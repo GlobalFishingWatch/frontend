@@ -26,10 +26,10 @@ import {
 import {
   CARRIER_PORTAL_API_URL,
   DEFAULT_PAGINATION_PARAMS,
+  IS_DEVELOPMENT_ENV,
   LATEST_CARRIER_DATASET_ID,
   PUBLIC_SUFIX,
 } from 'data/config'
-import { debugRelatedDatasets } from 'features/datasets/datasets.debug'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 
@@ -125,7 +125,7 @@ const fetchDatasetsFromApi = async (
   )
 
   const mockedDatasets =
-    process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
+    IS_DEVELOPMENT_ENV || process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
       ? await import('./datasets.mock')
       : { default: [] }
   let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], 'id')
@@ -133,7 +133,6 @@ const fetchDatasetsFromApi = async (
   const relatedDatasetsIds = uniq(
     datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
   )
-  debugRelatedDatasets(datasets, relatedDatasetsIds)
   const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
   const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...currentIds)
   if (uniqRelatedDatasetsIds.length > 1 && maxDepth > 0) {
