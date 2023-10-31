@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
+import { useDropzone } from 'react-dropzone'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -265,6 +266,19 @@ function App() {
   } else if (workspaceLocation) {
     asideWidth = '39rem'
   }
+  const onDropAccepted = useCallback((files: any) => {
+    console.log(files)
+  }, [])
+  const [disabled, setDisable] = useState(true)
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
+    onDropAccepted,
+    noClick: true,
+    onDragEnter: () => {
+      console.log('enter')
+      setDisable(false)
+    },
+    onDragLeave: () => console.log('exit') || setDisable(true),
+  })
 
   if (!i18n.ready) {
     return null
@@ -272,6 +286,10 @@ function App() {
 
   return (
     <Fragment>
+      <div className={cx(styles.dropFiles)} {...(getRootProps() as any)}>
+        <input {...getInputProps()} />
+        {isDragActive ? <p className={styles.dragActive}>Drop the file here ...</p> : null}
+      </div>
       <a href="https://globalfishingwatch.org" className="print-only">
         <Logo className={styles.logo} />
       </a>
