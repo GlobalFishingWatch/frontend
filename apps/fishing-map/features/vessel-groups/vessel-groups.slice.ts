@@ -125,11 +125,9 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
       const dataset = searchDatasets[0]
       const datasets = searchDatasets.map((d) => d.id)
       const uniqVesselIds = uniq(vessels.map(({ vesselId }) => vesselId))
-      const advancedSearchQuery = encodeURIComponent(
-        `${idField} IN ('${uniqVesselIds.join("','")}')`
-      )
+      const isVesselByIdSearch = idField === 'vesselId'
       const datasetConfig: DataviewDatasetConfig = {
-        endpoint: idField === 'vesselId' ? EndpointId.VesselList : EndpointId.VesselSearch,
+        endpoint: isVesselByIdSearch ? EndpointId.VesselList : EndpointId.VesselSearch,
         datasetId: searchDatasets[0].id,
         params: [],
         query: [
@@ -137,15 +135,17 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
             id: 'datasets',
             value: datasets,
           },
-          idField === 'vesselId'
+          isVesselByIdSearch
             ? { id: 'ids', value: uniqVesselIds }
             : {
-                id: 'query',
-                value: advancedSearchQuery,
+                id: 'where',
+                value: encodeURIComponent(
+                  `${uniqVesselIds.map((ssvid) => `ssvid = '${ssvid}'`).join(' OR ')}`
+                ),
               },
         ],
       }
-      if (idField === 'mmsi') {
+      if (!isVesselByIdSearch) {
         datasetConfig.query?.push({
           id: 'limit',
           value: SEARCH_PAGINATION,
@@ -166,19 +166,18 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
           [getVesselId(vessel), vessel.dataset].join(',')
         )
         // Searching could return same vessel id from different datasets so we need to choose the original one
-        const searchResultsFiltered =
-          idField === 'vesselId'
-            ? uniqSearchResults.filter((vessel) => {
-                const vesselId = getVesselId(vessel)
-                return (
-                  vessels.find((v) => {
-                    const isSameVesselid = v.vesselId === vesselId
-                    const isSameDataset = v.dataset ? v.dataset === vessel.dataset : true
-                    return isSameVesselid && isSameDataset
-                  }) !== undefined
-                )
-              })
-            : uniqSearchResults
+        const searchResultsFiltered = isVesselByIdSearch
+          ? uniqSearchResults.filter((vessel) => {
+              const vesselId = getVesselId(vessel)
+              return (
+                vessels.find((v) => {
+                  const isSameVesselid = v.vesselId === vesselId
+                  const isSameDataset = v.dataset ? v.dataset === vessel.dataset : true
+                  return isSameVesselid && isSameDataset
+                }) !== undefined
+              )
+            })
+          : uniqSearchResults
 
         return searchResultsFiltered
       } catch (e: any) {
