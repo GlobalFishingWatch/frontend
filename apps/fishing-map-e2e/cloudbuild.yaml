@@ -1,6 +1,5 @@
 steps:
   - id: 'smoke-test-e2e-live'
-    waitFor: ['deploy-cloud-run']
     name: cypress/included:12.17.1
     entrypoint: 'bash'
     env:
