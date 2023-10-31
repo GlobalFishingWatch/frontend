@@ -58,7 +58,10 @@ export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
 type MapState = {
   clicked: SliceInteractionEvent | null
   hovered: SliceInteractionEvent | null
-  isDrawing: boolean
+  draw: {
+    isDrawing: boolean
+    editDatasetId: string | null
+  }
   fishingStatus: AsyncReducerStatus
   currentFishingRequestId: string
   apiEventStatus: AsyncReducerStatus
@@ -67,7 +70,10 @@ type MapState = {
 const initialState: MapState = {
   clicked: null,
   hovered: null,
-  isDrawing: false,
+  draw: {
+    isDrawing: false,
+    editDatasetId: null,
+  },
   fishingStatus: AsyncReducerStatus.Idle,
   currentFishingRequestId: '',
   apiEventStatus: AsyncReducerStatus.Idle,
@@ -462,7 +468,10 @@ const slice = createSlice({
   initialState,
   reducers: {
     setMapDrawing: (state, action: PayloadAction<boolean>) => {
-      state.isDrawing = action.payload
+      state.draw = { ...state.draw, isDrawing: action.payload }
+    },
+    setMapDrawEditDatasetId: (state, action: PayloadAction<string | null>) => {
+      state.draw = { ...state.draw, editDatasetId: action.payload }
     },
     setClickedEvent: (state, action: PayloadAction<SliceInteractionEvent | null>) => {
       if (action.payload === null) {
@@ -542,9 +551,10 @@ const slice = createSlice({
 })
 
 export const selectClickedEvent = (state: { map: MapState }) => state.map.clicked
-export const selectIsMapDrawing = (state: { map: MapState }) => state.map.isDrawing
+export const selectIsMapDrawing = (state: { map: MapState }) => state.map.draw.isDrawing
+export const selectMapDrawEditDatasetId = (state: { map: MapState }) => state.map.draw.editDatasetId
 export const selectFishingInteractionStatus = (state: { map: MapState }) => state.map.fishingStatus
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 
-export const { setClickedEvent, setMapDrawing } = slice.actions
+export const { setClickedEvent, setMapDrawing, setMapDrawEditDatasetId } = slice.actions
 export default slice.reducer

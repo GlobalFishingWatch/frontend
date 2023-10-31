@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Feature, Polygon } from 'geojson'
 import { DrawModes, DrawSelectionChangeEvent } from '@mapbox/mapbox-gl-draw'
 import { Popup } from 'react-map-gl'
+import { useSelector } from 'react-redux'
 import { Button, InputText, IconButton, SwitchRow } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -14,6 +15,7 @@ import {
 } from 'features/datasets/datasets.hook'
 import useDrawControl from 'features/map/MapDrawControl'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useMapDrawConnect } from './map-draw.hooks'
 import styles from './MapDraw.module.css'
 import {
@@ -59,6 +61,7 @@ function MapDraw() {
   // const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null)
   const [newPointLatitude, setNewPointLatitude] = useState<number | string | null>(null)
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
+  const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const { isMapDrawing, dispatchSetMapDrawing } = useMapDrawConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const { dispatchCreateDataset } = useDatasetsAPI()
@@ -353,7 +356,8 @@ function MapDraw() {
         <InputText
           label={t('layer.name', 'Layer name')}
           labelClassName={styles.layerLabel}
-          value={layerName}
+          value={mapDrawEditDataset ? mapDrawEditDataset.name : layerName}
+          disabled={!!mapDrawEditDataset}
           onChange={onInputChange}
           className={styles.input}
         />
@@ -376,6 +380,7 @@ function MapDraw() {
               'dataset.uploadPublic',
               'Allow other users to see this dataset when you share a workspace'
             )}
+            disabled={!!mapDrawEditDataset}
             active={createAsPublic}
             onClick={toggleCreateAsPublic}
           />
