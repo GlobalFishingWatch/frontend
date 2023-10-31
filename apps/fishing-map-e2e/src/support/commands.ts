@@ -10,7 +10,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
-  // int-disable-next-line @typescript-eslint/no-unused-vars
+  // esint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
     login(email: string, password: string): void
     store(reducerName: string): void
@@ -48,17 +48,10 @@ Cypress.Commands.add('forceClick', { prevSubject: 'element' }, (subject, options
   cy.wrap(subject).click({ force: true })
 })
 
-let LOCAL_STORAGE_MEMORY = {
-  token: null,
-}
-
 function loginViaAuthAPI(username: string, password: string) {
   // App landing page redirects to Auth0.
   cy.visit('/')
-  if (LOCAL_STORAGE_MEMORY.token) {
-    localStorage.setItem('GFW_API_USER_TOKEN', LOCAL_STORAGE_MEMORY.token)
-    return
-  }
+
   // This is needed to ensure the cookies are send
   Cypress.Cookies.debug(true)
 
