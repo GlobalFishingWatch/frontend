@@ -11,6 +11,8 @@ export const getCoordinatePrecisionRounded = (coordinate: Position): Position =>
   return coordinate.map((points) => Math.round(points * 100000) / 100000)
 }
 
+const DRAW_DATASET_SOURCE = 'drawn_on_gfw_map'
+
 export const getDrawDatasetDefinition = (name: string): Partial<Dataset> => {
   return {
     name,
@@ -18,6 +20,7 @@ export const getDrawDatasetDefinition = (name: string): Partial<Dataset> => {
     category: DatasetCategory.Context,
     subcategory: 'user',
     unit: 'NA',
+    source: DRAW_DATASET_SOURCE,
     configuration: {
       format: 'geojson',
       geometryType: 'polygons',

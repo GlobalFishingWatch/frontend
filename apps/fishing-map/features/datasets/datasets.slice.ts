@@ -204,7 +204,7 @@ export const createDatasetThunk = createAsyncThunk<
       ...dataset,
       description: dataset.description || dataset.name,
       id: createAsPublic ? `${PUBLIC_SUFIX}-${id}` : id,
-      source: DATASETS_USER_SOURCE_ID,
+      source: dataset.source || DATASETS_USER_SOURCE_ID,
       configuration: {
         ...dataset.configuration,
         ...(propertyToInclude && { propertyToInclude }),

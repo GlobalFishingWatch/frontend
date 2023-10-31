@@ -147,6 +147,7 @@ function MapDraw() {
     editingPointLongitude,
     editingPointLatitude,
     drawControl,
+    setSelectedPointIndex,
   ])
 
   const onDeletePoint = useCallback(() => {
@@ -155,7 +156,7 @@ function MapDraw() {
       drawControl.add(newFeature)
       setSelectedPointIndex(null)
     }
-  }, [drawControl, selectedFeature, selectedPointIndex])
+  }, [drawControl, selectedFeature, selectedPointIndex, setSelectedPointIndex])
 
   const onInputChange = useCallback(
     (e: any) => {
@@ -178,7 +179,7 @@ function MapDraw() {
       setDrawingMode('direct_select', selectedFeature.id as string)
       setSelectedPointIndex(1)
     }
-  }, [features, setDrawingMode])
+  }, [features, setDrawingMode, setSelectedPointIndex])
 
   const onAddPolygonClick = useCallback(() => {
     setDrawingMode('draw_polygon')
@@ -196,7 +197,7 @@ function MapDraw() {
     setSelectedPointIndex(null)
     setNewPointLatitude(null)
     setNewPointLongitude(null)
-  }, [])
+  }, [setSelectedPointIndex])
 
   const resetState = useCallback(() => {
     setLayerName('')
