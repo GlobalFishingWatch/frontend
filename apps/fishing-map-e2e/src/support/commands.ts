@@ -10,7 +10,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
-  // esint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
     login(email: string, password: string): void
     store(reducerName: string): void
@@ -79,7 +79,7 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.url().should('include', Cypress.config('baseUrl')).should('include', 'access-token=')
 
   // Validate that we request a token and is saved in the local storage
-  cy.wait('@requestToken', { requestTimeout: 30000 }).then((interception) => {
+  cy.wait('@requestToken', { requestTimeout: 20000 }).then((interception) => {
     const token = interception.response.body.token
     // eslint-disable-next-line
     cy.wait(1000) // After request the token give a second so it can be added to the localstorage after the resquest is completed
@@ -91,7 +91,6 @@ function loginViaAuthAPI(username: string, password: string) {
         },
       })
     })
-    LOCAL_STORAGE_MEMORY.token = token
   })
 }
 
