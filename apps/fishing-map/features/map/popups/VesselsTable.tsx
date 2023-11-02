@@ -40,7 +40,7 @@ import { getUTCDateTime } from 'utils/dates'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { getRelatedIdentityVesselIds, getVesselProperty } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
@@ -179,6 +179,7 @@ function VesselsTable({
       info: vessel.infoDataset?.id,
       track: vessel.trackDataset?.id,
       ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
+      relatedVesselIds: getRelatedIdentityVesselIds(vessel),
     })
 
     upsertDataviewInstance(vesselDataviewInstance)
