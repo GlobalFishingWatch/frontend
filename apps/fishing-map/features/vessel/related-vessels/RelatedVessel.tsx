@@ -1,78 +1,44 @@
 import { Fragment } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Dataset, DataviewInstance } from '@globalfishingwatch/api-types'
-import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
-import { useLocationConnect } from 'routes/routes.hook'
+import { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 import { selectVesselDataset } from 'features/vessel/vessel.selectors'
-import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
 import VesselLink from 'features/vessel/VesselLink'
-import { VesselLastIdentity } from 'features/search/search.slice'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
+import VesselPin, { VesselToResolve } from 'features/vessel/VesselPin'
+import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
 import styles from './RelatedVessels.module.css'
 
 const RelatedVessel = ({
   vessel,
+  vesselToResolve,
   showTooltip = false,
 }: {
-  vessel: VesselLastIdentity
+  vessel?: IdentityVessel
+  vesselToResolve?: VesselToResolve
   showTooltip?: boolean
 }) => {
-  const { t } = useTranslation()
-  const { track, info, events } = useSelector(selectVesselInfoData)
-  const { dispatchQueryParams } = useLocationConnect()
+  const vesselIdentity = vessel ? getCurrentIdentityVessel(vessel) : vesselToResolve
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselDataset = useSelector(selectVesselDataset) as Dataset
-  const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
-  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.id as string)
-  const hasDatasets = track && info
-  const pinTrackDisabled = !hasDatasets
-  const nameLabel = formatInfoField(vessel.shipname || (vessel as any).name || '', 'shipname')
-  const flagLabel = formatInfoField(vessel.flag || '', 'flag')
+  const nameLabel = formatInfoField(
+    (vesselIdentity as any)?.shipname || (vesselIdentity as any)?.name || '',
+    'shipname'
+  )
+  const flagLabel = formatInfoField(vesselIdentity?.flag || '', 'flag')
   const fullLabel = `${nameLabel} (${flagLabel})`
-
-  const onVesselClick = async () => {
-    if (vesselInWorkspace) {
-      deleteDataviewInstance(vesselInWorkspace.id)
-      return
-    }
-    const vesselDataviewInstance: DataviewInstance = getVesselDataviewInstance(
-      { id: vessel.id },
-      { info, track, events }
-    )
-    dispatchQueryParams({ viewOnlyVessel: false })
-    upsertDataviewInstance(vesselDataviewInstance)
-  }
 
   return (
     <Fragment>
-      {isWorkspaceVesselLocation && (
-        <IconButton
-          className={styles.pin}
-          icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
-          style={{
-            color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
-          }}
-          disabled={pinTrackDisabled}
-          tooltip={
-            pinTrackDisabled
-              ? ''
-              : vesselInWorkspace
-              ? t('search.removeVessel', 'Remove vessel')
-              : t('search.seeVessel', 'See vessel')
-          }
-          onClick={onVesselClick}
-          size="small"
-        />
-      )}
+      {isWorkspaceVesselLocation && <VesselPin vessel={vessel} vesselToResolve={vesselToResolve} />}
       <Tooltip content={showTooltip && fullLabel.length > 30 && fullLabel}>
         <span>
-          <VesselLink className={styles.vessel} vesselId={vessel.id} datasetId={vesselDataset?.id}>
+          <VesselLink
+            className={styles.vessel}
+            vesselId={vesselIdentity?.id}
+            datasetId={vesselDataset?.id}
+          >
             {nameLabel}
           </VesselLink>{' '}
           <span className={styles.secondary}>({flagLabel})</span>
