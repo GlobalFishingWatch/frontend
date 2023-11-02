@@ -33,7 +33,10 @@ export const getFileWithFeatures = (name: string, features: DrawFeature[]) => {
     [
       JSON.stringify({
         type: 'FeatureCollection',
-        features: features,
+        features: features.map((feature, index) => ({
+          ...feature,
+          properties: { ...(feature.properties || {}), draw_id: index },
+        })),
       }),
     ],
     `${name}.json`,

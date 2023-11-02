@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import cx from 'classnames'
 import kinks from '@turf/kinks'
@@ -16,6 +16,8 @@ import {
 import useDrawControl from 'features/map/MapDrawControl'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { fetchDatasetAreasThunk, selectDatasetAreasById } from 'features/areas/areas.slice'
 import { useMapDrawConnect } from './map-draw.hooks'
 import styles from './MapDraw.module.css'
 import {
@@ -54,6 +56,7 @@ const selectedPointIndexAtom = atom<number | null>({
 
 function MapDraw() {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
   const [createAsPublic, setCreateAsPublic] = useState<boolean>(true)
@@ -61,11 +64,19 @@ function MapDraw() {
   // const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null)
   const [newPointLatitude, setNewPointLatitude] = useState<number | string | null>(null)
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
-  const mapDrawEditDataset = useSelector(selectDrawEditDataset)
-  const { isMapDrawing, dispatchSetMapDrawing } = useMapDrawConnect()
+  const { isMapDrawing, dispatchResetMapDraw } = useMapDrawConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const { dispatchCreateDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
+  const mapDrawEditDataset = useSelector(selectDrawEditDataset)
+  const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
+
+  useEffect(() => {
+    if (mapDrawEditDataset) {
+      setLayerName(mapDrawEditDataset.name)
+      dispatch(fetchDatasetAreasThunk({ datasetId: mapDrawEditDataset.id }))
+    }
+  }, [dispatch, mapDrawEditDataset])
 
   const onSelectionChange = (e: DrawSelectionChangeEvent) => {
     const feature = e.features?.[0] as DrawFeature
@@ -209,13 +220,13 @@ function MapDraw() {
 
   const closeDraw = useCallback(() => {
     resetState()
-    dispatchSetMapDrawing(false)
+    dispatchResetMapDraw()
     dispatchQueryParams({ sidebarOpen: true })
     trackEvent({
       category: TrackCategory.ReferenceLayer,
       action: `Draw a custom reference layer - Click dismiss`,
     })
-  }, [dispatchQueryParams, dispatchSetMapDrawing, resetState])
+  }, [dispatchQueryParams, dispatchResetMapDraw, resetState])
 
   const toggleCreateAsPublic = useCallback(() => {
     setCreateAsPublic((createAsPublic) => !createAsPublic)
@@ -244,15 +255,19 @@ function MapDraw() {
 
   const onSaveClick = useCallback(
     (features: any) => {
-      if (features && features.length > 0 && layerName) {
-        createDataset(features, layerName)
-        trackEvent({
-          category: TrackCategory.ReferenceLayer,
-          action: `Draw a custom reference layer - Click save`,
-        })
+      if (mapDrawEditDataset) {
+        console.log('TODO: update dataset')
+      } else {
+        if (features && features.length > 0 && layerName) {
+          createDataset(features, layerName)
+          trackEvent({
+            category: TrackCategory.ReferenceLayer,
+            action: `Draw a custom reference layer - Click save`,
+          })
+        }
       }
     },
-    [createDataset, layerName]
+    [createDataset, layerName, mapDrawEditDataset]
   )
 
   const overLapInFeatures = useMemo(() => {
@@ -356,7 +371,7 @@ function MapDraw() {
         <InputText
           label={t('layer.name', 'Layer name')}
           labelClassName={styles.layerLabel}
-          value={mapDrawEditDataset ? mapDrawEditDataset.name : layerName}
+          value={layerName}
           disabled={!!mapDrawEditDataset}
           onChange={onInputChange}
           className={styles.input}

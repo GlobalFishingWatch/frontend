@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSidebarOpen } from 'features/app/app.selectors'
-import { selectIsMapDrawing, setMapDrawEditDatasetId, setMapDrawing } from './map.slice'
+import {
+  resetMapDraw,
+  selectIsMapDrawing,
+  setMapDrawEditDatasetId,
+  setMapDrawing,
+} from './map.slice'
 
 export const useMapDrawConnect = () => {
   const dispatch = useAppDispatch()
@@ -28,5 +33,17 @@ export const useMapDrawConnect = () => {
     [dispatch]
   )
 
-  return { isMapDrawing, dispatchSetMapDrawing, dispatchSetMapDrawEditDataset }
+  const dispatchResetMapDraw = useCallback(() => {
+    dispatch(resetMapDraw())
+    if (!sidebarOpen) {
+      dispatchQueryParams({ sidebarOpen: true })
+    }
+  }, [dispatch, dispatchQueryParams, sidebarOpen])
+
+  return {
+    isMapDrawing,
+    dispatchResetMapDraw,
+    dispatchSetMapDrawing,
+    dispatchSetMapDrawEditDataset,
+  }
 }

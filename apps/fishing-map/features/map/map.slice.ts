@@ -473,6 +473,9 @@ const slice = createSlice({
     setMapDrawEditDatasetId: (state, action: PayloadAction<string | null>) => {
       state.draw = { ...state.draw, editDatasetId: action.payload }
     },
+    resetMapDraw: (state, action?: PayloadAction<undefined>) => {
+      state.draw = { isDrawing: false, editDatasetId: null }
+    },
     setClickedEvent: (state, action: PayloadAction<SliceInteractionEvent | null>) => {
       if (action.payload === null) {
         state.clicked = null
@@ -556,5 +559,6 @@ export const selectMapDrawEditDatasetId = (state: { map: MapState }) => state.ma
 export const selectFishingInteractionStatus = (state: { map: MapState }) => state.map.fishingStatus
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 
-export const { setClickedEvent, setMapDrawing, setMapDrawEditDatasetId } = slice.actions
+export const { setClickedEvent, setMapDrawing, setMapDrawEditDatasetId, resetMapDraw } =
+  slice.actions
 export default slice.reducer

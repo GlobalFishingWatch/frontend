@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { kebabCase, memoize, uniqBy } from 'lodash'
-import { Polygon, MultiPolygon } from 'geojson'
+import { Polygon, MultiPolygon, FeatureCollection } from 'geojson'
 import { TileContextAreaFeature, Dataset, EndpointId } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
@@ -8,14 +8,17 @@ import { wrapGeometryBbox, wrapBBoxLongitudes } from '@globalfishingwatch/data-t
 import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
+
 export interface DatasetArea {
   id: string
   label: string
   bbox?: Bbox
 }
+
 export interface DatasetAreaList {
   status: AsyncReducerStatus
-  data: DatasetArea[]
+  data: DrawnDatasetGeometry | DatasetArea[]
 }
 
 export type AreaGeometry = Polygon | MultiPolygon
@@ -122,13 +125,19 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
     }: FetchDatasetAreasThunkParam = {} as FetchDatasetAreasThunkParam,
     { signal }
   ) => {
-    const datasetAreas = await GFWAPI.fetch<DatasetArea[]>(
-      `/datasets/${datasetId}/user-context-layer-v1${
+    const datasetAreas = await GFWAPI.fetch<DatasetArea[] | DrawnDatasetGeometry>(
+      `/datasets/${datasetId}/user-context-layers${
         include?.length ? `?includes=${include.join(',')}` : ''
       }`,
       { signal }
     )
-    const areasWithSlug = datasetAreas.map((area) => ({ ...area, slug: kebabCase(area.label) }))
+    if ((datasetAreas as DrawnDatasetGeometry).type === 'FeatureCollection') {
+      return datasetAreas
+    }
+    const areasWithSlug = (datasetAreas as DatasetArea[]).map((area) => ({
+      ...area,
+      slug: kebabCase(area.label),
+    }))
     return uniqBy(areasWithSlug, 'slug')
   },
   {
