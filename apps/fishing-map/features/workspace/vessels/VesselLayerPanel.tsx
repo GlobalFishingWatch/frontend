@@ -29,6 +29,7 @@ import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel
 import GFWOnly from 'features/user/GFWOnly'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import VesselLink from 'features/vessel/VesselLink'
+import { getOtherVesselNames } from 'features/vessel/vessel.utils'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -87,6 +88,9 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const trackError = trackResource?.status === ResourceStatus.Error
 
   const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
+  const otherVesselsLabel = infoResource?.data
+    ? getOtherVesselNames(infoResource?.data as IdentityVessel)
+    : ''
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
       (p: DataviewDatasetConfigParam) => p.id === 'vesselId'
@@ -103,11 +107,19 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
         <Fragment>
           <GFWOnly type="only-icon" />
           {vesselLabel}
+          {otherVesselsLabel && <span className={styles.secondary}>{otherVesselsLabel}</span>}
         </Fragment>
       )
-    if (dataview?.datasetsConfig?.some((d) => isPrivateDataset({ id: d.datasetId })))
-      return `🔒 ${vesselLabel}`
-    return vesselLabel
+    const isPrivateVessel = dataview?.datasetsConfig?.some((d) =>
+      isPrivateDataset({ id: d.datasetId })
+    )
+    return (
+      <Fragment>
+        {isPrivateVessel && '🔒'}
+        {vesselLabel}
+        {otherVesselsLabel && <span className={styles.secondary}>{otherVesselsLabel}</span>}
+      </Fragment>
+    )
   }
 
   const TitleComponentContent = () => (
