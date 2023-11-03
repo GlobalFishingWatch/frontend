@@ -19,7 +19,7 @@ import {
   pickTrackResource,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
-import { getVesselLabel } from 'utils/info'
+import { formatInfoField, getVesselLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
@@ -30,6 +30,7 @@ import GFWOnly from 'features/user/GFWOnly'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import VesselLink from 'features/vessel/VesselLink'
 import { getOtherVesselNames } from 'features/vessel/vessel.utils'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -87,10 +88,20 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = trackResource?.status === ResourceStatus.Error
 
-  const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
-  const otherVesselsLabel = infoResource?.data
-    ? getOtherVesselNames(infoResource?.data as IdentityVessel)
-    : ''
+  const vesselData = infoResource?.data
+  const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
+  const otherVesselsLabel = vesselData ? getOtherVesselNames(vesselData as IdentityVessel) : ''
+  const identitiesSummary = vesselData?.selfReportedInfo.flatMap((selfReported, index) => {
+    const info = `${formatInfoField(selfReported.shipname, 'name')} - ${formatInfoField(
+      selfReported.flag,
+      'flag'
+    )} (${formatI18nDate(selfReported.transmissionDateFrom)} - ${formatI18nDate(
+      selfReported.transmissionDateTo
+    )})`
+
+    return index < vesselData?.selfReportedInfo.length - 1 ? [info, <br />] : [info]
+  })
+
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
       (p: DataviewDatasetConfigParam) => p.id === 'vesselId'
@@ -129,6 +140,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
           className={styles.link}
           vesselId={vesselId}
           datasetId={dataset?.id}
+          tooltip={identitiesSummary}
           query={{
             vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
             vesselSelfReportedId: vesselId,
@@ -196,7 +208,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
                 'errors.vesselLoading',
                 'There was an error loading the vessel details'
               )} (${vesselId})`
-            : t('layer.infoOpen', 'Show info')
+            : ''
         }
         // onClick={onToggleInfoOpen}
         tooltipPlacement="top"
