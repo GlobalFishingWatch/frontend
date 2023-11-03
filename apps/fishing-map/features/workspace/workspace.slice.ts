@@ -167,7 +167,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
-        signal.addEventListener('abort', fetchDatasetsAction.abort)
+        // Don't abort datasets as they are needed in the search
+        // signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
         datasets = payload as Dataset[]
 
