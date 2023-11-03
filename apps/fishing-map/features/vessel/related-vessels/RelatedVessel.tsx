@@ -32,7 +32,13 @@ const RelatedVessel = ({
 
   return (
     <Fragment>
-      {isWorkspaceVesselLocation && <VesselPin vessel={vessel} vesselToResolve={vesselToResolve} />}
+      {isWorkspaceVesselLocation && (
+        <VesselPin
+          vessel={vessel}
+          vesselToResolve={vesselToResolve}
+          tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
+        />
+      )}
       <VesselLink
         className={styles.vessel}
         vesselId={vesselIdentity?.id}

@@ -37,9 +37,11 @@ export type VesselToResolve = { id: string; name?: string; flag?: string; datase
 function VesselPin({
   vessel,
   vesselToResolve,
+  tooltip,
 }: {
   vessel?: IdentityVessel
   vesselToResolve?: VesselToResolve
+  tooltip?: React.ReactNode
 }) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
@@ -147,7 +149,7 @@ function VesselPin({
       tooltip={
         vesselInWorkspace
           ? t('search.vesselAlreadyInWorkspace', 'This vessel is already in your workspace')
-          : t('search.seeVessel', 'See vessel')
+          : tooltip || t('search.seeVessel', 'See vessel')
       }
       onClick={onPinClick}
       size="small"

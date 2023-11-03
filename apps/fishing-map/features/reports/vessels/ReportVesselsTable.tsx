@@ -91,6 +91,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       id: vessel.id || vessel.vesselId,
                       datasetId: vessel.dataset,
                     }}
+                    tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
                   />
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
