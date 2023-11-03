@@ -289,8 +289,9 @@ export function filterRegistryInfoByDateAndSSVID(
 
 export const getOtherVesselNames = (
   vessel: IdentityVessel | IdentityVesselData,
-  currentNShipname: string
+  currentName?: string
 ) => {
+  const currentNShipname = currentName || getSearchIdentityResolved(vessel)?.nShipname
   const uniqIdentitiesByNormalisedName = uniqBy(getVesselIdentities(vessel), 'nShipname')
   const otherIdentities = uniqIdentitiesByNormalisedName.filter(
     (i) => i.nShipname !== currentNShipname

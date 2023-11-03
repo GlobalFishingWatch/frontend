@@ -235,6 +235,10 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
             id: 'vessel-groups',
             value: vesselGroup.id,
           },
+          {
+            id: 'cache',
+            value: false,
+          },
         ],
       }
       try {
@@ -246,7 +250,10 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
             message: 'Missing search url',
           })
         }
-        const vessels = await GFWAPI.fetch<APIPagination<IdentityVessel>>(url, { signal })
+        const vessels = await GFWAPI.fetch<APIPagination<IdentityVessel>>(url, {
+          signal,
+          cache: 'reload',
+        })
         return vessels.entries
       } catch (e: any) {
         console.warn(e)
