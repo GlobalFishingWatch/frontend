@@ -43,18 +43,33 @@ export type VesselInstanceDatasets = {
   relatedVesselIds?: string[]
 }
 
+export const getVesselInfoDataviewInstanceDatasetConfig = (
+  vesselId: string,
+  { info }: VesselInstanceDatasets
+) => {
+  return {
+    datasetId: info,
+    params: [{ id: 'vesselId', value: vesselId }],
+    query: [
+      { id: 'dataset', value: info },
+      {
+        id: 'includes',
+        value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+      },
+    ],
+    endpoint: EndpointId.Vessel,
+  } as DataviewDatasetConfig
+}
+
 export const getVesselDataviewInstanceDatasetConfig = (
   vesselId: string,
   { track, info, events, relatedVesselIds = [] }: VesselInstanceDatasets
 ) => {
   const datasetsConfig: DataviewDatasetConfig[] = []
   if (info) {
-    datasetsConfig.push({
-      datasetId: info,
-      params: [{ id: 'vesselId', value: vesselId }],
-      query: [{ id: 'dataset', value: info }],
-      endpoint: EndpointId.Vessel,
-    })
+    datasetsConfig.push(
+      getVesselInfoDataviewInstanceDatasetConfig(vesselId, { info: info as string })
+    )
   }
   if (track) {
     const vesselIds = relatedVesselIds ? [vesselId, ...relatedVesselIds].join(',') : vesselId
