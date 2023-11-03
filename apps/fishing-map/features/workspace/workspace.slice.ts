@@ -336,6 +336,15 @@ const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
+    setWorkspaceProperty: (
+      state,
+      action: PayloadAction<{ key: keyof Workspace<WorkspaceState, string>; value: string }>
+    ) => {
+      const { key, value } = action.payload
+      if (state.data && state.data[key]) {
+        ;(state.data as any)[key] = value
+      }
+    },
     resetWorkspaceSlice: (state) => {
       state.status = initialState.status
       state.customStatus = initialState.customStatus
@@ -417,6 +426,7 @@ const workspaceSlice = createSlice({
 })
 
 export const {
+  setWorkspaceProperty,
   resetWorkspaceSlice,
   setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,
