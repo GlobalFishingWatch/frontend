@@ -94,7 +94,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   useAutoRefreshImportingDataset(dataset)
   const isCustomUserLayer = !guestUser && dataset?.ownerId === userId
 
-  if (!dataset) {
+  if (!dataset || dataset.status === 'deleted') {
     return <DatasetNotFound dataview={dataview} />
   }
 

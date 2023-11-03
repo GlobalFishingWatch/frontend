@@ -31,6 +31,7 @@ import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import VesselLink from 'features/vessel/VesselLink'
 import { getOtherVesselNames } from 'features/vessel/vessel.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { t } from 'features/i18n/i18n'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -42,7 +43,7 @@ export type VesselLayerPanelProps = {
 }
 
 export const getVesselIdentityTooltipSummary = (vessel: IdentityVessel) => {
-  return vessel?.selfReportedInfo.flatMap((selfReported, index) => {
+  const identities = vessel?.selfReportedInfo.flatMap((selfReported, index) => {
     const info = `${formatInfoField(selfReported.shipname, 'name')} - ${formatInfoField(
       selfReported.flag,
       'flag'
@@ -50,8 +51,9 @@ export const getVesselIdentityTooltipSummary = (vessel: IdentityVessel) => {
       selfReported.transmissionDateTo
     )})`
 
-    return index < vessel?.selfReportedInfo.length - 1 ? [info, <br />] : [info]
+    return [info, <br />]
   })
+  return [...identities, t('vessel.clickToSeeVessel', 'Click to see more information')]
 }
 
 function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactElement {
@@ -125,9 +127,10 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
           {otherVesselsLabel && <span className={styles.secondary}>{otherVesselsLabel}</span>}
         </Fragment>
       )
-    const isPrivateVessel = dataview?.datasetsConfig?.some((d) =>
-      isPrivateDataset({ id: d.datasetId })
-    )
+
+    const isPrivateVessel = dataview?.datasetsConfig
+      ?.filter((d) => d.datasetId)
+      .some((d) => isPrivateDataset({ id: d.datasetId }))
     return (
       <Fragment>
         {isPrivateVessel && '🔒'}

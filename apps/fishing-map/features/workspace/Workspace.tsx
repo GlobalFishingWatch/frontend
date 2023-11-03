@@ -27,6 +27,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
+import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -100,6 +101,9 @@ function Workspace() {
           description: workspaceEditDescription,
         })
       )
+      if (workspaceEditName) {
+        dispatch(setWorkspaceProperty({ key: 'name', value: workspaceEditName }))
+      }
       onWorkspaceUpdateClose()
     },
     [dispatch, onWorkspaceUpdateClose, workspaceEditDescription, workspaceEditName]
