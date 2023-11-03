@@ -38,10 +38,12 @@ function VesselPin({
   vessel,
   vesselToResolve,
   tooltip,
+  disabled,
 }: {
   vessel?: IdentityVessel
   vesselToResolve?: VesselToResolve
   tooltip?: React.ReactNode
+  disabled?: boolean
 }) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
@@ -143,6 +145,7 @@ function VesselPin({
     <IconButton
       icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
       loading={loading}
+      disabled={disabled}
       style={{
         color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
       }}

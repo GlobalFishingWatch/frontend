@@ -14,6 +14,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { EMPTY_API_VALUES } from 'features/reports/reports.config'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { selectReportVesselsPaginated } from '../reports.selectors'
 import { ReportActivityUnit } from '../Report'
 import styles from './ReportVesselsTable.module.css'
@@ -80,6 +81,10 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
             const type = isFishingReport ? vessel.geartype : vessel.vesselType
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
+            const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
+              ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+              : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const pinTrackDisabled = !hasDatasets
             return (
               <Fragment key={vessel.vesselId}>
                 <div
@@ -92,6 +97,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       datasetId: vessel.dataset,
                     }}
                     tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
+                    disabled={pinTrackDisabled}
                   />
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
