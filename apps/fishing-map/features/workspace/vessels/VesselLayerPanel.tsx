@@ -127,9 +127,10 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
           {otherVesselsLabel && <span className={styles.secondary}>{otherVesselsLabel}</span>}
         </Fragment>
       )
-    const isPrivateVessel = dataview?.datasetsConfig?.some((d) =>
-      isPrivateDataset({ id: d.datasetId })
-    )
+
+    const isPrivateVessel = dataview?.datasetsConfig
+      ?.filter((d) => d.datasetId)
+      .some((d) => isPrivateDataset({ id: d.datasetId }))
     return (
       <Fragment>
         {isPrivateVessel && '🔒'}
