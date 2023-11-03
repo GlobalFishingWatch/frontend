@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
-import { Tooltip } from '@globalfishingwatch/ui-components'
 import { selectVesselDataset } from 'features/vessel/vessel.selectors'
 import { formatInfoField } from 'utils/info'
 import VesselLink from 'features/vessel/VesselLink'
@@ -19,6 +19,7 @@ const RelatedVessel = ({
   vesselToResolve?: VesselToResolve
   showTooltip?: boolean
 }) => {
+  const { t } = useTranslation()
   const vesselIdentity = vessel ? getCurrentIdentityVessel(vessel) : vesselToResolve
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const vesselDataset = useSelector(selectVesselDataset) as Dataset
@@ -27,23 +28,20 @@ const RelatedVessel = ({
     'shipname'
   )
   const flagLabel = formatInfoField(vesselIdentity?.flag || '', 'flag')
-  const fullLabel = `${nameLabel} (${flagLabel})`
+  const fullLabel = `${t('common.see', 'See')} ${nameLabel} (${flagLabel})`
 
   return (
     <Fragment>
       {isWorkspaceVesselLocation && <VesselPin vessel={vessel} vesselToResolve={vesselToResolve} />}
-      <Tooltip content={showTooltip && fullLabel.length > 30 && fullLabel}>
-        <span>
-          <VesselLink
-            className={styles.vessel}
-            vesselId={vesselIdentity?.id}
-            datasetId={vesselDataset?.id}
-          >
-            {nameLabel}
-          </VesselLink>{' '}
-          <span className={styles.secondary}>({flagLabel})</span>
-        </span>
-      </Tooltip>
+      <VesselLink
+        className={styles.vessel}
+        vesselId={vesselIdentity?.id}
+        datasetId={vesselDataset?.id}
+        tooltip={showTooltip ? fullLabel : ''}
+      >
+        {nameLabel}
+      </VesselLink>{' '}
+      <span className={styles.secondary}>({flagLabel})</span>
     </Fragment>
   )
 }
