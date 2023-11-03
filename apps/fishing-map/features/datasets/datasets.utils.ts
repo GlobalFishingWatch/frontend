@@ -731,12 +731,14 @@ export const getFiltersBySchema = (
   const filterOperator = getSchemaFilterOperationInDataview(dataview, schema) as FilterOperator
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   const unit = getSchemaFilterUnitInDataview(dataview, schema)
-  const datasetsWithoutSchema = getNotSupportedSchemaFieldsDatasets(dataview, schema)!?.length > 0
+  const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)!?.map((d) => d.id)
+  const activeDatasets = getActiveDatasetsInActivityDataviews([dataview as UrlDataviewInstance])
+  const hasDatasetsWithSchema =
+    compatibilityOperation === 'some'
+      ? activeDatasets.some((d) => datasetsWithSchema.includes(d))
+      : activeDatasets.every((d) => datasetsWithSchema.includes(d))
   const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)!?.length > 0
-  const disabled =
-    compatibilityOperation === 'every'
-      ? datasetsWithoutSchema || incompatibleFilterSelection
-      : incompatibleFilterSelection
+  const disabled = !hasDatasetsWithSchema || incompatibleFilterSelection
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)!?.[0]?.id)
   let label: string = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
     ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
