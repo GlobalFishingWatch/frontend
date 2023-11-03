@@ -181,6 +181,7 @@
       "registryInfo": "registryInfo",
       "registryOwners": "registryOwners",
       "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate",
       "registryAuthorizations": "registryAuthorizations"
@@ -194,6 +195,7 @@
       "registryInfo": "registryInfo",
       "registryOwners": "registryOwners",
       "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate",
       "registryAuthorizations": "registryAuthorizations"
@@ -439,6 +441,7 @@
     "schema": {
       "id": "id",
       "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -449,6 +452,7 @@
     "schema": {
       "id": "id",
       "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -1463,6 +1467,7 @@
       "registryInfo": "registryInfo",
       "registryOwners": "registryOwners",
       "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate",
       "registryAuthorizations": "registryAuthorizations"
@@ -1611,6 +1616,7 @@
     "schema": {
       "id": "id",
       "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -2775,6 +2781,7 @@
       "registryInfo": "registryInfo",
       "registryOwners": "registryOwners",
       "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate",
       "registryAuthorizations": "registryAuthorizations"
@@ -2786,6 +2793,7 @@
     "schema": {
       "id": "id",
       "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
@@ -2830,8 +2838,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "Panama VMS (Public Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Public)",
+    "name": "Panama VMS (Public Non fishing vessels)",
+    "description": "Dataset for VMS Panama - Carriers (Public)",
     "schema": {
       "id": "id",
       "selfReportedInfo": "selfReportedInfo",

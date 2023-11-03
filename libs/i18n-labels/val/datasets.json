@@ -181,6 +181,7 @@
       "registryInfo": "crwdns68824:0crwdne68824:0",
       "registryOwners": "crwdns68826:0crwdne68826:0",
       "selfReportedInfo": "crwdns68828:0crwdne68828:0",
+      "combinedSourcesInfo": "crwdns70174:0crwdne70174:0",
       "lastTransmissionDate": "crwdns68830:0crwdne68830:0",
       "firstTransmissionDate": "crwdns68832:0crwdne68832:0",
       "registryAuthorizations": "crwdns68834:0crwdne68834:0"
@@ -194,6 +195,7 @@
       "registryInfo": "crwdns68842:0crwdne68842:0",
       "registryOwners": "crwdns68844:0crwdne68844:0",
       "selfReportedInfo": "crwdns68846:0crwdne68846:0",
+      "combinedSourcesInfo": "crwdns70176:0crwdne70176:0",
       "lastTransmissionDate": "crwdns68848:0crwdne68848:0",
       "firstTransmissionDate": "crwdns68850:0crwdne68850:0",
       "registryAuthorizations": "crwdns68852:0crwdne68852:0"
@@ -439,6 +441,7 @@
     "schema": {
       "id": "crwdns68876:0crwdne68876:0",
       "selfReportedInfo": "crwdns68878:0crwdne68878:0",
+      "combinedSourcesInfo": "crwdns70178:0crwdne70178:0",
       "lastTransmissionDate": "crwdns68880:0crwdne68880:0",
       "firstTransmissionDate": "crwdns68882:0crwdne68882:0"
     }
@@ -449,6 +452,7 @@
     "schema": {
       "id": "crwdns68888:0crwdne68888:0",
       "selfReportedInfo": "crwdns68890:0crwdne68890:0",
+      "combinedSourcesInfo": "crwdns70180:0crwdne70180:0",
       "lastTransmissionDate": "crwdns68892:0crwdne68892:0",
       "firstTransmissionDate": "crwdns68894:0crwdne68894:0"
     }
@@ -1463,6 +1467,7 @@
       "registryInfo": "crwdns69010:0crwdne69010:0",
       "registryOwners": "crwdns69012:0crwdne69012:0",
       "selfReportedInfo": "crwdns69014:0crwdne69014:0",
+      "combinedSourcesInfo": "crwdns70182:0crwdne70182:0",
       "lastTransmissionDate": "crwdns69016:0crwdne69016:0",
       "firstTransmissionDate": "crwdns69018:0crwdne69018:0",
       "registryAuthorizations": "crwdns69020:0crwdne69020:0"
@@ -1611,6 +1616,7 @@
     "schema": {
       "id": "crwdns69044:0crwdne69044:0",
       "selfReportedInfo": "crwdns69046:0crwdne69046:0",
+      "combinedSourcesInfo": "crwdns70184:0crwdne70184:0",
       "lastTransmissionDate": "crwdns69048:0crwdne69048:0",
       "firstTransmissionDate": "crwdns69050:0crwdne69050:0"
     }
@@ -2775,6 +2781,7 @@
       "registryInfo": "crwdns69148:0crwdne69148:0",
       "registryOwners": "crwdns69150:0crwdne69150:0",
       "selfReportedInfo": "crwdns69152:0crwdne69152:0",
+      "combinedSourcesInfo": "crwdns70186:0crwdne70186:0",
       "lastTransmissionDate": "crwdns69154:0crwdne69154:0",
       "firstTransmissionDate": "crwdns69156:0crwdne69156:0",
       "registryAuthorizations": "crwdns69158:0crwdne69158:0"
@@ -2786,6 +2793,7 @@
     "schema": {
       "id": "crwdns69164:0crwdne69164:0",
       "selfReportedInfo": "crwdns69166:0crwdne69166:0",
+      "combinedSourcesInfo": "crwdns70188:0crwdne70188:0",
       "lastTransmissionDate": "crwdns69168:0crwdne69168:0",
       "firstTransmissionDate": "crwdns69170:0crwdne69170:0"
     }
@@ -2830,8 +2838,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "crwdns70162:0crwdne70162:0",
-    "description": "crwdns70164:0crwdne70164:0",
+    "name": "crwdns70198:0crwdne70198:0",
+    "description": "crwdns70200:0crwdne70200:0",
     "schema": {
       "id": "crwdns69176:0crwdne69176:0",
       "selfReportedInfo": "crwdns69178:0crwdne69178:0",
