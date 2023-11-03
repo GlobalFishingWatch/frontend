@@ -21,9 +21,10 @@ import { TimeRangeDates } from 'features/map/controls/MapInfo'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getUTCDateTime } from 'utils/dates'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
+import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
@@ -142,6 +143,8 @@ function VesselsTable({
                 getVesselProperty(vessel, 'shipname', getVesselPropertyParams),
                 'name'
               )
+
+              const otherVesselsLabel = vessel ? getOtherVesselNames(vessel) : ''
               const vesselFlag = getVesselProperty(vessel, 'flag', getVesselPropertyParams)
 
               const vesselType = isPresenceActivity
@@ -160,6 +163,8 @@ function VesselsTable({
 
               const pinTrackDisabled = !interactionAllowed || !hasDatasets
               const detectionsTimestamps = getDetectionsTimestamps(vessel)
+
+              const identitiesSummary = vessel ? getVesselIdentityTooltipSummary(vessel) : ''
               return (
                 <tr key={i} data-test={`${testId}-item-${i}`}>
                   {!pinTrackDisabled && (
@@ -169,17 +174,23 @@ function VesselsTable({
                   )}
                   <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1} data-test="vessel-name">
                     {vesselName !== EMPTY_FIELD_PLACEHOLDER ? (
-                      <VesselLink
-                        className={styles.link}
-                        vesselId={vessel.id}
-                        datasetId={vessel.infoDataset?.id}
-                        query={{
-                          vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-                          vesselSelfReportedId: vessel.id,
-                        }}
-                      >
-                        {vesselName}
-                      </VesselLink>
+                      <Fragment>
+                        <VesselLink
+                          className={styles.link}
+                          vesselId={vessel.id}
+                          datasetId={vessel.infoDataset?.id}
+                          tooltip={identitiesSummary}
+                          query={{
+                            vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                            vesselSelfReportedId: vessel.id,
+                          }}
+                        >
+                          {vesselName}
+                        </VesselLink>
+                        {otherVesselsLabel && (
+                          <span className={styles.secondary}>{otherVesselsLabel}</span>
+                        )}
+                      </Fragment>
                     ) : (
                       vesselName
                     )}

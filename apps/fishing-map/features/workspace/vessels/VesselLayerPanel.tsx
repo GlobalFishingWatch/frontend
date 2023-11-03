@@ -41,6 +41,19 @@ export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
+export const getVesselIdentityTooltipSummary = (vessel: IdentityVessel) => {
+  return vessel?.selfReportedInfo.flatMap((selfReported, index) => {
+    const info = `${formatInfoField(selfReported.shipname, 'name')} - ${formatInfoField(
+      selfReported.flag,
+      'flag'
+    )} (${formatI18nDate(selfReported.transmissionDateFrom)} - ${formatI18nDate(
+      selfReported.transmissionDateTo
+    )})`
+
+    return index < vessel?.selfReportedInfo.length - 1 ? [info, <br />] : [info]
+  })
+}
+
 function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -91,16 +104,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const vesselData = infoResource?.data
   const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
   const otherVesselsLabel = vesselData ? getOtherVesselNames(vesselData as IdentityVessel) : ''
-  const identitiesSummary = vesselData?.selfReportedInfo.flatMap((selfReported, index) => {
-    const info = `${formatInfoField(selfReported.shipname, 'name')} - ${formatInfoField(
-      selfReported.flag,
-      'flag'
-    )} (${formatI18nDate(selfReported.transmissionDateFrom)} - ${formatI18nDate(
-      selfReported.transmissionDateTo
-    )})`
-
-    return index < vesselData?.selfReportedInfo.length - 1 ? [info, <br />] : [info]
-  })
+  const identitiesSummary = vesselData ? getVesselIdentityTooltipSummary(vesselData) : ''
 
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
