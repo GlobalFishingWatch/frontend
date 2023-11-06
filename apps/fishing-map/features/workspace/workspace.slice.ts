@@ -167,7 +167,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
-        signal.addEventListener('abort', fetchDatasetsAction.abort)
+        // Don't abort datasets as they are needed in the search
+        // signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
         datasets = payload as Dataset[]
 
@@ -336,6 +337,15 @@ const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
+    setWorkspaceProperty: (
+      state,
+      action: PayloadAction<{ key: keyof Workspace<WorkspaceState, string>; value: string }>
+    ) => {
+      const { key, value } = action.payload
+      if (state.data && state.data[key]) {
+        ;(state.data as any)[key] = value
+      }
+    },
     resetWorkspaceSlice: (state) => {
       state.status = initialState.status
       state.customStatus = initialState.customStatus
@@ -417,6 +427,7 @@ const workspaceSlice = createSlice({
 })
 
 export const {
+  setWorkspaceProperty,
   resetWorkspaceSlice,
   setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,

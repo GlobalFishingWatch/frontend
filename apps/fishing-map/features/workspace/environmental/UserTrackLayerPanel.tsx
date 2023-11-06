@@ -94,7 +94,7 @@ function UserTrackLayerPanel({ dataview, onToggle }: LayerPanelProps): React.Rea
 
   const loading = trackResource?.status === ResourceStatus.Loading
 
-  if (!dataset) {
+  if (!dataset || dataset.status === 'deleted') {
     return <DatasetNotFound dataview={dataview} />
   }
 

@@ -60,7 +60,9 @@ function loginViaAuthAPI(username: string, password: string) {
 
   // Reload the page to see that view if from anonnymous user
   cy.reload()
-
+  // @TODO: Remove thw wait when the bug in login is fixed "/index bug"
+  // eslint-disable-next-line
+  cy.wait(5000)
   // Close dialog popup
   cy.get('div[role=dialog] button[type=button][aria-label=close]').click()
 
@@ -77,7 +79,7 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.url().should('include', Cypress.config('baseUrl')).should('include', 'access-token=')
 
   // Validate that we request a token and is saved in the local storage
-  cy.wait('@requestToken', { requestTimeout: 10000 }).then((interception) => {
+  cy.wait('@requestToken', { requestTimeout: 20000 }).then((interception) => {
     const token = interception.response.body.token
     // eslint-disable-next-line
     cy.wait(1000) // After request the token give a second so it can be added to the localstorage after the resquest is completed

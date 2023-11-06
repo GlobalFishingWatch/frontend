@@ -26,6 +26,7 @@ import {
 import {
   CARRIER_PORTAL_API_URL,
   DEFAULT_PAGINATION_PARAMS,
+  IS_DEVELOPMENT_ENV,
   LATEST_CARRIER_DATASET_ID,
   PUBLIC_SUFIX,
 } from 'data/config'
@@ -124,7 +125,7 @@ const fetchDatasetsFromApi = async (
   )
 
   const mockedDatasets =
-    process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
+    IS_DEVELOPMENT_ENV || process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
       ? await import('./datasets.mock')
       : { default: [] }
   let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], 'id')

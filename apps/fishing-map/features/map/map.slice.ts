@@ -158,6 +158,10 @@ export const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: stri
         id: 'ids',
         value: vesselIds,
       },
+      {
+        id: 'includes',
+        value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+      },
     ],
   }
   return resolveEndpoint(vesselDatasets[0], datasetConfig)
