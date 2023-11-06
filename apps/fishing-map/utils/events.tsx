@@ -180,14 +180,11 @@ export const getEventDescriptionComponent = ({
             })}
           </span>
           <Trans i18nKey="">
-            <VesselPin vesselId={encounterVesselId} />
-            <VesselLink
-              vesselId={encounterVesselId}
-              datasetId={''}
-              style={{ textDecoration: 'underline' }}
-            >
-              {formatInfoField(encounterVesselName, 'name')}
-            </VesselLink>
+            <VesselPin
+              vesselToResolve={{ id: encounterVesselId }}
+              tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
+            />
+            <span>{formatInfoField(encounterVesselName, 'name')}</span>
           </Trans>
           <span>{t('', ' starting at {{start}} for {{duration}}', time)}</span>
         </div>
