@@ -195,7 +195,9 @@ function App() {
         const workspace = resolvedAction.payload as Workspace
         const viewport = urlViewport || workspace?.viewport
         if (viewport && !isReportLocation) {
-          setMapCoordinates(viewport)
+          setTimeout(() => {
+            setMapCoordinates(viewport)
+          }, 100)
         }
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
