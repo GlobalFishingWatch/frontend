@@ -62,7 +62,7 @@ function VesselEventsTooltipSection({
                 portName,
                 portFlag,
               } = feature.properties
-              const { DescriptionComponent } = getEventDescriptionComponent({
+              const { description, DescriptionComponent } = getEventDescriptionComponent({
                 start,
                 end,
                 type: type as EventTypes,
@@ -74,7 +74,7 @@ function VesselEventsTooltipSection({
               })
               return (
                 <div key={index} className={styles.row}>
-                  <DescriptionComponent />
+                  {showFeaturesDetails ? DescriptionComponent : description}
                 </div>
               )
             })}

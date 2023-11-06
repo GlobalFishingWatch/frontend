@@ -1,15 +1,13 @@
-import { Fragment, ReactElement } from 'react'
+import { Fragment } from 'react'
 import { DateTime, Duration } from 'luxon'
 import { Trans } from 'react-i18next'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { EVENTS_COLORS } from 'data/config'
 import { formatInfoField } from 'utils/info'
-import VesselLink from 'features/vessel/VesselLink'
-import { VesselPin } from 'features/vessel/VesselPin'
-import { SupportedDateType, TimeLabels, getUTCDateTime } from './dates'
+import VesselPin from 'features/vessel/VesselPin'
+import { SupportedDateType, getUTCDateTime } from './dates'
 // const vessels = useSelector(selectActiveTrackDataviews)
 
 type EventProps = {
@@ -23,6 +21,10 @@ type EventProps = {
   portFlag?: string
 }
 
+type TimeLabels = {
+  start: string
+  duration: string
+}
 const getTimeLabels = ({
   start,
   end,
@@ -169,34 +171,37 @@ export const getEventDescriptionComponent = ({
     portName,
     portFlag,
   })
-  if (type === EventTypes.Encounter && mainVesselName && encounterVesselName) {
+  if (type === EventTypes.Encounter && mainVesselName && encounterVesselName && encounterVesselId) {
     const time = getTimeLabels({ start, end })
-    DescriptionComponent = () => {
-      return (
-        <div>
-          <span>
-            {t('', '{{mainVessel}} had an encounter with ', {
-              mainVessel: mainVesselName,
-            })}
-          </span>
-          <Trans i18nKey="">
-            <VesselPin
-              vesselToResolve={{ id: encounterVesselId }}
-              tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
-            />
-            <span>{formatInfoField(encounterVesselName, 'name')}</span>
-          </Trans>
-          <span>{t('', ' starting at {{start}} for {{duration}}', time)}</span>
-        </div>
-      )
-    }
+    DescriptionComponent = (
+      <p>
+        <Trans
+          i18nKey="event.encounterActionWithVesselsPin"
+          defaults="{{mainVessel}} had an encounter with <pin></pin> {{encounterVessel}} starting at {{start}} for {{duration}}"
+          values={{
+            mainVessel: formatInfoField(mainVesselName, 'name'),
+            encounterVessel: formatInfoField(encounterVesselName, 'name'),
+            ...time,
+          }}
+          components={{
+            pin: (
+              <VesselPin
+                vesselToResolve={{ id: encounterVesselId }}
+                tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
+              />
+            ),
+          }}
+        ></Trans>
+      </p>
+    )
   } else {
-    DescriptionComponent = () => <Fragment>{description}</Fragment>
+    DescriptionComponent = <Fragment>{description}</Fragment>
   }
   return {
     color,
     colorLabels,
-    DescriptionComponent,
+    description,
     descriptionGeneric,
+    DescriptionComponent,
   }
 }
