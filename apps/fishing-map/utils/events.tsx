@@ -1,10 +1,16 @@
-import { DateTime } from 'luxon'
+import { Fragment, ReactElement } from 'react'
+import { DateTime, Duration } from 'luxon'
+import { Trans } from 'react-i18next'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { EVENTS_COLORS } from 'data/config'
 import { formatInfoField } from 'utils/info'
-import { getUTCDateTime } from './dates'
+import VesselLink from 'features/vessel/VesselLink'
+import { VesselPin } from 'features/vessel/VesselPin'
+import { SupportedDateType, TimeLabels, getUTCDateTime } from './dates'
+// const vessels = useSelector(selectActiveTrackDataviews)
 
 type EventProps = {
   start: string
@@ -12,27 +18,34 @@ type EventProps = {
   type: EventTypes
   mainVesselName?: string
   encounterVesselName?: string
+  encounterVesselId?: string
   portName?: string
   portFlag?: string
 }
 
-export const getEventDescription = ({
+const getTimeLabels = ({
   start,
   end,
-  type,
-  mainVesselName,
-  encounterVesselName,
-  portName,
-  portFlag,
-}: EventProps) => {
+}: {
+  start: SupportedDateType
+  end: SupportedDateType
+}): TimeLabels => {
   const startDT = getUTCDateTime(start)
   const endDT = getUTCDateTime(end)
   const durationRaw = endDT.diff(startDT, ['days', 'hours', 'minutes'])
-  const duration = durationRaw.toObject()
 
   const startLabel = formatI18nDate(start, { format: DateTime.DATETIME_MED, showUTCLabel: true })
 
-  const durationLabel = [
+  const durationLabel = getDurationLabel({ durationRaw })
+  return {
+    start: startLabel,
+    duration: durationLabel,
+  }
+}
+
+const getDurationLabel = ({ durationRaw }: { durationRaw: Duration }): string => {
+  const duration = durationRaw.toObject()
+  return [
     duration.days && duration.days > 0
       ? t('event.dayAbbreviated', '{{count}}d', { count: duration.days })
       : '',
@@ -45,11 +58,18 @@ export const getEventDescription = ({
         })
       : '',
   ].join(' ')
+}
 
-  const time = {
-    start: startLabel,
-    duration: durationLabel,
-  }
+export const getEventDescription = ({
+  start,
+  end,
+  type,
+  mainVesselName,
+  encounterVesselName,
+  portName,
+  portFlag,
+}: EventProps) => {
+  const time = getTimeLabels({ start, end })
   let description: string
   let descriptionGeneric
   switch (type) {
@@ -125,6 +145,61 @@ export const getEventDescription = ({
     color,
     colorLabels,
     description,
+    descriptionGeneric,
+  }
+}
+
+export const getEventDescriptionComponent = ({
+  start,
+  end,
+  type,
+  mainVesselName,
+  encounterVesselName,
+  encounterVesselId,
+  portName,
+  portFlag,
+}: EventProps) => {
+  let DescriptionComponent
+  const { color, colorLabels, descriptionGeneric, description } = getEventDescription({
+    start,
+    end,
+    type,
+    mainVesselName,
+    encounterVesselName,
+    portName,
+    portFlag,
+  })
+  if (type === EventTypes.Encounter && mainVesselName && encounterVesselName) {
+    const time = getTimeLabels({ start, end })
+    DescriptionComponent = () => {
+      return (
+        <div>
+          <span>
+            {t('', '{{mainVessel}} had an encounter with ', {
+              mainVessel: mainVesselName,
+            })}
+          </span>
+          <Trans i18nKey="">
+            <VesselPin vesselId={encounterVesselId} />
+            <VesselLink
+              vesselId={encounterVesselId}
+              datasetId={''}
+              style={{ textDecoration: 'underline' }}
+            >
+              {formatInfoField(encounterVesselName, 'name')}
+            </VesselLink>
+          </Trans>
+          <span>{t('', ' starting at {{start}} for {{duration}}', time)}</span>
+        </div>
+      )
+    }
+  } else {
+    DescriptionComponent = () => <Fragment>{description}</Fragment>
+  }
+  return {
+    color,
+    colorLabels,
+    DescriptionComponent,
     descriptionGeneric,
   }
 }
