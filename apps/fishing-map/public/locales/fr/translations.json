@@ -348,6 +348,7 @@
     "encounterAction": "a eu une rencontre avec",
     "encounterActionWith": "a eu une rencontre avec {{vessel}} à {{start}} durant {{duration}}",
     "encounterActionWithVessels": "{{mainVessel}} a eu une rencontre avec {{encounterVessel}} à {{start}} durant {{duration}}",
+    "encounterActionWithVesselsPin": "{{mainVessel}} had an encounter with <pin></pin> {{encounterVessel}} starting at {{start}} for {{duration}}",
     "encounterAnotherVessel": "un autre navire",
     "events": "évènements",
     "fishing": "Pêche",
