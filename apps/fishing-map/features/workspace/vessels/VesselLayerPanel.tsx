@@ -43,7 +43,10 @@ export type VesselLayerPanelProps = {
 }
 
 export const getVesselIdentityTooltipSummary = (vessel: IdentityVessel) => {
-  const identities = vessel?.selfReportedInfo.flatMap((selfReported, index) => {
+  if (!vessel || !vessel.selfReportedInfo?.length) {
+    return ['']
+  }
+  const identities = vessel?.selfReportedInfo?.flatMap((selfReported) => {
     const info = `${formatInfoField(selfReported.shipname, 'name')} - ${formatInfoField(
       selfReported.flag,
       'flag'
