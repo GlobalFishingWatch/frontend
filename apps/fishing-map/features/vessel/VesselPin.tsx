@@ -101,7 +101,11 @@ function VesselPin({
       const url = resolveEndpoint(infoDatasetResolved, datasetConfig)
       if (url) {
         setLoading(true)
-        vesselWithIdentity = await GFWAPI.fetch<IdentityVessel>(url)
+        try {
+          vesselWithIdentity = await GFWAPI.fetch<IdentityVessel>(url)
+        } catch (e) {
+          setLoading(false)
+        }
       }
     }
     if (vesselWithIdentity) {
