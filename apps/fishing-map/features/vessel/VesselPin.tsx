@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useState } from 'react'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, IconButtonSize } from '@globalfishingwatch/ui-components'
 import {
   Dataset,
   DatasetTypes,
@@ -39,11 +39,15 @@ function VesselPin({
   vesselToResolve,
   tooltip,
   disabled,
+  className = '',
+  size = 'small',
 }: {
   vessel?: IdentityVessel
   vesselToResolve?: VesselToResolve
+  className?: string
   tooltip?: React.ReactNode
   disabled?: boolean
+  size?: IconButtonSize
 }) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
@@ -150,6 +154,7 @@ function VesselPin({
       icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
       loading={loading}
       disabled={disabled}
+      className={className}
       style={{
         color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
       }}
@@ -159,7 +164,7 @@ function VesselPin({
           : tooltip || t('search.seeVessel', 'See vessel')
       }
       onClick={onPinClick}
-      size="small"
+      size={size}
     />
   )
 }

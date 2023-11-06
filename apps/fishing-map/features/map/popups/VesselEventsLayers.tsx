@@ -71,6 +71,7 @@ function VesselEventsTooltipSection({
                 encounterVesselId,
                 portName,
                 portFlag,
+                className: styles.textContainer,
               })
               return (
                 <div key={index} className={styles.row}>

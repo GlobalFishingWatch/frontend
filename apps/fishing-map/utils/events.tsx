@@ -8,7 +8,6 @@ import { EVENTS_COLORS } from 'data/config'
 import { formatInfoField } from 'utils/info'
 import VesselPin from 'features/vessel/VesselPin'
 import { SupportedDateType, getUTCDateTime } from './dates'
-// const vessels = useSelector(selectActiveTrackDataviews)
 
 type EventProps = {
   start: string
@@ -17,6 +16,7 @@ type EventProps = {
   mainVesselName?: string
   encounterVesselName?: string
   encounterVesselId?: string
+  className?: string
   portName?: string
   portFlag?: string
 }
@@ -158,6 +158,7 @@ export const getEventDescriptionComponent = ({
   mainVesselName,
   encounterVesselName,
   encounterVesselId,
+  className,
   portName,
   portFlag,
 }: EventProps) => {
@@ -174,10 +175,10 @@ export const getEventDescriptionComponent = ({
   if (type === EventTypes.Encounter && mainVesselName && encounterVesselName && encounterVesselId) {
     const time = getTimeLabels({ start, end })
     DescriptionComponent = (
-      <p>
+      <p className={className}>
         <Trans
           i18nKey="event.encounterActionWithVesselsPin"
-          defaults="{{mainVessel}} had an encounter with <pin></pin> {{encounterVessel}} starting at {{start}} for {{duration}}"
+          defaults="{{mainVessel}} had an encounter with {{encounterVessel}} <pin></pin> starting at {{start}} for {{duration}}"
           values={{
             mainVessel: formatInfoField(mainVesselName, 'name'),
             encounterVessel: formatInfoField(encounterVesselName, 'name'),
@@ -188,6 +189,7 @@ export const getEventDescriptionComponent = ({
               <VesselPin
                 vesselToResolve={{ id: encounterVesselId }}
                 tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
+                size="tiny"
               />
             ),
           }}
