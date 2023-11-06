@@ -56,7 +56,7 @@ export const getVesselIdentityTooltipSummary = (vessel: IdentityVessel) => {
 
     return [info, <br />]
   })
-  return [...identities, t('vessel.clickToSeeVessel', 'Click to see more information')]
+  return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
 }
 
 function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactElement {

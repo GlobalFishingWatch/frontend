@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
-import { getEventDescription } from 'utils/events'
+import { getEventDescriptionComponent } from 'utils/events'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { formatInfoField } from 'utils/info'
 import { MAX_TOOLTIP_LIST } from '../map.slice'
@@ -26,7 +26,6 @@ function VesselEventsTooltipSection({
     const maxFeatures = overflows ? features.slice(0, MAX_TOOLTIP_LIST) : features
     return groupBy(maxFeatures, 'properties.vesselId')
   }, [overflows, features])
-
   const resources = useSelector(selectVisibleResources)
 
   const vesselNamesByType = useMemo(() => {
@@ -53,20 +52,30 @@ function VesselEventsTooltipSection({
               <h3 className={styles.popupSectionTitle}>{vesselNamesByType[index]}</h3>
             )}
             {featureByType.map((feature, index) => {
-              const { start, end, type, vesselName, encounterVesselName, portName, portFlag } =
-                feature.properties
-              const { description } = getEventDescription({
+              const {
+                start,
+                end,
+                type,
+                vesselName,
+                encounterVesselName,
+                encounterVesselId,
+                portName,
+                portFlag,
+              } = feature.properties
+              const { description, DescriptionComponent } = getEventDescriptionComponent({
                 start,
                 end,
                 type: type as EventTypes,
                 mainVesselName: vesselName,
                 encounterVesselName,
+                encounterVesselId,
                 portName,
                 portFlag,
+                className: styles.textContainer,
               })
               return (
                 <div key={index} className={styles.row}>
-                  {description}
+                  {showFeaturesDetails ? DescriptionComponent : description}
                 </div>
               )
             })}
