@@ -184,6 +184,7 @@ class MyDocument extends Document {
             name="description"
             content="Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability."
           />
+          <meta name="robots" content="noindex" />
         </Head>
         <body>
           <noscript
