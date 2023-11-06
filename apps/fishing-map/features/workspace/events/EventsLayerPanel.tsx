@@ -45,7 +45,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
     setFiltersOpen(!filterOpen)
   }
 
-  if (!dataset) {
+  if (!dataset || dataset.status === 'deleted') {
     return <DatasetNotFound dataview={dataview} />
   }
 

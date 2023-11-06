@@ -30,6 +30,7 @@ export type VesselLinkProps = {
   identity?: VesselDataIdentity
   children: any
   onClick?: (e: MouseEvent) => void
+  tooltip?: React.ReactNode
   fitBounds?: boolean
   className?: string
   query?: Partial<Record<keyof QueryParams, string | number>>
@@ -41,6 +42,7 @@ const VesselLink = ({
   identity,
   children,
   onClick,
+  tooltip,
   fitBounds = true,
   className = '',
   query,
@@ -110,7 +112,7 @@ const VesselLink = ({
       }}
       onClick={onLinkClick}
     >
-      <Tooltip content={t('search.seeVessel', 'See vessel')}>
+      <Tooltip maxWidth="none" content={tooltip || t('search.seeVessel', 'See vessel')}>
         <span>{children}</span>
       </Tooltip>
     </Link>
