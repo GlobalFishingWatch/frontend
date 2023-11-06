@@ -110,6 +110,12 @@
   opacity: var(--opacity-secondary);
 }
 
+.textContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .rowContainer {
   flex: 1;
 }

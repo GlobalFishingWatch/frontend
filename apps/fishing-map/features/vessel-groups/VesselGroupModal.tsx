@@ -32,7 +32,6 @@ import { updateLocation } from 'routes/routes.actions'
 import { ROUTE_TYPES } from 'routes/routes'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getVesselId } from 'features/vessel/vessel.utils'
@@ -84,7 +83,6 @@ function VesselGroupModal(): React.ReactElement {
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
-  const { dispatchQueryParams } = useLocationConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const loading =
     searchVesselStatus === AsyncReducerStatus.Loading ||
@@ -141,12 +139,14 @@ function VesselGroupModal(): React.ReactElement {
 
   const onBackClick = useCallback(
     (action: 'back' | 'close' = 'back') => {
-      const confirmed = window.confirm(
-        t(
-          'vesselGroup.confirmAbort',
-          'You will lose any changes made in this vessel group. Are you sure?'
-        )
-      )
+      const confirmed = hasVesselGroupsVessels
+        ? window.confirm(
+            t(
+              'vesselGroup.confirmAbort',
+              'You will lose any changes made in this vessel group. Are you sure?'
+            )
+          )
+        : true
       if (confirmed) {
         if (action === 'back') {
           setError('')
@@ -157,7 +157,7 @@ function VesselGroupModal(): React.ReactElement {
         }
       }
     },
-    [close, dispatch, t]
+    [close, dispatch, t, hasVesselGroupsVessels]
   )
 
   const onSearchVesselsClick = useCallback(async () => {
@@ -277,7 +277,6 @@ function VesselGroupModal(): React.ReactElement {
       lastVisitedWorkspace,
       searchQuery,
       upsertDataviewInstance,
-      dispatchQueryParams,
     ]
   )
 
@@ -370,15 +369,17 @@ function VesselGroupModal(): React.ReactElement {
             </span>
           )}
         </div>
-        {hasVesselGroupsVessels && showBackButton && (
-          <Button
-            type="secondary"
-            className={styles.backButton}
-            onClick={() => onBackClick('back')}
-          >
-            {t('common.back', 'back')}
-          </Button>
-        )}
+        {searchVesselStatus === AsyncReducerStatus.Finished
+          ? showBackButton && hasVesselGroupsVessels
+          : showBackButton && (
+              <Button
+                type="secondary"
+                className={styles.backButton}
+                onClick={() => onBackClick('back')}
+              >
+                {t('common.back', 'back')}
+              </Button>
+            )}
         {!fullModalLoading &&
           (confirmationMode === 'save' ? (
             <Button

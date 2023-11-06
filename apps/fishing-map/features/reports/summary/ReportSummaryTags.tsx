@@ -10,8 +10,6 @@ import layerPanelStyles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import styles from './ReportSummaryTags.module.css'
 
-const allAvailableProperties = ['dataset', 'source', 'flag', 'vessel-groups']
-
 type LayerPanelProps = {
   index: number
   dataview: UrlDataviewInstance
@@ -28,6 +26,7 @@ export default function ReportSummaryTags({
 
   const activityDataview = isActivityDataview(dataview)
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+  const hasFilters = dataview.config?.filters && Object.keys(dataview.config.filters).length > 0
 
   let datasetName = dataset ? getDatasetLabel(dataset) : dataview.name || ''
   if (activityDataview) {
@@ -37,7 +36,11 @@ export default function ReportSummaryTags({
         : t(`common.apparentFishing`, 'Apparent Fishing Effort')
   }
   const TitleComponent = <p className={styles.dataset}>{datasetName}</p>
-  const showDot = !allAvailableProperties.every((property) => hiddenProperties?.includes(property))
+  const showDot =
+    !hiddenProperties?.includes('dataset') ||
+    !hiddenProperties?.includes('source') ||
+    !hiddenProperties?.includes('flag') ||
+    hasFilters
 
   const areAllPropertiesHidden =
     hiddenProperties?.includes('dataset') &&
