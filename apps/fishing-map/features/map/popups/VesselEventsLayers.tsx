@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import { EventTypes, IdentityVessel, SelfReportedInfo } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { getEventDescriptionComponent } from 'utils/events'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
-import { formatInfoField } from 'utils/info'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { MAX_TOOLTIP_LIST } from '../map.slice'
 import styles from './Popup.module.css'
 
@@ -32,9 +32,14 @@ function VesselEventsTooltipSection({
     return Object.values(featuresByType).map((features) => {
       const vesselId = features[0].properties.vesselId
       const vesselResource = Object.values(resources).find((resource) => {
-        return (resource.data as any)?.id === vesselId
+        return (resource.data as IdentityVessel).selfReportedInfo?.some(
+          (identity: SelfReportedInfo) => vesselId.includes(identity.id)
+        )
       })
-      return vesselResource ? formatInfoField((vesselResource as any).data.shipname, 'name') : ''
+
+      return vesselResource
+        ? getVesselProperty(vesselResource.data as IdentityVessel, 'shipname')
+        : ''
     })
   }, [resources, featuresByType])
 
@@ -79,7 +84,6 @@ function VesselEventsTooltipSection({
                 </div>
               )
             })}
-
             {overflows && (
               <div className={styles.vesselsMore}>
                 + {features.length - MAX_TOOLTIP_LIST} {t('common.more', 'more')}
