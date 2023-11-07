@@ -374,6 +374,7 @@ function VesselGroupModal(): React.ReactElement {
           : showBackButton && (
               <Button
                 type="secondary"
+                disabled={loading}
                 className={styles.backButton}
                 onClick={() => onBackClick('back')}
               >
