@@ -2,7 +2,11 @@ import { Dictionary } from '@reduxjs/toolkit'
 import { invert, isObject, isString, transform } from 'lodash'
 import { stringify, parse } from 'qs'
 import { UrlDataviewInstance } from '..'
-import { removeLegacyEndpointPrefix, runDatasetMigrations } from './migrations'
+import {
+  removeLegacyEndpointPrefix,
+  runDatasetMigrations,
+  migrateEventsLegacyDatasets,
+} from './migrations'
 
 /**
  * A generic workspace to be extended by apps
@@ -151,6 +155,9 @@ export const parseLegacyDataviewInstanceConfig = (
       ...dataviewInstance.config,
       ...(dataviewInstance?.config?.info && {
         info: runDatasetMigrations(dataviewInstance?.config?.info),
+      }),
+      ...(dataviewInstance?.config?.events?.length && {
+        events: dataviewInstance?.config?.events.map((d) => migrateEventsLegacyDatasets(d)),
       }),
     },
     ...(dataviewInstance.datasetsConfig && {

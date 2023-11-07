@@ -43,6 +43,12 @@ export type VesselInstanceDatasets = {
   relatedVesselIds?: string[]
 }
 
+export const VESSEL_INSTANCE_DATASETS = [
+  'track' as keyof VesselInstanceDatasets,
+  'info' as keyof VesselInstanceDatasets,
+  'events' as keyof VesselInstanceDatasets,
+]
+
 export const getVesselInfoDataviewInstanceDatasetConfig = (
   vesselId: string,
   { info }: VesselInstanceDatasets

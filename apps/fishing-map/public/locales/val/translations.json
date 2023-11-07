@@ -348,6 +348,7 @@
     "encounterAction": "crwdns60137:0crwdne60137:0",
     "encounterActionWith": "crwdns60139:0{{vessel}}crwdnd60139:0{{start}}crwdnd60139:0{{duration}}crwdne60139:0",
     "encounterActionWithVessels": "crwdns70032:0{{mainVessel}}crwdnd70032:0{{encounterVessel}}crwdnd70032:0{{start}}crwdnd70032:0{{duration}}crwdne70032:0",
+    "encounterActionWithVesselsPin": "crwdns70206:0{{mainVessel}}crwdnd70206:0{{encounterVessel}}crwdnd70206:0{{start}}crwdnd70206:0{{duration}}crwdne70206:0",
     "encounterAnotherVessel": "crwdns60141:0crwdne60141:0",
     "events": "crwdns60143:0crwdne60143:0",
     "fishing": "crwdns68331:0crwdne68331:0",

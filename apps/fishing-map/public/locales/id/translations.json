@@ -348,6 +348,7 @@
     "encounterAction": "terjadi pertemuan dengan",
     "encounterActionWith": "terjadi pertemuan dengan {{vessel}} mulai dari {{start}} selama {{duration}}",
     "encounterActionWithVessels": "{{mainVessel}} terjadi pertemuan dengan {{encounterVessel}} mulai dari {{start}} selama {{duration}}",
+    "encounterActionWithVesselsPin": "{{mainVessel}} had an encounter with <pin></pin> {{encounterVessel}} starting at {{start}} for {{duration}}",
     "encounterAnotherVessel": "kapal lainnya",
     "events": "peristiwa",
     "fishing": "Memancing",
