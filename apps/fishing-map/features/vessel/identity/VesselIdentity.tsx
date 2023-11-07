@@ -39,6 +39,7 @@ import { useRegionTranslationsById } from 'features/regions/regions.hooks'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import VesselIdentityCombinedSourceField from 'features/vessel/identity/VesselIdentityCombinedSourceField'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -212,25 +213,19 @@ const VesselIdentity = () => {
             </div>
           </div>
           <div className={styles.actionsContainer}>
-            <IconButton
+            <UserLoggedIconButton
               type="border"
               icon="download"
               size="medium"
               className="print-hidden"
               onClick={onDownloadClick}
               tooltip={t('download.dataDownload', 'Download Data')}
+              loginTooltip={t(
+                'download.dataDownloadLogin',
+                'Register and login to download vessel information (free, 2 minutes)'
+              )}
               tooltipPlacement="top"
             />
-            {/* <Button
-            className={styles.actionButton}
-            disabled
-            type="border-secondary"
-            size="small"
-            tooltip={t('common.comingSoon', 'Coming Soon!')}
-            tooltipPlacement="top"
-          >
-            {t('vessel.identityCalendar', 'See as calendar')} <Icon icon="history" />
-          </Button> */}
           </div>
         </div>
         {vesselIdentity && (
