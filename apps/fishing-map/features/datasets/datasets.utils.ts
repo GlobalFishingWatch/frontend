@@ -32,6 +32,7 @@ import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import { getVesselGearType } from 'utils/info'
+import { VESSEL_INSTANCE_DATASETS } from 'features/dataviews/dataviews.utils'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema =
@@ -171,8 +172,16 @@ const getDatasetsInDataview = (
   dataview: Dataview | DataviewInstance | UrlDataviewInstance,
   guestUser = false
 ): string[] => {
-  if (!dataview.datasetsConfig) return []
-  const datasetIds: string[] = dataview.datasetsConfig.flatMap(({ datasetId }) => datasetId || [])
+  let datasetIds: string[] = (dataview.datasetsConfig || []).flatMap(
+    ({ datasetId }) => datasetId || []
+  )
+  if (!datasetIds.length) {
+    // Get the datasets from the vessel config shorcurt (to avoid large urls)
+    datasetIds = VESSEL_INSTANCE_DATASETS.flatMap((d) => {
+      return dataview.config?.[d] || []
+    })
+  }
+
   return guestUser
     ? datasetIds.filter((id) => !isPrivateDataset({ id }) && !id.includes(FULL_SUFIX))
     : datasetIds
@@ -187,9 +196,6 @@ export const getDatasetsInDataviews = (
     return []
   }
   const datasets = [...dataviews, ...dataviewInstances].flatMap((dataview) => {
-    if (!dataview.datasetsConfig?.length) {
-      return []
-    }
     return getDatasetsInDataview(dataview, guestUser)
   })
   return uniq(datasets)

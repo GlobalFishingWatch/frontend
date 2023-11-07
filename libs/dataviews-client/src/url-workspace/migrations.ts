@@ -1,5 +1,6 @@
 import { EndpointId } from '@globalfishingwatch/api-types'
 import {
+  ALL_LEGACY_EVENTS_DATASETS_DICT,
   ALL_LEGACY_VESSELS_DATASETS_DICT,
   FULL_VMS_VESSELS_DATASETS,
   PUBLIC_VMS_TRACK_DATASETS,
@@ -34,4 +35,8 @@ export const migrateVesselLegacyDatasets = (datasetId: string) => {
 
 export const runDatasetMigrations = (datasetId: string) => {
   return migrateVesselLegacyDatasets(migrateLegacyVMSDatasets(datasetId))
+}
+
+export const migrateEventsLegacyDatasets = (datasetId: string) => {
+  return ALL_LEGACY_EVENTS_DATASETS_DICT[datasetId] || datasetId
 }
