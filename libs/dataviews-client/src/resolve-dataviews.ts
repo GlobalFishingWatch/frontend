@@ -95,6 +95,17 @@ export const getDatasetConfigsByDatasetType = (
   const datasetConfigs = availableDatasetConfigs.filter((datasetConfig) =>
     datasetIds.includes(datasetConfig.datasetId)
   )
+  if (type === DatasetTypes.Tracks && !datasetConfigs.length) {
+    // This supports legacy dataviewInstances with no datasetConfig
+    // for example: a pinned vessel with public-global-carriers-tracks:v20201001 dataset
+    // won't work as the defuault dataview now points to public-global-all-tracks
+    const legacyDatasetConfig = availableDatasetConfigs.find(
+      (d) => d.endpoint === EndpointId.Tracks
+    )
+    if (legacyDatasetConfig) {
+      return [legacyDatasetConfig]
+    }
+  }
   return datasetConfigs
 }
 

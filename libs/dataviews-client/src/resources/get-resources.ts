@@ -55,8 +55,8 @@ export const getResources = (
     const trackDatasetConfig = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
     const hasTrackData =
       trackDatasetType === DatasetTypes.Tracks
-        ? trackDatasetConfig?.params?.find((p) => p.id === 'vesselId')?.value
-        : trackDatasetConfig?.params?.find((p) => p.id === 'id')?.value
+        ? trackDatasetConfig?.params?.find((p) => p.id === 'vesselId')?.value !== undefined
+        : trackDatasetConfig?.params?.find((p) => p.id === 'id')?.value !== undefined
     // Cleaning track resources with no data as now now the track is hidden for guest users in VMS full- datasets
     const track = hasTrackData ? trackDatasetConfig : ({} as DataviewDatasetConfig)
 
