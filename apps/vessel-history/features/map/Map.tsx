@@ -4,7 +4,7 @@ import { Map, MapboxStyle } from 'react-map-gl'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { useLayerComposer, useMapClick, useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
-import { DatasetCategory, DatasetSubCategory, DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetSubCategory } from '@globalfishingwatch/api-types'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
 import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
@@ -190,30 +190,35 @@ const MapWrapper: React.FC = (): React.ReactElement => {
           .plus({ days: 1 })
           .toISO()
       : ''
-    const vessels = vessel.id.split('|').map((id) => parseVesselProfileId(id))
-    const vesselsSegments = vessels
-      .map((v, i) => {
-        let eventsCount = 0
-        const datasets = Array.from(new Set(vesselDataview.datasets.map(({ id }) => id)))
-          .map((id) => {
-            const d = vesselDataview.datasets.find((d) => d.id === id)
-            if ([DatasetSubCategory.Info, DatasetSubCategory.Track].includes(d.subcategory))
-              return `dvIn[${i}][cfg][${d.subcategory}]=${id}`
 
-            if ([DatasetCategory.Event].includes(d.category))
-              return `dvIn[${i}][cfg][events][${eventsCount++}]=${id}`
-            return ''
-          })
-          .filter((x) => x)
+    const [mainVessel, ...otherVessels] = vessel.id.split('|').map((id) => parseVesselProfileId(id)).filter((x) => x.id)
 
-        return [
-          `dvIn[${i}][id]=vessel-${v.id}`,
-          `dvIn[${i}][dvId]=fishing-map-vessel-track`,
-          ...datasets,
-          `dvIn[${i}][cfg][clr]=%23F95E5E`,
-        ]
+    let i = 0
+    let eventsCount = 0
+    const datasets = Array.from(new Set(vesselDataview.datasets.map(({ id }) => id)))
+      .map((id) => {
+        const d = vesselDataview.datasets.find((d) => d.id === id)
+        if ([DatasetSubCategory.Info, DatasetSubCategory.Track].includes(d.subcategory as DatasetSubCategory))
+          return `dvIn[${i}][cfg][${d.subcategory}]=${id}`
+
+        if ([DatasetCategory.Event].includes(d.category))
+          return `dvIn[${i}][cfg][events][${eventsCount++}]=${id}`
+        return ''
       })
-      .flat()
+      .filter((x) => x)
+
+    const fishingMapVesselDataview = [
+      `dvIn[${i}][id]=vessel-${mainVessel.id}`,
+      `dvIn[${i}][dvId]=fishing-map-vessel-track`,
+      ...datasets,
+      `dvIn[${i}][cfg][clr]=%23F95E5E`,
+    ]
+    if (otherVessels?.length) {
+      otherVessels.forEach((vessel, index) => {
+        fishingMapVesselDataview.push(`dvIn[${i}][cfg][relatedVesselIds][${index}]=${vessel.id}`)
+      })
+    }
+
     const urlSegments = [
       `https://globalfishingwatch.org/map/index?`,
       `start=${start}`,
@@ -221,7 +226,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
       `longitude=${viewport.longitude}`,
       `zoom=${viewport.zoom}`,
       `end=${end}`,
-      ...vesselsSegments,
+      ...fishingMapVesselDataview,
       `timebarVisualisation=vessel`,
     ]
     const url = urlSegments.join('&')
