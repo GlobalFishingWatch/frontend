@@ -2,12 +2,7 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 import { string, func, shape } from 'prop-types'
 import dayjs from 'dayjs'
-import {
-  LIMITS_BY_INTERVAL,
-  getInterval,
-  INTERVAL_ORDER,
-  Interval,
-} from '@globalfishingwatch/layer-composer'
+import { LIMITS_BY_INTERVAL, getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import { Select, Tooltip } from '@globalfishingwatch/ui-components'
 import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
@@ -54,12 +49,12 @@ class TimeRangeSelector extends Component {
       endDate: dayjs.utc(end),
       startInputValues: {
         year: startDate.year(),
-        month: startDate.month() + 1,
+        month: startDate.month(),
         date: startDate.date(),
       },
       endInputValues: {
         year: endDate.year(),
-        month: endDate.month() + 1,
+        month: endDate.month(),
         date: endDate.date(),
       },
       startInputValids: {
@@ -83,7 +78,7 @@ class TimeRangeSelector extends Component {
     const newStart = dayjs
       .utc({
         year: start.year(),
-        month: disabledFields.month ? 0 : start.month() + 1,
+        month: disabledFields.month ? 0 : start.month() - 1,
         date: disabledFields.day ? 0 : start.date(),
       })
       .startOf('day')
@@ -91,7 +86,7 @@ class TimeRangeSelector extends Component {
     const newEnd = dayjs
       .utc({
         year: end.year(),
-        month: disabledFields.month ? 0 : end.month() + 1,
+        month: disabledFields.month ? 0 : end.month() - 1,
         date: disabledFields.day ? 0 : end.date(),
       })
       .startOf('day')
