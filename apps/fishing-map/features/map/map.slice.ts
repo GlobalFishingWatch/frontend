@@ -285,7 +285,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       const topActivityVesselIds = topActivityVessels.map(({ id }) => id)
 
       const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
-      debugger
+
       const sublayersIds = fishingActivityFeatures.map(
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
