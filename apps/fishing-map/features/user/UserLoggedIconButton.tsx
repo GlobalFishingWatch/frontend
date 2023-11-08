@@ -7,7 +7,7 @@ import { isGuestUser } from 'features/user/user.slice'
 
 type UserLoggedIconButton = IconButtonProps & { loginTooltip?: string }
 
-const UserLoggedIconButton = (props: UserLoggedIconButton) => {
+const UserLoggedIconButton = ({ loginTooltip, ...props }: UserLoggedIconButton) => {
   const { t } = useTranslation()
   const [isLoginHover, setIsLoginHover] = useState(false)
   const guestUser = useSelector(isGuestUser)
@@ -19,7 +19,7 @@ const UserLoggedIconButton = (props: UserLoggedIconButton) => {
           {...props}
           icon={isLoginHover ? 'user' : props.icon}
           tooltip={
-            props.loginTooltip ||
+            loginTooltip ||
             t('vessel.infoLogin', 'Register and login to see more details (free, 2 minutes)')
           }
           onClick={undefined}
