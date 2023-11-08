@@ -2,12 +2,7 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 import { string, func, shape } from 'prop-types'
 import dayjs from 'dayjs'
-import {
-  LIMITS_BY_INTERVAL,
-  getInterval,
-  INTERVAL_ORDER,
-  Interval,
-} from '@globalfishingwatch/layer-composer'
+import { LIMITS_BY_INTERVAL, getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import { Select, Tooltip } from '@globalfishingwatch/ui-components'
 import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
@@ -83,7 +78,7 @@ class TimeRangeSelector extends Component {
     const newStart = dayjs
       .utc({
         year: start.year(),
-        month: disabledFields.month ? 0 : start.month() + 1,
+        month: disabledFields.month ? 0 : start.month() - 1,
         date: disabledFields.day ? 0 : start.date(),
       })
       .startOf('day')
@@ -91,7 +86,7 @@ class TimeRangeSelector extends Component {
     const newEnd = dayjs
       .utc({
         year: end.year(),
-        month: disabledFields.month ? 0 : end.month() + 1,
+        month: disabledFields.month ? 0 : end.month() - 1,
         date: disabledFields.day ? 0 : end.date(),
       })
       .startOf('day')
@@ -125,10 +120,7 @@ class TimeRangeSelector extends Component {
   }
 
   onStartChange = (e, property) => {
-    const startDate = dayjs.utc({
-      ...this.state.startInputValues,
-      month: this.state.startInputValues.month,
-    })
+    const startDate = dayjs.utc(this.props.start)
     const currentMonthDays = dayjs
       .utc({
         year: property === 'year' ? e.target.value : startDate.year(),
@@ -165,10 +157,7 @@ class TimeRangeSelector extends Component {
   }
 
   onEndChange = (e, property) => {
-    const endDate = dayjs.utc({
-      ...this.state.endInputValues,
-      month: this.state.endInputValues.month,
-    })
+    const endDate = dayjs.utc(this.props.end)
     const currentMonthDays = dayjs
       .utc({
         year: property === 'year' ? e.target.value : endDate.year(),
@@ -300,7 +289,7 @@ class TimeRangeSelector extends Component {
                         onChange={(e) => this.onStartChange(e, 'month')}
                         onBlur={(e) => this.onStartBlur(e, 'month')}
                         step={'1'}
-                        disabled={disabledFields.month}
+                        disabled={disabledFields['MONTH']}
                         className={classNames(styles.input, {
                           [styles.error]: !startValid || !startBeforeEnd,
                         })}
@@ -325,7 +314,7 @@ class TimeRangeSelector extends Component {
                         onChange={(e) => this.onStartChange(e, 'date')}
                         onBlur={(e) => this.onStartBlur(e, 'date')}
                         step={'1'}
-                        disabled={disabledFields.day}
+                        disabled={disabledFields['DAY']}
                         className={classNames(styles.input, {
                           [styles.error]: !startValid || !startBeforeEnd,
                         })}
@@ -371,7 +360,7 @@ class TimeRangeSelector extends Component {
                         onChange={(e) => this.onEndChange(e, 'month')}
                         onBlur={(e) => this.onEndBlur(e, 'month')}
                         step={'1'}
-                        disabled={disabledFields.month}
+                        disabled={disabledFields['MONTH']}
                         className={classNames(styles.input, {
                           [styles.error]: !endValid || !startBeforeEnd,
                         })}
@@ -396,7 +385,7 @@ class TimeRangeSelector extends Component {
                         onChange={(e) => this.onEndChange(e, 'date')}
                         onBlur={(e) => this.onEndBlur(e, 'date')}
                         step={'1'}
-                        disabled={disabledFields.day}
+                        disabled={disabledFields['DAY']}
                         className={classNames(styles.input, {
                           [styles.error]: !endValid || !startBeforeEnd,
                         })}

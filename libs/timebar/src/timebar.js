@@ -128,6 +128,7 @@ class Timebar extends Component {
     const intervalConfig = CONFIG_BY_INTERVAL[interval]
     if (intervalConfig) {
       const intervalLimit = LIMITS_BY_INTERVAL[interval]
+
       if (intervalLimit) {
         let newStart
         let newEnd
@@ -146,7 +147,7 @@ class Timebar extends Component {
           }).startOf(intervalLimit.unit)
           newEnd = newStart.plus({ [intervalLimit.unit]: 1 })
         }
-        this.notifyChange(newStart.toISODate(), newEnd.toISODate(), EVENT_INTERVAL_SOURCE[interval])
+        this.notifyChange(newStart.toISO(), newEnd.toISO(), EVENT_INTERVAL_SOURCE[interval])
       } else {
         this.notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval])
       }
