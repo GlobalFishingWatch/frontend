@@ -151,7 +151,10 @@ export const selectTracksGraphData = createSelector(
       const resourceQuery = resourcesQueries.find(
         (r) =>
           r.datasetConfig.query?.find(
-            (q) => q.id === 'fields' && q.value.toString().includes(timebarGraphType)
+            (q) =>
+              q.id === 'fields' &&
+              (q.value.toString().includes(timebarGraphType) ||
+                q.value.toString().toLowerCase().includes(timebarGraphType))
           )
       )
       const graphUrl = resourceQuery?.url
