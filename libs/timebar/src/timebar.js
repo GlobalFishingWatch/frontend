@@ -125,15 +125,10 @@ class Timebar extends Component {
 
   onIntervalClick = (interval) => {
     const { start, end, absoluteStart, absoluteEnd, latestAvailableDataDate } = this.props
-    console.log(
-      '🚀 ~ file: timebar.js:128 ~ Timebar ~ latestAvailableDataDate:',
-      latestAvailableDataDate
-    )
     const intervalConfig = CONFIG_BY_INTERVAL[interval]
-    console.log('🚀 ~ start, end:', start, end)
     if (intervalConfig) {
       const intervalLimit = LIMITS_BY_INTERVAL[interval]
-      console.log('🚀 ~ file: timebar.js:136 ~ Timebar ~ intervalLimit:', intervalLimit)
+
       if (intervalLimit) {
         let newStart
         let newEnd
@@ -152,7 +147,7 @@ class Timebar extends Component {
           }).startOf(intervalLimit.unit)
           newEnd = newStart.plus({ [intervalLimit.unit]: 1 })
         }
-        this.notifyChange(newStart.toISODate(), newEnd.toISODate(), EVENT_INTERVAL_SOURCE[interval])
+        this.notifyChange(newStart.toISO(), newEnd.toISO(), EVENT_INTERVAL_SOURCE[interval])
       } else {
         this.notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval])
       }
