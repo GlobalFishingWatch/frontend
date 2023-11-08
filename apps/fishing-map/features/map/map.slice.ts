@@ -285,7 +285,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       const topActivityVesselIds = topActivityVessels.map(({ id }) => id)
 
       const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
-
+      debugger
       const sublayersIds = fishingActivityFeatures.map(
         (feature) => feature.temporalgrid?.sublayerId || ''
       )
@@ -298,8 +298,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
                 const vesselInfo = vesselsInfo?.find((vesselInfo) => {
-                  const vesselInfoId = vesselInfo.selfReportedInfo?.[0]?.id
-                  return vesselInfoId === vessel.id
+                  const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) => s.id)
+                  return vesselInfoIds.includes(vessel.id)
                 })
                 const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
