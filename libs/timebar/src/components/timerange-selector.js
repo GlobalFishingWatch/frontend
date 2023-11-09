@@ -332,7 +332,7 @@ class TimeRangeSelector extends Component {
                       name="end year"
                       type="number"
                       min={this.bounds.min.slice(0, 4)}
-                      max={(parseInt(this.bounds.max.slice(0, 4)) + 1).toString()}
+                      max={this.bounds.max.slice(0, 4)}
                       value={endInputValues.year}
                       onChange={(e) => this.onEndChange(e, 'year')}
                       onBlur={(e) => this.onEndBlur(e, 'year')}
@@ -360,7 +360,10 @@ class TimeRangeSelector extends Component {
                         onChange={(e) => this.onEndChange(e, 'month')}
                         onBlur={(e) => this.onEndBlur(e, 'month')}
                         step={'1'}
-                        disabled={disabledFields['MONTH']}
+                        disabled={
+                          disabledFields['MONTH'] ||
+                          endInputValues.year > this.bounds.max.slice(0, 4)
+                        }
                         className={classNames(styles.input, {
                           [styles.error]: !endValid || !startBeforeEnd,
                         })}
