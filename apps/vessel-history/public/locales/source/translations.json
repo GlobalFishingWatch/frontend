@@ -170,7 +170,8 @@
   "map": {
     "filters": "Filter events",
     "loading": "Map loading",
-    "toggleLayers": "Toggle layers"
+    "toggleLayers": "Toggle layers",
+    "viewInGFWMap": "View in GFW Map"
   },
   "risk": {
     "aisDisabling": "AIS Disabling",
