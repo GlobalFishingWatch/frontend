@@ -58,10 +58,6 @@ export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
 type MapState = {
   clicked: SliceInteractionEvent | null
   hovered: SliceInteractionEvent | null
-  draw: {
-    isDrawing: boolean
-    editDatasetId: string | null
-  }
   fishingStatus: AsyncReducerStatus
   currentFishingRequestId: string
   apiEventStatus: AsyncReducerStatus
@@ -70,10 +66,6 @@ type MapState = {
 const initialState: MapState = {
   clicked: null,
   hovered: null,
-  draw: {
-    isDrawing: false,
-    editDatasetId: null,
-  },
   fishingStatus: AsyncReducerStatus.Idle,
   currentFishingRequestId: '',
   apiEventStatus: AsyncReducerStatus.Idle,
@@ -467,15 +459,6 @@ const slice = createSlice({
   name: 'map',
   initialState,
   reducers: {
-    setMapDrawing: (state, action: PayloadAction<boolean>) => {
-      state.draw = { ...state.draw, isDrawing: action.payload }
-    },
-    setMapDrawEditDatasetId: (state, action: PayloadAction<string | null>) => {
-      state.draw = { ...state.draw, editDatasetId: action.payload }
-    },
-    resetMapDraw: (state, action?: PayloadAction<undefined>) => {
-      state.draw = { isDrawing: false, editDatasetId: null }
-    },
     setClickedEvent: (state, action: PayloadAction<SliceInteractionEvent | null>) => {
       if (action.payload === null) {
         state.clicked = null
@@ -554,11 +537,8 @@ const slice = createSlice({
 })
 
 export const selectClickedEvent = (state: { map: MapState }) => state.map.clicked
-export const selectIsMapDrawing = (state: { map: MapState }) => state.map.draw.isDrawing
-export const selectMapDrawEditDatasetId = (state: { map: MapState }) => state.map.draw.editDatasetId
 export const selectFishingInteractionStatus = (state: { map: MapState }) => state.map.fishingStatus
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 
-export const { setClickedEvent, setMapDrawing, setMapDrawEditDatasetId, resetMapDraw } =
-  slice.actions
+export const { setClickedEvent } = slice.actions
 export default slice.reducer

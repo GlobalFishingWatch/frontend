@@ -15,6 +15,7 @@ import {
   selectUrlTimeRange,
   selectUrlViewport,
   selectWorkspaceId,
+  selectIsMapDrawing,
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
@@ -125,6 +126,7 @@ function App() {
   const map = useMapInstance()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
+  const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
   const i18n = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
@@ -278,7 +280,7 @@ function App() {
         <Logo className={styles.logo} />
       </a>
       <SplitView
-        isOpen={sidebarOpen}
+        isOpen={sidebarOpen && !isMapDrawing}
         showToggle={workspaceLocation || vesselLocation}
         onToggle={onToggle}
         aside={<Sidebar onMenuClick={onMenuClick} />}

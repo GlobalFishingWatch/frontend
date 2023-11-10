@@ -38,6 +38,7 @@ import {
   selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
+  selectMapDrawingEditId,
 } from 'routes/routes.selectors'
 import {
   selectShowTimeComparison,
@@ -48,7 +49,6 @@ import { WorkspaceCategory } from 'data/workspaces'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
-import { selectMapDrawEditDatasetId } from 'features/map/map.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   PREVIEW_BUFFER_GENERATOR_ID,
@@ -417,7 +417,7 @@ export const selectActiveHeatmapAnimatedGeneratorConfigs = createSelector(
 )
 
 export const selectDrawEditDataset = createSelector(
-  [selectAllDatasets, selectMapDrawEditDatasetId],
+  [selectAllDatasets, selectMapDrawingEditId],
   (datasets, datasetId) => {
     return datasets.find((dataset) => dataset.id === datasetId)
   }

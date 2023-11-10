@@ -1,44 +1,29 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { selectIsMapDrawing } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectSidebarOpen } from 'features/app/app.selectors'
-import {
-  resetMapDraw,
-  selectIsMapDrawing,
-  setMapDrawEditDatasetId,
-  setMapDrawing,
-} from './map.slice'
 
 export const useMapDrawConnect = () => {
-  const dispatch = useAppDispatch()
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const { dispatchQueryParams } = useLocationConnect()
-  const sidebarOpen = useSelector(selectSidebarOpen)
 
   const dispatchSetMapDrawing = useCallback(
-    (mode: boolean) => {
-      dispatch(setMapDrawing(mode))
-      if (mode === true && sidebarOpen) {
-        dispatchQueryParams({ sidebarOpen: false })
-      }
+    (mapDrawing: boolean) => {
+      dispatchQueryParams({ mapDrawing })
     },
-    [dispatch, dispatchQueryParams, sidebarOpen]
+    [dispatchQueryParams]
   )
 
   const dispatchSetMapDrawEditDataset = useCallback(
-    (datasetId: string) => {
-      dispatch(setMapDrawEditDatasetId(datasetId))
+    (mapDrawingEditId: string) => {
+      dispatchQueryParams({ mapDrawingEditId })
     },
-    [dispatch]
+    [dispatchQueryParams]
   )
 
   const dispatchResetMapDraw = useCallback(() => {
-    dispatch(resetMapDraw())
-    if (!sidebarOpen) {
-      dispatchQueryParams({ sidebarOpen: true })
-    }
-  }, [dispatch, dispatchQueryParams, sidebarOpen])
+    dispatchQueryParams({ mapDrawing: false, mapDrawingEditId: undefined })
+  }, [dispatchQueryParams])
 
   return {
     isMapDrawing,
