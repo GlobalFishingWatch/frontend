@@ -18,6 +18,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetAreasThunk, selectDatasetAreasById } from 'features/areas/areas.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { useMapDrawConnect } from './map-draw.hooks'
 import styles from './MapDraw.module.css'
 import {
@@ -96,9 +97,15 @@ function MapDraw() {
 
   const drawControl = useDrawControl({
     displayControlsDefault: false,
-    defaultMode: 'draw_polygon',
+    defaultMode: mapDrawEditDataset ? 'simple_select' : 'draw_polygon',
     onSelectionChange: onSelectionChange,
   })
+
+  useEffect(() => {
+    if (mapDrawEditGeometry?.status === AsyncReducerStatus.Finished && mapDrawEditGeometry?.data) {
+      drawControl.add(mapDrawEditGeometry.data as any)
+    }
+  }, [drawControl, mapDrawEditGeometry])
 
   const features = getAllFeatures(drawControl)
   const selectedFeature = getSelectedFeature(drawControl)
@@ -405,9 +412,13 @@ function MapDraw() {
             </Button>
             <Button
               className={styles.button}
-              loading={loading}
+              loading={loading && mapDrawEditGeometry?.status === AsyncReducerStatus.Loading}
               disabled={
-                !layerName || !layerNameMinLength || !hasFeaturesDrawn || hasOverLapInFeatures
+                !layerName ||
+                !layerNameMinLength ||
+                !hasFeaturesDrawn ||
+                hasOverLapInFeatures ||
+                mapDrawEditGeometry?.status === AsyncReducerStatus.Loading
               }
               tooltip={saveTooltip}
               tooltipPlacement="top"
