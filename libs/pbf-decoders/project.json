@@ -1,9 +1,8 @@
 {
-  "name": "pbf",
+  "name": "pbf-decoders",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/pbf-decoders",
+  "sourceRoot": "libs/pbf-decoders/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
     "dist": {
       "executor": "@nx/rollup:rollup",
@@ -30,27 +29,10 @@
         "updateBuildableProjectDepsInPackageJson": true
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/pbf-decoders/**/*.{ts,tsx,js,jsx}"]
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/pbf-decoders"],
-      "options": {
-        "jestConfig": "libs/pbf-decoders/jest.config.ts",
-        "passWithNoTests": true
-      }
-    },
     "publish": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/pbf-decoders"
-      }
+      "command": "node tools/scripts/publish.mjs pbf-decoders {args.ver} {args.tag}",
+      "dependsOn": ["build"]
     }
-  }
+  },
+  "tags": []
 }

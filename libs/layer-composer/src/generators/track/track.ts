@@ -2,7 +2,7 @@ import { scaleLinear, scalePow } from 'd3-scale'
 import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import { uniq } from 'lodash'
-import convert from 'color-convert'
+import { hex, hsl } from 'color-convert'
 import type { LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Group } from '../../types'
@@ -179,15 +179,15 @@ class TrackGenerator {
       } else {
         const HUE_CHANGE_DELTA = 40
         const hueIncrement = HUE_CHANGE_DELTA / (uniqIds.length - 1)
-        const hsl = convert.hex.hsl(config.color || '')
-        const baseHue = hsl[0]
+        const hslColor = hex.hsl(config.color || '')
+        const baseHue = hslColor[0]
         exprLineColor = [
           'match',
           ['get', 'id'],
           ...uniqIds.flatMap((id, index) => {
             const rawHue = baseHue - HUE_CHANGE_DELTA / 2 + hueIncrement * index
             const hue = (rawHue + 360) % 360
-            const color = `#${convert.hsl.hex([hue, hsl[1], hsl[2]])}`
+            const color = `#${hsl.hex([hue, hslColor[1], hslColor[2]])}`
             return [id, color]
           }),
           config.color,

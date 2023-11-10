@@ -46,10 +46,12 @@
     stroke-dasharray: 1, 150;
     stroke-dashoffset: 0;
   }
+
   50% {
     stroke-dasharray: 90, 150;
     stroke-dashoffset: -35;
   }
+
   100% {
     stroke-dasharray: 90, 150;
     stroke-dashoffset: -124;
@@ -61,10 +63,12 @@
     stroke-dasharray: 1, 60;
     stroke-dashoffset: 0;
   }
+
   50% {
     stroke-dasharray: 35, 60;
     stroke-dashoffset: -14;
   }
+
   100% {
     stroke-dasharray: 35, 60;
     stroke-dashoffset: -54;
@@ -76,10 +80,12 @@
     stroke-dasharray: 1, 30;
     stroke-dashoffset: 0;
   }
+
   50% {
     stroke-dasharray: 17, 30;
     stroke-dashoffset: -7;
   }
+
   100% {
     stroke-dasharray: 17, 30;
     stroke-dashoffset: -27;

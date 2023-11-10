@@ -2,12 +2,16 @@
   "name": "@globalfishingwatch/features-aggregate",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
-  "typings": "src/index.d.ts",
   "license": "MIT",
   "author": "satellitestudio <contact@satellitestud.io>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "dependencies": {
+    "@swc/helpers": "~0.5.2"
   }
 }

@@ -2,8 +2,8 @@ import { useMemo, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { Range, getTrackBackground } from 'react-range'
 import { scaleLinear } from 'd3-scale'
-import { SliderThumbsSize, formatSliderNumber } from '@globalfishingwatch/ui-components'
 import styles from '../slider/slider.module.css'
+import { SliderThumbsSize, formatSliderNumber } from '../index'
 
 export type SliderRangeValues = number[]
 type SliderRangeConfig = {

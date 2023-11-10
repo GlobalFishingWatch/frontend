@@ -3,75 +3,45 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/fourwings-aggregate/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
-    "start": {
-      "executor": "@nx/web:rollup",
+    "dist": {
+      "executor": "@nx/js:swc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/fourwings-aggregate",
+        "main": "libs/fourwings-aggregate/src/index.ts",
         "tsConfig": "libs/fourwings-aggregate/tsconfig.lib.json",
-        "project": "libs/fourwings-aggregate/package.json",
-        "entryFile": "libs/fourwings-aggregate/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "watch": true,
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/fourwings-aggregate/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
+        "assets": []
       }
     },
-    "dist": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/fourwings-aggregate",
-        "tsConfig": "libs/fourwings-aggregate/tsconfig.lib.json",
-        "project": "libs/fourwings-aggregate/package.json",
-        "entryFile": "libs/fourwings-aggregate/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/fourwings-aggregate/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
-      },
-      "configurations": {
-        "local": {
-          "watch": true,
-          "outputPath": "libs/fourwings-aggregate/dist"
-        }
-      }
+    "publish": {
+      "command": "node tools/scripts/publish.mjs fourwings-aggregate {args.ver} {args.tag}",
+      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/fourwings-aggregate/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "libs/fourwings-aggregate/**/*.ts",
+          "libs/fourwings-aggregate/package.json"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/fourwings-aggregate"],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/fourwings-aggregate/jest.config.ts",
         "passWithNoTests": true
-      }
-    },
-    "publish": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/fourwings-aggregate"
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     }
-  }
+  },
+  "tags": []
 }

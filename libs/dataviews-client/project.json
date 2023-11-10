@@ -3,49 +3,42 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/dataviews-client/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
     "dist": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/js:swc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/dataviews-client",
+        "main": "libs/dataviews-client/src/index.ts",
         "tsConfig": "libs/dataviews-client/tsconfig.lib.json",
-        "project": "libs/dataviews-client/package.json",
-        "entryFile": "libs/dataviews-client/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/dataviews-client/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": []
       }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs dataviews-client {args.ver} {args.tag}",
+      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/dataviews-client/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/dataviews-client/**/*.ts", "libs/dataviews-client/package.json"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/dataviews-client"],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/dataviews-client/jest.config.ts",
         "passWithNoTests": true
-      }
-    },
-    "publish": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/dataviews-client"
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     }
-  }
+  },
+  "tags": []
 }

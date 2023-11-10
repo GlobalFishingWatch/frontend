@@ -1,51 +1,12 @@
 {
   "name": "@globalfishingwatch/timebar",
-  "version": "2.3.1",
-  "description": "GFW timebar",
-  "author": "satellitestudio <contact@satellitestud.io>",
-  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
-  "license": "MIT",
-  "main": "index.js",
-  "typings": "index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
-  },
-  "dependencies": {
-    "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
-    "@mapbox/tile-cover": "^3.0.2",
-    "@turf/area": "^6.5.0",
-    "@turf/bbox": "6.5.0",
-    "d3-ease": "3.0.1",
-    "d3-geo": "3.1.0",
-    "d3-scale": "^3.3.0",
-    "d3-shape": "3.2.0",
-    "memoize-one": "^6.0.0",
-    "react-spring": "^9.7.3",
-    "recoil": "0.7.7",
-    "resize-observer-polyfill": "^1.5.1",
-    "simple-statistics": "^7.8.3",
-    "topojson-client": "^3.1.0",
-    "use-debounce": "^8.0.4"
-  },
-  "devDependencies": {
-    "@mapbox/geojsonhint": "^3.2.0",
-    "dayjs": "1.11.10",
-    "geojson-validation": "^1.0.2",
-    "prop-types": "^15.8.1"
-  },
-  "peerDependencies": {
-    "@globalfishingwatch/ui-components": "12.x",
-    "classnames": "2.x",
-    "dayjs": "1.x",
-    "lodash": "4.x",
-    "prop-types": "15.x",
-    "react": ">17.x",
-    "react-dom": ">17.x",
-    "react-spring": "^9.x",
-    "recoil": "^0.7.x"
-  },
-  "publishConfig": {
-    "access": "public"
+  "version": "0.0.1",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
   }
 }

@@ -3,49 +3,28 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api-types/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
     "dist": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/js:swc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/api-types",
+        "main": "libs/api-types/src/index.ts",
         "tsConfig": "libs/api-types/tsconfig.lib.json",
-        "project": "libs/api-types/package.json",
-        "entryFile": "libs/api-types/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/api-types/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": []
       }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs api-types {args.ver} {args.tag}",
+      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/api-types/**/*.{ts,tsx,js,jsx}"]
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/api-types"],
-      "options": {
-        "jestConfig": "libs/api-types/jest.config.ts",
-        "passWithNoTests": true
-      }
-    },
-    "publish": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/api-types"
+        "lintFilePatterns": ["libs/api-types/**/*.ts", "libs/api-types/package.json"]
       }
     }
-  }
+  },
+  "tags": []
 }

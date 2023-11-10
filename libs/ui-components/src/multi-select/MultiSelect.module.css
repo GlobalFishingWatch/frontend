@@ -7,8 +7,7 @@
   height: var(--size-M);
   padding-left: var(--space-XS);
   max-width: 75%;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto hidden;
 }
 
 .placeholderContainer {

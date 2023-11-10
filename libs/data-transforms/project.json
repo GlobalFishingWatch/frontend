@@ -3,49 +3,42 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/data-transforms/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
     "dist": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/js:swc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/data-transforms",
+        "main": "libs/data-transforms/src/index.ts",
         "tsConfig": "libs/data-transforms/tsconfig.lib.json",
-        "project": "libs/data-transforms/package.json",
-        "entryFile": "libs/data-transforms/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/data-transforms/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": []
       }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs data-transforms {args.ver} {args.tag}",
+      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/data-transforms/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/data-transforms/**/*.ts", "libs/data-transforms/package.json"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/data-transforms"],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/data-transforms/jest.config.ts",
         "passWithNoTests": true
-      }
-    },
-    "publish": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/data-transforms"
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     }
-  }
+  },
+  "tags": []
 }

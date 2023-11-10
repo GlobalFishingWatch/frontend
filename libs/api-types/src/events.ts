@@ -85,6 +85,7 @@ export enum AuthorizationOptions {
   Partially = 'partially',
   Unmatched = 'unmatched',
 }
+
 export interface EncounterEvent<Vessel = EventVessel> {
   encounteredVesselAuthorizationStatus: JSX.Element
   mainVesselAuthorizationStatus: JSX.Element

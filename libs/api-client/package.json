@@ -9,6 +9,12 @@
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "dependencies": {
+    "@swc/helpers": "~0.5.2"
+  },
   "peerDependencies": {
     "@globalfishingwatch/api-types": "6.x",
     "@globalfishingwatch/pbf": "1.x",

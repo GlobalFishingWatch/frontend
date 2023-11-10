@@ -16,8 +16,8 @@
   box-shadow: 0 0 7px 0 rgba(0, 16, 57, 0.7);
   cursor: move; /* fallback if grab cursor is unsupported */
   cursor: grab;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
+  cursor: grab;
+  cursor: grab;
   z-index: var(--timebar-z-handlers);
   transition: var(--timebar-hover-transition);
 }
@@ -59,7 +59,7 @@
   background-color: var(--timebar-white);
 }
 
-@media only screen and (max-width: 460px) {
+@media only screen and (width <= 460px) {
   .handler {
     width: 2.4rem;
   }

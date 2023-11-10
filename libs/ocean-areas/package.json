@@ -19,8 +19,11 @@
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
   "dependencies": {
+    "@turf/bbox": "^6.5.0",
+    "@turf/distance": "^6.5.0",
+    "@turf/explode": "^6.5.0",
     "@turf/helpers": "^6.5.0",
-    "@turf/turf": "^6.5.0",
+    "@turf/nearest-point": "^6.5.0",
     "match-sorter": "^6.3.1"
   },
   "peerDependencies": {
