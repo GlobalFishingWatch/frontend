@@ -11,7 +11,7 @@
         "script": "start"
       }
     },
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
