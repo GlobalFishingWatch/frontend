@@ -19,6 +19,7 @@ import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetAreasThunk, selectDatasetAreasById } from 'features/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectMapDrawingEditId } from 'routes/routes.selectors'
 import { useMapDrawConnect } from './map-draw.hooks'
 import styles from './MapDraw.module.css'
 import {
@@ -58,6 +59,7 @@ const selectedPointIndexAtom = atom<number | null>({
 function MapDraw() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
   const [createAsPublic, setCreateAsPublic] = useState<boolean>(true)
@@ -67,8 +69,9 @@ function MapDraw() {
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
   const { isMapDrawing, dispatchResetMapDraw } = useMapDrawConnect()
   const { dispatchQueryParams } = useLocationConnect()
-  const { dispatchCreateDataset } = useDatasetsAPI()
+  const { dispatchUpsertDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
+  const mapDrawEditDatasetId = useSelector(selectMapDrawingEditId)
   const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
 
@@ -243,38 +246,43 @@ function MapDraw() {
     async (features: DrawFeature[], name: string) => {
       if (features && features.length > 0) {
         setLoading(true)
-        const { payload, error } = await dispatchCreateDataset({
-          dataset: getDrawDatasetDefinition(name),
+        const { payload, error } = await dispatchUpsertDataset({
+          dataset: { id: mapDrawEditDatasetId, ...getDrawDatasetDefinition(name) },
           file: getFileWithFeatures(name, features),
           createAsPublic,
         })
         if (error) {
           console.warn(error)
+          setError('There was an error uploading the dataset')
         } else if (payload) {
-          addDataviewFromDatasetToWorkspace(payload)
+          if (!mapDrawEditDatasetId) {
+            addDataviewFromDatasetToWorkspace(payload)
+          }
+          closeDraw()
         }
         setLoading(false)
-        closeDraw()
       }
     },
-    [addDataviewFromDatasetToWorkspace, closeDraw, createAsPublic, dispatchCreateDataset]
+    [
+      addDataviewFromDatasetToWorkspace,
+      closeDraw,
+      createAsPublic,
+      dispatchUpsertDataset,
+      mapDrawEditDatasetId,
+    ]
   )
 
   const onSaveClick = useCallback(
     (features: any) => {
-      if (mapDrawEditDataset) {
-        console.log('TODO: update dataset')
-      } else {
-        if (features && features.length > 0 && layerName) {
-          createDataset(features, layerName)
-          trackEvent({
-            category: TrackCategory.ReferenceLayer,
-            action: `Draw a custom reference layer - Click save`,
-          })
-        }
+      if (features && features.length > 0 && layerName) {
+        createDataset(features, layerName)
+        trackEvent({
+          category: TrackCategory.ReferenceLayer,
+          action: `Draw a custom reference layer - Click save`,
+        })
       }
     },
-    [createDataset, layerName, mapDrawEditDataset]
+    [createDataset, layerName]
   )
 
   const overLapInFeatures = useMemo(() => {
@@ -362,17 +370,21 @@ function MapDraw() {
       )}
       <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
         {(features?.length > 0 || hasOverLapInFeatures) && (
-          <div className={cx(styles.hint, { [styles.warning]: hasOverLapInFeatures })}>
+          <div className={cx(styles.hint, { [styles.warning]: error || hasOverLapInFeatures })}>
             <IconButton
               size="small"
-              type={hasOverLapInFeatures ? 'warning' : 'border'}
-              icon={hasOverLapInFeatures ? 'warning' : 'help'}
               className={styles.hintIcon}
-              onClick={hasOverLapInFeatures ? undefined : onHintClick}
+              type={error || hasOverLapInFeatures ? 'warning' : 'border'}
+              icon={error || hasOverLapInFeatures ? 'warning' : 'help'}
+              onClick={error || hasOverLapInFeatures ? undefined : onHintClick}
             />
-            {hasOverLapInFeatures
-              ? t('layer.geometryError', 'Some polygons have self-intersections')
-              : t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')}
+            {error ? (
+              <span>{error}</span>
+            ) : hasOverLapInFeatures ? (
+              t('layer.geometryError', 'Some polygons have self-intersections')
+            ) : (
+              t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')
+            )}
           </div>
         )}
         <InputText
@@ -412,7 +424,7 @@ function MapDraw() {
             </Button>
             <Button
               className={styles.button}
-              loading={loading && mapDrawEditGeometry?.status === AsyncReducerStatus.Loading}
+              loading={loading || mapDrawEditGeometry?.status === AsyncReducerStatus.Loading}
               disabled={
                 !layerName ||
                 !layerNameMinLength ||
