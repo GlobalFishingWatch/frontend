@@ -257,6 +257,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
             <IconButton
               icon="edit"
               size="small"
+              disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
               tooltip={t('layer.editDraw', 'Edit draw')}
               tooltipPlacement="top"
               onClick={() => {
