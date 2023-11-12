@@ -1,10 +1,4 @@
-import {
-  disablePopups,
-  getWorkspace,
-  switchLanguage,
-  waitForMapLoadTiles,
-  waitForSidebarLoaded,
-} from '../../support/app.po'
+import { disablePopups, getWorkspaceTitle, waitForSidebarLoaded } from '../../support/app.po'
 import { WORKSPACE_NAME } from '../../constants/workspace'
 import { deleteUserWorkspaces } from '../../support/sidebar/save-workspace.po'
 import { SIDEBAR_USER_BUTTON } from '../../constants/buttons'
@@ -25,7 +19,7 @@ describe('Save a workspace', () => {
     cy.getBySel('create-workspace-input').clear()
     cy.getBySel('create-workspace-input').type(WORKSPACE_NAME)
     cy.getBySel('create-workspace-button').click()
-    getWorkspace().should('contain', WORKSPACE_NAME)
+    getWorkspaceTitle().should('contain', WORKSPACE_NAME)
     cy.getBySel(SIDEBAR_USER_BUTTON).click()
     cy.getBySel('user-workspace').click()
     cy.getBySel('workspace-name').contains(WORKSPACE_NAME)

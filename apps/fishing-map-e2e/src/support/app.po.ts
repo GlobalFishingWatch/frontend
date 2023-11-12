@@ -2,7 +2,7 @@ import { API_URL_4WINGS_TILES } from '../constants/urls'
 
 export const getGreeting = () => cy.get('h1')
 
-export const getWorkspace = () => cy.get('h2')
+export const getWorkspaceTitle = () => cy.getBySel('user-workspace-title')
 
 export const getVmsActivityLayerPanel = () =>
   cy.getBySelLike('activity-layer-panel-vms-', getDOMTimeout(20000))
