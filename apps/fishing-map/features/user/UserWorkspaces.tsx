@@ -205,7 +205,9 @@ function UserWorkspaces() {
                     }}
                     onClick={() => onWorkspaceClick(workspace)}
                   >
-                    <span className={styles.workspaceTitle}>{getWorkspaceLabel(workspace)}</span>
+                    <span className={styles.workspaceTitle} data-test="workspace-name">
+                      {getWorkspaceLabel(workspace)}
+                    </span>
                     <IconButton icon="arrow-right" />
                   </Link>
                   <IconButton
