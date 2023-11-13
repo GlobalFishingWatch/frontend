@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { useLayerComposer, useMapClick, useMemoCompare } from '@globalfishingwatch/react-hooks'
-import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { DatasetCategory, DatasetSubCategory } from '@globalfishingwatch/api-types'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
-import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveVesselsDataviews, selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import Info from 'features/map/info/Info'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
@@ -68,6 +68,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
   const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
   const filters = useSelector(selectFilters)
   const [prevFilters, setPrevFilters] = useState(filters)
+  const contextLayers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
 
   useEffect(() => {
     if (!vesselLoaded || !vesselDataviewLoaded || eventsLoading || highlightedEvent) return
@@ -218,6 +219,13 @@ const MapWrapper: React.FC = (): React.ReactElement => {
         fishingMapVesselDataview.push(`dvIn[${i}][cfg][relatedVesselIds][${index}]=${vessel.id}`)
       })
     }
+    const contextLayersDataviews = contextLayers.filter(x => x?.config?.visible).map(layer => {
+      i++
+      return [
+        `dvIn[${i}][id]=${layer.id}`,
+        `dvIn[${i}][cfg][vis]=true`,
+      ]
+    }).flat()
 
     const urlSegments = [
       `https://globalfishingwatch.org/map/index?`,
@@ -227,6 +235,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
       `zoom=${viewport.zoom}`,
       `end=${end}`,
       ...fishingMapVesselDataview,
+      ...contextLayersDataviews,
       `timebarVisualisation=vessel`,
     ]
     const url = urlSegments.join('&')
@@ -238,6 +247,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
     viewport.latitude,
     viewport.longitude,
     viewport.zoom,
+    contextLayers,
   ])
 
   return (

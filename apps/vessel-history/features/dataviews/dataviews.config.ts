@@ -64,7 +64,7 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
     dataviewId: DEFAULT_BASEMAP_DATAVIEW_SLUG,
   },
   {
-    id: 'public-eez-areas',
+    id: 'context-layer-eez',
     config: {
       color: '#069688',
       visible: true,
@@ -72,7 +72,7 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
     dataviewId: DEFAULT_EEZ_DATAVIEW_SLUG,
   },
   {
-    id: 'public-mpa-all',
+    id: 'context-layer-mpa',
     config: {
       color: '#1AFF6B',
       visible: true,
@@ -80,7 +80,7 @@ export const dataviewInstances: DataviewInstance<GeneratorType>[] = [
     dataviewId: DEFAULT_MPA_DATAVIEW_SLUG,
   },
   {
-    id: 'public-rfmo',
+    id: 'context-layer-rfmo',
     config: {
       color: '#6b67e5',
       visible: true,
