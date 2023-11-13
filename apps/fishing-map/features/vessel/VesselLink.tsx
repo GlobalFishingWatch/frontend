@@ -112,7 +112,10 @@ const VesselLink = ({
       }}
       onClick={onLinkClick}
     >
-      <Tooltip maxWidth="none" content={tooltip || t('search.seeVessel', 'See vessel')}>
+      <Tooltip
+        maxWidth="none"
+        content={tooltip || t('vessel.clickToSeeMore', 'Click to see more information')}
+      >
         <span>{children}</span>
       </Tooltip>
     </Link>

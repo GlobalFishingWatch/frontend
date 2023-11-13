@@ -55,7 +55,7 @@ const OwnerVessels = ({ owner, dataset, ignoreVessel }: OwnerVesselsProps) => {
       {vessels?.map((vessel) => {
         return (
           <li key={getVesselId(vessel)} className={styles.vessel}>
-            <RelatedVessel vessel={vessel} showTooltip />
+            <RelatedVessel vessel={vessel} />
           </li>
         )
       })}
