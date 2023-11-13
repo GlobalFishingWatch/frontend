@@ -157,6 +157,8 @@ export enum DatasetCategory {
 }
 
 export enum DatasetSubCategory {
+  Info = 'info',
+  Track = 'track',
   Fishing = 'fishing',
   Presence = 'presence',
   Viirs = 'viirs',
