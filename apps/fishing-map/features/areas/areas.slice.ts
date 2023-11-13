@@ -159,6 +159,15 @@ const areasSlice = createSlice({
   name: 'areas',
   initialState,
   reducers: {
+    resetAreaList: (state, action: PayloadAction<{ datasetId: string }>) => {
+      const { datasetId } = action.payload
+      if (state[datasetId]?.list) {
+        state[datasetId].list = {
+          status: AsyncReducerStatus.Idle,
+          data: [],
+        }
+      }
+    },
     resetAreaDetail: (state, action: PayloadAction<{ datasetId: string; areaId: number }>) => {
       const { datasetId, areaId } = action.payload
       if (state[datasetId]?.detail?.[areaId]) {
@@ -230,7 +239,7 @@ const areasSlice = createSlice({
   },
 })
 
-export const { resetAreaDetail } = areasSlice.actions
+export const { resetAreaList, resetAreaDetail } = areasSlice.actions
 
 export const selectAreas = (state: { areas: AreasState }) => state.areas
 export const selectDatasetAreaById = memoize((id: string) =>

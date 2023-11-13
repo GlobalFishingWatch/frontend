@@ -17,7 +17,11 @@ import useDrawControl from 'features/map/MapDrawControl'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchDatasetAreasThunk, selectDatasetAreasById } from 'features/areas/areas.slice'
+import {
+  resetAreaList,
+  fetchDatasetAreasThunk,
+  selectDatasetAreasById,
+} from 'features/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectMapDrawingEditId } from 'routes/routes.selectors'
 import { useMapDrawConnect } from './map-draw.hooks'
@@ -30,7 +34,7 @@ import {
   updateFeaturePointByIndex,
 } from './map.draw.utils'
 
-export type DrawFeature = Feature<Polygon, { id: string }>
+export type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
 export type DrawPointPosition = [number, number]
 export type DrawMode = DrawModes['DIRECT_SELECT'] | DrawModes['DRAW_POLYGON']
 export const MIN_DATASET_NAME_LENGTH = 3
@@ -230,13 +234,14 @@ function MapDraw() {
 
   const closeDraw = useCallback(() => {
     resetState()
+    dispatch(resetAreaList({ datasetId: mapDrawEditDatasetId }))
     dispatchResetMapDraw()
     dispatchQueryParams({ sidebarOpen: true })
     trackEvent({
       category: TrackCategory.ReferenceLayer,
       action: `Draw a custom reference layer - Click dismiss`,
     })
-  }, [dispatchQueryParams, dispatchResetMapDraw, resetState])
+  }, [dispatch, dispatchQueryParams, dispatchResetMapDraw, mapDrawEditDatasetId, resetState])
 
   const toggleCreateAsPublic = useCallback(() => {
     setCreateAsPublic((createAsPublic) => !createAsPublic)
