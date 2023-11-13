@@ -2,7 +2,7 @@ import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-// import NextLink from 'next/link'
+import { groupBy } from 'lodash'
 import {
   DatasetTypes,
   ResourceStatus,
@@ -32,6 +32,7 @@ import VesselLink from 'features/vessel/VesselLink'
 import { getOtherVesselNames } from 'features/vessel/vessel.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { t } from 'features/i18n/i18n'
+import { isGFWUser } from 'features/user/user.slice'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -42,20 +43,51 @@ export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
-export const getVesselIdentityTooltipSummary = (vessel: IdentityVessel) => {
+export const getVesselIdentityTooltipSummary = (
+  vessel: IdentityVessel,
+  { showVesselId } = {} as { showVesselId: boolean }
+) => {
   if (!vessel || !vessel.selfReportedInfo?.length) {
     return ['']
   }
-  const identities = vessel?.selfReportedInfo?.flatMap((selfReported) => {
-    const info = `${formatInfoField(selfReported.shipname, 'name')} - ${formatInfoField(
-      selfReported.flag,
-      'flag'
-    )} (${formatI18nDate(selfReported.transmissionDateFrom)} - ${formatI18nDate(
-      selfReported.transmissionDateTo
-    )})`
+  const identitiesByNormalizedShipname = groupBy(vessel?.selfReportedInfo, 'nShipname')
+  const identities = Object.entries(identitiesByNormalizedShipname).flatMap(
+    ([_, selfReportedInfo]) => {
+      const firstTransmissionDateFrom = selfReportedInfo.reduce((acc, curr) => {
+        if (!acc) {
+          return curr.transmissionDateFrom
+        }
+        return acc < curr.transmissionDateFrom ? acc : curr.transmissionDateFrom
+      }, '')
+      const lastTransmissionDateTo = selfReportedInfo.reduce((acc, curr) => {
+        if (!acc) {
+          return curr.transmissionDateTo
+        }
+        return acc > curr.transmissionDateTo ? acc : curr.transmissionDateTo
+      }, '')
 
-    return [info, <br />]
-  })
+      const selfReported = selfReportedInfo[0]
+      const name = formatInfoField(selfReported.shipname, 'name')
+      const flag = formatInfoField(selfReported.flag, 'flag')
+      let info = `${name} - (${flag}) (${formatI18nDate(
+        firstTransmissionDateFrom
+      )} - ${formatI18nDate(lastTransmissionDateTo)})`
+      if (showVesselId) {
+        return [
+          info,
+          <br />,
+          selfReportedInfo.map((s, index) => (
+            <Fragment key={s.id}>
+              <GFWOnly type="only-icon" /> {s.id}
+              {index < selfReportedInfo.length - 1 && <br />}
+            </Fragment>
+          )),
+          <br />,
+        ]
+      }
+      return [info, <br />]
+    }
+  )
   return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
 }
 
@@ -64,6 +96,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
+  const gfwUser = useSelector(isGFWUser)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
@@ -109,7 +142,9 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const vesselData = infoResource?.data
   const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
   const otherVesselsLabel = vesselData ? getOtherVesselNames(vesselData as IdentityVessel) : ''
-  const identitiesSummary = vesselData ? getVesselIdentityTooltipSummary(vesselData) : ''
+  const identitiesSummary = vesselData
+    ? getVesselIdentityTooltipSummary(vesselData, { showVesselId: gfwUser || false })
+    : ''
 
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
