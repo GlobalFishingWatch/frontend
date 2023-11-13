@@ -79,7 +79,7 @@ export const getEventDescription = ({
       if (mainVesselName && encounterVesselName) {
         description = t(
           'event.encounterActionWithVessels',
-          '{{mainVessel}} had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}',
+          'had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}',
           {
             ...time,
             mainVessel: mainVesselName,
@@ -172,26 +172,19 @@ export const getEventDescriptionComponent = ({
     portName,
     portFlag,
   })
-  if (type === EventTypes.Encounter && mainVesselName && encounterVesselName && encounterVesselId) {
+  if (type === EventTypes.Encounter && encounterVesselName && encounterVesselId) {
     const time = getTimeLabels({ start, end })
     DescriptionComponent = (
       <p className={className}>
         <Trans
           i18nKey="event.encounterActionWithVesselsPin"
-          defaults="{{mainVessel}} had an encounter with {{encounterVessel}} <pin></pin> starting at {{start}} for {{duration}}"
+          defaults="had an encounter with <pin></pin>{{encounterVessel}} starting at {{start}} for {{duration}}"
           values={{
-            mainVessel: formatInfoField(mainVesselName, 'name'),
             encounterVessel: formatInfoField(encounterVesselName, 'name'),
             ...time,
           }}
           components={{
-            pin: (
-              <VesselPin
-                vesselToResolve={{ id: encounterVesselId }}
-                tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
-                size="tiny"
-              />
-            ),
+            pin: <VesselPin vesselToResolve={{ id: encounterVesselId }} size="tiny" />,
           }}
         ></Trans>
       </p>

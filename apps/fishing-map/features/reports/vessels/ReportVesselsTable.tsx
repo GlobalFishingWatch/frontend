@@ -96,7 +96,6 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                       id: vessel.id || vessel.vesselId,
                       datasetId: vessel.dataset,
                     }}
-                    tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
                     disabled={pinTrackDisabled}
                   />
                 </div>

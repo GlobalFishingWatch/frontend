@@ -17,7 +17,7 @@ const VesselTick = ({ y, index }: any) => {
   const vessel = encountersByVessel[index]
   return (
     <foreignObject x={0} y={y - 20} className={styles.vesselContainer}>
-      <RelatedVessel vesselToResolve={vessel} showTooltip />
+      <RelatedVessel vesselToResolve={vessel} />
     </foreignObject>
   )
 }

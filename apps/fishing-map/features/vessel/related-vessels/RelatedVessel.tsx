@@ -13,11 +13,9 @@ import styles from './RelatedVessels.module.css'
 const RelatedVessel = ({
   vessel,
   vesselToResolve,
-  showTooltip = false,
 }: {
   vessel?: IdentityVessel
   vesselToResolve?: VesselToResolve
-  showTooltip?: boolean
 }) => {
   const { t } = useTranslation()
   const vesselIdentity = vessel ? getCurrentIdentityVessel(vessel) : vesselToResolve
@@ -28,22 +26,21 @@ const RelatedVessel = ({
     'shipname'
   )
   const flagLabel = formatInfoField(vesselIdentity?.flag || '', 'flag')
-  const fullLabel = `${t('common.see', 'See')} ${nameLabel} (${flagLabel})`
+  const fullLabel = `${nameLabel} (${flagLabel})`
+  const lengthComparison = isWorkspaceVesselLocation ? 25 : 35
+  const tooltip =
+    fullLabel?.length > lengthComparison
+      ? [fullLabel, <br />, t('vessel.clickToSeeMore', 'Click to see more information')]
+      : ''
 
   return (
     <Fragment>
-      {isWorkspaceVesselLocation && (
-        <VesselPin
-          vessel={vessel}
-          vesselToResolve={vesselToResolve}
-          tooltip={t('vessel.addToWorkspace', 'Add vessel to view')}
-        />
-      )}
+      {isWorkspaceVesselLocation && <VesselPin vessel={vessel} vesselToResolve={vesselToResolve} />}
       <VesselLink
         className={styles.vessel}
         vesselId={vesselIdentity?.id}
         datasetId={vesselDataset?.id}
-        tooltip={showTooltip ? fullLabel : ''}
+        tooltip={tooltip}
       >
         {nameLabel}
       </VesselLink>{' '}
