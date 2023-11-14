@@ -82,7 +82,7 @@ steps:
 
   - id: 'save-test-videos'
     name: gcr.io/cloud-builders/gcloud
-    waitFor: ['smoke-test-e2e']
+    waitFor: ['smoke-test-e2e-live']
     entrypoint: bash
     env:
       - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
