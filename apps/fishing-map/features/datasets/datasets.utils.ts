@@ -59,6 +59,7 @@ export type SupportedActivityDatasetSchema =
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
   | 'vessel-groups'
+  | 'neural_vessel_type'
   | 'visibleValues'
   | 'callsign'
   | 'shipname'
