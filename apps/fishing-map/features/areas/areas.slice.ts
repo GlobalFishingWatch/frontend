@@ -127,7 +127,7 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
   ) => {
     const datasetAreas = await GFWAPI.fetch<DatasetArea[] | DrawnDatasetGeometry>(
       `/datasets/${datasetId}/user-context-layers${
-        include?.length ? `?includes=${include.join(',')}` : ''
+        include?.length ? `?includes=${include.join(',')}&cache=false` : ''
       }`,
       { signal }
     )
