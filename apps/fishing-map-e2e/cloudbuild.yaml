@@ -60,6 +60,7 @@ steps:
     waitFor: ['restore_cypress_cache']
     entrypoint: 'bash'
     env:
+      - 'CYPRESS_publicApiGateway=$_NEXT_PUBLIC_API_GATEWAY'
       - 'CYPRESS_basicAuth=$_BASIC_AUTH'
       - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
       - 'CYPRESS_basicAuthPass=$_BASIC_AUTH_PASS'

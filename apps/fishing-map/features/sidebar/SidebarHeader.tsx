@@ -179,6 +179,7 @@ function SaveWorkspaceButton() {
               : t('workspace.save', 'Save this workspace')
           }
           tooltipPlacement="bottom"
+          testId="save-workspace-button"
         />
       </LoginButtonWrapper>
       {showWorkspaceCreateModal && (

@@ -165,6 +165,7 @@ function NewWorkspaceModal({
         value={name}
         label={t('common.name', 'Name')}
         className={styles.input}
+        testId="create-workspace-input"
         onChange={(e) => setName(e.target.value)}
         autoFocus
       />
@@ -209,7 +210,12 @@ function NewWorkspaceModal({
           </Button>
         )}
         {error && <p className={styles.error}>{error}</p>}
-        <Button loading={createLoading} disabled={!name} onClick={createWorkspace}>
+        <Button
+          loading={createLoading}
+          disabled={!name}
+          onClick={createWorkspace}
+          testId="create-workspace-button"
+        >
           {t('workspace.create', 'Create as new workspace') as string}
         </Button>
       </div>

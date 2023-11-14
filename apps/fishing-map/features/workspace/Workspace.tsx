@@ -139,7 +139,7 @@ function Workspace() {
             {isUserWorkspace && (
               <label className={styles.subTitle}>{t('workspace.user', 'User workspace')}</label>
             )}
-            <h2 className={styles.title}>
+            <h2 className={styles.title} data-test="user-workspace-title">
               {getWorkspaceLabel(workspace)}
               {gfwUser && (
                 <IconButton
