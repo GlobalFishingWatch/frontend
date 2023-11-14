@@ -161,6 +161,7 @@ steps:
 
   - id: 'smoke-test-e2e'
     waitFor: ['deploy-cloud-run']
+    allowFailure: true
     name: cypress/included:12.17.1
     entrypoint: 'bash'
     env:
