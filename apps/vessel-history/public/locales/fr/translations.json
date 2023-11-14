@@ -172,7 +172,8 @@
   "map": {
     "filters": "Filtrer les événements",
     "loading": "Chargement de la carte",
-    "toggleLayers": "Activer/désactiver les calques"
+    "toggleLayers": "Activer/désactiver les calques",
+    "viewInGFWMap": "View in GFW Map"
   },
   "risk": {
     "aisDisabling": "AIS Disabling",
