@@ -80,6 +80,20 @@ steps:
           CYPRESS_CACHE_FOLDER=.cypress-cache \
           yarn nx run fishing-map-e2e:test-env --parallel
 
+  - id: 'save-test-videos'
+    name: gcr.io/cloud-builders/gcloud
+    waitFor: ['smoke-test-e2e']
+    entrypoint: bash
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - 'BUILD_ID=$BUILD_ID'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
+
 timeout: 1800s
 options:
   machineType: 'E2_HIGHCPU_8'
