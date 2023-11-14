@@ -9,6 +9,7 @@ import {
   DatasetStatus,
   DatasetCategory,
   Dataset,
+  DRAW_DATASET_SOURCE,
 } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -47,7 +48,6 @@ import {
   getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import { DRAW_DATASET_SOURCE } from 'features/map/map.draw.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
