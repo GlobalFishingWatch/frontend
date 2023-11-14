@@ -2050,7 +2050,13 @@
     "schema": {
       "flag": "flag",
       "fields": "fields",
-      "duration": "Duration",
+      "duration": {
+        "keyword": "Duration",
+        "enum": {
+          "120": 120,
+          "4320": 4320
+        }
+      },
       "event_id": "event_id",
       "event_end": "event_end",
       "vessel_id": "vessel_id",

@@ -2050,7 +2050,13 @@
     "schema": {
       "flag": "crwdns69916:0crwdne69916:0",
       "fields": "crwdns66237:0crwdne66237:0",
-      "duration": "crwdns69918:0crwdne69918:0",
+      "duration": {
+        "keyword": "crwdns70220:0crwdne70220:0",
+        "enum": {
+          "120": 0,
+          "4320": 0
+        }
+      },
       "event_id": "crwdns66239:0crwdne66239:0",
       "event_end": "crwdns66241:0crwdne66241:0",
       "vessel_id": "crwdns66243:0crwdne66243:0",
