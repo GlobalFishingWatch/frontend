@@ -159,6 +159,25 @@ steps:
           gcloud -q beta builds triggers run --branch=develop ui-libs-i18n-labels-stable
         fi
 
+  - id: 'test-production'
+    name: gcr.io/cloud-builders/gcloud
+    waitFor: ['i18n-labels publish stable']
+    entrypoint: bash
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
+        if [ $workspace_env = 'production' ]; then
+          gcloud -q beta builds triggers run ui-fishing-map-auto-testing-production
+        fi
+        if [ $workspace_env = 'staging' ]; then
+          gcloud -q beta builds triggers run ui-fishing-map-auto-testing-staging
+        fi
+
   - id: 'smoke-test-e2e'
     waitFor: ['deploy-cloud-run']
     allowFailure: true
