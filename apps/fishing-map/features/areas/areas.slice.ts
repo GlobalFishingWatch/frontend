@@ -129,7 +129,7 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
       `/datasets/${datasetId}/user-context-layers${
         include?.length ? `?includes=${include.join(',')}&cache=false` : ''
       }`,
-      { signal }
+      { signal, cache: 'no-cache' }
     )
     if ((datasetAreas as DrawnDatasetGeometry).type === 'FeatureCollection') {
       return datasetAreas
