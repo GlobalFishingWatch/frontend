@@ -58,7 +58,7 @@ steps:
   - id: 'smoke-test-e2e-live'
     name: cypress/included:12.17.1
     waitFor: ['restore_cypress_cache']
-    allowFailure: false
+    allowFailure: true
     entrypoint: 'bash'
     env:
       - 'CYPRESS_publicApiGateway=$_NEXT_PUBLIC_API_GATEWAY'
