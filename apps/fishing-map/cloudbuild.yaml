@@ -190,13 +190,13 @@ steps:
     entrypoint: bash
     env:
       - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - 'BUILD_ID=$BUILD_ID'
     args:
       - '-eEuo'
       - 'pipefail'
       - '-c'
       - |-
-        workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
-        gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/develop
+        gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
 
 timeout: 1800s
 options:
