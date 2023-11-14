@@ -78,7 +78,7 @@ class TimeRangeSelector extends Component {
     const newStart = dayjs
       .utc({
         year: start.year(),
-        month: disabledFields['MONTH'] ? 0 : start.month() - 1,
+        month: disabledFields['MONTH'] ? 0 : start.month(),
         date: disabledFields['DAY'] ? 0 : start.date(),
       })
       .startOf('day')
@@ -86,7 +86,7 @@ class TimeRangeSelector extends Component {
     const newEnd = dayjs
       .utc({
         year: end.year(),
-        month: disabledFields['MONTH'] ? 0 : end.month() - 1,
+        month: disabledFields['MONTH'] ? 0 : end.month(),
         date: disabledFields['DAY'] ? 0 : end.date(),
       })
       .startOf('day')
@@ -99,8 +99,8 @@ class TimeRangeSelector extends Component {
     const { start, end } = getLastX(option.num, option.unit, latestAvailableDataDate)
     const interval = getInterval(start, end, [INTERVAL_ORDER])
     this.submit(
-      dayjs.utc(start).endOf(interval).add(1, 'millisecond'),
-      dayjs.utc(end).endOf(interval).add(1, 'millisecond')
+      dayjs.utc(start).endOf(interval.toLowerCase()).add(1, 'millisecond'),
+      dayjs.utc(end).endOf(interval.toLowerCase()).add(1, 'millisecond')
     )
   }
 
@@ -120,7 +120,9 @@ class TimeRangeSelector extends Component {
   }
 
   onStartChange = (e, property) => {
-    const startDate = dayjs.utc(this.props.start)
+    const startDate = dayjs.utc(this.state.startInputValues)
+    const endDate = dayjs.utc(this.state.endInputValues)
+    const disabledFields = this.getDisabledFields(startDate, endDate)
     const currentMonthDays = dayjs
       .utc({
         year: property === 'year' ? e.target.value : startDate.year(),
@@ -132,7 +134,7 @@ class TimeRangeSelector extends Component {
       startInputValues: {
         ...state.startInputValues,
         date: dateHigherThanDaysInMonth ? currentMonthDays : startDate.date(),
-        [property]: e.target.value,
+        [property]: property.month && disabledFields['MONTH'] ? 0 : e.target.value,
       },
       startInputValids: {
         ...state.startInputValids,
@@ -157,7 +159,7 @@ class TimeRangeSelector extends Component {
   }
 
   onEndChange = (e, property) => {
-    const endDate = dayjs.utc(this.props.end)
+    const endDate = dayjs.utc(this.state.endInputValues)
     const currentMonthDays = dayjs
       .utc({
         year: property === 'year' ? e.target.value : endDate.year(),
@@ -209,7 +211,7 @@ class TimeRangeSelector extends Component {
 
     const startDate = dayjs.utc({
       ...startInputValues,
-      month: startInputValues.month,
+      month: startInputValues.month - 1,
     })
     const startValid =
       Object.values(startInputValids).every((valid) => valid) &&
@@ -217,7 +219,7 @@ class TimeRangeSelector extends Component {
       startDate.isValid()
     const endDate = dayjs.utc({
       ...endInputValues,
-      month: endInputValues.month,
+      month: endInputValues.month - 1,
     })
     const endValid =
       Object.values(endInputValids).every((valid) => valid) &&
