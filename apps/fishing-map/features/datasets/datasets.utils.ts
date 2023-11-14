@@ -630,21 +630,13 @@ export const getSchemaOptionsSelectedInDataview = (
   if (schema === 'flag') {
     return getFlagsByIds(dataview.config?.filters?.flag || [])
   }
-  if (schema === 'radiance' && dataview.config?.filters?.[schema]) {
+  if ((schema === 'radiance' || schema === 'duration') && dataview.config?.filters?.[schema]) {
     return dataview.config?.filters?.[schema]?.map((o: string) => [
       {
         id: o.toString(),
         label: o.toString(),
       },
     ])
-  }
-  if (schema === 'duration' && dataview.config?.filters?.[schema]) {
-    return [
-      {
-        id: dataview.config?.filters?.[schema].toString(),
-        label: dataview.config?.filters?.[schema].toString(),
-      },
-    ]
   }
   if (
     schema === 'visibleValues' &&
