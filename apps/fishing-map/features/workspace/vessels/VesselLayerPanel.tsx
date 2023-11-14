@@ -1,77 +1,111 @@
 import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
+import { groupBy } from 'lodash'
 import {
-  Vessel,
   DatasetTypes,
   ResourceStatus,
   DataviewDatasetConfigParam,
   Resource,
   EndpointId,
+  IdentityVessel,
+  VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import { IconButton, Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
+import { IconButton, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
   pickTrackResource,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselLabel } from 'utils/info'
+import { formatInfoField, getVesselLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
-import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
-import { isGuestUser, isGFWUser, selectUserData } from 'features/user/user.slice'
-import I18nDate from 'features/i18n/i18nDate'
-import I18nFlag from 'features/i18n/i18nFlag'
-import {
-  getVesselDatasetsDownloadTrackSupported,
-  isGFWOnlyDataset,
-  isPrivateDataset,
-} from 'features/datasets/datasets.utils'
-import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { selectPrivateUserGroups } from 'features/user/user.selectors'
+import { isGFWOnlyDataset, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
-import DatasetLabel from 'features/datasets/DatasetLabel'
+import VesselDownload from 'features/workspace/vessels/VesselDownload'
+import VesselLink from 'features/vessel/VesselLink'
+import { getOtherVesselNames } from 'features/vessel/vessel.utils'
+import { formatI18nDate } from 'features/i18n/i18nDate'
+import { t } from 'features/i18n/i18n'
+import { isGFWUser } from 'features/user/user.slice'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import FitBounds from '../common/FitBounds'
-import InfoModal from '../common/InfoModal'
 
-type LayerPanelProps = {
+export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
-function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
+export const getVesselIdentityTooltipSummary = (
+  vessel: IdentityVessel,
+  { showVesselId } = {} as { showVesselId: boolean }
+) => {
+  if (!vessel || !vessel.selfReportedInfo?.length) {
+    return ['']
+  }
+  const identitiesByNormalizedShipname = groupBy(vessel?.selfReportedInfo, 'nShipname')
+  const identities = Object.entries(identitiesByNormalizedShipname).flatMap(
+    ([_, selfReportedInfo]) => {
+      const firstTransmissionDateFrom = selfReportedInfo.reduce((acc, curr) => {
+        if (!acc) {
+          return curr.transmissionDateFrom
+        }
+        return acc < curr.transmissionDateFrom ? acc : curr.transmissionDateFrom
+      }, '')
+      const lastTransmissionDateTo = selfReportedInfo.reduce((acc, curr) => {
+        if (!acc) {
+          return curr.transmissionDateTo
+        }
+        return acc > curr.transmissionDateTo ? acc : curr.transmissionDateTo
+      }, '')
+
+      const selfReported = selfReportedInfo[0]
+      const name = formatInfoField(selfReported.shipname, 'name')
+      const flag = formatInfoField(selfReported.flag, 'flag')
+      let info = `${name} - (${flag}) (${formatI18nDate(
+        firstTransmissionDateFrom
+      )} - ${formatI18nDate(lastTransmissionDateTo)})`
+      if (showVesselId) {
+        return [
+          info,
+          <br />,
+          selfReportedInfo.map((s, index) => (
+            <Fragment key={s.id}>
+              <GFWOnly type="only-icon" /> {s.id}
+              {index < selfReportedInfo.length - 1 && <br />}
+            </Fragment>
+          )),
+          <br />,
+        ]
+      }
+      return [info, <br />]
+    }
+  )
+  return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
+}
+
+function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+  const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
+  const gfwUser = useSelector(isGFWUser)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
-  const infoResource: Resource<Vessel> = useSelector(selectResourceByUrl<Vessel>(infoUrl))
+  const infoResource: Resource<IdentityVessel> = useSelector(
+    selectResourceByUrl<IdentityVessel>(infoUrl)
+  )
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
 
-  const guestUser = useSelector(isGuestUser)
-  const userData = useSelector(selectUserData)
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
-  const [datasetModalOpen, setDatasetModalOpen] = useState(false)
-  const gfwUser = useSelector(isGFWUser)
-  const userPrivateGroups = useSelector(selectPrivateUserGroups)
-  const downloadDatasetsSupported = getVesselDatasetsDownloadTrackSupported(
-    dataview,
-    userData?.permissions
-  )
-  const downloadSupported = downloadDatasetsSupported.length > 0
 
   const layerActive = dataview?.config?.visible ?? true
 
@@ -88,15 +122,14 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
-  const onToggleInfoOpen = () => {
-    setInfoOpen(!infoOpen)
-  }
+
+  // const onToggleInfoOpen = () => {
+  //   setInfoOpen(!infoOpen)
+  // }
 
   const closeExpandedContainer = () => {
-    if (!datasetModalOpen) {
-      setColorOpen(false)
-      setInfoOpen(false)
-    }
+    setColorOpen(false)
+    setInfoOpen(false)
   }
 
   const trackLoading = trackResource?.status === ResourceStatus.Loading
@@ -106,14 +139,19 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = trackResource?.status === ResourceStatus.Error
 
-  const vesselLabel = infoResource?.data ? getVesselLabel(infoResource.data) : ''
+  const vesselData = infoResource?.data
+  const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
+  const otherVesselsLabel = vesselData ? getOtherVesselNames(vesselData as IdentityVessel) : ''
+  const identitiesSummary = vesselData
+    ? getVesselIdentityTooltipSummary(vesselData, { showVesselId: gfwUser || false })
+    : ''
+
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
       (p: DataviewDatasetConfigParam) => p.id === 'vesselId'
     )?.value as string) ||
     dataview.id.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '') ||
     ''
-  const vesselTitle = vesselLabel || t('common.unknownVessel', 'Unknown vessel')
 
   const getVesselTitle = (): ReactNode => {
     if (infoLoading) return t('vessel.loadingInfo', 'Loading vessel info')
@@ -123,20 +161,38 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
         <Fragment>
           <GFWOnly type="only-icon" />
           {vesselLabel}
+          {otherVesselsLabel && <span className={styles.secondary}>{otherVesselsLabel}</span>}
         </Fragment>
       )
-    if (dataview?.datasetsConfig?.some((d) => isPrivateDataset({ id: d.datasetId })))
-      return `🔒 ${vesselLabel}`
-    return vesselLabel
+
+    const isPrivateVessel = dataview?.datasetsConfig
+      ?.filter((d) => d.datasetId)
+      .some((d) => isPrivateDataset({ id: d.datasetId }))
+    return (
+      <Fragment>
+        {isPrivateVessel && '🔒'}
+        {vesselLabel}
+        {otherVesselsLabel && <span className={styles.secondary}>{otherVesselsLabel}</span>}
+      </Fragment>
+    )
   }
 
   const TitleComponentContent = () => (
     <Fragment>
-      <span
-        className={cx({ [styles.faded]: infoLoading || infoError })}
-        data-test="vessel-layer-vessel-name"
-      >
-        {getVesselTitle()}
+      <span className={cx({ [styles.faded]: infoLoading || infoError })}>
+        <VesselLink
+          className={styles.link}
+          vesselId={vesselId}
+          datasetId={dataset?.id}
+          tooltip={identitiesSummary}
+          query={{
+            vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+            vesselSelfReportedId: vesselId,
+          }}
+          testId="vessel-layer-vessel-name"
+        >
+          {getVesselTitle()}
+        </VesselLink>
       </span>
       {(infoError || trackError) && (
         <IconButton
@@ -149,55 +205,6 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       )}
     </Fragment>
   )
-
-  const TitleComponent = (
-    <Title
-      title={<TitleComponentContent />}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-    />
-  )
-
-  const getFieldValue = (field: any, fieldValue: string | undefined) => {
-    if (!fieldValue) return
-    if (field.type === 'date') {
-      return <I18nDate date={fieldValue} />
-    }
-    if (field.type === 'flag') {
-      return <I18nFlag iso={fieldValue} />
-    }
-    if (field.id === 'geartype') {
-      if (!fieldValue) return EMPTY_FIELD_PLACEHOLDER
-      const fieldValueSplit = fieldValue.split('|')
-      if (fieldValueSplit.length > 1) {
-        return fieldValueSplit
-          .map((field) => t(`vessel.gearTypes.${field}` as any, field))
-          .join(', ')
-      }
-      return t(`vessel.gearTypes.${fieldValue}` as any, fieldValue)
-    }
-    if (field.id === 'mmsi') {
-      return (
-        <a
-          className={styles.link}
-          target="_blank"
-          rel="noreferrer"
-          href={`https://www.marinetraffic.com/en/ais/details/ships/${fieldValue}`}
-        >
-          {formatInfoField(fieldValue, field.type)}
-        </a>
-      )
-    }
-    if (field.id === 'dataset') {
-      return <DatasetLabel dataset={{ id: fieldValue }} />
-    }
-    return formatInfoField(fieldValue, field.type)
-  }
-
-  const infoFields = guestUser
-    ? dataview.infoConfig?.fields?.filter((field) => field.guest)
-    : dataview.infoConfig?.fields
 
   const TrackIconComponent = trackLoading ? (
     <IconButton
@@ -222,45 +229,10 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
       tooltip={t('vessel.loadingInfo', 'Loading vessel info')}
     />
   ) : (
-    <ExpandedContainer
-      visible={infoOpen}
-      onClickOutside={closeExpandedContainer}
-      component={
-        <ul className={styles.infoContent}>
-          {infoFields?.map((field: any) => {
-            const value = infoResource?.data?.[field.id as keyof Vessel]
-            if (!value && !field.mandatory) return null
-            const fieldValues = Array.isArray(value) ? value : [value]
-            return (
-              <li key={field.id} className={styles.infoContentItem}>
-                <label>{t(`vessel.${field.id}` as any)}</label>
-                {fieldValues.map((fieldValue, i) => (
-                  <span key={field.id + fieldValue}>
-                    {fieldValue ? getFieldValue(field, fieldValue as any) : '---'}
-                    {/* Field values separator */}
-                    {i < fieldValues.length - 1 ? ', ' : ''}
-                    {field.id === 'dataset' && infoOpen && gfwUser && (
-                      <InfoModal dataview={dataview} onModalStateChange={setDatasetModalOpen} />
-                    )}
-                  </span>
-                ))}
-              </li>
-            )
-          })}
-          {guestUser && (
-            <li className={styles.infoLogin}>
-              <Trans i18nKey="vessel.login">
-                You need to
-                <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
-                to see more details
-              </Trans>
-            </li>
-          )}
-        </ul>
-      }
-    >
+    <VesselLink vesselId={vesselId} datasetId={dataset?.id}>
       <IconButton
         size="small"
+        loading={loading}
         icon={infoError ? 'warning' : 'info'}
         type={infoError ? 'warning' : 'default'}
         disabled={infoError}
@@ -270,25 +242,13 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
                 'errors.vesselLoading',
                 'There was an error loading the vessel details'
               )} (${vesselId})`
-            : infoOpen
-            ? t('layer.infoClose', 'Hide info')
-            : t('layer.infoOpen', 'Show info')
+            : ''
         }
-        onClick={onToggleInfoOpen}
+        // onClick={onToggleInfoOpen}
         tooltipPlacement="top"
       />
-    </ExpandedContainer>
+    </VesselLink>
   )
-
-  const onDownloadClick = () => {
-    dispatch(
-      setDownloadTrackVessel({
-        id: vesselId,
-        name: vesselTitle,
-        datasets: trackResource?.dataset!?.id,
-      })
-    )
-  }
 
   return (
     <div
@@ -299,35 +259,25 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
     >
       <div className={styles.header}>
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
-        {vesselTitle && vesselTitle.length > 20 ? (
-          <Tooltip content={vesselTitle}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={<TitleComponentContent />}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          toggleVisibility={false}
+        />
         <div
           className={cx('print-hidden', styles.actions, styles.hideUntilHovered, {
             [styles.active]: layerActive,
           })}
         >
           <Fragment>
-            {(gfwUser || userPrivateGroups?.length > 0) && (
-              <IconButton
-                icon="download"
-                disabled={!downloadSupported}
-                tooltip={
-                  downloadSupported
-                    ? t('download.trackAction', 'Download vessel track')
-                    : t(
-                        'download.trackNotAllowed',
-                        "You don't have permissions to download tracks from this source"
-                      )
-                }
-                tooltipPlacement="top"
-                onClick={onDownloadClick}
-                size="small"
-              />
-            )}
-
+            <VesselDownload
+              dataview={dataview}
+              vesselIds={[vesselId]}
+              vesselTitle={vesselLabel || t('common.unknownVessel', 'Unknown vessel')}
+              datasetId={trackResource?.dataset!?.id}
+            />
             <Color
               dataview={dataview}
               open={colorOpen}
@@ -360,4 +310,4 @@ function LayerPanel({ dataview }: LayerPanelProps): React.ReactElement {
   )
 }
 
-export default LayerPanel
+export default VesselLayerPanel

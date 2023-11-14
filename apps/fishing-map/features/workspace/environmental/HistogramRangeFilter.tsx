@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { BarChart, Bar, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { SliderRange } from '@globalfishingwatch/ui-components'
+import { SliderRange, SliderRangeValues } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   Dataset,
@@ -50,7 +50,7 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
   }
 
   const onSliderChange = useCallback(
-    (rangeSelected) => {
+    (rangeSelected: SliderRangeValues) => {
       if (rangeSelected[0] === layerRange.min && rangeSelected[1] === layerRange.max) {
         // onClean(id)
       } else {
@@ -65,7 +65,7 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
       trackEvent({
         category: TrackCategory.EnvironmentalData,
         action: `Filter environmental layer`,
-        label: getEventLabel([dataview.name, ...rangeSelected]),
+        label: getEventLabel([dataview.name as string, ...rangeSelected.map((r) => r.toString())]),
       })
     },
     [layerRange?.min, layerRange?.max, dataview.name, dataview.id, upsertDataviewInstance]

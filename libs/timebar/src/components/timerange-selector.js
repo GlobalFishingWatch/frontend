@@ -75,20 +75,19 @@ class TimeRangeSelector extends Component {
     const { onSubmit } = this.props
     const disabledFields = this.getDisabledFields(start, end)
     // on release, "stick" to day/hour
-
     const newStart = dayjs
       .utc({
         year: start.year(),
-        month: disabledFields.month ? 0 : start.month(),
-        date: disabledFields.day ? 0 : start.date(),
+        month: disabledFields['MONTH'] ? 0 : start.month(),
+        date: disabledFields['DAY'] ? 0 : start.date(),
       })
       .startOf('day')
       .toISOString()
     const newEnd = dayjs
       .utc({
         year: end.year(),
-        month: disabledFields.month ? 0 : end.month(),
-        date: disabledFields.day ? 0 : end.date(),
+        month: disabledFields['MONTH'] ? 0 : end.month(),
+        date: disabledFields['DAY'] ? 0 : end.date(),
       })
       .startOf('day')
       .toISOString()
@@ -100,32 +99,34 @@ class TimeRangeSelector extends Component {
     const { start, end } = getLastX(option.num, option.unit, latestAvailableDataDate)
     const interval = getInterval(start, end, [INTERVAL_ORDER])
     this.submit(
-      dayjs.utc(start).endOf(interval).add(1, 'millisecond'),
-      dayjs.utc(end).endOf(interval).add(1, 'millisecond')
+      dayjs.utc(start).endOf(interval.toLowerCase()).add(1, 'millisecond'),
+      dayjs.utc(end).endOf(interval.toLowerCase()).add(1, 'millisecond')
     )
   }
 
   getDisabledFields = (startDate, endDate) => {
-    const intervalsToCheck = ['month', 'day']
+    /** @type {Interval[]} */
+    const intervalsToCheck = ['MONTH', 'DAY']
     return intervalsToCheck.reduce((acc, limit) => {
       const limitConfig = LIMITS_BY_INTERVAL[limit]
-      const duration = endDate.diff(startDate, limitConfig.unit)
-      return {
-        ...acc,
-        [limit]: Math.floor(duration) > limitConfig.value,
+      if (limitConfig) {
+        const duration = endDate.diff(startDate, limitConfig.unit)
+        return {
+          ...acc,
+          [limit]: Math.floor(duration) > limitConfig.value,
+        }
       }
     }, {})
   }
 
   onStartChange = (e, property) => {
-    const startDate = dayjs.utc({
-      ...this.state.startInputValues,
-      month: this.state.startInputValues.month - 1,
-    })
+    const startDate = dayjs.utc(this.state.startInputValues)
+    const endDate = dayjs.utc(this.state.endInputValues)
+    const disabledFields = this.getDisabledFields(startDate, endDate)
     const currentMonthDays = dayjs
       .utc({
         year: property === 'year' ? e.target.value : startDate.year(),
-        month: property === 'month' ? e.target.value - 1 : startDate.month(),
+        month: property === 'month' ? e.target.value : startDate.month(),
       })
       .daysInMonth()
     const dateHigherThanDaysInMonth = startDate.date() > currentMonthDays
@@ -133,7 +134,7 @@ class TimeRangeSelector extends Component {
       startInputValues: {
         ...state.startInputValues,
         date: dateHigherThanDaysInMonth ? currentMonthDays : startDate.date(),
-        [property]: e.target.value,
+        [property]: property.month && disabledFields['MONTH'] ? 0 : e.target.value,
       },
       startInputValids: {
         ...state.startInputValids,
@@ -158,14 +159,11 @@ class TimeRangeSelector extends Component {
   }
 
   onEndChange = (e, property) => {
-    const endDate = dayjs.utc({
-      ...this.state.endInputValues,
-      month: this.state.endInputValues.month - 1,
-    })
+    const endDate = dayjs.utc(this.state.endInputValues)
     const currentMonthDays = dayjs
       .utc({
         year: property === 'year' ? e.target.value : endDate.year(),
-        month: property === 'month' ? e.target.value - 1 : endDate.month(),
+        month: property === 'month' ? e.target.value : endDate.month(),
       })
       .daysInMonth()
     const dateHigherThanDaysInMonth = endDate.date() > currentMonthDays
@@ -275,11 +273,11 @@ class TimeRangeSelector extends Component {
                       })}
                     />
                   </div>
-                  <Tooltip content={disabledFields.month ? labels.tooLongForMonths : ''}>
+                  <Tooltip content={disabledFields['MONTH'] ? labels.tooLongForMonths : ''}>
                     <div className={styles.selectorGroup}>
                       <label
                         className={classNames(styles.selectorLabel, {
-                          [styles.faded]: disabledFields.month,
+                          [styles.faded]: disabledFields['MONTH'],
                         })}
                       >
                         {labels.month}
@@ -289,22 +287,22 @@ class TimeRangeSelector extends Component {
                         type="number"
                         min="1"
                         max="12"
-                        value={startInputValues.month}
+                        value={disabledFields['MONTH'] ? 1 : startInputValues.month}
                         onChange={(e) => this.onStartChange(e, 'month')}
                         onBlur={(e) => this.onStartBlur(e, 'month')}
                         step={'1'}
-                        disabled={disabledFields.month}
+                        disabled={disabledFields['MONTH']}
                         className={classNames(styles.input, {
                           [styles.error]: !startValid || !startBeforeEnd,
                         })}
                       />
                     </div>
                   </Tooltip>
-                  <Tooltip content={disabledFields.day ? labels.tooLongForDays : ''}>
+                  <Tooltip content={disabledFields['DAY'] ? labels.tooLongForDays : ''}>
                     <div className={styles.selectorGroup}>
                       <label
                         className={classNames(styles.selectorLabel, {
-                          [styles.faded]: disabledFields.day,
+                          [styles.faded]: disabledFields['DAY'],
                         })}
                       >
                         {labels.day}
@@ -314,11 +312,11 @@ class TimeRangeSelector extends Component {
                         type="number"
                         min={'1'}
                         max={startDate.daysInMonth()}
-                        value={startInputValues.date}
+                        value={disabledFields['DAY'] ? 1 : startInputValues.date}
                         onChange={(e) => this.onStartChange(e, 'date')}
                         onBlur={(e) => this.onStartBlur(e, 'date')}
                         step={'1'}
-                        disabled={disabledFields.day}
+                        disabled={disabledFields['DAY']}
                         className={classNames(styles.input, {
                           [styles.error]: !startValid || !startBeforeEnd,
                         })}
@@ -336,7 +334,7 @@ class TimeRangeSelector extends Component {
                       name="end year"
                       type="number"
                       min={this.bounds.min.slice(0, 4)}
-                      max={(parseInt(this.bounds.max.slice(0, 4)) + 1).toString()}
+                      max={this.bounds.max.slice(0, 4)}
                       value={endInputValues.year}
                       onChange={(e) => this.onEndChange(e, 'year')}
                       onBlur={(e) => this.onEndBlur(e, 'year')}
@@ -346,11 +344,11 @@ class TimeRangeSelector extends Component {
                       })}
                     />
                   </div>
-                  <Tooltip content={disabledFields.month ? labels.tooLongForMonths : ''}>
+                  <Tooltip content={disabledFields['MONTH'] ? labels.tooLongForMonths : ''}>
                     <div className={styles.selectorGroup}>
                       <label
                         className={classNames(styles.selectorLabel, {
-                          [styles.faded]: disabledFields.month,
+                          [styles.faded]: disabledFields['MONTH'],
                         })}
                       >
                         {labels.month}
@@ -360,22 +358,25 @@ class TimeRangeSelector extends Component {
                         type="number"
                         min="1"
                         max="12"
-                        value={endInputValues.month}
+                        value={disabledFields['MONTH'] ? 1 : endInputValues.month}
                         onChange={(e) => this.onEndChange(e, 'month')}
                         onBlur={(e) => this.onEndBlur(e, 'month')}
                         step={'1'}
-                        disabled={disabledFields.month}
+                        disabled={
+                          disabledFields['MONTH'] ||
+                          endInputValues.year > this.bounds.max.slice(0, 4)
+                        }
                         className={classNames(styles.input, {
                           [styles.error]: !endValid || !startBeforeEnd,
                         })}
                       />
                     </div>
                   </Tooltip>
-                  <Tooltip content={disabledFields.day ? labels.tooLongForDays : ''}>
+                  <Tooltip content={disabledFields['DAY'] ? labels.tooLongForDays : ''}>
                     <div className={styles.selectorGroup}>
                       <label
                         className={classNames(styles.selectorLabel, {
-                          [styles.faded]: disabledFields.day,
+                          [styles.faded]: disabledFields['DAY'],
                         })}
                       >
                         {labels.day}
@@ -385,11 +386,11 @@ class TimeRangeSelector extends Component {
                         type="number"
                         min={'1'}
                         max={endDate.daysInMonth()}
-                        value={endInputValues.date}
+                        value={disabledFields['DAY'] ? 1 : endInputValues.date}
                         onChange={(e) => this.onEndChange(e, 'date')}
                         onBlur={(e) => this.onEndBlur(e, 'date')}
                         step={'1'}
-                        disabled={disabledFields.day}
+                        disabled={disabledFields['DAY']}
                         className={classNames(styles.input, {
                           [styles.error]: !endValid || !startBeforeEnd,
                         })}

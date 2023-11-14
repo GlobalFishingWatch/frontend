@@ -12,6 +12,8 @@ import { Bbox } from 'types'
 import Hint from 'features/help/Hint'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
 import { useMapFitBounds } from '../map-viewport.hooks'
 import styles from './MapSearch.module.css'
 
@@ -22,11 +24,25 @@ const MapSearch = () => {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const searchOceanAreas = useRef<typeof searchOceanAreasType>()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const fitBounds = useMapFitBounds()
 
   const onSelectResult = ({ selectedItem }: UseComboboxStateChange<OceanArea>) => {
     const bounds = selectedItem?.properties.bounds as Bbox
+    const areaDataview =
+      selectedItem?.properties?.type &&
+      BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES.find((d) =>
+        d.id.includes(selectedItem?.properties?.type)
+      )
+    if (areaDataview) {
+      upsertDataviewInstance({
+        ...areaDataview,
+        config: {
+          visible: true,
+        },
+      })
+    }
     if (bounds) {
       fitBounds(bounds)
     }
@@ -62,7 +78,6 @@ const MapSearch = () => {
   }
 
   const {
-    getComboboxProps,
     getMenuProps,
     getInputProps,
     getItemProps,
@@ -78,7 +93,7 @@ const MapSearch = () => {
     onSelectedItemChange: onSelectResult,
   })
   return (
-    <div className={styles.container} {...getComboboxProps()}>
+    <div className={styles.container}>
       <IconButton
         {...getToggleButtonProps(togglePropOptions)}
         icon="search"

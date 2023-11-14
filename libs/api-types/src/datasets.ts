@@ -1,5 +1,7 @@
 import { EventTypes } from './events'
 
+export const DRAW_DATASET_SOURCE = 'drawn_on_gfw_map'
+
 export interface UploadResponse {
   path: string
   url: string
@@ -98,6 +100,7 @@ export interface DatasetConfiguration {
   fields?: string[]
   idProperty?: string
   valueProperties?: string[]
+  apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
   [key: string]: unknown
 }
 
@@ -117,7 +120,21 @@ export type RelatedDataset = {
   type: DatasetTypes
 }
 
-export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean'
+export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean' | 'array'
+
+export type DatasetSchemaItem = {
+  type: DatasetSchemaType
+  maxLength: number
+  minLength: number
+  enum: string[]
+  min: number
+  max: number
+  stats?: boolean
+  unit?: string
+  singleSelection?: boolean
+  items?: { type: DatasetSchemaType; enum: string[] }
+  properties?: Record<string, DatasetSchemaItem>
+}
 
 export type DatasetSchema = {
   type: DatasetSchemaType
@@ -129,6 +146,7 @@ export type DatasetSchema = {
   stats?: boolean
   unit?: string
   singleSelection?: boolean
+  items?: Record<string, DatasetSchemaItem>
 }
 
 export enum DatasetCategory {
@@ -153,7 +171,7 @@ export interface Dataset {
   alias: string[] | null
   name: string
   description: string
-  schema?: Record<string, DatasetSchema>
+  schema?: Record<string, DatasetSchema | DatasetSchemaItem>
   category?: DatasetCategory
   subcategory?: DatasetSubCategory | EventTypes | string
   source?: string

@@ -6,10 +6,11 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Icon, IconButton, IconType, Tooltip } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { WorkspaceCategory } from 'data/workspaces'
-import { HOME, USER, WORKSPACES_LIST } from 'routes/routes'
+import { Workspace } from '@globalfishingwatch/api-types'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { HOME, SEARCH, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
-import { selectUserData, isGuestUser } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/user.slice'
 import { useClickedEventConnect } from 'features/map/map.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
@@ -17,17 +18,19 @@ import useViewport from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import WhatsNew from 'features/sidebar/WhatsNew'
-import LocalStorageLoginLink from 'routes/LoginLink'
 import HelpHub from 'features/help/HelpHub'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import UserButton from 'features/user/UserButton'
 import styles from './CategoryTabs.module.css'
 
 const FeedbackModal = dynamic(
   () => import(/* webpackChunkName: "FeedbackModal" */ 'features/feedback/FeedbackModal')
 )
 
-const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
+export const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
   latitude: 10,
   longitude: -90,
   zoom: 1,
@@ -35,6 +38,17 @@ const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
 
 type CategoryTabsProps = {
   onMenuClick: () => void
+}
+
+function getLinkToSearch(workspace: Workspace) {
+  return {
+    type: SEARCH,
+    payload: {
+      category: workspace?.category || WorkspaceCategory.FishingActivity,
+      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+    },
+    replaceQuery: true,
+  }
 }
 
 function getLinkToCategory(category: WorkspaceCategory) {
@@ -47,18 +61,15 @@ function getLinkToCategory(category: WorkspaceCategory) {
 
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
-  const guestUser = useSelector(isGuestUser)
   const dispatch = useAppDispatch()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchClickedEvent } = useClickedEventConnect()
   const locationType = useSelector(selectLocationType)
   const { setMapCoordinates } = useViewport()
+  const workspace = useSelector(selectWorkspace)
   const locationCategory = useSelector(selectLocationCategory)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
-  const initials = userData
-    ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
-    : ''
 
   const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
 
@@ -74,6 +85,13 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     cleanFeatureState('highlight')
   }, [setMapCoordinates, cleanFeatureState, dispatchClickedEvent])
 
+  const onSearchClick = useCallback(() => {
+    trackEvent({
+      category: TrackCategory.SearchVessel,
+      action: 'Click search icon to open search panel',
+    })
+  }, [])
+
   return (
     <Fragment>
       <ul className={cx('print-hidden', styles.CategoryTabs)}>
@@ -82,12 +100,30 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <Icon icon="menu" />
           </span>
         </li>
+        <li
+          className={cx(styles.tab, {
+            [styles.current]: locationType === SEARCH,
+          })}
+        >
+          <Link
+            className={styles.tabContent}
+            to={getLinkToSearch(workspace as Workspace)}
+            onClick={onSearchClick}
+          >
+            <Tooltip content={t('search.vessels', 'Search vessels')} placement="right">
+              <span className={styles.tabContent}>
+                <Icon icon="category-search" className={styles.searchIcon} />
+              </span>
+            </Tooltip>
+          </Link>
+        </li>
         {availableCategories?.map((category, index) => (
           <li
             key={category.title}
             className={cx(styles.tab, {
               [styles.current]:
-                locationCategory === (category.title as WorkspaceCategory) ||
+                (locationType !== SEARCH &&
+                  locationCategory === (category.title as WorkspaceCategory)) ||
                 (index === 0 && locationType === HOME),
             })}
           >
@@ -140,24 +176,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             [styles.current]: locationType === USER,
           })}
         >
-          {guestUser ? (
-            <Tooltip content={t('common.login', 'Log in')}>
-              <LocalStorageLoginLink className={styles.loginLink}>
-                <Icon icon="user" />
-              </LocalStorageLoginLink>
-            </Tooltip>
-          ) : (
-            <Link
-              to={{
-                type: USER,
-                payload: {},
-                query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
-                replaceQuery: true,
-              }}
-            >
-              {userData ? initials : <Icon icon="user" className="print-hidden" />}
-            </Link>
-          )}
+          <UserButton className={styles.userButton} testId="sidebar-login-icon" />
         </li>
       </ul>
       {modalFeedbackOpen && (

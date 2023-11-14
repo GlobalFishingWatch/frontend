@@ -32,11 +32,12 @@ export const trackValueArrayToSegments = (valueArray: number[], fields_: Field[]
     throw new Error()
   }
 
-  const fields: Field[] = [...fields_]
+  const fields: Field[] = [...fields_].map((f) => f.toLowerCase() as Field)
   if (fields.includes(Field.lonlat)) {
     const llIndex = fields.indexOf(Field.lonlat)
     fields.splice(llIndex, 1, Field.longitude, Field.latitude)
   }
+
   const numFields = fields.length
 
   let numSegments: number
@@ -87,7 +88,8 @@ export const trackValueArrayToSegments = (valueArray: number[], fields_: Field[]
       }
 
       const field: Field = fields[currentPointFieldIndex]
-      const transformer = transformerByField[field]
+      const transformer =
+        transformerByField[field] || transformerByField[field.toLowerCase() as Field]
 
       if (value === nullValue || transformer === undefined) {
         currentPoint[field] = null

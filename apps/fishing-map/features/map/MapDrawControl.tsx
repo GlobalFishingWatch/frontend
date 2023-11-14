@@ -127,6 +127,7 @@ export default function useDrawControl(props: DrawControlProps) {
     onUpdate = defaultFn,
     onModeChange = defaultFn,
     onSelectionChange = defaultFn,
+    ...rest
   } = props
 
   const drawControl = useControl<MapboxDraw>(
@@ -135,7 +136,7 @@ export default function useDrawControl(props: DrawControlProps) {
       map.on('draw.update', onUpdate)
       map.on('draw.modechange', onModeChange)
       map.on('draw.selectionchange', onSelectionChange)
-      return new MapboxDraw({ ...props, styles })
+      return new MapboxDraw({ ...rest, styles })
     },
     ({ map }: { map: MapRef }) => {
       map.off('draw.create', onCreate)

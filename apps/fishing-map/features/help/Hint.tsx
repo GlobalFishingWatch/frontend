@@ -19,7 +19,7 @@ type HintProps = {
 export const DISMISSED = 'dismissed'
 
 function Hint({ id, className }: HintProps) {
-  const { t, ready } = useTranslation(['translations', 'helpHints'])
+  const { t, ready } = useTranslation(['translations', 'help-hints'])
   const { placement, imageUrl, pulse, openedByDefault } = hintsConfig[id]
   const isReadOnly = useSelector(selectReadOnly)
   const dispatch = useAppDispatch()
@@ -84,7 +84,7 @@ function Hint({ id, className }: HintProps) {
             />
           )}
           <div className={styles.content}>
-            <p className={styles.text}>{t(`helpHints:${id}`)}</p>
+            <p className={styles.text}>{t(`help-hints:${id}`)}</p>
           </div>
           <div className={styles.footer}>
             <Button type="secondary" onClick={onDismissAll} className={styles.footerBtn}>

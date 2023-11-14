@@ -3,6 +3,7 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  gap: var(--space-XS);
   border: none;
   cursor: pointer;
   transition: var(--transition);
@@ -10,8 +11,8 @@
   background-position: center center;
   padding: 0 var(--space-S);
   text-transform: uppercase;
-  min-width: 150px;
   line-height: 1;
+  border-radius: var(--border-radius);
 }
 
 .button:focus {
@@ -27,8 +28,7 @@ a.button:visited,
 }
 
 .button.disabled {
-  color: var(--color-secondary-blue);
-  background-color: var(--color-terthiary-blue);
+  background-color: var(--color-secondary-blue);
   cursor: not-allowed;
 }
 
@@ -42,8 +42,26 @@ a.button:visited,
   background-color: var(--color-terthiary-blue);
 }
 
+.secondary.disabled {
+  color: rgba(var(--primary-blue-rgb), 0.5);
+  background-color: var(--color-terthiary-blue);
+}
+
 .secondary:not(.disabled):hover,
 .secondary:not(.disabled):focus {
+  color: var(--color-primary-blue);
+  background-color: var(--color-border);
+}
+
+.border-secondary {
+  border: var(--border);
+  border-radius: var(--border-radius);
+  color: var(--color-secondary-blue);
+  background-color: transparent;
+}
+
+.border-secondary:not(.disabled):hover,
+.border-secondary:not(.disabled):focus {
   color: var(--color-primary-blue);
   background-color: var(--color-border);
 }

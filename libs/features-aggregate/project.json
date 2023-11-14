@@ -25,7 +25,7 @@
         ]
       }
     },
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -41,7 +41,8 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "configurations": {
         "local": {
@@ -50,7 +51,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/features-aggregate/**/*.{ts,tsx,js,jsx}"]
@@ -64,10 +65,11 @@
         "passWithNoTests": true
       }
     },
-    "deploy": {
+    "publish": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
-        "access": "public"
+        "access": "public",
+        "distFolderPath": "dist/libs/features-aggregate"
       }
     }
   }

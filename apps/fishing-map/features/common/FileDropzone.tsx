@@ -23,7 +23,9 @@ interface FileDropzoneProps {
 
 type FileConfig = { id: string; files: string[]; icon: JSX.Element }
 
-const MIME_TYPES_BY_EXTENSION = {
+type MimeExtention = '.json' | '.geojson' | '.zip' | '.csv'
+type MimeType = 'application/json' | 'application/zip' | 'text/csv'
+const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType> = {
   '.json': 'application/json',
   '.geojson': 'application/json',
   '.zip': 'application/zip',
@@ -42,7 +44,7 @@ const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
 
 const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileLoaded, fileTypes, className = '' }) => {
   const fileTypesConfigs = fileTypes.map((fileType) => FILE_TYPES_CONFIG[fileType])
-  const filesAcceptedExtensions = fileTypesConfigs.flatMap(({ files }) => files)
+  const filesAcceptedExtensions = fileTypesConfigs.flatMap(({ files }) => files as MimeExtention[])
   const fileAcceptedByMime = filesAcceptedExtensions.reduce((acc, extension) => {
     const mime = MIME_TYPES_BY_EXTENSION[extension]
     if (!acc[mime]) {
@@ -51,11 +53,11 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileLoaded, fileTypes, cl
       acc[mime].push(extension)
     }
     return acc
-  }, {})
+  }, {} as Record<MimeType, MimeExtention[]>)
 
   const { t } = useTranslation()
   const onDropAccepted = useCallback(
-    (files) => {
+    (files: any) => {
       onFileLoaded(files[0])
     },
     [onFileLoaded]

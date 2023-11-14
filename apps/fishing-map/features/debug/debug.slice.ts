@@ -3,6 +3,7 @@ import { RootState } from 'reducers'
 
 export enum DebugOption {
   Blob = 'blob',
+  DatasetRelationship = 'datasetRelationship',
   Extruded = 'extruded',
   Debug = 'debug',
   Thinning = 'thinning',
@@ -19,6 +20,7 @@ const initialState: DebugState = {
   active: false,
   options: {
     blob: false,
+    datasetRelationship: false,
     debug: false,
     thinning: true,
     extruded: false,

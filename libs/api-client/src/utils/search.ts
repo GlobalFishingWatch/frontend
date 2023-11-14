@@ -1,93 +1,146 @@
 import { partition } from 'lodash'
 
-export type MultiSelectOption<T = any> = {
-  id: T
-  label: string
+// Copied from ui-components to avoid circular dependencies
+export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
+  id: ID
+  label: Label
   alias?: string[]
   tooltip?: string
 }
 
 export type AdvancedSearchQueryFieldKey =
   | 'shipname'
-  | 'mmsi'
+  | 'ssvid'
   | 'imo'
+  | 'mmsi'
   | 'callsign'
   | 'codMarinha'
   | 'flag'
-  | 'geartype'
-  | 'target_species'
+  | 'geartypes'
+  | 'shiptypes'
+  | 'targetSpecies'
   | 'fleet'
   | 'origin'
-  | 'lastTransmissionDate'
-  | 'firstTransmissionDate'
+  | 'transmissionDateFrom'
+  | 'transmissionDateTo'
+  | 'owner'
 
 export type AdvancedSearchQueryField = {
   key: AdvancedSearchQueryFieldKey
-  value: string | MultiSelectOption<string>[] | undefined
+  value: string | string[] | undefined
+  operator?: AdvancedSearchOperator
   combinedWithOR?: boolean
 }
 
+type AdvancedSearchOperator = '=' | '>' | '<' | 'LIKE'
 type AdvancedSearchQueryFieldParams = {
-  operator: string
-  transformation?: (value: string | MultiSelectOption<string>[]) => string
+  operator: AdvancedSearchOperator
+  transformation?: (field: AdvancedSearchQueryField) => string | string[]
 }
 
-const multiSelectOptionToQuery = (value: string | MultiSelectOption<string>[]): string =>
-  `(${(value as MultiSelectOption<string>[])?.map((f) => `'${f.id}'`).join(', ')})`
+const toUpperCaseWithQuotationMarks = (field: AdvancedSearchQueryField) => {
+  if (!field.value) return ''
+  const transform = (value: string) => `'${value}'`.toUpperCase()
+  return Array.isArray(field.value) ? field.value.map(transform) : transform(field.value)
+}
+
+const toUpperCaseWithWildcardsAndQuotationMarks = (field: AdvancedSearchQueryField) => {
+  if (!field.value) return ''
+  const transform = (value: string) => `'%${value}%'`.toUpperCase()
+  return Array.isArray(field.value) ? field.value.map(transform) : transform(field.value)
+}
 
 const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFieldParams> = {
   shipname: {
     operator: 'LIKE',
-    transformation: (value) => `'%${(value as string).toLocaleUpperCase()}%'`,
+    transformation: toUpperCaseWithWildcardsAndQuotationMarks,
+  },
+  ssvid: {
+    operator: '=',
+    transformation: toUpperCaseWithQuotationMarks,
   },
   mmsi: {
     operator: '=',
-  },
-  codMarinha: {
-    operator: '=',
+    transformation: toUpperCaseWithQuotationMarks,
   },
   imo: {
     operator: '=',
+    transformation: toUpperCaseWithQuotationMarks,
   },
   callsign: {
     operator: '=',
+    transformation: toUpperCaseWithQuotationMarks,
   },
-  geartype: {
-    operator: 'IN',
-    transformation: multiSelectOptionToQuery,
+  owner: {
+    operator: 'LIKE',
+    transformation: toUpperCaseWithWildcardsAndQuotationMarks,
   },
-  target_species: {
-    operator: 'IN',
-    transformation: multiSelectOptionToQuery,
+  geartypes: {
+    operator: '=',
+  },
+  shiptypes: {
+    operator: '=',
   },
   flag: {
-    operator: 'IN',
-    transformation: multiSelectOptionToQuery,
+    operator: '=',
+  },
+  transmissionDateFrom: {
+    operator: '<',
+    transformation: toUpperCaseWithQuotationMarks,
+  },
+  transmissionDateTo: {
+    operator: '>',
+    transformation: toUpperCaseWithQuotationMarks,
+  },
+  // VMS specific
+  codMarinha: {
+    operator: '=',
+  },
+  targetSpecies: {
+    operator: '=',
   },
   fleet: {
-    operator: 'IN',
-    transformation: multiSelectOptionToQuery,
+    operator: '=',
   },
   origin: {
-    operator: 'IN',
-    transformation: multiSelectOptionToQuery,
-  },
-  lastTransmissionDate: {
-    operator: '>=',
-  },
-  firstTransmissionDate: {
-    operator: '<=',
+    operator: '=',
   },
 }
 
-export const getAdvancedSearchQuery = (fields: AdvancedSearchQueryField[]) => {
+export const getAdvancedSearchQuery = (
+  fields: AdvancedSearchQueryField[],
+  { rootObject } = {} as { rootObject?: 'registryInfo' | 'selfReportedInfo' }
+) => {
   const getFieldQuery = (field: AdvancedSearchQueryField) => {
     const params = FIELDS_PARAMS[field.key]
-    const value = params?.transformation
-      ? params.transformation(field.value as string | MultiSelectOption[])
-      : `'${field.value}'`
-    const query = `${field.key} ${params?.operator} ${value}`
-    return query
+    const value = params?.transformation ? params.transformation(field) : field.value
+
+    if (!value) {
+      return ''
+    }
+
+    const getFieldValue = (value: string) => {
+      const operator = field.operator || params.operator || '='
+      if (field.key === 'owner') {
+        return `registryOwners.name ${operator} ${value}`
+      }
+      if (field.key === 'shiptypes') {
+        return `combinedSourcesInfo.shiptypes.name ${operator} ${value}`
+      }
+      if (rootObject === 'selfReportedInfo' && field.key === 'geartypes') {
+        return `combinedSourcesInfo.geartypes.name ${operator} ${value}`
+      }
+      return rootObject
+        ? `${rootObject}.${field.key} ${operator} ${value}`
+        : `${field.key} ${operator} ${value}`
+    }
+    if (Array.isArray(value)) {
+      const filter = value
+        .map((v) => getFieldValue(params.transformation ? v : `'${v}'`))
+        .join(' OR ')
+      return `(${filter})`
+    }
+    return getFieldValue(value)
   }
 
   const [fieldsQueriesCombinedWithOR, fieldsQueriesCombinedWithAND] = partition(

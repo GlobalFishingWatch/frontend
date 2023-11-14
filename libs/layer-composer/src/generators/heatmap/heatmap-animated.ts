@@ -19,13 +19,14 @@ import {
 import { isUrlAbsolute, memoizeByLayerId, memoizeCache } from '../../utils'
 import { API_GATEWAY, API_GATEWAY_VERSION } from '../../config'
 import { Group } from '../../types'
+import { toURLArray } from '../utils'
 import { API_ENDPOINTS, HEATMAP_DEFAULT_MAX_ZOOM, HEATMAP_MODE_COMBINATION } from './config'
 import { TimeChunk, TimeChunks, getActiveTimeChunks, pickActiveTimeChunk } from './util/time-chunks'
 import getLegends, { getSublayersBreaks } from './util/get-legends'
 import getGriddedLayers from './modes/gridded'
 import getBlobLayer from './modes/blob'
 import getExtrudedLayer from './modes/extruded'
-import { getSourceId, toURLArray } from './util'
+import { getSourceId } from './util'
 import fetchBreaks, { getBreaksCacheKey, Breaks, FetchBreaksParams } from './util/fetch-breaks'
 import griddedTimeCompare from './modes/gridded-time-compare'
 import { getTimeChunksInterval } from './util/get-time-chunks-interval'
@@ -131,7 +132,7 @@ const getFinalurl = (
   const { datasets, filters, 'vessel-groups': vesselGroups, ...rest } = params
   const finalUrlParams = {
     ...rest,
-    format: 'intArray',
+    format: 'INTARRAY',
     'temporal-aggregation': params.singleFrame === 'true',
     // We want proxy active as default when api tiles auth is required
     proxy: params.proxy !== 'false',
@@ -160,7 +161,7 @@ const getFinalurl = (
 const DEFAULT_CONFIG: Partial<HeatmapAnimatedGeneratorConfig> = {
   mode: HeatmapAnimatedMode.Compare,
   datasetsStart: '2012-01-01T00:00:00.000Z',
-  datasetsEnd: DateTime.now().toUTC().toISO(),
+  datasetsEnd: DateTime.now().toUTC().toISO() as string,
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
   aggregationOperation: AggregationOperation.Sum,
@@ -243,7 +244,7 @@ class HeatmapAnimatedGenerator {
       }
 
       const getDateForInterval = (date: string) =>
-        timeChunks.interval === 'hour'
+        timeChunks.interval === 'HOUR'
           ? date
           : DateTime.fromISO(date as string, { zone: 'utc' }).toISODate()
 

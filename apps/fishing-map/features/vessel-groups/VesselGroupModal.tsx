@@ -31,10 +31,10 @@ import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selecto
 import { updateLocation } from 'routes/routes.actions'
 import { ROUTE_TYPES } from 'routes/routes'
 import { resetSidebarScroll } from 'features/sidebar/Sidebar'
-import { selectSearchQuery } from 'features/app/app.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { getVesselId } from 'features/vessel/vessel.utils'
 import {
   IdField,
   resetVesselGroup,
@@ -83,7 +83,6 @@ function VesselGroupModal(): React.ReactElement {
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
-  const { dispatchQueryParams } = useLocationConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const loading =
     searchVesselStatus === AsyncReducerStatus.Loading ||
@@ -121,7 +120,7 @@ function VesselGroupModal(): React.ReactElement {
     }
   }, [dispatch, editingVesselGroup])
 
-  const onGroupNameChange = useCallback((e) => {
+  const onGroupNameChange = useCallback((e: any) => {
     setGroupName(e.target.value)
   }, [])
 
@@ -140,12 +139,14 @@ function VesselGroupModal(): React.ReactElement {
 
   const onBackClick = useCallback(
     (action: 'back' | 'close' = 'back') => {
-      const confirmed = window.confirm(
-        t(
-          'vesselGroup.confirmAbort',
-          'You will lose any changes made in this vessel group. Are you sure?'
-        )
-      )
+      const confirmed = hasVesselGroupsVessels
+        ? window.confirm(
+            t(
+              'vesselGroup.confirmAbort',
+              'You will lose any changes made in this vessel group. Are you sure?'
+            )
+          )
+        : true
       if (confirmed) {
         if (action === 'back') {
           setError('')
@@ -156,7 +157,7 @@ function VesselGroupModal(): React.ReactElement {
         }
       }
     },
-    [close, dispatch, t]
+    [close, dispatch, t, hasVesselGroupsVessels]
   )
 
   const onSearchVesselsClick = useCallback(async () => {
@@ -203,7 +204,7 @@ function VesselGroupModal(): React.ReactElement {
       setButtonLoading(navigateToWorkspace ? 'saveAndNavigate' : 'save')
       const vessels: VesselGroupVessel[] = vesselGroupSearchVessels.map((vessel) => {
         return {
-          vesselId: vessel.id,
+          vesselId: getVesselId(vessel),
           dataset: vessel.dataset as string,
         }
       })
@@ -245,8 +246,9 @@ function VesselGroupModal(): React.ReactElement {
               })
             )
           } else if (searchQuery) {
+            // TODO check if is search location and navigate back to workspace
             upsertDataviewInstance(dataviewInstances)
-            dispatchQueryParams({ query: undefined })
+            // dispatchQueryParams({ query: undefined })
           }
           resetSidebarScroll()
         } else if (addToDataviews && dataviewInstances) {
@@ -275,7 +277,6 @@ function VesselGroupModal(): React.ReactElement {
       lastVisitedWorkspace,
       searchQuery,
       upsertDataviewInstance,
-      dispatchQueryParams,
     ]
   )
 
@@ -368,15 +369,18 @@ function VesselGroupModal(): React.ReactElement {
             </span>
           )}
         </div>
-        {hasVesselGroupsVessels && showBackButton && (
-          <Button
-            type="secondary"
-            className={styles.backButton}
-            onClick={() => onBackClick('back')}
-          >
-            {t('common.back', 'back')}
-          </Button>
-        )}
+        {searchVesselStatus === AsyncReducerStatus.Finished
+          ? showBackButton && hasVesselGroupsVessels
+          : showBackButton && (
+              <Button
+                type="secondary"
+                disabled={loading}
+                className={styles.backButton}
+                onClick={() => onBackClick('back')}
+              >
+                {t('common.back', 'back')}
+              </Button>
+            )}
         {!fullModalLoading &&
           (confirmationMode === 'save' ? (
             <Button

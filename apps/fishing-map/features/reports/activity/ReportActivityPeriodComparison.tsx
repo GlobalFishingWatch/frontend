@@ -2,11 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
-import {
-  MAX_DAYS_TO_COMPARE,
-  MAX_MONTHS_TO_COMPARE,
-  useReportTimeCompareConnect,
-} from 'features/reports/reports-timecomparison.hooks'
+import { useReportTimeCompareConnect } from 'features/reports/reports-timecomparison.hooks'
 import { selectReportTimeComparison } from 'features/app/app.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
@@ -15,6 +11,7 @@ import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import Hint from 'features/help/Hint'
 import { COLOR_PRIMARY_BLUE } from 'features/app/App'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { MAX_MONTHS_TO_COMPARE, MAX_DAYS_TO_COMPARE } from 'features/reports/reports.config'
 import styles from './ReportActivityBeforeAfter.module.css'
 
 export default function ReportActivityGraph() {
@@ -34,7 +31,7 @@ export default function ReportActivityGraph() {
     MAX_DATE,
   } = useReportTimeCompareConnect('periodComparison')
 
-  const trackAndChangeComparisonDate = (date) => {
+  const trackAndChangeComparisonDate = (date: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select comparison date in 'period comparison'`,
@@ -49,7 +46,7 @@ export default function ReportActivityGraph() {
     onCompareStartChange(date)
   }
 
-  const trackAndChangeBaselineDate = (date) => {
+  const trackAndChangeBaselineDate = (date: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select baseline date in 'period comparison'`,
@@ -64,7 +61,7 @@ export default function ReportActivityGraph() {
     onStartChange(date)
   }
 
-  const trackAndChangeDuration = (duration) => {
+  const trackAndChangeDuration = (duration: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select duration in 'period comparison'`,
@@ -79,7 +76,7 @@ export default function ReportActivityGraph() {
     onDurationChange(duration)
   }
 
-  const trackAndChangeDurationType = (duration) => {
+  const trackAndChangeDurationType = (duration: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select duration in 'period comparison'`,

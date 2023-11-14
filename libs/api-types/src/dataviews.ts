@@ -36,7 +36,7 @@ export interface DataviewConfig<Type = any> {
 
 export interface DataviewDatasetConfigParam {
   id: string
-  value: string | number | boolean | string[]
+  value: string | number | boolean | string[] | number[]
 }
 
 export interface DataviewDatasetConfig {
@@ -74,7 +74,7 @@ export interface DataviewEventsConfig {
 
 export interface IncomatibleFilterConfig {
   id: string // id of the filter
-  value: boolean // value to match
+  value: boolean | string // value to match
   disabled: string[] // disabled filter on matches
 }
 

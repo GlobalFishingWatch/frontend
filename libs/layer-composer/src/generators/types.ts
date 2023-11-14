@@ -5,7 +5,7 @@ import {
   GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { Segment, Locale } from '@globalfishingwatch/api-types'
+import { Segment, Locale, Anchorage, EventTypes } from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
 
@@ -341,6 +341,10 @@ export interface PolygonsGeneratorConfig extends GeneratorConfig {
    * Sets the opacity for the track line
    */
   opacity?: number
+  /**
+   * Sets the ordering group the polygons belong to
+   */
+  group?: Group
 }
 
 export interface VesselEventsGeneratorConfig extends GeneratorConfig {
@@ -444,6 +448,7 @@ export type AnyGeneratorConfig =
   | TrackGeneratorConfig
   | UserContextGeneratorConfig
   | VesselEventsGeneratorConfig
+  | VesselEventsShapesGeneratorConfig
 
 // ---- Generator specific types
 export enum BasemapType {
@@ -469,7 +474,7 @@ export enum ContextLayerType {
 
 export type RawEvent = {
   id: string
-  type: string
+  type: EventTypes
   position: {
     lng?: number
     lon?: number
@@ -489,6 +494,9 @@ export type RawEvent = {
       id: string
       name: string
     }
+  }
+  port_visit?: {
+    intermediateAnchorage: Anchorage
   }
 }
 

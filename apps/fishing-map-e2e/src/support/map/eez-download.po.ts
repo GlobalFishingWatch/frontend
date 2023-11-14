@@ -1,28 +1,35 @@
 import { SEARCH_EEZ_FULL_NAME } from '../../constants/search'
 import { API_URL_4WINGS_REPORT, URL_ONE_MONTH } from '../../constants/urls'
-import { deleteDownloadsFolder, getDownloadsFolderPath, getQueryParam } from '../app.po'
+import {
+  deleteDownloadsFolder,
+  getDOMTimeout,
+  getDownloadsFolderPath,
+  getQueryParam,
+  getRequestTimeout,
+} from '../app.po'
 
-export const REPORT_FORMAT_JSON = 'report-format-json'
-export const REPORT_FORMAT_CSV = 'report-format-csv'
+export const REPORT_FORMAT_JSON = 'report-format-JSON'
+export const REPORT_FORMAT_CSV = 'report-format-CSV'
 
-export const GROUPBY_FLAG = 'group-vessels-by-flag'
-export const GROUPBY_MMSI = 'group-vessels-by-mmsi'
-export const GROUPBY_GEAR = 'group-vessels-by-gearType'
-export const GROUPBY_FLAG_GEAR = 'group-vessels-by-flagAndGearType'
+export const GROUPBY_FLAG = 'group-vessels-by-FLAG'
+export const GROUPBY_MMSI = 'group-vessels-by-MMSI'
+export const GROUPBY_GEAR = 'group-vessels-by-GEARTYPE'
+export const GROUPBY_FLAG_GEAR = 'group-vessels-by-FLAGANDGEARTYPE'
 
-export const GROUPBY_DAY = 'group-time-by-daily'
-export const GROUPBY_MONTH = 'group-time-by-monthly'
+export const GROUPBY_DAY = 'group-time-by-DAILY'
+export const GROUPBY_MONTH = 'group-time-by-MONTHLY'
 
 // Static names and paths used for verifications
-const start = getQueryParam(URL_ONE_MONTH.substring(1), 'start').replaceAll(':', '_')
-const end = getQueryParam(URL_ONE_MONTH.substring(1), 'end').replaceAll(':', '_')
+// I added a random domain to build a full url
+const start = getQueryParam('https://gfw.com' + URL_ONE_MONTH, 'start').replaceAll(':', '_')
+const end = getQueryParam('https://gfw.com' + URL_ONE_MONTH, 'end').replaceAll(':', '_')
 export const filename = `${SEARCH_EEZ_FULL_NAME} - ${start},${end}`
 export const zipFilename = `${filename}.zip`
 const jsonFilename = `${filename}.json`
 export const zipPath = `${getDownloadsFolderPath()}/${zipFilename}`
 export const jsonPath = `${getDownloadsFolderPath()}/${jsonFilename}`
-const DATASET = 'public-global-fishing-effort:v20201001'
-export const folderToUse = '/layer-activity-data-0/public-global-fishing-effort-v20201001'
+const DATASET = 'public-global-fishing-effort:v20231026'
+export const folderToUse = '/layer-activity-data-0/public-global-fishing-effort-v20231026'
 
 export const verifyJson = (attributes: string[]) => {
   cy.readFile(`${getDownloadsFolderPath()}/${jsonFilename}`).then((json) => {
@@ -47,11 +54,11 @@ export const verifyCSV = (attributes: string[]) => {
 export const verifyFileDownload = (file: string, button: string) => {
   cy.intercept(API_URL_4WINGS_REPORT).as('downloadReport')
   cy.getBySel(`download-${button}-button`).should('not.be.disabled').click()
-  // This request takes for me 17s, so I use 30 just in case
-  cy.wait('@downloadReport', { requestTimeout: 40000 })
+  // This request takes for me 17s, so I use 40 just in case
+  cy.wait('@downloadReport', getRequestTimeout(40000))
 
   //Create the same file name that the component CSVLink is generating
-  cy.readFile(file, { timeout: 15000 })
+  cy.readFile(file, getDOMTimeout(15000))
 }
 
 export const validateZipFile = (downloadContainer: string, columns: string[]) => {
@@ -70,7 +77,8 @@ export const testCsvOptions = (
 ) => {
   cy.log(description)
   deleteDownloadsFolder()
-  buttons.forEach((button) => cy.getBySel(container).findBySel(button).click())
+  // We need force because the buttons are covered by the active element
+  buttons.forEach((button) => cy.getBySel(container).findBySel(button).forceClick())
   validateZipFile(downloadContainer, columns)
 }
 
@@ -82,7 +90,7 @@ export const testCsvVesselActivityOptions = (
 ) => {
   cy.log(description)
   deleteDownloadsFolder()
-  buttons.forEach((button) => cy.getBySel(button).click())
+  buttons.forEach((button) => cy.getBySel(button).forceClick())
   validateZipFile(downloadContainer, columns)
 }
 
@@ -95,7 +103,7 @@ export const testJsonOptions = (
 ) => {
   cy.log(description)
   deleteDownloadsFolder()
-  buttons.forEach((button) => cy.getBySel(container).findBySel(button).click())
+  buttons.forEach((button) => cy.getBySel(container).findBySel(button).forceClick())
   verifyFileDownload(jsonPath, downloadContainer)
   verifyJson(columns)
 }

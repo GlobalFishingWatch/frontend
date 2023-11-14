@@ -4,6 +4,7 @@ import { Icon } from '@globalfishingwatch/ui-components'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
+import { useContextInteractions } from './ContextLayers.hooks'
 
 type UserPointsLayersProps = {
   features: TooltipEventFeature[]
@@ -14,6 +15,7 @@ function UserPointsTooltipSection({
   features,
   showFeaturesDetails = false,
 }: UserPointsLayersProps) {
+  const { onReportClick } = useContextInteractions()
   const featuresByType = groupBy(features, 'layerId')
   return (
     <Fragment>
@@ -39,6 +41,7 @@ function UserPointsTooltipSection({
                   label={label}
                   feature={feature}
                   showFeaturesDetails={showFeaturesDetails}
+                  handleReportClick={(e) => onReportClick(e, feature)}
                 />
               )
             })}

@@ -66,7 +66,7 @@ const WorkspaceEditor = ({ onEditClick }: WorkspaceEditorProps) => {
     const dataviewInstance = getDataviewInstanceFromDataview(dataview)
     const datasets = dataview.datasetsConfig?.map(({ datasetId }) => datasetId)
     if (datasets && datasets?.length) {
-      const action = await dispatch(fetchDatasetsByIdsThunk(datasets))
+      const action = await dispatch(fetchDatasetsByIdsThunk({ ids: datasets }))
       if (!fetchDatasetsByIdsThunk.fulfilled.match(action)) {
         setError((action.payload as AsyncError).message)
       }

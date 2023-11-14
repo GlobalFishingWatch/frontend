@@ -164,7 +164,7 @@ export const APP_PROFILE_VIEWS: ProfileView[] = [
     events_query_params: [
       {
         id: 'start-date',
-        value: DateTime.utc().minus({ months: 12 }).toISO(),
+        value: DateTime.utc().minus({ months: 12 }).toISO() as string,
       },
     ],
   },
@@ -175,7 +175,7 @@ export const APP_PROFILE_VIEWS: ProfileView[] = [
     events_query_params: [
       {
         id: 'start-date',
-        value: DateTime.local(2012, 1, 1, 0, 0).toISO(),
+        value: DateTime.local(2012, 1, 1, 0, 0).toISO() as string,
       },
       {
         id: 'limit',

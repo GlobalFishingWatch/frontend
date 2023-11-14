@@ -6,7 +6,7 @@ export interface Authorization {
   originalEndDate: number
 }
 
-export type VesselType =
+export type VesselTypeV2 =
   | 'seismic_vessel'
   | 'carrier'
   | 'cargo'
@@ -15,6 +15,7 @@ export type VesselType =
   | 'other_non_fishing'
   | 'bunker_or_tanker'
   | 'support'
+  | 'other'
 
 export interface Vessel {
   authorizations?: Authorization[]
@@ -35,6 +36,7 @@ export interface Vessel {
   length?: string
   matricula?: string
   mmsi?: string
+  msgCount?: number
   nationalId?: string
   operator?: string
   origin?: string
@@ -42,8 +44,10 @@ export interface Vessel {
   posCount?: number
   registeredGearType?: string
   shipname: string
+  shiptype?: VesselTypeV2
+  source?: string
+  ssvid?: string
   type?: string
-  vesselType?: VesselType
   years?: number[]
 }
 

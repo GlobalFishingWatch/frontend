@@ -16,6 +16,7 @@ import { ReactComponent as CategoryFishing } from '../assets/icons/category-fish
 import { ReactComponent as CategoryMarineManager } from '../assets/icons/category-marine-manager.svg'
 import { ReactComponent as CategoryNews } from '../assets/icons/category-news.svg'
 import { ReactComponent as CategoryReports } from '../assets/icons/category-reports.svg'
+import { ReactComponent as CategorySearch } from '../assets/icons/category-search.svg'
 import { ReactComponent as Close } from '../assets/icons/close.svg'
 import { ReactComponent as Clusters } from '../assets/icons/clusters.svg'
 import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
@@ -30,23 +31,32 @@ import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Edit } from '../assets/icons/edit.svg'
 import { ReactComponent as Email } from '../assets/icons/email.svg'
 import { ReactComponent as Encounters } from '../assets/icons/encounters.svg'
+import { ReactComponent as EventLegendEncounter } from '../assets/icons/event-legend-encounter.svg'
+import { ReactComponent as EventLegendFishing } from '../assets/icons/event-legend-fishing.svg'
+import { ReactComponent as EventLegendLoitering } from '../assets/icons/event-legend-loitering.svg'
+import { ReactComponent as EventLegendPort } from '../assets/icons/event-legend-port_visit.svg'
 import { ReactComponent as EventEncounter } from '../assets/icons/event-encounter.svg'
 import { ReactComponent as EventFishing } from '../assets/icons/event-fishing.svg'
 import { ReactComponent as EventLoitering } from '../assets/icons/event-loitering.svg'
 import { ReactComponent as EventPort } from '../assets/icons/event-port.svg'
 import { ReactComponent as EventPortVisit } from '../assets/icons/event-port-visit.svg'
+import { ReactComponent as Expand } from '../assets/icons/expand.svg'
 import { ReactComponent as ExternalLink } from '../assets/icons/external-link.svg'
 import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
 import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
+import { ReactComponent as FitToTimeRange } from '../assets/icons/fit-to-timerange.svg'
 import { ReactComponent as GFWLogo } from '../assets/icons/gfw-logo.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Heatmap } from '../assets/icons/heatmap.svg'
 import { ReactComponent as Help } from '../assets/icons/help.svg'
+import { ReactComponent as History } from '../assets/icons/history.svg'
 import { ReactComponent as Home } from '../assets/icons/home.svg'
 import { ReactComponent as Info } from '../assets/icons/info.svg'
 import { ReactComponent as Language } from '../assets/icons/language.svg'
 import { ReactComponent as Layers } from '../assets/icons/layers.svg'
+import { ReactComponent as LayersOn } from '../assets/icons/layers-on.svg'
+import { ReactComponent as LayersOff } from '../assets/icons/layers-off.svg'
 import { ReactComponent as Logout } from '../assets/icons/logout.svg'
 import { ReactComponent as Magic } from '../assets/icons/magic.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
@@ -73,8 +83,8 @@ import { ReactComponent as Split } from '../assets/icons/split.svg'
 import { ReactComponent as Target } from '../assets/icons/target.svg'
 import { ReactComponent as Tick } from '../assets/icons/tick.svg'
 import { ReactComponent as Track } from '../assets/icons/track.svg'
-import { ReactComponent as TransmissionsOff } from '../assets/icons/transmissions-off.svg'
-import { ReactComponent as TransmissionsOn } from '../assets/icons/transmissions-on.svg'
+import { ReactComponent as EventGap } from '../assets/icons/event-gap.svg'
+// import { ReactComponent as TransmissionsOn } from '../assets/icons/transmissions-on.svg'
 import { ReactComponent as Upload } from '../assets/icons/upload.svg'
 import { ReactComponent as User } from '../assets/icons/user.svg'
 import { ReactComponent as Vessel } from '../assets/icons/vessel.svg'
@@ -95,17 +105,27 @@ export const IconComponents = {
   'category-marine-manager': CategoryMarineManager,
   'category-news': CategoryNews,
   'category-reports': CategoryReports,
+  'category-search': CategorySearch,
   'color-picker-filled': ColorPickerFilled,
   'color-picker': ColorPicker,
   'event-encounter': EventEncounter,
   'event-fishing': EventFishing,
+  'event-gap': EventGap,
   'event-loitering': EventLoitering,
-  'event-port-visit': EventPortVisit,
+  'event-legend-encounter': EventLegendEncounter,
+  'event-legend-fishing': EventLegendFishing,
+  'event-legend-loitering': EventLegendLoitering,
+  'event-legend-port_visit': EventLegendPort,
+  'event-port_visit': EventPortVisit,
   'event-port': EventPort,
+  expand: Expand,
   'external-link': ExternalLink,
   'filter-off': FilterOff,
   'filter-on': FilterOn,
+  'fit-to-timerange': FitToTimeRange,
   'gfw-logo': GFWLogo,
+  'layers-on': LayersOn,
+  'layers-off': LayersOff,
   'pin-filled': PinFilled,
   'remove-from-map': RemoveFromMap,
   'view-on-map': ViewOnMap,
@@ -130,6 +150,7 @@ export const IconComponents = {
   graph: Graph,
   heatmap: Heatmap,
   help: Help,
+  history: History,
   home: Home,
   info: Info,
   language: Language,
@@ -158,8 +179,6 @@ export const IconComponents = {
   target: Target,
   tick: Tick,
   track: Track,
-  'transmissions-off': TransmissionsOff,
-  'transmissions-on': TransmissionsOn,
   upload: Upload,
   user: User,
   vessel: Vessel,
@@ -175,12 +194,13 @@ export interface IconProps {
   type?: 'default' | 'warning' | 'original-colors'
   tooltip?: TooltipTypes
   tooltipPlacement?: Placement
+  testId?: string
 }
 
 const defaultStyle = {}
 
 export function Icon(props: IconProps) {
-  const { icon, tooltip, type = 'default', className = '', style = defaultStyle } = props
+  const { icon, tooltip, type = 'default', className = '', style = defaultStyle, testId } = props
   const Component = IconComponents[icon]
   if (!Component) {
     console.warn(`Missing icon: ${icon} in ui-components Icon component. Rendering null`)
@@ -188,7 +208,11 @@ export function Icon(props: IconProps) {
   }
   return (
     <Tooltip content={tooltip as React.ReactNode} placement="auto">
-      <Component className={cx(styles.icon, styles[type], className)} style={style} />
+      <Component
+        className={cx(styles.icon, styles[type], className)}
+        style={style}
+        {...(testId && { 'data-test': testId })}
+      />
     </Tooltip>
   )
 }

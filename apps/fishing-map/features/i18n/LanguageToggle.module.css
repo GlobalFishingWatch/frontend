@@ -9,6 +9,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 2;
 }
 
 .languageBtn {
@@ -33,7 +34,7 @@
 
 .bottomRight {
   bottom: 0;
-  left: 5.2rem;
+  left: var(--sidebar-tabs-width);
 }
 
 .rightDown {

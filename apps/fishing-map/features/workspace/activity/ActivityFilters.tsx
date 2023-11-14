@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import {
+  Button,
   MultiSelect,
   MultiSelectOnChange,
   MultiSelectOption,
@@ -47,6 +48,7 @@ import {
 
 type ActivityFiltersProps = {
   dataview: UrlDataviewInstance
+  onConfirmCallback?: () => void
 }
 
 const trackEventCb = debounce((filterKey: string, label: string) => {
@@ -59,14 +61,17 @@ const trackEventCb = debounce((filterKey: string, label: string) => {
 
 const cleanDataviewFiltersNotAllowed = (
   dataview: UrlDataviewInstance,
-  vesselGroupOptions: MultiSelectOption[]
+  vesselGroups: MultiSelectOption[]
 ) => {
   const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
-  Object.keys(filters).forEach((key: SupportedDatasetSchema) => {
+  Object.keys(filters).forEach((k) => {
+    const key = k as SupportedDatasetSchema
     if (filters[key]) {
-      const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, vesselGroupOptions)
-      const newFilterSelection = newFilterOptions?.filter((option) =>
-        dataview.config?.filters?.[key]?.includes(option.id)
+      const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, {
+        vesselGroups,
+      })
+      const newFilterSelection = newFilterOptions?.filter(
+        (option) => dataview.config?.filters?.[key]?.includes(option.id)
       )
 
       // We have to remove the key if it is not supported by the datasets selecion
@@ -94,7 +99,10 @@ export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
   )
 }
 
-function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): React.ReactElement {
+function ActivityFilters({
+  dataview: baseDataview,
+  onConfirmCallback,
+}: ActivityFiltersProps): React.ReactElement {
   const { t } = useTranslation()
 
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
@@ -133,10 +141,9 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
-  const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(
-    dataview,
-    vesselGroupsOptions
-  )
+  const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(dataview, {
+    vesselGroups: vesselGroupsOptions,
+  })
 
   const onDataviewFilterChange = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
@@ -158,12 +165,11 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
 
   const handleIsOpenChange = useCallback(
     (isOpen: boolean) => {
-      if (!isOpen && newDataviewInstanceConfig) {
-        upsertDataviewInstance(newDataviewInstanceConfig)
-        setNewDataviewInstanceConfig(undefined)
+      if (!isOpen) {
+        setNewDataviewInstanceConfig(newDataviewInstanceConfig)
       }
     },
-    [newDataviewInstanceConfig, upsertDataviewInstance]
+    [newDataviewInstanceConfig]
   )
 
   useEffect(() => {
@@ -173,7 +179,13 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
   useEffect(() => {
     return () => {
       if (newDataviewInstanceConfigRef.current) {
-        upsertDataviewInstance(newDataviewInstanceConfigRef.current)
+        if (
+          window.confirm(
+            t('layer.filtersConfirmAbort', 'Do you want to apply the changes made to the layer?')
+          ) === true
+        ) {
+          upsertDataviewInstance(newDataviewInstanceConfigRef.current)
+        }
       }
     }
     // Running on effect to ensure the dataview update is running when we close the filter from outside
@@ -209,8 +221,8 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
   }
 
   const onSelectFilterClick = (
-    filterKey: SupportedDatasetSchema,
-    selection: MultiSelectOption | MultiSelectOption[],
+    filterKey: string | SupportedDatasetSchema,
+    selection: any,
     singleValue: boolean = false
   ) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
@@ -256,7 +268,7 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
   }
 
   const onSelectFilterOperationClick = (
-    filterKey: SupportedDatasetSchema,
+    filterKey: string | SupportedDatasetSchema,
     filterOperator: FilterOperator
   ) => {
     const newDataviewConfig = {
@@ -319,6 +331,16 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
     })
   }
 
+  const onConfirmFilters = () => {
+    if (newDataviewInstanceConfig) {
+      upsertDataviewInstance(newDataviewInstanceConfig)
+      newDataviewInstanceConfigRef.current = undefined
+    }
+    if (onConfirmCallback) {
+      onConfirmCallback()
+    }
+  }
+
   const showHistogramFilter = isHistogramDataviewSupported(dataview)
   const showSchemaFilters =
     showHistogramFilter || showSourceFilter || filtersAllowed.some(showSchemaFilter)
@@ -333,8 +355,12 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
         <MultiSelect
           testId="activity-filters"
           label={t('layer.source_other', 'Sources') as string}
-          placeholder={getPlaceholderBySelections(sourcesSelected)}
+          placeholder={getPlaceholderBySelections({
+            selection: sourcesSelected.map(({ id }) => id),
+            options: allSourceOptions,
+          })}
           options={allSourceOptions}
+          labelContainerClassName={styles.labelContainer}
           selectedOptions={sourcesSelected}
           onSelect={onSelectSourceClick}
           onIsOpenChange={handleIsOpenChange}
@@ -366,6 +392,9 @@ function ActivityFilters({ dataview: baseDataview }: ActivityFiltersProps): Reac
           />
         )
       })}
+      <div className={styles.footer}>
+        <Button onClick={onConfirmFilters}>{t('common.confirm', 'confirm')}</Button>
+      </div>
       {filtersDisabled.length >= 1 && (
         <p className={styles.filtersDisabled}>
           {t('layer.filtersDisabled', {

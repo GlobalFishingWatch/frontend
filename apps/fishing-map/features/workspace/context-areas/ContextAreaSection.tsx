@@ -13,7 +13,6 @@ import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -23,7 +22,6 @@ import LayerPanel from './ContextAreaLayerPanel'
 function ContextAreaSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
-  const { dispatchQueryParams } = useLocationConnect()
 
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectContextAreasDataviews)
@@ -31,12 +29,11 @@ function ContextAreaSection(): React.ReactElement {
 
   const onDrawClick = useCallback(() => {
     dispatchSetMapDrawing(true)
-    dispatchQueryParams({ sidebarOpen: false })
     trackEvent({
       category: TrackCategory.ReferenceLayer,
       action: `Draw a custom reference layer - Start`,
     })
-  }, [dispatchQueryParams, dispatchSetMapDrawing])
+  }, [dispatchSetMapDrawing])
 
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))

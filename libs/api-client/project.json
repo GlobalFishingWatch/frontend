@@ -4,7 +4,7 @@
   "sourceRoot": "libs/api-client/src",
   "projectType": "library",
   "targets": {
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -20,11 +20,12 @@
             "input": ".",
             "output": "."
           }
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/api-client/**/*.{ts,tsx,js,jsx}"]
@@ -38,10 +39,11 @@
         "passWithNoTests": true
       }
     },
-    "deploy": {
+    "publish": {
       "executor": "ngx-deploy-npm:deploy",
       "options": {
-        "access": "public"
+        "access": "public",
+        "distFolderPath": "dist/libs/api-client"
       }
     }
   },

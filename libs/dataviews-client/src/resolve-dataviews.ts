@@ -1,6 +1,8 @@
 import { uniqBy } from 'lodash'
 import {
   Dataset,
+  DatasetSchema,
+  DatasetSchemaItem,
   DatasetTypes,
   Dataview,
   DataviewDatasetConfig,
@@ -24,6 +26,13 @@ export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
   [INCLUDE_FILTER_ID]: 'IN',
   [EXCLUDE_FILTER_ID]: 'NOT IN',
   [GREATER_THAN_FILTER_ID]: '>',
+}
+
+function getDatasetSchemaItem(dataset: Dataset, schema: string) {
+  return (
+    (dataset?.schema?.[schema] as DatasetSchemaItem) ||
+    (dataset?.schema?.selfReportedInfo as DatasetSchema)?.items?.[schema]
+  )
 }
 
 /**
@@ -88,6 +97,17 @@ export const getDatasetConfigsByDatasetType = (
   const datasetConfigs = availableDatasetConfigs.filter((datasetConfig) =>
     datasetIds.includes(datasetConfig.datasetId)
   )
+  if (type === DatasetTypes.Tracks && !datasetConfigs.length) {
+    // This supports legacy dataviewInstances with no datasetConfig
+    // for example: a pinned vessel with public-global-carriers-tracks:v20201001 dataset
+    // won't work as the defuault dataview now points to public-global-all-tracks
+    const legacyDatasetConfig = availableDatasetConfigs.find(
+      (d) => d.endpoint === EndpointId.Tracks
+    )
+    if (legacyDatasetConfig) {
+      return [legacyDatasetConfig]
+    }
+  }
   return datasetConfigs
 }
 
@@ -349,14 +369,15 @@ export function resolveDataviews(
               ? filters[filterKey]
               : [filters[filterKey]]
 
-            const datasetSchema = dataviewInstance.datasets?.find(
-              (d) => d.schema?.[filterKey] !== undefined
-            )?.schema?.[filterKey]
+            const dataset = dataviewInstance.datasets?.find(
+              (d) => getDatasetSchemaItem(d, filterKey) !== undefined
+            )
+            const datasetSchema = getDatasetSchemaItem(dataset as Dataset, filterKey)
 
             if (datasetSchema && datasetSchema.type === 'range') {
-              const minPossible = Number(datasetSchema.enum[0])
+              const minPossible = Number(datasetSchema?.enum[0])
               const minSelected = Number(filterValues[0])
-              const maxPossible = Number(datasetSchema.enum[datasetSchema.enum.length - 1])
+              const maxPossible = Number(datasetSchema?.enum[datasetSchema.enum.length - 1])
               const maxSelected = Number(filterValues[filterValues.length - 1])
               if (minSelected !== minPossible && maxSelected !== maxPossible) {
                 return `${filterKey} >= ${minSelected} AND ${filterKey} <= ${maxSelected}`

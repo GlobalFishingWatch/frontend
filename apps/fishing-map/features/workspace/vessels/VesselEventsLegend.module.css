@@ -53,7 +53,7 @@
 .fishing > .icon {
   border-radius: 99px;
   background: var(--color);
-  border: 1px solid var(--color);
+  border: 1px solid var(--color-border);
   width: 8px;
   height: 8px;
 }

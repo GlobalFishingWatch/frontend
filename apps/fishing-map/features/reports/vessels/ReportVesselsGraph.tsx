@@ -14,10 +14,10 @@ import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
+import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
+import { getVesselGearType } from 'utils/info'
 import {
   cleanFlagState,
-  EMPTY_API_VALUES,
-  OTHERS_CATEGORY_LABEL,
   selectReportDataviewsWithPermissions,
   selectReportVesselsGraphDataGrouped,
   selectReportVesselsGraphDataOthers,
@@ -48,7 +48,7 @@ const ReportGraphTooltip = (props: any) => {
   let translatedLabel = ''
   if (EMPTY_API_VALUES.includes(label)) translatedLabel = t('common.unknown', 'Unknown')
   else if (type === 'geartype') {
-    translatedLabel = `${t(`vessel.gearTypes.${label}` as any, label)}`
+    translatedLabel = getVesselGearType({ geartypes: label })
   } else {
     translatedLabel = t(`flags:${label}` as any, label)
   }
@@ -88,9 +88,9 @@ const CustomTick = (props: any) => {
     if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
     switch (selectedReportVesselGraph) {
       case 'geartype':
-        return `${t(`vessel.gearTypes.${label}` as any, label)}`
+        return getVesselGearType({ geartypes: label })
       case 'vesselType':
-        return `${t(`vessel.vesselTypes.${label}` as any, label)}`
+        return `${t(`vessel.vesselTypes.${label?.toLowerCase()}` as any, label)}`
       case 'flag':
         return t(`flags:${label}` as any, label)
       default:
@@ -122,9 +122,11 @@ const CustomTick = (props: any) => {
 
   const tooltip = isOtherCategory ? (
     <ul>
-      {othersData!?.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
-        <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
-      ))}
+      {othersData!
+        ?.slice(0, MAX_OTHER_TOOLTIP_ITEMS)
+        .map(({ name, value }) => (
+          <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
+        ))}
       {othersData!?.length > MAX_OTHER_TOOLTIP_ITEMS && (
         <li>
           + {othersData!?.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
@@ -137,7 +139,7 @@ const CustomTick = (props: any) => {
   const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)
   const labelChunks = label.split(' ')
   let labelChunksClean = [labelChunks[0]]
-  labelChunks.slice(1).forEach((chunk) => {
+  labelChunks.slice(1).forEach((chunk: any) => {
     let currentChunk = labelChunksClean[labelChunksClean.length - 1]
     if (currentChunk.length + chunk.length >= width / visibleTicksCount / 8) {
       labelChunksClean.push(chunk)
@@ -206,7 +208,7 @@ export default function ReportVesselsGraph() {
                     {index === dataviews.length - 1 && (
                       <LabelList
                         position="top"
-                        valueAccessor={(entry) => formatI18nNumber(entry.value[1])}
+                        valueAccessor={(entry: any) => formatI18nNumber(entry.value[1])}
                       />
                     )}
                   </Bar>

@@ -20,6 +20,7 @@ import {
   filterFeaturesByTimerange,
   groupFeaturesByType,
   getVesselEventsSegmentsGeojsonMemoizeEqualityCheck,
+  getVesselEventsGeojsonMemoizeEqualityCheck,
 } from './vessel-events.utils'
 
 export type GlobalVesselEventsShapesGeneratorConfig =
@@ -68,6 +69,7 @@ class VesselsEventsShapesGenerator {
       type: 'geojson',
       data: { ...geojson, features: fishing },
     }
+
     const otherEventsSource: VesselsEventsSource = {
       id: `${id}_otherEvents`,
       type: 'geojson',
@@ -134,7 +136,15 @@ class VesselsEventsShapesGenerator {
       },
       paint: {
         'circle-color': ['get', 'color'],
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 1.5, 9, 4],
+        'circle-radius': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          4,
+          getExpression(4, 1.5),
+          9,
+          getExpression(7, 4),
+        ],
         'circle-stroke-color': getExpression('#ffffff', 'transparent'),
         'circle-stroke-width': 2,
       },
@@ -158,7 +168,7 @@ class VesselsEventsShapesGenerator {
           4,
           getExpression(0.75, 0.5),
           9,
-          getExpression(1.5, 1),
+          getExpression(1, 0.75),
         ],
         'icon-image': getExpression(['get', 'shapeHighlight'], ['get', 'shape']),
         'symbol-sort-key': getExpression(
@@ -211,7 +221,10 @@ class VesselsEventsShapesGenerator {
           return newArgs.length !== lastArgs.length
         }
       ),
-      getVesselEventsGeojson: memoizeOne(getVesselEventsGeojson),
+      getVesselEventsGeojson: memoizeOne(
+        getVesselEventsGeojson,
+        getVesselEventsGeojsonMemoizeEqualityCheck
+      ),
       getVesselEventsSegmentsGeojson: memoizeOne(
         getVesselEventsSegmentsGeojson,
         // This is a hack needed because the events array mutates constantly in resolve-dataviews-generators

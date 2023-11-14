@@ -86,7 +86,7 @@ export default function ReportVesselsPlaceholder({ children }: { children?: Reac
             <ReportVesselsGraphPlaceholder />
             {/* search */}
             <div
-              style={{ width: '100%' }}
+              style={{ width: '100%', borderRadius: 'var(--border-radius)' }}
               className={cx(
                 styles.block,
                 styles.animate,

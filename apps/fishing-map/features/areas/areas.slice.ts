@@ -1,31 +1,31 @@
 import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { kebabCase, memoize, uniqBy } from 'lodash'
-import { MultiPolygon } from 'geojson'
-import {
-  ContextAreaFeature,
-  ContextAreaFeatureGeom,
-  Dataset,
-  EndpointId,
-} from '@globalfishingwatch/api-types'
+import { Polygon, MultiPolygon, FeatureCollection } from 'geojson'
+import { TileContextAreaFeature, Dataset, EndpointId } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
-import { wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import { wrapGeometryBbox, wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
+export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
 
 export interface DatasetArea {
   id: string
   label: string
   bbox?: Bbox
 }
+
 export interface DatasetAreaList {
   status: AsyncReducerStatus
-  data: DatasetArea[]
+  data: DrawnDatasetGeometry | DatasetArea[]
 }
 
-export interface Area {
+export type AreaGeometry = Polygon | MultiPolygon
+export interface Area<Geometry = AreaGeometry> {
+  type: 'Feature'
   id: string
-  geometry: ContextAreaFeatureGeom | undefined
+  geometry: Geometry | undefined
   bounds: Bbox | undefined
   name: string
   properties: Record<any, any>
@@ -44,7 +44,7 @@ export type AreasState = Record<string, DatasetAreas>
 const initialState: AreasState = {}
 
 export type AreaKeyId = string | number
-export type AreaKeys = { datasetId: string; areaId: AreaKeyId }
+export type AreaKeys = { datasetId: string; areaId: AreaKeyId; areaName: string | undefined }
 export type FetchAreaDetailThunkParam = {
   dataset: Dataset
   areaId: AreaKeyId
@@ -76,15 +76,17 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       console.warn('No endpoint found for area detail fetch')
       return
     }
-    let area = await GFWAPI.fetch<ContextAreaFeature>(endpoint, { signal })
+    let area = await GFWAPI.fetch<TileContextAreaFeature<AreaGeometry>>(endpoint, { signal })
     if (!area.geometry) {
       const endpointNoSimplified = resolveEndpoint(dataset, datasetConfig) as string
-      area = await GFWAPI.fetch<ContextAreaFeature>(endpointNoSimplified, { signal })
+      area = await GFWAPI.fetch<TileContextAreaFeature<AreaGeometry>>(endpointNoSimplified, {
+        signal,
+      })
       if (!area.geometry) {
         console.warn('Area has no geometry, even calling the endpoint without simplification')
       }
     }
-    const bounds = wrapGeometryBbox(area.geometry as MultiPolygon)
+    const bounds = area.bbox ? wrapBBoxLongitudes(area.bbox) : wrapGeometryBbox(area.geometry)
     // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
     // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
     if (area.geometry) {
@@ -123,13 +125,19 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
     }: FetchDatasetAreasThunkParam = {} as FetchDatasetAreasThunkParam,
     { signal }
   ) => {
-    const datasetAreas = await GFWAPI.fetch<DatasetArea[]>(
-      `/datasets/${datasetId}/user-context-layer-v1${
-        include?.length ? `?includes=${include.join(',')}` : ''
+    const datasetAreas = await GFWAPI.fetch<DatasetArea[] | DrawnDatasetGeometry>(
+      `/datasets/${datasetId}/user-context-layers${
+        include?.length ? `?includes=${include.join(',')}&cache=false` : ''
       }`,
-      { signal }
+      { signal, cache: 'no-cache' }
     )
-    const areasWithSlug = datasetAreas.map((area) => ({ ...area, slug: kebabCase(area.label) }))
+    if ((datasetAreas as DrawnDatasetGeometry).type === 'FeatureCollection') {
+      return datasetAreas
+    }
+    const areasWithSlug = (datasetAreas as DatasetArea[]).map((area) => ({
+      ...area,
+      slug: kebabCase(area.label),
+    }))
     return uniqBy(areasWithSlug, 'slug')
   },
   {
@@ -151,6 +159,15 @@ const areasSlice = createSlice({
   name: 'areas',
   initialState,
   reducers: {
+    resetAreaList: (state, action: PayloadAction<{ datasetId: string }>) => {
+      const { datasetId } = action.payload
+      if (state[datasetId]?.list) {
+        state[datasetId].list = {
+          status: AsyncReducerStatus.Idle,
+          data: [],
+        }
+      }
+    },
     resetAreaDetail: (state, action: PayloadAction<{ datasetId: string; areaId: number }>) => {
       const { datasetId, areaId } = action.payload
       if (state[datasetId]?.detail?.[areaId]) {
@@ -222,7 +239,7 @@ const areasSlice = createSlice({
   },
 })
 
-export const { resetAreaDetail } = areasSlice.actions
+export const { resetAreaList, resetAreaDetail } = areasSlice.actions
 
 export const selectAreas = (state: { areas: AreasState }) => state.areas
 export const selectDatasetAreaById = memoize((id: string) =>

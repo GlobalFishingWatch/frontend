@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { InputText, Button, Modal, SwitchRow } from '@globalfishingwatch/ui-components'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { Workspace } from '@globalfishingwatch/api-types'
 import {
   saveWorkspaceThunk,
   updatedCurrentWorkspaceThunk,
@@ -28,7 +27,7 @@ type NewWorkspaceModalProps = {
   title?: string
   isOpen: boolean
   onClose: () => void
-  onFinish?: (workspace: Workspace) => void
+  onFinish?: (workspace: AppWorkspace) => void
   workspace: AppWorkspace
   suggestName?: boolean
 }
@@ -136,7 +135,7 @@ function NewWorkspaceModal({
         saveWorkspaceThunk({ workspace, name, createAsPublic })
       )
       if (saveWorkspaceThunk.fulfilled.match(dispatchedAction)) {
-        const workspace = dispatchedAction.payload as Workspace
+        const workspace = dispatchedAction.payload as AppWorkspace
         trackEvent({
           category: TrackCategory.WorkspaceManagement,
           action: 'Save current workspace',
@@ -163,10 +162,10 @@ function NewWorkspaceModal({
       onClose={onClose}
     >
       <InputText
-        inputSize="small"
         value={name}
         label={t('common.name', 'Name')}
         className={styles.input}
+        testId="create-workspace-input"
         onChange={(e) => setName(e.target.value)}
         autoFocus
       />
@@ -211,7 +210,12 @@ function NewWorkspaceModal({
           </Button>
         )}
         {error && <p className={styles.error}>{error}</p>}
-        <Button loading={createLoading} disabled={!name} onClick={createWorkspace}>
+        <Button
+          loading={createLoading}
+          disabled={!name}
+          onClick={createWorkspace}
+          testId="create-workspace-button"
+        >
           {t('workspace.create', 'Create as new workspace') as string}
         </Button>
       </div>

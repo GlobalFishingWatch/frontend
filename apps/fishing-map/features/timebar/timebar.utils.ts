@@ -12,7 +12,8 @@ export const parseTrackEventChunkProps = (
     end: event.end as string,
     type: event.type,
     encounterVesselName: event.encounter?.vessel?.name,
-    portName: event.port?.name,
+    portName: event.port_visit?.intermediateAnchorage?.name,
+    portFlag: event.port_visit?.intermediateAnchorage?.flag,
   })
 
   return {

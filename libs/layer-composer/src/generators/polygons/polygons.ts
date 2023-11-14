@@ -32,6 +32,8 @@ class PolygonsGenerator {
         id: config.id,
         type: 'geojson',
         data,
+        promoteId: 'id',
+        generateId: true,
       },
     ]
   }
@@ -48,7 +50,7 @@ class PolygonsGenerator {
 
     const paint = {
       'line-color': config.color || DEFAULT_COLOR,
-      'line-width': 0.5,
+      'line-width': 1,
       'line-opacity': config.opacity || 1,
     }
 
@@ -59,7 +61,7 @@ class PolygonsGenerator {
       layout: { visibility },
       paint,
       metadata: {
-        group: Group.OutlinePolygons,
+        group: config.group || Group.OutlinePolygons,
         ...(config.metadata || {}),
       },
     }
@@ -78,7 +80,7 @@ class PolygonsGenerator {
       metadata: {
         interactive,
         generatorId: generatorId,
-        group: Group.CustomLayer,
+        group: config.group || Group.CustomLayer,
       },
     }
     return [lineLayer, interactionLayer]

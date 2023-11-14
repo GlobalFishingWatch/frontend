@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DndContext } from '@dnd-kit/core'
@@ -7,11 +6,12 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 import { Spinner, Button, IconButton, Modal, InputText } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
+import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectWorkspaceStatus, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { isGFWUser } from 'features/user/user.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
-import { selectReadOnly, selectSearchQuery } from 'features/app/app.selectors'
+import { selectReadOnly } from 'features/app/app.selectors'
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/dataviews.slice'
@@ -27,6 +27,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
+import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -34,13 +35,10 @@ import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
 
-const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
-
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const searchQuery = useSelector(selectSearchQuery)
   const readOnly = useSelector(selectReadOnly)
   const gfwUser = useSelector(isGFWUser)
   const workspace = useSelector(selectWorkspace)
@@ -65,6 +63,8 @@ function Workspace() {
     }
   }, [workspace])
 
+  useFetchDataviewResources()
+
   const workspaceVesselGroupsIdsHash = workspaceVesselGroupsIds.join(',')
   useEffect(() => {
     if (workspaceVesselGroupsIds.length) {
@@ -74,7 +74,7 @@ function Workspace() {
   }, [workspaceVesselGroupsIdsHash, dispatch])
 
   const handleDragEnd = useCallback(
-    (event) => {
+    (event: any) => {
       const { active, over } = event
       if (active && over && active.id !== over.id) {
         const oldIndex = dataviews.findIndex((d) => d.id === active.id)
@@ -92,7 +92,7 @@ function Workspace() {
   }, [])
 
   const onWorkspaceUpdateClick = useCallback(
-    async (workspaceId) => {
+    async (workspaceId: string) => {
       setEditWorkspaceLoading(true)
       await dispatch(
         updateWorkspaceThunk({
@@ -101,6 +101,9 @@ function Workspace() {
           description: workspaceEditDescription,
         })
       )
+      if (workspaceEditName) {
+        dispatch(setWorkspaceProperty({ key: 'name', value: workspaceEditName }))
+      }
       onWorkspaceUpdateClose()
     },
     [dispatch, onWorkspaceUpdateClose, workspaceEditDescription, workspaceEditName]
@@ -124,10 +127,6 @@ function Workspace() {
     return <WorkspaceError />
   }
 
-  if (searchQuery !== undefined) {
-    return <Search />
-  }
-
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
       {(locationCategory === WorkspaceCategory.MarineManager ||
@@ -140,7 +139,7 @@ function Workspace() {
             {isUserWorkspace && (
               <label className={styles.subTitle}>{t('workspace.user', 'User workspace')}</label>
             )}
-            <h2 className={styles.title}>
+            <h2 className={styles.title} data-test="user-workspace-title">
               {getWorkspaceLabel(workspace)}
               {gfwUser && (
                 <IconButton
@@ -162,14 +161,12 @@ function Workspace() {
                 <InputText
                   value={workspaceEditName}
                   className={styles.input}
-                  inputSize="small"
                   label={t('common.name', 'Name')}
                   onChange={(e) => setWorkspaceEditName(e.target.value)}
                 />
                 <InputText
                   value={workspaceEditDescription}
                   className={styles.input}
-                  inputSize="small"
                   label={t('common.description', 'Description')}
                   onChange={(e) => setWorkspaceEditDescription(e.target.value)}
                 />

@@ -1,17 +1,34 @@
 import { useSelector } from 'react-redux'
-import { Switch } from '@globalfishingwatch/ui-components'
+import { useEffect, useState } from 'react'
+import { InputText, Switch } from '@globalfishingwatch/ui-components'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { useMapStyle } from 'features/map/map-style.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import styles from './DebugMenu.module.css'
+import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 
 const DebugMenu: React.FC = () => {
   const dispatch = useAppDispatch()
   const debugOptions = useSelector(selectDebugOptions)
   const locationQuery = useSelector(selectLocationQuery)
+  const [datasetId, setDatasetId] = useState<string>('')
   // Not sure why, but it seems this hook returns an outdated style
   const style = useMapStyle()
+  const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
+  const datasets = useSelector(selectAllDatasets)
+
+  useEffect(() => {
+    if (datasetId?.length > 4) {
+      debugDatasetsInDataviews(dataviews, datasetId)
+      debugRelatedDatasets(datasets, datasetId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datasetId])
+
   return (
     <div className={styles.row}>
       <section className={styles.section}>
@@ -45,6 +62,26 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_debug">Debug tiles</label>
         </div>
         <p>Displays info on tiles useful for debugging.</p>
+        <div className={styles.header}>
+          <Switch
+            id="dataset_relationship"
+            active={debugOptions.datasetRelationship}
+            onClick={() => dispatch(toggleOption(DebugOption.DatasetRelationship))}
+          />
+          <label htmlFor="dataset_relationship">Debug dataset relationship</label>
+          {debugOptions.datasetRelationship && (
+            <InputText
+              className={styles.input}
+              value={datasetId}
+              inputSize="small"
+              onChange={(e) => setDatasetId(e.target.value)}
+            />
+          )}
+        </div>
+        <p>
+          Type the dataset id you want to debug why it is loaded in the workspace and check the
+          console log
+        </p>
         <div className={styles.header}>
           <Switch
             id="option_thinning"

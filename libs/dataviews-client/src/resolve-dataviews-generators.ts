@@ -11,6 +11,7 @@ import {
   Dataset,
   ApiEvent,
   TrackResourceData,
+  DRAW_DATASET_SOURCE,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -121,7 +122,7 @@ export const getDatasetsExtent = (
     extentEnd = format === 'isoString' ? extentEndDate.toISOString() : extentEndDate.getTime()
   }
 
-  return { extentStart, extentEnd }
+  return { extentStart: extentStart as string | number, extentEnd: extentEnd as string | number }
 }
 
 export function getGeneratorConfig(
@@ -373,7 +374,10 @@ export function getGeneratorConfig(
         }
         generator.datasetId = dataset.id
         if (url) {
-          generator.tilesUrl = url
+          generator.tilesUrl =
+            dataset.source === DRAW_DATASET_SOURCE
+              ? `${url}?cache=${dataset.configuration?.filePath}`
+              : url
         }
         if (dataset?.source) {
           generator.attribution = getDatasetAttribution(dataset)
@@ -458,8 +462,8 @@ export function getMergedHeatmapAnimatedDataview(
     }
     const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
 
-    const activeDatasets = dataview.datasets.filter((dataset) =>
-      dataview?.config?.datasets?.includes(dataset.id)
+    const activeDatasets = dataview.datasets.filter(
+      (dataset) => dataview?.config?.datasets?.includes(dataset.id)
     )
     const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
     if (units.length > 0 && units.length !== 1) {

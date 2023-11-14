@@ -2,7 +2,7 @@ import { Interval } from '../types'
 import { HeatmapAnimatedMode, HeatmapAnimatedGeneratorConfig } from '../../types'
 import { getInterval } from './time-chunks'
 
-export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: Interval[] = ['month', 'year']
+export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: Interval[] = ['MONTH', 'YEAR']
 
 export const getTimeChunksInterval = (
   config: HeatmapAnimatedGeneratorConfig,

@@ -9,7 +9,6 @@ import {
   selectEnvironmentalDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
 import {
   selectAllVesselGroups,
@@ -17,13 +16,12 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectAllReports } from 'features/reports/reports.slice'
 import {
-  selectUserStatus,
-  selectUserLogged,
   selectUserData,
   DEFAULT_GROUP_ID,
   PRIVATE_SUPPORTED_GROUPS,
   isGFWUser,
   USER_GROUP_WORKSPACE,
+  UserGroup,
 } from './user.slice'
 
 export const hasUserPermission = (permission: UserPermission) =>
@@ -91,7 +89,7 @@ export const selectPrivateUserGroups = createSelector(
       ? PRIVATE_SUPPORTED_GROUPS.map((g) => g.toLowerCase())
       : userGroups.filter((g) => PRIVATE_SUPPORTED_GROUPS.includes(g)).map((g) => g.toLowerCase())
 
-    return groupsWithAccess
+    return groupsWithAccess as UserGroup[]
   }
 )
 
@@ -119,8 +117,9 @@ export const selectUserDatasets = createSelector(
 )
 
 export const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
-  createSelector([selectUserDatasets], (datasets) =>
-    datasets?.filter((d) => d.category === datasetCategory)
+  createSelector(
+    [selectUserDatasets],
+    (datasets) => datasets?.filter((d) => d.category === datasetCategory)
   )
 
 export const selectUserDatasetsNotUsed = (datasetCategory: DatasetCategory) => {

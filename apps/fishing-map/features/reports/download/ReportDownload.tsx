@@ -1,20 +1,17 @@
 import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
-import {
-  setDownloadActivityAreaDataview,
-  setDownloadActivityAreaKey,
-} from 'features/download/downloadActivity.slice'
+import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportAreaDataview, selectReportAreaIds } from 'features/reports/reports.selectors'
+import { selectReportAreaIds, selectReportAreaName } from 'features/reports/reports.selectors'
 import styles from './ReportDownload.module.css'
 
 export default function ReportDownload() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
-  const dataview = useSelector(selectReportAreaDataview)
+  const areaName = useSelector(selectReportAreaName)
 
   const handleMoreOptionsClick = () => {
     trackEvent({
@@ -23,8 +20,7 @@ export default function ReportDownload() {
       label: areaId?.toString(),
     })
     batch(() => {
-      dispatch(setDownloadActivityAreaDataview(dataview))
-      dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
+      dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
     })
   }
 

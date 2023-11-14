@@ -1,11 +1,12 @@
 {
   "name": "@globalfishingwatch/data-transforms",
-  "version": "1.4.1",
+  "version": "1.5.3",
   "license": "MIT",
   "description": "Utils to decode various data formats",
   "peerDependencies": {
     "lodash": "4.x",
     "luxon": "3.x",
-    "papaparse": "5.x"
+    "papaparse": "5.x",
+    "turf": "3.x"
   }
 }

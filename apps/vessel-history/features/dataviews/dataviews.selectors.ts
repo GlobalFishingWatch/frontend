@@ -31,6 +31,7 @@ import {
   selectTrackThinningConfig,
 } from 'features/resources/resources.slice'
 import { trackDatasetConfigsCallback } from 'features/resources/resources.utils'
+import { WorkspaceProfileViewParam } from 'types'
 import { selectAllDataviews, selectDataviewsStatus } from './dataviews.slice'
 import { BACKGROUND_LAYER, OFFLINE_LAYERS, DEFAULT_VESSEL_DATAVIEWS } from './dataviews.config'
 import { getVesselDataviewInstanceFactory } from './dataviews.utils'
@@ -111,7 +112,7 @@ export const selectTrackDatasetConfigsCallback = createSelector(
     selectWorkspaceStateProperty('timebarGraph'),
   ],
   (thinningConfig, chunks, timebarGraph) =>
-    trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph)
+    trackDatasetConfigsCallback(thinningConfig, chunks as any, timebarGraph)
 )
 
 /**
@@ -162,7 +163,7 @@ export const selectDataviewsResources = createSelector(
   [selectDataviewInstancesResolved, selectTrackDatasetConfigsCallback],
   (dataviewInstances, trackDatasetConfigsCallback) => {
     const callbacks: GetDatasetConfigsCallbacks = {
-      tracks: trackDatasetConfigsCallback,
+      track: trackDatasetConfigsCallback,
     }
 
     return getResources(dataviewInstances || [], callbacks)
@@ -198,8 +199,9 @@ export const selectVesselsDataviews = createSelector([selectTrackDataviews], (da
   )
 })
 
-export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
-  dataviews?.filter((d) => d.config?.visible)
+export const selectActiveVesselsDataviews = createSelector(
+  [selectVesselsDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
@@ -208,7 +210,7 @@ export const selectActiveTrackDataviews = createSelector([selectTrackDataviews],
 
 export const selectGetVesselDataviewInstance = createSelector(
   [selectWorkspaceProfileView],
-  (profileView) => {
+  (profileView: WorkspaceProfileViewParam) => {
     const { events_query_params } = APP_PROFILE_VIEWS.filter(
       (v) => v.id === profileView
     ).shift() ?? {
@@ -228,7 +230,7 @@ export const selectGetVesselDataviewInstance = createSelector(
  */
 export const selectEventDatasetsConfigQueryParams = (state) => {
   const profileView = state.workspace?.profileView
-  const { propagate_events_query_params } = APP_PROFILE_VIEWS.filter(
+  const { propagate_events_query_params }: any = APP_PROFILE_VIEWS.filter(
     (v) => v.id === profileView
   ).shift()
   const vesselDataview =

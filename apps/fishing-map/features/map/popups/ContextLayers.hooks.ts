@@ -1,45 +1,51 @@
 import { useCallback, useMemo } from 'react'
 import { batch, useSelector } from 'react-redux'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
+import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import { getEventLabel } from 'utils/analytics'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
-import { parsePropertiesBbox } from 'features/map/map.utils'
 import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  setDownloadActivityAreaDataview,
-  setDownloadActivityAreaKey,
-} from 'features/download/downloadActivity.slice'
+import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectReportAreaSource } from 'features/app/app.selectors'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
+import { getBufferedAreaBbox } from 'features/reports/reports.utils'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-viewport.hooks'
 
 export const getFeatureBounds = (feature: TooltipEventFeature) => {
-  return feature.properties.bbox ? parsePropertiesBbox(feature.properties.bbox) : null
+  if (feature.geometry) {
+    const geometry = getGeometryDissolved(feature.geometry)
+    const bounds = getBufferedAreaBbox({ area: { geometry } } as any)
+    return bounds
+  }
 }
 
 export const getFeatureAreaId = (feature: TooltipEventFeature) => {
   return feature.properties.gfw_id || feature.properties[feature.promoteId as string]
 }
 
+export type HighlightedAreaParams = {
+  sourceId: string
+  areaId: string
+  sourceLayer?: string
+}
 export const useHighlightArea = () => {
   const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   return useCallback(
-    ({ sourceId, areaId }: { sourceId: string; areaId: string }) => {
+    ({ sourceId, areaId, sourceLayer = DEFAULT_CONTEXT_SOURCE_LAYER }: HighlightedAreaParams) => {
       cleanFeatureState('click')
-      cleanFeatureState('highlight')
       const featureState = {
         source: sourceId,
-        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+        sourceLayer: sourceLayer !== '' ? sourceLayer : undefined,
         id: areaId,
       }
       updateFeatureState([featureState], 'highlight')
@@ -73,13 +79,15 @@ export const useContextInteractions = () => {
       const datasetId = feature.datasetId as string
       const dataset = datasets.find((d) => d.id === datasetId)
       if (dataset) {
-        const dataview = dataviews.find((dataview) =>
-          dataview.datasets?.some((dataset) => dataset.id === datasetId)
+        const dataview = dataviews.find(
+          (dataview) => dataview.datasets?.some((dataset) => dataset.id === datasetId)
         )
-        const areaName = feature.value || feature.title
+        const areaName =
+          dataview?.config?.type === GeneratorType.UserContext
+            ? dataview?.datasets?.[0]?.name
+            : feature.value || feature.title
         batch(() => {
-          dispatch(setDownloadActivityAreaKey({ datasetId, areaId }))
-          dispatch(setDownloadActivityAreaDataview(dataview))
+          dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
           dispatch(setClickedEvent(null))
         })
         dispatch(fetchAreaDetailThunk({ dataset, areaId, areaName }))

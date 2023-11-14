@@ -37,7 +37,7 @@ import {
 import styles from './NewDataset.module.css'
 import DatasetConfig, { extractPropertiesFromGeojson } from './DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
-import { getFileTypes } from './datasets.utils'
+import { DatasetGeometryTypesSupported, getFileTypes } from './datasets.utils'
 
 export type DatasetMetadata = {
   name: string
@@ -75,7 +75,7 @@ function NewDataset(): React.ReactElement {
   const [error, setError] = useState('')
   const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
   const locationType = useSelector(selectLocationType)
-  const { dispatchCreateDataset } = useDatasetsAPI()
+  const { dispatchUpsertDataset } = useDatasetsAPI()
 
   const onFileLoaded = useCallback(
     async (file: File) => {
@@ -362,7 +362,7 @@ function NewDataset(): React.ReactElement {
       })
       setLoading(true)
       const { fields, guessedFields, ...meta } = metadata as DatasetMetadata
-      const { payload, error: createDatasetError } = await dispatchCreateDataset({
+      const { payload, error: createDatasetError } = await dispatchUpsertDataset({
         dataset: {
           ...meta,
           unit: 'TBD',
@@ -435,7 +435,7 @@ function NewDataset(): React.ReactElement {
             {/* eslint-disable-next-line  */}
             <FileDropzone
               onFileLoaded={onFileLoaded}
-              fileTypes={getFileTypes(datasetGeometryType)}
+              fileTypes={getFileTypes(datasetGeometryType as DatasetGeometryTypesSupported)}
             />
             {fileData && metadata && (
               <DatasetConfig

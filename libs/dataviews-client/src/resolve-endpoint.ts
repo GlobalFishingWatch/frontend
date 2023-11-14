@@ -9,7 +9,9 @@ import {
 const arrayQueryParams: EndpointParamType[] = ['4wings-datasets', 'sql']
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
 export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
-  const endpoint = dataset.endpoints?.find((endpoint) => endpoint.id === datasetConfig.endpoint)
+  const endpoint = dataset.endpoints?.find((endpoint) => {
+    return endpoint.id === datasetConfig.endpoint
+  })
 
   if (!endpoint) return null
 
@@ -23,7 +25,6 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
   if (datasetConfig.query) {
     const resolvedQuery = new URLSearchParams()
     datasetConfig.query.forEach((query) => {
-      // if (query)
       const endpointQuery = endpoint.query.find((q) => q.id === query.id)
       if (
         endpointQuery &&
@@ -47,16 +48,33 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
           })
         }
       } else {
-        resolvedQuery.set(query.id, query.value.toString())
+        if (Array.isArray(query.value)) {
+          query.value.forEach((queryArrItem, i) => {
+            const queryArrId = `${query.id}[${i}]`
+            resolvedQuery.set(queryArrId, queryArrItem as string)
+          })
+        } else {
+          resolvedQuery.set(query.id, query.value.toString())
+        }
       }
     })
+
     // To avoid duplicating query in every config when we already have the datasetId
     if (
       endpoint.query.some((q) => q.id === 'datasets') &&
       !resolvedQuery.toString().includes('datasets') &&
+      !resolvedQuery.toString().includes('dataset') &&
       datasetConfig.datasetId
     ) {
-      resolvedQuery.set('datasets', datasetConfig.datasetId)
+      const datasetString = API_VERSION === 'v2' ? 'datasets' : 'datasets[0]'
+      resolvedQuery.set(datasetString, datasetConfig.datasetId)
+    } else if (
+      // Also check v3 new single dataset param
+      endpoint.query.some((q) => q.id === 'dataset') &&
+      !resolvedQuery.toString().includes('dataset') &&
+      datasetConfig.datasetId
+    ) {
+      resolvedQuery.set('dataset', datasetConfig.datasetId)
     }
     url = `${url}?${resolvedQuery.toString()}`
   } else if (

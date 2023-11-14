@@ -4,19 +4,18 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { ReportActivityGraph } from 'types'
-import { DEFAULT_WORKSPACE } from 'data/config'
+import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import { selectReportActivityGraph, selectReportTimeComparison } from 'features/app/app.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getUTCDateTime } from 'utils/dates'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
+import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from 'features/reports/reports.config'
 
 // TODO get this from start and endDate from datasets
-const MIN_DATE = DEFAULT_WORKSPACE.availableStart.slice(0, 10)
-const MAX_DATE = DEFAULT_WORKSPACE.availableEnd.slice(0, 10)
-export const MAX_DAYS_TO_COMPARE = 100
-export const MAX_MONTHS_TO_COMPARE = 12
+const MIN_DATE = AVAILABLE_START.slice(0, 10)
+const MAX_DATE = AVAILABLE_END.slice(0, 10)
 
 export const useSetReportTimeComparison = () => {
   const timeComparison = useSelector(selectReportTimeComparison)
@@ -31,7 +30,7 @@ export const useSetReportTimeComparison = () => {
         // make sure start is properly recalculated again in beforeAfter mode when coming from another mode
         const newStart = getUTCDateTime(timeComparison.compareStart)
           .minus({ [durationType]: duration })
-          .toISO()
+          .toISO() as string
         dispatchQueryParams({
           reportTimeComparison: {
             ...timeComparison,
@@ -41,8 +40,8 @@ export const useSetReportTimeComparison = () => {
       }
       return
     }
-    const baseStart = timebarStart || DEFAULT_WORKSPACE.availableStart
-    const baseEnd = timebarEnd || DEFAULT_WORKSPACE.availableEnd
+    const baseStart = timebarStart || AVAILABLE_START
+    const baseEnd = timebarEnd || AVAILABLE_END
     const initialDuration = getUTCDateTime(baseEnd).diff(getUTCDateTime(baseStart), [
       'days',
       'months',
@@ -57,7 +56,7 @@ export const useSetReportTimeComparison = () => {
       activityType === 'periodComparison'
         ? { years: 1 }
         : { [initialDurationType]: initialDurationValue }
-    const initialStart = getUTCDateTime(baseStart).minus(baseStartMinusOffset).toISO()
+    const initialStart = getUTCDateTime(baseStart).minus(baseStartMinusOffset).toISO() as string
     const initialCompareStart = baseStart
 
     dispatchQueryParams({
@@ -106,7 +105,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
     ({ newStart, newCompareStart, newDuration, newDurationType, error }: any) => {
       const compareStart = getUTCDateTime(
         newCompareStart ? newCompareStart : (timeComparison.compareStart as string)
-      ).toISO()
+      ).toISO() as string
 
       const duration = newDuration || timeComparison.duration
       const durationType = newDurationType || timeComparison.durationType
@@ -118,16 +117,16 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
       let start: string
       if (activityType === 'beforeAfter') {
         // In before/after mode, start of 1st period is calculated automatically depending on start of 2nd period (compareStart)
-        start = startFromCompareStart.toISO()
+        start = startFromCompareStart.toISO() as string
       } else {
-        start = getUTCDateTime(newStart ? newStart : timeComparison.start).toISO()
+        start = getUTCDateTime(newStart ? newStart : timeComparison.start).toISO() as string
 
         // If new duration is set, make sure there delta from start to compareStart is >= of new duration
         if (
           newDuration &&
           startFromCompareStart.toMillis() - getUTCDateTime(timeComparison.start).toMillis() <= 0
         ) {
-          start = startFromCompareStart.toISO()
+          start = startFromCompareStart.toISO() as string
         }
       }
 
@@ -164,7 +163,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
   )
 
   const onStartChange = useCallback(
-    (e) => {
+    (e: any) => {
       update({
         newStart: e.target.value,
         error: e.target.validity.rangeOverflow || e.target.validity.rangeUnderflow,
@@ -174,7 +173,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
   )
 
   const onCompareStartChange = useCallback(
-    (e) => {
+    (e: any) => {
       update({
         newCompareStart: e.target.value,
         error: e.target.validity.rangeOverflow || e.target.validity.rangeUnderflow,
@@ -184,7 +183,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
   )
 
   const onDurationChange = useCallback(
-    (e) => {
+    (e: any) => {
       if (
         (durationType === 'months' && e.target.value > MAX_MONTHS_TO_COMPARE) ||
         (durationType === 'days' && e.target.value > MAX_DAYS_TO_COMPARE)
@@ -196,7 +195,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
   )
 
   const onDurationTypeSelect = useCallback(
-    (option) => {
+    (option: SelectOption) => {
       if (option.id === 'months' && duration > MAX_MONTHS_TO_COMPARE) {
         update({ newDurationType: option.id, newDuration: MAX_MONTHS_TO_COMPARE })
       } else {

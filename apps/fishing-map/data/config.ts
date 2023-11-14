@@ -1,16 +1,19 @@
 import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { TimebarGraphs, TimebarVisualisations, UserTab } from 'types'
+import { AppState, TimebarGraphs, TimebarVisualisations, UserTab, WorkspaceState } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
+export const IS_DEVELOPMENT_ENV = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION_BUILD = process.env.NODE_ENV === 'production'
 export const PUBLIC_WORKSPACE_ENV = process.env.NEXT_PUBLIC_WORKSPACE_ENV
-export const IS_PRODUCTION = PUBLIC_WORKSPACE_ENV === 'production' || IS_PRODUCTION_BUILD
+export const IS_PRODUCTION_WORKSPACE_ENV =
+  PUBLIC_WORKSPACE_ENV === 'production' || PUBLIC_WORKSPACE_ENV === 'staging'
+export const IS_PRODUCTION = IS_PRODUCTION_WORKSPACE_ENV || IS_PRODUCTION_BUILD
 
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
@@ -20,14 +23,14 @@ export const REPORT_DAYS_LIMIT =
 // Never actually used?
 export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
 export const CARRIER_PORTAL_API_URL =
-  process.env.NEXT_CARRIER_PORTAL_API_URL || 'https://gateway.api.globalfishingwatch.org'
+  process.env.NEXT_PUBLIC_CARRIER_PORTAL_API_URL || 'https://gateway.api.globalfishingwatch.org'
 export const CARRIER_PORTAL_URL =
   process.env.NEXT_PUBLIC_CARRIER_PORTAL_URL || 'https://carrier-portal.globalfishingwatch.org'
 export const LATEST_CARRIER_DATASET_ID =
   process.env.NEXT_PUBLIC_LATEST_CARRIER_DATASET_ID || 'carriers:latest'
 
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
-export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID
+export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID
 
 export const REPORT_VESSELS_PER_PAGE = 10
 export const REPORT_SHOW_MORE_VESSELS_PER_PAGE = REPORT_VESSELS_PER_PAGE * 5
@@ -49,7 +52,7 @@ export const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
 const LAST_DATA_UPDATE = DateTime.fromObject({ hour: 0, minute: 0, second: 0 }, { zone: 'utc' })
   .minus({ days: DEFAULT_DATA_DELAY_DAYS })
-  .toISO()
+  .toISO() as string
 
 export const DEFAULT_VIEWPORT = {
   zoom: 1.5,
@@ -63,23 +66,25 @@ export const DEFAULT_TIME_RANGE = {
 }
 
 export const DEFAULT_PAGINATION_PARAMS = {
-  limit: 99999,
+  limit: 999999,
   offset: 0,
 }
+
+export const BUFFER_PREVIEW_COLOR = '#F95E5E'
 
 export const DEFAULT_ACTIVITY_CATEGORY = 'fishing'
 
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = new Date().getFullYear()
 
-export const DEFAULT_WORKSPACE = {
+export const AVAILABLE_START = new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString() as string
+export const AVAILABLE_END = new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString() as string
+
+export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   ...DEFAULT_VIEWPORT,
-  query: undefined,
   readOnly: false,
   daysFromLatest: undefined,
   sidebarOpen: true,
-  availableStart: new Date(Date.UTC(FIRST_YEAR_OF_DATA, 0, 1)).toISOString(),
-  availableEnd: new Date(Date.UTC(CURRENT_YEAR, 11, 31)).toISOString(),
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   visibleEvents: 'all',

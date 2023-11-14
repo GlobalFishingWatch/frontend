@@ -16,16 +16,18 @@ const API_GATEWAY =
   'https://gateway.api.dev.globalfishingwatch.org'
 export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
-export const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v2'
+export const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v3'
 const DEBUG_API_REQUESTS: boolean = process.env.NEXT_PUBLIC_DEBUG_API_REQUESTS === 'true'
 
 const AUTH_PATH = 'auth'
 const REGISTER_PATH = 'registration'
 export const GUEST_USER_TYPE = 'guest'
 
+export type V2MetadataError = Record<string, any>
 export interface V2MessageError {
   detail: string
   title: string
+  metadata?: V2MetadataError
 }
 export interface ResponseError {
   status: number
@@ -43,9 +45,10 @@ interface LoginParams {
   refreshToken?: string | null
 }
 export type ApiVersion = '' | 'v1' | 'v2' | 'v3'
-export type FetchOptions<T = BodyInit> = Partial<RequestInit> & {
+export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body'>> & {
   version?: ApiVersion
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  cache?: RequestCache
   responseType?: ResourceResponseType
   requestType?: ResourceRequestType
   body?: T
@@ -58,12 +61,19 @@ interface LibConfig {
   baseUrl?: string
 }
 
-const processStatus = (response: Response): Promise<Response> => {
+const processStatus = (
+  response: Response,
+  requestStatus?: ResourceResponseType
+): Promise<Response> => {
   return new Promise(async (resolve, reject) => {
     const { status, statusText } = response
     try {
       if (response.status >= 200 && response.status < 400) {
         return resolve(response)
+      }
+
+      if (requestStatus === 'default') {
+        return reject(response)
       }
       // Compatibility with v1 and v2 errors format
       const errors = {
@@ -145,9 +155,7 @@ export class GFW_API_CLASS {
 
   getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
     const fallbackLocale =
-      locale ||
-      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : 'en') ||
-      'en'
+      locale || (isClientSide ? localStorage.getItem('i18nextLng') : 'en') || 'en'
     return this.generateUrl(
       `/${API_VERSION}/${AUTH_PATH}/${REGISTER_PATH}?client=${client}&callback=${encodeURIComponent(
         callbackUrl
@@ -159,9 +167,7 @@ export class GFW_API_CLASS {
 
   getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
     const fallbackLocale =
-      locale ||
-      (typeof localStorage !== 'undefined' ? localStorage.getItem('i18nextLng') : 'en') ||
-      'en'
+      locale || (isClientSide ? localStorage.getItem('i18nextLng') : 'en') || 'en'
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
     return this.generateUrl(
       `/${API_VERSION}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`,
@@ -197,10 +203,12 @@ export class GFW_API_CLASS {
 
   setToken(token: string) {
     this.token = token
-    if (token) {
-      localStorage.setItem(this.storageKeys.token, token)
-    } else {
-      localStorage.removeItem(this.storageKeys.token)
+    if (isClientSide) {
+      if (token) {
+        localStorage.setItem(this.storageKeys.token, token)
+      } else {
+        localStorage.removeItem(this.storageKeys.token)
+      }
     }
     if (this.debug) {
       console.log('GFWAPI: updated token with', token)
@@ -213,10 +221,12 @@ export class GFW_API_CLASS {
 
   setRefreshToken(refreshToken: string) {
     this.refreshToken = refreshToken
-    if (refreshToken) {
-      localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
-    } else {
-      localStorage.removeItem(this.storageKeys.refreshToken)
+    if (isClientSide) {
+      if (refreshToken) {
+        localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
+      } else {
+        localStorage.removeItem(this.storageKeys.refreshToken)
+      }
     }
     if (this.debug) {
       console.log('GFWAPI: updated refreshToken with', refreshToken)
@@ -279,8 +289,8 @@ export class GFW_API_CLASS {
     return absolute ? `${this.baseUrl}${prefix}${url}` : `${prefix}${url}`
   }
 
-  fetch<T>(url: string, options: FetchOptions = {}) {
-    return this._internalFetch<T>(this.generateUrl(url, options.version), options)
+  fetch<Response, Body = unknown>(url: string, options: FetchOptions<Body> = {}) {
+    return this._internalFetch<Response, Body>(this.generateUrl(url, options.version), options)
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
@@ -297,12 +307,22 @@ export class GFW_API_CLASS {
       })
   }
 
-  async _internalFetch<T = Record<string, unknown> | Blob | ArrayBuffer | Response>(
+  async _internalFetch<T = Record<string, unknown> | Blob | ArrayBuffer | Response, Body = unknown>(
     url: string,
-    options: FetchOptions = {},
+    options: FetchOptions<Body> = {},
     refreshRetries = 0,
     waitLogin = true
   ): Promise<T> {
+    const {
+      method = 'GET',
+      body = null,
+      headers = {},
+      responseType = 'json',
+      requestType = 'json',
+      cache,
+      signal,
+      local = false,
+    } = options
     try {
       if (this.logging && waitLogin) {
         // Don't do any request until the login is completed
@@ -317,15 +337,6 @@ export class GFW_API_CLASS {
       }
 
       try {
-        const {
-          method = 'GET',
-          body = null,
-          headers = {},
-          responseType = 'json',
-          requestType = 'json',
-          signal,
-          local = false,
-        } = options
         if (this.debug) {
           console.log(`GFWAPI: Fetching URL: ${url}`)
         }
@@ -346,10 +357,12 @@ export class GFW_API_CLASS {
         const data = await fetch(fetchUrl, {
           method,
           signal,
-          ...(body && { body: requestType === 'json' ? JSON.stringify(body) : body }),
+          ...(cache && { cache }),
+          ...(body &&
+            ({ body: requestType === 'json' ? JSON.stringify(body) : body } as RequestInit)),
           headers: finalHeaders,
         })
-          .then(processStatus)
+          .then((res) => processStatus(res, responseType))
           .then((res) => {
             switch (responseType) {
               case 'default':
@@ -406,8 +419,10 @@ export class GFW_API_CLASS {
               if (this.debug) {
                 console.warn(`GFWAPI: Error fetching ${url}`, e)
               }
-              localStorage.removeItem(this.storageKeys.token)
-              localStorage.removeItem(this.storageKeys.refreshToken)
+              if (isClientSide) {
+                localStorage.removeItem(this.storageKeys.token)
+                localStorage.removeItem(this.storageKeys.refreshToken)
+              }
               e.refreshError = true
               throw parseAPIError(e)
             }
@@ -423,12 +438,19 @@ export class GFW_API_CLASS {
             }
             console.warn(`GFWAPI: Error fetching ${url}`, e)
           }
+          if (responseType === 'default') {
+            throw e
+          }
+
           throw parseAPIError(e)
         }
       }
     } catch (e: any) {
       if (this.debug) {
         console.warn(`GFWAPI: Error fetching ${url}`, e)
+      }
+      if (responseType === 'default') {
+        throw e
       }
       throw parseAPIError(e)
     }

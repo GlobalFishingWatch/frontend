@@ -2,23 +2,25 @@ import { API_URL_4WINGS_TILES } from '../constants/urls'
 
 export const getGreeting = () => cy.get('h1')
 
-export const getVmsActivityLayerPanel = () =>
-  cy.getBySelLike('activity-layer-panel-vms-', { timeout: 20000 })
+export const getWorkspaceTitle = () => cy.getBySel('user-workspace-title')
 
-export const getTimebar = () => cy.getByClass('Timebar_timebarWrapper', { timeout: 5000 })
+export const getVmsActivityLayerPanel = () =>
+  cy.getBySelLike('activity-layer-panel-vms-', getDOMTimeout(20000))
+
+export const getTimebar = () => cy.getByClass('Timebar_timebarWrapper', getDOMTimeout(5000))
 
 export const getTimeline = () => cy.getBySel('timeline-graph')
 
 export const getMapCanvas = () => cy.get('#map canvas')
 
-export const getSidebar = () => cy.getBySel('sidebar-container', { timeout: 10000 })
+export const getSidebar = () => cy.getBySel('sidebar-container', getDOMTimeout(10000))
 
 export const waitForSidebarLoaded = () =>
-  getSidebar().findByClass('Sections_container', { timeout: 10000 }).should('exist')
+  getSidebar().findByClass('Sections_container', getDOMTimeout(10000)).should('exist')
 
 export const waitForMapLoadTiles = (extraDelay?: number) => {
   cy.intercept(API_URL_4WINGS_TILES).as('loadTiles')
-  cy.wait('@loadTiles', { requestTimeout: 10000 })
+  cy.wait('@loadTiles', getRequestTimeout(10000))
   if (extraDelay) {
     cy.wait(extraDelay)
   }
@@ -27,7 +29,7 @@ export const waitForMapLoadTiles = (extraDelay?: number) => {
 export const verifyTracksInTimebar = (segments?: number) => {
   getTimeline()
     // The tracks request can be heavy
-    .findBySelLike(`tracks-segment`, { timeout: 20000 })
+    .findBySelLike(`tracks-segment`, getDOMTimeout(20000))
     .should('have.length.greaterThan', segments ?? 1)
 }
 
@@ -36,6 +38,7 @@ export const disablePopups = () => {
   localStorage.setItem('DisableWelcomePopup', 'true')
   localStorage.setItem('DisableSourceSwitchPopup', 'true')
   localStorage.setItem('HighlightPopup', '"vms-with-png"')
+  localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
   localStorage.setItem(
     'hints',
     '{"fishingEffortHeatmap":true,"filterActivityLayers":true,"clickingOnAGridCellToShowVessels":true,"changingTheTimeRange":true,"areaSearch":true,"periodComparisonBaseline":true}'
@@ -59,6 +62,25 @@ export const deleteDownloadsFolder = () => {
 }
 
 export const getQueryParam = (url: string, name: string) => {
-  let params = new URLSearchParams(url)
+  const urlComponent = new URL(url)
+  let params = new URLSearchParams(urlComponent.search)
   return params.get(name)
+}
+
+/**
+ *
+ * @param aditionalTime if you don't set global timeouts but we want to keep longer timeouts for specific actions or requests
+ */
+export const getDOMTimeout = (aditionalTime?: number) => {
+  return { timeout: Cypress.config('defaultCommandTimeout') + aditionalTime }
+}
+
+export const getRequestTimeout = (
+  aditionalResquestTime?: number,
+  aditionalResponseTime?: number
+) => {
+  return {
+    requestTimeout: Cypress.config('requestTimeout') + aditionalResquestTime,
+    responseTimeout: Cypress.config('responseTimeout') + aditionalResponseTime,
+  }
 }

@@ -1,18 +1,15 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
-import {
-  MAX_DAYS_TO_COMPARE,
-  MAX_MONTHS_TO_COMPARE,
-  useReportTimeCompareConnect,
-} from 'features/reports/reports-timecomparison.hooks'
+import { InputDate, InputText, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import { useReportTimeCompareConnect } from 'features/reports/reports-timecomparison.hooks'
 import { selectReportTimeComparison } from 'features/app/app.selectors'
 import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { MAX_MONTHS_TO_COMPARE, MAX_DAYS_TO_COMPARE } from 'features/reports/reports.config'
 import styles from './ReportActivityBeforeAfter.module.css'
 
 export default function ReportActivityBeforeAfter() {
@@ -31,7 +28,7 @@ export default function ReportActivityBeforeAfter() {
     MAX_DATE,
   } = useReportTimeCompareConnect('beforeAfter')
 
-  const trackAndChangeDate = (date) => {
+  const trackAndChangeDate = (date: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select date in 'before/after'`,
@@ -46,7 +43,7 @@ export default function ReportActivityBeforeAfter() {
     onCompareStartChange(date)
   }
 
-  const trackAndChangeDuration = (duration) => {
+  const trackAndChangeDuration = (duration: any) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select duration in 'before/after'`,
@@ -63,7 +60,7 @@ export default function ReportActivityBeforeAfter() {
     onDurationChange(duration)
   }
 
-  const trackAndChangeDurationType = (duration) => {
+  const trackAndChangeDurationType = (duration: SelectOption) => {
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Select duration in 'before/after'`,

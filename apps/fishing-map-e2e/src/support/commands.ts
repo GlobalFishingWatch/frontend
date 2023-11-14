@@ -14,6 +14,9 @@ declare namespace Cypress {
   interface Chainable<Subject> {
     login(email: string, password: string): void
     store(reducerName: string): void
+    forceClick(
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Cypress.Chainable<JQuery<HTMLElement>>
     getBySel(
       selector: string,
       options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
@@ -41,6 +44,10 @@ declare namespace Cypress {
   }
 }
 
+Cypress.Commands.add('forceClick', { prevSubject: 'element' }, (subject, options) => {
+  cy.wrap(subject).click({ force: true })
+})
+
 function loginViaAuthAPI(username: string, password: string) {
   // App landing page redirects to Auth0.
   cy.visit('/')
@@ -53,12 +60,14 @@ function loginViaAuthAPI(username: string, password: string) {
 
   // Reload the page to see that view if from anonnymous user
   cy.reload()
-
+  // @TODO: Remove thw wait when the bug in login is fixed "/index bug"
+  // eslint-disable-next-line
+  cy.wait(5000)
   // Close dialog popup
   cy.get('div[role=dialog] button[type=button][aria-label=close]').click()
 
   // Login on Auth0.
-  cy.get('a[href*="auth"]', { timeout: 20000 }).click()
+  cy.getBySel('sidebar-login-icon', { timeout: 20000 }).click()
   cy.log(`logging in with ${username}`)
 
   cy.get('input#email').type(username)
@@ -66,15 +75,17 @@ function loginViaAuthAPI(username: string, password: string) {
   cy.get('input[type=submit]').click()
 
   // Ensure API Auth has redirected us back to the app, in development set your domain in .env
-  cy.intercept('/v2/auth/tokens*').as('requestToken')
+  cy.intercept('/v3/auth/tokens*').as('requestToken')
   cy.url().should('include', Cypress.config('baseUrl')).should('include', 'access-token=')
 
   // Validate that we request a token and is saved in the local storage
-  cy.wait('@requestToken', { requestTimeout: 10000 }).then((interception) => {
+  cy.wait('@requestToken', { requestTimeout: 20000 }).then((interception) => {
     const token = interception.response.body.token
+    // eslint-disable-next-line
+    cy.wait(1000) // After request the token give a second so it can be added to the localstorage after the resquest is completed
     cy.getAllLocalStorage().then((result) => {
       expect(result).to.deep.contain({
-        [Cypress.config('baseUrl')]: {
+        [Cypress.config('baseUrl').replace('/map', '')]: {
           ...localStorage,
           GFW_API_USER_TOKEN: token,
         },

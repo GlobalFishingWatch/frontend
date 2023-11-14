@@ -93,37 +93,39 @@ export const getUnitsPositions = (
   const numUnits = mOuterEnd.diff(mOuterStart, baseUnit) + numUnitsOffset
 
   let mUnit = mOuterStart
-  let x = outerScale(mUnit)
+  if (mUnit.isValid()) {
+    let x = outerScale(mUnit)
 
-  for (let ui = 0; ui <= numUnits; ui += 1) {
-    const mUnitNext = mUnit.add(1, baseUnit)
-    const xNext = outerScale(mUnitNext)
+    for (let ui = 0; ui <= numUnits; ui += 1) {
+      const mUnitNext = mUnit.add(1, baseUnit)
+      const xNext = outerScale(mUnitNext)
 
-    const id = mUnit.format(
-      {
-        year: 'YYYY',
-        month: 'YYYY-MM',
-        week: 'YYYY-MM-DD',
-        day: 'YYYY-MM-DD',
-        hour: 'YYYY-MM-DD-HH',
-      }[baseUnit]
-    )
+      const id = mUnit.format(
+        {
+          year: 'YYYY',
+          month: 'YYYY-MM',
+          week: 'YYYY-MM-DD',
+          day: 'YYYY-MM-DD',
+          hour: 'YYYY-MM-DD-HH',
+        }[baseUnit]
+      )
 
-    const width = xNext - x
-    const unit = {
-      id,
-      x,
-      width,
-      label: getUnitLabel(mUnit, baseUnit, width),
-      hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity)} - ${labels.zoomTo} ${
-        labels.intervals[baseUnit]
-      }`,
-      start: mUnit.toISOString(),
-      end: mUnitNext.toISOString(),
+      const width = xNext - x
+      const unit = {
+        id,
+        x,
+        width,
+        label: getUnitLabel(mUnit, baseUnit, width),
+        hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity)} - ${labels.zoomTo} ${
+          labels.intervals[baseUnit]
+        }`,
+        start: mUnit.toISOString(),
+        end: mUnitNext.toISOString(),
+      }
+      units.push(unit)
+      mUnit = mUnitNext
+      x = xNext
     }
-    units.push(unit)
-    mUnit = mUnitNext
-    x = xNext
   }
 
   return units

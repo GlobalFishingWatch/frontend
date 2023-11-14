@@ -280,7 +280,8 @@
   display: none !important;
 }
 
-.faded {
+.faded,
+.secondary {
   color: var(--color-secondary-blue);
 }
 

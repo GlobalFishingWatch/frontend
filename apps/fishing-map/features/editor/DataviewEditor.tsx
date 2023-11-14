@@ -19,7 +19,11 @@ import {
   MultiSelect,
   ChoiceOption,
 } from '@globalfishingwatch/ui-components'
-import { GeneratorType, COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
+import {
+  GeneratorType,
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
+  Interval,
+} from '@globalfishingwatch/layer-composer'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { createDataviewThunk, updateDataviewThunk } from 'features/dataviews/dataviews.slice'
 import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'
@@ -45,10 +49,11 @@ const dynamicHeatmapOption: ChoiceOption = { id: 'dynamic', label: 'Dynamic' }
 const staticHeatmapOption: ChoiceOption = { id: 'static', label: 'Static' }
 const heatmapTypesOptions = [dynamicHeatmapOption, staticHeatmapOption]
 
-const temporalResolutionOptions = [
-  { id: 'month', label: 'Month' },
-  { id: 'day', label: 'Day' },
-  { id: 'hour', label: 'Hour' },
+type temporalResolutionOption = { id: Interval; label: string }
+const temporalResolutionOptions: temporalResolutionOption[] = [
+  { id: 'MONTH', label: 'Month' },
+  { id: 'DAY', label: 'Day' },
+  { id: 'HOUR', label: 'Hour' },
 ]
 
 type DataviewEditorProps = {
@@ -85,7 +90,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
 
   useEffect(() => {
     if (!isEditingDataview) {
-      dispatch(fetchAllDatasetsThunk())
+      dispatch(fetchAllDatasetsThunk({ onlyUserDatasets: false }))
     }
   }, [dispatch, isEditingDataview])
 
@@ -170,7 +175,6 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
   return (
     <div className={styles.container}>
       <InputText
-        inputSize="small"
         value={dataview.name}
         label={`${t('common.name', 'Name')} *`}
         className={styles.input}
@@ -238,7 +242,6 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
         <div className={styles.input2Columns}>
           <label>Max zoom level *</label>
           <InputText
-            inputSize="small"
             type="number"
             step="1"
             defaultValue={8}
@@ -258,7 +261,6 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
                 <div className={styles.rangeContainer}>
                   {[...new Array(COLOR_RAMP_DEFAULT_NUM_STEPS)].map((_, i) => (
                     <InputText
-                      inputSize="small"
                       type="number"
                       step="0.1"
                       key={i}
@@ -298,8 +300,8 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
                   options={temporalResolutionOptions}
                   containerClassName={styles.input2Columns}
                   direction="top"
-                  selectedOption={temporalResolutionOptions.find(({ id }) =>
-                    dataview.config?.intervals?.includes(id)
+                  selectedOption={temporalResolutionOptions.find(
+                    ({ id }) => dataview.config?.intervals?.includes(id)
                   )}
                   onSelect={(selected) => {
                     onDataviewConfigChange({ interval: selected.id })

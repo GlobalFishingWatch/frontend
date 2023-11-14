@@ -61,23 +61,48 @@ const filterEventByTimerange = (startMs: number, endMs: number, feature: Feature
     !feature.properties.startMs) &&
   ((feature.properties.endMs && feature.properties.endMs >= startMs) || !feature.properties.endMs)
 
-export const getVesselEventsGeojson = (
-  trackEvents: RawEvent[] | null,
-  showAuthorizationStatus = true,
-  iconsPrefix = 'carrier_portal_',
-  trackColor = null,
-  vesselId?: string
+type GetVesselEventsGeojsonParams = Parameters<
+  (
+    trackEvents: RawEvent[] | null,
+    showAuthorizationStatus: boolean,
+    iconsPrefix: string,
+    trackColor?: string,
+    vesselId?: string
+  ) => void
+>
+
+type GetVesselEventsGeojsonFn = (...args: GetVesselEventsGeojsonParams) => FeatureCollection
+
+export const getVesselEventsGeojsonMemoizeEqualityCheck = (
+  newArgs: GetVesselEventsGeojsonParams,
+  lastArgs: GetVesselEventsGeojsonParams
+) => {
+  return (
+    newArgs?.[0]?.length === lastArgs?.[0]?.length &&
+    newArgs[1] === lastArgs[1] &&
+    newArgs[2] === lastArgs[2] &&
+    newArgs[3] === lastArgs[3] &&
+    newArgs[4] === lastArgs[4]
+  )
+}
+
+export const getVesselEventsGeojson: GetVesselEventsGeojsonFn = (
+  trackEvents,
+  showAuthorizationStatus,
+  iconsPrefix,
+  trackColor,
+  vesselId
 ): FeatureCollection => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],
   }
-
   if (!trackEvents) return featureCollection
   const trackEventsSorted = [...trackEvents].sort((a, b) => (a.type === 'encounter' ? 1 : -1))
   featureCollection.features = trackEventsSorted.flatMap((event: RawEvent) => {
     if (!event) return []
     const isEncounterEvent = event.type === 'encounter'
+    const isPortEvent = event.type === 'port_visit'
     const authorized = event.encounter?.authorized === true
     const authorizationStatus = event?.encounter
       ? event.encounter?.authorizationStatus
@@ -108,11 +133,20 @@ export const getVesselEventsGeojson = (
         start: startDT.toISO(),
         end: endDT.toISO(),
         ...(isEncounterEvent && {
+          ...(event.vessel?.name && {
+            vesselName: event.vessel.name,
+          }),
           encounterVesselId: event.encounter?.vessel?.id,
           encounterVesselName: event.encounter?.vessel?.name,
           ...(showAuthorizationStatus && {
             authorized,
             authorizationStatus,
+          }),
+        }),
+        ...(isPortEvent && {
+          ...(event.port_visit?.intermediateAnchorage && {
+            portName: event.port_visit?.intermediateAnchorage.name,
+            portFlag: event.port_visit?.intermediateAnchorage.flag,
           }),
         }),
         icon: `${iconsPrefix}${event.type}`,
@@ -173,19 +207,27 @@ export const filterGeojsonByTimerange = (
   return geojsonFiltered
 }
 
+type GetVesselEventsSegmentsGeojsonParams = Parameters<
+  (track: any, events: RawEvent[], showAuthorizationStatus: boolean, vesselId?: string) => void
+>
+
+type GetVesselEventsSegmentsGeojsonFn = (
+  ...args: GetVesselEventsSegmentsGeojsonParams
+) => FeatureCollection
+
 export const getVesselEventsSegmentsGeojsonMemoizeEqualityCheck = (
-  newArgs: any[],
-  lastArgs: any[]
+  newArgs: GetVesselEventsSegmentsGeojsonParams,
+  lastArgs: GetVesselEventsSegmentsGeojsonParams
 ) => {
   return newArgs[0].length === lastArgs[0].length && newArgs[1].length === lastArgs[1].length
 }
 
-export const getVesselEventsSegmentsGeojson = (
-  track: any,
-  events: RawEvent[],
-  showAuthorizationStatus = true,
-  vesselId?: string
-): FeatureCollection => {
+export const getVesselEventsSegmentsGeojson: GetVesselEventsSegmentsGeojsonFn = (
+  track,
+  events,
+  showAuthorizationStatus,
+  vesselId
+) => {
   const featureCollection: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],

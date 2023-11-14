@@ -3,11 +3,31 @@
   background: var(--color-border);
 }
 
-.highlighted {
+.flex {
+  display: flex;
+}
+
+.transmissions {
   display: flex;
   justify-content: space-between;
-  padding: 0.2rem;
   overflow: hidden;
+  padding: 0.2rem;
+}
+
+.year {
+  padding: 0.2rem;
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+
+.year::after {
+  content: '';
+  position: absolute;
+  inset: -1rem 0;
+}
+
+.highlighted {
   letter-spacing: -0.05rem;
   font-size: 1rem;
   line-height: 1rem;
@@ -16,4 +36,11 @@
   background: var(--color-secondary-blue);
   white-space: nowrap;
   min-height: 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.year.highlighted:hover {
+  background: var(--color-primary-blue);
 }

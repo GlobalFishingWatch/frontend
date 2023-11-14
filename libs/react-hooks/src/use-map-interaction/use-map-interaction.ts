@@ -21,7 +21,12 @@ export type MaplibreGeoJSONFeature = GeoJSONFeature & {
 }
 
 type FeatureStates = 'click' | 'hover' | 'highlight'
-type FeatureStateSource = { source: string; sourceLayer: string; id: string; state?: FeatureStates }
+type FeatureStateSource = {
+  id: string
+  source: string
+  sourceLayer?: string
+  state?: FeatureStates
+}
 
 export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
   const uniqueLayerIdFeatures: Record<string, string> = {}
@@ -36,6 +41,18 @@ export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
     return uniqueLayerIdFeatures[layerId] === id
   })
   return filtered
+}
+
+const getId = (feature: MaplibreGeoJSONFeature) => {
+  const promoteIdValue =
+    feature.layer.metadata?.promoteId && feature.properties[feature.layer.metadata?.promoteId]
+  if (feature.id !== undefined) {
+    return feature.id
+  } else if (feature.properties?.gfw_id !== undefined) {
+    return feature.properties?.gfw_id
+  } else if (promoteIdValue !== undefined) {
+    return promoteIdValue
+  }
 }
 
 const getExtendedFeatures = (
@@ -57,8 +74,6 @@ const getExtendedFeatures = (
 
     const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
     const properties = feature.properties || {}
-    const promoteIdValue =
-      feature.layer.metadata?.promoteId && feature.properties[feature.layer.metadata?.promoteId]
     let value = properties.value || properties.name || properties.id
     if (feature.layer.metadata?.valueProperties?.length) {
       value = feature.layer.metadata.valueProperties
@@ -74,7 +89,7 @@ const getExtendedFeatures = (
       source: feature.source,
       sourceLayer: feature.sourceLayer,
       uniqueFeatureInteraction,
-      id: (feature.id as number) || feature.properties?.gfw_id || promoteIdValue || undefined,
+      id: getId(feature),
       value,
       tile: {
         x: (feature as any)._vectorTileFeature._x,
@@ -201,8 +216,8 @@ export const useFeatureState = (map?: Map) => {
             map.setFeatureState(
               {
                 source: feature.source,
-                sourceLayer: feature.sourceLayer,
                 id: feature.id,
+                ...(feature.sourceLayer && { sourceLayer: feature.sourceLayer }),
               },
               { [state]: true }
             )

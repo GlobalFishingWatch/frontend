@@ -173,6 +173,47 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-belize-vessel-identity-fishing": {
+    "name": "VMS Belize",
+    "description": "Vessel Identity",
+    "schema": {
+      "id": "id",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
+    }
+  },
+  "private-belize-vessel-identity-non-fishing": {
+    "name": "VMS Belize",
+    "description": "Vessel Identity",
+    "schema": {
+      "id": "id",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
+    }
+  },
+  "private-belize-vessel-identity": {
+    "name": "VMS Belize",
+    "description": "Vessel Identity",
+    "schema": {
+      "id": "id",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
+    }
+  },
   "private-bra-onyxsat-fishing-effort": {
     "name": "VMS Brasil (Esforço de Pesca)",
     "description": "Dados de rastreamento por satélite são fornecidos pela Secretaria de Aquicultura e Pesca. Os dados são coletados do sistema de rastreamento de embarcações pesqueira do Brasil e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica para transmissão de localização em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações AIS, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada.",
@@ -224,7 +265,7 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": "Camarão-rosa",
+          " Camarão-rosa": " Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
@@ -299,7 +340,7 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": "Camarão-rosa",
+          " Camarão-rosa": " Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
@@ -367,7 +408,7 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": "Camarão-rosa",
+          " Camarão-rosa": " Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
@@ -385,13 +426,35 @@
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "non-fishing": "não pesqueiro"
         }
       },
       "vessel_id": "vessel_id"
+    }
+  },
+  "private-bra-onyxsat-vessel-identity-fishing": {
+    "name": "VMS Brasil (Embarcações de Pesca)",
+    "description": "Embarcações de Pesca (VMS Brasil)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "private-bra-onyxsat-vessel-identity-non-fishing": {
+    "name": "VMS Brasil (Embacações não pesqueiras)",
+    "description": "Embacações não pesqueiras (VMS Brasil)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "private-brazil-opentuna-presence": {
@@ -407,7 +470,7 @@
   },
   "private-costa-rica-fishing-effort": {
     "name": "Costa Rica VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -429,7 +492,7 @@
   },
   "private-costa-rica-presence": {
     "name": "Vessel Presence Costa Rica VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -451,14 +514,14 @@
   },
   "private-ecuador-fishing-effort": {
     "name": "Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "hours": "horas",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca"
         }
@@ -471,13 +534,13 @@
   },
   "private-ecuador-presence": {
     "name": "Vessel Presence Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "international traffic": "international traffic",
@@ -560,6 +623,16 @@
       "vessel-groups": "vessel-groups"
     }
   },
+  "private-indonesia-aruna-vessel-identity": {
+    "name": "Indonesia Aruna (Vessels)",
+    "description": "Vessels (Indonesia Aruna)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "private-indonesia-aruna-vessels": {
     "name": "Indonesia Aruna (Vessels)",
     "description": "Vessels (Indonesia Aruna)",
@@ -612,6 +685,16 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-indonesia-fishing-vessels": {
+    "name": "Indonesia VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Indonesia (Private)",
+    "schema": {
+      "id": "id",
+      "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "private-indonesia-ipnlf-fishing-effort": {
     "name": "AP2HI-IPNLF: Indonesia Pelagic",
     "description": "Indonesia AP2HI-IPNLF Fishing Effort",
@@ -653,6 +736,19 @@
       },
       "vessel_id": "vessel_id",
       "vessel-groups": "vessel-groups"
+    }
+  },
+  "private-indonesia-ipnlf-vessel-identity": {
+    "name": "Indonesia AP2HI-IPNLF (Vessels)\n",
+    "description": "Vessels (Indonesia AP2HI-IPNLF)\n",
+    "schema": {
+      "id": "id",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
     }
   },
   "private-indonesia-ipnlf-vessels": {
@@ -712,6 +808,16 @@
       "vessel-groups": "vessel-groups"
     }
   },
+  "private-indonesia-pelagic-vessel-identity": {
+    "name": "Indonesia Pelagic (Vessels)",
+    "description": "Vessels (Indonesia Pelagic)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "private-indonesia-pelagic-vessels": {
     "name": "Indonesia Pelagic (Vessels)",
     "description": "Vessels (Indonesia Pelagic)",
@@ -734,7 +840,7 @@
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "Cast Nets": "Cast Nets",
           "Anchored gillnets": "Anchored gillnets",
@@ -800,6 +906,16 @@
       "vessel-groups": "vessel-groups"
     }
   },
+  "private-indonesia-rare-vessel-identity": {
+    "name": "Indonesia Rare (Vessels)",
+    "description": "Vessels (Indonesia Rare)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "private-indonesia-rare-vessels": {
     "name": "Indonesia Rare (Vessels)",
     "description": "Vessels (Indonesia Rare)",
@@ -834,6 +950,19 @@
       "vessel-groups": "vessel-groups"
     }
   },
+  "private-indonesia-zebrax-vessel-identity": {
+    "name": "Embarcações",
+    "description": "Embarcações",
+    "schema": {
+      "id": "id",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
+    }
+  },
   "private-indonesia-zebrax-vessels": {
     "name": "Embarcações",
     "description": "Embarcações",
@@ -850,7 +979,7 @@
   },
   "private-norway-fishing-effort": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -920,7 +1049,7 @@
     "schema": {
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "carrier": "carrier",
           "fishing": "pesca",
@@ -929,6 +1058,26 @@
       },
       "vessel_id": "vessel_id",
       "vessel-groups": "vessel-groups"
+    }
+  },
+  "private-panama-vessel-identity-fishing": {
+    "name": "Panama Private VMS (Private Fishing Vessels)",
+    "description": "Dataset for VMS Panama (Private)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "private-panama-vessel-identity-non-fishing": {
+    "name": "Panama Private VMS (Private Non Fishing Vessels)",
+    "description": "Dataset for VMS Panama (Private)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "private-peru-fishing-effort": {
@@ -1074,6 +1223,16 @@
       "vessel_id": "vessel_id"
     }
   },
+  "private-peru-vessel-identity-fishing": {
+    "name": "Private Peru VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Peru (Private)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "private-png-fishing-effort": {
     "name": "Papua Nova Guiné VMS",
     "description": "Os dados do sistema de monitoramento de embarcações (VMS) são fornecidos pela Autoridade Pesqueira Nacional de Papua Nova Guiné. Os dados são coletados usando o VMS nacional de Papua Nova Guiné que é fornecido pelo Sistema de Gestão e Informações Pesqueiras (FMIS). Os dados VMS incluem identificadores e localizações das embarcações e são publicados com um atraso de 5 dias. Global Fishing Watch infere a velocidade e rumo de cada posição das embarcações e analisa estes dados com os mesmos algoritmos desenvolvidos para o sistema de Identificação automática (AIS) para identificar atividades e comportamentos. O algoritmo classifica para transmissão de localização em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações AIS, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
@@ -1095,9 +1254,22 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "private-png-fishing-identity-vessels": {
+    "name": "Papua Nova Guiné VMS (Embarcações pesqueiras)",
+    "description": "Papua Nova Guiné VMS (Embarcações pesqueiras)",
+    "schema": {
+      "id": "id",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
+    }
+  },
   "private-png-fishing-vessels": {
     "name": "Papua Nova Guiné VMS (Embarcações pesqueiras)",
-    "description": "Dataset para Papua Nova Guiné VMS (Private)",
+    "description": "Papua Nova Guiné VMS (Embarcações pesqueiras)",
     "schema": {
       "id": "id",
       "flag": "flag",
@@ -1167,7 +1339,56 @@
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
+        "enum": {
+          "unknown": "unknown",
+          "fishing": "pesca",
+          "carrier": "carrier",
+          "support": "support"
+        }
+      },
+      "detect_id": "detect_id",
+      "qf_detect": {
+        "keyword": "qf_detect",
+        "enum": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "5": 5,
+          "7": 7,
+          "10": 10
+        }
+      },
+      "timestamp": "timestamp",
+      "vessel_id": "vessel_id"
+    }
+  },
+  "public-ais-presence-viirs-match": {
+    "name": "VIIRS Match",
+    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat presence. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
+    "schema": {
+      "cel": "cel",
+      "lat": "lat",
+      "lon": "lon",
+      "pos": "pos",
+      "flag": "flag",
+      "htime": "htime",
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": true,
+          "false": false
+        }
+      },
+      "radiance": {
+        "keyword": "radiance",
+        "enum": {
+          "0": 0,
+          "10000": 10000
+        }
+      },
+      "shiptype": {
+        "keyword": "tipo de embarcação",
         "enum": {
           "unknown": "unknown",
           "fishing": "pesca",
@@ -1238,6 +1459,33 @@
       "firstTransmissionDate": "primeira data de transmissão"
     }
   },
+  "public-belize-vessel-identity-fishing": {
+    "name": "VMS Belize",
+    "description": "Vessel Identity (VMS Belize)",
+    "schema": {
+      "id": "id",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
+    }
+  },
+  "public-belize-vessel-identity": {
+    "name": "VMS Belize",
+    "description": "Vessel Identity (VMS Belize)",
+    "schema": {
+      "id": "id",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
+    }
+  },
   "public-bra-onyxsat-fishing-effort": {
     "name": "Brasil VMS",
     "description": "Dados de rastreamento por satélite são fornecidos pela Secretaria de Aquicultura e Pesca. Os dados são coletados do sistema de rastreamento de embarcações pesqueira do Brasil e publicados com atraso de três dias, contendo informações sobre a identidade da embarcação, localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica para transmissão de localização em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações AIS, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada.",
@@ -1289,7 +1537,7 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": "Camarão-rosa",
+          " Camarão-rosa": " Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
@@ -1353,11 +1601,22 @@
           "camarões": "Camarões",
           "Abrótea; Galo e Merluza": "Abrótea; Galo e Merluza",
           "peixes demersais": "Peixes demersais",
-          " Camarão-rosa": "Camarão-rosa",
+          " Camarão-rosa": " Camarão-rosa",
           "Dourado - atuns e afins": "Dourado - atuns e afins",
           "Albacoras - atuns e afins": "Albacoras - atuns e afins"
         }
       },
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "public-bra-onyxsat-vessel-identity-fishing": {
+    "name": "VMS Brasil (Embarcações de Pesca)",
+    "description": "Embarcações de Pesca (VMS Brasil)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
@@ -1384,6 +1643,19 @@
       "flag": "flag",
       "vessel_id": "vessel_id",
       "vessel-groups": "vessel-groups"
+    }
+  },
+  "public-brazil-opentuna-vessel-identity-fishing": {
+    "name": "Brasil OpenTuna VMS (Embarcações pesqueiras)",
+    "description": "Dataset VMS Brasil (Público)",
+    "schema": {
+      "id": "id",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
     }
   },
   "public-chile-all-vessels": {
@@ -1459,6 +1731,26 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-chile-vessel-identity-fishing": {
+    "name": "Chile VMS (Non fishing Vessels)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "public-chile-vessel-identity-non-fishing": {
+    "name": "Chile VMS (Non fishing Vessels)",
+    "description": "Dataset for VMS Chile (Public)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "public-cold-water-corals": {
     "name": "Cold Water Corals",
     "description": "Buffered at ~1km",
@@ -1466,7 +1758,7 @@
   },
   "public-costa-rica-fishing-effort": {
     "name": "Costa Rica VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -1498,6 +1790,16 @@
       "firstTransmissionDate": "primeira data de transmissão"
     }
   },
+  "public-costa-rica-vessel-identity-vessels": {
+    "name": "Costa Rica VMS",
+    "description": "Dataset for VMS Costa Rica (Public)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "public-dgg_sar_caribe_match_2019": {
     "name": "SAR with an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) and matched to a vessel using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1.",
@@ -1510,14 +1812,14 @@
   },
   "public-ecuador-fishing-effort": {
     "name": "Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "hours": "horas",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca"
         }
@@ -1558,13 +1860,13 @@
   },
   "public-ecuador-presence": {
     "name": "Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "international traffic": "international traffic",
@@ -1579,6 +1881,26 @@
       "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-ecuador-vessel-identity-fishing": {
+    "name": "Ecuador VMS (Fishing vessels)",
+    "description": "VMS Ecuador (Fishing vessels)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "public-ecuador-vessel-identity-non-fishing": {
+    "name": "Ecuador VMS (Non fishing vessels)",
+    "description": "VMS Ecuador (Non fishing vessels)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "public-eez-areas": {
@@ -1622,6 +1944,23 @@
     "name": "Fisheries Restricted Areas",
     "description": "",
     "schema": {}
+  },
+  "public-global-all-tracks": {
+    "name": "Rotas",
+    "description": "The dataset contains the tracks from all vessels (AIS) - Version 20231026",
+    "schema": {
+      "lat": "lat",
+      "lon": "lon",
+      "flag": "flag",
+      "night": "night",
+      "speed": "velocidade",
+      "course": "course",
+      "seg_id": "seg_id",
+      "elevation": "elevation",
+      "timestamp": "timestamp",
+      "distance_from_port": "distance_from_port",
+      "distance_from_shore": "distance_from_shore"
+    }
   },
   "public-global-all-vessels": {
     "name": "AIS (All Vessels)",
@@ -1707,9 +2046,17 @@
   },
   "public-global-encounters-events": {
     "name": "Encounter Events. (AIS)",
-    "description": "The dataset contains encounter events for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
+    "description": "The dataset contains encounter events for AIS.",
     "schema": {
+      "flag": "flag",
       "fields": "fields",
+      "duration": {
+        "keyword": "duração",
+        "enum": {
+          "120": 120,
+          "4320": 4320
+        }
+      },
       "event_id": "event_id",
       "event_end": "event_end",
       "vessel_id": "vessel_id",
@@ -1871,14 +2218,16 @@
       "vessel_type": {
         "keyword": "vessel_type",
         "enum": {
-          "fishing": "pesca",
           "carrier": "carrier",
-          "cargo": "cargo",
-          "bunker_or_tanker": "bunker_or_tanker",
-          "passenger": "passenger",
           "seismic_vessel": "seismic_vessel",
-          "other_non_fishing": "other_non_fishing",
-          "unknown": "unknown"
+          "passenger": "passenger",
+          "other": "other",
+          "support": "support",
+          "bunker": "bunker",
+          "gear": "petrecho",
+          "cargo": "cargo",
+          "fishing": "pesca",
+          "discrepancy": "discrepancy"
         }
       },
       "vessel-groups": "vessel-groups"
@@ -1890,7 +2239,7 @@
     "schema": {}
   },
   "public-global-sar-presence": {
-    "name": "SAR",
+    "name": "SAR with Neural classification",
     "description": "SAR",
     "schema": {
       "id": "id",
@@ -1898,6 +2247,7 @@
       "lon": "lon",
       "pos": "pos",
       "cell": "cell",
+      "flag": "flag",
       "htime": "htime",
       "ssvid": "ssvid",
       "matched": {
@@ -1907,8 +2257,65 @@
           "false": false
         }
       },
+      "geartype": {
+        "keyword": "Aparelho de pesca",
+        "enum": {
+          "dredge_fishing": "dredge_fishing",
+          "seiners": "seiners",
+          "passenger": "passenger",
+          "pole_and_line": "Vara e isca viva",
+          "cargo_or_tanker": "cargo_or_tanker",
+          "other": "other",
+          "other_purse_seines": "Rede de Cerco",
+          "purse_seine_support": "purse_seine_support",
+          "specialized_reefer": "specialized_reefer",
+          "carrier": "carrier",
+          "trawlers": "Arrasto",
+          "set_gillnets": "Emalhe de Fundo",
+          "squid_jigger": "squid_jigger",
+          "seismic_vessel": "seismic_vessel",
+          "tug": "tug",
+          "bunker": "bunker",
+          "gear": "petrecho",
+          "purse_seines": "purse_seines",
+          "patrol_vessel": "patrol_vessel",
+          "set_longlines": "Espinhel de fundo",
+          "tuna_purse_seines": "tuna_purse_seines",
+          "trollers": "trollers",
+          "drifting_longlines": "Espinhel de superfície",
+          "pots_and_traps": "Armadilhas e potes",
+          "non_fishing": "non_fishing",
+          "inconclusive": "inconclusive",
+          "fixed_gear": "fixed_gear",
+          "cargo": "cargo"
+        }
+      },
+      "shiptype": {
+        "keyword": "tipo de embarcação",
+        "enum": {
+          "carrier": "carrier",
+          "seismic_vessel": "seismic_vessel",
+          "passenger": "passenger",
+          "other": "other",
+          "support": "support",
+          "bunker": "bunker",
+          "gear": "petrecho",
+          "cargo": "cargo",
+          "fishing": "pesca",
+          "discrepancy": "discrepancy"
+        }
+      },
       "timestamp": "timestamp",
-      "confidence": "confidence"
+      "vessel_id": "vessel_id",
+      "confidence": "confidence",
+      "neural_vessel_type": {
+        "keyword": "neural_vessel_type",
+        "enum": {
+          "Likely non-fishing": "Likely non-fishing",
+          "Likely Fishing": "Likely Fishing",
+          "Unknown": "Desconhecido"
+        }
+      }
     }
   },
   "public-global-support-vessels": {
@@ -1934,6 +2341,22 @@
       "normalized_shipname": "Embarcação normalizado",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "public-global-vessel-identity": {
+    "name": "AIS (all vessel types)",
+    "description": "Vessel Identity (all shiptypes)",
+    "schema": {
+      "id": "id",
+      "dataset": "dataset",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryLastUpdateDate": "registryLastUpdateDate",
+      "registryPublicAuthorizations": "registryPublicAuthorizations"
     }
   },
   "public-global-vessel-insights": {
@@ -2126,14 +2549,14 @@
   },
   "public-mexico-fishing-effort": {
     "name": "Mexico VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "hours": "horas",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca"
         }
@@ -2161,13 +2584,13 @@
   },
   "public-mexico-presence": {
     "name": "Mexico VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
       "flag": "flag",
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "fishing": "pesca",
           "international traffic": "international traffic",
@@ -2182,6 +2605,16 @@
       "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-mexico-vessel-identity-fishing": {
+    "name": "Mexico VMS (Fishing vessels)",
+    "description": "Dataset for VMS Mexico (Public)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "public-mpa-all": {
@@ -2308,7 +2741,7 @@
   },
   "public-norway-presence": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
     "schema": {
       "lat": "lat",
       "lon": "lon",
@@ -2346,6 +2779,31 @@
       "distance_from_shore_m": "distance_from_shore_m"
     }
   },
+  "public-norway-vessel-identity-fishing": {
+    "name": "Norway VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Norway (Public)",
+    "schema": {
+      "id": "id",
+      "registryInfo": "registryInfo",
+      "registryOwners": "registryOwners",
+      "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão",
+      "registryAuthorizations": "registryAuthorizations"
+    }
+  },
+  "public-norway-vessel-identity-non-fishing": {
+    "name": "Norway VMS (Non Fishing Vessels)",
+    "description": "Dataset for VMS Norway (Public)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "combinedSourcesInfo": "combinedSourcesInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "public-panama-fishing-effort": {
     "name": "Panama VMS",
     "description": "Vessel monitoring system (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). Data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Panama’s carrier vessel data is also available here. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. In the future, we expect to be able to display more positions. Click on a carrier vessel’s position to view the vessel’s complete track. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
@@ -2381,6 +2839,16 @@
       "source": "source",
       "geartype": "Aparelho de pesca",
       "shipname": "Embarcação",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
+  "public-panama-vessel-identity-fishing": {
+    "name": "Panama VMS (Public Fishing Vessels)",
+    "description": "Dataset for VMS Panama (Public)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
@@ -2491,6 +2959,16 @@
       "vessel_id": "vessel_id"
     }
   },
+  "public-peru-vessel-identity-fishing": {
+    "name": "Peru VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Peru (Public)",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
+    }
+  },
   "public-png-fishing-effort": {
     "name": "Papua Nova Guiné VMS",
     "description": "Os dados do sistema de monitoramento de embarcações (VMS) são fornecidos pela Autoridade Pesqueira Nacional de Papua Nova Guiné. Os dados são coletados usando o VMS nacional de Papua Nova Guiné que é fornecido pelo Sistema de Gestão e Informações Pesqueiras (FMIS). Os dados VMS incluem identificadores e localizações das embarcações e são publicados com um atraso de 5 dias. Global Fishing Watch infere a velocidade e rumo de cada posição das embarcações e analisa estes dados com os mesmos algoritmos desenvolvidos para o sistema de Identificação automática (AIS) para identificar atividades e comportamentos. O algoritmo classifica para transmissão de localização em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações AIS, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
@@ -2537,6 +3015,16 @@
       "vessel-groups": "vessel-groups",
       "distance_from_port_m": "distance_from_port_m",
       "distance_from_shore_m": "distance_from_shore_m"
+    }
+  },
+  "public-png-vessel-identity-fishing": {
+    "name": "Papua Nova Guiné VMS (Embarcações pesqueiras)",
+    "description": "Dataset para Papua Nova Guiné VMS",
+    "schema": {
+      "id": "id",
+      "selfReportedInfo": "selfReportedInfo",
+      "lastTransmissionDate": "última data de transmissão",
+      "firstTransmissionDate": "primeira data de transmissão"
     }
   },
   "public-presence-viirs-match-prototype": {
@@ -2655,7 +3143,7 @@
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "tipo de embarcação",
         "enum": {
           "unknown": "unknown",
           "fishing": "pesca",
@@ -2686,11 +3174,11 @@
       "removal_of": {
         "keyword": "Nível de Proteção à Pesca",
         "enum": {
-          "1": "1",
-          "2": "2",
-          "3": "3",
-          "4": "4",
-          "5": "5"
+          "1": "1. Pouco restritivo",
+          "2": "2. Menos restritivo",
+          "3": "3. Moderadamente restritivo",
+          "4": "4. Fortemente restritivo",
+          "5": "5. Totalmente restritivo"
         }
       }
     }
@@ -2721,7 +3209,7 @@
           "1": "1",
           "2": "2",
           "3": "3",
-          "4": "4",
+          "4": "4. Fortemente restritivo",
           "5": "5"
         }
       }
