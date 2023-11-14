@@ -227,9 +227,10 @@ function NewDataset(): React.ReactElement {
           if (datasetCategory === 'context' && datasetGeometryType === 'polygons') {
             if (
               (geojson.type === 'Feature' && geojson.geometry?.type === 'Polygon') ||
-              !(geojson as FeatureCollectionWithMetadata).features?.every((feature) =>
-                ['Polygon', 'MultiPolygon'].includes(feature.geometry?.type)
-              )
+              ((geojson as FeatureCollectionWithMetadata).features !== undefined &&
+                !(geojson as FeatureCollectionWithMetadata).features?.every((feature) =>
+                  ['Polygon', 'MultiPolygon'].includes(feature.geometry?.type)
+                ))
             ) {
               configuration.disableInteraction = true
             }
