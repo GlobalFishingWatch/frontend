@@ -58,7 +58,7 @@ steps:
   - id: 'smoke-test-e2e-live'
     name: cypress/included:12.17.1
     waitFor: ['restore_cypress_cache']
-    allowFailure: true
+    allowFailure: false
     entrypoint: 'bash'
     env:
       - 'CYPRESS_publicApiGateway=$_NEXT_PUBLIC_API_GATEWAY'
@@ -72,6 +72,8 @@ steps:
       - 'CYPRESS_DEFAULT_COMMAND_TIMEOUT=$_CYPRESS_DEFAULT_COMMAND_TIMEOUT'
       - 'CYPRESS_REQUEST_TIMEOUT=$_CYPRESS_REQUEST_TIMEOUT'
       - 'CYPRESS_RESPONSE_TIMEOUT=$_CYPRESS_RESPONSE_TIMEOUT'
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - 'BUILD_ID=$BUILD_ID'
     args:
       - '-eEuo'
       - 'pipefail'
@@ -80,6 +82,7 @@ steps:
         CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
           CYPRESS_CACHE_FOLDER=.cypress-cache \
           yarn nx run fishing-map-e2e:test-env --parallel
+          gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
 
   - id: 'save-test-videos'
     name: gcr.io/cloud-builders/gcloud
@@ -93,7 +96,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV-$BUILD_ID
+        gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
 
 timeout: 1800s
 options:
