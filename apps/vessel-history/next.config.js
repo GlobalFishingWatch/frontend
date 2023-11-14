@@ -38,6 +38,19 @@ const nextConfig = {
         : []),
     ]
   },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'x-robots-tag',
+            value: 'noindex',
+          },
+        ],
+      },
+    ]
+  },
   webpack: function (config, { isServer }) {
     if (!isServer) {
       config.resolve.fallback = {
