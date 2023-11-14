@@ -58,6 +58,32 @@ export const getFilterOperatorOptions = () => {
   ] as ChoiceOption[]
 }
 
+const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
+  if (schemaFilter?.id === 'radiance') {
+    return {
+      steps: [0, 1, 10, 100, 1000, 10000],
+      min: 0,
+      max: 10000,
+    }
+  } else if (
+    schemaFilter.unit &&
+    VALUE_TRANSFORMATIONS_BY_UNIT[schemaFilter.unit as TransformationUnit]
+  ) {
+    const min = VALUE_TRANSFORMATIONS_BY_UNIT[schemaFilter.unit as TransformationUnit].in(
+      schemaFilter.options?.[0]?.id
+    )
+    const max = VALUE_TRANSFORMATIONS_BY_UNIT[schemaFilter.unit as TransformationUnit].in(
+      schemaFilter.options?.[1]?.id
+    )
+    return {
+      steps: [min, max],
+      min,
+      max,
+    }
+  }
+  return { steps: [], min: 0, max: 0 }
+}
+
 const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
   const { options } = schemaFilter
   const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
@@ -67,9 +93,17 @@ const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
 }
 
 const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
-  const { options, optionsSelected } = schemaFilter
+  const { options, optionsSelected, unit } = schemaFilter
 
-  const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
+  const optionValues = options
+    .map(({ id }) => {
+      if (unit && VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]) {
+        return VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(id)
+      }
+      return parseInt(id)
+    })
+    .sort((a, b) => a - b)
+
   const rangeValues =
     optionsSelected?.length > 0
       ? optionsSelected
@@ -113,8 +147,8 @@ function ActivitySchemaFilter({
         onSelect(id, value, true)
       } else {
         const selection = rangeSelected.map((id: any) => ({
-          id: id.toString(),
-          label: id.toString(),
+          id: Math.round(id).toString(),
+          label: Math.round(id).toString(),
         }))
         onSelect(id, selection)
       }
@@ -131,14 +165,10 @@ function ActivitySchemaFilter({
       <SliderRange
         className={styles.multiSelect}
         initialRange={getRangeBySchema(schemaFilter)}
+        histogram={id === 'radiance'}
         label={label}
-        config={{
-          steps: [0, 1, 10, 100, 1000, 10000],
-          min: 0,
-          max: 10000,
-        }}
+        config={getSliderConfigBySchema(schemaFilter)}
         onChange={onSliderChange}
-        histogram
       />
     )
   }
