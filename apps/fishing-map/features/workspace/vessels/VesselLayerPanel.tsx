@@ -12,7 +12,7 @@ import {
   IdentityVessel,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import { IconButton, Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
+import { IconButton, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
@@ -152,7 +152,6 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     )?.value as string) ||
     dataview.id.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '') ||
     ''
-  const vesselTitle = vesselLabel || t('common.unknownVessel', 'Unknown vessel')
 
   const getVesselTitle = (): ReactNode => {
     if (infoLoading) return t('vessel.loadingInfo', 'Loading vessel info')
@@ -205,16 +204,6 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
         />
       )}
     </Fragment>
-  )
-
-  const TitleComponent = (
-    <Title
-      title={<TitleComponentContent />}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      toggleVisibility={false}
-    />
   )
 
   const TrackIconComponent = trackLoading ? (
@@ -270,11 +259,13 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     >
       <div className={styles.header}>
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
-        {vesselTitle && vesselTitle.length > 20 ? (
-          <Tooltip content={vesselTitle}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={<TitleComponentContent />}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          toggleVisibility={false}
+        />
         <div
           className={cx('print-hidden', styles.actions, styles.hideUntilHovered, {
             [styles.active]: layerActive,
@@ -284,7 +275,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
             <VesselDownload
               dataview={dataview}
               vesselIds={[vesselId]}
-              vesselTitle={vesselTitle}
+              vesselTitle={vesselLabel || t('common.unknownVessel', 'Unknown vessel')}
               datasetId={trackResource?.dataset!?.id}
             />
             <Color
