@@ -371,7 +371,8 @@ function ActivityFilters({
       {filtersAllowed.map((schemaFilter) => {
         if (
           schemaFilter.id === 'vessel-groups' &&
-          !schemaFilter.optionsSelected.length &&
+          ((schemaFilter.options && !schemaFilter.optionsSelected.length) ||
+            schemaFilter.type !== 'string') &&
           !allowVesselGroup
         ) {
           return null

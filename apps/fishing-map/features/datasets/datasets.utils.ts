@@ -60,6 +60,7 @@ export type SupportedActivityDatasetSchema =
   | 'license_category'
   | 'vessel-groups'
   | 'visibleValues'
+  | 'neural_value'
   | 'callsign'
   | 'shipname'
   | 'mmsi'
@@ -475,7 +476,7 @@ export const getDatasetSchemaItem = (
 }
 
 export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
-  if (schema === 'vessel-groups') {
+  if (schema === 'vessel-groups' || schema === 'neural_value') {
     // returning true as the schema fields enum comes from the dynamic fetch list passed as props
     return true
   }
@@ -630,7 +631,7 @@ export const getSchemaOptionsSelectedInDataview = (
   if (schema === 'flag') {
     return getFlagsByIds(dataview.config?.filters?.flag || [])
   }
-  if (schema === 'radiance' && dataview.config?.filters?.[schema]) {
+  if ((schema === 'radiance' || schema === 'neural_value') && dataview.config?.filters?.[schema]) {
     return dataview.config?.filters?.[schema]?.map((o: string) => [
       {
         id: o.toString(),

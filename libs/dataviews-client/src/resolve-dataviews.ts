@@ -10,6 +10,7 @@ import {
   EndpointId,
   EXCLUDE_FILTER_ID,
   FilterOperator,
+  GREATER_THAN_FILTER_ID,
   INCLUDE_FILTER_ID,
   Resource,
 } from '@globalfishingwatch/api-types'
@@ -24,6 +25,7 @@ export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, '
 export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
   [INCLUDE_FILTER_ID]: 'IN',
   [EXCLUDE_FILTER_ID]: 'NOT IN',
+  [GREATER_THAN_FILTER_ID]: '>',
 }
 
 function getDatasetSchemaItem(dataset: Dataset, schema: string) {
@@ -388,9 +390,12 @@ export function resolveDataviews(
               }
             }
             const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
-            const query = `${filterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
-              .map((f: string) => `'${f}'`)
-              .join(', ')})`
+            const query =
+              filterOperator !== GREATER_THAN_FILTER_ID
+                ? `${filterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
+                    .map((f: string) => `'${f}'`)
+                    .join(', ')})`
+                : `${filterKey} ${FILTER_OPERATOR_SQL[filterOperator]} ${filterValues[0]}`
             if (filterOperator === EXCLUDE_FILTER_ID) {
               // workaround as bigquery exludes null values
               return `(${filterKey} IS NULL OR ${query})`

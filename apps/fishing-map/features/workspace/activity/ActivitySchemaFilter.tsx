@@ -28,7 +28,10 @@ type ActivitySchemaFilterProps = {
   onClean: (filterKey: string) => void
 }
 export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
-  return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
+  return (
+    !schemaFilter.disabled &&
+    ((schemaFilter.options && schemaFilter.options.length > 0) || schemaFilter.type !== 'string')
+  )
 }
 
 export type TransformationUnit = 'minutes'
@@ -63,7 +66,7 @@ const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
   const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
   return optionValues.length === 1
     ? optionValues
-    : [optionValues[0], optionValues[optionValues.length - 1]]
+    : [optionValues[0] || 0, optionValues[optionValues.length - 1] || 1]
 }
 
 const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
@@ -148,17 +151,18 @@ function ActivitySchemaFilter({
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
           getRangeBySchema(schemaFilter)[0] as number
         )
-      : getRangeBySchema(schemaFilter)[0]
+      : getRangeBySchema(schemaFilter)[0] || 0.5
     const minValue = unit
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
           getRangeLimitsBySchema(schemaFilter)[0]
         )
-      : getRangeLimitsBySchema(schemaFilter)[0]
+      : getRangeLimitsBySchema(schemaFilter)[0] || 0
     const maxValue = unit
       ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
           getRangeLimitsBySchema(schemaFilter)[1]
         )
-      : getRangeLimitsBySchema(schemaFilter)[1]
+      : getRangeLimitsBySchema(schemaFilter)[1] || 1
+
     return (
       <Slider
         className={styles.multiSelect}
