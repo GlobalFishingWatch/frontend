@@ -9,6 +9,7 @@ import {
   DatasetStatus,
   DatasetCategory,
   Dataset,
+  DRAW_DATASET_SOURCE,
 } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -47,6 +48,7 @@ import {
   getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -79,6 +81,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()
+  const { dispatchSetMapDrawing, dispatchSetMapDrawEditDataset } = useMapDrawConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [featuresOnScreen, setFeaturesOnScreen] = useState<FeaturesOnScreen>({
     total: 0,
@@ -98,6 +101,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
   )
+  const supportsDrawEdit = dataset?.source === DRAW_DATASET_SOURCE
 
   const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
   const dataviewFeaturesParams = useMemo(() => {
@@ -249,6 +253,19 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+          {layerActive && supportsDrawEdit && (
+            <IconButton
+              icon="edit"
+              size="small"
+              disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
+              tooltip={t('layer.editDraw', 'Edit draw')}
+              tooltipPlacement="top"
+              onClick={() => {
+                dispatchSetMapDrawEditDataset(dataset?.id)
+                dispatchSetMapDrawing(true)
+              }}
+            />
+          )}
           {layerActive && !isBasemapLabelsDataview && (
             <Color
               dataview={dataview}

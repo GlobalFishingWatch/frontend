@@ -75,7 +75,7 @@ function NewDataset(): React.ReactElement {
   const [error, setError] = useState('')
   const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
   const locationType = useSelector(selectLocationType)
-  const { dispatchCreateDataset } = useDatasetsAPI()
+  const { dispatchUpsertDataset } = useDatasetsAPI()
 
   const onFileLoaded = useCallback(
     async (file: File) => {
@@ -362,7 +362,7 @@ function NewDataset(): React.ReactElement {
       })
       setLoading(true)
       const { fields, guessedFields, ...meta } = metadata as DatasetMetadata
-      const { payload, error: createDatasetError } = await dispatchCreateDataset({
+      const { payload, error: createDatasetError } = await dispatchUpsertDataset({
         dataset: {
           ...meta,
           unit: 'TBD',

@@ -156,6 +156,8 @@ export enum UserTab {
 
 export type AppState = {
   userTab?: UserTab
+  mapDrawing?: boolean
+  mapDrawingEditId?: string
 }
 
 export type QueryParams = Partial<WorkspaceViewport> &

@@ -11,6 +11,7 @@ import {
   Dataset,
   ApiEvent,
   TrackResourceData,
+  DRAW_DATASET_SOURCE,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -373,7 +374,10 @@ export function getGeneratorConfig(
         }
         generator.datasetId = dataset.id
         if (url) {
-          generator.tilesUrl = url
+          generator.tilesUrl =
+            dataset.source === DRAW_DATASET_SOURCE
+              ? `${url}?cache=${dataset.configuration?.filePath}`
+              : url
         }
         if (dataset?.source) {
           generator.attribution = getDatasetAttribution(dataset)

@@ -273,6 +273,7 @@ export type TooltipEventFeature = {
   category: DataviewCategory
   color?: string
   datasetId?: string
+  datasetSource?: string
   event?: ExtendedFeatureEvent
   generatorContextLayer?: ContextLayerType | null
   geometry?: Point | Polygon | MultiPolygon
@@ -418,9 +419,14 @@ export const parseMapTooltipFeatures = (
 
     const title = getDatasetTitleByDataview(dataview)
 
-    const datasets = getActiveDatasetsInActivityDataviews([dataview])
-    const subcategory = dataview?.datasets?.find(({ id }) => datasets.includes(id))
-      ?.subcategory as DatasetSubCategory
+    const datasets =
+      dataview.category === DataviewCategory.Activity ||
+      dataview.category === DataviewCategory.Detections
+        ? getActiveDatasetsInActivityDataviews([dataview])
+        : (dataview.datasets || [])?.map((d) => d.id)
+
+    const dataset = dataview?.datasets?.find(({ id }) => datasets.includes(id))
+    const subcategory = dataset?.subcategory as DatasetSubCategory
     const tooltipEventFeature: TooltipEventFeature = {
       title,
       type: dataview.config?.type,
@@ -428,6 +434,7 @@ export const parseMapTooltipFeatures = (
       visible: dataview.config?.visible,
       category: dataview.category || DataviewCategory.Context,
       subcategory,
+      datasetSource: dataset?.source,
       ...feature,
       properties: { ...feature.properties },
     }
