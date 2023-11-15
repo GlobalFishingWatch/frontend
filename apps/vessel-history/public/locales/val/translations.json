@@ -172,7 +172,8 @@
   "map": {
     "filters": "crwdns61081:0crwdne61081:0",
     "loading": "crwdns61083:0crwdne61083:0",
-    "toggleLayers": "crwdns61085:0crwdne61085:0"
+    "toggleLayers": "crwdns61085:0crwdne61085:0",
+    "viewInGFWMap": "crwdns70230:0crwdne70230:0"
   },
   "risk": {
     "aisDisabling": "crwdns61087:0crwdne61087:0",

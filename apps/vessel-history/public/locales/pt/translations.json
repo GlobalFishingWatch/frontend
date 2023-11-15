@@ -172,7 +172,8 @@
   "map": {
     "filters": "Filtrar Eventos",
     "loading": "Carregando mapa",
-    "toggleLayers": "Alternar camadas"
+    "toggleLayers": "Alternar camadas",
+    "viewInGFWMap": "View in GFW Map"
   },
   "risk": {
     "aisDisabling": "AIS Disabling",
