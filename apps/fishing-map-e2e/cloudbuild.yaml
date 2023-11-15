@@ -96,7 +96,12 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
+        if [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
+          gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
+          echo "You can see the testing videos of this deploy in: "
+          echo "https://console.cloud.google.com/storage/browser/e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
+          exit 1
+        fi
 
 timeout: 1800s
 options:
