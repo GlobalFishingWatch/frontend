@@ -40,7 +40,7 @@ class TileClusterGenerator {
     }
 
     if (config.filters?.duration) {
-      const duration = `duration >= ${config.filters?.duration[0]} AND duration <= ${config.filters?.duration[1]}`
+      const duration = `${config.filters?.duration[0]}:${config.filters?.duration[1]}`
       url.searchParams.set('duration', duration)
     }
 
