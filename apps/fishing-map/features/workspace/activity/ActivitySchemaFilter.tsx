@@ -98,7 +98,7 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
   const optionValues = options
     .map(({ id }) => {
       if (unit && VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]) {
-        return VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(id)
+        return Math.round(VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(id))
       }
       return parseInt(id)
     })
@@ -110,6 +110,7 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
           .map((option) => (Array.isArray(option) ? parseInt(option[0].id) : parseInt(option.id)))
           .sort((a, b) => a - b)
       : optionValues
+
   return optionValues.length === 1
     ? rangeValues
     : [rangeValues[0], rangeValues[rangeValues.length - 1]]
@@ -142,7 +143,7 @@ function ActivitySchemaFilter({
         onClean(id)
       } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
         const value = unit
-          ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].out(rangeSelected)
+          ? Math.round(VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].out(rangeSelected))
           : rangeSelected
         onSelect(id, value, true)
       } else {

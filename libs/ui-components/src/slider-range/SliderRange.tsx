@@ -56,7 +56,9 @@ export function SliderRange(props: SliderRangeProps) {
       .nice()
   }, [steps])
 
-  const initialValues = (initialRange || [min, max]).map((v) => scale.invert(v))
+  const initialValues = (initialRange || [min, max]).map((v) => {
+    return Math.round(scale.invert(v))
+  })
   const [values, setValues] = useState(initialValues)
 
   const handleChange = useCallback(
