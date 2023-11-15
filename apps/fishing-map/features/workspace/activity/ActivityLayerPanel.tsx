@@ -174,6 +174,7 @@ function ActivityLayerPanel({
       { field: 'license_category', label: t('vessel.license_category', 'License category') },
       { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
       { field: 'vessel-groups', label: t('vesselGroup.vesselGroup', 'Vessel Group') },
+      { field: 'neural_vessel_type', label: t('vessel.neuralVesselType', 'Neural vessel type') },
     ]
     return fields
   }, [t])
