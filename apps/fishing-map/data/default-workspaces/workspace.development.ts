@@ -105,6 +105,116 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
+      id: 'infrastructure-oil',
+      config: {
+        color: '#F09300',
+        filters: {
+          label: ['oil'],
+        },
+      },
+      dataviewId: 'default-points-layer',
+      datasetsConfig: [
+        {
+          params: [
+            {
+              id: 'id',
+              value: 'public-fixed-infrastructure-1699616337831',
+            },
+          ],
+          endpoint: 'context-tiles',
+          datasetId: 'public-fixed-infrastructure-1699616337831',
+        },
+      ],
+    },
+    {
+      id: 'infrastructure-uncertain-oil',
+      config: {
+        color: '#F09300',
+        filters: {
+          label: ['probable_oil', 'possible_oil'],
+        },
+      },
+      dataviewId: 'default-points-layer',
+      datasetsConfig: [
+        {
+          params: [
+            {
+              id: 'id',
+              value: 'public-fixed-infrastructure-1699616337831',
+            },
+          ],
+          endpoint: 'context-tiles',
+          datasetId: 'public-fixed-infrastructure-1699616337831',
+        },
+      ],
+    },
+    {
+      id: 'infrastructure-wind',
+      config: {
+        color: '#F09300',
+        filters: {
+          label: ['wind'],
+        },
+      },
+      dataviewId: 'default-points-layer',
+      datasetsConfig: [
+        {
+          params: [
+            {
+              id: 'id',
+              value: 'public-fixed-infrastructure-1699616337831',
+            },
+          ],
+          endpoint: 'context-tiles',
+          datasetId: 'public-fixed-infrastructure-1699616337831',
+        },
+      ],
+    },
+    {
+      id: 'infrastructure-uncertain-wind',
+      config: {
+        color: '#F09300',
+        filters: {
+          label: ['probable_wind', 'possible_wind'],
+        },
+      },
+      dataviewId: 'default-points-layer',
+      datasetsConfig: [
+        {
+          params: [
+            {
+              id: 'id',
+              value: 'public-fixed-infrastructure-1699616337831',
+            },
+          ],
+          endpoint: 'context-tiles',
+          datasetId: 'public-fixed-infrastructure-1699616337831',
+        },
+      ],
+    },
+    {
+      id: 'infrastructure-unknown',
+      config: {
+        color: '#F09300',
+        filters: {
+          label: ['unknown'],
+        },
+      },
+      dataviewId: 'default-points-layer',
+      datasetsConfig: [
+        {
+          params: [
+            {
+              id: 'id',
+              value: 'public-fixed-infrastructure-1699616337831',
+            },
+          ],
+          endpoint: 'context-tiles',
+          datasetId: 'public-fixed-infrastructure-1699616337831',
+        },
+      ],
+    },
+    {
       id: 'context-layer-graticules',
       config: {
         visible: true,
@@ -119,6 +229,7 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     },
+
     {
       id: BASEMAP_DATAVIEW_INSTANCE_ID,
       config: {
