@@ -52,6 +52,7 @@ export type SupportedActivityDatasetSchema =
   | 'origin'
   | 'vessel_type'
   | 'radiance'
+  | 'duration'
   | 'source'
   | 'matched'
   | 'codMarinha'
