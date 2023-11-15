@@ -3113,8 +3113,6 @@ __metadata:
 "@globalfishingwatchapp/fishing-map-e2e@workspace:apps/fishing-map-e2e":
   version: 0.0.0-use.local
   resolution: "@globalfishingwatchapp/fishing-map-e2e@workspace:apps/fishing-map-e2e"
-  dependencies:
-    mochawesome: ^7.1.3
   languageName: unknown
   linkType: soft
 
