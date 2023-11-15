@@ -82,7 +82,6 @@ steps:
         CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
           CYPRESS_CACHE_FOLDER=.cypress-cache \
           yarn nx run fishing-map-e2e:test-env --parallel
-          gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
 
   - id: 'save-test-videos'
     name: gcr.io/cloud-builders/gcloud
@@ -96,7 +95,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        if [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
+        if [ -d "dist/cypress/apps/fishing-map-e2e/screenshots" ] && [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
           gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
           echo "You can see the testing videos of this deploy in: "
           echo "https://console.cloud.google.com/storage/browser/e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
