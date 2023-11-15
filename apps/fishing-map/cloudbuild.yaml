@@ -6,8 +6,8 @@ steps:
       #!/usr/bin/env bash
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn3-$( checksum yarn.lock ) \
-        --key_fallback=yarn3a-cache
+        --key=yarn-$( checksum yarn.lock ) \
+        --key_fallback=yarn3-cache
 
   - id: 'generate-cypress-lock'
     waitFor: ['restore_cache']
@@ -50,7 +50,7 @@ steps:
       #!/usr/bin/env bash
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn3-$( checksum yarn.lock ) \
+        --key=yarn-$( checksum yarn.lock ) \
         --path=./node_modules \
         --no-clobber
       save_cache \
@@ -62,7 +62,7 @@ steps:
         if [ $BRANCH_NAME == "dev" ]; then
           save_cache \
             --bucket=gs://frontend-cache-dependencies \
-            --key=yarn3a-cache \
+            --key=yarn3-cache \
             --path=./.yarn/cache
         fi
       fi
