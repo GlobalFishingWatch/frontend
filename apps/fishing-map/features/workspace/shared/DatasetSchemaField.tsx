@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { formatSliderNumber, TagList } from '@globalfishingwatch/ui-components'
+import { TagList } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -11,10 +11,7 @@ import {
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import {
-  TransformationUnit,
-  VALUE_TRANSFORMATIONS_BY_UNIT,
-} from 'features/workspace/activity/ActivitySchemaFilter'
+import { getValueLabelByUnit } from 'features/workspace/activity/ActivitySchemaFilter'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -53,7 +50,10 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
     const label2 = Array.isArray(valuesSelected[valuesSelected.length - 1])
       ? valuesSelected[valuesSelected.length - 1][0]?.label
       : valuesSelected[valuesSelected.length - 1]?.label
-    const range = `${formatSliderNumber(label)} - ${formatSliderNumber(label2)}`
+    const range = `${getValueLabelByUnit(label, {
+      unit: filterUnit,
+      unitLabel: false,
+    })} - ${getValueLabelByUnit(label2, { unit: filterUnit })}`
     valuesSelected = [
       {
         id: range,
@@ -61,14 +61,10 @@ function DatasetSchemaField({ dataview, field, label }: LayerPanelProps): React.
       },
     ]
   } else if (valuesIsNumber) {
-    const value = VALUE_TRANSFORMATIONS_BY_UNIT[filterUnit as TransformationUnit]
     valuesSelected = [
       {
         id: valuesSelected.id,
-        label:
-          filterUnit && value
-            ? `${formatSliderNumber(value.in(valuesSelected[0]?.label))} ${value.label}`
-            : formatSliderNumber(valuesSelected[0]?.label),
+        label: getValueLabelByUnit(valuesSelected[0]?.label, { unit: filterUnit }),
       },
     ]
   }
