@@ -1,6 +1,6 @@
 import { defineConfig } from 'cypress'
 import { nxE2EPreset } from '@nx/cypress/plugins/cypress-preset'
-const { stat, rmdir } = require('fs')
+const { stat, rmdir, unlinkSync } = require('fs')
 const decompress = require('decompress')
 
 const cypressJsonConfig = {
@@ -52,10 +52,23 @@ export default defineConfig({
         unzipping: ({ path, file }) =>
           decompress(path + file, path + 'unzip/' + file.replace('.zip', '')),
       })
+      on('after:spec', (spec, results) => {
+        if (results && results.video) {
+          // Do we have failures for any retry attempts?
+          const failures = results.tests.some((test) =>
+            test.attempts.some((attempt) => attempt.state === 'failed')
+          )
+          if (!failures) {
+            // delete the video if the spec passed and no tests retried
+            unlinkSync(results.video)
+          }
+        }
+      })
     },
-  },
-  env: {
-    apiAuthUser: '',
-    apiAuthPass: '',
+
+    env: {
+      apiAuthUser: '',
+      apiAuthPass: '',
+    },
   },
 })
