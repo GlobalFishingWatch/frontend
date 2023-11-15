@@ -8,6 +8,7 @@ import {
   Select,
   Slider,
   SliderRange,
+  formatSliderNumber,
 } from '@globalfishingwatch/ui-components'
 import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -32,17 +33,51 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
 }
 
 export type TransformationUnit = 'minutes'
+
 type Transformation = {
   in: (v: any) => number
   out: (v: any) => number
   label: string
 }
+
 export const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
   minutes: {
     in: (v) => v / 60,
     out: (v) => v * 60,
     label: t('common.hour_other', 'Hours'),
   },
+}
+
+export const getValueByUnit = (
+  value: string | number,
+  { unit, transformDirection = 'in' } = {} as { unit?: string; transformDirection?: 'in' | 'out' }
+): number => {
+  const transformConfig = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
+  if (transformConfig) {
+    return Math.round(
+      VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit][transformDirection](value)
+    )
+  }
+  if (typeof value === 'number') return value
+  return parseInt(value as string)
+}
+
+export const getValueLabelByUnit = (
+  value: string | number,
+  { unit, unitLabel = true } = {} as { unit?: string; unitLabel?: boolean }
+): string => {
+  const transformConfig = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
+  if (transformConfig && unitLabel) {
+    return `${formatSliderNumber(getValueByUnit(value, { unit }))} ${transformConfig.label}`
+  }
+  return formatSliderNumber(getValueByUnit(value, { unit }))
+}
+
+export const getLabelWithUnit = (label: string, unit?: string): string => {
+  if (unit) {
+    return `${label} (${VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label})`
+  }
+  return label
 }
 
 export const getFilterOperatorOptions = () => {
@@ -58,6 +93,23 @@ export const getFilterOperatorOptions = () => {
   ] as ChoiceOption[]
 }
 
+const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
+  if (schemaFilter?.id === 'radiance') {
+    return {
+      steps: [0, 1, 10, 100, 1000, 10000],
+      min: 0,
+      max: 10000,
+    }
+  }
+  const min = getValueByUnit(schemaFilter.options?.[0]?.id, { unit: schemaFilter.unit }) || 0
+  const max = getValueByUnit(schemaFilter.options?.[1]?.id, { unit: schemaFilter.unit }) || 1
+  return {
+    steps: [min, max],
+    min,
+    max,
+  }
+}
+
 const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
   const { options } = schemaFilter
   const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
@@ -67,15 +119,19 @@ const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
 }
 
 const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
-  const { options, optionsSelected } = schemaFilter
+  const { options, optionsSelected, unit } = schemaFilter
+  const optionValues = options.map(({ id }) => getValueByUnit(id, { unit })).sort((a, b) => a - b)
 
-  const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
   const rangeValues =
     optionsSelected?.length > 0
       ? optionsSelected
-          .map((option) => (Array.isArray(option) ? parseInt(option[0].id) : parseInt(option.id)))
+          .map((option) => {
+            const value = Array.isArray(option) ? parseInt(option[0].id) : parseInt(option.id)
+            return getValueByUnit(value, { unit })
+          })
           .sort((a, b) => a - b)
       : optionValues
+
   return optionValues.length === 1
     ? rangeValues
     : [rangeValues[0], rangeValues[rangeValues.length - 1]]
@@ -107,14 +163,12 @@ function ActivitySchemaFilter({
       if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
         onClean(id)
       } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
-        const value = unit
-          ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].out(rangeSelected)
-          : rangeSelected
+        const value = getValueByUnit(rangeSelected, { unit, transformDirection: 'out' })
         onSelect(id, value, true)
       } else {
-        const selection = rangeSelected.map((id: any) => ({
-          id: id.toString(),
-          label: id.toString(),
+        const selection = rangeSelected.map((range: number) => ({
+          id: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
+          label: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
         }))
         onSelect(id, selection)
       }
@@ -131,39 +185,23 @@ function ActivitySchemaFilter({
       <SliderRange
         className={styles.multiSelect}
         initialRange={getRangeBySchema(schemaFilter)}
-        label={label}
-        config={{
-          steps: [0, 1, 10, 100, 1000, 10000],
-          min: 0,
-          max: 10000,
-        }}
+        histogram={id === 'radiance'}
+        label={getLabelWithUnit(label, unit)}
+        config={getSliderConfigBySchema(schemaFilter)}
         onChange={onSliderChange}
-        histogram
       />
     )
   }
 
   if (type === 'number') {
-    const initialValue = unit
-      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
-          getRangeBySchema(schemaFilter)[0] as number
-        )
-      : getRangeBySchema(schemaFilter)[0]
-    const minValue = unit
-      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
-          getRangeLimitsBySchema(schemaFilter)[0]
-        )
-      : getRangeLimitsBySchema(schemaFilter)[0]
-    const maxValue = unit
-      ? VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit].in(
-          getRangeLimitsBySchema(schemaFilter)[1]
-        )
-      : getRangeLimitsBySchema(schemaFilter)[1]
+    const initialValue = getValueByUnit(getRangeBySchema(schemaFilter)[0], { unit })
+    const minValue = getValueByUnit(getRangeLimitsBySchema(schemaFilter)[0], { unit })
+    const maxValue = getValueByUnit(getRangeLimitsBySchema(schemaFilter)[1], { unit })
     return (
       <Slider
         className={styles.multiSelect}
         initialValue={initialValue}
-        label={label}
+        label={getLabelWithUnit(label, unit)}
         config={{
           steps: [minValue, maxValue],
           min: minValue,
@@ -179,7 +217,7 @@ function ActivitySchemaFilter({
       <Select
         key={id}
         disabled={disabled}
-        label={label}
+        label={getLabelWithUnit(label, unit)}
         placeholder={getPlaceholderBySelections({
           selection: optionsSelected.map(({ id }) => id),
           options,
@@ -209,7 +247,7 @@ function ActivitySchemaFilter({
         <Select
           key={id}
           disabled={disabled}
-          label={label}
+          label={getLabelWithUnit(label, unit)}
           placeholder={getPlaceholderBySelections({
             selection: optionsSelected.map(({ id }) => id),
             options,
@@ -225,7 +263,7 @@ function ActivitySchemaFilter({
         <MultiSelect
           key={id}
           disabled={disabled}
-          label={label}
+          label={getLabelWithUnit(label, unit)}
           placeholder={getPlaceholderBySelections({
             selection: optionsSelected.map(({ id }) => id),
             options,

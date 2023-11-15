@@ -81,7 +81,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
-              component={<Filters dataview={dataview} />}
+              component={<Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />}
             >
               <div className={styles.filterButtonWrapper}>
                 <IconButton

@@ -3,7 +3,7 @@ import { GeneratorType, TileClusterGeneratorConfig, MergedGeneratorConfig } from
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
 import { Group } from '../../types'
-import { addURLSearchParams, toURLArray } from '../utils'
+import { addURLSearchParams } from '../utils'
 import { DEFAULT_POINTS_SOURCE_LAYER, MAX_ZOOM_TO_CLUSTER_POINTS } from './config'
 
 export type GlobalTileClusterGeneratorConfig = Required<
@@ -40,7 +40,8 @@ class TileClusterGenerator {
     }
 
     if (config.filters?.duration) {
-      url.searchParams.set('duration', config.filters.duration)
+      const duration = `duration >= ${config.filters?.duration[0]} AND duration <= ${config.filters?.duration[1]}`
+      url.searchParams.set('duration', duration)
     }
 
     url.searchParams.set(
