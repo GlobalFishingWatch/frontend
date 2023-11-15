@@ -191,6 +191,7 @@ steps:
     entrypoint: bash
     env:
       - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - 'E2E_BUCKET=$_E2E_BUCKET'
       - 'BUILD_ID=$BUILD_ID'
     args:
       - '-eEuo'
@@ -198,9 +199,9 @@ steps:
       - '-c'
       - |-
         if [ -d "dist/cypress/apps/fishing-map-e2e/screenshots" ] && [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
-          gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
+          gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://$E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
           echo "You can see the testing videos of this deploy in: "
-          echo "https://console.cloud.google.com/storage/browser/e2e-ui-fishing-map/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
+          echo "https://console.cloud.google.com/storage/browser/$E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
           exit 1
         fi
 
