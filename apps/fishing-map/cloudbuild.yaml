@@ -161,6 +161,7 @@ steps:
 
   - id: 'smoke-test-e2e'
     waitFor: ['deploy-cloud-run']
+    allowFailure: true
     name: cypress/included:12.17.1
     entrypoint: 'bash'
     env:
@@ -183,6 +184,26 @@ steps:
         CYPRESS_BASE_URL=`cat app_url` \
           CYPRESS_CACHE_FOLDER=.cypress-cache \
           yarn nx run fishing-map-e2e:test-pr --parallel
+
+  - id: 'save-test-videos'
+    name: gcr.io/cloud-builders/gcloud
+    waitFor: ['smoke-test-e2e']
+    entrypoint: bash
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - '_E2E_BUCKET=$_E2E_BUCKET'
+      - 'BUILD_ID=$BUILD_ID'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        if [ -d "dist/cypress/apps/fishing-map-e2e/screenshots" ] && [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
+          gsutil cp -r dist/cypress/apps/fishing-map-e2e gs://$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
+          echo "You can see the testing videos of this deploy in: "
+          echo "https://console.cloud.google.com/storage/browser/$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
+          exit 1
+        fi
 
 timeout: 1800s
 options:
