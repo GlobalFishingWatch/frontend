@@ -137,7 +137,7 @@ function SearchBasicResult({
   } else if (isSelected) {
     tooltip = t('search.vesselSelected', 'Vessel selected')
   }
-  const { onClick, ...itemProps } = getItemProps({ item: vessel, index })
+  const { onClick, onMouseDown, ...itemProps } = getItemProps({ item: vessel, index })
 
   const vesselQuery = useMemo(() => {
     const query = { start: transmissionDateFrom, end: transmissionDateTo }
@@ -203,7 +203,7 @@ function SearchBasicResult({
           icon={isSelected || isInWorkspace ? 'tick' : undefined}
           type="border"
           testId={`search-vessels-option-selection-${index}`}
-          className={cx({ [styles.selectedIcon]: isSelected || isInWorkspace })}
+          className={cx(styles.icon, { [styles.selectedIcon]: isSelected || isInWorkspace })}
           size="tiny"
           tooltip={tooltip}
           onClick={isInWorkspace ? undefined : onClick}
