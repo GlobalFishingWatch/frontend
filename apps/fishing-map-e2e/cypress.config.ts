@@ -12,7 +12,7 @@ const cypressJsonConfig = {
   chromeWebSecurity: false,
   trashAssetsBeforeRuns: true,
   specPattern: ['src/e2e/**/*.cy.{js,jsx,ts,tsx}'],
-  excludeSpecPattern: ['src/e2e/map/', 'src/e2e/sidebar/'],
+  //excludeSpecPattern: ['src/e2e/map/', 'src/e2e/sidebar/'],
   supportFile: 'src/support/e2e.ts',
   numTestsKeptInMemory: 5,
 }
