@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment, useMemo, useState } from 'react'
+import { ChangeEvent, FC, Fragment, useCallback, useMemo, useState } from 'react'
 import { uniq } from 'lodash'
 import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
@@ -36,14 +36,9 @@ const getHighlightedText = (text: string, highlight: string) => {
   })
 }
 
-const LayerLibrary: React.FC = () => {
+const LayerLibrary: FC = () => {
   const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
-
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
-
   const dataviews = useSelector(selectAllDataviews)
 
   const layersResolved: LayerResolved[] = useMemo(
@@ -55,7 +50,10 @@ const LayerLibrary: React.FC = () => {
           ...layer,
           name: t(`datasets:${layer.datasetId}.name`),
           description: t(`datasets:${layer.datasetId}.description`),
-          category: dataview.category as DataviewCategory,
+          category: t(
+            `common.${dataview.category as DataviewCategory}`,
+            dataview.category as DataviewCategory
+          ),
         }
       }),
     [dataviews, t]
@@ -90,7 +88,20 @@ const LayerLibrary: React.FC = () => {
       ),
     [filteredLayers, uniqCategories]
   )
-  console.log('layersByCategory:', layersByCategory)
+
+  const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }, [])
+
+  const onCategoryClick = useCallback((e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault()
+    const targetElement = document.querySelector((e.target as any).getAttribute('href'))
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+      })
+    }
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -106,7 +117,7 @@ const LayerLibrary: React.FC = () => {
       <div className={styles.categoriesContainer}>
         <div className={styles.categories}>
           {uniqCategories.map((category) => (
-            <a className={styles.category} href={`#${category}`}>
+            <a className={styles.category} href={`#${category}`} onClick={onCategoryClick}>
               {category}
             </a>
           ))}
