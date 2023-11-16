@@ -11,14 +11,22 @@
 }
 
 .categories {
-  padding: var(--space-M);
+  padding: var(--space-S) var(--space-M) var(--space-M) var(--space-M);
   border-right: var(--border);
 }
 
 .category {
   display: block;
-  margin-bottom: var(--space-M);
+  cursor: pointer;
   color: var(--color-secondary-blue);
+  padding: var(--space-S);
+  border-left: 0.4rem solid transparent;
+  transition: var(--transition);
+}
+
+.currentCategory {
+  color: var(--color-primary-blue);
+  border-left: 0.4rem solid var(--color-primary-blue);
 }
 
 .layerList {

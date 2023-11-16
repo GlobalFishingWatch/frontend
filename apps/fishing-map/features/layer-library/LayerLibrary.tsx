@@ -1,3 +1,4 @@
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { ChangeEvent, FC, Fragment, useCallback, useMemo, useState } from 'react'
 import { uniq } from 'lodash'
@@ -39,6 +40,9 @@ const getHighlightedText = (text: string, highlight: string) => {
 const LayerLibrary: FC = () => {
   const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
+  const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
+    DataviewCategory.Activity
+  )
   const dataviews = useSelector(selectAllDataviews)
 
   const layersResolved: LayerResolved[] = useMemo(
@@ -50,10 +54,7 @@ const LayerLibrary: FC = () => {
           ...layer,
           name: t(`datasets:${layer.datasetId}.name`),
           description: t(`datasets:${layer.datasetId}.description`),
-          category: t(
-            `common.${dataview.category as DataviewCategory}`,
-            dataview.category as DataviewCategory
-          ),
+          category: dataview.category as DataviewCategory,
         }
       }),
     [dataviews, t]
@@ -62,6 +63,16 @@ const LayerLibrary: FC = () => {
     () => uniq(layersResolved.map(({ category }) => category)),
     [layersResolved]
   )
+
+  const categoryElements = useMemo(
+    () =>
+      uniqCategories.flatMap((category) => {
+        const element = document.getElementById(category)
+        return element || []
+      }),
+    [uniqCategories]
+  )
+
   const filteredLayers = useMemo(
     () =>
       layersResolved.filter((layer) => {
@@ -93,15 +104,38 @@ const LayerLibrary: FC = () => {
     setSearchQuery(e.target.value)
   }, [])
 
-  const onCategoryClick = useCallback((e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault()
-    const targetElement = document.querySelector((e.target as any).getAttribute('href'))
-    if (targetElement) {
-      targetElement.scrollIntoView({
-        behavior: 'smooth',
+  const onLayerListScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      let current
+      categoryElements.forEach((categoryElement) => {
+        if (
+          (e.target as any).scrollTop >=
+          categoryElement.offsetTop - (e.target as any).offsetTop
+        ) {
+          current = categoryElement.id
+        }
       })
-    }
-  }, [])
+      if (current && currentCategory !== current) {
+        setCurrentCategory(current)
+      }
+    },
+    [categoryElements, currentCategory]
+  )
+
+  const onCategoryClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.preventDefault()
+      const targetElement = categoryElements.find((element) => {
+        return `#${element.id}` === (e.target as any).getAttribute('href')
+      })
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+        })
+      }
+    },
+    [categoryElements]
+  )
 
   return (
     <div className={styles.container}>
@@ -117,17 +151,23 @@ const LayerLibrary: FC = () => {
       <div className={styles.categoriesContainer}>
         <div className={styles.categories}>
           {uniqCategories.map((category) => (
-            <a className={styles.category} href={`#${category}`} onClick={onCategoryClick}>
-              {category}
+            <a
+              className={cx(styles.category, {
+                [styles.currentCategory]: currentCategory === category,
+              })}
+              href={`#${category}`}
+              onClick={onCategoryClick}
+            >
+              {t(`common.${category as DataviewCategory}`, category as DataviewCategory)}
             </a>
           ))}
         </div>
-        <div className={styles.layerList}>
+        <div className={styles.layerList} onScroll={onLayerListScroll}>
           {uniqCategories.map((category) => (
             <Fragment>
               {layersByCategory[category].length > 0 && (
                 <label id={category} className={styles.categoryLabel}>
-                  {category}
+                  {t(`common.${category as DataviewCategory}`, category as DataviewCategory)}
                 </label>
               )}
               {layersByCategory[category].map(({ previewImageUrl, name, description }) => (
