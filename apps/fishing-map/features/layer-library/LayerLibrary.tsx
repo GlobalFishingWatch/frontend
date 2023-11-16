@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { ChangeEvent, FC, Fragment, useCallback, useMemo, useState } from 'react'
+import { ChangeEvent, FC, Fragment, useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import { uniq } from 'lodash'
 import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
@@ -40,6 +40,7 @@ const getHighlightedText = (text: string, highlight: string) => {
 const LayerLibrary: FC = () => {
   const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
+  const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
     DataviewCategory.Activity
   )
@@ -64,14 +65,14 @@ const LayerLibrary: FC = () => {
     [layersResolved]
   )
 
-  const categoryElements = useMemo(
-    () =>
+  useLayoutEffect(() => {
+    setCategoryElements(
       uniqCategories.flatMap((category) => {
         const element = document.getElementById(category)
         return element || []
-      }),
-    [uniqCategories]
-  )
+      })
+    )
+  }, [uniqCategories])
 
   const filteredLayers = useMemo(
     () =>
@@ -106,18 +107,16 @@ const LayerLibrary: FC = () => {
 
   const onLayerListScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
-      let current
+      let current = currentCategory
       categoryElements.forEach((categoryElement) => {
         if (
           (e.target as any).scrollTop >=
           categoryElement.offsetTop - (e.target as any).offsetTop
         ) {
-          current = categoryElement.id
+          current = categoryElement.id as DataviewCategory
         }
       })
-      if (current && currentCategory !== current) {
-        setCurrentCategory(current)
-      }
+      setCurrentCategory(current)
     },
     [categoryElements, currentCategory]
   )
@@ -128,6 +127,7 @@ const LayerLibrary: FC = () => {
       const targetElement = categoryElements.find((element) => {
         return `#${element.id}` === (e.target as any).getAttribute('href')
       })
+
       if (targetElement) {
         targetElement.scrollIntoView({
           behavior: 'smooth',
@@ -157,6 +157,7 @@ const LayerLibrary: FC = () => {
               })}
               href={`#${category}`}
               onClick={onCategoryClick}
+              key={category}
             >
               {t(`common.${category as DataviewCategory}`, category as DataviewCategory)}
             </a>
@@ -164,28 +165,32 @@ const LayerLibrary: FC = () => {
         </div>
         <div className={styles.layerList} onScroll={onLayerListScroll}>
           {uniqCategories.map((category) => (
-            <Fragment>
+            <Fragment key={category}>
               {layersByCategory[category].length > 0 && (
                 <label id={category} className={styles.categoryLabel}>
                   {t(`common.${category as DataviewCategory}`, category as DataviewCategory)}
                 </label>
               )}
-              {layersByCategory[category].map(({ previewImageUrl, name, description }) => (
-                <div className={styles.layer}>
-                  <div className={styles.layerContainer}>
-                    <div
-                      className={styles.layerImage}
-                      style={{ backgroundImage: `url(${previewImageUrl})` }}
-                    />
-                    <div className={styles.layerContent}>
-                      <h2 className={styles.layerTitle}>{getHighlightedText(name, searchQuery)}</h2>
-                      <p className={styles.layerDescription}>
-                        {getHighlightedText(description, searchQuery)}
-                      </p>
+              {layersByCategory[category].map(
+                ({ dataviewSlug, previewImageUrl, name, description }) => (
+                  <div className={styles.layer} key={dataviewSlug}>
+                    <div className={styles.layerContainer}>
+                      <div
+                        className={styles.layerImage}
+                        style={{ backgroundImage: `url(${previewImageUrl})` }}
+                      />
+                      <div className={styles.layerContent}>
+                        <h2 className={styles.layerTitle}>
+                          {getHighlightedText(name, searchQuery)}
+                        </h2>
+                        <p className={styles.layerDescription}>
+                          {getHighlightedText(description, searchQuery)}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </Fragment>
           ))}
         </div>
