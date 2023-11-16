@@ -33,6 +33,15 @@ function getDatasetSchemaItem(dataset: Dataset, schema: string) {
   )
 }
 
+function isFilterableDataviewInstanceGenerator(dataviewInstance: UrlDataviewInstance) {
+  return (
+    dataviewInstance.config?.type === GeneratorType.HeatmapAnimated ||
+    dataviewInstance.config?.type === GeneratorType.TileCluster ||
+    dataviewInstance.config?.type === GeneratorType.UserContext ||
+    dataviewInstance.config?.type === GeneratorType.UserPoints
+  )
+}
+
 /**
  * Detects newly instanciated dataviews in workspaceDataviewInstances
  * @param workspaceDataviewInstances
@@ -350,12 +359,7 @@ export function resolveDataviews(
 
   // resolved array filters to url filters
   dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
-    if (
-      dataviewInstance.config?.type === GeneratorType.HeatmapAnimated ||
-      dataviewInstance.config?.type === GeneratorType.TileCluster ||
-      dataviewInstance.config?.type === GeneratorType.UserContext ||
-      dataviewInstance.config?.type === GeneratorType.UserPoints
-    ) {
+    if (isFilterableDataviewInstanceGenerator(dataviewInstance) && dataviewInstance.config) {
       const { filters, filterOperators } = dataviewInstance.config
       if (filters) {
         if (filters['vessel-groups']) {
