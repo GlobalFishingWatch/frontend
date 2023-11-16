@@ -8,7 +8,11 @@ import {
   selectDownloadTrackModalOpen,
 } from 'features/download/download.selectors'
 import { selectEditorActive } from 'features/editor/editor.slice'
-import { selectFeedbackModalOpen, selectScreenshotModalOpen } from 'features/modals/modals.slice'
+import {
+  selectFeedbackModalOpen,
+  selectLayerLibraryModalOpen,
+  selectScreenshotModalOpen,
+} from 'features/modals/modals.slice'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
 import { WelcomeContentKey } from 'features/welcome/welcome.content'
 import {
@@ -30,6 +34,7 @@ export const selectSecretModals = createSelector(
 export const selectAppModals = createSelector(
   [
     selectFeedbackModalOpen,
+    selectLayerLibraryModalOpen,
     selectDatasetModal,
     selectScreenshotModalOpen,
     selectVesselGroupModalOpen,
@@ -38,6 +43,7 @@ export const selectAppModals = createSelector(
   ],
   (
     feedbackModalOpen,
+    layerLibraryModalOpen,
     datasetModal,
     screenshotModalOpen,
     vesselGroupsModalOpen,
@@ -46,6 +52,7 @@ export const selectAppModals = createSelector(
   ) => {
     return {
       feedback: feedbackModalOpen,
+      layerLibrary: layerLibraryModalOpen,
       datataset: datasetModal !== undefined,
       screenshot: screenshotModalOpen,
       vesselGroups: vesselGroupsModalOpen,

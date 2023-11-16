@@ -5,3 +5,8 @@
 .bqModal {
   height: 56rem;
 }
+
+.layerLibraryModal {
+  height: calc(100vh - 20rem);
+  padding: 0;
+}

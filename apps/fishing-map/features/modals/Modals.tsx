@@ -16,10 +16,15 @@ import GFWOnly from 'features/user/GFWOnly'
 import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/modals.selectors'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
+import { selectLayerLibraryModalOpen } from 'features/modals/modals.slice'
 import styles from './Modals.module.css'
 
 const BigQueryMenu = dynamic(
   () => import(/* webpackChunkName: "BigQueryMenu" */ 'features/bigquery/BigQuery')
+)
+
+const LayerLibrary = dynamic(
+  () => import(/* webpackChunkName: "LayerLibrary" */ 'features/layer-library/LayerLibrary')
 )
 const DebugMenu = dynamic(
   () => import(/* webpackChunkName: "DebugMenu" */ 'features/debug/DebugMenu')
@@ -76,6 +81,7 @@ const AppModals = () => {
   useSecretKeyboardCombo(ResetWorkspaceConfig)
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
   const isVesselGroupModalOpen = useSelector(selectVesselGroupModalOpen)
+  const isLayerLibraryModalOpen = useSelector(selectLayerLibraryModalOpen)
   const downloadTrackModalOpen = useSelector(selectDownloadTrackModalOpen)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
@@ -130,6 +136,20 @@ const AppModals = () => {
           <BigQueryMenu />
         </Modal>
       )}
+      {/* {isLayerLibraryModalOpen && ( */}
+      {true && (
+        <Modal
+          appSelector={ROOT_DOM_ELEMENT}
+          title="Layer Library"
+          isOpen={true}
+          onClose={() => {}}
+          contentClassName={styles.layerLibraryModal}
+          fullScreen={true}
+        >
+          <LayerLibrary />
+        </Modal>
+      )}
+
       {downloadActivityAreaKey && <DownloadActivityModal />}
       {downloadTrackModalOpen && <DownloadTrackModal />}
       {!readOnly && (
