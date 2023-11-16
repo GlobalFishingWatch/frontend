@@ -148,6 +148,7 @@ steps:
            --region $_RUN_REGION \
            --format 'value(status.url)' > app_url
         fi
+        echo app_url
 
   - id: 'i18n-labels publish stable'
     name: gcr.io/cloud-builders/gcloud
