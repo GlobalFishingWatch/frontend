@@ -2019,6 +2019,16 @@
       "firstTransmissionDate": "crwdns66203:0crwdne66203:0"
     }
   },
+  "public-global-chlorophyl-max": {
+    "name": "crwdns70240:0crwdne70240:0",
+    "description": "crwdns70242:0crwdne70242:0",
+    "schema": {}
+  },
+  "public-global-chlorophyl-min": {
+    "name": "crwdns70244:0crwdne70244:0",
+    "description": "crwdns70246:0crwdne70246:0",
+    "schema": {}
+  },
   "public-global-chlorophyl": {
     "name": "crwdns66205:0crwdne66205:0",
     "description": "crwdns66207:0crwdne66207:0",
@@ -2402,9 +2412,29 @@
       "timestamp": "crwdns66599:0crwdne66599:0"
     }
   },
+  "public-global-water-salinity-max": {
+    "name": "crwdns70248:0crwdne70248:0",
+    "description": "crwdns70250:0crwdne70250:0",
+    "schema": {}
+  },
+  "public-global-water-salinity-min": {
+    "name": "crwdns70252:0crwdne70252:0",
+    "description": "crwdns70254:0crwdne70254:0",
+    "schema": {}
+  },
   "public-global-water-salinity": {
     "name": "crwdns66601:0crwdne66601:0",
     "description": "crwdns66603:0crwdne66603:0",
+    "schema": {}
+  },
+  "public-global-water-temperature-max": {
+    "name": "crwdns70256:0crwdne70256:0",
+    "description": "crwdns70258:0crwdne70258:0",
+    "schema": {}
+  },
+  "public-global-water-temperature-min": {
+    "name": "crwdns70260:0crwdne70260:0",
+    "description": "crwdns70262:0crwdne70262:0",
     "schema": {}
   },
   "public-global-water-temperature": {
