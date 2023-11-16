@@ -140,7 +140,7 @@ steps:
           --allow-unauthenticated
         workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
         echo "https://globalfishingwatch.org/map" > app_url
-        if [ $workspace_env != 'development' ]; then
+        if [ $workspace_env != 'production' ]; then
           gcloud run services describe $service_name \
            --project $_RUN_PROJECT \
            --platform managed \
