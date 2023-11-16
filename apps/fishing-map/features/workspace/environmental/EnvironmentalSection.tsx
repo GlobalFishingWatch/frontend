@@ -89,26 +89,19 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
         )}
       </div>
       <SortableContext items={dataviews}>
-        {dataviews.length > 0 ? (
-          dataviews?.map((dataview) =>
-            dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
-              <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                <UserTrackLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-              </LayerPanelContainer>
-            ) : (
-              <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-              </LayerPanelContainer>
+        {dataviews.length > 0
+          ? dataviews?.map((dataview) =>
+              dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
+                <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                  <UserTrackLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+                </LayerPanelContainer>
+              ) : (
+                <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                  <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+                </LayerPanelContainer>
+              )
             )
-          )
-        ) : (
-          <div className={styles.emptyState}>
-            {t(
-              'workspace.emptyStateEnvironment',
-              'Upload custom datasets like animal telemetry clicking on the plus icon.'
-            )}
-          </div>
-        )}
+          : null}
       </SortableContext>
       {locationCategory === WorkspaceCategory.MarineManager && (
         <div className={styles.surveyLink}>

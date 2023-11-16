@@ -28,6 +28,7 @@ import {
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
+import UserSection from 'features/workspace/user/UserSection'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -185,9 +186,10 @@ function Workspace() {
         )}
       <ActivitySection />
       <DetectionsSection />
-      <VesselsSection />
       <EventsSection />
+      <VesselsSection />
       <EnvironmentalSection />
+      <UserSection />
       <ContextAreaSection />
     </DndContext>
   )

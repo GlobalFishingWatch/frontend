@@ -125,6 +125,13 @@ export const selectContextAreasDataviews = createSelector(
   }
 )
 
+export const selectCustomUserDataviews = createSelector(
+  [selectDataviewInstancesByCategory(DataviewCategory.User)],
+  (contextDataviews) => {
+    return contextDataviews
+  }
+)
+
 export const selectActiveContextAreasDataviews = createSelector(
   [selectDataviewInstancesByCategory(DataviewCategory.Context)],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)

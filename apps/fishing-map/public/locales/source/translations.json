@@ -242,6 +242,7 @@
     "typePolygonsDescription": "Display one or multiple areas coloured by any quantitative value in your dataset.",
     "typeTracks": " Tracks",
     "typeTracksDescription": "Display the movement of one or multiple animals or vessels.",
+    "upload": "Upload dataset",
     "uploadLogin": "<0>Register</0> or <2>login</2>to upload datasets (free, 2 minutes)",
     "uploadNewContext": "Upload new context areas",
     "uploadNewEnviroment": "Upload new environment dataset",
@@ -578,6 +579,7 @@
     "tracksDisabled": "Select at least one vessel"
   },
   "user": {
+    "datasets": "User datasets",
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "User Groups",
     "info": "User Info",

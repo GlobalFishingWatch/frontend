@@ -6,27 +6,48 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectCustomUserDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
-import LayerPanel from './ContextAreaLayerPanel'
+import LayerPanel from './UserLayerPanel'
 
-function ContextAreaSection(): React.ReactElement {
+function UserSection(): React.ReactElement {
   const { t } = useTranslation()
+  const { dispatchSetMapDrawing } = useMapDrawConnect()
 
   const readOnly = useSelector(selectReadOnly)
-  const dataviews = useSelector(selectContextAreasDataviews)
+  const dataviews = useSelector(selectCustomUserDataviews)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+
+  const onDrawClick = useCallback(() => {
+    dispatchSetMapDrawing(true)
+    trackEvent({
+      category: TrackCategory.ReferenceLayer,
+      action: `Draw a custom reference layer - Start`,
+    })
+  }, [dispatchSetMapDrawing])
 
   const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
-  const onAdd = useCallback(() => {
+
+  const onUploadClick = useCallback(() => {
+    trackEvent({
+      category: TrackCategory.ReferenceLayer,
+      action: `Open panel to upload new reference layer`,
+      value: userDatasets.length,
+    })
+    setNewDatasetOpen(true)
+  }, [userDatasets.length])
+
+  const onAddClick = useCallback(() => {
     trackEvent({
       category: TrackCategory.ReferenceLayer,
       action: `Open panel to upload new reference layer`,
@@ -55,10 +76,35 @@ function ContextAreaSection(): React.ReactElement {
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={cx('print-hidden', styles.sectionTitle)}>
-          {t('common.context_area_other', 'Context areas')}
+          {t('user.datasets', 'User datasets')}
         </h2>
         {!readOnly && (
           <Fragment>
+            <IconButton
+              icon="upload"
+              type="border"
+              size="medium"
+              tooltip={t('dataset.upload', 'Upload dataset')}
+              tooltipPlacement="top"
+              className="print-hidden"
+              onClick={onUploadClick}
+            />
+            <LoginButtonWrapper
+              tooltip={t(
+                'layer.drawPolygonLogin',
+                'Register and login to draw a layer (free, 2 minutes)'
+              )}
+            >
+              <IconButton
+                icon="draw"
+                type="border"
+                size="medium"
+                tooltip={t('layer.drawPolygon', 'Draw a layer')}
+                tooltipPlacement="top"
+                className="print-hidden"
+                onClick={onDrawClick}
+              />
+            </LoginButtonWrapper>
             <TooltipContainer
               visible={newDatasetOpen}
               onClickOutside={() => {
@@ -78,21 +124,30 @@ function ContextAreaSection(): React.ReactElement {
                 tooltip={t('dataset.addContext', 'Add context dataset')}
                 tooltipPlacement="top"
                 className="print-hidden"
-                onClick={onAdd}
+                onClick={onAddClick}
               />
             </TooltipContainer>
           </Fragment>
         )}
       </div>
       <SortableContext items={dataviews}>
-        {dataviews?.map((dataview) => (
-          <LayerPanelContainer key={dataview.id} dataview={dataview}>
-            <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-          </LayerPanelContainer>
-        ))}
+        {dataviews?.length ? (
+          dataviews?.map((dataview) => (
+            <LayerPanelContainer key={dataview.id} dataview={dataview}>
+              <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+            </LayerPanelContainer>
+          ))
+        ) : (
+          <div className={styles.emptyState}>
+            {t(
+              'workspace.emptyStateEnvironment',
+              'Upload custom datasets like animal telemetry clicking on the plus icon.'
+            )}
+          </div>
+        )}
       </SortableContext>
     </div>
   )
 }
 
-export default ContextAreaSection
+export default UserSection
