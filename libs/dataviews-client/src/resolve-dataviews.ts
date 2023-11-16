@@ -352,7 +352,9 @@ export function resolveDataviews(
   dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
     if (
       dataviewInstance.config?.type === GeneratorType.HeatmapAnimated ||
-      dataviewInstance.config?.type === GeneratorType.TileCluster
+      dataviewInstance.config?.type === GeneratorType.TileCluster ||
+      dataviewInstance.config?.type === GeneratorType.UserContext ||
+      dataviewInstance.config?.type === GeneratorType.UserPoints
     ) {
       const { filters, filterOperators } = dataviewInstance.config
       if (filters) {
