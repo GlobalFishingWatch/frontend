@@ -114,6 +114,7 @@ steps:
     entrypoint: 'bash'
     env:
       - '_RUN_SERVICE_NAME=$_RUN_SERVICE_NAME'
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
     args:
       - '-eEuo'
       - 'pipefail'
@@ -137,11 +138,16 @@ steps:
           --set-env-vars \
           BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
           --allow-unauthenticated
-        gcloud run services describe $service_name \
+        workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
+        if [ $workspace_env = 'development' ]; then
+          app_url='https://globalfishingwatch.org/map'
+        else
+          gcloud run services describe $service_name \
            --project $_RUN_PROJECT \
            --platform managed \
            --region $_RUN_REGION \
            --format 'value(status.url)' > app_url
+        fi
 
   - id: 'i18n-labels publish stable'
     name: gcr.io/cloud-builders/gcloud
@@ -157,25 +163,6 @@ steps:
         workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
         if [ $workspace_env = 'production' ]; then
           gcloud -q beta builds triggers run --branch=develop ui-libs-i18n-labels-stable
-        fi
-
-  - id: 'test-production'
-    name: gcr.io/cloud-builders/gcloud
-    waitFor: ['i18n-labels publish stable']
-    entrypoint: bash
-    env:
-      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
-    args:
-      - '-eEuo'
-      - 'pipefail'
-      - '-c'
-      - |-
-        workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
-        if [ $workspace_env = 'production' ]; then
-          gcloud -q beta builds triggers run ui-fishing-map-auto-testing-production
-        fi
-        if [ $workspace_env = 'staging' ]; then
-          gcloud -q beta builds triggers run ui-fishing-map-auto-testing-staging
         fi
 
   - id: 'smoke-test-e2e'
