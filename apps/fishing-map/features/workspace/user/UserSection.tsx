@@ -1,31 +1,36 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import { SortableContext } from '@dnd-kit/sortable'
 import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { selectCustomUserDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
-import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
-import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { isGuestUser } from 'features/user/user.slice'
+import LocalStorageLoginLink from 'routes/LoginLink'
+import { useAddDataset } from 'features/datasets/datasets.hook'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './UserLayerPanel'
 
 function UserSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
+  const guestUser = useSelector(isGuestUser)
 
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectCustomUserDataviews)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+
+  const onAddNewClick = useAddDataset({})
 
   const onDrawClick = useCallback(() => {
     dispatchSetMapDrawing(true)
@@ -35,7 +40,6 @@ function UserSection(): React.ReactElement {
     })
   }, [dispatchSetMapDrawing])
 
-  const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
 
   const onUploadClick = useCallback(() => {
@@ -44,16 +48,16 @@ function UserSection(): React.ReactElement {
       action: `Open panel to upload new reference layer`,
       value: userDatasets.length,
     })
-    setNewDatasetOpen(true)
-  }, [userDatasets.length])
+    onAddNewClick()
+  }, [onAddNewClick, userDatasets.length])
 
   const onAddClick = useCallback(() => {
     trackEvent({
       category: TrackCategory.ReferenceLayer,
-      action: `Open panel to upload new reference layer`,
+      action: `Open panel to add a reference layer`,
       value: userDatasets.length,
     })
-    setNewDatasetOpen(true)
+    alert('TODO: INTEGRATE WITH DATASET LIBRARY')
   }, [userDatasets.length])
 
   const onToggleLayer = useCallback(
@@ -105,47 +109,52 @@ function UserSection(): React.ReactElement {
                 onClick={onDrawClick}
               />
             </LoginButtonWrapper>
-            <TooltipContainer
-              visible={newDatasetOpen}
-              onClickOutside={() => {
-                setNewDatasetOpen(false)
-              }}
-              component={
-                <NewDatasetTooltip
-                  datasetCategory={DatasetCategory.Context}
-                  onSelect={() => setNewDatasetOpen(false)}
-                />
-              }
-            >
-              <IconButton
-                icon="plus"
-                type="border"
-                size="medium"
-                tooltip={t('dataset.addContext', 'Add context dataset')}
-                tooltipPlacement="top"
-                className="print-hidden"
-                onClick={onAddClick}
-              />
-            </TooltipContainer>
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('dataset.addContext', 'Add context dataset')}
+              tooltipPlacement="top"
+              className="print-hidden"
+              onClick={onAddClick}
+            />
           </Fragment>
         )}
       </div>
-      <SortableContext items={dataviews}>
-        {dataviews?.length ? (
-          dataviews?.map((dataview) => (
-            <LayerPanelContainer key={dataview.id} dataview={dataview}>
-              <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-            </LayerPanelContainer>
-          ))
-        ) : (
-          <div className={styles.emptyState}>
-            {t(
-              'workspace.emptyStateEnvironment',
-              'Upload custom datasets like animal telemetry clicking on the plus icon.'
-            )}
-          </div>
-        )}
-      </SortableContext>
+      {guestUser ? (
+        <div className={styles.emptyState}>
+          <Trans i18nKey="dataset.uploadLogin">
+            <a
+              className={styles.link}
+              href={GFWAPI.getRegisterUrl(
+                typeof window !== 'undefined' ? window.location.toString() : ''
+              )}
+            >
+              Register
+            </a>
+            or
+            <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
+            to upload datasets (free, 2 minutes)
+          </Trans>
+        </div>
+      ) : (
+        <SortableContext items={dataviews}>
+          {dataviews?.length ? (
+            dataviews?.map((dataview) => (
+              <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+              </LayerPanelContainer>
+            ))
+          ) : (
+            <div className={styles.emptyState}>
+              {t(
+                'workspace.emptyStateEnvironment',
+                'Upload custom datasets like animal telemetry clicking on the plus icon.'
+              )}
+            </div>
+          )}
+        </SortableContext>
+      )}
     </div>
   )
 }
