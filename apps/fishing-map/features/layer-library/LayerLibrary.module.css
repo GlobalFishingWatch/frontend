@@ -36,6 +36,7 @@
 .layerList {
   padding: 0 var(--space-M) var(--space-L);
   overflow: auto;
+  width: 100%;
 }
 
 .categoryLabel {

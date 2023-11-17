@@ -1,0 +1,67 @@
+{
+  "fishing-effort": {
+    "name": "fishing",
+    "description": "fishing description",
+    "moreInfoLink": ""
+  },
+  "presence": {
+    "name": "presence",
+    "description": "presence description",
+    "moreInfoLink": ""
+  },
+  "viirs": {
+    "name": "viirs",
+    "description": "viirs description",
+    "moreInfoLink": ""
+  },
+  "sar": {
+    "name": "sar",
+    "description": "sar description",
+    "moreInfoLink": ""
+  },
+  "water-temperature": {
+    "name": "water",
+    "description": "water description",
+    "moreInfoLink": ""
+  },
+  "water-salinity": {
+    "name": "water",
+    "description": "water description",
+    "moreInfoLink": ""
+  },
+  "chlorophyl": {
+    "name": "chlorophyl",
+    "description": "chlorophyl description",
+    "moreInfoLink": ""
+  },
+  "eez": {
+    "name": "eez",
+    "description": "eez description",
+    "moreInfoLink": ""
+  },
+  "mpa": {
+    "name": "mpa",
+    "description": "mpa description",
+    "moreInfoLink": ""
+  },
+  "protectedseas": {
+    "name": "protectedseas",
+    "description": "protectedseas description",
+    "moreInfoLink": ""
+  },
+  "fao-major": {
+    "name": "fao-major",
+    "description": "fao-major description",
+    "moreInfoLink": ""
+  },
+  "rfmo": {
+    "name": "rfmo",
+    "description": "rfmo description",
+    "moreInfoLink": ""
+  },
+  "high-seas": {
+    "name": "high-seas",
+    "description": "high-seas description",
+    "moreInfoLink": ""
+  }
+}

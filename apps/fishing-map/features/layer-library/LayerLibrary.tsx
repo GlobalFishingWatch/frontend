@@ -5,15 +5,15 @@ import { uniq } from 'lodash'
 import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { LIBRARY_LAYERS } from 'data/library-layers'
+import { LIBRARY_LAYERS, LibraryLayer } from 'data/library-layers'
 import { upperFirst } from 'utils/info'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
-import LayerLibraryItem, { LayerResolved } from 'features/layer-library/LayerLibraryItem'
+import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import { selectLayerLibraryModal } from 'features/modals/modals.slice'
 import styles from './LayerLibrary.module.css'
 
 const LayerLibrary: FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['layer-library'])
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
   const initialCategory = useSelector(selectLayerLibraryModal)
@@ -22,20 +22,21 @@ const LayerLibrary: FC = () => {
   )
   const dataviews = useSelector(selectAllDataviews)
 
-  const layersResolved: LayerResolved[] = useMemo(
-    () =>
-      LIBRARY_LAYERS.flatMap((layer) => {
-        const dataview = dataviews.find((d) => d.slug === layer.dataviewSlug)
-        if (!dataview) return []
-        return {
-          ...layer,
-          name: t(`datasets:${layer.datasetId}.name`),
-          description: t(`datasets:${layer.datasetId}.description`),
-          category: dataview.category as DataviewCategory,
-        }
-      }),
-    [dataviews, t]
-  )
+  const layersResolved: (Omit<LibraryLayer, 'category'> & { category: DataviewCategory })[] =
+    useMemo(
+      () =>
+        LIBRARY_LAYERS.flatMap((layer) => {
+          const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
+          if (!dataview) return []
+          return {
+            ...layer,
+            name: t(`layer-library:${layer.id}.name`),
+            description: t(`layer-library:${layer.id}.description`),
+            category: dataview.category as DataviewCategory,
+          }
+        }),
+      [dataviews, t]
+    )
   const uniqCategories = useMemo(
     () => uniq(layersResolved.map(({ category }) => category)),
     [layersResolved]
@@ -72,8 +73,8 @@ const LayerLibrary: FC = () => {
     () =>
       layersResolved.filter((layer) => {
         return (
-          layer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          layer.description.toLowerCase().includes(searchQuery.toLowerCase())
+          layer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          layer.description?.toLowerCase().includes(searchQuery.toLowerCase())
         )
       }),
     [layersResolved, searchQuery]
@@ -90,7 +91,7 @@ const LayerLibrary: FC = () => {
           return acc
         },
         Object.fromEntries(
-          uniqCategories.map((category) => [category, []] as [DataviewCategory, LayerResolved[]])
+          uniqCategories.map((category) => [category, []] as [DataviewCategory, LibraryLayer[]])
         )
       ),
     [filteredLayers, uniqCategories]
@@ -163,7 +164,7 @@ const LayerLibrary: FC = () => {
               </label>
               {layersByCategory[category].map((layer) => (
                 <LayerLibraryItem
-                  key={layer.dataviewSlug}
+                  key={layer.dataviewId}
                   layer={layer}
                   highlightedText={searchQuery}
                 />

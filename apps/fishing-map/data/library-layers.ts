@@ -1,3 +1,4 @@
+import { DataviewCategory, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
@@ -13,84 +14,90 @@ import {
   SAR_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
+import libraryTranslations from '../public/locales/source/layer-library.json'
 
 // Browser config for equal screenshots
 // map at latitude=30&longitude=4&zoom=2
 // browser zoom at 80%
 
-export const LIBRARY_LAYERS: {
-  datasetId: string
-  dataviewSlug: string
+export type LibraryLayer = Omit<DataviewInstance, 'id'> & {
+  id: keyof typeof libraryTranslations
+  category?: DataviewCategory
   previewImageUrl: string
-}[] = [
+}
+
+export const LIBRARY_LAYERS: LibraryLayer[] = [
   {
-    datasetId: 'public-global-fishing-effort',
-    dataviewSlug: FISHING_DATAVIEW_SLUG,
+    id: 'fishing-effort',
+    dataviewId: FISHING_DATAVIEW_SLUG,
     previewImageUrl:
       'https://globalfishingwatch.org/wp-content/uploads/layer-library-AIS-apparent-fishing-effort-1.jpg',
   },
   {
-    datasetId: 'public-global-presence',
-    dataviewSlug: PRESENCE_DATAVIEW_SLUG,
+    id: 'presence',
+    dataviewId: PRESENCE_DATAVIEW_SLUG,
     previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-presence.jpg',
   },
   {
-    datasetId: 'public-ais-presence-viirs-match',
-    dataviewSlug: VIIRS_MATCH_DATAVIEW_SLUG,
+    id: 'viirs',
+    dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
     previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-VIIRS.jpg',
   },
   {
-    datasetId: 'public-global-sar-presence',
-    dataviewSlug: SAR_DATAVIEW_SLUG,
+    id: 'sar',
+    dataviewId: SAR_DATAVIEW_SLUG,
     previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-SAR.jpg',
   },
   {
-    datasetId: 'public-global-water-temperature',
-    dataviewSlug: GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG,
+    id: 'water-temperature',
+    dataviewId: GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG,
     previewImageUrl:
       'https://globalfishingwatch.org/wp-content/uploads/layer-library-temperature-1.jpg',
   },
   {
-    datasetId: 'public-global-water-salinity',
-    dataviewSlug: GLOBAL_SALINITY_DATAVIEW_SLUG,
+    id: 'water-salinity',
+    dataviewId: GLOBAL_SALINITY_DATAVIEW_SLUG,
     previewImageUrl:
       'https://globalfishingwatch.org/wp-content/uploads/layer-library-salinity-1.jpg',
   },
   {
-    datasetId: 'public-global-chlorophyl',
-    dataviewSlug: GLOBAL_CHLOROPHYL_DATAVIEW_SLUG,
+    id: 'chlorophyl',
+    dataviewId: GLOBAL_CHLOROPHYL_DATAVIEW_SLUG,
     previewImageUrl:
       'https://globalfishingwatch.org/wp-content/uploads/layer-library-chlorophyl-1.jpg',
   },
   {
-    datasetId: 'public-eez-areas',
-    dataviewSlug: EEZ_DATAVIEW_SLUG,
+    id: 'eez',
+    dataviewId: EEZ_DATAVIEW_SLUG,
     previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-eezs-2.jpg',
+    config: {
+      color: '#F95E5E',
+    },
   },
   {
-    datasetId: 'public-mpa-all',
-    dataviewSlug: MPA_DATAVIEW_SLUG,
+    id: 'mpa',
+    dataviewId: MPA_DATAVIEW_SLUG,
     previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-mpa.jpg',
   },
   {
-    datasetId: 'public-protectedseas',
-    dataviewSlug: PROTECTED_SEAS_DATAVIEW_SLUG,
+    id: 'protectedseas',
+    dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
     previewImageUrl:
       'https://globalfishingwatch.org/wp-content/uploads/layer-library-protected-seas.jpg',
   },
   {
-    datasetId: 'public-fao-major',
-    dataviewSlug: FAO_AREAS_DATAVIEW_SLUG,
+    id: 'fao-major',
+    dataviewId: FAO_AREAS_DATAVIEW_SLUG,
     previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-fao-2.jpg',
   },
   {
-    datasetId: 'public-rfmo',
-    dataviewSlug: RFMO_DATAVIEW_SLUG,
+    id: 'rfmo',
+    dataviewId: RFMO_DATAVIEW_SLUG,
     previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-rfmos.jpg',
   },
   {
-    datasetId: 'public-high-seas',
-    dataviewSlug: HIGH_SEAS_DATAVIEW_SLUG,
+    id: 'high-seas',
+    dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     previewImageUrl:
       'https://globalfishingwatch.org/wp-content/uploads/layer-library-high-seas.jpg',
   },
