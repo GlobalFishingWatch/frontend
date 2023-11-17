@@ -7,16 +7,8 @@ import { InputText } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { LIBRARY_LAYERS } from 'data/library-layers'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
+import LayerItem, { LayerResolved } from 'features/layer-library/LayerItem'
 import styles from './LayerLibrary.module.css'
-
-type LayerResolved = {
-  name: string
-  description: string
-  category: DataviewCategory
-  datasetId: string
-  dataviewSlug: string
-  previewImageUrl: string
-}
 
 const getHighlightedText = (text: string, highlight: string) => {
   if (highlight === '') return text
@@ -106,7 +98,7 @@ const LayerLibrary: FC = () => {
   }, [])
 
   const onLayerListScroll = useCallback(
-    (e: React.UIEvent<HTMLDivElement>) => {
+    (e: React.UIEvent<HTMLElement>) => {
       let current = currentCategory
       categoryElements.forEach((categoryElement) => {
         if (
@@ -163,37 +155,23 @@ const LayerLibrary: FC = () => {
             </a>
           ))}
         </div>
-        <div className={styles.layerList} onScroll={onLayerListScroll}>
+        <ul className={styles.layerList} onScroll={onLayerListScroll}>
           {uniqCategories.map((category) => (
             <Fragment key={category}>
-              {layersByCategory[category].length > 0 && (
-                <label id={category} className={styles.categoryLabel}>
-                  {t(`common.${category as DataviewCategory}`, category as DataviewCategory)}
-                </label>
-              )}
-              {layersByCategory[category].map(
-                ({ dataviewSlug, previewImageUrl, name, description }) => (
-                  <div className={styles.layer} key={dataviewSlug}>
-                    <div className={styles.layerContainer}>
-                      <div
-                        className={styles.layerImage}
-                        style={{ backgroundImage: `url(${previewImageUrl})` }}
-                      />
-                      <div className={styles.layerContent}>
-                        <h2 className={styles.layerTitle}>
-                          {getHighlightedText(name, searchQuery)}
-                        </h2>
-                        <p className={styles.layerDescription}>
-                          {getHighlightedText(description, searchQuery)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )
-              )}
+              <label
+                id={category}
+                className={cx(styles.categoryLabel, {
+                  [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
+                })}
+              >
+                {t(`common.${category as DataviewCategory}`, category as DataviewCategory)}
+              </label>
+              {layersByCategory[category].map((layer) => (
+                <LayerItem key={layer.dataviewSlug} layer={layer} highlightedText={searchQuery} />
+              ))}
             </Fragment>
           ))}
-        </div>
+        </ul>
       </div>
     </div>
   )

@@ -36,7 +36,14 @@
 
 .categoryLabel {
   padding-top: var(--space-M);
-  margin-bottom: var(--space-S);
+  padding-bottom: var(--space-S);
+}
+
+.categoryLabelHidden {
+  width: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 .layer {
