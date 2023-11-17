@@ -6,28 +6,10 @@ import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { LIBRARY_LAYERS } from 'data/library-layers'
+import { upperFirst } from 'utils/info'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
-import LayerItem, { LayerResolved } from 'features/layer-library/LayerItem'
+import LayerLibraryItem, { LayerResolved } from 'features/layer-library/LayerLibraryItem'
 import styles from './LayerLibrary.module.css'
-
-const getHighlightedText = (text: string, highlight: string) => {
-  if (highlight === '') return text
-  const regEscape = (v: string) => v.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
-  const textChunks = text.split(new RegExp(regEscape(highlight), 'ig'))
-  let sliceIdx = 0
-  return textChunks.map((chunk) => {
-    const currentSliceIdx = sliceIdx + chunk.length
-    sliceIdx += chunk.length + highlight.length
-    return (
-      <Fragment>
-        {chunk}
-        {currentSliceIdx < text.length && (
-          <span className={styles.highlighted}>{text.slice(currentSliceIdx, sliceIdx)}</span>
-        )}
-      </Fragment>
-    )
-  })
-}
 
 const LayerLibrary: FC = () => {
   const { t } = useTranslation()
@@ -76,6 +58,7 @@ const LayerLibrary: FC = () => {
       }),
     [layersResolved, searchQuery]
   )
+
   const layersByCategory = useMemo(
     () =>
       filteredLayers.reduce(
@@ -114,10 +97,10 @@ const LayerLibrary: FC = () => {
   )
 
   const onCategoryClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.preventDefault()
       const targetElement = categoryElements.find((element) => {
-        return `#${element.id}` === (e.target as any).getAttribute('href')
+        return `nav-${element.id}` === (e.target as any).getAttribute('id')
       })
 
       if (targetElement) {
@@ -143,16 +126,17 @@ const LayerLibrary: FC = () => {
       <div className={styles.categoriesContainer}>
         <div className={styles.categories}>
           {uniqCategories.map((category) => (
-            <a
+            <button
               className={cx(styles.category, {
                 [styles.currentCategory]: currentCategory === category,
               })}
-              href={`#${category}`}
+              disabled={layersByCategory[category].length === 0}
+              id={`nav-${category}`}
               onClick={onCategoryClick}
               key={category}
             >
-              {t(`common.${category as DataviewCategory}`, category as DataviewCategory)}
-            </a>
+              {t(`common.${category as DataviewCategory}`, upperFirst(category))}
+            </button>
           ))}
         </div>
         <ul className={styles.layerList} onScroll={onLayerListScroll}>
@@ -164,10 +148,14 @@ const LayerLibrary: FC = () => {
                   [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
                 })}
               >
-                {t(`common.${category as DataviewCategory}`, category as DataviewCategory)}
+                {t(`common.${category as DataviewCategory}`, upperFirst(category))}
               </label>
               {layersByCategory[category].map((layer) => (
-                <LayerItem key={layer.dataviewSlug} layer={layer} highlightedText={searchQuery} />
+                <LayerLibraryItem
+                  key={layer.dataviewSlug}
+                  layer={layer}
+                  highlightedText={searchQuery}
+                />
               ))}
             </Fragment>
           ))}

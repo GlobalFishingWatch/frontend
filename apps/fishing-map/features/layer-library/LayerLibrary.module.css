@@ -24,6 +24,10 @@
   transition: var(--transition);
 }
 
+.category:disabled {
+  cursor: not-allowed;
+}
+
 .currentCategory {
   color: var(--color-primary-blue);
   border-left: 0.4rem solid var(--color-primary-blue);
