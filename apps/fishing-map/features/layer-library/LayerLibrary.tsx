@@ -4,7 +4,7 @@ import { ChangeEvent, FC, Fragment, useCallback, useLayoutEffect, useMemo, useSt
 import { uniq } from 'lodash'
 import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
-import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { LIBRARY_LAYERS, LibraryLayer } from 'data/library-layers'
 import { upperFirst } from 'utils/info'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -22,10 +22,7 @@ const LayerLibrary: FC = () => {
   )
   const dataviews = useSelector(selectAllDataviews)
 
-  const layersResolved: (Omit<LibraryLayer, 'category' | 'dataview'> & {
-    category: DataviewCategory
-    dataview: Dataview
-  })[] = useMemo(
+  const layersResolved: LibraryLayer[] = useMemo(
     () =>
       LIBRARY_LAYERS.flatMap((layer) => {
         const dataview = dataviews.find((d) => d.slug === layer.dataviewId)

@@ -22,14 +22,18 @@ import libraryTranslations from '../public/locales/source/layer-library.json'
 // map at latitude=30&longitude=4&zoom=2
 // browser zoom at 80%
 
-export type LibraryLayer = Omit<DataviewInstance, 'id'> & {
+export type LibraryLayerConfig = Omit<DataviewInstance, 'id'> & {
   id: keyof typeof libraryTranslations
-  category?: DataviewCategory
-  dataview?: Dataview
   previewImageUrl: string
 }
 
-export const LIBRARY_LAYERS: LibraryLayer[] = [
+export type LibraryLayer = LibraryLayerConfig & {
+  category: DataviewCategory
+  dataview: Dataview
+  previewImageUrl: string
+}
+
+export const LIBRARY_LAYERS: LibraryLayerConfig[] = [
   {
     id: 'fishing-effort',
     dataviewId: FISHING_DATAVIEW_SLUG,
