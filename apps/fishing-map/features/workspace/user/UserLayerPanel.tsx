@@ -114,6 +114,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
       classNameActive={styles.active}
       dataview={dataview}
       onToggle={onToggle}
+      showIcon
     />
   )
 

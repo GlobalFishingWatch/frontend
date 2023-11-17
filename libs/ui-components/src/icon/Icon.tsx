@@ -22,6 +22,7 @@ import { ReactComponent as Clusters } from '../assets/icons/clusters.svg'
 import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
 import { ReactComponent as ColorPickerFilled } from '../assets/icons/color-picker-filled.svg'
 import { ReactComponent as Compare } from '../assets/icons/compare.svg'
+import { ReactComponent as CopernicusLogo } from '../assets/icons/copernicus-logo.svg'
 import { ReactComponent as Copy } from '../assets/icons/copy.svg'
 import { ReactComponent as Delete } from '../assets/icons/delete.svg'
 import { ReactComponent as Dots } from '../assets/icons/dots.svg'
@@ -43,6 +44,7 @@ import { ReactComponent as EventPortVisit } from '../assets/icons/event-port-vis
 import { ReactComponent as Expand } from '../assets/icons/expand.svg'
 import { ReactComponent as ExternalLink } from '../assets/icons/external-link.svg'
 import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
+import { ReactComponent as FAOLogo } from '../assets/icons/fao-logo.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
 import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
 import { ReactComponent as FitToTimeRange } from '../assets/icons/fit-to-timerange.svg'
@@ -52,6 +54,7 @@ import { ReactComponent as Heatmap } from '../assets/icons/heatmap.svg'
 import { ReactComponent as Help } from '../assets/icons/help.svg'
 import { ReactComponent as History } from '../assets/icons/history.svg'
 import { ReactComponent as Home } from '../assets/icons/home.svg'
+import { ReactComponent as HycomLogo } from '../assets/icons/hycom-logo.svg'
 import { ReactComponent as Info } from '../assets/icons/info.svg'
 import { ReactComponent as Language } from '../assets/icons/language.svg'
 import { ReactComponent as Layers } from '../assets/icons/layers.svg'
@@ -59,6 +62,7 @@ import { ReactComponent as LayersOn } from '../assets/icons/layers-on.svg'
 import { ReactComponent as LayersOff } from '../assets/icons/layers-off.svg'
 import { ReactComponent as Logout } from '../assets/icons/logout.svg'
 import { ReactComponent as Magic } from '../assets/icons/magic.svg'
+import { ReactComponent as MarineRegionsLogo } from '../assets/icons/marine-regions-logo.svg'
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
 import { ReactComponent as More } from '../assets/icons/more.svg'
@@ -68,6 +72,8 @@ import { ReactComponent as Plus } from '../assets/icons/plus.svg'
 import { ReactComponent as Polygons } from '../assets/icons/polygons.svg'
 import { ReactComponent as Print } from '../assets/icons/print.svg'
 import { ReactComponent as Private } from '../assets/icons/private.svg'
+import { ReactComponent as ProtectedPlanetLogo } from '../assets/icons/protected-planet-logo.svg'
+import { ReactComponent as ProtectedSeasLogo } from '../assets/icons/protected-seas-logo.svg'
 import { ReactComponent as Publish } from '../assets/icons/publish.svg'
 import { ReactComponent as RemoveFromMap } from '../assets/icons/remove-from-map.svg'
 import { ReactComponent as Report } from '../assets/icons/report.svg'
@@ -120,6 +126,7 @@ export const IconComponents = {
   'event-port': EventPort,
   expand: Expand,
   'external-link': ExternalLink,
+  'fao-logo': FAOLogo,
   'filter-off': FilterOff,
   'filter-on': FilterOn,
   'fit-to-timerange': FitToTimeRange,
@@ -137,6 +144,7 @@ export const IconComponents = {
   close: Close,
   clusters: Clusters,
   compare: Compare,
+  'copernicus-logo': CopernicusLogo,
   copy: Copy,
   delete: Delete,
   dots: Dots,
@@ -152,11 +160,13 @@ export const IconComponents = {
   help: Help,
   history: History,
   home: Home,
+  'hycom-logo': HycomLogo,
   info: Info,
   language: Language,
   layers: Layers,
   logout: Logout,
   magic: Magic,
+  'marine-regions-logo': MarineRegionsLogo,
   menu: Menu,
   minus: Minus,
   more: More,
@@ -165,6 +175,8 @@ export const IconComponents = {
   polygons: Polygons,
   print: Print,
   private: Private,
+  'protected-planet-logo': ProtectedPlanetLogo,
+  'protected-seas-logo': ProtectedSeasLogo,
   publish: Publish,
   report: Report,
   ruler: Ruler,

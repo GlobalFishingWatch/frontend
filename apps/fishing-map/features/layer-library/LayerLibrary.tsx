@@ -4,7 +4,7 @@ import { ChangeEvent, FC, Fragment, useCallback, useLayoutEffect, useMemo, useSt
 import { uniq } from 'lodash'
 import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
 import { LIBRARY_LAYERS, LibraryLayer } from 'data/library-layers'
 import { upperFirst } from 'utils/info'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -22,21 +22,24 @@ const LayerLibrary: FC = () => {
   )
   const dataviews = useSelector(selectAllDataviews)
 
-  const layersResolved: (Omit<LibraryLayer, 'category'> & { category: DataviewCategory })[] =
-    useMemo(
-      () =>
-        LIBRARY_LAYERS.flatMap((layer) => {
-          const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
-          if (!dataview) return []
-          return {
-            ...layer,
-            name: t(`layer-library:${layer.id}.name`),
-            description: t(`layer-library:${layer.id}.description`),
-            category: dataview.category as DataviewCategory,
-          }
-        }),
-      [dataviews, t]
-    )
+  const layersResolved: (Omit<LibraryLayer, 'category' | 'dataview'> & {
+    category: DataviewCategory
+    dataview: Dataview
+  })[] = useMemo(
+    () =>
+      LIBRARY_LAYERS.flatMap((layer) => {
+        const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
+        if (!dataview) return []
+        return {
+          ...layer,
+          name: t(`layer-library:${layer.id}.name`),
+          description: t(`layer-library:${layer.id}.description`),
+          category: dataview.category as DataviewCategory,
+          dataview,
+        }
+      }),
+    [dataviews, t]
+  )
   const uniqCategories = useMemo(
     () => uniq(layersResolved.map(({ category }) => category)),
     [layersResolved]

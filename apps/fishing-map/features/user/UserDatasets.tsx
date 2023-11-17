@@ -7,7 +7,7 @@ import {
   getDataviewInstanceByDataset,
   useDatasetModalConnect,
 } from 'features/datasets/datasets.hook'
-import { getDatasetIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
+import { getDatasetTypeIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
   deleteDatasetThunk,
   selectDatasetsStatus,
@@ -126,7 +126,7 @@ function UserDatasets() {
                   'There was an error uploading your dataset'
                 )} - ${dataset.importLogs}`
               }
-              const datasetIcon = getDatasetIcon(dataset)
+              const datasetIcon = getDatasetTypeIcon(dataset)
               return (
                 <li className={styles.dataset} key={dataset.id}>
                   <span>

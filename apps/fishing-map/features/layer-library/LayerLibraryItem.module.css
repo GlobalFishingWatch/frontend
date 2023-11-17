@@ -1,0 +1,49 @@
+.layer {
+  margin-bottom: var(--space-M);
+}
+
+.container {
+  display: flex;
+  gap: var(--space-M);
+}
+
+.image {
+  width: 15rem;
+  height: 15rem;
+  background-color: black;
+  background-size: cover;
+  flex-shrink: 0;
+  border-radius: var(--border-radius);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font: var(--font-L);
+}
+
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.highlighted {
+  display: inline-block;
+  background: var(--color-highlight-blue);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  margin-top: auto;
+  gap: var(--space-S);
+}
+
+.cta {
+  margin-left: auto;
+}

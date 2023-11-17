@@ -50,37 +50,3 @@
   padding: 0;
   overflow: hidden;
 }
-
-.layer {
-  margin-bottom: var(--space-M);
-}
-
-.layerContainer {
-  display: flex;
-  gap: var(--space-M);
-}
-
-.layerImage {
-  width: 15rem;
-  height: 15rem;
-  background-color: black;
-  background-size: cover;
-  flex-shrink: 0;
-  border-radius: var(--border-radius);
-}
-
-.layerTitle {
-  font: var(--font-L);
-}
-
-.layerDescription {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.highlighted {
-  display: inline-block;
-  background: var(--color-highlight-blue);
-}

@@ -121,10 +121,32 @@ export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string =
   return label
 }
 
-export const getDatasetIcon = (dataset: Dataset): IconType | null => {
+export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
+  if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
+  if (dataset.type === DatasetTypes.Events) return 'clusters'
   if (dataset.type === DatasetTypes.UserTracks) return 'track'
   if (dataset.configuration?.geometryType === 'points') return 'dots'
-  if (dataset.type === DatasetTypes.UserContext) return 'polygons'
+  if (dataset.type === DatasetTypes.Context || dataset.type === DatasetTypes.UserContext)
+    return 'polygons'
+  return null
+}
+
+export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
+  const source = dataset.source?.toLowerCase() || dataset.id?.toLowerCase()
+  if (!source) {
+    console.log('source:', dataset)
+    return null
+  }
+  if (source.includes('gfw') || source.includes('global fishing watch')) return 'gfw-logo'
+  if (source.includes('fao')) return 'fao-logo'
+  if (source.includes('protectedplanet')) return 'protected-planet-logo'
+  if (source.includes('protectedseas')) return 'protected-seas-logo'
+  if (source.includes('marine regions')) return 'marine-regions-logo'
+  if (dataset.description.toLowerCase().includes('hycom')) return 'hycom-logo'
+  if (dataset.description.toLowerCase().includes('copernicus')) return 'copernicus-logo'
+  // TODO REVIEW DATASET SOURCES IN TERRAFORM
+  console.log('dataset without source icon', dataset.description)
+
   return null
 }
 

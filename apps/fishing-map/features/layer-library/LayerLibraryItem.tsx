@@ -1,11 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
-import { Button } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { LibraryLayer } from 'data/library-layers'
-import styles from './LayerLibrary.module.css'
+import { getDatasetSourceIcon, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
+import styles from './LayerLibraryItem.module.css'
 
 type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
 
@@ -30,10 +33,13 @@ const getHighlightedText = (text: string, highlight: string) => {
 
 const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const { layer, highlightedText = '' } = props
-  const { id, dataviewId, config, previewImageUrl, name, description } = layer
+  const { id, dataviewId, config, previewImageUrl, name, description, dataview } = layer
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const dataset = useSelector(selectDatasetById(dataview?.datasetsConfig?.[0].datasetId || ''))
+  const datasetTypeIcon = dataset && getDatasetTypeIcon(dataset)
+  const datasetSourceIcon = dataset && getDatasetSourceIcon(dataset)
 
   const onAddToWorkspaceClick = () => {
     upsertDataviewInstance({ id: `${id}-${Date.now()}`, dataviewId, config })
@@ -42,17 +48,17 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
 
   return (
     <li className={styles.layer}>
-      <div className={styles.layerContainer}>
-        <div className={styles.layerImage} style={{ backgroundImage: `url(${previewImageUrl})` }} />
-        <div className={styles.layerContent}>
-          <h2 className={styles.layerTitle}>
-            {getHighlightedText(name as string, highlightedText)}
-          </h2>
-          <p className={styles.layerDescription}>
+      <div className={styles.container}>
+        <div className={styles.image} style={{ backgroundImage: `url(${previewImageUrl})` }} />
+        <div className={styles.content}>
+          <h2 className={styles.title}>{getHighlightedText(name as string, highlightedText)}</h2>
+          <p className={styles.description}>
             {getHighlightedText(description as string, highlightedText)}
           </p>
-          <div className={styles.layerActions}>
-            <Button onClick={onAddToWorkspaceClick}>
+          <div className={styles.actions}>
+            {datasetTypeIcon && <Icon icon={datasetTypeIcon} />}
+            {datasetSourceIcon && <Icon icon={datasetSourceIcon} type="original-colors" />}
+            <Button className={styles.cta} onClick={onAddToWorkspaceClick}>
               {t('workspace.addLayer', 'Add to workspace')}
             </Button>
           </div>
