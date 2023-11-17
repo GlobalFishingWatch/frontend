@@ -14,6 +14,8 @@ import { selectReadOnly } from 'features/app/app.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 import UserTrackLayerPanel from './UserTrackLayerPanel'
@@ -26,14 +28,16 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const locationCategory = useSelector(selectLocationCategory)
 
+  const dispatch = useAppDispatch()
+
   const onAddClick = useCallback(() => {
     trackEvent({
       category: TrackCategory.EnvironmentalData,
       action: `Open panel to add a environmental dataset`,
       value: userDatasets.length,
     })
-    alert('TODO: INTEGRATE WITH DATASET LIBRARY')
-  }, [userDatasets.length])
+    dispatch(setModalOpen({ id: 'layerLibrary', open: true }))
+  }, [dispatch, userDatasets.length])
 
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {

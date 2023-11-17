@@ -15,6 +15,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
 import activityStyles from './ActivitySection.module.css'
@@ -27,28 +29,11 @@ function ActivitySection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const dispatch = useAppDispatch()
 
-  // const activityDataviews = useSelector(selectAvailableActivityDataviews)
-  // const addDataviewInstance = useCallback(
-  //   (dataviewInstance: UrlDataviewInstance) => {
-  //     dispatchQueryParams({ bivariateDataviews: undefined })
-  //     upsertDataviewInstance(dataviewInstance)
-  //     setAddedDataviewId(dataviewInstance.id)
-  //   },
-  //   [dispatchQueryParams, upsertDataviewInstance]
-  // )
-
-  const onAddLayerClick = useCallback((dataviewId?: number) => {
-    alert('TODO: INTEGRATE WITH DATASET LIBRARY')
-    // Remove the code once the dataset integration is done
-    // const dataview = activityDataviews.find((d) => d.id === dataviewId)
-    // const dataviewInstance = dataview
-    //   ? getActivityDataviewInstanceFromDataview(dataview)
-    //   : getFishingDataviewInstance()
-    // if (dataviewInstance) {
-    //   addDataviewInstance(dataviewInstance)
-    // }
-  }, [])
+  const onAddLayerClick = useCallback(() => {
+    dispatch(setModalOpen({ id: 'layerLibrary', open: true }))
+  }, [dispatch])
 
   const onBivariateDataviewsClick = useCallback(
     (dataview1: UrlDataviewInstance, dataview2: UrlDataviewInstance) => {

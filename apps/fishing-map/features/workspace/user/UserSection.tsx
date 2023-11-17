@@ -18,6 +18,8 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { isGuestUser } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAddDataset } from 'features/datasets/datasets.hook'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './UserLayerPanel'
 
@@ -25,6 +27,7 @@ function UserSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
   const guestUser = useSelector(isGuestUser)
+  const dispatch = useAppDispatch()
 
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectCustomUserDataviews)
@@ -57,7 +60,7 @@ function UserSection(): React.ReactElement {
       action: `Open panel to add a reference layer`,
       value: userDatasets.length,
     })
-    alert('TODO: INTEGRATE WITH DATASET LIBRARY')
+    dispatch(setModalOpen({ id: 'layerLibrary', open: true }))
   }, [userDatasets.length])
 
   const onToggleLayer = useCallback(

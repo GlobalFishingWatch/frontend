@@ -15,6 +15,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from '../activity/ActivityLayerPanel'
 import activityStyles from '../activity/ActivitySection.module.css'
@@ -28,24 +30,10 @@ function DetectionsSection(): React.ReactElement {
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
 
-  // const detectionDataviews = useSelector(selectAvailableDetectionsDataviews)
-  // const addDataviewInstance = useCallback(
-  //   (dataviewInstance: UrlDataviewInstance) => {
-  //     dispatchQueryParams({ bivariateDataviews: undefined })
-  //     upsertDataviewInstance(dataviewInstance)
-  //     setAddedDataviewId(dataviewInstance.id)
-  //   },
-  //   [dispatchQueryParams, upsertDataviewInstance]
-  // )
-
+  const dispatch = useAppDispatch()
   const onAddLayerClick = useCallback(() => {
-    alert('TODO: INTEGRATE WITH DATASET LIBRARY')
-    // const dataview = detectionDataviews.find((d) => d.id === dataviewId)
-    // const dataviewInstance = getActivityDataviewInstanceFromDataview(dataview)
-    // if (dataviewInstance) {
-    //   addDataviewInstance(dataviewInstance)
-    // }
-  }, [])
+    dispatch(setModalOpen({ id: 'layerLibrary', open: true }))
+  }, [dispatch])
 
   const onBivariateDataviewsClick = useCallback(
     (dataview1: UrlDataviewInstance, dataview2: UrlDataviewInstance) => {

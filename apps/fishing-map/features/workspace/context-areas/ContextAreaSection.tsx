@@ -12,11 +12,14 @@ import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ContextAreaLayerPanel'
 
 function ContextAreaSection(): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
 
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectContextAreasDataviews)
@@ -30,8 +33,8 @@ function ContextAreaSection(): React.ReactElement {
       action: `Open panel to add a reference layer`,
       value: userDatasets.length,
     })
-    alert('TODO: INTEGRATE WITH DATASET LIBRARY')
-  }, [userDatasets.length])
+    dispatch(setModalOpen({ id: 'layerLibrary', open: true }))
+  }, [dispatch, userDatasets.length])
 
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {

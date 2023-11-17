@@ -14,6 +14,8 @@ import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigq
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
 import GFWOnly from 'features/user/GFWOnly'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/modals.selectors'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
@@ -77,6 +79,7 @@ const AppModals = () => {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const gfwUser = useSelector(isGFWUser)
+  const dispatch = useAppDispatch()
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
@@ -138,20 +141,16 @@ const AppModals = () => {
           <BigQueryMenu />
         </Modal>
       )}
-      {/* {isLayerLibraryModalOpen && ( */}
-      {true && (
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          title={t('common.layerLibrary', 'Layer Library')}
-          isOpen={true}
-          onClose={() => {}}
-          contentClassName={styles.layerLibraryModal}
-          fullScreen={true}
-        >
-          <LayerLibrary />
-        </Modal>
-      )}
-
+      <Modal
+        appSelector={ROOT_DOM_ELEMENT}
+        title={t('common.layerLibrary', 'Layer Library')}
+        isOpen={isLayerLibraryModalOpen}
+        onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
+        contentClassName={styles.layerLibraryModal}
+        fullScreen={true}
+      >
+        <LayerLibrary />
+      </Modal>
       {downloadActivityAreaKey && <DownloadActivityModal />}
       {downloadTrackModalOpen && <DownloadTrackModal />}
       {!readOnly && (
