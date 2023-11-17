@@ -20,6 +20,19 @@ export default defineConfig({
   e2e: {
     ...nxE2EPreset(__filename),
     ...cypressJsonConfig,
+    reporter: '../../node_modules/mochawesome',
+    reporterOptions: {
+      mochaFile: '../../dist/cypress/apps/fishing-map-e2e/test-[hash].xml',
+      reportDir: '../../dist/cypress/apps/fishing-map-e2e/',
+      toConsole: true,
+      overwrite: false,
+      // generate intermediate HTML reports
+      html: true,
+      // generate intermediate JSON reports
+      json: true,
+      reportFilename: '[status]_[datetime]-[name]-report',
+      timestamp: 'longDate',
+    },
     /**
      * TODO(@nx/cypress): In Cypress v12,the testIsolation option is turned on by default.
      * This can cause tests to start breaking where not indended.

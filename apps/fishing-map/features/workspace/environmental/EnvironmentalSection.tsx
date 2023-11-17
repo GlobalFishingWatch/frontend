@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
@@ -8,9 +8,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
-import NewDatasetTooltip from 'features/datasets/NewDatasetTooltip'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
-import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -22,7 +20,6 @@ import UserTrackLayerPanel from './UserTrackLayerPanel'
 
 function EnvironmentalLayerSection(): React.ReactElement | null {
   const { t } = useTranslation()
-  const [newDatasetOpen, setNewDatasetOpen] = useState(false)
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)
   const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Environment))
@@ -32,11 +29,11 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const onAddClick = useCallback(() => {
     trackEvent({
       category: TrackCategory.EnvironmentalData,
-      action: `Open panel to upload new environmental dataset`,
+      action: `Open panel to add a environmental dataset`,
       value: userDatasets.length,
     })
-    setNewDatasetOpen(true)
-  }, [userDatasets])
+    alert('TODO: INTEGRATE WITH DATASET LIBRARY')
+  }, [userDatasets.length])
 
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {
@@ -64,51 +61,31 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
           {t('common.environment', 'Environment')}
         </h2>
         {!readOnly && (
-          <TooltipContainer
-            visible={newDatasetOpen}
-            onClickOutside={() => {
-              setNewDatasetOpen(false)
-            }}
-            component={
-              <NewDatasetTooltip
-                datasetCategory={DatasetCategory.Environment}
-                onSelect={() => setNewDatasetOpen(false)}
-              />
-            }
-          >
-            <IconButton
-              icon="plus"
-              type="border"
-              size="medium"
-              tooltip={t('dataset.addEnvironmental', 'Add environmental dataset')}
-              tooltipPlacement="top"
-              className="print-hidden"
-              onClick={onAddClick}
-            />
-          </TooltipContainer>
+          <IconButton
+            icon="plus"
+            type="border"
+            size="medium"
+            tooltip={t('dataset.addEnvironmental', 'Add environmental dataset')}
+            tooltipPlacement="top"
+            className="print-hidden"
+            onClick={onAddClick}
+          />
         )}
       </div>
       <SortableContext items={dataviews}>
-        {dataviews.length > 0 ? (
-          dataviews?.map((dataview) =>
-            dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
-              <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                <UserTrackLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-              </LayerPanelContainer>
-            ) : (
-              <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-              </LayerPanelContainer>
+        {dataviews.length > 0
+          ? dataviews?.map((dataview) =>
+              dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
+                <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                  <UserTrackLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+                </LayerPanelContainer>
+              ) : (
+                <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                  <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+                </LayerPanelContainer>
+              )
             )
-          )
-        ) : (
-          <div className={styles.emptyState}>
-            {t(
-              'workspace.emptyStateEnvironment',
-              'Upload custom datasets like animal telemetry clicking on the plus icon.'
-            )}
-          </div>
-        )}
+          : null}
       </SortableContext>
       {locationCategory === WorkspaceCategory.MarineManager && (
         <div className={styles.surveyLink}>

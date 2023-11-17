@@ -81,13 +81,14 @@ export interface DataviewFiltersConfig {
 }
 
 export enum DataviewCategory {
-  Context = 'context',
-  Events = 'events',
-  Environment = 'environment',
   Activity = 'activity',
-  Detections = 'detections',
-  Vessels = 'vessels',
   Comparison = 'comparison',
+  Context = 'context',
+  Detections = 'detections',
+  Environment = 'environment',
+  Events = 'events',
+  User = 'user',
+  Vessels = 'vessels',
 }
 
 export interface Dataview<Type = any, Category = DataviewCategory> {

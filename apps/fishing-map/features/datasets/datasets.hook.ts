@@ -20,15 +20,16 @@ import {
   fetchLastestCarrierDatasetThunk,
   selectCarrierLatestDataset,
   selectCarrierLatestDatasetStatus,
-  selectDatasetCategory,
   selectDatasetModal,
   selectEditingDatasetId,
-  setDatasetCategory,
   setDatasetModal,
   setEditingDatasetId,
   updateDatasetThunk,
 } from './datasets.slice'
-import type { NewDatasetTooltipProps } from './NewDatasetTooltip'
+
+export interface NewDatasetProps {
+  onSelect?: (dataset?: Dataset) => void
+}
 
 const DATASET_REFRESH_TIMEOUT = 10000
 
@@ -67,19 +68,11 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
 export const useDatasetModalConnect = () => {
   const dispatch = useAppDispatch()
   const datasetModal = useSelector(selectDatasetModal)
-  const datasetCategory = useSelector(selectDatasetCategory)
   const editingDatasetId = useSelector(selectEditingDatasetId)
 
   const dispatchDatasetModal = useCallback(
     (datasetModal: DatasetModals) => {
       dispatch(setDatasetModal(datasetModal))
-    },
-    [dispatch]
-  )
-
-  const dispatchDatasetCategory = useCallback(
-    (datasetCategory: DatasetCategory) => {
-      dispatch(setDatasetCategory(datasetCategory))
     },
     [dispatch]
   )
@@ -93,9 +86,7 @@ export const useDatasetModalConnect = () => {
 
   return {
     datasetModal,
-    datasetCategory,
     dispatchDatasetModal,
-    dispatchDatasetCategory,
     editingDatasetId,
     dispatchEditingDatasetId,
   }
@@ -201,19 +192,15 @@ export const useAutoRefreshImportingDataset = (
   }, [dataset, dispatchFetchDataset, refreshTimeout])
 }
 
-export const useAddDataset = ({ datasetCategory, onSelect }: NewDatasetTooltipProps) => {
-  const { dispatchDatasetModal, dispatchDatasetCategory } = useDatasetModalConnect()
+export const useAddDataset = ({ onSelect }: NewDatasetProps) => {
+  const { dispatchDatasetModal } = useDatasetModalConnect()
   return () => {
-    if (datasetCategory === DatasetCategory.Context) {
-      trackEvent({
-        category: TrackCategory.ReferenceLayer,
-        action: 'Start upload reference layer flow',
-        label: datasetCategory,
-      })
-    }
+    trackEvent({
+      category: TrackCategory.ReferenceLayer,
+      action: 'Start uploading user dataset',
+    })
     batch(() => {
       dispatchDatasetModal('new')
-      dispatchDatasetCategory(datasetCategory)
     })
     if (onSelect) {
       onSelect()

@@ -311,7 +311,6 @@ export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
 export type DatasetModals = 'new' | 'edit' | undefined
 export interface DatasetsState extends AsyncReducer<Dataset> {
   datasetModal: DatasetModals
-  datasetCategory: DatasetCategory
   editingDatasetId: string | undefined
   allDatasetsRequested: boolean
   carrierLatest: {
@@ -322,7 +321,6 @@ export interface DatasetsState extends AsyncReducer<Dataset> {
 const initialState: DatasetsState = {
   ...asyncInitialState,
   datasetModal: undefined,
-  datasetCategory: DatasetCategory.Context,
   allDatasetsRequested: false,
   editingDatasetId: undefined,
   carrierLatest: {
@@ -340,9 +338,6 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
         state.editingDatasetId = undefined
       }
       state.datasetModal = action.payload
-    },
-    setDatasetCategory: (state, action: PayloadAction<DatasetCategory>) => {
-      state.datasetCategory = action.payload
     },
     setEditingDatasetId: (state, action: PayloadAction<string>) => {
       state.editingDatasetId = action.payload
@@ -374,7 +369,7 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
   },
 })
 
-export const { setDatasetModal, setDatasetCategory, setEditingDatasetId } = datasetSlice.actions
+export const { setDatasetModal, setEditingDatasetId } = datasetSlice.actions
 
 export type DatasetsSliceState = { datasets: DatasetsState }
 export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<DatasetsSliceState>(
@@ -400,6 +395,5 @@ export const selectCarrierLatestDataset = (state: DatasetsSliceState) =>
   state.datasets.carrierLatest.dataset
 export const selectCarrierLatestDatasetStatus = (state: DatasetsSliceState) =>
   state.datasets.carrierLatest.status
-export const selectDatasetCategory = (state: DatasetsSliceState) => state.datasets.datasetCategory
 
 export default datasetSlice.reducer

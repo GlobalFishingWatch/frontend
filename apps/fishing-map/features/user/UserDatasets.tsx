@@ -24,29 +24,23 @@ import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { sortByCreationDate } from 'utils/dates'
 import styles from './User.module.css'
-import { selectUserDatasetsByCategory } from './user.selectors'
+import { selectUserDatasets } from './user.selectors'
 
-interface UserDatasetsProps {
-  datasetCategory: DatasetCategory
-}
-
-function UserDatasets({ datasetCategory }: UserDatasetsProps) {
+function UserDatasets() {
   const [infoDataset, setInfoDataset] = useState<Dataset | undefined>()
-  const datasets = useSelector(selectUserDatasetsByCategory(datasetCategory))
+  const datasets = useSelector(selectUserDatasets)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const datasetStatusId = useSelector(selectDatasetsStatusId)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchDatasetModal, dispatchDatasetCategory, dispatchEditingDatasetId } =
-    useDatasetModalConnect()
+  const { dispatchDatasetModal, dispatchEditingDatasetId } = useDatasetModalConnect()
 
   const onNewDatasetClick = useCallback(async () => {
     batch(() => {
       dispatchDatasetModal('new')
-      dispatchDatasetCategory(datasetCategory)
     })
-  }, [datasetCategory, dispatchDatasetModal, dispatchDatasetCategory])
+  }, [dispatchDatasetModal])
 
   const onDatasetClick = useCallback(
     (dataset: Dataset) => {
@@ -81,10 +75,9 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
       batch(() => {
         dispatchDatasetModal('edit')
         dispatchEditingDatasetId(dataset.id)
-        dispatchDatasetCategory(datasetCategory)
       })
     },
-    [datasetCategory, dispatchDatasetModal, dispatchDatasetCategory, dispatchEditingDatasetId]
+    [dispatchDatasetModal, dispatchEditingDatasetId]
   )
 
   const onDeleteClick = useCallback(
@@ -107,11 +100,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>
-          {datasetCategory === DatasetCategory.Context
-            ? t('common.context_area_other', 'Context areas')
-            : t('common.environment', 'Environment')}
-        </label>
+        <label>{t('user.datasets', 'User datasets')}</label>
         <Button disabled={loading} type="secondary" onClick={onNewDatasetClick}>
           {t('dataset.new', 'New dataset') as string}
         </Button>
