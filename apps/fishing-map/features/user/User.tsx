@@ -61,8 +61,7 @@ function User() {
         title: t('dataset.title_other', 'Datasets'),
         content: (
           <Fragment>
-            <UserDatasets datasetCategory={DatasetCategory.Environment} />
-            <UserDatasets datasetCategory={DatasetCategory.Context} />
+            <UserDatasets />
           </Fragment>
         ),
       },

@@ -22,7 +22,6 @@ import {
   selectCarrierLatestDatasetStatus,
   selectDatasetModal,
   selectEditingDatasetId,
-  setDatasetCategory,
   setDatasetModal,
   setEditingDatasetId,
   updateDatasetThunk,
@@ -78,13 +77,6 @@ export const useDatasetModalConnect = () => {
     [dispatch]
   )
 
-  const dispatchDatasetCategory = useCallback(
-    (datasetCategory: DatasetCategory) => {
-      dispatch(setDatasetCategory(datasetCategory))
-    },
-    [dispatch]
-  )
-
   const dispatchEditingDatasetId = useCallback(
     (id: string) => {
       dispatch(setEditingDatasetId(id))
@@ -95,7 +87,6 @@ export const useDatasetModalConnect = () => {
   return {
     datasetModal,
     dispatchDatasetModal,
-    dispatchDatasetCategory,
     editingDatasetId,
     dispatchEditingDatasetId,
   }
