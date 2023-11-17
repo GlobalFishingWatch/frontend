@@ -1,48 +1,21 @@
-import { useState, useCallback, Fragment, useEffect, useMemo } from 'react'
+import { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import parse from 'html-react-parser'
-import { uniqBy } from 'lodash'
-import {
-  DatasetTypes,
-  DatasetStatus,
-  DatasetCategory,
-  Dataset,
-  DRAW_DATASET_SOURCE,
-} from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
+import { DatasetTypes, DatasetStatus, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { selectViewport } from 'features/app/app.selectors'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
+import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
-import { ROOT_DOM_ELEMENT } from 'data/config'
-import {
-  BASEMAP_DATAVIEW_INSTANCE_ID,
-  EEZ_DATAVIEW_INSTANCE_ID,
-  MPA_DATAVIEW_INSTANCE_ID,
-  ONLY_GFW_STAFF_DATAVIEW_SLUGS,
-  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-  HIDDEN_DATAVIEW_FILTERS,
-} from 'data/workspaces'
+import { ONLY_GFW_STAFF_DATAVIEW_SLUGS, HIDDEN_DATAVIEW_FILTERS } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
-import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
-import {
-  CONTEXT_FEATURES_LIMIT,
-  filterFeaturesByDistance,
-  parseContextFeatures,
-} from 'features/workspace/context-areas/context.utils'
-import { ReportPopupLink } from 'features/map/popups/ContextLayersRow'
-import useMapInstance from 'features/map/map-context.hooks'
-import { useContextInteractions } from 'features/map/popups/ContextLayers.hooks'
 import {
   getDatasetLabel,
   getSchemaFiltersInDataview,
@@ -65,82 +38,20 @@ type UserPanelProps = {
   onToggle?: () => void
 }
 
-export const DATAVIEWS_WARNING = [
-  EEZ_DATAVIEW_INSTANCE_ID,
-  MPA_DATAVIEW_INSTANCE_ID,
-  BASEMAP_DATAVIEW_INSTANCE_ID,
-  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-]
-const LIST_ELEMENT_HEIGHT = 30
-const LIST_ELLIPSIS_HEIGHT = 14
-const LIST_MARGIN_HEIGHT = 10
-const LIST_TITLE_HEIGHT = 22
-
-export type FeaturesOnScreen = { total: number; closest: any[] }
 function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { onReportClick } = useContextInteractions()
   const { dispatchSetMapDrawing, dispatchSetMapDrawEditDataset } = useMapDrawConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
-  const [featuresOnScreen, setFeaturesOnScreen] = useState<FeaturesOnScreen>({
-    total: 0,
-    closest: [],
-  })
   const [colorOpen, setColorOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const userId = useSelector(selectUserId)
-  const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
-  const onDataWarningModalClose = useCallback(() => {
-    setModalDataWarningOpen(false)
-  }, [setModalDataWarningOpen])
   const guestUser = useSelector(isGuestUser)
-  const viewport = useSelector(selectViewport)
-  const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
   const layerActive = dataview?.config?.visible ?? true
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
   )
   const supportsDrawEdit = dataset?.source === DRAW_DATASET_SOURCE
-
-  const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
-  const dataviewFeaturesParams = useMemo(() => {
-    return {
-      queryMethod: 'render' as const,
-      queryCacheKey: [viewport.latitude, viewport.longitude, viewport.zoom]
-        .map((v) => v?.toFixed(3))
-        .join('-'),
-    }
-  }, [viewport])
-
-  const layerFeatures = useMapDataviewFeatures(
-    layerActive ? dataview : [],
-    dataviewFeaturesParams
-  )?.[0]
-  const uniqKey = dataset?.configuration?.idProperty
-    ? `properties.${dataset?.configuration?.idProperty}`
-    : 'id'
-
-  useEffect(() => {
-    if (layerActive && layerFeatures?.features) {
-      const uniqLayerFeatures = uniqBy(layerFeatures?.features, uniqKey)
-      const filteredFeatures = filterFeaturesByDistance(uniqLayerFeatures, {
-        viewport,
-        uniqKey,
-      })
-      setFeaturesOnScreen({
-        total: uniqLayerFeatures.length,
-        closest: parseContextFeatures(filteredFeatures, dataset as Dataset),
-      })
-    }
-  }, [dataset, layerActive, layerFeatures?.features, uniqKey, viewport])
-
-  const listHeight = Math.min(featuresOnScreen?.total, CONTEXT_FEATURES_LIMIT) * LIST_ELEMENT_HEIGHT
-  const ellispsisHeight =
-    featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT ? LIST_ELLIPSIS_HEIGHT : 0
-  const closestAreasHeight = featuresOnScreen?.total
-    ? listHeight + ellispsisHeight + LIST_TITLE_HEIGHT + LIST_MARGIN_HEIGHT
-    : 0
 
   const {
     items,
@@ -212,18 +123,6 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
-
-  const handleHoverArea = (feature: any) => {
-    const { source, id } = feature
-    if (source && id) {
-      const featureState = {
-        source,
-        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
-        id,
-      }
-      updateFeatureState([featureState], 'highlight')
-    }
-  }
 
   return (
     <div
@@ -311,45 +210,12 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
           )}
         </div>
       </div>
-      {layerActive && (DATAVIEWS_WARNING.includes(dataview?.id) || hasSchemaFilterSelection) && (
+      {layerActive && hasSchemaFilterSelection && (
         <div
           className={cx(styles.properties, styles.dataWarning, styles.drag, {
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          {DATAVIEWS_WARNING.includes(dataview?.id) && (
-            <Fragment>
-              <div>
-                {t(
-                  `dataview.${dataview?.id}.dataWarning` as any,
-                  'This platform uses a reference layer from an external source.'
-                )}
-              </div>
-              <div className={cx('print-hidden', styles.dataWarningLinks)}>
-                <button onClick={onAddNewClick}>
-                  {t('dataset.uploadYourOwn', 'Upload your own')}
-                </button>{' '}
-                |{' '}
-                <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>
-                  {t('common.learnMore', 'Learn more')}
-                </button>
-                <Modal
-                  appSelector={ROOT_DOM_ELEMENT}
-                  title={title}
-                  isOpen={modalDataWarningOpen}
-                  onClose={onDataWarningModalClose}
-                  contentClassName={styles.modalContent}
-                >
-                  {parse(
-                    t(
-                      `dataview.${dataview?.id}.dataWarningDetail` as any,
-                      'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'
-                    )
-                  )}
-                </Modal>
-              </div>
-            </Fragment>
-          )}
           {hasSchemaFilterSelection && (
             <div className={styles.filters}>
               <div className={styles.filters}>
@@ -358,52 +224,6 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
                 ))}
               </div>
             </div>
-          )}
-        </div>
-      )}
-      {layerActive && (
-        <div
-          className={cx(styles.closestAreas, { [styles.properties]: featuresOnScreen?.total > 0 })}
-          style={{ height: closestAreasHeight }}
-        >
-          {featuresOnScreen?.total > 0 && (
-            <Fragment>
-              <label>
-                {t('layer.areasOnScreen', 'Areas on screen')} ({featuresOnScreen?.total})
-              </label>
-              <ul>
-                {featuresOnScreen.closest.map((feature) => {
-                  const id =
-                    feature?.properties?.[uniqKey] || feature?.properties!.id || feature?.id
-                  let title =
-                    feature.properties.value || feature.properties.name || feature.properties.id
-                  if (dataset?.configuration?.valueProperties?.length) {
-                    title = dataset.configuration.valueProperties
-                      .flatMap((prop) => feature.properties[prop] || [])
-                      .join(', ')
-                  }
-                  return (
-                    <li
-                      key={`${id}-${title}`}
-                      className={styles.area}
-                      onMouseEnter={() => handleHoverArea(feature)}
-                      onMouseLeave={() => cleanFeatureState('highlight')}
-                    >
-                      <span
-                        title={title.length > 40 ? title : undefined}
-                        className={styles.areaTitle}
-                      >
-                        {title}
-                      </span>
-                      <ReportPopupLink feature={feature} onClick={onReportClick}></ReportPopupLink>
-                    </li>
-                  )
-                })}
-                {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
-                  <li className={cx(styles.area, styles.ellipsis)}>...</li>
-                )}
-              </ul>
-            </Fragment>
           )}
         </div>
       )}
