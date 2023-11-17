@@ -1,6 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { Button } from '@globalfishingwatch/ui-components'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 import styles from './LayerLibrary.module.css'
 
 export type LayerResolved = {
@@ -11,7 +15,7 @@ export type LayerResolved = {
   dataviewSlug: string
   previewImageUrl: string
 }
-type LayerItemProps = { layer: LayerResolved; highlightedText?: string }
+type LayerLibraryItemProps = { layer: LayerResolved; highlightedText?: string }
 
 const getHighlightedText = (text: string, highlight: string) => {
   if (highlight === '') return text
@@ -32,10 +36,17 @@ const getHighlightedText = (text: string, highlight: string) => {
   })
 }
 
-const LayerItem = (props: LayerItemProps) => {
+const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const { layer, highlightedText = '' } = props
   const { previewImageUrl, name, description } = layer
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+
+  const onAddToWorkspaceClick = () => {
+    upsertDataviewInstance({ id: 'TODO', dataviewId: layer.dataviewSlug })
+    dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
+  }
 
   return (
     <li className={styles.layer}>
@@ -46,11 +57,15 @@ const LayerItem = (props: LayerItemProps) => {
           <p className={styles.layerDescription}>
             {getHighlightedText(description, highlightedText)}
           </p>
-          <div className={styles.layerActions}>actions</div>
+          <div className={styles.layerActions}>
+            <Button onClick={onAddToWorkspaceClick}>
+              {t('workspace.addLayer', 'Add to workspace')}
+            </Button>
+          </div>
         </div>
       </div>
     </li>
   )
 }
 
-export default LayerItem
+export default LayerLibraryItem
