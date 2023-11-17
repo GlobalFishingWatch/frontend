@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { replace } from 'redux-first-router'
+import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
 import { isGFWUser } from 'features/user/user.slice'
 import { selectReadOnly } from 'features/app/app.selectors'
@@ -73,6 +74,7 @@ const ResetWorkspaceConfig = {
 }
 
 const AppModals = () => {
+  const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const gfwUser = useSelector(isGFWUser)
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
@@ -140,7 +142,7 @@ const AppModals = () => {
       {true && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title="Layer Library"
+          title={t('common.layerLibrary', 'Layer Library')}
           isOpen={true}
           onClose={() => {}}
           contentClassName={styles.layerLibraryModal}
