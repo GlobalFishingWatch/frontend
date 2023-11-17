@@ -44,8 +44,7 @@ const checkChanges = (metadata: EditDatasetMetadata | undefined, dataset: Datase
 
 function EditDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const { datasetCategory, datasetModal, editingDatasetId, dispatchDatasetModal } =
-    useDatasetModalConnect()
+  const { datasetModal, editingDatasetId, dispatchDatasetModal } = useDatasetModalConnect()
   const dataset = useSelector(selectDatasetById(editingDatasetId as string))
   const [loading, setLoading] = useState(false)
   const [metadata, setMetadata] = useState<EditDatasetMetadata | undefined>({
@@ -95,9 +94,7 @@ function EditDataset(): React.ReactElement {
   // const showContextNamePropertyFields =
   //   datasetCategory === DatasetCategory.Context && contextFieldOptions?.length > 0
 
-  const showColorPropertyFields =
-    datasetCategory === DatasetCategory.Environment &&
-    dataset?.configuration?.geometryType === 'polygons'
+  const showColorPropertyFields = dataset?.configuration?.geometryType === 'polygons'
 
   const { min, max } = metadata?.propertyToIncludeRange || {}
 
@@ -122,14 +119,14 @@ function EditDataset(): React.ReactElement {
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
         />
-        {datasetCategory === DatasetCategory.Context && (
+        {/* {datasetCategory === DatasetCategory.Context && (
           <InputText
             disabled
             value={metadata?.propertyToInclude ?? ''}
             label={t('dataset.featuresNameField', 'Features name field')}
             className={styles.input}
           />
-        )}
+        )} */}
         {/* {showContextNamePropertyFields && (
           <Select
             label={

@@ -58,9 +58,25 @@ interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
   extensions?: string[]
 }
 
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+// TODO REMOVE THIS ONCE START WORKING ON THE UPLOAD
+const datasetCategory = DatasetCategory.Context
+
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const { datasetModal, datasetCategory, dispatchDatasetModal } = useDatasetModalConnect()
+  const { datasetModal, dispatchDatasetModal } = useDatasetModalConnect()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
   const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | undefined>(
@@ -250,7 +266,7 @@ function NewDataset(): React.ReactElement {
       }
       setLoading(false)
     },
-    [datasetCategory, t, metadata, datasetGeometryType, error]
+    [t, metadata, datasetGeometryType, error]
   )
 
   const onDatasetFieldChange = (field: DatasetMetadata | AnyDatasetConfiguration) => {
@@ -402,13 +418,11 @@ function NewDataset(): React.ReactElement {
   }
 
   const onConfirmDatasetCategoryClick = () => {
-    if (datasetCategory === DatasetCategory.Environment) {
-      trackEvent({
-        category: TrackCategory.EnvironmentalData,
-        action: `Start upload environmental dataset flow`,
-        label: datasetGeometryType ?? '',
-      })
-    }
+    trackEvent({
+      category: TrackCategory.User,
+      action: `Start upload dataset flow`,
+      label: datasetGeometryType ?? '',
+    })
     setDatasetGeometryTypeConfirmed(true)
   }
 
