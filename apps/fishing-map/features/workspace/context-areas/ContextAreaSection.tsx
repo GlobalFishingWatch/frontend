@@ -4,7 +4,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
@@ -33,7 +33,7 @@ function ContextAreaSection(): React.ReactElement {
       action: `Open panel to add a reference layer`,
       value: userDatasets.length,
     })
-    dispatch(setModalOpen({ id: 'layerLibrary', open: true }))
+    dispatch(setModalOpen({ id: 'layerLibrary', open: DataviewCategory.Context }))
   }, [dispatch, userDatasets.length])
 
   const onToggleLayer = useCallback(

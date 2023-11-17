@@ -5,7 +5,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { useTranslation } from 'react-i18next'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
@@ -36,7 +36,7 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
       action: `Open panel to add a environmental dataset`,
       value: userDatasets.length,
     })
-    dispatch(setModalOpen({ id: 'layerLibrary', open: true }))
+    dispatch(setModalOpen({ id: 'layerLibrary', open: DataviewCategory.Environment }))
   }, [dispatch, userDatasets.length])
 
   const onToggleLayer = useCallback(

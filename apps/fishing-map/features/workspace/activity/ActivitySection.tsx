@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   selectActivityDataviews,
   selectDetectionsDataviews,
@@ -32,7 +33,7 @@ function ActivitySection(): React.ReactElement {
   const dispatch = useAppDispatch()
 
   const onAddLayerClick = useCallback(() => {
-    dispatch(setModalOpen({ id: 'layerLibrary', open: true }))
+    dispatch(setModalOpen({ id: 'layerLibrary', open: DataviewCategory.Activity }))
   }, [dispatch])
 
   const onBivariateDataviewsClick = useCallback(

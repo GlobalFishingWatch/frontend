@@ -9,14 +9,16 @@ import { LIBRARY_LAYERS } from 'data/library-layers'
 import { upperFirst } from 'utils/info'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import LayerLibraryItem, { LayerResolved } from 'features/layer-library/LayerLibraryItem'
+import { selectLayerLibraryModal } from 'features/modals/modals.slice'
 import styles from './LayerLibrary.module.css'
 
 const LayerLibrary: FC = () => {
   const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
+  const initialCategory = useSelector(selectLayerLibraryModal)
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
-    DataviewCategory.Activity
+    initialCategory || DataviewCategory.Activity
   )
   const dataviews = useSelector(selectAllDataviews)
 
@@ -39,13 +41,31 @@ const LayerLibrary: FC = () => {
     [layersResolved]
   )
 
-  useLayoutEffect(() => {
-    setCategoryElements(
-      uniqCategories.flatMap((category) => {
-        const element = document.getElementById(category)
-        return element || []
+  const scrollToCategory = useCallback(
+    (categoryElements: HTMLElement[], category: DataviewCategory) => {
+      const targetElement = categoryElements.find((categoryElement) => {
+        return categoryElement.id === category
       })
-    )
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+        })
+      }
+    },
+    []
+  )
+
+  useLayoutEffect(() => {
+    const categoryElements = uniqCategories.flatMap((category) => {
+      const element = document.getElementById(category)
+      return element || []
+    })
+    setCategoryElements(categoryElements)
+    if (currentCategory) {
+      scrollToCategory(categoryElements, currentCategory)
+    }
+    // Running only when categoryElements changes as listening to currentCategory blocks the scroll
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uniqCategories])
 
   const filteredLayers = useMemo(
@@ -98,18 +118,9 @@ const LayerLibrary: FC = () => {
 
   const onCategoryClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      e.preventDefault()
-      const targetElement = categoryElements.find((element) => {
-        return `nav-${element.id}` === (e.target as any).getAttribute('id')
-      })
-
-      if (targetElement) {
-        targetElement.scrollIntoView({
-          behavior: 'smooth',
-        })
-      }
+      scrollToCategory(categoryElements, (e.target as any).dataset.category as DataviewCategory)
     },
-    [categoryElements]
+    [categoryElements, scrollToCategory]
   )
 
   return (
@@ -131,7 +142,7 @@ const LayerLibrary: FC = () => {
                 [styles.currentCategory]: currentCategory === category,
               })}
               disabled={layersByCategory[category].length === 0}
-              id={`nav-${category}`}
+              data-category={category}
               onClick={onCategoryClick}
               key={category}
             >
