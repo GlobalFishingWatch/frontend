@@ -12,7 +12,6 @@ import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventLabel } from 'utils/analytics'
 import { selectReadOnly } from 'features/app/app.selectors'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { isGuestUser } from 'features/user/user.slice'
@@ -20,6 +19,7 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAddDataset } from 'features/datasets/datasets.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './UserLayerPanel'
 
@@ -87,38 +87,32 @@ function UserSection(): React.ReactElement {
         </h2>
         {!readOnly && (
           <Fragment>
-            <LoginButtonWrapper
-              tooltip={t(
-                'dataset.uploadLogin',
-                'Register and login to upload datasets (free, 2 minutes)'
+            <UserLoggedIconButton
+              icon="upload"
+              type="border"
+              size="medium"
+              className="print-hidden"
+              onClick={onUploadClick}
+              tooltip={t('dataset.upload', 'Upload dataset')}
+              tooltipPlacement="top"
+              loginTooltip={t(
+                'download.eventsDownloadLogin',
+                'Register and login to download vessel events (free, 2 minutes)'
               )}
-            >
-              <IconButton
-                icon="upload"
-                type="border"
-                size="medium"
-                tooltip={t('dataset.upload', 'Upload dataset')}
-                tooltipPlacement="top"
-                className="print-hidden"
-                onClick={onUploadClick}
-              />
-            </LoginButtonWrapper>
-            <LoginButtonWrapper
-              tooltip={t(
-                'layer.drawPolygonLogin',
-                'Register and login to draw a layer (free, 2 minutes)'
+            />
+            <UserLoggedIconButton
+              icon="draw"
+              type="border"
+              size="medium"
+              tooltip={t('layer.drawPolygon', 'Draw a layer')}
+              tooltipPlacement="top"
+              className="print-hidden"
+              onClick={onDrawClick}
+              loginTooltip={t(
+                'download.eventsDownloadLogin',
+                'Register and login to download vessel events (free, 2 minutes)'
               )}
-            >
-              <IconButton
-                icon="draw"
-                type="border"
-                size="medium"
-                tooltip={t('layer.drawPolygon', 'Draw a layer')}
-                tooltipPlacement="top"
-                className="print-hidden"
-                onClick={onDrawClick}
-              />
-            </LoginButtonWrapper>
+            />
             <IconButton
               icon="plus"
               type="border"
