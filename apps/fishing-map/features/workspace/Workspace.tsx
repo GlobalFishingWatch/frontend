@@ -189,8 +189,8 @@ function Workspace() {
       <EventsSection />
       <VesselsSection />
       <EnvironmentalSection />
-      <UserSection />
       <ContextAreaSection />
+      <UserSection />
     </DndContext>
   )
 }

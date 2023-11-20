@@ -132,7 +132,7 @@ function UserSection(): React.ReactElement {
         )}
       </div>
       {guestUser ? (
-        <div className={styles.emptyState}>
+        <div className={styles.emptyStateBig}>
           <Trans i18nKey="dataset.uploadLogin">
             <a
               className={styles.link}
@@ -156,7 +156,7 @@ function UserSection(): React.ReactElement {
               </LayerPanelContainer>
             ))
           ) : (
-            <div className={styles.emptyState}>
+            <div className={styles.emptyStateBig}>
               {t(
                 'workspace.emptyStateEnvironment',
                 'Upload custom datasets like animal telemetry clicking on the plus icon.'
