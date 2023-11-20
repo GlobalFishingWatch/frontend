@@ -13,7 +13,12 @@ export const URL_YEAR_2018 =
 export const API_URL_VESSELS = '/v3/vessels*'
 export const API_URL_SEARCH_VESSELS = '/v3/vessels/search*'
 export const API_URL_4WINGS_TILES = '/v3/4wings/tile/heatmap/*/*/*'
-export const API_URL_4WINGS_REPORT = 'v3/4wings/report*'
+export const API_URL_4WINGS_REPORT = '/v3/4wings/report*'
 
 // CUSTOM API URLS
-export const API_URL_GALAPAGOS_INFO = 'v3/datasets/public-eez-areas/context-layers/8403?'
+export const API_URL_GALAPAGOS_INFO = '/v3/datasets/public-eez-areas/context-layers/8403?'
+
+//WORKSPACES
+export const API_URL_WORKSPACES_LIST =
+  '/v3/workspaces?app=fishing-map&logged-user-or-gfw=true&limit=999999&offset=0'
+export const API_URL_WORKSPACES_DELETE = '/v3/workspaces/%WORKSPACE_ID%'

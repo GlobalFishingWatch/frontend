@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { kebabCase, memoize, uniqBy } from 'lodash'
-import { Polygon, MultiPolygon } from 'geojson'
+import { Polygon, MultiPolygon, FeatureCollection } from 'geojson'
 import { TileContextAreaFeature, Dataset, EndpointId } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
@@ -8,14 +8,17 @@ import { wrapGeometryBbox, wrapBBoxLongitudes } from '@globalfishingwatch/data-t
 import { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
+
 export interface DatasetArea {
   id: string
   label: string
   bbox?: Bbox
 }
+
 export interface DatasetAreaList {
   status: AsyncReducerStatus
-  data: DatasetArea[]
+  data: DrawnDatasetGeometry | DatasetArea[]
 }
 
 export type AreaGeometry = Polygon | MultiPolygon
@@ -122,13 +125,19 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
     }: FetchDatasetAreasThunkParam = {} as FetchDatasetAreasThunkParam,
     { signal }
   ) => {
-    const datasetAreas = await GFWAPI.fetch<DatasetArea[]>(
-      `/datasets/${datasetId}/user-context-layer-v1${
-        include?.length ? `?includes=${include.join(',')}` : ''
+    const datasetAreas = await GFWAPI.fetch<DatasetArea[] | DrawnDatasetGeometry>(
+      `/datasets/${datasetId}/user-context-layers${
+        include?.length ? `?includes=${include.join(',')}&cache=false` : ''
       }`,
-      { signal }
+      { signal, cache: 'no-cache' }
     )
-    const areasWithSlug = datasetAreas.map((area) => ({ ...area, slug: kebabCase(area.label) }))
+    if ((datasetAreas as DrawnDatasetGeometry).type === 'FeatureCollection') {
+      return datasetAreas
+    }
+    const areasWithSlug = (datasetAreas as DatasetArea[]).map((area) => ({
+      ...area,
+      slug: kebabCase(area.label),
+    }))
     return uniqBy(areasWithSlug, 'slug')
   },
   {
@@ -150,6 +159,15 @@ const areasSlice = createSlice({
   name: 'areas',
   initialState,
   reducers: {
+    resetAreaList: (state, action: PayloadAction<{ datasetId: string }>) => {
+      const { datasetId } = action.payload
+      if (state[datasetId]?.list) {
+        state[datasetId].list = {
+          status: AsyncReducerStatus.Idle,
+          data: [],
+        }
+      }
+    },
     resetAreaDetail: (state, action: PayloadAction<{ datasetId: string; areaId: number }>) => {
       const { datasetId, areaId } = action.payload
       if (state[datasetId]?.detail?.[areaId]) {
@@ -221,7 +239,7 @@ const areasSlice = createSlice({
   },
 })
 
-export const { resetAreaDetail } = areasSlice.actions
+export const { resetAreaList, resetAreaDetail } = areasSlice.actions
 
 export const selectAreas = (state: { areas: AreasState }) => state.areas
 export const selectDatasetAreaById = memoize((id: string) =>

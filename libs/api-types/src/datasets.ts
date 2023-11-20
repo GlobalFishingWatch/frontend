@@ -1,5 +1,7 @@
 import { EventTypes } from './events'
 
+export const DRAW_DATASET_SOURCE = 'drawn_on_gfw_map'
+
 export interface UploadResponse {
   path: string
   url: string

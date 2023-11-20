@@ -26,11 +26,22 @@ export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
   [EXCLUDE_FILTER_ID]: 'NOT IN',
 }
 
+export const FILTERABLE_GENERATORS: GeneratorType[] = [
+  GeneratorType.HeatmapAnimated,
+  GeneratorType.TileCluster,
+  GeneratorType.UserContext,
+  GeneratorType.UserPoints,
+]
+
 function getDatasetSchemaItem(dataset: Dataset, schema: string) {
   return (
     (dataset?.schema?.[schema] as DatasetSchemaItem) ||
     (dataset?.schema?.selfReportedInfo as DatasetSchema)?.items?.[schema]
   )
+}
+
+function isFilterableDataviewInstanceGenerator(dataviewInstance: UrlDataviewInstance) {
+  return FILTERABLE_GENERATORS.some((generator) => generator === dataviewInstance.config?.type)
 }
 
 /**
@@ -350,10 +361,7 @@ export function resolveDataviews(
 
   // resolved array filters to url filters
   dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
-    if (
-      dataviewInstance.config?.type === GeneratorType.HeatmapAnimated ||
-      dataviewInstance.config?.type === GeneratorType.TileCluster
-    ) {
+    if (dataviewInstance.config && isFilterableDataviewInstanceGenerator(dataviewInstance)) {
       const { filters, filterOperators } = dataviewInstance.config
       if (filters) {
         if (filters['vessel-groups']) {

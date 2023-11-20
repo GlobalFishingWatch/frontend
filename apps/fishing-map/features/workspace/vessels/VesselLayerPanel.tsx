@@ -2,7 +2,7 @@ import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-// import NextLink from 'next/link'
+import { groupBy } from 'lodash'
 import {
   DatasetTypes,
   ResourceStatus,
@@ -12,7 +12,7 @@ import {
   IdentityVessel,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import { IconButton, Tooltip, ColorBarOption } from '@globalfishingwatch/ui-components'
+import { IconButton, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
@@ -32,6 +32,7 @@ import VesselLink from 'features/vessel/VesselLink'
 import { getOtherVesselNames } from 'features/vessel/vessel.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { t } from 'features/i18n/i18n'
+import { isGFWUser } from 'features/user/user.slice'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -42,20 +43,51 @@ export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
 }
 
-export const getVesselIdentityTooltipSummary = (vessel: IdentityVessel) => {
+export const getVesselIdentityTooltipSummary = (
+  vessel: IdentityVessel,
+  { showVesselId } = {} as { showVesselId: boolean }
+) => {
   if (!vessel || !vessel.selfReportedInfo?.length) {
     return ['']
   }
-  const identities = vessel?.selfReportedInfo?.flatMap((selfReported) => {
-    const info = `${formatInfoField(selfReported.shipname, 'name')} - ${formatInfoField(
-      selfReported.flag,
-      'flag'
-    )} (${formatI18nDate(selfReported.transmissionDateFrom)} - ${formatI18nDate(
-      selfReported.transmissionDateTo
-    )})`
+  const identitiesByNormalizedShipname = groupBy(vessel?.selfReportedInfo, 'nShipname')
+  const identities = Object.entries(identitiesByNormalizedShipname).flatMap(
+    ([_, selfReportedInfo]) => {
+      const firstTransmissionDateFrom = selfReportedInfo.reduce((acc, curr) => {
+        if (!acc) {
+          return curr.transmissionDateFrom
+        }
+        return acc < curr.transmissionDateFrom ? acc : curr.transmissionDateFrom
+      }, '')
+      const lastTransmissionDateTo = selfReportedInfo.reduce((acc, curr) => {
+        if (!acc) {
+          return curr.transmissionDateTo
+        }
+        return acc > curr.transmissionDateTo ? acc : curr.transmissionDateTo
+      }, '')
 
-    return [info, <br />]
-  })
+      const selfReported = selfReportedInfo[0]
+      const name = formatInfoField(selfReported.shipname, 'name')
+      const flag = formatInfoField(selfReported.flag, 'flag')
+      let info = `${name} - (${flag}) (${formatI18nDate(
+        firstTransmissionDateFrom
+      )} - ${formatI18nDate(lastTransmissionDateTo)})`
+      if (showVesselId) {
+        return [
+          info,
+          <br />,
+          selfReportedInfo.map((s, index) => (
+            <Fragment key={s.id}>
+              <GFWOnly type="only-icon" /> {s.id}
+              {index < selfReportedInfo.length - 1 && <br />}
+            </Fragment>
+          )),
+          <br />,
+        ]
+      }
+      return [info, <br />]
+    }
+  )
   return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
 }
 
@@ -64,6 +96,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
+  const gfwUser = useSelector(isGFWUser)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
@@ -109,7 +142,9 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const vesselData = infoResource?.data
   const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
   const otherVesselsLabel = vesselData ? getOtherVesselNames(vesselData as IdentityVessel) : ''
-  const identitiesSummary = vesselData ? getVesselIdentityTooltipSummary(vesselData) : ''
+  const identitiesSummary = vesselData
+    ? getVesselIdentityTooltipSummary(vesselData, { showVesselId: gfwUser || false })
+    : ''
 
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
@@ -117,7 +152,6 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     )?.value as string) ||
     dataview.id.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '') ||
     ''
-  const vesselTitle = vesselLabel || t('common.unknownVessel', 'Unknown vessel')
 
   const getVesselTitle = (): ReactNode => {
     if (infoLoading) return t('vessel.loadingInfo', 'Loading vessel info')
@@ -170,16 +204,6 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
         />
       )}
     </Fragment>
-  )
-
-  const TitleComponent = (
-    <Title
-      title={<TitleComponentContent />}
-      className={styles.name}
-      classNameActive={styles.active}
-      dataview={dataview}
-      toggleVisibility={false}
-    />
   )
 
   const TrackIconComponent = trackLoading ? (
@@ -235,11 +259,13 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     >
       <div className={styles.header}>
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
-        {vesselTitle && vesselTitle.length > 20 ? (
-          <Tooltip content={vesselTitle}>{TitleComponent}</Tooltip>
-        ) : (
-          TitleComponent
-        )}
+        <Title
+          title={<TitleComponentContent />}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          toggleVisibility={false}
+        />
         <div
           className={cx('print-hidden', styles.actions, styles.hideUntilHovered, {
             [styles.active]: layerActive,
@@ -249,7 +275,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
             <VesselDownload
               dataview={dataview}
               vesselIds={[vesselId]}
-              vesselTitle={vesselTitle}
+              vesselTitle={vesselLabel || t('common.unknownVessel', 'Unknown vessel')}
               datasetId={trackResource?.dataset!?.id}
             />
             <Color

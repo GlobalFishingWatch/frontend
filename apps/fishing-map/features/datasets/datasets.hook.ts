@@ -13,7 +13,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   CreateDataset,
-  createDatasetThunk,
+  upsertDatasetThunk,
   DatasetModals,
   deleteDatasetThunk,
   fetchDatasetByIdThunk,
@@ -116,10 +116,10 @@ export const useDatasetsAPI = () => {
     [dispatch]
   )
 
-  const dispatchCreateDataset = useCallback(
+  const dispatchUpsertDataset = useCallback(
     async (createDataset: CreateDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
-      const action = await dispatch(createDatasetThunk(createDataset))
-      if (createDatasetThunk.fulfilled.match(action)) {
+      const action = await dispatch(upsertDatasetThunk(createDataset))
+      if (upsertDatasetThunk.fulfilled.match(action)) {
         return { payload: action.payload }
       } else {
         return { error: action.payload as AsyncError }
@@ -151,7 +151,7 @@ export const useDatasetsAPI = () => {
 
   return {
     dispatchFetchDataset,
-    dispatchCreateDataset,
+    dispatchUpsertDataset,
     dispatchUpdateDataset,
     dispatchDeleteDataset,
   }

@@ -1,5 +1,6 @@
 import { Position } from 'geojson'
 import {
+  DRAW_DATASET_SOURCE,
   Dataset,
   DatasetCategory,
   DatasetConfiguration,
@@ -18,7 +19,9 @@ export const getDrawDatasetDefinition = (name: string): Partial<Dataset> => {
     category: DatasetCategory.Context,
     subcategory: 'user',
     unit: 'NA',
+    source: DRAW_DATASET_SOURCE,
     configuration: {
+      propertyToInclude: 'draw_id',
       format: 'geojson',
       geometryType: 'polygons',
     } as DatasetConfiguration,
@@ -26,11 +29,22 @@ export const getDrawDatasetDefinition = (name: string): Partial<Dataset> => {
 }
 
 export const getFileWithFeatures = (name: string, features: DrawFeature[]) => {
+  const startingIndex = features.reduce((acc, feature) => {
+    const featureIndex = feature.properties?.gfw_id
+    return featureIndex && featureIndex > acc ? featureIndex : acc
+  }, 1)
   return new File(
     [
       JSON.stringify({
         type: 'FeatureCollection',
-        features: features,
+        features: features.map((feature, index) => ({
+          ...feature,
+          properties: {
+            ...(feature.properties || {}),
+            gfw_id: feature.properties.gfw_id || startingIndex + index,
+            draw_id: feature.properties.gfw_id || startingIndex + index,
+          },
+        })),
       }),
     ],
     `${name}.json`,

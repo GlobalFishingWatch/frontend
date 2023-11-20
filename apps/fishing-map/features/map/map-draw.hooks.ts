@@ -1,18 +1,34 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { selectIsMapDrawing, setMapDrawing } from './map.slice'
+import { selectIsMapDrawing } from 'routes/routes.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 
 export const useMapDrawConnect = () => {
-  const dispatch = useAppDispatch()
   const isMapDrawing = useSelector(selectIsMapDrawing)
+  const { dispatchQueryParams } = useLocationConnect()
 
   const dispatchSetMapDrawing = useCallback(
-    (mode: boolean) => {
-      dispatch(setMapDrawing(mode))
+    (mapDrawing: boolean) => {
+      dispatchQueryParams({ mapDrawing })
     },
-    [dispatch]
+    [dispatchQueryParams]
   )
 
-  return { isMapDrawing, dispatchSetMapDrawing }
+  const dispatchSetMapDrawEditDataset = useCallback(
+    (mapDrawingEditId: string) => {
+      dispatchQueryParams({ mapDrawingEditId })
+    },
+    [dispatchQueryParams]
+  )
+
+  const dispatchResetMapDraw = useCallback(() => {
+    dispatchQueryParams({ mapDrawing: false, mapDrawingEditId: undefined })
+  }, [dispatchQueryParams])
+
+  return {
+    isMapDrawing,
+    dispatchResetMapDraw,
+    dispatchSetMapDrawing,
+    dispatchSetMapDrawEditDataset,
+  }
 }

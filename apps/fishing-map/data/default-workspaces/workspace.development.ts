@@ -119,6 +119,7 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     },
+
     {
       id: BASEMAP_DATAVIEW_INSTANCE_ID,
       config: {

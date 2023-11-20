@@ -37,7 +37,6 @@ export type VesselToResolve = { id: string; name?: string; flag?: string; datase
 function VesselPin({
   vessel,
   vesselToResolve,
-  tooltip,
   disabled,
   className = '',
   size = 'small',
@@ -45,7 +44,6 @@ function VesselPin({
   vessel?: IdentityVessel
   vesselToResolve?: VesselToResolve
   className?: string
-  tooltip?: React.ReactNode
   disabled?: boolean
   size?: IconButtonSize
 }) {
@@ -161,7 +159,7 @@ function VesselPin({
       tooltip={
         vesselInWorkspace
           ? t('search.vesselAlreadyInWorkspace', 'This vessel is already in your workspace')
-          : tooltip || t('search.seeVessel', 'See vessel')
+          : t('vessel.addToWorkspace', 'Add vessel to view')
       }
       onClick={onPinClick}
       size={size}

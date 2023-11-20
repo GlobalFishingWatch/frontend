@@ -32,7 +32,7 @@ function VesselEventsTooltipSection({
     return Object.values(featuresByType).map((features) => {
       const vesselId = features[0].properties.vesselId
       const vesselResource = Object.values(resources).find((resource) => {
-        return (resource.data as IdentityVessel).selfReportedInfo?.some(
+        return (resource.data as IdentityVessel)?.selfReportedInfo?.some(
           (identity: SelfReportedInfo) => vesselId.includes(identity.id)
         )
       })

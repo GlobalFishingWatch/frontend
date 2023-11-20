@@ -52,6 +52,7 @@ export type SupportedActivityDatasetSchema =
   | 'origin'
   | 'vessel_type'
   | 'radiance'
+  | 'duration'
   | 'source'
   | 'matched'
   | 'codMarinha'
@@ -59,11 +60,13 @@ export type SupportedActivityDatasetSchema =
   | 'target_species' // between camelCase or snake_case
   | 'license_category'
   | 'vessel-groups'
+  | 'neural_vessel_type'
   | 'visibleValues'
   | 'callsign'
   | 'shipname'
   | 'mmsi'
   | 'imo'
+  | 'label'
 
 export type SupportedEnvDatasetSchema = 'type'
 export type SupportedContextDatasetSchema = 'removal_of'
@@ -630,21 +633,13 @@ export const getSchemaOptionsSelectedInDataview = (
   if (schema === 'flag') {
     return getFlagsByIds(dataview.config?.filters?.flag || [])
   }
-  if (schema === 'radiance' && dataview.config?.filters?.[schema]) {
+  if ((schema === 'radiance' || schema === 'duration') && dataview.config?.filters?.[schema]) {
     return dataview.config?.filters?.[schema]?.map((o: string) => [
       {
         id: o.toString(),
         label: o.toString(),
       },
     ])
-  }
-  if (schema === 'duration' && dataview.config?.filters?.[schema]) {
-    return [
-      {
-        id: dataview.config?.filters?.[schema].toString(),
-        label: dataview.config?.filters?.[schema].toString(),
-      },
-    ]
   }
   if (
     schema === 'visibleValues' &&

@@ -167,6 +167,9 @@ export const selectUrlDataviewInstances =
 export const selectUrlDataviewInstancesOrder =
   selectQueryParam<UrlDataviewInstance['id'][]>('dataviewInstancesOrder')
 
+export const selectIsMapDrawing = selectQueryParam<boolean>('mapDrawing')
+export const selectMapDrawingEditId = selectQueryParam<string>('mapDrawingEditId')
+
 export const selectUrlViewport = createSelector(
   [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],
   (zoom, latitude, longitude) => {
@@ -184,7 +187,9 @@ export const selectUrlTimeRange = createSelector(
 )
 
 export const selectUrlDataviewInstancesById = memoize((id: string) =>
-  createSelector([selectUrlDataviewInstances], (urlDataviewInstances) =>
-    urlDataviewInstances?.find((dataviewInstance) => dataviewInstance.id === id)
+  createSelector(
+    [selectUrlDataviewInstances],
+    (urlDataviewInstances) =>
+      urlDataviewInstances?.find((dataviewInstance) => dataviewInstance.id === id)
   )
 )

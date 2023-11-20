@@ -75,7 +75,7 @@ function NewDataset(): React.ReactElement {
   const [error, setError] = useState('')
   const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
   const locationType = useSelector(selectLocationType)
-  const { dispatchCreateDataset } = useDatasetsAPI()
+  const { dispatchUpsertDataset } = useDatasetsAPI()
 
   const onFileLoaded = useCallback(
     async (file: File) => {
@@ -227,9 +227,10 @@ function NewDataset(): React.ReactElement {
           if (datasetCategory === 'context' && datasetGeometryType === 'polygons') {
             if (
               (geojson.type === 'Feature' && geojson.geometry?.type === 'Polygon') ||
-              !(geojson as FeatureCollectionWithMetadata).features?.every((feature) =>
-                ['Polygon', 'MultiPolygon'].includes(feature.geometry?.type)
-              )
+              ((geojson as FeatureCollectionWithMetadata).features !== undefined &&
+                !(geojson as FeatureCollectionWithMetadata).features?.every((feature) =>
+                  ['Polygon', 'MultiPolygon'].includes(feature.geometry?.type)
+                ))
             ) {
               configuration.disableInteraction = true
             }
@@ -362,7 +363,7 @@ function NewDataset(): React.ReactElement {
       })
       setLoading(true)
       const { fields, guessedFields, ...meta } = metadata as DatasetMetadata
-      const { payload, error: createDatasetError } = await dispatchCreateDataset({
+      const { payload, error: createDatasetError } = await dispatchUpsertDataset({
         dataset: {
           ...meta,
           unit: 'TBD',

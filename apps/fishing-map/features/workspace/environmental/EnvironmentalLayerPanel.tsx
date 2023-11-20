@@ -150,7 +150,9 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
-              component={<ActivityFilters dataview={dataview} />}
+              component={
+                <ActivityFilters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />
+              }
             >
               <div className={styles.filterButtonWrapper}>
                 <IconButton
