@@ -110,14 +110,21 @@ const LayerLibrary: FC = () => {
   const onLayerListScroll = useCallback(
     (e: React.UIEvent<HTMLElement>) => {
       let current = currentCategory
-      categoryElements.forEach((categoryElement) => {
-        if (
-          (e.target as any).scrollTop >=
-          categoryElement.offsetTop - (e.target as any).offsetTop
-        ) {
-          current = categoryElement.id as DataviewCategory
-        }
-      })
+      const target = e.target as HTMLElement
+      const lastElement = categoryElements[categoryElements.length - 1]
+      if (
+        target.scrollTop + target.clientHeight >=
+        target.scrollHeight - lastElement.clientHeight
+      ) {
+        //Ensure last category shows as current if visible even if it's shorter than the scroll viewport
+        current = lastElement.id as DataviewCategory
+      } else {
+        categoryElements.forEach((categoryElement) => {
+          if (target.scrollTop >= categoryElement.offsetTop - target.offsetTop) {
+            current = categoryElement.id as DataviewCategory
+          }
+        })
+      }
       setCurrentCategory(current)
     },
     [categoryElements, currentCategory]
