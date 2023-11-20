@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { WorkspaceCategory } from 'data/workspaces'
 import { selectBigQueryActive } from 'features/bigquery/bigquery.slice'
-import { selectDatasetModal } from 'features/datasets/datasets.slice'
 import { selectDebugActive } from 'features/debug/debug.slice'
 import {
   selectDownloadActivityModalOpen,
@@ -9,6 +8,7 @@ import {
 } from 'features/download/download.selectors'
 import { selectEditorActive } from 'features/editor/editor.slice'
 import {
+  selectDatasetUploadModalOpen,
   selectFeedbackModalOpen,
   selectLayerLibraryModalOpen,
   selectScreenshotModalOpen,
@@ -35,7 +35,7 @@ export const selectAppModals = createSelector(
   [
     selectFeedbackModalOpen,
     selectLayerLibraryModalOpen,
-    selectDatasetModal,
+    selectDatasetUploadModalOpen,
     selectScreenshotModalOpen,
     selectVesselGroupModalOpen,
     selectDownloadTrackModalOpen,
@@ -44,7 +44,7 @@ export const selectAppModals = createSelector(
   (
     feedbackModalOpen,
     layerLibraryModalOpen,
-    datasetModal,
+    datasetUploadModalOpen,
     screenshotModalOpen,
     vesselGroupsModalOpen,
     downloadTrackModalOpen,
@@ -53,7 +53,7 @@ export const selectAppModals = createSelector(
     return {
       feedback: feedbackModalOpen,
       layerLibrary: layerLibraryModalOpen,
-      datataset: datasetModal !== undefined,
+      datataset: datasetUploadModalOpen,
       screenshot: screenshotModalOpen,
       vesselGroups: vesselGroupsModalOpen,
       downloadTrack: downloadTrackModalOpen,

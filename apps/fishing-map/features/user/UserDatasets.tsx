@@ -34,13 +34,13 @@ function UserDatasets() {
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchDatasetModal, dispatchEditingDatasetId } = useDatasetModalConnect()
+  const { dispatchDatasetModalOpen, dispatchDatasetModalConfig } = useDatasetModalConnect()
 
   const onNewDatasetClick = useCallback(async () => {
     batch(() => {
-      dispatchDatasetModal('new')
+      dispatchDatasetModalOpen(true)
     })
-  }, [dispatchDatasetModal])
+  }, [dispatchDatasetModalOpen])
 
   const onDatasetClick = useCallback(
     (dataset: Dataset) => {
@@ -73,11 +73,11 @@ function UserDatasets() {
   const onEditClick = useCallback(
     (dataset: Dataset) => {
       batch(() => {
-        dispatchDatasetModal('edit')
-        dispatchEditingDatasetId(dataset.id)
+        dispatchDatasetModalOpen(true)
+        dispatchDatasetModalConfig({ id: dataset?.id, type: dataset?.configuration?.geometryType })
       })
     },
-    [dispatchDatasetModal, dispatchEditingDatasetId]
+    [dispatchDatasetModalOpen, dispatchDatasetModalConfig]
   )
 
   const onDeleteClick = useCallback(

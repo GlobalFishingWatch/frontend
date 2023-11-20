@@ -12,18 +12,21 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
+  DatasetUploadConfig,
+  selectDatasetUploadModalId,
+  selectDatasetUploadModalOpen,
+  selectDatasetUploadModalType,
+  setDatasetUploadConfig,
+  setModalOpen,
+} from 'features/modals/modals.slice'
+import {
   CreateDataset,
   upsertDatasetThunk,
-  DatasetModals,
   deleteDatasetThunk,
   fetchDatasetByIdThunk,
   fetchLastestCarrierDatasetThunk,
   selectCarrierLatestDataset,
   selectCarrierLatestDatasetStatus,
-  selectDatasetModal,
-  selectEditingDatasetId,
-  setDatasetModal,
-  setEditingDatasetId,
   updateDatasetThunk,
 } from './datasets.slice'
 
@@ -67,28 +70,30 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
 
 export const useDatasetModalConnect = () => {
   const dispatch = useAppDispatch()
-  const datasetModal = useSelector(selectDatasetModal)
-  const editingDatasetId = useSelector(selectEditingDatasetId)
+  const datasetModalId = useSelector(selectDatasetUploadModalId)
+  const datasetModalType = useSelector(selectDatasetUploadModalType)
+  const datasetModalOpen = useSelector(selectDatasetUploadModalOpen)
 
-  const dispatchDatasetModal = useCallback(
-    (datasetModal: DatasetModals) => {
-      dispatch(setDatasetModal(datasetModal))
+  const dispatchDatasetModalOpen = useCallback(
+    (open: boolean) => {
+      dispatch(setModalOpen({ id: 'datasetUpload', open }))
     },
     [dispatch]
   )
 
-  const dispatchEditingDatasetId = useCallback(
-    (id: string) => {
-      dispatch(setEditingDatasetId(id))
+  const dispatchDatasetModalConfig = useCallback(
+    (config: DatasetUploadConfig) => {
+      dispatch(setDatasetUploadConfig(config))
     },
     [dispatch]
   )
 
   return {
-    datasetModal,
-    dispatchDatasetModal,
-    editingDatasetId,
-    dispatchEditingDatasetId,
+    datasetModalId,
+    datasetModalType,
+    datasetModalOpen,
+    dispatchDatasetModalOpen,
+    dispatchDatasetModalConfig,
   }
 }
 
@@ -193,14 +198,14 @@ export const useAutoRefreshImportingDataset = (
 }
 
 export const useAddDataset = ({ onSelect }: NewDatasetProps) => {
-  const { dispatchDatasetModal } = useDatasetModalConnect()
+  const { dispatchDatasetModalOpen } = useDatasetModalConnect()
   return () => {
     trackEvent({
       category: TrackCategory.ReferenceLayer,
       action: 'Start uploading user dataset',
     })
     batch(() => {
-      dispatchDatasetModal('new')
+      dispatchDatasetModalOpen(true)
     })
     if (onSelect) {
       onSelect()

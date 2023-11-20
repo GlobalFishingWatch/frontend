@@ -3,11 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { InputText, Modal, Button } from '@globalfishingwatch/ui-components'
-import {
-  Dataset,
-  DatasetCategory,
-  EnviromentalDatasetConfiguration,
-} from '@globalfishingwatch/api-types'
+import { Dataset, EnviromentalDatasetConfiguration } from '@globalfishingwatch/api-types'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
 import styles from './NewDataset.module.css'
@@ -44,8 +40,8 @@ const checkChanges = (metadata: EditDatasetMetadata | undefined, dataset: Datase
 
 function EditDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const { datasetModal, editingDatasetId, dispatchDatasetModal } = useDatasetModalConnect()
-  const dataset = useSelector(selectDatasetById(editingDatasetId as string))
+  const { datasetModalId, datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalConnect()
+  const dataset = useSelector(selectDatasetById(datasetModalId as string))
   const [loading, setLoading] = useState(false)
   const [metadata, setMetadata] = useState<EditDatasetMetadata | undefined>({
     name: dataset?.name,
@@ -66,7 +62,7 @@ function EditDataset(): React.ReactElement {
     if (metadata) {
       setLoading(true)
       const updatedDataset = {
-        id: editingDatasetId,
+        id: datasetModalId,
         name: metadata.name,
         description: metadata.description,
         configuration: {
@@ -83,7 +79,7 @@ function EditDataset(): React.ReactElement {
   const onClose = async () => {
     setLoading(false)
     setMetadata(undefined)
-    dispatchDatasetModal(undefined)
+    dispatchDatasetModalOpen(false)
   }
 
   const allowUpdate = checkChanges(metadata, dataset)
@@ -102,7 +98,7 @@ function EditDataset(): React.ReactElement {
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
       title={t('dataset.edit', 'Edit dataset')}
-      isOpen={datasetModal === 'edit'}
+      isOpen={datasetModalOpen}
       contentClassName={styles.modalContainer}
       onClose={onClose}
     >

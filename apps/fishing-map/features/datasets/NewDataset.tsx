@@ -76,7 +76,7 @@ const datasetCategory = DatasetCategory.Context
 
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const { datasetModal, dispatchDatasetModal } = useDatasetModalConnect()
+  const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalConnect()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
 
   const [datasetGeometryType, setDatasetGeometryType] = useState<DatasetGeometryType | undefined>(
@@ -408,7 +408,7 @@ function NewDataset(): React.ReactElement {
     setError('')
     setLoading(false)
     setMetadata(undefined)
-    dispatchDatasetModal(undefined)
+    dispatchDatasetModalOpen(false)
     setDatasetGeometryType(undefined)
     setDatasetGeometryTypeConfirmed(false)
   }
@@ -434,7 +434,7 @@ function NewDataset(): React.ReactElement {
           ? t('dataset.uploadNewContext', 'Upload new context areas')
           : t('dataset.uploadNewEnviroment', 'Upload new environment dataset')
       }
-      isOpen={datasetModal === 'new'}
+      isOpen={datasetModalOpen}
       contentClassName={styles.modalContainer}
       onClose={onClose}
     >

@@ -4,13 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import EditDataset from 'features/datasets/EditDataset'
 import {
   // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
-import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { UserTab } from 'types'
@@ -35,7 +33,6 @@ function User() {
   const userTab = useSelector(selectUserTab)
   const { dispatchQueryParams } = useLocationConnect()
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
-  const { datasetModal, editingDatasetId } = useDatasetModalConnect()
 
   const userTabs = useMemo(() => {
     const tabs = [
@@ -124,7 +121,6 @@ function User() {
   return (
     <div className={styles.container}>
       <Tabs tabs={userTabs} activeTab={userTab} onTabClick={onTabClick} />
-      {datasetModal === 'edit' && editingDatasetId !== undefined && <EditDataset />}
     </div>
   )
 }

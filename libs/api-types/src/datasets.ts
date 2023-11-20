@@ -101,6 +101,7 @@ export interface DatasetConfiguration {
   idProperty?: string
   valueProperties?: string[]
   apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
+  configurationUI?: Record<string, unknown>
   [key: string]: unknown
 }
 
