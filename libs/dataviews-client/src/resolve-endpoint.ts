@@ -77,12 +77,14 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
       resolvedQuery.set('dataset', datasetConfig.datasetId)
     }
     url = `${url}?${resolvedQuery.toString()}`
-  } else if (
-    dataset.type !== DatasetTypes.Fourwings &&
-    endpoint.query.some((q) => q.id === 'datasets')
-  ) {
-    // Fallback when no dataset query is defined but we already know which dataset want to search in
-    url = `${url}?datasets=${dataset.id}`
+  } else if (dataset.type !== DatasetTypes.Fourwings) {
+    if (endpoint.query.some((q) => q.id === 'dataset')) {
+      // Fallback when no dataset query is defined but we already know which dataset want to search in
+      url = `${url}?dataset=${dataset.id}`
+    } else if (endpoint.query.some((q) => q.id === 'datasets')) {
+      // Fallback when no dataset query is defined but we already know which datasets want to search in
+      url = `${url}?datasets=${dataset.id}`
+    }
   }
 
   return decodeURI(url)
