@@ -46,11 +46,10 @@ const modals = createSlice({
       }
     },
     setDatasetUploadConfig: (state, action: PayloadAction<DatasetUploadConfig>) => {
-      const { id, type } = action.payload
-      if (id) {
+      if (Object.keys(action.payload).includes('id')) {
         state.datasetUpload.id = action.payload.id
       }
-      if (type) {
+      if (Object.keys(action.payload).includes('type')) {
         state.datasetUpload.type = action.payload.type
       }
     },

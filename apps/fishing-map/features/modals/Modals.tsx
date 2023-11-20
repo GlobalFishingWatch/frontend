@@ -23,7 +23,7 @@ import { selectLayerLibraryModalOpen } from 'features/modals/modals.slice'
 import styles from './Modals.module.css'
 
 const NewDataset = dynamic(
-  () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/NewDataset')
+  () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/upload/NewDataset')
 )
 
 const BigQueryMenu = dynamic(

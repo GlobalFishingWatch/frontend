@@ -1,0 +1,41 @@
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  align-items: stretch;
+  padding-bottom: 2rem;
+  gap: var(--space-S);
+}
+
+.geometryTypeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px dashed var(--color-border);
+  border-radius: 4px;
+  background-color: var(--color-terthiary-blue);
+  width: 33%;
+}
+
+.textContainer {
+  padding-top: var(--space-M);
+}
+
+.title,
+.description {
+  text-align: center;
+  text-transform: none;
+}
+
+.title {
+  font: var(--font-L);
+  color: var(--color-primary-blue);
+}
+
+.description {
+  color: var(--color-primary-blue);
+  text-align: center;
+}

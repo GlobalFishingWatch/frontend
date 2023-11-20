@@ -20,7 +20,7 @@ import {
   setModalOpen,
 } from 'features/modals/modals.slice'
 import {
-  CreateDataset,
+  UpsertDataset,
   upsertDatasetThunk,
   deleteDatasetThunk,
   fetchDatasetByIdThunk,
@@ -113,7 +113,7 @@ export const useDatasetsAPI = () => {
   )
 
   const dispatchUpsertDataset = useCallback(
-    async (createDataset: CreateDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
+    async (createDataset: UpsertDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
       const action = await dispatch(upsertDatasetThunk(createDataset))
       if (upsertDatasetThunk.fulfilled.match(action)) {
         return { payload: action.payload }

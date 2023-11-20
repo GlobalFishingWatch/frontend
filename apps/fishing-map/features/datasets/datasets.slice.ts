@@ -179,10 +179,10 @@ export const fetchAllDatasetsThunk = createAsyncThunk<
   return dispatch(fetchDatasetsByIdsThunk({ ids: [], onlyUserDatasets }))
 })
 
-export type CreateDataset = { dataset: Partial<Dataset>; file: File; createAsPublic: boolean }
+export type UpsertDataset = { dataset: Partial<Dataset>; file?: File; createAsPublic?: boolean }
 export const upsertDatasetThunk = createAsyncThunk<
   Dataset,
-  CreateDataset,
+  UpsertDataset,
   {
     rejectValue: AsyncError
   }
@@ -202,7 +202,7 @@ export const upsertDatasetThunk = createAsyncThunk<
 
     // API needs to have the value in lowercase
     const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
-    const generatedId = `${kebabCase(dataset.name)}-${Date.now()}`
+    const generatedId = dataset.id || `${kebabCase(dataset.name)}-${Date.now()}`
     const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
     const { id: originalId, ...rest } = dataset
     const isPatchDataset = originalId !== undefined
@@ -212,7 +212,7 @@ export const upsertDatasetThunk = createAsyncThunk<
       description: dataset.description || dataset.name,
       source: dataset.source || DATASETS_USER_SOURCE_ID,
       // Needed to start polling the dataset in useAutoRefreshImportingDataset
-      ...(isPatchDataset && { status: 'importing' }),
+      ...(isPatchDataset && file && { status: 'importing' }),
       configuration: {
         ...dataset.configuration,
         ...(propertyToInclude && { propertyToInclude }),

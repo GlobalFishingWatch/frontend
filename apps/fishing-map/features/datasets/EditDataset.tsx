@@ -6,7 +6,7 @@ import { InputText, Modal, Button } from '@globalfishingwatch/ui-components'
 import { Dataset, EnviromentalDatasetConfiguration } from '@globalfishingwatch/api-types'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
-import styles from './NewDataset.module.css'
+import styles from './upload/NewDataset.module.css'
 import { selectDatasetById } from './datasets.slice'
 
 export type EditDatasetMetadata = Pick<

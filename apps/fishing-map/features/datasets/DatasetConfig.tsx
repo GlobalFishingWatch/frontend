@@ -9,8 +9,8 @@ import {
   DatasetGeometryType,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
-import { DatasetMetadata } from './NewDataset'
-import styles from './NewDataset.module.css'
+import { DatasetMetadata } from './upload/NewDataset'
+import styles from './upload/NewDataset.module.css'
 
 export const extractPropertiesFromGeojson = (geojson: GeoJSON.FeatureCollection) => {
   if (!geojson?.features) return []

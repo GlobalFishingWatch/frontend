@@ -9,7 +9,10 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
+import {
+  useAutoRefreshImportingDataset,
+  useDatasetModalConnect,
+} from 'features/datasets/datasets.hook'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -41,6 +44,7 @@ type UserPanelProps = {
 function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { dispatchDatasetModalOpen, dispatchDatasetModalConfig } = useDatasetModalConnect()
   const { dispatchSetMapDrawing, dispatchSetMapDrawEditDataset } = useMapDrawConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
@@ -49,9 +53,13 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const guestUser = useSelector(isGuestUser)
   const layerActive = dataview?.config?.visible ?? true
   const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
+    (d) =>
+      d.type === DatasetTypes.Context ||
+      d.type === DatasetTypes.UserContext ||
+      d.type === DatasetTypes.UserTracks
   )
-  const supportsDrawEdit = dataset?.source === DRAW_DATASET_SOURCE
+
+  const isDrawDataset = dataset?.source === DRAW_DATASET_SOURCE
 
   const {
     items,
@@ -73,6 +81,16 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
       },
     })
     setColorOpen(false)
+  }
+
+  const onEditClick = () => {
+    if (isDrawDataset) {
+      dispatchSetMapDrawEditDataset(dataset?.id)
+      dispatchSetMapDrawing(true)
+    } else {
+      dispatchDatasetModalOpen(true)
+      dispatchDatasetModalConfig({ id: dataset?.id, type: dataset?.configuration?.geometryType })
+    }
   }
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
@@ -153,17 +171,16 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && supportsDrawEdit && (
+          {layerActive && (
             <IconButton
               icon="edit"
               size="small"
               disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
-              tooltip={t('layer.editDraw', 'Edit draw')}
+              tooltip={
+                isDrawDataset ? t('layer.editDraw', 'Edit draw') : t('dataset.edit', 'Edit dataset')
+              }
               tooltipPlacement="top"
-              onClick={() => {
-                dispatchSetMapDrawEditDataset(dataset?.id)
-                dispatchSetMapDrawing(true)
-              }}
+              onClick={onEditClick}
             />
           )}
           {layerActive && !isBasemapLabelsDataview && (
