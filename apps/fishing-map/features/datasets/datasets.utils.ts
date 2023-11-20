@@ -132,20 +132,21 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
 }
 
 export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
-  const source = dataset.source?.toLowerCase() || dataset.id?.toLowerCase()
+  const { source } = dataset
   if (!source) {
-    console.log('source:', dataset)
     return null
   }
-  if (source.includes('gfw') || source.includes('global fishing watch')) return 'gfw-logo'
-  if (source.includes('fao')) return 'fao-logo'
+  // Activity, Detections & Events
+  if (source === 'Global Fishing Watch') return 'gfw-logo'
+  // Environment
+  if (source.includes('HYCOM')) return 'hycom-logo'
+  if (source.includes('Copernicus')) return 'copernicus-logo'
+  if (source.includes('NASA')) return 'nasa-logo'
+  // Reference
   if (source.includes('protectedplanet')) return 'protected-planet-logo'
   if (source.includes('protectedseas')) return 'protected-seas-logo'
-  if (source.includes('marine regions')) return 'marine-regions-logo'
-  if (dataset.description.toLowerCase().includes('hycom')) return 'hycom-logo'
-  if (dataset.description.toLowerCase().includes('copernicus')) return 'copernicus-logo'
-  // TODO REVIEW DATASET SOURCES IN TERRAFORM
-  console.log('dataset without source icon', dataset.description)
+  if (source.includes('marineregions')) return 'marine-regions-logo'
+  if (source.includes('fao')) return 'fao-logo'
 
   return null
 }

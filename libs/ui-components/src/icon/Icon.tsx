@@ -66,6 +66,7 @@ import { ReactComponent as MarineRegionsLogo } from '../assets/icons/marine-regi
 import { ReactComponent as Menu } from '../assets/icons/menu.svg'
 import { ReactComponent as Minus } from '../assets/icons/minus.svg'
 import { ReactComponent as More } from '../assets/icons/more.svg'
+import { ReactComponent as NASALogo } from '../assets/icons/nasa-logo.svg'
 import { ReactComponent as Pin } from '../assets/icons/pin.svg'
 import { ReactComponent as PinFilled } from '../assets/icons/pin-filled.svg'
 import { ReactComponent as Plus } from '../assets/icons/plus.svg'
@@ -170,6 +171,7 @@ export const IconComponents = {
   menu: Menu,
   minus: Minus,
   more: More,
+  'nasa-logo': NASALogo,
   pin: Pin,
   plus: Plus,
   polygons: Polygons,
