@@ -66,6 +66,7 @@ export type SupportedActivityDatasetSchema =
   | 'shipname'
   | 'mmsi'
   | 'imo'
+  | 'label'
 
 export type SupportedEnvDatasetSchema = 'type'
 export type SupportedContextDatasetSchema = 'removal_of'
