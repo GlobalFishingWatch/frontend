@@ -87,15 +87,22 @@ function UserSection(): React.ReactElement {
         </h2>
         {!readOnly && (
           <Fragment>
-            <IconButton
-              icon="upload"
-              type="border"
-              size="medium"
-              tooltip={t('dataset.upload', 'Upload dataset')}
-              tooltipPlacement="top"
-              className="print-hidden"
-              onClick={onUploadClick}
-            />
+            <LoginButtonWrapper
+              tooltip={t(
+                'dataset.uploadLogin',
+                'Register and login to upload datasets (free, 2 minutes)'
+              )}
+            >
+              <IconButton
+                icon="upload"
+                type="border"
+                size="medium"
+                tooltip={t('dataset.upload', 'Upload dataset')}
+                tooltipPlacement="top"
+                className="print-hidden"
+                onClick={onUploadClick}
+              />
+            </LoginButtonWrapper>
             <LoginButtonWrapper
               tooltip={t(
                 'layer.drawPolygonLogin',
@@ -116,7 +123,7 @@ function UserSection(): React.ReactElement {
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('dataset.addContext', 'Add context dataset')}
+              tooltip={t('dataset.addUser', 'Add an uploaded dataset')}
               tooltipPlacement="top"
               className="print-hidden"
               onClick={onAddClick}

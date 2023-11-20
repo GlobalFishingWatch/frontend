@@ -207,6 +207,7 @@
   "dataset": {
     "addContext": "Add context dataset",
     "addEnvironmental": "Add environmental dataset",
+    "addUser": "Add an uploaded dataset",
     "colorByValue": "Color features by value",
     "confirmRemove": "Are you sure you want to permanently delete this dataset?",
     "dragActive": "Drop the file here ...",

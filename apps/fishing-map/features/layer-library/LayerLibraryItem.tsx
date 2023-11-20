@@ -8,28 +8,10 @@ import { setModalOpen } from 'features/modals/modals.slice'
 import { LibraryLayer } from 'data/library-layers'
 import { getDatasetSourceIcon, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
+import { getHighlightedText } from 'features/layer-library/layer-library.utils'
 import styles from './LayerLibraryItem.module.css'
 
 type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
-
-const getHighlightedText = (text: string, highlight: string) => {
-  if (highlight === '') return text
-  const regEscape = (v: string) => v.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
-  const textChunks = text.split(new RegExp(regEscape(highlight), 'ig'))
-  let sliceIdx = 0
-  return textChunks.map((chunk) => {
-    const currentSliceIdx = sliceIdx + chunk.length
-    sliceIdx += chunk.length + highlight.length
-    return (
-      <Fragment>
-        {chunk}
-        {currentSliceIdx < text.length && (
-          <span className={styles.highlighted}>{text.slice(currentSliceIdx, sliceIdx)}</span>
-        )}
-      </Fragment>
-    )
-  })
-}
 
 const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const { layer, highlightedText = '' } = props
@@ -51,9 +33,11 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       <div className={styles.container}>
         <div className={styles.image} style={{ backgroundImage: `url(${previewImageUrl})` }} />
         <div className={styles.content}>
-          <h2 className={styles.title}>{getHighlightedText(name as string, highlightedText)}</h2>
+          <h2 className={styles.title}>
+            {getHighlightedText(name as string, highlightedText, styles)}
+          </h2>
           <p className={styles.description}>
-            {getHighlightedText(description as string, highlightedText)}
+            {getHighlightedText(description as string, highlightedText, styles)}
           </p>
           <div className={styles.actions}>
             {datasetTypeIcon && <Icon icon={datasetTypeIcon} />}

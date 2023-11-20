@@ -10,6 +10,7 @@ import { upperFirst } from 'utils/info'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import { selectLayerLibraryModal } from 'features/modals/modals.slice'
+import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
 import styles from './LayerLibrary.module.css'
 
 const LayerLibrary: FC = () => {
@@ -42,6 +43,11 @@ const LayerLibrary: FC = () => {
     [layersResolved]
   )
 
+  const uniqCategoriesPlusUser = useMemo(
+    () => [...uniqCategories, DataviewCategory.User],
+    [uniqCategories]
+  )
+
   const scrollToCategory = useCallback(
     (categoryElements: HTMLElement[], category: DataviewCategory) => {
       const targetElement = categoryElements.find((categoryElement) => {
@@ -57,7 +63,7 @@ const LayerLibrary: FC = () => {
   )
 
   useLayoutEffect(() => {
-    const categoryElements = uniqCategories.flatMap((category) => {
+    const categoryElements = uniqCategoriesPlusUser.flatMap((category) => {
       const element = document.getElementById(category)
       return element || []
     })
@@ -67,7 +73,7 @@ const LayerLibrary: FC = () => {
     }
     // Running only when categoryElements changes as listening to currentCategory blocks the scroll
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uniqCategories])
+  }, [uniqCategoriesPlusUser])
 
   const filteredLayers = useMemo(
     () =>
@@ -137,12 +143,14 @@ const LayerLibrary: FC = () => {
       </div>
       <div className={styles.categoriesContainer}>
         <div className={styles.categories}>
-          {uniqCategories.map((category) => (
+          {uniqCategoriesPlusUser.map((category) => (
             <button
               className={cx(styles.category, {
                 [styles.currentCategory]: currentCategory === category,
               })}
-              disabled={layersByCategory[category].length === 0}
+              disabled={
+                category !== DataviewCategory.User && layersByCategory[category].length === 0
+              }
               data-category={category}
               onClick={onCategoryClick}
               key={category}
@@ -171,6 +179,7 @@ const LayerLibrary: FC = () => {
               ))}
             </Fragment>
           ))}
+          <LayerLibraryUserPanel searchQuery={searchQuery} />
         </ul>
       </div>
     </div>
