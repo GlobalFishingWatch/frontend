@@ -12,6 +12,7 @@
   height: 15rem;
   background-color: black;
   background-size: cover;
+  background-position: center;
   flex-shrink: 0;
   border-radius: var(--border-radius);
 }
@@ -19,6 +20,7 @@
 .content {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .title {
@@ -46,4 +48,19 @@
 
 .cta {
   margin-left: auto;
+}
+
+@media only screen and (width <= 800px) {
+  .image {
+    width: 100%;
+  }
+
+  .container {
+    flex-direction: column;
+    gap: var(--space-S);
+  }
+
+  .actions {
+    margin-top: var(--space-S);
+  }
 }

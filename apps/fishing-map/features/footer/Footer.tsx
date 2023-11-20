@@ -54,7 +54,7 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
 }
 
 function Footer(): React.ReactElement {
-  const isSmallScreen = useSmallScreen(500)
+  const isSmallScreen = useSmallScreen(900)
   const copyright = isSmallScreen ? '© GFW ' : '© Global Fishing Watch '
   return (
     <footer className={cx('print-hidden', styles.footer)}>

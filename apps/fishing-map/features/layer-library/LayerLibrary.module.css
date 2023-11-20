@@ -50,3 +50,14 @@
   padding: 0;
   overflow: hidden;
 }
+
+@media only screen and (width <= 800px) {
+  .categories {
+    display: none;
+  }
+
+  .categoriesContainer {
+    /* Screen minus search bar and modal title heights */
+    height: calc(100vh - 6.1rem - 6.1rem);
+  }
+}

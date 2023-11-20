@@ -10,3 +10,9 @@
   height: calc(100vh - 20rem);
   padding: 0;
 }
+
+@media only screen and (width <= 800px) {
+  .layerLibraryModal {
+    height: unset;
+  }
+}

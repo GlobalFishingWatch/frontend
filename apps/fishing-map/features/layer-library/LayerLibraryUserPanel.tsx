@@ -172,6 +172,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                           error={datasetError}
                           loading={datasetImporting}
                           tooltip={infoTooltip}
+                          size="default"
                           onClick={() => !datasetError && onInfoClick(dataset)}
                         />
                       )}
