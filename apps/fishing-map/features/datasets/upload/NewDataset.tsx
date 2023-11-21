@@ -268,6 +268,9 @@ function NewDataset(): React.ReactElement {
         const { payload, error: createDatasetError } = await dispatchUpsertDataset({
           dataset: {
             ...dataset,
+            fieldsAllowed: dataset.configuration?.configurationUI?.filter
+              ? ([dataset.configuration?.configurationUI?.filter] as string[])
+              : [],
             unit: 'TBD',
             subcategory: 'info',
           },
