@@ -53,7 +53,7 @@ function NewTrackDataset({
       category: DatasetCategory.Environment,
       schema,
       configuration: {
-        consfigurationUI: {
+        configurationUI: {
           latitude: guessedColumns.latitude,
           longitude: guessedColumns.longitude,
           timestamp: guessedColumns.timestamp,
@@ -98,12 +98,12 @@ function NewTrackDataset({
   const onConfirmClick = useCallback(() => {
     let file: File | undefined
     if (datasetMetadata) {
+      const config = {
+        ...datasetMetadata?.configuration,
+        ...datasetMetadata?.configuration?.configurationUI,
+      } as DatasetConfiguration
       if (fileData) {
-        if (
-          !datasetMetadata.configuration?.latitude ||
-          !datasetMetadata.configuration?.longitude ||
-          !datasetMetadata.configuration?.timestamp
-        ) {
+        if (!config?.latitude || !config?.longitude || !config?.timestamp) {
           const fields = ['latitude', 'longitude', 'timestamp'].map((f) =>
             t(`common.${f}` as any, f)
           )
@@ -116,7 +116,7 @@ function NewTrackDataset({
         } else {
           const errors = checkRecordValidity({
             record: (fileData as CSV)[0],
-            ...datasetMetadata.configuration,
+            ...config,
           } as any)
           if (errors.length) {
             const fields = errors.map((error) => t(`common.${error}` as any, error)).join(',')
@@ -130,7 +130,7 @@ function NewTrackDataset({
             console.log('FILE DATA', fileData)
             const segments = csvToTrackSegments({
               records: fileData as CSV,
-              ...(datasetMetadata.configuration as any),
+              ...(config as any),
             })
             const geoJSON = segmentsToGeoJSON(segments)
             file = getFileFromGeojson(geoJSON)
@@ -173,8 +173,11 @@ function NewTrackDataset({
 
   const selectedOption = useCallback(
     (option: string): SelectOption => ({
-      label: datasetMetadata?.configuration?.[option] as string,
-      id: datasetMetadata?.configuration?.[option],
+      label: (datasetMetadata?.configuration?.configurationUI?.[option] ||
+        datasetMetadata?.configuration?.[option]) as string,
+      id:
+        datasetMetadata?.configuration?.configurationUI?.[option] ||
+        datasetMetadata?.configuration?.configurationUI?.[option],
     }),
     [datasetMetadata]
   )
@@ -278,9 +281,9 @@ function NewTrackDataset({
           label={t('dataset.trackSegmentId', 'track filter property')}
           placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
-          selectedOption={selectedOption('idProperty')}
+          selectedOption={selectedOption('filter')}
           onSelect={(selected) => {
-            onDatasetConfigurationChange({ idProperty: selected.id })
+            onDatasetConfigurationChange({ filter: selected.id })
           }}
         />
       </Collapsable>
