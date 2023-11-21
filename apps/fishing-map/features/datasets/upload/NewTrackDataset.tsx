@@ -75,6 +75,7 @@ function NewTrackDataset({
         ...meta,
         id: dataset.id,
         name: dataset.name,
+        description: dataset.description,
         public: true,
         type: DatasetTypes.UserTracks,
         category: DatasetCategory.Environment,
@@ -156,9 +157,11 @@ function NewTrackDataset({
 
   return (
     <div className={styles.container}>
-      <div className={styles.file}>
-        <FileDropzone label={file?.name} fileTypes={['csv']} onFileLoaded={onFileUpdate} />
-      </div>
+      {!dataset && (
+        <div className={styles.file}>
+          <FileDropzone label={file?.name} fileTypes={['csv']} onFileLoaded={onFileUpdate} />
+        </div>
+      )}
       <div className={styles.content}>
         <InputText
           value={datasetMetadata?.name}
@@ -172,7 +175,7 @@ function NewTrackDataset({
         label={t('dataset.optionalFields', 'Optional fields')}
       >
         <InputText
-          value={datasetMetadata?.name}
+          value={datasetMetadata?.description}
           label={t('dataset.description', 'Dataset description')}
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
