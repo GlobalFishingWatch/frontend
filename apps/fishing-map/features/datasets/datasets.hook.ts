@@ -20,6 +20,7 @@ import {
   DatasetUploadConfig,
   selectDatasetUploadModalId,
   selectDatasetUploadModalOpen,
+  selectDatasetUploadModalStyle,
   selectDatasetUploadModalType,
   setDatasetUploadConfig,
   setModalOpen,
@@ -77,10 +78,28 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
   return { addDataviewFromDatasetToWorkspace }
 }
 
-export const useDatasetModalConnect = () => {
+export const useDatasetModalOpenConnect = () => {
+  const dispatch = useAppDispatch()
+  const datasetModalOpen = useSelector(selectDatasetUploadModalOpen)
+
+  const dispatchDatasetModalOpen = useCallback(
+    (open: boolean) => {
+      dispatch(setModalOpen({ id: 'datasetUpload', open }))
+    },
+    [dispatch]
+  )
+
+  return {
+    datasetModalOpen,
+    dispatchDatasetModalOpen,
+  }
+}
+
+export const useDatasetModalConfigConnect = () => {
   const dispatch = useAppDispatch()
   const datasetModalId = useSelector(selectDatasetUploadModalId)
   const datasetModalType = useSelector(selectDatasetUploadModalType)
+  const datasetModalStyle = useSelector(selectDatasetUploadModalStyle)
   const datasetModalOpen = useSelector(selectDatasetUploadModalOpen)
 
   const dispatchDatasetModalOpen = useCallback(
@@ -100,6 +119,7 @@ export const useDatasetModalConnect = () => {
   return {
     datasetModalId,
     datasetModalType,
+    datasetModalStyle,
     datasetModalOpen,
     dispatchDatasetModalOpen,
     dispatchDatasetModalConfig,
@@ -207,7 +227,7 @@ export const useAutoRefreshImportingDataset = (
 }
 
 export const useAddDataset = ({ onSelect }: NewDatasetProps) => {
-  const { dispatchDatasetModalOpen } = useDatasetModalConnect()
+  const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   return () => {
     trackEvent({
       category: TrackCategory.ReferenceLayer,

@@ -6,7 +6,7 @@ import { ReactComponent as Polygons } from 'assets/icons/dataset-type-polygons.s
 import { ReactComponent as Tracks } from 'assets/icons/dataset-type-tracks.svg'
 import { ReactComponent as Points } from 'assets/icons/dataset-type-points.svg'
 import { getFilesAcceptedByMime } from 'utils/files'
-import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
+import { useDatasetModalConfigConnect } from 'features/datasets/datasets.hook'
 import { DatasetGeometryTypesSupported, getFileTypes } from '../datasets.utils'
 import styles from './DatasetTypeSelect.module.css'
 
@@ -24,7 +24,7 @@ const DatasetType = ({
   onFileLoaded: (file: File) => void
 }) => {
   const { t } = useTranslation()
-  const { dispatchDatasetModalConfig } = useDatasetModalConnect()
+  const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
 
   const onDropAccepted = useCallback(
     (files: File[]) => {

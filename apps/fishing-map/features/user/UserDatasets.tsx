@@ -5,7 +5,8 @@ import { Button, Spinner, IconButton, Modal, Icon } from '@globalfishingwatch/ui
 import { Dataset, DatasetGeometryType, DatasetStatus } from '@globalfishingwatch/api-types'
 import {
   getDataviewInstanceByDataset,
-  useDatasetModalConnect,
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
 import { getDatasetTypeIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
@@ -34,7 +35,8 @@ function UserDatasets() {
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchDatasetModalOpen, dispatchDatasetModalConfig } = useDatasetModalConnect()
+  const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
+  const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
 
   const onNewDatasetClick = useCallback(async () => {
     batch(() => {

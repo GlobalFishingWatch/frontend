@@ -5,7 +5,11 @@ import { useSelector } from 'react-redux'
 import { InputText, Modal, Button } from '@globalfishingwatch/ui-components'
 import { Dataset, EnviromentalDatasetConfiguration } from '@globalfishingwatch/api-types'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { useDatasetsAPI, useDatasetModalConnect } from './datasets.hook'
+import {
+  useDatasetsAPI,
+  useDatasetModalOpenConnect,
+  useDatasetModalConfigConnect,
+} from './datasets.hook'
 import styles from './upload/NewDataset.module.css'
 import { selectDatasetById } from './datasets.slice'
 
@@ -40,7 +44,8 @@ const checkChanges = (metadata: EditDatasetMetadata | undefined, dataset: Datase
 
 function EditDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const { datasetModalId, datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalConnect()
+  const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
+  const { datasetModalId } = useDatasetModalConfigConnect()
   const dataset = useSelector(selectDatasetById(datasetModalId as string))
   const [loading, setLoading] = useState(false)
   const [metadata, setMetadata] = useState<EditDatasetMetadata | undefined>({

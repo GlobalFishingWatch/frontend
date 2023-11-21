@@ -13,8 +13,9 @@ import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import {
   useDatasetsAPI,
-  useDatasetModalConnect,
+  useDatasetModalOpenConnect,
   useAddDataviewFromDatasetToWorkspace,
+  useDatasetModalConfigConnect,
 } from '../datasets.hook'
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
@@ -46,13 +47,9 @@ interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
 
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
-  const {
-    datasetModalOpen,
-    datasetModalType,
-    datasetModalId,
-    dispatchDatasetModalOpen,
-    dispatchDatasetModalConfig,
-  } = useDatasetModalConnect()
+  const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
+  const { datasetModalType, datasetModalStyle, datasetModalId, dispatchDatasetModalConfig } =
+    useDatasetModalConfigConnect()
   const dataset = useSelector(selectDatasetById(datasetModalId as string))
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const [rawFile, setRawFile] = useState<File | undefined>()
