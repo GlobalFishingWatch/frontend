@@ -1,7 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { ParseMeta, parse as parseCSV } from 'papaparse'
-import { useCallback, useEffect, useState } from 'react'
-import { Button, Collapsable, InputText, Select } from '@globalfishingwatch/ui-components'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  Button,
+  Collapsable,
+  InputText,
+  Select,
+  SelectOption,
+} from '@globalfishingwatch/ui-components'
 import {
   DatasetCategory,
   DatasetConfiguration,
@@ -21,6 +27,7 @@ import FileDropzone from 'features/datasets/upload/FileDropzone'
 import styles from './NewDataset.module.css'
 
 export type CSV = Record<string, any>[]
+export type ExtractMetadataProps = { meta: ParseMeta; name: string }
 
 function NewTrackDataset({
   onConfirm,
@@ -33,15 +40,16 @@ function NewTrackDataset({
   const [fileData, setFileData] = useState<CSV | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
 
-  const extractMetadata = useCallback((meta: ParseMeta) => {
+  const extractMetadata = useCallback(({ meta, name }: ExtractMetadataProps) => {
     const guessedColumns = guessColumns(meta?.fields)
+    const fields = meta?.fields
     setDatasetMetadata((meta) => ({
       ...meta,
-      name: 'TODO',
+      name,
       public: true,
       type: DatasetTypes.UserTracks,
       category: DatasetCategory.Environment,
-      fields: meta?.fields,
+      fields,
       guessedFields: guessedColumns,
       configuration: {
         latitude: guessedColumns.latitude,
@@ -61,7 +69,7 @@ function NewTrackDataset({
         skipEmptyLines: true,
       })
       setFileData(data as CSV)
-      extractMetadata(meta)
+      extractMetadata({ meta, name: file.name })
     },
     [extractMetadata]
   )
@@ -122,6 +130,7 @@ function NewTrackDataset({
               })
             )
           } else {
+            console.log('FILE DATA', fileData)
             const segments = csvToTrackSegments({
               records: fileData as CSV,
               ...(datasetMetadata.configuration as any),
@@ -154,6 +163,19 @@ function NewTrackDataset({
     []
   )
 
+  const fieldsOptions: SelectOption[] = useMemo(
+    () => datasetMetadata?.fields?.map((field) => ({ id: field, label: field })) || [],
+    [datasetMetadata]
+  )
+
+  const selectedOption = useCallback(
+    (option: string): SelectOption => ({
+      label: datasetMetadata?.configuration?.[option] as string,
+      id: datasetMetadata?.configuration?.[option],
+    }),
+    [datasetMetadata]
+  )
+
   return (
     <div className={styles.container}>
       <div className={styles.file}>
@@ -166,6 +188,37 @@ function NewTrackDataset({
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
         />
+        <div className={styles.requiredDataContainer}>
+          <Select
+            label={t('dataset.trackSegmentId', 'latitude')}
+            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+            options={fieldsOptions}
+            selectedOption={selectedOption('latitude')}
+            onSelect={(selected) => {
+              onDatasetConfigurationChange({ latitude: selected.id })
+            }}
+          />
+          <Select
+            label={t('dataset.trackSegmentId', 'longitude')}
+            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+            options={fieldsOptions}
+            selectedOption={selectedOption('longitude')}
+            onSelect={(selected) => {
+              onDatasetConfigurationChange({ longitude: selected.id })
+            }}
+          />
+          <div className={styles.timestampSelectWrapper}>
+            <Select
+              label={t('dataset.trackSegmentTimes', 'Track segment times')}
+              placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+              options={fieldsOptions}
+              selectedOption={selectedOption('timestamp')}
+              onSelect={(selected) => {
+                onDatasetConfigurationChange({ timestamp: selected.id })
+              }}
+            />
+          </div>
+        </div>
       </div>
       <Collapsable
         className={styles.optional}
@@ -180,8 +233,8 @@ function NewTrackDataset({
         <Select
           label={t('dataset.trackSegmentId', 'Individual track segment id')}
           placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-          options={[{ id: 'TODO', label: 'TODO' }]}
-          selectedOption={undefined}
+          options={fieldsOptions}
+          selectedOption={selectedOption('idProperty')}
           onSelect={(selected) => {
             onDatasetConfigurationChange({ idProperty: selected.id })
           }}

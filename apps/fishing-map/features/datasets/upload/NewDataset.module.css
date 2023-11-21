@@ -5,6 +5,19 @@
   flex-direction: column;
 }
 
+.requiredDataContainer {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  width: 100%;
+  gap: var(--space-S);
+  padding-bottom: var(--space-M);
+}
+
+.timestampSelectWrapper {
+  flex-grow: 1;
+}
+
 .row {
   display: flex;
   position: relative;
