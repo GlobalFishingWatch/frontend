@@ -102,13 +102,6 @@ export const useDatasetModalConfigConnect = () => {
   const datasetModalStyle = useSelector(selectDatasetUploadModalStyle)
   const datasetModalOpen = useSelector(selectDatasetUploadModalOpen)
 
-  const dispatchDatasetModalOpen = useCallback(
-    (open: boolean) => {
-      dispatch(setModalOpen({ id: 'datasetUpload', open }))
-    },
-    [dispatch]
-  )
-
   const dispatchDatasetModalConfig = useCallback(
     (config: DatasetUploadConfig) => {
       dispatch(setDatasetUploadConfig(config))
@@ -121,7 +114,6 @@ export const useDatasetModalConfigConnect = () => {
     datasetModalType,
     datasetModalStyle,
     datasetModalOpen,
-    dispatchDatasetModalOpen,
     dispatchDatasetModalConfig,
   }
 }

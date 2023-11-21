@@ -55,7 +55,9 @@ const modals = createSlice({
       if (Object.keys(action.payload).includes('type')) {
         state.datasetUpload.type = action.payload.type
       }
-      state.datasetUpload.style = action.payload.style || 'default'
+      if (Object.keys(action.payload).includes('style')) {
+        state.datasetUpload.style = action.payload.style
+      }
     },
   },
 })
