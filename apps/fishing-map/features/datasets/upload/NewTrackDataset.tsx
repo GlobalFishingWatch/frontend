@@ -9,6 +9,7 @@ import {
   SelectOption,
 } from '@globalfishingwatch/ui-components'
 import {
+  Dataset,
   DatasetCategory,
   DatasetConfiguration,
   DatasetGeometryType,
@@ -24,10 +25,11 @@ import UserGuideLink from 'features/help/UserGuideLink'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
+import { getDatasetSchema } from '../datasets.utils'
 import styles from './NewDataset.module.css'
 
 export type CSV = Record<string, any>[]
-export type ExtractMetadataProps = { meta: ParseMeta; name: string }
+export type ExtractMetadataProps = { meta: ParseMeta; data: CSV; name: string }
 
 function NewTrackDataset({
   onConfirm,
@@ -40,17 +42,16 @@ function NewTrackDataset({
   const [fileData, setFileData] = useState<CSV | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
 
-  const extractMetadata = useCallback(({ meta, name }: ExtractMetadataProps) => {
+  const extractMetadata = useCallback(({ meta, data, name }: ExtractMetadataProps) => {
     const guessedColumns = guessColumns(meta?.fields)
-    const fields = meta?.fields
+    const schema: Dataset['schema'] = getDatasetSchema({ data, meta })
     setDatasetMetadata((meta) => ({
       ...meta,
       name,
       public: true,
       type: DatasetTypes.UserTracks,
       category: DatasetCategory.Environment,
-      fields,
-      guessedFields: guessedColumns,
+      schema,
       configuration: {
         latitude: guessedColumns.latitude,
         longitude: guessedColumns.longitude,
@@ -69,7 +70,7 @@ function NewTrackDataset({
         skipEmptyLines: true,
       })
       setFileData(data as CSV)
-      extractMetadata({ meta, name: file.name })
+      extractMetadata({ meta, data: data as CSV, name: file.name })
     },
     [extractMetadata]
   )
@@ -78,23 +79,21 @@ function NewTrackDataset({
     if (file) {
       updateFileData(file)
     } else if (dataset) {
-      console.log('TODO', dataset)
-      setDatasetMetadata((meta) => ({
-        ...meta,
+      setDatasetMetadata({
         id: dataset.id,
         name: dataset.name,
         public: true,
         type: DatasetTypes.UserTracks,
         category: DatasetCategory.Environment,
-        fields: meta?.fields,
+        schema: dataset.schema,
         configuration: {
+          ...dataset.configuration,
           latitude: dataset?.configuration?.latitude,
           longitude: dataset?.configuration?.longitude,
           timestamp: dataset?.configuration?.timestamp,
           geometryType: 'tracks' as DatasetGeometryType,
         } as DatasetConfiguration,
-      }))
-      // setDatasetMetadata(dataset)
+      })
     }
   }, [dataset, file, updateFileData])
 
@@ -164,7 +163,10 @@ function NewTrackDataset({
   )
 
   const fieldsOptions: SelectOption[] = useMemo(
-    () => datasetMetadata?.fields?.map((field) => ({ id: field, label: field })) || [],
+    () =>
+      (datasetMetadata?.schema &&
+        Object.keys(datasetMetadata.schema).map((field) => ({ id: field, label: field }))) ||
+      [],
     [datasetMetadata]
   )
 
