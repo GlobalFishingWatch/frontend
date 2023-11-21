@@ -20,6 +20,11 @@
   width: 33%;
 }
 
+.geometryTypeContainer.transparent {
+  border-color: var(--color-white);
+  background-color: transparent;
+}
+
 .textContainer {
   padding-top: var(--space-M);
 }
@@ -38,4 +43,9 @@
 .description {
   color: var(--color-primary-blue);
   text-align: center;
+}
+
+.title.transparent,
+.description.transparent {
+  color: var(--color-white);
 }

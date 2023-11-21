@@ -5,9 +5,11 @@ import { DatasetGeometryType, DataviewCategory } from '@globalfishingwatch/api-t
 export type ModalId = 'feedback' | 'screenshot' | 'layerLibrary' | 'datasetUpload'
 
 export type LayerLibraryMode = DataviewCategory | false
+export type DatasetUploadStyle = 'default' | 'transparent'
 export type DatasetUploadConfig = {
   id?: string
   type?: DatasetGeometryType
+  style?: DatasetUploadStyle
 }
 
 export type ModalsOpenState = {
@@ -25,6 +27,7 @@ const initialState: ModalsOpenState = {
     open: false,
     id: undefined,
     type: undefined,
+    style: 'default',
   },
 }
 
@@ -52,6 +55,7 @@ const modals = createSlice({
       if (Object.keys(action.payload).includes('type')) {
         state.datasetUpload.type = action.payload.type
       }
+      state.datasetUpload.style = action.payload.style || 'default'
     },
   },
 })
@@ -63,6 +67,7 @@ export const selectLayerLibraryModal = (state: RootState) => state.modals.layerL
 export const selectLayerLibraryModalOpen = (state: RootState) => state.modals.layerLibrary !== false
 export const selectDatasetUploadModalId = (state: RootState) => state.modals.datasetUpload?.id
 export const selectDatasetUploadModalType = (state: RootState) => state.modals.datasetUpload?.type
+export const selectDatasetUploadModalStyle = (state: RootState) => state.modals.datasetUpload?.style
 export const selectDatasetUploadModalOpen = (state: RootState) => state.modals.datasetUpload?.open
 export const selectScreenshotModalOpen = (state: RootState) => state.modals.screenshot
 

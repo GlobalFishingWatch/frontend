@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import cx from 'classnames'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -11,6 +12,7 @@ import NewPolygonDataset from 'features/datasets/upload/NewPolygonDataset'
 import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
 import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
+import { DatasetUploadStyle } from 'features/modals/modals.slice'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -24,6 +26,7 @@ import styles from './NewDataset.module.css'
 export type NewDatasetProps = {
   file?: File
   dataset?: Dataset
+  style?: DatasetUploadStyle
   onFileUpdate: (file: File) => void
   onConfirm: (datasetMetadata: DatasetMetadata, file?: File) => void
 }
@@ -325,13 +328,19 @@ function NewDataset(): React.ReactElement {
       }
       isOpen={datasetModalOpen}
       contentClassName={styles.modalContainer}
+      header={datasetModalStyle !== 'transparent'}
+      className={
+        datasetModalStyle === 'transparent'
+          ? cx(styles.largeModal, styles.transparentOverlay)
+          : undefined
+      }
       onClose={onClose}
     >
       <div className={styles.modalContent}>
         {datasetModalType && (rawFile || dataset) ? (
           getDatasetComponentByType(datasetModalType)
         ) : (
-          <DatasetTypeSelect onFileLoaded={onFileLoaded} />
+          <DatasetTypeSelect style={datasetModalStyle} onFileLoaded={onFileLoaded} />
         )}
       </div>
     </Modal>

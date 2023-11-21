@@ -1,3 +1,12 @@
+.largeModal {
+  max-width: 75%;
+}
+
+.transparentOverlay {
+  background: none;
+  background-color: transparent;
+}
+
 .container {
   display: flex;
   flex: 1;
