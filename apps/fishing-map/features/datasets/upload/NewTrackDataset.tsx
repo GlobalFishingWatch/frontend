@@ -242,6 +242,47 @@ function NewTrackDataset({
             onDatasetConfigurationChange({ idProperty: selected.id })
           }}
         />
+        {/* <section className={styles.trackTimestampFiltersContainer}>
+          <p className={styles.label}>Track Time Filter</p>
+          <div className={styles.trackTimestampSelectors}>
+            <Select
+              placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+              options={[
+                { id: 'timerange', label: 'timerange' },
+                { id: 'timestamp', label: 'timestamp' },
+              ]}
+              selectedOption={undefined}
+              onSelect={(selected) => {
+                onDatasetConfigurationChange({ idProperty: selected.id })
+              }}
+            />
+            <Select
+              placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+              options={fieldsOptions}
+              selectedOption={selectedOption('idProperty')}
+              onSelect={(selected) => {
+                onDatasetConfigurationChange({ idProperty: selected.id })
+              }}
+            />
+            <Select
+              placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+              options={fieldsOptions}
+              selectedOption={selectedOption('idProperty')}
+              onSelect={(selected) => {
+                onDatasetConfigurationChange({ idProperty: selected.id })
+              }}
+            />
+          </div>
+        </section> */}
+        <Select
+          label={t('dataset.trackSegmentId', 'track filter property')}
+          placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+          options={fieldsOptions}
+          selectedOption={selectedOption('idProperty')}
+          onSelect={(selected) => {
+            onDatasetConfigurationChange({ idProperty: selected.id })
+          }}
+        />
       </Collapsable>
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
