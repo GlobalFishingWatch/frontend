@@ -1,25 +1,17 @@
-import { useState, useCallback, useMemo } from 'react'
-import { featureCollection, point } from '@turf/helpers'
+import { useState, useCallback } from 'react'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
-import { lowerCase } from 'lodash'
 import { useSelector } from 'react-redux'
-import { parse as parseCSV } from 'papaparse'
-import { Feature } from 'geojson'
 import { Modal } from '@globalfishingwatch/ui-components'
 import {
   AnyDatasetConfiguration,
   Dataset,
   DatasetCategory,
-  DatasetConfiguration,
   DatasetGeometryType,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
-import { guessColumn } from '@globalfishingwatch/data-transforms'
-import { capitalize } from 'utils/shared'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
-import { readBlobAs } from 'utils/files'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import NewPolygonDataset from 'features/datasets/upload/NewPolygonDataset'
 import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
@@ -49,7 +41,6 @@ export type DatasetMetadata = {
   type: DatasetTypes
   configuration?: AnyDatasetConfiguration
   fields?: string[]
-  guessedFields?: Record<string, string>
 }
 
 const datasetCategory = DatasetCategory.Context
@@ -281,7 +272,7 @@ function NewDataset(): React.ReactElement {
   const onConfirmClick = useCallback(
     async (dataset: DatasetMetadata, datasetFile?: File) => {
       if (dataset) {
-        const { fields, guessedFields, ...meta } = dataset as DatasetMetadata
+        const { fields, ...meta } = dataset as DatasetMetadata
         const { payload, error: createDatasetError } = await dispatchUpsertDataset({
           dataset: {
             ...meta,

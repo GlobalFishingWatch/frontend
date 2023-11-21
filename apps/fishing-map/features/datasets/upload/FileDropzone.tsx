@@ -21,12 +21,18 @@ const IconsByType: Record<string, any> = {
 }
 
 interface FileDropzoneProps {
+  label?: string
   fileTypes: FileType[]
   className?: string
   onFileLoaded: (fileInfo: File, type?: DatasetGeometryType) => void
 }
 
-const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileLoaded, fileTypes, className = '' }) => {
+const FileDropzone: React.FC<FileDropzoneProps> = ({
+  onFileLoaded,
+  fileTypes,
+  className = '',
+  label,
+}) => {
   const fileTypesConfigs = fileTypes.map((fileType) => FILE_TYPES_CONFIG[fileType])
   const filesAcceptedExtensions = fileTypesConfigs.flatMap(({ files }) => files as MimeExtention[])
   const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)
@@ -47,7 +53,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileLoaded, fileTypes, cl
     <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
       <div className={styles.icons}>{fileTypesConfigs.map(({ icon }) => IconsByType[icon])}</div>
       <input {...getInputProps()} />
-      {acceptedFiles.length ? (
+      {label ? (
+        label
+      ) : acceptedFiles.length ? (
         <p className={styles.fileText}>
           {t('dataset.file', 'File')}: {acceptedFiles[0].name}
         </p>

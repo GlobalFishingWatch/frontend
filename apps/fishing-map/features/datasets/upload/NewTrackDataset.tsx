@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { ParseMeta, parse as parseCSV } from 'papaparse'
 import { useCallback, useEffect, useState } from 'react'
-import { Button, InputText } from '@globalfishingwatch/ui-components'
+import { Button, Collapsable, InputText, Select } from '@globalfishingwatch/ui-components'
 import {
   DatasetCategory,
   DatasetConfiguration,
@@ -138,13 +138,26 @@ function NewTrackDataset({
   }, [datasetMetadata, fileData, onConfirm, t])
 
   const onDatasetFieldChange = useCallback((newFields: Partial<DatasetMetadata>) => {
-    setDatasetMetadata((meta) => ({ ...meta, ...newFields }))
+    setDatasetMetadata((meta) => ({ ...meta, ...(newFields as DatasetMetadata) }))
   }, [])
 
+  const onDatasetConfigurationChange = useCallback(
+    (newConfig: Partial<DatasetMetadata['configuration']>) => {
+      setDatasetMetadata((meta) => ({
+        ...(meta as DatasetMetadata),
+        configuration: {
+          ...meta?.configuration,
+          ...(newConfig as DatasetMetadata['configuration']),
+        },
+      }))
+    },
+    []
+  )
+
   return (
-    <div>
+    <div className={styles.container}>
       <div className={styles.file}>
-        <FileDropzone fileTypes={['csv']} onFileLoaded={onFileUpdate} />
+        <FileDropzone label={file?.name} fileTypes={['csv']} onFileLoaded={onFileUpdate} />
       </div>
       <div className={styles.content}>
         <InputText
@@ -154,6 +167,26 @@ function NewTrackDataset({
           onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
         />
       </div>
+      <Collapsable
+        className={styles.optional}
+        label={t('dataset.optionalFields', 'Optional fields')}
+      >
+        <InputText
+          value={datasetMetadata?.name}
+          label={t('dataset.description', 'Dataset description')}
+          className={styles.input}
+          onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
+        />
+        <Select
+          label={t('dataset.trackSegmentId', 'Individual track segment id')}
+          placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+          options={[{ id: 'TODO', label: 'TODO' }]}
+          selectedOption={undefined}
+          onSelect={(selected) => {
+            onDatasetConfigurationChange({ idProperty: selected.id })
+          }}
+        />
+      </Collapsable>
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}

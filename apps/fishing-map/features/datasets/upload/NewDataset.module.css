@@ -1,5 +1,6 @@
 .container {
   display: flex;
+  flex: 1;
   height: 100%;
   flex-direction: column;
 }
@@ -17,32 +18,8 @@
   flex: 1;
 }
 
-.shortInput {
-  width: var(--size-L);
-  margin-left: var(--space-S);
-  margin-right: var(--space-S);
-}
-
-.mediumInput {
-  width: 10rem;
-  margin-left: var(--space-S);
-  margin-right: var(--space-S);
-}
-
-.noLabelInput {
-  margin-top: auto;
-  margin-bottom: 0;
-}
-
-.selectLabel {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.selectShort {
-  margin-top: 2.5rem;
-  margin-right: 1rem;
+.optional {
+  margin-bottom: var(--space-M);
 }
 
 .modalFooter {
