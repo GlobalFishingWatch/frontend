@@ -1,5 +1,6 @@
 import { intersection, lowerCase, uniq } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
+import { ParseMeta } from 'papaparse'
 import {
   Dataset,
   DatasetCategory,
@@ -34,6 +35,7 @@ import { getLayerDatasetRange } from 'features/workspace/environmental/Histogram
 import { getVesselGearType } from 'utils/info'
 import { VESSEL_INSTANCE_DATASETS } from 'features/dataviews/dataviews.utils'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
+import type { CSV } from './upload/NewTrackDataset'
 
 export type SupportedDatasetSchema =
   | SupportedActivityDatasetSchema
@@ -391,6 +393,24 @@ export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
     const hasVesselId = datasetsConfigured?.includes(dataset.id)
     return isEventType && hasVesselId
   })
+}
+
+export type DatasetSchemaGeneratorProps = {
+  data: CSV
+  meta: ParseMeta
+}
+export const getDatasetSchema = ({ data, meta }: DatasetSchemaGeneratorProps) => {
+  const fields = meta?.fields
+  const schema =
+    fields &&
+    (fields.reduce((acc: Dataset['schema'], field: string): Dataset['schema'] => {
+      const dataWithValue = data.find((d: any) => d[field]) || {}
+      return {
+        ...acc,
+        [field]: { type: typeof dataWithValue[field] } as DatasetSchemaItem,
+      }
+    }, {}) as Dataset['schema'])
+  return schema
 }
 
 export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boolean) => {
