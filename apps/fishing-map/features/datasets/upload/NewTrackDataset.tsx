@@ -53,10 +53,12 @@ function NewTrackDataset({
       category: DatasetCategory.Environment,
       schema,
       configuration: {
-        latitude: guessedColumns.latitude,
-        longitude: guessedColumns.longitude,
-        timestamp: guessedColumns.timestamp,
-        geometryType: 'tracks' as DatasetGeometryType,
+        consfigurationUI: {
+          latitude: guessedColumns.latitude,
+          longitude: guessedColumns.longitude,
+          timestamp: guessedColumns.timestamp,
+          geometryType: 'tracks' as DatasetGeometryType,
+        },
       } as DatasetConfiguration,
     }))
   }, [])
@@ -88,10 +90,6 @@ function NewTrackDataset({
         schema: dataset.schema,
         configuration: {
           ...dataset.configuration,
-          latitude: dataset?.configuration?.latitude,
-          longitude: dataset?.configuration?.longitude,
-          timestamp: dataset?.configuration?.timestamp,
-          geometryType: 'tracks' as DatasetGeometryType,
         } as DatasetConfiguration,
       })
     }
@@ -155,7 +153,10 @@ function NewTrackDataset({
         ...(meta as DatasetMetadata),
         configuration: {
           ...meta?.configuration,
-          ...(newConfig as DatasetMetadata['configuration']),
+          configurationUI: {
+            ...meta?.configuration?.configurationUI,
+            ...(newConfig as DatasetMetadata['configuration']),
+          },
         },
       }))
     },
