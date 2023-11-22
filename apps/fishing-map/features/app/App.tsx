@@ -51,6 +51,7 @@ import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/help/hints.slice'
 import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
+import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectReportAreaBounds, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -122,6 +123,7 @@ const setMobileSafeVH = () => {
 
 function App() {
   useAnalytics()
+  useDatasetDrag()
   useReplaceLoginUrl()
   const map = useMapInstance()
   const dispatch = useAppDispatch()

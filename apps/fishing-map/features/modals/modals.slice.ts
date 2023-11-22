@@ -5,9 +5,12 @@ import { DatasetGeometryType, DataviewCategory } from '@globalfishingwatch/api-t
 export type ModalId = 'feedback' | 'screenshot' | 'layerLibrary' | 'datasetUpload'
 
 export type LayerLibraryMode = DataviewCategory | false
+export type DatasetUploadStyle = 'default' | 'transparent'
 export type DatasetUploadConfig = {
   id?: string
   type?: DatasetGeometryType
+  style?: DatasetUploadStyle
+  fileRejected?: boolean
 }
 
 export type ModalsOpenState = {
@@ -25,6 +28,8 @@ const initialState: ModalsOpenState = {
     open: false,
     id: undefined,
     type: undefined,
+    fileRejected: false,
+    style: 'default',
   },
 }
 
@@ -46,12 +51,7 @@ const modals = createSlice({
       }
     },
     setDatasetUploadConfig: (state, action: PayloadAction<DatasetUploadConfig>) => {
-      if (Object.keys(action.payload).includes('id')) {
-        state.datasetUpload.id = action.payload.id
-      }
-      if (Object.keys(action.payload).includes('type')) {
-        state.datasetUpload.type = action.payload.type
-      }
+      state.datasetUpload = { ...state.datasetUpload, ...action.payload }
     },
   },
 })
@@ -61,8 +61,7 @@ export const { setModalOpen, setDatasetUploadConfig } = modals.actions
 export const selectFeedbackModalOpen = (state: RootState) => state.modals.feedback
 export const selectLayerLibraryModal = (state: RootState) => state.modals.layerLibrary
 export const selectLayerLibraryModalOpen = (state: RootState) => state.modals.layerLibrary !== false
-export const selectDatasetUploadModalId = (state: RootState) => state.modals.datasetUpload?.id
-export const selectDatasetUploadModalType = (state: RootState) => state.modals.datasetUpload?.type
+export const selectDatasetUploadModalConfig = (state: RootState) => state.modals.datasetUpload
 export const selectDatasetUploadModalOpen = (state: RootState) => state.modals.datasetUpload?.open
 export const selectScreenshotModalOpen = (state: RootState) => state.modals.screenshot
 

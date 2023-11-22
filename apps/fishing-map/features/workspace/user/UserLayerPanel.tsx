@@ -16,7 +16,8 @@ import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   useAutoRefreshImportingDataset,
-  useDatasetModalConnect,
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
 import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
@@ -49,7 +50,8 @@ type UserPanelProps = {
 function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { dispatchDatasetModalOpen, dispatchDatasetModalConfig } = useDatasetModalConnect()
+  const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
+  const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
   const { dispatchSetMapDrawing, dispatchSetMapDrawEditDataset } = useMapDrawConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
