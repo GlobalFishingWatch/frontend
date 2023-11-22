@@ -1,5 +1,4 @@
-import { useState, useCallback } from 'react'
-import cx from 'classnames'
+import { useState, useCallback, Fragment } from 'react'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -329,20 +328,30 @@ function NewDataset(): React.ReactElement {
       isOpen={datasetModalOpen}
       contentClassName={styles.modalContainer}
       header={datasetModalStyle !== 'transparent'}
-      className={
-        datasetModalStyle === 'transparent'
-          ? cx(styles.largeModal, styles.transparentOverlay)
-          : undefined
-      }
+      className={datasetModalStyle === 'transparent' ? styles.transparentOverlay : undefined}
+      fullScreen={datasetModalStyle === 'transparent'}
       onClose={onClose}
     >
-      <div className={styles.modalContent}>
-        {datasetModalType && (rawFile || dataset) ? (
-          getDatasetComponentByType(datasetModalType)
-        ) : (
-          <DatasetTypeSelect style={datasetModalStyle} onFileLoaded={onFileLoaded} />
-        )}
-      </div>
+      {datasetModalType && (rawFile || dataset) ? (
+        <div className={styles.modalContent}>{getDatasetComponentByType(datasetModalType)}</div>
+      ) : (
+        <Fragment>
+          <p className={styles.instructions}>
+            {datasetModalStyle !== 'transparent'
+              ? t(
+                  'dataset.dragAndDropFileToCreateDataset',
+                  'Drag and drop a file in one of the boxes or click on them to upload your dataset'
+                )
+              : t(
+                  'dataset.dropFileToCreateDataset',
+                  'Drop your file in one of the boxes to upload your dataset'
+                )}
+          </p>
+          <div className={styles.modalContent}>
+            <DatasetTypeSelect style={datasetModalStyle} onFileLoaded={onFileLoaded} />
+          </div>
+        </Fragment>
+      )}
     </Modal>
   )
 }

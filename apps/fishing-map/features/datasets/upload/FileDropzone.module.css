@@ -1,18 +1,18 @@
 .dropFiles {
   flex: 1;
-  margin-right: var(--space-S);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: var(--space-M);
+  padding-bottom: var(--space-S);
   text-align: center;
   background: var(--color-terthiary-blue);
   border: 0.2rem dotted var(--color-secondary-blue);
   color: var(--color-secondary-blue);
   font: var(--font-S);
   border-radius: 3px;
-  margin-bottom: var(--space-L);
+  margin-bottom: var(--space-M);
   cursor: pointer;
 }
 
@@ -23,7 +23,7 @@
 .fileText {
   line-height: 1.2;
   margin-top: var(--space-S);
-  max-width: 30rem;
+  max-width: 100%;
 }
 
 .warning {

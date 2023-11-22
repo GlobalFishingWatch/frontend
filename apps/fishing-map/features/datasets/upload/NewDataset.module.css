@@ -1,10 +1,17 @@
-.largeModal {
-  max-width: 75%;
-}
-
 .transparentOverlay {
   background: none;
   background-color: transparent;
+}
+
+.instructions {
+  color: var(--color-secondary-blue);
+  margin-bottom: var(--space-S);
+}
+
+.transparentOverlay .instructions {
+  color: var(--color-white);
+  text-align: center;
+  margin-bottom: var(--space-M);
 }
 
 .container {
@@ -87,11 +94,6 @@
 
 .saveBtn {
   min-width: 15rem;
-}
-
-.hint {
-  color: var(--color-secondary-blue);
-  text-decoration: underline;
 }
 
 .errorMsg {

@@ -2,7 +2,7 @@ import { ReactComponentElement, useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDropzone } from 'react-dropzone'
-import { ReactComponent as Polygons } from 'assets/icons/dataset-type-polygons.svg'
+import { ReactComponent as Polygons } from 'assets/icons/dataset-type-polygons-lines.svg'
 import { ReactComponent as Tracks } from 'assets/icons/dataset-type-tracks.svg'
 import { ReactComponent as Points } from 'assets/icons/dataset-type-points.svg'
 import { getFilesAcceptedByMime } from 'utils/files'
@@ -51,17 +51,19 @@ const DatasetType = ({
       {icon}
       <input {...getInputProps()} />
       {acceptedFiles.length ? (
-        <p className={styles.fileText}>
+        <p>
           {t('dataset.file', 'File')}: {acceptedFiles[0].name}
         </p>
       ) : isDragActive ? (
-        <p className={styles.fileText}>{t('dataset.dragActive', 'Drop the file here ...')}</p>
+        <div className={styles.textContainer}>
+          <p>{t('dataset.dragActive', 'Drop the file here ...')}</p>
+        </div>
       ) : (
         <div className={styles.textContainer}>
-          <p className={cx(styles.title, styles[style])}>{title}</p>
-          <p className={cx(styles.description, styles[style])}>{description}</p>
-          <div className={cx(styles.textContainer, styles[style])}>
-            <p className={cx(styles.description, styles[style])}>{fileTypes.join(',')}</p>
+          <p className={styles.title}>{title}</p>
+          <p className={styles.description}>{description}</p>
+          <div className={styles.textContainer}>
+            <p className={styles.description}>{fileTypes.join(',')}</p>
           </div>
         </div>
       )}

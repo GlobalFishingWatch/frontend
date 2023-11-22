@@ -212,6 +212,8 @@
     "confirmRemove": "Are you sure you want to permanently delete this dataset?",
     "dragActive": "Drop the file here ...",
     "dragFileFormatsPlaceholder": "Drag and drop a {{formats}} here or click to select it",
+    "dragAndDropFileToCreateDataset": "Drag and drop a file in one of the boxes or click on them to upload your dataset",
+    "dropFileToCreateDataset": "Drop your file in one of the boxes to upload your dataset",
     "edit": "Edit dataset",
     "emptyFilters": "No filters available",
     "emptyState": "Your datasets will appear here",
