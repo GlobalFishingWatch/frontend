@@ -25,7 +25,7 @@ import UserGuideLink from 'features/help/UserGuideLink'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
-import { getDatasetSchema } from '../datasets.utils'
+import { getDatasetSchemaFromCSV } from './upload.utils'
 import styles from './NewDataset.module.css'
 
 export type CSV = Record<string, any>[]
@@ -44,7 +44,7 @@ function NewTrackDataset({
 
   const extractMetadata = useCallback(({ meta, data, name }: ExtractMetadataProps) => {
     const guessedColumns = guessColumns(meta?.fields)
-    const schema: Dataset['schema'] = getDatasetSchema({ data, meta })
+    const schema: Dataset['schema'] = getDatasetSchemaFromCSV({ data, meta })
     setDatasetMetadata((meta) => ({
       ...meta,
       name,
