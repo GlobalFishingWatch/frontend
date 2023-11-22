@@ -1,7 +1,7 @@
 import { ReactComponentElement, useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useDropzone } from 'react-dropzone'
+import { FileRejection, useDropzone } from 'react-dropzone'
 import { ReactComponent as Polygons } from 'assets/icons/dataset-type-polygons-lines.svg'
 import { ReactComponent as Tracks } from 'assets/icons/dataset-type-tracks.svg'
 import { ReactComponent as Points } from 'assets/icons/dataset-type-points.svg'
@@ -32,9 +32,16 @@ const DatasetType = ({
   const onDropAccepted = useCallback(
     (files: File[]) => {
       onFileLoaded(files[0])
-      dispatchDatasetModalConfig({ type })
+      dispatchDatasetModalConfig({ type, fileRejected: false })
     },
     [dispatchDatasetModalConfig, type, onFileLoaded]
+  )
+  const onDropRejected = useCallback(
+    (files: FileRejection[]) => {
+      console.log('🚀 ~ files:', files)
+      dispatchDatasetModalConfig({ fileRejected: true })
+    },
+    [dispatchDatasetModalConfig]
   )
 
   const fileTypes = getFileTypes(type)
@@ -43,6 +50,7 @@ const DatasetType = ({
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
     accept: fileAcceptedByMime,
     onDropAccepted,
+    onDropRejected,
   })
 
   // TODO handle not supported files in fileRejections
@@ -62,8 +70,15 @@ const DatasetType = ({
         <div className={styles.textContainer}>
           <p className={styles.title}>{title}</p>
           <p className={styles.description}>{description}</p>
+
           <div className={styles.textContainer}>
-            <p className={styles.description}>{fileTypes.join(',')}</p>
+            {fileRejections.length > 0 ? (
+              <p className={cx(styles.description, styles.error)}>
+                {fileRejections[0].errors[0]?.message}
+              </p>
+            ) : (
+              <p className={styles.description}>{fileTypes.join(',')}</p>
+            )}
           </div>
         </div>
       )}

@@ -18,10 +18,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   DatasetUploadConfig,
-  selectDatasetUploadModalId,
+  selectDatasetUploadModalConfig,
   selectDatasetUploadModalOpen,
-  selectDatasetUploadModalStyle,
-  selectDatasetUploadModalType,
   setDatasetUploadConfig,
   setModalOpen,
 } from 'features/modals/modals.slice'
@@ -97,10 +95,7 @@ export const useDatasetModalOpenConnect = () => {
 
 export const useDatasetModalConfigConnect = () => {
   const dispatch = useAppDispatch()
-  const datasetModalId = useSelector(selectDatasetUploadModalId)
-  const datasetModalType = useSelector(selectDatasetUploadModalType)
-  const datasetModalStyle = useSelector(selectDatasetUploadModalStyle)
-  const datasetModalOpen = useSelector(selectDatasetUploadModalOpen)
+  const datasetModal = useSelector(selectDatasetUploadModalConfig)
 
   const dispatchDatasetModalConfig = useCallback(
     (config: DatasetUploadConfig) => {
@@ -110,10 +105,7 @@ export const useDatasetModalConfigConnect = () => {
   )
 
   return {
-    datasetModalId,
-    datasetModalType,
-    datasetModalStyle,
-    datasetModalOpen,
+    ...datasetModal,
     dispatchDatasetModalConfig,
   }
 }

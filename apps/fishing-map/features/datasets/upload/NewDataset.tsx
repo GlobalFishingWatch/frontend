@@ -2,7 +2,7 @@ import { useState, useCallback, Fragment } from 'react'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Modal } from '@globalfishingwatch/ui-components'
+import { Button, Modal } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
@@ -50,9 +50,9 @@ interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
   const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
-  const { datasetModalType, datasetModalStyle, datasetModalId, dispatchDatasetModalConfig } =
+  const { type, style, id, fileRejected, dispatchDatasetModalConfig } =
     useDatasetModalConfigConnect()
-  const dataset = useSelector(selectDatasetById(datasetModalId as string))
+  const dataset = useSelector(selectDatasetById(id as string))
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const [rawFile, setRawFile] = useState<File | undefined>()
   const [error, setError] = useState('')
@@ -261,7 +261,12 @@ function NewDataset(): React.ReactElement {
   const onClose = useCallback(() => {
     setError('')
     dispatchDatasetModalOpen(false)
-    dispatchDatasetModalConfig({ id: undefined, type: undefined })
+    dispatchDatasetModalConfig({
+      id: undefined,
+      type: undefined,
+      style: 'default',
+      fileRejected: false,
+    })
   }, [dispatchDatasetModalConfig, dispatchDatasetModalOpen])
 
   const onConfirmClick = useCallback(
@@ -327,17 +332,17 @@ function NewDataset(): React.ReactElement {
       }
       isOpen={datasetModalOpen}
       contentClassName={styles.modalContainer}
-      header={datasetModalStyle !== 'transparent'}
-      className={datasetModalStyle === 'transparent' ? styles.transparentOverlay : undefined}
-      fullScreen={datasetModalStyle === 'transparent'}
+      header={style !== 'transparent'}
+      className={style === 'transparent' ? styles.transparentOverlay : undefined}
+      fullScreen={style === 'transparent'}
       onClose={onClose}
     >
-      {datasetModalType && (rawFile || dataset) ? (
-        <div className={styles.modalContent}>{getDatasetComponentByType(datasetModalType)}</div>
+      {type && (rawFile || dataset) ? (
+        <div className={styles.modalContent}>{getDatasetComponentByType(type)}</div>
       ) : (
         <Fragment>
           <p className={styles.instructions}>
-            {datasetModalStyle !== 'transparent'
+            {style !== 'transparent'
               ? t(
                   'dataset.dragAndDropFileToCreateDataset',
                   'Drag and drop a file in one of the boxes or click on them to upload your dataset'
@@ -348,8 +353,11 @@ function NewDataset(): React.ReactElement {
                 )}
           </p>
           <div className={styles.modalContent}>
-            <DatasetTypeSelect style={datasetModalStyle} onFileLoaded={onFileLoaded} />
+            <DatasetTypeSelect style={style} onFileLoaded={onFileLoaded} />
           </div>
+          {style === 'transparent' && fileRejected && (
+            <Button onClick={onClose}>{t('common.dismiss', 'Dismiss')}</Button>
+          )}
         </Fragment>
       )}
     </Modal>

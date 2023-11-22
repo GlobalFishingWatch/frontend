@@ -45,8 +45,8 @@ const checkChanges = (metadata: EditDatasetMetadata | undefined, dataset: Datase
 function EditDataset(): React.ReactElement {
   const { t } = useTranslation()
   const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
-  const { datasetModalId } = useDatasetModalConfigConnect()
-  const dataset = useSelector(selectDatasetById(datasetModalId as string))
+  const { id } = useDatasetModalConfigConnect()
+  const dataset = useSelector(selectDatasetById(id as string))
   const [loading, setLoading] = useState(false)
   const [metadata, setMetadata] = useState<EditDatasetMetadata | undefined>({
     name: dataset?.name,
@@ -67,7 +67,7 @@ function EditDataset(): React.ReactElement {
     if (metadata) {
       setLoading(true)
       const updatedDataset = {
-        id: datasetModalId,
+        id,
         name: metadata.name,
         description: metadata.description,
         configuration: {

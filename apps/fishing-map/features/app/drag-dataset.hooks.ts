@@ -7,8 +7,8 @@ import {
 } from 'features/datasets/datasets.hook'
 import { selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import {
+  selectDatasetUploadModalConfig,
   selectDatasetUploadModalOpen,
-  selectDatasetUploadModalType,
 } from 'features/modals/modals.slice'
 
 export function useDatasetDrag() {
@@ -46,11 +46,13 @@ export function useDatasetDrag() {
     (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      const datasetModalType = selectDatasetUploadModalType(store.getState() as RootState)
-      if (!e.currentTarget || !datasetModalType) {
+      const { type, fileRejected } = selectDatasetUploadModalConfig(store.getState() as RootState)
+      if (!e.currentTarget || (!type && !fileRejected)) {
         dispatchDatasetModalOpen(false)
       }
-      dispatchDatasetModalConfig({ style: 'default' })
+      if (type) {
+        dispatchDatasetModalConfig({ style: 'default' })
+      }
     },
     [dispatchDatasetModalConfig, dispatchDatasetModalOpen, store]
   )
