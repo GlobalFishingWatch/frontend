@@ -2,7 +2,12 @@ import { useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes, DatasetStatus, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DatasetStatus,
+  DRAW_DATASET_SOURCE,
+  DatasetGeometryType,
+} from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -89,7 +94,12 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
       dispatchSetMapDrawing(true)
     } else {
       dispatchDatasetModalOpen(true)
-      dispatchDatasetModalConfig({ id: dataset?.id, type: dataset?.configuration?.geometryType })
+      dispatchDatasetModalConfig({
+        id: dataset?.id,
+        type:
+          (dataset?.configuration?.configurationUI?.geometryType as DatasetGeometryType) ||
+          dataset?.configuration?.geometryType,
+      })
     }
   }
   const onToggleColorOpen = () => {
