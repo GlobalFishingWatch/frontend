@@ -13,11 +13,13 @@ export const getDatasetSchemaFromCSV = ({ data, meta }: DatasetSchemaGeneratorPr
   const schema =
     fields &&
     (fields.reduce((acc: Dataset['schema'], field: string): Dataset['schema'] => {
-      const dataWithValue = data.find((d: any) => d[field]) || {}
-      return {
-        ...acc,
-        [field]: { type: typeof dataWithValue[field] } as DatasetSchemaItem,
-      }
+      const dataWithValue = data.find((d: any) => d[field])
+      return dataWithValue
+        ? {
+            ...acc,
+            [field]: { type: typeof dataWithValue[field] } as DatasetSchemaItem,
+          }
+        : acc
     }, {}) as Dataset['schema'])
   return schema
 }
