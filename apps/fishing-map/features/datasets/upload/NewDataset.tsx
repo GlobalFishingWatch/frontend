@@ -3,7 +3,7 @@ import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Modal } from '@globalfishingwatch/ui-components'
-import { Dataset, DatasetCategory, DatasetGeometryType } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -271,10 +271,9 @@ function NewDataset(): React.ReactElement {
         const { payload, error: createDatasetError } = await dispatchUpsertDataset({
           dataset: {
             ...datasetMetadata,
-            fieldsAllowed:
-              [
-                getDatasetConfigurationProperty({ datasetMetadata, property: 'filter' }) as string,
-              ] || [],
+            fieldsAllowed: getDatasetConfigurationProperty({ datasetMetadata, property: 'filter' })
+              ? [getDatasetConfigurationProperty({ datasetMetadata, property: 'filter' }) as string]
+              : dataset?.fieldsAllowed,
             unit: 'TBD',
             subcategory: 'info',
           },
@@ -300,7 +299,7 @@ function NewDataset(): React.ReactElement {
         label: datasetMetadata?.name,
       })
     },
-    [addDataviewFromDatasetToWorkspace, dispatchUpsertDataset, locationType, onClose, t]
+    [addDataviewFromDatasetToWorkspace, dispatchUpsertDataset, locationType, onClose, t, dataset]
   )
 
   const getDatasetComponentByType = useCallback(
