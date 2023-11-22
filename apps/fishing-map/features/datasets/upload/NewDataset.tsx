@@ -19,7 +19,6 @@ import {
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
 import styles from './NewDataset.module.css'
-import { getDatasetConfigurationProperty } from './upload.utils'
 
 export type NewDatasetProps = {
   file?: File
@@ -29,13 +28,14 @@ export type NewDatasetProps = {
 }
 
 export type DatasetMetadata = {
-  name: string
   public: boolean
-  category: Dataset['category']
-  description?: string
+  name: Dataset['name']
+  description: Dataset['description']
   type: Dataset['type']
-  configuration?: Dataset['configuration']
   schema?: Dataset['schema']
+  category: Dataset['category']
+  configuration?: Dataset['configuration']
+  fieldsAllowed?: Dataset['fieldsAllowed']
 }
 
 // TODO Update https://github.com/DefinitelyTyped/DefinitelyTyped/blob/b453d9d1b99c48c8711c31c2a64e9dffb6ce729d/types/shpjs/index.d.ts
@@ -271,9 +271,6 @@ function NewDataset(): React.ReactElement {
         const { payload, error: createDatasetError } = await dispatchUpsertDataset({
           dataset: {
             ...datasetMetadata,
-            fieldsAllowed: getDatasetConfigurationProperty({ datasetMetadata, property: 'filter' })
-              ? [getDatasetConfigurationProperty({ datasetMetadata, property: 'filter' }) as string]
-              : dataset?.fieldsAllowed,
             unit: 'TBD',
             subcategory: 'info',
           },
@@ -299,7 +296,7 @@ function NewDataset(): React.ReactElement {
         label: datasetMetadata?.name,
       })
     },
-    [addDataviewFromDatasetToWorkspace, dispatchUpsertDataset, locationType, onClose, t, dataset]
+    [addDataviewFromDatasetToWorkspace, dispatchUpsertDataset, locationType, onClose, t]
   )
 
   const getDatasetComponentByType = useCallback(

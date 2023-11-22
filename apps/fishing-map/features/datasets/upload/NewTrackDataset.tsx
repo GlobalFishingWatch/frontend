@@ -30,7 +30,7 @@ import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getDatasetSchemaFromCSV,
-} from './upload.utils'
+} from './datasets-upload.utils'
 import styles from './NewDataset.module.css'
 
 export type CSV = Record<string, any>[]
@@ -166,20 +166,26 @@ function NewTrackDataset({
     []
   )
 
-  const fieldsOptions: SelectOption[] = useMemo(
-    () =>
-      (datasetMetadata?.schema &&
-        Object.keys(datasetMetadata.schema).map((field) => ({ id: field, label: field }))) ||
-      [],
-    [datasetMetadata]
-  )
+  const fieldsOptions: SelectOption[] = useMemo(() => {
+    const options: SelectOption[] = datasetMetadata?.schema
+      ? Object.keys(datasetMetadata.schema).map((field) => ({ id: field, label: field }))
+      : []
+    return options
+    // TODO remove options already selected
+    //   .filter((o) => {
+    //   return (
+    //     o.id === getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }) ||
+    //     o.id === getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }) ||
+    //     o.id === getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
+    //   )
+    // })
+  }, [datasetMetadata])
 
-  const selectedOption = useCallback(
-    (option: string): SelectOption => ({
-      label: getDatasetConfigurationProperty({ datasetMetadata, property: option }) as string,
-      id: getDatasetConfigurationProperty({ datasetMetadata, property: option }),
-    }),
-    [datasetMetadata]
+  const getSelectedOption = useCallback(
+    (option: string | string[]): SelectOption => {
+      return fieldsOptions.find((o) => o.id === option) || ({} as SelectOption)
+    },
+    [fieldsOptions]
   )
 
   return (
@@ -201,7 +207,9 @@ function NewTrackDataset({
             label={t('dataset.trackSegmentId', 'latitude')}
             placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
             options={fieldsOptions}
-            selectedOption={selectedOption('latitude')}
+            selectedOption={getSelectedOption(
+              getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' })
+            )}
             onSelect={(selected) => {
               onDatasetConfigurationChange({ latitude: selected.id })
             }}
@@ -210,7 +218,9 @@ function NewTrackDataset({
             label={t('dataset.trackSegmentId', 'longitude')}
             placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
             options={fieldsOptions}
-            selectedOption={selectedOption('longitude')}
+            selectedOption={getSelectedOption(
+              getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' })
+            )}
             onSelect={(selected) => {
               onDatasetConfigurationChange({ longitude: selected.id })
             }}
@@ -220,7 +230,9 @@ function NewTrackDataset({
               label={t('dataset.trackSegmentTimes', 'Track segment times')}
               placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
               options={fieldsOptions}
-              selectedOption={selectedOption('timestamp')}
+              selectedOption={getSelectedOption(
+                getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
+              )}
               onSelect={(selected) => {
                 onDatasetConfigurationChange({ timestamp: selected.id })
               }}
@@ -243,7 +255,7 @@ function NewTrackDataset({
           placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
           direction="top"
-          selectedOption={selectedOption('idProperty')}
+          selectedOption={getSelectedOption('idProperty')}
           onSelect={(selected) => {
             onDatasetConfigurationChange({ idProperty: selected.id })
           }}
@@ -285,7 +297,7 @@ function NewTrackDataset({
           placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
           direction="top"
-          selectedOption={selectedOption('filter')}
+          selectedOption={getSelectedOption(datasetMetadata?.fieldsAllowed)}
           onSelect={(selected) => {
             onDatasetConfigurationChange({ filter: selected.id })
           }}
