@@ -6,7 +6,10 @@ import {
   useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
 import { selectIsWorkspaceLocation } from 'routes/routes.selectors'
-import { selectDatasetUploadModalType } from 'features/modals/modals.slice'
+import {
+  selectDatasetUploadModalOpen,
+  selectDatasetUploadModalType,
+} from 'features/modals/modals.slice'
 
 export function useDatasetDrag() {
   const store = useStore()
@@ -18,12 +21,13 @@ export function useDatasetDrag() {
     (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      if (workspaceLocation) {
+      const datasetModalOpen = selectDatasetUploadModalOpen(store.getState() as RootState)
+      if (workspaceLocation && !datasetModalOpen) {
         dispatchDatasetModalOpen(true)
         dispatchDatasetModalConfig({ style: 'transparent' })
       }
     },
-    [dispatchDatasetModalConfig, dispatchDatasetModalOpen, workspaceLocation]
+    [dispatchDatasetModalConfig, dispatchDatasetModalOpen, store, workspaceLocation]
   )
 
   const onDragLeave = useCallback(
