@@ -1,6 +1,7 @@
 import { ParseMeta } from 'papaparse'
 import { Dataset, DatasetSchemaItem } from '@globalfishingwatch/api-types'
 import { CSV } from './NewTrackDataset'
+import { DatasetMetadata } from './NewDataset'
 
 export type DatasetSchemaGeneratorProps = {
   data: CSV
@@ -20,3 +21,25 @@ export const getDatasetSchemaFromCSV = ({ data, meta }: DatasetSchemaGeneratorPr
     }, {}) as Dataset['schema'])
   return schema
 }
+
+export const getDatasetConfigurationProperty = ({
+  datasetMetadata,
+  property,
+}: {
+  datasetMetadata: DatasetMetadata | undefined
+  property: string
+}) => {
+  return (
+    datasetMetadata?.configuration?.configurationUI?.[property] ||
+    datasetMetadata?.configuration?.[property]
+  )
+}
+
+export const getDatasetConfiguration = ({
+  datasetMetadata,
+}: {
+  datasetMetadata: DatasetMetadata | undefined
+}): Dataset['configuration'] => ({
+  ...datasetMetadata?.configuration,
+  ...datasetMetadata?.configuration?.configurationUI,
+})

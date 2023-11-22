@@ -19,6 +19,7 @@ import {
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
 import styles from './NewDataset.module.css'
+import { getDatasetConfigurationProperty } from './upload.utils'
 
 export type NewDatasetProps = {
   file?: File
@@ -30,7 +31,7 @@ export type NewDatasetProps = {
 export type DatasetMetadata = {
   name: string
   public: boolean
-  category: DatasetCategory
+  category: Dataset['category']
   description?: string
   type: Dataset['type']
   configuration?: Dataset['configuration']
@@ -265,19 +266,20 @@ function NewDataset(): React.ReactElement {
   }, [dispatchDatasetModalConfig, dispatchDatasetModalOpen])
 
   const onConfirmClick = useCallback(
-    async (dataset: DatasetMetadata, datasetFile?: File) => {
-      if (dataset) {
+    async (datasetMetadata: DatasetMetadata, datasetFile?: File) => {
+      if (datasetMetadata) {
         const { payload, error: createDatasetError } = await dispatchUpsertDataset({
           dataset: {
-            ...dataset,
-            fieldsAllowed: dataset.configuration?.configurationUI?.filter
-              ? ([dataset.configuration?.configurationUI?.filter] as string[])
-              : [],
+            ...datasetMetadata,
+            fieldsAllowed:
+              [
+                getDatasetConfigurationProperty({ datasetMetadata, property: 'filter' }) as string,
+              ] || [],
             unit: 'TBD',
             subcategory: 'info',
           },
           file: datasetFile,
-          createAsPublic: dataset?.public ?? true,
+          createAsPublic: datasetMetadata?.public ?? true,
         })
 
         if (createDatasetError) {
@@ -294,8 +296,8 @@ function NewDataset(): React.ReactElement {
       }
       trackEvent({
         category: TrackCategory.User,
-        action: `Confirm ${dataset.configuration?.geometryType} upload`,
-        label: dataset?.name,
+        action: `Confirm ${datasetMetadata.configuration?.geometryType} upload`,
+        label: datasetMetadata?.name,
       })
     },
     [addDataviewFromDatasetToWorkspace, dispatchUpsertDataset, locationType, onClose, t]

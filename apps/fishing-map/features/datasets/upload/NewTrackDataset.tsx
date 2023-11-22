@@ -25,7 +25,11 @@ import UserGuideLink from 'features/help/UserGuideLink'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
-import { getDatasetSchemaFromCSV } from './upload.utils'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+  getDatasetSchemaFromCSV,
+} from './upload.utils'
 import styles from './NewDataset.module.css'
 
 export type CSV = Record<string, any>[]
@@ -99,10 +103,7 @@ function NewTrackDataset({
   const onConfirmClick = useCallback(() => {
     let file: File | undefined
     if (datasetMetadata) {
-      const config = {
-        ...datasetMetadata?.configuration,
-        ...datasetMetadata?.configuration?.configurationUI,
-      } as DatasetConfiguration
+      const config = getDatasetConfiguration({ datasetMetadata }) as Dataset['configuration']
       if (fileData) {
         if (!config?.latitude || !config?.longitude || !config?.timestamp) {
           const fields = ['latitude', 'longitude', 'timestamp'].map((f) =>
@@ -174,11 +175,8 @@ function NewTrackDataset({
 
   const selectedOption = useCallback(
     (option: string): SelectOption => ({
-      label: (datasetMetadata?.configuration?.configurationUI?.[option] ||
-        datasetMetadata?.configuration?.[option]) as string,
-      id:
-        datasetMetadata?.configuration?.configurationUI?.[option] ||
-        datasetMetadata?.configuration?.configurationUI?.[option],
+      label: getDatasetConfigurationProperty({ datasetMetadata, property: option }) as string,
+      id: getDatasetConfigurationProperty({ datasetMetadata, property: option }),
     }),
     [datasetMetadata]
   )
