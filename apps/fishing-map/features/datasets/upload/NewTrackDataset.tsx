@@ -25,6 +25,7 @@ import UserGuideLink from 'features/help/UserGuideLink'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
+import { isPrivateDataset } from '../datasets.utils'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
@@ -89,7 +90,7 @@ function NewTrackDataset({
         id: dataset.id,
         name: dataset.name,
         description: dataset.description,
-        public: true,
+        public: isPrivateDataset(dataset),
         type: DatasetTypes.UserTracks,
         category: DatasetCategory.Environment,
         schema: dataset.schema,
