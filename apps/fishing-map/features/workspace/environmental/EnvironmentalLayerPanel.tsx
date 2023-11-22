@@ -170,7 +170,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               </div>
             </ExpandedContainer>
           )}
-          {layerActive && isCustomUserLayer && (
+          {layerActive && (
             <Color
               dataview={dataview}
               open={colorOpen}
