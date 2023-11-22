@@ -59,6 +59,8 @@ function NewDataset(): React.ReactElement {
   const locationType = useSelector(selectLocationType)
   const { dispatchUpsertDataset } = useDatasetsAPI()
 
+  const isDatasetEdit = dataset !== undefined
+
   const onFileLoaded = useCallback((file: File) => {
     console.log('setting file', file)
     setRawFile(file)
@@ -321,7 +323,11 @@ function NewDataset(): React.ReactElement {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={t('dataset.uploadNew', 'Upload new dataset')}
+      title={
+        isDatasetEdit
+          ? t('dataset.edit', 'Edit dataset')
+          : t('dataset.uploadNew', 'Upload new dataset')
+      }
       isOpen={datasetModalOpen}
       contentClassName={styles.modalContainer}
       onClose={onClose}

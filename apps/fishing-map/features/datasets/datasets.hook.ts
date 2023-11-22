@@ -1,6 +1,11 @@
 import { useSelector, batch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
-import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
+import {
+  AnyDatasetConfiguration,
+  Dataset,
+  DatasetCategory,
+  DatasetStatus,
+} from '@globalfishingwatch/api-types'
 import { AsyncError } from 'utils/async-slice'
 import {
   getContextDataviewInstance,
@@ -37,14 +42,18 @@ export interface NewDatasetProps {
 const DATASET_REFRESH_TIMEOUT = 10000
 
 export const getDataviewInstanceByDataset = (dataset: Dataset) => {
+  const config = {
+    ...dataset.configuration,
+    ...dataset.configuration?.configurationUI,
+  } as AnyDatasetConfiguration
   if (dataset.category === DatasetCategory.Context) {
-    return dataset.configuration?.geometryType === 'points'
+    return config?.geometryType === 'points'
       ? getUserPointsDataviewInstance(dataset.id)
       : getContextDataviewInstance(dataset.id)
   } else if (dataset.category === DatasetCategory.Environment) {
-    if (dataset.configuration?.geometryType === 'polygons') {
+    if (config?.geometryType === 'polygons') {
       return getEnvironmentDataviewInstance(dataset.id)
-    } else if (dataset.configuration?.geometryType === 'tracks') {
+    } else if (config?.geometryType === 'tracks') {
       return getUserTrackDataviewInstance(dataset)
     }
   }

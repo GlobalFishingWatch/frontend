@@ -84,6 +84,7 @@ function NewTrackDataset({
       setDatasetMetadata({
         id: dataset.id,
         name: dataset.name,
+        description: dataset.description,
         public: true,
         type: DatasetTypes.UserTracks,
         category: DatasetCategory.Environment,
@@ -184,9 +185,11 @@ function NewTrackDataset({
 
   return (
     <div className={styles.container}>
-      <div className={styles.file}>
-        <FileDropzone label={file?.name} fileTypes={['csv']} onFileLoaded={onFileUpdate} />
-      </div>
+      {!dataset && (
+        <div className={styles.file}>
+          <FileDropzone label={file?.name} fileTypes={['csv']} onFileLoaded={onFileUpdate} />
+        </div>
+      )}
       <div className={styles.content}>
         <InputText
           value={datasetMetadata?.name}
@@ -231,7 +234,7 @@ function NewTrackDataset({
         label={t('dataset.optionalFields', 'Optional fields')}
       >
         <InputText
-          value={datasetMetadata?.name}
+          value={datasetMetadata?.description}
           label={t('dataset.description', 'Dataset description')}
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
@@ -240,6 +243,7 @@ function NewTrackDataset({
           label={t('dataset.trackSegmentId', 'Individual track segment id')}
           placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
+          direction="top"
           selectedOption={selectedOption('idProperty')}
           onSelect={(selected) => {
             onDatasetConfigurationChange({ idProperty: selected.id })
@@ -281,6 +285,7 @@ function NewTrackDataset({
           label={t('dataset.trackSegmentId', 'track filter property')}
           placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
+          direction="top"
           selectedOption={selectedOption('filter')}
           onSelect={(selected) => {
             onDatasetConfigurationChange({ filter: selected.id })
