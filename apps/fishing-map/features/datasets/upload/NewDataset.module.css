@@ -3,6 +3,41 @@
   flex: 1;
   height: 100%;
   flex-direction: column;
+  padding-bottom: var(--space-M);
+}
+
+.label {
+  font: var(--font-S);
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
+  height: var(--size-S);
+  line-height: 2em;
+}
+
+.requiredDataContainer {
+  display: flex;
+  width: 100%;
+  gap: var(--space-S);
+  padding-bottom: var(--space-M);
+}
+
+.timestampSelectWrapper {
+  flex-grow: 1;
+}
+
+.trackTimestampFiltersContainer {
+  padding-top: var(--space-M);
+}
+
+.trackTimestampSelectors {
+  display: flex;
+  width: 100%;
+  gap: var(--space-S);
+  padding-bottom: var(--space-M);
+}
+
+.trackTimestampSelectors > div {
+  flex-grow: 1;
 }
 
 .row {

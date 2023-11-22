@@ -3,13 +3,7 @@ import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Modal } from '@globalfishingwatch/ui-components'
-import {
-  AnyDatasetConfiguration,
-  Dataset,
-  DatasetCategory,
-  DatasetGeometryType,
-  DatasetTypes,
-} from '@globalfishingwatch/api-types'
+import { Dataset, DatasetCategory, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -38,12 +32,11 @@ export type DatasetMetadata = {
   public: boolean
   category: DatasetCategory
   description?: string
-  type: DatasetTypes
-  configuration?: AnyDatasetConfiguration
-  fields?: string[]
+  type: Dataset['type']
+  configuration?: Dataset['configuration']
+  schema?: Dataset['schema']
 }
 
-const datasetCategory = DatasetCategory.Context
 // TODO Update https://github.com/DefinitelyTyped/DefinitelyTyped/blob/b453d9d1b99c48c8711c31c2a64e9dffb6ce729d/types/shpjs/index.d.ts
 // When this gets merged to upstream https://github.com/calvinmetcalf/shapefile-js/pull/181
 interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
@@ -274,10 +267,12 @@ function NewDataset(): React.ReactElement {
   const onConfirmClick = useCallback(
     async (dataset: DatasetMetadata, datasetFile?: File) => {
       if (dataset) {
-        const { fields, ...meta } = dataset as DatasetMetadata
         const { payload, error: createDatasetError } = await dispatchUpsertDataset({
           dataset: {
-            ...meta,
+            ...dataset,
+            fieldsAllowed: dataset.configuration?.configurationUI?.filter
+              ? ([dataset.configuration?.configurationUI?.filter] as string[])
+              : [],
             unit: 'TBD',
             subcategory: 'info',
           },
