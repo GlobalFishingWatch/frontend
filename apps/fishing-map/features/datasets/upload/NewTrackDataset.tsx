@@ -243,6 +243,7 @@ function NewTrackDataset({
           label={t('dataset.trackSegmentId', 'Individual track segment id')}
           placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
+          direction="top"
           selectedOption={selectedOption('idProperty')}
           onSelect={(selected) => {
             onDatasetConfigurationChange({ idProperty: selected.id })
@@ -284,6 +285,7 @@ function NewTrackDataset({
           label={t('dataset.trackSegmentId', 'track filter property')}
           placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
+          direction="top"
           selectedOption={selectedOption('filter')}
           onSelect={(selected) => {
             onDatasetConfigurationChange({ filter: selected.id })
