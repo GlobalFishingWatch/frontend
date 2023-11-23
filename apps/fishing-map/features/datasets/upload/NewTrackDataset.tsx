@@ -5,6 +5,9 @@ import {
   Button,
   Collapsable,
   InputText,
+  MultiSelect,
+  MultiSelectOnChange,
+  MultiSelectOption,
   Select,
   SelectOption,
 } from '@globalfishingwatch/ui-components'
@@ -87,13 +90,10 @@ function NewTrackDataset({
       updateFileData(file)
     } else if (dataset) {
       setDatasetMetadata({
-        id: dataset.id,
-        name: dataset.name,
-        description: dataset.description,
+        ...dataset,
         public: isPrivateDataset(dataset),
         type: DatasetTypes.UserTracks,
         category: DatasetCategory.Environment,
-        schema: dataset.schema,
         configuration: {
           ...dataset.configuration,
         } as DatasetConfiguration,
@@ -166,7 +166,23 @@ function NewTrackDataset({
     []
   )
 
-  const fieldsOptions: SelectOption[] = useMemo(() => {
+  const onDatasetFieldsAllowedChange = useCallback(
+    (newFilters: DatasetMetadata['fieldsAllowed']) => {
+      setDatasetMetadata((meta) => ({
+        ...(meta as DatasetMetadata),
+        fieldsAllowed: newFilters,
+      }))
+    },
+    []
+  )
+
+  const getSelectOptionFromDatasetField = (field: string | string[]) => {
+    return Array.isArray(field)
+      ? field.map((value) => ({ id: value, label: value }))
+      : { id: field, label: field }
+  }
+
+  const fieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
     const options: SelectOption[] = datasetMetadata?.schema
       ? Object.keys(datasetMetadata.schema).map((field) => ({ id: field, label: field }))
       : []
@@ -182,11 +198,32 @@ function NewTrackDataset({
   }, [datasetMetadata])
 
   const getSelectedOption = useCallback(
-    (option: string | string[]): SelectOption => {
+    (option: string | string[]): SelectOption | MultiSelectOption => {
       return fieldsOptions.find((o) => o.id === option) || ({} as SelectOption)
     },
     [fieldsOptions]
   )
+
+  const getFieldsAllowedArray = useCallback(() => {
+    return datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
+  }, [datasetMetadata, dataset])
+
+  const handleFieldsAllowedRemoveItem: MultiSelectOnChange = useCallback(
+    (_: MultiSelectOption, rest: MultiSelectOption[]) => {
+      onDatasetFieldsAllowedChange(rest.map((f: MultiSelectOption) => f.id))
+    },
+    [onDatasetFieldsAllowedChange]
+  )
+  const handleFieldsAllowedAddItem: MultiSelectOnChange = useCallback(
+    (newFilter: MultiSelectOption) => {
+      onDatasetFieldsAllowedChange([...getFieldsAllowedArray(), newFilter.id])
+    },
+    [onDatasetFieldsAllowedChange, getFieldsAllowedArray]
+  )
+
+  const handleFieldsAllowedCleanSelection = useCallback(() => {
+    onDatasetFieldsAllowedChange([])
+  }, [onDatasetFieldsAllowedChange])
 
   return (
     <div className={styles.container}>
@@ -260,47 +297,20 @@ function NewTrackDataset({
             onDatasetConfigurationChange({ idProperty: selected.id })
           }}
         />
-        {/* <section className={styles.trackTimestampFiltersContainer}>
-          <p className={styles.label}>Track Time Filter</p>
-          <div className={styles.trackTimestampSelectors}>
-            <Select
-              placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-              options={[
-                { id: 'timerange', label: 'timerange' },
-                { id: 'timestamp', label: 'timestamp' },
-              ]}
-              selectedOption={undefined}
-              onSelect={(selected) => {
-                onDatasetConfigurationChange({ idProperty: selected.id })
-              }}
-            />
-            <Select
-              placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-              options={fieldsOptions}
-              selectedOption={selectedOption('idProperty')}
-              onSelect={(selected) => {
-                onDatasetConfigurationChange({ idProperty: selected.id })
-              }}
-            />
-            <Select
-              placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-              options={fieldsOptions}
-              selectedOption={selectedOption('idProperty')}
-              onSelect={(selected) => {
-                onDatasetConfigurationChange({ idProperty: selected.id })
-              }}
-            />
-          </div>
-        </section> */}
-        <Select
+        <MultiSelect
           label={t('dataset.trackSegmentId', 'track filter property')}
-          placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+          placeholder={
+            getFieldsAllowedArray().length > 0
+              ? getFieldsAllowedArray().join(', ')
+              : t('dataset.fieldPlaceholder', 'Select a field from your dataset')
+          }
           options={fieldsOptions}
-          direction="top"
-          selectedOption={getSelectedOption(datasetMetadata?.fieldsAllowed)}
-          onSelect={(selected) => {
-            onDatasetConfigurationChange({ filter: selected.id })
-          }}
+          selectedOptions={
+            getSelectOptionFromDatasetField(getFieldsAllowedArray()) as MultiSelectOption[]
+          }
+          onSelect={handleFieldsAllowedAddItem}
+          onRemove={handleFieldsAllowedRemoveItem}
+          onCleanClick={handleFieldsAllowedCleanSelection}
         />
       </Collapsable>
       <div className={styles.modalFooter}>

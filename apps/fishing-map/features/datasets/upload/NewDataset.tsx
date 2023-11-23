@@ -32,8 +32,8 @@ export type NewDatasetProps = {
 
 export type DatasetMetadata = {
   public: boolean
-  name: Dataset['name']
-  description: Dataset['description']
+  name?: Dataset['name']
+  description?: Dataset['description']
   type: Dataset['type']
   schema?: Dataset['schema']
   category: Dataset['category']
