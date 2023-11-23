@@ -1,5 +1,5 @@
 import { ParseMeta } from 'papaparse'
-import { capitalize, lowerCase } from 'lodash'
+import { capitalize, lowerCase, uniq } from 'lodash'
 import { Dataset, DatasetSchemaItem } from '@globalfishingwatch/api-types'
 import { CSV } from './NewTrackDataset'
 import { DatasetMetadata } from './NewDataset'
@@ -24,7 +24,13 @@ export const getDatasetSchemaFromCSV = ({ data, meta }: DatasetSchemaGeneratorPr
       return dataWithValue
         ? {
             ...acc,
-            [field]: { type: typeof dataWithValue[field] } as DatasetSchemaItem,
+            [field]: {
+              type: typeof dataWithValue[field],
+              enum:
+                typeof dataWithValue[field] === 'string' && field !== 'timestamp'
+                  ? uniq(data.map((d) => d[field]))
+                  : [],
+            } as DatasetSchemaItem,
           }
         : acc
     }, {}) as Dataset['schema'])
