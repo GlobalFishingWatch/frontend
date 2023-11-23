@@ -89,8 +89,9 @@ function NewTrackDataset({
     if (file) {
       updateFileData(file)
     } else if (dataset) {
+      const { ownerType, createdAt, endpoints, ...rest } = dataset
       setDatasetMetadata({
-        ...dataset,
+        ...rest,
         public: isPrivateDataset(dataset),
         type: DatasetTypes.UserTracks,
         category: DatasetCategory.Environment,
