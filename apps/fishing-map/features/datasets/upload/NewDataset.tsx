@@ -2,6 +2,10 @@ import { useState, useCallback, Fragment } from 'react'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import initGdalJs from 'gdal3.js'
+// import workerUrl from 'gdal3.js/dist/package/gdal3.js?url'
+// import dataUrl from 'gdal3.js/dist/package/gdal3WebAssembly.data?url'
+// import wasmUrl from 'gdal3.js/dist/package/gdal3WebAssembly.wasm?url'
 import { Button, Modal } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
@@ -12,6 +16,7 @@ import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
 import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
+import { readBlobAs } from 'utils/files'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -21,6 +26,14 @@ import {
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
 import styles from './NewDataset.module.css'
+
+let Gdal: Gdal
+const initGdal = async () => {
+  if (!Gdal) {
+    Gdal = await initGdalJs({ path: '/' })
+  }
+  return Gdal
+}
 
 export type NewDatasetProps = {
   file?: File
@@ -47,6 +60,12 @@ interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
   extensions?: string[]
 }
 
+// const paths = {
+//   wasm: wasmUrl,
+//   data: dataUrl,
+//   js: workerUrl,
+// }
+
 function NewDataset(): React.ReactElement {
   const { t } = useTranslation()
   const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
@@ -61,9 +80,31 @@ function NewDataset(): React.ReactElement {
 
   const isDatasetEdit = dataset !== undefined
 
-  const onFileLoaded = useCallback((file: File) => {
-    console.log('setting file', file)
-    setRawFile(file)
+  const onFileLoaded = useCallback(async (file: File) => {
+    if (!Gdal) {
+      await initGdal()
+    }
+    const dataset = await Gdal.open(file).then(({ datasets }) => datasets[0])
+    const datasetInfo = await Gdal.getInfo(dataset) // Vector
+    console.log('🚀 ~ onFileLoaded ~ datasetInfo:', datasetInfo)
+    const options = [
+      // https://gdal.org/programs/ogr2ogr.html#description
+      '-f',
+      'GeoJSON',
+      '-t_srs',
+      'EPSG:4326',
+      '-nlt',
+      'POINT',
+      '-geomfield',
+      'encoding="PointFromColumns" x="longitude" y="latitude"',
+    ]
+    const output = await Gdal.ogr2ogr(dataset, options)
+    const bytes = await Gdal.getFileBytes(output)
+    const fileData = await readBlobAs(new Blob([bytes]), 'text')
+    const geojson = JSON.parse(fileData)
+    console.log('🚀 ~ onFileLoaded ~ geojson:', geojson)
+    Gdal.close(dataset)
+    // setRawFile(file)
 
     // const type = datasetModalType
     // setLoading(true)

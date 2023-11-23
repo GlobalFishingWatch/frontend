@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { join } = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
+// const CopyWebpackPlugin = require('copy-webpack-plugin')
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: process.env.ANALYZE === 'true',
 // })
@@ -64,6 +65,20 @@ const nextConfig = {
     }
     config.externals = [...config.externals, 'mapbox-gl']
     // config.optimization.minimize = false
+    // config.plugins.push(
+    //   new CopyWebpackPlugin({
+    //     patterns: [
+    //       { from: '../../node_modules/gdal3.js/dist/package/gdal3.js', to: 'public' },
+    //       { from: '../../node_modules/gdal3.js/dist/package/gdal3WebAssembly.wasm', to: 'public' },
+    //       { from: '../../node_modules/gdal3.js/dist/package/gdal3WebAssembly.data', to: 'public' },
+    //     ],
+    //   })
+    // )
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+      syncWebAssembly: true,
+    }
     // config.plugins.push(
     //   new CircularDependencyPlugin({
     //     // exclude detection of files based on a RegExp

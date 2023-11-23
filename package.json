@@ -74,6 +74,7 @@
     "d3-shape": "3.2.0",
     "downshift": "8.2.1",
     "file-saver": "2.0.5",
+    "gdal3.js": "^2.4.0",
     "geojson": "^0.5.0",
     "geojson-vt": "^3.2.1",
     "gl-matrix": "3.4.3",
