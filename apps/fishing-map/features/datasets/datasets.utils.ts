@@ -584,10 +584,9 @@ export type SchemaFieldSelection = {
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
 
 export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
-  return dataview.category === DataviewCategory.Context ||
-    dataview.category === DataviewCategory.Events
-    ? dataview?.datasets
-    : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+  return dataview.config?.datasets
+    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+    : dataview?.datasets
 }
 
 export const getCommonSchemaFieldsInDataview = (
