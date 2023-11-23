@@ -321,6 +321,10 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
     start: string
     end: string
   }
+  /**
+   * Filter the tracks displayed https://docs.mapbox.com/help/glossary/filter/
+   */
+  filters?: Record<string, Array<string>>
 }
 
 export interface PolygonsGeneratorConfig extends GeneratorConfig {

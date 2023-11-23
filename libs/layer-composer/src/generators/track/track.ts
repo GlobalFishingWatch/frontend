@@ -3,7 +3,7 @@ import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import { uniq } from 'lodash'
 import convert from 'color-convert'
-import type { LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type { FilterSpecification, LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Group } from '../../types'
 import { GeneratorType, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
@@ -171,6 +171,13 @@ class TrackGenerator {
       'line-width': 1.5,
       'line-opacity': 1,
     }
+    let filters: Array<any> = []
+    if (config?.filters) {
+      filters = ['all']
+      Object.entries(config.filters).forEach(([key, values]) => {
+        filters.push(['match', ['get', key], values, true, false])
+      })
+    }
 
     if (uniqIds.length > 1) {
       let exprLineColor
@@ -202,6 +209,7 @@ class TrackGenerator {
       source: config.id,
       type: 'line',
       layout: { visibility },
+      ...(filters.length > 0 && { filter: filters as FilterSpecification }),
       paint,
       metadata: {
         group: Group.Track,
