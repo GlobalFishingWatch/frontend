@@ -2,10 +2,9 @@ import { useState, useCallback, Fragment } from 'react'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import initGdalJs from 'gdal3.js'
-// import workerUrl from 'gdal3.js/dist/package/gdal3.js?url'
-// import dataUrl from 'gdal3.js/dist/package/gdal3WebAssembly.data?url'
-// import wasmUrl from 'gdal3.js/dist/package/gdal3WebAssembly.wasm?url'
+import { load } from '@loaders.gl/core'
+import { CSVLoader } from '@loaders.gl/csv'
+import { ShapefileLoader } from '@loaders.gl/shapefile'
 import { Button, Modal } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
@@ -26,14 +25,6 @@ import {
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
 import styles from './NewDataset.module.css'
-
-let Gdal: Gdal
-const initGdal = async () => {
-  if (!Gdal) {
-    Gdal = await initGdalJs({ path: '/' })
-  }
-  return Gdal
-}
 
 export type NewDatasetProps = {
   file?: File
@@ -81,29 +72,17 @@ function NewDataset(): React.ReactElement {
   const isDatasetEdit = dataset !== undefined
 
   const onFileLoaded = useCallback(async (file: File) => {
-    if (!Gdal) {
-      await initGdal()
-    }
-    const dataset = await Gdal.open(file).then(({ datasets }) => datasets[0])
-    const datasetInfo = await Gdal.getInfo(dataset) // Vector
-    console.log('🚀 ~ onFileLoaded ~ datasetInfo:', datasetInfo)
-    const options = [
-      // https://gdal.org/programs/ogr2ogr.html#description
-      '-f',
-      'GeoJSON',
-      '-t_srs',
-      'EPSG:4326',
-      '-nlt',
-      'POINT',
-      '-geomfield',
-      'encoding="PointFromColumns" x="longitude" y="latitude"',
-    ]
-    const output = await Gdal.ogr2ogr(dataset, options)
-    const bytes = await Gdal.getFileBytes(output)
-    const fileData = await readBlobAs(new Blob([bytes]), 'text')
-    const geojson = JSON.parse(fileData)
-    console.log('🚀 ~ onFileLoaded ~ geojson:', geojson)
-    Gdal.close(dataset)
+    console.log('🚀 ~ onFileLoaded ~ file:', file)
+    // if (file.name.endsWith('.csv')) {
+    //   const data = await load(file, CSVLoader)
+    //   console.log('🚀 ~ onFileLoaded ~ data:', data)
+    //   debugger
+    // } else if (file.name.endsWith('.zip')) {
+    //   debugger
+    // }
+    console.log('🚀 ~ onFileLoaded ~ file:', file)
+    const datashp = await load(file, ShapefileLoader)
+    console.log('🚀 ~ onFileLoaded ~ datashp:', datashp)
     // setRawFile(file)
 
     // const type = datasetModalType
@@ -111,10 +90,8 @@ function NewDataset(): React.ReactElement {
     // setError('')
     // const name =
     //   file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
-
     // const metadataName = capitalize(lowerCase(name))
     // let formatGeojson = false
-
     // if (type === 'tracks') {
     // } else if (!type || type === 'polygons' || type === 'points') {
     //   const isZip =
@@ -125,7 +102,6 @@ function NewDataset(): React.ReactElement {
     //   const isGeojson =
     //     !isZip && (file.type === 'application/json' || file.name.includes('.geojson'))
     //   const isCSV = !isZip && !isGeojson && file.type === 'text/csv'
-
     //   if (isGeojson) {
     //     formatGeojson = true
     //     const blob = file.slice(0, file.size, 'application/json')
@@ -134,7 +110,6 @@ function NewDataset(): React.ReactElement {
     //   } else {
     //     setFile(file)
     //   }
-
     //   let geojson: Feature | FeatureCollectionWithMetadata | undefined = undefined
     //   if (isZip) {
     //     try {
@@ -214,7 +189,6 @@ function NewDataset(): React.ReactElement {
     //       setError(t('errors.uploadGeojson', 'Error reading GeoJSON: {{error}}', { error: e }))
     //     }
     //   }
-
     //   if (geojson !== undefined) {
     //     setFileData(geojson)
     //     const fields = extractPropertiesFromGeojson(geojson as FeatureCollectionWithMetadata)
@@ -225,7 +199,6 @@ function NewDataset(): React.ReactElement {
     //       // ...(geojson?.fileName && { file: geojson.fileName }),
     //       ...(formatGeojson && { format: 'geojson' }),
     //     } as DatasetConfiguration
-
     //     // Set disableInteraction flag when not all features are polygons
     //     if (datasetCategory === 'context' && datasetGeometryType === 'polygons') {
     //       if (

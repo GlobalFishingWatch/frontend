@@ -25,6 +25,7 @@ import UserGuideLink from 'features/help/UserGuideLink'
 import { getFileFromGeojson, readBlobAs } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
+import { getGdalDataset, getGdalDatasetSchema } from 'features/datasets/upload/datasets-parse'
 import { isPrivateDataset } from '../datasets.utils'
 import {
   getDatasetConfiguration,
@@ -44,7 +45,6 @@ function NewTrackDataset({
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string | undefined>()
-  const [fileData, setFileData] = useState<CSV | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
 
   const extractMetadata = useCallback(({ meta, data, name }: ExtractMetadataProps) => {
@@ -70,14 +70,10 @@ function NewTrackDataset({
 
   const updateFileData = useCallback(
     async (file: File) => {
-      const fileData = await readBlobAs(file, 'text')
-      const { data, meta } = parseCSV(fileData, {
-        dynamicTyping: true,
-        header: true,
-        skipEmptyLines: true,
-      })
-      setFileData(data as CSV)
-      extractMetadata({ meta, data: data as CSV, name: file.name })
+      const dataset = await getGdalDataset(file)
+      const schema = await getGdalDatasetSchema(dataset)
+      console.log('🚀 ~ schema:', schema)
+      // extractMetadata({ meta, data: data as CSV, name: file.name })
     },
     [extractMetadata]
   )
@@ -105,46 +101,46 @@ function NewTrackDataset({
     let file: File | undefined
     if (datasetMetadata) {
       const config = getDatasetConfiguration({ datasetMetadata }) as Dataset['configuration']
-      if (fileData) {
-        if (!config?.latitude || !config?.longitude || !config?.timestamp) {
-          const fields = ['latitude', 'longitude', 'timestamp'].map((f) =>
-            t(`common.${f}` as any, f)
-          )
-          setError(
-            t('dataset.requiredFields', {
-              fields,
-              defaultValue: `Required fields ${fields}`,
-            })
-          )
-        } else {
-          const errors = checkRecordValidity({
-            record: (fileData as CSV)[0],
-            ...config,
-          } as any)
-          if (errors.length) {
-            const fields = errors.map((error) => t(`common.${error}` as any, error)).join(',')
-            setError(
-              t('errors.fields', {
-                fields,
-                defaultValue: `Error with fields: ${fields}`,
-              })
-            )
-          } else {
-            console.log('FILE DATA', fileData)
-            const segments = csvToTrackSegments({
-              records: fileData as CSV,
-              ...(config as any),
-            })
-            const geoJSON = segmentsToGeoJSON(segments)
-            file = getFileFromGeojson(geoJSON)
-          }
-        }
-      }
+      // if (fileData) {
+      //   if (!config?.latitude || !config?.longitude || !config?.timestamp) {
+      //     const fields = ['latitude', 'longitude', 'timestamp'].map((f) =>
+      //       t(`common.${f}` as any, f)
+      //     )
+      //     setError(
+      //       t('dataset.requiredFields', {
+      //         fields,
+      //         defaultValue: `Required fields ${fields}`,
+      //       })
+      //     )
+      //   } else {
+      //     const errors = checkRecordValidity({
+      //       record: (fileData as CSV)[0],
+      //       ...config,
+      //     } as any)
+      //     if (errors.length) {
+      //       const fields = errors.map((error) => t(`common.${error}` as any, error)).join(',')
+      //       setError(
+      //         t('errors.fields', {
+      //           fields,
+      //           defaultValue: `Error with fields: ${fields}`,
+      //         })
+      //       )
+      //     } else {
+      //       console.log('FILE DATA', fileData)
+      //       const segments = csvToTrackSegments({
+      //         records: fileData as CSV,
+      //         ...(config as any),
+      //       })
+      //       const geoJSON = segmentsToGeoJSON(segments)
+      //       file = getFileFromGeojson(geoJSON)
+      //     }
+      //   }
+      // }
       if (onConfirm) {
         onConfirm(datasetMetadata, file)
       }
     }
-  }, [datasetMetadata, fileData, onConfirm, t])
+  }, [datasetMetadata, onConfirm, t])
 
   const onDatasetFieldChange = useCallback((newFields: Partial<DatasetMetadata>) => {
     setDatasetMetadata((meta) => ({ ...meta, ...(newFields as DatasetMetadata) }))

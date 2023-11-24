@@ -27,6 +27,7 @@
       "options": {
         "commands": [
           "nx clean-locales fishing-map",
+          "nx copy-gdal fishing-map",
           "nx serve i18n-labels",
           "nx serve fishing-map --hostname=0.0.0.0"
         ],
@@ -58,6 +59,17 @@
       "executor": "@nx/next:export",
       "options": {
         "buildTarget": "fishing-map:build:production"
+      }
+    },
+    "copy-gdal": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "cp node_modules/@globalfishingwatch/gdal3.js/dist/package/gdal3.js apps/fishing-map/public",
+          "cp node_modules/@globalfishingwatch/gdal3.js/dist/package/gdal3WebAssembly.wasm apps/fishing-map/public",
+          "cp node_modules/@globalfishingwatch/gdal3.js/dist/package/gdal3WebAssembly.data apps/fishing-map/public"
+        ],
+        "parallel": false
       }
     },
     "rename-export": {

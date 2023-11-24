@@ -65,15 +65,6 @@ const nextConfig = {
     }
     config.externals = [...config.externals, 'mapbox-gl']
     // config.optimization.minimize = false
-    // config.plugins.push(
-    //   new CopyWebpackPlugin({
-    //     patterns: [
-    //       { from: '../../node_modules/gdal3.js/dist/package/gdal3.js', to: 'public' },
-    //       { from: '../../node_modules/gdal3.js/dist/package/gdal3WebAssembly.wasm', to: 'public' },
-    //       { from: '../../node_modules/gdal3.js/dist/package/gdal3WebAssembly.data', to: 'public' },
-    //     ],
-    //   })
-    // )
     config.experiments = {
       ...config.experiments,
       asyncWebAssembly: true,
