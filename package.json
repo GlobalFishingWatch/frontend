@@ -45,6 +45,8 @@
     "@emotion/styled": "^11.11.0",
     "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
     "@loaders.gl/core": "^3.4.14",
+    "@loaders.gl/csv": "^3.4.14",
+    "@loaders.gl/json": "^3.4.14",
     "@loaders.gl/loader-utils": "^3.4.14",
     "@loaders.gl/mvt": "^3.4.14",
     "@mapbox/tile-cover": "^3.0.2",

@@ -12,6 +12,7 @@ import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
 import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
+import { getDatasetParse } from 'features/datasets/upload/datasets-parse.utils'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -61,9 +62,11 @@ function NewDataset(): React.ReactElement {
 
   const isDatasetEdit = dataset !== undefined
 
-  const onFileLoaded = useCallback((file: File) => {
+  const onFileLoaded = useCallback(async (file: File) => {
     console.log('setting file', file)
-    setRawFile(file)
+    const geojsonData = await getDatasetParse(file)
+    console.log('🚀 ~ onFileLoaded ~ datashp:', geojsonData)
+    // setRawFile(file)
 
     // const type = datasetModalType
     // setLoading(true)
