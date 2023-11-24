@@ -1,0 +1,19 @@
+{
+  "name": "@globalfishingwatch/loaders",
+  "version": "1.0.0",
+  "description": "",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "peerDependencies": {
+    "@loaders.gl/core": "^3.4.14",
+    "@loaders.gl/csv": "^3.4.14",
+    "@loaders.gl/loader-utils": "^3.4.14",
+    "@loaders.gl/mvt": "^3.4.14",
+    "@loaders.gl/shapefile": "^3.4.14"
+  }
+}
