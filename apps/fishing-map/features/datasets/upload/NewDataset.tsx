@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, Modal } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
+import { getDatasetSchemaFromGeojson } from '@globalfishingwatch/loaders'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -12,7 +13,7 @@ import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
 import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
-import { getDatasetParse } from 'features/datasets/upload/datasets-parse.utils'
+import { getDatasetParsed, getDatasetSchema } from 'features/datasets/upload/datasets-parse.utils'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -64,17 +65,14 @@ function NewDataset(): React.ReactElement {
 
   const onFileLoaded = useCallback(async (file: File) => {
     console.log('setting file', file)
-    const geojsonData = await getDatasetParse(file)
+    const geojsonData = await getDatasetParsed(file)
     console.log('🚀 ~ onFileLoaded ~ datashp:', geojsonData)
+    debugger
+    const schema = getDatasetSchemaFromGeojson(geojsonData)
+    console.log('🚀 ~ onFileLoaded ~ schema:', schema)
+    debugger
     // setRawFile(file)
 
-    // const type = datasetModalType
-    // setLoading(true)
-    // setError('')
-    // const name =
-    //   file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
-
-    // const metadataName = capitalize(lowerCase(name))
     // let formatGeojson = false
 
     // if (type === 'tracks') {

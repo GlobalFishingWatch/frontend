@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { ParseMeta, parse as parseCSV } from 'papaparse'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   Button,
@@ -21,23 +20,25 @@ import {
 import {
   checkRecordValidity,
   csvToTrackSegments,
-  guessColumns,
+  guessColumnsFromSchema,
   segmentsToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { getFileFromGeojson, readBlobAs } from 'utils/files'
+import { getFileFromGeojson } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
+import { getDatasetParsed, getDatasetSchema } from 'features/datasets/upload/datasets-parse.utils'
 import { isPrivateDataset } from '../datasets.utils'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
-  getDatasetSchemaFromCSV,
+  // getDatasetSchemaFromCSV,
+  getFileName,
 } from './datasets-upload.utils'
 import styles from './NewDataset.module.css'
 
 export type CSV = Record<string, any>[]
-export type ExtractMetadataProps = { meta: ParseMeta; data: CSV; name: string }
+export type ExtractMetadataProps = { name: string; data: any }
 
 function NewTrackDataset({
   onConfirm,
@@ -50,9 +51,10 @@ function NewTrackDataset({
   const [fileData, setFileData] = useState<CSV | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
 
-  const extractMetadata = useCallback(({ meta, data, name }: ExtractMetadataProps) => {
-    const guessedColumns = guessColumns(meta?.fields)
-    const schema: Dataset['schema'] = getDatasetSchemaFromCSV({ data, meta })
+  const extractMetadata = useCallback(async ({ name, data }: ExtractMetadataProps) => {
+    const schema = await getDatasetSchema(data)
+    const guessedColumns = guessColumnsFromSchema(schema)
+
     setDatasetMetadata((meta) => ({
       ...meta,
       name,
@@ -71,23 +73,18 @@ function NewTrackDataset({
     }))
   }, [])
 
-  const updateFileData = useCallback(
+  const handleFileData = useCallback(
     async (file: File) => {
-      const fileData = await readBlobAs(file, 'text')
-      const { data, meta } = parseCSV(fileData, {
-        dynamicTyping: true,
-        header: true,
-        skipEmptyLines: true,
-      })
-      setFileData(data as CSV)
-      extractMetadata({ meta, data: data as CSV, name: file.name })
+      const data = await getDatasetParsed(file)
+      setFileData(data)
+      extractMetadata({ data, name: getFileName(file) })
     },
     [extractMetadata]
   )
 
   useEffect(() => {
     if (file) {
-      updateFileData(file)
+      handleFileData(file)
     } else if (dataset) {
       const { ownerType, createdAt, endpoints, ...rest } = dataset
       setDatasetMetadata({
@@ -100,7 +97,7 @@ function NewTrackDataset({
         } as DatasetConfiguration,
       })
     }
-  }, [dataset, file, updateFileData])
+  }, [dataset, file, handleFileData])
 
   const onConfirmClick = useCallback(() => {
     let file: File | undefined

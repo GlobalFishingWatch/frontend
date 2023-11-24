@@ -1,3 +1,5 @@
+import { Dataset } from '@globalfishingwatch/api-types'
+
 export type GuessColumn = 'latitude' | 'longitude' | 'timestamp'
 
 export const LatitudeMatches = ['latitude', 'latitud', 'lat', 'location-lat', 'y']
@@ -34,7 +36,9 @@ export const guessColumn = (col: GuessColumn, options: string[] = []) => {
   return options.find((option) => GUESS_COLUMN_DICT[col].includes(option))
 }
 
-export const guessColumns = (columns: string[] | undefined) => {
+export const guessColumnsFromSchema = (schema: Dataset['schema']) => {
+  if (!schema) return {}
+  const columns = Object.keys(schema)
   if (!columns) return {}
   const guessedColumns = GUESS_COLUMN_NAMES.map(([columnToGuess, candidates]) => {
     const exactGuess = columns?.find((column) => candidates.includes(column))

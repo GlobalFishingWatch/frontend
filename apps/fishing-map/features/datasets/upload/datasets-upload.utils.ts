@@ -15,6 +15,24 @@ export type DatasetSchemaGeneratorProps = {
   meta: ParseMeta
 }
 
+export const getDatasetSchemaFromGeojson = (geojson: any) => {
+  const fields = geojson?.features?.[0]?.properties && Object.keys(geojson.features[0].properties)
+  console.log('🚀 ~ getDatasetSchemaFromGeojson ~ fields:', fields)
+  return fields.reduce((acc: Dataset['schema'], field: string): Dataset['schema'] => {
+    return {
+      ...acc,
+      [field]: {
+        type: typeof geojson.features[0].properties[field],
+        // TODO
+        // enum:
+        //   typeof geojson.features[0].properties[field] === 'string'
+        //     ? uniq(geojson.features.map((f: any) => f.properties[field]))
+        //     : [],
+      } as DatasetSchemaItem,
+    }
+  }, {})
+}
+
 export const getDatasetSchemaFromCSV = ({ data, meta }: DatasetSchemaGeneratorProps) => {
   const fields = meta?.fields
   const schema =
