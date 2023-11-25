@@ -12,7 +12,13 @@ steps:
   - id: 'generate-cypress-lock'
     waitFor: ['restore_cache']
     name: node:18
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
     script: |
+      if [ $_NEXT_PUBLIC_WORKSPACE_ENV = "production" ]; then
+          tag=$(git describe --tags  --match="@globalfishingwatchapp/fishing-map*")
+          git checkout tag
+      fi
       if [ -d "node_modules" ]; then
         yarn info cypress version > cypress.lock
       fi
