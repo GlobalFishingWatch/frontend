@@ -1,4 +1,6 @@
 steps:
+  - name: gcr.io/cloud-builders/git
+    args: [fetch, --depth=1000]
   - id: 'switch_tag'
     waitFor: ['-']
     name: node:18
