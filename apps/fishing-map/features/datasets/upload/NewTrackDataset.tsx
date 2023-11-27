@@ -106,7 +106,7 @@ function NewTrackDataset({
   const idProperty = getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })
 
   useEffect(() => {
-    if (idProperty && datasetMetadata) {
+    if (idProperty && datasetMetadata && fileData) {
       const geojson = getTrackFromList(fileData, datasetMetadata)
       setGeojson(geojson)
       if (!geojson.features.some((f) => f.geometry.coordinates?.length >= 2)) {
@@ -121,7 +121,7 @@ function NewTrackDataset({
   }, [idProperty])
 
   useEffect(() => {
-    if (idProperty && datasetMetadata) {
+    if (idProperty && datasetMetadata && fileData) {
       const geojson = getTrackFromList(fileData, datasetMetadata)
       setGeojson(geojson)
     }
