@@ -49,9 +49,6 @@ export const listToTrackSegments = ({
         const latitudeValue = record[latitude]
         const longitudeValue = record[longitude]
         const timestampValue = record[timestamp]
-        delete record[latitude]
-        delete record[longitude]
-        delete record[timestamp]
         return {
           latitude: parseFloat(latitudeValue),
           longitude: parseFloat(longitudeValue),
