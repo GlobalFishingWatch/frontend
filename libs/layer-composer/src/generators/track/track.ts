@@ -233,7 +233,10 @@ class TrackGenerator {
     if (visibility && config.highlightedTime) {
       const id = `${config.id}${this.highlightSufix}`
       const highlightedLayer = getHighlightedLayer(id)
-      layers.push(highlightedLayer)
+      layers.push({
+        ...highlightedLayer,
+        ...(filters.length > 0 && { filter: filters as FilterSpecification }),
+      })
     }
 
     return layers

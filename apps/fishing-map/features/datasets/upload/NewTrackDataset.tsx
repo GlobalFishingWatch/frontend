@@ -54,11 +54,10 @@ function NewTrackDataset({
   const [geojson, setGeojson] = useState<FeatureCollection<LineString> | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
 
-  const extractMetadata = useCallback(async ({ name, data }: ExtractMetadataProps) => {
+  const getDatasetMetadata = useCallback(({ name, data }: ExtractMetadataProps) => {
     const schema = getDatasetSchema(data, { includeEnum: true })
     const guessedColumns = guessColumnsFromSchema(schema)
-    setDatasetMetadata((meta) => ({
-      ...meta,
+    return {
       name,
       public: true,
       type: DatasetTypes.UserTracks,
@@ -72,16 +71,19 @@ function NewTrackDataset({
           geometryType: 'tracks' as DatasetGeometryType,
         },
       } as DatasetConfiguration,
-    }))
+    }
   }, [])
 
   const handleRawData = useCallback(
     async (file: File) => {
       const data = await getDatasetParsed(file)
       setFileData(data)
-      extractMetadata({ data, name: getFileName(file) })
+      const datasetMetadata = getDatasetMetadata({ data, name: getFileName(file) })
+      setDatasetMetadata((meta) => ({ ...meta, ...datasetMetadata }))
+      const geojson = getTrackFromList(data, datasetMetadata)
+      setGeojson(geojson)
     },
-    [extractMetadata]
+    [getDatasetMetadata]
   )
 
   useEffect(() => {
@@ -340,6 +342,10 @@ function NewTrackDataset({
           onSelect={(selected) => {
             onDatasetConfigurationChange({ idProperty: selected.id })
           }}
+          onCleanClick={() => {
+            onDatasetFieldChange({ fieldsAllowed: [] })
+            onDatasetConfigurationChange({ idProperty: undefined })
+          }}
         />
         <MultiSelect
           label={t('dataset.trackSegmentId', 'track filter property')}
@@ -349,6 +355,7 @@ function NewTrackDataset({
               : t('dataset.fieldPlaceholder', 'Select a field from your dataset')
           }
           direction="top"
+          disabled={!getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })}
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(getFieldsAllowedArray()) as MultiSelectOption[]}
           onSelect={handleFieldsAllowedAddItem}

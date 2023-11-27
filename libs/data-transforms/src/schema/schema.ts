@@ -55,7 +55,6 @@ export const getDatasetSchemaFromGeojson = (
     },
     {}
   )
-  console.log('🚀 ~ schema:', schema)
   return schema
 }
 

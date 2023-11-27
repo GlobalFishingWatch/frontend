@@ -353,8 +353,6 @@ function NewDataset(): React.ReactElement {
           {style === 'transparent' && fileRejected && (
             <Button onClick={onClose}>{t('common.dismiss', 'Dismiss')}</Button>
           )}
-          {/* Spinner only present to check if main thread is frozen */}
-          <Spinner />
         </Fragment>
       )}
     </Modal>

@@ -40,7 +40,8 @@ export const listToTrackSegments = ({
   timestamp,
   id,
 }: Args): Segment[] => {
-  const grouped = id ? groupBy(records, id) : { no_id: records }
+  const hasIdGroup = id !== undefined && id !== ''
+  const grouped = hasIdGroup ? groupBy(records, id) : { no_id: records }
   const segments = Object.values(grouped).map((groupedRecords) => {
     return groupedRecords.flatMap((record) => {
       const recordId = id && record[id] ? record[id] : NO_RECORD_ID
@@ -51,7 +52,7 @@ export const listToTrackSegments = ({
           longitude: parseFloat(longitude),
           timestamp: getUTCDate(timestamp).getTime(),
           id: recordId,
-          properties,
+          ...(hasIdGroup && { properties }),
         }
       } else return []
     })

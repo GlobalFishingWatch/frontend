@@ -38,7 +38,6 @@ const DatasetType = ({
   )
   const onDropRejected = useCallback(
     (files: FileRejection[]) => {
-      console.log('🚀 ~ files:', files)
       dispatchDatasetModalConfig({ fileRejected: true })
     },
     [dispatchDatasetModalConfig]
