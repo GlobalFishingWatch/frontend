@@ -1,7 +1,19 @@
 steps:
+  - name: gcr.io/cloud-builders/git
+    args: [fetch, --depth=1000]
+  - id: 'switch_tag'
+    waitFor: ['-']
+    name: node:18
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+    script: |
+      if [ $_NEXT_PUBLIC_WORKSPACE_ENV = "production" ]; then
+          tag=$(git describe --match "@globalfishingwatchapp/fishing-map*" --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          git checkout $tag
+      fi
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
-    waitFor: ['-']
+    waitFor: ['switch_tag']
     script: |
       #!/usr/bin/env bash
       restore_cache \
