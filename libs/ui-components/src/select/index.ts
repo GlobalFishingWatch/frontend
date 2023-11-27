@@ -1,9 +1,9 @@
 import type { Placement } from 'tippy.js'
 export * from './Select'
 
-export type SelectOption<T = any> = {
-  id: T
-  label: string | JSX.Element
+export type SelectOption<Id = any, Label = string | JSX.Element> = {
+  id: Id
+  label: Label
   disabled?: boolean
   tooltip?: string
   tooltipPlacement?: Placement

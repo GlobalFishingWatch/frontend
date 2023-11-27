@@ -1,6 +1,6 @@
 import { ParseMeta } from 'papaparse'
-import { capitalize, lowerCase, uniq } from 'lodash'
-import { Dataset, DatasetSchemaItem } from '@globalfishingwatch/api-types'
+import { capitalize, lowerCase } from 'lodash'
+import { Dataset, DatasetConfigurationUI } from '@globalfishingwatch/api-types'
 import { CSV } from './NewTrackDataset'
 import { DatasetMetadata } from './NewDataset'
 
@@ -15,34 +15,12 @@ export type DatasetSchemaGeneratorProps = {
   meta: ParseMeta
 }
 
-export const getDatasetSchemaFromCSV = ({ data, meta }: DatasetSchemaGeneratorProps) => {
-  const fields = meta?.fields
-  const schema =
-    fields &&
-    (fields.reduce((acc: Dataset['schema'], field: string): Dataset['schema'] => {
-      const dataWithValue = data.find((d: any) => d[field])
-      return dataWithValue
-        ? {
-            ...acc,
-            [field]: {
-              type: typeof dataWithValue[field],
-              enum:
-                typeof dataWithValue[field] === 'string' && field !== 'timestamp'
-                  ? uniq(data.map((d) => d[field]))
-                  : [],
-            } as DatasetSchemaItem,
-          }
-        : acc
-    }, {}) as Dataset['schema'])
-  return schema
-}
-
 export const getDatasetConfigurationProperty = ({
   datasetMetadata,
   property,
 }: {
   datasetMetadata: DatasetMetadata | undefined
-  property: string
+  property: keyof DatasetConfigurationUI
 }) => {
   return (datasetMetadata?.configuration?.configurationUI?.[property] ||
     datasetMetadata?.configuration?.[property]) as string

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { ParseMeta, parse as parseCSV } from 'papaparse'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FeatureCollection, LineString } from 'geojson'
 import {
   Button,
   Collapsable,
@@ -20,24 +20,26 @@ import {
 } from '@globalfishingwatch/api-types'
 import {
   checkRecordValidity,
-  csvToTrackSegments,
-  guessColumns,
-  segmentsToGeoJSON,
+  getDatasetSchema,
+  guessColumnsFromSchema,
 } from '@globalfishingwatch/data-transforms'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { getFileFromGeojson, readBlobAs } from 'utils/files'
+import { getFileFromGeojson } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
+import { getDatasetParsed, getTrackFromList } from 'features/datasets/upload/datasets-parse.utils'
+import { sortFields } from 'utils/shared'
 import { isPrivateDataset } from '../datasets.utils'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
-  getDatasetSchemaFromCSV,
+  // getDatasetSchemaFromCSV,
+  getFileName,
 } from './datasets-upload.utils'
 import styles from './NewDataset.module.css'
 
 export type CSV = Record<string, any>[]
-export type ExtractMetadataProps = { meta: ParseMeta; data: CSV; name: string }
+export type ExtractMetadataProps = { name: string; data: any }
 
 function NewTrackDataset({
   onConfirm,
@@ -46,13 +48,15 @@ function NewTrackDataset({
   onFileUpdate,
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
-  const [error, setError] = useState<string | undefined>()
+  const [error, setError] = useState<string>('')
+  const [idGroupError, setIdGroupError] = useState<string>('')
   const [fileData, setFileData] = useState<CSV | undefined>()
+  const [geojson, setGeojson] = useState<FeatureCollection<LineString> | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
 
-  const extractMetadata = useCallback(({ meta, data, name }: ExtractMetadataProps) => {
-    const guessedColumns = guessColumns(meta?.fields)
-    const schema: Dataset['schema'] = getDatasetSchemaFromCSV({ data, meta })
+  const extractMetadata = useCallback(async ({ name, data }: ExtractMetadataProps) => {
+    const schema = getDatasetSchema(data, { includeEnum: true })
+    const guessedColumns = guessColumnsFromSchema(schema)
     setDatasetMetadata((meta) => ({
       ...meta,
       name,
@@ -71,23 +75,18 @@ function NewTrackDataset({
     }))
   }, [])
 
-  const updateFileData = useCallback(
+  const handleRawData = useCallback(
     async (file: File) => {
-      const fileData = await readBlobAs(file, 'text')
-      const { data, meta } = parseCSV(fileData, {
-        dynamicTyping: true,
-        header: true,
-        skipEmptyLines: true,
-      })
-      setFileData(data as CSV)
-      extractMetadata({ meta, data: data as CSV, name: file.name })
+      const data = await getDatasetParsed(file)
+      setFileData(data)
+      extractMetadata({ data, name: getFileName(file) })
     },
     [extractMetadata]
   )
 
   useEffect(() => {
     if (file) {
-      updateFileData(file)
+      handleRawData(file)
     } else if (dataset) {
       const { ownerType, createdAt, endpoints, ...rest } = dataset
       setDatasetMetadata({
@@ -100,7 +99,32 @@ function NewTrackDataset({
         } as DatasetConfiguration,
       })
     }
-  }, [dataset, file, updateFileData])
+  }, [dataset, file, handleRawData])
+
+  const idProperty = getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })
+
+  useEffect(() => {
+    if (idProperty && datasetMetadata) {
+      const geojson = getTrackFromList(fileData, datasetMetadata)
+      setGeojson(geojson)
+      if (!geojson.features.some((f) => f.geometry.coordinates?.length >= 2)) {
+        setIdGroupError(
+          t('errors.trackSegmentIdGrup', "Grouping by this field doesn't generate valid tracks")
+        )
+      } else {
+        setIdGroupError('')
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idProperty])
+
+  useEffect(() => {
+    if (idProperty && datasetMetadata) {
+      const geojson = getTrackFromList(fileData, datasetMetadata)
+      setGeojson(geojson)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idProperty])
 
   const onConfirmClick = useCallback(() => {
     let file: File | undefined
@@ -130,22 +154,16 @@ function NewTrackDataset({
                 defaultValue: `Error with fields: ${fields}`,
               })
             )
-          } else {
-            console.log('FILE DATA', fileData)
-            const segments = csvToTrackSegments({
-              records: fileData as CSV,
-              ...(config as any),
-            })
-            const geoJSON = segmentsToGeoJSON(segments)
-            file = getFileFromGeojson(geoJSON)
+          } else if (geojson) {
+            file = getFileFromGeojson(geojson)
           }
         }
       }
-      if (onConfirm) {
+      if (file && onConfirm) {
         onConfirm(datasetMetadata, file)
       }
     }
-  }, [datasetMetadata, fileData, onConfirm, t])
+  }, [datasetMetadata, fileData, geojson, onConfirm, t])
 
   const onDatasetFieldChange = useCallback((newFields: Partial<DatasetMetadata>) => {
     setDatasetMetadata((meta) => ({ ...meta, ...(newFields as DatasetMetadata) }))
@@ -177,30 +195,44 @@ function NewTrackDataset({
     []
   )
 
-  const getSelectOptionFromDatasetField = (field: string | string[]) => {
-    return Array.isArray(field)
-      ? field.map((value) => ({ id: value, label: value }))
-      : { id: field, label: field }
-  }
-
   const fieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
-    const options: SelectOption[] = datasetMetadata?.schema
-      ? Object.keys(datasetMetadata.schema).map((field) => ({ id: field, label: field }))
+    const options = datasetMetadata?.schema
+      ? Object.keys(datasetMetadata.schema).map((field) => {
+          return { id: field, label: field }
+        })
+      : []
+    return options.sort(sortFields)
+  }, [datasetMetadata])
+
+  const filtersFieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
+    const options = datasetMetadata?.schema
+      ? Object.keys(datasetMetadata.schema).flatMap((field) => {
+          const schema = datasetMetadata.schema?.[field]
+          const isEnumAllowed =
+            (schema?.type === 'string' || schema?.type === 'boolean') && schema?.enum?.length
+          const isRangeAllowed = schema?.type === 'range' && schema?.min && schema?.max
+          return isEnumAllowed || isRangeAllowed ? { id: field, label: field } : []
+        })
       : []
     return options
-    // TODO remove options already selected
-    //   .filter((o) => {
-    //   return (
-    //     o.id === getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }) ||
-    //     o.id === getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }) ||
-    //     o.id === getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
-    //   )
-    // })
+      .filter((o) => {
+        return (
+          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }) &&
+          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }) &&
+          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
+        )
+      })
+      .sort(sortFields)
   }, [datasetMetadata])
 
   const getSelectedOption = useCallback(
-    (option: string | string[]): SelectOption | MultiSelectOption => {
-      return fieldsOptions.find((o) => o.id === option) || ({} as SelectOption)
+    (option: string | string[]): SelectOption | MultiSelectOption[] | undefined => {
+      if (option) {
+        if (Array.isArray(option)) {
+          return fieldsOptions.filter((o) => option.includes(o.id)) || ([] as SelectOption[])
+        }
+        return fieldsOptions.find((o) => o.id === option)
+      }
     },
     [fieldsOptions]
   )
@@ -245,9 +277,11 @@ function NewTrackDataset({
             label={t('dataset.trackSegmentId', 'latitude')}
             placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
             options={fieldsOptions}
-            selectedOption={getSelectedOption(
-              getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' })
-            )}
+            selectedOption={
+              getSelectedOption(
+                getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' })
+              ) as SelectOption
+            }
             onSelect={(selected) => {
               onDatasetConfigurationChange({ latitude: selected.id })
             }}
@@ -256,9 +290,11 @@ function NewTrackDataset({
             label={t('dataset.trackSegmentId', 'longitude')}
             placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
             options={fieldsOptions}
-            selectedOption={getSelectedOption(
-              getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' })
-            )}
+            selectedOption={
+              getSelectedOption(
+                getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' })
+              ) as SelectOption
+            }
             onSelect={(selected) => {
               onDatasetConfigurationChange({ longitude: selected.id })
             }}
@@ -268,9 +304,11 @@ function NewTrackDataset({
               label={t('dataset.trackSegmentTimes', 'Track segment times')}
               placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
               options={fieldsOptions}
-              selectedOption={getSelectedOption(
-                getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
-              )}
+              selectedOption={
+                getSelectedOption(
+                  getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
+                ) as SelectOption
+              }
               onSelect={(selected) => {
                 onDatasetConfigurationChange({ timestamp: selected.id })
               }}
@@ -291,9 +329,14 @@ function NewTrackDataset({
         <Select
           label={t('dataset.trackSegmentId', 'Individual track segment id')}
           placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-          options={fieldsOptions}
+          options={filtersFieldsOptions}
+          error={idGroupError}
           direction="top"
-          selectedOption={getSelectedOption('idProperty')}
+          selectedOption={
+            getSelectedOption(
+              getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })
+            ) as SelectOption
+          }
           onSelect={(selected) => {
             onDatasetConfigurationChange({ idProperty: selected.id })
           }}
@@ -305,10 +348,9 @@ function NewTrackDataset({
               ? getFieldsAllowedArray().join(', ')
               : t('dataset.fieldPlaceholder', 'Select a field from your dataset')
           }
-          options={fieldsOptions}
-          selectedOptions={
-            getSelectOptionFromDatasetField(getFieldsAllowedArray()) as MultiSelectOption[]
-          }
+          direction="top"
+          options={filtersFieldsOptions}
+          selectedOptions={getSelectedOption(getFieldsAllowedArray()) as MultiSelectOption[]}
           onSelect={handleFieldsAllowedAddItem}
           onRemove={handleFieldsAllowedRemoveItem}
           onCleanClick={handleFieldsAllowedCleanSelection}
@@ -323,7 +365,7 @@ function NewTrackDataset({
         <Button
           className={styles.saveBtn}
           onClick={onConfirmClick}
-          // disabled={!file || !metadata?.name}
+          disabled={!file || error !== '' || idGroupError !== ''}
           // loading={loading}
         >
           {t('common.confirm', 'Confirm') as string}

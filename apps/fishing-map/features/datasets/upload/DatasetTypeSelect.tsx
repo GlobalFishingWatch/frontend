@@ -48,7 +48,7 @@ const DatasetType = ({
   const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)
 
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
-    accept: fileAcceptedByMime,
+    // accept: fileAcceptedByMime,
     onDropAccepted,
     onDropRejected,
   })

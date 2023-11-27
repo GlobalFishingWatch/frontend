@@ -10,6 +10,7 @@ import { SelectOption, SelectOnChange } from './index'
 interface SelectProps {
   id?: string
   label?: string
+  error?: string
   placeholder?: string
   options: SelectOption[]
   selectedOption?: SelectOption
@@ -34,6 +35,7 @@ export function Select(props: SelectProps) {
   const {
     id,
     label = '',
+    error = '',
     placeholder = 'Select an option',
     options,
     selectedOption,
@@ -95,6 +97,7 @@ export function Select(props: SelectProps) {
       {label && (
         <label className={cx(styles.label, labelContainerClassName)} {...getLabelProps()}>
           {label}
+          {error && <span className={styles.errorLabel}>{error}</span>}
         </label>
       )}
       <div
@@ -103,6 +106,7 @@ export function Select(props: SelectProps) {
           styles[type],
           { [styles.isOpen]: isOpen },
           { [styles.placeholderShown]: !selectedOption },
+          { [styles.error]: error !== '' },
           className
         )}
       >

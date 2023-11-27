@@ -2689,6 +2689,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@globalfishingwatch/loaders@workspace:libs/loaders":
+  version: 0.0.0-use.local
+  resolution: "@globalfishingwatch/loaders@workspace:libs/loaders"
+  peerDependencies:
+    "@loaders.gl/core": ^3.4.14
+    "@loaders.gl/csv": ^3.4.14
+    "@loaders.gl/loader-utils": ^3.4.14
+    "@loaders.gl/mvt": ^3.4.14
+    "@loaders.gl/shapefile": ^3.4.14
+  languageName: unknown
+  linkType: soft
+
 "@globalfishingwatch/map-convert@github:GlobalFishingWatch/map-convert":
   version: 1.0.0
   resolution: "@globalfishingwatch/map-convert@https://github.com/GlobalFishingWatch/map-convert.git#commit=29d2918507ad3b57ac661abc2791b9334a43b853"
@@ -2816,6 +2828,8 @@ __metadata:
     "@globalfishingwatch/maplibre-gl": ^3.5.1-gfw.2
     "@jscutlery/semver": ^3.1.0
     "@loaders.gl/core": ^3.4.14
+    "@loaders.gl/csv": ^3.4.14
+    "@loaders.gl/json": ^3.4.14
     "@loaders.gl/loader-utils": ^3.4.14
     "@loaders.gl/mvt": ^3.4.14
     "@mapbox/tile-cover": ^3.0.2
@@ -4107,6 +4121,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@loaders.gl/csv@npm:^3.4.14":
+  version: 3.4.14
+  resolution: "@loaders.gl/csv@npm:3.4.14"
+  dependencies:
+    "@loaders.gl/loader-utils": 3.4.14
+    "@loaders.gl/schema": 3.4.14
+  checksum: 69e6a72b6439df4a7e181e305e813166c4fa5d6fc51985bfacc0b6df01054781a1fc15d5659714ed79212af58ff41f74cfdff3e9c25e22b542f4f9fe9713e5e6
+  languageName: node
+  linkType: hard
+
 "@loaders.gl/draco@npm:3.4.14":
   version: 3.4.14
   resolution: "@loaders.gl/draco@npm:3.4.14"
@@ -4152,6 +4176,17 @@ __metadata:
   dependencies:
     "@loaders.gl/loader-utils": 3.4.14
   checksum: bb4049fa6a0739079597bc6d52e389440703fcf61c6e1c8f797dfa5c7404a24e04dc744e08d22c1d8333e4da040451572a3df9b980766beadb9bfa17a5f47234
+  languageName: node
+  linkType: hard
+
+"@loaders.gl/json@npm:^3.4.14":
+  version: 3.4.14
+  resolution: "@loaders.gl/json@npm:3.4.14"
+  dependencies:
+    "@loaders.gl/gis": 3.4.14
+    "@loaders.gl/loader-utils": 3.4.14
+    "@loaders.gl/schema": 3.4.14
+  checksum: 64a52fc4ede4d755df2f9ec4fecec746fb2cd082286c57162472c0efd2975c79d7e0b62e29c507a839e1c32fa98a8284a73fd6241fc3027c6ec540e9a66288ec
   languageName: node
   linkType: hard
 

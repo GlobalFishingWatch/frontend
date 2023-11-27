@@ -59,6 +59,7 @@ interface MultiSelectProps {
   selectedOptions?: MultiSelectOption[]
   disabled?: boolean
   disabledMsg?: string
+  direction?: 'bottom' | 'top'
   onFilterOptions?: MultiSelectOnFilter
   onIsOpenChange?: (open: boolean) => void
   onSelect: MultiSelectOnChange
@@ -86,6 +87,7 @@ const getPlaceholderBySelections = (
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
+  console.log('🚀 ~ isItemSelected ~ selectedItems:', selectedItems)
   return selectedItems !== null ? selectedItems.some((selected) => selected.id === item.id) : false
 }
 
@@ -107,6 +109,7 @@ export function MultiSelect(props: MultiSelectProps) {
     placeholder,
     className = '',
     labelContainerClassName = '',
+    direction = 'bottom',
     onSelect,
     onRemove,
     onCleanClick,
@@ -293,7 +296,7 @@ export function MultiSelect(props: MultiSelectProps) {
             </Fragment>
           )}
         </div>
-        <ul {...getMenuProps()} className={styles.optionsContainer}>
+        <ul {...getMenuProps()} className={cx(styles.optionsContainer, styles[direction])}>
           {isOpen &&
             filteredItems.length > 0 &&
             filteredItems.map((item, index) => {

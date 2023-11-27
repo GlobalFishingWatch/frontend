@@ -25,7 +25,7 @@ const initialState: ModalsOpenState = {
   screenshot: false,
   layerLibrary: false,
   datasetUpload: {
-    open: false,
+    open: true,
     id: undefined,
     type: undefined,
     fileRejected: false,
