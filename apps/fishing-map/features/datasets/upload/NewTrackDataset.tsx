@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FeatureCollection, LineString } from 'geojson'
 import {
   Button,
   Collapsable,
@@ -47,8 +48,10 @@ function NewTrackDataset({
   onFileUpdate,
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
-  const [error, setError] = useState<string | undefined>()
+  const [error, setError] = useState<string>('')
+  const [idGroupError, setIdGroupError] = useState<string>('')
   const [fileData, setFileData] = useState<CSV | undefined>()
+  const [geojson, setGeojson] = useState<FeatureCollection<LineString> | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
 
   const extractMetadata = useCallback(async ({ name, data }: ExtractMetadataProps) => {
@@ -98,6 +101,31 @@ function NewTrackDataset({
     }
   }, [dataset, file, handleRawData])
 
+  const idProperty = getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })
+
+  useEffect(() => {
+    if (idProperty && datasetMetadata) {
+      const geojson = getTrackFromList(fileData, datasetMetadata)
+      setGeojson(geojson)
+      if (!geojson.features.some((f) => f.geometry.coordinates?.length >= 2)) {
+        setIdGroupError(
+          t('errors.trackSegmentIdGrup', "Grouping by this field doesn't generate valid tracks")
+        )
+      } else {
+        setIdGroupError('')
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idProperty])
+
+  useEffect(() => {
+    if (idProperty && datasetMetadata) {
+      const geojson = getTrackFromList(fileData, datasetMetadata)
+      setGeojson(geojson)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idProperty])
+
   const onConfirmClick = useCallback(() => {
     let file: File | undefined
     if (datasetMetadata) {
@@ -126,17 +154,16 @@ function NewTrackDataset({
                 defaultValue: `Error with fields: ${fields}`,
               })
             )
-          } else {
-            const geojson = getTrackFromList(fileData, datasetMetadata)
+          } else if (geojson) {
             file = getFileFromGeojson(geojson)
           }
         }
       }
-      if (onConfirm) {
+      if (file && onConfirm) {
         onConfirm(datasetMetadata, file)
       }
     }
-  }, [datasetMetadata, fileData, onConfirm, t])
+  }, [datasetMetadata, fileData, geojson, onConfirm, t])
 
   const onDatasetFieldChange = useCallback((newFields: Partial<DatasetMetadata>) => {
     setDatasetMetadata((meta) => ({ ...meta, ...(newFields as DatasetMetadata) }))
@@ -303,6 +330,7 @@ function NewTrackDataset({
           label={t('dataset.trackSegmentId', 'Individual track segment id')}
           placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
           options={filtersFieldsOptions}
+          error={idGroupError}
           direction="top"
           selectedOption={
             getSelectedOption(
@@ -310,7 +338,6 @@ function NewTrackDataset({
             ) as SelectOption
           }
           onSelect={(selected) => {
-            // TODO pre-generate the geojson to set an error in case the groupping doesn't make sense
             onDatasetConfigurationChange({ idProperty: selected.id })
           }}
         />
@@ -338,7 +365,7 @@ function NewTrackDataset({
         <Button
           className={styles.saveBtn}
           onClick={onConfirmClick}
-          // disabled={!file || !metadata?.name}
+          disabled={!file || error !== '' || idGroupError !== ''}
           // loading={loading}
         >
           {t('common.confirm', 'Confirm') as string}

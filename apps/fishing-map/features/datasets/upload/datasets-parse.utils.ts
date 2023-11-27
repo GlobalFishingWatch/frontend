@@ -20,7 +20,7 @@ export function getDatasetParsed(file: File) {
   return load(file, JSONLoader)
 }
 
-export const getTrackFromList = (data: any, datasetMetadata: DatasetMetadata) => {
+export const getTrackFromList = (data: Record<string, any>[], datasetMetadata: DatasetMetadata) => {
   const segments = listToTrackSegments({
     records: data,
     latitude: getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }),

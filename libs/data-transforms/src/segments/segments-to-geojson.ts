@@ -1,8 +1,8 @@
 import type { FeatureCollection, LineString, Feature } from 'geojson'
-import { Segment, Point, PointProperties } from '@globalfishingwatch/api-types'
+import { Segment, Point } from '@globalfishingwatch/api-types'
 
 const segmentsToGeoJSON = (segments: Segment[]) => {
-  const geoJSON: FeatureCollection = {
+  const geoJSON: FeatureCollection<LineString> = {
     type: 'FeatureCollection',
     features: [],
   }
@@ -18,7 +18,7 @@ const segmentsToGeoJSON = (segments: Segment[]) => {
       coordinates,
     }
     const times = segment.map((point) => point.timestamp)
-    const feature: Feature = {
+    const feature: Feature<LineString> = {
       type: 'Feature',
       geometry,
       properties: {
