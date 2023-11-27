@@ -125,11 +125,11 @@ export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean' | 'arr
 
 export type DatasetSchemaItem = {
   type: DatasetSchemaType
-  maxLength: number
-  minLength: number
-  enum: string[]
-  min: number
-  max: number
+  enum?: (string | boolean)[]
+  maxLength?: number
+  minLength?: number
+  min?: number
+  max?: number
   stats?: boolean
   unit?: string
   singleSelection?: boolean

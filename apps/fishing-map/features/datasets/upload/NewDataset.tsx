@@ -2,10 +2,8 @@ import { useState, useCallback, Fragment } from 'react'
 import type { FeatureCollectionWithFilename } from 'shpjs'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { load } from '@loaders.gl/core'
 import { Button, Modal, Spinner } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
-import { getDatasetSchemaFromGeojson } from '@globalfishingwatch/loaders'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { selectLocationType } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -14,8 +12,6 @@ import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
 import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
-import { getDatasetParsed } from 'features/datasets/upload/datasets-parse.utils'
-import { JSONTrackLoader } from 'features/datasets/upload/loaders/JSONTrackLoader'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -23,7 +19,6 @@ import {
   useDatasetModalConfigConnect,
 } from '../datasets.hook'
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
-import { guessColumn } from '../../../../../libs/data-transforms/src/csv-to-track-segments'
 import DatasetTypeSelect from './DatasetTypeSelect'
 import styles from './NewDataset.module.css'
 
@@ -68,29 +63,7 @@ function NewDataset(): React.ReactElement {
 
   const onFileLoaded = useCallback(
     async (file: File) => {
-      const jsonData = await getDatasetParsed(file)
-      console.log('🚀 ~ onFileLoaded ~ jsonData:', jsonData)
-      // debugger
-      const schema = getDatasetSchemaFromGeojson(jsonData)
-      console.log('🚀 ~ onFileLoaded ~ schema:', schema)
-
-      //MOVE TO CONFIRMATION LOGIC
-      if (schema && type === 'tracks') {
-        const schemaKeys = Object.keys(schema)
-        const latField = guessColumn('latitude', schemaKeys)
-        const lonField = guessColumn('longitude', schemaKeys)
-        const timeField = guessColumn('timestamp', schemaKeys)
-        const dataBlob = new Blob([JSON.stringify(jsonData)])
-        const track = await load(dataBlob, JSONTrackLoader, {
-          latField: latField || 'latitude',
-          lonField: lonField || 'longitude',
-          timeField: timeField || 'timestamp',
-          segmentIdField: 'individual-local-identifier',
-        })
-        console.log('🚀 ~ onFileLoaded ~ track:', track)
-      }
-      // debugger
-      // setRawFile(file)
+      setRawFile(file)
 
       // let formatGeojson = false
 

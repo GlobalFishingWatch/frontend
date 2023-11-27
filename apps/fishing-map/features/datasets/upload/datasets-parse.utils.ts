@@ -1,8 +1,7 @@
 import { load } from '@loaders.gl/core'
-import { JSONLoader } from '@loaders.gl/json'
 import { CSVLoader } from '@loaders.gl/csv'
-import { GeojsonSchemaLoader } from '@globalfishingwatch/loaders'
-import { Dataset } from '@globalfishingwatch/api-types'
+import { JSONLoader } from '@loaders.gl/json'
+import { csvToTrackSegments, segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 
 export function getDatasetParsed(file: File) {
   const isZip =
@@ -19,6 +18,21 @@ export function getDatasetParsed(file: File) {
   return load(file, JSONLoader)
 }
 
-export function getDatasetSchema(geojson: any): Promise<Dataset['schema']> {
-  return load(geojson, GeojsonSchemaLoader)
+type ParseTrackOptions = {
+  latField?: string
+  lonField?: string
+  timeField?: string
+  segmentIdField?: string
+}
+const parseTrack = (data: any, options: ParseTrackOptions) => {
+  const { latField, lonField, timeField, segmentIdField } = options
+  const segments = csvToTrackSegments({
+    records: data,
+    latitude: latField as string,
+    longitude: lonField as string,
+    timestamp: timeField as string,
+    id: segmentIdField as string,
+  })
+  const geoJSON = segmentsToGeoJSON(segments)
+  return geoJSON
 }
