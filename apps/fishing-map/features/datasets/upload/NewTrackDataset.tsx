@@ -19,16 +19,15 @@ import {
 } from '@globalfishingwatch/api-types'
 import {
   checkRecordValidity,
-  listToTrackSegments,
   getDatasetSchema,
   guessColumnsFromSchema,
-  segmentsToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getFileFromGeojson } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
 import { getDatasetParsed, getTrackFromList } from 'features/datasets/upload/datasets-parse.utils'
+import { sortFields } from 'utils/shared'
 import { isPrivateDataset } from '../datasets.utils'
 import {
   getDatasetConfiguration,
@@ -170,16 +169,16 @@ function NewTrackDataset({
   )
 
   const fieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
-    const options: SelectOption[] = datasetMetadata?.schema
+    const options = datasetMetadata?.schema
       ? Object.keys(datasetMetadata.schema).map((field) => {
           return { id: field, label: field }
         })
       : []
-    return options
+    return options.sort(sortFields)
   }, [datasetMetadata])
 
   const filtersFieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
-    const options: SelectOption[] = datasetMetadata?.schema
+    const options = datasetMetadata?.schema
       ? Object.keys(datasetMetadata.schema).flatMap((field) => {
           const schema = datasetMetadata.schema?.[field]
           const isEnumAllowed =
@@ -188,13 +187,15 @@ function NewTrackDataset({
           return isEnumAllowed || isRangeAllowed ? { id: field, label: field } : []
         })
       : []
-    return options.filter((o) => {
-      return (
-        o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }) &&
-        o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }) &&
-        o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
-      )
-    })
+    return options
+      .filter((o) => {
+        return (
+          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }) &&
+          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }) &&
+          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
+        )
+      })
+      .sort(sortFields)
   }, [datasetMetadata])
 
   const getSelectedOption = useCallback(
