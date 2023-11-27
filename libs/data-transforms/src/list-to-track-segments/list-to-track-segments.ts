@@ -45,11 +45,13 @@ export const listToTrackSegments = ({
     return groupedRecords.flatMap((record) => {
       const recordId = id && record[id] ? record[id] : NO_RECORD_ID
       if (record[latitude] && record[longitude] && record[timestamp]) {
+        const { latitude, longitude, timestamp, ...properties } = record
         return {
-          latitude: parseFloat(record[latitude]),
-          longitude: parseFloat(record[longitude]),
-          timestamp: getUTCDate(record[timestamp]).getTime(),
+          latitude: parseFloat(latitude),
+          longitude: parseFloat(longitude),
+          timestamp: getUTCDate(timestamp).getTime(),
           id: recordId,
+          properties,
         }
       } else return []
     })
