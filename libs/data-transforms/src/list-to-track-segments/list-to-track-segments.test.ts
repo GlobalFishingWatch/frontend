@@ -1,7 +1,7 @@
 import { parse } from 'papaparse'
 import { guessColumn } from '../schema/guess-columns'
-import { csvToTrackSegments, getUTCDate } from './csvToTrackSegments'
-import { checkRecordValidity } from './checkRecordValidity'
+import { listToTrackSegments, getUTCDate } from './list-to-track-segments'
+import { checkRecordValidity } from './check-record-validity'
 const fs = require('fs')
 const path = require('path')
 
@@ -71,7 +71,7 @@ describe('Basic raw csv to track', () => {
     timestamp: 'timestamp',
     id: 'individual-local-identifier',
   }
-  const segments = csvToTrackSegments({ records: data as Record<string, any>[], ...columns })
+  const segments = listToTrackSegments({ records: data as Record<string, any>[], ...columns })
   const ids = Array.from(new Set(data.map((item: any) => item[columns.id])))
 
   // Map index position in segment array for a given id
@@ -174,7 +174,7 @@ describe('Raw csv to track with UTC timestamps', () => {
     timestamp: 'timestamp',
     id: 'ssvid',
   }
-  const segments = csvToTrackSegments({ records: data as Record<string, any>[], ...columns })
+  const segments = listToTrackSegments({ records: data as Record<string, any>[], ...columns })
   const ids = Array.from(new Set(data.map((item: any) => item[columns.id])))
 
   // Map index position in segment array for a given id

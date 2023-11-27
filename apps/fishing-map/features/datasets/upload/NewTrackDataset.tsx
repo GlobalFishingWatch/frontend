@@ -19,7 +19,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import {
   checkRecordValidity,
-  csvToTrackSegments,
+  listToTrackSegments,
   getDatasetSchema,
   guessColumnsFromSchema,
   segmentsToGeoJSON,
@@ -28,7 +28,7 @@ import UserGuideLink from 'features/help/UserGuideLink'
 import { getFileFromGeojson } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
-import { getDatasetParsed } from 'features/datasets/upload/datasets-parse.utils'
+import { getDatasetParsed, getTrackFromList } from 'features/datasets/upload/datasets-parse.utils'
 import { isPrivateDataset } from '../datasets.utils'
 import {
   getDatasetConfiguration,
@@ -128,13 +128,8 @@ function NewTrackDataset({
               })
             )
           } else {
-            console.log('FILE DATA', fileData)
-            const segments = csvToTrackSegments({
-              records: fileData as CSV,
-              ...(config as any),
-            })
-            const geoJSON = segmentsToGeoJSON(segments)
-            file = getFileFromGeojson(geoJSON)
+            const geojson = getTrackFromList(fileData, datasetMetadata)
+            file = getFileFromGeojson(geojson)
           }
         }
       }
@@ -203,11 +198,13 @@ function NewTrackDataset({
   }, [datasetMetadata])
 
   const getSelectedOption = useCallback(
-    (option: string | string[]): SelectOption | MultiSelectOption[] => {
-      if (Array.isArray(option)) {
-        fieldsOptions.filter((o) => option.includes(o.id)) || ([] as SelectOption[])
+    (option: string | string[]): SelectOption | MultiSelectOption[] | undefined => {
+      if (option) {
+        if (Array.isArray(option)) {
+          return fieldsOptions.filter((o) => option.includes(o.id)) || ([] as SelectOption[])
+        }
+        return fieldsOptions.find((o) => o.id === option)
       }
-      return fieldsOptions.find((o) => o.id === option) || ({} as SelectOption)
     },
     [fieldsOptions]
   )
@@ -312,6 +309,7 @@ function NewTrackDataset({
             ) as SelectOption
           }
           onSelect={(selected) => {
+            // TODO pre-generate the geojson to set an error in case the groupping doesn't make sense
             onDatasetConfigurationChange({ idProperty: selected.id })
           }}
         />

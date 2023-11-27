@@ -33,7 +33,7 @@ export const getUTCDate = (timestamp: string | number) => {
 
 export const NO_RECORD_ID = 'no_id'
 
-export const csvToTrackSegments = ({
+export const listToTrackSegments = ({
   records,
   latitude,
   longitude,

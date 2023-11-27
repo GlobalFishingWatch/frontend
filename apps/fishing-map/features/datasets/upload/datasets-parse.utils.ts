@@ -1,7 +1,9 @@
 import { load } from '@loaders.gl/core'
 import { CSVLoader } from '@loaders.gl/csv'
 import { JSONLoader } from '@loaders.gl/json'
-import { csvToTrackSegments, segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import { listToTrackSegments, segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
+import { getDatasetConfigurationProperty } from 'features/datasets/upload/datasets-upload.utils'
 
 export function getDatasetParsed(file: File) {
   const isZip =
@@ -18,21 +20,13 @@ export function getDatasetParsed(file: File) {
   return load(file, JSONLoader)
 }
 
-type ParseTrackOptions = {
-  latField?: string
-  lonField?: string
-  timeField?: string
-  segmentIdField?: string
-}
-const parseTrack = (data: any, options: ParseTrackOptions) => {
-  const { latField, lonField, timeField, segmentIdField } = options
-  const segments = csvToTrackSegments({
+export const getTrackFromList = (data: any, datasetMetadata: DatasetMetadata) => {
+  const segments = listToTrackSegments({
     records: data,
-    latitude: latField as string,
-    longitude: lonField as string,
-    timestamp: timeField as string,
-    id: segmentIdField as string,
+    latitude: getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }),
+    longitude: getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }),
+    timestamp: getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' }),
+    id: getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' }),
   })
-  const geoJSON = segmentsToGeoJSON(segments)
-  return geoJSON
+  return segmentsToGeoJSON(segments)
 }

@@ -1,6 +1,6 @@
 export * from './buffer'
 export * from './events'
-export * from './csv-to-track-segments'
+export * from './list-to-track-segments'
 export * from './dissolve'
 export * from './features'
 export * from './merge-track-chunks'

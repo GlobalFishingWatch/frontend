@@ -1,6 +1,6 @@
 import { ParseMeta } from 'papaparse'
 import { capitalize, lowerCase } from 'lodash'
-import { Dataset } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetConfigurationUI } from '@globalfishingwatch/api-types'
 import { CSV } from './NewTrackDataset'
 import { DatasetMetadata } from './NewDataset'
 
@@ -20,7 +20,7 @@ export const getDatasetConfigurationProperty = ({
   property,
 }: {
   datasetMetadata: DatasetMetadata | undefined
-  property: string
+  property: keyof DatasetConfigurationUI
 }) => {
   return (datasetMetadata?.configuration?.configurationUI?.[property] ||
     datasetMetadata?.configuration?.[property]) as string

@@ -87,6 +87,7 @@ const getPlaceholderBySelections = (
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
+  console.log('🚀 ~ isItemSelected ~ selectedItems:', selectedItems)
   return selectedItems !== null ? selectedItems.some((selected) => selected.id === item.id) : false
 }
 

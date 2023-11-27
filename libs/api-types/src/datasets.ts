@@ -87,6 +87,14 @@ export interface DatasetDocumentation {
   provider?: string
 }
 
+export interface DatasetConfigurationUI {
+  latitude?: string
+  longitude?: string
+  timestamp?: string
+  idValue?: string
+  [key: string]: unknown
+}
+
 export interface DatasetConfiguration {
   index?: string
   filePath?: string
@@ -101,7 +109,7 @@ export interface DatasetConfiguration {
   idProperty?: string
   valueProperties?: string[]
   apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
-  configurationUI?: Record<string, unknown>
+  configurationUI?: DatasetConfigurationUI
   [key: string]: unknown
 }
 

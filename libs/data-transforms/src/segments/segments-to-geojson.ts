@@ -6,7 +6,9 @@ const segmentsToGeoJSON = (segments: Segment[]) => {
     type: 'FeatureCollection',
     features: [],
   }
-  geoJSON.features = segments.map((segment) => {
+  geoJSON.features = segments.flatMap((segment) => {
+    if (!segment.length) return []
+
     const coordinates = segment.map((point) => [
       point.longitude as number,
       point.latitude as number,
