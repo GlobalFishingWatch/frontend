@@ -1,7 +1,7 @@
 import { parse } from 'papaparse'
+import { guessColumn } from '../schema/guess-columns'
 import { csvToTrackSegments, getUTCDate } from './csvToTrackSegments'
 import { checkRecordValidity } from './checkRecordValidity'
-import { guessColumns } from './guessColumns'
 const fs = require('fs')
 const path = require('path')
 
@@ -88,10 +88,9 @@ describe('Basic raw csv to track', () => {
   }
 
   it('guesses columns correctly', () => {
-    const guessedColumns = guessColumns(meta?.fields)
-    expect(guessedColumns.timestamp).toEqual('timestamp')
-    expect(guessedColumns.latitude).toEqual('location-lat')
-    expect(guessedColumns.longitude).toEqual('location-long')
+    expect(guessColumn('timestamp', meta?.fields)).toEqual('timestamp')
+    expect(guessColumn('latitude', meta?.fields)).toEqual('location-lat')
+    expect(guessColumn('longitude', meta?.fields)).toEqual('location-long')
   })
 
   it('checks record validity correctly', () => {
@@ -192,10 +191,9 @@ describe('Raw csv to track with UTC timestamps', () => {
   }
 
   it('guesses columns correctly', () => {
-    const guessedColumns = guessColumns(meta?.fields)
-    expect(guessedColumns.timestamp).toEqual('timestamp')
-    expect(guessedColumns.latitude).toEqual('lat')
-    expect(guessedColumns.longitude).toEqual('lon')
+    expect(guessColumn('timestamp', meta?.fields)).toEqual('timestamp')
+    expect(guessColumn('latitude', meta?.fields)).toEqual('lat')
+    expect(guessColumn('longitude', meta?.fields)).toEqual('lon')
   })
 
   it('checks record validity correctly', () => {
