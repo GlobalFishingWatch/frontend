@@ -350,9 +350,11 @@ export function resolveDataviews(
 
   // resolved array filters to url filters
   dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
+    debugger
     if (
       dataviewInstance.config?.type === GeneratorType.HeatmapAnimated ||
-      dataviewInstance.config?.type === GeneratorType.TileCluster
+      dataviewInstance.config?.type === GeneratorType.TileCluster ||
+      dataviewInstance.config?.type === GeneratorType.UserContext
     ) {
       const { filters, filterOperators } = dataviewInstance.config
       if (filters) {

@@ -132,6 +132,10 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    */
   datasetId?: string
   /**
+   * SQL filter to apply to the dataset
+   */
+  filter?: string
+  /**
    * Custom color ramp for filled layers
    */
   steps?: number[]
