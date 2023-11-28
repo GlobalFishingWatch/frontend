@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { FeatureCollection, Point } from 'geojson'
 import {
   Button,
+  InputText,
   MultiSelect,
   MultiSelectOnChange,
   MultiSelectOption,
+  Select,
   SelectOption,
 } from '@globalfishingwatch/ui-components'
 import {
@@ -23,16 +25,21 @@ import {
 import UserGuideLink from 'features/help/UserGuideLink'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { sortFields } from 'utils/shared'
-import { getFileFromGeojson } from 'utils/files'
+import { FileType, getFileFromGeojson } from 'utils/files'
 import { isPrivateDataset } from '../datasets.utils'
 import styles from './NewDataset.module.css'
 import { ExtractMetadataProps } from './NewTrackDataset'
-import { getDatasetParsed, getPointsFromList } from './datasets-parse.utils'
+import {
+  getDatasetParsed,
+  getFileType,
+  getFeatureCollectionFromPointsList,
+} from './datasets-parse.utils'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getFileName,
 } from './datasets-upload.utils'
+import FileDropzone from './FileDropzone'
 
 function NewPointDataset({
   onConfirm,
@@ -44,22 +51,24 @@ function NewPointDataset({
   const [error, setError] = useState<string>('')
   const [idGroupError, setIdGroupError] = useState<string>('')
   const [fileData, setFileData] = useState<CSV | undefined>()
+  const [fileType, setFileType] = useState<FileType>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
 
   const getDatasetMetadata = useCallback(({ name, data }: ExtractMetadataProps) => {
     const schema = getDatasetSchema(data, { includeEnum: true })
+    const isNotGeoStandard = data.type !== 'FeatureCollection'
     const guessedColumns = guessColumnsFromSchema(schema)
     return {
       name,
       public: true,
-      type: DatasetTypes.Context,
+      type: DatasetTypes.UserContext,
       category: DatasetCategory.Context,
       schema,
       configuration: {
         configurationUI: {
-          latitude: guessedColumns.latitude,
-          longitude: guessedColumns.longitude,
+          ...(isNotGeoStandard && { longitude: guessedColumns.longitude }),
+          ...(isNotGeoStandard && { latitude: guessedColumns.latitude }),
           timestamp: guessedColumns.timestamp,
           geometryType: 'points' as DatasetGeometryType,
         },
@@ -71,10 +80,18 @@ function NewPointDataset({
     async (file: File) => {
       const data = await getDatasetParsed(file)
       setFileData(data)
+      setFileType(getFileType(file))
       const datasetMetadata = getDatasetMetadata({ data, name: getFileName(file) })
       setDatasetMetadata((meta) => ({ ...meta, ...datasetMetadata }))
-      const geojson = getPointsFromList(data, datasetMetadata) as FeatureCollection<Point>
-      setGeojson(geojson)
+      if (getFileType(file) === 'csv') {
+        const geojson = getFeatureCollectionFromPointsList(
+          data,
+          datasetMetadata
+        ) as FeatureCollection<Point>
+        setGeojson(geojson)
+      } else {
+        setGeojson(data)
+      }
     },
     [getDatasetMetadata]
   )
@@ -83,16 +100,16 @@ function NewPointDataset({
     if (file) {
       handleRawData(file)
     } else if (dataset) {
-      // const { ownerType, createdAt, endpoints, ...rest } = dataset
-      // setDatasetMetadata({
-      //   ...rest,
-      //   public: isPrivateDataset(dataset),
-      //   type: DatasetTypes.UserTracks,
-      //   category: DatasetCategory.Environment,
-      //   configuration: {
-      //     ...dataset.configuration,
-      //   } as DatasetConfiguration,
-      // })
+      const { ownerType, createdAt, endpoints, ...rest } = dataset
+      setDatasetMetadata({
+        ...rest,
+        public: isPrivateDataset(dataset),
+        type: dataset.type,
+        category: dataset.category,
+        configuration: {
+          ...dataset.configuration,
+        } as DatasetConfiguration,
+      })
     }
   }, [dataset, file, handleRawData])
 
@@ -100,10 +117,8 @@ function NewPointDataset({
     let file: File | undefined
     if (datasetMetadata) {
       const config = getDatasetConfiguration({ datasetMetadata }) as Dataset['configuration']
-      console.log('🚀 ~ file: NewPointsDataset.tsx:109 ~ onConfirmClick ~ fileData:', fileData)
-      console.log('config?.latitude', config?.latitude, 'config?.longitude', config?.longitude)
       if (fileData) {
-        if (!config?.latitude || !config?.longitude) {
+        if (fileType === 'csv' && (!config?.latitude || !config?.longitude)) {
           const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
           setError(
             t('dataset.requiredFields', {
@@ -115,13 +130,11 @@ function NewPointDataset({
           file = getFileFromGeojson(geojson)
         }
       }
-      console.log('🚀 ~ file: NewPointsDataset.tsx:134 ~ onConfirmClick ~ onConfirm:', onConfirm)
-      console.log('CONFIRMING', file)
       if (file && onConfirm) {
         onConfirm(datasetMetadata, file)
       }
     }
-  }, [datasetMetadata, fileData, geojson, onConfirm, t])
+  }, [datasetMetadata, fileData, geojson, onConfirm, t, fileType])
 
   const onDatasetFieldChange = useCallback((newFields: Partial<DatasetMetadata>) => {
     setDatasetMetadata((meta) => ({ ...meta, ...(newFields as DatasetMetadata) }))
@@ -217,8 +230,55 @@ function NewPointDataset({
   }, [onDatasetFieldsAllowedChange])
 
   return (
-    <div>
-      <div className={styles.content}>Points dataset configuration here</div>
+    <div className={styles.container}>
+      {!dataset && (
+        <div className={styles.file}>
+          <FileDropzone
+            label={file?.name}
+            fileTypes={['csv', 'geojson', 'shapefile']}
+            onFileLoaded={onFileUpdate}
+          />
+        </div>
+      )}
+      <div className={styles.content}>
+        <InputText
+          value={datasetMetadata?.name}
+          label={t('common.name', 'Name')}
+          className={styles.input}
+          onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
+        />
+        {fileType === 'csv' && (
+          <Fragment>
+            <p className={styles.label}>point coordinates</p>
+            <div className={styles.requiredDataContainer}>
+              <Select
+                placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+                options={fieldsOptions}
+                selectedOption={
+                  getSelectedOption(
+                    getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' })
+                  ) as SelectOption
+                }
+                onSelect={(selected) => {
+                  onDatasetConfigurationChange({ latitude: selected.id })
+                }}
+              />
+              <Select
+                placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+                options={fieldsOptions}
+                selectedOption={
+                  getSelectedOption(
+                    getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' })
+                  ) as SelectOption
+                }
+                onSelect={(selected) => {
+                  onDatasetConfigurationChange({ longitude: selected.id })
+                }}
+              />
+            </div>
+          </Fragment>
+        )}
+      </div>
       <MultiSelect
         label={t('dataset.trackSegmentId', 'track filter property')}
         placeholder={
