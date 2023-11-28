@@ -2,10 +2,12 @@ import { parse } from 'papaparse'
 import { kml } from '@tmcw/togeojson'
 import JSZip, { JSZipObject } from 'jszip'
 import { featureCollection } from '@turf/helpers'
-import type { FeatureCollection, Feature, Point } from 'geojson'
 import { t } from 'i18next'
-import { parse } from 'papaparse'
-import { listToTrackSegments, segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import {
+  pointsListToGeojson,
+  listToTrackSegments,
+  segmentsToGeoJSON,
+} from '@globalfishingwatch/data-transforms'
 import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getDatasetConfigurationProperty } from 'features/datasets/upload/datasets-upload.utils'
@@ -121,28 +123,14 @@ export const getTrackFromList = (data: Record<string, any>[], datasetMetadata: D
   return segmentsToGeoJSON(segments)
 }
 
-export const getFeatureCollectionFromPointsList = (
+export const getGeojsonFromPointsList = (
   data: Record<string, any>[],
   datasetMetadata: DatasetMetadata
 ) => {
-  const latitude = getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' })
-  const longitude = getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' })
-  const timestamp = getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
-  const id = getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })
-  const features: Feature<Point>[] = data.map((point) => ({
-    type: 'Feature',
-    properties: {
-      timestamp: timestamp && point[timestamp],
-      id: id && point[id],
-      ...point,
-    },
-    geometry: {
-      type: 'Point',
-      coordinates: [point[latitude] as number, point[longitude] as number],
-    },
-  }))
-  return {
-    type: 'FeatureCollection',
-    features,
-  } as FeatureCollection
+  return pointsListToGeojson(data, {
+    latitude: getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }),
+    longitude: getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }),
+    timestamp: getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' }),
+    id: getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' }),
+  })
 }

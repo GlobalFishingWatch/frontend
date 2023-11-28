@@ -11,11 +11,7 @@ import {
   Select,
   SelectOption,
 } from '@globalfishingwatch/ui-components'
-import {
-  checkRecordValidity,
-  getDatasetSchema,
-  guessColumnsFromSchema,
-} from '@globalfishingwatch/data-transforms'
+import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
 import {
   Dataset,
   DatasetCategory,
@@ -30,11 +26,7 @@ import { FileType, getFileFromGeojson } from 'utils/files'
 import { isPrivateDataset } from '../datasets.utils'
 import styles from './NewDataset.module.css'
 import { ExtractMetadataProps } from './NewTrackDataset'
-import {
-  getDatasetParsed,
-  getFileType,
-  getFeatureCollectionFromPointsList,
-} from './datasets-parse.utils'
+import { getDatasetParsed, getFileType, getGeojsonFromPointsList } from './datasets-parse.utils'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
@@ -86,10 +78,7 @@ function NewPointDataset({
       const datasetMetadata = getDatasetMetadata({ data, name: getFileName(file) })
       setDatasetMetadata((meta) => ({ ...meta, ...datasetMetadata }))
       if (getFileType(file) === 'csv') {
-        const geojson = getFeatureCollectionFromPointsList(
-          data,
-          datasetMetadata
-        ) as FeatureCollection<Point>
+        const geojson = getGeojsonFromPointsList(data, datasetMetadata) as FeatureCollection<Point>
         setGeojson(geojson)
       } else {
         setGeojson(data)
