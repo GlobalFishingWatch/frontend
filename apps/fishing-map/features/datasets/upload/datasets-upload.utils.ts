@@ -1,6 +1,11 @@
 import { ParseMeta } from 'papaparse'
 import { capitalize, lowerCase } from 'lodash'
-import { Dataset, DatasetConfigurationUI } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetConfiguration,
+  DatasetConfigurationUI,
+  DatasetGeometryType,
+} from '@globalfishingwatch/api-types'
 import { CSV } from './NewTrackDataset'
 import { DatasetMetadata } from './NewDataset'
 
@@ -15,15 +20,26 @@ export type DatasetSchemaGeneratorProps = {
   meta: ParseMeta
 }
 
-export const getDatasetConfigurationProperty = ({
+export type VesselConfigurationProperty = keyof DatasetConfigurationUI | keyof DatasetConfiguration
+type DatasetProperty<P extends VesselConfigurationProperty> = P extends 'geometryType'
+  ? DatasetGeometryType
+  : P extends 'latitude' | 'longitude'
+  ? number
+  : P extends 'timestamp' | 'idProperty'
+  ? string | number
+  : unknown
+
+export function getDatasetConfigurationProperty<P extends VesselConfigurationProperty>({
   datasetMetadata,
   property,
 }: {
-  datasetMetadata: DatasetMetadata | undefined
-  property: keyof DatasetConfigurationUI
-}) => {
-  return (datasetMetadata?.configuration?.configurationUI?.[property] ||
-    datasetMetadata?.configuration?.[property]) as string
+  datasetMetadata: Dataset | DatasetMetadata | undefined
+  property: P
+}): DatasetProperty<P> {
+  return (datasetMetadata?.configuration?.configurationUI?.[
+    property as keyof DatasetConfigurationUI
+  ] ||
+    datasetMetadata?.configuration?.[property as keyof DatasetConfiguration]) as DatasetProperty<P>
 }
 
 export const getDatasetConfiguration = ({
