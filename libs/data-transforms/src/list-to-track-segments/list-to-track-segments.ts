@@ -1,6 +1,7 @@
 import { groupBy, toNumber } from 'lodash'
 import { DateTime, DateTimeOptions } from 'luxon'
 import { Segment } from '@globalfishingwatch/api-types'
+import { parseCoords } from '@globalfishingwatch/data-transforms'
 import { Columns } from './types'
 
 type Args = Columns & {
@@ -41,18 +42,23 @@ export const listToTrackSegments = ({
   id,
 }: Args): Segment[] => {
   const hasIdGroup = id !== undefined && id !== ''
-  const grouped = hasIdGroup ? groupBy(records, id) : { no_id: records }
+  const recordArray = Array.isArray(records) ? records : [records]
+  const grouped = hasIdGroup ? groupBy(recordArray, id) : { no_id: recordArray }
   const segments = Object.values(grouped).map((groupedRecords) => {
     return groupedRecords.flatMap((record) => {
       const recordId = id && record[id] ? record[id] : NO_RECORD_ID
       if (record[latitude] && record[longitude] && record[timestamp]) {
-        const latitudeValue = record[latitude]
-        const longitudeValue = record[longitude]
-        const timestampValue = record[timestamp]
+        const {
+          [latitude]: latitudeValue,
+          [longitude]: longitudeValue,
+          [timestamp]: timestampValue,
+          ...properties
+        } = record
+        const coords = parseCoords(latitudeValue, longitudeValue)
         return {
-          ...(hasIdGroup && { ...record }),
-          latitude: parseFloat(latitudeValue),
-          longitude: parseFloat(longitudeValue),
+          ...(hasIdGroup && { properties }),
+          latitude: coords.latitude,
+          longitude: coords.longitude,
           timestamp: getUTCDate(timestampValue).getTime(),
           id: recordId,
         }

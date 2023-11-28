@@ -1,4 +1,5 @@
 export * from './buffer'
+export * from './coordinates'
 export * from './events'
 export * from './list-to-track-segments'
 export * from './dissolve'

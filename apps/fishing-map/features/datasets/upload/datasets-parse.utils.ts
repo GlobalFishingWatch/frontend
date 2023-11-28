@@ -1,10 +1,12 @@
-import { load } from '@loaders.gl/core'
-import { CSVLoader } from '@loaders.gl/csv'
-import { JSONLoader } from '@loaders.gl/json'
+import { parse } from 'papaparse'
+import { kml } from '@tmcw/togeojson'
+import JSZip, { JSZipObject } from 'jszip'
+import { featureCollection } from '@turf/helpers'
 import type { FeatureCollection, Feature, Point } from 'geojson'
 import { t } from 'i18next'
 import { parse } from 'papaparse'
 import { listToTrackSegments, segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getDatasetConfigurationProperty } from 'features/datasets/upload/datasets-upload.utils'
 import { FileType, readBlobAs } from 'utils/files'
@@ -12,19 +14,52 @@ import { FileType, readBlobAs } from 'utils/files'
 //   extensions?: string[]
 // }
 
+const CSV_EXTENSIONS = ['csv', 'tsv', 'dsv']
+const KML_EXTENSIONS = ['kml', 'kmz']
+const ZIP_FILE_TYPES = [
+  'application/zip',
+  'application/x-zip-compressed',
+  'application/octet-stream',
+  'multipart/x-zip',
+]
+
 export function getFileType(file: File): FileType {
-  const isZip =
-    file.type === 'application/zip' ||
-    file.type === 'application/x-zip-compressed' ||
-    file.type === 'application/octet-stream' ||
-    file.type === 'multipart/x-zip'
-  const isCSV = file.name.includes('.csv')
+  const isZip = ZIP_FILE_TYPES.some((type) => file.type === type)
+  const isCSV = CSV_EXTENSIONS.some((ext) => file.name.endsWith(`.${ext}`))
+  const isKML = KML_EXTENSIONS.some((ext) => file.name.endsWith(`.${ext}`))
   if (isZip) return 'shapefile'
   if (isCSV) return 'csv'
+  if (isKML) return 'kml'
   return 'geojson'
 }
 
-export async function getDatasetParsed(file: File) {
+async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
+  const isKMZ = file.name.endsWith('.kmz')
+  const results = []
+  let files: JSZip.JSZipObject[] | File[] = [file]
+  if (isKMZ) {
+    const zip = await JSZip.loadAsync(file)
+    files = zip.file(/\.kml$/)
+  }
+
+  for (const file of files) {
+    const str = isKMZ ? await (file as JSZipObject).async('string') : await (file as File).text()
+    const kmlDoc = new DOMParser().parseFromString(str, 'text/xml')
+    const { features } = kml(kmlDoc)
+    const geomType = features[0]?.geometry?.type
+    if (type === 'polygons' && (geomType === 'Polygon' || geomType === 'MultiPolygon')) {
+      results.push(...features)
+    } else if (type === 'tracks' && (geomType === 'LineString' || geomType === 'MultiLineString')) {
+      results.push(...features)
+    } else if (type === 'points' && (geomType === 'Point' || geomType === 'MultiPoint')) {
+      results.push(...features)
+    }
+  }
+
+  return featureCollection(results)
+}
+
+export async function getDatasetParsed(file: File, type?: DatasetGeometryType) {
   const fileType: FileType = getFileType(file)
   if (fileType === 'shapefile') {
     try {
@@ -68,8 +103,11 @@ export async function getDatasetParsed(file: File) {
       header: true,
     })
     return data.slice(1)
+  } else if (fileType === 'kml') {
+    return await kmlToGeoJSON(file, type as DatasetGeometryType)
   }
-  return load(file, JSONLoader)
+  const fileText = await file.text()
+  return JSON.parse(fileText)
 }
 
 export const getTrackFromList = (data: Record<string, any>[], datasetMetadata: DatasetMetadata) => {

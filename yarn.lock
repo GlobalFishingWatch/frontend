@@ -2689,18 +2689,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@globalfishingwatch/loaders@workspace:libs/loaders":
-  version: 0.0.0-use.local
-  resolution: "@globalfishingwatch/loaders@workspace:libs/loaders"
-  peerDependencies:
-    "@loaders.gl/core": ^3.4.14
-    "@loaders.gl/csv": ^3.4.14
-    "@loaders.gl/loader-utils": ^3.4.14
-    "@loaders.gl/mvt": ^3.4.14
-    "@loaders.gl/shapefile": ^3.4.14
-  languageName: unknown
-  linkType: soft
-
 "@globalfishingwatch/map-convert@github:GlobalFishingWatch/map-convert":
   version: 1.0.0
   resolution: "@globalfishingwatch/map-convert@https://github.com/GlobalFishingWatch/map-convert.git#commit=29d2918507ad3b57ac661abc2791b9334a43b853"
@@ -2858,6 +2846,7 @@ __metadata:
     "@svgr/webpack": ^8.1.0
     "@testing-library/react": 13.4.0
     "@tippyjs/react": 4.2.6
+    "@tmcw/togeojson": ^5.8.1
     "@turf/area": ^6.5.0
     "@turf/bbox": 6.5.0
     "@turf/great-circle": ^6.5.0
@@ -2914,6 +2903,7 @@ __metadata:
     eslint-plugin-react: 7.33.2
     eslint-plugin-react-hooks: 4.6.0
     file-saver: 2.0.5
+    geo-coordinates-parser: ^1.6.3
     geojson: ^0.5.0
     geojson-vt: ^3.2.1
     gl-matrix: 3.4.3
@@ -2923,6 +2913,7 @@ __metadata:
     jest: 29.7.0
     jest-environment-jsdom: 29.7.0
     jest-watch-typeahead: ^1.1.0
+    jszip: ^3.10.1
     kill-port: ^2.0.1
     lint-staged: 14.0.1
     lodash: 4.17.21
@@ -6532,6 +6523,15 @@ __metadata:
     react: ">=16.8"
     react-dom: ">=16.8"
   checksum: 8f0fba591c9dae2e1af1ae632bbc775ba5c9dd4498e50e242be70302b4c27115c6740eec44e885e294b27cb28515777b52af5b34aac9d4bab627d948add938ae
+  languageName: node
+  linkType: hard
+
+"@tmcw/togeojson@npm:^5.8.1":
+  version: 5.8.1
+  resolution: "@tmcw/togeojson@npm:5.8.1"
+  peerDependencies:
+    "@types/geojson": "*"
+  checksum: c0b7a3e922a2baa291f6f682c10c2e96925fb93c337171bd9db608434ddaf76969aae26140f91ddd6ca5818be771507e132e611dae845ed35c66148516f6dd17
   languageName: node
   linkType: hard
 
@@ -16479,6 +16479,13 @@ __metadata:
   version: 1.0.0-beta.2
   resolution: "gensync@npm:1.0.0-beta.2"
   checksum: a7437e58c6be12aa6c90f7730eac7fa9833dc78872b4ad2963d2031b00a3367a93f98aec75f9aaac7220848e4026d67a8655e870b24f20a543d103c0d65952ec
+  languageName: node
+  linkType: hard
+
+"geo-coordinates-parser@npm:^1.6.3":
+  version: 1.6.3
+  resolution: "geo-coordinates-parser@npm:1.6.3"
+  checksum: 9037dd967484a31e2dcd83fb0a8720960e5138d6f2906722a700c6721a8193196fb27a3cca2f1240f07c0b1dbc35206feab0632db300242055f2f2f6e2894769
   languageName: node
   linkType: hard
 
