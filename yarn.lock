@@ -2846,6 +2846,7 @@ __metadata:
     "@svgr/webpack": ^8.1.0
     "@testing-library/react": 13.4.0
     "@tippyjs/react": 4.2.6
+    "@tmcw/togeojson": ^5.8.1
     "@turf/area": ^6.5.0
     "@turf/bbox": 6.5.0
     "@turf/great-circle": ^6.5.0
@@ -2912,6 +2913,7 @@ __metadata:
     jest: 29.7.0
     jest-environment-jsdom: 29.7.0
     jest-watch-typeahead: ^1.1.0
+    jszip: ^3.10.1
     kill-port: ^2.0.1
     lint-staged: 14.0.1
     lodash: 4.17.21
@@ -6521,6 +6523,15 @@ __metadata:
     react: ">=16.8"
     react-dom: ">=16.8"
   checksum: 8f0fba591c9dae2e1af1ae632bbc775ba5c9dd4498e50e242be70302b4c27115c6740eec44e885e294b27cb28515777b52af5b34aac9d4bab627d948add938ae
+  languageName: node
+  linkType: hard
+
+"@tmcw/togeojson@npm:^5.8.1":
+  version: 5.8.1
+  resolution: "@tmcw/togeojson@npm:5.8.1"
+  peerDependencies:
+    "@types/geojson": "*"
+  checksum: c0b7a3e922a2baa291f6f682c10c2e96925fb93c337171bd9db608434ddaf76969aae26140f91ddd6ca5818be771507e132e611dae845ed35c66148516f6dd17
   languageName: node
   linkType: hard
 

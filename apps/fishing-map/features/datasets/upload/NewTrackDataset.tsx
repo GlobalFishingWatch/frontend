@@ -76,7 +76,7 @@ function NewTrackDataset({
 
   const handleRawData = useCallback(
     async (file: File) => {
-      const data = await getDatasetParsed(file)
+      const data = await getDatasetParsed(file, 'tracks')
       setFileData(data)
       const datasetMetadata = getDatasetMetadata({ data, name: getFileName(file) })
       setDatasetMetadata((meta) => ({ ...meta, ...datasetMetadata }))
