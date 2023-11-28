@@ -66,8 +66,8 @@ function NewPointDataset({
       type: DatasetTypes.UserContext,
       category: DatasetCategory.Context,
       schema,
-      format: 'geojson',
       configuration: {
+        format: 'geojson',
         configurationUI: {
           ...(isNotGeoStandard && { longitude: guessedColumns.longitude }),
           ...(isNotGeoStandard && { latitude: guessedColumns.latitude }),
