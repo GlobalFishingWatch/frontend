@@ -1,7 +1,7 @@
-import { ApiAppName, Dataset } from '.'
+import { ApiAppName } from './workspaces'
+import { Dataset } from './datasets'
 
 export type ColorCyclingType = 'fill' | 'line'
-
 export const INCLUDE_FILTER_ID = 'include'
 export const EXCLUDE_FILTER_ID = 'exclude'
 export type FilterOperator = typeof INCLUDE_FILTER_ID | typeof EXCLUDE_FILTER_ID

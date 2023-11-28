@@ -25,6 +25,26 @@
         "updateBuildableProjectDepsInPackageJson": true
       }
     },
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/api-types",
+        "tsConfig": "libs/api-types/tsconfig.lib.json",
+        "project": "libs/api-types/package.json",
+        "entryFile": "libs/api-types/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "assets": [
+          {
+            "glob": "libs/api-types/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
