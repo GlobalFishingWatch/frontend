@@ -167,6 +167,10 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    */
   datasetId?: string
   /**
+   * SQL filter to apply to the dataset
+   */
+  filter?: string
+  /**
    * Property to get value to display the ramp
    */
   pickValueAt?: string
