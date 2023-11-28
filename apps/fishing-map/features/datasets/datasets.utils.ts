@@ -127,7 +127,11 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
   if (dataset.type === DatasetTypes.Events) return 'clusters'
   if (dataset.type === DatasetTypes.UserTracks) return 'track'
-  if (dataset.configuration?.geometryType === 'points') return 'dots'
+  if (
+    dataset.configuration?.geometryType === 'points' ||
+    dataset.configuration?.configurationUI?.geometryType === 'points'
+  )
+    return 'dots'
   if (dataset.type === DatasetTypes.Context || dataset.type === DatasetTypes.UserContext)
     return 'polygons'
   return null
@@ -566,10 +570,9 @@ const getCommonSchemaTypeInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
-  const activeDatasets =
-    dataview.category === DataviewCategory.Context || dataview.category === DataviewCategory.Events
-      ? dataview.datasets
-      : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+  const activeDatasets = dataview.config?.datasets
+    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+    : dataview?.datasets
   const datasetSchemas = activeDatasets
     ?.map((d) => getDatasetSchemaItem(d, schema)?.type)
     .filter(Boolean)
@@ -618,7 +621,7 @@ export const getCommonSchemaFieldsInDataview = (
     const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
     return schemaItem?.enum || schemaItem?.items?.enum || []
   })
-  if (schemaType === 'number') {
+  if (schemaType === 'number' || schemaType === 'range') {
     const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)
     if (schemaConfig) {
       schemaFields = [[schemaConfig?.min?.toString(), schemaConfig?.max?.toString()]]

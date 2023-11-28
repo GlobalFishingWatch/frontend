@@ -25,12 +25,19 @@ class UserContextGenerator {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
+
+    const url = new URL(tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}'))
+
+    if (config.filter) {
+      url.searchParams.set('filter', config.filter)
+    }
+
     return [
       {
         id: config.id,
         type: 'vector',
         promoteId: 'gfw_id',
-        tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
+        tiles: [decodeURI(url.toString())],
       },
     ]
   }

@@ -1,6 +1,6 @@
-import { Columns } from './types'
+import { SegmentColumns } from '../types'
 
-type Args = Columns & {
+type Args = SegmentColumns & {
   record: Record<string, any>
 }
 

@@ -2,9 +2,9 @@ import { groupBy, toNumber } from 'lodash'
 import { DateTime, DateTimeOptions } from 'luxon'
 import { Segment } from '@globalfishingwatch/api-types'
 import { parseCoords } from '@globalfishingwatch/data-transforms'
-import { Columns } from './types'
+import { SegmentColumns } from '../types'
 
-type Args = Columns & {
+type Args = SegmentColumns & {
   records: Record<string, any>[]
 }
 
