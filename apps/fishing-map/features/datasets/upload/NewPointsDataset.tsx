@@ -3,6 +3,7 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { FeatureCollection, Point } from 'geojson'
 import {
   Button,
+  Collapsable,
   InputText,
   MultiSelect,
   MultiSelectOnChange,
@@ -178,7 +179,6 @@ function NewPointDataset({
     const options = datasetMetadata?.schema
       ? Object.keys(datasetMetadata.schema).flatMap((field) => {
           const schema = datasetMetadata.schema?.[field]
-          console.log('🚀 ~ file: NewPointsDataset.tsx:168 ~ ?Object.keys ~ schema:', schema)
           const isEnumAllowed =
             (schema?.type === 'string' || schema?.type === 'boolean') && schema?.enum?.length
           const isRangeAllowed = schema?.type === 'range' && schema?.min && schema?.max
@@ -250,7 +250,7 @@ function NewPointDataset({
         {fileType === 'csv' && (
           <Fragment>
             <p className={styles.label}>point coordinates</p>
-            <div className={styles.requiredDataContainer}>
+            <div className={styles.evenSelectorsGroup}>
               <Select
                 placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
                 options={fieldsOptions}
@@ -279,21 +279,68 @@ function NewPointDataset({
           </Fragment>
         )}
       </div>
-      <MultiSelect
-        label={t('dataset.trackSegmentId', 'track filter property')}
-        placeholder={
-          getFieldsAllowedArray().length > 0
-            ? getFieldsAllowedArray().join(', ')
-            : t('dataset.fieldPlaceholder', 'Select a field from your dataset')
-        }
-        direction="bottom"
-        // disabled={!getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })}
-        options={filtersFieldsOptions}
-        selectedOptions={getSelectedOption(getFieldsAllowedArray()) as MultiSelectOption[]}
-        onSelect={handleFieldsAllowedAddItem}
-        onRemove={handleFieldsAllowedRemoveItem}
-        onCleanClick={handleFieldsAllowedCleanSelection}
-      />
+      <Collapsable
+        className={styles.optional}
+        label={t('dataset.optionalFields', 'Optional fields')}
+      >
+        <InputText
+          value={datasetMetadata?.description}
+          label={t('dataset.description', 'Dataset description')}
+          className={styles.input}
+          onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
+        />
+        <div className={styles.evenSelectorsGroup}>
+          <Select
+            label={t('dataset.trackSegmentId', 'Individual track segment id')}
+            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+            options={fieldsOptions}
+            direction="top"
+            selectedOption={
+              getSelectedOption(
+                getDatasetConfigurationProperty({ datasetMetadata, property: 'pointName' })
+              ) as SelectOption
+            }
+            onSelect={(selected) => {
+              onDatasetConfigurationChange({ pointName: selected.id })
+            }}
+            onCleanClick={() => {
+              onDatasetConfigurationChange({ pointName: undefined })
+            }}
+          />
+          <Select
+            label={t('dataset.trackSegmentId', 'Individual track segment id')}
+            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+            options={fieldsOptions}
+            direction="top"
+            selectedOption={
+              getSelectedOption(
+                getDatasetConfigurationProperty({ datasetMetadata, property: 'pointSize' })
+              ) as SelectOption
+            }
+            onSelect={(selected) => {
+              onDatasetConfigurationChange({ pointSize: selected.id })
+            }}
+            onCleanClick={() => {
+              onDatasetConfigurationChange({ pointSize: undefined })
+            }}
+          />
+        </div>
+        <MultiSelect
+          label={t('dataset.trackSegmentId', 'track filter property')}
+          placeholder={
+            getFieldsAllowedArray().length > 0
+              ? getFieldsAllowedArray().join(', ')
+              : t('dataset.fieldPlaceholder', 'Point filters')
+          }
+          direction="bottom"
+          // disabled={!getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })}
+          options={filtersFieldsOptions}
+          selectedOptions={getSelectedOption(getFieldsAllowedArray()) as MultiSelectOption[]}
+          onSelect={handleFieldsAllowedAddItem}
+          onRemove={handleFieldsAllowedRemoveItem}
+          onCleanClick={handleFieldsAllowedCleanSelection}
+        />
+      </Collapsable>
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {/* {error && <span className={styles.errorMsg}>{error}</span>} */}

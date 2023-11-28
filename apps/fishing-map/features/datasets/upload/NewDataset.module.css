@@ -37,8 +37,18 @@
   padding-bottom: var(--space-M);
 }
 
-.timestampSelectWrapper {
+.evenSelectorsGroup {
+  display: flex;
+  gap: var(--space-S);
+  padding-bottom: var(--space-M);
+}
+
+.evenSelectorsGroup > div {
   flex-grow: 1;
+}
+
+.timestampSelectWrapper {
+  flex-grow: 2;
 }
 
 .trackTimestampFiltersContainer {
