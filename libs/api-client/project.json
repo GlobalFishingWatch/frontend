@@ -4,26 +4,6 @@
   "sourceRoot": "libs/api-client/src",
   "projectType": "library",
   "targets": {
-    "dist": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/api-client",
-        "tsConfig": "libs/api-client/tsconfig.lib.json",
-        "project": "libs/api-client/package.json",
-        "entryFile": "libs/api-client/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/api-client/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
-      }
-    },
     "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
