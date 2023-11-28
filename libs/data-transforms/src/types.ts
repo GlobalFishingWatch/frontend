@@ -1,8 +1,8 @@
 export type BBox = [number, number, number, number]
 
 export type SegmentColumns = {
-  latitude: string
-  longitude: string
-  timestamp: string
-  id?: string
+  latitude: string | number
+  longitude: string | number
+  timestamp: string | number
+  id?: string | number
 }

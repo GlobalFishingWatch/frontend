@@ -18,7 +18,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
-import UserTrackLayerPanel from './UserTrackLayerPanel'
 
 function EnvironmentalLayerSection(): React.ReactElement | null {
   const { t } = useTranslation()
@@ -78,17 +77,11 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
       </div>
       <SortableContext items={dataviews}>
         {dataviews.length > 0
-          ? dataviews?.map((dataview) =>
-              dataview.datasets && dataview.datasets[0]?.type === DatasetTypes.UserTracks ? (
-                <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                  <UserTrackLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-                </LayerPanelContainer>
-              ) : (
-                <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                  <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-                </LayerPanelContainer>
-              )
-            )
+          ? dataviews?.map((dataview) => (
+              <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+              </LayerPanelContainer>
+            ))
           : null}
       </SortableContext>
       {locationCategory === WorkspaceCategory.MarineManager && (
