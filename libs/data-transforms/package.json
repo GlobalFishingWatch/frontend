@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/data-transforms",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "license": "MIT",
   "description": "Utils to decode various data formats",
   "peerDependencies": {
