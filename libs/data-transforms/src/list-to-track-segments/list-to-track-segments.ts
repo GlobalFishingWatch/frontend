@@ -50,11 +50,11 @@ export const listToTrackSegments = ({
         const longitudeValue = record[longitude]
         const timestampValue = record[timestamp]
         return {
+          ...(hasIdGroup && { ...record }),
           latitude: parseFloat(latitudeValue),
           longitude: parseFloat(longitudeValue),
           timestamp: getUTCDate(timestampValue).getTime(),
           id: recordId,
-          ...(hasIdGroup && { ...record }),
         }
       } else return []
     })
