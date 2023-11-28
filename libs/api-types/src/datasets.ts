@@ -92,10 +92,11 @@ export interface DatasetConfigurationUI {
   longitude?: string
   timestamp?: string
   idValue?: string
-  [key: string]: unknown
+  geometryType?: DatasetGeometryType
 }
 
 export interface DatasetConfiguration {
+  id?: string
   index?: string
   filePath?: string
   srid?: number
@@ -110,7 +111,6 @@ export interface DatasetConfiguration {
   valueProperties?: string[]
   apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
   configurationUI?: DatasetConfigurationUI
-  [key: string]: unknown
 }
 
 export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
