@@ -35,18 +35,20 @@ export function getDatasetConfigurationProperty<P extends VesselConfigurationPro
 }: {
   datasetMetadata: Dataset | DatasetMetadata | undefined
   property: P
-}): DatasetProperty<P> {
+}): keyof DatasetConfigurationUI {
   return (datasetMetadata?.configuration?.configurationUI?.[
     property as keyof DatasetConfigurationUI
   ] ||
-    datasetMetadata?.configuration?.[property as keyof DatasetConfiguration]) as DatasetProperty<P>
+    datasetMetadata?.configuration?.[
+      property as keyof DatasetConfiguration
+    ]) as keyof DatasetConfigurationUI
 }
 
 export const getDatasetConfiguration = ({
   datasetMetadata,
 }: {
   datasetMetadata: DatasetMetadata | undefined
-}): Dataset['configuration'] => ({
+}): DatasetConfiguration & DatasetConfiguration['configurationUI'] => ({
   ...datasetMetadata?.configuration,
   ...datasetMetadata?.configuration?.configurationUI,
 })

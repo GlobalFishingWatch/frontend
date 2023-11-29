@@ -13,20 +13,20 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
 import {
-  Dataset,
   DatasetCategory,
   DatasetConfiguration,
+  DatasetConfigurationUI,
   DatasetGeometryType,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { sortFields } from 'utils/shared'
-import { FileType, getFileFromGeojson } from 'utils/files'
+import { FileType, getFileFromGeojson, getFileType } from 'utils/files'
 import { isPrivateDataset } from '../datasets.utils'
 import styles from './NewDataset.module.css'
 import { ExtractMetadataProps } from './NewTrackDataset'
-import { getDatasetParsed, getFileType, getGeojsonFromPointsList } from './datasets-parse.utils'
+import { getDatasetParsed, getGeojsonFromPointsList } from './datasets-parse.utils'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
@@ -107,7 +107,7 @@ function NewPointDataset({
   const onConfirmClick = useCallback(() => {
     let file: File | undefined
     if (datasetMetadata) {
-      const config = getDatasetConfiguration({ datasetMetadata }) as Dataset['configuration']
+      const config = getDatasetConfiguration({ datasetMetadata })
       if (fileData) {
         if (fileType === 'csv' && (!config?.latitude || !config?.longitude)) {
           const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
@@ -131,21 +131,18 @@ function NewPointDataset({
     setDatasetMetadata((meta) => ({ ...meta, ...(newFields as DatasetMetadata) }))
   }, [])
 
-  const onDatasetConfigurationChange = useCallback(
-    (newConfig: Partial<DatasetMetadata['configuration']>) => {
-      setDatasetMetadata((meta) => ({
-        ...(meta as DatasetMetadata),
-        configuration: {
-          ...meta?.configuration,
-          configurationUI: {
-            ...meta?.configuration?.configurationUI,
-            ...(newConfig as DatasetMetadata['configuration']),
-          },
+  const onDatasetConfigurationChange = useCallback((newConfig: Partial<DatasetConfigurationUI>) => {
+    setDatasetMetadata((meta) => ({
+      ...(meta as DatasetMetadata),
+      configuration: {
+        ...meta?.configuration,
+        configurationUI: {
+          ...meta?.configuration?.configurationUI,
+          ...(newConfig as DatasetMetadata['configuration']),
         },
-      }))
-    },
-    []
-  )
+      },
+    }))
+  }, [])
 
   const onDatasetFieldsAllowedChange = useCallback(
     (newFilters: DatasetMetadata['fieldsAllowed']) => {

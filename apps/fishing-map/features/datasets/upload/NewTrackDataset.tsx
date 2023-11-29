@@ -15,6 +15,7 @@ import {
   Dataset,
   DatasetCategory,
   DatasetConfiguration,
+  DatasetConfigurationUI,
   DatasetGeometryType,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
@@ -131,7 +132,7 @@ function NewTrackDataset({
   const onConfirmClick = useCallback(() => {
     let file: File | undefined
     if (datasetMetadata) {
-      const config = getDatasetConfiguration({ datasetMetadata }) as Dataset['configuration']
+      const config = getDatasetConfiguration({ datasetMetadata })
       if (fileData) {
         if (!config?.latitude || !config?.longitude || !config?.timestamp) {
           const fields = ['latitude', 'longitude', 'timestamp'].map((f) =>
@@ -171,21 +172,18 @@ function NewTrackDataset({
     setDatasetMetadata((meta) => ({ ...meta, ...(newFields as DatasetMetadata) }))
   }, [])
 
-  const onDatasetConfigurationChange = useCallback(
-    (newConfig: Partial<DatasetMetadata['configuration']>) => {
-      setDatasetMetadata((meta) => ({
-        ...(meta as DatasetMetadata),
-        configuration: {
-          ...meta?.configuration,
-          configurationUI: {
-            ...meta?.configuration?.configurationUI,
-            ...(newConfig as DatasetMetadata['configuration']),
-          },
+  const onDatasetConfigurationChange = useCallback((newConfig: Partial<DatasetConfigurationUI>) => {
+    setDatasetMetadata((meta) => ({
+      ...(meta as DatasetMetadata),
+      configuration: {
+        ...meta?.configuration,
+        configurationUI: {
+          ...meta?.configuration?.configurationUI,
+          ...(newConfig as DatasetMetadata['configuration']),
         },
-      }))
-    },
-    []
-  )
+      },
+    }))
+  }, [])
 
   const onDatasetFieldsAllowedChange = useCallback(
     (newFilters: DatasetMetadata['fieldsAllowed']) => {

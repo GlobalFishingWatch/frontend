@@ -91,7 +91,9 @@ export interface DatasetConfigurationUI {
   latitude?: string
   longitude?: string
   timestamp?: string
-  idValue?: string
+  idProperty?: string
+  pointName?: string
+  pointSize?: string
   geometryType?: DatasetGeometryType
 }
 
