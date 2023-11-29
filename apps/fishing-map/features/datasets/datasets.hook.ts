@@ -47,7 +47,7 @@ export const getDataviewInstanceByDataset = (dataset: Dataset) => {
   } as AnyDatasetConfiguration
   if (dataset.category === DatasetCategory.Context) {
     return config?.geometryType === 'points'
-      ? getUserPointsDataviewInstance(dataset.id)
+      ? getUserPointsDataviewInstance(dataset)
       : getContextDataviewInstance(dataset.id)
   } else if (dataset.category === DatasetCategory.Environment) {
     if (config?.geometryType === 'polygons') {

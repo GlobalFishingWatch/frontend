@@ -171,6 +171,15 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    */
   filter?: string
   /**
+   * Feature property to drive circle radius
+   */
+  circleRadiusProperty?: string
+  /**
+   * min max values of the circleRadiusProperty
+   * circle radius linear interpolation will be based on this range
+   */
+  circleRadiusRange?: number[]
+  /**
    * Property to get value to display the ramp
    */
   pickValueAt?: string

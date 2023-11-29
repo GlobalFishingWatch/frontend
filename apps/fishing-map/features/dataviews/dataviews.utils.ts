@@ -158,6 +158,7 @@ export const getEnvironmentDataviewInstance = (
 export const getUserPointsDataviewInstance = (
   dataset: Dataset
 ): DataviewInstance<GeneratorType> => {
+  const circleRadiusProperty = dataset.configuration?.configurationUI?.pointSize
   return {
     id: `user-points-${dataset.id}`,
     dataviewId: TEMPLATE_POINTS_DATAVIEW_SLUG,
@@ -169,10 +170,9 @@ export const getUserPointsDataviewInstance = (
         datasetId: dataset.id,
         endpoint: EndpointId.ContextTiles,
         params: [{ id: 'id', value: dataset.id }],
-        ...(dataset.configuration?.configurationUI?.pointSize && {
-          query: [
-            { id: 'properties', value: [`${dataset.configuration?.configurationUI?.pointSize}`] },
-          ],
+
+        ...(circleRadiusProperty && {
+          query: [{ id: 'properties', value: [`${circleRadiusProperty}`] }],
         }),
       },
     ],

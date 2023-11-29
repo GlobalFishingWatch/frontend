@@ -1,3 +1,4 @@
+import { UserPointsGeneratorConfig } from '@globalfishingwatch/layer-composer'
 import {
   LineLayerSpecification,
   FillLayerSpecification,
@@ -7,6 +8,7 @@ import {
 export const DEFAULT_LINE_COLOR = 'white'
 export const HIGHLIGHT_LINE_COLOR = 'white'
 export const HIGHLIGHT_FILL_COLOR = 'rgba(0, 0, 0, 0.3)'
+export const POINT_SIZES_DEFAULT_RANGE = [1, 10]
 
 export const getLinePaintWithFeatureState = (
   color = DEFAULT_LINE_COLOR,
@@ -43,6 +45,22 @@ export const getCirclePaintWithFeatureState = (
       color,
     ],
   }
+}
+
+export const getCircleRadiusWithPointSizeProperty = (
+  property: string | undefined,
+  range: number[] | undefined
+): CircleLayerSpecification['paint'] => {
+  return property && range
+    ? {
+        'circle-radius': [
+          'interpolate',
+          ['linear'],
+          ['get', `${property}`],
+          ...range.flatMap((b, i) => [b, POINT_SIZES_DEFAULT_RANGE[i]]),
+        ],
+      }
+    : { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 2, 5, 4] }
 }
 
 export const getFillPaintWithFeatureState = (
