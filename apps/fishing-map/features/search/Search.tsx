@@ -10,7 +10,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 import SearchBasic from 'features/search/basic/SearchBasic'
 import SearchAdvanced from 'features/search/advanced/SearchAdvanced'
 import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlaceholders'
@@ -65,7 +65,7 @@ function Search() {
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const datasetsStatus = useSelector(selectDatasetsStatus)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const datasetError = useSelector(selectDatasetsError)
   const { fetchResults, fetchMoreResults } = useFetchSearchResults()
 

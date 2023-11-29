@@ -14,6 +14,7 @@ class UserPointsGenerator {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
+
     const url = new URL(tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}'))
 
     if (config.filter) {

@@ -22,7 +22,7 @@ import {
   selectActiveTemporalgridDataviews,
 } from 'features/dataviews/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 
@@ -202,7 +202,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   'map/fetchFishingActivityInteraction',
   async ({ fishingActivityFeatures, activityProperties }, { getState, signal, dispatch }) => {
     const state = getState() as any
-    const guestUser = isGuestUser(state)
+    const guestUser = selectIsGuestUser(state)
     const temporalgridDataviews = selectActiveTemporalgridDataviews(state) || []
     if (!fishingActivityFeatures.length) {
       console.warn('fetchInteraction not possible, 0 features')

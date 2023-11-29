@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { IconButton, IconButtonProps } from '@globalfishingwatch/ui-components'
 import LocalStorageLoginLink from 'routes/LoginLink'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 
 type UserLoggedIconButton = IconButtonProps & { loginTooltip?: string }
 
 const UserLoggedIconButton = ({ loginTooltip, ...props }: UserLoggedIconButton) => {
   const { t } = useTranslation()
   const [isLoginHover, setIsLoginHover] = useState(false)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
 
   if (guestUser) {
     return (

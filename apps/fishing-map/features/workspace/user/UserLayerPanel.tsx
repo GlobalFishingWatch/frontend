@@ -13,7 +13,7 @@ import {
   useDatasetModalConfigConnect,
   useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
-import { isGFWUser, isGuestUser } from 'features/user/user.slice'
+import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
@@ -57,7 +57,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const [colorOpen, setColorOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const userId = useSelector(selectUserId)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const layerActive = dataview?.config?.visible ?? true
   const dataset = getUserDataviewDataset(dataview)
   const datasetGeometryType = getDatasetGeometryType(dataset)

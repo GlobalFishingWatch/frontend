@@ -13,7 +13,7 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { isUserLogged } from 'features/user/user.slice'
+import { selectIsUserLogged } from 'features/user/user.slice'
 import { selectUserGroupsPermissions } from 'features/user/user.selectors'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -56,7 +56,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
-  const userLogged = useSelector(isUserLogged)
+  const userLogged = useSelector(selectIsUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
 

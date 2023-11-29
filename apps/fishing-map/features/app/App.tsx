@@ -26,7 +26,7 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk, isUserLogged } from 'features/user/user.slice'
+import { fetchUserThunk, selectIsUserLogged } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -174,7 +174,7 @@ function App() {
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  const userLogged = useSelector(isUserLogged)
+  const userLogged = useSelector(selectIsUserLogged)
   const urlViewport = useSelector(selectUrlViewport)
   const urlTimeRange = useSelector(selectUrlTimeRange)
   const urlWorkspaceId = useSelector(selectWorkspaceId)

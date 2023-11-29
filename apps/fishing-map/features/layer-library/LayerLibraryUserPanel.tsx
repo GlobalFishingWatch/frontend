@@ -13,7 +13,7 @@ import InfoError from 'features/workspace/common/InfoError'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -31,7 +31,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
   const dispatch = useAppDispatch()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
   const datasets = useSelector(selectUserDatasets)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const onAddNewClick = useAddDataset({})
 
   const filteredDatasets = useMemo(

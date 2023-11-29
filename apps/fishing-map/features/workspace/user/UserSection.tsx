@@ -14,7 +14,7 @@ import { selectReadOnly } from 'features/app/app.selectors'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAddDataset } from 'features/datasets/datasets.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -23,10 +23,28 @@ import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './UserLayerPanel'
 
+export function RegisterOrLoginToUpload() {
+  return (
+    <Trans i18nKey="dataset.uploadLogin">
+      <a
+        className={styles.link}
+        href={GFWAPI.getRegisterUrl(
+          typeof window !== 'undefined' ? window.location.toString() : ''
+        )}
+      >
+        Register
+      </a>
+      or
+      <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
+      to upload datasets (free, 2 minutes)
+    </Trans>
+  )
+}
+
 function UserSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const dispatch = useAppDispatch()
 
   const readOnly = useSelector(selectReadOnly)
@@ -127,19 +145,7 @@ function UserSection(): React.ReactElement {
       </div>
       {guestUser ? (
         <div className={styles.emptyStateBig}>
-          <Trans i18nKey="dataset.uploadLogin">
-            <a
-              className={styles.link}
-              href={GFWAPI.getRegisterUrl(
-                typeof window !== 'undefined' ? window.location.toString() : ''
-              )}
-            >
-              Register
-            </a>
-            or
-            <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
-            to upload datasets (free, 2 minutes)
-          </Trans>
+          <RegisterOrLoginToUpload />
         </div>
       ) : (
         <SortableContext items={dataviews}>

@@ -41,7 +41,7 @@ import {
   getDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
-import { isGFWUser, isGuestUser } from 'features/user/user.slice'
+import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
@@ -88,7 +88,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const state = getState() as any
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
-    const guestUser = isGuestUser(state)
+    const guestUser = selectIsGuestUser(state)
     const gfwUser = isGFWUser(state)
     const reportId = selectReportId(state)
     try {

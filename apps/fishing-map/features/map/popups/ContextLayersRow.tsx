@@ -7,7 +7,7 @@ import {
   selectHasReportLayersVisible,
 } from 'features/dataviews/dataviews.selectors'
 import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
-import { isGuestUser, selectUserData } from 'features/user/user.slice'
+import { selectIsGuestUser, selectUserData } from 'features/user/user.slice'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
@@ -35,7 +35,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   onClick,
 }: DownloadPopupButtonProps) => {
   const { t } = useTranslation()
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const userData = useSelector(selectUserData)
   const activityDataviews = useSelector(selectActiveHeatmapDataviews)
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)

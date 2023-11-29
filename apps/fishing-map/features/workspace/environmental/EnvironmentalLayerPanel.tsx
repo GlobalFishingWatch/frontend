@@ -9,7 +9,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
 import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { isGFWUser, isGuestUser } from 'features/user/user.slice'
+import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import ActivityFilters, {
   isHistogramDataviewSupported,
@@ -38,7 +38,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const gfwUser = useSelector(isGFWUser)
   const [colorOpen, setColorOpen] = useState(false)
   const {

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { selectWorkspaceError } from 'features/workspace/workspace.selectors'
-import { isGuestUser, logoutUserThunk, selectUserData } from 'features/user/user.slice'
+import { selectIsGuestUser, logoutUserThunk, selectUserData } from 'features/user/user.slice'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
@@ -39,7 +39,7 @@ export function WorkspaceLoginError({
 }) {
   const { t } = useTranslation()
   const [logoutLoading, setLogoutLoading] = useState(false)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const userData = useSelector(selectUserData)
   const dispatch = useAppDispatch()
   return (

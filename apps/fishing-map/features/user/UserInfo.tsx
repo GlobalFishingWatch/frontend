@@ -8,13 +8,13 @@ import { updateLocation } from 'routes/routes.actions'
 import { SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './User.module.css'
-import { fetchUserThunk, logoutUserThunk, selectUserData, isUserLogged } from './user.slice'
+import { fetchUserThunk, logoutUserThunk, selectUserData, selectIsUserLogged } from './user.slice'
 import { selectUserGroupsClean } from './user.selectors'
 
 function UserInfo() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const userLogged = useSelector(isUserLogged)
+  const userLogged = useSelector(selectIsUserLogged)
   const userData = useSelector(selectUserData)
   const userGroups = useSelector(selectUserGroupsClean)
   const [logoutLoading, setLogoutLoading] = useState(false)
