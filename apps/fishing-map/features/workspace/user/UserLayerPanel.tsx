@@ -1,27 +1,35 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes, DatasetStatus, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import { DatasetStatus, DatasetGeometryType, ResourceStatus } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { isGFWUser, isGuestUser } from 'features/user/user.slice'
+import {
+  useAutoRefreshImportingDataset,
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
+} from 'features/datasets/datasets.hook'
+import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import { ONLY_GFW_STAFF_DATAVIEW_SLUGS, HIDDEN_DATAVIEW_FILTERS } from 'data/workspaces'
-import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
 import {
   getDatasetLabel,
   getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
+import {
+  getDatasetGeometryType,
+  getUserDataviewDataset,
+} from 'features/workspace/user/workspace-user.utils'
+import { COLOR_SECONDARY_BLUE } from 'features/app/App'
+import FitBounds from 'features/workspace/common/FitBounds'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -32,6 +40,7 @@ import InfoModal from '../common/InfoModal'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import { showSchemaFilter } from '../activity/ActivitySchemaFilter'
+import UserLayerTrackPanel, { useUserLayerTrackResource } from './UserLayerTrackPanel'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance
@@ -41,17 +50,21 @@ type UserPanelProps = {
 function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
+  const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
   const { dispatchSetMapDrawing, dispatchSetMapDrawEditDataset } = useMapDrawConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
   const gfwUser = useSelector(isGFWUser)
   const userId = useSelector(selectUserId)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const layerActive = dataview?.config?.visible ?? true
-  const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
-  )
-  const supportsDrawEdit = dataset?.source === DRAW_DATASET_SOURCE
+  const dataset = getUserDataviewDataset(dataview)
+  const datasetGeometryType = getDatasetGeometryType(dataset)
+  const { resource, featuresColoredByField } = useUserLayerTrackResource(dataview)
+  const trackError = resource?.status === ResourceStatus.Error
+
+  useAutoRefreshImportingDataset(dataset, 5000)
 
   const {
     items,
@@ -64,6 +77,12 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
     activeIndex,
   } = useLayerPanelDataviewSort(dataview.id)
 
+  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
+  const hasSchemaFilterSelection = filtersAllowed.some(
+    (schema) => schema.optionsSelected?.length > 0
+  )
+
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
@@ -73,6 +92,21 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
       },
     })
     setColorOpen(false)
+  }
+
+  const onEditClick = () => {
+    if (datasetGeometryType === 'draw') {
+      dispatchSetMapDrawEditDataset(dataset?.id)
+      dispatchSetMapDrawing(true)
+    } else {
+      dispatchDatasetModalOpen(true)
+      dispatchDatasetModalConfig({
+        id: dataset?.id,
+        type:
+          (dataset?.configuration?.configurationUI?.geometryType as DatasetGeometryType) ||
+          dataset?.configuration?.geometryType,
+      })
+    }
   }
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
@@ -89,10 +123,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
 
   const isUserLayer = !guestUser && dataset?.ownerId === userId
 
-  useAutoRefreshImportingDataset(dataset, 5000)
-
-  const basemapLabelsDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
-  if (!dataset && dataview.id !== basemapLabelsDataviewInstance.id) {
+  if (!dataset) {
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
       isPrivateDataset({ id: d.datasetId })
     )
@@ -118,12 +149,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
     />
   )
 
-  const isBasemapLabelsDataview = dataview.config?.type === GeneratorType.BasemapLabels
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
-  const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
-  const hasSchemaFilterSelection = filtersAllowed.some(
-    (schema) => schema.optionsSelected?.length > 0
-  )
+  const hasLayerProperties = hasSchemaFilterSelection || datasetGeometryType === 'tracks'
 
   return (
     <div
@@ -142,6 +168,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
+          color={featuresColoredByField ? COLOR_SECONDARY_BLUE : undefined}
           testId={`context-layer-${dataview.id}`}
         />
         {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
@@ -153,27 +180,34 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && supportsDrawEdit && (
+          {layerActive && (
             <IconButton
               icon="edit"
               size="small"
               disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
-              tooltip={t('layer.editDraw', 'Edit draw')}
+              tooltip={
+                datasetGeometryType === 'draw'
+                  ? t('layer.editDraw', 'Edit draw')
+                  : t('dataset.edit', 'Edit dataset')
+              }
               tooltipPlacement="top"
-              onClick={() => {
-                dispatchSetMapDrawEditDataset(dataset?.id)
-                dispatchSetMapDrawing(true)
-              }}
+              onClick={onEditClick}
             />
           )}
-          {layerActive && !isBasemapLabelsDataview && (
-            <Color
-              dataview={dataview}
-              open={colorOpen}
-              onColorClick={changeColor}
-              onToggleClick={onToggleColorOpen}
-              onClickOutside={closeExpandedContainer}
-            />
+          {layerActive && (
+            <Fragment>
+              <Color
+                dataview={dataview}
+                open={colorOpen}
+                disabled={featuresColoredByField}
+                onColorClick={changeColor}
+                onToggleClick={onToggleColorOpen}
+                onClickOutside={closeExpandedContainer}
+              />
+              {datasetGeometryType === 'tracks' && (
+                <FitBounds hasError={trackError} trackResource={resource} />
+              )}
+            </Fragment>
           )}
           {layerActive &&
             hasSchemaFilters &&
@@ -198,7 +232,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
                 </div>
               </ExpandedContainer>
             )}
-          {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
+          {<InfoModal dataview={dataview} />}
           {(isUserLayer || gfwUser) && <Remove dataview={dataview} />}
           {items.length > 1 && (
             <IconButton
@@ -211,7 +245,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
           )}
         </div>
       </div>
-      {layerActive && hasSchemaFilterSelection && (
+      {layerActive && hasLayerProperties && (
         <div
           className={cx(styles.properties, styles.dataWarning, styles.drag, {
             [styles.dragging]: isSorting && activeIndex > -1,
@@ -226,6 +260,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
               </div>
             </div>
           )}
+          {datasetGeometryType === 'tracks' && <UserLayerTrackPanel dataview={dataview} />}
         </div>
       )}
     </div>

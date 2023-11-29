@@ -29,7 +29,7 @@ import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
-import { FileType } from 'features/common/FileDropzone'
+import { FileType } from 'utils/files'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import { getVesselGearType } from 'utils/info'
 import { VESSEL_INSTANCE_DATASETS } from 'features/dataviews/dataviews.utils'
@@ -66,6 +66,7 @@ export type SupportedActivityDatasetSchema =
   | 'shipname'
   | 'mmsi'
   | 'imo'
+  | 'label'
 
 export type SupportedEnvDatasetSchema = 'type'
 export type SupportedContextDatasetSchema = 'removal_of'
@@ -125,7 +126,11 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
   if (dataset.type === DatasetTypes.Events) return 'clusters'
   if (dataset.type === DatasetTypes.UserTracks) return 'track'
-  if (dataset.configuration?.geometryType === 'points') return 'dots'
+  if (
+    dataset.configuration?.geometryType === 'points' ||
+    dataset.configuration?.configurationUI?.geometryType === 'points'
+  )
+    return 'dots'
   if (dataset.type === DatasetTypes.Context || dataset.type === DatasetTypes.UserContext)
     return 'polygons'
   return null
@@ -564,10 +569,9 @@ const getCommonSchemaTypeInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
-  const activeDatasets =
-    dataview.category === DataviewCategory.Context || dataview.category === DataviewCategory.Events
-      ? dataview.datasets
-      : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+  const activeDatasets = dataview.config?.datasets
+    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+    : dataview?.datasets
   const datasetSchemas = activeDatasets
     ?.map((d) => getDatasetSchemaItem(d, schema)?.type)
     .filter(Boolean)
@@ -582,10 +586,9 @@ export type SchemaFieldSelection = {
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
 
 export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
-  return dataview.category === DataviewCategory.Context ||
-    dataview.category === DataviewCategory.Events
-    ? dataview?.datasets
-    : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+  return dataview.config?.datasets
+    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+    : dataview?.datasets
 }
 
 export const getCommonSchemaFieldsInDataview = (
@@ -613,13 +616,13 @@ export const getCommonSchemaFieldsInDataview = (
     return []
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  let schemaFields: string[][] = (activeDatasets || [])?.map((d) => {
+  let schemaFields: (string | boolean)[][] = (activeDatasets || [])?.map((d) => {
     const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
     return schemaItem?.enum || schemaItem?.items?.enum || []
   })
-  if (schemaType === 'number') {
+  if (schemaType === 'number' || schemaType === 'range') {
     const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)
-    if (schemaConfig) {
+    if (schemaConfig && schemaConfig.min && schemaConfig.max) {
       schemaFields = [[schemaConfig?.min?.toString(), schemaConfig?.max?.toString()]]
     }
   }
@@ -634,11 +637,11 @@ export const getCommonSchemaFieldsInDataview = (
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field!?.toString())
         if (label === field) {
           if (dataview.category !== DataviewCategory.Context) {
-            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
+            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
           }
           if (schema === 'geartypes') {
             // There is an fixed list of gearTypes independant of the dataset
-            label = getVesselGearType({ geartypes: field })
+            label = getVesselGearType({ geartypes: field as string })
           }
         }
         return { id: field!?.toString(), label: label as string }

@@ -1,11 +1,10 @@
-import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, uniqBy, without, kebabCase, uniq } from 'lodash'
 import { stringify } from 'qs'
 import {
   AnyDatasetConfiguration,
   APIPagination,
   Dataset,
-  DatasetCategory,
   EndpointId,
   EndpointParam,
   UploadResponse,
@@ -180,10 +179,10 @@ export const fetchAllDatasetsThunk = createAsyncThunk<
   return dispatch(fetchDatasetsByIdsThunk({ ids: [], onlyUserDatasets }))
 })
 
-export type CreateDataset = { dataset: Partial<Dataset>; file: File; createAsPublic: boolean }
+export type UpsertDataset = { dataset: Partial<Dataset>; file?: File; createAsPublic?: boolean }
 export const upsertDatasetThunk = createAsyncThunk<
   Dataset,
-  CreateDataset,
+  UpsertDataset,
   {
     rejectValue: AsyncError
   }
@@ -203,7 +202,7 @@ export const upsertDatasetThunk = createAsyncThunk<
 
     // API needs to have the value in lowercase
     const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
-    const generatedId = `${kebabCase(dataset.name)}-${Date.now()}`
+    const generatedId = dataset.id || `${kebabCase(dataset.name)}-${Date.now()}`
     const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
     const { id: originalId, ...rest } = dataset
     const isPatchDataset = originalId !== undefined
@@ -213,7 +212,7 @@ export const upsertDatasetThunk = createAsyncThunk<
       description: dataset.description || dataset.name,
       source: dataset.source || DATASETS_USER_SOURCE_ID,
       // Needed to start polling the dataset in useAutoRefreshImportingDataset
-      ...(isPatchDataset && { status: 'importing' }),
+      ...(isPatchDataset && file && { status: 'importing' }),
       configuration: {
         ...dataset.configuration,
         ...(propertyToInclude && { propertyToInclude }),
@@ -308,21 +307,15 @@ export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
   }
 })
 
-export type DatasetModals = 'new' | 'edit' | undefined
 export interface DatasetsState extends AsyncReducer<Dataset> {
-  datasetModal: DatasetModals
-  editingDatasetId: string | undefined
-  allDatasetsRequested: boolean
   carrierLatest: {
     status: AsyncReducerStatus
     dataset: Dataset | undefined
   }
 }
+
 const initialState: DatasetsState = {
   ...asyncInitialState,
-  datasetModal: undefined,
-  allDatasetsRequested: false,
-  editingDatasetId: undefined,
   carrierLatest: {
     status: AsyncReducerStatus.Idle,
     dataset: undefined,
@@ -332,21 +325,8 @@ const initialState: DatasetsState = {
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
   name: 'datasets',
   initialState,
-  reducers: {
-    setDatasetModal: (state, action: PayloadAction<DatasetModals>) => {
-      if (state.datasetModal === 'edit' && action.payload === undefined) {
-        state.editingDatasetId = undefined
-      }
-      state.datasetModal = action.payload
-    },
-    setEditingDatasetId: (state, action: PayloadAction<string>) => {
-      state.editingDatasetId = action.payload
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchAllDatasetsThunk.fulfilled, (state) => {
-      state.allDatasetsRequested = true
-    })
     builder.addCase(fetchLastestCarrierDatasetThunk.pending, (state) => {
       state.carrierLatest.status = AsyncReducerStatus.Loading
     })
@@ -369,8 +349,6 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
   },
 })
 
-export const { setDatasetModal, setEditingDatasetId } = datasetSlice.actions
-
 export type DatasetsSliceState = { datasets: DatasetsState }
 export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<DatasetsSliceState>(
   (state) => state.datasets
@@ -387,10 +365,6 @@ export const selectDatasetById = memoize((id: string) =>
 export const selectDatasetsStatus = (state: DatasetsSliceState) => state.datasets.status
 export const selectDatasetsStatusId = (state: DatasetsSliceState) => state.datasets.statusId
 export const selectDatasetsError = (state: DatasetsSliceState) => state.datasets.error
-export const selectEditingDatasetId = (state: DatasetsSliceState) => state.datasets.editingDatasetId
-export const selectAllDatasetsRequested = (state: DatasetsSliceState) =>
-  state.datasets.allDatasetsRequested
-export const selectDatasetModal = (state: DatasetsSliceState) => state.datasets.datasetModal
 export const selectCarrierLatestDataset = (state: DatasetsSliceState) =>
   state.datasets.carrierLatest.dataset
 export const selectCarrierLatestDatasetStatus = (state: DatasetsSliceState) =>

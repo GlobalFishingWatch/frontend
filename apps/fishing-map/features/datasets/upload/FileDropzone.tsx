@@ -7,53 +7,35 @@ import { ReactComponent as FilesCsvIcon } from 'assets/icons/file-csv.svg'
 import { ReactComponent as FilesJsonIcon } from 'assets/icons/file-json.svg'
 import { ReactComponent as FileZipIcon } from 'assets/icons/file-zip.svg'
 import { joinTranslatedList } from 'features/i18n/utils'
+import { FILE_TYPES_CONFIG, FileType, MimeExtention, getFilesAcceptedByMime } from 'utils/files'
 import styles from './FileDropzone.module.css'
 
 // t('dataset.formats.csv', 'csv')
 // t('dataset.formats.geojson', 'geojson')
 // t('dataset.formats.shapefile', 'compressed shapefile')
 
-export type FileType = 'geojson' | 'shapefile' | 'csv'
+const IconsByType: Record<string, any> = {
+  json: <FilesJsonIcon key="json" />,
+  csv: <FilesCsvIcon key="csv" />,
+  zip: <FileZipIcon key="zip" />,
+}
 
 interface FileDropzoneProps {
+  label?: string
   fileTypes: FileType[]
   className?: string
   onFileLoaded: (fileInfo: File, type?: DatasetGeometryType) => void
 }
 
-type FileConfig = { id: string; files: string[]; icon: JSX.Element }
-
-type MimeExtention = '.json' | '.geojson' | '.zip' | '.csv'
-type MimeType = 'application/json' | 'application/zip' | 'text/csv'
-const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType> = {
-  '.json': 'application/json',
-  '.geojson': 'application/json',
-  '.zip': 'application/zip',
-  '.csv': 'text/csv',
-}
-
-const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
-  geojson: {
-    id: 'geojson',
-    files: ['.json', '.geojson'],
-    icon: <FilesJsonIcon key="geojson" />,
-  },
-  shapefile: { id: 'shapefile', files: ['.zip'], icon: <FileZipIcon key="zip" /> },
-  csv: { id: 'csv', files: ['.csv'], icon: <FilesCsvIcon key="csv" /> },
-}
-
-const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileLoaded, fileTypes, className = '' }) => {
+const FileDropzone: React.FC<FileDropzoneProps> = ({
+  onFileLoaded,
+  fileTypes,
+  className = '',
+  label,
+}) => {
   const fileTypesConfigs = fileTypes.map((fileType) => FILE_TYPES_CONFIG[fileType])
   const filesAcceptedExtensions = fileTypesConfigs.flatMap(({ files }) => files as MimeExtention[])
-  const fileAcceptedByMime = filesAcceptedExtensions.reduce((acc, extension) => {
-    const mime = MIME_TYPES_BY_EXTENSION[extension]
-    if (!acc[mime]) {
-      acc[mime] = [extension]
-    } else {
-      acc[mime].push(extension)
-    }
-    return acc
-  }, {} as Record<MimeType, MimeExtention[]>)
+  const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)
 
   const { t } = useTranslation()
   const onDropAccepted = useCallback(
@@ -69,9 +51,11 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileLoaded, fileTypes, cl
 
   return (
     <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
-      <div className={styles.icons}>{fileTypesConfigs.map(({ icon }) => icon)}</div>
+      <div className={styles.icons}>{fileTypesConfigs.map(({ icon }) => IconsByType[icon])}</div>
       <input {...getInputProps()} />
-      {acceptedFiles.length ? (
+      {label ? (
+        label
+      ) : acceptedFiles.length ? (
         <p className={styles.fileText}>
           {t('dataset.file', 'File')}: {acceptedFiles[0].name}
         </p>

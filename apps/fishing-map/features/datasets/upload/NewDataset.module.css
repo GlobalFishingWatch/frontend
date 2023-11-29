@@ -1,0 +1,142 @@
+.transparentOverlay {
+  background: none;
+  background-color: transparent;
+}
+
+.instructions {
+  color: var(--color-secondary-blue);
+  margin-bottom: var(--space-S);
+}
+
+.transparentOverlay .instructions {
+  color: var(--color-white);
+  text-align: center;
+  margin-bottom: var(--space-M);
+}
+
+.container {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  flex-direction: column;
+  padding-bottom: var(--space-M);
+}
+
+.placeholder {
+  margin: auto;
+}
+
+.label {
+  font: var(--font-S);
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
+  height: var(--size-S);
+  line-height: 2em;
+}
+
+.requiredDataContainer {
+  display: flex;
+  width: 100%;
+  gap: var(--space-S);
+  padding-bottom: var(--space-M);
+}
+
+.evenSelectorsGroup {
+  display: flex;
+  gap: var(--space-S);
+  padding-bottom: var(--space-M);
+}
+
+.evenSelectorsGroup > div {
+  flex-grow: 1;
+}
+
+.timestampSelectWrapper {
+  flex-grow: 2;
+}
+
+.trackTimestampFiltersContainer {
+  padding-top: var(--space-M);
+}
+
+.trackTimestampSelectors {
+  display: flex;
+  width: 100%;
+  gap: var(--space-S);
+  padding-bottom: var(--space-M);
+}
+
+.trackTimestampSelectors > div {
+  flex-grow: 1;
+}
+
+.row {
+  display: flex;
+  position: relative;
+}
+
+.input {
+  margin-bottom: var(--space-M);
+}
+
+.inputFullWidth {
+  flex: 1;
+}
+
+.optional {
+  margin-bottom: var(--space-M);
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: auto;
+}
+
+.modalContainer {
+  height: 54rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.footerMsg {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.saveBtn {
+  min-width: 15rem;
+}
+
+.errorMsg {
+  color: var(--color-danger-red);
+}
+
+.modalContent {
+  display: flex;
+  flex: 1;
+}
+
+.datasetConfig {
+  flex: 1;
+  margin-left: var(--space-S);
+  display: flex;
+  flex-direction: column;
+}
+
+.selectContainer {
+  flex: 1;
+}
+
+.shortSelect,
+.shortSelect:hover {
+  width: 15rem;
+}
+
+.multipleSelectContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}

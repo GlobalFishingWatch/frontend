@@ -30,7 +30,7 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselId } from 'routes/routes.selectors'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum
@@ -81,7 +81,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       // TODO: skip dataset fetch if already loaded in the
       // const dataset = selectAllDatasets(state).find((d: Dataset) => d.id === datasetId)
       const action = await dispatch(fetchDatasetByIdThunk(datasetId))
-      const guestUser = isGuestUser(state)
+      const guestUser = selectIsGuestUser(state)
       const resources = selectResources(state)
       if (fetchDatasetByIdThunk.fulfilled.match(action)) {
         const dataset = action.payload as Dataset

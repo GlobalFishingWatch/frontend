@@ -13,9 +13,8 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { isUserLogged } from 'features/user/user.slice'
+import { selectIsUserLogged } from 'features/user/user.slice'
 import { selectUserGroupsPermissions } from 'features/user/user.selectors'
-import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import Report from 'features/reports/Report'
@@ -32,9 +31,6 @@ const WorkspacesList = dynamic(
   () => import(/* webpackChunkName: "WorkspacesList" */ 'features/workspaces-list/WorkspacesList')
 )
 const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
-const NewDataset = dynamic(
-  () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/NewDataset')
-)
 
 type SidebarProps = {
   onMenuClick: () => void
@@ -60,10 +56,9 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
-  const userLogged = useSelector(isUserLogged)
+  const userLogged = useSelector(selectIsUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
-  const { datasetModal } = useDatasetModalConnect()
 
   useEffect(() => {
     if (hasUserGroupsPermissions) {
@@ -115,7 +110,6 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     <div className={styles.container}>
       {!readOnly && !isSmallScreen && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
-      {datasetModal === 'new' && <NewDataset />}
       <div className="scrollContainer" data-test="sidebar-container">
         <SidebarHeader />
         {sidebarComponent}

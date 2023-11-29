@@ -4,7 +4,7 @@ import {
   useAnalytics as useAnalyticsBase,
 } from '@globalfishingwatch/react-hooks'
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
-import { isUserLogged, selectUserData } from 'features/user/user.slice'
+import { selectIsUserLogged, selectUserData } from 'features/user/user.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 
 export const GOOGLE_ANALYTICS_DEBUG_MODE =
@@ -31,7 +31,7 @@ export const trackEvent = trackEventBase<TrackCategory>
 
 export const useAnalytics = () => {
   const user = useSelector(selectUserData)
-  const logged = useSelector(isUserLogged)
+  const logged = useSelector(selectIsUserLogged)
   const locationCategory = useSelector(selectLocationCategory)
 
   useAnalyticsBase({

@@ -87,7 +87,18 @@ export interface DatasetDocumentation {
   provider?: string
 }
 
+export interface DatasetConfigurationUI {
+  latitude?: string
+  longitude?: string
+  timestamp?: string
+  idProperty?: string
+  pointName?: string
+  pointSize?: string
+  geometryType?: DatasetGeometryType
+}
+
 export interface DatasetConfiguration {
+  id?: string
   index?: string
   filePath?: string
   srid?: number
@@ -99,9 +110,14 @@ export interface DatasetConfiguration {
   documentation?: DatasetDocumentation
   fields?: string[]
   idProperty?: string
+  propertyToInclude?: string
+  min?: number
+  max?: number
+  intervals?: string[]
+  disableInteraction?: boolean
   valueProperties?: string[]
   apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
-  [key: string]: unknown
+  configurationUI?: DatasetConfigurationUI
 }
 
 export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
@@ -124,11 +140,11 @@ export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean' | 'arr
 
 export type DatasetSchemaItem = {
   type: DatasetSchemaType
-  maxLength: number
-  minLength: number
-  enum: string[]
-  min: number
-  max: number
+  enum?: (string | boolean)[]
+  maxLength?: number
+  minLength?: number
+  min?: number
+  max?: number
   stats?: boolean
   unit?: string
   singleSelection?: boolean

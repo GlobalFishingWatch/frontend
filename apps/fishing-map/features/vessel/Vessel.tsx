@@ -23,7 +23,7 @@ import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 import {
   selectVesselAreaSubsection,
   selectVesselDatasetId,
@@ -66,7 +66,7 @@ const Vessel = () => {
   const infoError = useSelector(selectVesselInfoError)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const regionsDatasets = useSelector(selectRegionsDatasets)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const vesselData = useSelector(selectVesselInfoData)
   const hasSelfReportedData =
     getVesselIdentities(vesselData, {

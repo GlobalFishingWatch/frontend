@@ -2612,7 +2612,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@globalfishingwatch/fourwings-aggregate@4.3.0, @globalfishingwatch/fourwings-aggregate@workspace:libs/fourwings-aggregate":
+"@globalfishingwatch/fourwings-aggregate@npm:4.3.0":
+  version: 4.3.0
+  resolution: "@globalfishingwatch/fourwings-aggregate@npm:4.3.0"
+  peerDependencies:
+    "@mapbox/vector-tile": 1.3.1
+  checksum: 19331adc700982be423c942f47db25cd056e202243882450f85ec6d089e75d792faa990d5a45ec7ebbda5a94ba29d3787ea028590bfc8e9d64029ad54e44acb4
+  languageName: node
+  linkType: hard
+
+"@globalfishingwatch/fourwings-aggregate@workspace:libs/fourwings-aggregate":
   version: 0.0.0-use.local
   resolution: "@globalfishingwatch/fourwings-aggregate@workspace:libs/fourwings-aggregate"
   languageName: unknown
@@ -2816,6 +2825,8 @@ __metadata:
     "@globalfishingwatch/maplibre-gl": ^3.5.1-gfw.2
     "@jscutlery/semver": ^3.1.0
     "@loaders.gl/core": ^3.4.14
+    "@loaders.gl/csv": ^3.4.14
+    "@loaders.gl/json": ^3.4.14
     "@loaders.gl/loader-utils": ^3.4.14
     "@loaders.gl/mvt": ^3.4.14
     "@mapbox/tile-cover": ^3.0.2
@@ -2844,6 +2855,7 @@ __metadata:
     "@svgr/webpack": ^8.1.0
     "@testing-library/react": 13.4.0
     "@tippyjs/react": 4.2.6
+    "@tmcw/togeojson": ^5.8.1
     "@turf/area": ^6.5.0
     "@turf/bbox": 6.5.0
     "@turf/great-circle": ^6.5.0
@@ -2900,6 +2912,7 @@ __metadata:
     eslint-plugin-react: 7.33.2
     eslint-plugin-react-hooks: 4.6.0
     file-saver: 2.0.5
+    geo-coordinates-parser: ^1.6.3
     geojson: ^0.5.0
     geojson-vt: ^3.2.1
     gl-matrix: 3.4.3
@@ -2909,6 +2922,7 @@ __metadata:
     jest: 29.7.0
     jest-environment-jsdom: 29.7.0
     jest-watch-typeahead: ^1.1.0
+    jszip: ^3.10.1
     kill-port: ^2.0.1
     lint-staged: 14.0.1
     lodash: 4.17.21
@@ -4107,6 +4121,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@loaders.gl/csv@npm:^3.4.14":
+  version: 3.4.14
+  resolution: "@loaders.gl/csv@npm:3.4.14"
+  dependencies:
+    "@loaders.gl/loader-utils": 3.4.14
+    "@loaders.gl/schema": 3.4.14
+  checksum: 69e6a72b6439df4a7e181e305e813166c4fa5d6fc51985bfacc0b6df01054781a1fc15d5659714ed79212af58ff41f74cfdff3e9c25e22b542f4f9fe9713e5e6
+  languageName: node
+  linkType: hard
+
 "@loaders.gl/draco@npm:3.4.14":
   version: 3.4.14
   resolution: "@loaders.gl/draco@npm:3.4.14"
@@ -4152,6 +4176,17 @@ __metadata:
   dependencies:
     "@loaders.gl/loader-utils": 3.4.14
   checksum: bb4049fa6a0739079597bc6d52e389440703fcf61c6e1c8f797dfa5c7404a24e04dc744e08d22c1d8333e4da040451572a3df9b980766beadb9bfa17a5f47234
+  languageName: node
+  linkType: hard
+
+"@loaders.gl/json@npm:^3.4.14":
+  version: 3.4.14
+  resolution: "@loaders.gl/json@npm:3.4.14"
+  dependencies:
+    "@loaders.gl/gis": 3.4.14
+    "@loaders.gl/loader-utils": 3.4.14
+    "@loaders.gl/schema": 3.4.14
+  checksum: 64a52fc4ede4d755df2f9ec4fecec746fb2cd082286c57162472c0efd2975c79d7e0b62e29c507a839e1c32fa98a8284a73fd6241fc3027c6ec540e9a66288ec
   languageName: node
   linkType: hard
 
@@ -6497,6 +6532,15 @@ __metadata:
     react: ">=16.8"
     react-dom: ">=16.8"
   checksum: 8f0fba591c9dae2e1af1ae632bbc775ba5c9dd4498e50e242be70302b4c27115c6740eec44e885e294b27cb28515777b52af5b34aac9d4bab627d948add938ae
+  languageName: node
+  linkType: hard
+
+"@tmcw/togeojson@npm:^5.8.1":
+  version: 5.8.1
+  resolution: "@tmcw/togeojson@npm:5.8.1"
+  peerDependencies:
+    "@types/geojson": "*"
+  checksum: c0b7a3e922a2baa291f6f682c10c2e96925fb93c337171bd9db608434ddaf76969aae26140f91ddd6ca5818be771507e132e611dae845ed35c66148516f6dd17
   languageName: node
   linkType: hard
 
@@ -16444,6 +16488,13 @@ __metadata:
   version: 1.0.0-beta.2
   resolution: "gensync@npm:1.0.0-beta.2"
   checksum: a7437e58c6be12aa6c90f7730eac7fa9833dc78872b4ad2963d2031b00a3367a93f98aec75f9aaac7220848e4026d67a8655e870b24f20a543d103c0d65952ec
+  languageName: node
+  linkType: hard
+
+"geo-coordinates-parser@npm:^1.6.3":
+  version: 1.6.3
+  resolution: "geo-coordinates-parser@npm:1.6.3"
+  checksum: 9037dd967484a31e2dcd83fb0a8720960e5138d6f2906722a700c6721a8193196fb27a3cca2f1240f07c0b1dbc35206feab0632db300242055f2f2f6e2894769
   languageName: node
   linkType: hard
 

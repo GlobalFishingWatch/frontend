@@ -1,9 +1,10 @@
 import { groupBy, toNumber } from 'lodash'
 import { DateTime, DateTimeOptions } from 'luxon'
 import { Segment } from '@globalfishingwatch/api-types'
-import { Columns } from './types'
+import { parseCoords } from '@globalfishingwatch/data-transforms'
+import { SegmentColumns } from '../types'
 
-type Args = Columns & {
+type Args = SegmentColumns & {
   records: Record<string, any>[]
 }
 
@@ -33,22 +34,32 @@ export const getUTCDate = (timestamp: string | number) => {
 
 export const NO_RECORD_ID = 'no_id'
 
-export const csvToTrackSegments = ({
+export const listToTrackSegments = ({
   records,
   latitude,
   longitude,
   timestamp,
   id,
 }: Args): Segment[] => {
-  const grouped = id ? groupBy(records, id) : { no_id: records }
+  const hasIdGroup = id !== undefined && id !== ''
+  const recordArray = Array.isArray(records) ? records : [records]
+  const grouped = hasIdGroup ? groupBy(recordArray, id) : { no_id: recordArray }
   const segments = Object.values(grouped).map((groupedRecords) => {
     return groupedRecords.flatMap((record) => {
       const recordId = id && record[id] ? record[id] : NO_RECORD_ID
       if (record[latitude] && record[longitude] && record[timestamp]) {
+        const {
+          [latitude]: latitudeValue,
+          [longitude]: longitudeValue,
+          [timestamp]: timestampValue,
+          ...properties
+        } = record
+        const coords = parseCoords(latitudeValue, longitudeValue)
         return {
-          latitude: parseFloat(record[latitude]),
-          longitude: parseFloat(record[longitude]),
-          timestamp: getUTCDate(record[timestamp]).getTime(),
+          ...(hasIdGroup && { properties }),
+          latitude: coords.latitude as number,
+          longitude: coords.longitude as number,
+          timestamp: getUTCDate(timestampValue).getTime(),
           id: recordId,
         }
       } else return []

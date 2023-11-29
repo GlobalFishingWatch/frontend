@@ -1,6 +1,11 @@
 import { useSelector, batch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
-import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
+import {
+  AnyDatasetConfiguration,
+  Dataset,
+  DatasetCategory,
+  DatasetStatus,
+} from '@globalfishingwatch/api-types'
 import { AsyncError } from 'utils/async-slice'
 import {
   getContextDataviewInstance,
@@ -12,18 +17,20 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
-  CreateDataset,
+  DatasetUploadConfig,
+  selectDatasetUploadModalConfig,
+  selectDatasetUploadModalOpen,
+  setDatasetUploadConfig,
+  setModalOpen,
+} from 'features/modals/modals.slice'
+import {
+  UpsertDataset,
   upsertDatasetThunk,
-  DatasetModals,
   deleteDatasetThunk,
   fetchDatasetByIdThunk,
   fetchLastestCarrierDatasetThunk,
   selectCarrierLatestDataset,
   selectCarrierLatestDatasetStatus,
-  selectDatasetModal,
-  selectEditingDatasetId,
-  setDatasetModal,
-  setEditingDatasetId,
   updateDatasetThunk,
 } from './datasets.slice'
 
@@ -34,14 +41,18 @@ export interface NewDatasetProps {
 const DATASET_REFRESH_TIMEOUT = 10000
 
 export const getDataviewInstanceByDataset = (dataset: Dataset) => {
+  const config = {
+    ...dataset.configuration,
+    ...dataset.configuration?.configurationUI,
+  } as AnyDatasetConfiguration
   if (dataset.category === DatasetCategory.Context) {
-    return dataset.configuration?.geometryType === 'points'
+    return config?.geometryType === 'points'
       ? getUserPointsDataviewInstance(dataset.id)
       : getContextDataviewInstance(dataset.id)
   } else if (dataset.category === DatasetCategory.Environment) {
-    if (dataset.configuration?.geometryType === 'polygons') {
+    if (config?.geometryType === 'polygons') {
       return getEnvironmentDataviewInstance(dataset.id)
-    } else if (dataset.configuration?.geometryType === 'tracks') {
+    } else if (config?.geometryType === 'tracks') {
       return getUserTrackDataviewInstance(dataset)
     }
   }
@@ -65,30 +76,37 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
   return { addDataviewFromDatasetToWorkspace }
 }
 
-export const useDatasetModalConnect = () => {
+export const useDatasetModalOpenConnect = () => {
   const dispatch = useAppDispatch()
-  const datasetModal = useSelector(selectDatasetModal)
-  const editingDatasetId = useSelector(selectEditingDatasetId)
+  const datasetModalOpen = useSelector(selectDatasetUploadModalOpen)
 
-  const dispatchDatasetModal = useCallback(
-    (datasetModal: DatasetModals) => {
-      dispatch(setDatasetModal(datasetModal))
-    },
-    [dispatch]
-  )
-
-  const dispatchEditingDatasetId = useCallback(
-    (id: string) => {
-      dispatch(setEditingDatasetId(id))
+  const dispatchDatasetModalOpen = useCallback(
+    (open: boolean) => {
+      dispatch(setModalOpen({ id: 'datasetUpload', open }))
     },
     [dispatch]
   )
 
   return {
-    datasetModal,
-    dispatchDatasetModal,
-    editingDatasetId,
-    dispatchEditingDatasetId,
+    datasetModalOpen,
+    dispatchDatasetModalOpen,
+  }
+}
+
+export const useDatasetModalConfigConnect = () => {
+  const dispatch = useAppDispatch()
+  const datasetModal = useSelector(selectDatasetUploadModalConfig)
+
+  const dispatchDatasetModalConfig = useCallback(
+    (config: DatasetUploadConfig) => {
+      dispatch(setDatasetUploadConfig(config))
+    },
+    [dispatch]
+  )
+
+  return {
+    ...datasetModal,
+    dispatchDatasetModalConfig,
   }
 }
 
@@ -108,7 +126,7 @@ export const useDatasetsAPI = () => {
   )
 
   const dispatchUpsertDataset = useCallback(
-    async (createDataset: CreateDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
+    async (createDataset: UpsertDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
       const action = await dispatch(upsertDatasetThunk(createDataset))
       if (upsertDatasetThunk.fulfilled.match(action)) {
         return { payload: action.payload }
@@ -193,14 +211,14 @@ export const useAutoRefreshImportingDataset = (
 }
 
 export const useAddDataset = ({ onSelect }: NewDatasetProps) => {
-  const { dispatchDatasetModal } = useDatasetModalConnect()
+  const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   return () => {
     trackEvent({
       category: TrackCategory.ReferenceLayer,
       action: 'Start uploading user dataset',
     })
     batch(() => {
-      dispatchDatasetModal('new')
+      dispatchDatasetModalOpen(true)
     })
     if (onSelect) {
       onSelect()

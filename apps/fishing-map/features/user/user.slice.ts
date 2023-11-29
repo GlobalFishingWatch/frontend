@@ -134,11 +134,11 @@ export const isGFWAdminUser = (state: UserSliceState) =>
 export const isGFWDeveloper = (state: UserSliceState) =>
   state.user.data?.groups.includes(GFW_DEV_GROUP_ID)
 
-export const isGuestUser = createSelector([selectUserData], (userData) => {
+export const selectIsGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE
 })
 
-export const isUserLogged = createSelector(
+export const selectIsUserLogged = createSelector(
   [selectUserStatus, selectUserLogged],
   (status, logged) => {
     return status === AsyncReducerStatus.Finished && logged

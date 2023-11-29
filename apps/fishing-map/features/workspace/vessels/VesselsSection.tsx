@@ -9,7 +9,7 @@ import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { selectHasTracksWithNoData } from 'features/timebar/timebar.selectors'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { WORKSPACE_SEARCH } from 'routes/routes'
@@ -24,7 +24,7 @@ function VesselsSection(): React.ReactElement {
   const { dispatchLocation } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const hasVesselsWithNoTrack = useSelector(selectHasTracksWithNoData)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)

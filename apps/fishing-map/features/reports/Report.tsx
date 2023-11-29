@@ -27,7 +27,7 @@ import {
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
-import { isGuestUser, selectUserData } from 'features/user/user.slice'
+import { selectIsGuestUser, selectUserData } from 'features/user/user.slice'
 import { ReportCategory, TimebarVisualisations } from 'types'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
@@ -71,7 +71,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const reportCategory = useSelector(selectReportCategory)
   const timerange = useSelector(selectTimeRange)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const datasetId = useSelector(selectReportDatasetId)
   const areaId = useSelector(selectReportAreaId)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)

@@ -132,6 +132,10 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    */
   datasetId?: string
   /**
+   * SQL filter to apply to the dataset
+   */
+  filter?: string
+  /**
    * Custom color ramp for filled layers
    */
   steps?: number[]
@@ -162,6 +166,10 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    * Id for API dataset in case you need to fetch geometries by gfw_id
    */
   datasetId?: string
+  /**
+   * SQL filter to apply to the dataset
+   */
+  filter?: string
   /**
    * Property to get value to display the ramp
    */
@@ -321,6 +329,10 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
     start: string
     end: string
   }
+  /**
+   * Filter the tracks displayed https://docs.mapbox.com/help/glossary/filter/
+   */
+  filters?: Record<string, Array<string>>
 }
 
 export interface PolygonsGeneratorConfig extends GeneratorConfig {

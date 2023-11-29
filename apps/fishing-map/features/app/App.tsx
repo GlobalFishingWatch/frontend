@@ -26,7 +26,7 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk, isUserLogged } from 'features/user/user.slice'
+import { fetchUserThunk, selectIsUserLogged } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -51,6 +51,7 @@ import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/help/hints.slice'
 import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
+import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectReportAreaBounds, selectSidebarOpen } from './app.selectors'
 import styles from './App.module.css'
@@ -122,6 +123,7 @@ const setMobileSafeVH = () => {
 
 function App() {
   useAnalytics()
+  useDatasetDrag()
   useReplaceLoginUrl()
   const map = useMapInstance()
   const dispatch = useAppDispatch()
@@ -172,7 +174,7 @@ function App() {
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  const userLogged = useSelector(isUserLogged)
+  const userLogged = useSelector(selectIsUserLogged)
   const urlViewport = useSelector(selectUrlViewport)
   const urlTimeRange = useSelector(selectUrlTimeRange)
   const urlWorkspaceId = useSelector(selectWorkspaceId)

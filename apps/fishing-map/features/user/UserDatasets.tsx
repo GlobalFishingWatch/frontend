@@ -2,10 +2,11 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { batch, useSelector } from 'react-redux'
 import { Button, Spinner, IconButton, Modal, Icon } from '@globalfishingwatch/ui-components'
-import { Dataset, DatasetStatus } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetGeometryType, DatasetStatus } from '@globalfishingwatch/api-types'
 import {
   getDataviewInstanceByDataset,
-  useDatasetModalConnect,
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
 import { getDatasetTypeIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
@@ -34,13 +35,14 @@ function UserDatasets() {
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchDatasetModal, dispatchEditingDatasetId } = useDatasetModalConnect()
+  const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
+  const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
 
   const onNewDatasetClick = useCallback(async () => {
     batch(() => {
-      dispatchDatasetModal('new')
+      dispatchDatasetModalOpen(true)
     })
-  }, [dispatchDatasetModal])
+  }, [dispatchDatasetModalOpen])
 
   const onDatasetClick = useCallback(
     (dataset: Dataset) => {
@@ -73,11 +75,16 @@ function UserDatasets() {
   const onEditClick = useCallback(
     (dataset: Dataset) => {
       batch(() => {
-        dispatchDatasetModal('edit')
-        dispatchEditingDatasetId(dataset.id)
+        dispatchDatasetModalOpen(true)
+        dispatchDatasetModalConfig({
+          id: dataset?.id,
+          type:
+            (dataset?.configuration?.configurationUI?.geometryType as DatasetGeometryType) ||
+            dataset?.configuration?.geometryType,
+        })
       })
     },
-    [dispatchDatasetModal, dispatchEditingDatasetId]
+    [dispatchDatasetModalOpen, dispatchDatasetModalConfig]
   )
 
   const onDeleteClick = useCallback(
