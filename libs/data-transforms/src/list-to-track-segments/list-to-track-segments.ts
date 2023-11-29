@@ -57,8 +57,8 @@ export const listToTrackSegments = ({
         const coords = parseCoords(latitudeValue, longitudeValue)
         return {
           ...(hasIdGroup && { properties }),
-          latitude: coords.latitude,
-          longitude: coords.longitude,
+          latitude: coords.latitude as number,
+          longitude: coords.longitude as number,
           timestamp: getUTCDate(timestampValue).getTime(),
           id: recordId,
         }

@@ -6,7 +6,7 @@ import {
   DatasetConfigurationUI,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
-import { CSV } from './NewTrackDataset'
+import { DataList } from 'features/datasets/upload/datasets-parse.utils'
 import { DatasetMetadata } from './NewDataset'
 
 export function getFileName(file: File): string {
@@ -16,18 +16,14 @@ export function getFileName(file: File): string {
 }
 
 export type DatasetSchemaGeneratorProps = {
-  data: CSV
+  data: DataList
   meta: ParseMeta
 }
 
 export type VesselConfigurationProperty = keyof DatasetConfigurationUI | keyof DatasetConfiguration
 type DatasetProperty<P extends VesselConfigurationProperty> = P extends 'geometryType'
   ? DatasetGeometryType
-  : P extends 'latitude' | 'longitude'
-  ? number
-  : P extends 'timestamp' | 'idProperty'
-  ? string | number
-  : unknown
+  : string
 
 export function getDatasetConfigurationProperty<P extends VesselConfigurationProperty>({
   datasetMetadata,
@@ -35,13 +31,11 @@ export function getDatasetConfigurationProperty<P extends VesselConfigurationPro
 }: {
   datasetMetadata: Dataset | DatasetMetadata | undefined
   property: P
-}): keyof DatasetConfigurationUI {
+}): DatasetProperty<P> {
   return (datasetMetadata?.configuration?.configurationUI?.[
     property as keyof DatasetConfigurationUI
   ] ||
-    datasetMetadata?.configuration?.[
-      property as keyof DatasetConfiguration
-    ]) as keyof DatasetConfigurationUI
+    datasetMetadata?.configuration?.[property as keyof DatasetConfiguration]) as DatasetProperty<P>
 }
 
 export const getDatasetConfiguration = ({

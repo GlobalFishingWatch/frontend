@@ -1,6 +1,3 @@
-declare module '@mapbox/tilebelt'
-declare module '@globalfishingwatch/maplibre-gl/dist/style-spec'
-
 // Remove once this is merged: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/67548
 declare module 'geo-coordinates-parser' {
   export interface ToFormats {
