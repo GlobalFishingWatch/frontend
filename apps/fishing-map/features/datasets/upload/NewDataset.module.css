@@ -22,6 +22,10 @@
   padding-bottom: var(--space-M);
 }
 
+.placeholder {
+  margin: auto;
+}
+
 .label {
   font: var(--font-S);
   text-transform: uppercase;

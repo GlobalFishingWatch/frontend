@@ -12,6 +12,8 @@ import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
 import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
+import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -47,7 +49,7 @@ interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
   extensions?: string[]
 }
 
-function NewDataset(): React.ReactElement {
+function NewDataset() {
   const { t } = useTranslation()
   const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { type, style, id, fileRejected, dispatchDatasetModalConfig } =
@@ -55,6 +57,7 @@ function NewDataset(): React.ReactElement {
   const dataset = useSelector(selectDatasetById(id as string))
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const [rawFile, setRawFile] = useState<File | undefined>()
+  const isGuestUser = useSelector(selectIsGuestUser)
   const [error, setError] = useState('')
   const locationType = useSelector(selectLocationType)
   const { dispatchUpsertDataset } = useDatasetsAPI()
@@ -332,7 +335,11 @@ function NewDataset(): React.ReactElement {
       fullScreen={style === 'transparent'}
       onClose={onClose}
     >
-      {type && (rawFile || dataset) ? (
+      {isGuestUser ? (
+        <div className={styles.placeholder}>
+          <RegisterOrLoginToUpload />
+        </div>
+      ) : type && (rawFile || dataset) ? (
         <div className={styles.modalContent}>{getDatasetComponentByType(type)}</div>
       ) : (
         <Fragment>
