@@ -19,7 +19,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectUserTab } from 'routes/routes.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import styles from './User.module.css'
-import { selectUserData, isUserLogged } from './user.slice'
+import { selectUserData, selectIsUserLogged } from './user.slice'
 import { selectUserGroupsPermissions } from './user.selectors'
 import UserWorkspaces from './UserWorkspaces'
 import UserWorkspacesPrivate from './UserWorkspacesPrivate'
@@ -31,7 +31,7 @@ import UserVesselGroups from './UserVesselGroups'
 function User() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const userLogged = useSelector(isUserLogged)
+  const userLogged = useSelector(selectIsUserLogged)
   const userData = useSelector(selectUserData)
   const userTab = useSelector(selectUserTab)
   const { dispatchQueryParams } = useLocationConnect()

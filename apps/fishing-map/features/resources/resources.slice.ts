@@ -13,7 +13,7 @@ import {
   THINNING_LEVEL_ZOOMS,
 } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 import {
   selectUrlEndQuery,
   selectUrlMapZoomQuery,
@@ -30,7 +30,7 @@ export {
 
 // DO NOT MOVE TO RESOURCES.SELECTORS, IT CREATES A CIRCULAR DEPENDENCY
 export const selectTrackThinningConfig = createSelector(
-  [(state) => isGuestUser(state), selectDebugOptions, selectUrlMapZoomQuery],
+  [(state) => selectIsGuestUser(state), selectDebugOptions, selectUrlMapZoomQuery],
   (guestUser, { thinning }, currentZoom) => {
     if (!thinning) return null
     let config = {} as ThinningConfig

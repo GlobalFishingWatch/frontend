@@ -20,7 +20,7 @@ import { selectViewport } from 'features/app/app.selectors'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { isGFWUser, isGuestUser } from 'features/user/user.slice'
+import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
@@ -94,7 +94,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
   }, [setModalDataWarningOpen])
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const viewport = useSelector(selectViewport)
   const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
   const layerActive = dataview?.config?.visible ?? true

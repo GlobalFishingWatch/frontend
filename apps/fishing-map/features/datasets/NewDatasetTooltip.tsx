@@ -8,7 +8,7 @@ import { Dataset, DatasetCategory } from '@globalfishingwatch/api-types'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserDatasetsNotUsed } from 'features/user/user.selectors'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getDatasetIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
@@ -30,7 +30,7 @@ function NewDatasetTooltip({ onSelect, datasetCategory }: NewDatasetTooltipProps
   const dispatch = useAppDispatch()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const datasets = useSelector(selectUserDatasetsNotUsed(datasetCategory))
-  const guestuser = useSelector(isGuestUser)
+  const guestuser = useSelector(selectIsGuestUser)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const allDatasetsRequested = useSelector(selectAllDatasetsRequested)
 

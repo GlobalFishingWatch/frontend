@@ -6,7 +6,7 @@ import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { selectActiveDataviews } from 'features/dataviews/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { selectUserData, isGuestUser } from 'features/user/user.slice'
+import { selectUserData, selectIsGuestUser } from 'features/user/user.slice'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserGroupsClean } from 'features/user/user.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -69,7 +69,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const [loading, setLoading] = useState(false)
   const [suficientData, setSuficientData] = useState(false)
   const userGroups = useSelector(selectUserGroupsClean)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
 
   const initialFeedbackState = {
     date: new Date().toISOString(),
