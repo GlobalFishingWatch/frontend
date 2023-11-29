@@ -118,7 +118,7 @@ export function Select(props: SelectProps) {
           {selectedOption ? selectedOption.label : placeholder}
         </div>
         <div className={styles.buttonsContainer}>
-          {onCleanClick !== undefined && hasSelectedOptions && (
+          {onCleanClick !== undefined && hasSelectedOptions && !disabled && (
             <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
           )}
           <IconButton
