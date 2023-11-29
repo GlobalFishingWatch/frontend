@@ -178,6 +178,17 @@ function NewPointDataset({
     return options.sort(sortFields)
   }, [datasetMetadata])
 
+  const schemaRangeOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
+    const options = datasetMetadata?.schema
+      ? Object.keys(datasetMetadata.schema)
+          .filter((field) => datasetMetadata.schema?.[field].type === 'range')
+          .map((field) => {
+            return { id: field, label: field }
+          })
+      : []
+    return options.sort(sortFields)
+  }, [datasetMetadata])
+
   const filtersFieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
     const options = datasetMetadata?.schema
       ? Object.keys(datasetMetadata.schema).flatMap((field) => {
@@ -319,8 +330,8 @@ function NewPointDataset({
           />
           <Select
             label={t('dataset.pointSize', 'point size')}
-            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-            options={fieldsOptions}
+            placeholder={t('dataset.fieldPlaceholder', 'Select a numeric field from your dataset')}
+            options={schemaRangeOptions}
             direction="top"
             selectedOption={
               getSelectedOption(
