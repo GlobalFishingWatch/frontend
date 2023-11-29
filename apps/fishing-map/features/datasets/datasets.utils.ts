@@ -1,6 +1,5 @@
 import { intersection, lowerCase, uniq } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { ParseMeta } from 'papaparse'
 import {
   Dataset,
   DatasetCategory,
@@ -35,7 +34,6 @@ import { getLayerDatasetRange } from 'features/workspace/environmental/Histogram
 import { getVesselGearType } from 'utils/info'
 import { VESSEL_INSTANCE_DATASETS } from 'features/dataviews/dataviews.utils'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
-import type { CSV } from './upload/NewTrackDataset'
 
 export type SupportedDatasetSchema =
   | SupportedActivityDatasetSchema
@@ -618,13 +616,13 @@ export const getCommonSchemaFieldsInDataview = (
     return []
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  let schemaFields: string[][] = (activeDatasets || [])?.map((d) => {
+  let schemaFields: (string | boolean)[][] = (activeDatasets || [])?.map((d) => {
     const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
     return schemaItem?.enum || schemaItem?.items?.enum || []
   })
   if (schemaType === 'number' || schemaType === 'range') {
     const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)
-    if (schemaConfig) {
+    if (schemaConfig && schemaConfig.min && schemaConfig.max) {
       schemaFields = [[schemaConfig?.min?.toString(), schemaConfig?.max?.toString()]]
     }
   }
@@ -639,11 +637,11 @@ export const getCommonSchemaFieldsInDataview = (
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field!?.toString())
         if (label === field) {
           if (dataview.category !== DataviewCategory.Context) {
-            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
+            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
           }
           if (schema === 'geartypes') {
             // There is an fixed list of gearTypes independant of the dataset
-            label = getVesselGearType({ geartypes: field })
+            label = getVesselGearType({ geartypes: field as string })
           }
         }
         return { id: field!?.toString(), label: label as string }

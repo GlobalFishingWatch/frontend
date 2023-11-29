@@ -110,6 +110,11 @@ export interface DatasetConfiguration {
   documentation?: DatasetDocumentation
   fields?: string[]
   idProperty?: string
+  propertyToInclude?: string
+  min?: number
+  max?: number
+  intervals?: string[]
+  disableInteraction?: boolean
   valueProperties?: string[]
   apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
   configurationUI?: DatasetConfigurationUI

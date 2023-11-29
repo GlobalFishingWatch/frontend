@@ -12,7 +12,6 @@ import {
   SelectOption,
 } from '@globalfishingwatch/ui-components'
 import {
-  Dataset,
   DatasetCategory,
   DatasetConfiguration,
   DatasetConfigurationUI,
@@ -28,7 +27,11 @@ import UserGuideLink from 'features/help/UserGuideLink'
 import { getFileFromGeojson } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
-import { getDatasetParsed, getTrackFromList } from 'features/datasets/upload/datasets-parse.utils'
+import {
+  DataList,
+  getDatasetParsed,
+  getTrackFromList,
+} from 'features/datasets/upload/datasets-parse.utils'
 import { sortFields } from 'utils/shared'
 import { isPrivateDataset } from '../datasets.utils'
 import {
@@ -39,7 +42,6 @@ import {
 } from './datasets-upload.utils'
 import styles from './NewDataset.module.css'
 
-export type CSV = Record<string, any>[]
 export type ExtractMetadataProps = { name: string; data: any }
 
 function NewTrackDataset({
@@ -51,7 +53,7 @@ function NewTrackDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [idGroupError, setIdGroupError] = useState<string>('')
-  const [fileData, setFileData] = useState<CSV | undefined>()
+  const [fileData, setFileData] = useState<DataList | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection<LineString> | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
 
@@ -146,7 +148,7 @@ function NewTrackDataset({
           )
         } else {
           const errors = checkRecordValidity({
-            record: (fileData as CSV)[0],
+            record: (fileData as DataList)[0],
             ...config,
           } as any)
           if (errors.length) {

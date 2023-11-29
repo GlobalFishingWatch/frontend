@@ -26,7 +26,7 @@ import { FileType, getFileFromGeojson, getFileType } from 'utils/files'
 import { isPrivateDataset } from '../datasets.utils'
 import styles from './NewDataset.module.css'
 import { ExtractMetadataProps } from './NewTrackDataset'
-import { getDatasetParsed, getGeojsonFromPointsList } from './datasets-parse.utils'
+import { DataList, getDatasetParsed, getGeojsonFromPointsList } from './datasets-parse.utils'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
@@ -43,7 +43,7 @@ function NewPointDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [idGroupError, setIdGroupError] = useState<string>('')
-  const [fileData, setFileData] = useState<CSV | undefined>()
+  const [fileData, setFileData] = useState<DataList | undefined>()
   const [fileType, setFileType] = useState<FileType>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
@@ -284,7 +284,10 @@ function NewPointDataset({
             direction="top"
             selectedOption={
               getSelectedOption(
-                getDatasetConfigurationProperty({ datasetMetadata, property: 'pointName' })
+                getDatasetConfigurationProperty({
+                  datasetMetadata,
+                  property: 'pointName',
+                })
               ) as SelectOption
             }
             onSelect={(selected) => {
@@ -301,7 +304,10 @@ function NewPointDataset({
             direction="top"
             selectedOption={
               getSelectedOption(
-                getDatasetConfigurationProperty({ datasetMetadata, property: 'pointSize' })
+                getDatasetConfigurationProperty({
+                  datasetMetadata,
+                  property: 'pointSize',
+                })
               ) as SelectOption
             }
             onSelect={(selected) => {

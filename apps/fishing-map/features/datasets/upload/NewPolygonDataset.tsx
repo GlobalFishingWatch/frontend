@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Button } from '@globalfishingwatch/ui-components'
 import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import UserGuideLink from 'features/help/UserGuideLink'
@@ -11,7 +11,7 @@ function NewPolygonDataset({ onConfirm }: NewDatasetProps): React.ReactElement {
   const [metadata, setMetadata] = useState<DatasetMetadata | undefined>()
 
   const onConfirmClick = useCallback(() => {
-    onTheFlyGeoJSONFile = getFileFromGeojson(fileData as Feature)
+    // onTheFlyGeoJSONFile = getFileFromGeojson(fileData as Feature)
   }, [])
 
   return (

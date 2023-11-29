@@ -65,7 +65,8 @@ export async function getDatasetParsed(file: File, type?: DatasetGeometryType) {
   return JSON.parse(fileText)
 }
 
-export const getTrackFromList = (data: Record<string, any>[], datasetMetadata: DatasetMetadata) => {
+export type DataList = Record<string, any>[]
+export const getTrackFromList = (data: DataList, datasetMetadata: DatasetMetadata) => {
   const segments = listToTrackSegments({
     records: data,
     latitude: getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }),
