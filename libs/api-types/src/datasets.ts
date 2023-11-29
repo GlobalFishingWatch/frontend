@@ -92,6 +92,7 @@ export interface DatasetConfigurationUI {
   longitude?: string
   timestamp?: string
   idProperty?: string
+  sourceFormat?: 'csv' | 'geojson' | 'shapefile' | 'kml'
   pointName?: string
   pointSize?: string
   geometryType?: DatasetGeometryType

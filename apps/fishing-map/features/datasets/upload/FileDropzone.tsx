@@ -6,6 +6,7 @@ import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { ReactComponent as FilesCsvIcon } from 'assets/icons/file-csv.svg'
 import { ReactComponent as FilesJsonIcon } from 'assets/icons/file-json.svg'
 import { ReactComponent as FileZipIcon } from 'assets/icons/file-zip.svg'
+import { ReactComponent as FileKMLIcon } from 'assets/icons/file-kml.svg'
 import { joinTranslatedList } from 'features/i18n/utils'
 import { FILE_TYPES_CONFIG, FileType, MimeExtention, getFilesAcceptedByMime } from 'utils/files'
 import styles from './FileDropzone.module.css'
@@ -13,11 +14,13 @@ import styles from './FileDropzone.module.css'
 // t('dataset.formats.csv', 'csv')
 // t('dataset.formats.geojson', 'geojson')
 // t('dataset.formats.shapefile', 'compressed shapefile')
+// t('dataset.formats.kml', 'KML')
 
 const IconsByType: Record<string, any> = {
-  json: <FilesJsonIcon key="json" />,
+  geojson: <FilesJsonIcon key="json" />,
   csv: <FilesCsvIcon key="csv" />,
   zip: <FileZipIcon key="zip" />,
+  kml: <FileKMLIcon key="kml" />,
 }
 
 interface FileDropzoneProps {
@@ -34,7 +37,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
   label,
 }) => {
   const fileTypesConfigs = fileTypes.map((fileType) => FILE_TYPES_CONFIG[fileType])
-  const filesAcceptedExtensions = fileTypesConfigs.flatMap(({ files }) => files as MimeExtention[])
+  const filesAcceptedExtensions = fileTypesConfigs.flatMap(
+    (config) => config?.files as MimeExtention[]
+  )
   const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)
 
   const { t } = useTranslation()
@@ -51,7 +56,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
 
   return (
     <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
-      <div className={styles.icons}>{fileTypesConfigs.map(({ icon }) => IconsByType[icon])}</div>
+      <div className={styles.icons}>
+        {fileTypesConfigs.map((config) => IconsByType[config?.icon])}
+      </div>
       <input {...getInputProps()} />
       {label ? (
         label

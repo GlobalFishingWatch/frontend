@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { FeatureCollection, LineString } from 'geojson'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { FeatureCollection } from 'geojson'
 import {
   Button,
   Collapsable,
@@ -24,7 +24,7 @@ import {
   guessColumnsFromSchema,
 } from '@globalfishingwatch/data-transforms'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { getFileFromGeojson } from 'utils/files'
+import { FileType, getFileFromGeojson, getFileType } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
 import {
@@ -42,7 +42,28 @@ import {
 } from './datasets-upload.utils'
 import styles from './NewDataset.module.css'
 
-export type ExtractMetadataProps = { name: string; data: any }
+export type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
+
+const getDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
+  const schema = getDatasetSchema(data, { includeEnum: true })
+  const guessedColumns = guessColumnsFromSchema(schema)
+  return {
+    name,
+    public: true,
+    type: DatasetTypes.UserTracks,
+    category: DatasetCategory.Environment,
+    schema,
+    configuration: {
+      configurationUI: {
+        sourceFormat,
+        latitude: guessedColumns.latitude,
+        longitude: guessedColumns.longitude,
+        timestamp: guessedColumns.timestamp,
+        geometryType: 'tracks' as DatasetGeometryType,
+      },
+    } as DatasetConfiguration,
+  }
+}
 
 function NewTrackDataset({
   onConfirm,
@@ -53,44 +74,40 @@ function NewTrackDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [idGroupError, setIdGroupError] = useState<string>('')
-  const [fileData, setFileData] = useState<DataList | undefined>()
-  const [geojson, setGeojson] = useState<FeatureCollection<LineString> | undefined>()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [sourceData, setSourceData] = useState<DataList | undefined>()
+  const [geojson, setGeojson] = useState<FeatureCollection | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
-
-  const getDatasetMetadata = useCallback(({ name, data }: ExtractMetadataProps) => {
-    const schema = getDatasetSchema(data, { includeEnum: true })
-    const guessedColumns = guessColumnsFromSchema(schema)
-    return {
-      name,
-      public: true,
-      type: DatasetTypes.UserTracks,
-      category: DatasetCategory.Environment,
-      schema,
-      configuration: {
-        configurationUI: {
-          latitude: guessedColumns.latitude,
-          longitude: guessedColumns.longitude,
-          timestamp: guessedColumns.timestamp,
-          geometryType: 'tracks' as DatasetGeometryType,
-        },
-      } as DatasetConfiguration,
-    }
-  }, [])
+  const isEditing = dataset?.id !== undefined
+  const fileType = getFileType(file)
+  const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
+  const isCSVFile = fileType === 'csv' || sourceFormat === 'csv'
 
   const handleRawData = useCallback(
     async (file: File) => {
+      setLoading(true)
       const data = await getDatasetParsed(file, 'tracks')
-      setFileData(data)
-      const datasetMetadata = getDatasetMetadata({ data, name: getFileName(file) })
+      const datasetMetadata = getDatasetMetadata({
+        data,
+        name: getFileName(file),
+        sourceFormat: fileType as FileType,
+      })
       setDatasetMetadata((meta) => ({ ...meta, ...datasetMetadata }))
-      const geojson = getTrackFromList(data, datasetMetadata)
-      setGeojson(geojson)
+      if (fileType === 'csv') {
+        setSourceData(data as DataList)
+        const geojson = getTrackFromList(data as DataList, datasetMetadata)
+        setGeojson(geojson)
+      } else {
+        setGeojson(data as FeatureCollection)
+      }
+      setLoading(false)
     },
-    [getDatasetMetadata]
+    [fileType]
   )
 
   useEffect(() => {
-    if (file) {
+    if (file && !loading) {
+      console.log('🚀 ~ useEffect ~ file:', file)
       handleRawData(file)
     } else if (dataset) {
       const { ownerType, createdAt, endpoints, ...rest } = dataset
@@ -104,13 +121,17 @@ function NewTrackDataset({
         } as DatasetConfiguration,
       })
     }
-  }, [dataset, file, handleRawData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataset, file])
 
-  const idProperty = getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })
+  const idProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'idProperty',
+  })
 
   useEffect(() => {
-    if (idProperty && datasetMetadata && fileData) {
-      const geojson = getTrackFromList(fileData, datasetMetadata)
+    if (idProperty && datasetMetadata && sourceData) {
+      const geojson = getTrackFromList(sourceData, datasetMetadata)
       setGeojson(geojson)
       if (!geojson.features.some((f) => f.geometry.coordinates?.length >= 2)) {
         setIdGroupError(
@@ -123,52 +144,45 @@ function NewTrackDataset({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idProperty])
 
-  useEffect(() => {
-    if (idProperty && datasetMetadata && fileData) {
-      const geojson = getTrackFromList(fileData, datasetMetadata)
-      setGeojson(geojson)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idProperty])
-
-  const onConfirmClick = useCallback(() => {
-    let file: File | undefined
+  const onConfirmClick = useCallback(async () => {
+    let error = ''
+    setLoading(true)
     if (datasetMetadata) {
-      const config = getDatasetConfiguration({ datasetMetadata })
-      if (fileData) {
+      const config = getDatasetConfiguration(datasetMetadata)
+      if (sourceData) {
         if (!config?.latitude || !config?.longitude || !config?.timestamp) {
           const fields = ['latitude', 'longitude', 'timestamp'].map((f) =>
             t(`common.${f}` as any, f)
           )
-          setError(
-            t('dataset.requiredFields', {
-              fields,
-              defaultValue: `Required fields ${fields}`,
-            })
-          )
+          error = t('dataset.requiredFields', {
+            fields,
+            defaultValue: `Required fields ${fields}`,
+          })
         } else {
           const errors = checkRecordValidity({
-            record: (fileData as DataList)[0],
+            record: sourceData?.[0],
             ...config,
           } as any)
           if (errors.length) {
             const fields = errors.map((error) => t(`common.${error}` as any, error)).join(',')
-            setError(
-              t('errors.fields', {
-                fields,
-                defaultValue: `Error with fields: ${fields}`,
-              })
-            )
-          } else if (geojson) {
-            file = getFileFromGeojson(geojson)
+            error = t('errors.fields', {
+              fields,
+              defaultValue: `Error with fields: ${fields}`,
+            })
           }
         }
       }
-      if (file && onConfirm) {
-        onConfirm(datasetMetadata, file)
+      if (error) {
+        setError(error)
+      } else if (geojson) {
+        const file = getFileFromGeojson(geojson)
+        if (file && onConfirm) {
+          await onConfirm(datasetMetadata, file)
+        }
       }
     }
-  }, [datasetMetadata, fileData, geojson, onConfirm, t])
+    setLoading(true)
+  }, [datasetMetadata, geojson, onConfirm, sourceData, t])
 
   const onDatasetFieldChange = useCallback((newFields: Partial<DatasetMetadata>) => {
     setDatasetMetadata((meta) => ({ ...meta, ...(newFields as DatasetMetadata) }))
@@ -219,9 +233,12 @@ function NewTrackDataset({
     return options
       .filter((o) => {
         return (
-          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }) &&
-          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }) &&
-          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
+          o.id !==
+            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'latitude' }) &&
+          o.id !==
+            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'longitude' }) &&
+          o.id !==
+            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'timestamp' })
         )
       })
       .sort(sortFields)
@@ -262,9 +279,13 @@ function NewTrackDataset({
 
   return (
     <div className={styles.container}>
-      {!dataset && (
+      {!isEditing && (
         <div className={styles.file}>
-          <FileDropzone label={file?.name} fileTypes={['csv']} onFileLoaded={onFileUpdate} />
+          <FileDropzone
+            label={file?.name}
+            fileTypes={[fileType as FileType]}
+            onFileLoaded={onFileUpdate}
+          />
         </div>
       )}
       <div className={styles.content}>
@@ -274,49 +295,99 @@ function NewTrackDataset({
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
         />
-        <div className={styles.requiredDataContainer}>
-          <Select
-            label={t('dataset.trackSegmentId', 'latitude')}
-            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-            options={fieldsOptions}
-            selectedOption={
-              getSelectedOption(
-                getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' })
-              ) as SelectOption
-            }
-            onSelect={(selected) => {
-              onDatasetConfigurationChange({ latitude: selected.id })
-            }}
-          />
-          <Select
-            label={t('dataset.trackSegmentId', 'longitude')}
-            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-            options={fieldsOptions}
-            selectedOption={
-              getSelectedOption(
-                getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' })
-              ) as SelectOption
-            }
-            onSelect={(selected) => {
-              onDatasetConfigurationChange({ longitude: selected.id })
-            }}
-          />
-          <div className={styles.timestampSelectWrapper}>
-            <Select
-              label={t('dataset.trackSegmentTimes', 'Track segment times')}
-              placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-              options={fieldsOptions}
-              selectedOption={
-                getSelectedOption(
-                  getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
-                ) as SelectOption
-              }
-              onSelect={(selected) => {
-                onDatasetConfigurationChange({ timestamp: selected.id })
-              }}
-            />
+        {isCSVFile && (
+          <div className={styles.requiredDataContainer}>
+            {!isEditing ? (
+              <Select
+                label={t('dataset.trackSegmentId', 'latitude')}
+                placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+                options={fieldsOptions}
+                disabled={isEditing}
+                selectedOption={
+                  getSelectedOption(
+                    getDatasetConfigurationProperty({
+                      dataset: datasetMetadata,
+                      property: 'latitude',
+                    })
+                  ) as SelectOption
+                }
+                onSelect={(selected) => {
+                  onDatasetConfigurationChange({ latitude: selected.id })
+                }}
+              />
+            ) : (
+              <InputText
+                value={getDatasetConfigurationProperty({
+                  dataset: datasetMetadata,
+                  property: 'latitude',
+                })}
+                label={t('dataset.trackSegmentId', 'latitude')}
+                className={styles.input}
+                disabled
+              />
+            )}
+            {!isEditing ? (
+              <Select
+                label={t('dataset.trackSegmentId', 'longitude')}
+                placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+                options={fieldsOptions}
+                disabled={isEditing}
+                selectedOption={
+                  getSelectedOption(
+                    getDatasetConfigurationProperty({
+                      dataset: datasetMetadata,
+                      property: 'longitude',
+                    })
+                  ) as SelectOption
+                }
+                onSelect={(selected) => {
+                  onDatasetConfigurationChange({ longitude: selected.id })
+                }}
+              />
+            ) : (
+              <InputText
+                value={getDatasetConfigurationProperty({
+                  dataset: datasetMetadata,
+                  property: 'longitude',
+                })}
+                label={t('dataset.trackSegmentId', 'longitude')}
+                className={styles.input}
+                disabled
+              />
+            )}
+            <div className={styles.timestampSelectWrapper}>
+              {!isEditing ? (
+                <Select
+                  label={t('dataset.trackSegmentTimes', 'Track segment times')}
+                  placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+                  options={fieldsOptions}
+                  disabled={isEditing}
+                  selectedOption={
+                    getSelectedOption(
+                      getDatasetConfigurationProperty({
+                        dataset: datasetMetadata,
+                        property: 'timestamp',
+                      })
+                    ) as SelectOption
+                  }
+                  onSelect={(selected) => {
+                    onDatasetConfigurationChange({ timestamp: selected.id })
+                  }}
+                />
+              ) : (
+                <InputText
+                  value={getDatasetConfigurationProperty({
+                    dataset: datasetMetadata,
+                    property: 'timestamp',
+                  })}
+                  label={t('dataset.trackSegmentId', 'timestamp')}
+                  className={styles.input}
+                  disabled
+                />
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <Collapsable
         className={styles.optional}
@@ -328,25 +399,45 @@ function NewTrackDataset({
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
         />
-        <Select
-          label={t('dataset.trackSegmentId', 'Individual track segment id')}
-          placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-          options={filtersFieldsOptions}
-          error={idGroupError}
-          direction="top"
-          selectedOption={
-            getSelectedOption(
-              getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })
-            ) as SelectOption
-          }
-          onSelect={(selected) => {
-            onDatasetConfigurationChange({ idProperty: selected.id })
-          }}
-          onCleanClick={() => {
-            onDatasetFieldChange({ fieldsAllowed: [] })
-            onDatasetConfigurationChange({ idProperty: undefined })
-          }}
-        />
+        {isCSVFile && (
+          <Fragment>
+            {!isEditing ? (
+              <Select
+                label={t('dataset.trackSegmentId', 'Individual track segment id')}
+                placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+                options={filtersFieldsOptions}
+                error={idGroupError}
+                direction="top"
+                disabled={isEditing}
+                selectedOption={
+                  getSelectedOption(
+                    getDatasetConfigurationProperty({
+                      dataset: datasetMetadata,
+                      property: 'idProperty',
+                    })
+                  ) as SelectOption
+                }
+                onSelect={(selected) => {
+                  onDatasetConfigurationChange({ idProperty: selected.id })
+                }}
+                onCleanClick={() => {
+                  onDatasetFieldChange({ fieldsAllowed: [] })
+                  onDatasetConfigurationChange({ idProperty: undefined })
+                }}
+              />
+            ) : (
+              <InputText
+                value={getDatasetConfigurationProperty({
+                  dataset: datasetMetadata,
+                  property: 'idProperty',
+                })}
+                label={t('dataset.trackSegmentId', 'idProperty')}
+                className={styles.input}
+                disabled
+              />
+            )}
+          </Fragment>
+        )}
         <MultiSelect
           label={t('dataset.trackSegmentId', 'track filter property')}
           placeholder={
@@ -355,7 +446,10 @@ function NewTrackDataset({
               : t('dataset.fieldPlaceholder', 'Select a field from your dataset')
           }
           direction="top"
-          disabled={!getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })}
+          disabled={
+            isCSVFile &&
+            !getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'idProperty' })
+          }
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(getFieldsAllowedArray()) as MultiSelectOption[]}
           onSelect={handleFieldsAllowedAddItem}
@@ -373,7 +467,7 @@ function NewTrackDataset({
           className={styles.saveBtn}
           onClick={onConfirmClick}
           disabled={!file || error !== '' || idGroupError !== ''}
-          // loading={loading}
+          loading={loading}
         >
           {t('common.confirm', 'Confirm') as string}
         </Button>

@@ -26,23 +26,19 @@ type DatasetProperty<P extends VesselConfigurationProperty> = P extends 'geometr
   : string
 
 export function getDatasetConfigurationProperty<P extends VesselConfigurationProperty>({
-  datasetMetadata,
+  dataset,
   property,
 }: {
-  datasetMetadata: Dataset | DatasetMetadata | undefined
+  dataset: Dataset | DatasetMetadata | undefined
   property: P
 }): DatasetProperty<P> {
-  return (datasetMetadata?.configuration?.configurationUI?.[
-    property as keyof DatasetConfigurationUI
-  ] ||
-    datasetMetadata?.configuration?.[property as keyof DatasetConfiguration]) as DatasetProperty<P>
+  return (dataset?.configuration?.configurationUI?.[property as keyof DatasetConfigurationUI] ||
+    dataset?.configuration?.[property as keyof DatasetConfiguration]) as DatasetProperty<P>
 }
 
-export const getDatasetConfiguration = ({
-  datasetMetadata,
-}: {
-  datasetMetadata: DatasetMetadata | undefined
-}): DatasetConfiguration & DatasetConfiguration['configurationUI'] => ({
-  ...datasetMetadata?.configuration,
-  ...datasetMetadata?.configuration?.configurationUI,
+export const getDatasetConfiguration = (
+  dataset: Dataset | DatasetMetadata | undefined
+): DatasetConfiguration & DatasetConfiguration['configurationUI'] => ({
+  ...dataset?.configuration,
+  ...dataset?.configuration?.configurationUI,
 })
