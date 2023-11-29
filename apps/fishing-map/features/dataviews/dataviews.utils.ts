@@ -156,19 +156,24 @@ export const getEnvironmentDataviewInstance = (
 }
 
 export const getUserPointsDataviewInstance = (
-  datasetId: string
+  dataset: Dataset
 ): DataviewInstance<GeneratorType> => {
   return {
-    id: `user-points-${datasetId}`,
+    id: `user-points-${dataset.id}`,
     dataviewId: TEMPLATE_POINTS_DATAVIEW_SLUG,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
     datasetsConfig: [
       {
-        datasetId: datasetId,
+        datasetId: dataset.id,
         endpoint: EndpointId.ContextTiles,
-        params: [{ id: 'id', value: datasetId }],
+        params: [{ id: 'id', value: dataset.id }],
+        ...(dataset.configuration?.configurationUI?.pointSize && {
+          query: [
+            { id: 'properties', value: [`${dataset.configuration?.configurationUI?.pointSize}`] },
+          ],
+        }),
       },
     ],
   }
