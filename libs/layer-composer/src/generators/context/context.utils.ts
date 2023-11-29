@@ -1,4 +1,3 @@
-import { UserPointsGeneratorConfig } from '@globalfishingwatch/layer-composer'
 import {
   LineLayerSpecification,
   FillLayerSpecification,
@@ -51,7 +50,8 @@ export const getCircleRadiusWithPointSizeProperty = (
   property: string | undefined,
   range: number[] | undefined
 ): CircleLayerSpecification['paint'] => {
-  return property && range
+  // Check that no range value is undefined
+  return property && range?.every((v) => v)
     ? {
         'circle-radius': [
           'interpolate',
