@@ -1,27 +1,50 @@
 import type { Feature, FeatureCollection } from 'geojson'
-
-export const CSV_EXTENSIONS = ['csv', 'tsv', 'dsv']
-export const KML_EXTENSIONS = ['kml', 'kmz']
-export const ZIP_FILE_TYPES = [
-  'application/zip',
-  'application/x-zip-compressed',
-  'application/octet-stream',
-  'multipart/x-zip',
-]
+import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 
 export type FileType = 'geojson' | 'shapefile' | 'csv' | 'kml'
-export type MimeExtention = '.json' | '.geojson' | '.zip' | '.csv' | '.kml'
-export type MimeType = 'application/json' | 'application/zip' | 'text/csv' | 'application/vnd'
+export type MimeExtention =
+  | '.json'
+  | '.geojson'
+  | '.zip'
+  | '.csv'
+  | '.dsv'
+  | '.tsv'
+  | '.kml'
+  | '.kmz'
+export type MimeType =
+  | 'application/json'
+  | 'application/zip'
+  | 'text/csv'
+  | 'text/dsv'
+  | 'text/tsv'
+  | 'application/vnd'
+
+export type DatasetGeometryTypesSupported = Extract<
+  DatasetGeometryType,
+  'polygons' | 'tracks' | 'points'
+>
+
+export const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
+  polygons: ['geojson', 'kml', 'shapefile'],
+  tracks: ['csv', 'geojson', 'kml', 'shapefile'],
+  points: ['csv', 'geojson', 'kml', 'shapefile'],
+}
+
+export const getFileTypes = (datasetGeometryType: DatasetGeometryTypesSupported) =>
+  FILES_TYPES_BY_GEOMETRY_TYPE[datasetGeometryType || ('polygons' as DatasetGeometryTypesSupported)]
 
 export const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType> = {
   '.json': 'application/json',
   '.geojson': 'application/json',
   '.zip': 'application/zip',
   '.csv': 'text/csv',
+  '.dsv': 'text/dsv',
+  '.tsv': 'text/tsv',
   '.kml': 'application/vnd',
+  '.kmz': 'application/vnd',
 }
 
-type FileConfig = { id: string; files: string[]; icon: string }
+type FileConfig = { id: FileType; files: string[]; icon: string }
 
 export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
   geojson: {
@@ -30,23 +53,24 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
     icon: 'geojson',
   },
   shapefile: { id: 'shapefile', files: ['.zip'], icon: 'zip' },
-  csv: { id: 'csv', files: ['.csv'], icon: 'csv' },
-  kml: { id: 'kml', files: ['.kml'], icon: 'kml' },
+  csv: { id: 'csv', files: ['.csv', '.tsv', '.dsv'], icon: 'csv' },
+  kml: { id: 'kml', files: ['.kml', '.kmz'], icon: 'kml' },
 }
 
-export function getFileType(file: File): FileType {
-  const isZip = ZIP_FILE_TYPES.some((type) => file.type === type)
-  const isCSV = CSV_EXTENSIONS.some((ext) => file.name.endsWith(`.${ext}`))
-  const isKML = KML_EXTENSIONS.some((ext) => file.name.endsWith(`.${ext}`))
-  if (isZip) return 'shapefile'
-  if (isCSV) return 'csv'
-  if (isKML) return 'kml'
-  return 'geojson'
+export function getFileType(file?: File) {
+  if (!file) {
+    return undefined
+  }
+  return Object.values(FILE_TYPES_CONFIG).find(({ files }) => {
+    return files.some((ext) => file.name.endsWith(ext))
+  })?.id
 }
 
 export function getFilesAcceptedByMime(fileTypes: FileType[]) {
   const fileTypesConfigs = fileTypes.map((fileType) => FILE_TYPES_CONFIG[fileType])
-  const filesAcceptedExtensions = fileTypesConfigs.flatMap(({ files }) => files as MimeExtention[])
+  const filesAcceptedExtensions = fileTypesConfigs.flatMap(
+    (config) => config?.files as MimeExtention[]
+  )
   const fileAcceptedByMime = filesAcceptedExtensions.reduce(
     (acc, extension) => {
       const mime = MIME_TYPES_BY_EXTENSION[extension]

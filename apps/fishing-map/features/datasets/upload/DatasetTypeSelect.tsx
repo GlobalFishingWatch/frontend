@@ -5,10 +5,9 @@ import { FileRejection, useDropzone } from 'react-dropzone'
 import { ReactComponent as Polygons } from 'assets/icons/dataset-type-polygons-lines.svg'
 import { ReactComponent as Tracks } from 'assets/icons/dataset-type-tracks.svg'
 import { ReactComponent as Points } from 'assets/icons/dataset-type-points.svg'
-import { getFilesAcceptedByMime } from 'utils/files'
+import { DatasetGeometryTypesSupported, getFileTypes, getFilesAcceptedByMime } from 'utils/files'
 import { useDatasetModalConfigConnect } from 'features/datasets/datasets.hook'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
-import { DatasetGeometryTypesSupported, getFileTypes } from '../datasets.utils'
 import styles from './DatasetTypeSelect.module.css'
 
 const DatasetType = ({
@@ -47,7 +46,7 @@ const DatasetType = ({
   const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)
 
   const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
-    // accept: fileAcceptedByMime,
+    accept: fileAcceptedByMime,
     onDropAccepted,
     onDropRejected,
   })

@@ -1,6 +1,7 @@
 import { kml } from '@tmcw/togeojson'
 import JSZip, { JSZipObject } from 'jszip'
 import { featureCollection } from '@turf/helpers'
+import { FeatureCollection } from 'geojson'
 import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 
 export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
@@ -13,18 +14,32 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
   }
 
   for (const file of files) {
-    const str = isKMZ ? await (file as JSZipObject).async('string') : await (file as File).text()
-    const kmlDoc = new DOMParser().parseFromString(str, 'text/xml')
-    const { features } = kml(kmlDoc)
-    const geomType = features[0]?.geometry?.type
-    if (type === 'polygons' && (geomType === 'Polygon' || geomType === 'MultiPolygon')) {
-      results.push(...features)
-    } else if (type === 'tracks' && (geomType === 'LineString' || geomType === 'MultiLineString')) {
-      results.push(...features)
-    } else if (type === 'points' && (geomType === 'Point' || geomType === 'MultiPoint')) {
-      results.push(...features)
+    try {
+      const str = isKMZ ? await (file as JSZipObject).async('string') : await (file as File).text()
+      const kmlDoc = new DOMParser().parseFromString(str, 'text/xml')
+      const geomType =
+        kmlDoc.getElementsByTagName('LineString') || kmlDoc.getElementsByTagName('MultiLineString')
+          ? 'lines'
+          : kmlDoc.getElementsByTagName('Polygon') || kmlDoc.getElementsByTagName('MultiPolygon')
+          ? 'polygons'
+          : kmlDoc.getElementsByTagName('Point') || kmlDoc.getElementsByTagName('MultiPoint')
+          ? 'points'
+          : null
+
+      if (type === 'polygons' && geomType === 'polygons') {
+        const { features } = kml(kmlDoc)
+        results.push(...features)
+      } else if (type === 'tracks' && geomType === 'lines') {
+        const { features } = kml(kmlDoc)
+        results.push(...features)
+      } else if (type === 'points' && geomType === 'points') {
+        const { features } = kml(kmlDoc)
+        results.push(...features)
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
 
-  return featureCollection(results)
+  return featureCollection(results) as FeatureCollection
 }

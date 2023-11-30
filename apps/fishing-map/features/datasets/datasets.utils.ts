@@ -11,7 +11,6 @@ import {
   EndpointId,
   EventTypes,
   UserPermission,
-  DatasetGeometryType,
   FilterOperator,
   INCLUDE_FILTER_ID,
   DatasetSubCategory,
@@ -29,7 +28,6 @@ import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
-import { FileType } from 'utils/files'
 import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import { getVesselGearType } from 'utils/info'
 import { VESSEL_INSTANCE_DATASETS } from 'features/dataviews/dataviews.utils'
@@ -88,19 +86,6 @@ export type GetSchemaInDataviewParams = {
 export type SchemaFieldDataview =
   | UrlDataviewInstance
   | Pick<Dataview, 'category' | 'config' | 'datasets' | 'filtersConfig'>
-
-export type DatasetGeometryTypesSupported = Extract<
-  DatasetGeometryType,
-  'polygons' | 'tracks' | 'points'
->
-export const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
-  polygons: ['shapefile', 'geojson'],
-  tracks: ['csv'],
-  points: ['shapefile', 'geojson', 'csv'],
-}
-
-export const getFileTypes = (datasetGeometryType: DatasetGeometryTypesSupported) =>
-  FILES_TYPES_BY_GEOMETRY_TYPE[datasetGeometryType || ('polygons' as DatasetGeometryTypesSupported)]
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   !(dataset?.id || '').startsWith(`${PUBLIC_SUFIX}-`)

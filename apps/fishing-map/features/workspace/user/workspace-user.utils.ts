@@ -25,7 +25,7 @@ export function getDatasetGeometryType(dataset?: Dataset): DatasetGeometryType {
     return 'draw'
   }
   return getDatasetConfigurationProperty({
-    datasetMetadata: dataset,
+    dataset,
     property: 'geometryType',
   })
 }
