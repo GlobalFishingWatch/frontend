@@ -137,15 +137,22 @@ const getFinalurl = (
     // We want proxy active as default when api tiles auth is required
     proxy: params.proxy !== 'false',
   }
+
   const finalUrlParamsArr = Object.entries(finalUrlParams)
-    .filter(([_, value]) => {
-      return value !== undefined && value !== null && value !== 'undefined' && value !== 'null'
+    .filter(([key, value]) => {
+      return (
+        key !== 'id' &&
+        value !== undefined &&
+        value !== null &&
+        value !== 'undefined' &&
+        value !== 'null'
+      )
     })
     .map(([key, value]) => {
       return `${key}=${value}`
     })
   if (datasets) {
-    finalUrlParamsArr.push(datasets)
+    // finalUrlParamsArr.push(datasets)
   }
   if (filters) {
     finalUrlParamsArr.push(filters)
@@ -154,7 +161,7 @@ const getFinalurl = (
     finalUrlParamsArr.push(vesselGroups)
   }
   const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
-  const finalUrlStr = `${tilesUrl}?${finalUrlParamsArr.join('&')}`
+  const finalUrlStr = `${tilesUrl}&${finalUrlParamsArr.join('&')}`
   return decodeURI(finalUrlStr)
 }
 
