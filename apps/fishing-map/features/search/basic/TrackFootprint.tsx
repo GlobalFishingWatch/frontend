@@ -129,7 +129,7 @@ function TrackFootprint({
       const highlightedTrack = {
         ...trackData,
         features: trackData.features.flatMap((feature) => {
-          const featureTimes = feature.properties?.coordinateProperties.times
+          const featureTimes = feature.properties?.coordinateProperties?.times
           if (
             featureTimes[featureTimes.length - 1] < highlightStart ||
             featureTimes[0] > highlightEnd

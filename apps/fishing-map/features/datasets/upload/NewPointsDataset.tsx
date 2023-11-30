@@ -26,7 +26,12 @@ import { FileType, getFileFromGeojson, getFileType } from 'utils/files'
 import { isPrivateDataset } from '../datasets.utils'
 import styles from './NewDataset.module.css'
 import { ExtractMetadataProps } from './NewTrackDataset'
-import { DataList, getDatasetParsed, getGeojsonFromPointsList } from './datasets-parse.utils'
+import {
+  DataList,
+  DataParsed,
+  getDatasetParsed,
+  getGeojsonFromPointsList,
+} from './datasets-parse.utils'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
@@ -42,8 +47,7 @@ function NewPointDataset({
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
-  const [idGroupError, setIdGroupError] = useState<string>('')
-  const [fileData, setFileData] = useState<DataList | undefined>()
+  const [fileData, setFileData] = useState<DataParsed | undefined>()
   const [fileType, setFileType] = useState<FileType>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
   const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
@@ -78,10 +82,13 @@ function NewPointDataset({
       const datasetMetadata = getDatasetMetadata({ data, name: getFileName(file) })
       setDatasetMetadata((meta) => ({ ...meta, ...datasetMetadata }))
       if (getFileType(file) === 'csv') {
-        const geojson = getGeojsonFromPointsList(data, datasetMetadata) as FeatureCollection<Point>
+        const geojson = getGeojsonFromPointsList(
+          data as DataList,
+          datasetMetadata
+        ) as FeatureCollection<Point>
         setGeojson(geojson)
       } else {
-        setGeojson(data)
+        setGeojson(data as FeatureCollection<Point>)
       }
     },
     [getDatasetMetadata]
@@ -107,7 +114,7 @@ function NewPointDataset({
   const onConfirmClick = useCallback(() => {
     let file: File | undefined
     if (datasetMetadata) {
-      const config = getDatasetConfiguration({ datasetMetadata })
+      const config = getDatasetConfiguration(datasetMetadata)
       if (fileData) {
         if (fileType === 'csv' && (!config?.latitude || !config?.longitude)) {
           const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
@@ -175,9 +182,12 @@ function NewPointDataset({
     return options
       .filter((o) => {
         return (
-          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }) &&
-          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }) &&
-          o.id !== getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' })
+          o.id !==
+            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'latitude' }) &&
+          o.id !==
+            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'longitude' }) &&
+          o.id !==
+            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'timestamp' })
         )
       })
       .sort(sortFields)
@@ -243,7 +253,10 @@ function NewPointDataset({
                 options={fieldsOptions}
                 selectedOption={
                   getSelectedOption(
-                    getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' })
+                    getDatasetConfigurationProperty({
+                      dataset: datasetMetadata,
+                      property: 'latitude',
+                    })
                   ) as SelectOption
                 }
                 onSelect={(selected) => {
@@ -255,7 +268,10 @@ function NewPointDataset({
                 options={fieldsOptions}
                 selectedOption={
                   getSelectedOption(
-                    getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' })
+                    getDatasetConfigurationProperty({
+                      dataset: datasetMetadata,
+                      property: 'longitude',
+                    })
                   ) as SelectOption
                 }
                 onSelect={(selected) => {
@@ -285,7 +301,7 @@ function NewPointDataset({
             selectedOption={
               getSelectedOption(
                 getDatasetConfigurationProperty({
-                  datasetMetadata,
+                  dataset: datasetMetadata,
                   property: 'pointName',
                 })
               ) as SelectOption
@@ -305,7 +321,7 @@ function NewPointDataset({
             selectedOption={
               getSelectedOption(
                 getDatasetConfigurationProperty({
-                  datasetMetadata,
+                  dataset: datasetMetadata,
                   property: 'pointSize',
                 })
               ) as SelectOption
@@ -326,7 +342,7 @@ function NewPointDataset({
               : t('dataset.fieldPlaceholder', 'Point filters')
           }
           direction="bottom"
-          // disabled={!getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' })}
+          // disabled={!getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'idProperty' })}
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(getFieldsAllowedArray()) as MultiSelectOption[]}
           onSelect={handleFieldsAllowedAddItem}

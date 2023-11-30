@@ -12,11 +12,15 @@ interface SegmentData {
   times: number[]
 }
 
+type FilterTrackByTimerangeParams = {
+  start: number
+  end: number
+  includeNonTemporalFeatures?: boolean
+}
 // TODO TS types wont work with MultiPoint geoms
 const filterTrackByTimerange = (
   geojson: FeatureCollection,
-  start: number,
-  end: number
+  { start, end, includeNonTemporalFeatures = false } = {} as FilterTrackByTimerangeParams
 ): FeatureCollection => {
   if (!geojson || !geojson.features)
     return {
@@ -30,7 +34,7 @@ const filterTrackByTimerange = (
       if (hasTimes) {
         const filtered: SegmentData = (feature.geometry as LineString).coordinates.reduce(
           (filteredCoordinates, coordinate, index) => {
-            const timeCoordinate: number = feature.properties?.coordinateProperties.times[index]
+            const timeCoordinate: number = feature.properties?.coordinateProperties?.times[index]
             const isInTimeline = timeCoordinate >= start && timeCoordinate <= end
             if (isInTimeline) {
               if (leadingPoint && index > 0) {
@@ -40,7 +44,7 @@ const filterTrackByTimerange = (
                   leadingIndex
                 ]
                 const leadingCoordinateTime: number =
-                  feature.properties?.coordinateProperties.times[leadingIndex]
+                  feature.properties?.coordinateProperties?.times[leadingIndex]
                 filteredCoordinates.coordinates.push(leadingCoordinatePoint)
                 filteredCoordinates.times.push(leadingCoordinateTime)
               }
@@ -75,6 +79,8 @@ const filterTrackByTimerange = (
           properties,
         }
         filteredFeatures.push(filteredFeature)
+      } else if (includeNonTemporalFeatures) {
+        filteredFeatures.push(feature)
       }
       return filteredFeatures
     },

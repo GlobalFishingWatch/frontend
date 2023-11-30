@@ -44,7 +44,11 @@ const filterByTimerange = (data: FeatureCollection, start: string, end: string) 
   const startMs = new Date(start).getTime()
   const endMs = new Date(end).getTime()
 
-  const filteredData = filterTrackByTimerange(data, startMs, endMs)
+  const filteredData = filterTrackByTimerange(data, {
+    start: startMs,
+    end: endMs,
+    includeNonTemporalFeatures: true,
+  })
   return filteredData
 }
 
@@ -56,7 +60,7 @@ const getHighlightedData = (
   const startMs = new Date(highlightedStart).getTime()
   const endMs = new Date(highlightedEnd).getTime()
 
-  const filteredData = filterTrackByTimerange(data, startMs, endMs)
+  const filteredData = filterTrackByTimerange(data, { start: startMs, end: endMs })
 
   return filteredData
 }

@@ -1,5 +1,5 @@
 import { parse } from 'papaparse'
-import { t } from 'i18next'
+import { FeatureCollection } from 'geojson'
 import {
   pointsListToGeojson,
   listToTrackSegments,
@@ -9,13 +9,22 @@ import {
 import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getDatasetConfigurationProperty } from 'features/datasets/upload/datasets-upload.utils'
-import { FileType, getFileType, readBlobAs } from 'utils/files'
+import { getFileType, readBlobAs } from 'utils/files'
 // interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
 //   extensions?: string[]
 // }
 
-export async function getDatasetParsed(file: File, type?: DatasetGeometryType) {
-  const fileType: FileType = getFileType(file)
+export type DataList = Record<string, any>[]
+export type DataParsed = FeatureCollection | DataList
+
+export async function getDatasetParsed(
+  file: File,
+  type?: DatasetGeometryType
+): Promise<DataParsed> {
+  const fileType = getFileType(file)
+  if (!fileType) {
+    throw new Error('File type not supported')
+  }
   if (fileType === 'shapefile') {
     try {
       const shpjs = await import('shpjs').then((module) => module.default)
@@ -46,7 +55,8 @@ export async function getDatasetParsed(file: File, type?: DatasetGeometryType) {
         return expandedShp
       }
     } catch (e: any) {
-      return t('errors.uploadShapefile', 'Error reading shapefile: {{error}}', { error: e })
+      console.log('Error loading shapefile file', e)
+      throw new Error(e)
     }
   } else if (fileType === 'csv') {
     // return load(file, CSVLoader)
@@ -57,34 +67,30 @@ export async function getDatasetParsed(file: File, type?: DatasetGeometryType) {
       dynamicTyping: true,
       header: true,
     })
-    return data.slice(1)
+    return data.slice(1) as DataList
   } else if (fileType === 'kml') {
-    return await kmlToGeoJSON(file, type as DatasetGeometryType)
+    return kmlToGeoJSON(file, type as DatasetGeometryType)
   }
   const fileText = await file.text()
   return JSON.parse(fileText)
 }
 
-export type DataList = Record<string, any>[]
-export const getTrackFromList = (data: DataList, datasetMetadata: DatasetMetadata) => {
+export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
   const segments = listToTrackSegments({
     records: data,
-    latitude: getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }),
-    longitude: getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }),
-    timestamp: getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' }),
-    id: getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' }),
+    latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' }),
+    longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' }),
+    timestamp: getDatasetConfigurationProperty({ dataset, property: 'timestamp' }),
+    id: getDatasetConfigurationProperty({ dataset, property: 'idProperty' }),
   })
   return segmentsToGeoJSON(segments)
 }
 
-export const getGeojsonFromPointsList = (
-  data: Record<string, any>[],
-  datasetMetadata: DatasetMetadata
-) => {
+export const getGeojsonFromPointsList = (data: Record<string, any>[], dataset: DatasetMetadata) => {
   return pointsListToGeojson(data, {
-    latitude: getDatasetConfigurationProperty({ datasetMetadata, property: 'latitude' }),
-    longitude: getDatasetConfigurationProperty({ datasetMetadata, property: 'longitude' }),
-    timestamp: getDatasetConfigurationProperty({ datasetMetadata, property: 'timestamp' }),
-    id: getDatasetConfigurationProperty({ datasetMetadata, property: 'idProperty' }),
+    latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' }),
+    longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' }),
+    timestamp: getDatasetConfigurationProperty({ dataset, property: 'timestamp' }),
+    id: getDatasetConfigurationProperty({ dataset, property: 'idProperty' }),
   })
 }
