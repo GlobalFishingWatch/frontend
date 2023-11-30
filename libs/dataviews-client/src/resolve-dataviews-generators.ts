@@ -404,7 +404,8 @@ export function getGeneratorConfig(
         ) {
           const circleRadiusProperty = dataset.configuration?.configurationUI?.pointSize
 
-          generator.circleRadiusProperty = circleRadiusProperty
+          generator.circleRadiusProperty =
+            circleRadiusProperty && circleRadiusProperty.toLowerCase()
           generator.circleRadiusRange = circleRadiusProperty && [
             dataset.schema?.[circleRadiusProperty].min,
             dataset.schema?.[circleRadiusProperty].max,

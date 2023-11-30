@@ -172,7 +172,7 @@ export const getUserPointsDataviewInstance = (
         params: [{ id: 'id', value: dataset.id }],
 
         ...(circleRadiusProperty && {
-          query: [{ id: 'properties', value: [`${circleRadiusProperty}`] }],
+          query: [{ id: 'properties', value: [`${circleRadiusProperty.toLocaleLowerCase()}`] }],
         }),
       },
     ],
