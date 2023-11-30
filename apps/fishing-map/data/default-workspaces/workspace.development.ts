@@ -45,28 +45,6 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
     {
-      id: 'environment-1668717057495',
-      config: {
-        color: '#00EEFF',
-        datasets: ['public-sst-cog'],
-        visible: true,
-        colorRamp: 'sky',
-      },
-      dataviewId: 'global-chlorophyll',
-      datasetsConfig: [
-        {
-          params: [
-            {
-              id: 'type',
-              value: 'heatmap',
-            },
-          ],
-          endpoint: '4wings-tiles',
-          datasetId: 'public-sst-cog',
-        },
-      ],
-    },
-    {
       id: 'fishing-ais',
       config: {
         datasets: ['public-global-fishing-effort:v20231026'],
