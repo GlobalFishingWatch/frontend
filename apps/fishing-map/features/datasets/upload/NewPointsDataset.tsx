@@ -10,6 +10,7 @@ import {
   MultiSelectOption,
   Select,
   SelectOption,
+  SwitchRow,
 } from '@globalfishingwatch/ui-components'
 import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
 import {
@@ -18,7 +19,13 @@ import {
   DatasetConfigurationUI,
   DatasetGeometryType,
   DatasetTypes,
+  pointTimeFilter,
 } from '@globalfishingwatch/api-types'
+import {
+  MAX_POINT_SIZE,
+  MIN_POINT_SIZE,
+  POINT_SIZES_DEFAULT_RANGE,
+} from '@globalfishingwatch/layer-composer'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { sortFields } from 'utils/shared'
@@ -38,6 +45,11 @@ import {
   getFileName,
 } from './datasets-upload.utils'
 import FileDropzone from './FileDropzone'
+
+const POINT_TIME_OPTIONS: SelectOption[] = [
+  { id: 'timerange', label: 'timerange' },
+  { id: 'timestamp', label: 'timestamp' },
+]
 
 function NewPointDataset({
   onConfirm,
@@ -134,6 +146,15 @@ function NewPointDataset({
     }
   }, [datasetMetadata, fileData, geojson, onConfirm, t, fileType])
 
+  const onDatasetPublicToggle = useCallback(() => {
+    setDatasetMetadata((meta) => ({
+      ...(meta as DatasetMetadata),
+      public: !!!meta?.public,
+    }))
+  }, [])
+
+  const isPublic = useMemo(() => !!datasetMetadata?.public, [datasetMetadata])
+
   const onDatasetFieldChange = useCallback((newFields: Partial<DatasetMetadata>) => {
     setDatasetMetadata((meta) => ({ ...meta, ...(newFields as DatasetMetadata) }))
   }, [])
@@ -169,6 +190,17 @@ function NewPointDataset({
     return options.sort(sortFields)
   }, [datasetMetadata])
 
+  const schemaRangeOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
+    const options = datasetMetadata?.schema
+      ? Object.keys(datasetMetadata.schema)
+          .filter((field) => datasetMetadata.schema?.[field].type === 'range')
+          .map((field) => {
+            return { id: field, label: field }
+          })
+      : []
+    return options.sort(sortFields)
+  }, [datasetMetadata])
+
   const filtersFieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
     const options = datasetMetadata?.schema
       ? Object.keys(datasetMetadata.schema).flatMap((field) => {
@@ -194,12 +226,16 @@ function NewPointDataset({
   }, [datasetMetadata])
 
   const getSelectedOption = useCallback(
-    (option: string | string[]): SelectOption | MultiSelectOption[] | undefined => {
+    (
+      option: string | string[],
+      options?: SelectOption[] | MultiSelectOption[]
+    ): SelectOption | MultiSelectOption[] | undefined => {
+      const opts = options ?? fieldsOptions
       if (option) {
         if (Array.isArray(option)) {
-          return fieldsOptions.filter((o) => option.includes(o.id)) || ([] as SelectOption[])
+          return opts.filter((o) => option.includes(o.id)) || ([] as SelectOption[])
         }
-        return fieldsOptions.find((o) => o.id === option)
+        return opts.find((o) => o.id === option)
       }
     },
     [fieldsOptions]
@@ -292,31 +328,31 @@ function NewPointDataset({
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
         />
+        <Select
+          label={t('dataset.pointName', 'point name')}
+          placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+          options={fieldsOptions}
+          direction="top"
+          selectedOption={
+            getSelectedOption(
+              getDatasetConfigurationProperty({
+                dataset: datasetMetadata,
+                property: 'pointName',
+              })
+            ) as SelectOption
+          }
+          onSelect={(selected) => {
+            onDatasetConfigurationChange({ pointName: selected.id })
+          }}
+          onCleanClick={() => {
+            onDatasetConfigurationChange({ pointName: undefined })
+          }}
+        />
         <div className={styles.evenSelectorsGroup}>
           <Select
-            label={t('dataset.trackSegmentId', 'Individual track segment id')}
-            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-            options={fieldsOptions}
-            direction="top"
-            selectedOption={
-              getSelectedOption(
-                getDatasetConfigurationProperty({
-                  dataset: datasetMetadata,
-                  property: 'pointName',
-                })
-              ) as SelectOption
-            }
-            onSelect={(selected) => {
-              onDatasetConfigurationChange({ pointName: selected.id })
-            }}
-            onCleanClick={() => {
-              onDatasetConfigurationChange({ pointName: undefined })
-            }}
-          />
-          <Select
-            label={t('dataset.trackSegmentId', 'Individual track segment id')}
-            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-            options={fieldsOptions}
+            label={t('dataset.pointSize', 'point size')}
+            placeholder={t('dataset.fieldPlaceholder', 'Select a numeric field from your dataset')}
+            options={schemaRangeOptions}
             direction="top"
             selectedOption={
               getSelectedOption(
@@ -333,15 +369,121 @@ function NewPointDataset({
               onDatasetConfigurationChange({ pointSize: undefined })
             }}
           />
+          {getDatasetConfigurationProperty({
+            dataset: datasetMetadata,
+            property: 'pointSize',
+          }) && (
+            <Fragment>
+              <InputText
+                type="number"
+                value={
+                  getDatasetConfigurationProperty({
+                    dataset: datasetMetadata,
+                    property: 'minPointSize',
+                  }) || POINT_SIZES_DEFAULT_RANGE[0]
+                }
+                min={MIN_POINT_SIZE}
+                label={t('dataset.minPointSize', 'Min point size')}
+                className={styles.input}
+                onChange={(e) =>
+                  onDatasetConfigurationChange({ minPointSize: parseFloat(e.target.value) })
+                }
+              />
+              <InputText
+                type="number"
+                value={
+                  getDatasetConfigurationProperty({
+                    dataset: datasetMetadata,
+                    property: 'maxPointSize',
+                  }) || POINT_SIZES_DEFAULT_RANGE[1]
+                }
+                max={MAX_POINT_SIZE}
+                label={t('dataset.maxPointSize', 'max point size')}
+                className={styles.input}
+                onChange={(e) =>
+                  onDatasetConfigurationChange({ maxPointSize: parseFloat(e.target.value) })
+                }
+              />
+            </Fragment>
+          )}
+        </div>
+        <p className={styles.label}>point time</p>
+        <div className={styles.evenSelectorsGroup}>
+          <Select
+            placeholder={t('dataset.pointTimePlaceholder', 'Select a time period filter type')}
+            options={POINT_TIME_OPTIONS}
+            direction="top"
+            selectedOption={
+              getSelectedOption(
+                getDatasetConfigurationProperty({
+                  dataset: datasetMetadata,
+                  property: 'pointTimeFilter',
+                }),
+                POINT_TIME_OPTIONS
+              ) as SelectOption
+            }
+            onSelect={(selected) => {
+              onDatasetConfigurationChange({ pointTimeFilter: selected.id })
+            }}
+            onCleanClick={() => {
+              onDatasetConfigurationChange({ pointTimeFilter: undefined })
+            }}
+          />
+          <Select
+            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+            options={fieldsOptions}
+            direction="top"
+            disabled={
+              !getDatasetConfigurationProperty({
+                dataset: datasetMetadata,
+                property: 'pointTimeFilter',
+              })
+            }
+            selectedOption={
+              getSelectedOption(
+                getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'pointTime' })
+              ) as SelectOption
+            }
+            onSelect={(selected) => {
+              onDatasetConfigurationChange({ pointTime: selected.id })
+            }}
+            onCleanClick={() => {
+              onDatasetConfigurationChange({ pointTime: undefined })
+            }}
+          />
+          {(getDatasetConfigurationProperty({
+            dataset: datasetMetadata,
+            property: 'pointTimeFilter',
+          }) as pointTimeFilter) === 'timerange' && (
+            <Select
+              placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+              options={fieldsOptions}
+              direction="top"
+              selectedOption={
+                getSelectedOption(
+                  getDatasetConfigurationProperty({
+                    dataset: datasetMetadata,
+                    property: 'pointTime',
+                  })
+                ) as SelectOption
+              }
+              onSelect={(selected) => {
+                onDatasetConfigurationChange({ pointTime: selected.id })
+              }}
+              onCleanClick={() => {
+                onDatasetConfigurationChange({ pointTime: undefined })
+              }}
+            />
+          )}
         </div>
         <MultiSelect
-          label={t('dataset.trackSegmentId', 'track filter property')}
+          label={t('dataset.pointFilters', 'point filters')}
           placeholder={
             getFieldsAllowedArray().length > 0
               ? getFieldsAllowedArray().join(', ')
               : t('dataset.fieldPlaceholder', 'Point filters')
           }
-          direction="bottom"
+          direction="top"
           // disabled={!getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'idProperty' })}
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(getFieldsAllowedArray()) as MultiSelectOption[]}
@@ -350,6 +492,16 @@ function NewPointDataset({
           onCleanClick={handleFieldsAllowedCleanSelection}
         />
       </Collapsable>
+      <SwitchRow
+        className={styles.saveAsPublic}
+        label={t(
+          'dataset.uploadPublic',
+          'Allow other users to see this dataset when you share a workspace'
+        )}
+        // disabled={!!mapDrawEditDataset}
+        active={isPublic}
+        onClick={onDatasetPublicToggle}
+      />
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {/* {error && <span className={styles.errorMsg}>{error}</span>} */}

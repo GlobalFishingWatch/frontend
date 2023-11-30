@@ -55,13 +55,15 @@ export const listToTrackSegments = ({
           ...properties
         } = record
         const coords = parseCoords(latitudeValue, longitudeValue)
-        return {
-          ...(hasIdGroup && { properties }),
-          latitude: coords.latitude as number,
-          longitude: coords.longitude as number,
-          timestamp: getUTCDate(timestampValue).getTime(),
-          id: recordId,
-        }
+        if (coords) {
+          return {
+            ...(hasIdGroup && { properties }),
+            latitude: coords.latitude as number,
+            longitude: coords.longitude as number,
+            timestamp: getUTCDate(timestampValue).getTime(),
+            id: recordId,
+          }
+        } else return []
       } else return []
     })
   })

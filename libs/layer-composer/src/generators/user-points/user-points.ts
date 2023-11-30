@@ -5,6 +5,7 @@ import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
 import { getCirclePaintWithFeatureState } from '../context/context.utils'
+import { getCircleRadiusWithPointSizeProperty } from '../user-points/user-points.utils'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 
 class UserPointsGenerator {
@@ -43,11 +44,11 @@ class UserPointsGenerator {
       ...baseLayer,
       type: 'circle',
       paint: {
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 2, 5, 4],
         'circle-stroke-color': DEFAULT_BACKGROUND_COLOR,
         'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0.1, 5, 0.5],
         'circle-stroke-opacity': 0.5,
         ...getCirclePaintWithFeatureState(config.color, 0.7),
+        ...getCircleRadiusWithPointSizeProperty(config),
       },
       metadata: {
         color: config.color,

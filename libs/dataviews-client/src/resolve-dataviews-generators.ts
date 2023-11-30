@@ -402,6 +402,16 @@ export function getGeneratorConfig(
           (dataview.config?.type === GeneratorType.UserContext ||
             dataview.config?.type === GeneratorType.UserPoints)
         ) {
+          const circleRadiusProperty = dataset.configuration?.configurationUI?.pointSize
+
+          generator.circleRadiusProperty =
+            circleRadiusProperty && circleRadiusProperty.toLowerCase()
+          generator.circleRadiusRange = circleRadiusProperty && [
+            dataset.schema?.[circleRadiusProperty].min,
+            dataset.schema?.[circleRadiusProperty].max,
+          ]
+          generator.minPointSize = dataset.configuration?.configurationUI?.minPointSize
+          generator.maxPointSize = dataset.configuration?.configurationUI?.maxPointSize
           generator.disableInteraction = dataset.configuration?.disableInteraction
         }
       }

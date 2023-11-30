@@ -78,6 +78,7 @@ export enum DatasetStatus {
 }
 
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
+export type pointTimeFilter = 'timerange' | 'timestamp'
 
 export interface DatasetDocumentation {
   type?: string
@@ -95,6 +96,10 @@ export interface DatasetConfigurationUI {
   sourceFormat?: 'csv' | 'geojson' | 'shapefile' | 'kml'
   pointName?: string
   pointSize?: string
+  maxPointSize?: number
+  minPointSize?: number
+  pointTime?: string[]
+  pointTimeFilter?: pointTimeFilter
   geometryType?: DatasetGeometryType
 }
 

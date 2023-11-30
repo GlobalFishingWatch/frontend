@@ -20,6 +20,7 @@ export * from './heatmap/types'
 export * from './heatmap/util'
 export * from './heatmap/util/get-time-chunks-interval'
 export * from './vessel-events/vessel-events.utils'
+export * from './user-points/user-points.utils'
 export { TRACK_HIGHLIGHT_SUFFIX } from './track/track'
 export { HEATMAP_COLOR_RAMPS, HEATMAP_COLORS_BY_ID } from './heatmap/colors'
 export { rgbaStringToComponents, hexToComponents, rgbaToString } from './heatmap/util/colors'
@@ -34,7 +35,7 @@ export {
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
   TEMPORALGRID_LAYER_INTERACTIVE_SUFIX,
 } from './heatmap/config'
-
+export { MIN_POINT_SIZE, MAX_POINT_SIZE, POINT_SIZES_DEFAULT_RANGE } from './user-points/config'
 export type AnyGeneratorClass =
   | BackgroundGenerator
   | BaseMapGenerator
