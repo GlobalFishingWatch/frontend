@@ -416,7 +416,7 @@ function NewPointDataset({
               ? getFieldsAllowedArray().join(', ')
               : t('dataset.fieldPlaceholder', 'Point filters')
           }
-          direction="bottom"
+          direction="top"
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(getFieldsAllowedArray()) as MultiSelectOption[]}
           onSelect={handleFieldsAllowedAddItem}

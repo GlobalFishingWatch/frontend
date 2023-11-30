@@ -7,7 +7,7 @@ import {
 export const DEFAULT_LINE_COLOR = 'white'
 export const HIGHLIGHT_LINE_COLOR = 'white'
 export const HIGHLIGHT_FILL_COLOR = 'rgba(0, 0, 0, 0.3)'
-export const POINT_SIZES_DEFAULT_RANGE = [1, 10]
+export const POINT_SIZES_DEFAULT_RANGE = [3, 15]
 
 export const getLinePaintWithFeatureState = (
   color = DEFAULT_LINE_COLOR,
