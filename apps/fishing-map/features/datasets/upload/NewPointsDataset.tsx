@@ -26,10 +26,14 @@ import {
   MIN_POINT_SIZE,
   POINT_SIZES_DEFAULT_RANGE,
 } from '@globalfishingwatch/layer-composer'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { sortFields } from 'utils/shared'
-import { FileType, getFileFromGeojson, getFileType } from 'utils/files'
+import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 import { isPrivateDataset } from '../datasets.utils'
 import styles from './NewDataset.module.css'
 import { ExtractMetadataProps } from './NewTrackDataset'
@@ -39,11 +43,6 @@ import {
   getDatasetParsed,
   getGeojsonFromPointsList,
 } from './datasets-parse.utils'
-import {
-  getDatasetConfiguration,
-  getDatasetConfigurationProperty,
-  getFileName,
-} from './datasets-upload.utils'
 import FileDropzone from './FileDropzone'
 
 const POINT_TIME_OPTIONS: SelectOption[] = [

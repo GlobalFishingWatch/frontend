@@ -10,10 +10,10 @@ import {
   resolveDataviewDatasetResource,
   selectResourceByUrl,
 } from '@globalfishingwatch/dataviews-client'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
-import { getUserDataviewDataset } from 'features/workspace/user/workspace-user.utils'
-import { getDatasetConfigurationProperty } from 'features/datasets/upload/datasets-upload.utils'
+import { getUserDataviewDataset } from './UserLayerPanel'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance
@@ -29,7 +29,7 @@ export function useUserLayerTrackResource(dataview: UrlDataviewInstance) {
     selectResourceByUrl<FeatureCollection>(trackUrl)
   )
   const idProperty = getDatasetConfigurationProperty({
-    datasetMetadata: dataset,
+    dataset,
     property: 'idProperty',
   }) as string
 

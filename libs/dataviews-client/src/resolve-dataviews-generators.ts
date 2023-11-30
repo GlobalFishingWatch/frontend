@@ -30,6 +30,7 @@ import type {
   HeatmapAnimatedInteractionType,
 } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
@@ -402,16 +403,25 @@ export function getGeneratorConfig(
           (dataview.config?.type === GeneratorType.UserContext ||
             dataview.config?.type === GeneratorType.UserPoints)
         ) {
-          const circleRadiusProperty = dataset.configuration?.configurationUI?.pointSize
-
-          generator.circleRadiusProperty =
-            circleRadiusProperty && circleRadiusProperty.toLowerCase()
-          generator.circleRadiusRange = circleRadiusProperty && [
-            dataset.schema?.[circleRadiusProperty].min,
-            dataset.schema?.[circleRadiusProperty].max,
-          ]
-          generator.minPointSize = dataset.configuration?.configurationUI?.minPointSize
-          generator.maxPointSize = dataset.configuration?.configurationUI?.maxPointSize
+          const circleRadiusProperty = getDatasetConfigurationProperty({
+            dataset,
+            property: 'pointSize',
+          })
+          if (circleRadiusProperty) {
+            generator.circleRadiusProperty = circleRadiusProperty.toLowerCase()
+            generator.circleRadiusRange = circleRadiusProperty && [
+              dataset.schema?.[circleRadiusProperty].min,
+              dataset.schema?.[circleRadiusProperty].max,
+            ]
+          }
+          generator.minPointSize = getDatasetConfigurationProperty({
+            dataset,
+            property: 'minPointSize',
+          })
+          generator.maxPointSize = getDatasetConfigurationProperty({
+            dataset,
+            property: 'maxPointSize',
+          })
           generator.disableInteraction = dataset.configuration?.disableInteraction
         }
       }

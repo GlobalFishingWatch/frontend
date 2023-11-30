@@ -23,8 +23,12 @@ import {
   getDatasetSchema,
   guessColumnsFromSchema,
 } from '@globalfishingwatch/data-transforms'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { FileType, getFileFromGeojson, getFileType } from 'utils/files'
+import { FileType, getFileFromGeojson, getFileType, getFileName } from 'utils/files'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
 import {
@@ -34,12 +38,6 @@ import {
 } from 'features/datasets/upload/datasets-parse.utils'
 import { sortFields } from 'utils/shared'
 import { isPrivateDataset } from '../datasets.utils'
-import {
-  getDatasetConfiguration,
-  getDatasetConfigurationProperty,
-  // getDatasetSchemaFromCSV,
-  getFileName,
-} from './datasets-upload.utils'
 import styles from './NewDataset.module.css'
 
 export type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }

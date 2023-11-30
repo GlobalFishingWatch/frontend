@@ -11,6 +11,7 @@ import {
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
@@ -158,21 +159,21 @@ export const getEnvironmentDataviewInstance = (
 export const getUserPointsDataviewInstance = (
   dataset: Dataset
 ): DataviewInstance<GeneratorType> => {
-  const circleRadiusProperty = dataset.configuration?.configurationUI?.pointSize
+  const circleRadiusProperty = getDatasetConfigurationProperty({ dataset, property: 'pointSize' })
   return {
-    id: `user-points-${dataset.id}`,
+    id: `user-points-${dataset?.id}`,
     dataviewId: TEMPLATE_POINTS_DATAVIEW_SLUG,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
     datasetsConfig: [
       {
-        datasetId: dataset.id,
+        datasetId: dataset?.id,
         endpoint: EndpointId.ContextTiles,
-        params: [{ id: 'id', value: dataset.id }],
+        params: [{ id: 'id', value: dataset?.id }],
 
         ...(circleRadiusProperty && {
-          query: [{ id: 'properties', value: [`${circleRadiusProperty.toLocaleLowerCase()}`] }],
+          query: [{ id: 'properties', value: [circleRadiusProperty.toLocaleLowerCase()] }],
         }),
       },
     ],

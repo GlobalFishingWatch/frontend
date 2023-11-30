@@ -2,7 +2,7 @@ import type { LayerSpecification, CircleLayerSpecification } from '@globalfishin
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
 import { GeneratorType, UserPointsGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
-import { Group } from '../../types'
+import { GeneratorDataviewConfig, Group } from '../../types'
 import { API_GATEWAY } from '../../config'
 import { getCirclePaintWithFeatureState } from '../context/context.utils'
 import { getCircleRadiusWithPointSizeProperty } from '../user-points/user-points.utils'
@@ -11,7 +11,7 @@ import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 class UserPointsGenerator {
   type = GeneratorType.UserPoints
 
-  _getStyleSources = (config: UserPointsGeneratorConfig) => {
+  _getStyleSources = (config: GeneratorDataviewConfig<UserPointsGeneratorConfig>) => {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
@@ -32,7 +32,9 @@ class UserPointsGenerator {
     ]
   }
 
-  _getStyleLayers = (config: UserPointsGeneratorConfig): LayerSpecification[] => {
+  _getStyleLayers = (
+    config: GeneratorDataviewConfig<UserPointsGeneratorConfig>
+  ): LayerSpecification[] => {
     const generatorId = config.id
     const baseLayer = {
       id: generatorId,
@@ -66,7 +68,7 @@ class UserPointsGenerator {
     return [circleLayer]
   }
 
-  getStyle = (config: UserPointsGeneratorConfig) => {
+  getStyle = (config: GeneratorDataviewConfig<UserPointsGeneratorConfig>) => {
     return {
       id: config.id,
       sources: this._getStyleSources(config),

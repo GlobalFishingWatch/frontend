@@ -7,9 +7,10 @@ import {
   kmlToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
 import { DatasetGeometryType } from '@globalfishingwatch/api-types'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
-import { getDatasetConfigurationProperty } from 'features/datasets/upload/datasets-upload.utils'
 import { getFileType, readBlobAs } from 'utils/files'
+
 // interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
 //   extensions?: string[]
 // }
