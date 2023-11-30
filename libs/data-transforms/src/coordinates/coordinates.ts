@@ -1,6 +1,9 @@
 import { convert } from 'geo-coordinates-parser'
 
-export const parseCoords = (latitude: number | string, longitude: number | string) => {
+export const parseCoords = (
+  latitude: number | string,
+  longitude: number | string
+): Record<string, number> | null => {
   if (typeof latitude === 'number' && typeof longitude === 'number') {
     return { latitude, longitude }
   }
@@ -9,6 +12,6 @@ export const parseCoords = (latitude: number | string, longitude: number | strin
     return { latitude: coords.decimalLatitude, longitude: coords.decimalLongitude }
   } catch (e) {
     console.warn(e, `latitude: ${latitude}, longitude ${longitude}`)
-    return { latitude, longitude }
+    return null
   }
 }
