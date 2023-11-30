@@ -21,6 +21,11 @@ import {
   DatasetTypes,
   pointTimeFilter,
 } from '@globalfishingwatch/api-types'
+import {
+  MAX_POINT_SIZE,
+  MIN_POINT_SIZE,
+  POINT_SIZES_DEFAULT_RANGE,
+} from '@globalfishingwatch/layer-composer'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { sortFields } from 'utils/shared'
@@ -323,27 +328,27 @@ function NewPointDataset({
           className={styles.input}
           onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
         />
+        <Select
+          label={t('dataset.pointName', 'point name')}
+          placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+          options={fieldsOptions}
+          direction="top"
+          selectedOption={
+            getSelectedOption(
+              getDatasetConfigurationProperty({
+                dataset: datasetMetadata,
+                property: 'pointName',
+              })
+            ) as SelectOption
+          }
+          onSelect={(selected) => {
+            onDatasetConfigurationChange({ pointName: selected.id })
+          }}
+          onCleanClick={() => {
+            onDatasetConfigurationChange({ pointName: undefined })
+          }}
+        />
         <div className={styles.evenSelectorsGroup}>
-          <Select
-            label={t('dataset.pointName', 'point name')}
-            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-            options={fieldsOptions}
-            direction="top"
-            selectedOption={
-              getSelectedOption(
-                getDatasetConfigurationProperty({
-                  dataset: datasetMetadata,
-                  property: 'pointName',
-                })
-              ) as SelectOption
-            }
-            onSelect={(selected) => {
-              onDatasetConfigurationChange({ pointName: selected.id })
-            }}
-            onCleanClick={() => {
-              onDatasetConfigurationChange({ pointName: undefined })
-            }}
-          />
           <Select
             label={t('dataset.pointSize', 'point size')}
             placeholder={t('dataset.fieldPlaceholder', 'Select a numeric field from your dataset')}
@@ -364,6 +369,43 @@ function NewPointDataset({
               onDatasetConfigurationChange({ pointSize: undefined })
             }}
           />
+          {getDatasetConfigurationProperty({
+            dataset: datasetMetadata,
+            property: 'pointSize',
+          }) && (
+            <Fragment>
+              <InputText
+                type="number"
+                value={
+                  getDatasetConfigurationProperty({
+                    dataset: datasetMetadata,
+                    property: 'minPointSize',
+                  }) || POINT_SIZES_DEFAULT_RANGE[0]
+                }
+                min={MIN_POINT_SIZE}
+                label={t('dataset.minPointSize', 'Min point size')}
+                className={styles.input}
+                onChange={(e) =>
+                  onDatasetConfigurationChange({ minPointSize: parseFloat(e.target.value) })
+                }
+              />
+              <InputText
+                type="number"
+                value={
+                  getDatasetConfigurationProperty({
+                    dataset: datasetMetadata,
+                    property: 'maxPointSize',
+                  }) || POINT_SIZES_DEFAULT_RANGE[1]
+                }
+                max={MAX_POINT_SIZE}
+                label={t('dataset.maxPointSize', 'max point size')}
+                className={styles.input}
+                onChange={(e) =>
+                  onDatasetConfigurationChange({ maxPointSize: parseFloat(e.target.value) })
+                }
+              />
+            </Fragment>
+          )}
         </div>
         <p className={styles.label}>point time</p>
         <div className={styles.evenSelectorsGroup}>

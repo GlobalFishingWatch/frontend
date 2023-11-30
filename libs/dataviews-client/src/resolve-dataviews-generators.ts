@@ -410,6 +410,8 @@ export function getGeneratorConfig(
             dataset.schema?.[circleRadiusProperty].min,
             dataset.schema?.[circleRadiusProperty].max,
           ]
+          generator.minPointSize = dataset.configuration?.configurationUI?.minPointSize
+          generator.maxPointSize = dataset.configuration?.configurationUI?.maxPointSize
           generator.disableInteraction = dataset.configuration?.disableInteraction
         }
       }

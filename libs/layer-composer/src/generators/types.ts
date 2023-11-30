@@ -180,6 +180,14 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    */
   circleRadiusRange?: number[]
   /**
+   * min point size of the values range lower end
+   */
+  minPointSize?: number
+  /**
+   * man point size of the values range higher end
+   */
+  maxPointSize?: number
+  /**
    * Property to get value to display the ramp
    */
   pickValueAt?: string

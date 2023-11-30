@@ -96,6 +96,8 @@ export interface DatasetConfigurationUI {
   sourceFormat?: 'csv' | 'geojson' | 'shapefile' | 'kml'
   pointName?: string
   pointSize?: string
+  maxPointSize?: number
+  minPointSize?: number
   pointTime?: string[]
   pointTimeFilter?: pointTimeFilter
   geometryType?: DatasetGeometryType
