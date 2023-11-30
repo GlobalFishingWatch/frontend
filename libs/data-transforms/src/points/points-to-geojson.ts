@@ -14,7 +14,7 @@ export const pointsListToGeojson = (
     },
     geometry: {
       type: 'Point',
-      coordinates: [point[latitude] as number, point[longitude] as number],
+      coordinates: [point[longitude] as number, point[latitude] as number],
     },
   }))
   return {
