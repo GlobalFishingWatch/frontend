@@ -32,6 +32,9 @@ class UserContextGenerator {
       url.searchParams.set('filter', config.filter)
     }
 
+    // As user can modify the dataset, we need to avoid the cache
+    url.searchParams.set('cache', 'false')
+
     return [
       {
         id: config.id,

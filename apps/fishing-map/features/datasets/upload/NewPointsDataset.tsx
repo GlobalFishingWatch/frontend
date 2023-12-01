@@ -11,7 +11,7 @@ import {
   SelectOption,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { DatasetConfiguration, pointTimeFilter } from '@globalfishingwatch/api-types'
+import { pointTimeFilter } from '@globalfishingwatch/api-types'
 import {
   MAX_POINT_SIZE,
   MIN_POINT_SIZE,
@@ -28,9 +28,11 @@ import {
   useDatasetMetadata,
   useDatasetMetadataOptions,
 } from 'features/datasets/upload/datasets-upload.hooks'
-import { getPointsDatasetMetadata } from 'features/datasets/upload/datasets-upload.utils'
+import {
+  getMetadataFromDataset,
+  getPointsDatasetMetadata,
+} from 'features/datasets/upload/datasets-upload.utils'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
-import { isPrivateDataset } from '../datasets.utils'
 import styles from './NewDataset.module.css'
 import { DataList, getDatasetParsed, getGeojsonFromPointsList } from './datasets-parse.utils'
 import FileDropzone from './FileDropzone'
@@ -86,21 +88,13 @@ function NewPointDataset({
   )
 
   useEffect(() => {
-    if (file) {
+    if (file && !loading) {
       handleRawData(file)
     } else if (dataset) {
-      const { ownerType, createdAt, endpoints, ...rest } = dataset
-      setDatasetMetadata({
-        ...rest,
-        public: !isPrivateDataset(dataset),
-        type: dataset.type,
-        category: dataset.category,
-        configuration: {
-          ...dataset.configuration,
-        } as DatasetConfiguration,
-      })
+      setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-  }, [dataset, file, handleRawData, setDatasetMetadata])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataset, file])
 
   const onConfirmClick = useCallback(async () => {
     let error = ''
@@ -187,15 +181,15 @@ function NewPointDataset({
             getSelectedOption(
               getDatasetConfigurationProperty({
                 dataset: datasetMetadata,
-                property: 'pointName',
+                property: 'propertyToInclude',
               })
             ) as SelectOption
           }
           onSelect={(selected) => {
-            setDatasetMetadataConfig({ pointName: selected.id })
+            setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ pointName: undefined })
+            setDatasetMetadataConfig({ propertyToInclude: undefined })
           }}
         />
         <div className={styles.evenSelectorsGroup}>
@@ -214,6 +208,13 @@ function NewPointDataset({
             }
             onSelect={(selected) => {
               setDatasetMetadataConfig({ pointSize: selected.id })
+              const pointSizeSchema = datasetMetadata.schema?.[selected.id]
+              if (pointSizeSchema) {
+                setDatasetMetadataConfig({
+                  minPointSize: pointSizeSchema.min,
+                  maxPointSize: pointSizeSchema.max,
+                })
+              }
             }}
             onCleanClick={() => {
               setDatasetMetadataConfig({ pointSize: undefined })
@@ -241,12 +242,10 @@ function NewPointDataset({
               />
               <InputText
                 type="number"
-                value={
-                  getDatasetConfigurationProperty({
-                    dataset: datasetMetadata,
-                    property: 'maxPointSize',
-                  }) || POINT_SIZES_DEFAULT_RANGE[1]
-                }
+                value={getDatasetConfigurationProperty({
+                  dataset: datasetMetadata,
+                  property: 'maxPointSize',
+                })}
                 max={MAX_POINT_SIZE}
                 label={t('dataset.maxPointSize', 'max point size')}
                 className={styles.input}

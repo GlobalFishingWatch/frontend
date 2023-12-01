@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { DatasetConfigurationUI } from '@globalfishingwatch/api-types'
+import { DatasetConfiguration, DatasetConfigurationUI } from '@globalfishingwatch/api-types'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { MultiSelectOption } from '@globalfishingwatch/api-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
@@ -16,18 +16,28 @@ export function useDatasetMetadata() {
     }))
   }, [])
 
-  const setDatasetMetadataConfig = useCallback((newConfig: Partial<DatasetConfigurationUI>) => {
-    setDatasetMetadataState((meta = {} as DatasetMetadata) => ({
-      ...meta,
-      configuration: {
-        ...meta?.configuration,
-        configurationUI: {
-          ...meta?.configuration?.configurationUI,
-          ...(newConfig as DatasetMetadata['configuration']),
-        },
-      },
-    }))
-  }, [])
+  const setDatasetMetadataConfig = useCallback(
+    (newConfig: Partial<DatasetConfiguration | DatasetConfigurationUI>) => {
+      setDatasetMetadataState((meta = {} as DatasetMetadata) => {
+        const { idProperty, valueProperties, propertyToInclude, ...configurationUI } =
+          newConfig as DatasetConfiguration
+        return {
+          ...meta,
+          configuration: {
+            ...meta?.configuration,
+            ...(idProperty && { idProperty }),
+            ...(valueProperties && { valueProperties }),
+            ...(propertyToInclude && { propertyToInclude }),
+            configurationUI: {
+              ...meta?.configuration?.configurationUI,
+              ...(configurationUI as DatasetConfigurationUI),
+            },
+          },
+        }
+      })
+    },
+    []
+  )
 
   return useMemo(
     () => ({

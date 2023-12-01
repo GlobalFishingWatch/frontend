@@ -1,11 +1,6 @@
 import { useSelector, batch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
-import {
-  AnyDatasetConfiguration,
-  Dataset,
-  DatasetCategory,
-  DatasetStatus,
-} from '@globalfishingwatch/api-types'
+import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import { AsyncError } from 'utils/async-slice'
 import {

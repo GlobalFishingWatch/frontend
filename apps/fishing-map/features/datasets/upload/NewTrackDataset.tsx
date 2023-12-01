@@ -9,7 +9,6 @@ import {
   MultiSelectOption,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { DatasetCategory, DatasetConfiguration, DatasetTypes } from '@globalfishingwatch/api-types'
 import { checkRecordValidity } from '@globalfishingwatch/data-transforms'
 import {
   getDatasetConfiguration,
@@ -24,13 +23,15 @@ import {
   getDatasetParsed,
   getTrackFromList,
 } from 'features/datasets/upload/datasets-parse.utils'
-import { getTracksDatasetMetadata } from 'features/datasets/upload/datasets-upload.utils'
+import {
+  getMetadataFromDataset,
+  getTracksDatasetMetadata,
+} from 'features/datasets/upload/datasets-upload.utils'
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,
 } from 'features/datasets/upload/datasets-upload.hooks'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
-import { isPrivateDataset } from '../datasets.utils'
 import styles from './NewDataset.module.css'
 
 function NewTrackDataset({
@@ -85,16 +86,7 @@ function NewTrackDataset({
     if (file && !loading) {
       handleRawData(file)
     } else if (dataset) {
-      const { ownerType, createdAt, endpoints, ...rest } = dataset
-      setDatasetMetadata({
-        ...rest,
-        public: !isPrivateDataset(dataset),
-        type: DatasetTypes.UserTracks,
-        category: DatasetCategory.Environment,
-        configuration: {
-          ...dataset.configuration,
-        } as DatasetConfiguration,
-      })
+      setDatasetMetadata(getMetadataFromDataset(dataset))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataset, file])

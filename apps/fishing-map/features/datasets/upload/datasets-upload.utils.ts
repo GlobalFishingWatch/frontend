@@ -1,13 +1,30 @@
 import {
+  Dataset,
   DatasetCategory,
   DatasetConfiguration,
   DatasetGeometryType,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
+import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { FileType } from 'utils/files'
 
 export type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
+
+export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
+  return {
+    id: dataset.id,
+    name: dataset.name,
+    public: !isPrivateDataset(dataset),
+    description: dataset.description,
+    type: dataset.type,
+    schema: dataset.schema,
+    category: dataset.category,
+    configuration: dataset.configuration,
+    fieldsAllowed: dataset.fieldsAllowed,
+  }
+}
 
 export const getTracksDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const schema = getDatasetSchema(data, { includeEnum: true })
