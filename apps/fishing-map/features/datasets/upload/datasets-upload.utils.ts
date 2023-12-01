@@ -30,7 +30,7 @@ export const getTracksDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   }
 }
 
-export const getPointsDatasetMetadata = ({ name, data }: ExtractMetadataProps) => {
+export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const schema = getDatasetSchema(data, { includeEnum: true })
   const isNotGeoStandard = data.type !== 'FeatureCollection'
   const guessedColumns = guessColumnsFromSchema(schema)
@@ -43,6 +43,7 @@ export const getPointsDatasetMetadata = ({ name, data }: ExtractMetadataProps) =
     configuration: {
       format: 'geojson',
       configurationUI: {
+        sourceFormat,
         ...(isNotGeoStandard && { longitude: guessedColumns.longitude }),
         ...(isNotGeoStandard && { latitude: guessedColumns.latitude }),
         timestamp: guessedColumns.timestamp,

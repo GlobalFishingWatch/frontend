@@ -287,12 +287,13 @@ function NewDataset() {
           }
           onClose()
         }
+        trackEvent({
+          category: TrackCategory.User,
+          action: `Confirm ${datasetMetadata.configuration?.geometryType} upload`,
+          label: datasetMetadata?.name,
+        })
+        return payload
       }
-      trackEvent({
-        category: TrackCategory.User,
-        action: `Confirm ${datasetMetadata.configuration?.geometryType} upload`,
-        label: datasetMetadata?.name,
-      })
     },
     [addDataviewFromDatasetToWorkspace, dispatchUpsertDataset, locationType, onClose, t]
   )

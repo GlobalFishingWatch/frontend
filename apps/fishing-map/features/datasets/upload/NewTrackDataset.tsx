@@ -7,6 +7,7 @@ import {
   InputText,
   MultiSelect,
   MultiSelectOption,
+  SwitchRow,
 } from '@globalfishingwatch/ui-components'
 import { DatasetCategory, DatasetConfiguration, DatasetTypes } from '@globalfishingwatch/api-types'
 import { checkRecordValidity } from '@globalfishingwatch/data-transforms'
@@ -50,11 +51,18 @@ function NewTrackDataset({
   const fileType = getFileType(file)
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const isCSVFile = fileType === 'csv' || sourceFormat === 'csv'
+  const fieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
+  const isPublic = !!datasetMetadata?.public
+  const idProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'idProperty',
+  })
 
   const handleRawData = useCallback(
     async (file: File) => {
       setLoading(true)
       const data = await getDatasetParsed(file, 'tracks')
+      const fileType = getFileType(file)
       const datasetMetadata = getTracksDatasetMetadata({
         data,
         name: getFileName(file),
@@ -70,7 +78,7 @@ function NewTrackDataset({
       }
       setLoading(false)
     },
-    [fileType, setDatasetMetadata]
+    [setDatasetMetadata]
   )
 
   useEffect(() => {
@@ -80,7 +88,7 @@ function NewTrackDataset({
       const { ownerType, createdAt, endpoints, ...rest } = dataset
       setDatasetMetadata({
         ...rest,
-        public: isPrivateDataset(dataset),
+        public: !isPrivateDataset(dataset),
         type: DatasetTypes.UserTracks,
         category: DatasetCategory.Environment,
         configuration: {
@@ -90,11 +98,6 @@ function NewTrackDataset({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataset, file])
-
-  const idProperty = getDatasetConfigurationProperty({
-    dataset: datasetMetadata,
-    property: 'idProperty',
-  })
 
   useEffect(() => {
     if (idProperty && datasetMetadata && sourceData) {
@@ -113,7 +116,6 @@ function NewTrackDataset({
 
   const onConfirmClick = useCallback(async () => {
     let error = ''
-    setLoading(true)
     if (datasetMetadata) {
       const config = getDatasetConfiguration(datasetMetadata)
       if (sourceData) {
@@ -141,16 +143,14 @@ function NewTrackDataset({
       }
       if (error) {
         setError(error)
-      } else if (geojson) {
-        const file = getFileFromGeojson(geojson)
-        if (file && onConfirm) {
-          await onConfirm(datasetMetadata, file)
-        }
+      } else if (onConfirm) {
+        setLoading(true)
+        const file = geojson ? getFileFromGeojson(geojson) : undefined
+        await onConfirm(datasetMetadata, file)
+        setLoading(false)
       }
     }
-    setLoading(true)
   }, [datasetMetadata, geojson, onConfirm, sourceData, t])
-  const fieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
 
   return (
     <div className={styles.container}>
@@ -256,6 +256,16 @@ function NewTrackDataset({
           }}
         />
       </Collapsable>
+      <SwitchRow
+        className={styles.saveAsPublic}
+        label={t(
+          'dataset.uploadPublic',
+          'Allow other users to see this dataset when you share a workspace'
+        )}
+        // disabled={!!mapDrawEditDataset}
+        active={isPublic}
+        onClick={() => setDatasetMetadata({ public: !isPublic })}
+      />
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
@@ -265,7 +275,7 @@ function NewTrackDataset({
         <Button
           className={styles.saveBtn}
           onClick={onConfirmClick}
-          disabled={!file || error !== '' || idGroupError !== ''}
+          disabled={!datasetMetadata || error !== '' || idGroupError !== ''}
           loading={loading}
         >
           {t('common.confirm', 'Confirm') as string}

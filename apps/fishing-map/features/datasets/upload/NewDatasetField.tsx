@@ -21,14 +21,13 @@ export function NewDatasetField({
   datasetMetadata,
   property,
   editable,
-  label: labelProp,
+  label,
   onSelect,
   onCleanClick,
 }: NewDatasetFieldProps) {
   const { t } = useTranslation()
   const { fieldsOptions, filtersFieldsOptions, getSelectedOption } =
     useDatasetMetadataOptions(datasetMetadata)
-  const label = labelProp || t(`dataset.${property}`, property)
   const options =
     property === 'latitude' || property === 'longitude' || property === 'timestamp'
       ? fieldsOptions

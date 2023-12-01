@@ -79,7 +79,6 @@ const MapWrapper = () => {
         // },
         _pathType: 'open',
         // getFilterValue: (d: any) => {
-        //   debugger
         //   return d.timestamp as any
         // },
         // filterRange: [startTime, endTime],
@@ -162,11 +161,7 @@ const MapWrapper = () => {
         ) : f.object?.properties?.vesselId ? (
           <p key={f.object?.properties?.vesselId}>{f.object?.properties?.vesselId}</p>
         ) : f.object?.value instanceof Array ? (
-          <div key={f.object?.value}>
-            {f.object?.value.map((v) => (
-              <p key={v.id}>{v.value}</p>
-            ))}
-          </div>
+          <div key={f.object?.value}>{f.object?.value.map((v) => <p key={v.id}>{v.value}</p>)}</div>
         ) : null
       )}
     </div>
