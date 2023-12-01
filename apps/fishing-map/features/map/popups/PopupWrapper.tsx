@@ -137,14 +137,7 @@ function PopupWrapper({
                     showFeaturesDetails={type === 'click'}
                   />
                 )
-              // TODO: merge UserContextTooltipSection and ContextTooltipSection
               case DataviewCategory.Context: {
-                const userPointFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserPoints
-                )
-                const userContextFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserContext
-                )
                 const defaultContextFeatures = features.filter(
                   (feature) => feature.type === GeneratorType.Context
                 )
@@ -156,18 +149,30 @@ function PopupWrapper({
                 )
                 return (
                   <Fragment key={featureCategory}>
+                    <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
+                    <ReportBufferTooltip features={areaBufferFeatures} />
+                    <ContextTooltipSection
+                      features={defaultContextFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  </Fragment>
+                )
+              }
+              case DataviewCategory.User: {
+                const userPointFeatures = features.filter(
+                  (feature) => feature.type === GeneratorType.UserPoints
+                )
+                const userContextFeatures = features.filter(
+                  (feature) => feature.type === GeneratorType.UserContext
+                )
+                return (
+                  <Fragment key={featureCategory}>
                     <UserPointsTooltipSection
                       features={userPointFeatures}
                       showFeaturesDetails={type === 'click'}
                     />
-                    <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
-                    <ReportBufferTooltip features={areaBufferFeatures} />
                     <UserContextTooltipSection
                       features={userContextFeatures}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                    <ContextTooltipSection
-                      features={defaultContextFeatures}
                       showFeaturesDetails={type === 'click'}
                     />
                   </Fragment>
