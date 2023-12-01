@@ -1,12 +1,9 @@
 import { CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
-import {
-  GeneratorDataviewConfig,
-  UserPointsGeneratorConfig,
-} from '@globalfishingwatch/layer-composer'
 import { POINT_SIZES_DEFAULT_RANGE } from './config'
+import { GlobalUserPointsGeneratorConfig } from './user-points'
 
 export const getCircleRadiusWithPointSizeProperty = (
-  config: GeneratorDataviewConfig<UserPointsGeneratorConfig>
+  config: GlobalUserPointsGeneratorConfig
 ): CircleLayerSpecification['paint'] => {
   const { circleRadiusProperty, circleRadiusRange, minPointSize, maxPointSize } = config
   const sizes =

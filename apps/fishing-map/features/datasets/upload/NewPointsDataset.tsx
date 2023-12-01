@@ -23,7 +23,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
-import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
+import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,
@@ -126,7 +126,7 @@ function NewPointDataset({
         <div className={styles.file}>
           <FileDropzone
             label={file?.name}
-            fileTypes={['csv', 'geojson', 'shapefile']}
+            fileTypes={[fileType as FileType]}
             onFileLoaded={onFileUpdate}
           />
         </div>
@@ -352,7 +352,7 @@ function NewPointDataset({
           'dataset.uploadPublic',
           'Allow other users to see this dataset when you share a workspace'
         )}
-        // disabled={!!mapDrawEditDataset}
+        disabled={isEditing}
         active={isPublic}
         onClick={() => setDatasetMetadata({ public: !isPublic })}
       />

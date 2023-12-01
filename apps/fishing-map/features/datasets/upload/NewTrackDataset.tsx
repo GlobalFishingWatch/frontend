@@ -256,6 +256,7 @@ function NewTrackDataset({
         )}
         // disabled={!!mapDrawEditDataset}
         active={isPublic}
+        disabled={isEditing}
         onClick={() => setDatasetMetadata({ public: !isPublic })}
       />
       <div className={styles.modalFooter}>

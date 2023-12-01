@@ -160,6 +160,13 @@ export const getUserPointsDataviewInstance = (
   dataset: Dataset
 ): DataviewInstance<GeneratorType> => {
   const circleRadiusProperty = getDatasetConfigurationProperty({ dataset, property: 'pointSize' })
+  const pointTimeFilterProperty = getDatasetConfigurationProperty({
+    dataset,
+    property: 'pointTimeFilter',
+  })
+  const properties = [circleRadiusProperty, pointTimeFilterProperty]
+    .filter(Boolean)
+    .map((p) => p.toLowerCase())
   return {
     id: `user-points-${dataset?.id}`,
     dataviewId: TEMPLATE_POINTS_DATAVIEW_SLUG,
@@ -173,7 +180,12 @@ export const getUserPointsDataviewInstance = (
         params: [{ id: 'id', value: dataset?.id }],
 
         ...(circleRadiusProperty && {
-          query: [{ id: 'properties', value: [circleRadiusProperty.toLocaleLowerCase()] }],
+          query: [
+            {
+              id: 'properties',
+              value: properties,
+            },
+          ],
         }),
       },
     ],

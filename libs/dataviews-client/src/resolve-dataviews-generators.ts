@@ -422,6 +422,14 @@ export function getGeneratorConfig(
             dataset,
             property: 'maxPointSize',
           })
+
+          const pointTimeFilterProperty = getDatasetConfigurationProperty({
+            dataset,
+            property: 'pointTimeFilter',
+          })
+          if (pointTimeFilterProperty) {
+            generator.pointTimeFilterProperty = pointTimeFilterProperty
+          }
           generator.disableInteraction = dataset.configuration?.disableInteraction
         }
       }
