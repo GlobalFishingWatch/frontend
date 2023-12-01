@@ -227,6 +227,19 @@ const MapWrapper: React.FC = (): React.ReactElement => {
       ]
     }).flat()
 
+    const fishingEffortLayersHidden = [
+      'fishing-ais',
+      // Update this dataviewId when a the vms layer dataview id is changed in
+      // https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/fishing-map/features/workspace/highlight-panel/highlight-panel.content.ts#L43
+      'vms-with-png'
+    ].map(layer => {
+      i++
+      return [
+        `dvIn[${i}][id]=${layer}`,
+        `dvIn[${i}][cfg][vis]=false`,
+      ]
+    }).flat()
+
     const urlSegments = [
       `https://globalfishingwatch.org/map/index?`,
       `start=${start}`,
@@ -236,6 +249,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
       `end=${end}`,
       ...fishingMapVesselDataview,
       ...contextLayersDataviews,
+      ...fishingEffortLayersHidden,
       `timebarVisualisation=vessel`,
     ]
     const url = urlSegments.join('&')
