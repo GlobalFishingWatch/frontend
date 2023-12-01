@@ -32,16 +32,19 @@ export type NewDatasetProps = {
   onConfirm: (datasetMetadata: DatasetMetadata, file?: File) => void
 }
 
-export type DatasetMetadata = {
-  public: boolean
-  name?: Dataset['name']
-  description?: Dataset['description']
-  type: Dataset['type']
-  schema?: Dataset['schema']
-  category: Dataset['category']
-  configuration?: Dataset['configuration']
-  fieldsAllowed?: Dataset['fieldsAllowed']
-}
+export type DatasetMetadata = Partial<
+  Pick<
+    Dataset,
+    | 'id'
+    | 'name'
+    | 'description'
+    | 'type'
+    | 'schema'
+    | 'category'
+    | 'configuration'
+    | 'fieldsAllowed'
+  >
+> & { public: boolean }
 
 // TODO Update https://github.com/DefinitelyTyped/DefinitelyTyped/blob/b453d9d1b99c48c8711c31c2a64e9dffb6ce729d/types/shpjs/index.d.ts
 // When this gets merged to upstream https://github.com/calvinmetcalf/shapefile-js/pull/181
@@ -291,12 +294,13 @@ function NewDataset() {
           }
           onClose()
         }
+        trackEvent({
+          category: TrackCategory.User,
+          action: `Confirm ${datasetMetadata.configuration?.geometryType} upload`,
+          label: datasetMetadata?.name,
+        })
+        return payload
       }
-      trackEvent({
-        category: TrackCategory.User,
-        action: `Confirm ${datasetMetadata.configuration?.geometryType} upload`,
-        label: datasetMetadata?.name,
-      })
     },
     [addDataviewFromDatasetToWorkspace, dispatchUpsertDataset, locationType, onClose, t]
   )

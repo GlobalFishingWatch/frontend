@@ -2,9 +2,17 @@ import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetStatus, DatasetGeometryType, ResourceStatus } from '@globalfishingwatch/api-types'
+import {
+  DatasetStatus,
+  DatasetGeometryType,
+  ResourceStatus,
+  Dataview,
+  Dataset,
+  DatasetTypes,
+} from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDatasetGeometryType } from '@globalfishingwatch/datasets-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -24,10 +32,6 @@ import {
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import {
-  getDatasetGeometryType,
-  getUserDataviewDataset,
-} from 'features/workspace/user/workspace-user.utils'
 import { COLOR_SECONDARY_BLUE } from 'features/app/App'
 import FitBounds from 'features/workspace/common/FitBounds'
 import DatasetNotFound from '../shared/DatasetNotFound'
@@ -47,6 +51,15 @@ type UserPanelProps = {
   onToggle?: () => void
 }
 
+export function getUserDataviewDataset(dataview?: Dataview | UrlDataviewInstance): Dataset {
+  return dataview?.datasets?.find(
+    (d) =>
+      d.type === DatasetTypes.Context ||
+      d.type === DatasetTypes.UserContext ||
+      d.type === DatasetTypes.UserTracks
+  ) as Dataset
+}
+
 function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -64,7 +77,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { resource, featuresColoredByField } = useUserLayerTrackResource(dataview)
   const trackError = resource?.status === ResourceStatus.Error
 
-  useAutoRefreshImportingDataset(dataset, 5000)
+  useAutoRefreshImportingDataset(layerActive ? dataset : ({} as Dataset), 5000)
 
   const {
     items,

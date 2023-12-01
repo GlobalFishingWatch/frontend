@@ -2591,6 +2591,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@globalfishingwatch/datasets-client@workspace:libs/datasets-client":
+  version: 0.0.0-use.local
+  resolution: "@globalfishingwatch/datasets-client@workspace:libs/datasets-client"
+  dependencies:
+    "@types/qs": ^6.9.8
+    qs: ^6.11.2
+  peerDependencies:
+    "@globalfishingwatch/api-types": 6.x
+    "@globalfishingwatch/data-transforms": 1.x
+    "@globalfishingwatch/layer-composer": 10.x
+    "@reduxjs/toolkit": 1.x
+    lodash: 4.x
+  languageName: unknown
+  linkType: soft
+
 "@globalfishingwatch/dataviews-client@workspace:libs/dataviews-client":
   version: 0.0.0-use.local
   resolution: "@globalfishingwatch/dataviews-client@workspace:libs/dataviews-client"

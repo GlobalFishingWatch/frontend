@@ -1,49 +1,40 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { FeatureCollection, Point } from 'geojson'
 import {
   Button,
   Collapsable,
   InputText,
   MultiSelect,
-  MultiSelectOnChange,
   MultiSelectOption,
   Select,
   SelectOption,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
-import {
-  DatasetCategory,
-  DatasetConfiguration,
-  DatasetConfigurationUI,
-  DatasetGeometryType,
-  DatasetTypes,
-  pointTimeFilter,
-} from '@globalfishingwatch/api-types'
+import { pointTimeFilter } from '@globalfishingwatch/api-types'
 import {
   MAX_POINT_SIZE,
   MIN_POINT_SIZE,
   POINT_SIZES_DEFAULT_RANGE,
 } from '@globalfishingwatch/layer-composer'
-import UserGuideLink from 'features/help/UserGuideLink'
-import { DatasetMetadata, NewDatasetProps } from 'features/datasets/upload/NewDataset'
-import { sortFields } from 'utils/shared'
-import { FileType, getFileFromGeojson, getFileType } from 'utils/files'
-import { isPrivateDataset } from '../datasets.utils'
-import styles from './NewDataset.module.css'
-import { ExtractMetadataProps } from './NewTrackDataset'
-import {
-  DataList,
-  DataParsed,
-  getDatasetParsed,
-  getGeojsonFromPointsList,
-} from './datasets-parse.utils'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
-  getFileName,
-} from './datasets-upload.utils'
+} from '@globalfishingwatch/datasets-client'
+import UserGuideLink from 'features/help/UserGuideLink'
+import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
+import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
+import {
+  useDatasetMetadata,
+  useDatasetMetadataOptions,
+} from 'features/datasets/upload/datasets-upload.hooks'
+import {
+  getMetadataFromDataset,
+  getPointsDatasetMetadata,
+} from 'features/datasets/upload/datasets-upload.utils'
+import NewDatasetField from 'features/datasets/upload/NewDatasetField'
+import styles from './NewDataset.module.css'
+import { DataList, getDatasetParsed, getGeojsonFromPointsList } from './datasets-parse.utils'
 import FileDropzone from './FileDropzone'
 
 const POINT_TIME_OPTIONS: SelectOption[] = [
@@ -59,41 +50,31 @@ function NewPointDataset({
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
-  const [fileData, setFileData] = useState<DataParsed | undefined>()
-  const [fileType, setFileType] = useState<FileType>()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [sourceData, setSourceData] = useState<DataList | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
-  const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata | undefined>()
-
-  const getDatasetMetadata = useCallback(({ name, data }: ExtractMetadataProps) => {
-    const schema = getDatasetSchema(data, { includeEnum: true })
-    const isNotGeoStandard = data.type !== 'FeatureCollection'
-    const guessedColumns = guessColumnsFromSchema(schema)
-    return {
-      name,
-      public: true,
-      type: DatasetTypes.UserContext,
-      category: DatasetCategory.Context,
-      schema,
-      configuration: {
-        format: 'geojson',
-        configurationUI: {
-          ...(isNotGeoStandard && { longitude: guessedColumns.longitude }),
-          ...(isNotGeoStandard && { latitude: guessedColumns.latitude }),
-          timestamp: guessedColumns.timestamp,
-          geometryType: 'points' as DatasetGeometryType,
-        },
-      } as DatasetConfiguration,
-    }
-  }, [])
+  const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
+  const { fieldsOptions, getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
+    useDatasetMetadataOptions(datasetMetadata)
+  const isEditing = dataset?.id !== undefined
+  const isPublic = !!datasetMetadata?.public
+  const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
+  const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
+  const fileType = getFileType(file)
+  const isCSVFile = fileType === 'csv' || sourceFormat === 'csv'
 
   const handleRawData = useCallback(
     async (file: File) => {
       const data = await getDatasetParsed(file)
-      setFileData(data)
-      setFileType(getFileType(file))
-      const datasetMetadata = getDatasetMetadata({ data, name: getFileName(file) })
-      setDatasetMetadata((meta) => ({ ...meta, ...datasetMetadata }))
-      if (getFileType(file) === 'csv') {
+      const fileType = getFileType(file)
+      const datasetMetadata = getPointsDatasetMetadata({
+        data,
+        name: getFileName(file),
+        sourceFormat: fileType,
+      })
+      setDatasetMetadata(datasetMetadata)
+      if (fileType === 'csv') {
+        setSourceData(data as DataList)
         const geojson = getGeojsonFromPointsList(
           data as DataList,
           datasetMetadata
@@ -103,164 +84,41 @@ function NewPointDataset({
         setGeojson(data as FeatureCollection<Point>)
       }
     },
-    [getDatasetMetadata]
+    [setDatasetMetadata]
   )
 
   useEffect(() => {
-    if (file) {
+    if (file && !loading) {
       handleRawData(file)
     } else if (dataset) {
-      const { ownerType, createdAt, endpoints, ...rest } = dataset
-      setDatasetMetadata({
-        ...rest,
-        public: isPrivateDataset(dataset),
-        type: dataset.type,
-        category: dataset.category,
-        configuration: {
-          ...dataset.configuration,
-        } as DatasetConfiguration,
-      })
+      setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-  }, [dataset, file, handleRawData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataset, file])
 
-  const onConfirmClick = useCallback(() => {
-    let file: File | undefined
+  const onConfirmClick = useCallback(async () => {
+    let error = ''
     if (datasetMetadata) {
-      const config = getDatasetConfiguration(datasetMetadata)
-      if (fileData) {
+      if (sourceData) {
+        const config = getDatasetConfiguration(datasetMetadata)
         if (fileType === 'csv' && (!config?.latitude || !config?.longitude)) {
           const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
-          setError(
-            t('dataset.requiredFields', {
-              fields,
-              defaultValue: `Required fields ${fields}`,
-            })
-          )
-        } else if (geojson) {
-          file = getFileFromGeojson(geojson)
+          error = t('dataset.requiredFields', {
+            fields,
+            defaultValue: `Required fields ${fields}`,
+          })
         }
       }
-      if (file && onConfirm) {
-        onConfirm(datasetMetadata, file)
+      if (error) {
+        setError(error)
+      } else if (onConfirm) {
+        setLoading(true)
+        const file = geojson ? getFileFromGeojson(geojson) : undefined
+        await onConfirm(datasetMetadata, file)
+        setLoading(false)
       }
     }
-  }, [datasetMetadata, fileData, geojson, onConfirm, t, fileType])
-
-  const onDatasetPublicToggle = useCallback(() => {
-    setDatasetMetadata((meta) => ({
-      ...(meta as DatasetMetadata),
-      public: !!!meta?.public,
-    }))
-  }, [])
-
-  const isPublic = useMemo(() => !!datasetMetadata?.public, [datasetMetadata])
-
-  const onDatasetFieldChange = useCallback((newFields: Partial<DatasetMetadata>) => {
-    setDatasetMetadata((meta) => ({ ...meta, ...(newFields as DatasetMetadata) }))
-  }, [])
-
-  const onDatasetConfigurationChange = useCallback((newConfig: Partial<DatasetConfigurationUI>) => {
-    setDatasetMetadata((meta) => ({
-      ...(meta as DatasetMetadata),
-      configuration: {
-        ...meta?.configuration,
-        configurationUI: {
-          ...meta?.configuration?.configurationUI,
-          ...(newConfig as DatasetMetadata['configuration']),
-        },
-      },
-    }))
-  }, [])
-
-  const onDatasetFieldsAllowedChange = useCallback(
-    (newFilters: DatasetMetadata['fieldsAllowed']) => {
-      setDatasetMetadata((meta) => ({
-        ...(meta as DatasetMetadata),
-        fieldsAllowed: newFilters,
-      }))
-    },
-    []
-  )
-  const fieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
-    const options = datasetMetadata?.schema
-      ? Object.keys(datasetMetadata.schema).map((field) => {
-          return { id: field, label: field }
-        })
-      : []
-    return options.sort(sortFields)
-  }, [datasetMetadata])
-
-  const schemaRangeOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
-    const options = datasetMetadata?.schema
-      ? Object.keys(datasetMetadata.schema)
-          .filter((field) => datasetMetadata.schema?.[field].type === 'range')
-          .map((field) => {
-            return { id: field, label: field }
-          })
-      : []
-    return options.sort(sortFields)
-  }, [datasetMetadata])
-
-  const filtersFieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
-    const options = datasetMetadata?.schema
-      ? Object.keys(datasetMetadata.schema).flatMap((field) => {
-          const schema = datasetMetadata.schema?.[field]
-          const isEnumAllowed =
-            (schema?.type === 'string' || schema?.type === 'boolean') && schema?.enum?.length
-          const isRangeAllowed = schema?.type === 'range' && schema?.min && schema?.max
-          return isEnumAllowed || isRangeAllowed ? { id: field, label: field } : []
-        })
-      : []
-    return options
-      .filter((o) => {
-        return (
-          o.id !==
-            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'latitude' }) &&
-          o.id !==
-            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'longitude' }) &&
-          o.id !==
-            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'timestamp' })
-        )
-      })
-      .sort(sortFields)
-  }, [datasetMetadata])
-
-  const getSelectedOption = useCallback(
-    (
-      option: string | string[],
-      options?: SelectOption[] | MultiSelectOption[]
-    ): SelectOption | MultiSelectOption[] | undefined => {
-      const opts = options ?? fieldsOptions
-      if (option) {
-        if (Array.isArray(option)) {
-          return opts.filter((o) => option.includes(o.id)) || ([] as SelectOption[])
-        }
-        return opts.find((o) => o.id === option)
-      }
-    },
-    [fieldsOptions]
-  )
-
-  const getFieldsAllowedArray = useCallback(() => {
-    return datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
-  }, [datasetMetadata, dataset])
-
-  const handleFieldsAllowedRemoveItem: MultiSelectOnChange = useCallback(
-    (_: MultiSelectOption, rest: MultiSelectOption[]) => {
-      onDatasetFieldsAllowedChange(rest.map((f: MultiSelectOption) => f.id))
-    },
-    [onDatasetFieldsAllowedChange]
-  )
-  const handleFieldsAllowedAddItem: MultiSelectOnChange = useCallback(
-    (newFilter: MultiSelectOption) => {
-      onDatasetFieldsAllowedChange([...getFieldsAllowedArray(), newFilter.id])
-    },
-    [onDatasetFieldsAllowedChange, getFieldsAllowedArray]
-  )
-
-  const handleFieldsAllowedCleanSelection = useCallback(() => {
-    onDatasetFieldsAllowedChange([])
-  }, [onDatasetFieldsAllowedChange])
+  }, [datasetMetadata, sourceData, onConfirm, fileType, geojson, t])
 
   return (
     <div className={styles.container}>
@@ -278,40 +136,26 @@ function NewPointDataset({
           value={datasetMetadata?.name}
           label={t('common.name', 'Name')}
           className={styles.input}
-          onChange={(e) => onDatasetFieldChange({ name: e.target.value })}
+          onChange={(e) => setDatasetMetadata({ name: e.target.value })}
         />
-        {fileType === 'csv' && (
+        {isCSVFile && (
           <Fragment>
             <p className={styles.label}>point coordinates</p>
             <div className={styles.evenSelectorsGroup}>
-              <Select
-                placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-                options={fieldsOptions}
-                selectedOption={
-                  getSelectedOption(
-                    getDatasetConfigurationProperty({
-                      dataset: datasetMetadata,
-                      property: 'latitude',
-                    })
-                  ) as SelectOption
-                }
+              <NewDatasetField
+                datasetMetadata={datasetMetadata}
+                property="latitude"
+                editable={!isEditing}
                 onSelect={(selected) => {
-                  onDatasetConfigurationChange({ latitude: selected.id })
+                  setDatasetMetadataConfig({ latitude: selected.id })
                 }}
               />
-              <Select
-                placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
-                options={fieldsOptions}
-                selectedOption={
-                  getSelectedOption(
-                    getDatasetConfigurationProperty({
-                      dataset: datasetMetadata,
-                      property: 'longitude',
-                    })
-                  ) as SelectOption
-                }
+              <NewDatasetField
+                datasetMetadata={datasetMetadata}
+                property="longitude"
+                editable={!isEditing}
                 onSelect={(selected) => {
-                  onDatasetConfigurationChange({ longitude: selected.id })
+                  setDatasetMetadataConfig({ longitude: selected.id })
                 }}
               />
             </div>
@@ -326,7 +170,7 @@ function NewPointDataset({
           value={datasetMetadata?.description}
           label={t('dataset.description', 'Dataset description')}
           className={styles.input}
-          onChange={(e) => onDatasetFieldChange({ description: e.target.value })}
+          onChange={(e) => setDatasetMetadata({ description: e.target.value })}
         />
         <Select
           label={t('dataset.pointName', 'point name')}
@@ -337,15 +181,15 @@ function NewPointDataset({
             getSelectedOption(
               getDatasetConfigurationProperty({
                 dataset: datasetMetadata,
-                property: 'pointName',
+                property: 'propertyToInclude',
               })
             ) as SelectOption
           }
           onSelect={(selected) => {
-            onDatasetConfigurationChange({ pointName: selected.id })
+            setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
           onCleanClick={() => {
-            onDatasetConfigurationChange({ pointName: undefined })
+            setDatasetMetadataConfig({ propertyToInclude: undefined })
           }}
         />
         <div className={styles.evenSelectorsGroup}>
@@ -363,10 +207,17 @@ function NewPointDataset({
               ) as SelectOption
             }
             onSelect={(selected) => {
-              onDatasetConfigurationChange({ pointSize: selected.id })
+              setDatasetMetadataConfig({ pointSize: selected.id })
+              const pointSizeSchema = datasetMetadata.schema?.[selected.id]
+              if (pointSizeSchema) {
+                setDatasetMetadataConfig({
+                  minPointSize: pointSizeSchema.min,
+                  maxPointSize: pointSizeSchema.max,
+                })
+              }
             }}
             onCleanClick={() => {
-              onDatasetConfigurationChange({ pointSize: undefined })
+              setDatasetMetadataConfig({ pointSize: undefined })
             }}
           />
           {getDatasetConfigurationProperty({
@@ -386,22 +237,20 @@ function NewPointDataset({
                 label={t('dataset.minPointSize', 'Min point size')}
                 className={styles.input}
                 onChange={(e) =>
-                  onDatasetConfigurationChange({ minPointSize: parseFloat(e.target.value) })
+                  setDatasetMetadataConfig({ minPointSize: parseFloat(e.target.value) })
                 }
               />
               <InputText
                 type="number"
-                value={
-                  getDatasetConfigurationProperty({
-                    dataset: datasetMetadata,
-                    property: 'maxPointSize',
-                  }) || POINT_SIZES_DEFAULT_RANGE[1]
-                }
+                value={getDatasetConfigurationProperty({
+                  dataset: datasetMetadata,
+                  property: 'maxPointSize',
+                })}
                 max={MAX_POINT_SIZE}
                 label={t('dataset.maxPointSize', 'max point size')}
                 className={styles.input}
                 onChange={(e) =>
-                  onDatasetConfigurationChange({ maxPointSize: parseFloat(e.target.value) })
+                  setDatasetMetadataConfig({ maxPointSize: parseFloat(e.target.value) })
                 }
               />
             </Fragment>
@@ -423,10 +272,10 @@ function NewPointDataset({
               ) as SelectOption
             }
             onSelect={(selected) => {
-              onDatasetConfigurationChange({ pointTimeFilter: selected.id })
+              setDatasetMetadataConfig({ pointTimeFilter: selected.id })
             }}
             onCleanClick={() => {
-              onDatasetConfigurationChange({ pointTimeFilter: undefined })
+              setDatasetMetadataConfig({ pointTimeFilter: undefined })
             }}
           />
           <Select
@@ -445,10 +294,10 @@ function NewPointDataset({
               ) as SelectOption
             }
             onSelect={(selected) => {
-              onDatasetConfigurationChange({ pointTime: selected.id })
+              setDatasetMetadataConfig({ pointTime: selected.id })
             }}
             onCleanClick={() => {
-              onDatasetConfigurationChange({ pointTime: undefined })
+              setDatasetMetadataConfig({ pointTime: undefined })
             }}
           />
           {(getDatasetConfigurationProperty({
@@ -468,10 +317,10 @@ function NewPointDataset({
                 ) as SelectOption
               }
               onSelect={(selected) => {
-                onDatasetConfigurationChange({ pointTime: selected.id })
+                setDatasetMetadataConfig({ pointTime: selected.id })
               }}
               onCleanClick={() => {
-                onDatasetConfigurationChange({ pointTime: undefined })
+                setDatasetMetadataConfig({ pointTime: undefined })
               }}
             />
           )}
@@ -479,17 +328,22 @@ function NewPointDataset({
         <MultiSelect
           label={t('dataset.pointFilters', 'point filters')}
           placeholder={
-            getFieldsAllowedArray().length > 0
-              ? getFieldsAllowedArray().join(', ')
+            datasetFieldsAllowed.length > 0
+              ? datasetFieldsAllowed.join(', ')
               : t('dataset.fieldPlaceholder', 'Point filters')
           }
           direction="top"
-          // disabled={!getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'idProperty' })}
           options={filtersFieldsOptions}
-          selectedOptions={getSelectedOption(getFieldsAllowedArray()) as MultiSelectOption[]}
-          onSelect={handleFieldsAllowedAddItem}
-          onRemove={handleFieldsAllowedRemoveItem}
-          onCleanClick={handleFieldsAllowedCleanSelection}
+          selectedOptions={getSelectedOption(datasetFieldsAllowed) as MultiSelectOption[]}
+          onSelect={(newFilter: MultiSelectOption) => {
+            setDatasetMetadata({ fieldsAllowed: [...datasetFieldsAllowed, newFilter.id] })
+          }}
+          onRemove={(_: MultiSelectOption, rest: MultiSelectOption[]) => {
+            setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
+          }}
+          onCleanClick={() => {
+            setDatasetMetadata({ fieldsAllowed: [] })
+          }}
         />
       </Collapsable>
       <SwitchRow
@@ -500,7 +354,7 @@ function NewPointDataset({
         )}
         // disabled={!!mapDrawEditDataset}
         active={isPublic}
-        onClick={onDatasetPublicToggle}
+        onClick={() => setDatasetMetadata({ public: !isPublic })}
       />
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
@@ -511,8 +365,8 @@ function NewPointDataset({
         <Button
           className={styles.saveBtn}
           onClick={onConfirmClick}
-          // disabled={!file || !metadata?.name}
-          // loading={loading}
+          disabled={!datasetMetadata || error !== ''}
+          loading={loading}
         >
           {t('common.confirm', 'Confirm') as string}
         </Button>

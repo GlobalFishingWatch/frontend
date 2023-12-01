@@ -1,44 +1,71 @@
-import { ParseMeta } from 'papaparse'
-import { capitalize, lowerCase } from 'lodash'
 import {
   Dataset,
+  DatasetCategory,
   DatasetConfiguration,
-  DatasetConfigurationUI,
   DatasetGeometryType,
+  DatasetTypes,
 } from '@globalfishingwatch/api-types'
-import { DataList } from 'features/datasets/upload/datasets-parse.utils'
-import { DatasetMetadata } from './NewDataset'
+import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
+import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
+import { FileType } from 'utils/files'
 
-export function getFileName(file: File): string {
-  const name =
-    file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
-  return capitalize(lowerCase(name))
+export type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
+
+export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
+  return {
+    id: dataset.id,
+    name: dataset.name,
+    public: !isPrivateDataset(dataset),
+    description: dataset.description,
+    type: dataset.type,
+    schema: dataset.schema,
+    category: dataset.category,
+    configuration: dataset.configuration,
+    fieldsAllowed: dataset.fieldsAllowed,
+  }
 }
 
-export type DatasetSchemaGeneratorProps = {
-  data: DataList
-  meta: ParseMeta
+export const getTracksDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
+  const schema = getDatasetSchema(data, { includeEnum: true })
+  const guessedColumns = guessColumnsFromSchema(schema)
+  return {
+    name,
+    public: true,
+    type: DatasetTypes.UserTracks,
+    category: DatasetCategory.Environment,
+    schema,
+    configuration: {
+      configurationUI: {
+        sourceFormat,
+        latitude: guessedColumns.latitude,
+        longitude: guessedColumns.longitude,
+        timestamp: guessedColumns.timestamp,
+        geometryType: 'tracks' as DatasetGeometryType,
+      },
+    } as DatasetConfiguration,
+  }
 }
 
-export type VesselConfigurationProperty = keyof DatasetConfigurationUI | keyof DatasetConfiguration
-type DatasetProperty<P extends VesselConfigurationProperty> = P extends 'geometryType'
-  ? DatasetGeometryType
-  : string
-
-export function getDatasetConfigurationProperty<P extends VesselConfigurationProperty>({
-  dataset,
-  property,
-}: {
-  dataset: Dataset | DatasetMetadata | undefined
-  property: P
-}): DatasetProperty<P> {
-  return (dataset?.configuration?.configurationUI?.[property as keyof DatasetConfigurationUI] ||
-    dataset?.configuration?.[property as keyof DatasetConfiguration]) as DatasetProperty<P>
+export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
+  const schema = getDatasetSchema(data, { includeEnum: true })
+  const isNotGeoStandard = data.type !== 'FeatureCollection'
+  const guessedColumns = guessColumnsFromSchema(schema)
+  return {
+    name,
+    public: true,
+    type: DatasetTypes.UserContext,
+    category: DatasetCategory.Context,
+    schema,
+    configuration: {
+      format: 'geojson',
+      configurationUI: {
+        sourceFormat,
+        ...(isNotGeoStandard && { longitude: guessedColumns.longitude }),
+        ...(isNotGeoStandard && { latitude: guessedColumns.latitude }),
+        timestamp: guessedColumns.timestamp,
+        geometryType: 'points' as DatasetGeometryType,
+      },
+    } as DatasetConfiguration,
+  }
 }
-
-export const getDatasetConfiguration = (
-  dataset: Dataset | DatasetMetadata | undefined
-): DatasetConfiguration & DatasetConfiguration['configurationUI'] => ({
-  ...dataset?.configuration,
-  ...dataset?.configuration?.configurationUI,
-})

@@ -8,10 +8,10 @@ import {
   geoJSONToSegments,
 } from '@globalfishingwatch/data-transforms'
 import { IdentityVessel, Resource, Segment } from '@globalfishingwatch/api-types'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { Bbox } from 'types'
-import { getDatasetConfigurationProperty } from 'features/datasets/upload/datasets-upload.utils'
 
 type FitBoundsProps = {
   hasError: boolean

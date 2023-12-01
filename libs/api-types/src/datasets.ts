@@ -92,7 +92,6 @@ export interface DatasetConfigurationUI {
   latitude?: string
   longitude?: string
   timestamp?: string
-  idProperty?: string
   sourceFormat?: 'csv' | 'geojson' | 'shapefile' | 'kml'
   pointName?: string
   pointSize?: string
@@ -116,12 +115,12 @@ export interface DatasetConfiguration {
   documentation?: DatasetDocumentation
   fields?: string[]
   idProperty?: string
+  valueProperties?: string[]
   propertyToInclude?: string
   min?: number
   max?: number
   intervals?: string[]
   disableInteraction?: boolean
-  valueProperties?: string[]
   apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
   configurationUI?: DatasetConfigurationUI
 }

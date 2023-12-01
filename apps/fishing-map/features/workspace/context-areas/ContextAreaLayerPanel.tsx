@@ -13,7 +13,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectViewport } from 'features/app/app.selectors'
 import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
+import { useAddDataset } from 'features/datasets/datasets.hook'
 import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -168,8 +168,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   }
 
   const isUserLayer = !guestUser && dataset?.ownerId === userId
-
-  useAutoRefreshImportingDataset(dataset, 5000)
 
   const basemapLabelsDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
   if (!dataset && dataview.id !== basemapLabelsDataviewInstance.id) {

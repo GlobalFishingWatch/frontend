@@ -140,7 +140,7 @@ export class LayerComposer {
     const generator = this.generators[finalConfig.type]
     const generatorStyles = this._applyGenericStyle(
       finalConfig,
-      generator.getStyle(finalConfig as any)
+      (generator as any).getStyle(finalConfig as any)
     )
     return generatorStyles
   }
