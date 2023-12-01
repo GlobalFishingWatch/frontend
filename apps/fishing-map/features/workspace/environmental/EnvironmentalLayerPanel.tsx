@@ -8,7 +8,6 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/user.selectors'
-import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
 import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import ActivityFilters, {
@@ -91,7 +90,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
   )
-  useAutoRefreshImportingDataset(dataset)
+
   const isCustomUserLayer = !guestUser && dataset?.ownerId === userId
 
   if (!dataset || dataset.status === 'deleted') {

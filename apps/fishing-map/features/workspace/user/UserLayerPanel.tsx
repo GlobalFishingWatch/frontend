@@ -77,7 +77,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { resource, featuresColoredByField } = useUserLayerTrackResource(dataview)
   const trackError = resource?.status === ResourceStatus.Error
 
-  useAutoRefreshImportingDataset(dataset, 5000)
+  useAutoRefreshImportingDataset(layerActive ? dataset : ({} as Dataset), 5000)
 
   const {
     items,
