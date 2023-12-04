@@ -208,13 +208,6 @@ function NewPointDataset({
             }
             onSelect={(selected) => {
               setDatasetMetadataConfig({ pointSize: selected.id })
-              const pointSizeSchema = datasetMetadata.schema?.[selected.id]
-              if (pointSizeSchema) {
-                setDatasetMetadataConfig({
-                  minPointSize: pointSizeSchema.min,
-                  maxPointSize: pointSizeSchema.max,
-                })
-              }
             }}
             onCleanClick={() => {
               setDatasetMetadataConfig({ pointSize: undefined })
