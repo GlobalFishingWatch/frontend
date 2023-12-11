@@ -256,6 +256,34 @@
     "uploadPublic": "Allow other users to see this dataset when you share a workspace",
     "uploadYourOwn": "Upload your own"
   },
+  "datasetUploadUI": {
+    "datasetDescription": "Dataset description",
+    "datasetName": "Dataset name",
+    "fieldPlaceholder": "Select a field from your dataset",
+    "fieldMultiplePlaceholder": "Select fields from your dataset",
+    "fieldNumericPlaceholder": "Select a numeric field from your dataset",
+    "optionalFields": "Optional fields",
+    "timePeriodTypePlaceholder": "Select a time period type",
+    "points": {
+      "coordinates": "Point coordinates",
+      "filters": "Point filters",
+      "name": "Point name",
+      "size": "Point size",
+      "sizeMax": "Maximum size",
+      "sizeMin": "Minimum size",
+      "time": "Point time"
+    },
+    "tracks": {
+      "filters": "track filters",
+      "name": "Point name",
+      "lineId": "Individual line ids",
+      "segmentId": "Individual segment ids",
+      "segmentTimes": "Track segment times",
+      "size": "Point size",
+      "time": "Track point times"
+    },
+    "segment": ""
+  },
   "dataview": {
     "basemap-labels": {
       "dataWarning": "This platform uses location labels from Google Maps.",

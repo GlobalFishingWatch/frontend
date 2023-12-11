@@ -115,8 +115,6 @@ function NewPointDataset({
         sourceData,
         datasetMetadata
       ) as FeatureCollection<Point>
-      console.log('geojson:', geojson)
-      debugger
       setGeojson(geojson)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -160,17 +158,20 @@ function NewPointDataset({
       <div className={styles.content}>
         <InputText
           value={datasetMetadata?.name}
-          label={t('common.name', 'Name')}
+          label={t('datasetUploadUI.datasetName', 'Dataset Name')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ name: e.target.value })}
         />
         {isCSVFile && (
           <Fragment>
-            <p className={styles.label}>point coordinates</p>
             <div className={styles.evenSelectorsGroup}>
               <NewDatasetField
                 datasetMetadata={datasetMetadata}
                 property="latitude"
+                label={`${t('datasetUploadUI.point.coordinates', 'Point coordinates')} - ${t(
+                  'common.latitude',
+                  'Latitude'
+                )}`}
                 editable={!isEditing}
                 onSelect={(selected) => {
                   setDatasetMetadataConfig({ latitude: selected.id })
@@ -179,6 +180,7 @@ function NewPointDataset({
               <NewDatasetField
                 datasetMetadata={datasetMetadata}
                 property="longitude"
+                label={t('common.longitude', 'Longitude')}
                 editable={!isEditing}
                 onSelect={(selected) => {
                   setDatasetMetadataConfig({ longitude: selected.id })
@@ -190,17 +192,17 @@ function NewPointDataset({
       </div>
       <Collapsable
         className={styles.optional}
-        label={t('dataset.optionalFields', 'Optional fields')}
+        label={t('datasetUploadUI.optionalFields', 'Optional fields')}
       >
         <InputText
           value={datasetMetadata?.description}
-          label={t('dataset.description', 'Dataset description')}
+          label={t('datasetUploadUI.datasetDescription', 'Dataset description')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
         />
         <Select
-          label={t('dataset.pointName', 'point name')}
-          placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+          label={t('datasetUploadUI.points.name', 'Point name')}
+          placeholder={t('datasetUploadUI.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
           direction="top"
           selectedOption={
@@ -220,8 +222,11 @@ function NewPointDataset({
         />
         <div className={styles.evenSelectorsGroup}>
           <Select
-            label={t('dataset.pointSize', 'point size')}
-            placeholder={t('dataset.fieldPlaceholder', 'Select a numeric field from your dataset')}
+            label={t('datasetUploadUI.points.size', 'point size')}
+            placeholder={t(
+              'datasetUploadUI.fieldNumericPlaceholder',
+              'Select a numeric field from your dataset'
+            )}
             options={schemaRangeOptions}
             direction="top"
             selectedOption={
@@ -253,7 +258,7 @@ function NewPointDataset({
                   }) || POINT_SIZES_DEFAULT_RANGE[0]
                 }
                 min={MIN_POINT_SIZE}
-                label={t('dataset.minPointSize', 'Min point size')}
+                label={t('datasetUploadUI.points.sizeMin', 'Minimum size')}
                 className={styles.input}
                 onChange={(e) =>
                   setDatasetMetadataConfig({ minPointSize: parseFloat(e.target.value) })
@@ -261,12 +266,14 @@ function NewPointDataset({
               />
               <InputText
                 type="number"
-                value={getDatasetConfigurationProperty({
-                  dataset: datasetMetadata,
-                  property: 'maxPointSize',
-                })}
+                value={
+                  getDatasetConfigurationProperty({
+                    dataset: datasetMetadata,
+                    property: 'maxPointSize',
+                  }) || POINT_SIZES_DEFAULT_RANGE[1]
+                }
                 max={MAX_POINT_SIZE}
-                label={t('dataset.maxPointSize', 'max point size')}
+                label={t('datasetUploadUI.points.sizeMax', 'Maximum size')}
                 className={styles.input}
                 onChange={(e) =>
                   setDatasetMetadataConfig({ maxPointSize: parseFloat(e.target.value) })
@@ -278,7 +285,10 @@ function NewPointDataset({
         <p className={styles.label}>point time</p>
         <div className={styles.evenSelectorsGroup}>
           <Select
-            placeholder={t('dataset.pointTimePlaceholder', 'Select a time period filter type')}
+            placeholder={t(
+              'datasetUploadUI.timePeriodTypePlaceholder',
+              'Select a time period filter type'
+            )}
             options={POINT_TIME_OPTIONS}
             direction="top"
             selectedOption={
@@ -298,7 +308,7 @@ function NewPointDataset({
             }}
           />
           <Select
-            placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+            placeholder={t('datasetUploadUI.fieldPlaceholder', 'Select a field from your dataset')}
             options={fieldsOptions}
             direction="top"
             disabled={
@@ -324,7 +334,10 @@ function NewPointDataset({
             property: 'pointTimeFilter',
           }) as pointTimeFilter) === 'timerange' && (
             <Select
-              placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+              placeholder={t(
+                'datasetUploadUI.fieldPlaceholder',
+                'Select a field from your dataset'
+              )}
               options={fieldsOptions}
               direction="top"
               selectedOption={
@@ -345,11 +358,11 @@ function NewPointDataset({
           )}
         </div>
         <MultiSelect
-          label={t('dataset.pointFilters', 'point filters')}
+          label={t('datasetUploadUI.points.filters', 'point filters')}
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
-              : t('dataset.fieldPlaceholder', 'Point filters')
+              : t('datasetUploadUI.fieldMultiplePlaceholder', 'Select fields from your dataset')
           }
           direction="top"
           options={filtersFieldsOptions}

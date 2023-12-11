@@ -170,7 +170,7 @@ function NewTrackDataset({
       <div className={styles.content}>
         <InputText
           value={datasetMetadata?.name}
-          label={t('common.name', 'Name')}
+          label={t('datasetUploadUI.datasetName', 'Dataset Name')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ name: e.target.value })}
         />
@@ -179,7 +179,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="latitude"
-              label={t('dataset.latitude', 'latitude')}
+              label={t('common.latitude', 'latitude')}
               editable={!isEditing}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ latitude: selected.id })
@@ -188,7 +188,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="longitude"
-              label={t('dataset.longitude', 'longitude')}
+              label={t('common.longitude', 'longitude')}
               editable={!isEditing}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ longitude: selected.id })
@@ -198,7 +198,7 @@ function NewTrackDataset({
               <NewDatasetField
                 datasetMetadata={datasetMetadata}
                 property="timestamp"
-                label={t('dataset.trackSegmentTimes', 'Track segment times')}
+                label={t('datasetUploadUI.tracks.segmentTimes', 'Track point times')}
                 editable={!isEditing}
                 onSelect={(selected) => {
                   setDatasetMetadataConfig({ timestamp: selected.id })
@@ -210,11 +210,11 @@ function NewTrackDataset({
       </div>
       <Collapsable
         className={styles.optional}
-        label={t('dataset.optionalFields', 'Optional fields')}
+        label={t('datasetUploadUI.optionalFields', 'Optional fields')}
       >
         <InputText
           value={datasetMetadata?.description}
-          label={t('dataset.description', 'Dataset description')}
+          label={t('datasetUploadUI.datasetDescription', 'Dataset description')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
         />
@@ -223,7 +223,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="idProperty"
-              label={t('dataset.trackSegmentId', 'Individual track segment id')}
+              label={t('datasetUploadUI.tracks.segmentId', 'Individual segment id')}
               editable={!isEditing}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ idProperty: selected.id })
@@ -236,11 +236,11 @@ function NewTrackDataset({
           </Fragment>
         )}
         <MultiSelect
-          label={t('dataset.trackSegmentId', 'track filter property')}
+          label={t('datasetUploadUI.tracks.filters', 'Line filters')}
           placeholder={
             fieldsAllowed.length > 0
               ? fieldsAllowed.join(', ')
-              : t('dataset.fieldPlaceholder', 'Select a field from your dataset')
+              : t('datasetUploadUI.fieldMultiplePlaceholder', 'Select fields from your dataset')
           }
           direction="top"
           disabled={
