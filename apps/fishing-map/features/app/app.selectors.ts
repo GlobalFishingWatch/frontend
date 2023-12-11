@@ -40,6 +40,7 @@ import {
   ReportActivityGraph,
   BufferUnit,
   BufferOperation,
+  MapAnnotation,
 } from 'types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
@@ -141,6 +142,13 @@ export const selectSidebarOpen = createSelector(
   [selectWorkspaceStateProperty('sidebarOpen')],
   (sidebarOpen): boolean => {
     return sidebarOpen
+  }
+)
+
+export const selectMapAnnotations = createSelector(
+  [selectWorkspaceStateProperty('mapAnnotations')],
+  (mapAnnotations): MapAnnotation[] => {
+    return mapAnnotations
   }
 )
 

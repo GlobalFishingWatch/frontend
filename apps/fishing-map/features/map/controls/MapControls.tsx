@@ -38,6 +38,9 @@ const MapScreenshot = dynamic(
 )
 const MapSearch = dynamic(() => import(/* webpackChunkName: "MapSearch" */ './MapSearch'))
 const Rulers = dynamic(() => import(/* webpackChunkName: "Rulers" */ 'features/map/rulers/Rulers'))
+const MapAnnotations = dynamic(
+  () => import(/* webpackChunkName: "MapAnnotations" */ 'features/map/annotations/Annotations')
+)
 
 const MapControls = ({
   mapLoading = false,
@@ -182,6 +185,7 @@ const MapControls = ({
           {showExtendedControls && (
             <Fragment>
               <Rulers />
+              <MapAnnotations />
               {showScreenshot && (
                 <IconButton
                   icon="camera"
