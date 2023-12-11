@@ -1,61 +1,42 @@
-import { useCallback, useState, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
-  useMapClick,
-  useMapHover,
   useMapLegend,
   useFeatureState,
-  useSimpleMapHover,
-  InteractionEventCallback,
   useLayerComposer,
   defaultStyleTransformations,
   useDebounce,
   useMemoCompare,
 } from '@globalfishingwatch/react-hooks'
-import { ExtendedStyleMeta, GeneratorType, LayerComposer } from '@globalfishingwatch/layer-composer'
+import { LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
-import { POPUP_CATEGORY_ORDER } from 'data/config'
 import useMapInstance from 'features/map/map-context.hooks'
-import {
-  useClickedEventConnect,
-  useMapHighlightedEvent,
-  parseMapTooltipEvent,
-  useGeneratorsConnect,
-  TooltipEventFeature,
-} from 'features/map/map.hooks'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
+import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { getEventLabel } from 'utils/analytics'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
-import {
-  selectIsMarineManagerLocation,
-  selectIsAnyReportLocation,
-  selectIsWorkspaceLocation,
-} from 'routes/routes.selectors'
+import { selectIsAnyReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import {
+  useMapCursor,
+  useMapMouseClick,
+  useMapMouseHover,
+} from 'features/map/map-interactions.hooks'
+import { selectIsMapInteractionDisabled } from 'features/map/map.selectors'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
-import useRulers from './rulers/rulers.hooks'
-import {
-  useAllMapSourceTilesLoaded,
-  useMapClusterTilesLoaded,
-  useMapSourceTilesLoadedAtom,
-} from './map-sources.hooks'
-import { SliceInteractionEvent } from './map.slice'
+import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
 import MapLegends from './MapLegends'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
@@ -104,13 +85,12 @@ const MapWrapper = () => {
   useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   const map = useMapInstance()
+  const { isMapDrawing } = useMapDrawConnect()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const setMapReady = useSetRecoilState(mapReadyAtom)
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
-  const { isMapDrawing } = useMapDrawConnect()
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
+  const isMapInteractionDisabled = useSelector(selectIsMapInteractionDisabled)
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration
@@ -124,45 +104,7 @@ const MapWrapper = () => {
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
     useClickedEventConnect()
-  const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
   const { cleanFeatureState } = useFeatureState(map)
-  const { rulesCursor, onMapHoverWithRuler, onMapClickWithRuler, rulersEditing } = useRulers()
-
-  const onMapClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
-
-  const clickedCellLayers = useMemo(() => {
-    if (!clickedEvent || !clickedTooltipEvent) return
-
-    const layersByCategory = (clickedTooltipEvent?.features ?? [])
-      .sort(
-        (a, b) =>
-          POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
-      )
-      .reduce(
-        (prev: Record<string, TooltipEventFeature[]>, current) => ({
-          ...prev,
-          [current.category]: [...(prev[current.category] ?? []), current],
-        }),
-        {}
-      )
-
-    return Object.entries(layersByCategory).map(
-      ([featureCategory, features]) =>
-        `${featureCategory}: ${features.map((f) => f.layerId).join(',')}`
-    )
-  }, [clickedEvent, clickedTooltipEvent])
-
-  const currentClickCallback = useMemo(() => {
-    const clickEvent = (event: any) => {
-      trackEvent({
-        category: TrackCategory.EnvironmentalData,
-        action: `Click in grid cell`,
-        label: getEventLabel(clickedCellLayers ?? []),
-      })
-      return rulersEditing ? onMapClickWithRuler(event) : onMapClick(event)
-    }
-    return clickEvent
-  }, [clickedCellLayers, rulersEditing, onMapClickWithRuler, onMapClick])
 
   const onLoadCallback = useCallback(() => {
     setMapReady(true)
@@ -174,34 +116,15 @@ const MapWrapper = () => {
     cancelPendingInteractionRequests()
   }, [cancelPendingInteractionRequests, cleanFeatureState, dispatchClickedEvent])
 
-  const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
-
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
-    null
-  )
-  const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
-  const onMapHover = useMapHover(
-    setHoveredEvent as InteractionEventCallback,
-    setHoveredDebouncedEvent as InteractionEventCallback,
-    map,
-    style?.metadata
-  )
-  const currentMapHoverCallback = useMemo(() => {
-    return rulersEditing ? onMapHoverWithRuler : onMapHover
-  }, [rulersEditing, onMapHoverWithRuler, onMapHover])
-
-  const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
-  useMapHighlightedEvent(hoveredTooltipEvent?.features)
-
-  const resetHoverState = useCallback(() => {
-    setHoveredEvent(null)
-    setHoveredDebouncedEvent(null)
-    cleanFeatureState('hover')
-  }, [cleanFeatureState])
+  const { onMouseMove, resetHoverState, hoveredEvent, hoveredTooltipEvent, hoveredDebouncedEvent } =
+    useMapMouseHover(style)
+  const { onMapClick, clickedTooltipEvent } = useMapMouseClick(style)
 
   const { viewport, onViewportChange } = useViewport()
 
   const { setMapBounds } = useMapBounds()
+  const cursor = useMapCursor()
+
   useEffect(() => {
     setMapBounds()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -216,49 +139,6 @@ const MapWrapper = () => {
   const portalledLegend = !showTimeComparison
 
   const mapLoaded = useMapLoaded()
-  const tilesClusterLoaded = useMapClusterTilesLoaded()
-
-  const getCursor = useCallback(() => {
-    if (isMapDrawing || isMarineManagerLocation) {
-      // updating cursor using css at style.css as the library sets classes depending on the state
-      return undefined
-    } else if (hoveredTooltipEvent) {
-      // Workaround to fix cluster events duplicated, only working for encounters and needs
-      // TODO if wanted to scale it to other layers
-      const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
-      const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
-
-      const clusterFeature = hoveredTooltipEvent.features.find(
-        (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
-      )
-
-      if (clusterFeature) {
-        if (!tilesClusterLoaded) {
-          return 'progress'
-        }
-        const { expansionZoom, lat, lng, lon } = clusterFeature.properties
-        const longitude = lng || lon
-        return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
-      }
-      const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
-        (f) => f.category === DataviewCategory.Vessels
-      )
-      if (vesselFeatureEvents.length > 1) {
-        return 'grab'
-      }
-      return 'pointer'
-    } else if (map?.isMoving()) {
-      return 'grabbing'
-    }
-    return 'grab'
-  }, [
-    isMapDrawing,
-    isMarineManagerLocation,
-    hoveredTooltipEvent,
-    map,
-    dataviews,
-    tilesClusterLoaded,
-  ])
 
   useEffect(() => {
     if (map) {
@@ -270,17 +150,13 @@ const MapWrapper = () => {
   const mapLoading = !mapLoaded || layerComposerLoading || !allSourcesLoaded
   const debouncedMapLoading = useDebounce(mapLoading, 300)
 
-  const onMouseMove: any = useMemo(() => {
-    return isMapDrawing ? onSimpleMapHover : currentMapHoverCallback
-  }, [currentMapHoverCallback, isMapDrawing, onSimpleMapHover])
-
   const styleInteractiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
   const interactiveLayerIds = useMemo(() => {
-    if (rulersEditing || isMapDrawing) {
+    if (isMapInteractionDisabled) {
       return undefined
     }
     return styleInteractiveLayerIds
-  }, [isMapDrawing, rulersEditing, styleInteractiveLayerIds])
+  }, [isMapInteractionDisabled, styleInteractiveLayerIds])
 
   return (
     <div className={styles.container}>
@@ -299,9 +175,9 @@ const MapWrapper = () => {
           mapStyle={style as MapboxStyle}
           transformRequest={transformRequest}
           onResize={setMapBounds}
-          cursor={rulersEditing ? rulesCursor : getCursor()}
+          cursor={cursor}
           interactiveLayerIds={interactiveLayerIds}
-          onClick={isMapDrawing || isMarineManagerLocation ? undefined : currentClickCallback}
+          onClick={onMapClick}
           onMouseEnter={onMouseMove}
           onMouseMove={onMouseMove}
           onLoad={onLoadCallback}

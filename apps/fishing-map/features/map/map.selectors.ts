@@ -24,7 +24,7 @@ import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces
 import { ResourcesState } from 'features/resources/resources.slice'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
-import { selectRulers } from 'features/map/rulers/rulers.slice'
+import { selectEditing, selectRulers } from 'features/map/rulers/rulers.slice'
 import {
   selectHighlightedTime,
   selectHighlightedEvents,
@@ -39,6 +39,7 @@ import {
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
   selectMapDrawingEditId,
+  selectIsMapDrawing,
 } from 'routes/routes.selectors'
 import {
   selectShowTimeComparison,
@@ -50,6 +51,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectIsMapAnnotating } from 'features/map/annotations/annotations.slice'
 import {
   PREVIEW_BUFFER_GENERATOR_ID,
   REPORT_BUFFER_GENERATOR_ID,
@@ -420,5 +422,12 @@ export const selectDrawEditDataset = createSelector(
   [selectAllDatasets, selectMapDrawingEditId],
   (datasets, datasetId) => {
     return datasets.find((dataset) => dataset.id === datasetId)
+  }
+)
+
+export const selectIsMapInteractionDisabled = createSelector(
+  [selectEditing, selectIsMapDrawing, selectIsMapAnnotating],
+  (rulersEditing, isMapDrawing, isMapAnnotating) => {
+    return rulersEditing || isMapDrawing || isMapAnnotating
   }
 )

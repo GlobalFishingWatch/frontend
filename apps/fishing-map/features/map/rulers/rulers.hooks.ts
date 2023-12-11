@@ -7,7 +7,6 @@ import { editRuler, moveCurrentRuler, selectEditing } from './rulers.slice'
 const useRulers = () => {
   const rulersEditing = useSelector(selectEditing)
   const dispatch = useAppDispatch()
-  const rulesCursor = 'crosshair'
   const onMapHoverWithRuler = useCallback(
     (event: MapLayerMouseEvent) => {
       dispatch(
@@ -32,7 +31,7 @@ const useRulers = () => {
     [dispatch]
   )
 
-  return { rulesCursor, onMapHoverWithRuler, onMapClickWithRuler, rulersEditing }
+  return { onMapHoverWithRuler, onMapClickWithRuler, rulersEditing }
 }
 
 export default useRulers
