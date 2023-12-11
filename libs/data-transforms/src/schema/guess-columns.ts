@@ -42,14 +42,13 @@ export const guessColumnsFromSchema = (schema: Dataset['schema']) => {
   if (!columns) return {}
   const guessedColumns = GUESS_COLUMN_NAMES.map(([columnToGuess, candidates]) => {
     const exactGuess = columns?.find((column) => candidates.includes(column))
-
-    let approximateGuess
-    if (!exactGuess) {
-      approximateGuess = columns?.find((column) =>
-        candidates.find((candidate) => new RegExp(candidate as string).test(column))
+    const longEnoughCandidates = candidates.filter((c) => c.length >= 3)
+    const approximateGuess =
+      !exactGuess &&
+      columns?.find((column) =>
+        longEnoughCandidates.find((candidate) => new RegExp(candidate as string).test(column))
       )
-    }
-    return [columnToGuess, exactGuess || approximateGuess]
+    return [columnToGuess, exactGuess || approximateGuess || null]
   })
 
   return Object.fromEntries(guessedColumns)
