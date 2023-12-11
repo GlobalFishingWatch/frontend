@@ -58,6 +58,18 @@ function NewTrackDataset({
     dataset: datasetMetadata,
     property: 'idProperty',
   })
+  const latitudeProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'latitude',
+  })
+  const longitudeProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'longitude',
+  })
+  const timestampProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'timestamp',
+  })
 
   const handleRawData = useCallback(
     async (file: File) => {
@@ -92,7 +104,7 @@ function NewTrackDataset({
   }, [dataset, file])
 
   useEffect(() => {
-    if (idProperty && datasetMetadata && sourceData) {
+    if (latitudeProperty && longitudeProperty && idProperty && timestampProperty && sourceData) {
       const geojson = getTrackFromList(sourceData, datasetMetadata)
       setGeojson(geojson)
       if (!geojson.features.some((f) => f.geometry.coordinates?.length >= 2)) {
@@ -104,7 +116,7 @@ function NewTrackDataset({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idProperty])
+  }, [idProperty, latitudeProperty, longitudeProperty, timestampProperty])
 
   const onConfirmClick = useCallback(async () => {
     let error = ''

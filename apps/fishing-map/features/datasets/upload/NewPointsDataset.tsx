@@ -63,6 +63,19 @@ function NewPointDataset({
   const fileType = getFileType(file)
   const isCSVFile = fileType === 'csv' || sourceFormat === 'csv'
 
+  const latitudeProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'latitude',
+  })
+  const longitudeProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'longitude',
+  })
+  const timestampProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'timestamp',
+  })
+
   const handleRawData = useCallback(
     async (file: File) => {
       const data = await getDatasetParsed(file)
@@ -95,6 +108,19 @@ function NewPointDataset({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataset, file])
+
+  useEffect(() => {
+    if (latitudeProperty && longitudeProperty && timestampProperty && sourceData) {
+      const geojson = getGeojsonFromPointsList(
+        sourceData,
+        datasetMetadata
+      ) as FeatureCollection<Point>
+      console.log('geojson:', geojson)
+      debugger
+      setGeojson(geojson)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [latitudeProperty, longitudeProperty, timestampProperty])
 
   const onConfirmClick = useCallback(async () => {
     let error = ''
