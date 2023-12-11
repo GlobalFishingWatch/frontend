@@ -7,7 +7,8 @@ import { editRuler, moveCurrentRuler, selectEditing } from './rulers.slice'
 const useRulers = () => {
   const rulersEditing = useSelector(selectEditing)
   const dispatch = useAppDispatch()
-  const onMapHoverWithRuler = useCallback(
+
+  const onRulerMapHover = useCallback(
     (event: MapLayerMouseEvent) => {
       dispatch(
         moveCurrentRuler({
@@ -19,7 +20,7 @@ const useRulers = () => {
     [dispatch]
   )
 
-  const onMapClickWithRuler = useCallback(
+  const onRulerMapClick = useCallback(
     (event: MapLayerMouseEvent) => {
       dispatch(
         editRuler({
@@ -31,7 +32,7 @@ const useRulers = () => {
     [dispatch]
   )
 
-  return { onMapHoverWithRuler, onMapClickWithRuler, rulersEditing }
+  return { onRulerMapHover, onRulerMapClick, rulersEditing }
 }
 
 export default useRulers

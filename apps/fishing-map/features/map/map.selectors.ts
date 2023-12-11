@@ -6,6 +6,7 @@ import {
   GlGeneratorConfig,
   Group,
   HeatmapAnimatedMode,
+  MapAnnotation,
   PolygonsGeneratorConfig,
   Ruler,
 } from '@globalfishingwatch/layer-composer'
@@ -30,7 +31,11 @@ import {
   selectHighlightedEvents,
   TimeRange,
 } from 'features/timebar/timebar.slice'
-import { selectBivariateDataviews, selectTimeRange } from 'features/app/app.selectors'
+import {
+  selectBivariateDataviews,
+  selectMapAnnotations,
+  selectTimeRange,
+} from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
 import {
   selectIsMarineManagerLocation,
@@ -63,6 +68,7 @@ type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
   resources: ResourcesState
   rulers: Ruler[]
+  annotations?: MapAnnotation[]
   debugOptions: DebugOptions
   timeRange: TimeRange
   highlightedTime?: TimeRange
@@ -74,6 +80,7 @@ const getGeneratorsConfig = ({
   dataviews = [],
   resources,
   rulers,
+  annotations = [],
   debugOptions,
   timeRange,
   highlightedTime,
@@ -129,16 +136,25 @@ const getGeneratorsConfig = ({
       })
     }
 
+    const finalGenerators = [...generatorsConfig.reverse()]
     // Avoid entering rulers sources and layers when no active rules
     if (rulers?.length) {
-      const rulersGeneratorConfig = {
+      const rulersGeneratorConfig: AnyGeneratorConfig = {
         type: GeneratorType.Rulers,
         id: 'rulers',
         data: rulers,
       }
-      return [...generatorsConfig.reverse(), rulersGeneratorConfig] as AnyGeneratorConfig[]
+      finalGenerators.push(rulersGeneratorConfig)
     }
-    return generatorsConfig.reverse()
+    if (annotations?.length) {
+      const annotationsGeneratorConfig: AnyGeneratorConfig = {
+        type: GeneratorType.Annotation,
+        id: 'annotations',
+        data: annotations,
+      }
+      finalGenerators.push(annotationsGeneratorConfig)
+    }
+    return finalGenerators
   } catch (e) {
     console.error(e)
     return []
@@ -150,6 +166,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectDataviewInstancesResolvedVisible,
     selectVisibleResources,
     selectRulers,
+    selectMapAnnotations,
     selectDebugOptions,
     selectHighlightedTime,
     selectHighlightedEvents,
@@ -161,6 +178,7 @@ const selectMapGeneratorsConfig = createSelector(
     dataviews = [],
     resources,
     rulers,
+    annotations,
     debugOptions,
     highlightedTime,
     highlightedEvents,
@@ -172,6 +190,7 @@ const selectMapGeneratorsConfig = createSelector(
       dataviews,
       resources,
       rulers,
+      annotations,
       debugOptions,
       highlightedTime,
       highlightedEvents,
@@ -188,6 +207,7 @@ const selectStaticGeneratorsConfig = createSelector(
     selectDataviewInstancesResolvedVisible,
     selectVisibleResources,
     selectRulers,
+    selectMapAnnotations,
     selectDebugOptions,
     selectBivariateDataviews,
     selectShowTimeComparison,
@@ -197,6 +217,7 @@ const selectStaticGeneratorsConfig = createSelector(
     dataviews = [],
     resources,
     rulers,
+    annotations,
     debugOptions,
     bivariateDataviews,
     showTimeComparison,
@@ -207,6 +228,7 @@ const selectStaticGeneratorsConfig = createSelector(
       dataviews,
       resources,
       rulers,
+      annotations,
       debugOptions,
       bivariateDataviews,
       showTimeComparison,

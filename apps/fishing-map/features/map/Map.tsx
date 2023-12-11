@@ -34,6 +34,7 @@ import {
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
 import { selectIsMapInteractionDisabled } from 'features/map/map.selectors'
+import MapAnnotations from 'features/map/annotations/Annotations'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
@@ -100,6 +101,7 @@ const MapWrapper = () => {
     defaultStyleTransformations,
     layerComposer
   )
+
   const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -200,6 +202,7 @@ const MapWrapper = () => {
               <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
             )}
           <MapInfo center={hoveredEvent} />
+          <MapAnnotations />
           {isMapDrawing && <MapDraw />}
           {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
         </Map>

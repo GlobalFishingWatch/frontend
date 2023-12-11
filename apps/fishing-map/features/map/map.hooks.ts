@@ -40,6 +40,7 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
+import useMapAnnotations from 'features/map/annotations/annotations.hooks'
 import { selectDefaultMapGeneratorsConfig } from './map.selectors'
 import {
   WORKSPACES_POINTS_TYPE,
@@ -138,6 +139,7 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
+  const { setMapAnnotation } = useMapAnnotations()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
@@ -157,6 +159,7 @@ export const useClickedEventConnect = () => {
       dispatch(setClickedEvent(null))
       return
     }
+
     // Used on workspaces-list or user panel to go to the workspace detail page
     if (locationType === USER || locationType === WORKSPACES_LIST) {
       const workspace = event?.features?.find(
@@ -204,6 +207,14 @@ export const useClickedEventConnect = () => {
         }
         return
       }
+    }
+
+    const annotatedFeature = event?.features?.find(
+      (f) => f.generatorType === GeneratorType.Annotation
+    )
+    if (annotatedFeature?.properties?.id) {
+      setMapAnnotation(annotatedFeature.properties)
+      return
     }
 
     // Cancel all pending promises

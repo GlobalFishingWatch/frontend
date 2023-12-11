@@ -1,27 +1,77 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
+import { MapAnnotation } from '@globalfishingwatch/layer-composer'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectIsMapAnnotating, setMapAnnotationPosition } from './annotations.slice'
+import { selectMapAnnotations } from 'features/app/app.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { resetMapAnnotation, selectIsMapAnnotating, setMapAnnotation } from './annotations.slice'
 
 const useMapAnnotations = () => {
-  const isMapAnnotating = useSelector(selectIsMapAnnotating)
   const dispatch = useAppDispatch()
-  const rulesCursor = 'crosshair'
+  const mapAnnotations = useSelector(selectMapAnnotations)
+  const isMapAnnotating = useSelector(selectIsMapAnnotating)
+  const { dispatchQueryParams } = useLocationConnect()
 
-  const onMapClickWithAnnotation = useCallback(
-    (event: MapLayerMouseEvent) => {
-      dispatch(
-        setMapAnnotationPosition({
-          longitude: event.lngLat.lng,
-          latitude: event.lngLat.lat,
-        })
-      )
+  const cleanMapAnnotations = useCallback(() => {
+    dispatchQueryParams({ mapAnnotations: undefined })
+  }, [dispatchQueryParams])
+
+  const dispatchResetMapAnnotation = useCallback(() => {
+    dispatch(resetMapAnnotation())
+  }, [dispatch])
+
+  const dispatchSetMapAnnotation = useCallback(
+    (annotation: Partial<MapAnnotation>) => {
+      dispatch(setMapAnnotation(annotation))
     },
     [dispatch]
   )
 
-  return { rulesCursor, onMapClickWithAnnotation, isMapAnnotating }
+  const onAnnotationMapClick = useCallback(
+    (event: MapLayerMouseEvent) => {
+      dispatchSetMapAnnotation({
+        lon: event.lngLat.lng,
+        lat: event.lngLat.lat,
+      })
+    },
+    [dispatchSetMapAnnotation]
+  )
+
+  const upsertMapAnnotation = useCallback(
+    (annotation: MapAnnotation) => {
+      if (mapAnnotations?.length && mapAnnotations?.some((a) => a.id === annotation.id)) {
+        const annotations = mapAnnotations.map((a) => {
+          return a.id === annotation.id ? { ...a, ...annotation } : a
+        })
+        dispatchQueryParams({ mapAnnotations: annotations })
+      } else {
+        dispatchQueryParams({ mapAnnotations: [annotation] })
+      }
+    },
+    [dispatchQueryParams, mapAnnotations]
+  )
+
+  const deleteMapAnnotation = useCallback(
+    (id: MapAnnotation['id']) => {
+      const annotations = mapAnnotations.filter((a) => {
+        return a.id !== id
+      })
+      dispatchQueryParams({ mapAnnotations: annotations })
+    },
+    [dispatchQueryParams, mapAnnotations]
+  )
+
+  return {
+    mapAnnotations,
+    upsertMapAnnotation,
+    deleteMapAnnotation,
+    onAnnotationMapClick,
+    cleanMapAnnotations,
+    resetMapAnnotation: dispatchResetMapAnnotation,
+    setMapAnnotation: dispatchSetMapAnnotation,
+    isMapAnnotating,
+  }
 }
 
 export default useMapAnnotations

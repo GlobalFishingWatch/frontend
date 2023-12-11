@@ -32,7 +32,7 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
   const map = useMapInstance()
   const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating } = useMapAnnotations()
-  const { onMapHoverWithRuler, rulersEditing } = useRulers()
+  const { onRulerMapHover, rulersEditing } = useRulers()
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const { cleanFeatureState } = useFeatureState(map)
@@ -50,13 +50,18 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
     style?.metadata
   )
 
-  const currentMapHoverCallback = useMemo(() => {
-    return rulersEditing ? onMapHoverWithRuler : onMapHover
-  }, [rulersEditing, onMapHoverWithRuler, onMapHover])
-
-  const onMouseMove: any = useMemo(() => {
-    return isMapDrawing || isMapAnnotating ? onSimpleMapHover : currentMapHoverCallback
-  }, [currentMapHoverCallback, isMapAnnotating, isMapDrawing, onSimpleMapHover])
+  const onMouseMove: any = useCallback(
+    (event: any) => {
+      if (isMapDrawing || isMapAnnotating) {
+        return onSimpleMapHover(event)
+      }
+      if (rulersEditing) {
+        return onRulerMapHover(event)
+      }
+      return onMapHover(event)
+    },
+    [isMapAnnotating, isMapDrawing, onMapHover, onRulerMapHover, onSimpleMapHover, rulersEditing]
+  )
 
   const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
   useMapHighlightedEvent(hoveredTooltipEvent?.features)
@@ -79,10 +84,11 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
 export const useMapMouseClick = (style?: ExtendedStyle) => {
   const map = useMapInstance()
   const { isMapDrawing } = useMapDrawConnect()
+  const { isMapAnnotating, onAnnotationMapClick } = useMapAnnotations()
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const { onMapClickWithRuler, rulersEditing } = useRulers()
+  const { onRulerMapClick, rulersEditing } = useRulers()
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
 
   const onClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
@@ -111,24 +117,35 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
     )
   }, [clickedEvent, clickedTooltipEvent])
 
-  const currentClickCallback = useMemo(() => {
-    const clickEvent = (event: any) => {
+  const onMapClick = useCallback(
+    (event: any) => {
       trackEvent({
         category: TrackCategory.EnvironmentalData,
         action: `Click in grid cell`,
         label: getEventLabel(clickedCellLayers ?? []),
       })
-      return rulersEditing ? onMapClickWithRuler(event) : onClick(event)
-    }
-    return clickEvent
-  }, [clickedCellLayers, rulersEditing, onMapClickWithRuler, onClick])
-
-  const onMapClick = useMemo(() => {
-    if (isMapDrawing || isMarineManagerLocation) {
-      return undefined
-    }
-    return currentClickCallback
-  }, [currentClickCallback, isMapDrawing, isMarineManagerLocation])
+      if (isMapDrawing || isMarineManagerLocation) {
+        return undefined
+      }
+      if (rulersEditing) {
+        return onRulerMapClick(event)
+      }
+      if (isMapAnnotating) {
+        return onAnnotationMapClick(event)
+      }
+      onClick(event)
+    },
+    [
+      clickedCellLayers,
+      isMapAnnotating,
+      isMapDrawing,
+      isMarineManagerLocation,
+      onAnnotationMapClick,
+      onClick,
+      onRulerMapClick,
+      rulersEditing,
+    ]
+  )
 
   return { onMapClick, clickedTooltipEvent }
 }

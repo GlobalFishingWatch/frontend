@@ -1,49 +1,36 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
+import { MapAnnotation } from '@globalfishingwatch/layer-composer'
 
 type MapAnnotationsSlice = {
   isAnnotating: boolean
-  position: [number, number] | null
-  content: string
+  annotation: MapAnnotation | null
 }
 
 const initialState: MapAnnotationsSlice = {
   isAnnotating: false,
-  position: null,
-  content: '',
+  annotation: null,
 }
 
 const slice = createSlice({
   name: 'mapAnnotations',
   initialState,
   reducers: {
-    setMapAnnotationPosition: (
-      state,
-      action: PayloadAction<{ latitude: number; longitude: number }>
-    ) => {
-      state.position = [action.payload.longitude, action.payload.latitude]
-    },
-    setMapAnnotationContent: (state, action: PayloadAction<{ content: string }>) => {
-      state.content = action.payload.content
+    setMapAnnotation: (state, action: PayloadAction<Partial<MapAnnotation>>) => {
+      state.annotation = { ...state.annotation, ...(action.payload as MapAnnotation) }
     },
     toggleMapAnnotating: (state) => {
       state.isAnnotating = !state.isAnnotating
     },
-    resetMapAnnotations: (state) => {
+    resetMapAnnotation: (state) => {
       return initialState
     },
   },
 })
 
-export const {
-  setMapAnnotationPosition,
-  setMapAnnotationContent,
-  toggleMapAnnotating,
-  resetMapAnnotations,
-} = slice.actions
+export const { setMapAnnotation, toggleMapAnnotating, resetMapAnnotation } = slice.actions
 
 export const selectIsMapAnnotating = (state: RootState) => state.annotations.isAnnotating
-export const selectMapAnnotationsPosition = (state: RootState) => state.annotations.position
-export const selectMapAnnotationsContent = (state: RootState) => state.annotations.content
+export const selectMapAnnotation = (state: RootState) => state.annotations.annotation
 
 export default slice.reducer

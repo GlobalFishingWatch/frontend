@@ -1,65 +1,77 @@
-import { useCallback } from 'react'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { useSelector, batch } from 'react-redux'
+import { Popup } from 'react-map-gl'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { selectMapAnnotations } from 'features/app/app.selectors'
-import useMapInstance from '../map-context.hooks'
 import {
-  resetMapAnnotations,
-  selectIsMapAnnotating,
-  toggleMapAnnotating,
-} from './annotations.slice'
+  Button,
+  ColorBar,
+  IconButton,
+  InputText,
+  LineColorBarOptions,
+} from '@globalfishingwatch/ui-components'
+import useMapAnnotations from 'features/map/annotations/annotations.hooks'
+import { selectMapAnnotation } from './annotations.slice'
 import styles from './Annotations.module.css'
+
+const colors = [{ id: 'white', value: '#ffffff' }, ...LineColorBarOptions]
 
 const MapAnnotations = () => {
   const { t } = useTranslation()
-  const isAnnotating = useSelector(selectIsMapAnnotating)
-  const { isMapDrawing } = useMapDrawConnect()
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
-  const mapAnnotations = useSelector(selectMapAnnotations)
+  const mapAnnotation = useSelector(selectMapAnnotation)
+  const { resetMapAnnotation, deleteMapAnnotation, setMapAnnotation, upsertMapAnnotation } =
+    useMapAnnotations()
 
-  const dispatch = useAppDispatch()
-  const onToggleClick = useCallback(() => {
-    dispatch(toggleMapAnnotating())
-    if (isAnnotating) {
-      cleanFeatureState('click')
-    }
-  }, [cleanFeatureState, dispatch, isAnnotating])
+  if (!mapAnnotation) {
+    return null
+  }
 
-  const onRemoveClick = useCallback(() => {
-    batch(() => {
-      dispatch(resetMapAnnotations())
+  const onDeleteClick = () => {
+    deleteMapAnnotation(mapAnnotation.id)
+    resetMapAnnotation()
+  }
+
+  const onConfirmClick = () => {
+    upsertMapAnnotation({
+      ...mapAnnotation,
+      id: mapAnnotation.id || Date.now(),
     })
-  }, [dispatch])
+    resetMapAnnotation()
+  }
 
   return (
-    <div className={styles.container}>
-      <IconButton
-        icon="edit"
-        disabled={isMapDrawing}
-        type="map-tool"
-        tooltip={isAnnotating ? '' : t('map.rulers_add', 'Add rulers')}
-        className={cx({ [styles.active]: isAnnotating })}
-        onClick={onToggleClick}
-      >
-        {mapAnnotations?.length > 0 && (
-          <div className={cx(styles.num)}>{mapAnnotations.length}</div>
-        )}
-      </IconButton>
-      {mapAnnotations?.length > 0 && (
-        <IconButton
-          icon="close"
-          type="map-tool"
-          tooltip={t('map.rulers_remove', 'Remove all rulers')}
-          className={styles.remove}
-          onClick={onRemoveClick}
-        />
-      )}
-    </div>
+    <Popup
+      latitude={mapAnnotation.lat as number}
+      longitude={mapAnnotation.lon as number}
+      closeButton={true}
+      closeOnClick={false}
+      onClose={resetMapAnnotation}
+      maxWidth="330px"
+      className={cx(styles.popup)}
+    >
+      <div className={styles.popupContent}>
+        <div className={styles.flex}>
+          <InputText
+            value={mapAnnotation.label}
+            onChange={(e) => setMapAnnotation({ label: e.target.value })}
+          />
+          <ColorBar
+            colorBarOptions={colors}
+            selectedColor={mapAnnotation.color}
+            onColorClick={(color) => {
+              setMapAnnotation({ color: color.value })
+            }}
+          />
+        </div>
+        <div className={styles.popupButtons}>
+          {mapAnnotation.id && (
+            <IconButton icon="delete" type="warning-border" onClick={onDeleteClick} />
+          )}
+          <Button onClick={onConfirmClick} className={styles.confirmBtn}>
+            {t('common.confirm', 'Confirm')}
+          </Button>
+        </div>
+      </div>
+    </Popup>
   )
 }
 
