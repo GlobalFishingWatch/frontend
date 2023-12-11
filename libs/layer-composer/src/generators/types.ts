@@ -12,6 +12,7 @@ import { Interval } from './heatmap/types'
 export type LayerVisibility = 'visible' | 'none'
 
 export enum GeneratorType {
+  Annotation = 'ANNOTATION',
   Background = 'BACKGROUND',
   Basemap = 'BASEMAP',
   BasemapLabels = 'BASEMAP_LABELS',
@@ -52,7 +53,7 @@ export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
   totalHeatmapAnimatedGenerators?: number
 }
 
-export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
+export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | MapAnnotation[] | null
 
 export interface GeneratorLegend {
   type?: string
@@ -392,6 +393,17 @@ export interface RulersGeneratorConfig extends GeneratorConfig {
   data: Ruler[]
 }
 
+/**
+ * Renders map text annotations
+ */
+export interface AnnotationsGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.Annotation
+  /**
+   * An array defining rulers with start and end coordinates, and an isNew flag
+   */
+  data: MapAnnotation[]
+}
+
 export interface HeatmapGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.Heatmap
   // Types needed but already in GlobalGeneratorConfig
@@ -438,6 +450,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
 }
 
 export type AnyGeneratorConfig =
+  | AnnotationsGeneratorConfig
   | BackgroundGeneratorConfig
   | BasemapGeneratorConfig
   | BasemapLabelsGeneratorConfig
@@ -516,6 +529,14 @@ export type Ruler = {
     longitude: number
   }
   isNew?: boolean
+}
+
+export type MapAnnotation = {
+  id: number
+  lon: number | string
+  lat: number | string
+  label: string
+  color?: string
 }
 
 export type HeatmapAnimatedInteractionType = 'activity' | 'detections'
