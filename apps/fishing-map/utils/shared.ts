@@ -13,13 +13,13 @@ export const toFixed = (value: number, decimals = 2) => {
   return (Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)).toFixed(decimals)
 }
 
-export type Field = { id: string | number; label: string | number }
+export type Field = { id: string | number; label: string | number | JSX.Element }
 
 export const sortStrings = (a: string, b: string) => a.localeCompare(b)
 
 export const sortFields = (a: Field, b: Field) => {
-  const aLabel = a.label || a.id
-  const bLabel = b.label || b.id
+  const aLabel = (a.label && typeof a.label === 'string') || a.id
+  const bLabel = (b.label && typeof b.label === 'string') || b.id
 
   if (!aLabel && !bLabel) return 0
   if (!aLabel) return -1
