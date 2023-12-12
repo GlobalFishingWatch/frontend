@@ -159,27 +159,28 @@ function NewTrackDataset({
   return (
     <div className={styles.container}>
       {!isEditing && (
-        <div className={styles.file}>
-          <FileDropzone
-            label={file?.name}
-            fileTypes={[fileType as FileType]}
-            onFileLoaded={onFileUpdate}
-          />
-        </div>
+        <FileDropzone
+          label={file?.name}
+          fileTypes={[fileType as FileType]}
+          onFileLoaded={onFileUpdate}
+        />
       )}
       <div className={styles.content}>
         <InputText
           value={datasetMetadata?.name}
-          label={t('datasetUploadUI.datasetName', 'Dataset Name')}
+          label={t('datasetUpload.datasetName', 'Dataset Name')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ name: e.target.value })}
         />
         {isCSVFile && (
-          <div className={styles.requiredDataContainer}>
+          <div className={styles.row}>
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="latitude"
-              label={t('common.latitude', 'latitude')}
+              label={`${t('datasetUpload.point.coordinates', 'Point coordinates')} - ${t(
+                'common.latitude',
+                'Latitude'
+              )}`}
               editable={!isEditing}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ latitude: selected.id })
@@ -194,27 +195,25 @@ function NewTrackDataset({
                 setDatasetMetadataConfig({ longitude: selected.id })
               }}
             />
-            <div className={styles.timestampSelectWrapper}>
-              <NewDatasetField
-                datasetMetadata={datasetMetadata}
-                property="timestamp"
-                label={t('datasetUploadUI.tracks.segmentTimes', 'Track point times')}
-                editable={!isEditing}
-                onSelect={(selected) => {
-                  setDatasetMetadataConfig({ timestamp: selected.id })
-                }}
-              />
-            </div>
+            <NewDatasetField
+              datasetMetadata={datasetMetadata}
+              property="timestamp"
+              label={t('datasetUpload.tracks.segmentTimes', 'Track point times')}
+              editable={!isEditing}
+              onSelect={(selected) => {
+                setDatasetMetadataConfig({ timestamp: selected.id })
+              }}
+            />
           </div>
         )}
       </div>
       <Collapsable
         className={styles.optional}
-        label={t('datasetUploadUI.optionalFields', 'Optional fields')}
+        label={t('datasetUpload.optionalFields', 'Optional fields')}
       >
         <InputText
           value={datasetMetadata?.description}
-          label={t('datasetUploadUI.datasetDescription', 'Dataset description')}
+          label={t('datasetUpload.datasetDescription', 'Dataset description')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
         />
@@ -223,7 +222,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="idProperty"
-              label={t('datasetUploadUI.tracks.segmentId', 'Individual segment id')}
+              label={t('datasetUpload.tracks.segmentId', 'Individual segment id')}
               editable={!isEditing}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ idProperty: selected.id })
@@ -236,11 +235,11 @@ function NewTrackDataset({
           </Fragment>
         )}
         <MultiSelect
-          label={t('datasetUploadUI.tracks.filters', 'Line filters')}
+          label={t('datasetUpload.tracks.filters', 'Line filters')}
           placeholder={
             fieldsAllowed.length > 0
               ? fieldsAllowed.join(', ')
-              : t('datasetUploadUI.fieldMultiplePlaceholder', 'Select fields from your dataset')
+              : t('datasetUpload.fieldMultiplePlaceholder', 'Select fields from your dataset')
           }
           direction="top"
           disabled={
@@ -259,18 +258,18 @@ function NewTrackDataset({
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
         />
+        <SwitchRow
+          className={styles.saveAsPublic}
+          label={t(
+            'dataset.uploadPublic',
+            'Allow other users to see this dataset when you share a workspace'
+          )}
+          // disabled={!!mapDrawEditDataset}
+          active={isPublic}
+          disabled={isEditing}
+          onClick={() => setDatasetMetadata({ public: !isPublic })}
+        />
       </Collapsable>
-      <SwitchRow
-        className={styles.saveAsPublic}
-        label={t(
-          'dataset.uploadPublic',
-          'Allow other users to see this dataset when you share a workspace'
-        )}
-        // disabled={!!mapDrawEditDataset}
-        active={isPublic}
-        disabled={isEditing}
-        onClick={() => setDatasetMetadata({ public: !isPublic })}
-      />
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}

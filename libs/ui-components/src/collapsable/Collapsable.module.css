@@ -3,8 +3,9 @@
 }
 
 .summary .icon {
-  background-color: white;
   z-index: 1;
+  color: var(--color-secondary-blue);
+  background-color: white;
 }
 
 .details:not([open]) .summary .icon {

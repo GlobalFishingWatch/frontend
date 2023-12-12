@@ -13,6 +13,7 @@ type NewDatasetFieldProps = {
   property: VesselConfigurationProperty
   editable: boolean
   label?: string
+  placeholder?: string
   onSelect: SelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
 }
@@ -22,6 +23,7 @@ export function NewDatasetField({
   property,
   editable,
   label,
+  placeholder,
   onSelect,
   onCleanClick,
 }: NewDatasetFieldProps) {
@@ -37,7 +39,9 @@ export function NewDatasetField({
     return (
       <Select
         label={label}
-        placeholder={t('dataset.fieldPlaceholder', 'Select a field from your dataset')}
+        placeholder={
+          placeholder || t('dataset.fieldPlaceholder', 'Select a field from your dataset')
+        }
         options={options}
         selectedOption={
           getSelectedOption(
@@ -50,6 +54,7 @@ export function NewDatasetField({
         }
         onSelect={onSelect}
         onCleanClick={onCleanClick}
+        className={styles.input}
       />
     )
   }
