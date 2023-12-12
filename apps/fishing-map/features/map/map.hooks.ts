@@ -370,7 +370,7 @@ export const parseMapTooltipFeatures = (
   temporalgridDataviews?: UrlDataviewInstance<GeneratorType>[]
 ): TooltipEventFeature[] => {
   const tooltipEventFeatures: TooltipEventFeature[] = features.flatMap((feature) => {
-    const { temporalgrid, generatorId } = feature
+    const { temporalgrid, generatorId, generatorType } = feature
     const baseFeature = {
       source: feature.source,
       sourceLayer: feature.sourceLayer,
@@ -405,7 +405,8 @@ export const parseMapTooltipFeatures = (
     }
 
     if (!dataview) {
-      // Not needed to create a dataview just for the workspaces list interaction
+      // There are three use cases when there is no dataview and we want interaction
+      // 1. Wworkspaces list
       if (generatorId && (generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
           ...baseFeature,
@@ -415,7 +416,9 @@ export const parseMapTooltipFeatures = (
           category: DataviewCategory.Context,
         }
         return tooltipWorkspaceFeature
-      } else if (generatorId === REPORT_BUFFER_GENERATOR_ID) {
+      }
+      // 2. Report buffer
+      else if (generatorId === REPORT_BUFFER_GENERATOR_ID) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
           ...baseFeature,
           category: DataviewCategory.Context,
@@ -424,6 +427,17 @@ export const parseMapTooltipFeatures = (
           visible: true,
         }
         return tooltipWorkspaceFeature
+      }
+      // 3. Annotations
+      else if (generatorType === GeneratorType.Annotation) {
+        const tooltipAnnotationFeature: TooltipEventFeature = {
+          ...baseFeature,
+          category: DataviewCategory.Context,
+          properties: {},
+          value: feature.properties.label,
+          visible: true,
+        }
+        return tooltipAnnotationFeature
       }
       return []
     }

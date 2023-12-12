@@ -159,7 +159,7 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const tilesClusterLoaded = useMapClusterTilesLoaded()
 
-  const cursor = useMemo(() => {
+  const getCursor = useCallback(() => {
     if (rulersEditing || isMapAnnotating) {
       return 'crosshair'
     } else if (isMapDrawing || isMarineManagerLocation) {
@@ -205,5 +205,5 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
     tilesClusterLoaded,
   ])
 
-  return cursor
+  return getCursor()
 }

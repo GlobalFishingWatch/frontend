@@ -125,7 +125,7 @@ const MapWrapper = () => {
   const { viewport, onViewportChange } = useViewport()
 
   const { setMapBounds } = useMapBounds()
-  const cursor = useMapCursor()
+  const cursor = useMapCursor(hoveredTooltipEvent)
 
   useEffect(() => {
     setMapBounds()
