@@ -10,12 +10,14 @@ import {
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
 import useMapAnnotations from 'features/map/annotations/annotations.hooks'
+import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
 import { selectMapAnnotation } from './annotations.slice'
 import styles from './Annotations.module.css'
 
 const colors = [{ id: 'white', value: '#ffffff' }, ...LineColorBarOptions]
 
 const MapAnnotations = () => {
+  useMapAnnotationDrag()
   const { t } = useTranslation()
   const mapAnnotation = useSelector(selectMapAnnotation)
   const { resetMapAnnotation, deleteMapAnnotation, setMapAnnotation, upsertMapAnnotation } =

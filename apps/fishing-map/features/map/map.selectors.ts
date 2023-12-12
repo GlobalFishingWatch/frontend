@@ -58,6 +58,7 @@ import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectIsMapAnnotating } from 'features/map/annotations/annotations.slice'
 import {
+  ANNOTATIONS_GENERATOR_ID,
   PREVIEW_BUFFER_GENERATOR_ID,
   REPORT_BUFFER_GENERATOR_ID,
   WORKSPACES_POINTS_TYPE,
@@ -149,7 +150,7 @@ const getGeneratorsConfig = ({
     if (annotations?.length) {
       const annotationsGeneratorConfig: AnyGeneratorConfig = {
         type: GeneratorType.Annotation,
-        id: 'annotations',
+        id: ANNOTATIONS_GENERATOR_ID,
         data: annotations,
       }
       finalGenerators.push(annotationsGeneratorConfig)

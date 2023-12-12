@@ -1,6 +1,7 @@
 import memoizeOne from 'memoize-one'
 import { FeatureCollection, Feature, Point } from 'geojson'
 import { LayerSpecification, SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { Group } from '../../types'
 import { GeneratorType, MapAnnotation, AnnotationsGeneratorConfig } from '../types'
@@ -48,9 +49,13 @@ class AnnotationsGenerator {
           'symbol-placement': 'point',
           'text-font': ['Roboto Medium'],
           'text-size': 14,
+          'text-allow-overlap': true,
+          'text-ignore-placement': true,
         } as SymbolLayerSpecification['layout'],
         paint: {
           'text-color': ['coalesce', ['get', 'color'], '#fff'],
+          'text-halo-color': DEFAULT_BACKGROUND_COLOR,
+          'text-halo-width': 2,
         },
         metadata: {
           group: Group.Tool,
