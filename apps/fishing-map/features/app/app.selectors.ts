@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
 import { uniq } from 'lodash'
 import { DataviewCategory, DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
-import { MapAnnotation } from '@globalfishingwatch/layer-composer'
+import { MapAnnotation, Ruler } from '@globalfishingwatch/layer-composer'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
@@ -57,6 +57,7 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 import { selectReportById } from 'features/reports/reports.slice'
+import { selectRulers } from 'features/map/rulers/rulers.slice'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -145,10 +146,24 @@ export const selectSidebarOpen = createSelector(
   }
 )
 
+export const selectAreMapRulersVisible = createSelector(
+  [selectWorkspaceStateProperty('mapRulersVisible')],
+  (mapRulersVisible): boolean => {
+    return mapRulersVisible
+  }
+)
+
+export const selectMapRulersVisible = createSelector(
+  [selectRulers, selectAreMapRulersVisible],
+  (rulers, areMapRulersVisible): Ruler[] => {
+    return areMapRulersVisible ? rulers : []
+  }
+)
+
 export const selectAreMapAnnotationsVisible = createSelector(
   [selectWorkspaceStateProperty('mapAnnotationsVisible')],
-  (mapAnnotations): boolean => {
-    return mapAnnotations
+  (mapAnnotationsVisible): boolean => {
+    return mapAnnotationsVisible
   }
 )
 

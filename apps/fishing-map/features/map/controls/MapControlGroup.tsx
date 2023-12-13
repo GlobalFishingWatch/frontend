@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IconButton, IconType } from '@globalfishingwatch/ui-components'
 import styles from './MapControlGroup.module.css'
 
@@ -26,6 +27,7 @@ function MapControlGroup({
   onResetClick,
   onVisibilityClick,
 }: MapControlGroupProps) {
+  const { t } = useTranslation()
   return (
     <ul className={cx(styles.container, { [styles.active]: active })}>
       <li>
@@ -42,9 +44,10 @@ function MapControlGroup({
           {onVisibilityClick && (
             <li>
               <IconButton
-                icon={visible ? 'visibility-on' : 'visibility-off'}
+                icon={visible ? 'visibility-off' : 'visibility-on'}
                 disabled={disabled}
                 type="map-tool"
+                tooltip={t('common.toggleVisibility', 'Toggle visibility')}
                 onClick={onVisibilityClick}
               ></IconButton>
             </li>
@@ -55,6 +58,7 @@ function MapControlGroup({
                 icon={'delete'}
                 disabled={disabled}
                 type="map-tool"
+                tooltip={t('common.reset', 'Reset')}
                 onClick={onResetClick}
               ></IconButton>
             </li>

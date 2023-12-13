@@ -25,7 +25,7 @@ import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces
 import { ResourcesState } from 'features/resources/resources.slice'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
-import { selectEditing, selectRulers } from 'features/map/rulers/rulers.slice'
+import { selectEditing } from 'features/map/rulers/rulers.slice'
 import {
   selectHighlightedTime,
   selectHighlightedEvents,
@@ -34,6 +34,7 @@ import {
 import {
   selectBivariateDataviews,
   selectMapAnnotationsVisible,
+  selectMapRulersVisible,
   selectTimeRange,
 } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
@@ -166,7 +167,7 @@ const selectMapGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolvedVisible,
     selectVisibleResources,
-    selectRulers,
+    selectMapRulersVisible,
     selectMapAnnotationsVisible,
     selectDebugOptions,
     selectHighlightedTime,
@@ -207,7 +208,7 @@ const selectStaticGeneratorsConfig = createSelector(
   [
     selectDataviewInstancesResolvedVisible,
     selectVisibleResources,
-    selectRulers,
+    selectMapRulersVisible,
     selectMapAnnotationsVisible,
     selectDebugOptions,
     selectBivariateDataviews,

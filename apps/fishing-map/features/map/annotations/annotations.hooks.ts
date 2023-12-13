@@ -1,11 +1,16 @@
 import { useCallback } from 'react'
-import { useSelector } from 'react-redux'
+import { batch, useSelector } from 'react-redux'
 import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { MapAnnotation } from '@globalfishingwatch/layer-composer'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapAnnotationsVisible, selectMapAnnotations } from 'features/app/app.selectors'
-import { resetMapAnnotation, selectIsMapAnnotating, setMapAnnotation } from './annotations.slice'
+import {
+  setMapAnnotating,
+  selectIsMapAnnotating,
+  resetMapAnnotation as resetMapAnnotationAction,
+  setMapAnnotation as setMapAnnotationAction,
+} from './annotations.slice'
 
 export const DEFAUL_ANNOTATION_COLOR = '#ffffff'
 
@@ -16,32 +21,35 @@ export const useMapAnnotation = () => {
   const dispatch = useAppDispatch()
   const isMapAnnotating = useSelector(selectIsMapAnnotating)
 
-  const dispatchResetMapAnnotation = useCallback(() => {
-    dispatch(resetMapAnnotation())
+  const resetMapAnnotation = useCallback(() => {
+    batch(() => {
+      dispatch(resetMapAnnotationAction())
+      dispatch(setMapAnnotating(false))
+    })
   }, [dispatch])
 
-  const dispatchSetMapAnnotation = useCallback(
+  const setMapAnnotation = useCallback(
     (annotation: Partial<MapAnnotation>) => {
-      dispatch(setMapAnnotation(annotation))
+      dispatch(setMapAnnotationAction(annotation))
     },
     [dispatch]
   )
 
   const addMapAnnotation = useCallback(
     (event: MapLayerMouseEvent) => {
-      dispatchSetMapAnnotation({
+      setMapAnnotation({
         lon: event.lngLat.lng,
         lat: event.lngLat.lat,
         color: DEFAUL_ANNOTATION_COLOR,
       })
     },
-    [dispatchSetMapAnnotation]
+    [setMapAnnotation]
   )
 
   return {
     addMapAnnotation,
-    resetMapAnnotation: dispatchResetMapAnnotation,
-    setMapAnnotation: dispatchSetMapAnnotation,
+    resetMapAnnotation,
+    setMapAnnotation,
     isMapAnnotating,
   }
 }

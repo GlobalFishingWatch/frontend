@@ -22,13 +22,17 @@ const slice = createSlice({
     toggleMapAnnotating: (state) => {
       state.isAnnotating = !state.isAnnotating
     },
+    setMapAnnotating: (state, action: PayloadAction<boolean>) => {
+      state.isAnnotating = action.payload
+    },
     resetMapAnnotation: (state) => {
       state.annotation = null
     },
   },
 })
 
-export const { setMapAnnotation, toggleMapAnnotating, resetMapAnnotation } = slice.actions
+export const { setMapAnnotation, toggleMapAnnotating, setMapAnnotating, resetMapAnnotation } =
+  slice.actions
 
 export const selectIsMapAnnotating = (state: RootState) => state.annotations.isAnnotating
 export const selectMapAnnotation = (state: RootState) => state.annotations.annotation

@@ -37,12 +37,12 @@ const MapScreenshot = dynamic(
   () => import(/* webpackChunkName: "MapScreenshot" */ '../MapScreenshot')
 )
 const MapSearch = dynamic(() => import(/* webpackChunkName: "MapSearch" */ './MapSearch'))
-const Rulers = dynamic(() => import(/* webpackChunkName: "Rulers" */ 'features/map/rulers/Rulers'))
+const Rulers = dynamic(
+  () => import(/* webpackChunkName: "Rulers" */ 'features/map/controls/RulersControl')
+)
 const MapAnnotations = dynamic(
   () =>
-    import(
-      /* webpackChunkName: "AnnotationsControl" */ 'features/map/annotations/AnnotationsControl'
-    )
+    import(/* webpackChunkName: "AnnotationsControl" */ 'features/map/controls/AnnotationsControl')
 )
 
 const MapControls = ({
