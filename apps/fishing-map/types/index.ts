@@ -83,6 +83,7 @@ export type WorkspaceActivityCategory = 'fishing' | 'presence'
 export interface WorkspaceState extends BaseUrlWorkspace {
   bivariateDataviews?: BivariateDataviews
   mapAnnotations?: MapAnnotation[]
+  mapAnnotationsVisible?: boolean
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   readOnly?: boolean
   reportActivityGraph?: ReportActivityGraph

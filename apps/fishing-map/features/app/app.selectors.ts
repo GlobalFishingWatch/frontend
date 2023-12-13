@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
 import { uniq } from 'lodash'
 import { DataviewCategory, DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
+import { MapAnnotation } from '@globalfishingwatch/layer-composer'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
@@ -40,7 +41,6 @@ import {
   ReportActivityGraph,
   BufferUnit,
   BufferOperation,
-  MapAnnotation,
 } from 'types'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import {
@@ -145,10 +145,24 @@ export const selectSidebarOpen = createSelector(
   }
 )
 
+export const selectAreMapAnnotationsVisible = createSelector(
+  [selectWorkspaceStateProperty('mapAnnotationsVisible')],
+  (mapAnnotations): boolean => {
+    return mapAnnotations
+  }
+)
+
 export const selectMapAnnotations = createSelector(
   [selectWorkspaceStateProperty('mapAnnotations')],
   (mapAnnotations): MapAnnotation[] => {
     return mapAnnotations
+  }
+)
+
+export const selectMapAnnotationsVisible = createSelector(
+  [selectMapAnnotations, selectAreMapAnnotationsVisible],
+  (mapAnnotations, areMapAnnotationsVisible): MapAnnotation[] => {
+    return areMapAnnotationsVisible ? mapAnnotations : []
   }
 )
 

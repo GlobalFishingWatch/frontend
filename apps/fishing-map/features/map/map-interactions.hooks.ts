@@ -10,7 +10,7 @@ import {
 import { ExtendedStyle, ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import useMapAnnotations from 'features/map/annotations/annotations.hooks'
+import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
 import {
   TooltipEventFeature,
   parseMapTooltipEvent,
@@ -31,7 +31,7 @@ import { SliceInteractionEvent } from './map.slice'
 export const useMapMouseHover = (style?: ExtendedStyle) => {
   const map = useMapInstance()
   const { isMapDrawing } = useMapDrawConnect()
-  const { isMapAnnotating } = useMapAnnotations()
+  const { isMapAnnotating } = useMapAnnotation()
   const { onRulerMapHover, rulersEditing } = useRulers()
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
@@ -84,7 +84,7 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
 export const useMapMouseClick = (style?: ExtendedStyle) => {
   const map = useMapInstance()
   const { isMapDrawing } = useMapDrawConnect()
-  const { isMapAnnotating, onAnnotationMapClick } = useMapAnnotations()
+  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
@@ -131,7 +131,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
         return onRulerMapClick(event)
       }
       if (isMapAnnotating) {
-        return onAnnotationMapClick(event)
+        return addMapAnnotation(event)
       }
       onClick(event)
     },
@@ -140,7 +140,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       isMapAnnotating,
       isMapDrawing,
       isMarineManagerLocation,
-      onAnnotationMapClick,
+      addMapAnnotation,
       onClick,
       onRulerMapClick,
       rulersEditing,
@@ -152,7 +152,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
 
 export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
   const map = useMapInstance()
-  const { isMapAnnotating } = useMapAnnotations()
+  const { isMapAnnotating } = useMapAnnotation()
   const { isMapDrawing } = useMapDrawConnect()
   const { rulersEditing } = useRulers()
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)

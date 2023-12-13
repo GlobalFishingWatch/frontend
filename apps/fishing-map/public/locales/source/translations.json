@@ -506,6 +506,7 @@
     "annotationsHover": "Drag to move or click to edit annotation",
     "annotationsPlaceholder": "Type something here",
     "annotationsRemove": "Remove all annotations",
+    "annotationsStop": "Stop annotations",
     "captureMap": "Capture map",
     "change_basemap_default": "Switch to default basemap",
     "change_basemap_satellite": "Switch to satellite basemap",

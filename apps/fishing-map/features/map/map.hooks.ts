@@ -40,7 +40,7 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
-import useMapAnnotations from 'features/map/annotations/annotations.hooks'
+import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
 import { selectDefaultMapGeneratorsConfig } from './map.selectors'
 import {
   WORKSPACES_POINTS_TYPE,
@@ -139,7 +139,7 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
-  const { setMapAnnotation } = useMapAnnotations()
+  const { setMapAnnotation } = useMapAnnotation()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()

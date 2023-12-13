@@ -9,7 +9,9 @@ import {
   InputText,
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
-import useMapAnnotations, {
+import {
+  useMapAnnotation,
+  useMapAnnotations,
   DEFAUL_ANNOTATION_COLOR,
 } from 'features/map/annotations/annotations.hooks'
 import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
@@ -22,8 +24,8 @@ const MapAnnotations = () => {
   useMapAnnotationDrag()
   const { t } = useTranslation()
   const mapAnnotation = useSelector(selectMapAnnotation)
-  const { resetMapAnnotation, deleteMapAnnotation, setMapAnnotation, upsertMapAnnotation } =
-    useMapAnnotations()
+  const { resetMapAnnotation, setMapAnnotation } = useMapAnnotation()
+  const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
 
   if (!mapAnnotation) {
     return null
@@ -35,7 +37,7 @@ const MapAnnotations = () => {
   }
 
   const onConfirmClick = () => {
-    upsertMapAnnotation({
+    upsertMapAnnotations({
       ...mapAnnotation,
       id: mapAnnotation.id || Date.now(),
     })

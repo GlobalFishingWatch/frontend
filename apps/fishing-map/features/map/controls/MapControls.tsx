@@ -41,7 +41,7 @@ const Rulers = dynamic(() => import(/* webpackChunkName: "Rulers" */ 'features/m
 const MapAnnotations = dynamic(
   () =>
     import(
-      /* webpackChunkName: "AnnotationsControls" */ 'features/map/annotations/AnnotationsControls'
+      /* webpackChunkName: "AnnotationsControl" */ 'features/map/annotations/AnnotationsControl'
     )
 )
 

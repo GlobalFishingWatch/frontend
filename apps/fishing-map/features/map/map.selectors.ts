@@ -33,7 +33,7 @@ import {
 } from 'features/timebar/timebar.slice'
 import {
   selectBivariateDataviews,
-  selectMapAnnotations,
+  selectMapAnnotationsVisible,
   selectTimeRange,
 } from 'features/app/app.selectors'
 import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
@@ -167,7 +167,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectDataviewInstancesResolvedVisible,
     selectVisibleResources,
     selectRulers,
-    selectMapAnnotations,
+    selectMapAnnotationsVisible,
     selectDebugOptions,
     selectHighlightedTime,
     selectHighlightedEvents,
@@ -208,7 +208,7 @@ const selectStaticGeneratorsConfig = createSelector(
     selectDataviewInstancesResolvedVisible,
     selectVisibleResources,
     selectRulers,
-    selectMapAnnotations,
+    selectMapAnnotationsVisible,
     selectDebugOptions,
     selectBivariateDataviews,
     selectShowTimeComparison,

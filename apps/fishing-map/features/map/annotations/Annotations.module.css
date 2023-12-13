@@ -1,26 +1,3 @@
-.container {
-  position: relative;
-}
-
-.container .active {
-  opacity: 1;
-  background-color: var(--color-white);
-  color: var(--color-primary-blue);
-}
-
-.remove {
-  position: absolute;
-  top: -20%;
-  right: -20%;
-  width: 2.4rem;
-  height: 2.4rem;
-  opacity: 1;
-}
-
-.container .remove:hover {
-  opacity: 1;
-}
-
 .popup {
   color: var(--color-primary-blue);
   box-shadow: var(--box-shadow);

@@ -3,19 +3,18 @@ import { useSelector } from 'react-redux'
 import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { MapAnnotation } from '@globalfishingwatch/layer-composer'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectMapAnnotations } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectAreMapAnnotationsVisible, selectMapAnnotations } from 'features/app/app.selectors'
 import { resetMapAnnotation, selectIsMapAnnotating, setMapAnnotation } from './annotations.slice'
-export const DEFAUL_ANNOTATION_COLOR = '#ffffff'
-const useMapAnnotations = () => {
-  const dispatch = useAppDispatch()
-  const mapAnnotations = useSelector(selectMapAnnotations)
-  const isMapAnnotating = useSelector(selectIsMapAnnotating)
-  const { dispatchQueryParams } = useLocationConnect()
 
-  const cleanMapAnnotations = useCallback(() => {
-    dispatchQueryParams({ mapAnnotations: undefined })
-  }, [dispatchQueryParams])
+export const DEFAUL_ANNOTATION_COLOR = '#ffffff'
+
+/**
+ * Hook used only for the temporal annotation stored into the slice before confirming
+ */
+export const useMapAnnotation = () => {
+  const dispatch = useAppDispatch()
+  const isMapAnnotating = useSelector(selectIsMapAnnotating)
 
   const dispatchResetMapAnnotation = useCallback(() => {
     dispatch(resetMapAnnotation())
@@ -28,7 +27,7 @@ const useMapAnnotations = () => {
     [dispatch]
   )
 
-  const onAnnotationMapClick = useCallback(
+  const addMapAnnotation = useCallback(
     (event: MapLayerMouseEvent) => {
       dispatchSetMapAnnotation({
         lon: event.lngLat.lng,
@@ -39,7 +38,31 @@ const useMapAnnotations = () => {
     [dispatchSetMapAnnotation]
   )
 
-  const upsertMapAnnotation = useCallback(
+  return {
+    addMapAnnotation,
+    resetMapAnnotation: dispatchResetMapAnnotation,
+    setMapAnnotation: dispatchSetMapAnnotation,
+    isMapAnnotating,
+  }
+}
+
+/**
+ * Hook used only for the confirmed annotations into the url
+ */
+export const useMapAnnotations = () => {
+  const mapAnnotations = useSelector(selectMapAnnotations)
+  const areMapAnnotationsVisible = useSelector(selectAreMapAnnotationsVisible)
+  const { dispatchQueryParams } = useLocationConnect()
+
+  const toggleMapAnnotationsVisibility = useCallback(() => {
+    dispatchQueryParams({ mapAnnotationsVisible: !areMapAnnotationsVisible })
+  }, [areMapAnnotationsVisible, dispatchQueryParams])
+
+  const cleanMapAnnotations = useCallback(() => {
+    dispatchQueryParams({ mapAnnotations: undefined })
+  }, [dispatchQueryParams])
+
+  const upsertMapAnnotations = useCallback(
     (annotation: MapAnnotation) => {
       if (mapAnnotations?.length && mapAnnotations?.some((a) => a.id === annotation.id)) {
         const annotations = mapAnnotations.map((a) => {
@@ -65,14 +88,10 @@ const useMapAnnotations = () => {
 
   return {
     mapAnnotations,
-    upsertMapAnnotation,
+    areMapAnnotationsVisible,
+    upsertMapAnnotations,
     deleteMapAnnotation,
-    onAnnotationMapClick,
     cleanMapAnnotations,
-    resetMapAnnotation: dispatchResetMapAnnotation,
-    setMapAnnotation: dispatchSetMapAnnotation,
-    isMapAnnotating,
+    toggleMapAnnotationsVisibility,
   }
 }
-
-export default useMapAnnotations
