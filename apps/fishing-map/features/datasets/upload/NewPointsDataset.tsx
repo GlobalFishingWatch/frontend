@@ -11,7 +11,7 @@ import {
   SelectOption,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { pointTimeFilter } from '@globalfishingwatch/api-types'
+import { PointTimeFilterType } from '@globalfishingwatch/api-types'
 import {
   MAX_POINT_SIZE,
   MIN_POINT_SIZE,
@@ -54,6 +54,7 @@ function NewPointDataset({
   const [sourceData, setSourceData] = useState<DataList | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
+  console.log('🚀 ~ file: NewPointsDataset.tsx:57 ~ datasetMetadata:', datasetMetadata)
   const { fieldsOptions, getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
     useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
@@ -295,16 +296,16 @@ function NewPointDataset({
               getSelectedOption(
                 getDatasetConfigurationProperty({
                   dataset: datasetMetadata,
-                  property: 'pointTimeFilter',
+                  property: 'pointTimeFilterType',
                 }),
                 POINT_TIME_OPTIONS
               ) as SelectOption
             }
             onSelect={(selected) => {
-              setDatasetMetadataConfig({ pointTimeFilter: selected.id })
+              setDatasetMetadataConfig({ pointTimeFilterType: selected.id })
             }}
             onCleanClick={() => {
-              setDatasetMetadataConfig({ pointTimeFilter: undefined })
+              setDatasetMetadataConfig({ pointTimeFilterType: undefined })
             }}
           />
           <Select
@@ -314,25 +315,43 @@ function NewPointDataset({
             disabled={
               !getDatasetConfigurationProperty({
                 dataset: datasetMetadata,
-                property: 'pointTimeFilter',
+                property: 'pointTimeFilterType',
               })
             }
             selectedOption={
               getSelectedOption(
-                getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'pointTime' })
+                getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'startTime' })
               ) as SelectOption
             }
             onSelect={(selected) => {
-              setDatasetMetadataConfig({ pointTime: selected.id })
+              if (
+                getDatasetConfigurationProperty({
+                  dataset: datasetMetadata,
+                  property: 'pointTimeFilterType',
+                }) === 'timestamp'
+              ) {
+                setDatasetMetadataConfig({ startTime: selected.id, endTime: selected.id })
+              } else {
+                setDatasetMetadataConfig({ startTime: selected.id })
+              }
             }}
             onCleanClick={() => {
-              setDatasetMetadataConfig({ pointTime: undefined })
+              if (
+                getDatasetConfigurationProperty({
+                  dataset: datasetMetadata,
+                  property: 'pointTimeFilterType',
+                }) === 'timestamp'
+              ) {
+                setDatasetMetadataConfig({ startTime: undefined, endTime: undefined })
+              } else {
+                setDatasetMetadataConfig({ startTime: undefined })
+              }
             }}
           />
           {(getDatasetConfigurationProperty({
             dataset: datasetMetadata,
-            property: 'pointTimeFilter',
-          }) as pointTimeFilter) === 'timerange' && (
+            property: 'pointTimeFilterType',
+          }) as PointTimeFilterType) === 'timerange' && (
             <Select
               placeholder={t(
                 'datasetUploadUI.fieldPlaceholder',
@@ -344,15 +363,15 @@ function NewPointDataset({
                 getSelectedOption(
                   getDatasetConfigurationProperty({
                     dataset: datasetMetadata,
-                    property: 'pointTime',
+                    property: 'endTime',
                   })
                 ) as SelectOption
               }
               onSelect={(selected) => {
-                setDatasetMetadataConfig({ pointTime: selected.id })
+                setDatasetMetadataConfig({ endTime: selected.id })
               }}
               onCleanClick={() => {
-                setDatasetMetadataConfig({ pointTime: undefined })
+                setDatasetMetadataConfig({ endTime: undefined })
               }}
             />
           )}

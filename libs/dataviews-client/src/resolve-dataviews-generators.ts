@@ -423,12 +423,19 @@ export function getGeneratorConfig(
             property: 'maxPointSize',
           })
 
-          const pointTimeFilterProperty = getDatasetConfigurationProperty({
+          const startTimeFilterProperty = getDatasetConfigurationProperty({
             dataset,
-            property: 'pointTimeFilter',
+            property: 'startTime',
           })
-          if (pointTimeFilterProperty) {
-            generator.pointTimeFilterProperty = pointTimeFilterProperty
+          const endTimeFilterProperty = getDatasetConfigurationProperty({
+            dataset,
+            property: 'endTime',
+          })
+          if (startTimeFilterProperty) {
+            generator.startTimeFilterProperty = startTimeFilterProperty
+          }
+          if (endTimeFilterProperty) {
+            generator.endTimeFilterProperty = endTimeFilterProperty
           }
           generator.disableInteraction = dataset.configuration?.disableInteraction
         }

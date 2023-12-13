@@ -51,17 +51,17 @@ class UserPointsGenerator {
       'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
     }
     let filters: FilterSpecification | undefined
-    if (config?.pointTimeFilterProperty) {
+    if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
       filters = [
         'all',
         [
           '<=',
-          ['to-number', ['get', config.pointTimeFilterProperty]],
+          ['to-number', ['get', config.endTimeFilterProperty]],
           getUTCDate(config.end).getTime(),
         ],
         [
           '>=',
-          ['to-number', ['get', config.pointTimeFilterProperty]],
+          ['to-number', ['get', config.startTimeFilterProperty]],
           getUTCDate(config.start).getTime(),
         ],
       ]

@@ -160,11 +160,15 @@ export const getUserPointsDataviewInstance = (
   dataset: Dataset
 ): DataviewInstance<GeneratorType> => {
   const circleRadiusProperty = getDatasetConfigurationProperty({ dataset, property: 'pointSize' })
-  const pointTimeFilterProperty = getDatasetConfigurationProperty({
+  const startTimeFilterProperty = getDatasetConfigurationProperty({
     dataset,
-    property: 'pointTimeFilter',
+    property: 'startTime',
   })
-  const properties = [circleRadiusProperty, pointTimeFilterProperty]
+  const endTimeFilterProperty = getDatasetConfigurationProperty({
+    dataset,
+    property: 'endTime',
+  })
+  const properties = [circleRadiusProperty, startTimeFilterProperty, endTimeFilterProperty]
     .filter(Boolean)
     .map((p) => p.toLowerCase())
   return {
