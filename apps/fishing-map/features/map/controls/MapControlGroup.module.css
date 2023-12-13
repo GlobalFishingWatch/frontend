@@ -1,0 +1,24 @@
+.container {
+  position: relative;
+  background-color: var(--color-primary-blue);
+  border-radius: var(--space-M);
+  border: var(--border-white);
+}
+
+.container.active {
+  opacity: 1;
+  background-color: var(--color-white);
+  color: var(--color-primary-blue);
+}
+
+.container button,
+.container button:focus,
+.container button:hover {
+  border: none;
+  border-radius: 0;
+  background: none;
+}
+
+.container.active button {
+  color: var(--color-primary-blue);
+}
