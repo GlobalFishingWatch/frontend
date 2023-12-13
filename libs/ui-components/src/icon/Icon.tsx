@@ -5,6 +5,7 @@ import { Tooltip } from '../tooltip'
 import { TooltipTypes } from '../types/types'
 import { ReactComponent as AddPolygon } from '../assets/icons/add-polygon.svg'
 import { ReactComponent as Analysis } from '../assets/icons/analysis.svg'
+import { ReactComponent as Annotation } from '../assets/icons/annotation.svg'
 import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
 import { ReactComponent as ArrowLeft } from '../assets/icons/arrow-left.svg'
 import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
@@ -132,6 +133,7 @@ export const IconComponents = {
   'visibility-off': VisibilityOff,
   'visibility-on': VisibilityOn,
   analysis: Analysis,
+  annotation: Annotation,
   calendar: Calendar,
   camera: Camera,
   close: Close,
