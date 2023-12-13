@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import { MapAnnotation } from '@globalfishingwatch/layer-composer'
-import { MapMouseEvent } from '@globalfishingwatch/maplibre-gl'
+import { MapGeoJSONFeature, MapMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import useMapInstance from 'features/map/map-context.hooks'
 import { ANNOTATIONS_GENERATOR_ID } from 'features/map/map.config'
 import { selectMapAnnotations } from 'features/app/app.selectors'
@@ -21,17 +21,19 @@ export function useMapAnnotationDrag() {
   const debouncedUpdate = useCallback(
     throttle((mapAnnotations) => {
       dispatchQueryParams({ mapAnnotations })
-    }, 150),
+    }, 200),
     [dispatchQueryParams]
   )
 
   const onMove = useCallback(
     (e: MapMouseEvent) => {
-      const { lat, lng } = e.lngLat
-      const mapAnnotations = annotations.map((a) => {
-        return a.id === currentAnnotationRef.current?.id ? { ...a, lat, lon: lng } : a
-      })
-      debouncedUpdate(mapAnnotations)
+      if (annotations?.length) {
+        const { lat, lng } = e.lngLat
+        const mapAnnotations = annotations.map((a) => {
+          return a.id === currentAnnotationRef.current?.id ? { ...a, lat, lon: lng } : a
+        })
+        debouncedUpdate(mapAnnotations)
+      }
     },
     [annotations, debouncedUpdate]
   )
@@ -43,11 +45,15 @@ export function useMapAnnotationDrag() {
     map.off('touchmove', onMove)
   }, [map, onMove])
 
-  useEffect(() => {
-    if (map) {
-      map.on('mousedown', ANNOTATIONS_LAYER_ID, (e) => {
-        const annotationId = e.features?.[0]?.properties?.id
-        const currentAnnotation = annotations.find((a) => a.id === annotationId)
+  const onDown = useCallback(
+    (
+      e: MapMouseEvent & {
+        features?: MapGeoJSONFeature[] | undefined
+      }
+    ) => {
+      const annotationId = e.features?.[0]?.properties?.id
+      if (annotationId) {
+        const currentAnnotation = annotations?.find((a) => a.id === annotationId)
         if (currentAnnotation) {
           currentAnnotationRef.current = currentAnnotation
         }
@@ -56,9 +62,17 @@ export function useMapAnnotationDrag() {
 
         map.on('mousemove', onMove)
         map.once('mouseup', onUp)
-      })
-      return () => {}
+      }
+    },
+    [annotations, map, onMove, onUp]
+  )
+
+  useEffect(() => {
+    if (map) {
+      map.on('mousedown', ANNOTATIONS_LAYER_ID, onDown)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map])
+    return () => {
+      map.off('mousedown', ANNOTATIONS_LAYER_ID, onDown)
+    }
+  }, [map, onDown])
 }
