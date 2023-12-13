@@ -6,7 +6,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectMapAnnotations } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { resetMapAnnotation, selectIsMapAnnotating, setMapAnnotation } from './annotations.slice'
-
+export const DEFAUL_ANNOTATION_COLOR = '#ffffff'
 const useMapAnnotations = () => {
   const dispatch = useAppDispatch()
   const mapAnnotations = useSelector(selectMapAnnotations)
@@ -33,6 +33,7 @@ const useMapAnnotations = () => {
       dispatchSetMapAnnotation({
         lon: event.lngLat.lng,
         lat: event.lngLat.lat,
+        color: DEFAUL_ANNOTATION_COLOR,
       })
     },
     [dispatchSetMapAnnotation]
@@ -46,7 +47,7 @@ const useMapAnnotations = () => {
         })
         dispatchQueryParams({ mapAnnotations: annotations })
       } else {
-        dispatchQueryParams({ mapAnnotations: [annotation] })
+        dispatchQueryParams({ mapAnnotations: [...(mapAnnotations || []), annotation] })
       }
     },
     [dispatchQueryParams, mapAnnotations]

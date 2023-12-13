@@ -502,8 +502,10 @@
     "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected timerange. Change timerange to fit this track?"
   },
   "map": {
-    "annotations_add": "Add annotation",
-    "annotations_remove": "Remove all annotations",
+    "annotationsAdd": "Add annotation",
+    "annotationsHover": "Drag to move or click to edit annotation",
+    "annotationsPlaceholder": "Type something here",
+    "annotationsRemove": "Remove all annotations",
     "captureMap": "Capture map",
     "change_basemap_default": "Switch to default basemap",
     "change_basemap_satellite": "Switch to satellite basemap",

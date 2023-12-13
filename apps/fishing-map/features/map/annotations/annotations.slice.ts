@@ -23,7 +23,7 @@ const slice = createSlice({
       state.isAnnotating = !state.isAnnotating
     },
     resetMapAnnotation: (state) => {
-      return initialState
+      state.annotation = null
     },
   },
 })

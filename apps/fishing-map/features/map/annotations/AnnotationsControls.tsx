@@ -41,7 +41,7 @@ const MapAnnotationsControls = () => {
         icon="annotation"
         disabled={isMapDrawing}
         type="map-tool"
-        tooltip={isAnnotating ? '' : t('map.annotations_add', 'Add annotation')}
+        tooltip={isAnnotating ? '' : t('map.annotationsAdd', 'Add annotation')}
         className={cx({ [styles.active]: isAnnotating })}
         onClick={onToggleClick}
       >
@@ -53,7 +53,7 @@ const MapAnnotationsControls = () => {
         <IconButton
           icon="close"
           type="map-tool"
-          tooltip={t('map.annotations_remove', 'Remove all annotations')}
+          tooltip={t('map.annotationsRemove', 'Remove all annotations')}
           className={styles.remove}
           onClick={onRemoveClick}
         />

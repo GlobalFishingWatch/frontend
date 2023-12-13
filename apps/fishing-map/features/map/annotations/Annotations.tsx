@@ -9,12 +9,14 @@ import {
   InputText,
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
-import useMapAnnotations from 'features/map/annotations/annotations.hooks'
+import useMapAnnotations, {
+  DEFAUL_ANNOTATION_COLOR,
+} from 'features/map/annotations/annotations.hooks'
 import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
 import { selectMapAnnotation } from './annotations.slice'
 import styles from './Annotations.module.css'
 
-const colors = [{ id: 'white', value: '#ffffff' }, ...LineColorBarOptions]
+const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]
 
 const MapAnnotations = () => {
   useMapAnnotationDrag()
@@ -55,6 +57,7 @@ const MapAnnotations = () => {
           <InputText
             value={mapAnnotation.label}
             onChange={(e) => setMapAnnotation({ label: e.target.value })}
+            placeholder={t('map.annotationPlaceholder', 'Type something here')}
           />
           <ColorBar
             colorBarOptions={colors}

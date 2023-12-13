@@ -375,6 +375,7 @@ export const parseMapTooltipFeatures = (
       source: feature.source,
       sourceLayer: feature.sourceLayer,
       layerId: feature.layerId as string,
+      type: generatorType as GeneratorType,
     }
 
     if (temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
