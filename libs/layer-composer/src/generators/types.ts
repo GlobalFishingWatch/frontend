@@ -174,6 +174,9 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    * Feature property to drive timestamps filtering
    */
   startTimeFilterProperty?: string
+  /**
+   * Feature property to drive timestamps filtering
+   */
   endTimeFilterProperty?: string
   /**
    * Feature property to drive circle radius
