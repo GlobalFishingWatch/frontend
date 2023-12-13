@@ -54,7 +54,6 @@ function NewPointDataset({
   const [sourceData, setSourceData] = useState<DataList | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
-  console.log('🚀 ~ file: NewPointsDataset.tsx:57 ~ datasetMetadata:', datasetMetadata)
   const { fieldsOptions, getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
     useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
@@ -76,11 +75,6 @@ function NewPointDataset({
     dataset: datasetMetadata,
     property: 'timestamp',
   })
-
-  const pointTimeFilter = getDatasetConfigurationProperty({
-    dataset: datasetMetadata,
-    property: 'pointTimeFilter',
-  }) as pointTimeFilter
 
   const handleRawData = useCallback(
     async (file: File) => {
@@ -302,6 +296,7 @@ function NewPointDataset({
             placeholder={t('datasetUploadUI.fieldPlaceholder', 'Select a field from your dataset')}
             options={fieldsOptions}
             direction="top"
+            className={styles.input}
             disabled={
               !getDatasetConfigurationProperty({
                 dataset: datasetMetadata,
