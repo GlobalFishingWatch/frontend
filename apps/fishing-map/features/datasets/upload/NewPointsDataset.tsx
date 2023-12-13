@@ -77,6 +77,11 @@ function NewPointDataset({
     property: 'timestamp',
   })
 
+  const pointTimeFilter = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'pointTimeFilter',
+  }) as pointTimeFilter
+
   const handleRawData = useCallback(
     async (file: File) => {
       const data = await getDatasetParsed(file)
@@ -148,88 +153,72 @@ function NewPointDataset({
   return (
     <div className={styles.container}>
       {!dataset && (
-        <div className={styles.file}>
-          <FileDropzone
-            label={file?.name}
-            fileTypes={[fileType as FileType]}
-            onFileLoaded={onFileUpdate}
+        <FileDropzone
+          label={file?.name}
+          fileTypes={[fileType as FileType]}
+          onFileLoaded={onFileUpdate}
+        />
+      )}
+      <InputText
+        value={datasetMetadata?.name}
+        label={t('datasetUpload.datasetName', 'Dataset Name')}
+        className={styles.input}
+        onChange={(e) => setDatasetMetadata({ name: e.target.value })}
+      />
+      {isCSVFile && (
+        <div className={styles.row}>
+          <NewDatasetField
+            datasetMetadata={datasetMetadata}
+            property="latitude"
+            label={`${t('datasetUpload.point.coordinates', 'Point coordinates')} - ${t(
+              'common.latitude',
+              'Latitude'
+            )}`}
+            editable={!isEditing}
+            onSelect={(selected) => {
+              setDatasetMetadataConfig({ latitude: selected.id })
+            }}
+          />
+          <NewDatasetField
+            datasetMetadata={datasetMetadata}
+            property="longitude"
+            label={t('common.longitude', 'Longitude')}
+            editable={!isEditing}
+            onSelect={(selected) => {
+              setDatasetMetadataConfig({ longitude: selected.id })
+            }}
           />
         </div>
       )}
-      <div className={styles.content}>
-        <InputText
-          value={datasetMetadata?.name}
-          label={t('datasetUploadUI.datasetName', 'Dataset Name')}
-          className={styles.input}
-          onChange={(e) => setDatasetMetadata({ name: e.target.value })}
-        />
-        {isCSVFile && (
-          <Fragment>
-            <div className={styles.evenSelectorsGroup}>
-              <NewDatasetField
-                datasetMetadata={datasetMetadata}
-                property="latitude"
-                label={`${t('datasetUploadUI.point.coordinates', 'Point coordinates')} - ${t(
-                  'common.latitude',
-                  'Latitude'
-                )}`}
-                editable={!isEditing}
-                onSelect={(selected) => {
-                  setDatasetMetadataConfig({ latitude: selected.id })
-                }}
-              />
-              <NewDatasetField
-                datasetMetadata={datasetMetadata}
-                property="longitude"
-                label={t('common.longitude', 'Longitude')}
-                editable={!isEditing}
-                onSelect={(selected) => {
-                  setDatasetMetadataConfig({ longitude: selected.id })
-                }}
-              />
-            </div>
-          </Fragment>
-        )}
-      </div>
       <Collapsable
         className={styles.optional}
-        label={t('datasetUploadUI.optionalFields', 'Optional fields')}
+        label={t('datasetUpload.optionalFields', 'Optional fields')}
       >
         <InputText
           value={datasetMetadata?.description}
-          label={t('datasetUploadUI.datasetDescription', 'Dataset description')}
+          label={t('datasetUpload.datasetDescription', 'Dataset description')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
         />
-        <Select
-          label={t('datasetUploadUI.points.name', 'Point name')}
-          placeholder={t('datasetUploadUI.fieldPlaceholder', 'Select a field from your dataset')}
-          options={fieldsOptions}
-          direction="top"
-          selectedOption={
-            getSelectedOption(
-              getDatasetConfigurationProperty({
-                dataset: datasetMetadata,
-                property: 'propertyToInclude',
-              })
-            ) as SelectOption
-          }
+        <NewDatasetField
+          datasetMetadata={datasetMetadata}
+          property="propertyToInclude"
+          label={t('datasetUpload.points.name', 'Point name')}
+          editable={!isEditing}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
-          onCleanClick={() => {
-            setDatasetMetadataConfig({ propertyToInclude: undefined })
-          }}
         />
-        <div className={styles.evenSelectorsGroup}>
+        <div className={styles.row}>
           <Select
-            label={t('datasetUploadUI.points.size', 'point size')}
+            label={t('datasetUpload.points.size', 'point size')}
             placeholder={t(
-              'datasetUploadUI.fieldNumericPlaceholder',
+              'datasetUpload.fieldNumericPlaceholder',
               'Select a numeric field from your dataset'
             )}
             options={schemaRangeOptions}
             direction="top"
+            className={styles.input}
             selectedOption={
               getSelectedOption(
                 getDatasetConfigurationProperty({
@@ -259,7 +248,7 @@ function NewPointDataset({
                   }) || POINT_SIZES_DEFAULT_RANGE[0]
                 }
                 min={MIN_POINT_SIZE}
-                label={t('datasetUploadUI.points.sizeMin', 'Minimum size')}
+                label={t('datasetUpload.points.sizeMin', 'Minimum size')}
                 className={styles.input}
                 onChange={(e) =>
                   setDatasetMetadataConfig({ minPointSize: parseFloat(e.target.value) })
@@ -274,7 +263,7 @@ function NewPointDataset({
                   }) || POINT_SIZES_DEFAULT_RANGE[1]
                 }
                 max={MAX_POINT_SIZE}
-                label={t('datasetUploadUI.points.sizeMax', 'Maximum size')}
+                label={t('datasetUpload.points.sizeMax', 'Maximum size')}
                 className={styles.input}
                 onChange={(e) =>
                   setDatasetMetadataConfig({ maxPointSize: parseFloat(e.target.value) })
@@ -283,8 +272,7 @@ function NewPointDataset({
             </Fragment>
           )}
         </div>
-        <p className={styles.label}>point time</p>
-        <div className={styles.evenSelectorsGroup}>
+        <div className={styles.row}>
           <Select
             placeholder={t(
               'datasetUploadUI.timePeriodTypePlaceholder',
@@ -292,6 +280,8 @@ function NewPointDataset({
             )}
             options={POINT_TIME_OPTIONS}
             direction="top"
+            label={t('datasetUpload.points.time', 'Point time')}
+            className={styles.input}
             selectedOption={
               getSelectedOption(
                 getDatasetConfigurationProperty({
@@ -353,12 +343,10 @@ function NewPointDataset({
             property: 'pointTimeFilterType',
           }) as PointTimeFilterType) === 'timerange' && (
             <Select
-              placeholder={t(
-                'datasetUploadUI.fieldPlaceholder',
-                'Select a field from your dataset'
-              )}
+              placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
               options={fieldsOptions}
               direction="top"
+              className={styles.input}
               selectedOption={
                 getSelectedOption(
                   getDatasetConfigurationProperty({
@@ -377,11 +365,11 @@ function NewPointDataset({
           )}
         </div>
         <MultiSelect
-          label={t('datasetUploadUI.points.filters', 'point filters')}
+          label={t('datasetUpload.points.filters', 'point filters')}
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
-              : t('datasetUploadUI.fieldMultiplePlaceholder', 'Select fields from your dataset')
+              : t('datasetUpload.fieldMultiplePlaceholder', 'Select fields from your dataset')
           }
           direction="top"
           options={filtersFieldsOptions}
@@ -396,17 +384,17 @@ function NewPointDataset({
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
         />
+        <SwitchRow
+          className={styles.saveAsPublic}
+          label={t(
+            'dataset.uploadPublic',
+            'Allow other users to see this dataset when you share a workspace'
+          )}
+          disabled={isEditing}
+          active={isPublic}
+          onClick={() => setDatasetMetadata({ public: !isPublic })}
+        />
       </Collapsable>
-      <SwitchRow
-        className={styles.saveAsPublic}
-        label={t(
-          'dataset.uploadPublic',
-          'Allow other users to see this dataset when you share a workspace'
-        )}
-        disabled={isEditing}
-        active={isPublic}
-        onClick={() => setDatasetMetadata({ public: !isPublic })}
-      />
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {/* {error && <span className={styles.errorMsg}>{error}</span>} */}

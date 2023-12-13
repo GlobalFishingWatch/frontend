@@ -34,57 +34,31 @@
   line-height: 2em;
 }
 
-.requiredDataContainer {
-  display: flex;
-  width: 100%;
-  gap: var(--space-S);
-  padding-bottom: var(--space-M);
-}
-
-.evenSelectorsGroup {
-  display: flex;
-  gap: var(--space-S);
-  padding-bottom: var(--space-M);
-}
-
-.evenSelectorsGroup > div {
-  flex-grow: 1;
-}
-
-.timestampSelectWrapper {
-  flex-grow: 2;
-}
-
-.trackTimestampFiltersContainer {
-  padding-top: var(--space-M);
-}
-
-.trackTimestampSelectors {
-  display: flex;
-  width: 100%;
-  gap: var(--space-S);
-  padding-bottom: var(--space-M);
-}
-
-.trackTimestampSelectors > div {
-  flex-grow: 1;
-}
-
 .row {
   display: flex;
-  position: relative;
+  width: 100%;
+  gap: var(--space-S);
+  align-items: flex-end;
 }
 
-.input {
-  margin-bottom: var(--space-M);
-}
-
-.inputFullWidth {
+.row > * {
   flex: 1;
 }
 
+.input {
+  margin-bottom: var(--space-S);
+}
+
 .optional {
-  margin-bottom: var(--space-M);
+  margin-top: var(--space-S);
+}
+
+.optional summary {
+  margin-bottom: var(--space-S);
+}
+
+.saveAsPublic {
+  margin-top: var(--space-M);
 }
 
 .modalFooter {
@@ -117,26 +91,4 @@
 .modalContent {
   display: flex;
   flex: 1;
-}
-
-.datasetConfig {
-  flex: 1;
-  margin-left: var(--space-S);
-  display: flex;
-  flex-direction: column;
-}
-
-.selectContainer {
-  flex: 1;
-}
-
-.shortSelect,
-.shortSelect:hover {
-  width: 15rem;
-}
-
-.multipleSelectContainer {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
 }

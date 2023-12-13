@@ -256,7 +256,7 @@
     "uploadPublic": "Allow other users to see this dataset when you share a workspace",
     "uploadYourOwn": "Upload your own"
   },
-  "datasetUploadUI": {
+  "datasetUpload": {
     "datasetDescription": "Dataset description",
     "datasetName": "Dataset name",
     "fieldPlaceholder": "Select a field from your dataset",

@@ -1,15 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
-import {
-  DatasetConfiguration,
-  DatasetConfigurationUI,
-  DatasetSchema,
-  DatasetSchemaItem,
-} from '@globalfishingwatch/api-types'
+import { DatasetConfiguration, DatasetConfigurationUI } from '@globalfishingwatch/api-types'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { MultiSelectOption } from '@globalfishingwatch/api-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { sortFields } from 'utils/shared'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
+import DatasetFieldLabel from 'features/datasets/upload/DatasetFieldLabel'
 
 export function useDatasetMetadata() {
   const [datasetMetadata, setDatasetMetadataState] = useState({} as DatasetMetadata)
@@ -54,30 +50,13 @@ export function useDatasetMetadata() {
   )
 }
 
-const OptionLabel = ({
-  field,
-  fieldSchema,
-}: {
-  field: string
-  fieldSchema: DatasetSchema | DatasetSchemaItem
-}) => {
-  return (
-    <span>
-      <label style={{ display: 'inline', marginRight: 'var(--space-XS)' }}>
-        {fieldSchema.type === 'range' ? '123' : 'ABC'}
-      </label>
-      {field}
-    </span>
-  )
-}
-
 export function useDatasetMetadataOptions(datasetMetadata?: DatasetMetadata) {
   const fieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
     const options = datasetMetadata?.schema
       ? Object.entries(datasetMetadata.schema).map(([field, fieldSchema]) => {
           return {
             id: field,
-            label: <OptionLabel field={field} fieldSchema={fieldSchema} />,
+            label: <DatasetFieldLabel field={field} fieldSchema={fieldSchema} />,
           }
         })
       : []
@@ -105,7 +84,10 @@ export function useDatasetMetadataOptions(datasetMetadata?: DatasetMetadata) {
       ? Object.entries(datasetMetadata.schema)
           .filter(([_, fieldSchema]) => fieldSchema.type === 'range')
           .map(([field, fieldSchema]) => {
-            return { id: field, label: <OptionLabel field={field} fieldSchema={fieldSchema} /> }
+            return {
+              id: field,
+              label: <DatasetFieldLabel field={field} fieldSchema={fieldSchema} />,
+            }
           })
       : []
     return options.sort(sortFields)
@@ -119,7 +101,7 @@ export function useDatasetMetadataOptions(datasetMetadata?: DatasetMetadata) {
             (schema?.type === 'string' || schema?.type === 'boolean') && schema?.enum?.length
           const isRangeAllowed = schema?.type === 'range' && schema?.min && schema?.max
           return isEnumAllowed || isRangeAllowed
-            ? { id: field, label: <OptionLabel field={field} fieldSchema={schema} /> }
+            ? { id: field, label: <DatasetFieldLabel field={field} fieldSchema={schema} /> }
             : []
         })
       : []
