@@ -171,6 +171,13 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
       const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
       const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
 
+      const annotationFeature = hoveredTooltipEvent.features.find(
+        (f) => f.type === GeneratorType.Annotation
+      )
+      if (annotationFeature) {
+        return 'all-scroll'
+      }
+
       const clusterFeature = hoveredTooltipEvent.features.find(
         (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
       )

@@ -15,6 +15,7 @@ import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { WORKSPACE_GENERATOR_ID, REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
+import AnnotationTooltip from 'features/map/popups/AnnotationTooltip'
 import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.slice'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
@@ -154,6 +155,9 @@ function PopupWrapper({
                 const areaBufferFeatures = features.filter(
                   (feature) => feature.source === REPORT_BUFFER_GENERATOR_ID
                 )
+                const annotationFeatures = features.filter(
+                  (feature) => feature.type === GeneratorType.Annotation
+                )
                 return (
                   <Fragment key={featureCategory}>
                     <UserPointsTooltipSection
@@ -162,6 +166,7 @@ function PopupWrapper({
                     />
                     <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
                     <ReportBufferTooltip features={areaBufferFeatures} />
+                    <AnnotationTooltip features={annotationFeatures} />
                     <UserContextTooltipSection
                       features={userContextFeatures}
                       showFeaturesDetails={type === 'click'}

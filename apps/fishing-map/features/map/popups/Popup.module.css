@@ -38,6 +38,10 @@
   padding-left: 2.5rem;
 }
 
+.withoutIcon {
+  padding-left: var(--space-XS);
+}
+
 .popupSection:not(:last-child) {
   border-bottom: none;
 }
