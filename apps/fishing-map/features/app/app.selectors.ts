@@ -425,6 +425,10 @@ export const selectWorkspaceAppState = createSelector(
   [
     selectActivityCategory,
     selectBivariateDataviews,
+    selectMapAnnotations,
+    selectAreMapAnnotationsVisible,
+    selectMapRulers,
+    selectAreMapRulersVisible,
     selectSidebarOpen,
     selectTimebarGraph,
     selectTimebarSelectedEnvId,
@@ -435,6 +439,10 @@ export const selectWorkspaceAppState = createSelector(
   (
     activityCategory,
     bivariateDataviews,
+    mapAnnotations,
+    mapAnnotationsVisible,
+    mapRulers,
+    mapRulersVisible,
     sidebarOpen,
     timebarGraph,
     timebarSelectedEnvId,
@@ -445,6 +453,10 @@ export const selectWorkspaceAppState = createSelector(
     return {
       activityCategory,
       bivariateDataviews,
+      mapAnnotations,
+      mapAnnotationsVisible,
+      mapRulers,
+      mapRulersVisible,
       sidebarOpen,
       timebarGraph,
       timebarSelectedEnvId,
