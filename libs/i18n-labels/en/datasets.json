@@ -2261,7 +2261,7 @@
       "htime": "htime",
       "ssvid": "ssvid",
       "matched": {
-        "keyword": "Matching",
+        "keyword": "Matching AIS vessels",
         "enum": {
           "true": true,
           "false": false
