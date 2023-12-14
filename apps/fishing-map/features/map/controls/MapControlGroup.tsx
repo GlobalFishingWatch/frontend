@@ -32,12 +32,12 @@ function MapControlGroup({
     <ul className={cx(styles.container, { [styles.active]: active })}>
       <li>
         <IconButton
-          icon={icon}
+          icon={active ? 'edit-off' : icon}
           disabled={disabled}
           type="map-tool"
           tooltip={tooltip}
           onClick={onClick}
-        ></IconButton>
+        />
       </li>
       {expanded && (
         <Fragment>
@@ -49,7 +49,7 @@ function MapControlGroup({
                 type="map-tool"
                 tooltip={t('common.toggleVisibility', 'Toggle visibility')}
                 onClick={onVisibilityClick}
-              ></IconButton>
+              />
             </li>
           )}
           {onResetClick && (
@@ -60,7 +60,7 @@ function MapControlGroup({
                 type="map-tool"
                 tooltip={t('common.reset', 'Reset')}
                 onClick={onResetClick}
-              ></IconButton>
+              />
             </li>
           )}
         </Fragment>

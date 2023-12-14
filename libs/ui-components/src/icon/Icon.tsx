@@ -30,6 +30,7 @@ import { ReactComponent as Download } from '../assets/icons/download.svg'
 import { ReactComponent as Drag } from '../assets/icons/drag.svg'
 import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Edit } from '../assets/icons/edit.svg'
+import { ReactComponent as EditOff } from '../assets/icons/edit-off.svg'
 import { ReactComponent as Email } from '../assets/icons/email.svg'
 import { ReactComponent as Encounters } from '../assets/icons/encounters.svg'
 import { ReactComponent as EventLegendEncounter } from '../assets/icons/event-legend-encounter.svg'
@@ -146,6 +147,7 @@ export const IconComponents = {
   drag: Drag,
   draw: Draw,
   edit: Edit,
+  'edit-off': EditOff,
   email: Email,
   encounters: Encounters,
   feedback: Feedback,
