@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
-import { useLocalStorage, useMemoCompare } from '@globalfishingwatch/react-hooks'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectReportBufferOperation,
@@ -29,7 +29,6 @@ import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewp
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import { HighlightedAreaParams, useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
@@ -91,7 +90,7 @@ export function useFitAreaInViewport() {
 export const COARSE_SIMPLIFY_TOLERANCE = 0.1
 export const FINE_SIMPLIFY_TOLERANCE = 0.001
 
-export function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
+export function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview | undefined) {
   return dataview?.slug === RFMO_DATAVIEW_SLUG ? COARSE_SIMPLIFY_TOLERANCE : FINE_SIMPLIFY_TOLERANCE
 }
 
@@ -104,7 +103,7 @@ export function useFetchReportArea() {
   const areaDataview = useSelector(selectReportAreaDataview)
 
   useEffect(() => {
-    if (reportAreaDataset && areaId && areaDataview) {
+    if (reportAreaDataset && areaId) {
       const simplify = getSimplificationByDataview(areaDataview)
       dispatch(
         fetchAreaDetailThunk({
