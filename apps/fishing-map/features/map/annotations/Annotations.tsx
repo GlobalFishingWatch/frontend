@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import { Popup } from 'react-map-gl'
 import { useTranslation } from 'react-i18next'
 import { KeyboardEventHandler } from 'react'
@@ -10,12 +9,9 @@ import {
   InputText,
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
-import {
-  useMapAnnotation,
-  useMapAnnotations,
-  DEFAUL_ANNOTATION_COLOR,
-} from 'features/map/annotations/annotations.hooks'
+import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
 import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
+import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { selectMapAnnotation } from './annotations.slice'
 import styles from './Annotations.module.css'
 
@@ -58,7 +54,7 @@ const MapAnnotations = () => {
       closeOnClick={false}
       onClose={resetMapAnnotation}
       maxWidth="330px"
-      className={cx(styles.popup)}
+      className={styles.popup}
     >
       <div className={styles.popupContent}>
         <div className={styles.flex}>

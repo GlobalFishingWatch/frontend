@@ -5,14 +5,13 @@ import { MapAnnotation } from '@globalfishingwatch/layer-composer'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapAnnotationsVisible, selectMapAnnotations } from 'features/app/app.selectors'
+import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import {
   setMapAnnotating,
   selectIsMapAnnotating,
   resetMapAnnotation as resetMapAnnotationAction,
   setMapAnnotation as setMapAnnotationAction,
 } from './annotations.slice'
-
-export const DEFAUL_ANNOTATION_COLOR = '#ffffff'
 
 /**
  * Hook used only for the temporal annotation stored into the slice before confirming
