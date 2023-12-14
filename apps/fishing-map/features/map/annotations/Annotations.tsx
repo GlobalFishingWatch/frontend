@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { Popup } from 'react-map-gl'
 import { useTranslation } from 'react-i18next'
+import { KeyboardEventHandler } from 'react'
 import {
   Button,
   ColorBar,
@@ -43,6 +44,11 @@ const MapAnnotations = () => {
     })
     resetMapAnnotation()
   }
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === 'Enter') {
+      onConfirmClick()
+    }
+  }
 
   return (
     <Popup
@@ -60,6 +66,7 @@ const MapAnnotations = () => {
             value={mapAnnotation.label}
             onChange={(e) => setMapAnnotation({ label: e.target.value })}
             placeholder={t('map.annotationPlaceholder', 'Type something here')}
+            onKeyDown={handleKeyDown}
           />
           <ColorBar
             colorBarOptions={colors}

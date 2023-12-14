@@ -30,7 +30,7 @@ const Rulers = () => {
       expanded={rulers?.length > 0}
       tooltip={
         rulersEditing
-          ? t('map.rulersStop', 'Stop measures')
+          ? t('map.rulersStop', 'Stop editing measures')
           : t('map.rulers_add', 'Measure distance')
       }
       onClick={onToggleClick}

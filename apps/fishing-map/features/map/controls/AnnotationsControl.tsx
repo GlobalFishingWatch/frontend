@@ -45,7 +45,7 @@ const MapAnnotationsControls = () => {
       expanded={mapAnnotations?.length > 0}
       tooltip={
         isAnnotating
-          ? t('map.annotationsStop', 'Stop annotations')
+          ? t('map.annotationsStop', 'Stop editing annotations')
           : t('map.annotationsAdd', 'Add annotation')
       }
       onClick={onToggleClick}
