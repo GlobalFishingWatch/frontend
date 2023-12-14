@@ -2328,6 +2328,21 @@
       }
     }
   },
+  "public-global-sst-anomalies-max": {
+    "name": "crwdns70290:0crwdne70290:0",
+    "description": "crwdns70292:0crwdne70292:0",
+    "schema": {}
+  },
+  "public-global-sst-anomalies-min": {
+    "name": "crwdns70294:0crwdne70294:0",
+    "description": "crwdns70296:0crwdne70296:0",
+    "schema": {}
+  },
+  "public-global-sst-anomalies": {
+    "name": "crwdns70298:0crwdne70298:0",
+    "description": "crwdns70300:0crwdne70300:0",
+    "schema": {}
+  },
   "public-global-support-vessels": {
     "name": "crwdns66513:0crwdne66513:0",
     "description": "crwdns66515:0crwdne66515:0",
