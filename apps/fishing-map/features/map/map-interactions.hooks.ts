@@ -9,6 +9,7 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyle, ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
 import {
@@ -26,6 +27,7 @@ import { getEventLabel } from 'utils/analytics'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
 import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
+import { ANNOTATIONS_GENERATOR_ID } from 'features/map/map.config'
 import { SliceInteractionEvent } from './map.slice'
 
 export const useMapMouseHover = (style?: ExtendedStyle) => {
@@ -51,7 +53,7 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
   )
 
   const onMouseMove: any = useCallback(
-    (event: any) => {
+    (event: MapLayerMouseEvent) => {
       if (isMapDrawing || isMapAnnotating) {
         return onSimpleMapHover(event)
       }
@@ -118,7 +120,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
   }, [clickedEvent, clickedTooltipEvent])
 
   const onMapClick = useCallback(
-    (event: any) => {
+    (event: MapLayerMouseEvent) => {
       trackEvent({
         category: TrackCategory.EnvironmentalData,
         action: `Click in grid cell`,
@@ -133,19 +135,25 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       if (isMapAnnotating) {
         return addMapAnnotation(event)
       }
-      onClick(event)
+      // Filtering out features that are not annotations when clickin on one to avoid double tooltips
+      const annotationFeature = event.features?.find((f) => f.source === ANNOTATIONS_GENERATOR_ID)
+      onClick({
+        ...event,
+        features: annotationFeature ? [annotationFeature] : event.features,
+      } as MapLayerMouseEvent)
     },
     [
       clickedCellLayers,
-      isMapAnnotating,
       isMapDrawing,
       isMarineManagerLocation,
-      addMapAnnotation,
+      rulersEditing,
+      isMapAnnotating,
       onClick,
       onRulerMapClick,
-      rulersEditing,
+      addMapAnnotation,
     ]
-  )
+    // this stops complaining between typings in mapbox-gl and maplibre-gl
+  ) as (e: any) => void
 
   return { onMapClick, clickedTooltipEvent }
 }
