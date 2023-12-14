@@ -103,7 +103,7 @@ export function useFetchReportArea() {
   const areaDataview = useSelector(selectReportAreaDataview)
 
   useEffect(() => {
-    if (reportAreaDataset && areaId) {
+    if (reportAreaDataset && areaId && areaDataview) {
       const simplify = getSimplificationByDataview(areaDataview)
       dispatch(
         fetchAreaDetailThunk({

@@ -34,7 +34,6 @@ import {
   getReportCategoryFromDataview,
 } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
-import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
 import { sortStrings } from 'utils/shared'
@@ -44,6 +43,7 @@ import {
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
 } from 'features/reports/reports.config'
+import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
 
 export type ReportVesselWithMeta = ReportVessel & {
@@ -88,9 +88,9 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
 )
 
 export const selectReportAreaDataview = createSelector(
-  [selectContextAreasDataviews, selectReportDatasetId],
-  (contextDataviews, datasetId) => {
-    const areaDataview = contextDataviews?.find((dataview) => {
+  [selectDataviewInstancesResolved, selectReportDatasetId],
+  (dataviewsInstances, datasetId) => {
+    const areaDataview = dataviewsInstances?.find((dataview) => {
       return dataview.datasets?.some((dataset) => dataset.id === datasetId)
     })
     return areaDataview
