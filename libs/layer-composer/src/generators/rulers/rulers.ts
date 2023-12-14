@@ -9,7 +9,7 @@ import { GeneratorType, RulersGeneratorConfig, Ruler } from '../types'
 
 const COLOR = '#ffaa00'
 
-const makeRulerGeometry = (ruler: Ruler): Feature<LineString> => {
+const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
   const { start, end, isNew } = ruler
   const rawFeature: Feature<LineString> = {
     type: 'Feature',
@@ -48,9 +48,7 @@ const makeRulerPointsGeometry = (ruler: Ruler): Feature<Point>[] => {
   return [
     {
       type: 'Feature',
-      properties: {
-        isNew,
-      },
+      properties: { isNew },
       geometry: {
         type: 'Point',
         coordinates: [start.longitude, start.latitude],
@@ -58,7 +56,7 @@ const makeRulerPointsGeometry = (ruler: Ruler): Feature<Point>[] => {
     },
     {
       type: 'Feature',
-      properties: {},
+      properties: { isNew },
       geometry: {
         type: 'Point',
         coordinates: [end.longitude, end.latitude],
@@ -70,7 +68,7 @@ const makeRulerPointsGeometry = (ruler: Ruler): Feature<Point>[] => {
 const getRulersGeojsons = (data: Ruler[]): Dictionary<FeatureCollection> => {
   const lines: FeatureCollection = {
     type: 'FeatureCollection',
-    features: data.map(makeRulerGeometry),
+    features: data.map(makeRulerLineGeometry),
   }
   const points: FeatureCollection = {
     type: 'FeatureCollection',

@@ -6,6 +6,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
 import MapControlGroup from 'features/map/controls/MapControlGroup'
 import { setRulersEditing } from 'features/map/rulers/rulers.slice'
+import useRulers from 'features/map/rulers/rulers.hooks'
 import useMapInstance from '../map-context.hooks'
 import { selectIsMapAnnotating, toggleMapAnnotating } from '../annotations/annotations.slice'
 
@@ -14,6 +15,7 @@ const MapAnnotationsControls = () => {
   const isAnnotating = useSelector(selectIsMapAnnotating)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { resetMapAnnotation } = useMapAnnotation()
+  const { rulersEditing } = useRulers()
   const {
     mapAnnotations,
     areMapAnnotationsVisible,
@@ -23,12 +25,14 @@ const MapAnnotationsControls = () => {
 
   const dispatch = useAppDispatch()
   const onToggleClick = useCallback(() => {
-    dispatch(setRulersEditing(false))
+    if (rulersEditing) {
+      dispatch(setRulersEditing(false))
+    }
     dispatch(toggleMapAnnotating())
     if (isAnnotating) {
       cleanFeatureState('click')
     }
-  }, [cleanFeatureState, dispatch, isAnnotating])
+  }, [cleanFeatureState, dispatch, isAnnotating, rulersEditing])
 
   const onRemoveClick = useCallback(() => {
     batch(() => {

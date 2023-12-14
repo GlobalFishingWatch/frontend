@@ -3,56 +3,40 @@ import { RootState } from 'reducers'
 import { Ruler } from '@globalfishingwatch/layer-composer'
 
 type RulersSlice = {
-  visible: boolean
   editing: boolean
-  drawing: boolean
-  rulers: Ruler[]
+  ruler: Partial<Ruler> | null
 }
 
 const initialState: RulersSlice = {
-  visible: false,
   editing: false,
-  drawing: false,
-  rulers: [],
+  ruler: null,
 }
 
 const slice = createSlice({
   name: 'rulers',
   initialState,
   reducers: {
-    editRuler: (state, action: PayloadAction<{ latitude: number; longitude: number }>) => {
-      if (!state.editing) {
-        return
-      }
-      if (state.drawing) {
-        const lastIndex = state.rulers.length - 1
-        state.rulers[lastIndex].isNew = true
-        state.drawing = false
-        state.visible = true
-        return
-      }
-      const newRuler: Ruler = {
+    setRuleStart: (state, action: PayloadAction<{ latitude: number; longitude: number }>) => {
+      state.ruler = {
+        isNew: true,
         start: {
           longitude: action.payload.longitude,
           latitude: action.payload.latitude,
         },
         end: {
-          longitude: action.payload.longitude + 0.000001,
-          latitude: action.payload.latitude + 0.000001,
+          longitude: action.payload.longitude + 0.00000001,
+          latitude: action.payload.latitude + 0.00000001,
         },
-        isNew: true,
       }
-      state.drawing = true
-      state.visible = true
-      state.rulers.push(newRuler)
     },
-    moveCurrentRuler: (state, action: PayloadAction<{ latitude: number; longitude: number }>) => {
-      if (!state.drawing || !state.editing || !state.rulers.length) {
+    setRuleEnd: (state, action: PayloadAction<{ latitude: number; longitude: number }>) => {
+      if (!state.editing || !state.ruler?.start) {
         return
       }
-      const lastIndex = state.rulers.length - 1
-      state.rulers[lastIndex].end.longitude = action.payload.longitude
-      state.rulers[lastIndex].end.latitude = action.payload.latitude
+      state.ruler.end = {
+        longitude: action.payload.longitude,
+        latitude: action.payload.latitude,
+      }
     },
     toggleRulersEditing: (state) => {
       state.editing = !state.editing
@@ -60,19 +44,16 @@ const slice = createSlice({
     setRulersEditing: (state, action) => {
       state.editing = action.payload
     },
-    resetRulers: (state) => {
-      state.visible = false
-      state.drawing = false
-      state.rulers = []
+    resetEditingRule: (state) => {
+      state.ruler = null
     },
   },
 })
 
-export const { editRuler, moveCurrentRuler, toggleRulersEditing, setRulersEditing, resetRulers } =
+export const { setRuleStart, setRuleEnd, toggleRulersEditing, setRulersEditing, resetEditingRule } =
   slice.actions
 
 export const selectEditing = (state: RootState) => state.rulers.editing
-export const selectNumRulers = (state: RootState) => state.rulers.rulers.length
-export const selectRulers = (state: RootState) => state.rulers.rulers
+export const selectEditingRuler = (state: RootState) => state.rulers.ruler as Ruler
 
 export default slice.reducer

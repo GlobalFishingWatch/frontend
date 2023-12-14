@@ -57,7 +57,6 @@ import {
 } from 'features/dataviews/dataviews.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 import { selectReportById } from 'features/reports/reports.slice'
-import { selectRulers } from 'features/map/rulers/rulers.slice'
 
 export const selectViewport = createSelector(
   [selectUrlViewport, selectWorkspaceViewport],
@@ -153,8 +152,15 @@ export const selectAreMapRulersVisible = createSelector(
   }
 )
 
+export const selectMapRulers = createSelector(
+  [selectWorkspaceStateProperty('mapRulers')],
+  (rulers = []): Ruler[] => {
+    return rulers
+  }
+)
+
 export const selectMapRulersVisible = createSelector(
-  [selectRulers, selectAreMapRulersVisible],
+  [selectMapRulers, selectAreMapRulersVisible],
   (rulers, areMapRulersVisible): Ruler[] => {
     return areMapRulersVisible ? rulers : []
   }

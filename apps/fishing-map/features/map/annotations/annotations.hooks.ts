@@ -50,6 +50,7 @@ export const useMapAnnotation = () => {
     resetMapAnnotation,
     setMapAnnotation,
     isMapAnnotating,
+    setMapAnnotating,
   }
 }
 

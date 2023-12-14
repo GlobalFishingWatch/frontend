@@ -25,7 +25,7 @@ import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces
 import { ResourcesState } from 'features/resources/resources.slice'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
-import { selectEditing } from 'features/map/rulers/rulers.slice'
+import { selectEditingRuler, selectEditing } from 'features/map/rulers/rulers.slice'
 import {
   selectHighlightedTime,
   selectHighlightedEvents,
@@ -70,6 +70,7 @@ type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
   resources: ResourcesState
   rulers: Ruler[]
+  editingRuler: Ruler | null
   annotations?: MapAnnotation[]
   debugOptions: DebugOptions
   timeRange: TimeRange
@@ -82,6 +83,7 @@ const getGeneratorsConfig = ({
   dataviews = [],
   resources,
   rulers,
+  editingRuler,
   annotations = [],
   debugOptions,
   timeRange,
@@ -148,6 +150,15 @@ const getGeneratorsConfig = ({
       }
       finalGenerators.push(rulersGeneratorConfig)
     }
+    // This way we avoid to re-compute the other rulers when editing
+    if (editingRuler) {
+      const rulersGeneratorConfig: AnyGeneratorConfig = {
+        type: GeneratorType.Rulers,
+        id: 'editing-ruler',
+        data: [editingRuler],
+      }
+      finalGenerators.push(rulersGeneratorConfig)
+    }
     if (annotations?.length) {
       const annotationsGeneratorConfig: AnyGeneratorConfig = {
         type: GeneratorType.Annotation,
@@ -168,6 +179,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectDataviewInstancesResolvedVisible,
     selectVisibleResources,
     selectMapRulersVisible,
+    selectEditingRuler,
     selectMapAnnotationsVisible,
     selectDebugOptions,
     selectHighlightedTime,
@@ -180,6 +192,7 @@ const selectMapGeneratorsConfig = createSelector(
     dataviews = [],
     resources,
     rulers,
+    editingRuler,
     annotations,
     debugOptions,
     highlightedTime,
@@ -192,6 +205,7 @@ const selectMapGeneratorsConfig = createSelector(
       dataviews,
       resources,
       rulers,
+      editingRuler,
       annotations,
       debugOptions,
       highlightedTime,
@@ -209,6 +223,7 @@ const selectStaticGeneratorsConfig = createSelector(
     selectDataviewInstancesResolvedVisible,
     selectVisibleResources,
     selectMapRulersVisible,
+    selectEditingRuler,
     selectMapAnnotationsVisible,
     selectDebugOptions,
     selectBivariateDataviews,
@@ -219,6 +234,7 @@ const selectStaticGeneratorsConfig = createSelector(
     dataviews = [],
     resources,
     rulers,
+    editingRuler,
     annotations,
     debugOptions,
     bivariateDataviews,
@@ -230,6 +246,7 @@ const selectStaticGeneratorsConfig = createSelector(
       dataviews,
       resources,
       rulers,
+      editingRuler,
       annotations,
       debugOptions,
       bivariateDataviews,
