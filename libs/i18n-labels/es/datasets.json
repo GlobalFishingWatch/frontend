@@ -2328,6 +2328,21 @@
       }
     }
   },
+  "public-global-sst-anomalies-max": {
+    "name": "Sea Surface Temperatures anomalies (Max)",
+    "description": "Sea surface temperatures anomalies (Max)",
+    "schema": {}
+  },
+  "public-global-sst-anomalies-min": {
+    "name": "Sea Surface Temperatures anomalies (Min)",
+    "description": "Sea surface temperatures anomalies (Max)",
+    "schema": {}
+  },
+  "public-global-sst-anomalies": {
+    "name": "Sea Surface Temperatures anomalies",
+    "description": "Sea surface temperatures anomalies (Mean)",
+    "schema": {}
+  },
   "public-global-support-vessels": {
     "name": "AIS (Buques de soporte)",
     "description": "Support vessels from AIS",
