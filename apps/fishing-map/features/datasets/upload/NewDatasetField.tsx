@@ -11,7 +11,7 @@ import styles from './NewDataset.module.css'
 type NewDatasetFieldProps = {
   datasetMetadata: DatasetMetadata
   property: VesselConfigurationProperty
-  editable: boolean
+  editable?: boolean | undefined
   label?: string
   placeholder?: string
   onSelect: SelectOnChange
@@ -21,7 +21,7 @@ type NewDatasetFieldProps = {
 export function NewDatasetField({
   datasetMetadata,
   property,
-  editable,
+  editable = true,
   label,
   placeholder,
   onSelect,
@@ -62,7 +62,7 @@ export function NewDatasetField({
     <InputText
       value={getDatasetConfigurationProperty({
         dataset: datasetMetadata,
-        property: 'timestamp',
+        property,
       })}
       label={label}
       className={styles.input}
