@@ -80,7 +80,11 @@ const MapAnnotations = () => {
           {mapAnnotation.id && (
             <IconButton icon="delete" type="warning-border" onClick={onDeleteClick} />
           )}
-          <Button onClick={onConfirmClick} className={styles.confirmBtn}>
+          <Button
+            onClick={onConfirmClick}
+            className={styles.confirmBtn}
+            disabled={!mapAnnotation.label}
+          >
             {t('common.confirm', 'Confirm')}
           </Button>
         </div>
