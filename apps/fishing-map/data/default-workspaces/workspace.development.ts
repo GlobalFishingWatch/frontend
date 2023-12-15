@@ -98,6 +98,14 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
+      id: 'vessels-speed',
+      config: {
+        visible: true,
+      },
+      dataviewId: 11111111,
+      datasetsConfig: [],
+    },
+    {
       id: ENCOUNTER_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
       config: {
