@@ -506,6 +506,7 @@
   "map": {
     "annotationPlaceholder": "Type something here",
     "annotationsAdd": "Add annotation",
+    "annotationsDelete": "Delete all annotations",
     "annotationsHover": "Drag to move or click to edit annotation",
     "annotationsStop": "Stop annotations",
     "captureMap": "Capture map",
@@ -516,6 +517,7 @@
     "mapLoadingWait": "Please wait until map loads",
     "rulers_add": "Add rulers",
     "rulersStop": "Stop measures",
+    "rulersDelete": "Delete all measures",
     "search": "Search ocean and sea areas, MPAs or EEZs",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"

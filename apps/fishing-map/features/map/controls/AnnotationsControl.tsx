@@ -14,7 +14,7 @@ const MapAnnotationsControls = () => {
   const { t } = useTranslation()
   const isAnnotating = useSelector(selectIsMapAnnotating)
   const { cleanFeatureState } = useFeatureState(useMapInstance())
-  const { resetMapAnnotation } = useMapAnnotation()
+  const { setMapAnnotating, resetMapAnnotation } = useMapAnnotation()
   const { rulersEditing } = useRulers()
   const {
     mapAnnotations,
@@ -37,9 +37,10 @@ const MapAnnotationsControls = () => {
   const onRemoveClick = useCallback(() => {
     batch(() => {
       resetMapAnnotation()
+      setMapAnnotating(false)
       cleanMapAnnotations()
     })
-  }, [cleanMapAnnotations, resetMapAnnotation])
+  }, [cleanMapAnnotations, resetMapAnnotation, setMapAnnotating])
 
   return (
     <MapControlGroup
@@ -47,14 +48,15 @@ const MapAnnotationsControls = () => {
       active={isAnnotating}
       visible={areMapAnnotationsVisible}
       expanded={mapAnnotations?.length > 0}
-      tooltip={
+      editTooltip={
         isAnnotating
           ? t('map.annotationsStop', 'Stop editing annotations')
           : t('map.annotationsAdd', 'Add annotation')
       }
+      deleteTooltip={t('map.annotationsDelete', 'Delete all annotations')}
       onClick={onToggleClick}
       onVisibilityClick={toggleMapAnnotationsVisibility}
-      onResetClick={onRemoveClick}
+      onDeleteClick={onRemoveClick}
     />
   )
 }

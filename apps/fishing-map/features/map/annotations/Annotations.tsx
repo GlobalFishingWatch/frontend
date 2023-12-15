@@ -12,6 +12,7 @@ import {
 import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
 import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
+import { useLocationConnect } from 'routes/routes.hook'
 import { selectMapAnnotation } from './annotations.slice'
 import styles from './Annotations.module.css'
 
@@ -21,6 +22,7 @@ const MapAnnotations = () => {
   useMapAnnotationDrag()
   const { t } = useTranslation()
   const mapAnnotation = useSelector(selectMapAnnotation)
+  const { dispatchQueryParams } = useLocationConnect()
   const { resetMapAnnotation, setMapAnnotation } = useMapAnnotation()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
 
@@ -39,7 +41,9 @@ const MapAnnotations = () => {
       id: mapAnnotation.id || Date.now(),
     })
     resetMapAnnotation()
+    dispatchQueryParams({ mapAnnotationsVisible: true })
   }
+
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === 'Enter') {
       onConfirmClick()

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { MapAnnotation } from '@globalfishingwatch/layer-composer'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -7,8 +7,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapAnnotationsVisible, selectMapAnnotations } from 'features/app/app.selectors'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import {
-  setMapAnnotating,
   selectIsMapAnnotating,
+  setMapAnnotating as setMapAnnotatingAction,
   resetMapAnnotation as resetMapAnnotationAction,
   setMapAnnotation as setMapAnnotationAction,
 } from './annotations.slice'
@@ -21,11 +21,15 @@ export const useMapAnnotation = () => {
   const isMapAnnotating = useSelector(selectIsMapAnnotating)
 
   const resetMapAnnotation = useCallback(() => {
-    batch(() => {
-      dispatch(resetMapAnnotationAction())
-      dispatch(setMapAnnotating(false))
-    })
+    dispatch(resetMapAnnotationAction())
   }, [dispatch])
+
+  const setMapAnnotating = useCallback(
+    (annotating: boolean) => {
+      dispatch(setMapAnnotatingAction(annotating))
+    },
+    [dispatch]
+  )
 
   const setMapAnnotation = useCallback(
     (annotation: Partial<MapAnnotation>) => {

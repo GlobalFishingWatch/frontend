@@ -1,5 +1,4 @@
 import cx from 'classnames'
-import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconButton, IconType } from '@globalfishingwatch/ui-components'
 import styles from './MapControlGroup.module.css'
@@ -9,11 +8,12 @@ type MapControlGroupProps = {
   active: boolean
   expanded: boolean
   visible: boolean
-  tooltip: string
+  editTooltip: string
+  deleteTooltip?: string
   disabled?: boolean
   onClick: () => void
   onVisibilityClick?: () => void
-  onResetClick?: () => void
+  onDeleteClick?: () => void
 }
 
 function MapControlGroup({
@@ -21,10 +21,11 @@ function MapControlGroup({
   visible,
   active,
   expanded,
-  tooltip,
+  editTooltip,
+  deleteTooltip,
   disabled,
   onClick,
-  onResetClick,
+  onDeleteClick,
   onVisibilityClick,
 }: MapControlGroupProps) {
   const { t } = useTranslation()
@@ -35,35 +36,31 @@ function MapControlGroup({
           icon={active ? 'edit-off' : icon}
           disabled={disabled}
           type="map-tool"
-          tooltip={tooltip}
+          tooltip={editTooltip}
           onClick={onClick}
         />
       </li>
-      {expanded && (
-        <Fragment>
-          {onVisibilityClick && (
-            <li>
-              <IconButton
-                icon={visible ? 'visibility-off' : 'visibility-on'}
-                disabled={disabled}
-                type="map-tool"
-                tooltip={t('common.toggleVisibility', 'Toggle visibility')}
-                onClick={onVisibilityClick}
-              />
-            </li>
-          )}
-          {onResetClick && (
-            <li>
-              <IconButton
-                icon={'delete'}
-                disabled={disabled}
-                type="map-tool"
-                tooltip={t('common.reset', 'Reset')}
-                onClick={onResetClick}
-              />
-            </li>
-          )}
-        </Fragment>
+      {onVisibilityClick && (
+        <li className={cx(styles.expandedAction, { [styles.visible]: expanded })}>
+          <IconButton
+            icon={visible ? 'visibility-off' : 'visibility-on'}
+            disabled={disabled}
+            type="map-tool"
+            tooltip={t('common.toggleVisibility', 'Toggle visibility')}
+            onClick={onVisibilityClick}
+          />
+        </li>
+      )}
+      {onDeleteClick && (
+        <li className={cx(styles.expandedAction, { [styles.visible]: expanded })}>
+          <IconButton
+            icon={'delete'}
+            disabled={disabled}
+            type="map-tool"
+            tooltip={deleteTooltip || t('common.delete', 'Delete')}
+            onClick={onDeleteClick}
+          />
+        </li>
       )}
     </ul>
   )

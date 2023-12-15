@@ -43,7 +43,10 @@ const useRulers = () => {
       if (!editingRuler) {
         dispatch(setRuleStart(point))
       } else {
-        dispatchQueryParams({ mapRulers: [...rulers, { ...editingRuler, isNew: false }] })
+        dispatchQueryParams({
+          mapRulers: [...rulers, { ...editingRuler, isNew: false }],
+          mapRulersVisible: true,
+        })
         dispatch(resetEditingRuleAction())
       }
     },

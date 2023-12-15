@@ -23,10 +23,6 @@ const slice = createSlice({
           longitude: action.payload.longitude,
           latitude: action.payload.latitude,
         },
-        end: {
-          longitude: action.payload.longitude + 0.00000001,
-          latitude: action.payload.latitude + 0.00000001,
-        },
       }
     },
     setRuleEnd: (state, action: PayloadAction<{ latitude: number; longitude: number }>) => {

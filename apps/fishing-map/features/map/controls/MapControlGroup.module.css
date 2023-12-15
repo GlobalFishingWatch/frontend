@@ -3,6 +3,7 @@
   background-color: var(--color-primary-blue);
   border-radius: var(--space-M);
   border: var(--border-white);
+  transition: var(--transition);
 }
 
 .container.active {
@@ -15,10 +16,20 @@
 .container button:focus,
 .container button:hover {
   border: none;
-  border-radius: 0;
   background: none;
+  box-shadow: none;
 }
 
 .container.active button {
   color: var(--color-primary-blue);
+}
+
+.expandedAction {
+  height: 0;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.expandedAction.visible {
+  height: var(--size-M);
 }
