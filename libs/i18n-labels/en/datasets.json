@@ -1945,6 +1945,20 @@
     "description": "",
     "schema": {}
   },
+  "public-fixed-infrastructure": {
+    "name": "Fixed infrastructure",
+    "description": "SAR identified fixed infrastructure",
+    "schema": {
+      "label": {
+        "keyword": "label",
+        "enum": {
+          "oil": "oil",
+          "wind": "wind",
+          "unknown": "unknown"
+        }
+      }
+    }
+  },
   "public-global-all-tracks": {
     "name": "Tracks",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 20231026",
@@ -2889,8 +2903,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "Panama VMS (Public Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Public)",
+    "name": "Panama VMS (Public Non fishing vessels)",
+    "description": "Dataset for VMS Panama - Carriers (Public)",
     "schema": {
       "id": "id",
       "selfReportedInfo": "selfReportedInfo",
