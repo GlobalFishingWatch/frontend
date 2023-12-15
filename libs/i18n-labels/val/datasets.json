@@ -1945,6 +1945,20 @@
     "description": "crwdns66113:0crwdne66113:0",
     "schema": {}
   },
+  "public-fixed-infrastructure": {
+    "name": "crwdns70318:0crwdne70318:0",
+    "description": "crwdns70320:0crwdne70320:0",
+    "schema": {
+      "label": {
+        "keyword": "crwdns70322:0crwdne70322:0",
+        "enum": {
+          "oil": "crwdns70324:0crwdne70324:0",
+          "wind": "crwdns70326:0crwdne70326:0",
+          "unknown": "crwdns70328:0crwdne70328:0"
+        }
+      }
+    }
+  },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
     "description": "crwdns69890:0crwdne69890:0",
@@ -2889,8 +2903,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "crwdns70314:0crwdne70314:0",
-    "description": "crwdns70316:0crwdne70316:0",
+    "name": "crwdns70330:0crwdne70330:0",
+    "description": "crwdns70332:0crwdne70332:0",
     "schema": {
       "id": "crwdns69176:0crwdne69176:0",
       "selfReportedInfo": "crwdns69178:0crwdne69178:0",
