@@ -2264,7 +2264,7 @@
   },
   "public-global-sar-presence": {
     "name": "crwdns69930:0crwdne69930:0",
-    "description": "crwdns70284:0crwdne70284:0",
+    "description": "crwdns70350:0crwdne70350:0",
     "schema": {
       "id": "crwdns66489:0crwdne66489:0",
       "lat": "crwdns66491:0crwdne66491:0",
@@ -2903,8 +2903,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "crwdns70346:0crwdne70346:0",
-    "description": "crwdns70348:0crwdne70348:0",
+    "name": "crwdns70352:0crwdne70352:0",
+    "description": "crwdns70354:0crwdne70354:0",
     "schema": {
       "id": "crwdns69176:0crwdne69176:0",
       "selfReportedInfo": "crwdns69178:0crwdne69178:0",
