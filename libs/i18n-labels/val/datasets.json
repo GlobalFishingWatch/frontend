@@ -1945,6 +1945,20 @@
     "description": "crwdns66113:0crwdne66113:0",
     "schema": {}
   },
+  "public-fixed-infrastructure-1702564139432": {
+    "name": "crwdns70302:0crwdne70302:0",
+    "description": "crwdns70304:0crwdne70304:0",
+    "schema": {
+      "label": {
+        "keyword": "crwdns70306:0crwdne70306:0",
+        "enum": {
+          "oil": "crwdns70308:0crwdne70308:0",
+          "wind": "crwdns70310:0crwdne70310:0",
+          "unknown": "crwdns70312:0crwdne70312:0"
+        }
+      }
+    }
+  },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
     "description": "crwdns69890:0crwdne69890:0",
