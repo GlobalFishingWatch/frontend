@@ -1945,20 +1945,6 @@
     "description": "",
     "schema": {}
   },
-  "public-fixed-infrastructure-1702564139432": {
-    "name": "Fixed infrastructure",
-    "description": "SAR identified fixed infrastructure",
-    "schema": {
-      "label": {
-        "keyword": "label",
-        "enum": {
-          "oil": "oil",
-          "wind": "wind",
-          "unknown": "unknown"
-        }
-      }
-    }
-  },
   "public-global-all-tracks": {
     "name": "Trayectorias",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 20231026",
