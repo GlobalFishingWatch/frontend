@@ -60,6 +60,7 @@ class AnnotationsGenerator {
         metadata: {
           group: Group.Tool,
           interactive: true,
+          stopPropagation: true,
         },
       },
     ]
