@@ -56,6 +56,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     () => [
       { field: 'type', label: t('layer.type', 'Type') },
       { field: 'flag', label: t('layer.flagState', 'Flags') },
+      { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
       { field: 'speed', label: t('layer.speed', 'Speed') },
     ],
     [t]

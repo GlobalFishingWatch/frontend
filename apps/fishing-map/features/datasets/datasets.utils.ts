@@ -68,6 +68,7 @@ export type SupportedActivityDatasetSchema =
   | 'imo'
   | 'label'
 
+// Speed flag and vessels only added to debug purposes of vessel speed dataset
 export type SupportedEnvDatasetSchema = 'type' | 'speed' | 'flag' | 'vessel_type'
 export type SupportedContextDatasetSchema = 'removal_of'
 export type SupportedEventsDatasetSchema = 'duration'
@@ -105,7 +106,10 @@ export const getFileTypes = (datasetGeometryType: DatasetGeometryTypesSupported)
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   !(dataset?.id || '').startsWith(`${PUBLIC_SUFIX}-`)
 
-const GFW_ONLY_DATASETS = ['private-global-other-vessels:v20201001']
+const GFW_ONLY_DATASETS = [
+  'private-global-other-vessels:v20201001',
+  'public-global-presence-speed:v20231026',
+]
 
 export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
   GFW_ONLY_DATASETS.includes(dataset?.id || '')
@@ -538,14 +542,18 @@ export const getIncompatibleFilterSelection = (
   })
 }
 
+export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
+  return dataview.category === DataviewCategory.Activity ||
+    dataview.category === DataviewCategory.Detections
+    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+    : dataview?.datasets
+}
+
 const getCommonSchemaTypeInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
-  const activeDatasets =
-    dataview.category === DataviewCategory.Context || dataview.category === DataviewCategory.Events
-      ? dataview.datasets
-      : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+  const activeDatasets = getActiveDatasetsInDataview(dataview)
   const datasetSchemas = activeDatasets
     ?.map((d) => getDatasetSchemaItem(d, schema)?.type)
     .filter(Boolean)
@@ -558,13 +566,6 @@ export type SchemaFieldSelection = {
 }
 
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
-
-export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
-  return dataview.category === DataviewCategory.Context ||
-    dataview.category === DataviewCategory.Events
-    ? dataview?.datasets
-    : dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
-}
 
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
@@ -630,10 +631,11 @@ export const getSchemaOptionsSelectedInDataview = (
   schema: SupportedDatasetSchema,
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
 ) => {
+  const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
   if (schema === 'flag') {
     return getFlagsByIds(dataview.config?.filters?.flag || [])
   }
-  if ((schema === 'radiance' || schema === 'duration') && dataview.config?.filters?.[schema]) {
+  if (schemaType === 'range' && dataview.config?.filters?.[schema]) {
     return dataview.config?.filters?.[schema]?.map((o: string) => [
       {
         id: o.toString(),

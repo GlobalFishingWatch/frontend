@@ -102,7 +102,7 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         visible: true,
       },
-      dataviewId: 11111111,
+      dataviewId: 'vessel-speed',
       datasetsConfig: [],
     },
     {
