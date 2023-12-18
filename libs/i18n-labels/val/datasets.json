@@ -1945,6 +1945,20 @@
     "description": "crwdns66113:0crwdne66113:0",
     "schema": {}
   },
+  "public-fixed-infrastructure": {
+    "name": "crwdns70318:0crwdne70318:0",
+    "description": "crwdns70320:0crwdne70320:0",
+    "schema": {
+      "label": {
+        "keyword": "crwdns70322:0crwdne70322:0",
+        "enum": {
+          "oil": "crwdns70324:0crwdne70324:0",
+          "wind": "crwdns70326:0crwdne70326:0",
+          "unknown": "crwdns70328:0crwdne70328:0"
+        }
+      }
+    }
+  },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
     "description": "crwdns69890:0crwdne69890:0",
@@ -2250,7 +2264,7 @@
   },
   "public-global-sar-presence": {
     "name": "crwdns69930:0crwdne69930:0",
-    "description": "crwdns66487:0crwdne66487:0",
+    "description": "crwdns70350:0crwdne70350:0",
     "schema": {
       "id": "crwdns66489:0crwdne66489:0",
       "lat": "crwdns66491:0crwdne66491:0",
@@ -2327,6 +2341,21 @@
         }
       }
     }
+  },
+  "public-global-sst-anomalies-max": {
+    "name": "crwdns70290:0crwdne70290:0",
+    "description": "crwdns70292:0crwdne70292:0",
+    "schema": {}
+  },
+  "public-global-sst-anomalies-min": {
+    "name": "crwdns70294:0crwdne70294:0",
+    "description": "crwdns70296:0crwdne70296:0",
+    "schema": {}
+  },
+  "public-global-sst-anomalies": {
+    "name": "crwdns70298:0crwdne70298:0",
+    "description": "crwdns70300:0crwdne70300:0",
+    "schema": {}
   },
   "public-global-support-vessels": {
     "name": "crwdns66513:0crwdne66513:0",
@@ -2874,8 +2903,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "crwdns70280:0crwdne70280:0",
-    "description": "crwdns70282:0crwdne70282:0",
+    "name": "crwdns70364:0crwdne70364:0",
+    "description": "crwdns70366:0crwdne70366:0",
     "schema": {
       "id": "crwdns69176:0crwdne69176:0",
       "selfReportedInfo": "crwdns69178:0crwdne69178:0",

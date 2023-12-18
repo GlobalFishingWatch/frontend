@@ -68,7 +68,7 @@ export type SupportedActivityDatasetSchema =
   | 'imo'
   | 'label'
 
-export type SupportedEnvDatasetSchema = 'type'
+export type SupportedEnvDatasetSchema = 'type' | 'speed' | 'flag' | 'vessel_type'
 export type SupportedContextDatasetSchema = 'removal_of'
 export type SupportedEventsDatasetSchema = 'duration'
 
