@@ -10,7 +10,6 @@ import {
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
 import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
-import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectMapAnnotation } from './annotations.slice'
@@ -19,7 +18,6 @@ import styles from './Annotations.module.css'
 const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]
 
 const MapAnnotations = () => {
-  useMapAnnotationDrag()
   const { t } = useTranslation()
   const mapAnnotation = useSelector(selectMapAnnotation)
   const { dispatchQueryParams } = useLocationConnect()

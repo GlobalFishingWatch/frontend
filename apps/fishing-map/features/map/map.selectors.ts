@@ -61,6 +61,7 @@ import {
   ANNOTATIONS_GENERATOR_ID,
   PREVIEW_BUFFER_GENERATOR_ID,
   REPORT_BUFFER_GENERATOR_ID,
+  RULERS_GENERATOR_ID,
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
 } from './map.config'
@@ -144,7 +145,7 @@ const getGeneratorsConfig = ({
     if (rulers?.length) {
       const rulersGeneratorConfig: AnyGeneratorConfig = {
         type: GeneratorType.Rulers,
-        id: 'rulers',
+        id: RULERS_GENERATOR_ID,
         data: rulers,
       }
       finalGenerators.push(rulersGeneratorConfig)
@@ -153,7 +154,7 @@ const getGeneratorsConfig = ({
     if (editingRuler) {
       const rulersGeneratorConfig: AnyGeneratorConfig = {
         type: GeneratorType.Rulers,
-        id: 'editing-ruler',
+        id: `${RULERS_GENERATOR_ID}-editing`,
         data: [editingRuler],
       }
       finalGenerators.push(rulersGeneratorConfig)

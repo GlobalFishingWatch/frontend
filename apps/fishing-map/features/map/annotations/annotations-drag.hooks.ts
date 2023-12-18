@@ -8,8 +8,6 @@ import { ANNOTATIONS_GENERATOR_ID } from 'features/map/map.config'
 import { selectMapAnnotations } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 
-const ANNOTATIONS_LAYER_ID = `${ANNOTATIONS_GENERATOR_ID}-labels`
-
 export function useMapAnnotationDrag() {
   const map = useMapInstance()
   const annotations = useSelector(selectMapAnnotations)
@@ -69,10 +67,12 @@ export function useMapAnnotationDrag() {
 
   useEffect(() => {
     if (map) {
-      map.on('mousedown', ANNOTATIONS_LAYER_ID, onDown)
+      map.on('mousedown', ANNOTATIONS_GENERATOR_ID, onDown)
     }
     return () => {
-      map.off('mousedown', ANNOTATIONS_LAYER_ID, onDown)
+      if (map) {
+        map.off('mousedown', ANNOTATIONS_GENERATOR_ID, onDown)
+      }
     }
   }, [map, onDown])
 }

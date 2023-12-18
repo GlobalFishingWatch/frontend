@@ -41,7 +41,7 @@ class AnnotationsGenerator {
     const { id } = config
     const layers: Partial<LayerSpecification>[] = [
       {
-        id: `${id}-labels`,
+        id: id,
         source: id,
         type: 'symbol',
         layout: {

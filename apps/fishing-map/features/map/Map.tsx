@@ -35,6 +35,8 @@ import {
 } from 'features/map/map-interactions.hooks'
 import { selectIsMapInteractionDisabled } from 'features/map/map.selectors'
 import MapAnnotations from 'features/map/annotations/Annotations'
+import { useMapRulersDrag } from 'features/map/rulers/rulers-drag.hooks'
+import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
@@ -85,6 +87,8 @@ const MapWrapper = () => {
   useSetMapIdleAtom()
   useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
+  useMapRulersDrag()
+  useMapAnnotationDrag()
   const map = useMapInstance()
   const { isMapDrawing } = useMapDrawConnect()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()

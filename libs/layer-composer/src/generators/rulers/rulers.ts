@@ -8,6 +8,8 @@ import { Dictionary, Group } from '../../types'
 import { GeneratorType, RulersGeneratorConfig, Ruler } from '../types'
 
 const COLOR = '#ffaa00'
+export const RULER_INTERACTIVE_LAYER = 'points'
+export type RulerPointPosition = 'start' | 'end'
 
 const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
   const { start, end, isNew } = ruler
@@ -48,7 +50,7 @@ const makeRulerPointsGeometry = (ruler: Ruler): Feature<Point>[] => {
   return [
     {
       type: 'Feature',
-      properties: { isNew },
+      properties: { position: 'start' as RulerPointPosition, isNew },
       geometry: {
         type: 'Point',
         coordinates: [start.longitude, start.latitude],
@@ -56,7 +58,7 @@ const makeRulerPointsGeometry = (ruler: Ruler): Feature<Point>[] => {
     },
     {
       type: 'Feature',
-      properties: { isNew },
+      properties: { position: 'end' as RulerPointPosition, isNew },
       geometry: {
         type: 'Point',
         coordinates: [end.longitude, end.latitude],
@@ -94,8 +96,8 @@ class RulersGenerator {
 
     const { lines, points } = memoizeCache[config.id].getRulersGeojsons(data)
     return [
-      { id: `rulers-${id}-lines`, type: 'geojson', data: lines },
-      { id: `rulers-${id}-points`, type: 'geojson', data: points },
+      { id: `${id}-lines`, type: 'geojson', data: lines },
+      { id: `${id}-points`, type: 'geojson', data: points },
     ]
   }
 
@@ -103,8 +105,8 @@ class RulersGenerator {
     const { id } = config
     const layers: Partial<LayerSpecification>[] = [
       {
-        id: `rulers-${id}-lines`,
-        source: `rulers-${id}-lines`,
+        id: `${id}-lines`,
+        source: `${id}-lines`,
         type: 'line',
         metadata: {
           group: Group.Tool,
@@ -116,8 +118,8 @@ class RulersGenerator {
         },
       },
       {
-        id: `rulers-${id}-points`,
-        source: `rulers-${id}-points`,
+        id: `${id}-${RULER_INTERACTIVE_LAYER}`,
+        source: `${id}-points`,
         type: 'circle',
         paint: {
           'circle-radius': ['case', ['==', ['get', 'isNew'], true], 6, 3],
@@ -130,8 +132,8 @@ class RulersGenerator {
         },
       },
       {
-        id: `rulers-${id}-labels`,
-        source: `rulers-${id}-lines`,
+        id: `${id}-labels`,
+        source: `${id}-lines`,
         type: 'symbol',
         layout: {
           'text-field': '{label}',
