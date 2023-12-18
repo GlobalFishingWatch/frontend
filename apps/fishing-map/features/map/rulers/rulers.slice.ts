@@ -18,7 +18,7 @@ const slice = createSlice({
   reducers: {
     setRuleStart: (state, action: PayloadAction<{ latitude: number; longitude: number }>) => {
       state.ruler = {
-        isNew: true,
+        id: new Date().getTime(),
         start: {
           longitude: action.payload.longitude,
           latitude: action.payload.latitude,

@@ -155,9 +155,11 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
   return { onMapClick, clickedTooltipEvent }
 }
 
-const hasAnnotationFeature = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
+const hasToolFeature = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
   return (
-    hoveredTooltipEvent?.features.find((f) => f.type === GeneratorType.Annotation) !== undefined
+    hoveredTooltipEvent?.features.find(
+      (f) => f.type === GeneratorType.Annotation || f.type === GeneratorType.Rulers
+    ) !== undefined
   )
 }
 
@@ -171,23 +173,21 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
   const tilesClusterLoaded = useMapClusterTilesLoaded()
 
   const getCursor = useCallback(() => {
-    if (rulersEditing || isMapAnnotating) {
-      if (isMapAnnotating && hasAnnotationFeature(hoveredTooltipEvent)) {
-        return 'all-scroll'
-      }
+    if (hasToolFeature(hoveredTooltipEvent)) {
+      return 'all-scroll'
+    } else if (isMapAnnotating || rulersEditing) {
       return 'crosshair'
     } else if (isMapDrawing || isMarineManagerLocation) {
       // updating cursor using css at style.css as the library sets classes depending on the state
       return undefined
     } else if (hoveredTooltipEvent) {
+      if (hasToolFeature(hoveredTooltipEvent)) {
+        return 'all-scroll'
+      }
       // Workaround to fix cluster events duplicated, only working for encounters and needs
       // TODO if wanted to scale it to other layers
       const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
       const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
-
-      if (hasAnnotationFeature(hoveredTooltipEvent)) {
-        return 'all-scroll'
-      }
 
       const clusterFeature = hoveredTooltipEvent.features.find(
         (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount

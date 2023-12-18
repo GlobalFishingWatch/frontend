@@ -22,6 +22,7 @@ const useRulers = () => {
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onRulerMapHover = useCallback(
     throttle((event: MapLayerMouseEvent) => {
       dispatch(
@@ -44,7 +45,7 @@ const useRulers = () => {
         dispatch(setRuleStart(point))
       } else {
         dispatchQueryParams({
-          mapRulers: [...rulers, { ...editingRuler, isNew: false }],
+          mapRulers: [...rulers, { ...editingRuler }],
           mapRulersVisible: true,
         })
         dispatch(resetEditingRuleAction())

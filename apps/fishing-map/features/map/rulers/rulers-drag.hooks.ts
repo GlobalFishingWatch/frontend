@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import { MapGeoJSONFeature, MapMouseEvent } from '@globalfishingwatch/maplibre-gl'
-import { RULER_INTERACTIVE_LAYER, RulerPointPosition } from '@globalfishingwatch/layer-composer'
+import { RULER_INTERACTIVE_LAYER, RulerPointProperties } from '@globalfishingwatch/layer-composer'
 import useMapInstance from 'features/map/map-context.hooks'
 import { RULERS_GENERATOR_ID } from 'features/map/map.config'
 import { selectMapRulersVisible } from 'features/app/app.selectors'
@@ -15,7 +15,9 @@ export function useMapRulersDrag() {
   const rulers = useSelector(selectMapRulersVisible)
   const { dispatchQueryParams } = useLocationConnect()
 
-  const currentRuler = useRef<{ index: number; position: RulerPointPosition } | null>(null)
+  const currentRuler = useRef<{ index: number; position: RulerPointProperties['position'] } | null>(
+    null
+  )
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedUpdate = useCallback(
@@ -37,8 +39,6 @@ export function useMapRulersDrag() {
             ? { ...r, start: { longitude: lng, latitude: lat } }
             : { ...r, end: { longitude: lng, latitude: lat } }
         })
-        console.log('🚀 ~ newRulers ~ newRulers:', newRulers)
-
         debouncedUpdate(newRulers)
       }
     },
@@ -58,9 +58,8 @@ export function useMapRulersDrag() {
         features?: MapGeoJSONFeature[] | undefined
       }
     ) => {
-      const position = e.features?.[0]?.properties?.position as CurrentRulerPosition
-      console.log('TODO: GET INDEX BY ID')
-      const rulerIndex = 0
+      const { id, position } = e.features?.[0]?.properties as RulerPointProperties
+      const rulerIndex = rulers.findIndex((ruler) => ruler.id === id)
       if (position) {
         currentRuler.current = { index: rulerIndex, position }
         // Prevent the default map drag behavior.
@@ -70,7 +69,7 @@ export function useMapRulersDrag() {
         map.once('mouseup', onUp)
       }
     },
-    [map, onMove, onUp]
+    [map, onMove, onUp, rulers]
   )
 
   useEffect(() => {

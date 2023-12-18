@@ -388,7 +388,7 @@ export interface VesselEventsShapesGeneratorConfig extends GeneratorConfig {
 export interface RulersGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.Rulers
   /**
-   * An array defining rulers with start and end coordinates, and an isNew flag
+   * An array defining rulers with start and end coordinates
    */
   data: Ruler[]
 }
@@ -399,7 +399,7 @@ export interface RulersGeneratorConfig extends GeneratorConfig {
 export interface AnnotationsGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.Annotation
   /**
-   * An array defining rulers with start and end coordinates, and an isNew flag
+   * An array defining annotations with label, color and start and end coordinates
    */
   data: MapAnnotation[]
 }
@@ -520,6 +520,7 @@ export type RawEvent = {
 export type AuthorizationOptions = 'authorized' | 'partially' | 'unmatched'
 
 export type Ruler = {
+  id: number
   start: {
     latitude: number
     longitude: number
@@ -528,7 +529,6 @@ export type Ruler = {
     latitude: number
     longitude: number
   }
-  isNew?: boolean
 }
 
 export type MapAnnotation = {

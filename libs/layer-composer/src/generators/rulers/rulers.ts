@@ -9,10 +9,14 @@ import { GeneratorType, RulersGeneratorConfig, Ruler } from '../types'
 
 const COLOR = '#ffaa00'
 export const RULER_INTERACTIVE_LAYER = 'points'
-export type RulerPointPosition = 'start' | 'end'
+type RulerPointPosition = 'start' | 'end'
+export type RulerPointProperties = {
+  id: number
+  position: RulerPointPosition
+}
 
 const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
-  const { start, end, isNew } = ruler
+  const { start, end } = ruler
   const rawFeature: Feature<LineString> = {
     type: 'Feature',
     properties: {},
@@ -41,16 +45,15 @@ const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
 
   finalFeature.properties = {}
   finalFeature.properties.label = `${lengthKmFormatted}km - ${lengthNmiFormatted}nm`
-  finalFeature.properties.isNew = isNew
   return finalFeature
 }
 
 const makeRulerPointsGeometry = (ruler: Ruler): Feature<Point>[] => {
-  const { start, end, isNew } = ruler
+  const { id, start, end } = ruler
   return [
     {
       type: 'Feature',
-      properties: { position: 'start' as RulerPointPosition, isNew },
+      properties: { id, position: 'start' } as RulerPointProperties,
       geometry: {
         type: 'Point',
         coordinates: [start.longitude, start.latitude],
@@ -58,7 +61,7 @@ const makeRulerPointsGeometry = (ruler: Ruler): Feature<Point>[] => {
     },
     {
       type: 'Feature',
-      properties: { position: 'end' as RulerPointPosition, isNew },
+      properties: { id, position: 'end' } as RulerPointProperties,
       geometry: {
         type: 'Point',
         coordinates: [end.longitude, end.latitude],
@@ -113,7 +116,7 @@ class RulersGenerator {
         },
         paint: {
           'line-dasharray': [2, 1],
-          'line-width': ['case', ['==', ['get', 'isNew'], true], 1.5, 1],
+          'line-width': 1,
           'line-color': COLOR,
         },
       },
@@ -122,13 +125,15 @@ class RulersGenerator {
         source: `${id}-points`,
         type: 'circle',
         paint: {
-          'circle-radius': ['case', ['==', ['get', 'isNew'], true], 6, 3],
+          'circle-radius': 4,
           'circle-opacity': 1,
           'circle-stroke-opacity': 0,
           'circle-color': COLOR,
         },
         metadata: {
           group: Group.Tool,
+          interactive: true,
+          stopPropagation: true,
         },
       },
       {
@@ -140,13 +145,8 @@ class RulersGenerator {
           'symbol-placement': 'line',
           'text-allow-overlap': true,
           'text-offset': [0, -0.8],
-          'text-font': [
-            'case',
-            ['==', ['get', 'isNew'], true],
-            ['literal', ['Roboto Medium']],
-            ['literal', ['Roboto Mono Light']],
-          ],
-          'text-size': ['case', ['==', ['get', 'isNew'], true], 13, 12],
+          'text-font': ['Roboto Mono Light'],
+          'text-size': 12,
         } as SymbolLayerSpecification['layout'],
         paint: {
           'text-color': COLOR,

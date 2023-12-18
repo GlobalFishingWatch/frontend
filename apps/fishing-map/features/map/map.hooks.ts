@@ -440,6 +440,17 @@ export const parseMapTooltipFeatures = (
         }
         return tooltipAnnotationFeature
       }
+      // 4. Rulers
+      else if (generatorType === GeneratorType.Rulers) {
+        const tooltipAnnotationFeature: TooltipEventFeature = {
+          ...baseFeature,
+          category: DataviewCategory.Context,
+          properties: {},
+          value: feature.properties.label,
+          visible: true,
+        }
+        return tooltipAnnotationFeature
+      }
       return []
     }
 
