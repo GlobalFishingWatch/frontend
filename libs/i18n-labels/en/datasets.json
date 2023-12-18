@@ -2278,7 +2278,7 @@
         "keyword": "Matching AIS vessels",
         "enum": {
           "true": true,
-          "false": false
+          "false": true
         }
       },
       "geartype": {
