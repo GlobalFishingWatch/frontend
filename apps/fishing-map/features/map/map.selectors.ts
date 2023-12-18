@@ -57,7 +57,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectIsMapAnnotating } from 'features/map/annotations/annotations.slice'
 import {
   ANNOTATIONS_GENERATOR_ID,
   PREVIEW_BUFFER_GENERATOR_ID,
@@ -467,8 +466,8 @@ export const selectDrawEditDataset = createSelector(
 )
 
 export const selectIsMapInteractionDisabled = createSelector(
-  [selectEditing, selectIsMapDrawing, selectIsMapAnnotating],
-  (rulersEditing, isMapDrawing, isMapAnnotating) => {
-    return rulersEditing || isMapDrawing || isMapAnnotating
+  [selectEditing, selectIsMapDrawing],
+  (rulersEditing, isMapDrawing) => {
+    return rulersEditing || isMapDrawing
   }
 )

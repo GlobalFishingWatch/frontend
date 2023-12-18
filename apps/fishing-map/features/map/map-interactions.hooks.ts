@@ -132,15 +132,12 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       if (rulersEditing) {
         return onRulerMapClick(event)
       }
-      if (isMapAnnotating) {
+      const hasAnnotationFeature =
+        event.features?.find((f) => f.source === ANNOTATIONS_GENERATOR_ID) !== undefined
+      if (isMapAnnotating && !hasAnnotationFeature) {
         return addMapAnnotation(event)
       }
-      // Filtering out features that are not annotations when clickin on one to avoid double tooltips
-      const annotationFeature = event.features?.find((f) => f.source === ANNOTATIONS_GENERATOR_ID)
-      onClick({
-        ...event,
-        features: annotationFeature ? [annotationFeature] : event.features,
-      } as MapLayerMouseEvent)
+      onClick(event)
     },
     [
       clickedCellLayers,
@@ -158,6 +155,12 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
   return { onMapClick, clickedTooltipEvent }
 }
 
+const hasAnnotationFeature = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
+  return (
+    hoveredTooltipEvent?.features.find((f) => f.type === GeneratorType.Annotation) !== undefined
+  )
+}
+
 export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
   const map = useMapInstance()
   const { isMapAnnotating } = useMapAnnotation()
@@ -169,6 +172,9 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
 
   const getCursor = useCallback(() => {
     if (rulersEditing || isMapAnnotating) {
+      if (isMapAnnotating && hasAnnotationFeature(hoveredTooltipEvent)) {
+        return 'all-scroll'
+      }
       return 'crosshair'
     } else if (isMapDrawing || isMarineManagerLocation) {
       // updating cursor using css at style.css as the library sets classes depending on the state
@@ -179,10 +185,7 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
       const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
       const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
 
-      const annotationFeature = hoveredTooltipEvent.features.find(
-        (f) => f.type === GeneratorType.Annotation
-      )
-      if (annotationFeature) {
+      if (hasAnnotationFeature(hoveredTooltipEvent)) {
         return 'all-scroll'
       }
 

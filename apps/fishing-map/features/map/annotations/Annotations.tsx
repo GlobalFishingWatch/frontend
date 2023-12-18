@@ -63,7 +63,7 @@ const MapAnnotations = () => {
       <div className={styles.popupContent}>
         <div className={styles.flex}>
           <InputText
-            value={mapAnnotation.label}
+            value={mapAnnotation?.label || ''}
             onChange={(e) => setMapAnnotation({ label: e.target.value })}
             placeholder={t('map.annotationPlaceholder', 'Type something here')}
             onKeyDown={handleKeyDown}
