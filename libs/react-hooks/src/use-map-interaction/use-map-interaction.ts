@@ -7,6 +7,7 @@ import {
   CONFIG_BY_INTERVAL,
   pickActiveTimeChunk,
   ExtendedLayer,
+  Group,
 } from '@globalfishingwatch/layer-composer'
 import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
@@ -188,6 +189,7 @@ const getExtendedFeature = (
       return [extendedFeature]
   }
 }
+
 const getExtendedFeatures = (
   features: MaplibreGeoJSONFeature[],
   metadata?: ExtendedStyleMeta,
@@ -369,10 +371,23 @@ export const useMapHover = (
   return onMapHover
 }
 
+export const getToolFeatures = (features: MaplibreGeoJSONFeature[]) => {
+  const toolFeatures = features.filter((f) => f.layer.metadata?.group === Group.Tool)
+  return toolFeatures.flatMap((f) => getExtendedFeature(f))
+}
+
 export const useSimpleMapHover = (hoverCallback: InteractionEventCallback) => {
   const onMapHover = useCallback(
     (event: MapLayerMouseEvent) => {
       const hoverEvent = parseHoverEvent(event)
+      if (event.features?.length) {
+        const extendedFeatures: ExtendedFeature[] = getToolFeatures(
+          event.features as MaplibreGeoJSONFeature[]
+        )
+        if (extendedFeatures.length) {
+          hoverEvent.features = extendedFeatures
+        }
+      }
       if (hoverCallback) {
         hoverCallback(hoverEvent)
       }
