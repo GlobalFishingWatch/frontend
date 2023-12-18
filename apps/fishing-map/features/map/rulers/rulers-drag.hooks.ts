@@ -2,13 +2,11 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import { MapGeoJSONFeature, MapMouseEvent } from '@globalfishingwatch/maplibre-gl'
-import { RULER_INTERACTIVE_LAYER, RulerPointProperties } from '@globalfishingwatch/layer-composer'
+import { RulerPointProperties } from '@globalfishingwatch/layer-composer'
 import useMapInstance from 'features/map/map-context.hooks'
-import { RULERS_GENERATOR_ID } from 'features/map/map.config'
+import { RULERS_LAYER_ID } from 'features/map/map.config'
 import { selectMapRulersVisible } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-
-const RULERS_LAYER_ID = `${RULERS_GENERATOR_ID}-${RULER_INTERACTIVE_LAYER}`
 
 export function useMapRulersDrag() {
   const map = useMapInstance()

@@ -16,6 +16,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { WORKSPACE_GENERATOR_ID, REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
 import AnnotationTooltip from 'features/map/popups/AnnotationTooltip'
+import RulerTooltip from 'features/map/popups/RulerTooltip'
 import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.slice'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
@@ -60,6 +61,7 @@ function PopupWrapper({
   const visibleFeatures = event.features.filter(
     (feature) => feature.visible || feature.source === WORKSPACE_GENERATOR_ID
   )
+
   const featureByCategory = groupBy(
     visibleFeatures.sort(
       (a, b) => POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
@@ -158,6 +160,9 @@ function PopupWrapper({
                 const annotationFeatures = features.filter(
                   (feature) => feature.type === GeneratorType.Annotation
                 )
+                const rulersFeatures = features.filter(
+                  (feature) => feature.type === GeneratorType.Rulers
+                )
                 return (
                   <Fragment key={featureCategory}>
                     <UserPointsTooltipSection
@@ -167,6 +172,10 @@ function PopupWrapper({
                     <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
                     <ReportBufferTooltip features={areaBufferFeatures} />
                     <AnnotationTooltip features={annotationFeatures} />
+                    <RulerTooltip
+                      features={rulersFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
                     <UserContextTooltipSection
                       features={userContextFeatures}
                       showFeaturesDetails={type === 'click'}

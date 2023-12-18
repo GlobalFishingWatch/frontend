@@ -467,8 +467,8 @@ export const selectDrawEditDataset = createSelector(
 )
 
 export const selectIsMapInteractionDisabled = createSelector(
-  [selectEditing, selectIsMapDrawing],
-  (rulersEditing, isMapDrawing) => {
-    return rulersEditing || isMapDrawing
+  [selectIsMapDrawing],
+  (isMapDrawing) => {
+    return isMapDrawing
   }
 )

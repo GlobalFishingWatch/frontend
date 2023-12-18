@@ -27,7 +27,7 @@ import { getEventLabel } from 'utils/analytics'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
 import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
-import { ANNOTATIONS_GENERATOR_ID } from 'features/map/map.config'
+import { ANNOTATIONS_GENERATOR_ID, RULERS_LAYER_ID } from 'features/map/map.config'
 import { SliceInteractionEvent } from './map.slice'
 
 export const useMapMouseHover = (style?: ExtendedStyle) => {
@@ -58,7 +58,7 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
         return onSimpleMapHover(event)
       }
       if (rulersEditing) {
-        return onRulerMapHover(event)
+        return onMapHover(onRulerMapHover(event))
       }
       return onMapHover(event)
     },
@@ -129,7 +129,10 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       if (isMapDrawing || isMarineManagerLocation) {
         return undefined
       }
-      if (rulersEditing) {
+
+      const hasRulerFeature =
+        event.features?.find((f) => f.source === RULERS_LAYER_ID) !== undefined
+      if (rulersEditing && !hasRulerFeature) {
         return onRulerMapClick(event)
       }
       const hasAnnotationFeature =
@@ -181,9 +184,6 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
       // updating cursor using css at style.css as the library sets classes depending on the state
       return undefined
     } else if (hoveredTooltipEvent) {
-      if (hasToolFeature(hoveredTooltipEvent)) {
-        return 'all-scroll'
-      }
       // Workaround to fix cluster events duplicated, only working for encounters and needs
       // TODO if wanted to scale it to other layers
       const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)

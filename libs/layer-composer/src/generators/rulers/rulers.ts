@@ -15,26 +15,55 @@ export type RulerPointProperties = {
   position: RulerPointPosition
 }
 
-const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
-  const { start, end } = ruler
-  const rawFeature: Feature<LineString> = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [start.longitude, start.latitude],
-        [end.longitude, end.latitude],
-      ],
+const getRulerLength = (ruler: Ruler) => {
+  const lengthKm = length(
+    {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          [ruler.start.longitude, ruler.start.latitude],
+          [ruler.end.longitude, ruler.end.latitude],
+        ],
+      },
     },
-  }
-  const lengthKm = length(rawFeature, { units: 'kilometers' })
+    { units: 'kilometers' }
+  )
+  return lengthKm
+}
+const getRuleLengthLabel = (ruler: Ruler) => {
+  const lengthKm = getRulerLength(ruler)
   const lengthNmi = lengthKm / 1.852
   const precissionKm = lengthKm > 100 ? 0 : lengthKm > 10 ? 1 : 2
   const precissionNmi = lengthNmi > 100 ? 0 : lengthNmi > 10 ? 1 : 2
   const lengthKmFormatted = lengthKm.toFixed(precissionKm)
   const lengthNmiFormatted = lengthNmi.toFixed(precissionNmi)
+  return `${lengthKmFormatted}km - ${lengthNmiFormatted}nm`
+}
 
+const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
+  const { start, end } = ruler
+
+  const rawFeature: Feature<LineString> = {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'LineString',
+      coordinates: [],
+    },
+  }
+
+  if (!start || !end) {
+    return rawFeature
+  } else {
+    rawFeature.geometry.coordinates = [
+      [start.longitude, start.latitude],
+      [end.longitude, end.latitude],
+    ]
+  }
+
+  const lengthKm = getRulerLength(ruler)
   const finalFeature =
     lengthKm < 100
       ? rawFeature
@@ -44,7 +73,7 @@ const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
         ) as Feature<LineString>)
 
   finalFeature.properties = {}
-  finalFeature.properties.label = `${lengthKmFormatted}km - ${lengthNmiFormatted}nm`
+  finalFeature.properties.label = getRuleLengthLabel(ruler)
   return finalFeature
 }
 
@@ -53,18 +82,30 @@ const makeRulerPointsGeometry = (ruler: Ruler): Feature<Point>[] => {
   return [
     {
       type: 'Feature',
-      properties: { id, position: 'start' } as RulerPointProperties,
+      properties: {
+        id,
+        position: 'start',
+        ...(end && {
+          lengthLabel: getRuleLengthLabel(ruler),
+        }),
+      } as RulerPointProperties,
       geometry: {
         type: 'Point',
-        coordinates: [start.longitude, start.latitude],
+        coordinates: start ? [start.longitude, start.latitude] : [],
       },
     },
     {
       type: 'Feature',
-      properties: { id, position: 'end' } as RulerPointProperties,
+      properties: {
+        id,
+        position: 'end',
+        ...(end && {
+          lengthLabel: getRuleLengthLabel(ruler),
+        }),
+      } as RulerPointProperties,
       geometry: {
         type: 'Point',
-        coordinates: [end.longitude, end.latitude],
+        coordinates: end ? [end.longitude, end.latitude] : [],
       },
     },
   ]

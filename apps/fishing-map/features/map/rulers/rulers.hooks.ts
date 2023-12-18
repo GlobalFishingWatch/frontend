@@ -23,7 +23,7 @@ const useRulers = () => {
   const { dispatchQueryParams } = useLocationConnect()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const onRulerMapHover = useCallback(
+  const throttledSetRuleEnd = useCallback(
     throttle((event: MapLayerMouseEvent) => {
       dispatch(
         setRuleEnd({
@@ -33,6 +33,24 @@ const useRulers = () => {
       )
     }, 16),
     [dispatch]
+  )
+
+  const onRulerMapHover = useCallback(
+    (event: MapLayerMouseEvent) => {
+      throttledSetRuleEnd(event)
+      return event
+    },
+    [throttledSetRuleEnd]
+  )
+
+  const deleteMapRuler = useCallback(
+    (id: string | number) => {
+      const mapRulers = rulers.filter((a) => {
+        return a.id !== id
+      })
+      dispatchQueryParams({ mapRulers })
+    },
+    [dispatchQueryParams, rulers]
   )
 
   const onRulerMapClick = useCallback(
@@ -73,6 +91,7 @@ const useRulers = () => {
     onRulerMapClick,
     rulersEditing,
     rulersVisible,
+    deleteMapRuler,
     resetRulers,
     toggleRulersVisibility,
   }
