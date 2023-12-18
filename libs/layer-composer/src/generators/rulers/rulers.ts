@@ -9,7 +9,9 @@ import { GeneratorType, RulersGeneratorConfig, Ruler } from '../types'
 
 const COLOR = '#ffaa00'
 export const RULER_INTERACTIVE_LAYER = 'points'
+
 type RulerPointPosition = 'start' | 'end'
+
 export type RulerPointProperties = {
   id: number
   position: RulerPointPosition
