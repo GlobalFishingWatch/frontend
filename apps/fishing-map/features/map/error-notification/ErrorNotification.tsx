@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux'
 import { Popup } from 'react-map-gl'
 import { useTranslation } from 'react-i18next'
-import { KeyboardEventHandler, useState } from 'react'
+import { useState } from 'react'
 import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserData } from 'features/user/user.slice'
@@ -22,12 +23,10 @@ const ErrorNotification = () => {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const userData = useSelector(selectUserData)
-
-  if (!errorNotification) {
-    return null
-  }
-
   const onConfirmClick = async () => {
+    if (!errorNotification) {
+      return
+    }
     setLoading(true)
     try {
       const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(ERRORS_SPREADSHEET_ID)
@@ -61,17 +60,16 @@ const ErrorNotification = () => {
       console.error('Error: ', e)
     }
   }
+  const ref = useEventKeyListener(['Enter'], onConfirmClick)
+
+  if (!errorNotification) {
+    return null
+  }
 
   const onClose = () => {
     resetErrorNotification()
     setNotifyingError(false)
     setSuccess(false)
-  }
-
-  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.key === 'Enter') {
-      onConfirmClick()
-    }
   }
 
   return (
@@ -83,7 +81,7 @@ const ErrorNotification = () => {
       onClose={onClose}
       className={styles.popup}
     >
-      <div className={styles.popupContent}>
+      <div className={styles.popupContent} ref={ref}>
         <InputText
           label="error description"
           value={errorNotification?.label || ''}
@@ -92,7 +90,6 @@ const ErrorNotification = () => {
             'map.annotationPlaceholder',
             'Please describe the error as detailed as possible'
           )}
-          onKeyDown={handleKeyDown}
           className={styles.input}
         />
         <div className={styles.popupButtons}>
