@@ -1327,15 +1327,15 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": true,
-          "false": false
+          "true": "true",
+          "false": "false"
         }
       },
       "radiance": {
         "keyword": "radiance",
         "enum": {
-          "0": 0,
-          "10000": 10000
+          "0": "0",
+          "10000": "10000"
         }
       },
       "shiptype": {
@@ -1351,12 +1351,12 @@
       "qf_detect": {
         "keyword": "qf_detect",
         "enum": {
-          "1": 1,
-          "2": 2,
-          "3": 3,
-          "5": 5,
-          "7": 7,
-          "10": 10
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "5": "5",
+          "7": "7",
+          "10": "10"
         }
       },
       "timestamp": "timestamp",
@@ -1376,15 +1376,15 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": true,
-          "false": false
+          "true": "true",
+          "false": "false"
         }
       },
       "radiance": {
         "keyword": "radiance",
         "enum": {
-          "0": 0,
-          "10000": 10000
+          "0": "0",
+          "10000": "10000"
         }
       },
       "shiptype": {
@@ -1400,12 +1400,12 @@
       "qf_detect": {
         "keyword": "qf_detect",
         "enum": {
-          "1": 1,
-          "2": 2,
-          "3": 3,
-          "5": 5,
-          "7": 7,
-          "10": 10
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "5": "5",
+          "7": "7",
+          "10": "10"
         }
       },
       "timestamp": "timestamp",
@@ -2077,8 +2077,8 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "120": 120,
-          "4320": 4320
+          "120": "120",
+          "4320": "4320"
         }
       },
       "event_id": "event_id",
@@ -2277,8 +2277,8 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": true,
-          "false": false
+          "true": "true",
+          "false": "false"
         }
       },
       "geartype": {
@@ -2422,20 +2422,20 @@
       "radiance": {
         "keyword": "radiance",
         "enum": {
-          "1": 1,
-          "1000": 1000
+          "1": "1",
+          "1000": "1000"
         }
       },
       "detect_id": "detect_id",
       "qf_detect": {
         "keyword": "qf_detect",
         "enum": {
-          "1": 1,
-          "2": 2,
-          "3": 3,
-          "5": 5,
-          "7": 7,
-          "10": 10
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "5": "5",
+          "7": "7",
+          "10": "10"
         }
       },
       "timestamp": "timestamp"
@@ -3117,8 +3117,8 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": true,
-          "false": false
+          "true": "true",
+          "false": "false"
         }
       },
       "geartype": {
@@ -3197,8 +3197,8 @@
       "radiance": {
         "keyword": "radiance",
         "enum": {
-          "1": 1,
-          "1000": 1000
+          "1": "1",
+          "1000": "1000"
         }
       },
       "shiptype": {
@@ -3214,12 +3214,12 @@
       "qf_detect": {
         "keyword": "qf_detect",
         "enum": {
-          "1": 1,
-          "2": 2,
-          "3": 3,
-          "5": 5,
-          "7": 7,
-          "10": 10
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "5": "5",
+          "7": "7",
+          "10": "10"
         }
       },
       "timestamp": "timestamp",
