@@ -1,46 +1,60 @@
 import { useCallback } from 'react'
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
+import { Ruler } from '@globalfishingwatch/layer-composer'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/app.selectors'
-import {
-  selectEditing,
-  selectEditingRuler,
-  setRuleEnd,
-  setRuleStart,
-  setRulersEditing,
-  resetEditingRule as resetEditingRuleAction,
-} from './rulers.slice'
+import { useMapControl } from 'features/map/controls/map-controls.hooks'
 
 const useRulers = () => {
-  const rulers = useSelector(selectMapRulers)
-  const editingRuler = useSelector(selectEditingRuler)
-  const rulersEditing = useSelector(selectEditing)
-  const rulersVisible = useSelector(selectAreMapRulersVisible)
   const dispatch = useAppDispatch()
+  const rulers = useSelector(selectMapRulers)
+  const rulersVisible = useSelector(selectAreMapRulersVisible)
   const { dispatchQueryParams } = useLocationConnect()
+  const {
+    value,
+    isEditing,
+    setMapControl,
+    toggleMapControl,
+    setMapControlValue,
+    resetMapControlValue,
+  } = useMapControl('rulers')
+
+  const setRuleStart = useCallback(
+    (start: Ruler['start']) => {
+      setMapControlValue({ id: new Date().getTime(), start })
+    },
+    [setMapControlValue]
+  )
+
+  const setRulerEnd = useCallback(
+    (end: Ruler['end']) => {
+      setMapControlValue({ ...(value as Ruler), end })
+    },
+    [setMapControlValue, value]
+  )
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const throttledSetRuleEnd = useCallback(
     throttle((event: MapLayerMouseEvent) => {
-      dispatch(
-        setRuleEnd({
-          longitude: event.lngLat.lng,
-          latitude: event.lngLat.lat,
-        })
-      )
+      setRulerEnd({
+        longitude: event.lngLat.lng,
+        latitude: event.lngLat.lat,
+      })
     }, 16),
     [dispatch]
   )
 
   const onRulerMapHover = useCallback(
     (event: MapLayerMouseEvent) => {
-      throttledSetRuleEnd(event)
+      if (isEditing && value) {
+        throttledSetRuleEnd(event)
+      }
       return event
     },
-    [throttledSetRuleEnd]
+    [isEditing, throttledSetRuleEnd, value]
   )
 
   const deleteMapRuler = useCallback(
@@ -59,17 +73,17 @@ const useRulers = () => {
         longitude: event.lngLat.lng,
         latitude: event.lngLat.lat,
       }
-      if (!editingRuler) {
-        dispatch(setRuleStart(point))
+      if (!value) {
+        setRuleStart(point)
       } else {
         dispatchQueryParams({
-          mapRulers: [...rulers, { ...editingRuler }],
+          mapRulers: [...rulers, { ...(value as Ruler) }],
           mapRulersVisible: true,
         })
-        dispatch(resetEditingRuleAction())
+        resetMapControlValue()
       }
     },
-    [dispatch, dispatchQueryParams, editingRuler, rulers]
+    [dispatchQueryParams, resetMapControlValue, rulers, setRuleStart, value]
   )
 
   const toggleRulersVisibility = useCallback(() => {
@@ -77,22 +91,23 @@ const useRulers = () => {
   }, [rulersVisible, dispatchQueryParams])
 
   const resetRulers = useCallback(() => {
-    batch(() => {
-      dispatch(resetEditingRuleAction())
-      dispatch(setRulersEditing(false))
-    })
+    setMapControl(false)
+    resetMapControlValue()
     dispatchQueryParams({ mapRulers: undefined })
-  }, [dispatch, dispatchQueryParams])
+  }, [dispatchQueryParams, resetMapControlValue, setMapControl])
 
   return {
     rulers,
-    editingRuler,
-    onRulerMapHover,
-    onRulerMapClick,
-    rulersEditing,
+    resetRulers,
+    editingRuler: value as Ruler,
+    rulersEditing: isEditing,
     rulersVisible,
     deleteMapRuler,
-    resetRulers,
+    onRulerMapHover,
+    onRulerMapClick,
+    toggleRulersEditing: toggleMapControl,
+    resetEditingRule: resetMapControlValue,
+    setRulersEditing: setMapControl,
     toggleRulersVisibility,
   }
 }

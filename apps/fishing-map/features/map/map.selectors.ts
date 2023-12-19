@@ -25,7 +25,6 @@ import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces
 import { ResourcesState } from 'features/resources/resources.slice'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { DebugOptions, selectDebugOptions } from 'features/debug/debug.slice'
-import { selectEditingRuler, selectEditing } from 'features/map/rulers/rulers.slice'
 import {
   selectHighlightedTime,
   selectHighlightedEvents,
@@ -57,6 +56,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { BivariateDataviews } from 'types'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectMapControlRuler } from 'features/map/controls/map-controls.slice'
 import {
   ANNOTATIONS_GENERATOR_ID,
   PREVIEW_BUFFER_GENERATOR_ID,
@@ -179,7 +179,7 @@ const selectMapGeneratorsConfig = createSelector(
     selectDataviewInstancesResolvedVisible,
     selectVisibleResources,
     selectMapRulersVisible,
-    selectEditingRuler,
+    selectMapControlRuler,
     selectMapAnnotationsVisible,
     selectDebugOptions,
     selectHighlightedTime,
@@ -223,7 +223,7 @@ const selectStaticGeneratorsConfig = createSelector(
     selectDataviewInstancesResolvedVisible,
     selectVisibleResources,
     selectMapRulersVisible,
-    selectEditingRuler,
+    selectMapControlRuler,
     selectMapAnnotationsVisible,
     selectDebugOptions,
     selectBivariateDataviews,

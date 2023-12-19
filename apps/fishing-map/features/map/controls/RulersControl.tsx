@@ -1,40 +1,46 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
 import useRulers from 'features/map/rulers/rulers.hooks'
 import MapControlGroup from 'features/map/controls/MapControlGroup'
-import { setMapAnnotating } from 'features/map/annotations/annotations.slice'
 import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
 import useMapInstance from '../map-context.hooks'
-import { resetEditingRule, toggleRulersEditing } from '../rulers/rulers.slice'
 
 const Rulers = () => {
   const { t } = useTranslation()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
-  const { isMapAnnotating } = useMapAnnotation()
+  const { setMapAnnotationEdit, isMapAnnotating } = useMapAnnotation()
   const {
-    editingRuler,
     rulers,
+    editingRuler,
     rulersEditing,
     rulersVisible,
     toggleRulersVisibility,
+    toggleRulersEditing,
     resetRulers,
+    resetEditingRule,
   } = useRulers()
 
-  const dispatch = useAppDispatch()
   const onToggleClick = useCallback(() => {
     if (isMapAnnotating) {
-      dispatch(setMapAnnotating(false))
+      setMapAnnotationEdit(false)
     }
     if (rulersEditing) {
       if (editingRuler) {
-        dispatch(resetEditingRule())
+        resetEditingRule()
       }
       cleanFeatureState('click')
     }
-    dispatch(toggleRulersEditing())
-  }, [cleanFeatureState, dispatch, editingRuler, isMapAnnotating, rulersEditing])
+    toggleRulersEditing()
+  }, [
+    cleanFeatureState,
+    editingRuler,
+    isMapAnnotating,
+    resetEditingRule,
+    rulersEditing,
+    setMapAnnotationEdit,
+    toggleRulersEditing,
+  ])
 
   return (
     <MapControlGroup

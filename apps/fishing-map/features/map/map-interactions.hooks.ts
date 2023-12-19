@@ -88,7 +88,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
   const map = useMapInstance()
   const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
-  const { isNotifyingError, addErrorNotification } = useMapErrorNotification()
+  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
@@ -142,7 +142,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       if (isMapAnnotating && !hasAnnotationFeature) {
         return addMapAnnotation(event)
       }
-      if (isNotifyingError) {
+      if (isErrorNotificationEditing) {
         return addErrorNotification(event)
       }
       onClick(event)
@@ -153,7 +153,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       isMarineManagerLocation,
       rulersEditing,
       isMapAnnotating,
-      isNotifyingError,
+      isErrorNotificationEditing,
       onClick,
       onRulerMapClick,
       addMapAnnotation,
@@ -176,7 +176,7 @@ const hasToolFeature = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipE
 export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
   const map = useMapInstance()
   const { isMapAnnotating } = useMapAnnotation()
-  const { isNotifyingError } = useMapErrorNotification()
+  const { isErrorNotificationEditing } = useMapErrorNotification()
   const { isMapDrawing } = useMapDrawConnect()
   const { rulersEditing } = useRulers()
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
@@ -186,7 +186,7 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
   const getCursor = useCallback(() => {
     if (hasToolFeature(hoveredTooltipEvent)) {
       return 'all-scroll'
-    } else if (isMapAnnotating || rulersEditing || isNotifyingError) {
+    } else if (isMapAnnotating || rulersEditing || isErrorNotificationEditing) {
       return 'crosshair'
     } else if (isMapDrawing || isMarineManagerLocation) {
       // updating cursor using css at style.css as the library sets classes depending on the state
@@ -221,11 +221,12 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
     }
     return 'grab'
   }, [
-    rulersEditing,
+    hoveredTooltipEvent,
     isMapAnnotating,
+    rulersEditing,
+    isErrorNotificationEditing,
     isMapDrawing,
     isMarineManagerLocation,
-    hoveredTooltipEvent,
     map,
     dataviews,
     tilesClusterLoaded,

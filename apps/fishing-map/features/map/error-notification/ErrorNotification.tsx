@@ -11,7 +11,6 @@ import { useMapErrorNotification } from 'features/map/error-notification/error-n
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserData } from 'features/user/user.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-import { selectErrorNotification } from './error-notification.slice'
 import styles from './ErrorNotification.module.css'
 
 const ERRORS_SPREADSHEET_ID = '1VzEjTiSJrbwBfZrhaSFwZgHClxKkwN9E0rrfFR8bw2c'
@@ -19,8 +18,7 @@ const ERRORS_SHEET_TITLE = 'errors'
 
 const ErrorNotification = () => {
   const { t } = useTranslation()
-  const errorNotification = useSelector(selectErrorNotification)
-  const { resetErrorNotification, setErrorNotification, setNotifyingError } =
+  const { errorNotification, resetErrorNotification, setErrorNotification, setNotifyingErrorEdit } =
     useMapErrorNotification()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -34,18 +32,18 @@ const ErrorNotification = () => {
       const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(ERRORS_SPREADSHEET_ID)
       const sheet = feedbackSpreadsheetDoc.sheetsByTitle[ERRORS_SHEET_TITLE]
       const date = new Date()
-      const mapAnnotation: MapAnnotation[] = [
+      const mapAnnotations: MapAnnotation[] = [
         {
           id: date.getTime(),
-          lat: errorNotification.latitude,
-          lon: errorNotification.longitude,
+          lat: errorNotification.lat,
+          lon: errorNotification.lon,
           label: errorNotification.label,
         },
       ]
       const finalErrorData = {
         ...errorNotification,
         date: date.toISOString(),
-        url: `${window.location.href}${stringify(mapAnnotation)}`,
+        url: `${window.location.href}${stringify({ mapAnnotations })}`,
         userId: userData?.id || GUEST_USER_TYPE,
         email: userData?.email || EMPTY_FIELD_PLACEHOLDER,
         name: userData?.firstName
@@ -70,14 +68,14 @@ const ErrorNotification = () => {
 
   const onClose = () => {
     resetErrorNotification()
-    setNotifyingError(false)
+    setNotifyingErrorEdit(false)
     setSuccess(false)
   }
 
   return (
     <Popup
-      latitude={errorNotification.latitude as number}
-      longitude={errorNotification.longitude as number}
+      latitude={errorNotification.lat as number}
+      longitude={errorNotification.lon as number}
       closeButton={true}
       closeOnClick={false}
       onClose={onClose}
