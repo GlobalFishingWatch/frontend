@@ -677,6 +677,7 @@ export const getSchemaFilterOperationInDataview = (
 ) => {
   if (
     schema === 'vessel-groups' ||
+    schema === 'neural_vessel_type' ||
     dataview.category === DataviewCategory.Events ||
     dataview.category === DataviewCategory.Context
   ) {
