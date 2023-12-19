@@ -143,7 +143,14 @@ export type RelatedDataset = {
   type: DatasetTypes
 }
 
-export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean' | 'array'
+export type DatasetSchemaType =
+  | 'range'
+  | 'number'
+  | 'string'
+  | 'boolean'
+  | 'array'
+  | 'coordinate'
+  | 'timestamp'
 
 export type DatasetSchemaItem = {
   type: DatasetSchemaType
