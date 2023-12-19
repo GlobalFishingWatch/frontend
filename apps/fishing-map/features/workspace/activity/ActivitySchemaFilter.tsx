@@ -34,6 +34,8 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
 
 export type TransformationUnit = 'minutes'
 
+export const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
+
 type Transformation = {
   in: (v: any) => number
   out: (v: any) => number
@@ -224,7 +226,9 @@ function ActivitySchemaFilter({
         })}
         options={options}
         selectedOption={optionsSelected?.[0]}
-        containerClassName={cx(styles.multiSelect, { [styles.experimental]: id === 'matched' })}
+        containerClassName={cx(styles.multiSelect, {
+          [styles.experimental]: EXPERIMENTAL_FILTERS.includes(id),
+        })}
         onSelect={(selection) => onSelect(id, [selection])}
         onRemove={() => onRemove(id, [])}
         onCleanClick={() => onClean(id)}
@@ -255,6 +259,9 @@ function ActivitySchemaFilter({
           })}
           options={options}
           selectedOption={optionsSelected[0]}
+          className={cx({
+            [styles.experimental]: EXPERIMENTAL_FILTERS.includes(id),
+          })}
           labelContainerClassName={styles.labelContainer}
           onSelect={(selection) => onSelect(id, selection, true)}
           onCleanClick={() => onClean(id)}
@@ -268,6 +275,9 @@ function ActivitySchemaFilter({
             selection: optionsSelected.map(({ id }) => id),
             options,
             filterOperator,
+          })}
+          className={cx({
+            [styles.experimental]: EXPERIMENTAL_FILTERS.includes(id),
           })}
           options={options}
           selectedOptions={optionsSelected}

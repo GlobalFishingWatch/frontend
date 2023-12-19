@@ -38,10 +38,10 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
       </p>
       {gfwUser && queries!?.length > 0 && (
         <div className={styles.content}>
-          <h2 className={styles.subtitle}>
-            Queries used
+          <div className={styles.queriesContainer}>
+            <h2 className={styles.subtitle}>Queries used</h2>
             <GFWOnly />
-          </h2>
+          </div>
           {queries?.map((query: string, index: number) => (
             <div key={index}>
               <a target="_blank" href={query} rel="noreferrer">
