@@ -45,6 +45,7 @@ import { ReactComponent as EventPortVisit } from '../assets/icons/event-port-vis
 import { ReactComponent as Expand } from '../assets/icons/expand.svg'
 import { ReactComponent as ExternalLink } from '../assets/icons/external-link.svg'
 import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
+import { ReactComponent as FeedbackError } from '../assets/icons/feedback-error.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
 import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
 import { ReactComponent as FitToTimeRange } from '../assets/icons/fit-to-timerange.svg'
@@ -151,6 +152,7 @@ export const IconComponents = {
   email: Email,
   encounters: Encounters,
   feedback: Feedback,
+  'feedback-error': FeedbackError,
   graph: Graph,
   heatmap: Heatmap,
   help: Help,

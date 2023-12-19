@@ -12,6 +12,7 @@ import debugReducer from 'features/debug/debug.slice'
 import downloadActivityReducer from 'features/download/downloadActivity.slice'
 import downloadTrackReducer from 'features/download/downloadTrack.slice'
 import editorReducer from 'features/editor/editor.slice'
+import errorNotificationReducer from 'features/map/error-notification/error-notification.slice'
 import hintsReducer from 'features/help/hints.slice'
 import mapReducer from 'features/map/map.slice'
 import modalsReducer from 'features/modals/modals.slice'
@@ -42,6 +43,7 @@ export const rootReducer = combineReducers({
   downloadActivity: downloadActivityReducer,
   downloadTrack: downloadTrackReducer,
   editor: editorReducer,
+  errorNotification: errorNotificationReducer,
   hints: hintsReducer,
   location: connectedRoutes.reducer,
   map: mapReducer,
