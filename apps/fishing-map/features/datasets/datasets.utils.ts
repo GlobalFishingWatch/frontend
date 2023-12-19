@@ -398,7 +398,9 @@ export const isDataviewSchemaSupported = (
   const schemaSupported = dataview?.datasets
     ?.filter((dataset) => activeDatasets?.includes(dataset.id))
     .every((dataset) => {
-      return dataset.fieldsAllowed.includes(schema)
+      const fieldAllowed = dataset.fieldsAllowed.includes(schema)
+      const incompatibleSelection = getIncompatibleFilterSelection(dataview, schema)
+      return fieldAllowed && incompatibleSelection?.length === 0
     })
   return schemaSupported
 }
