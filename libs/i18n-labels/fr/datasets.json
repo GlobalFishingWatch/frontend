@@ -1327,7 +1327,7 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": "true",
+          "true": "1",
           "false": "false"
         }
       },
@@ -1376,7 +1376,7 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": "true",
+          "true": "1",
           "false": "false"
         }
       },
@@ -2277,7 +2277,7 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": "true",
+          "true": "1",
           "false": "false"
         }
       },
@@ -3117,7 +3117,7 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": "true",
+          "true": "1",
           "false": "false"
         }
       },
