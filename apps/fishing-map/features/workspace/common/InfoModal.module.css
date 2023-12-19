@@ -19,6 +19,24 @@ div.modalContent {
   text-decoration: underline;
 }
 
+.content h2 {
+  font: var(--font-L);
+}
+
+.content h3 {
+  font: var(--font-M);
+}
+
+.content p + h2,
+.content ul + h2 {
+  margin-top: var(--space-M);
+}
+
+.content h2 + p,
+.content h2 + ul {
+  margin-top: var(--space-S);
+}
+
 .subtitle {
   font: var(--font-S);
   text-transform: uppercase;
@@ -28,6 +46,11 @@ div.modalContent {
   display: flex;
   align-items: center;
   margin-right: var(--space-S);
+}
+
+.queriesContainer {
+  display: flex;
+  align-items: center;
 }
 
 .title {
