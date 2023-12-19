@@ -60,6 +60,12 @@
         "buildTarget": "fishing-map:build:production"
       }
     },
+    "i18n": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "i18n:parser"
+      }
+    },
     "rename-export": {
       "executor": "nx:run-commands",
       "options": {
