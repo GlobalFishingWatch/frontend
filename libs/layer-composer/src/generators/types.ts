@@ -12,6 +12,7 @@ import { Interval } from './heatmap/types'
 export type LayerVisibility = 'visible' | 'none'
 
 export enum GeneratorType {
+  Annotation = 'ANNOTATION',
   Background = 'BACKGROUND',
   Basemap = 'BASEMAP',
   BasemapLabels = 'BASEMAP_LABELS',
@@ -52,7 +53,7 @@ export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
   totalHeatmapAnimatedGenerators?: number
 }
 
-export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
+export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | MapAnnotation[] | null
 
 export interface GeneratorLegend {
   type?: string
@@ -387,9 +388,20 @@ export interface VesselEventsShapesGeneratorConfig extends GeneratorConfig {
 export interface RulersGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.Rulers
   /**
-   * An array defining rulers with start and end coordinates, and an isNew flag
+   * An array defining rulers with start and end coordinates
    */
   data: Ruler[]
+}
+
+/**
+ * Renders map text annotations
+ */
+export interface AnnotationsGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.Annotation
+  /**
+   * An array defining annotations with label, color and start and end coordinates
+   */
+  data: MapAnnotation[]
 }
 
 export interface HeatmapGeneratorConfig extends GeneratorConfig {
@@ -438,6 +450,7 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
 }
 
 export type AnyGeneratorConfig =
+  | AnnotationsGeneratorConfig
   | BackgroundGeneratorConfig
   | BasemapGeneratorConfig
   | BasemapLabelsGeneratorConfig
@@ -507,6 +520,7 @@ export type RawEvent = {
 export type AuthorizationOptions = 'authorized' | 'partially' | 'unmatched'
 
 export type Ruler = {
+  id: number
   start: {
     latitude: number
     longitude: number
@@ -515,7 +529,14 @@ export type Ruler = {
     latitude: number
     longitude: number
   }
-  isNew?: boolean
+}
+
+export type MapAnnotation = {
+  id: number
+  lon: number | string
+  lat: number | string
+  label: string
+  color?: string
 }
 
 export type HeatmapAnimatedInteractionType = 'activity' | 'detections'

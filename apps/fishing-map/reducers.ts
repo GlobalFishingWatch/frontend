@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit'
 import { dataviewStatsApi } from 'queries/stats-api'
 import { vesselSearchApi } from 'queries/search-api'
 import descriptionReducer from 'routes/description.reducer'
+import annotationsReducer from 'features/map/annotations/annotations.slice'
 import areasReducer from 'features/areas/areas.slice'
 import bigQueryReducer from 'features/bigquery/bigquery.slice'
 import connectedRoutes from 'routes/routes'
@@ -11,6 +12,7 @@ import debugReducer from 'features/debug/debug.slice'
 import downloadActivityReducer from 'features/download/downloadActivity.slice'
 import downloadTrackReducer from 'features/download/downloadTrack.slice'
 import editorReducer from 'features/editor/editor.slice'
+import errorNotificationReducer from 'features/map/error-notification/error-notification.slice'
 import hintsReducer from 'features/help/hints.slice'
 import mapReducer from 'features/map/map.slice'
 import modalsReducer from 'features/modals/modals.slice'
@@ -31,6 +33,7 @@ import workspacesReducer from 'features/workspaces-list/workspaces-list.slice'
 export const rootReducer = combineReducers({
   [dataviewStatsApi.reducerPath]: dataviewStatsApi.reducer,
   [vesselSearchApi.reducerPath]: vesselSearchApi.reducer,
+  annotations: annotationsReducer,
   areas: areasReducer,
   bigQuery: bigQueryReducer,
   datasets: datasetsReducer,
@@ -40,6 +43,7 @@ export const rootReducer = combineReducers({
   downloadActivity: downloadActivityReducer,
   downloadTrack: downloadTrackReducer,
   editor: editorReducer,
+  errorNotification: errorNotificationReducer,
   hints: hintsReducer,
   location: connectedRoutes.reducer,
   map: mapReducer,

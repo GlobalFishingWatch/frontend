@@ -1,4 +1,5 @@
 import { GeneratorType } from './types'
+import AnnotationsGenerator from './annotations/annotations'
 import BackgroundGenerator from './background/background'
 import BaseMapGenerator from './basemap/basemap'
 import BasemapLabelsGenerator from './basemap-labels/basemap-labels'
@@ -20,6 +21,7 @@ export * from './heatmap/types'
 export * from './heatmap/util'
 export * from './heatmap/util/get-time-chunks-interval'
 export * from './vessel-events/vessel-events.utils'
+export * from './rulers/rulers'
 export { TRACK_HIGHLIGHT_SUFFIX } from './track/track'
 export { HEATMAP_COLOR_RAMPS, HEATMAP_COLORS_BY_ID } from './heatmap/colors'
 export { rgbaStringToComponents, hexToComponents, rgbaToString } from './heatmap/util/colors'
@@ -36,6 +38,7 @@ export {
 } from './heatmap/config'
 
 export type AnyGeneratorClass =
+  | AnnotationsGenerator
   | BackgroundGenerator
   | BaseMapGenerator
   | BasemapLabelsGenerator
@@ -56,6 +59,7 @@ export type AnyGeneratorClass =
 export type GeneratorsRecord = Record<GeneratorType, AnyGeneratorClass>
 
 const GeneratorConfig: GeneratorsRecord = {
+  [GeneratorType.Annotation]: new AnnotationsGenerator(),
   [GeneratorType.Background]: new BackgroundGenerator(),
   [GeneratorType.Basemap]: new BaseMapGenerator(),
   [GeneratorType.BasemapLabels]: new BasemapLabelsGenerator(),

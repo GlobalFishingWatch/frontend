@@ -56,10 +56,6 @@
   color: var(--color-secondary-blue);
 }
 
-.input:focus::placeholder {
-  color: var(--color-primary-blue);
-}
-
 .input:disabled {
   border-bottom: var(--border);
   opacity: var(--opacity-secondary);

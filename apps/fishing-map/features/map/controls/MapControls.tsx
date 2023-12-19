@@ -27,6 +27,11 @@ import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import {
+  selectIsNotifyingError,
+  toggleErrorNotifying,
+} from 'features/map/error-notification/error-notification.slice'
+import { selectIsGuestUser } from 'features/user/user.slice'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 
@@ -37,7 +42,13 @@ const MapScreenshot = dynamic(
   () => import(/* webpackChunkName: "MapScreenshot" */ '../MapScreenshot')
 )
 const MapSearch = dynamic(() => import(/* webpackChunkName: "MapSearch" */ './MapSearch'))
-const Rulers = dynamic(() => import(/* webpackChunkName: "Rulers" */ 'features/map/rulers/Rulers'))
+const Rulers = dynamic(
+  () => import(/* webpackChunkName: "Rulers" */ 'features/map/controls/RulersControl')
+)
+const MapAnnotations = dynamic(
+  () =>
+    import(/* webpackChunkName: "AnnotationsControl" */ 'features/map/controls/AnnotationsControl')
+)
 
 const MapControls = ({
   mapLoading = false,
@@ -51,6 +62,7 @@ const MapControls = ({
   const modalOpen = useSelector(selectScreenshotModalOpen)
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
+  const guestUser = useSelector(selectIsGuestUser)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -66,6 +78,7 @@ const MapControls = ({
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const reportLocation = useSelector(selectIsAnyReportLocation)
+  const isNotifyingError = useSelector(selectIsNotifyingError)
   const showExtendedControls = isWorkspaceLocation || isVesselLocation || reportLocation
   const showScreenshot = !isVesselLocation && !reportLocation
 
@@ -147,6 +160,9 @@ const MapControls = ({
       },
     })
   }
+  const switchErrorNotification = () => {
+    dispatch(toggleErrorNotifying())
+  }
 
   return (
     <Fragment>
@@ -182,6 +198,17 @@ const MapControls = ({
           {showExtendedControls && (
             <Fragment>
               <Rulers />
+              <MapAnnotations />
+              {!guestUser && (
+                <IconButton
+                  icon="feedback-error"
+                  type="map-tool"
+                  disabled={mapLoading || loading}
+                  tooltip={t('map.errorAction', 'Log an issue at a specific location')}
+                  onClick={switchErrorNotification}
+                  className={cx({ [styles.active]: isNotifyingError })}
+                />
+              )}
               {showScreenshot && (
                 <IconButton
                   icon="camera"

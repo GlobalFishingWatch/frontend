@@ -53,6 +53,11 @@
   padding-left: 3rem;
 }
 
+.withoutIcon,
+.click .withoutIcon {
+  padding-left: var(--space-S);
+}
+
 .hover .popupSection:not(:last-child) {
   border-bottom: none;
 }
@@ -118,6 +123,12 @@
 
 .rowContainer {
   flex: 1;
+}
+
+.rulerContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
 }
 
 .row {

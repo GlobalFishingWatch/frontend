@@ -40,6 +40,7 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
+import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
 import { selectDefaultMapGeneratorsConfig } from './map.selectors'
 import {
   WORKSPACES_POINTS_TYPE,
@@ -138,6 +139,7 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   const { cleanFeatureState } = useFeatureState(map)
   const { setMapCoordinates } = useViewport()
+  const { setMapAnnotation } = useMapAnnotation()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
@@ -157,6 +159,7 @@ export const useClickedEventConnect = () => {
       dispatch(setClickedEvent(null))
       return
     }
+
     // Used on workspaces-list or user panel to go to the workspace detail page
     if (locationType === USER || locationType === WORKSPACES_LIST) {
       const workspace = event?.features?.find(
@@ -204,6 +207,14 @@ export const useClickedEventConnect = () => {
         }
         return
       }
+    }
+
+    const annotatedFeature = event?.features?.find(
+      (f) => f.generatorType === GeneratorType.Annotation
+    )
+    if (annotatedFeature?.properties?.id) {
+      setMapAnnotation(annotatedFeature.properties)
+      return
     }
 
     // Cancel all pending promises
@@ -359,11 +370,12 @@ export const parseMapTooltipFeatures = (
   temporalgridDataviews?: UrlDataviewInstance<GeneratorType>[]
 ): TooltipEventFeature[] => {
   const tooltipEventFeatures: TooltipEventFeature[] = features.flatMap((feature) => {
-    const { temporalgrid, generatorId } = feature
+    const { temporalgrid, generatorId, generatorType } = feature
     const baseFeature = {
       source: feature.source,
       sourceLayer: feature.sourceLayer,
       layerId: feature.layerId as string,
+      type: generatorType as GeneratorType,
     }
 
     if (temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
@@ -394,7 +406,8 @@ export const parseMapTooltipFeatures = (
     }
 
     if (!dataview) {
-      // Not needed to create a dataview just for the workspaces list interaction
+      // There are three use cases when there is no dataview and we want interaction
+      // 1. Wworkspaces list
       if (generatorId && (generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
           ...baseFeature,
@@ -404,7 +417,9 @@ export const parseMapTooltipFeatures = (
           category: DataviewCategory.Context,
         }
         return tooltipWorkspaceFeature
-      } else if (generatorId === REPORT_BUFFER_GENERATOR_ID) {
+      }
+      // 2. Report buffer
+      else if (generatorId === REPORT_BUFFER_GENERATOR_ID) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
           ...baseFeature,
           category: DataviewCategory.Context,
@@ -413,6 +428,20 @@ export const parseMapTooltipFeatures = (
           visible: true,
         }
         return tooltipWorkspaceFeature
+      }
+      // 3. Tools (Annotations and Rulers)
+      else if (
+        generatorType === GeneratorType.Annotation ||
+        generatorType === GeneratorType.Rulers
+      ) {
+        const tooltipToolFeature: TooltipEventFeature = {
+          ...baseFeature,
+          category: DataviewCategory.Context,
+          properties: feature.properties,
+          value: feature.properties.label,
+          visible: true,
+        }
+        return tooltipToolFeature
       }
       return []
     }
