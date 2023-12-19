@@ -13,7 +13,7 @@ import { selectUserData } from 'features/user/user.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import styles from './ErrorNotification.module.css'
 
-const ERRORS_SPREADSHEET_ID = '1VzEjTiSJrbwBfZrhaSFwZgHClxKkwN9E0rrfFR8bw2c'
+const ERRORS_SPREADSHEET_ID = process.env.NEXT_PUBLIC_MAP_ERRORS_SPREADSHEET_ID || ''
 const ERRORS_SHEET_TITLE = 'errors'
 
 const ErrorNotification = () => {
@@ -24,7 +24,7 @@ const ErrorNotification = () => {
   const [success, setSuccess] = useState(false)
   const userData = useSelector(selectUserData)
   const onConfirmClick = async () => {
-    if (!errorNotification) {
+    if (!errorNotification || !ERRORS_SPREADSHEET_ID) {
       return
     }
     setLoading(true)
