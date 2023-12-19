@@ -4,19 +4,32 @@ div.modalContent {
 
 .content {
   padding: var(--space-L);
-  line-height: 1.8;
+  font: var(--font-S);
 }
 
 .content strong {
   font-weight: bold;
 }
 
-.defaultCursor {
-  cursor: default;
+.content p {
+  margin-bottom: var(--space-M);
 }
 
 .content a {
   text-decoration: underline;
+}
+
+.content * {
+  /* Needed to override the library inline color style */
+  color: var(--color-primary-blue) !important;
+}
+
+.content img {
+  max-width: 100%;
+}
+
+.infoButton {
+  vertical-align: text-bottom;
 }
 
 .content h2 {
@@ -27,14 +40,20 @@ div.modalContent {
   font: var(--font-M);
 }
 
-.content p + h2,
-.content ul + h2 {
-  margin-top: var(--space-M);
+.content ol,
+.content ul {
+  padding-left: var(--space-M);
+  list-style-type: circle;
 }
 
-.content h2 + p,
-.content h2 + ul {
-  margin-top: var(--space-S);
+.content > ol,
+.content > ul {
+  list-style: disc;
+  margin-bottom: var(--space-M);
+}
+
+.content > *:nth-last-child(1) {
+  padding-bottom: var(--space-XL);
 }
 
 .subtitle {
@@ -55,4 +74,8 @@ div.modalContent {
 
 .title {
   flex: 1;
+}
+
+.defaultCursor {
+  cursor: default;
 }
