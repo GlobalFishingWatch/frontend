@@ -204,7 +204,7 @@ const MapControls = ({
                   icon="feedback-error"
                   type="map-tool"
                   disabled={mapLoading || loading}
-                  tooltip="Log an issue in a specific location"
+                  tooltip={t('map.errorAction', 'Log an issue at a specific location')}
                   onClick={switchErrorNotification}
                   className={cx({ [styles.active]: isNotifyingError })}
                 />

@@ -2,9 +2,11 @@ import { useSelector } from 'react-redux'
 import { Popup } from 'react-map-gl'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
+import { stringify } from 'qs'
 import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
+import { MapAnnotation } from '@globalfishingwatch/layer-composer'
 import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserData } from 'features/user/user.slice'
@@ -30,20 +32,20 @@ const ErrorNotification = () => {
     setLoading(true)
     try {
       const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(ERRORS_SPREADSHEET_ID)
-      // loads document properties and worksheets
       const sheet = feedbackSpreadsheetDoc.sheetsByTitle[ERRORS_SHEET_TITLE]
       const date = new Date()
-      const annotationURL = `&mapAnnotations[0][lon]=${
-        errorNotification.longitude
-      }&mapAnnotations[0][lat]=${
-        errorNotification.latitude
-      }&mapAnnotations[0][clr]=%23ffffff&mapAnnotations[0][label]=${
-        errorNotification.label
-      }&mapAnnotations[0][id]=${date.getTime()}`
+      const mapAnnotation: MapAnnotation[] = [
+        {
+          id: date.getTime(),
+          lat: errorNotification.latitude,
+          lon: errorNotification.longitude,
+          label: errorNotification.label,
+        },
+      ]
       const finalErrorData = {
         ...errorNotification,
         date: date.toISOString(),
-        url: `${window.location.href}${annotationURL}`,
+        url: `${window.location.href}${stringify(mapAnnotation)}`,
         userId: userData?.id || GUEST_USER_TYPE,
         email: userData?.email || EMPTY_FIELD_PLACEHOLDER,
         name: userData?.firstName
@@ -83,11 +85,11 @@ const ErrorNotification = () => {
     >
       <div className={styles.popupContent} ref={ref}>
         <InputText
-          label="error description"
+          label={t('map.errorLabel', 'Error description')}
           value={errorNotification?.label || ''}
           onChange={(e) => setErrorNotification({ label: e.target.value })}
           placeholder={t(
-            'map.annotationPlaceholder',
+            'map.errorPlaceholder',
             'Please describe the error as detailed as possible'
           )}
           className={styles.input}
