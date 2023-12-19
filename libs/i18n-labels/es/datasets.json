@@ -1327,7 +1327,7 @@
       "matched": {
         "keyword": "coincidencia",
         "enum": {
-          "true": "true",
+          "true": "1",
           "false": "false"
         }
       },
@@ -1376,7 +1376,7 @@
       "matched": {
         "keyword": "coincidencia",
         "enum": {
-          "true": "true",
+          "true": "1",
           "false": "false"
         }
       },
@@ -2275,10 +2275,10 @@
       "htime": "htime",
       "ssvid": "ssvid",
       "matched": {
-        "keyword": "coincidencia",
+        "keyword": "Coincidencia con AIS vessels",
         "enum": {
-          "true": "true",
-          "false": "false"
+          "true": "Coincidencia con AIS",
+          "false": "Sin coincidencia con AIS"
         }
       },
       "geartype": {
@@ -3117,7 +3117,7 @@
       "matched": {
         "keyword": "coincidencia",
         "enum": {
-          "true": "true",
+          "true": "1",
           "false": "false"
         }
       },

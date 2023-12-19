@@ -1327,7 +1327,7 @@
       "matched": {
         "keyword": "Matching",
         "enum": {
-          "true": "true",
+          "true": "1",
           "false": "false"
         }
       },
@@ -1376,7 +1376,7 @@
       "matched": {
         "keyword": "Matching",
         "enum": {
-          "true": "true",
+          "true": "1",
           "false": "false"
         }
       },
@@ -2277,8 +2277,8 @@
       "matched": {
         "keyword": "Matching AIS vessels",
         "enum": {
-          "true": "true",
-          "false": "false"
+          "true": "AIS Matched",
+          "false": "AIS Unmatched"
         }
       },
       "geartype": {
@@ -3117,7 +3117,7 @@
       "matched": {
         "keyword": "Matching",
         "enum": {
-          "true": "true",
+          "true": "1",
           "false": "false"
         }
       },
