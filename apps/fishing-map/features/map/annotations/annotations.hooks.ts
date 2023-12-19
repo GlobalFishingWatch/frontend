@@ -2,59 +2,43 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { MapAnnotation } from '@globalfishingwatch/layer-composer'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapAnnotationsVisible, selectMapAnnotations } from 'features/app/app.selectors'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
-import {
-  selectIsMapAnnotating,
-  setMapAnnotating as setMapAnnotatingAction,
-  resetMapAnnotation as resetMapAnnotationAction,
-  setMapAnnotation as setMapAnnotationAction,
-} from './annotations.slice'
+import { useMapControl } from 'features/map/controls/map-controls.hooks'
 
 /**
  * Hook used only for the temporal annotation stored into the slice before confirming
  */
 export const useMapAnnotation = () => {
-  const dispatch = useAppDispatch()
-  const isMapAnnotating = useSelector(selectIsMapAnnotating)
-
-  const resetMapAnnotation = useCallback(() => {
-    dispatch(resetMapAnnotationAction())
-  }, [dispatch])
-
-  const setMapAnnotating = useCallback(
-    (annotating: boolean) => {
-      dispatch(setMapAnnotatingAction(annotating))
-    },
-    [dispatch]
-  )
-
-  const setMapAnnotation = useCallback(
-    (annotation: Partial<MapAnnotation>) => {
-      dispatch(setMapAnnotationAction(annotation))
-    },
-    [dispatch]
-  )
+  const {
+    isEditing,
+    value,
+    toggleMapControl,
+    setMapControl,
+    setMapControlValue,
+    resetMapControlValue,
+  } = useMapControl('annotations')
 
   const addMapAnnotation = useCallback(
     (event: MapLayerMouseEvent) => {
-      setMapAnnotation({
+      setMapControlValue({
         lon: event.lngLat.lng,
         lat: event.lngLat.lat,
         color: DEFAUL_ANNOTATION_COLOR,
-      })
+      } as MapAnnotation)
     },
-    [setMapAnnotation]
+    [setMapControlValue]
   )
 
   return {
     addMapAnnotation,
-    resetMapAnnotation,
-    setMapAnnotation,
-    isMapAnnotating,
-    setMapAnnotating,
+    mapAnnotation: value as MapAnnotation,
+    isMapAnnotating: isEditing,
+    setMapAnnotation: setMapControlValue,
+    resetMapAnnotation: resetMapControlValue,
+    setMapAnnotationEdit: setMapControl,
+    toggleMapAnnotationEdit: toggleMapControl,
   }
 }
 

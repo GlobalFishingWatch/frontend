@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux'
 import { Popup } from 'react-map-gl'
 import { useTranslation } from 'react-i18next'
 import {
@@ -12,16 +11,14 @@ import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectMapAnnotation } from './annotations.slice'
 import styles from './Annotations.module.css'
 
 const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]
 
 const MapAnnotations = () => {
   const { t } = useTranslation()
-  const mapAnnotation = useSelector(selectMapAnnotation)
   const { dispatchQueryParams } = useLocationConnect()
-  const { resetMapAnnotation, setMapAnnotation } = useMapAnnotation()
+  const { mapAnnotation, resetMapAnnotation, setMapAnnotation } = useMapAnnotation()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
   const onConfirmClick = () => {
     if (!mapAnnotation) {
