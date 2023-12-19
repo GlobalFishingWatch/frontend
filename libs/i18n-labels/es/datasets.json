@@ -2277,7 +2277,7 @@
       "matched": {
         "keyword": "Coincidencia con AIS vessels",
         "enum": {
-          "true": "Coincidencia AIS",
+          "true": "Coincidencia con AIS",
           "false": "Sin coincidencia con AIS"
         }
       },
