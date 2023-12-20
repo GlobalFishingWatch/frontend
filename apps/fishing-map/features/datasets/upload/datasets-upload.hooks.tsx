@@ -1,5 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
-import { DatasetConfiguration, DatasetConfigurationUI } from '@globalfishingwatch/api-types'
+import {
+  DatasetConfiguration,
+  DatasetConfigurationUI,
+  DatasetSchemaItem,
+} from '@globalfishingwatch/api-types'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { MultiSelectOption } from '@globalfishingwatch/api-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
@@ -40,13 +44,29 @@ export function useDatasetMetadata() {
     []
   )
 
+  const setDatasetMetadataSchema = useCallback(
+    (newSchemaEntry: Record<string, DatasetSchemaItem>) => {
+      setDatasetMetadataState((meta = {} as DatasetMetadata) => {
+        return {
+          ...meta,
+          schema: {
+            ...meta?.schema,
+            ...newSchemaEntry,
+          },
+        }
+      })
+    },
+    []
+  )
+
   return useMemo(
     () => ({
       datasetMetadata,
       setDatasetMetadata,
       setDatasetMetadataConfig,
+      setDatasetMetadataSchema,
     }),
-    [datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig]
+    [datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig, setDatasetMetadataSchema]
   )
 }
 
