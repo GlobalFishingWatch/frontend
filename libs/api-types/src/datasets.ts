@@ -100,7 +100,7 @@ export interface DatasetConfigurationUI {
   pointTime?: string[]
   startTime?: string | number
   endTime?: string | number
-  pointTimeFilterType?: TimeFilterType
+  timeFilterType?: TimeFilterType
   geometryType?: DatasetGeometryType
 }
 

@@ -90,7 +90,7 @@ function NewPointDataset({
   const isTimestampFilter =
     getDatasetConfigurationProperty({
       dataset: datasetMetadata,
-      property: 'pointTimeFilterType',
+      property: 'timeFilterType',
     }) === 'timestamp'
 
   const handleRawData = useCallback(
@@ -183,13 +183,13 @@ function NewPointDataset({
 
   const handleTimeFilterTypeSelect = useCallback(
     (selected: SelectOption) => {
-      setDatasetMetadataConfig({ pointTimeFilterType: selected.id })
+      setDatasetMetadataConfig({ timeFilterType: selected.id })
     },
     [setDatasetMetadataConfig]
   )
 
   const handleTimeFilterTypeClean = useCallback(() => {
-    setDatasetMetadataConfig({ pointTimeFilterType: undefined })
+    setDatasetMetadataConfig({ timeFilterType: undefined })
   }, [setDatasetMetadataConfig])
 
   const handleStartTimeFilterSelect = useCallback(

@@ -1,15 +1,17 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import { t } from 'i18next'
 import { Select, SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { TimeFilterType } from '@globalfishingwatch/api-types'
 import { useDatasetMetadataOptions } from './datasets-upload.hooks'
 import { DatasetMetadata } from './NewDataset'
 
-const TIME_FILTER_OPTIONS: SelectOption[] = [
-  { id: 'timerange', label: 'time range' },
-  { id: 'timestamp', label: 'timestamp' },
-]
+const TIME_FILTER_OPTIONS: TimeFilterType[] = ['timerange', 'timestamp']
+
+export const getTimeFilterOptions = (): SelectOption<TimeFilterType>[] => {
+  return TIME_FILTER_OPTIONS.map((id) => ({ id, label: t(`common.${id}`, id as string) }))
+}
 
 type TimeFieldsGroupProps = {
   datasetMetadata: DatasetMetadata
@@ -32,6 +34,7 @@ export const TimeFieldsGroup = ({
 }: TimeFieldsGroupProps) => {
   const { t } = useTranslation()
   const { fieldsOptions, getSelectedOption } = useDatasetMetadataOptions(datasetMetadata)
+  const timeFilterOptions = getTimeFilterOptions()
   return (
     <Fragment>
       <Select
@@ -39,7 +42,7 @@ export const TimeFieldsGroup = ({
           'datasetUploadUI.timePeriodTypePlaceholder',
           'Select a time period filter type'
         )}
-        options={TIME_FILTER_OPTIONS}
+        options={timeFilterOptions}
         direction="top"
         label={t('datasetUpload.points.time', 'Point time')}
         // className={styles.input}
@@ -47,9 +50,9 @@ export const TimeFieldsGroup = ({
           getSelectedOption(
             getDatasetConfigurationProperty({
               dataset: datasetMetadata,
-              property: 'pointTimeFilterType',
+              property: 'timeFilterType',
             }),
-            TIME_FILTER_OPTIONS
+            timeFilterOptions
           ) as SelectOption
         }
         onSelect={onFilterSelect}
@@ -62,7 +65,7 @@ export const TimeFieldsGroup = ({
         disabled={
           !getDatasetConfigurationProperty({
             dataset: datasetMetadata,
-            property: 'pointTimeFilterType',
+            property: 'timeFilterType',
           })
         }
         selectedOption={
@@ -78,7 +81,7 @@ export const TimeFieldsGroup = ({
       />
       {(getDatasetConfigurationProperty({
         dataset: datasetMetadata,
-        property: 'pointTimeFilterType',
+        property: 'timeFilterType',
       }) as TimeFilterType) === 'timerange' && (
         <Select
           placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
