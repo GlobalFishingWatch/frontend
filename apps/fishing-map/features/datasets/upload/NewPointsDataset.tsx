@@ -34,7 +34,13 @@ import {
 } from 'features/datasets/upload/datasets-upload.utils'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import styles from './NewDataset.module.css'
-import { DataList, getDatasetParsed, getGeojsonFromPointsList } from './datasets-parse.utils'
+import {
+  DataList,
+  DataParsed,
+  getDatasetParsed,
+  getGeojsonFromPointsList,
+  getNormalizedGeojsonFromPointsGeojson,
+} from './datasets-parse.utils'
 import FileDropzone from './FileDropzone'
 
 const POINT_TIME_OPTIONS: SelectOption[] = [
@@ -51,7 +57,7 @@ function NewPointDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const [sourceData, setSourceData] = useState<DataList | undefined>()
+  const [sourceData, setSourceData] = useState<DataParsed | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
   const {
     datasetMetadata,
@@ -104,7 +110,12 @@ function NewPointDataset({
         ) as FeatureCollection<Point>
         setGeojson(geojson)
       } else {
-        setGeojson(data as FeatureCollection<Point>)
+        setSourceData(data as FeatureCollection)
+        const geojson = getNormalizedGeojsonFromPointsGeojson(
+          data as FeatureCollection,
+          datasetMetadata
+        ) as FeatureCollection<Point>
+        setGeojson(geojson)
       }
     },
     [setDatasetMetadata]
@@ -120,21 +131,30 @@ function NewPointDataset({
   }, [dataset, file])
 
   useEffect(() => {
-    if (
-      latitudeProperty &&
-      longitudeProperty &&
-      startTimeProperty &&
-      endTimeProperty &&
-      sourceData
-    ) {
-      const geojson = getGeojsonFromPointsList(
-        sourceData,
-        datasetMetadata
-      ) as FeatureCollection<Point>
-      setGeojson(geojson)
+    if (sourceData) {
+      if (isCSVFile) {
+        const geojson = getGeojsonFromPointsList(
+          sourceData as DataList,
+          datasetMetadata
+        ) as FeatureCollection<Point>
+        setGeojson(geojson)
+      } else {
+        const geojson = getNormalizedGeojsonFromPointsGeojson(
+          sourceData as FeatureCollection,
+          datasetMetadata
+        ) as FeatureCollection<Point>
+        setGeojson(geojson)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [latitudeProperty, longitudeProperty, startTimeProperty, endTimeProperty])
+  }, [
+    latitudeProperty,
+    longitudeProperty,
+    startTimeProperty,
+    endTimeProperty,
+    fileType,
+    sourceData,
+  ])
 
   const onConfirmClick = useCallback(async () => {
     let error = ''

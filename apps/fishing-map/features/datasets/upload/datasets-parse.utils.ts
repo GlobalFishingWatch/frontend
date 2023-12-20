@@ -2,6 +2,7 @@ import { parse } from 'papaparse'
 import { FeatureCollection } from 'geojson'
 import {
   pointsListToGeojson,
+  pointsGeojsonToNormalizedGeojson,
   listToTrackSegments,
   segmentsToGeoJSON,
   kmlToGeoJSON,
@@ -94,5 +95,15 @@ export const getGeojsonFromPointsList = (data: Record<string, any>[], dataset: D
     startTime: getDatasetConfigurationProperty({ dataset, property: 'startTime' }),
     endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
     id: getDatasetConfigurationProperty({ dataset, property: 'idProperty' }),
+  })
+}
+
+export const getNormalizedGeojsonFromPointsGeojson = (
+  data: FeatureCollection,
+  dataset: DatasetMetadata
+) => {
+  return pointsGeojsonToNormalizedGeojson(data, {
+    startTime: getDatasetConfigurationProperty({ dataset, property: 'startTime' }),
+    endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
   })
 }

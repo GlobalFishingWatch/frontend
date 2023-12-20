@@ -31,3 +31,22 @@ export const pointsListToGeojson = (
     features,
   } as FeatureCollection
 }
+
+export const pointsGeojsonToNormalizedGeojson = (
+  data: FeatureCollection,
+  { startTime, endTime }: Partial<PointColumns>
+) => {
+  return {
+    type: 'FeatureCollection',
+    features: data.features.map((feature) => ({
+      ...feature,
+      ...(feature?.properties && {
+        properties: {
+          ...feature.properties,
+          ...(startTime && { [startTime]: getUTCDate(feature.properties[startTime]).getTime() }),
+          ...(endTime && { [endTime]: getUTCDate(feature.properties[endTime]).getTime() }),
+        },
+      }),
+    })),
+  } as FeatureCollection
+}
