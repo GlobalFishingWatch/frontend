@@ -1,9 +1,13 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { t } from 'i18next'
-import { Select, SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components'
+import { Select, SelectOption } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import { TimeFilterType } from '@globalfishingwatch/api-types'
+import {
+  DatasetConfiguration,
+  DatasetConfigurationUI,
+  TimeFilterType,
+} from '@globalfishingwatch/api-types'
 import { useDatasetMetadataOptions } from './datasets-upload.hooks'
 import { DatasetMetadata } from './NewDataset'
 
@@ -15,26 +19,60 @@ export const getTimeFilterOptions = (): SelectOption<TimeFilterType>[] => {
 
 type TimeFieldsGroupProps = {
   datasetMetadata: DatasetMetadata
-  onFilterSelect: SelectOnChange
-  onStartSelect: SelectOnChange
-  onEndSelect: SelectOnChange
-  onFilterClean?: (e: React.MouseEvent) => void
-  onStartClean?: (e: React.MouseEvent) => void
-  onEndClean?: (e: React.MouseEvent) => void
+  setDatasetMetadataConfig: (config: Partial<DatasetConfiguration | DatasetConfigurationUI>) => void
 }
 
 export const TimeFieldsGroup = ({
   datasetMetadata,
-  onFilterSelect,
-  onFilterClean,
-  onStartSelect,
-  onStartClean,
-  onEndSelect,
-  onEndClean,
+  setDatasetMetadataConfig,
 }: TimeFieldsGroupProps) => {
   const { t } = useTranslation()
   const { fieldsOptions, getSelectedOption } = useDatasetMetadataOptions(datasetMetadata)
   const timeFilterOptions = getTimeFilterOptions()
+
+  const isTimestampFilter =
+    getDatasetConfigurationProperty({
+      dataset: datasetMetadata,
+      property: 'timeFilterType',
+    }) === 'timestamp'
+
+  const onFilterSelect = useCallback(
+    (selected: SelectOption) => {
+      setDatasetMetadataConfig({ timeFilterType: selected.id })
+    },
+    [setDatasetMetadataConfig]
+  )
+
+  const onFilterClean = useCallback(() => {
+    setDatasetMetadataConfig({ timeFilterType: undefined })
+  }, [setDatasetMetadataConfig])
+
+  const onStartSelect = useCallback(
+    (selected: SelectOption) => {
+      isTimestampFilter
+        ? setDatasetMetadataConfig({ startTime: selected.id, endTime: selected.id })
+        : setDatasetMetadataConfig({ startTime: selected.id })
+    },
+    [setDatasetMetadataConfig, isTimestampFilter]
+  )
+
+  const onStartClean = useCallback(() => {
+    isTimestampFilter
+      ? setDatasetMetadataConfig({ startTime: undefined, endTime: undefined })
+      : setDatasetMetadataConfig({ startTime: undefined })
+  }, [setDatasetMetadataConfig, isTimestampFilter])
+
+  const onEndSelect = useCallback(
+    (selected: SelectOption) => {
+      setDatasetMetadataConfig({ endTime: selected.id })
+    },
+    [setDatasetMetadataConfig]
+  )
+
+  const onEndClean = useCallback(() => {
+    setDatasetMetadataConfig({ endTime: undefined })
+  }, [setDatasetMetadataConfig])
+
   return (
     <Fragment>
       <Select

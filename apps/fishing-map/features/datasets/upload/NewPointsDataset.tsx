@@ -87,12 +87,6 @@ function NewPointDataset({
     property: 'endTime',
   })
 
-  const isTimestampFilter =
-    getDatasetConfigurationProperty({
-      dataset: datasetMetadata,
-      property: 'timeFilterType',
-    }) === 'timestamp'
-
   const handleRawData = useCallback(
     async (file: File) => {
       const data = await getDatasetParsed(file)
@@ -173,6 +167,8 @@ function NewPointDataset({
       if (error) {
         setError(error)
       } else if (onConfirm) {
+        // TODO update the schema with the selected field with type timestamp
+        // setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
         setLoading(true)
         const file = geojson ? getFileFromGeojson(geojson) : undefined
         await onConfirm(datasetMetadata, file)
@@ -180,45 +176,6 @@ function NewPointDataset({
       }
     }
   }, [datasetMetadata, sourceData, onConfirm, fileType, geojson, t])
-
-  const handleTimeFilterTypeSelect = useCallback(
-    (selected: SelectOption) => {
-      setDatasetMetadataConfig({ timeFilterType: selected.id })
-    },
-    [setDatasetMetadataConfig]
-  )
-
-  const handleTimeFilterTypeClean = useCallback(() => {
-    setDatasetMetadataConfig({ timeFilterType: undefined })
-  }, [setDatasetMetadataConfig])
-
-  const handleStartTimeFilterSelect = useCallback(
-    (selected: SelectOption) => {
-      setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
-      isTimestampFilter
-        ? setDatasetMetadataConfig({ startTime: selected.id, endTime: selected.id })
-        : setDatasetMetadataConfig({ startTime: selected.id })
-    },
-    [setDatasetMetadataConfig, setDatasetMetadataSchema, isTimestampFilter]
-  )
-
-  const handleStartTimeFilterClean = useCallback(() => {
-    isTimestampFilter
-      ? setDatasetMetadataConfig({ startTime: undefined, endTime: undefined })
-      : setDatasetMetadataConfig({ startTime: undefined })
-  }, [setDatasetMetadataConfig, isTimestampFilter])
-
-  const handleEndTimeFilterSelect = useCallback(
-    (selected: SelectOption) => {
-      setDatasetMetadataConfig({ endTime: selected.id })
-      setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
-    },
-    [setDatasetMetadataConfig, setDatasetMetadataSchema]
-  )
-
-  const handleEndTimeFilterClean = useCallback(() => {
-    setDatasetMetadataConfig({ endTime: undefined })
-  }, [setDatasetMetadataConfig])
 
   return (
     <div className={styles.container}>
@@ -263,12 +220,7 @@ function NewPointDataset({
       <div className={styles.row}>
         <TimeFieldsGroup
           datasetMetadata={datasetMetadata}
-          onFilterSelect={handleTimeFilterTypeSelect}
-          onFilterClean={handleTimeFilterTypeClean}
-          onStartSelect={handleStartTimeFilterSelect}
-          onStartClean={handleStartTimeFilterClean}
-          onEndSelect={handleEndTimeFilterSelect}
-          onEndClean={handleEndTimeFilterClean}
+          setDatasetMetadataConfig={setDatasetMetadataConfig}
         />
       </div>
       <Collapsable
