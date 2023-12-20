@@ -276,6 +276,13 @@
       "sizeMin": "Minimum size",
       "time": "Point time"
     },
+    "polygons": {
+      "coordinates": "Polygon coordinates",
+      "filters": "Polygon filters",
+      "name": "Polygon name",
+      "size": "Polygon size",
+      "time": "Polygon time"
+    },
     "tracks": {
       "filters": "track filters",
       "name": "Point name",
