@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
 import { uniq } from 'lodash'
 import { DataviewCategory, DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
+import { MapAnnotation, Ruler } from '@globalfishingwatch/layer-composer'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_WORKSPACE } from 'data/config'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
@@ -141,6 +142,48 @@ export const selectSidebarOpen = createSelector(
   [selectWorkspaceStateProperty('sidebarOpen')],
   (sidebarOpen): boolean => {
     return sidebarOpen
+  }
+)
+
+export const selectAreMapRulersVisible = createSelector(
+  [selectWorkspaceStateProperty('mapRulersVisible')],
+  (mapRulersVisible): boolean => {
+    return mapRulersVisible
+  }
+)
+
+export const selectMapRulers = createSelector(
+  [selectWorkspaceStateProperty('mapRulers')],
+  (rulers = []): Ruler[] => {
+    return rulers
+  }
+)
+
+export const selectMapRulersVisible = createSelector(
+  [selectMapRulers, selectAreMapRulersVisible],
+  (rulers, areMapRulersVisible): Ruler[] => {
+    return areMapRulersVisible ? rulers : []
+  }
+)
+
+export const selectAreMapAnnotationsVisible = createSelector(
+  [selectWorkspaceStateProperty('mapAnnotationsVisible')],
+  (mapAnnotationsVisible): boolean => {
+    return mapAnnotationsVisible
+  }
+)
+
+export const selectMapAnnotations = createSelector(
+  [selectWorkspaceStateProperty('mapAnnotations')],
+  (mapAnnotations): MapAnnotation[] => {
+    return mapAnnotations
+  }
+)
+
+export const selectMapAnnotationsVisible = createSelector(
+  [selectMapAnnotations, selectAreMapAnnotationsVisible],
+  (mapAnnotations, areMapAnnotationsVisible): MapAnnotation[] => {
+    return areMapAnnotationsVisible ? mapAnnotations : []
   }
 )
 
@@ -382,6 +425,10 @@ export const selectWorkspaceAppState = createSelector(
   [
     selectActivityCategory,
     selectBivariateDataviews,
+    selectMapAnnotations,
+    selectAreMapAnnotationsVisible,
+    selectMapRulers,
+    selectAreMapRulersVisible,
     selectSidebarOpen,
     selectTimebarGraph,
     selectTimebarSelectedEnvId,
@@ -392,6 +439,10 @@ export const selectWorkspaceAppState = createSelector(
   (
     activityCategory,
     bivariateDataviews,
+    mapAnnotations,
+    mapAnnotationsVisible,
+    mapRulers,
+    mapRulersVisible,
     sidebarOpen,
     timebarGraph,
     timebarSelectedEnvId,
@@ -402,6 +453,10 @@ export const selectWorkspaceAppState = createSelector(
     return {
       activityCategory,
       bivariateDataviews,
+      mapAnnotations,
+      mapAnnotationsVisible,
+      mapRulers,
+      mapRulersVisible,
       sidebarOpen,
       timebarGraph,
       timebarSelectedEnvId,

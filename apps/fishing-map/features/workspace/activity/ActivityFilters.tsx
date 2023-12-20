@@ -397,8 +397,7 @@ function ActivityFilters({
       {filtersDisabled.length >= 1 && (
         <p className={styles.filtersDisabled}>
           {t('layer.filtersDisabled', {
-            defaultValue:
-              'Other filters ({{filters}}) are available depending on the sources selected',
+            defaultValue: 'Other filters ({{filters}}) are available depending on your selection',
             filters: listAsSentence(filtersDisabled.map((filter) => filter.label)),
           })}
         </p>

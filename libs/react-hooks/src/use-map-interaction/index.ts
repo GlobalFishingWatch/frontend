@@ -30,6 +30,7 @@ export type ExtendedFeature = {
   generatorType: string | null
   generatorContextLayer?: ContextLayerType | null
   datasetId?: string
+  promoteId?: string
   id: string
   value: any
   tile: {
@@ -37,7 +38,9 @@ export type ExtendedFeature = {
     y: number
     z: number
   }
+  geometry?: any
   temporalgrid?: TemporalGridFeature
+  stopPropagation?: boolean
   uniqueFeatureInteraction?: boolean
 }
 

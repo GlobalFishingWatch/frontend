@@ -53,7 +53,12 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   } = useLayerPanelDataviewSort(dataview.id)
 
   const datasetFields: { field: SupportedEnvDatasetSchema; label: string }[] = useMemo(
-    () => [{ field: 'type', label: t('layer.type', 'Type') }],
+    () => [
+      { field: 'type', label: t('layer.type', 'Type') },
+      { field: 'flag', label: t('layer.flagState_others', 'Flags') },
+      { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
+      { field: 'speed', label: t('layer.speed', 'Speed') },
+    ],
     [t]
   )
 

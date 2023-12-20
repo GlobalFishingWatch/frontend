@@ -85,6 +85,8 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   readOnly: false,
   daysFromLatest: undefined,
   sidebarOpen: true,
+  mapAnnotationsVisible: true,
+  mapRulersVisible: true,
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   visibleEvents: 'all',

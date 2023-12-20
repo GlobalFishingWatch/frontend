@@ -324,7 +324,7 @@ function MapDraw() {
           closeOnClick={false}
           onClose={resetEditHandler}
           maxWidth="320px"
-          className={cx(styles.popup)}
+          className={styles.popup}
         >
           <div className={styles.popupContent}>
             <div className={styles.flex}>
