@@ -3,6 +3,10 @@
   font: var(--font-S);
 }
 
+.content strong {
+  font-weight: bold;
+}
+
 .content p {
   margin-bottom: var(--space-M);
 }
@@ -21,6 +25,10 @@
 
 .content h2 {
   font: var(--font-L);
+}
+
+.content h3 {
+  font: var(--font-M);
 }
 
 .content ul {

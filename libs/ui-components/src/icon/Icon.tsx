@@ -5,6 +5,7 @@ import { Tooltip } from '../tooltip'
 import { TooltipTypes } from '../types/types'
 import { ReactComponent as AddPolygon } from '../assets/icons/add-polygon.svg'
 import { ReactComponent as Analysis } from '../assets/icons/analysis.svg'
+import { ReactComponent as Annotation } from '../assets/icons/annotation.svg'
 import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
 import { ReactComponent as ArrowLeft } from '../assets/icons/arrow-left.svg'
 import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
@@ -30,6 +31,7 @@ import { ReactComponent as Download } from '../assets/icons/download.svg'
 import { ReactComponent as Drag } from '../assets/icons/drag.svg'
 import { ReactComponent as Draw } from '../assets/icons/draw.svg'
 import { ReactComponent as Edit } from '../assets/icons/edit.svg'
+import { ReactComponent as EditOff } from '../assets/icons/edit-off.svg'
 import { ReactComponent as Email } from '../assets/icons/email.svg'
 import { ReactComponent as Encounters } from '../assets/icons/encounters.svg'
 import { ReactComponent as EventLegendEncounter } from '../assets/icons/event-legend-encounter.svg'
@@ -45,6 +47,7 @@ import { ReactComponent as Expand } from '../assets/icons/expand.svg'
 import { ReactComponent as ExternalLink } from '../assets/icons/external-link.svg'
 import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
 import { ReactComponent as FAOLogo } from '../assets/icons/fao-logo.svg'
+import { ReactComponent as FeedbackError } from '../assets/icons/feedback-error.svg'
 import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
 import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
 import { ReactComponent as FitToTimeRange } from '../assets/icons/fit-to-timerange.svg'
@@ -140,6 +143,7 @@ export const IconComponents = {
   'visibility-off': VisibilityOff,
   'visibility-on': VisibilityOn,
   analysis: Analysis,
+  annotation: Annotation,
   calendar: Calendar,
   camera: Camera,
   close: Close,
@@ -153,9 +157,11 @@ export const IconComponents = {
   drag: Drag,
   draw: Draw,
   edit: Edit,
+  'edit-off': EditOff,
   email: Email,
   encounters: Encounters,
   feedback: Feedback,
+  'feedback-error': FeedbackError,
   graph: Graph,
   heatmap: Heatmap,
   help: Help,

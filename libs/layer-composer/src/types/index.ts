@@ -103,6 +103,7 @@ export interface ExtendedLayerMeta {
   valueProperties?: string[]
   interactive?: boolean
   uniqueFeatureInteraction?: boolean
+  stopPropagation?: boolean
   group?: Group
   'mapbox:group'?: string
   layer?: ContextLayerType

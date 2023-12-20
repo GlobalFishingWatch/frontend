@@ -339,7 +339,11 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
       )}
       {layerActive && (
         <div
-          className={cx(styles.closestAreas, { [styles.properties]: featuresOnScreen?.total > 0 })}
+          className={cx(
+            styles.closestAreas,
+            { [styles.properties]: featuresOnScreen?.total > 0 },
+            'print-hidden'
+          )}
           style={{ height: closestAreasHeight }}
         >
           {featuresOnScreen?.total > 0 && (

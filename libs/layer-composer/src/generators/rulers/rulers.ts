@@ -8,27 +8,64 @@ import { Dictionary, Group } from '../../types'
 import { GeneratorType, RulersGeneratorConfig, Ruler } from '../types'
 
 const COLOR = '#ffaa00'
+export const RULER_INTERACTIVE_LAYER = 'points'
 
-const makeRulerGeometry = (ruler: Ruler): Feature<LineString> => {
-  const { start, end, isNew } = ruler
-  const rawFeature: Feature<LineString> = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [start.longitude, start.latitude],
-        [end.longitude, end.latitude],
-      ],
+type RulerPointPosition = 'start' | 'end'
+
+export type RulerPointProperties = {
+  id: number
+  position: RulerPointPosition
+}
+
+const getRulerLength = (ruler: Ruler) => {
+  const lengthKm = length(
+    {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          [ruler.start.longitude, ruler.start.latitude],
+          [ruler.end.longitude, ruler.end.latitude],
+        ],
+      },
     },
-  }
-  const lengthKm = length(rawFeature, { units: 'kilometers' })
+    { units: 'kilometers' }
+  )
+  return lengthKm
+}
+const getRuleLengthLabel = (ruler: Ruler) => {
+  const lengthKm = getRulerLength(ruler)
   const lengthNmi = lengthKm / 1.852
   const precissionKm = lengthKm > 100 ? 0 : lengthKm > 10 ? 1 : 2
   const precissionNmi = lengthNmi > 100 ? 0 : lengthNmi > 10 ? 1 : 2
   const lengthKmFormatted = lengthKm.toFixed(precissionKm)
   const lengthNmiFormatted = lengthNmi.toFixed(precissionNmi)
+  return `${lengthKmFormatted}km - ${lengthNmiFormatted}nm`
+}
 
+const makeRulerLineGeometry = (ruler: Ruler): Feature<LineString> => {
+  const { start, end } = ruler
+
+  const rawFeature: Feature<LineString> = {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'LineString',
+      coordinates: [],
+    },
+  }
+
+  if (!start || !end) {
+    return rawFeature
+  } else {
+    rawFeature.geometry.coordinates = [
+      [start.longitude, start.latitude],
+      [end.longitude, end.latitude],
+    ]
+  }
+
+  const lengthKm = getRulerLength(ruler)
   const finalFeature =
     lengthKm < 100
       ? rawFeature
@@ -38,30 +75,39 @@ const makeRulerGeometry = (ruler: Ruler): Feature<LineString> => {
         ) as Feature<LineString>)
 
   finalFeature.properties = {}
-  finalFeature.properties.label = `${lengthKmFormatted}km - ${lengthNmiFormatted}nm`
-  finalFeature.properties.isNew = isNew
+  finalFeature.properties.label = getRuleLengthLabel(ruler)
   return finalFeature
 }
 
 const makeRulerPointsGeometry = (ruler: Ruler): Feature<Point>[] => {
-  const { start, end, isNew } = ruler
+  const { id, start, end } = ruler
   return [
     {
       type: 'Feature',
       properties: {
-        isNew,
-      },
+        id,
+        position: 'start',
+        ...(end && {
+          lengthLabel: getRuleLengthLabel(ruler),
+        }),
+      } as RulerPointProperties,
       geometry: {
         type: 'Point',
-        coordinates: [start.longitude, start.latitude],
+        coordinates: start ? [start.longitude, start.latitude] : [],
       },
     },
     {
       type: 'Feature',
-      properties: {},
+      properties: {
+        id,
+        position: 'end',
+        ...(end && {
+          lengthLabel: getRuleLengthLabel(ruler),
+        }),
+      } as RulerPointProperties,
       geometry: {
         type: 'Point',
-        coordinates: [end.longitude, end.latitude],
+        coordinates: end ? [end.longitude, end.latitude] : [],
       },
     },
   ]
@@ -70,7 +116,7 @@ const makeRulerPointsGeometry = (ruler: Ruler): Feature<Point>[] => {
 const getRulersGeojsons = (data: Ruler[]): Dictionary<FeatureCollection> => {
   const lines: FeatureCollection = {
     type: 'FeatureCollection',
-    features: data.map(makeRulerGeometry),
+    features: data.map(makeRulerLineGeometry),
   }
   const points: FeatureCollection = {
     type: 'FeatureCollection',
@@ -96,8 +142,8 @@ class RulersGenerator {
 
     const { lines, points } = memoizeCache[config.id].getRulersGeojsons(data)
     return [
-      { id: `rulers-${id}-lines`, type: 'geojson', data: lines },
-      { id: `rulers-${id}-points`, type: 'geojson', data: points },
+      { id: `${id}-lines`, type: 'geojson', data: lines },
+      { id: `${id}-points`, type: 'geojson', data: points },
     ]
   }
 
@@ -105,48 +151,45 @@ class RulersGenerator {
     const { id } = config
     const layers: Partial<LayerSpecification>[] = [
       {
-        id: `rulers-${id}-lines`,
-        source: `rulers-${id}-lines`,
+        id: `${id}-lines`,
+        source: `${id}-lines`,
         type: 'line',
         metadata: {
           group: Group.Tool,
         },
         paint: {
           'line-dasharray': [2, 1],
-          'line-width': ['case', ['==', ['get', 'isNew'], true], 1.5, 1],
+          'line-width': 1,
           'line-color': COLOR,
         },
       },
       {
-        id: `rulers-${id}-points`,
-        source: `rulers-${id}-points`,
+        id: `${id}-${RULER_INTERACTIVE_LAYER}`,
+        source: `${id}-points`,
         type: 'circle',
         paint: {
-          'circle-radius': ['case', ['==', ['get', 'isNew'], true], 6, 3],
+          'circle-radius': 4,
           'circle-opacity': 1,
           'circle-stroke-opacity': 0,
           'circle-color': COLOR,
         },
         metadata: {
           group: Group.Tool,
+          interactive: true,
+          stopPropagation: true,
         },
       },
       {
-        id: `rulers-${id}-labels`,
-        source: `rulers-${id}-lines`,
+        id: `${id}-labels`,
+        source: `${id}-lines`,
         type: 'symbol',
         layout: {
           'text-field': '{label}',
           'symbol-placement': 'line',
           'text-allow-overlap': true,
           'text-offset': [0, -0.8],
-          'text-font': [
-            'case',
-            ['==', ['get', 'isNew'], true],
-            ['literal', ['Roboto Medium']],
-            ['literal', ['Roboto Mono Light']],
-          ],
-          'text-size': ['case', ['==', ['get', 'isNew'], true], 13, 12],
+          'text-font': ['Roboto Mono Light'],
+          'text-size': 12,
         } as SymbolLayerSpecification['layout'],
         paint: {
           'text-color': COLOR,
