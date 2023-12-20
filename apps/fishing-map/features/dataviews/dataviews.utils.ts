@@ -183,7 +183,7 @@ export const getUserPointsDataviewInstance = (
         endpoint: EndpointId.ContextTiles,
         params: [{ id: 'id', value: dataset?.id }],
 
-        ...(circleRadiusProperty && {
+        ...(properties.length && {
           query: [
             {
               id: 'properties',
