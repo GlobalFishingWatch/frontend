@@ -11,6 +11,7 @@ import { useMapErrorNotification } from 'features/map/error-notification/error-n
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserData } from 'features/user/user.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { PUBLIC_WORKSPACE_ENV } from 'data/config'
 import styles from './ErrorNotification.module.css'
 
 const ERRORS_SPREADSHEET_ID = process.env.NEXT_PUBLIC_MAP_ERRORS_SPREADSHEET_ID || ''
@@ -41,11 +42,14 @@ const ErrorNotification = () => {
         },
       ]
       const finalErrorData = {
-        ...errorNotification,
+        latitude: errorNotification.lat,
+        longitude: errorNotification.lon,
+        label: errorNotification.label,
         date: date.toISOString(),
         url: `${window.location.href}${stringify({ mapAnnotations })}`,
         userId: userData?.id || GUEST_USER_TYPE,
         email: userData?.email || EMPTY_FIELD_PLACEHOLDER,
+        environment: PUBLIC_WORKSPACE_ENV || 'development',
         name: userData?.firstName
           ? `${userData.firstName} ${userData.lastName}`
           : EMPTY_FIELD_PLACEHOLDER,
