@@ -20,20 +20,19 @@ export const getFieldSchema = (
   const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType)
   if (values?.length) {
     const schema: DatasetSchemaItem = {
-      type: GUESS_COLUMN_DICT.timestamp.some((t) => t === field)
-        ? 'timestamp'
-        : GUESS_COLUMN_DICT.latitude.some((t) => t === field) ||
-          GUESS_COLUMN_DICT.longitude.some((t) => t === field)
-        ? 'coordinate'
-        : type === 'number'
-        ? 'range'
-        : type,
+      type:
+        GUESS_COLUMN_DICT.latitude.some((t) => t === field) ||
+        GUESS_COLUMN_DICT.longitude.some((t) => t === field)
+          ? 'coordinate'
+          : type === 'number'
+          ? 'range'
+          : type,
     }
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {
         const stringEnumSupported = values.length < maxSchemaEnumValues
         schema.enum = stringEnumSupported ? values.map((v) => v.toString()) : []
-      } else if (schema.type === 'range') {
+      } else if (schema.type === 'range' || schema.type === 'coordinate') {
         schema.min = min(values)
         schema.max = max(values)
       } else if (schema.type === 'boolean') {
