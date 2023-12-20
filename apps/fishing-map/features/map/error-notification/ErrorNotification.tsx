@@ -46,7 +46,7 @@ const ErrorNotification = () => {
         longitude: errorNotification.lon,
         label: errorNotification.label,
         date: date.toISOString(),
-        url: `${window.location.href}${stringify({ mapAnnotations })}`,
+        url: `${window.location.href}${stringify({ mapAnnotations, mapAnnotationsVisible: true })}`,
         userId: userData?.id || GUEST_USER_TYPE,
         email: userData?.email || EMPTY_FIELD_PLACEHOLDER,
         environment: PUBLIC_WORKSPACE_ENV || 'development',
