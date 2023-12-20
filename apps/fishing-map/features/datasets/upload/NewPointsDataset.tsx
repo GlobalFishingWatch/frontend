@@ -11,7 +11,6 @@ import {
   SelectOption,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { PointTimeFilterType } from '@globalfishingwatch/api-types'
 import {
   MAX_POINT_SIZE,
   MIN_POINT_SIZE,
@@ -42,11 +41,7 @@ import {
   getNormalizedGeojsonFromPointsGeojson,
 } from './datasets-parse.utils'
 import FileDropzone from './FileDropzone'
-
-const POINT_TIME_OPTIONS: SelectOption[] = [
-  { id: 'timerange', label: 'timerange' },
-  { id: 'timestamp', label: 'timestamp' },
-]
+import { TimeFieldsGroup } from './TimeFieldsGroup'
 
 function NewPointDataset({
   onConfirm,
@@ -65,7 +60,7 @@ function NewPointDataset({
     setDatasetMetadataConfig,
     setDatasetMetadataSchema,
   } = useDatasetMetadata()
-  const { fieldsOptions, getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
+  const { getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
     useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
@@ -91,6 +86,12 @@ function NewPointDataset({
     dataset: datasetMetadata,
     property: 'endTime',
   })
+
+  const isTimestampFilter =
+    getDatasetConfigurationProperty({
+      dataset: datasetMetadata,
+      property: 'pointTimeFilterType',
+    }) === 'timestamp'
 
   const handleRawData = useCallback(
     async (file: File) => {
@@ -180,6 +181,45 @@ function NewPointDataset({
     }
   }, [datasetMetadata, sourceData, onConfirm, fileType, geojson, t])
 
+  const handleTimeFilterTypeSelect = useCallback(
+    (selected: SelectOption) => {
+      setDatasetMetadataConfig({ pointTimeFilterType: selected.id })
+    },
+    [setDatasetMetadataConfig]
+  )
+
+  const handleTimeFilterTypeClean = useCallback(() => {
+    setDatasetMetadataConfig({ pointTimeFilterType: undefined })
+  }, [setDatasetMetadataConfig])
+
+  const handleStartTimeFilterSelect = useCallback(
+    (selected: SelectOption) => {
+      setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
+      isTimestampFilter
+        ? setDatasetMetadataConfig({ startTime: selected.id, endTime: selected.id })
+        : setDatasetMetadataConfig({ startTime: selected.id })
+    },
+    [setDatasetMetadataConfig, setDatasetMetadataSchema, isTimestampFilter]
+  )
+
+  const handleStartTimeFilterClean = useCallback(() => {
+    isTimestampFilter
+      ? setDatasetMetadataConfig({ startTime: undefined, endTime: undefined })
+      : setDatasetMetadataConfig({ startTime: undefined })
+  }, [setDatasetMetadataConfig, isTimestampFilter])
+
+  const handleEndTimeFilterSelect = useCallback(
+    (selected: SelectOption) => {
+      setDatasetMetadataConfig({ endTime: selected.id })
+      setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
+    },
+    [setDatasetMetadataConfig, setDatasetMetadataSchema]
+  )
+
+  const handleEndTimeFilterClean = useCallback(() => {
+    setDatasetMetadataConfig({ endTime: undefined })
+  }, [setDatasetMetadataConfig])
+
   return (
     <div className={styles.container}>
       {!dataset && (
@@ -221,103 +261,15 @@ function NewPointDataset({
         </div>
       )}
       <div className={styles.row}>
-        <Select
-          placeholder={t(
-            'datasetUploadUI.timePeriodTypePlaceholder',
-            'Select a time period filter type'
-          )}
-          options={POINT_TIME_OPTIONS}
-          direction="top"
-          label={t('datasetUpload.points.time', 'Point time')}
-          className={styles.input}
-          selectedOption={
-            getSelectedOption(
-              getDatasetConfigurationProperty({
-                dataset: datasetMetadata,
-                property: 'pointTimeFilterType',
-              }),
-              POINT_TIME_OPTIONS
-            ) as SelectOption
-          }
-          onSelect={(selected) => {
-            setDatasetMetadataConfig({ pointTimeFilterType: selected.id })
-          }}
-          onCleanClick={() => {
-            setDatasetMetadataConfig({ pointTimeFilterType: undefined })
-          }}
+        <TimeFieldsGroup
+          datasetMetadata={datasetMetadata}
+          onFilterSelect={handleTimeFilterTypeSelect}
+          onFilterClean={handleTimeFilterTypeClean}
+          onStartSelect={handleStartTimeFilterSelect}
+          onStartClean={handleStartTimeFilterClean}
+          onEndSelect={handleEndTimeFilterSelect}
+          onEndClean={handleEndTimeFilterClean}
         />
-        <Select
-          placeholder={t('datasetUploadUI.fieldPlaceholder', 'Select a field from your dataset')}
-          options={fieldsOptions}
-          direction="top"
-          className={styles.input}
-          disabled={
-            !getDatasetConfigurationProperty({
-              dataset: datasetMetadata,
-              property: 'pointTimeFilterType',
-            })
-          }
-          selectedOption={
-            getSelectedOption(
-              getDatasetConfigurationProperty({
-                dataset: datasetMetadata,
-                property: 'startTime',
-              })
-            ) as SelectOption
-          }
-          onSelect={(selected) => {
-            if (
-              getDatasetConfigurationProperty({
-                dataset: datasetMetadata,
-                property: 'pointTimeFilterType',
-              }) === 'timestamp'
-            ) {
-              setDatasetMetadataConfig({ startTime: selected.id, endTime: selected.id })
-              setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
-            } else {
-              setDatasetMetadataConfig({ startTime: selected.id })
-              setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
-            }
-          }}
-          onCleanClick={() => {
-            if (
-              getDatasetConfigurationProperty({
-                dataset: datasetMetadata,
-                property: 'pointTimeFilterType',
-              }) === 'timestamp'
-            ) {
-              setDatasetMetadataConfig({ startTime: undefined, endTime: undefined })
-            } else {
-              setDatasetMetadataConfig({ startTime: undefined })
-            }
-          }}
-        />
-        {(getDatasetConfigurationProperty({
-          dataset: datasetMetadata,
-          property: 'pointTimeFilterType',
-        }) as PointTimeFilterType) === 'timerange' && (
-          <Select
-            placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
-            options={fieldsOptions}
-            direction="top"
-            className={styles.input}
-            selectedOption={
-              getSelectedOption(
-                getDatasetConfigurationProperty({
-                  dataset: datasetMetadata,
-                  property: 'endTime',
-                })
-              ) as SelectOption
-            }
-            onSelect={(selected) => {
-              setDatasetMetadataConfig({ endTime: selected.id })
-              setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
-            }}
-            onCleanClick={() => {
-              setDatasetMetadataConfig({ endTime: undefined })
-            }}
-          />
-        )}
       </div>
       <Collapsable
         className={styles.optional}
