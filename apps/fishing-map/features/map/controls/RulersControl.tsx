@@ -3,13 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import useRulers from 'features/map/rulers/rulers.hooks'
 import MapControlGroup from 'features/map/controls/MapControlGroup'
-import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
 import useMapInstance from '../map-context.hooks'
 
 const Rulers = () => {
   const { t } = useTranslation()
   const { cleanFeatureState } = useFeatureState(useMapInstance())
-  const { setMapAnnotationEdit, isMapAnnotating } = useMapAnnotation()
   const {
     rulers,
     editingRuler,
@@ -22,9 +20,6 @@ const Rulers = () => {
   } = useRulers()
 
   const onToggleClick = useCallback(() => {
-    if (isMapAnnotating) {
-      setMapAnnotationEdit(false)
-    }
     if (rulersEditing) {
       if (editingRuler) {
         resetEditingRule()
@@ -32,15 +27,7 @@ const Rulers = () => {
       cleanFeatureState('click')
     }
     toggleRulersEditing()
-  }, [
-    cleanFeatureState,
-    editingRuler,
-    isMapAnnotating,
-    resetEditingRule,
-    rulersEditing,
-    setMapAnnotationEdit,
-    toggleRulersEditing,
-  ])
+  }, [cleanFeatureState, editingRuler, resetEditingRule, rulersEditing, toggleRulersEditing])
 
   return (
     <MapControlGroup

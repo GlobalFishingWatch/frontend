@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
 import MapControlGroup from 'features/map/controls/MapControlGroup'
-import useRulers from 'features/map/rulers/rulers.hooks'
 import useMapInstance from '../map-context.hooks'
 
 const MapAnnotationsControls = () => {
@@ -12,7 +11,6 @@ const MapAnnotationsControls = () => {
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { isMapAnnotating, resetMapAnnotation, setMapAnnotationEdit, toggleMapAnnotationEdit } =
     useMapAnnotation()
-  const { rulersEditing, setRulersEditing } = useRulers()
   const {
     mapAnnotations,
     areMapAnnotationsVisible,
@@ -21,14 +19,11 @@ const MapAnnotationsControls = () => {
   } = useMapAnnotations()
 
   const onToggleClick = useCallback(() => {
-    if (rulersEditing) {
-      setRulersEditing(false)
-    }
     toggleMapAnnotationEdit()
     if (isMapAnnotating) {
       cleanFeatureState('click')
     }
-  }, [cleanFeatureState, isMapAnnotating, rulersEditing, setRulersEditing, toggleMapAnnotationEdit])
+  }, [cleanFeatureState, isMapAnnotating, toggleMapAnnotationEdit])
 
   const onRemoveClick = useCallback(() => {
     batch(() => {

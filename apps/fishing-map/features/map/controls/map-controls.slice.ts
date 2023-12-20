@@ -45,6 +45,15 @@ const slice = createSlice({
     ) => {
       const { control, editing } = action.payload
       state[control].isEditing = editing
+      if (editing) {
+        // Disable editing of any other control
+        const controls = Object.keys(initialState) as MapControl[]
+        controls.forEach((c) => {
+          if (c !== control) {
+            state[c].isEditing = false
+          }
+        })
+      }
     },
     resetMapControlValue: (state, action: PayloadAction<MapControl>) => {
       if (action.payload) {
