@@ -101,18 +101,21 @@ const Vessel = () => {
         id: 'activity',
         title: t('vessel.sectionSummary', 'Summary'),
         content: <VesselActivity />,
+        testId: 'vv-summary-tab'
       },
       {
         id: 'areas',
         title: t('vessel.sectionAreas', 'Areas'),
         content: <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />,
         disabled: !hasEventsDataset,
+        testId: 'vv-areas-tab'
       },
       {
         id: 'related_vessels',
         title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
         content: <RelatedVessels />,
         disabled: !hasEventsDataset,
+        testId: 'vv-related-tab'
       },
     ],
     [t, updateAreaLayersVisibility, hasEventsDataset]
