@@ -4,6 +4,7 @@ import {
   DatasetConfiguration,
   DatasetConfigurationUI,
   DatasetGeometryType,
+  PointTimeFilter,
 } from '@globalfishingwatch/api-types'
 
 export type DataList = Record<string, any>[]
@@ -15,6 +16,8 @@ export type DatasetSchemaGeneratorProps = {
 export type VesselConfigurationProperty = keyof DatasetConfigurationUI | keyof DatasetConfiguration
 type DatasetProperty<P extends VesselConfigurationProperty> = P extends 'geometryType'
   ? DatasetGeometryType
+  : P extends 'pointTimeFilter'
+  ? PointTimeFilter
   : string
 
 export function getDatasetConfigurationProperty<P extends VesselConfigurationProperty>({

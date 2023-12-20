@@ -11,7 +11,6 @@ import {
   SelectOption,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { pointTimeFilter } from '@globalfishingwatch/api-types'
 import {
   MAX_POINT_SIZE,
   MIN_POINT_SIZE,
@@ -79,7 +78,7 @@ function NewPointDataset({
   const pointTimeFilter = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
     property: 'pointTimeFilter',
-  }) as pointTimeFilter
+  })
 
   const handleRawData = useCallback(
     async (file: File) => {
