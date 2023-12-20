@@ -53,7 +53,12 @@ function NewPointDataset({
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataList | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
-  const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
+  const {
+    datasetMetadata,
+    setDatasetMetadata,
+    setDatasetMetadataConfig,
+    setDatasetMetadataSchema,
+  } = useDatasetMetadata()
   const { fieldsOptions, getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
     useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
@@ -71,9 +76,14 @@ function NewPointDataset({
     dataset: datasetMetadata,
     property: 'longitude',
   })
-  const timestampProperty = getDatasetConfigurationProperty({
+  const startTimeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
-    property: 'timestamp',
+    property: 'startTime',
+  })
+
+  const endTimeProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'endTime',
   })
 
   const handleRawData = useCallback(
@@ -110,7 +120,13 @@ function NewPointDataset({
   }, [dataset, file])
 
   useEffect(() => {
-    if (latitudeProperty && longitudeProperty && timestampProperty && sourceData) {
+    if (
+      latitudeProperty &&
+      longitudeProperty &&
+      startTimeProperty &&
+      endTimeProperty &&
+      sourceData
+    ) {
       const geojson = getGeojsonFromPointsList(
         sourceData,
         datasetMetadata
@@ -118,7 +134,7 @@ function NewPointDataset({
       setGeojson(geojson)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [latitudeProperty, longitudeProperty, timestampProperty])
+  }, [latitudeProperty, longitudeProperty, startTimeProperty, endTimeProperty])
 
   const onConfirmClick = useCallback(async () => {
     let error = ''
@@ -184,6 +200,105 @@ function NewPointDataset({
           />
         </div>
       )}
+      <div className={styles.row}>
+        <Select
+          placeholder={t(
+            'datasetUploadUI.timePeriodTypePlaceholder',
+            'Select a time period filter type'
+          )}
+          options={POINT_TIME_OPTIONS}
+          direction="top"
+          label={t('datasetUpload.points.time', 'Point time')}
+          className={styles.input}
+          selectedOption={
+            getSelectedOption(
+              getDatasetConfigurationProperty({
+                dataset: datasetMetadata,
+                property: 'pointTimeFilterType',
+              }),
+              POINT_TIME_OPTIONS
+            ) as SelectOption
+          }
+          onSelect={(selected) => {
+            setDatasetMetadataConfig({ pointTimeFilterType: selected.id })
+          }}
+          onCleanClick={() => {
+            setDatasetMetadataConfig({ pointTimeFilterType: undefined })
+          }}
+        />
+        <Select
+          placeholder={t('datasetUploadUI.fieldPlaceholder', 'Select a field from your dataset')}
+          options={fieldsOptions}
+          direction="top"
+          className={styles.input}
+          disabled={
+            !getDatasetConfigurationProperty({
+              dataset: datasetMetadata,
+              property: 'pointTimeFilterType',
+            })
+          }
+          selectedOption={
+            getSelectedOption(
+              getDatasetConfigurationProperty({
+                dataset: datasetMetadata,
+                property: 'startTime',
+              })
+            ) as SelectOption
+          }
+          onSelect={(selected) => {
+            if (
+              getDatasetConfigurationProperty({
+                dataset: datasetMetadata,
+                property: 'pointTimeFilterType',
+              }) === 'timestamp'
+            ) {
+              setDatasetMetadataConfig({ startTime: selected.id, endTime: selected.id })
+              setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
+            } else {
+              setDatasetMetadataConfig({ startTime: selected.id })
+              setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
+            }
+          }}
+          onCleanClick={() => {
+            if (
+              getDatasetConfigurationProperty({
+                dataset: datasetMetadata,
+                property: 'pointTimeFilterType',
+              }) === 'timestamp'
+            ) {
+              setDatasetMetadataConfig({ startTime: undefined, endTime: undefined })
+            } else {
+              setDatasetMetadataConfig({ startTime: undefined })
+            }
+          }}
+        />
+        {(getDatasetConfigurationProperty({
+          dataset: datasetMetadata,
+          property: 'pointTimeFilterType',
+        }) as PointTimeFilterType) === 'timerange' && (
+          <Select
+            placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
+            options={fieldsOptions}
+            direction="top"
+            className={styles.input}
+            selectedOption={
+              getSelectedOption(
+                getDatasetConfigurationProperty({
+                  dataset: datasetMetadata,
+                  property: 'endTime',
+                })
+              ) as SelectOption
+            }
+            onSelect={(selected) => {
+              setDatasetMetadataConfig({ endTime: selected.id })
+              setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
+            }}
+            onCleanClick={() => {
+              setDatasetMetadataConfig({ endTime: undefined })
+            }}
+          />
+        )}
+      </div>
       <Collapsable
         className={styles.optional}
         label={t('datasetUpload.optionalFields', 'Optional fields')}
@@ -266,99 +381,7 @@ function NewPointDataset({
             </Fragment>
           )}
         </div>
-        <div className={styles.row}>
-          <Select
-            placeholder={t(
-              'datasetUploadUI.timePeriodTypePlaceholder',
-              'Select a time period filter type'
-            )}
-            options={POINT_TIME_OPTIONS}
-            direction="top"
-            label={t('datasetUpload.points.time', 'Point time')}
-            className={styles.input}
-            selectedOption={
-              getSelectedOption(
-                getDatasetConfigurationProperty({
-                  dataset: datasetMetadata,
-                  property: 'pointTimeFilterType',
-                }),
-                POINT_TIME_OPTIONS
-              ) as SelectOption
-            }
-            onSelect={(selected) => {
-              setDatasetMetadataConfig({ pointTimeFilterType: selected.id })
-            }}
-            onCleanClick={() => {
-              setDatasetMetadataConfig({ pointTimeFilterType: undefined })
-            }}
-          />
-          <Select
-            placeholder={t('datasetUploadUI.fieldPlaceholder', 'Select a field from your dataset')}
-            options={fieldsOptions}
-            direction="top"
-            className={styles.input}
-            disabled={
-              !getDatasetConfigurationProperty({
-                dataset: datasetMetadata,
-                property: 'pointTimeFilterType',
-              })
-            }
-            selectedOption={
-              getSelectedOption(
-                getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'startTime' })
-              ) as SelectOption
-            }
-            onSelect={(selected) => {
-              if (
-                getDatasetConfigurationProperty({
-                  dataset: datasetMetadata,
-                  property: 'pointTimeFilterType',
-                }) === 'timestamp'
-              ) {
-                setDatasetMetadataConfig({ startTime: selected.id, endTime: selected.id })
-              } else {
-                setDatasetMetadataConfig({ startTime: selected.id })
-              }
-            }}
-            onCleanClick={() => {
-              if (
-                getDatasetConfigurationProperty({
-                  dataset: datasetMetadata,
-                  property: 'pointTimeFilterType',
-                }) === 'timestamp'
-              ) {
-                setDatasetMetadataConfig({ startTime: undefined, endTime: undefined })
-              } else {
-                setDatasetMetadataConfig({ startTime: undefined })
-              }
-            }}
-          />
-          {(getDatasetConfigurationProperty({
-            dataset: datasetMetadata,
-            property: 'pointTimeFilterType',
-          }) as PointTimeFilterType) === 'timerange' && (
-            <Select
-              placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
-              options={fieldsOptions}
-              direction="top"
-              className={styles.input}
-              selectedOption={
-                getSelectedOption(
-                  getDatasetConfigurationProperty({
-                    dataset: datasetMetadata,
-                    property: 'endTime',
-                  })
-                ) as SelectOption
-              }
-              onSelect={(selected) => {
-                setDatasetMetadataConfig({ endTime: selected.id })
-              }}
-              onCleanClick={() => {
-                setDatasetMetadataConfig({ endTime: undefined })
-              }}
-            />
-          )}
-        </div>
+
         <MultiSelect
           label={t('datasetUpload.points.filters', 'point filters')}
           placeholder={

@@ -6,3 +6,11 @@ export type SegmentColumns = {
   timestamp: string | number
   id?: string | number
 }
+
+export type PointColumns = {
+  latitude: string | number
+  longitude: string | number
+  startTime?: string | number
+  endTime?: string | number
+  id?: string | number
+}
