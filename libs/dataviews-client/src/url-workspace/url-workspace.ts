@@ -253,12 +253,14 @@ export const parseWorkspace = (
   return parsedDetokenized
 }
 
+export const URL_STRINGIFY_CONFIG = {
+  encodeValuesOnly: true,
+  strictNullHandling: true,
+}
+
 export const stringifyWorkspace = (object: BaseUrlWorkspace) => {
   const objectWithAbbr = deepReplaceKeys(object, PARAMS_TO_ABBREVIATED)
   const tokenized = deepTokenizeValues(objectWithAbbr)
-  const stringified = stringify(tokenized, {
-    encodeValuesOnly: true,
-    strictNullHandling: true,
-  })
+  const stringified = stringify(tokenized, URL_STRINGIFY_CONFIG)
   return stringified
 }

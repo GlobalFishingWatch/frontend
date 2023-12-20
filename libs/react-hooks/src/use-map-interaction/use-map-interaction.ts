@@ -7,6 +7,7 @@ import {
   CONFIG_BY_INTERVAL,
   pickActiveTimeChunk,
   ExtendedLayer,
+  Group,
 } from '@globalfishingwatch/layer-composer'
 import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
@@ -55,130 +56,151 @@ const getId = (feature: MaplibreGeoJSONFeature) => {
   }
 }
 
-const getExtendedFeatures = (
-  features: MaplibreGeoJSONFeature[],
+const getFeatureTile = (feature: MaplibreGeoJSONFeature) => {
+  return {
+    x: (feature as any)._vectorTileFeature._x,
+    y: (feature as any)._vectorTileFeature._y,
+    z: (feature as any)._vectorTileFeature._z,
+  }
+}
+
+const getExtendedFeature = (
+  feature: MaplibreGeoJSONFeature,
   metadata?: ExtendedStyleMeta,
   debug = false
 ): ExtendedFeature[] => {
-  const extendedFeatures: ExtendedFeature[] = features.flatMap((feature) => {
-    const generatorType = feature.layer.metadata?.generatorType ?? null
-    const generatorId = feature.layer.metadata?.generatorId ?? null
+  const generatorType = feature.layer.metadata?.generatorType ?? null
+  const generatorId = feature.layer.metadata?.generatorId ?? null
 
-    // TODO: if no generatorMetadata is found, fallback to feature.layer.metadata, but the former should be prefered
-    let generatorMetadata: any
-    if (generatorId && metadata?.generatorsMetadata && metadata?.generatorsMetadata[generatorId]) {
-      generatorMetadata = metadata?.generatorsMetadata[generatorId]
-    } else {
-      generatorMetadata = feature.layer.metadata
-    }
+  // TODO: if no generatorMetadata is found, fallback to feature.layer.metadata, but the former should be prefered
+  let generatorMetadata: any
+  if (generatorId && metadata?.generatorsMetadata && metadata?.generatorsMetadata[generatorId]) {
+    generatorMetadata = metadata?.generatorsMetadata[generatorId]
+  } else {
+    generatorMetadata = feature.layer.metadata
+  }
 
-    const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
-    const properties = feature.properties || {}
-    let value = properties.value || properties.name || properties.id
-    if (feature.layer.metadata?.valueProperties?.length) {
-      value = feature.layer.metadata.valueProperties
-        .flatMap((prop) => properties[prop] || [])
-        .join(', ')
-    }
+  const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
+  const stopPropagation = feature.layer?.metadata?.stopPropagation ?? false
+  const properties = feature.properties || {}
+  let value = properties.value || properties.name || properties.id
+  if (feature.layer.metadata?.valueProperties?.length) {
+    value = feature.layer.metadata.valueProperties
+      .flatMap((prop) => properties[prop] || [])
+      .join(', ')
+  }
 
-    const extendedFeature: ExtendedFeature | null = {
-      properties,
-      generatorType,
-      generatorId,
-      layerId: feature.layer.id,
-      source: feature.source,
-      sourceLayer: feature.sourceLayer,
-      uniqueFeatureInteraction,
-      id: getId(feature),
-      value,
-      tile: {
-        x: (feature as any)._vectorTileFeature._x,
-        y: (feature as any)._vectorTileFeature._y,
-        z: (feature as any)._vectorTileFeature._z,
-      },
-    }
-    switch (generatorType) {
-      case GeneratorType.HeatmapAnimated:
-        const timeChunks = generatorMetadata?.timeChunks
-        const frame = timeChunks?.activeChunkFrame
-        const activeTimeChunk = pickActiveTimeChunk(timeChunks)
+  const extendedFeature: ExtendedFeature | null = {
+    properties,
+    generatorType,
+    generatorId,
+    layerId: feature.layer.id,
+    source: feature.source,
+    sourceLayer: feature.sourceLayer,
+    uniqueFeatureInteraction,
+    stopPropagation,
+    value,
+    id: getId(feature),
+    tile: getFeatureTile(feature),
+  }
+  switch (generatorType) {
+    case GeneratorType.HeatmapAnimated:
+      const timeChunks = generatorMetadata?.timeChunks
+      const frame = timeChunks?.activeChunkFrame
+      const activeTimeChunk = pickActiveTimeChunk(timeChunks)
 
-        // This is used when querying the interaction endpoint, so that start begins at the start of the frame (ie start of a 10days interval)
-        // This avoids querying a cell visible on the map, when its actual timerange is not included in the app-overall time range
-        const getDate = CONFIG_BY_INTERVAL[timeChunks.interval as Interval].getDate
-        const visibleStartDate = getDate(timeChunks.visibleStartFrame).toISOString()
-        const visibleEndDate = getDate(timeChunks.visibleEndFrame).toISOString()
-        const numSublayers = generatorMetadata?.numSublayers
-        const values = aggregateCell({
-          rawValues: properties.rawValues,
-          frame,
-          delta: Math.max(1, timeChunks.deltaInIntervalUnits),
-          quantizeOffset: activeTimeChunk.quantizeOffset,
-          sublayerCount:
-            generatorMetadata?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare
-              ? 2
-              : numSublayers,
-          aggregationOperation: generatorMetadata?.aggregationOperation,
-          sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
-          multiplier: generatorMetadata?.multiplier,
-        })
+      // This is used when querying the interaction endpoint, so that start begins at the start of the frame (ie start of a 10days interval)
+      // This avoids querying a cell visible on the map, when its actual timerange is not included in the app-overall time range
+      const getDate = CONFIG_BY_INTERVAL[timeChunks.interval as Interval].getDate
+      const visibleStartDate = getDate(timeChunks.visibleStartFrame).toISOString()
+      const visibleEndDate = getDate(timeChunks.visibleEndFrame).toISOString()
+      const numSublayers = generatorMetadata?.numSublayers
+      const values = aggregateCell({
+        rawValues: properties.rawValues,
+        frame,
+        delta: Math.max(1, timeChunks.deltaInIntervalUnits),
+        quantizeOffset: activeTimeChunk.quantizeOffset,
+        sublayerCount:
+          generatorMetadata?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare
+            ? 2
+            : numSublayers,
+        aggregationOperation: generatorMetadata?.aggregationOperation,
+        sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
+        multiplier: generatorMetadata?.multiplier,
+      })
 
-        if (debug) {
-          console.log(properties.rawValues)
+      if (debug) {
+        console.log(properties.rawValues)
+      }
+      // Clean values with 0 for sum aggregation and with NaN for avg aggregation layers
+      if (
+        !values ||
+        !values.filter((v: number) => {
+          const matchesMin =
+            generatorMetadata?.minVisibleValue !== undefined
+              ? v >= generatorMetadata?.minVisibleValue
+              : true
+          const matchesMax =
+            generatorMetadata?.maxVisibleValue !== undefined
+              ? v <= generatorMetadata?.maxVisibleValue
+              : true
+          return v !== 0 && !isNaN(v) && matchesMin && matchesMax
+        }).length
+      ) {
+        return []
+      }
+      const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
+      const sublayers = generatorMetadata?.sublayers
+      return values.flatMap((value: any, i: number) => {
+        if (value === 0) return []
+        const temporalGridExtendedFeature: ExtendedFeature = {
+          ...extendedFeature,
+          temporalgrid: {
+            sublayerIndex: i,
+            sublayerId: sublayers[i].id,
+            sublayerInteractionType: sublayers[i].interactionType,
+            sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
+            visible: visibleSublayers[i] === true,
+            col: properties._col as number,
+            row: properties._row as number,
+            interval: timeChunks.interval,
+            visibleStartDate,
+            visibleEndDate,
+            unit: sublayers[i].legend.unit,
+          },
+          value,
         }
-        // Clean values with 0 for sum aggregation and with NaN for avg aggregation layers
-        if (
-          !values ||
-          !values.filter((v: number) => {
-            const matchesMin =
-              generatorMetadata?.minVisibleValue !== undefined
-                ? v >= generatorMetadata?.minVisibleValue
-                : true
-            const matchesMax =
-              generatorMetadata?.maxVisibleValue !== undefined
-                ? v <= generatorMetadata?.maxVisibleValue
-                : true
-            return v !== 0 && !isNaN(v) && matchesMin && matchesMax
-          }).length
-        )
-          return []
-        const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
-        const sublayers = generatorMetadata?.sublayers
-        return values.flatMap((value: any, i: number) => {
-          if (value === 0) return []
-          const temporalGridExtendedFeature: ExtendedFeature = {
-            ...extendedFeature,
-            temporalgrid: {
-              sublayerIndex: i,
-              sublayerId: sublayers[i].id,
-              sublayerInteractionType: sublayers[i].interactionType,
-              sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
-              visible: visibleSublayers[i] === true,
-              col: properties._col as number,
-              row: properties._row as number,
-              interval: timeChunks.interval,
-              visibleStartDate,
-              visibleEndDate,
-              unit: sublayers[i].legend.unit,
-            },
-            value,
-          }
-          return [temporalGridExtendedFeature]
-        })
-      case GeneratorType.Context:
-      case GeneratorType.UserPoints:
-      case GeneratorType.UserContext: {
-        return {
+        return [temporalGridExtendedFeature]
+      })
+    case GeneratorType.Context:
+    case GeneratorType.UserPoints:
+    case GeneratorType.UserContext: {
+      return [
+        {
           ...extendedFeature,
           datasetId: feature.layer.metadata?.datasetId,
           promoteId: feature.layer.metadata?.promoteId,
           generatorContextLayer: feature.layer.metadata?.layer,
           geometry: feature.geometry,
-        }
-      }
-      default:
-        return extendedFeature
+        },
+      ]
     }
+    default:
+      return [extendedFeature]
+  }
+}
+
+const getExtendedFeatures = (
+  features: MaplibreGeoJSONFeature[],
+  metadata?: ExtendedStyleMeta,
+  debug = false
+): ExtendedFeature[] => {
+  const stopPropagationFeature = features.find((f) => f.layer.metadata?.stopPropagation)
+  if (stopPropagationFeature) {
+    return getExtendedFeature(stopPropagationFeature, metadata, debug)
+  }
+  const extendedFeatures: ExtendedFeature[] = features.flatMap((feature) => {
+    return getExtendedFeature(feature, metadata, debug) || []
   })
   return extendedFeatures
 }
@@ -349,10 +371,23 @@ export const useMapHover = (
   return onMapHover
 }
 
+export const getToolFeatures = (features: MaplibreGeoJSONFeature[]) => {
+  const toolFeatures = features.filter((f) => f.layer.metadata?.group === Group.Tool)
+  return toolFeatures.flatMap((f) => getExtendedFeature(f))
+}
+
 export const useSimpleMapHover = (hoverCallback: InteractionEventCallback) => {
   const onMapHover = useCallback(
     (event: MapLayerMouseEvent) => {
       const hoverEvent = parseHoverEvent(event)
+      if (event.features?.length) {
+        const extendedFeatures: ExtendedFeature[] = getToolFeatures(
+          event.features as MaplibreGeoJSONFeature[]
+        )
+        if (extendedFeatures.length) {
+          hoverEvent.features = extendedFeatures
+        }
+      }
       if (hoverCallback) {
         hoverCallback(hoverEvent)
       }

@@ -351,7 +351,7 @@
     "historyLabelByField": "crwdns61379:0{{label}}crwdnd61379:0{{vesselName}}crwdne61379:0",
     "imo": "crwdns61381:0crwdne61381:0",
     "iuuStatus": "crwdns61383:0crwdne61383:0",
-    "iuuStatusDescription": "crwdns61385:0[TDB]crwdne61385:0",
+    "iuuStatusDescription": "crwdns61385:0crwdne61385:0",
     "iuuStatusModalTitle": "crwdns61387:0{{vesselName}}crwdne61387:0",
     "iuuStatusOptions": {
       "0": "crwdns61389:0crwdne61389:0",

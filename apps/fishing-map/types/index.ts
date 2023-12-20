@@ -7,6 +7,7 @@ import {
   VesselIdentitySourceEnum,
   VesselType,
 } from '@globalfishingwatch/api-types'
+import { MapAnnotation, Ruler } from '@globalfishingwatch/layer-composer'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -81,6 +82,10 @@ export type WorkspaceActivityCategory = 'fishing' | 'presence'
 
 export interface WorkspaceState extends BaseUrlWorkspace {
   bivariateDataviews?: BivariateDataviews
+  mapAnnotations?: MapAnnotation[]
+  mapAnnotationsVisible?: boolean
+  mapRulers?: Ruler[]
+  mapRulersVisible?: boolean
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   readOnly?: boolean
   reportActivityGraph?: ReportActivityGraph

@@ -13,6 +13,7 @@
   height: 12px;
   border-radius: 8px;
   position: relative;
+  border: var(--border);
 }
 
 .color:hover {
@@ -22,10 +23,7 @@
 .color::after {
   position: absolute;
   content: '';
-  top: -4px;
-  right: -4px;
-  bottom: -4px;
-  left: -4px;
+  inset: -4px;
   border: 1px solid var(--color-primary-blue);
   border-radius: 50%;
   opacity: 0;

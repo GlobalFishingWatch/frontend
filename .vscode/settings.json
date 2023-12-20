@@ -42,17 +42,11 @@
   },
   "editor.formatOnSave": true, // auto format the file on each save
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-  "eslint.alwaysShowStatus": true,
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
-  "eslint.packageManager": "yarn", // change to npm if you use npm
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
-  "jest.enableInlineErrorMessages": true,
-  "jest.showCoverageOnLoad": true,
-  "jest.runAllTestsFirst": false,
-  "docwriter.hotkey.mac": "⌥ + .",
   "search.exclude": {
     ".yarn": true,
     "**/dist": true

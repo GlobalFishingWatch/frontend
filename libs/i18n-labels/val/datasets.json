@@ -1327,15 +1327,15 @@
       "matched": {
         "keyword": "crwdns65507:0crwdne65507:0",
         "enum": {
-          "true": true,
-          "false": true
+          "true": "crwdns70368:0crwdne70368:0",
+          "false": "crwdns70370:0crwdne70370:0"
         }
       },
       "radiance": {
         "keyword": "crwdns65513:0crwdne65513:0",
         "enum": {
-          "0": 0,
-          "10000": 0
+          "0": "crwdns65515:0crwdne65515:0",
+          "10000": "crwdns65517:0crwdne65517:0"
         }
       },
       "shiptype": {
@@ -1351,12 +1351,12 @@
       "qf_detect": {
         "keyword": "crwdns65531:0crwdne65531:0",
         "enum": {
-          "1": 0,
-          "2": 0,
-          "3": 0,
-          "5": 0,
-          "7": 0,
-          "10": 0
+          "1": "crwdns65533:0crwdne65533:0",
+          "2": "crwdns65535:0crwdne65535:0",
+          "3": "crwdns65537:0crwdne65537:0",
+          "5": "crwdns65539:0crwdne65539:0",
+          "7": "crwdns65541:0crwdne65541:0",
+          "10": "crwdns65543:0crwdne65543:0"
         }
       },
       "timestamp": "crwdns65545:0crwdne65545:0",
@@ -1376,15 +1376,15 @@
       "matched": {
         "keyword": "crwdns69846:0crwdne69846:0",
         "enum": {
-          "true": true,
-          "false": true
+          "true": "crwdns70372:0crwdne70372:0",
+          "false": "crwdns70374:0crwdne70374:0"
         }
       },
       "radiance": {
         "keyword": "crwdns69852:0crwdne69852:0",
         "enum": {
-          "0": 0,
-          "10000": 0
+          "0": "crwdns69854:0crwdne69854:0",
+          "10000": "crwdns69856:0crwdne69856:0"
         }
       },
       "shiptype": {
@@ -1400,12 +1400,12 @@
       "qf_detect": {
         "keyword": "crwdns69870:0crwdne69870:0",
         "enum": {
-          "1": 0,
-          "2": 0,
-          "3": 0,
-          "5": 0,
-          "7": 0,
-          "10": 0
+          "1": "crwdns69872:0crwdne69872:0",
+          "2": "crwdns69874:0crwdne69874:0",
+          "3": "crwdns69876:0crwdne69876:0",
+          "5": "crwdns69878:0crwdne69878:0",
+          "7": "crwdns69880:0crwdne69880:0",
+          "10": "crwdns69882:0crwdne69882:0"
         }
       },
       "timestamp": "crwdns69884:0crwdne69884:0",
@@ -1945,6 +1945,20 @@
     "description": "crwdns66113:0crwdne66113:0",
     "schema": {}
   },
+  "public-fixed-infrastructure": {
+    "name": "crwdns70318:0crwdne70318:0",
+    "description": "crwdns70320:0crwdne70320:0",
+    "schema": {
+      "label": {
+        "keyword": "crwdns70322:0crwdne70322:0",
+        "enum": {
+          "oil": "crwdns70324:0crwdne70324:0",
+          "wind": "crwdns70326:0crwdne70326:0",
+          "unknown": "crwdns70328:0crwdne70328:0"
+        }
+      }
+    }
+  },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
     "description": "crwdns69890:0crwdne69890:0",
@@ -2063,8 +2077,8 @@
       "duration": {
         "keyword": "crwdns70220:0crwdne70220:0",
         "enum": {
-          "120": 0,
-          "4320": 0
+          "120": "crwdns70222:0crwdne70222:0",
+          "4320": "crwdns70224:0crwdne70224:0"
         }
       },
       "event_id": "crwdns66239:0crwdne66239:0",
@@ -2250,7 +2264,7 @@
   },
   "public-global-sar-presence": {
     "name": "crwdns69930:0crwdne69930:0",
-    "description": "crwdns66487:0crwdne66487:0",
+    "description": "crwdns70350:0crwdne70350:0",
     "schema": {
       "id": "crwdns66489:0crwdne66489:0",
       "lat": "crwdns66491:0crwdne66491:0",
@@ -2263,8 +2277,8 @@
       "matched": {
         "keyword": "crwdns66503:0crwdne66503:0",
         "enum": {
-          "true": true,
-          "false": true
+          "true": "crwdns70376:0crwdne70376:0",
+          "false": "crwdns70378:0crwdne70378:0"
         }
       },
       "geartype": {
@@ -2327,6 +2341,21 @@
         }
       }
     }
+  },
+  "public-global-sst-anomalies-max": {
+    "name": "crwdns70290:0crwdne70290:0",
+    "description": "crwdns70292:0crwdne70292:0",
+    "schema": {}
+  },
+  "public-global-sst-anomalies-min": {
+    "name": "crwdns70294:0crwdne70294:0",
+    "description": "crwdns70296:0crwdne70296:0",
+    "schema": {}
+  },
+  "public-global-sst-anomalies": {
+    "name": "crwdns70298:0crwdne70298:0",
+    "description": "crwdns70300:0crwdne70300:0",
+    "schema": {}
   },
   "public-global-support-vessels": {
     "name": "crwdns66513:0crwdne66513:0",
@@ -2393,20 +2422,20 @@
       "radiance": {
         "keyword": "crwdns66577:0crwdne66577:0",
         "enum": {
-          "1": 0,
-          "1000": 0
+          "1": "crwdns66579:0crwdne66579:0",
+          "1000": "crwdns66581:0crwdne66581:0"
         }
       },
       "detect_id": "crwdns66583:0crwdne66583:0",
       "qf_detect": {
         "keyword": "crwdns66585:0crwdne66585:0",
         "enum": {
-          "1": 0,
-          "2": 0,
-          "3": 0,
-          "5": 0,
-          "7": 0,
-          "10": 0
+          "1": "crwdns66587:0crwdne66587:0",
+          "2": "crwdns66589:0crwdne66589:0",
+          "3": "crwdns66591:0crwdne66591:0",
+          "5": "crwdns66593:0crwdne66593:0",
+          "7": "crwdns66595:0crwdne66595:0",
+          "10": "crwdns66597:0crwdne66597:0"
         }
       },
       "timestamp": "crwdns66599:0crwdne66599:0"
@@ -2874,8 +2903,8 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "crwdns70268:0crwdne70268:0",
-    "description": "crwdns70270:0crwdne70270:0",
+    "name": "crwdns70364:0crwdne70364:0",
+    "description": "crwdns70366:0crwdne70366:0",
     "schema": {
       "id": "crwdns69176:0crwdne69176:0",
       "selfReportedInfo": "crwdns69178:0crwdne69178:0",
@@ -3088,8 +3117,8 @@
       "matched": {
         "keyword": "crwdns67369:0crwdne67369:0",
         "enum": {
-          "true": true,
-          "false": true
+          "true": "crwdns70380:0crwdne70380:0",
+          "false": "crwdns70382:0crwdne70382:0"
         }
       },
       "geartype": {
@@ -3168,8 +3197,8 @@
       "radiance": {
         "keyword": "crwdns67513:0crwdne67513:0",
         "enum": {
-          "1": 0,
-          "1000": 0
+          "1": "crwdns67515:0crwdne67515:0",
+          "1000": "crwdns67517:0crwdne67517:0"
         }
       },
       "shiptype": {
@@ -3185,12 +3214,12 @@
       "qf_detect": {
         "keyword": "crwdns67531:0crwdne67531:0",
         "enum": {
-          "1": 0,
-          "2": 0,
-          "3": 0,
-          "5": 0,
-          "7": 0,
-          "10": 0
+          "1": "crwdns67533:0crwdne67533:0",
+          "2": "crwdns67535:0crwdne67535:0",
+          "3": "crwdns67537:0crwdne67537:0",
+          "5": "crwdns67539:0crwdne67539:0",
+          "7": "crwdns67541:0crwdne67541:0",
+          "10": "crwdns67543:0crwdne67543:0"
         }
       },
       "timestamp": "crwdns67545:0crwdne67545:0",
