@@ -147,6 +147,7 @@ steps:
            --platform managed \
            --region $_RUN_REGION \
            --format 'value(status.url)' > app_url
+           printf %s "/map" >> app_url 
         fi
 
   - id: 'i18n-labels publish stable'
