@@ -2,6 +2,8 @@ import { URL_VESSEL_PROFILE } from '../../constants/urls'
 import {
   disablePopups,
 
+  switchLanguage,
+
   verifyTracksInTimebar,
 } from '../../support/app.po'
 
@@ -11,6 +13,7 @@ describe('Access to vessel viewver - direct', () => {
     // eslint-disable-next-line
     cy.clearAllLocalStorage().then(() => {
       disablePopups()
+      switchLanguage('en')
     })
   })
 
@@ -42,7 +45,7 @@ describe('Access to vessel viewver - direct', () => {
         
         cy.getBySel('vv-area-mpa').click()
         cy.get('span').contains('South Georgia and South Sandwich Islands Marine Protected Area - Marine Protected Area')
-        cy.get('span').contains('Outside AMP areas')
+        cy.get('span').contains('Outside mpa areas')
         
         cy.getBySel('vv-related-tab').click()
         cy.getBySel('link-vessel-profile').contains('La Manche')
