@@ -45,7 +45,7 @@ describe('Access to vessel viewver - direct', () => {
         
         cy.getBySel('vv-area-mpa').click()
         cy.get('span').contains('South Georgia and South Sandwich Islands Marine Protected Area - Marine Protected Area')
-        cy.get('span').contains('Outside mpa areas')
+        cy.get('span').contains('Outside MPA areas')
         
         cy.getBySel('vv-related-tab').click()
         cy.getBySel('link-vessel-profile').contains('La Manche')
