@@ -49,7 +49,7 @@ function NewPolygonDataset({
 
   const handleRawData = useCallback(
     async (file: File) => {
-      const data = await getDatasetParsed(file)
+      const data = await getDatasetParsed(file, 'polygons')
       const fileType = getFileType(file)
       const datasetMetadata = getPolygonsDatasetMetadata({
         data,
@@ -110,7 +110,6 @@ function NewPolygonDataset({
           datasetMetadata={datasetMetadata}
           property="propertyToInclude"
           label={t('datasetUpload.polygons.name', 'Polygon name')}
-          editable={!isEditing}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}

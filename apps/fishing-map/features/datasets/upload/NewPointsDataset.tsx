@@ -89,7 +89,7 @@ function NewPointDataset({
 
   const handleRawData = useCallback(
     async (file: File) => {
-      const data = await getDatasetParsed(file)
+      const data = await getDatasetParsed(file, 'points')
       const fileType = getFileType(file)
       const datasetMetadata = getPointsDatasetMetadata({
         data,
