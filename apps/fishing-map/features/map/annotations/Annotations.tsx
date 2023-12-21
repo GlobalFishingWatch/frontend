@@ -12,7 +12,7 @@ import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsGuestUser } from 'features/user/user.slice'
+import { isGFWUser } from 'features/user/user.slice'
 import styles from './Annotations.module.css'
 
 const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]
@@ -20,7 +20,7 @@ const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBar
 const MapAnnotations = () => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const isGuestUser = useSelector(selectIsGuestUser)
+  const gfwUser = useSelector(isGFWUser)
   const { mapAnnotation, resetMapAnnotation, setMapAnnotation } = useMapAnnotation()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
   const onConfirmClick = () => {
@@ -45,7 +45,7 @@ const MapAnnotations = () => {
     resetMapAnnotation()
   }
 
-  if (isGuestUser) {
+  if (!gfwUser) {
     return null
   }
 
