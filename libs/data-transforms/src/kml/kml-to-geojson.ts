@@ -17,22 +17,22 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
     try {
       const str = isKMZ ? await (file as JSZipObject).async('string') : await (file as File).text()
       const kmlDoc = new DOMParser().parseFromString(str, 'text/xml')
-      const geomType =
-        kmlDoc.getElementsByTagName('LineString') || kmlDoc.getElementsByTagName('MultiLineString')
-          ? 'lines'
-          : kmlDoc.getElementsByTagName('Polygon') || kmlDoc.getElementsByTagName('MultiPolygon')
-          ? 'polygons'
-          : kmlDoc.getElementsByTagName('Point') || kmlDoc.getElementsByTagName('MultiPoint')
-          ? 'points'
-          : null
+      let hasFeaturesOfDesiredType: boolean = false
+      if (type === 'polygons') {
+        hasFeaturesOfDesiredType =
+          kmlDoc.getElementsByTagName('Polygon').length > 0 ||
+          kmlDoc.getElementsByTagName('MultiPolygon').length > 0
+      } else if (type === 'tracks') {
+        hasFeaturesOfDesiredType =
+          kmlDoc.getElementsByTagName('LineString').length > 0 ||
+          kmlDoc.getElementsByTagName('MultiLineString').length > 0
+      } else if (type === 'points') {
+        hasFeaturesOfDesiredType =
+          kmlDoc.getElementsByTagName('Point').length > 0 ||
+          kmlDoc.getElementsByTagName('MultiPoint').length > 0
+      }
 
-      if (type === 'polygons' && geomType === 'polygons') {
-        const { features } = kml(kmlDoc)
-        results.push(...features)
-      } else if (type === 'tracks' && geomType === 'lines') {
-        const { features } = kml(kmlDoc)
-        results.push(...features)
-      } else if (type === 'points' && geomType === 'points') {
+      if (hasFeaturesOfDesiredType) {
         const { features } = kml(kmlDoc)
         results.push(...features)
       }
