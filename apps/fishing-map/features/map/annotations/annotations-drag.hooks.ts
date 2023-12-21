@@ -7,12 +7,12 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { ANNOTATIONS_GENERATOR_ID } from 'features/map/map.config'
 import { selectMapAnnotations } from 'features/app/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsGuestUser } from 'features/user/user.slice'
+import { isGFWUser } from 'features/user/user.slice'
 
 export function useMapAnnotationDrag() {
   const map = useMapInstance()
   const annotations = useSelector(selectMapAnnotations)
-  const isGuestUser = useSelector(selectIsGuestUser)
+  const gfwUser = useSelector(isGFWUser)
   const { dispatchQueryParams } = useLocationConnect()
 
   const currentAnnotationRef = useRef<MapAnnotation | null>(null)
@@ -68,7 +68,7 @@ export function useMapAnnotationDrag() {
   )
 
   useEffect(() => {
-    if (map && !isGuestUser) {
+    if (map && gfwUser) {
       map.on('mousedown', ANNOTATIONS_GENERATOR_ID, onDown)
     }
     return () => {
@@ -76,5 +76,5 @@ export function useMapAnnotationDrag() {
         map.off('mousedown', ANNOTATIONS_GENERATOR_ID, onDown)
       }
     }
-  }, [isGuestUser, map, onDown])
+  }, [gfwUser, map, onDown])
 }

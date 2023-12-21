@@ -29,7 +29,7 @@ import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
 import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
 import { ANNOTATIONS_GENERATOR_ID, RULERS_LAYER_ID } from 'features/map/map.config'
 import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
-import { selectIsGuestUser } from 'features/user/user.slice'
+import { isGFWUser } from 'features/user/user.slice'
 import { SliceInteractionEvent } from './map.slice'
 
 export const useMapMouseHover = (style?: ExtendedStyle) => {
@@ -187,14 +187,14 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { isMapDrawing } = useMapDrawConnect()
   const { rulersEditing } = useRulers()
-  const isGuestUser = useSelector(selectIsGuestUser)
+  const gfwUser = useSelector(isGFWUser)
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const tilesClusterLoaded = useMapClusterTilesLoaded()
 
   const getCursor = useCallback(() => {
     if (hoveredTooltipEvent && hasToolFeature(hoveredTooltipEvent)) {
-      if (hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Annotation) && isGuestUser) {
+      if (hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Annotation) && !gfwUser) {
         return 'grab'
       }
       return 'all-scroll'
@@ -240,7 +240,7 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
     isMapDrawing,
     isMarineManagerLocation,
     map,
-    isGuestUser,
+    gfwUser,
     dataviews,
     tilesClusterLoaded,
   ])
