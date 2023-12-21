@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import {
-  VesselConfigurationProperty,
+  DatasetConfigurationProperty,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
 import { InputText, Select, SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components'
@@ -10,7 +10,7 @@ import styles from './NewDataset.module.css'
 
 type NewDatasetFieldProps = {
   datasetMetadata: DatasetMetadata
-  property: VesselConfigurationProperty
+  property: DatasetConfigurationProperty
   editable?: boolean | undefined
   label?: string
   placeholder?: string
