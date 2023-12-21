@@ -54,16 +54,8 @@ class UserPointsGenerator {
     if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
       filters = [
         'all',
-        [
-          '<=',
-          ['to-number', ['get', config.endTimeFilterProperty]],
-          getUTCDate(config.end).getTime(),
-        ],
-        [
-          '>=',
-          ['to-number', ['get', config.startTimeFilterProperty]],
-          getUTCDate(config.start).getTime(),
-        ],
+        ['<=', ['to-number', ['get', config.endTimeFilterProperty]], config.end],
+        ['>=', ['to-number', ['get', config.startTimeFilterProperty]], config.start],
       ]
     }
     const circleLayer: CircleLayerSpecification = {
