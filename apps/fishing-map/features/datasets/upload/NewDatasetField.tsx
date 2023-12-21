@@ -30,10 +30,16 @@ export function NewDatasetField({
   const { t } = useTranslation()
   const { fieldsOptions, filtersFieldsOptions, getSelectedOption } =
     useDatasetMetadataOptions(datasetMetadata)
-  const options =
-    property === 'latitude' || property === 'longitude' || property === 'timestamp'
-      ? fieldsOptions
-      : filtersFieldsOptions
+  const notEditableOptions = [
+    'latitude',
+    'longitude',
+    'startTime',
+    'endTime',
+    'segmentId',
+    'lineId',
+  ]
+  const isNotEditableField = notEditableOptions.some((option) => option === property)
+  const options = isNotEditableField ? fieldsOptions : filtersFieldsOptions
 
   if (editable) {
     return (
