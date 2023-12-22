@@ -9,6 +9,7 @@ import {
   MultiSelectOption,
   Select,
   SelectOption,
+  Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 import {
@@ -51,6 +52,7 @@ function NewPointDataset({
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataParsed | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
@@ -89,6 +91,7 @@ function NewPointDataset({
 
   const handleRawData = useCallback(
     async (file: File) => {
+      setProcessingData(true)
       const data = await getDatasetParsed(file, 'points')
       const fileType = getFileType(file)
       const datasetMetadata = getPointsDatasetMetadata({
@@ -112,6 +115,7 @@ function NewPointDataset({
         ) as FeatureCollection<Point>
         setGeojson(geojson)
       }
+      setProcessingData(false)
     },
     [setDatasetMetadata]
   )
@@ -176,6 +180,15 @@ function NewPointDataset({
       }
     }
   }, [datasetMetadata, sourceData, onConfirm, fileType, geojson, t])
+
+  if (processingData) {
+    return (
+      <div className={styles.processingData}>
+        <Spinner className={styles.processingDataSpinner} />
+        <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>

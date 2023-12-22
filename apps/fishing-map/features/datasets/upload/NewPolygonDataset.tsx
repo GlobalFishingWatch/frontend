@@ -7,11 +7,9 @@ import {
   InputText,
   MultiSelect,
   MultiSelectOption,
-  Select,
-  SelectOption,
+  Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -37,6 +35,7 @@ function NewPolygonDataset({
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [geojson, setGeojson] = useState<FeatureCollection<Polygon> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
@@ -49,6 +48,7 @@ function NewPolygonDataset({
 
   const handleRawData = useCallback(
     async (file: File) => {
+      setProcessingData(true)
       const data = await getDatasetParsed(file, 'polygons')
       const fileType = getFileType(file)
       const datasetMetadata = getPolygonsDatasetMetadata({
@@ -56,9 +56,9 @@ function NewPolygonDataset({
         name: getFileName(file),
         sourceFormat: fileType,
       })
-      console.log('🚀 ~ datasetMetadata:', datasetMetadata)
       setDatasetMetadata(datasetMetadata)
       setGeojson(data as FeatureCollection<Polygon>)
+      setProcessingData(false)
     },
     [setDatasetMetadata]
   )
@@ -80,6 +80,15 @@ function NewPolygonDataset({
       setLoading(false)
     }
   }, [datasetMetadata, onConfirm, geojson])
+
+  if (processingData) {
+    return (
+      <div className={styles.processingData}>
+        <Spinner className={styles.processingDataSpinner} />
+        <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>

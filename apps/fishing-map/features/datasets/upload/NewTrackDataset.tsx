@@ -7,6 +7,7 @@ import {
   InputText,
   MultiSelect,
   MultiSelectOption,
+  Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 import { checkRecordValidity } from '@globalfishingwatch/data-transforms'
@@ -43,6 +44,7 @@ function NewTrackDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [idGroupError, setIdGroupError] = useState<string>('')
+  const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataList | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection | undefined>()
@@ -73,7 +75,7 @@ function NewTrackDataset({
 
   const handleRawData = useCallback(
     async (file: File) => {
-      setLoading(true)
+      setProcessingData(true)
       const data = await getDatasetParsed(file, 'tracks')
       const fileType = getFileType(file)
       const datasetMetadata = getTracksDatasetMetadata({
@@ -89,7 +91,7 @@ function NewTrackDataset({
       } else {
         setGeojson(data as FeatureCollection)
       }
-      setLoading(false)
+      setProcessingData(false)
     },
     [setDatasetMetadata]
   )
@@ -155,6 +157,15 @@ function NewTrackDataset({
       }
     }
   }, [datasetMetadata, geojson, onConfirm, sourceData, t])
+
+  if (processingData) {
+    return (
+      <div className={styles.processingData}>
+        <Spinner className={styles.processingDataSpinner} />
+        <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>

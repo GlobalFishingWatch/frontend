@@ -266,6 +266,7 @@
     "fieldMultiplePlaceholder": "Select fields from your dataset",
     "fieldNumericPlaceholder": "Select a numeric field from your dataset",
     "optionalFields": "Optional fields",
+    "processingData": "Processing data...",
     "timePeriodTypePlaceholder": "Select a time period type",
     "points": {
       "coordinates": "Point coordinates",
