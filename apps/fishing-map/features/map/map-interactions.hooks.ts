@@ -29,6 +29,7 @@ import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
 import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
 import { ANNOTATIONS_GENERATOR_ID, RULERS_LAYER_ID } from 'features/map/map.config'
 import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
+import { isGFWUser } from 'features/user/user.slice'
 import { SliceInteractionEvent } from './map.slice'
 
 export const useMapMouseHover = (style?: ExtendedStyle) => {
@@ -165,11 +166,18 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
   return { onMapClick, clickedTooltipEvent }
 }
 
+const hasTooltipEventFeature = (
+  hoveredTooltipEvent: ReturnType<typeof parseMapTooltipEvent>,
+  type: GeneratorType
+) => {
+  return hoveredTooltipEvent?.features.find((f) => f.type === type) !== undefined
+}
+
 const hasToolFeature = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
+  if (!hoveredTooltipEvent) return false
   return (
-    hoveredTooltipEvent?.features.find(
-      (f) => f.type === GeneratorType.Annotation || f.type === GeneratorType.Rulers
-    ) !== undefined
+    hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Annotation) ||
+    hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Rulers)
   )
 }
 
@@ -179,12 +187,16 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { isMapDrawing } = useMapDrawConnect()
   const { rulersEditing } = useRulers()
+  const gfwUser = useSelector(isGFWUser)
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const tilesClusterLoaded = useMapClusterTilesLoaded()
 
   const getCursor = useCallback(() => {
-    if (hasToolFeature(hoveredTooltipEvent)) {
+    if (hoveredTooltipEvent && hasToolFeature(hoveredTooltipEvent)) {
+      if (hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Annotation) && !gfwUser) {
+        return 'grab'
+      }
       return 'all-scroll'
     } else if (isMapAnnotating || rulersEditing || isErrorNotificationEditing) {
       return 'crosshair'
@@ -228,6 +240,7 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
     isMapDrawing,
     isMarineManagerLocation,
     map,
+    gfwUser,
     dataviews,
     tilesClusterLoaded,
   ])

@@ -819,7 +819,7 @@
     "edit": "Editar espacio de trabajo",
     "editName": "Modificar el nombre del espacio de trabajo",
     "emptyState": "Sus espacios de trabajo aparecerán aquí",
-    "emptyStateEnvironment": "Sube conjuntos de datos personalizados como telemetría de animales haciendo clic en el icono de más.",
+    "emptyStateEnvironment": "Suba conjuntos de datos personalizados (polígonos, pistas o puntos) arrastrando y soltando sus archivos en el mapa.",
     "emptyStateVessels": "Las embarcaciones seleccionadas en la búsqueda o haciendo clic en el mapa de calor aparecerán aquí.",
     "nameInput": "Nombre del espacio de trabajo",
     "new": "Nuevo espacio de trabajo",
