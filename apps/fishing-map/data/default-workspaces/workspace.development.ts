@@ -52,7 +52,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FISHING_DATAVIEW_SLUG,
     },
     {
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'vms',
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
@@ -91,7 +91,7 @@ const workspace: Workspace<WorkspaceState> = {
       datasetsConfig: [],
     },
     {
-      id: 'sar',
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       dataviewId: SAR_DATAVIEW_SLUG,
       config: {
         visible: false,
