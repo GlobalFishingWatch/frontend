@@ -42,31 +42,17 @@ const NEXT_YEAR = Date.now() + 1000 * 60 * 60 * 24 * 365
 // so that the popup is shown in production only after that date
 const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
   {
-    dataviewInstanceId: 'vms-with-norway',
-    releaseDateTimestamp: Date.parse('2023-03-03T00:00:00Z'),
+    dataviewInstanceId: 'sar',
+    releaseDateTimestamp: Date.parse('2024-01-04T00:00:00Z'),
     localStorageKey: HIGHLIGHT_POPUP_KEY,
     delayed: 1000,
-    imageUrl: `${PATH_BASENAME}/images/norway-vms.webp`,
-    // learnMoreUrl: 'https://globalfishingwatch.org/data/ais-viirs-reveals-dark-fleet/',
+    imageUrl: `${PATH_BASENAME}/images/sar.webp`,
+    learnMoreUrl:
+      'https://globalfishingwatch.org/press-release/new-research-harnesses-ai-and-satellite-imagery-to-reveal-the-expanding-footprint-of-human-activity-at-sea',
     en: {
-      title: "Norway's VMS data is now available",
+      title: 'Data added from satellite radar reveals industrial vessels hidden from public view',
       description:
-        "Vessel monitoring system (VMS) data is provided by the Norwegian Directorate of Fisheries. It is now possible to track the position and activity of 600+ vessels comprising Norway's large scale fishing fleet.",
-    },
-    es: {
-      title: 'Los datos VMS de Noruega ya están disponibles',
-      description:
-        'Los datos del sistema de monitoreo de embarcaciones (VMS) son proporcionados por la Dirección de Pesca de Noruega. Ahora es posible rastrear la posición y la actividad de más de 600 embarcaciones que componen la flota pesquera a gran escala de Noruega.',
-    },
-    fr: {
-      title: 'Les données VMS de la Norvège sont désormais disponibles',
-      description:
-        "Les données du système de surveillance des navires (VMS) sont fournies par la Direction norvégienne de la pêche. Il est désormais possible de suivre la position et l'activité de plus de 600 navires composant la flotte de pêche norvégienne à grande échelle.",
-    },
-    pt: {
-      title: 'Os dados VMS da Noruega estão disponíveis',
-      description:
-        'Os dados do sistema de monitoramento de embarcações (VMS) são fornecidos pela Diretoria de Pesca da Noruega. Agora é possível rastrear a posição e atividade de mais de 600 embarcações que compõem a frota pesqueira de grande escala da Noruega.',
+        'Global Fishing Watch has added an open global radar detections layer, derived from synthetic aperture radar or SAR, to display vessels at sea in any weather conditions. SAR can show vessels that can not be picked up by other cooperative tracking systems and infrastructure at sea like oil platforms and wind farms.',
     },
   },
   {
