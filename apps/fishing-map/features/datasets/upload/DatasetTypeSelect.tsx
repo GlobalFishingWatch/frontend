@@ -1,4 +1,4 @@
-import { ReactComponentElement, useCallback } from 'react'
+import { ReactComponentElement, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { FileRejection, useDropzone } from 'react-dropzone'
@@ -27,11 +27,16 @@ const DatasetType = ({
 }) => {
   const { t } = useTranslation()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
+  // Needed because browsers don't recognise all MIME types
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+  const [fileTypeEmpty, setFileTypeEmpty] = useState(false)
 
   const onDropAccepted = useCallback(
     (files: File[]) => {
+      console.log(files)
+
       onFileLoaded(files[0])
-      dispatchDatasetModalConfig({ type, fileRejected: false })
+      dispatchDatasetModalConfig({ type })
     },
     [dispatchDatasetModalConfig, type, onFileLoaded]
   )
@@ -45,25 +50,47 @@ const DatasetType = ({
   const fileTypes = getFileTypes(type)
   const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)
 
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles, fileRejections } = useDropzone({
+  const isFileTypeEmpty = (file: File) => {
+    if (file.type === '') {
+      setFileTypeEmpty(true)
+    }
+    return null
+  }
+
+  const { getRootProps, getInputProps, isDragActive, isDragAccept, fileRejections } = useDropzone({
     accept: fileAcceptedByMime,
+    validator: isFileTypeEmpty,
     onDropAccepted,
     onDropRejected,
   })
 
-  // TODO handle not supported files in fileRejections
+  const dragError = isDragActive && !isDragAccept && !fileTypeEmpty
+
   return (
-    <div className={cx(styles.geometryTypeContainer, styles[style])} {...(getRootProps() as any)}>
+    <div
+      className={cx(styles.geometryTypeContainer, styles[style], {
+        [styles.current]: isDragActive && !dragError,
+        [styles.error]: dragError,
+      })}
+      {...(getRootProps() as any)}
+    >
       {icon}
       <input {...getInputProps()} />
-      {acceptedFiles.length ? (
-        <p>
-          {t('dataset.file', 'File')}: {acceptedFiles[0].name}
-        </p>
-      ) : isDragActive ? (
-        <div className={styles.textContainer}>
-          <p>{t('dataset.dragActive', 'Drop the file here ...')}</p>
-        </div>
+      {isDragActive ? (
+        isDragAccept ? (
+          <div className={styles.textContainer}>
+            <p>{t('dataset.dragActive', 'Drop the file here ...')}</p>
+          </div>
+        ) : (
+          <div className={styles.textContainer}>
+            <p>
+              {t(
+                'dataset.dragNotAccepted',
+                'This file is not compatible with this type of dataset.'
+              )}
+            </p>
+          </div>
+        )
       ) : (
         <div className={styles.textContainer}>
           <p className={styles.title}>{title}</p>
@@ -71,8 +98,11 @@ const DatasetType = ({
 
           <div className={styles.textContainer}>
             {fileRejections.length > 0 ? (
-              <p className={cx(styles.description, styles.error)}>
-                {fileRejections[0].errors[0]?.message}
+              <p className={cx(styles.description, styles.errorMessage)}>
+                {t(
+                  'dataset.dragNotAccepted',
+                  'This file is not compatible with this type of dataset.'
+                )}
               </p>
             ) : (
               <p className={styles.description}>{fileTypes.join(',')}</p>
