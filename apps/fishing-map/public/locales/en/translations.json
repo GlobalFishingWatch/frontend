@@ -819,7 +819,7 @@
     "edit": "Edit workspace",
     "editName": "Edit workspace name",
     "emptyState": "Your workspaces will appear here.",
-    "emptyStateEnvironment": "Upload custom datasets, areas or tracks.",
+    "emptyStateEnvironment": "Upload custom datasets (polygons, tracks or points) by dragging and dropping your files on the map.",
     "emptyStateVessels": "Search for vessels or add them from the map.",
     "nameInput": "Workspace name",
     "new": "New workspace",
