@@ -37,7 +37,7 @@ function VesselGroupAddButton({
   const dispatch = useAppDispatch()
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const vesselGroupOptions = useVesselGroupsOptions()
-  const [vesselGroupsOpen, setVesselGroupsOpen] = useState(true)
+  const [vesselGroupsOpen, setVesselGroupsOpen] = useState(false)
   const tooManyVessels = vessels?.length > MAX_VESSEL_GROUP_VESSELS
 
   const toggleVesselGroupsOpen = useCallback(() => {
