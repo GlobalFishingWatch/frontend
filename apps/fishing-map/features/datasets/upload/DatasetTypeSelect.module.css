@@ -15,21 +15,36 @@
   border-radius: var(--border-radius);
   background-color: rgba(var(--primary-blue-rgb), 0.05);
   padding: var(--space-S);
+  transition: var(--transition);
+  text-align: center;
+}
+
+.geometryTypeContainer:hover,
+.current {
+  border: 0.2rem solid var(--color-secondary-blue);
+  background-color: rgba(var(--primary-blue-rgb), 0.1);
 }
 
 .transparent {
   color: var(--color-white);
   border-color: var(--color-white);
-  background-color: rgba(var(--white-rgb), var(--opacity-terthiary));
+  background-color: rgba(var(--white-rgb), 0.05);
+}
+
+.transparent.current {
+  border: 0.2rem solid var(--color-white);
+  background-color: rgba(var(--white-rgb), 0.1);
+}
+
+.error,
+.transparent.error {
+  color: var(--color-danger-red);
+  border: 0.2rem solid var(--color-danger-red);
+  background-color: rgba(var(--danger-red-rgb), 0.1);
 }
 
 .textContainer {
   padding-top: var(--space-M);
-}
-
-.title,
-.description {
-  text-align: center;
 }
 
 .title {
@@ -38,4 +53,20 @@
 
 .description {
   opacity: var(--opacity-secondary);
+  transition: var(--transition);
+  min-height: 7.2rem;
+}
+
+.geometryTypeContainer:hover .description {
+  opacity: var(--opacity-primary);
+}
+
+.fileTypes {
+  opacity: var(--opacity-secondary);
+  font: var(--font-S);
+}
+
+.errorMessage {
+  color: var(--color-danger-red);
+  font: var(--font-S);
 }

@@ -99,7 +99,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
         />
       </div>
       <div className={styles.dropzoneContainer}>
-        <FileDropzone className={styles.dropzone} onFileLoaded={onCSVLoaded} fileTypes={['csv']} />
+        <FileDropzone className={styles.dropzone} onFileLoaded={onCSVLoaded} fileTypes={['CSV']} />
       </div>
     </div>
   )

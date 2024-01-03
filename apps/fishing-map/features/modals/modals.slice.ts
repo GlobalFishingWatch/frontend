@@ -28,7 +28,6 @@ const initialState: ModalsOpenState = {
     open: true,
     id: undefined,
     type: undefined,
-    fileRejected: false,
     style: 'default',
   },
 }

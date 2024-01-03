@@ -56,12 +56,7 @@ function NewPointDataset({
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataParsed | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
-  const {
-    datasetMetadata,
-    setDatasetMetadata,
-    setDatasetMetadataConfig,
-    setDatasetMetadataSchema,
-  } = useDatasetMetadata()
+  const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
     useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
@@ -69,7 +64,7 @@ function NewPointDataset({
   const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const fileType = getFileType(file)
-  const isCSVFile = fileType === 'csv' || sourceFormat === 'csv'
+  const isCSVFile = fileType === 'CSV' || sourceFormat === 'csv'
 
   const latitudeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -100,7 +95,7 @@ function NewPointDataset({
         sourceFormat: fileType,
       })
       setDatasetMetadata(datasetMetadata)
-      if (fileType === 'csv') {
+      if (fileType === 'CSV') {
         setSourceData(data as DataList)
         const geojson = getGeojsonFromPointsList(
           data as DataList,
@@ -160,7 +155,7 @@ function NewPointDataset({
     if (datasetMetadata) {
       if (sourceData) {
         const config = getDatasetConfiguration(datasetMetadata)
-        if (fileType === 'csv' && (!config?.latitude || !config?.longitude)) {
+        if (fileType === 'CSV' && (!config?.latitude || !config?.longitude)) {
           const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
           error = t('dataset.requiredFields', {
             fields,

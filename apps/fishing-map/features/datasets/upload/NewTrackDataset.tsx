@@ -53,7 +53,7 @@ function NewTrackDataset({
   const isEditing = dataset?.id !== undefined
   const fileType = getFileType(file)
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
-  const isCSVFile = fileType === 'csv' || sourceFormat === 'csv'
+  const isCSVFile = fileType === 'CSV' || sourceFormat === 'csv'
   const fieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
   const isPublic = !!datasetMetadata?.public
   const idProperty = getDatasetConfigurationProperty({
@@ -84,7 +84,7 @@ function NewTrackDataset({
         sourceFormat: fileType as FileType,
       })
       setDatasetMetadata(datasetMetadata)
-      if (fileType === 'csv') {
+      if (fileType === 'CSV') {
         setSourceData(data as DataList)
         const geojson = getTrackFromList(data as DataList, datasetMetadata)
         setGeojson(geojson)

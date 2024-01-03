@@ -106,3 +106,17 @@
 .processingDataSpinner {
   height: 10rem;
 }
+
+.dismiss {
+  margin-top: var(--space-S);
+  margin-inline: auto;
+  width: 20rem;
+  color: var(--color-secondary-blue);
+  background: var(--color-white);
+}
+
+.dismiss:not(:disabled):hover,
+.dismiss:not(:disabled):focus {
+  color: var(--color-primary-blue);
+  background: var(--color-white);
+}
