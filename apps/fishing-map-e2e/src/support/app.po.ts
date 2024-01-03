@@ -5,7 +5,7 @@ export const getGreeting = () => cy.get('h1')
 export const getWorkspaceTitle = () => cy.getBySel('user-workspace-title')
 
 export const getVmsActivityLayerPanel = () =>
-  cy.getBySelLike('activity-layer-panel-vms-', getDOMTimeout(20000))
+  cy.getBySelLike('activity-layer-panel-vms', getDOMTimeout(20000))
 
 export const getTimebar = () => cy.getByClass('Timebar_timebarWrapper', getDOMTimeout(5000))
 
@@ -37,7 +37,7 @@ export const verifyTracksInTimebar = (segments?: number) => {
 export const disablePopups = () => {
   localStorage.setItem('DisableWelcomePopup', 'true')
   localStorage.setItem('DisableSourceSwitchPopup', 'true')
-  localStorage.setItem('HighlightPopup', '"vms-with-png"')
+  localStorage.setItem('HighlightPopup', '"sar"')
   localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
   localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
   localStorage.setItem(
