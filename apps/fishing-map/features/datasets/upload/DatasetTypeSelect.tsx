@@ -105,7 +105,7 @@ const DatasetType = ({
                 )}
               </p>
             ) : (
-              <p className={styles.description}>{fileTypes.join(',')}</p>
+              <p className={styles.fileTypes}>{fileTypes.join(', ')}</p>
             )}
           </div>
         </div>

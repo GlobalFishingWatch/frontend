@@ -199,6 +199,7 @@ function NewPointDataset({
         label={t('datasetUpload.datasetName', 'Dataset Name')}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}
+        disabled={loading}
       />
       {isCSVFile && (
         <div className={styles.row}>
@@ -209,7 +210,7 @@ function NewPointDataset({
               'common.latitude',
               'Latitude'
             )}`}
-            editable={!isEditing}
+            editable={!isEditing && !loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ latitude: selected.id })
             }}
@@ -218,7 +219,7 @@ function NewPointDataset({
             datasetMetadata={datasetMetadata}
             property="longitude"
             label={t('common.longitude', 'Longitude')}
-            editable={!isEditing}
+            editable={!isEditing && !loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ longitude: selected.id })
             }}
@@ -229,6 +230,7 @@ function NewPointDataset({
         <TimeFieldsGroup
           datasetMetadata={datasetMetadata}
           setDatasetMetadataConfig={setDatasetMetadataConfig}
+          disabled={loading}
         />
       </div>
       <Collapsable
@@ -240,12 +242,13 @@ function NewPointDataset({
           label={t('datasetUpload.datasetDescription', 'Dataset description')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
+          disabled={loading}
         />
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="propertyToInclude"
           label={t('datasetUpload.points.name', 'Point name')}
-          editable={!isEditing}
+          editable={!loading}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
@@ -274,6 +277,7 @@ function NewPointDataset({
             onCleanClick={() => {
               setDatasetMetadataConfig({ pointSize: undefined })
             }}
+            disabled={loading}
           />
           {getDatasetConfigurationProperty({
             dataset: datasetMetadata,
@@ -294,6 +298,7 @@ function NewPointDataset({
                 onChange={(e) =>
                   setDatasetMetadataConfig({ minPointSize: parseFloat(e.target.value) })
                 }
+                disabled={loading}
               />
               <InputText
                 type="number"
@@ -309,6 +314,7 @@ function NewPointDataset({
                 onChange={(e) =>
                   setDatasetMetadataConfig({ maxPointSize: parseFloat(e.target.value) })
                 }
+                disabled={loading}
               />
             </Fragment>
           )}
@@ -333,6 +339,7 @@ function NewPointDataset({
           onCleanClick={() => {
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
+          disabled={loading}
         />
         <SwitchRow
           className={styles.saveAsPublic}
@@ -340,7 +347,7 @@ function NewPointDataset({
             'dataset.uploadPublic',
             'Allow other users to see this dataset when you share a workspace'
           )}
-          disabled={isEditing}
+          disabled={isEditing || loading}
           active={isPublic}
           onClick={() => setDatasetMetadata({ public: !isPublic })}
         />

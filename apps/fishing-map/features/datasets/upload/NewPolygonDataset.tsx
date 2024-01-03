@@ -104,6 +104,7 @@ function NewPolygonDataset({
         label={t('datasetUpload.datasetName', 'Dataset Name')}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}
+        disabled={loading}
       />
       <Collapsable
         className={styles.optional}
@@ -114,6 +115,7 @@ function NewPolygonDataset({
           label={t('datasetUpload.datasetDescription', 'Dataset description')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
+          disabled={loading}
         />
         <NewDatasetField
           datasetMetadata={datasetMetadata}
@@ -122,11 +124,13 @@ function NewPolygonDataset({
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
+          editable={!loading}
         />
         <div className={styles.row}>
           <TimeFieldsGroup
             datasetMetadata={datasetMetadata}
             setDatasetMetadataConfig={setDatasetMetadataConfig}
+            disabled={loading}
           />
         </div>
         <MultiSelect
@@ -148,6 +152,7 @@ function NewPolygonDataset({
           onCleanClick={() => {
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
+          disabled={loading}
         />
         <SwitchRow
           className={styles.saveAsPublic}
@@ -155,7 +160,7 @@ function NewPolygonDataset({
             'dataset.uploadPublic',
             'Allow other users to see this dataset when you share a workspace'
           )}
-          disabled={isEditing}
+          disabled={isEditing || loading}
           active={isPublic}
           onClick={() => setDatasetMetadata({ public: !isPublic })}
         />

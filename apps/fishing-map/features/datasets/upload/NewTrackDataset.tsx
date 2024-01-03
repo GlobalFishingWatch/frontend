@@ -182,6 +182,7 @@ function NewTrackDataset({
           label={t('datasetUpload.datasetName', 'Dataset Name')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ name: e.target.value })}
+          disabled={loading}
         />
         {isCSVFile && (
           <div className={styles.row}>
@@ -192,7 +193,7 @@ function NewTrackDataset({
                 'common.latitude',
                 'Latitude'
               )}`}
-              editable={!isEditing}
+              editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ latitude: selected.id })
               }}
@@ -201,7 +202,7 @@ function NewTrackDataset({
               datasetMetadata={datasetMetadata}
               property="longitude"
               label={t('common.longitude', 'longitude')}
-              editable={!isEditing}
+              editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ longitude: selected.id })
               }}
@@ -210,7 +211,7 @@ function NewTrackDataset({
               datasetMetadata={datasetMetadata}
               property="timestamp"
               label={t('datasetUpload.tracks.segmentTimes', 'Track point times')}
-              editable={!isEditing}
+              editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ timestamp: selected.id })
               }}
@@ -227,6 +228,7 @@ function NewTrackDataset({
           label={t('datasetUpload.datasetDescription', 'Dataset description')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
+          disabled={loading}
         />
         {isCSVFile && (
           <Fragment>
@@ -234,7 +236,7 @@ function NewTrackDataset({
               datasetMetadata={datasetMetadata}
               property="idProperty"
               label={t('datasetUpload.tracks.segmentId', 'Individual segment id')}
-              editable={!isEditing}
+              editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ idProperty: selected.id })
               }}
@@ -254,8 +256,12 @@ function NewTrackDataset({
           }
           direction="top"
           disabled={
-            isCSVFile &&
-            !getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'idProperty' })
+            loading ||
+            (isCSVFile &&
+              !getDatasetConfigurationProperty({
+                dataset: datasetMetadata,
+                property: 'idProperty',
+              }))
           }
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
@@ -277,7 +283,7 @@ function NewTrackDataset({
           )}
           // disabled={!!mapDrawEditDataset}
           active={isPublic}
-          disabled={isEditing}
+          disabled={isEditing || loading}
           onClick={() => setDatasetMetadata({ public: !isPublic })}
         />
       </Collapsable>
