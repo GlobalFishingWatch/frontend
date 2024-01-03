@@ -217,7 +217,6 @@ function SearchBasicResult({
               onClick={onVesselClick}
               query={vesselQuery}
               fitBounds={!trackBbox}
-              testId="vessel-name"
             >
               {name}
             </VesselLink>

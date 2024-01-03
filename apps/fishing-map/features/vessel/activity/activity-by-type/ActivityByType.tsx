@@ -164,6 +164,7 @@ export function ActivityByType() {
               onMapClick={selectEventOnMap}
               onInfoClick={onInfoClick}
               className={styles.event}
+              testId={`vv-${event.type}-event-${index}`}
             >
               {selectedEvent?.id === event?.id && <EventDetail event={selectedEvent} />}
             </Event>

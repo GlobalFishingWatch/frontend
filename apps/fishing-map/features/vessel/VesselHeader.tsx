@@ -118,7 +118,7 @@ const VesselHeader = () => {
   return (
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={cx(styles.summaryContainer, styles.titleContainer)}>
-        <h1 className={styles.title}>
+        <h1 data-test="vv-vessel-name" className={styles.title}>
           <svg className={styles.vesselIcon} width="16" height="16">
             <path
               fill={vesselColor || COLOR_PRIMARY_BLUE}

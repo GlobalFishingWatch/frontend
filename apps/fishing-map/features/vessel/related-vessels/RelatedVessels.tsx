@@ -63,6 +63,7 @@ const RelatedVessels = () => {
         activeOption={vesselRelatedSubsection}
         className={styles.choice}
         onSelect={changeVesselRelatedSubsection}
+        testId="vv-related-type"
       />
       {vesselRelatedSubsection === 'encounters' && <RelatedEncounterVessels />}
       {vesselRelatedSubsection === 'owners' && <RelatedOwnersVessels />}

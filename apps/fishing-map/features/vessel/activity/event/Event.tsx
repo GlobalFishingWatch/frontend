@@ -14,6 +14,7 @@ interface EventProps {
   onInfoClick?: (event: ActivityEvent) => void
   onMapClick?: (event: ActivityEvent) => void
   onMapHover?: (event?: ActivityEvent) => void
+  testId?: string
 }
 
 export const EVENT_HEIGHT = 56
@@ -26,10 +27,11 @@ const Event: React.FC<EventProps> = (props): React.ReactElement => {
     onInfoClick = () => {},
     onMapHover = () => {},
     onMapClick = () => {},
+    testId
   } = props
   const { getEventDescription } = useActivityEventTranslations()
   return (
-    <li className={cx(styles.event, className)}>
+    <li className={cx(styles.event, className)} {...(testId && { 'data-test': testId })}>
       <div
         className={styles.header}
         onMouseEnter={() => onMapHover(event)}
