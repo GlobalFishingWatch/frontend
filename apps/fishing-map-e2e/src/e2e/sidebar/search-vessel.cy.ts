@@ -50,7 +50,7 @@ describe('Basic search for a vessel', () => {
       cy.getBySel('search-vessels-list')
         .findBySelLike('search-vessels-option-')
         .eq(0)
-        .findBySelLike('vessel-name')
+        .findBySelLike('link-vessel-profile')
         .then((vessel) => {
           // Click on the first result
           cy.getBySel('search-vessels-list')

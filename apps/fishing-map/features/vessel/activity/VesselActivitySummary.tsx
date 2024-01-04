@@ -177,7 +177,7 @@ export const VesselActivitySummary = () => {
                       />
                     )}
                   </span>
-                  <p>
+                  <p data-test={`vv-summary-${eventType}`}>
                     {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}
                     {t(`event.${eventType}` as any, {
                       defaultValue: eventType,
