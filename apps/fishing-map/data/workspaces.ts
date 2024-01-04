@@ -41,6 +41,7 @@ export const RFMO_DATAVIEW_INSTANCE_ID = 'context-layer-rfmo'
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas'
 export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas'
 export const GRATICULES_DATAVIEW_SLUG = 'graticules'
+export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure'
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas'
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas'
 
@@ -84,6 +85,7 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   GRATICULES_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
   BASEMAP_LABELS_DATAVIEW_SLUG,
+  FIXED_SAR_INFRASTRUCTURE,
 ]
 
 // Global environmental dataviews
