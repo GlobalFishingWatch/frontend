@@ -18,7 +18,7 @@ import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
 } from 'features/dataviews/dataviews.slice'
-import { COLOR_PRIMARY_BLUE } from 'features/app/App'
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectVesselIdentityId,

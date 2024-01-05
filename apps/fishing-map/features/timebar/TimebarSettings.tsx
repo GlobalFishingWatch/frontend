@@ -21,7 +21,7 @@ import { ReactComponent as TracksIcon } from 'assets/icons/timebar-tracks.svg'
 import { ReactComponent as TrackSpeedIcon } from 'assets/icons/timebar-track-speed.svg'
 import { ReactComponent as TrackDepthIcon } from 'assets/icons/timebar-track-depth.svg'
 import { selectHasTracksData } from 'features/timebar/timebar.selectors'
-import { COLOR_PRIMARY_BLUE } from 'features/app/App'
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import {

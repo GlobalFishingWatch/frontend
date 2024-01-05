@@ -9,7 +9,7 @@ import { getSourcesSelectedInDataview } from 'features/workspace/activity/activi
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import Hint from 'features/help/Hint'
-import { COLOR_PRIMARY_BLUE } from 'features/app/App'
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { MAX_MONTHS_TO_COMPARE, MAX_DAYS_TO_COMPARE } from 'features/reports/reports.config'
 import styles from './ReportActivityBeforeAfter.module.css'

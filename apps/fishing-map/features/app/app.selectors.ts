@@ -259,9 +259,9 @@ export function isActivityReport(reportCategory: ReportCategory) {
 export const selectActiveReportDataviews = createDeepEqualSelector(
   [
     selectReportCategory,
-    selectActiveReportActivityDataviews,
-    selectActiveDetectionsDataviews,
-    selectActiveEnvironmentalDataviews,
+    (state: RootState) => selectActiveReportActivityDataviews(state),
+    (state: RootState) => selectActiveDetectionsDataviews(state),
+    (state: RootState) => selectActiveEnvironmentalDataviews(state),
   ],
   (
     reportCategory,
@@ -350,7 +350,7 @@ export const selectTimebarSelectedEnvId = createSelector(
   [
     selectWorkspaceStateProperty('timebarSelectedEnvId'),
     selectTimebarVisualisation,
-    selectEnvironmentalDataviews,
+    (state: RootState) => selectEnvironmentalDataviews(state),
   ],
   (timebarSelectedEnvId, timebarVisualisation, envDataviews): string => {
     if (timebarVisualisation === TimebarVisualisations.Environment) {

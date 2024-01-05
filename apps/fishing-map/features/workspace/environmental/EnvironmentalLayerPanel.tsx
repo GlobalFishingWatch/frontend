@@ -24,7 +24,7 @@ import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import { getDatasetNameTranslated } from '../../i18n/utils'
+import { getDatasetNameTranslated } from '../../i18n/utils.datasets'
 import { getLayerDatasetRange } from './HistogramRangeFilter'
 
 type LayerPanelProps = {

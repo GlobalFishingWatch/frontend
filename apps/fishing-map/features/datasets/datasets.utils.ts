@@ -20,6 +20,7 @@ import {
   DatasetSchema,
   DatasetSchemaItem,
   IdentityVessel,
+  EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -27,12 +28,11 @@ import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingw
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
-import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
-import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import { getVesselGearType } from 'utils/info'
 import { VESSEL_INSTANCE_DATASETS } from 'features/dataviews/dataviews.utils'
+import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils.datasets'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export type SupportedDatasetSchema =
@@ -793,5 +793,22 @@ export const getSchemaFiltersInDataview = (
   return {
     filtersAllowed,
     filtersDisabled,
+  }
+}
+
+export const getLayerDatasetRange = (dataset: Dataset) => {
+  const {
+    max,
+    min,
+    scale = 1,
+    offset = 0,
+  } = dataset?.configuration as EnviromentalDatasetConfiguration
+
+  // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
+  const cleanMin = Math.max(0, Math.floor(min * scale + offset))
+  const cleanMax = Math.ceil(max * scale + offset)
+  return {
+    min: cleanMin,
+    max: cleanMax,
   }
 }
