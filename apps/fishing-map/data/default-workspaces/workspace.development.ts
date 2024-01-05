@@ -112,6 +112,14 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: GRATICULES_DATAVIEW_SLUG,
     },
+    ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
+    {
+      id: 'context-layer-high-seas',
+      config: {
+        visible: false,
+      },
+      dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
+    },
     {
       id: 'fixed-sar-infrastructure',
       config: {
@@ -120,14 +128,6 @@ const workspace: Workspace<WorkspaceState> = {
         colorRamp: 'seance',
       },
       dataviewId: FIXED_SAR_INFRASTRUCTURE,
-    },
-    ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
-    {
-      id: 'context-layer-high-seas',
-      config: {
-        visible: false,
-      },
-      dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     },
     {
       id: BASEMAP_DATAVIEW_INSTANCE_ID,
