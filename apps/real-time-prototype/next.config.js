@@ -72,7 +72,6 @@ const nextConfig = {
   outputFileTracing: true,
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
-    serverActions: true,
   },
   cleanDistDir: true,
   distDir: '.next',
