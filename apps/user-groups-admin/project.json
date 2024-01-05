@@ -64,17 +64,13 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/user-groups-admin/**/*.{ts,tsx,js,jsx}"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/user-groups-admin"],
       "options": {
-        "jestConfig": "apps/user-groups-admin/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/user-groups-admin/jest.config.ts"
       }
     }
   },

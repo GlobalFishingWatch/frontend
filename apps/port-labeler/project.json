@@ -62,17 +62,13 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/port-labeler/**/*.{ts,tsx,js,jsx}"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/port-labeler"],
       "options": {
-        "jestConfig": "apps/port-labeler/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/port-labeler/jest.config.ts"
       }
     }
   },

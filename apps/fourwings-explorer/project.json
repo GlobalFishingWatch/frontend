@@ -94,16 +94,12 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/fourwings-explorer"],
       "options": {
-        "jestConfig": "apps/fourwings-explorer/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/fourwings-explorer/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/fourwings-explorer/**/*.{ts,tsx,js,jsx}"]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

@@ -56,16 +56,12 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/tile-inspector"],
       "options": {
-        "jestConfig": "apps/tile-inspector/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/tile-inspector/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/tile-inspector/**/*.{ts,tsx,js,jsx}"]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

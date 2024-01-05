@@ -74,16 +74,12 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/real-time-prototype"],
       "options": {
-        "jestConfig": "apps/real-time-prototype/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/real-time-prototype/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/real-time-prototype/**/*.{ts,tsx,js,jsx}"]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []
