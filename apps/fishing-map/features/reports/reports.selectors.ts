@@ -117,15 +117,6 @@ export const selectReportActivityFlatten = createSelector(
           return []
         }
         return (vessels || ([] as any)).flatMap((vessel) => {
-          if (
-            reportCategory !== ReportCategory.Detections &&
-            EMPTY_API_VALUES.includes(vessel.flag) &&
-            EMPTY_API_VALUES.includes(vessel.shipName) &&
-            EMPTY_API_VALUES.includes(vessel.vesselType) &&
-            EMPTY_API_VALUES.includes(vessel.geartype)
-          ) {
-            return []
-          }
           return {
             ...vessel,
             shipName: EMPTY_API_VALUES.includes(vessel.shipName)
