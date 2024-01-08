@@ -24,7 +24,7 @@
     "@globalfishingwatch/linting": "2.0.2",
     "@next/eslint-plugin-next": "14.0.4",
     "@types/node": "20.10.6",
-    "depcheck": "1.4.6",
+    "depcheck": "1.4.7",
     "prettier": "3.1.1",
     "prop-types": "^15.8.1",
     "react-test-renderer": "18.2.0",

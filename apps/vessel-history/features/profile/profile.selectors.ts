@@ -6,7 +6,7 @@ import {
   INSURER_PERMISSION,
   PORT_INSPECTOR_PERMISSION,
 } from 'data/config'
-import { selectUserData } from 'features/user/selectors/user.selectors'
+import { selectUserData } from 'features/user/user.slice'
 import { selectWorkspaceProfileView } from 'features/workspace/workspace.selectors'
 
 export const selectCurrentUserProfileHasInsurerPermission = createSelector(
