@@ -53,6 +53,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
 import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
+import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { useFetchReportArea, useFetchReportVessel, useFitAreaInViewport } from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
@@ -65,6 +66,7 @@ import styles from './Report.module.css'
 export type ReportActivityUnit = 'hour' | 'detection'
 
 function ActivityReport({ reportName }: { reportName: string }) {
+  useFetchDataviewResources()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [lastReports] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
