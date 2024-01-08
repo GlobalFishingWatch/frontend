@@ -7,12 +7,12 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { EventType } from '@globalfishingwatch/api-types'
 import { Switch, SwitchEvent } from '@globalfishingwatch/ui-components'
 import { EVENTS_COLORS } from 'data/config'
-import { selectVisibleEvents } from 'features/app/app.selectors'
+import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { upperFirst } from 'utils/info'
-import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
+import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import EncounterIcon from '../../../assets/icons/event-encounter.svg'
 import LoiteringIcon from '../../../assets/icons/event-loitering.svg'
 import PortIcon from '../../../assets/icons/event-port.svg'
@@ -51,8 +51,8 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
         currentVisibleEvents === 'all'
           ? true
           : currentVisibleEvents === 'none'
-          ? false
-          : currentVisibleEvents.includes(eventType)
+            ? false
+            : currentVisibleEvents.includes(eventType)
       return {
         datasetId: dataset.id,
         active,

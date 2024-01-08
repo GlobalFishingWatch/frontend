@@ -13,7 +13,7 @@ import {
 import { DateTime } from 'luxon'
 import { useSelector } from 'react-redux'
 import { Interval } from '@globalfishingwatch/layer-composer'
-import { selectReportTimeComparison } from 'features/app/app.selectors'
+import { selectReportTimeComparison } from 'features/app/selectors/app.reports.selector'
 import { ReportActivityTimeComparison } from 'types'
 import i18n from 'features/i18n/i18n'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'

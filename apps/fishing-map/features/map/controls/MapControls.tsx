@@ -14,7 +14,6 @@ import {
 import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
 import {
   selectIsAnyVesselLocation,
@@ -27,8 +26,9 @@ import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { isGFWUser } from 'features/user/user.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 
@@ -59,7 +59,7 @@ const MapControls = ({
   const modalOpen = useSelector(selectScreenshotModalOpen)
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()

@@ -7,7 +7,7 @@ import { TextArea } from '@globalfishingwatch/ui-components'
 import FileDropzone from 'features/common/FileDropzone'
 import { readBlobAs } from 'utils/files'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { ID_COLUMN_LOOKUP } from 'features/vessel-groups/VesselGroupModal'
+import { ID_COLUMN_LOOKUP } from 'features/vessel-groups/vessel-groups.config'
 import {
   selectVesselGroupSearchId,
   selectVesselGroupsVessels,

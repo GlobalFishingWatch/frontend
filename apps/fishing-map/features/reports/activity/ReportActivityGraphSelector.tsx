@@ -8,7 +8,10 @@ import {
   REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
 } from 'data/config'
-import { selectActiveReportDataviews, selectReportActivityGraph } from 'features/app/app.selectors'
+import {
+  selectActiveReportDataviews,
+  selectReportActivityGraph,
+} from 'features/app/selectors/app.reports.selector'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 import { ReportActivityGraph } from 'types'
 import { useSetReportTimeComparison } from 'features/reports/reports-timecomparison.hooks'

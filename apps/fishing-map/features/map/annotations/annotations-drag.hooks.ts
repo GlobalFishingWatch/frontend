@@ -5,14 +5,14 @@ import { MapAnnotation } from '@globalfishingwatch/layer-composer'
 import { MapGeoJSONFeature, MapMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import useMapInstance from 'features/map/map-context.hooks'
 import { ANNOTATIONS_GENERATOR_ID } from 'features/map/map.config'
-import { selectMapAnnotations } from 'features/app/app.selectors'
+import { selectMapAnnotations } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { isGFWUser } from 'features/user/user.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 
 export function useMapAnnotationDrag() {
   const map = useMapInstance()
   const annotations = useSelector(selectMapAnnotations)
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const { dispatchQueryParams } = useLocationConnect()
 
   const currentAnnotationRef = useRef<MapAnnotation | null>(null)

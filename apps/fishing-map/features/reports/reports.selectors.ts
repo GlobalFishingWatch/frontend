@@ -6,6 +6,8 @@ import { FeatureCollection, MultiPolygon } from 'geojson'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import {
+  selectReportAreaId,
+  selectReportDatasetId,
   selectActiveReportDataviews,
   selectReportActivityGraph,
   selectReportBufferOperation,
@@ -17,16 +19,15 @@ import {
   selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
-} from 'features/app/app.selectors'
+} from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getDatasetsReportSupported,
   getRelatedDatasetByType,
 } from 'features/datasets/datasets.utils'
-import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectUserData } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import {
   getBufferedArea,
@@ -34,7 +35,7 @@ import {
   getReportCategoryFromDataview,
 } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
-import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
 import { sortStrings } from 'utils/shared'

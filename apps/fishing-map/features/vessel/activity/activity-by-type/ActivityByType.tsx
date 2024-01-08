@@ -14,7 +14,7 @@ import {
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
-import { getScrollElement } from 'features/sidebar/Sidebar'
+import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
 import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import { useLocationConnect } from 'routes/routes.hook'

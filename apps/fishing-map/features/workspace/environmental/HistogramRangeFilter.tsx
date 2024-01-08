@@ -18,6 +18,7 @@ type HistogramRangeFilterProps = {
   dataview: UrlDataviewInstance
 }
 
+// TODO move to datasets-client lib and also the histogram.hook
 export const getLayerDatasetRange = (dataset: Dataset) => {
   const {
     max,

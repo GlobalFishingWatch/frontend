@@ -23,7 +23,7 @@ import {
 } from 'routes/routes.selectors'
 import { useUser } from 'features/user/user.hooks'
 import { TMT_CONTACT_US_URL } from 'data/constants'
-import { selectUserData } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { selectCurrentUserProfileHasPortInspectorPermission } from '../profile.selectors'
 import InfoField from './InfoField'
 import styles from './Info.module.css'

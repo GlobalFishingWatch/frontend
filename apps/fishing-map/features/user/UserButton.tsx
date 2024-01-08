@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
-import { selectIsGuestUser, selectUserData } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { USER } from 'routes/routes'
-import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'features/sidebar/CategoryTabs'
+import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 
 const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
   const { t } = useTranslation()

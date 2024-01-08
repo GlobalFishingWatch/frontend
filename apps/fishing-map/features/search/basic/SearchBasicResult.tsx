@@ -27,7 +27,6 @@ import {
   getVesselShipType,
 } from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
@@ -43,6 +42,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {

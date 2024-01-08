@@ -9,11 +9,32 @@ import {
 } from '@globalfishingwatch/features-aggregate'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetTypes,
+  EnviromentalDatasetConfiguration,
+} from '@globalfishingwatch/api-types'
 import { HeatmapLayerMeta } from '@globalfishingwatch/layer-composer'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
-import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
+
+// TODO move to datasets-client lib and also the HistogramRangeFilter duplicated
+export const getLayerDatasetRange = (dataset: Dataset) => {
+  const {
+    max,
+    min,
+    scale = 1,
+    offset = 0,
+  } = dataset?.configuration as EnviromentalDatasetConfiguration
+
+  // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
+  const cleanMin = Math.max(0, Math.floor(min * scale + offset))
+  const cleanMax = Math.ceil(max * scale + offset)
+  return {
+    min: cleanMin,
+    max: cleanMax,
+  }
+}
 
 export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
   const { bounds } = useMapBounds()

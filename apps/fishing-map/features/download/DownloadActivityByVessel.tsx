@@ -24,9 +24,9 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectActiveHeatmapDataviews,
   selectActiveHeatmapVesselDatasets,
-} from 'features/dataviews/dataviews.selectors'
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { selectUserData } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import {
   checkDatasetReportPermission,
   getDatasetsReportNotSupported,

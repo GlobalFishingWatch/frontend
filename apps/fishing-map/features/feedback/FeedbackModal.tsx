@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux'
 import { Modal, Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { selectActiveDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { selectUserData, selectIsGuestUser } from 'features/user/user.slice'
+import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
-import { selectUserGroupsClean } from 'features/user/user.selectors'
+import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import styles from './FeedbackModal.module.css'
@@ -103,10 +103,6 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     setSuficientData(hasSuficientData)
   }, [feedbackData])
 
-  const inprovementsOption = {
-    id: 'improvements',
-    label: t('feedback.improvements', 'Platform Improvements'),
-  }
   const issuesOption = {
     id: 'issues',
     label: t('feedback.issues', 'Platform Issues'),

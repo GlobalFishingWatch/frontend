@@ -11,7 +11,7 @@ import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { PRIVATE_SUFIX } from 'data/config'
 import { RootState } from 'store'
-import { selectUserStatus, selectUserLogged, selectUserData, isGFWUser } from './user.slice'
+import { selectUserStatus, selectUserLogged, selectUserData, selectIsGFWUser } from './user.slice'
 
 const DEFAULT_GROUP_ID = 'Default'
 const PRIVATE_SUPPORTED_GROUPS = ['Indonesia', 'Peru', 'Panama', 'Brazil', 'Mexico', 'Ecuador']
@@ -65,7 +65,7 @@ export const selectUserWorkspaces = createSelector(
 )
 
 export const selectUserWorkspacesPrivate = createSelector(
-  [selectUserGroups, isGFWUser, (state: RootState) => selectWorkspaces(state)],
+  [selectUserGroups, selectIsGFWUser, (state: RootState) => selectWorkspaces(state)],
   (userGroups = [], gfwUser, workspaces) => {
     const groupsWithAccess = gfwUser
       ? PRIVATE_SUPPORTED_GROUPS.map((g) => g.toLowerCase())
@@ -85,8 +85,9 @@ export const selectUserDatasets = createSelector(
 )
 
 export const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
-  createSelector([selectUserDatasets], (datasets) =>
-    datasets?.filter((d) => d.category === datasetCategory)
+  createSelector(
+    [selectUserDatasets],
+    (datasets) => datasets?.filter((d) => d.category === datasetCategory)
   )
 
 export const selectUserDatasetsNotUsed = (datasetCategory: DatasetCategory) => {

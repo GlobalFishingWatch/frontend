@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux'
 import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { MapAnnotation } from '@globalfishingwatch/layer-composer'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectAreMapAnnotationsVisible, selectMapAnnotations } from 'features/app/app.selectors'
+import {
+  selectAreMapAnnotationsVisible,
+  selectMapAnnotations,
+} from 'features/app/selectors/app.selectors'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
 

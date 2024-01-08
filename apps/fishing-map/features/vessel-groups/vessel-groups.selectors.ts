@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { selectActivityDatasets } from 'features/datasets/datasets.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
+import { selectAllDataviewsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
@@ -11,7 +11,7 @@ import {
   selectVesselGroupSearchVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
-import { selectUserGroupsPermissions } from 'features/user/user.selectors'
+import { selectUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 
 export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],

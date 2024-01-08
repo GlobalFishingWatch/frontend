@@ -31,9 +31,22 @@ import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { FileType } from 'features/common/FileDropzone'
 import { getVesselGearType } from 'utils/info'
-import { VESSEL_INSTANCE_DATASETS } from 'features/dataviews/dataviews.utils'
 import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils.datasets'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
+
+// Datasets ids for vessel instances
+export type VesselInstanceDatasets = {
+  track?: string
+  info?: string
+  events?: string[]
+  relatedVesselIds?: string[]
+}
+
+export const VESSEL_INSTANCE_DATASETS = [
+  'track' as keyof VesselInstanceDatasets,
+  'info' as keyof VesselInstanceDatasets,
+  'events' as keyof VesselInstanceDatasets,
+]
 
 export type SupportedDatasetSchema =
   | SupportedActivityDatasetSchema

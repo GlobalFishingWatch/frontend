@@ -20,11 +20,11 @@ import { AppDispatch } from 'store'
 import {
   selectEventsDataviews,
   selectActiveTemporalgridDataviews,
-} from 'features/dataviews/dataviews.selectors'
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { selectIsGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
 export const MAX_TOOLTIP_LIST = 5
 

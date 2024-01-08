@@ -53,3 +53,10 @@ export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =
       return workspaceState[property] ?? DEFAULT_WORKSPACE[property]
     }
   )
+
+export const selectDaysFromLatest = createSelector(
+  [selectWorkspaceStateProperty('daysFromLatest')],
+  (daysFromLatest): number => {
+    return daysFromLatest
+  }
+)

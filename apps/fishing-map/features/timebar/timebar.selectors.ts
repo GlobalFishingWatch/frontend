@@ -21,16 +21,17 @@ import {
   TrackEventChunkProps,
   HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
-import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
+import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { t } from 'features/i18n/i18n'
 import { selectResources } from 'features/resources/resources.slice'
-import {
-  selectActiveTrackDataviews,
-  selectActiveVesselsDataviews,
-} from 'features/dataviews/dataviews.slice'
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import { TimebarGraphs } from 'types'
+import {
+  selectActiveTrackDataviews,
+  selectActiveVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null

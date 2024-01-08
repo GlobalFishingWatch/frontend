@@ -4,22 +4,19 @@ import { Workspace, WorkspaceViewport } from '@globalfishingwatch/api-types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { USER } from 'routes/routes'
-import { selectUserWorkspaces } from 'features/user/user.selectors'
+import { selectUserWorkspaces } from 'features/user/selectors/user.permissions.selectors'
 import {
   HighlightedWorkspace,
   selectHighlightedWorkspaces,
   selectWorkspaces,
 } from './workspaces-list.slice'
 
-export const selectDefaultWorkspace = createSelector(
-  [(state: RootState) => selectWorkspaces(state)],
-  (workspaces) => {
-    return workspaces?.find(
-      // To ensure this is the local workspace and not overlaps with a new one on the api with the same id
-      (w) => w.id === DEFAULT_WORKSPACE_ID && w.description === DEFAULT_WORKSPACE_ID
-    )
-  }
-)
+export const selectDefaultWorkspace = createSelector([selectWorkspaces], (workspaces) => {
+  return workspaces?.find(
+    // To ensure this is the local workspace and not overlaps with a new one on the api with the same id
+    (w) => w.id === DEFAULT_WORKSPACE_ID && w.description === DEFAULT_WORKSPACE_ID
+  )
+})
 
 export const selectWorkspaceByCategory = (category: WorkspaceCategory) => {
   return createSelector([selectWorkspaces], (workspaces) => {
@@ -49,11 +46,7 @@ export type HighlightedWorkspaceMerged = HighlightedWorkspace & {
 }
 
 export const selectCurrentHighlightedWorkspaces = createSelector(
-  [
-    selectLocationCategory,
-    selectHighlightedWorkspaces,
-    (state: RootState) => selectWorkspaces(state),
-  ],
+  [selectLocationCategory, selectHighlightedWorkspaces, selectWorkspaces],
   (
     locationCategory,
     highlightedWorkspaces,

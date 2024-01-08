@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
-import { RootState } from 'reducers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from './datasets.slice'
@@ -16,7 +15,7 @@ export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
   })
 
 export const selectDatasetsByType = (type: DatasetTypes) => {
-  return createSelector([(state: RootState) => selectAllDatasets(state)], (datasets) => {
+  return createSelector([selectAllDatasets], (datasets) => {
     return uniqBy(
       datasets.flatMap((dataset) => {
         if (dataset.type === type) return dataset

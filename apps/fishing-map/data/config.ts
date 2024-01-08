@@ -14,6 +14,7 @@ export const PUBLIC_WORKSPACE_ENV = process.env.NEXT_PUBLIC_WORKSPACE_ENV
 export const IS_PRODUCTION_WORKSPACE_ENV =
   PUBLIC_WORKSPACE_ENV === 'production' || PUBLIC_WORKSPACE_ENV === 'staging'
 export const IS_PRODUCTION = IS_PRODUCTION_WORKSPACE_ENV || IS_PRODUCTION_BUILD
+export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
 
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
@@ -58,6 +59,12 @@ export const DEFAULT_VIEWPORT = {
   zoom: 1.5,
   latitude: 19,
   longitude: 26,
+}
+
+export const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
+  latitude: 10,
+  longitude: -90,
+  zoom: 1,
 }
 
 export const DEFAULT_TIME_RANGE = {

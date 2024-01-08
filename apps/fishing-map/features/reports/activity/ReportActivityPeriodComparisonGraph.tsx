@@ -13,10 +13,8 @@ import {
 import { Interval as TimeInterval } from 'luxon'
 import { useSelector } from 'react-redux'
 import { Interval } from '@globalfishingwatch/layer-composer'
-import {
-  selectLatestAvailableDataDate,
-  selectReportTimeComparison,
-} from 'features/app/app.selectors'
+import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
+import { selectReportTimeComparison } from 'features/app/selectors/app.reports.selector'
 import i18n, { t } from 'features/i18n/i18n'
 import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { getUTCDateTime } from 'utils/dates'

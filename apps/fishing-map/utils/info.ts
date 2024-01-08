@@ -141,6 +141,14 @@ export const getVesselLabel = (
   return t('common.unknownVessel', 'Unknown vessel')
 }
 
+export const getVesselOtherNamesLabel = (otherVesselsNames: string[]) => {
+  return otherVesselsNames?.length
+    ? `, ${t('common.aka', 'a.k.a.')} ${otherVesselsNames
+        .map((i) => formatInfoField(i, 'name'))
+        .join(', ')}`
+    : ''
+}
+
 // 'any' is used here as timestamp is not declared in Vessel anyways
 export const getDetectionsTimestamps = (vessel: any) => {
   return vessel?.timestamp?.split(',').sort()

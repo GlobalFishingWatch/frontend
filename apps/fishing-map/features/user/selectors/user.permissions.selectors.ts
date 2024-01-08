@@ -7,7 +7,7 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   selectContextAreasDataviews,
   selectEnvironmentalDataviews,
-} from 'features/dataviews/dataviews.selectors'
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
 import {
@@ -15,14 +15,9 @@ import {
   selectWorkspaceVesselGroups,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectAllReports } from 'features/reports/reports.slice'
-import {
-  selectUserData,
-  DEFAULT_GROUP_ID,
-  PRIVATE_SUPPORTED_GROUPS,
-  isGFWUser,
-  USER_GROUP_WORKSPACE,
-  UserGroup,
-} from './user.slice'
+import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { DEFAULT_GROUP_ID, PRIVATE_SUPPORTED_GROUPS } from 'features/user/user.config'
+import { USER_GROUP_WORKSPACE, UserGroup } from '../user.slice'
 
 export const hasUserPermission = (permission: UserPermission) =>
   createSelector([selectUserData], (userData): boolean => {
@@ -61,7 +56,7 @@ export const selectUserGroupsClean = createSelector([selectUserGroups], (userGro
 })
 
 export const selectUserWorkspaces = createSelector(
-  [(state: RootState) => selectUserData(state), (state: RootState) => selectWorkspaces(state)],
+  [selectUserData, selectWorkspaces],
   (userData, workspaces) => {
     return orderBy(
       workspaces?.filter((workspace) => workspace.ownerId === userData?.id),
@@ -72,7 +67,7 @@ export const selectUserWorkspaces = createSelector(
 )
 
 export const selectUserReports = createSelector(
-  [(state: RootState) => selectUserData(state), (state: RootState) => selectAllReports(state)],
+  [selectUserData, selectAllReports],
   (userData, reports) => {
     return orderBy(
       reports?.filter((report) => report.ownerId === userData?.id),
@@ -83,7 +78,7 @@ export const selectUserReports = createSelector(
 )
 
 export const selectPrivateUserGroups = createSelector(
-  [selectUserGroups, isGFWUser],
+  [selectUserGroups, selectIsGFWUser],
   (userGroups = [], gfwUser) => {
     const groupsWithAccess = gfwUser
       ? PRIVATE_SUPPORTED_GROUPS.map((g) => g.toLowerCase())
@@ -94,7 +89,7 @@ export const selectPrivateUserGroups = createSelector(
 )
 
 export const selectUserWorkspacesPrivate = createSelector(
-  [selectPrivateUserGroups, (state: RootState) => selectWorkspaces(state)],
+  [selectPrivateUserGroups, selectWorkspaces],
   (groupsWithAccess = [], workspaces) => {
     const privateWorkspaces = workspaces?.filter(
       (workspace) =>
@@ -111,7 +106,7 @@ export const selectUserWorkspacesPrivate = createSelector(
 )
 
 export const selectUserDatasets = createSelector(
-  [(state: RootState) => selectAllDatasets(state), selectUserId],
+  [selectAllDatasets, selectUserId],
   (datasets, userId) =>
     datasets?.filter((d) => d.ownerId === userId && d.status !== DatasetStatus.Deleted)
 )

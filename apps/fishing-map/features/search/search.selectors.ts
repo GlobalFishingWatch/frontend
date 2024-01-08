@@ -1,16 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { Dataset, UserData } from '@globalfishingwatch/api-types'
-import { selectUserData, selectIsGuestUser } from 'features/user/user.slice'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import {
   filterDatasetsByUserType,
   getDatasetLabel,
   getDatasetsInDataviews,
 } from 'features/datasets/datasets.utils'
-import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
+import { selectAllDataviewsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { SearchType } from 'features/search/search.config'
+import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
 export const selectSearchDatasetsInWorkspace = createSelector(
   [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],

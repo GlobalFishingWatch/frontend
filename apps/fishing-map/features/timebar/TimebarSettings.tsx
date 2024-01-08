@@ -10,12 +10,8 @@ import {
   selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveNonTrackEnvironmentalDataviews,
-} from 'features/dataviews/dataviews.selectors'
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
-import {
-  selectActiveTrackDataviews,
-  selectActiveVesselsDataviews,
-} from 'features/dataviews/dataviews.slice'
 import { ReactComponent as AreaIcon } from 'assets/icons/timebar-area.svg'
 import { ReactComponent as TracksIcon } from 'assets/icons/timebar-tracks.svg'
 import { ReactComponent as TrackSpeedIcon } from 'assets/icons/timebar-track-speed.svg'
@@ -24,6 +20,10 @@ import { selectHasTracksData } from 'features/timebar/timebar.selectors'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
+import {
+  selectActiveTrackDataviews,
+  selectActiveVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   useTimebarVisualisationConnect,
   useTimebarGraphConnect,
@@ -127,8 +127,8 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
           loading
             ? t('vessel.loadingInfo')
             : optionsPanelOpen
-            ? t('timebarSettings.settings_close', 'Close timebar settings')
-            : t('timebarSettings.settings_open', 'Open timebar settings')
+              ? t('timebarSettings.settings_close', 'Close timebar settings')
+              : t('timebarSettings.settings_open', 'Open timebar settings')
         }
       />
       {optionsPanelOpen && (
@@ -207,11 +207,11 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 !activeTrackDataviews?.length
                   ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
                   : !timebarGraphEnabled
-                  ? t(
-                      'timebarSettings.graphDisabled',
-                      'Not available with more than 2 vessels selected'
-                    )
-                  : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
+                    ? t(
+                        'timebarSettings.graphDisabled',
+                        'Not available with more than 2 vessels selected'
+                      )
+                    : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
               }
               onClick={setVesselGraphSpeed}
             />
@@ -234,11 +234,11 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 !activeTrackDataviews?.length
                   ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
                   : !timebarGraphEnabled
-                  ? t(
-                      'timebarSettings.graphDisabled',
-                      'Not available with more than 2 vessels selected'
-                    )
-                  : t('timebarSettings.showGraphDepth', 'Show track depth graph')
+                    ? t(
+                        'timebarSettings.graphDisabled',
+                        'Not available with more than 2 vessels selected'
+                      )
+                    : t('timebarSettings.showGraphDepth', 'Show track depth graph')
               }
               onClick={setVesselGraphDepth}
             />

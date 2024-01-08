@@ -8,8 +8,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   selectActiveReportDataviews,
   selectReportCategory,
-  selectTimeRange,
-} from 'features/app/app.selectors'
+} from 'features/app/selectors/app.reports.selector'
 import ReportSummaryTags from 'features/reports/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
 import { ReportActivityUnit } from 'features/reports/Report'
@@ -24,6 +23,7 @@ import { getSourcesSelectedInDataview } from 'features/workspace/activity/activi
 import { listAsSentence } from 'utils/shared'
 import { ReportCategory } from 'types'
 import { getDateRangeHash, selectReportVesselsDateRangeHash } from 'features/reports/report.slice'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
 import styles from './ReportSummary.module.css'
 
@@ -61,8 +61,11 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
       : category === ReportCategory.Fishing || category === ReportCategory.Presence
-      ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
-      : undefined
+        ? `${t('common.of', 'of')} <strong>${t(
+            `common.activity`,
+            'Activity'
+          ).toLowerCase()}</strong>`
+        : undefined
 
     if (
       reportHours &&
