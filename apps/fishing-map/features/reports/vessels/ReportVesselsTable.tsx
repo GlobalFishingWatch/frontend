@@ -94,7 +94,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   <VesselPin
                     vesselToResolve={{
                       id: vessel.id || vessel.vesselId,
-                      datasetId: vessel.dataset,
+                      datasetId: vessel.infoDataset?.id || vessel.dataset,
                     }}
                     disabled={pinTrackDisabled}
                   />
