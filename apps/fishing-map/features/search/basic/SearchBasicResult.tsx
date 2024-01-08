@@ -25,6 +25,7 @@ import {
   EMPTY_FIELD_PLACEHOLDER,
   getVesselGearType,
   getVesselShipType,
+  getVesselOtherNamesLabel,
 } from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -90,7 +91,7 @@ function SearchBasicResult({
   const shiptypes = getVesselProperty(vessel, 'shiptypes')
   const geartypes = getVesselGearType({ geartypes: getVesselProperty(vessel, 'geartypes') })
   const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
-  const otherNamesLabel = getOtherVesselNames(vessel, nShipname)
+  const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
   const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
 
   const identitySource = useMemo(() => {
