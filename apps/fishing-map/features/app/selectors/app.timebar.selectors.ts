@@ -20,20 +20,20 @@ export const selectTimeRange = createSelector(
   }
 )
 
+export const selectTimebarVisualisationSelector =
+  selectWorkspaceStateProperty('timebarVisualisation')
 export const selectTimebarVisualisation = createSelector(
-  [selectWorkspaceStateProperty('timebarVisualisation'), selectIsAnyVesselLocation],
+  [selectTimebarVisualisationSelector, selectIsAnyVesselLocation],
   (timebarVisualisation, isAnyVesselLocation): TimebarVisualisations => {
     if (isAnyVesselLocation) return TimebarVisualisations.Vessel
     return timebarVisualisation
   }
 )
 
+export const selectTimebarSelectedEnvIdSelector =
+  selectWorkspaceStateProperty('timebarSelectedEnvId')
 export const selectTimebarSelectedEnvId = createSelector(
-  [
-    selectWorkspaceStateProperty('timebarSelectedEnvId'),
-    selectTimebarVisualisation,
-    selectEnvironmentalDataviews,
-  ],
+  [selectTimebarSelectedEnvIdSelector, selectTimebarVisualisation, selectEnvironmentalDataviews],
   (timebarSelectedEnvId, timebarVisualisation, envDataviews): string => {
     if (timebarVisualisation === TimebarVisualisations.Environment) {
       return timebarSelectedEnvId || envDataviews[0]?.id
@@ -42,8 +42,9 @@ export const selectTimebarSelectedEnvId = createSelector(
   }
 )
 
+export const selectTimebarGraphSelector = selectWorkspaceStateProperty('timebarGraph')
 export const selectTimebarGraph = createSelector(
-  [selectWorkspaceStateProperty('timebarGraph'), selectActiveVesselsDataviews],
+  [selectTimebarGraphSelector, selectActiveVesselsDataviews],
   (timebarGraph, vessels): TimebarGraphs => {
     return vessels && vessels.length ? timebarGraph : TimebarGraphs.None
   }

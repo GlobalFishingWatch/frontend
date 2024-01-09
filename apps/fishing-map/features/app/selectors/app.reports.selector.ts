@@ -15,15 +15,7 @@ import {
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
-import {
-  Bbox,
-  BufferOperation,
-  BufferUnit,
-  ReportActivityGraph,
-  ReportActivityTimeComparison,
-  ReportCategory,
-  ReportVesselGraph,
-} from 'types'
+import { BufferOperation, BufferUnit, ReportCategory, ReportVesselGraph } from 'types'
 import { createDeepEqualSelector } from 'utils/selectors'
 
 export function isActivityReport(reportCategory: ReportCategory) {
@@ -48,8 +40,9 @@ export const selectReportAreaId = createSelector(
   (locationAreaId, report) => (locationAreaId || report?.areaId) as number
 )
 
+export const selectReportCategorySelector = selectWorkspaceStateProperty('reportCategory')
 export const selectReportCategory = createSelector(
-  [selectWorkspaceStateProperty('reportCategory'), selectReportActiveCategories],
+  [selectReportCategorySelector, selectReportActiveCategories],
   (reportCategory, activeCategories): ReportCategory => {
     return activeCategories.some((category) => category === reportCategory)
       ? reportCategory
@@ -57,19 +50,8 @@ export const selectReportCategory = createSelector(
   }
 )
 
-export const selectReportAreaBounds = createSelector(
-  [selectWorkspaceStateProperty('reportAreaBounds')],
-  (reportAreaBounds): Bbox => {
-    return reportAreaBounds
-  }
-)
-
-export const selectReportAreaSource = createSelector(
-  [selectWorkspaceStateProperty('reportAreaSource')],
-  (reportAreaSource): string => {
-    return reportAreaSource
-  }
-)
+export const selectReportAreaBounds = selectWorkspaceStateProperty('reportAreaBounds')
+export const selectReportAreaSource = selectWorkspaceStateProperty('reportAreaSource')
 
 export const selectActiveReportDataviews = createDeepEqualSelector(
   [
@@ -94,15 +76,11 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
   }
 )
 
-export const selectReportActivityGraph = createSelector(
-  [selectWorkspaceStateProperty('reportActivityGraph')],
-  (reportActivityGraph): ReportActivityGraph => {
-    return reportActivityGraph
-  }
-)
+export const selectReportActivityGraph = selectWorkspaceStateProperty('reportActivityGraph')
+export const selectReportVesselGraphSelector = selectWorkspaceStateProperty('reportVesselGraph')
 
 export const selectReportVesselGraph = createSelector(
-  [selectWorkspaceStateProperty('reportVesselGraph'), selectReportCategory],
+  [selectReportVesselGraphSelector, selectReportCategory],
   (reportVesselGraph, reportCategory): ReportVesselGraph => {
     if (reportCategory === ReportCategory.Fishing && reportVesselGraph === 'vesselType') {
       return 'geartype'
@@ -111,50 +89,31 @@ export const selectReportVesselGraph = createSelector(
   }
 )
 
-export const selectReportVesselFilter = createSelector(
-  [selectWorkspaceStateProperty('reportVesselFilter')],
-  (reportVesselFilter): string => {
-    return reportVesselFilter
-  }
-)
+export const selectReportVesselFilter = selectWorkspaceStateProperty('reportVesselFilter')
+export const selectReportVesselPage = selectWorkspaceStateProperty('reportVesselPage')
+export const selectReportResultsPerPage = selectWorkspaceStateProperty('reportResultsPerPage')
+export const selectReportTimeComparison = selectWorkspaceStateProperty('reportTimeComparison')
 
-export const selectReportVesselPage = createSelector(
-  [selectWorkspaceStateProperty('reportVesselPage')],
-  (reportVesselPage): number => {
-    return parseInt(reportVesselPage)
-  }
-)
-
-export const selectReportResultsPerPage = createSelector(
-  [selectWorkspaceStateProperty('reportResultsPerPage')],
-  (reportVesselPage): number => {
-    return parseInt(reportVesselPage)
-  }
-)
-
-export const selectReportTimeComparison = createSelector(
-  [selectWorkspaceStateProperty('reportTimeComparison')],
-  (reportTimeComparison): ReportActivityTimeComparison => {
-    return reportTimeComparison
-  }
-)
-
+export const selectReportBufferValueSelector = selectWorkspaceStateProperty('reportBufferValue')
 export const selectReportBufferValue = createSelector(
-  [selectWorkspaceStateProperty('reportBufferValue'), selectUrlBufferValueQuery],
+  [selectReportBufferValueSelector, selectUrlBufferValueQuery],
   (workspaceBufferValue, urlBufferValue): number => {
     return workspaceBufferValue || urlBufferValue
   }
 )
 
+export const selectReportBufferUnitSelector = selectWorkspaceStateProperty('reportBufferUnit')
 export const selectReportBufferUnit = createSelector(
-  [selectWorkspaceStateProperty('reportBufferUnit'), selectUrlBufferUnitQuery],
+  [selectReportBufferUnitSelector, selectUrlBufferUnitQuery],
   (workspaceBufferUnit, urlBufferUnit): BufferUnit => {
     return workspaceBufferUnit || urlBufferUnit
   }
 )
 
+export const selectReportBufferOperationSelector =
+  selectWorkspaceStateProperty('reportBufferOperation')
 export const selectReportBufferOperation = createSelector(
-  [selectWorkspaceStateProperty('reportBufferOperation'), selectUrlBufferOperationQuery],
+  [selectReportBufferOperationSelector, selectUrlBufferOperationQuery],
   (workspaceBufferOperation, urlBufferOperation): BufferOperation => {
     return workspaceBufferOperation || urlBufferOperation
   }

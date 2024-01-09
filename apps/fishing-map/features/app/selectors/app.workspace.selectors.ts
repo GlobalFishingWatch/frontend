@@ -31,11 +31,11 @@ import {
   selectTimebarSelectedEnvId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 
 export const selectWorkspaceReportState = createSelector(
   [

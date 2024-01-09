@@ -38,29 +38,19 @@ export const filterDatasetByPermissions = (
   return filterDatasetsByUserType(datasetsWithPermissions, isGuest)
 }
 
-export const selectSearchDatasetsInWorkspaceByType = (type: SearchType) =>
-  createSelector(
+export function selectSearchDatasetsInWorkspaceByType(type: SearchType) {
+  return createSelector(
     [selectSearchDatasetsInWorkspace, selectUserData, selectIsGuestUser],
-    (datasets, userData, guestUser) => {
+    (datasets, userData, guestUser): Dataset[] | undefined => {
       if (!userData || !datasets?.length) return
 
       return filterDatasetByPermissions(datasets, type, userData, guestUser)
     }
   )
+}
 
-export const selectBasicSearchDatasets = createSelector(
-  [selectSearchDatasetsInWorkspaceByType('basic')],
-  (basicSearchDatasets) => {
-    return basicSearchDatasets as Dataset[]
-  }
-)
-
-export const selectAdvancedSearchDatasets = createSelector(
-  [selectSearchDatasetsInWorkspaceByType('advanced')],
-  (advancedSearchDatasets) => {
-    return advancedSearchDatasets as Dataset[]
-  }
-)
+export const selectBasicSearchDatasets = selectSearchDatasetsInWorkspaceByType('basic')
+export const selectAdvancedSearchDatasets = selectSearchDatasetsInWorkspaceByType('advanced')
 
 export const isBasicSearchAllowed = createSelector(
   [selectBasicSearchDatasets],

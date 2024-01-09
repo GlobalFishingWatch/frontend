@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'reducers'
 import { uniq } from 'lodash'
 import { DataviewCategory, Dataset, DatasetTypes, Dataview } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
@@ -56,7 +55,7 @@ export const selectDefaultBasemapGenerator = createSelector(
 )
 
 export const selectActiveDataviewsCategories = createSelector(
-  [(state) => selectDataviewInstancesResolved(state)],
+  [selectDataviewInstancesResolved],
   (dataviews): ReportCategory[] => {
     return uniq(
       dataviews.flatMap((d) => (d.config?.visible ? getReportCategoryFromDataview(d) : []))
@@ -79,8 +78,9 @@ export const selectReportActiveCategories = createSelector(
   }
 )
 
+export const selectReportCategorySelector = selectWorkspaceStateProperty('reportCategory')
 export const selectReportCategory = createSelector(
-  [selectWorkspaceStateProperty('reportCategory'), selectReportActiveCategories],
+  [selectReportCategorySelector, selectReportActiveCategories],
   (reportCategory, activeCategories): ReportCategory => {
     return activeCategories.some((category) => category === reportCategory)
       ? reportCategory
@@ -90,8 +90,8 @@ export const selectReportCategory = createSelector(
 
 export const selectDataviewInstancesResolvedVisible = createSelector(
   [
-    (state) => selectDataviewInstancesResolved(state),
-    (state) => selectIsAnyReportLocation(state),
+    selectDataviewInstancesResolved,
+    selectIsAnyReportLocation,
     selectReportCategory,
     selectIsAnyVesselLocation,
     selectViewOnlyVessel,
@@ -131,9 +131,12 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
 )
 
 export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
-  return createSelector([(state) => selectDataviewInstancesResolved(state)], (dataviews) => {
-    return dataviews?.filter((dataview) => dataview.category === category)
-  })
+  return createSelector(
+    [selectDataviewInstancesResolved],
+    (dataviews): UrlDataviewInstance<GeneratorType>[] => {
+      return dataviews?.filter((dataview) => dataview.category === category)
+    }
+  )
 }
 
 export const selectDataviewInstancesByIds = (ids: string[]) => {
@@ -143,7 +146,7 @@ export const selectDataviewInstancesByIds = (ids: string[]) => {
 }
 
 export const selectBasemapLabelsDataviewInstance = createSelector(
-  [(state) => selectAllDataviewInstancesResolved(state)],
+  [selectAllDataviewInstancesResolved],
   (dataviews) => {
     const basemapLabelsDataview = dataviews?.find(
       (d) => d.config?.type === GeneratorType.BasemapLabels
@@ -152,26 +155,18 @@ export const selectBasemapLabelsDataviewInstance = createSelector(
   }
 )
 
-export const selectContextAreasDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Context)],
-  (contextDataviews) => {
-    return contextDataviews
-  }
+export const selectContextAreasDataviews = selectDataviewInstancesByCategory(
+  DataviewCategory.Context
 )
 
 export const selectActiveContextAreasDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Context)],
+  [selectContextAreasDataviews],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectActivityDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Activity)],
-  (dataviews) => dataviews
-)
-
-export const selectDetectionsDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Detections)],
-  (dataviews) => dataviews
+export const selectActivityDataviews = selectDataviewInstancesByCategory(DataviewCategory.Activity)
+export const selectDetectionsDataviews = selectDataviewInstancesByCategory(
+  DataviewCategory.Detections
 )
 
 export const selectActiveActivityDataviews = createSelector(
@@ -182,11 +177,7 @@ export const selectActiveActivityDataviews = createSelector(
 )
 
 export const selectActiveReportActivityDataviews = createSelector(
-  [
-    selectActiveActivityDataviews,
-    (state) => selectIsAnyReportLocation(state),
-    (state) => selectReportCategory(state),
-  ],
+  [selectActiveActivityDataviews, selectIsAnyReportLocation, selectReportCategory],
   (dataviews, isReportLocation, reportCategory): UrlDataviewInstance[] => {
     if (isReportLocation) {
       return dataviews.filter((dataview) => {
@@ -230,13 +221,12 @@ export const selectActiveHeatmapVesselDatasets = createSelector(
   }
 )
 
-export const selectEnvironmentalDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
-  (dataviews) => dataviews
+export const selectEnvironmentalDataviews = selectDataviewInstancesByCategory(
+  DataviewCategory.Environment
 )
 
 export const selectActiveEnvironmentalDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
+  [selectEnvironmentalDataviews],
   (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
@@ -260,14 +250,10 @@ export const selectActiveTemporalgridDataviews: (
   }
 )
 
-export const selectEventsDataviews: (state: any) => UrlDataviewInstance<GeneratorType>[] =
-  createSelector(
-    [selectDataviewInstancesByCategory(DataviewCategory.Events)],
-    (dataviews) => dataviews
-  )
+export const selectEventsDataviews = selectDataviewInstancesByCategory(DataviewCategory.Events)
 
 export const selectActiveEventsDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Events)],
+  [selectEventsDataviews],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )
 

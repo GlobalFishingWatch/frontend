@@ -53,12 +53,12 @@ export const makeStore = () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware(defaultMiddlewareOptions).concat(
         dataviewStatsApi.middleware,
-        vesselSearchApi.middleware as Middleware,
+        vesselSearchApi.middleware,
         routerQueryMiddleware,
         routerWorkspaceMiddleware,
-        routerMiddleware
+        routerMiddleware as Middleware
       ),
-    enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers] as any,
+    enhancers: (getDefaultEnhancers) => [routerEnhancer, ...getDefaultEnhancers()] as any,
     // preloadedState,
   })
 }

@@ -6,7 +6,6 @@ import {
   getActiveActivityDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
-import { BivariateDataviews, VisibleEvents, WorkspaceActivityCategory } from 'types'
 import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
 export const selectLatestAvailableDataDate = createSelector(
@@ -27,47 +26,15 @@ export const selectLatestAvailableDataDate = createSelector(
   }
 )
 
-export const selectActivityCategory = createSelector(
-  [selectWorkspaceStateProperty('activityCategory')],
-  (activityCategory): WorkspaceActivityCategory => {
-    return activityCategory
-  }
-)
-
-export const selectBivariateDataviews = createSelector(
-  [selectWorkspaceStateProperty('bivariateDataviews')],
-  (bivariate): BivariateDataviews => {
-    return bivariate
-  }
-)
-
-export const selectReadOnly = createSelector(
-  [selectWorkspaceStateProperty('readOnly')],
-  (readOnly): boolean => {
-    return readOnly
-  }
-)
-
-export const selectSidebarOpen = createSelector(
-  [selectWorkspaceStateProperty('sidebarOpen')],
-  (sidebarOpen): boolean => {
-    return sidebarOpen
-  }
-)
-
-export const selectAreMapRulersVisible = createSelector(
-  [selectWorkspaceStateProperty('mapRulersVisible')],
-  (mapRulersVisible): boolean => {
-    return mapRulersVisible
-  }
-)
-
-export const selectMapRulers = createSelector(
-  [selectWorkspaceStateProperty('mapRulers')],
-  (rulers = []): Ruler[] => {
-    return rulers
-  }
-)
+export const selectActivityCategory = selectWorkspaceStateProperty('activityCategory')
+export const selectBivariateDataviews = selectWorkspaceStateProperty('bivariateDataviews')
+export const selectReadOnly = selectWorkspaceStateProperty('readOnly')
+export const selectSidebarOpen = selectWorkspaceStateProperty('sidebarOpen')
+export const selectAreMapRulersVisible = selectWorkspaceStateProperty('mapRulersVisible')
+export const selectMapRulers = selectWorkspaceStateProperty('mapRulers')
+export const selectAreMapAnnotationsVisible = selectWorkspaceStateProperty('mapAnnotationsVisible')
+export const selectMapAnnotations = selectWorkspaceStateProperty('mapAnnotations')
+export const selectVisibleEvents = selectWorkspaceStateProperty('visibleEvents')
 
 export const selectMapRulersVisible = createSelector(
   [selectMapRulers, selectAreMapRulersVisible],
@@ -76,30 +43,9 @@ export const selectMapRulersVisible = createSelector(
   }
 )
 
-export const selectAreMapAnnotationsVisible = createSelector(
-  [selectWorkspaceStateProperty('mapAnnotationsVisible')],
-  (mapAnnotationsVisible): boolean => {
-    return mapAnnotationsVisible
-  }
-)
-
-export const selectMapAnnotations = createSelector(
-  [selectWorkspaceStateProperty('mapAnnotations')],
-  (mapAnnotations): MapAnnotation[] => {
-    return mapAnnotations
-  }
-)
-
 export const selectMapAnnotationsVisible = createSelector(
   [selectMapAnnotations, selectAreMapAnnotationsVisible],
   (mapAnnotations, areMapAnnotationsVisible): MapAnnotation[] => {
     return areMapAnnotationsVisible ? mapAnnotations : []
-  }
-)
-
-export const selectVisibleEvents = createSelector(
-  [selectWorkspaceStateProperty('visibleEvents')],
-  (visibleEvents): VisibleEvents => {
-    return visibleEvents
   }
 )

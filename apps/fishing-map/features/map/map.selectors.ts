@@ -465,10 +465,3 @@ export const selectDrawEditDataset = createSelector(
     return datasets.find((dataset) => dataset.id === datasetId)
   }
 )
-
-export const selectIsMapInteractionDisabled = createSelector(
-  [selectIsMapDrawing],
-  (isMapDrawing) => {
-    return isMapDrawing
-  }
-)

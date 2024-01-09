@@ -4,7 +4,7 @@ import {
   ValidateSliceCaseReducers,
   ActionReducerMapBuilder,
   createEntityAdapter,
-  Dictionary,
+  IdSelector,
 } from '@reduxjs/toolkit'
 
 export enum AsyncReducerStatus {
@@ -27,7 +27,7 @@ export type AsyncError<Metadata = Record<string, any>> = {
 
 export type AsyncReducer<T = any> = {
   ids: (number | string)[]
-  entities: Dictionary<T>
+  entities: Record<any, T>
   error: AsyncError
   status: AsyncReducerStatus
   currentRequestIds: string[]
@@ -64,7 +64,7 @@ export const createAsyncSlice = <T, U>({
   initialState?: T
   reducers?: ValidateSliceCaseReducers<T, SliceCaseReducers<T>>
   extraReducers?: (builder: ActionReducerMapBuilder<T>) => void
-  selectId?: (entity: U) => string | number
+  selectId?: IdSelector<U, string | number>
   thunks?: {
     fetchThunk?: any
     fetchByIdThunk?: any
@@ -74,7 +74,7 @@ export const createAsyncSlice = <T, U>({
   }
 }) => {
   const { fetchThunk, fetchByIdThunk, createThunk, updateThunk, deleteThunk } = thunks
-  const entityAdapter = createEntityAdapter<U>({ ...(selectId && { selectId }) })
+  const entityAdapter = createEntityAdapter<U>({ ...(selectId && ({ selectId } as any)) })
   const slice = createSlice({
     name,
     initialState: entityAdapter.getInitialState({

@@ -1,52 +1,52 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { selectQueryParam } from 'routes/routes.selectors'
-import { DEFAULT_SEARCH_STATE, SearchType } from 'features/search/search.config'
+import { selectLocationQuery } from 'routes/routes.selectors'
+import { DEFAULT_SEARCH_STATE } from 'features/search/search.config'
 import { VesselSearchState, VesselSearchStateProperty } from 'types'
 
-export const selectVesselSearchStateProperty = (property: VesselSearchStateProperty) =>
-  createSelector([selectQueryParam(property)], (urlProperty) => {
+type VesselSearchProperty<P extends VesselSearchStateProperty> = Required<VesselSearchState>[P]
+export function selectVesselSearchStateProperty<P extends VesselSearchStateProperty>(property: P) {
+  return createSelector([selectLocationQuery], (locationQuery): VesselSearchProperty<P> => {
+    const urlProperty = locationQuery[property]
     if (urlProperty !== undefined) return urlProperty
-    return DEFAULT_SEARCH_STATE[property]
+    return DEFAULT_SEARCH_STATE[property] as VesselSearchProperty<P>
   })
+}
 
-export const selectSearchQuery = createSelector(
-  [selectVesselSearchStateProperty('query')],
-  (query): string => {
-    return query
-  }
-)
-
-export const selectSearchOption = createSelector(
-  [selectVesselSearchStateProperty('searchOption')],
-  (query): SearchType => {
-    return query
-  }
-)
-
-export const selectSearchInfoSource = createSelector(
-  [selectVesselSearchStateProperty('infoSource')],
-  (infoSource): VesselIdentitySourceEnum => {
-    return infoSource
-  }
-)
+export const selectSearchQuery = selectVesselSearchStateProperty('query')
+export const selectSearchOption = selectVesselSearchStateProperty('searchOption')
+export const selectSearchInfoSource = selectVesselSearchStateProperty('infoSource')
+export const selectSearchFlag = selectVesselSearchStateProperty('flag')
+export const selectSearchSources = selectVesselSearchStateProperty('sources')
+export const selectSearchTransmissionDateFrom =
+  selectVesselSearchStateProperty('transmissionDateFrom')
+export const selectSearchTransmissionDateTo = selectVesselSearchStateProperty('transmissionDateTo')
+export const selectSearchSsvid = selectVesselSearchStateProperty('ssvid')
+export const selectSearchImo = selectVesselSearchStateProperty('imo')
+export const selectSearchCallsign = selectVesselSearchStateProperty('callsign')
+export const selectSearchOwner = selectVesselSearchStateProperty('owner')
+export const selectSearchCodMarinha = selectVesselSearchStateProperty('codMarinha')
+export const selectSearchGeartypes = selectVesselSearchStateProperty('geartypes')
+export const selectSearchShiptypes = selectVesselSearchStateProperty('shiptypes')
+export const selectSearchTargetSpecies = selectVesselSearchStateProperty('targetSpecies')
+export const selectSearchFleet = selectVesselSearchStateProperty('fleet')
+export const selectSearchOrigin = selectVesselSearchStateProperty('origin')
 
 export const selectSearchFilters = createSelector(
   [
-    selectVesselSearchStateProperty('flag'),
-    selectVesselSearchStateProperty('sources'),
-    selectVesselSearchStateProperty('transmissionDateFrom'),
-    selectVesselSearchStateProperty('transmissionDateTo'),
-    selectVesselSearchStateProperty('ssvid'),
-    selectVesselSearchStateProperty('imo'),
-    selectVesselSearchStateProperty('callsign'),
-    selectVesselSearchStateProperty('owner'),
-    selectVesselSearchStateProperty('codMarinha'),
-    selectVesselSearchStateProperty('geartypes'),
-    selectVesselSearchStateProperty('shiptypes'),
-    selectVesselSearchStateProperty('targetSpecies'),
-    selectVesselSearchStateProperty('fleet'),
-    selectVesselSearchStateProperty('origin'),
+    selectSearchFlag,
+    selectSearchSources,
+    selectSearchTransmissionDateFrom,
+    selectSearchTransmissionDateTo,
+    selectSearchSsvid,
+    selectSearchImo,
+    selectSearchCallsign,
+    selectSearchOwner,
+    selectSearchCodMarinha,
+    selectSearchGeartypes,
+    selectSearchShiptypes,
+    selectSearchTargetSpecies,
+    selectSearchFleet,
+    selectSearchOrigin,
     selectSearchInfoSource,
   ],
   (

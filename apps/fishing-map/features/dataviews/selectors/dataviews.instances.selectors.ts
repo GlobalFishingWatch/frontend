@@ -37,9 +37,9 @@ import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import {
-  selectWorkspaceStatus,
   selectWorkspaceDataviewInstances,
   selectWorkspaceStateProperty,
+  selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import {
   selectIsWorkspaceLocation,
@@ -185,6 +185,7 @@ export const selectMarineManagerDataviewInstanceResolved = createSelector(
   }
 )
 
+export const selectTimebarGraphSelector = selectWorkspaceStateProperty('timebarGraph')
 /**
  * Calls getResources to prepare track dataviews' datasetConfigs.
  * Injects app-specific logic by using getResources's callback
@@ -194,7 +195,7 @@ export const selectDataviewsResources = createSelector(
     selectAllDataviewInstancesResolved,
     selectTrackThinningConfig,
     selectTrackChunksConfig,
-    selectWorkspaceStateProperty('timebarGraph'),
+    selectTimebarGraphSelector,
   ],
   (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
     const callbacks: GetDatasetConfigsCallbacks = {

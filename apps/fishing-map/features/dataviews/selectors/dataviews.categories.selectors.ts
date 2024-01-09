@@ -8,7 +8,6 @@ export const selectDataviewInstancesByCategory = (category: DataviewCategory) =>
   })
 }
 
-export const selectEnvironmentalDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.Environment)],
-  (dataviews) => dataviews
+export const selectEnvironmentalDataviews = selectDataviewInstancesByCategory(
+  DataviewCategory.Environment
 )
