@@ -41,8 +41,8 @@ export const filterDatasetByPermissions = (
 export function selectSearchDatasetsInWorkspaceByType(type: SearchType) {
   return createSelector(
     [selectSearchDatasetsInWorkspace, selectUserData, selectIsGuestUser],
-    (datasets, userData, guestUser): Dataset[] | undefined => {
-      if (!userData || !datasets?.length) return
+    (datasets, userData, guestUser): Dataset[] => {
+      if (!userData || !datasets?.length) return []
 
       return filterDatasetByPermissions(datasets, type, userData, guestUser)
     }

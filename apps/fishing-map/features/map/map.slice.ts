@@ -433,7 +433,7 @@ export const fetchBQEventThunk = createAsyncThunk<
     dispatch: AppDispatch
   }
 >('map/fetchBQEvent', async (eventFeature, { signal, getState }) => {
-  const state = getState()
+  const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)

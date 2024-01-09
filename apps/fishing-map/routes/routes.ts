@@ -84,7 +84,7 @@ export const routesMap: RoutesMap = {
   [NOT_FOUND]: {
     path: '',
     thunk: async (dispatch: Dispatch) => {
-      dispatch(redirect({ type: HOME }))
+      dispatch(redirect({ type: HOME }) as any)
     },
   },
 }

@@ -10,14 +10,15 @@ import { UpdateQueryParamsAction } from './routes.actions'
 export const routerQueryMiddleware: Middleware =
   ({ getState }: { getState: () => RootState }) =>
   (next) =>
-  (action: UpdateQueryParamsAction) => {
+  (action) => {
+    const routerAction = action as UpdateQueryParamsAction
     const routesActions = Object.keys(routesMap)
     // check if action type matches a route type
-    const isRouterAction = routesActions.includes(action.type)
+    const isRouterAction = routesActions.includes(routerAction.type)
     if (!isRouterAction) {
       next(action)
     } else {
-      const newAction: UpdateQueryParamsAction = { ...action }
+      const newAction: UpdateQueryParamsAction = { ...routerAction }
 
       const prevQuery = getState().location.query || {}
       if (newAction.replaceQuery !== true) {
@@ -29,7 +30,7 @@ export const routerQueryMiddleware: Middleware =
           delete newAction.query[ACCESS_TOKEN_STRING]
         }
       }
-      const { query, replaceUrl } = action
+      const { query, replaceUrl } = routerAction
       if (query || replaceUrl) {
         const redirect =
           replaceUrl ||
@@ -52,10 +53,11 @@ export const routerQueryMiddleware: Middleware =
 export const routerWorkspaceMiddleware: Middleware =
   ({ getState, dispatch }: { getState: () => RootState; dispatch: Dispatch }) =>
   (next) =>
-  (action: UpdateQueryParamsAction) => {
+  (action) => {
+    const routerAction = action as UpdateQueryParamsAction
     const routesActions = Object.keys(routesMap)
     // check if action type matches a route type
-    const isRouterAction = routesActions.includes(action.type)
+    const isRouterAction = routesActions.includes(routerAction.type)
     if (isRouterAction) {
       const state = getState() as RootState
       const { prev } = state.location
@@ -64,7 +66,11 @@ export const routerWorkspaceMiddleware: Middleware =
         (key) => !WORKSPACE_ROUTES.includes(key)
       )
       const comesFromWorkspacesRoute = WORKSPACE_ROUTES.includes(prev.type)
-      if (routesToSaveWorkspace.includes(action.type) && comesFromWorkspacesRoute && !lastVisited) {
+      if (
+        routesToSaveWorkspace.includes(routerAction.type) &&
+        comesFromWorkspacesRoute &&
+        !lastVisited
+      ) {
         dispatch(
           setLastWorkspaceVisited({
             type: prev.type as ROUTE_TYPES,
@@ -73,7 +79,7 @@ export const routerWorkspaceMiddleware: Middleware =
             replaceQuery: true,
           })
         )
-      } else if (WORKSPACE_ROUTES.includes(action.type) && lastVisited) {
+      } else if (WORKSPACE_ROUTES.includes(routerAction.type) && lastVisited) {
         dispatch(setLastWorkspaceVisited(undefined))
       }
     }

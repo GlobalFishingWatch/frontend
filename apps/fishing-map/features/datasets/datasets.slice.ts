@@ -377,8 +377,8 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
 export const { setDatasetModal, setDatasetCategory, setEditingDatasetId } = datasetSlice.actions
 
 export type DatasetsSliceState = { datasets: DatasetsState }
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<DatasetsSliceState>(
-  (state) => state.datasets
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors(
+  (state: DatasetsSliceState) => state.datasets
 )
 
 export function selectAllDatasets(state: DatasetsSliceState) {
