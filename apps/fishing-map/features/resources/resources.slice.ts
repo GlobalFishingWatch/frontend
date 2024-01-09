@@ -1,6 +1,6 @@
 import {
+  resourcesReducer,
   ResourcesState as CommonResourcesState,
-  resourcesSlice,
 } from '@globalfishingwatch/dataviews-client'
 
 export {
@@ -11,4 +11,4 @@ export {
 } from '@globalfishingwatch/dataviews-client'
 
 export type ResourcesState = CommonResourcesState
-export default resourcesSlice.reducer
+export default resourcesReducer
