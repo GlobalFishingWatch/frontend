@@ -136,13 +136,11 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState
 })
 
 export const { addDataviewEntity } = dataviewsSlice.actions
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors(
-  (state: DataviewsSliceState) => state.dataviews
-)
-
-export function selectAllDataviews(state: DataviewsSliceState) {
-  return selectAll(state)
-}
+export const {
+  selectAll: selectAllDataviews,
+  selectById,
+  selectIds,
+} = entityAdapter.getSelectors((state: DataviewsSliceState) => state.dataviews)
 
 export function selectDataviewBySlug(slug: string) {
   return createSelector([selectAllDataviews], (dataviews) => {

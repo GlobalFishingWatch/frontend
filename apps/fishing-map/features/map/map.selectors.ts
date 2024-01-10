@@ -42,7 +42,6 @@ import {
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
   selectMapDrawingEditId,
-  selectIsMapDrawing,
 } from 'routes/routes.selectors'
 import {
   selectShowTimeComparison,
@@ -65,6 +64,8 @@ import {
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
 } from './map.config'
+
+const EMPTY_ARRAY: [] = []
 
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
@@ -170,7 +171,7 @@ const getGeneratorsConfig = ({
     return finalGenerators
   } catch (e) {
     console.error(e)
-    return []
+    return EMPTY_ARRAY
   }
 }
 
@@ -271,7 +272,7 @@ export const selectWorkspacesListGenerator = createSelector(
             type: 'FeatureCollection',
             features: workspaces.flatMap((workspace) => {
               if (!workspace.viewport) {
-                return []
+                return EMPTY_ARRAY
               }
 
               const { latitude, longitude, zoom } = workspace.viewport
@@ -413,7 +414,7 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     isReportLocation,
     isVesselLocation,
     basemapGenerator,
-    workspaceGenerators = [] as AnyGeneratorConfig[],
+    workspaceGenerators = EMPTY_ARRAY as AnyGeneratorConfig[],
     workspaceListGenerators,
     mapReportGenerators
   ): AnyGeneratorConfig[] => {

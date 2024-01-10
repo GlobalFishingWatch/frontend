@@ -5,23 +5,11 @@ import { selectQueryParam } from 'routes/routes.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, WorkspaceCategory } from 'data/workspaces'
 import { RootState } from 'store'
 
-export const selectWorkspaceSlice = (state: RootState) => state.workspace
-
-export const selectLastVisitedWorkspace = createSelector([selectWorkspaceSlice], (workspace) => {
-  return workspace?.lastVisited
-})
-export const selectWorkspaceStatus = createSelector([selectWorkspaceSlice], (workspace) => {
-  return workspace?.status
-})
-export const selectWorkspaceCustomStatus = createSelector([selectWorkspaceSlice], (workspace) => {
-  return workspace?.customStatus
-})
-export const selectWorkspace = createSelector([selectWorkspaceSlice], (workspace) => {
-  return workspace?.data
-})
-export const selectWorkspaceError = createSelector([selectWorkspaceSlice], (workspace) => {
-  return workspace?.error
-})
+export const selectWorkspace = (state: RootState) => state.workspace?.data
+export const selectWorkspaceError = (state: RootState) => state.workspace?.error
+export const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
+export const selectLastVisitedWorkspace = (state: RootState) => state.workspace?.lastVisited
+export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace?.customStatus
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
@@ -50,10 +38,11 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
   return workspace?.dataviewInstances || [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
 })
 
+const EMPTY_OBJECT: {} = {}
 export const selectWorkspaceState = createSelector(
   [selectWorkspace],
   (workspace): WorkspaceState => {
-    return workspace?.state || ({} as WorkspaceState)
+    return workspace?.state || (EMPTY_OBJECT as WorkspaceState)
   }
 )
 

@@ -47,6 +47,8 @@ import {
 } from 'features/reports/reports.config'
 import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
 
+const EMPTY_ARRAY: [] = []
+
 export type ReportVesselWithMeta = ReportVessel & {
   sourceColor: string
   activityDatasetId: string
@@ -115,7 +117,7 @@ export const selectReportActivityFlatten = createSelector(
         const dataview = dataviews[index]
         if (!dataview) {
           console.warn('Missing dataview for report dataset:', dataset)
-          return []
+          return EMPTY_ARRAY
         }
         return (vessels || ([] as any)).flatMap((vessel) => {
           return {
@@ -154,7 +156,7 @@ export const selectReportVesselsList = createSelector(
     if (!vessels?.length) return null
     return Object.values(groupBy(vessels, 'vesselId'))
       .flatMap((vesselActivity) => {
-        if (vesselActivity[0]?.category !== reportCategory) return []
+        if (vesselActivity[0]?.category !== reportCategory) return EMPTY_ARRAY
         const activityDataset = datasets.find((d) => vesselActivity[0].activityDatasetId === d.id)
         const infoDatasetId = getRelatedDatasetByType(activityDataset, DatasetTypes.Vessels)?.id
         const infoDataset = datasets.find((d) => d.id === infoDatasetId)
@@ -402,7 +404,7 @@ export const selectReportVesselsGraphData = createSelector(
         dataByDataview.forEach(({ id, data }) => {
           distributionData[id] = (data?.[key] || []).length
         })
-        if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return []
+        if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return EMPTY_ARRAY
         return distributionData
       })
       .sort((a, b) => {
@@ -442,7 +444,7 @@ export const selectReportVesselsGraphDataOthers = createSelector(
     return reportGraph.distributionKeys
       .flatMap((key) => {
         const other = others.find((o) => o.name === key)
-        if (!other) return []
+        if (!other) return EMPTY_ARRAY
         const { name, ...rest } = other
         return { name, value: sum(Object.values(rest)) }
       })

@@ -33,6 +33,8 @@ import {
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 
+const EMPTY_ARRAY: [] = []
+
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
 }
@@ -172,7 +174,7 @@ export const selectTracksGraphData = createSelector(
       }
       const graphChunks: TimebarChartChunk[] = graphResource.data!?.flatMap((segment) => {
         if (!segment) {
-          return []
+          return EMPTY_ARRAY
         }
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
@@ -212,7 +214,7 @@ export const selectTracksEvents = createSelector(
   [selectActiveTrackDataviews, selectResources, selectVisibleEvents],
   (trackDataviews, resources, visibleEvents) => {
     if (!trackDataviews || trackDataviews.length > MAX_TIMEBAR_VESSELS) {
-      return []
+      return EMPTY_ARRAY
     }
     const tracksEvents: TimebarChartData<TrackEventChunkProps> = trackDataviews.map((dataview) => {
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
@@ -242,7 +244,7 @@ export const selectTracksEvents = createSelector(
 
       trackEvents.chunks = eventsResourcesFiltered.flatMap(({ url }) => {
         if (!url || !resources[url] || !resources[url].data) {
-          return []
+          return EMPTY_ARRAY
         }
 
         return resources[url].data as TimebarChartChunk<TrackEventChunkProps>[]

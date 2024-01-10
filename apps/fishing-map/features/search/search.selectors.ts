@@ -12,12 +12,14 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { SearchType } from 'features/search/search.config'
 import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
+const EMPTY_ARRAY: [] = []
+
 export const selectSearchDatasetsInWorkspace = createSelector(
   [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],
   (dataviews, vesselsDatasets, allDatasets) => {
     const datasetsIds = getDatasetsInDataviews(dataviews)
     const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
-      if (!datasetsIds.includes(id)) return []
+      if (!datasetsIds.includes(id)) return EMPTY_ARRAY
       return [id, ...(relatedDatasets || []).map((d) => d.id)]
     })
     return vesselsDatasets.filter((dataset) => datasets.includes(dataset.id))
@@ -42,7 +44,7 @@ export function selectSearchDatasetsInWorkspaceByType(type: SearchType) {
   return createSelector(
     [selectSearchDatasetsInWorkspace, selectUserData, selectIsGuestUser],
     (datasets, userData, guestUser): Dataset[] => {
-      if (!userData || !datasets?.length) return []
+      if (!userData || !datasets?.length) return EMPTY_ARRAY
 
       return filterDatasetByPermissions(datasets, type, userData, guestUser)
     }

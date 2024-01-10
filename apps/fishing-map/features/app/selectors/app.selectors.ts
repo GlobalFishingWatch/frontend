@@ -8,12 +8,14 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
+const EMPTY_ARRAY: [] = []
+
 export const selectLatestAvailableDataDate = createSelector(
   [selectActiveDataviewInstancesResolved],
   (dataviews) => {
     const activeDatasets = dataviews.flatMap((dataview) => {
       if (dataview.category === DataviewCategory.Context) {
-        return []
+        return EMPTY_ARRAY
       } else if (
         dataview.category === DataviewCategory.Activity ||
         dataview.category === DataviewCategory.Detections

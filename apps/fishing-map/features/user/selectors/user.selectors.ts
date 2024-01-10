@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { RootState } from 'reducers'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -7,8 +8,8 @@ import {
   GFW_GROUP_ID,
   JAC_GROUP_ID,
 } from 'features/user/user.config'
-import { RootState } from 'store'
 
+export const selectUserSlice = (state: RootState) => state.user
 export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged

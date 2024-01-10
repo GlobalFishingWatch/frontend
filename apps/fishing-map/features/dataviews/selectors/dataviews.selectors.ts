@@ -39,6 +39,8 @@ const VESSEL_ONLY_VISIBLE_LAYERS = [
   GeneratorType.UserPoints,
 ]
 
+const EMPTY_ARRAY: [] = []
+
 export const selectBasemapDataview = createSelector([selectAllDataviews], (dataviews) => {
   const basemapDataview = dataviews.find((d) => d.config?.type === GeneratorType.Basemap)
   return basemapDataview || DEFAULT_BASEMAP_DATAVIEW_INSTANCE
@@ -212,7 +214,7 @@ export const selectActiveHeatmapVesselDatasets = createSelector(
             if (activeDatasets.includes(dataset.id)) {
               return getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id || []
             }
-            return []
+            return EMPTY_ARRAY
           })
         })
       )

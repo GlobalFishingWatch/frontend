@@ -53,6 +53,8 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { createDeepEqualSelector } from 'utils/selectors'
 
+const EMPTY_ARRAY: [] = []
+
 export const selectDataviewInstancesMerged = createSelector(
   [
     selectIsWorkspaceLocation,
@@ -68,7 +70,7 @@ export const selectDataviewInstancesMerged = createSelector(
     isWorkspaceLocation,
     workspaceStatus,
     workspaceDataviewInstances,
-    urlDataviewInstances = [],
+    urlDataviewInstances = EMPTY_ARRAY,
     isAnyVesselLocation,
     isVesselLocation,
     urlVesselId,
@@ -132,7 +134,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
   [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets, selectUserLogged],
   (dataviewInstances, dataviews, datasets, loggedUser): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
-      return []
+      return EMPTY_ARRAY
     }
     const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
       if (
@@ -175,7 +177,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
 export const selectMarineManagerDataviewInstanceResolved = createSelector(
   [selectIsMarineManagerLocation, selectAllDataviews, selectAllDatasets],
   (isMarineManagerLocation, dataviews, datasets): UrlDataviewInstance[] | undefined => {
-    if (!isMarineManagerLocation || !dataviews.length || !datasets.length) return []
+    if (!isMarineManagerLocation || !dataviews.length || !datasets.length) return EMPTY_ARRAY
     const dataviewInstancesResolved = resolveDataviews(
       MARINE_MANAGER_DATAVIEWS,
       dataviews,
@@ -239,10 +241,7 @@ export const selectDataviewInstancesByType = (type: GeneratorType) => {
   })
 }
 
-export const selectTrackDataviews = createSelector(
-  [selectDataviewInstancesByType(GeneratorType.Track)],
-  (dataviews) => dataviews
-)
+export const selectTrackDataviews = selectDataviewInstancesByType(GeneratorType.Track)
 
 export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(

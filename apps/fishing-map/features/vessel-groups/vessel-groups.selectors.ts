@@ -13,6 +13,8 @@ import {
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { selectUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 
+const EMPTY_ARRAY: [] = []
+
 export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
   (vessels, newVessels) => {
@@ -62,7 +64,7 @@ export const selectActivityDatasetsInWorkspace = createSelector(
   (dataviews, vesselsDatasets, allDatasets) => {
     const datasetsIds = getDatasetsInDataviews(dataviews)
     const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
-      if (!datasetsIds.includes(id)) return []
+      if (!datasetsIds.includes(id)) return EMPTY_ARRAY
       return [id, ...(relatedDatasets || []).map((d) => d.id)]
     })
     return vesselsDatasets.filter((dataset) => datasets.includes(dataset.id))
