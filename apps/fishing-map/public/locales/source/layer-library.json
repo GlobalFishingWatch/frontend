@@ -24,16 +24,6 @@
     "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
     "moreInfoLink": ""
   },
-  "water-temperature": {
-    "name": "Sea surface temperature",
-    "description": "Sea surface temperature is the water temperature at or near the surface of the ocean. Sea surface temperature impacts weather and regional climates. Temperature and salinity drive global ocean circulation and large-scale movement of ocean currents.",
-    "moreInfoLink": ""
-  },
-  "water-salinity": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses.",
-    "moreInfoLink": ""
-  },
   "chlorophyl": {
     "name": "Chlorophyll-a concentration",
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen.",
@@ -72,6 +62,81 @@
   "high-seas": {
     "name": "High seas",
     "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": ""
+  },
+  "marine-ecoregions": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "mangroves": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "seamounts": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "coral-reefs": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "seagrasses": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "nitrate": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "oxygen": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "phosphate": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "salinity": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "ph": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "sst": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "thgt": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "sst-anomalies": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "sst-anomalies-max": {
+    "name": "Marine ecoregions",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "sst-anomalies-min": {
+    "name": "Marine ecoregions",
+    "description": "",
     "moreInfoLink": ""
   }
 }
