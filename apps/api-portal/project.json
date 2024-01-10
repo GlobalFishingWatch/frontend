@@ -34,7 +34,7 @@
       "options": {
         "buildTarget": "api-portal:build",
         "dev": true,
-        "port": 3003
+        "port": 3000
       },
       "configurations": {
         "production": {

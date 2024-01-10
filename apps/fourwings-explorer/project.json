@@ -34,7 +34,7 @@
       "options": {
         "buildTarget": "fourwings-explorer:build",
         "dev": true,
-        "port": 3003
+        "port": 3000
       },
       "configurations": {
         "production": {
@@ -47,6 +47,16 @@
       "executor": "@nx/next:export",
       "options": {
         "buildTarget": "fourwings-explorer:build:production"
+      }
+    },
+    "docker-prepare": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/fourwings-explorer",
+          "cp apps/fourwings-explorer/nginx.conf dist/apps/fourwings-explorer"
+        ]
       }
     },
     "lint": {

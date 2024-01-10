@@ -34,7 +34,7 @@
       "options": {
         "buildTarget": "deck-playground:build",
         "dev": true,
-        "port": 3003
+        "port": 3000
       },
       "configurations": {
         "production": {
@@ -47,6 +47,16 @@
       "executor": "@nx/next:export",
       "options": {
         "buildTarget": "deck-playground:build:production"
+      }
+    },
+    "docker-prepare": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/deck-playground",
+          "cp apps/deck-playground/nginx.conf dist/apps/deck-playground"
+        ]
       }
     },
     "lint": {

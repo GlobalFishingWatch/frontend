@@ -45,7 +45,7 @@
       "options": {
         "buildTarget": "port-labeler:build",
         "dev": true,
-        "port": 3003
+        "port": 3000
       },
       "configurations": {
         "production": {
@@ -58,6 +58,16 @@
       "executor": "@nx/next:export",
       "options": {
         "buildTarget": "port-labeler:build:production"
+      }
+    },
+    "docker-prepare": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/port-labeler",
+          "cp apps/port-labeler/nginx.conf dist/apps/port-labeler"
+        ]
       }
     },
     "lint": {

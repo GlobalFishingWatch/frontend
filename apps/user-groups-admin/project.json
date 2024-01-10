@@ -34,7 +34,7 @@
       "options": {
         "buildTarget": "user-groups-admin:build",
         "dev": true,
-        "port": 3003
+        "port": 3000
       },
       "configurations": {
         "production": {
@@ -47,6 +47,16 @@
       "executor": "@nx/next:export",
       "options": {
         "buildTarget": "user-groups-admin:build:production"
+      }
+    },
+    "docker-prepare": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/user-groups-admin",
+          "cp apps/user-groups-admin/nginx.conf dist/apps/user-groups-admin"
+        ]
       }
     },
     "lint": {
