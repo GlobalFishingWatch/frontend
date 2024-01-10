@@ -1,4 +1,4 @@
-import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
+import { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   DatasetSubCategory,
   DataviewCategory,
@@ -81,6 +81,7 @@ export type ReportVesselGraph =
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
 
 export interface WorkspaceState extends BaseUrlWorkspace {
+  dataviewInstances?: UrlDataviewInstance[]
   bivariateDataviews?: BivariateDataviews
   mapAnnotations?: MapAnnotation[]
   mapAnnotationsVisible?: boolean

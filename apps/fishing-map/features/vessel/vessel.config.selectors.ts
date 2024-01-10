@@ -3,6 +3,7 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   VesselAreaSubsection,
   VesselProfileActivityMode,
+  VesselProfileState,
   VesselProfileStateProperty,
   VesselRelatedSubsection,
   VesselSection,
@@ -10,11 +11,15 @@ import {
 import { selectQueryParam } from 'routes/routes.selectors'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 
-export const selectVesselProfileStateProperty = (property: VesselProfileStateProperty) =>
-  createSelector([selectQueryParam(property)], (urlProperty) => {
+type VesselProfileProperty<P extends VesselProfileStateProperty> = Required<VesselProfileState>[P]
+export function selectVesselProfileStateProperty<P extends VesselProfileStateProperty>(
+  property: P
+) {
+  return createSelector([selectQueryParam(property)], (urlProperty): VesselProfileProperty<P> => {
     if (urlProperty !== undefined) return urlProperty
-    return DEFAULT_VESSEL_STATE[property]
+    return DEFAULT_VESSEL_STATE[property] as VesselProfileProperty<P>
   })
+}
 
 export const selectVesselDatasetId = createSelector(
   [selectVesselProfileStateProperty('vesselDatasetId')],

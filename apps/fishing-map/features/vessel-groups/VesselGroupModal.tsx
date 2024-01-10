@@ -170,7 +170,7 @@ function VesselGroupModal(): React.ReactElement {
             },
           }
           const currentDataviewInstance = urlDataviewInstances?.find(
-            (dvi) => dvi.id === currentDataviewId
+            (dvi) => dvi?.id === currentDataviewId
           )
 
           if (currentDataviewInstance) {

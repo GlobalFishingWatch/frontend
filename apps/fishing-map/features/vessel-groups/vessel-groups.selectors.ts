@@ -45,7 +45,7 @@ export const selectWorkspaceVessselGroupsIds = createSelector(
   [selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
   (workspaceDataviewInstances = [], urlDataviewInstances = []) => {
     return [...workspaceDataviewInstances, ...urlDataviewInstances].flatMap(
-      (dvi) => dvi.config?.filters?.['vessel-groups'] || []
+      (dvi) => dvi?.config?.filters?.['vessel-groups'] || []
     )
   }
 )
