@@ -9,9 +9,8 @@ import {
 } from 'redux-first-router'
 import { Dispatch } from '@reduxjs/toolkit'
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
-import { IS_PRODUCTION } from 'data/config'
+import { PATH_BASENAME } from 'data/config'
 import { t } from 'features/i18n/i18n'
-export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
 
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
@@ -85,7 +84,7 @@ export const routesMap: RoutesMap = {
   [NOT_FOUND]: {
     path: '',
     thunk: async (dispatch: Dispatch) => {
-      dispatch(redirect({ type: HOME }))
+      dispatch(redirect({ type: HOME }) as any)
     },
   },
 }

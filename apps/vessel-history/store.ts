@@ -72,7 +72,7 @@ const store = configureStore({
     getDefaultMiddleware(defaultMiddlewareOptions)
       .concat(routerQueryMiddleware)
       .concat(routerMiddleware),
-  enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
+  enhancers: (getDefaultEnhancers) => [routerEnhancer, ...getDefaultEnhancers()] as any,
 })
 
 export type RootState = ReturnType<typeof rootReducer>

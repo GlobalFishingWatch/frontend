@@ -19,7 +19,7 @@ import {
   pickTrackResource,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
-import { formatInfoField, getVesselLabel } from 'utils/info'
+import { formatInfoField, getVesselLabel, getVesselOtherNamesLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
@@ -32,7 +32,7 @@ import VesselLink from 'features/vessel/VesselLink'
 import { getOtherVesselNames } from 'features/vessel/vessel.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { t } from 'features/i18n/i18n'
-import { isGFWUser } from 'features/user/user.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -96,7 +96,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
@@ -141,7 +141,9 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
 
   const vesselData = infoResource?.data
   const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
-  const otherVesselsLabel = vesselData ? getOtherVesselNames(vesselData as IdentityVessel) : ''
+  const otherVesselsLabel = vesselData
+    ? getVesselOtherNamesLabel(getOtherVesselNames(vesselData as IdentityVessel))
+    : ''
   const identitiesSummary = vesselData
     ? getVesselIdentityTooltipSummary(vesselData, { showVesselId: gfwUser || false })
     : ''

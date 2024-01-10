@@ -4,7 +4,7 @@ import {
   DatasetConfiguration,
   DatasetConfigurationUI,
   DatasetGeometryType,
-  TimeFilterType,
+  EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
 
 export type DataList = Record<string, any>[]
@@ -13,14 +13,12 @@ export type DatasetSchemaGeneratorProps = {
   data: DataList
 }
 
-export type DatasetConfigurationProperty = keyof DatasetConfigurationUI | keyof DatasetConfiguration
-type DatasetProperty<P extends DatasetConfigurationProperty> = P extends 'geometryType'
+export type VesselConfigurationProperty = keyof DatasetConfigurationUI | keyof DatasetConfiguration
+type DatasetProperty<P extends VesselConfigurationProperty> = P extends 'geometryType'
   ? DatasetGeometryType
-  : P extends 'timeFilter'
-  ? TimeFilterType
   : string
 
-export function getDatasetConfigurationProperty<P extends DatasetConfigurationProperty>({
+export function getDatasetConfigurationProperty<P extends VesselConfigurationProperty>({
   dataset,
   property,
 }: {
@@ -49,4 +47,21 @@ export function getDatasetGeometryType(dataset?: Dataset): DatasetGeometryType {
     dataset,
     property: 'geometryType',
   })
+}
+
+export const getEnvironmentalDatasetRange = (dataset: Dataset) => {
+  const {
+    max,
+    min,
+    scale = 1,
+    offset = 0,
+  } = dataset?.configuration as EnviromentalDatasetConfiguration
+
+  // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
+  const cleanMin = Math.max(0, Math.floor(min * scale + offset))
+  const cleanMax = Math.ceil(max * scale + offset)
+  return {
+    min: cleanMin,
+    max: cleanMax,
+  }
 }

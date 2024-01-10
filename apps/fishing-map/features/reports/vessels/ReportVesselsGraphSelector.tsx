@@ -8,7 +8,10 @@ import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { selectReportCategory, selectReportVesselGraph } from 'features/app/app.selectors'
+import {
+  selectReportCategory,
+  selectReportVesselGraph,
+} from 'features/app/selectors/app.reports.selector'
 import { ReportCategory, ReportVesselGraph } from 'types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 

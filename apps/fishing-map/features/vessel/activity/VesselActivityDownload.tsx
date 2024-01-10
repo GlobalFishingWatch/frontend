@@ -13,7 +13,7 @@ import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
-import { selectTimeRange } from 'features/app/app.selectors'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 

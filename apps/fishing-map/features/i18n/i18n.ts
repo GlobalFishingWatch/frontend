@@ -3,9 +3,8 @@ import Backend from 'i18next-http-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
-import { PATH_BASENAME } from 'routes/routes'
 import { WORKSPACE_ENV } from 'data/workspaces'
-import { IS_DEVELOPMENT_ENV } from 'data/config'
+import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
 
 export const CROWDIN_IN_CONTEXT_LANG = 'val'
 

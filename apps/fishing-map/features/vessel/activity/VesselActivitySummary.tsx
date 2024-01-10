@@ -14,14 +14,15 @@ import {
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import { formatInfoField } from 'utils/info'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectTimeRange, selectVisibleEvents } from 'features/app/app.selectors'
+import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_ORDER } from 'features/vessel/activity/activity-by-type/ActivityByType'
 import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
-import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.slice'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './VesselActivitySummary.module.css'
 
 const MAX_PORTS = 3
@@ -155,8 +156,8 @@ export const VesselActivitySummary = () => {
               visibleEvents === 'all'
                 ? true
                 : visibleEvents === 'none'
-                ? false
-                : visibleEvents.includes(eventType)
+                  ? false
+                  : visibleEvents.includes(eventType)
             return (
               <li key={eventType} className={styles.eventTypeRowContainer}>
                 <Switch
@@ -177,7 +178,7 @@ export const VesselActivitySummary = () => {
                       />
                     )}
                   </span>
-                  <p>
+                  <p data-test={`vv-summary-${eventType}`}>
                     {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}
                     {t(`event.${eventType}` as any, {
                       defaultValue: eventType,

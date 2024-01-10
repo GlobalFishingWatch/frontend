@@ -9,11 +9,11 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   selectActivityDataviews,
   selectDetectionsDataviews,
-} from 'features/dataviews/dataviews.selectors'
+} from 'features/dataviews/selectors/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
+import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'

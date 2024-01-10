@@ -3,11 +3,8 @@ import { BarChart, Bar, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { SliderRange, SliderRangeValues } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import {
-  Dataset,
-  DatasetTypes,
-  EnviromentalDatasetConfiguration,
-} from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useDataviewHistogram } from 'features/workspace/environmental/histogram.hooks'
 import { getEventLabel } from 'utils/analytics'
@@ -18,29 +15,12 @@ type HistogramRangeFilterProps = {
   dataview: UrlDataviewInstance
 }
 
-export const getLayerDatasetRange = (dataset: Dataset) => {
-  const {
-    max,
-    min,
-    scale = 1,
-    offset = 0,
-  } = dataset?.configuration as EnviromentalDatasetConfiguration
-
-  // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
-  const cleanMin = Math.max(0, Math.floor(min * scale + offset))
-  const cleanMax = Math.ceil(max * scale + offset)
-  return {
-    min: cleanMin,
-    max: cleanMax,
-  }
-}
-
 function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const histogram = useDataviewHistogram(dataview)
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
-  const layerRange = getLayerDatasetRange(dataset)
+  const layerRange = getEnvironmentalDatasetRange(dataset)
   const minSliderValue = dataview.config?.minVisibleValue ?? layerRange.min
   const maxSliderValue = dataview.config?.maxVisibleValue ?? layerRange.max
   const sliderConfig = {

@@ -18,6 +18,7 @@ import {
   EMPTY_FIELD_PLACEHOLDER,
   getVesselGearType,
   getVesselShipType,
+  getVesselOtherNamesLabel,
 } from 'utils/info'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -191,7 +192,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const vesselData = getSearchIdentityResolved(vessel)
           const { shipname, nShipname } = vesselData
-          const otherNamesLabel = getOtherVesselNames(vessel, nShipname)
+          const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
           const { transmissionDateFrom, transmissionDateTo } = vesselData
           const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
           const label = `${name} ${otherNamesLabel || ''}`
@@ -470,8 +471,8 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             cell.column.id === 'shipname'
               ? 'var(--color-white)'
               : vesselSelectedIds.includes(getVesselProperty(row.original, 'id'))
-              ? 'var(--color-terthiary-blue)'
-              : 'transparent',
+                ? 'var(--color-terthiary-blue)'
+                : 'transparent',
           textAlign: cell.column.id === 'mrt-row-select' ? 'center' : 'left',
           borderRight: 'var(--border)',
           borderBottom: 'var(--border)',

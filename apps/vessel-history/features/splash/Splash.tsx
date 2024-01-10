@@ -30,7 +30,7 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
         query: {
           offline: 'true',
         },
-      })
+      }) as any
     )
   }, [dispatch])
 
@@ -62,7 +62,11 @@ const Splash: React.FC<{ intro?: boolean }> = ({ intro }) => {
             <div className={styles.buttons}>
               <Button onClick={onLoginClick}>{t('user.login', 'Log in')}</Button>
             </div>
-            {!online && <span className={styles.offlineLink} onClick={() => goToOfflineHome()}>continue offline</span>}
+            {!online && (
+              <span className={styles.offlineLink} onClick={() => goToOfflineHome()}>
+                continue offline
+              </span>
+            )}
           </div>
         )}
       </div>

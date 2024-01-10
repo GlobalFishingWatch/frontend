@@ -4,7 +4,7 @@ import { EventType, EventTypes, RegionType, Regions, Vessel } from '@globalfishi
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
-import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
+import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import {
   selectVesselEventsByType,
@@ -19,6 +19,13 @@ export interface ActivityEvent extends ApiEvent {
   voyage: number
   subType?: ActivityEventSubType
 }
+
+export const selectEventsGroupedByType = createSelector(
+  [selectVesselEventsFilteredByTimerange],
+  (eventsList) => {
+    return groupBy(eventsList, 'type')
+  }
+)
 
 export const selectActivitySummary = createSelector(
   [selectVesselEventsFilteredByTimerange],
@@ -69,13 +76,6 @@ export const selectActivitySummary = createSelector(
         .map(([flag, count]) => ({ flag, count })),
       fishingHours,
     }
-  }
-)
-
-export const selectEventsGroupedByType = createSelector(
-  [selectVesselEventsFilteredByTimerange],
-  (eventsList) => {
-    return groupBy(eventsList, 'type')
   }
 )
 

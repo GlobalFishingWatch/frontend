@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { Dictionary } from '@reduxjs/toolkit'
 import {
   selectPointValues,
   selectPorts,
@@ -7,10 +6,12 @@ import {
   selectSubareas,
   selectSubareaValues,
   selectCountry,
-  setSelectedPoints
+  setSelectedPoints,
 } from 'features/labeler/labeler.slice'
 import { useMapConnect } from 'features/map/map.hooks'
 import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
+
+type Dictionary<T> = Record<string, T>
 
 export const useSearchConnect = () => {
   const dispatch = useDispatch()
@@ -24,7 +25,9 @@ export const useSearchConnect = () => {
   const country = useSelector(selectCountry)
 
   const compareProperty = (term: string, fields: string[]): boolean => {
-    return fields.some(field => field && field.toLocaleLowerCase().includes(term.toLocaleLowerCase()))
+    return fields.some(
+      (field) => field && field.toLocaleLowerCase().includes(term.toLocaleLowerCase())
+    )
   }
 
   const filterFiels = (
@@ -33,17 +36,21 @@ export const useSearchConnect = () => {
     term: string,
     fieldValues,
     optionNames: Dictionary<string> | null,
-    mainSearchProperties: string[]) => {
+    mainSearchProperties: string[]
+  ) => {
     if (country) {
-      return records.filter(record => {
+      return records.filter((record) => {
         return compareProperty(term, [
           fieldValues[country][record.s2id],
-          ...(optionNames ? optionNames[fieldValues[country][record.s2id]] : [])
+          ...(optionNames ? optionNames[fieldValues[country][record.s2id]] : []),
         ])
       })
     } else {
-      return records.filter(record => {
-        return compareProperty(term, mainSearchProperties.map(property => record[property]))
+      return records.filter((record) => {
+        return compareProperty(
+          term,
+          mainSearchProperties.map((property) => record[property])
+        )
       })
     }
   }
@@ -52,7 +59,7 @@ export const useSearchConnect = () => {
     let filteredPoints = []
     const optionNames = {}
     if (type === 'destination') {
-      filteredPoints = records.filter(record => {
+      filteredPoints = records.filter((record) => {
         return compareProperty(term, [record.top_destination])
       })
     }
@@ -60,17 +67,23 @@ export const useSearchConnect = () => {
       if (country) {
         ports[country].forEach((port) => {
           optionNames[port.id] = port.name
-        });
+        })
       }
-      filteredPoints = filterFiels(records, country, term, portValues, optionNames, ['port_label', 'port_iso3'])
+      filteredPoints = filterFiels(records, country, term, portValues, optionNames, [
+        'port_label',
+        'port_iso3',
+      ])
     }
     if (type === 'subarea') {
       if (country) {
         subareas[country].forEach((subarea) => {
           optionNames[subarea.id] = subarea.name
-        });
+        })
       }
-      filteredPoints = filterFiels(records, country, term, subareaValues, optionNames, ['community_label', 'community_iso3'])
+      filteredPoints = filterFiels(records, country, term, subareaValues, optionNames, [
+        'community_label',
+        'community_iso3',
+      ])
     }
     if (type === 'anchorage') {
       filteredPoints = filterFiels(records, country, term, pointValues, null, ['point_label'])
@@ -85,6 +98,6 @@ export const useSearchConnect = () => {
   }
 
   return {
-    searchPoints
+    searchPoints,
   }
 }

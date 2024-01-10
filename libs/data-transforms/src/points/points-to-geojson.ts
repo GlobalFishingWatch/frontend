@@ -1,6 +1,7 @@
 import { Feature, FeatureCollection, Point } from 'geojson'
-import { getUTCDate, parseCoords } from '@globalfishingwatch/data-transforms'
 import { PointColumns } from '../types'
+import { parseCoords } from '../coordinates'
+import { getUTCDate } from '../list-to-track-segments'
 
 export const pointsListToGeojson = (
   data: Record<string, any>[],
