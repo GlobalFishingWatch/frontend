@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'reducers'
 import { Workspace, WorkspaceViewport } from '@globalfishingwatch/api-types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
