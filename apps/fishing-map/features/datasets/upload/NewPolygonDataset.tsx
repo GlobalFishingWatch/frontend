@@ -7,11 +7,9 @@ import {
   InputText,
   MultiSelect,
   MultiSelectOption,
-  Select,
-  SelectOption,
+  Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -37,6 +35,7 @@ function NewPolygonDataset({
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [geojson, setGeojson] = useState<FeatureCollection<Polygon> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
@@ -49,6 +48,7 @@ function NewPolygonDataset({
 
   const handleRawData = useCallback(
     async (file: File) => {
+      setProcessingData(true)
       const data = await getDatasetParsed(file, 'polygons')
       const fileType = getFileType(file)
       const datasetMetadata = getPolygonsDatasetMetadata({
@@ -56,9 +56,9 @@ function NewPolygonDataset({
         name: getFileName(file),
         sourceFormat: fileType,
       })
-      console.log('🚀 ~ datasetMetadata:', datasetMetadata)
       setDatasetMetadata(datasetMetadata)
       setGeojson(data as FeatureCollection<Polygon>)
+      setProcessingData(false)
     },
     [setDatasetMetadata]
   )
@@ -81,6 +81,15 @@ function NewPolygonDataset({
     }
   }, [datasetMetadata, onConfirm, geojson])
 
+  if (processingData) {
+    return (
+      <div className={styles.processingData}>
+        <Spinner className={styles.processingDataSpinner} />
+        <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+      </div>
+    )
+  }
+
   return (
     <div className={styles.container}>
       {!dataset && (
@@ -95,6 +104,7 @@ function NewPolygonDataset({
         label={t('datasetUpload.datasetName', 'Dataset Name')}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}
+        disabled={loading}
       />
       <Collapsable
         className={styles.optional}
@@ -105,6 +115,7 @@ function NewPolygonDataset({
           label={t('datasetUpload.datasetDescription', 'Dataset description')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
+          disabled={loading}
         />
         <NewDatasetField
           datasetMetadata={datasetMetadata}
@@ -113,11 +124,13 @@ function NewPolygonDataset({
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
+          editable={!loading}
         />
         <div className={styles.row}>
           <TimeFieldsGroup
             datasetMetadata={datasetMetadata}
             setDatasetMetadataConfig={setDatasetMetadataConfig}
+            disabled={loading}
           />
         </div>
         <MultiSelect
@@ -139,6 +152,7 @@ function NewPolygonDataset({
           onCleanClick={() => {
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
+          disabled={loading}
         />
         <SwitchRow
           className={styles.saveAsPublic}
@@ -146,7 +160,7 @@ function NewPolygonDataset({
             'dataset.uploadPublic',
             'Allow other users to see this dataset when you share a workspace'
           )}
-          disabled={isEditing}
+          disabled={isEditing || loading}
           active={isPublic}
           onClick={() => setDatasetMetadata({ public: !isPublic })}
         />

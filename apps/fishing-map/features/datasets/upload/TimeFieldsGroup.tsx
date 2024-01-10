@@ -20,11 +20,13 @@ export const getTimeFilterOptions = (): SelectOption<TimeFilterType>[] => {
 type TimeFieldsGroupProps = {
   datasetMetadata: DatasetMetadata
   setDatasetMetadataConfig: (config: Partial<DatasetConfiguration | DatasetConfigurationUI>) => void
+  disabled?: boolean
 }
 
 export const TimeFieldsGroup = ({
   datasetMetadata,
   setDatasetMetadataConfig,
+  disabled = false,
 }: TimeFieldsGroupProps) => {
   const { t } = useTranslation()
   const { fieldsOptions, getSelectedOption } = useDatasetMetadataOptions(datasetMetadata)
@@ -83,7 +85,6 @@ export const TimeFieldsGroup = ({
         options={timeFilterOptions}
         direction="top"
         label={t('datasetUpload.points.time', 'Point time')}
-        // className={styles.input}
         selectedOption={
           getSelectedOption(
             getDatasetConfigurationProperty({
@@ -95,12 +96,13 @@ export const TimeFieldsGroup = ({
         }
         onSelect={onFilterSelect}
         onCleanClick={onFilterClean}
+        disabled={disabled}
       />
       <Select
         placeholder={t('datasetUploadUI.fieldPlaceholder', 'Select a field from your dataset')}
         options={fieldsOptions}
-        // className={styles.input}
         disabled={
+          disabled ||
           !getDatasetConfigurationProperty({
             dataset: datasetMetadata,
             property: 'timeFilterType',
@@ -125,7 +127,6 @@ export const TimeFieldsGroup = ({
           placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
           direction="top"
-          // className={styles.input}
           selectedOption={
             getSelectedOption(
               getDatasetConfigurationProperty({
@@ -136,6 +137,7 @@ export const TimeFieldsGroup = ({
           }
           onSelect={onEndSelect}
           onCleanClick={onEndClean}
+          disabled={disabled}
         />
       )}
     </Fragment>

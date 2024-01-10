@@ -62,7 +62,7 @@ function NewDatasetModal(): React.ReactElement {
           ({
             ...dataset,
             configuration: { ...dataset.configuration, ...datasetConfiguration },
-          } as any)
+          }) as any
       )
     },
     []
