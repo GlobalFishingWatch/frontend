@@ -4,7 +4,6 @@ import {
   ValidateSliceCaseReducers,
   ActionReducerMapBuilder,
   createEntityAdapter,
-  Dictionary,
   IdSelector,
   Comparer,
 } from '@reduxjs/toolkit'
@@ -21,14 +20,16 @@ export enum AsyncReducerStatus {
   Error = 'error',
 }
 
-export type AsyncError = {
+export type AsyncError<Metadata = Record<string, any>> = {
   status?: number // HHTP error codes
   message?: string
+  metadata?: Metadata
 }
 
+export type AsyncReducerId = any
 export type AsyncReducer<T = any> = {
-  ids: (number | string)[]
-  entities: Dictionary<T>
+  ids: AsyncReducerId[]
+  entities: Record<AsyncReducerId, T>
   error: AsyncError
   status: AsyncReducerStatus
   currentRequestIds: string[]
@@ -52,19 +53,23 @@ const getRequestIdsOnFinish = (currentRequestIds: string[], action: any) => {
   return currentRequestIds.filter((id: string) => id !== action.meta?.requestId)
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const createAsyncSlice = <T, U>({
+export const createAsyncSlice = <
+  T,
+  U extends { id: AsyncReducerId },
+  Reducers extends SliceCaseReducers<T> = SliceCaseReducers<T>,
+>({
   name = '',
   initialState = {} as T,
-  reducers = {},
+  reducers = {} as ValidateSliceCaseReducers<T, Reducers>,
+  selectId,
   extraReducers,
   thunks = {},
-  createEntityAdapterOptions,
 }: {
   name: string
   initialState?: T
-  reducers?: ValidateSliceCaseReducers<T, SliceCaseReducers<T>>
+  reducers?: ValidateSliceCaseReducers<T, Reducers>
   extraReducers?: (builder: ActionReducerMapBuilder<T>) => void
+  selectId?: IdSelector<U, AsyncReducerId>
   thunks?: {
     fetchThunk?: any
     fetchByIdThunk?: any
@@ -73,12 +78,12 @@ export const createAsyncSlice = <T, U>({
     deleteThunk?: any
   }
   createEntityAdapterOptions?: {
-    selectId?: IdSelector<U>
+    selectId?: IdSelector<U, AsyncReducerId>
     sortComparer?: false | Comparer<U>
   }
 }) => {
   const { fetchThunk, fetchByIdThunk, createThunk, updateThunk, deleteThunk } = thunks
-  const entityAdapter = createEntityAdapter<U>(createEntityAdapterOptions)
+  const entityAdapter = createEntityAdapter<U>({ ...(selectId && ({ selectId } as any)) })
   const slice = createSlice({
     name,
     initialState: entityAdapter.getInitialState({
@@ -192,7 +197,7 @@ export const createAsyncSlice = <T, U>({
             state.status = AsyncReducerStatus.Finished
           }
           state.statusId = null
-          entityAdapter.removeOne(state, entityAdapter.selectId(action.payload))
+          entityAdapter.removeOne(state, action.payload.id)
         })
         builder.addCase(deleteThunk.rejected, (state: any, action) => {
           state.currentRequestIds = getRequestIdsOnFinish(state.currentRequestIds, action)

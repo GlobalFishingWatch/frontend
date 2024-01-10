@@ -21,12 +21,12 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getEventLabel } from 'utils/analytics'
-import { selectTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
 export type VesselToResolve = { id: string; name?: string; flag?: string; datasetId?: string }
 

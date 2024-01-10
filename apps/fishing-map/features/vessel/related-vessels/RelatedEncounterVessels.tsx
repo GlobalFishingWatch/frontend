@@ -9,7 +9,7 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectVesselEventsResourcesLoading } from 'features/vessel/vessel.selectors'
 import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
-import { selectVisibleEvents } from 'features/app/app.selectors'
+import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import styles from './RelatedVessels.module.css'
 
 const VesselTick = ({ y, index }: any) => {

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
+import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection, LineString } from 'geojson'
@@ -134,7 +134,7 @@ const getChunkSetChunks = (state: ResourcesState, chunkSetId: string) => {
   return chunks
 }
 
-export const resourcesSlice = createSlice({
+const resourcesSlice = createSlice({
   name: 'resources',
   initialState,
   reducers: {
@@ -216,4 +216,4 @@ export const selectResourcesLoading = createSelector([selectResources], (resourc
     .includes(ResourceStatus.Loading)
 })
 
-export default resourcesSlice.reducer
+export const resourcesReducer = resourcesSlice.reducer

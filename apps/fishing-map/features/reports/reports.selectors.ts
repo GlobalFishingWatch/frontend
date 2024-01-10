@@ -6,6 +6,8 @@ import { FeatureCollection, MultiPolygon } from 'geojson'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import {
+  selectReportAreaId,
+  selectReportDatasetId,
   selectActiveReportDataviews,
   selectReportActivityGraph,
   selectReportBufferOperation,
@@ -17,16 +19,15 @@ import {
   selectReportVesselFilter,
   selectReportVesselGraph,
   selectReportVesselPage,
-} from 'features/app/app.selectors'
+} from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getDatasetsReportSupported,
   getRelatedDatasetByType,
 } from 'features/datasets/datasets.utils'
-import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectUserData } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import {
   getBufferedArea,
@@ -34,7 +35,7 @@ import {
   getReportCategoryFromDataview,
 } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
-import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
 import { sortStrings } from 'utils/shared'
@@ -45,6 +46,8 @@ import {
   OTHERS_CATEGORY_LABEL,
 } from 'features/reports/reports.config'
 import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
+
+const EMPTY_ARRAY: [] = []
 
 export type ReportVesselWithMeta = ReportVessel & {
   sourceColor: string
@@ -105,8 +108,8 @@ export const selectReportAreaIds = createSelector(
 )
 
 export const selectReportActivityFlatten = createSelector(
-  [selectReportVesselsData, selectReportDataviewsWithPermissions, selectReportCategory],
-  (reportDatasets, dataviews, reportCategory) => {
+  [selectReportVesselsData, selectReportDataviewsWithPermissions],
+  (reportDatasets, dataviews) => {
     if (!dataviews?.length || !reportDatasets?.length) return null
 
     return reportDatasets.flatMap((dataset, index) =>
@@ -114,7 +117,7 @@ export const selectReportActivityFlatten = createSelector(
         const dataview = dataviews[index]
         if (!dataview) {
           console.warn('Missing dataview for report dataset:', dataset)
-          return []
+          return EMPTY_ARRAY
         }
         return (vessels || ([] as any)).flatMap((vessel) => {
           return {
@@ -153,7 +156,7 @@ export const selectReportVesselsList = createSelector(
     if (!vessels?.length) return null
     return Object.values(groupBy(vessels, 'vesselId'))
       .flatMap((vesselActivity) => {
-        if (vesselActivity[0]?.category !== reportCategory) return []
+        if (vesselActivity[0]?.category !== reportCategory) return EMPTY_ARRAY
         const activityDataset = datasets.find((d) => vesselActivity[0].activityDatasetId === d.id)
         const infoDatasetId = getRelatedDatasetByType(activityDataset, DatasetTypes.Vessels)?.id
         const infoDataset = datasets.find((d) => d.id === infoDatasetId)
@@ -401,7 +404,7 @@ export const selectReportVesselsGraphData = createSelector(
         dataByDataview.forEach(({ id, data }) => {
           distributionData[id] = (data?.[key] || []).length
         })
-        if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return []
+        if (sum(dataviewIds.map((d) => distributionData[d])) === 0) return EMPTY_ARRAY
         return distributionData
       })
       .sort((a, b) => {
@@ -441,7 +444,7 @@ export const selectReportVesselsGraphDataOthers = createSelector(
     return reportGraph.distributionKeys
       .flatMap((key) => {
         const other = others.find((o) => o.name === key)
-        if (!other) return []
+        if (!other) return EMPTY_ARRAY
         const { name, ...rest } = other
         return { name, value: sum(Object.values(rest)) }
       })

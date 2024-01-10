@@ -24,7 +24,7 @@ import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { sortByCreationDate } from 'utils/dates'
 import styles from './User.module.css'
-import { selectUserDatasetsByCategory } from './user.selectors'
+import { selectUserDatasetsByCategory } from './selectors/user.permissions.selectors'
 
 interface UserDatasetsProps {
   datasetCategory: DatasetCategory

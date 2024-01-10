@@ -21,8 +21,11 @@ import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
-import { selectIsAnyReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
-import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
+import {
+  selectIsAnyReportLocation,
+  selectIsMapDrawing,
+  selectIsWorkspaceLocation,
+} from 'routes/routes.selectors'
 import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
@@ -33,11 +36,11 @@ import {
   useMapMouseClick,
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
-import { selectIsMapInteractionDisabled } from 'features/map/map.selectors'
 import MapAnnotations from 'features/map/annotations/Annotations'
 import { useMapRulersDrag } from 'features/map/rulers/rulers-drag.hooks'
 import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
 import ErrorNotification from 'features/map/error-notification/ErrorNotification'
+import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import useViewport, { useMapBounds } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
@@ -96,7 +99,7 @@ const MapWrapper = () => {
   const setMapReady = useSetRecoilState(mapReadyAtom)
   const hasTimeseries = useRecoilValue(selectMapTimeseries)
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
-  const isMapInteractionDisabled = useSelector(selectIsMapInteractionDisabled)
+  const isMapInteractionDisabled = useSelector(selectIsMapDrawing)
 
   // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
   // the generatorsConfig (ie the map "layers") and the global configuration

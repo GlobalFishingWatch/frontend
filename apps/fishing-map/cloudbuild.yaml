@@ -11,7 +11,7 @@ steps:
 
   - id: 'generate-cypress-lock'
     waitFor: ['restore_cache']
-    name: node:18
+    name: node:21
     script: |
       if [ -d "node_modules" ]; then
         yarn info cypress version > cypress.lock
@@ -31,11 +31,11 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:18
+    name: node:21
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
-        yarn set version 3.6.1
+        yarn set version 4.0.2
         yarn -v
         CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
         yarn info cypress version > cypress.lock
@@ -69,7 +69,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:18
+    name: node:21
     entrypoint: yarn
     args: ['nx', 'build', 'fishing-map', '--parallel']
     env:
@@ -146,8 +146,8 @@ steps:
            --project $_RUN_PROJECT \
            --platform managed \
            --region $_RUN_REGION \
-           --format 'value(status.url)'` > app_url 
-           printf %s "/map" >> app_url 
+           --format 'value(status.url)'` > app_url
+           printf %s "/map" >> app_url
         fi
 
   - id: 'i18n-labels publish stable'

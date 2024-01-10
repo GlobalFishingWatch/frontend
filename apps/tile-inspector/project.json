@@ -7,21 +7,11 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build tile-inspector --parallel", "nx docker-prepare tile-inspector"],
+        "commands": ["nx build tile-inspector --parallel"],
         "parallel": false
       }
     },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/tile-inspector",
-          "cp apps/tile-inspector/nginx.conf dist/apps/tile-inspector"
-        ]
-      }
-    },
-    "compile": {
+    "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -33,38 +23,41 @@
       }
     },
     "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx serve tile-inspector --hostname=0.0.0.0"],
+        "parallel": true
+      }
+    },
+    "serve": {
       "executor": "@nx/next:server",
       "options": {
-        "buildTarget": "tile-inspector:compile",
+        "buildTarget": "tile-inspector:build",
         "dev": true,
-        "port": 3004
+        "port": 3003
       },
       "configurations": {
         "production": {
-          "buildTarget": "tile-inspector:compile:production",
+          "buildTarget": "tile-inspector:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nx/next:export",
       "options": {
-        "buildTarget": "tile-inspector:compile:production"
+        "buildTarget": "tile-inspector:build:production"
       }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/tile-inspector"],
       "options": {
-        "jestConfig": "apps/tile-inspector/jest.config.ts",
-        "passWithNoTests": true
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/tile-inspector/**/*.{ts,tsx,js,jsx}"]
+        "jestConfig": "apps/tile-inspector/jest.config.ts"
       }
     }
   },

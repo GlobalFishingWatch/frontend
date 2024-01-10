@@ -10,7 +10,7 @@ import {
 import { VesselSearchState } from 'types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
-import { isGFWUser } from 'features/user/user.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectBasicSearchDatasets,
@@ -99,7 +99,7 @@ export const useFetchSearchResults = () => {
   const searchDatasets = useSelector(
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
   ) as Dataset[]
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const { searchFilters } = useSearchFiltersConnect()
   const dispatch = useAppDispatch()
 

@@ -9,7 +9,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel, getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import Remove from 'features/workspace/common/Remove'
-import { isGFWUser } from 'features/user/user.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetNotFound from '../shared/DatasetNotFound'
@@ -31,7 +31,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
 

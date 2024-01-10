@@ -5,7 +5,10 @@ import { DateTime } from 'luxon'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { ReportActivityGraph } from 'types'
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
-import { selectReportActivityGraph, selectReportTimeComparison } from 'features/app/app.selectors'
+import {
+  selectReportActivityGraph,
+  selectReportTimeComparison,
+} from 'features/app/selectors/app.reports.selector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getUTCDateTime } from 'utils/dates'

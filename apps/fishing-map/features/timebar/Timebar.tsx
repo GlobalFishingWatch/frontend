@@ -27,11 +27,7 @@ import {
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
-import {
-  selectLatestAvailableDataDate,
-  selectTimebarGraph,
-  selectTimebarVisualisation,
-} from 'features/app/app.selectors'
+import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
@@ -44,6 +40,10 @@ import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-gr
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import {
+  selectTimebarGraph,
+  selectTimebarVisualisation,
+} from 'features/app/selectors/app.timebar.selectors'
 import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'

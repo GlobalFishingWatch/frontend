@@ -12,7 +12,7 @@ steps:
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
-        yarn set version 3.6.1
+        yarn set version 4.0.2
         yarn -v
         yarn install --immutable
       fi
@@ -43,13 +43,13 @@ steps:
       - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID'
       - 'NEXT_PUBLIC_URL=$_NEXT_PUBLIC_URL'
     script: |
-        yarn -v
-        yarn nx run api-portal:build --parallel
+      yarn -v
+      yarn nx run api-portal:build --parallel
 
-        raw_tag="$COMMIT_SHA;$NEXT_PUBLIC_API_GATEWAY;$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID;$NEXT_PUBLIC_URL"
-        tag=`echo $raw_tag | sha256sum | cut -c1-64`
-        echo $tag > image-tag
-        echo Docker Image Tag: $tag
+      raw_tag="$COMMIT_SHA;$NEXT_PUBLIC_API_GATEWAY;$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID;$NEXT_PUBLIC_URL"
+      tag=`echo $raw_tag | sha256sum | cut -c1-64`
+      echo $tag > image-tag
+      echo Docker Image Tag: $tag
 
   - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'

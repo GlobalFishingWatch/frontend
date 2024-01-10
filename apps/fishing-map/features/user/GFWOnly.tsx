@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Icon, IconProps } from '@globalfishingwatch/ui-components'
-import { isGFWUser, isJACUser } from 'features/user/user.slice'
+import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import styles from './GFWOnly.module.css'
 
 type GFWOnlyProps = {
@@ -20,8 +20,8 @@ const defaultIconProps: IconProps = {
 function GFWOnly(props: GFWOnlyProps) {
   const { type = 'default', style = {}, className = '' } = props
   const { t } = useTranslation()
-  const gfwUser = useSelector(isGFWUser)
-  const jacUser = useSelector(isJACUser)
+  const gfwUser = useSelector(selectIsGFWUser)
+  const jacUser = useSelector(selectIsJACUser)
 
   if (!gfwUser && !jacUser) return null
 

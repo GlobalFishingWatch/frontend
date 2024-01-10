@@ -10,12 +10,10 @@ import {
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
-import { t } from 'features/i18n/i18n'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { TimeRange } from 'features/timebar/timebar.slice'
-import { formatInfoField } from 'utils/info'
 
 type GetVesselIdentityParams = { identityId?: string; identitySource?: VesselIdentitySourceEnum }
 export const getVesselIdentities = (
@@ -145,12 +143,12 @@ export function getVesselCombinedSourceProperty(
 type VesselProperty<P extends VesselIdentityProperty> = P extends 'shiptypes'
   ? VesselType[]
   : P extends 'geartypes'
-  ? GearType[]
-  : P extends number
-  ? number
-  : P extends string
-  ? string
-  : undefined
+    ? GearType[]
+    : P extends number
+      ? number
+      : P extends string
+        ? string
+        : undefined
 export function getVesselProperty<P extends VesselIdentityProperty>(
   vessel: IdentityVessel | IdentityVesselData | null,
   property: P,
@@ -300,11 +298,7 @@ export const getOtherVesselNames = (
     (i) => i.nShipname !== currentNShipname
   )
 
-  return otherIdentities?.length
-    ? `, ${t('common.aka', 'a.k.a.')} ${otherIdentities
-        .map((i) => formatInfoField(i.shipname, 'name'))
-        .join(', ')}`
-    : ''
+  return otherIdentities?.length ? otherIdentities.map((i) => i.shipname) : ([] as string[])
 }
 
 export const getSidebarContentWidth = () => {

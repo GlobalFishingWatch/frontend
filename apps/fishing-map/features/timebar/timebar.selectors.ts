@@ -21,16 +21,19 @@ import {
   TrackEventChunkProps,
   HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
-import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
+import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { t } from 'features/i18n/i18n'
 import { selectResources } from 'features/resources/resources.slice'
-import {
-  selectActiveTrackDataviews,
-  selectActiveVesselsDataviews,
-} from 'features/dataviews/dataviews.slice'
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import { TimebarGraphs } from 'types'
+import {
+  selectActiveTrackDataviews,
+  selectActiveVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
+
+const EMPTY_ARRAY: [] = []
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
@@ -171,7 +174,7 @@ export const selectTracksGraphData = createSelector(
       }
       const graphChunks: TimebarChartChunk[] = graphResource.data!?.flatMap((segment) => {
         if (!segment) {
-          return []
+          return EMPTY_ARRAY
         }
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
@@ -211,7 +214,7 @@ export const selectTracksEvents = createSelector(
   [selectActiveTrackDataviews, selectResources, selectVisibleEvents],
   (trackDataviews, resources, visibleEvents) => {
     if (!trackDataviews || trackDataviews.length > MAX_TIMEBAR_VESSELS) {
-      return []
+      return EMPTY_ARRAY
     }
     const tracksEvents: TimebarChartData<TrackEventChunkProps> = trackDataviews.map((dataview) => {
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
@@ -241,7 +244,7 @@ export const selectTracksEvents = createSelector(
 
       trackEvents.chunks = eventsResourcesFiltered.flatMap(({ url }) => {
         if (!url || !resources[url] || !resources[url].data) {
-          return []
+          return EMPTY_ARRAY
         }
 
         return resources[url].data as TimebarChartChunk<TrackEventChunkProps>[]

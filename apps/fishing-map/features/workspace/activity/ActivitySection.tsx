@@ -9,7 +9,7 @@ import {
   selectActivityDataviews,
   selectAvailableActivityDataviews,
   selectDetectionsDataviews,
-} from 'features/dataviews/dataviews.selectors'
+} from 'features/dataviews/selectors/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -17,7 +17,7 @@ import {
   getFishingDataviewInstance,
   getActivityDataviewInstanceFromDataview,
 } from 'features/dataviews/dataviews.utils'
-import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
+import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'

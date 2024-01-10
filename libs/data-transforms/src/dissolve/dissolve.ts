@@ -1,10 +1,7 @@
 import { featureCollection, point, polygon } from '@turf/helpers'
 import { bbox, dissolve } from '@turf/turf'
 import { Feature, GeoJsonProperties, MultiPolygon, Point, Polygon, Position } from 'geojson'
-import {
-  BUFFERED_ANTIMERIDIAN_LON,
-  wrapFeatureLongitudes,
-} from '@globalfishingwatch/data-transforms'
+import { BUFFERED_ANTIMERIDIAN_LON, wrapFeatureLongitudes } from '../wrap-longitudes'
 
 export const getGeometryDissolved = (geometry?: Point | Polygon | MultiPolygon) => {
   if (!geometry) {
