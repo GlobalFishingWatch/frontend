@@ -28,9 +28,10 @@ export function useUserLayerTrackResource(dataview: UrlDataviewInstance) {
   const resource: Resource<FeatureCollection> = useSelector(
     selectResourceByUrl<FeatureCollection>(trackUrl)
   )
+
   const idProperty = getDatasetConfigurationProperty({
     dataset,
-    property: 'idProperty',
+    property: 'lineId',
   }) as string
 
   const hasRecordIds = idProperty
