@@ -7,8 +7,21 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build fourwings-explorer --parallel"],
+        "commands": [
+          "nx build fourwings-explorer --parallel",
+          "nx docker-prepare fourwings-explorer"
+        ],
         "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/fourwings-explorer",
+          "cp apps/fourwings-explorer/nginx.conf dist/apps/fourwings-explorer"
+        ]
       }
     },
     "build": {
@@ -23,13 +36,6 @@
       }
     },
     "start": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx serve fourwings-explorer --hostname=0.0.0.0"],
-        "parallel": true
-      }
-    },
-    "serve": {
       "executor": "@nx/next:server",
       "options": {
         "buildTarget": "fourwings-explorer:build",
@@ -47,16 +53,6 @@
       "executor": "@nx/next:export",
       "options": {
         "buildTarget": "fourwings-explorer:build:production"
-      }
-    },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/fourwings-explorer",
-          "cp apps/fourwings-explorer/nginx.conf dist/apps/fourwings-explorer"
-        ]
       }
     },
     "lint": {

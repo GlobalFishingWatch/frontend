@@ -7,8 +7,18 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build tile-inspector --parallel"],
+        "commands": ["nx build tile-inspector --parallel", "nx docker-prepare tile-inspector"],
         "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/tile-inspector",
+          "cp apps/tile-inspector/nginx.conf dist/apps/tile-inspector"
+        ]
       }
     },
     "build": {
@@ -23,13 +33,6 @@
       }
     },
     "start": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx serve tile-inspector --hostname=0.0.0.0"],
-        "parallel": true
-      }
-    },
-    "serve": {
       "executor": "@nx/next:server",
       "options": {
         "buildTarget": "tile-inspector:build",
@@ -47,16 +50,6 @@
       "executor": "@nx/next:export",
       "options": {
         "buildTarget": "tile-inspector:build:production"
-      }
-    },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/tile-inspector",
-          "cp apps/tile-inspector/nginx.conf dist/apps/tile-inspector"
-        ]
       }
     },
     "lint": {

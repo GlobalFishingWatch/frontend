@@ -7,8 +7,18 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build deck-playground --parallel"],
+        "commands": ["nx build deck-playground --parallel", "nx docker-prepare deck-playground"],
         "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/deck-playground",
+          "cp apps/deck-playground/nginx.conf dist/apps/deck-playground"
+        ]
       }
     },
     "build": {
@@ -23,13 +33,6 @@
       }
     },
     "start": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx serve deck-playground --hostname=0.0.0.0"],
-        "parallel": true
-      }
-    },
-    "serve": {
       "executor": "@nx/next:server",
       "options": {
         "buildTarget": "deck-playground:build",
@@ -47,16 +50,6 @@
       "executor": "@nx/next:export",
       "options": {
         "buildTarget": "deck-playground:build:production"
-      }
-    },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/deck-playground",
-          "cp apps/deck-playground/nginx.conf dist/apps/deck-playground"
-        ]
       }
     },
     "lint": {

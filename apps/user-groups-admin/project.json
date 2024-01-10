@@ -7,8 +7,21 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build user-groups-admin --parallel"],
+        "commands": [
+          "nx build user-groups-admin --parallel",
+          "nx docker-prepare user-groups-admin"
+        ],
         "parallel": false
+      }
+    },
+    "docker-prepare": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/user-groups-admin",
+          "cp apps/user-groups-admin/nginx.conf dist/apps/user-groups-admin"
+        ]
       }
     },
     "build": {
@@ -23,13 +36,6 @@
       }
     },
     "start": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx serve user-groups-admin --hostname=0.0.0.0"],
-        "parallel": true
-      }
-    },
-    "serve": {
       "executor": "@nx/next:server",
       "options": {
         "buildTarget": "user-groups-admin:build",
@@ -47,16 +53,6 @@
       "executor": "@nx/next:export",
       "options": {
         "buildTarget": "user-groups-admin:build:production"
-      }
-    },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/user-groups-admin",
-          "cp apps/user-groups-admin/nginx.conf dist/apps/user-groups-admin"
-        ]
       }
     },
     "lint": {
