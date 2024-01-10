@@ -1,11 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'reducers'
 import { DatasetCategory, EventType } from '@globalfishingwatch/api-types'
-import { selectVisibleEvents } from 'features/app/app.selectors'
+import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { selectResources } from './resources.slice'
 
 export const selectVisibleResources = createSelector(
-  [selectResources, (state: RootState) => selectVisibleEvents(state)],
+  [selectResources, selectVisibleEvents],
   (resources, visibleEvents) => {
     if (visibleEvents === 'all') {
       return resources

@@ -5,15 +5,13 @@ import { groupBy } from 'lodash'
 import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import {
-  selectDataviewInstancesMergedOrdered,
-  addDataviewEntity,
-} from 'features/dataviews/dataviews.slice'
+import { addDataviewEntity } from 'features/dataviews/dataviews.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   fetchEditorDataviewsThunk,
   selectEditorDataviews,

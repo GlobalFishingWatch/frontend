@@ -2,14 +2,14 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
-import { useLocalStorage, useMemoCompare } from '@globalfishingwatch/react-hooks'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
-  selectTimeRange,
-} from 'features/app/app.selectors'
+} from 'features/app/selectors/app.reports.selector'
 import {
   fetchAreaDetailThunk,
   selectDatasetAreaDetail,

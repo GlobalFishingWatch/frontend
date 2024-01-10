@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { initialize as uaInitialize, set as uaSet, event as uaEvent, pageview } from 'react-ga'
-import { selectUserData } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { GOOGLE_UNIVERSAL_ANALYTICS_INIT_OPTIONS, IS_PRODUCTION } from 'data/config'
 
 const GOOGLE_UNIVERSAL_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_UNIVERSAL_ANALYTICS_ID

@@ -1,23 +1,25 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { Dataset, UserData } from '@globalfishingwatch/api-types'
-import { selectUserData, selectIsGuestUser } from 'features/user/user.slice'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import {
   filterDatasetsByUserType,
   getDatasetLabel,
   getDatasetsInDataviews,
 } from 'features/datasets/datasets.utils'
-import { selectAllDataviewsInWorkspace } from 'features/dataviews/dataviews.selectors'
+import { selectAllDataviewsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { SearchType } from 'features/search/search.config'
+import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+
+const EMPTY_ARRAY: [] = []
 
 export const selectSearchDatasetsInWorkspace = createSelector(
   [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],
   (dataviews, vesselsDatasets, allDatasets) => {
     const datasetsIds = getDatasetsInDataviews(dataviews)
     const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
-      if (!datasetsIds.includes(id)) return []
+      if (!datasetsIds.includes(id)) return EMPTY_ARRAY
       return [id, ...(relatedDatasets || []).map((d) => d.id)]
     })
     return vesselsDatasets.filter((dataset) => datasets.includes(dataset.id))
@@ -38,29 +40,19 @@ export const filterDatasetByPermissions = (
   return filterDatasetsByUserType(datasetsWithPermissions, isGuest)
 }
 
-export const selectSearchDatasetsInWorkspaceByType = (type: SearchType) =>
-  createSelector(
+export function selectSearchDatasetsInWorkspaceByType(type: SearchType) {
+  return createSelector(
     [selectSearchDatasetsInWorkspace, selectUserData, selectIsGuestUser],
-    (datasets, userData, guestUser) => {
-      if (!userData || !datasets?.length) return
+    (datasets, userData, guestUser): Dataset[] => {
+      if (!userData || !datasets?.length) return EMPTY_ARRAY
 
       return filterDatasetByPermissions(datasets, type, userData, guestUser)
     }
   )
+}
 
-export const selectBasicSearchDatasets = createSelector(
-  [selectSearchDatasetsInWorkspaceByType('basic')],
-  (basicSearchDatasets) => {
-    return basicSearchDatasets as Dataset[]
-  }
-)
-
-export const selectAdvancedSearchDatasets = createSelector(
-  [selectSearchDatasetsInWorkspaceByType('advanced')],
-  (advancedSearchDatasets) => {
-    return advancedSearchDatasets as Dataset[]
-  }
-)
+export const selectBasicSearchDatasets = selectSearchDatasetsInWorkspaceByType('basic')
+export const selectAdvancedSearchDatasets = selectSearchDatasetsInWorkspaceByType('advanced')
 
 export const isBasicSearchAllowed = createSelector(
   [selectBasicSearchDatasets],

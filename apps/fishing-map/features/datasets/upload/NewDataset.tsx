@@ -12,8 +12,8 @@ import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
 import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
-import { selectIsGuestUser } from 'features/user/user.slice'
 import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,

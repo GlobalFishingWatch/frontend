@@ -4,22 +4,22 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetCategory, DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { selectCustomUserDataviews } from 'features/dataviews/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventLabel } from 'utils/analytics'
-import { selectReadOnly } from 'features/app/app.selectors'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectIsGuestUser } from 'features/user/user.slice'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { useAddDataset } from 'features/datasets/datasets.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './UserLayerPanel'
 
@@ -61,7 +61,7 @@ function UserSection(): React.ReactElement {
     })
   }, [dispatchSetMapDrawing])
 
-  const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Context))
+  const userDatasets = useSelector(selectUserContextDatasets)
 
   const onUploadClick = useCallback(() => {
     trackEvent({

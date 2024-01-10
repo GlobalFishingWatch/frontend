@@ -7,7 +7,7 @@ import {
 import { Spinner, Switch, Tooltip } from '@globalfishingwatch/ui-components'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { getDatasetNameTranslated } from 'features/i18n/utils'
+import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import Title from 'features/workspace/common/Title'
 import { useMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
 import styles from './ActivityAuxiliaryLayer.module.css'

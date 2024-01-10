@@ -7,9 +7,12 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import ReportVesselsTableFooter from 'features/reports/vessels/ReportVesselsTableFooter'
-import { selectActiveReportDataviews, selectReportCategory } from 'features/app/app.selectors'
+import {
+  selectActiveReportDataviews,
+  selectReportCategory,
+} from 'features/app/selectors/app.reports.selector'
 import { ReportCategory } from 'types'
-import { selectUserData } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { EMPTY_API_VALUES } from 'features/reports/reports.config'
 import VesselLink from 'features/vessel/VesselLink'
@@ -94,7 +97,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   <VesselPin
                     vesselToResolve={{
                       id: vessel.id || vessel.vesselId,
-                      datasetId: vessel.dataset,
+                      datasetId: vessel.infoDataset?.id || vessel.dataset,
                     }}
                     disabled={pinTrackDisabled}
                   />

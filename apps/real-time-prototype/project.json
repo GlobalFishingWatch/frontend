@@ -22,14 +22,14 @@
         "production": {}
       }
     },
-    "clean-locales": {
+    "start": {
       "executor": "nx:run-commands",
-      "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/real-time-prototype/public/locales"]
+        "commands": ["nx serve real-time-prototype --hostname=0.0.0.0"],
+        "parallel": true
       }
     },
-    "start": {
+    "serve": {
       "executor": "@nx/next:server",
       "options": {
         "buildTarget": "real-time-prototype:build",
@@ -49,40 +49,25 @@
         "buildTarget": "real-time-prototype:build:production"
       }
     },
-    "rename-export": {
+    "docker-prepare": {
       "executor": "nx:run-commands",
+      "outputs": [],
       "options": {
         "commands": [
-          "rm -rf dist/apps/real-time-prototype/map",
-          "mv dist/apps/real-time-prototype/exported dist/apps/real-time-prototype/map"
-        ],
-        "parallel": false
+          "cp config/entrypoint.sh dist/apps/real-time-prototype",
+          "cp apps/real-time-prototype/nginx.conf dist/apps/real-time-prototype"
+        ]
       }
     },
-    "serve:build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "nx build real-time-prototype --parallel",
-          "nx rename-export real-time-prototype",
-          "serve dist/apps/real-time-prototype"
-        ],
-        "parallel": false
-      }
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/real-time-prototype"],
       "options": {
-        "jestConfig": "apps/real-time-prototype/jest.config.ts",
-        "passWithNoTests": true
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/real-time-prototype/**/*.{ts,tsx,js,jsx}"]
+        "jestConfig": "apps/real-time-prototype/jest.config.ts"
       }
     }
   },

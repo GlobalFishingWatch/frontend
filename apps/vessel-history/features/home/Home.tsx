@@ -35,13 +35,13 @@ import { HOME, PROFILE, SETTINGS } from 'routes/routes'
 import { useSearchConnect, useSearchResultsConnect } from 'features/search/search.hooks'
 import { formatVesselProfileId, NOT_AVAILABLE } from 'features/vessels/vessels.utils'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectUserData } from 'features/user/user.slice'
 import { useApp } from 'features/app/app.hooks'
 import Partners from 'features/partners/Partners'
 import ViewSelector from 'features/view-selector/view-selector'
 import { OfflineVessel } from 'types/vessel'
 import { getUTCDateTime } from 'utils/dates'
 import { IS_STANDALONE_APP } from 'data/config'
+import { selectUserData } from 'features/user/user.slice'
 import styles from './Home.module.css'
 import LanguageToggle from './LanguageToggle'
 
@@ -85,7 +85,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         query: {
           offline: 'false',
         },
-      })
+      }) as any
     )
   }, [dispatch])
 
@@ -102,7 +102,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           query: {
             aka: aka as any,
           },
-        })
+        }) as any
       )
     },
     [dispatch]
@@ -129,7 +129,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         formatVesselProfileId(akaVessel.dataset, akaVessel.id, akaVessel.vesselMatchId)
       )
     if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
-  }, [openVesselProfile, selectedVessels, vessels])
+  }, [getListOfSelectedVessels, openVesselProfile])
 
   const onMergeVesselClick = useCallback(() => {
     const parsedSelectedVessels = getListOfSelectedVessels()
@@ -145,7 +145,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         formatVesselProfileId(akaVessel.dataset, akaVessel.id, akaVessel.vesselMatchId)
       )
     if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
-  }, [openVesselProfile, selectedVessels, vessels])
+  }, [getListOfSelectedVessels, openVesselProfile, selectedVessels])
 
   const onSettingsClick = useCallback(() => {
     dispatchLocation(SETTINGS)
