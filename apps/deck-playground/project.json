@@ -7,28 +7,11 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build deck-playground --parallel", "nx docker-prepare deck-playground"],
+        "commands": ["nx build deck-playground --parallel"],
         "parallel": false
       }
     },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/deck-playground",
-          "cp apps/deck-playground/nginx.conf dist/apps/deck-playground"
-        ]
-      }
-    },
-    "zip": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": ["zip -r dist.zip dist/apps/deck-playground/exported/*"]
-      }
-    },
-    "compile": {
+    "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -39,53 +22,36 @@
         "production": {}
       }
     },
-    "clean-locales": {
+    "start": {
       "executor": "nx:run-commands",
-      "outputs": [],
       "options": {
-        "commands": ["rm -rf dist/apps/deck-playground/public/locales"]
+        "commands": ["nx serve deck-playground --hostname=0.0.0.0"],
+        "parallel": true
       }
     },
-    "start": {
+    "serve": {
       "executor": "@nx/next:server",
       "options": {
-        "buildTarget": "deck-playground:compile",
+        "buildTarget": "deck-playground:build",
         "dev": true,
-        "port": 3000
+        "port": 3003
       },
       "configurations": {
         "production": {
-          "buildTarget": "deck-playground:compile:production",
+          "buildTarget": "deck-playground:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nx/next:export",
       "options": {
-        "buildTarget": "deck-playground:compile:production"
+        "buildTarget": "deck-playground:build:production"
       }
     },
-    "rename-export": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "rm -rf dist/apps/deck-playground/map",
-          "mv dist/apps/deck-playground/exported dist/apps/deck-playground/map"
-        ],
-        "parallel": false
-      }
-    },
-    "serve:export": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "nx build deck-playground --parallel",
-          "nx rename-export deck-playground",
-          "serve dist/apps/deck-playground"
-        ],
-        "parallel": false
-      }
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -93,10 +59,6 @@
       "options": {
         "jestConfig": "apps/deck-playground/jest.config.ts"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

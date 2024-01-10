@@ -9,13 +9,14 @@ import {
   NavigationAction,
 } from 'redux-first-router'
 import { stringify, parse } from 'qs'
-import { Dictionary } from '@reduxjs/toolkit'
 import { AppActions, AppState } from 'types/redux.types'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { fetchPsmaThunk } from 'features/psma/psma.slice'
 import { BASE_URL } from 'data/constants'
 
 export const PATH_BASENAME = BASE_URL
+
+type Dictionary<T> = Record<string, T>
 
 export const HOME = 'HOME'
 export const LOGIN = 'LOGIN'
@@ -59,7 +60,7 @@ export const routesMap: RoutesMap = {
   [NOT_FOUND]: {
     path: '',
     thunk: async (dispatch: Dispatch) => {
-      dispatch(redirect({ type: HOME }))
+      dispatch(redirect({ type: HOME }) as any)
     },
   },
 }

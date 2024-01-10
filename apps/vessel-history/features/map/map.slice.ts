@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { CaseReducer, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
   GeneratorType,
   AnyGeneratorConfig,
@@ -62,7 +62,7 @@ export const mapSlice = createSlice({
     disableVoyageTime: (state) => {
       state.voyageTime = undefined
     },
-  },
+  } as Record<string, CaseReducer<MapState, PayloadAction<any>>>,
 })
 
 // createSlice generates for us actions that we can use to modify the store by calling dispatch, or using the useDispatch hook

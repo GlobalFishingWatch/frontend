@@ -55,7 +55,7 @@ const ActivityModalContentDetailsEncounter: React.FC<ActivityModalContentProps> 
             vesselID: vessel.id ?? NOT_AVAILABLE,
             tmtID: vesselMatchId ?? NOT_AVAILABLE,
           },
-        })
+        }) as any
       )
     },
     [dispatch, findVessel]

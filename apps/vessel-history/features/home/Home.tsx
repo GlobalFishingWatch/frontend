@@ -85,7 +85,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         query: {
           offline: 'false',
         },
-      })
+      }) as any
     )
   }, [dispatch])
 
@@ -102,7 +102,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
           query: {
             aka: aka as any,
           },
-        })
+        }) as any
       )
     },
     [dispatch]
@@ -129,7 +129,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         formatVesselProfileId(akaVessel.dataset, akaVessel.id, akaVessel.vesselMatchId)
       )
     if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
-  }, [openVesselProfile, selectedVessels, vessels])
+  }, [getListOfSelectedVessels, openVesselProfile])
 
   const onMergeVesselClick = useCallback(() => {
     const parsedSelectedVessels = getListOfSelectedVessels()
@@ -145,7 +145,7 @@ const Home: React.FC<LoaderProps> = (): React.ReactElement => {
         formatVesselProfileId(akaVessel.dataset, akaVessel.id, akaVessel.vesselMatchId)
       )
     if (selectedVessel) openVesselProfile(selectedVessel, akaVessels)
-  }, [openVesselProfile, selectedVessels, vessels])
+  }, [getListOfSelectedVessels, openVesselProfile, selectedVessels])
 
   const onSettingsClick = useCallback(() => {
     dispatchLocation(SETTINGS)
