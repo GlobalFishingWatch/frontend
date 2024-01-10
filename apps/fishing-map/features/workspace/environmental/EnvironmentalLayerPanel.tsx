@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
@@ -24,7 +25,6 @@ import Remove from '../common/Remove'
 import Title from '../common/Title'
 import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
 import { getDatasetNameTranslated } from '../../i18n/utils.datasets'
-import { getLayerDatasetRange } from './HistogramRangeFilter'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -115,7 +115,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     />
   )
 
-  const layerRange = getLayerDatasetRange(dataset)
+  const layerRange = getEnvironmentalDatasetRange(dataset)
   const showMinVisibleFilter =
     dataview.config?.minVisibleValue !== undefined
       ? dataview.config?.minVisibleValue !== layerRange.min

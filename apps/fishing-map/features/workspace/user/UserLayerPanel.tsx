@@ -6,13 +6,11 @@ import {
   DatasetStatus,
   DatasetGeometryType,
   ResourceStatus,
-  Dataview,
   Dataset,
-  DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getDatasetGeometryType } from '@globalfishingwatch/datasets-client'
+import { getDatasetGeometryType, getUserDataviewDataset } from '@globalfishingwatch/datasets-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -49,15 +47,6 @@ import UserLayerTrackPanel, { useUserLayerTrackResource } from './UserLayerTrack
 type UserPanelProps = {
   dataview: UrlDataviewInstance
   onToggle?: () => void
-}
-
-export function getUserDataviewDataset(dataview?: Dataview | UrlDataviewInstance): Dataset {
-  return dataview?.datasets?.find(
-    (d) =>
-      d.type === DatasetTypes.Context ||
-      d.type === DatasetTypes.UserContext ||
-      d.type === DatasetTypes.UserTracks
-  ) as Dataset
 }
 
 function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {

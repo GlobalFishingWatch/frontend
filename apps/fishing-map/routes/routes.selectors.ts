@@ -18,6 +18,7 @@ import {
 } from './routes'
 
 const selectLocation = (state: RootState) => state.location
+
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
   const routeMap = routesMap[type] as RouteObject
   return { type: type as ROUTE_TYPES, ...routeMap }

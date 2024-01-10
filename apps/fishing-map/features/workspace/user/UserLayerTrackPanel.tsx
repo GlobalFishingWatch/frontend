@@ -10,10 +10,12 @@ import {
   resolveDataviewDatasetResource,
   selectResourceByUrl,
 } from '@globalfishingwatch/dataviews-client'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getUserDataviewDataset,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { getUserDataviewDataset } from './UserLayerPanel'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance

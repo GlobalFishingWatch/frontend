@@ -1,8 +1,8 @@
 import { groupBy, toNumber } from 'lodash'
 import { DateTime, DateTimeOptions } from 'luxon'
 import { Segment } from '@globalfishingwatch/api-types'
-import { parseCoords } from '@globalfishingwatch/data-transforms'
 import { SegmentColumns } from '../types'
+import { parseCoords } from '../coordinates'
 
 type Args = SegmentColumns & {
   records: Record<string, any>[]

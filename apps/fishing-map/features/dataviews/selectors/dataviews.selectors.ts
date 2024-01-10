@@ -161,12 +161,7 @@ export const selectContextAreasDataviews = selectDataviewInstancesByCategory(
   DataviewCategory.Context
 )
 
-export const selectCustomUserDataviews = createSelector(
-  [selectDataviewInstancesByCategory(DataviewCategory.User)],
-  (contextDataviews) => {
-    return contextDataviews
-  }
-)
+export const selectCustomUserDataviews = selectDataviewInstancesByCategory(DataviewCategory.User)
 
 export const selectActiveContextAreasDataviews = createSelector(
   [selectContextAreasDataviews],

@@ -19,12 +19,14 @@ import {
   DatasetSchema,
   DatasetSchemaItem,
   IdentityVessel,
-  EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { getDatasetGeometryType } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetGeometryType,
+  getEnvironmentalDatasetRange,
+} from '@globalfishingwatch/datasets-client'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
@@ -678,7 +680,7 @@ export const getSchemaOptionsSelectedInDataview = (
     (dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue)
   ) {
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
-    const layerRange = getLayerDatasetRange(dataset)
+    const layerRange = getEnvironmentalDatasetRange(dataset)
     const min = dataview.config?.minVisibleValue || layerRange?.min
     const max = dataview.config?.maxVisibleValue || layerRange?.max
     return [
@@ -821,22 +823,5 @@ export const getSchemaFiltersInDataview = (
   return {
     filtersAllowed,
     filtersDisabled,
-  }
-}
-
-export const getLayerDatasetRange = (dataset: Dataset) => {
-  const {
-    max,
-    min,
-    scale = 1,
-    offset = 0,
-  } = dataset?.configuration as EnviromentalDatasetConfiguration
-
-  // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
-  const cleanMin = Math.max(0, Math.floor(min * scale + offset))
-  const cleanMax = Math.ceil(max * scale + offset)
-  return {
-    min: cleanMin,
-    max: cleanMax,
   }
 }
