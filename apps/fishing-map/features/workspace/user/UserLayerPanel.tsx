@@ -6,22 +6,18 @@ import {
   DatasetStatus,
   DatasetGeometryType,
   ResourceStatus,
-  Dataview,
   Dataset,
-  DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getDatasetGeometryType } from '@globalfishingwatch/datasets-client'
+import { getDatasetGeometryType, getUserDataviewDataset } from '@globalfishingwatch/datasets-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { selectUserId } from 'features/user/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   useAutoRefreshImportingDataset,
   useDatasetModalConfigConnect,
   useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
-import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
@@ -32,8 +28,10 @@ import {
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { COLOR_SECONDARY_BLUE } from 'features/app/App'
 import FitBounds from 'features/workspace/common/FitBounds'
+import { COLOR_SECONDARY_BLUE } from 'features/app/app.config'
+import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -51,15 +49,6 @@ type UserPanelProps = {
   onToggle?: () => void
 }
 
-export function getUserDataviewDataset(dataview?: Dataview | UrlDataviewInstance): Dataset {
-  return dataview?.datasets?.find(
-    (d) =>
-      d.type === DatasetTypes.Context ||
-      d.type === DatasetTypes.UserContext ||
-      d.type === DatasetTypes.UserTracks
-  ) as Dataset
-}
-
 function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -68,7 +57,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { dispatchSetMapDrawing, dispatchSetMapDrawEditDataset } = useMapDrawConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(selectIsGuestUser)
   const layerActive = dataview?.config?.visible ?? true

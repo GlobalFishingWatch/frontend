@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectAllDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
-import { selectActivityCategory } from 'features/app/app.selectors'
+import { selectActivityCategory } from 'features/app/selectors/app.selectors'
 import {
   FISHING_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
 export const useHideLegacyActivityCategoryDataviews = () => {
   const actionDone = useRef(false)

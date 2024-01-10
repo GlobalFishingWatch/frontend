@@ -21,7 +21,7 @@
         ]
       }
     },
-    "compile": {
+    "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -35,36 +35,32 @@
     "start": {
       "executor": "@nx/next:server",
       "options": {
-        "buildTarget": "tile-inspector:compile",
+        "buildTarget": "tile-inspector:build",
         "dev": true,
-        "port": 3004
+        "port": 3000
       },
       "configurations": {
         "production": {
-          "buildTarget": "tile-inspector:compile:production",
+          "buildTarget": "tile-inspector:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nx/next:export",
       "options": {
-        "buildTarget": "tile-inspector:compile:production"
+        "buildTarget": "tile-inspector:build:production"
       }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/tile-inspector"],
       "options": {
-        "jestConfig": "apps/tile-inspector/jest.config.ts",
-        "passWithNoTests": true
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/tile-inspector/**/*.{ts,tsx,js,jsx}"]
+        "jestConfig": "apps/tile-inspector/jest.config.ts"
       }
     }
   },

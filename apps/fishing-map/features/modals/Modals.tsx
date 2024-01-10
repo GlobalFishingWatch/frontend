@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux'
 import { replace } from 'redux-first-router'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
-import { isGFWUser } from 'features/user/user.slice'
-import { selectReadOnly } from 'features/app/app.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
 import { selectEditorActive, toggleEditorMenu } from 'features/editor/editor.slice'
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -82,7 +82,7 @@ const ResetWorkspaceConfig = {
 const AppModals = () => {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const dispatch = useAppDispatch()
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)

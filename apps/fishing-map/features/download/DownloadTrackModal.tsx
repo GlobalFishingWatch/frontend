@@ -24,7 +24,7 @@ import { DateRange } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { isGFWUser } from 'features/user/user.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import styles from './DownloadModal.module.css'
 import { Format, FORMAT_OPTIONS } from './downloadTrack.config'
 
@@ -36,7 +36,7 @@ function DownloadTrackModal() {
   const rateLimit = useSelector(selectDownloadTrackRateLimit)
   const [format, setFormat] = useState(FORMAT_OPTIONS[0].id as Format)
   const { timerange } = useTimerangeConnect()
-  const gFWUser = useSelector(isGFWUser)
+  const gFWUser = useSelector(selectIsGFWUser)
 
   const downloadTrackIds = useSelector(selectDownloadTrackIds)
   const downloadModalOpen = useSelector(selectDownloadTrackModalOpen)
@@ -121,11 +121,11 @@ function DownloadTrackModal() {
                   limit: rateLimit?.limit,
                 }) as string)
               : rateLimit?.remaining
-              ? (t('download.trackRemaining', {
-                  defaultValue: 'You can download {{count}} more tracks today',
-                  count: rateLimit?.remaining as number,
-                }) as string)
-              : null}
+                ? (t('download.trackRemaining', {
+                    defaultValue: 'You can download {{count}} more tracks today',
+                    count: rateLimit?.remaining as number,
+                  }) as string)
+                : null}
           </p>
           <Button
             className={styles.downloadBtn}

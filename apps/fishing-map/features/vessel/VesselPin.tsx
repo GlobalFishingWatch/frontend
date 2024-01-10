@@ -21,12 +21,12 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getEventLabel } from 'utils/analytics'
-import { selectTrackDataviews } from 'features/dataviews/dataviews.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
 export type VesselToResolve = { id: string; name?: string; flag?: string; datasetId?: string }
 
@@ -85,35 +85,35 @@ function VesselPin({
   const onPinClick = async () => {
     let vesselWithIdentity = vessel ? ({ ...vessel } as IdentityVessel) : undefined
     let infoDatasetResolved = { ...infoDataset } as Dataset
-    if (!infoDatasetResolved && infoDatasetId) {
-      setLoading(true)
-      // Fetch the info dataset when no available in the store
-      const action = await dispatch(fetchDatasetByIdThunk(infoDatasetId))
-      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
-        infoDatasetResolved = action.payload as Dataset
-      } else {
-        console.warn('Pin vessel is not available without an info dataset')
-      }
-    }
-    if (!vesselWithIdentity && infoDatasetResolved) {
-      // Fetch the vessel identity info no available
-      const datasetConfig = getVesselInfoDataviewInstanceDatasetConfig(vesselId, {
-        info: infoDatasetResolved?.id,
-      })
-      const url = resolveEndpoint(infoDatasetResolved, datasetConfig)
-      if (url) {
+    if (vesselInWorkspace) {
+      deleteDataviewInstance(vesselInWorkspace.id)
+    } else {
+      if (!infoDatasetResolved && infoDatasetId) {
         setLoading(true)
-        try {
-          vesselWithIdentity = await GFWAPI.fetch<IdentityVessel>(url)
-        } catch (e) {
-          setLoading(false)
+        // Fetch the info dataset when no available in the store
+        const action = await dispatch(fetchDatasetByIdThunk(infoDatasetId))
+        if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+          infoDatasetResolved = action.payload as Dataset
+        } else {
+          console.warn('Pin vessel is not available without an info dataset')
         }
       }
-    }
-    if (vesselWithIdentity) {
-      if (vesselInWorkspace) {
-        deleteDataviewInstance(vesselInWorkspace.id)
-      } else {
+      if (!vesselWithIdentity && infoDatasetResolved) {
+        // Fetch the vessel identity info no available
+        const datasetConfig = getVesselInfoDataviewInstanceDatasetConfig(vesselId, {
+          info: infoDatasetResolved?.id,
+        })
+        const url = resolveEndpoint(infoDatasetResolved, datasetConfig)
+        if (url) {
+          setLoading(true)
+          try {
+            vesselWithIdentity = await GFWAPI.fetch<IdentityVessel>(url)
+          } catch (e) {
+            setLoading(false)
+          }
+        }
+      }
+      if (vesselWithIdentity) {
         const trackDataset = getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks)?.[0]
         const vesselEventsDatasets = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)
         const eventsDatasetsId =
@@ -140,9 +140,9 @@ function VesselPin({
             label: getEventLabel([infoDataset?.id || '', vesselId]),
           })
         }
+      } else {
+        console.warn('Vessel to pin not found')
       }
-    } else {
-      console.warn('Vessel to pin not found')
     }
     setLoading(false)
   }

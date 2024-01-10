@@ -28,6 +28,8 @@ export function useRegionTranslationsById() {
   return useMemo(() => ({ getRegionTranslationsById }), [getRegionTranslationsById])
 }
 
+const EMPTY_ARRAY: [] = []
+
 export function useRegionNamesByType() {
   const { t } = useTranslation()
   const eezs = useSelector(selectEEZs)
@@ -37,7 +39,7 @@ export function useRegionNamesByType() {
 
   const getRegionNamesByType = useCallback(
     (regionType: keyof Regions, values: string[]) => {
-      if (!values?.length) return []
+      if (!values?.length) return EMPTY_ARRAY
       const regions = { eez: eezs, rfmo: rfmos, mpa: mpas, fao: faos }[regionType] || []
       let labels = values
       if (regions?.length) {

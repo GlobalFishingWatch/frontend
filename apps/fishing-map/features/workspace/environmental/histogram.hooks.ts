@@ -11,8 +11,8 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { HeatmapLayerMeta } from '@globalfishingwatch/layer-composer'
+import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
-import { getLayerDatasetRange } from 'features/workspace/environmental/HistogramRangeFilter'
 import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 
 export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
@@ -34,7 +34,7 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
           filteredFeatures,
           layerFeature.metadata as HeatmapLayerMeta
         )
-        const layerRange = getLayerDatasetRange(dataset)
+        const layerRange = getEnvironmentalDatasetRange(dataset)
         const data = rawData.filter((d) => {
           const matchesMin = layerRange.min !== undefined ? d >= layerRange.min : true
           const matchesMax = layerRange.max !== undefined ? d <= layerRange.max : true

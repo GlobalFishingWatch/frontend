@@ -11,7 +11,7 @@ import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveHeatmapDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   setVesselGroupConfirmationMode,
   setVesselGroupCurrentDataviewIds,

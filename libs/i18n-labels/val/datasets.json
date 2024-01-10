@@ -2903,13 +2903,23 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "crwdns70364:0crwdne70364:0",
-    "description": "crwdns70366:0crwdne70366:0",
+    "name": "crwdns70430:0crwdne70430:0",
+    "description": "crwdns70432:0crwdne70432:0",
     "schema": {
       "id": "crwdns69176:0crwdne69176:0",
       "selfReportedInfo": "crwdns69178:0crwdne69178:0",
       "lastTransmissionDate": "crwdns69180:0crwdne69180:0",
       "firstTransmissionDate": "crwdns69182:0crwdne69182:0"
+    }
+  },
+  "public-panama-vessel-identity-non-fishing": {
+    "name": "crwdns70434:0crwdne70434:0",
+    "description": "crwdns70436:0crwdne70436:0",
+    "schema": {
+      "id": "crwdns70438:0crwdne70438:0",
+      "selfReportedInfo": "crwdns70440:0crwdne70440:0",
+      "lastTransmissionDate": "crwdns70442:0crwdne70442:0",
+      "firstTransmissionDate": "crwdns70444:0crwdne70444:0"
     }
   },
   "public-peru-fishing-effort": {

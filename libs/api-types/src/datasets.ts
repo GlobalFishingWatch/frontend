@@ -101,6 +101,8 @@ export interface DatasetConfigurationUI {
   endTime?: string | number
   timeFilterType?: TimeFilterType
   geometryType?: DatasetGeometryType
+  lineId?: string | number
+  segmentId?: string | number
 }
 
 export interface DatasetConfiguration {

@@ -25,7 +25,7 @@ import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
 import { cleanCurrentWorkspaceData } from 'features/workspace/workspace.slice'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import styles from './User.module.css'
-import { selectUserWorkspaces } from './user.selectors'
+import { selectUserWorkspaces } from './selectors/user.permissions.selectors'
 
 function UserWorkspaces() {
   const { t } = useTranslation()

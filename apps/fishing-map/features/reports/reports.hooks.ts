@@ -4,12 +4,12 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
-  selectTimeRange,
-} from 'features/app/app.selectors'
+} from 'features/app/selectors/app.reports.selector'
 import {
   fetchAreaDetailThunk,
   selectDatasetAreaDetail,

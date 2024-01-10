@@ -7,7 +7,7 @@ import { useMapStyle } from 'features/map/map-style.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
-import { selectAllDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './DebugMenu.module.css'
 import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
 

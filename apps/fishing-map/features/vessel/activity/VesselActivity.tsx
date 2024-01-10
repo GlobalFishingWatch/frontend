@@ -15,7 +15,7 @@ import {
   selectVesselHasEventsDatasets,
 } from 'features/vessel/vessel.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectVesselProfileDataview } from 'features/dataviews/dataviews.slice'
+import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './VesselActivity.module.css'
 
 const VesselActivity = () => {

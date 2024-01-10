@@ -148,8 +148,8 @@ const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ReportState, Rep
   reducers: {},
 })
 
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<ReportsSliceState>(
-  (state) => state.reports
+export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors(
+  (state: ReportsSliceState) => state.reports
 )
 
 export function selectAllReports(state: ReportsSliceState) {
@@ -157,7 +157,7 @@ export function selectAllReports(state: ReportsSliceState) {
 }
 
 export const selectReportById = memoize((id: number) =>
-  createSelector([(state: ReportsSliceState) => state], (state) => selectById(state, id))
+  createSelector([(state: ReportsSliceState) => state], (state) => selectById(state, id as any))
 )
 
 export const selectReportsStatus = (state: ReportsSliceState) => state.reports.status

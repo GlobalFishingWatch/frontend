@@ -24,8 +24,8 @@ import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selecto
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { sortByCreationDate } from 'utils/dates'
+import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import styles from './User.module.css'
-import { selectUserDatasets } from './user.selectors'
 
 function UserDatasets() {
   const [infoDataset, setInfoDataset] = useState<Dataset | undefined>()

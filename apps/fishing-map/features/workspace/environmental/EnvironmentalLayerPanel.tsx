@@ -5,10 +5,11 @@ import { useTranslation } from 'react-i18next'
 import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectUserId } from 'features/user/user.selectors'
-import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
+import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import ActivityFilters, {
   isHistogramDataviewSupported,
@@ -23,8 +24,7 @@ import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import { getDatasetNameTranslated } from '../../i18n/utils'
-import { getLayerDatasetRange } from './HistogramRangeFilter'
+import { getDatasetNameTranslated } from '../../i18n/utils.datasets'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -38,7 +38,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(selectIsGuestUser)
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const [colorOpen, setColorOpen] = useState(false)
   const {
     items,
@@ -115,7 +115,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     />
   )
 
-  const layerRange = getLayerDatasetRange(dataset)
+  const layerRange = getEnvironmentalDatasetRange(dataset)
   const showMinVisibleFilter =
     dataview.config?.minVisibleValue !== undefined
       ? dataview.config?.minVisibleValue !== layerRange.min

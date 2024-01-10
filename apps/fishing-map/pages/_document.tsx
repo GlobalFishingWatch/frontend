@@ -1,6 +1,5 @@
 import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document'
-import { GOOGLE_TAG_MANAGER_ID } from 'data/config'
-import { PATH_BASENAME } from 'routes/routes'
+import { GOOGLE_TAG_MANAGER_ID, PATH_BASENAME } from 'data/config'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {

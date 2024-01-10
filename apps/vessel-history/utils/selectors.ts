@@ -1,4 +1,4 @@
-import { createSelectorCreator, defaultMemoize } from 'reselect'
+import { createSelectorCreator, lruMemoize } from 'reselect'
 import { isEqual } from 'lodash'
 
 /**
@@ -6,4 +6,4 @@ import { isEqual } from 'lodash'
  * when input variables are objects thus not equal using the reference
  * equality selector (===) that createSelector uses by default.
  */
-export const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual)
+export const createDeepEqualSelector = createSelectorCreator(lruMemoize, isEqual)

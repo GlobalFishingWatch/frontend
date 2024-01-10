@@ -46,7 +46,7 @@ const VesselLink = ({
   fitBounds = true,
   className = '',
   query,
-  testId,
+  testId = 'link-vessel-profile',
 }: VesselLinkProps) => {
   const { t } = useTranslation()
   const workspaceId = useSelector(selectCurrentWorkspaceId)

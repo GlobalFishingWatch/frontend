@@ -350,13 +350,11 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
 })
 
 export type DatasetsSliceState = { datasets: DatasetsState }
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors<DatasetsSliceState>(
-  (state) => state.datasets
-)
-
-export function selectAllDatasets(state: DatasetsSliceState) {
-  return selectAll(state)
-}
+export const {
+  selectAll: selectAllDatasets,
+  selectById,
+  selectIds,
+} = entityAdapter.getSelectors((state: DatasetsSliceState) => state.datasets)
 
 export const selectDatasetById = memoize((id: string) =>
   createSelector([(state: DatasetsSliceState) => state], (state) => selectById(state, id))

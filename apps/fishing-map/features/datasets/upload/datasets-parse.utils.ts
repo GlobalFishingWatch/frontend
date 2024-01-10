@@ -82,8 +82,10 @@ export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
     records: data,
     latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' }),
     longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' }),
-    timestamp: getDatasetConfigurationProperty({ dataset, property: 'timestamp' }),
-    id: getDatasetConfigurationProperty({ dataset, property: 'idProperty' }),
+    startTime: getDatasetConfigurationProperty({ dataset, property: 'startTime' }),
+    endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
+    segmentId: getDatasetConfigurationProperty({ dataset, property: 'segmentId' }),
+    lineId: getDatasetConfigurationProperty({ dataset, property: 'lineId' }),
   })
   return segmentsToGeoJSON(segments)
 }

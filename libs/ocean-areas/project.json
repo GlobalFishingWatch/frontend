@@ -27,17 +27,13 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/ocean-areas/**/*.{ts,tsx,js,jsx}"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/ocean-areas"],
       "options": {
-        "jestConfig": "libs/ocean-areas/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/ocean-areas/jest.config.ts"
       }
     },
     "publish": {

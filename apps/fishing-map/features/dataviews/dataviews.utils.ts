@@ -22,7 +22,7 @@ import {
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { isPrivateDataset } from 'features/datasets/datasets.utils'
+import { VesselInstanceDatasets, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { Area } from 'features/areas/areas.slice'
 
 // used in workspaces with encounter events layers
@@ -35,20 +35,6 @@ export const VESSEL_LAYER_PREFIX = 'vessel-'
 export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
-
-// Datasets ids for vessel instances
-export type VesselInstanceDatasets = {
-  track?: string
-  info?: string
-  events?: string[]
-  relatedVesselIds?: string[]
-}
-
-export const VESSEL_INSTANCE_DATASETS = [
-  'track' as keyof VesselInstanceDatasets,
-  'info' as keyof VesselInstanceDatasets,
-  'events' as keyof VesselInstanceDatasets,
-]
 
 export const getVesselInfoDataviewInstanceDatasetConfig = (
   vesselId: string,

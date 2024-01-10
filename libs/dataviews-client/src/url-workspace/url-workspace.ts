@@ -1,4 +1,3 @@
-import { Dictionary } from '@reduxjs/toolkit'
 import { invert, isObject, isString, transform } from 'lodash'
 import { stringify, parse } from 'qs'
 import { UrlDataviewInstance } from '..'
@@ -7,6 +6,8 @@ import {
   runDatasetMigrations,
   migrateEventsLegacyDatasets,
 } from './migrations'
+
+export type Dictionary<Value> = Record<string, Value>
 
 /**
  * A generic workspace to be extended by apps
@@ -46,7 +47,7 @@ const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
 const TOKEN_PREFIX = '~'
 export const TOKEN_REGEX = /~(\d+)/
 
-const BASE_URL_TO_OBJECT_TRANSFORMATION: Dictionary<(value: any) => any> = {
+const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
   latitude: (latitude) => parseFloat(latitude),
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),

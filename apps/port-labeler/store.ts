@@ -16,7 +16,7 @@ const rootReducer = combineReducers({
   location: location,
   title: titleReducer,
   user: userReducer,
-  labeler: labelerReducer
+  labeler: labelerReducer,
 })
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
@@ -45,7 +45,7 @@ const store = configureStore({
     getDefaultMiddleware(defaultMiddlewareOptions)
       .concat(routerQueryMiddleware)
       .concat(routerMiddleware),
-  enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers],
+  enhancers: (getDefaultEnhancers) => [routerEnhancer, ...getDefaultEnhancers()] as any,
 })
 
 export type RootState = ReturnType<typeof rootReducer>

@@ -84,7 +84,7 @@ const userSlice = createSlice({
 export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
-export const isGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
+export const selectIsGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE

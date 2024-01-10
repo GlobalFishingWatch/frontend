@@ -14,7 +14,6 @@ import {
 import { VesselAreaSubsection } from 'types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectVesselProfileColor } from 'features/dataviews/dataviews.slice'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_COLORS, ROOT_DOM_ELEMENT } from 'data/config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -29,6 +28,7 @@ import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectVesselProfileColor } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {
@@ -178,6 +178,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
       <Choice
         options={areaOptions}
         size="small"
+        testId="vv-area"
         activeOption={vesselArea}
         className={styles.choice}
         onSelect={changeVesselArea}
