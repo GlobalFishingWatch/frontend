@@ -33,11 +33,15 @@ const LayerLibrary: FC = () => {
           name: t(`layer-library:${layer.id}.name`),
           description: t(`layer-library:${layer.id}.description`),
           category: dataview.category as DataviewCategory,
-          dataview,
+          dataview: {
+            ...dataview,
+            datasetsConfig: [...(dataview.datasetsConfig || []), ...(layer.datasetsConfig || [])],
+          },
         }
       }),
     [dataviews, t]
   )
+
   const uniqCategories = useMemo(
     () => uniq(layersResolved.map(({ category }) => category)),
     [layersResolved]
@@ -178,11 +182,7 @@ const LayerLibrary: FC = () => {
                 {t(`common.${category as DataviewCategory}`, upperFirst(category))}
               </label>
               {layersByCategory[category].map((layer) => (
-                <LayerLibraryItem
-                  key={layer.dataviewId}
-                  layer={layer}
-                  highlightedText={searchQuery}
-                />
+                <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
               ))}
             </Fragment>
           ))}

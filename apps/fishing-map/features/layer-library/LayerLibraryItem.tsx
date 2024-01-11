@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { Dataset } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
@@ -14,20 +15,36 @@ import styles from './LayerLibraryItem.module.css'
 type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
 
 const LayerLibraryItem = (props: LayerLibraryItemProps) => {
-  const [loading, setLoading] = useState(false)
   const { layer, highlightedText = '' } = props
-  const { id, dataviewId, config, previewImageUrl, datasetsConfig, name, description, dataview } =
+  const { id, dataviewId, config, previewImageUrl, dataview, name, description, datasetsConfig } =
     layer
+  const dataset = useSelector(selectDatasetById(dataview.datasetsConfig?.[0].datasetId || ''))
+  const ids = (datasetsConfig || []).map(({ datasetId }) => datasetId)
+  const [loading, setLoading] = useState(false)
+  const [datasetResolved, setDatasetResolved] = useState<Dataset>(dataset)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const dataset = useSelector(selectDatasetById(dataview?.datasetsConfig?.[0].datasetId || ''))
-  const datasetTypeIcon = dataset && getDatasetTypeIcon(dataset)
-  const datasetSourceIcon = dataset && getDatasetSourceIcon(dataset)
+  const datasetTypeIcon = datasetResolved && getDatasetTypeIcon(datasetResolved)
+  const datasetSourceIcon = datasetResolved && getDatasetSourceIcon(datasetResolved)
+
+  const resolveDataset = useCallback(async () => {
+    const fetchDatasetsAction = await dispatch(fetchDatasetsByIdsThunk({ ids }))
+    const { payload } = await fetchDatasetsAction
+    if (payload) {
+      setDatasetResolved((payload as Dataset[])?.[0])
+    }
+  }, [dispatch, ids])
+
+  useEffect(() => {
+    if (!datasetResolved) {
+      resolveDataset()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onAddToWorkspaceClick = async () => {
     if (datasetsConfig?.length) {
-      const ids = datasetsConfig.map(({ datasetId }) => datasetId)
       setLoading(true)
       await dispatch(fetchDatasetsByIdsThunk({ ids }))
       setLoading(false)
