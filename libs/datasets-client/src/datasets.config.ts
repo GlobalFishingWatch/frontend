@@ -13,12 +13,12 @@ export type DatasetSchemaGeneratorProps = {
   data: DataList
 }
 
-export type VesselConfigurationProperty = keyof DatasetConfigurationUI | keyof DatasetConfiguration
-type DatasetProperty<P extends VesselConfigurationProperty> = P extends 'geometryType'
+export type DatasetConfigurationProperty = keyof DatasetConfigurationUI | keyof DatasetConfiguration
+type DatasetProperty<P extends DatasetConfigurationProperty> = P extends 'geometryType'
   ? DatasetGeometryType
   : string
 
-export function getDatasetConfigurationProperty<P extends VesselConfigurationProperty>({
+export function getDatasetConfigurationProperty<P extends DatasetConfigurationProperty>({
   dataset,
   property,
 }: {
