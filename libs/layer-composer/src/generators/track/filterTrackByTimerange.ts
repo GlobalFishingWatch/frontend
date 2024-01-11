@@ -67,7 +67,8 @@ const filterTrackByTimerange = (
         //
         const geometry: MultiLineString = {
           type: 'MultiLineString',
-          coordinates: filtered.coordinates,
+          // TODO fix this TS error and review the logic
+          coordinates: filtered.coordinates as any,
         }
 
         const properties: GeoJsonProperties = {
