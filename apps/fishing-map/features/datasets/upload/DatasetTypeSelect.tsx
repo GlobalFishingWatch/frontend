@@ -33,8 +33,6 @@ const DatasetType = ({
 
   const onDropAccepted = useCallback(
     (files: File[]) => {
-      console.log(files)
-
       onFileLoaded(files[0])
       dispatchDatasetModalConfig({ type })
     },

@@ -18,6 +18,7 @@ export const getFieldSchema = (
   // this is needed because there are cases where are mixed types in the same column
   const isStringType = values.some((d) => typeof d === 'string')
   const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType)
+
   if (values?.length) {
     const schema: DatasetSchemaItem = {
       type:
@@ -25,8 +26,8 @@ export const getFieldSchema = (
         GUESS_COLUMN_DICT.longitude.some((t) => t === field)
           ? 'coordinate'
           : type === 'number'
-          ? 'range'
-          : type,
+            ? 'range'
+            : type,
     }
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {
