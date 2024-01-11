@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Icon, Tooltip } from '@globalfishingwatch/ui-components'
-import { Dataset } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
@@ -27,30 +26,15 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
     moreInfoLink,
     datasetsConfig,
   } = layer
-  const dataset = useSelector(selectDatasetById(dataview.datasetsConfig?.[0].datasetId || ''))
+  const datasetId = dataview.datasetsConfig?.[0].datasetId || ''
+  const dataset = useSelector(selectDatasetById(datasetId))
   const ids = (datasetsConfig || []).map(({ datasetId }) => datasetId)
   const [loading, setLoading] = useState(false)
-  const [datasetResolved, setDatasetResolved] = useState<Dataset>(dataset)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const datasetTypeIcon = datasetResolved && getDatasetTypeIcon(datasetResolved)
-  const datasetSourceIcon = datasetResolved && getDatasetSourceIcon(datasetResolved)
-
-  const resolveDataset = useCallback(async () => {
-    const fetchDatasetsAction = await dispatch(fetchDatasetsByIdsThunk({ ids }))
-    const { payload } = await fetchDatasetsAction
-    if (payload) {
-      setDatasetResolved((payload as Dataset[])?.[0])
-    }
-  }, [dispatch, ids])
-
-  useEffect(() => {
-    if (!datasetResolved) {
-      resolveDataset()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const datasetTypeIcon = getDatasetTypeIcon(dataset)
+  const datasetSourceIcon = getDatasetSourceIcon(dataset)
 
   const onAddToWorkspaceClick = async () => {
     if (datasetsConfig?.length) {
