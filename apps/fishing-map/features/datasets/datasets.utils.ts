@@ -130,16 +130,18 @@ export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string =
 export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
   if (dataset.type === DatasetTypes.Events) return 'clusters'
+  if (dataset.type === DatasetTypes.UserTracks) return 'track'
 
   const geometryType = getDatasetGeometryType(dataset)
-  if (geometryType === 'points') return 'dots'
-  if (geometryType === 'tracks' || dataset.type === DatasetTypes.UserTracks) return 'track'
-  if (
-    geometryType === 'polygons' ||
-    dataset.type === DatasetTypes.Context ||
-    dataset.type === DatasetTypes.UserContext
-  )
+  if (dataset.type === DatasetTypes.Context) {
+    if (geometryType === 'points') {
+      return 'dots'
+    }
+    if (geometryType === 'tracks') {
+      return 'track'
+    }
     return 'polygons'
+  }
 
   return null
 }
