@@ -20,13 +20,63 @@
     "moreInfoLink": ""
   },
   "encounters": {
-    "name": "Encounter Events. (AIS)",
+    "name": "Encounter events (AIS)",
     "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
+    "moreInfoLink": ""
+  },
+  "sst": {
+    "name": "Sea surface temperature",
+    "description": "Sea surface temperature is the water temperature at or near the surface of the ocean. Sea surface temperature impacts weather and regional climates. Temperature and salinity drive global ocean circulation and large-scale movement of ocean currents.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/description"
+  },
+  "salinity": {
+    "name": "Salinity",
+    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses.",
     "moreInfoLink": ""
   },
   "chlorophyl": {
     "name": "Chlorophyll-a concentration",
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
+  },
+  "nitrate": {
+    "name": "Nitrate concentration (NO3)",
+    "description": "",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
+  },
+  "oxygen": {
+    "name": "Oxygen concentration (O2)",
+    "description": "",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
+  },
+  "phosphate": {
+    "name": "Phosphate concentration (PO4)",
+    "description": "",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
+  },
+  "ph": {
+    "name": "pH",
+    "description": "",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
+  },
+  "thgt": {
+    "name": "Waves height",
+    "description": "Wave height is the vertical distance of a sea surface wave from trough (bottom) to crest (top). It is plotted here using significant wave height, traditionally defined as the average of the highest one-third of all wave heights over a given sample period.",
+    "moreInfoLink": "https://www.pacioos.hawaii.edu/waves/model-global/#about"
+  },
+  "sst-anomalies": {
+    "name": "Sea surface temperature anommalies (mean)",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "sst-anomalies-max": {
+    "name": "Sea surface temperature anommalies (max)",
+    "description": "",
+    "moreInfoLink": ""
+  },
+  "sst-anomalies-min": {
+    "name": "Sea surface temperature anommalies (min)",
+    "description": "",
     "moreInfoLink": ""
   },
   "graticules": {
@@ -70,72 +120,22 @@
     "moreInfoLink": ""
   },
   "mangroves": {
-    "name": "Marine ecoregions",
+    "name": "Mangroves",
     "description": "",
     "moreInfoLink": ""
   },
   "seamounts": {
-    "name": "Marine ecoregions",
+    "name": "Seamounts",
     "description": "",
     "moreInfoLink": ""
   },
   "coral-reefs": {
-    "name": "Marine ecoregions",
+    "name": "Coral reefs",
     "description": "",
     "moreInfoLink": ""
   },
   "seagrasses": {
-    "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
-  },
-  "nitrate": {
-    "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
-  },
-  "oxygen": {
-    "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
-  },
-  "phosphate": {
-    "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
-  },
-  "salinity": {
-    "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
-  },
-  "ph": {
-    "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
-  },
-  "sst": {
-    "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
-  },
-  "thgt": {
-    "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
-  },
-  "sst-anomalies": {
-    "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
-  },
-  "sst-anomalies-max": {
-    "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
-  },
-  "sst-anomalies-min": {
-    "name": "Marine ecoregions",
+    "name": "Seagrasses",
     "description": "",
     "moreInfoLink": ""
   }

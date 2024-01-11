@@ -152,11 +152,15 @@ export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
     return null
   }
   // Activity, Detections & Events
-  if (source === 'Global Fishing Watch') return 'gfw-logo'
+  if (source === 'Global Fishing Watch' || source === 'GFW') return 'gfw-logo'
   // Environment
   if (source.includes('HYCOM')) return 'hycom-logo'
   if (source.includes('Copernicus')) return 'copernicus-logo'
   if (source.includes('NASA')) return 'nasa-logo'
+  if (source.includes('PacIOOS')) return 'pacioos-logo'
+  if (source.includes('Geospatial Conservation Atlas')) return 'gca-logo'
+  if (source.includes('UNEP')) return 'unep-logo'
+  if (source.includes('Blue Habitats')) return 'blue-habitats-logo'
   // Reference
   if (source.includes('protectedplanet')) return 'protected-planet-logo'
   if (source.includes('protectedseas')) return 'protected-seas-logo'
