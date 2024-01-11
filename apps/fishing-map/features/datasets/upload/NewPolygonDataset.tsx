@@ -76,10 +76,10 @@ function NewPolygonDataset({
     if (datasetMetadata && onConfirm) {
       setLoading(true)
       const file = geojson ? getFileFromGeojson(geojson) : undefined
-      await onConfirm(datasetMetadata, file)
+      await onConfirm(datasetMetadata, { file, isEditing })
       setLoading(false)
     }
-  }, [datasetMetadata, onConfirm, geojson])
+  }, [datasetMetadata, onConfirm, geojson, isEditing])
 
   if (processingData) {
     return (

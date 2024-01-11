@@ -170,11 +170,11 @@ function NewPointDataset({
         // setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
         setLoading(true)
         const file = geojson ? getFileFromGeojson(geojson) : undefined
-        await onConfirm(datasetMetadata, file)
+        await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }
     }
-  }, [datasetMetadata, sourceData, onConfirm, fileType, geojson, t])
+  }, [datasetMetadata, sourceData, onConfirm, fileType, geojson, t, isEditing])
 
   if (processingData) {
     return (

@@ -171,11 +171,11 @@ function NewTrackDataset({
       } else if (onConfirm) {
         setLoading(true)
         const file = geojson ? getFileFromGeojson(geojson) : undefined
-        await onConfirm(datasetMetadata, file)
+        await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }
     }
-  }, [datasetMetadata, geojson, onConfirm, sourceData, t])
+  }, [datasetMetadata, geojson, onConfirm, sourceData, t, isEditing])
 
   if (processingData) {
     return (

@@ -24,12 +24,13 @@ import {
 import DatasetTypeSelect from './DatasetTypeSelect'
 import styles from './NewDataset.module.css'
 
+type OnConfirmParams = { isEditing: boolean; file?: File }
 export type NewDatasetProps = {
   file?: File
   dataset?: Dataset
   style?: DatasetUploadStyle
   onFileUpdate: (file: File) => void
-  onConfirm: (datasetMetadata: DatasetMetadata, file?: File) => void
+  onConfirm: (datasetMetadata: DatasetMetadata, { isEditing, file }: OnConfirmParams) => void
 }
 
 export type DatasetMetadata = Partial<
@@ -45,12 +46,6 @@ export type DatasetMetadata = Partial<
     | 'fieldsAllowed'
   >
 > & { public: boolean }
-
-// TODO Update https://github.com/DefinitelyTyped/DefinitelyTyped/blob/b453d9d1b99c48c8711c31c2a64e9dffb6ce729d/types/shpjs/index.d.ts
-// When this gets merged to upstream https://github.com/calvinmetcalf/shapefile-js/pull/181
-interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
-  extensions?: string[]
-}
 
 function NewDataset() {
   const { t } = useTranslation()
@@ -82,8 +77,8 @@ function NewDataset() {
     })
   }, [dispatchDatasetModalConfig, dispatchDatasetModalOpen])
 
-  const onConfirmClick = useCallback(
-    async (datasetMetadata: DatasetMetadata, datasetFile?: File) => {
+  const onConfirmClick: NewDatasetProps['onConfirm'] = useCallback(
+    async (datasetMetadata, { file, isEditing } = {} as OnConfirmParams) => {
       if (datasetMetadata) {
         const { payload, error: createDatasetError } = await dispatchUpsertDataset({
           dataset: {
@@ -91,7 +86,7 @@ function NewDataset() {
             unit: 'TBD',
             subcategory: 'info',
           },
-          file: datasetFile,
+          file,
           createAsPublic: datasetMetadata?.public ?? true,
         })
 
@@ -102,7 +97,9 @@ function NewDataset() {
         } else if (payload) {
           if (locationType === 'HOME' || locationType === 'WORKSPACE') {
             const dataset = { ...payload }
-            addDataviewFromDatasetToWorkspace(dataset)
+            if (!isEditing) {
+              addDataviewFromDatasetToWorkspace(dataset)
+            }
           }
           onClose()
         }
