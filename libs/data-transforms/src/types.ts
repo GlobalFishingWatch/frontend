@@ -7,6 +7,7 @@ export type SegmentColumns = {
   endTime?: string | number
   segmentId?: string | number
   lineId?: string | number
+  timestamp?: string | number
 }
 
 export type PointColumns = {

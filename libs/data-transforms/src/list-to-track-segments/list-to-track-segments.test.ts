@@ -78,7 +78,7 @@ describe('Basic raw csv to track', () => {
   const segmentIndexPerId = ids.reduce((prev, id) => {
     for (let i = 0; i < segments.length; i++) {
       const segment = segments[i]
-      if (segment[0].id === id) return { ...prev, [id]: i }
+      if (segment[0]?.[0]?.id === id) return { ...prev, [id]: i }
     }
     return { ...prev }
   }, {})
@@ -151,10 +151,10 @@ describe('Basic raw csv to track', () => {
       const segmentPoint = segment[i]
 
       expect(segmentPoint).toBeDefined()
-      expect(segmentPoint.latitude).toEqual(point[columns.latitude])
-      expect(segmentPoint.longitude).toEqual(point[columns.longitude])
+      expect(segmentPoint[0]?.latitude).toEqual(point[columns.latitude])
+      expect(segmentPoint[0]?.longitude).toEqual(point[columns.longitude])
       const dateCsv = getUTCDate(point[columns.timestamp])
-      expect(segmentPoint.timestamp).toEqual(dateCsv.getTime())
+      expect(segmentPoint[0]?.timestamp).toEqual(dateCsv.getTime())
     }
   )
 })
@@ -181,7 +181,7 @@ describe('Raw csv to track with UTC timestamps', () => {
   const segmentIndexPerId = ids.reduce((prev, id) => {
     for (let i = 0; i < segments.length; i++) {
       const segment = segments[i]
-      if (segment[0].id === id) return { ...prev, [id]: i }
+      if (segment[0]?.[0]?.id === id) return { ...prev, [id]: i }
     }
     return { ...prev }
   }, {})
@@ -250,10 +250,10 @@ describe('Raw csv to track with UTC timestamps', () => {
       const segmentPoint = segment[i]
 
       expect(segmentPoint).toBeDefined()
-      expect(segmentPoint.latitude).toEqual(point[columns.latitude])
-      expect(segmentPoint.longitude).toEqual(point[columns.longitude])
+      expect(segmentPoint[0]?.latitude).toEqual(point[columns.latitude])
+      expect(segmentPoint[0]?.longitude).toEqual(point[columns.longitude])
       const dateCsv = getUTCDate(point[columns.timestamp])
-      expect(segmentPoint.timestamp).toEqual(dateCsv.getTime())
+      expect(segmentPoint[0]?.timestamp).toEqual(dateCsv.getTime())
     }
   )
 })
