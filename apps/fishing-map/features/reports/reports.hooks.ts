@@ -29,7 +29,6 @@ import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewp
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import { HighlightedAreaParams, useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'

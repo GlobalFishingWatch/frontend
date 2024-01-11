@@ -2,6 +2,7 @@ import { parse } from 'papaparse'
 import { FeatureCollection } from 'geojson'
 import {
   pointsListToGeojson,
+  pointsGeojsonToNormalizedGeojson,
   listToTrackSegments,
   segmentsToGeoJSON,
   kmlToGeoJSON,
@@ -18,20 +19,18 @@ import { getFileType, readBlobAs } from 'utils/files'
 export type DataList = Record<string, any>[]
 export type DataParsed = FeatureCollection | DataList
 
-export async function getDatasetParsed(
-  file: File,
-  type?: DatasetGeometryType
-): Promise<DataParsed> {
+export async function getDatasetParsed(file: File, type: DatasetGeometryType): Promise<DataParsed> {
   const fileType = getFileType(file)
   if (!fileType) {
     throw new Error('File type not supported')
   }
-  if (fileType === 'shapefile') {
+  if (fileType === 'Shapefile') {
     try {
+      // TODO support multi-dataset shapefiles
+      //  - filter by type to show only relevant datasets
+      //  - process only selected dataset
       const shpjs = await import('shpjs').then((module) => module.default)
-
       const fileData = await readBlobAs(file, 'arrayBuffer')
-      // TODO support multiple files in shapefile
       const expandedShp = await shpjs(fileData)
       if (Array.isArray(expandedShp)) {
         // geojson = expandedShp[0]
@@ -59,8 +58,7 @@ export async function getDatasetParsed(
       console.log('Error loading shapefile file', e)
       throw new Error(e)
     }
-  } else if (fileType === 'csv') {
-    // return load(file, CSVLoader)
+  } else if (fileType === 'CSV') {
     const fileText = await file.text()
     // TODO: CHECK IF CSV CONTAINS HEADERS ?
     const { data } = parse(fileText, {
@@ -69,8 +67,8 @@ export async function getDatasetParsed(
       header: true,
     })
     return data.slice(1) as DataList
-  } else if (fileType === 'kml') {
-    return kmlToGeoJSON(file, type as DatasetGeometryType)
+  } else if (fileType === 'KML') {
+    return kmlToGeoJSON(file, type)
   }
   const fileText = await file.text()
   return JSON.parse(fileText)
@@ -81,8 +79,10 @@ export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
     records: data,
     latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' }),
     longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' }),
-    timestamp: getDatasetConfigurationProperty({ dataset, property: 'timestamp' }),
-    id: getDatasetConfigurationProperty({ dataset, property: 'idProperty' }),
+    startTime: getDatasetConfigurationProperty({ dataset, property: 'startTime' }),
+    endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
+    segmentId: getDatasetConfigurationProperty({ dataset, property: 'segmentId' }),
+    lineId: getDatasetConfigurationProperty({ dataset, property: 'lineId' }),
   })
   return segmentsToGeoJSON(segments)
 }
@@ -91,7 +91,18 @@ export const getGeojsonFromPointsList = (data: Record<string, any>[], dataset: D
   return pointsListToGeojson(data, {
     latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' }),
     longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' }),
-    timestamp: getDatasetConfigurationProperty({ dataset, property: 'timestamp' }),
+    startTime: getDatasetConfigurationProperty({ dataset, property: 'startTime' }),
+    endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
     id: getDatasetConfigurationProperty({ dataset, property: 'idProperty' }),
+  })
+}
+
+export const getNormalizedGeojsonFromPointsGeojson = (
+  data: FeatureCollection,
+  dataset: DatasetMetadata
+) => {
+  return pointsGeojsonToNormalizedGeojson(data, {
+    startTime: getDatasetConfigurationProperty({ dataset, property: 'startTime' }),
+    endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
   })
 }

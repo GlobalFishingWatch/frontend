@@ -34,38 +34,76 @@ export const getUTCDate = (timestamp: string | number) => {
 
 export const NO_RECORD_ID = 'no_id'
 
+const sortRecordsByTimestamp = ({
+  recordsArray,
+  timestampProperty,
+}: {
+  recordsArray: Record<string, any>[]
+  timestampProperty: string | number
+}) => {
+  return recordsArray.toSorted((a: Record<string, any>, b: Record<string, any>) =>
+    a[timestampProperty] && b[timestampProperty]
+      ? getUTCDate(a[timestampProperty]).getTime() - getUTCDate(b[timestampProperty]).getTime()
+      : 1
+  )
+}
+
 export const listToTrackSegments = ({
   records,
   latitude,
   longitude,
-  timestamp,
-  id,
-}: Args): Segment[] => {
-  const hasIdGroup = id !== undefined && id !== ''
-  const recordArray = Array.isArray(records) ? records : [records]
-  const grouped = hasIdGroup ? groupBy(recordArray, id) : { no_id: recordArray }
-  const segments = Object.values(grouped).map((groupedRecords) => {
+  startTime,
+  segmentId,
+  lineId,
+}: Args): Segment[][] => {
+  const hasIdGroup = lineId !== undefined && lineId !== ''
+  const recordsArray = Array.isArray(records) ? records : [records]
+  const sortedRecords = startTime
+    ? sortRecordsByTimestamp({ recordsArray, timestampProperty: startTime })
+    : recordsArray
+  const groupedLines = hasIdGroup ? groupBy(sortedRecords, lineId) : { no_id: sortedRecords }
+  const lines = Object.values(groupedLines).map((groupedRecords) => {
     return groupedRecords.flatMap((record) => {
-      const recordId = id && record[id] ? record[id] : NO_RECORD_ID
-      if (record[latitude] && record[longitude] && record[timestamp]) {
-        const {
-          [latitude]: latitudeValue,
-          [longitude]: longitudeValue,
-          [timestamp]: timestampValue,
-          ...properties
-        } = record
+      const recordId = lineId && record[lineId] ? record[lineId] : NO_RECORD_ID
+      if (record[latitude] && record[longitude]) {
+        const { [latitude]: latitudeValue, [longitude]: longitudeValue, ...properties } = record
         const coords = parseCoords(latitudeValue, longitudeValue)
         if (coords) {
-          return {
-            ...(hasIdGroup && { properties }),
-            latitude: coords.latitude as number,
-            longitude: coords.longitude as number,
-            timestamp: getUTCDate(timestampValue).getTime(),
-            id: recordId,
+          if (segmentId) {
+            const groupedSegments = groupBy(record, segmentId)
+            return Object.values(groupedSegments).flatMap((segment: Record<string, any>) => {
+              const {
+                [latitude]: latitudeValue,
+                [longitude]: longitudeValue,
+                ...properties
+              } = segment
+              const coords = parseCoords(latitudeValue, longitudeValue)
+              return coords
+                ? {
+                    ...(hasIdGroup && { properties }),
+                    latitude: coords.latitude as number,
+                    longitude: coords.longitude as number,
+                    ...(startTime &&
+                      record[startTime] && { timestamp: getUTCDate(record[startTime]).getTime() }),
+                    id: recordId,
+                  }
+                : []
+            })
+          } else {
+            return [
+              {
+                ...(hasIdGroup && { properties }),
+                latitude: coords.latitude as number,
+                longitude: coords.longitude as number,
+                ...(startTime &&
+                  record[startTime] && { timestamp: getUTCDate(record[startTime]).getTime() }),
+                id: recordId,
+              },
+            ]
           }
         } else return []
       } else return []
     })
   })
-  return segments
+  return lines
 }

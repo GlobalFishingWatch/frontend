@@ -123,7 +123,7 @@ export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> =>
   }
 }
 
-export const getEnvironmentDataviewInstance = (
+export const getUserPolygonsDataviewInstance = (
   datasetId: string
 ): DataviewInstance<GeneratorType> => {
   return {
@@ -146,11 +146,15 @@ export const getUserPointsDataviewInstance = (
   dataset: Dataset
 ): DataviewInstance<GeneratorType> => {
   const circleRadiusProperty = getDatasetConfigurationProperty({ dataset, property: 'pointSize' })
-  const pointTimeFilterProperty = getDatasetConfigurationProperty({
+  const startTimeFilterProperty = getDatasetConfigurationProperty({
     dataset,
-    property: 'pointTimeFilter',
+    property: 'startTime',
   })
-  const properties = [circleRadiusProperty, pointTimeFilterProperty]
+  const endTimeFilterProperty = getDatasetConfigurationProperty({
+    dataset,
+    property: 'endTime',
+  })
+  const properties = [circleRadiusProperty, startTimeFilterProperty, endTimeFilterProperty]
     .filter(Boolean)
     .map((p) => p.toLowerCase())
   return {
@@ -165,7 +169,7 @@ export const getUserPointsDataviewInstance = (
         endpoint: EndpointId.ContextTiles,
         params: [{ id: 'id', value: dataset?.id }],
 
-        ...(circleRadiusProperty && {
+        ...(properties.length && {
           query: [
             {
               id: 'properties',

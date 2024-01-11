@@ -1,35 +1,40 @@
-import type { FeatureCollection, LineString, Feature } from 'geojson'
+import type { FeatureCollection, LineString, Feature, MultiLineString, Position } from 'geojson'
 import { Segment, Point } from '@globalfishingwatch/api-types'
 
-const segmentsToGeoJSON = (segments: Segment[]) => {
-  const geoJSON: FeatureCollection<LineString> = {
+const segmentToFeature = (segment: Segment | Segment[]): Feature<MultiLineString> => {
+  const arraySegment: Point[] = Array.isArray(segment) ? segment : [segment]
+  const coordinates: Position[][] = [
+    arraySegment.map(
+      (point: Point) => [point.longitude as number, point.latitude as number] as Position
+    ),
+  ]
+  const geometry: MultiLineString = {
+    type: 'MultiLineString',
+    coordinates,
+  }
+  const times = arraySegment.flatMap((point: Point) => point.timestamp || [])
+  const feature: Feature<MultiLineString> = {
+    type: 'Feature',
+    geometry,
+    properties: {
+      id: arraySegment[0].id,
+      ...arraySegment[0].properties,
+      coordinateProperties: {
+        times,
+      },
+    },
+  }
+  return feature
+}
+
+const segmentsToGeoJSON = (segments: Segment[] | Segment[][]) => {
+  const geoJSON: FeatureCollection<MultiLineString> = {
     type: 'FeatureCollection',
     features: [],
   }
   geoJSON.features = segments.flatMap((segment) => {
     if (!segment.length) return []
-
-    const coordinates = segment.map((point) => [
-      point.longitude as number,
-      point.latitude as number,
-    ])
-    const geometry: LineString = {
-      type: 'LineString',
-      coordinates,
-    }
-    const times = segment.map((point) => point.timestamp)
-    const feature: Feature<LineString> = {
-      type: 'Feature',
-      geometry,
-      properties: {
-        id: segment[0].id,
-        ...segment[0].properties,
-        coordinateProperties: {
-          times,
-        },
-      },
-    }
-    return feature
+    return segmentToFeature(segment)
   })
 
   return geoJSON

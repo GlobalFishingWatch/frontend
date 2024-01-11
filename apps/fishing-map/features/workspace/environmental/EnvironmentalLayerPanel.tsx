@@ -93,8 +93,12 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   }
 
   const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
+    (d) =>
+      d.type === DatasetTypes.Fourwings ||
+      d.type === DatasetTypes.Context ||
+      d.type === DatasetTypes.UserContext
   )
+  const hasLegend = dataset?.type === DatasetTypes.Fourwings
 
   const isCustomUserLayer = !guestUser && dataset?.ownerId === userId
 
@@ -197,7 +201,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           )}
         </div>
       </div>
-      {layerActive && (
+      {layerActive && showVisibleFilterValues && (
         <div className={styles.properties}>
           <div className={styles.filters}>
             <div className={styles.filters}>
@@ -217,7 +221,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           </div>
         </div>
       )}
-      {layerActive && (
+      {layerActive && hasLegend && (
         <div
           className={cx(styles.properties, styles.drag, {
             [styles.dragging]: isSorting && activeIndex > -1,

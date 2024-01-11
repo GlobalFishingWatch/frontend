@@ -135,8 +135,9 @@
   cursor: not-allowed;
 }
 
-.disabled {
-  pointer-events: none;
+.disabled,
+.disabled * {
+  cursor: not-allowed !important;
 }
 
 .icon {

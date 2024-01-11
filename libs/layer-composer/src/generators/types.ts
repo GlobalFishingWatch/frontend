@@ -174,7 +174,11 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
   /**
    * Feature property to drive timestamps filtering
    */
-  pointTimeFilterProperty?: string
+  startTimeFilterProperty?: string
+  /**
+   * Feature property to drive timestamps filtering
+   */
+  endTimeFilterProperty?: string
   /**
    * Feature property to drive circle radius
    */
@@ -595,6 +599,7 @@ export type ColorRampId =
   | 'yellow'
   | 'green'
   | 'orange'
+  | 'bathymetry' // Custom one for the bathymetry dataset
 
 export type ColorRampWhiteId =
   | 'teal_toWhite'

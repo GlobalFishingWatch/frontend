@@ -130,16 +130,18 @@ export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string =
 export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
   if (dataset.type === DatasetTypes.Events) return 'clusters'
+  if (dataset.type === DatasetTypes.UserTracks) return 'track'
 
   const geometryType = getDatasetGeometryType(dataset)
-  if (geometryType === 'points') return 'dots'
-  if (geometryType === 'tracks' || dataset.type === DatasetTypes.UserTracks) return 'track'
-  if (
-    geometryType === 'polygons' ||
-    dataset.type === DatasetTypes.Context ||
-    dataset.type === DatasetTypes.UserContext
-  )
+  if (dataset.type === DatasetTypes.Context) {
+    if (geometryType === 'points') {
+      return 'dots'
+    }
+    if (geometryType === 'tracks') {
+      return 'track'
+    }
     return 'polygons'
+  }
 
   return null
 }
@@ -150,11 +152,15 @@ export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
     return null
   }
   // Activity, Detections & Events
-  if (source === 'Global Fishing Watch') return 'gfw-logo'
+  if (source === 'Global Fishing Watch' || source === 'GFW') return 'gfw-logo'
   // Environment
   if (source.includes('HYCOM')) return 'hycom-logo'
   if (source.includes('Copernicus')) return 'copernicus-logo'
   if (source.includes('NASA')) return 'nasa-logo'
+  if (source.includes('PacIOOS')) return 'pacioos-logo'
+  if (source.includes('Geospatial Conservation Atlas')) return 'gca-logo'
+  if (source.includes('UNEP')) return 'unep-logo'
+  if (source.includes('Blue Habitats')) return 'blue-habitats-logo'
   // Reference
   if (source.includes('protectedplanet')) return 'protected-planet-logo'
   if (source.includes('protectedseas')) return 'protected-seas-logo'
@@ -626,7 +632,8 @@ export const getCommonSchemaFieldsInDataview = (
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
   let schemaFields: (string | boolean)[][] = (activeDatasets || [])?.map((d) => {
     const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
-    return schemaItem?.enum || schemaItem?.items?.enum || []
+    const schemaEnum = schemaItem?.enum || schemaItem?.items?.enum || []
+    return Array.isArray(schemaEnum) ? schemaEnum.filter((e) => !!e) : schemaEnum
   })
   if (schemaType === 'number' || schemaType === 'range') {
     const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)

@@ -51,7 +51,6 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
   const onAddToWorkspaceClick = useCallback(
     (dataset: Dataset) => {
       const dataviewInstanceWithDataset = getDataviewInstanceByDataset(dataset)
-      console.log('dataviewInstanceWithDataset:', dataviewInstanceWithDataset)
       if (!dataviewInstanceWithDataset) {
         return
       }

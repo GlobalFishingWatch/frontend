@@ -8,7 +8,7 @@ export function getFileName(file: File): string {
   return capitalize(lowerCase(name))
 }
 
-export type FileType = 'geojson' | 'shapefile' | 'csv' | 'kml'
+export type FileType = 'GeoJSON' | 'Shapefile' | 'CSV' | 'KML'
 export type MimeExtention =
   | '.json'
   | '.geojson'
@@ -19,12 +19,23 @@ export type MimeExtention =
   | '.kml'
   | '.kmz'
 export type MimeType =
-  | 'application/json'
+  | 'application/geo+json'
   | 'application/zip'
   | 'text/csv'
   | 'text/dsv'
   | 'text/tsv'
-  | 'application/vnd'
+  | 'application/vnd.google-earth.kml+xml'
+  | 'application/vnd.google-earth.kmz'
+export const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType> = {
+  '.json': 'application/geo+json',
+  '.geojson': 'application/geo+json',
+  '.zip': 'application/zip',
+  '.csv': 'text/csv',
+  '.dsv': 'text/dsv',
+  '.tsv': 'text/tsv',
+  '.kml': 'application/vnd.google-earth.kml+xml',
+  '.kmz': 'application/vnd.google-earth.kmz',
+}
 
 export type DatasetGeometryTypesSupported = Extract<
   DatasetGeometryType,
@@ -32,36 +43,25 @@ export type DatasetGeometryTypesSupported = Extract<
 >
 
 export const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
-  polygons: ['geojson', 'kml', 'shapefile'],
-  tracks: ['csv', 'geojson', 'kml', 'shapefile'],
-  points: ['csv', 'geojson', 'kml', 'shapefile'],
+  polygons: ['GeoJSON', 'KML', 'Shapefile'],
+  tracks: ['CSV', 'GeoJSON', 'KML', 'Shapefile'],
+  points: ['CSV', 'GeoJSON', 'KML', 'Shapefile'],
 }
 
 export const getFileTypes = (datasetGeometryType: DatasetGeometryTypesSupported) =>
-  FILES_TYPES_BY_GEOMETRY_TYPE[datasetGeometryType || ('polygons' as DatasetGeometryTypesSupported)]
-
-export const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType> = {
-  '.json': 'application/json',
-  '.geojson': 'application/json',
-  '.zip': 'application/zip',
-  '.csv': 'text/csv',
-  '.dsv': 'text/dsv',
-  '.tsv': 'text/tsv',
-  '.kml': 'application/vnd',
-  '.kmz': 'application/vnd',
-}
+  FILES_TYPES_BY_GEOMETRY_TYPE[datasetGeometryType]
 
 type FileConfig = { id: FileType; files: string[]; icon: string }
 
 export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
-  geojson: {
-    id: 'geojson',
+  GeoJSON: {
+    id: 'GeoJSON',
     files: ['.json', '.geojson'],
     icon: 'geojson',
   },
-  shapefile: { id: 'shapefile', files: ['.zip'], icon: 'zip' },
-  csv: { id: 'csv', files: ['.csv', '.tsv', '.dsv'], icon: 'csv' },
-  kml: { id: 'kml', files: ['.kml', '.kmz'], icon: 'kml' },
+  Shapefile: { id: 'Shapefile', files: ['.zip'], icon: 'zip' },
+  CSV: { id: 'CSV', files: ['.csv', '.tsv', '.dsv'], icon: 'csv' },
+  KML: { id: 'KML', files: ['.kml', '.kmz'], icon: 'kml' },
 }
 
 export function getFileType(file?: File) {

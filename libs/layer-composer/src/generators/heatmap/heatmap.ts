@@ -7,7 +7,7 @@ import { Group } from '../../types'
 import { GeneratorType, HeatmapGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { API_GATEWAY } from '../../config'
-import { toURLArray } from '../utils'
+import { addURLSearchParams } from '../utils'
 import fetchStats from './util/fetch-stats'
 import {
   HEATMAP_DEFAULT_MAX_ZOOM,
@@ -41,12 +41,14 @@ class HeatmapGenerator {
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
 
-    const url = new URL(
+    let url = new URL(
       tilesUrl.replace('{{type}}', 'heatmap').replace(/{{/g, '{').replace(/}}/g, '}')
     )
-    url.searchParams.set('geom-type', 'rectangle')
-    url.searchParams.set('single-frame', 'true')
-    url.searchParams.set('datasets', toURLArray('datasets', config.datasets))
+
+    url.searchParams.set('temporal-aggregation', 'true')
+    url.searchParams.set('format', 'INTARRAY')
+    url = addURLSearchParams(url, 'datasets', config.datasets)
+
     if (!staticHeatmap && config.start && config.end) {
       url.searchParams.set('date-range', [config.start, config.end].join(','))
     }

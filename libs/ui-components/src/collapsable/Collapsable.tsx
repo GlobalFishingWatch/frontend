@@ -18,7 +18,7 @@ export function Collapsable(props: CollapsableProps) {
         <span className={styles.label}>{label}</span>
         <Icon className={styles.icon} icon="arrow-down" />
       </summary>
-      <p>{children}</p>
+      {children}
     </details>
   )
 }

@@ -51,19 +51,11 @@ class UserPointsGenerator {
       'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
     }
     let filters: FilterSpecification | undefined
-    if (config?.pointTimeFilterProperty) {
+    if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
       filters = [
         'all',
-        [
-          '<=',
-          ['to-number', ['get', config.pointTimeFilterProperty]],
-          getUTCDate(config.end).getTime(),
-        ],
-        [
-          '>=',
-          ['to-number', ['get', config.pointTimeFilterProperty]],
-          getUTCDate(config.start).getTime(),
-        ],
+        ['<=', ['to-number', ['get', config.endTimeFilterProperty]], config.end],
+        ['>=', ['to-number', ['get', config.startTimeFilterProperty]], config.start],
       ]
     }
     const circleLayer: CircleLayerSpecification = {

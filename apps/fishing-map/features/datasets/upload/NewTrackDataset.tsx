@@ -7,6 +7,7 @@ import {
   InputText,
   MultiSelect,
   MultiSelectOption,
+  Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 import { checkRecordValidity } from '@globalfishingwatch/data-transforms'
@@ -33,6 +34,7 @@ import {
 } from 'features/datasets/upload/datasets-upload.hooks'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import styles from './NewDataset.module.css'
+import { TimeFieldsGroup } from './TimeFieldsGroup'
 
 function NewTrackDataset({
   onConfirm,
@@ -43,6 +45,7 @@ function NewTrackDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [idGroupError, setIdGroupError] = useState<string>('')
+  const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataList | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection | undefined>()
@@ -51,12 +54,17 @@ function NewTrackDataset({
   const isEditing = dataset?.id !== undefined
   const fileType = getFileType(file)
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
-  const isCSVFile = fileType === 'csv' || sourceFormat === 'csv'
+  const isCSVFile = fileType === 'CSV' || sourceFormat === 'csv'
   const fieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
   const isPublic = !!datasetMetadata?.public
-  const idProperty = getDatasetConfigurationProperty({
+
+  const lineIdProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
-    property: 'idProperty',
+    property: 'lineId',
+  })
+  const segmentIdProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'segmentId',
   })
   const latitudeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -66,14 +74,19 @@ function NewTrackDataset({
     dataset: datasetMetadata,
     property: 'longitude',
   })
-  const timestampProperty = getDatasetConfigurationProperty({
+  const startTimeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
-    property: 'timestamp',
+    property: 'startTime',
+  })
+
+  const endTimeProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'endTime',
   })
 
   const handleRawData = useCallback(
     async (file: File) => {
-      setLoading(true)
+      setProcessingData(true)
       const data = await getDatasetParsed(file, 'tracks')
       const fileType = getFileType(file)
       const datasetMetadata = getTracksDatasetMetadata({
@@ -82,14 +95,14 @@ function NewTrackDataset({
         sourceFormat: fileType as FileType,
       })
       setDatasetMetadata(datasetMetadata)
-      if (fileType === 'csv') {
+      if (fileType === 'CSV') {
         setSourceData(data as DataList)
         const geojson = getTrackFromList(data as DataList, datasetMetadata)
         setGeojson(geojson)
       } else {
         setGeojson(data as FeatureCollection)
       }
-      setLoading(false)
+      setProcessingData(false)
     },
     [setDatasetMetadata]
   )
@@ -104,8 +117,9 @@ function NewTrackDataset({
   }, [dataset, file])
 
   useEffect(() => {
-    if (latitudeProperty && longitudeProperty && idProperty && timestampProperty && sourceData) {
+    if (sourceData) {
       const geojson = getTrackFromList(sourceData, datasetMetadata)
+      console.log('🚀 ~ file: NewTrackDataset.tsx:113 ~ useEffect ~ geojson:', geojson)
       setGeojson(geojson)
       if (!geojson.features.some((f) => f.geometry.coordinates?.length >= 2)) {
         setIdGroupError(
@@ -116,7 +130,14 @@ function NewTrackDataset({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idProperty, latitudeProperty, longitudeProperty, timestampProperty])
+  }, [
+    lineIdProperty,
+    endTimeProperty,
+    latitudeProperty,
+    longitudeProperty,
+    startTimeProperty,
+    segmentIdProperty,
+  ])
 
   const onConfirmClick = useCallback(async () => {
     let error = ''
@@ -150,11 +171,20 @@ function NewTrackDataset({
       } else if (onConfirm) {
         setLoading(true)
         const file = geojson ? getFileFromGeojson(geojson) : undefined
-        await onConfirm(datasetMetadata, file)
+        await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }
     }
-  }, [datasetMetadata, geojson, onConfirm, sourceData, t])
+  }, [datasetMetadata, geojson, onConfirm, sourceData, t, isEditing])
+
+  if (processingData) {
+    return (
+      <div className={styles.processingData}>
+        <Spinner className={styles.processingDataSpinner} />
+        <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>
@@ -171,6 +201,7 @@ function NewTrackDataset({
           label={t('datasetUpload.datasetName', 'Dataset Name')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ name: e.target.value })}
+          disabled={loading}
         />
         {isCSVFile && (
           <div className={styles.row}>
@@ -181,7 +212,7 @@ function NewTrackDataset({
                 'common.latitude',
                 'Latitude'
               )}`}
-              editable={!isEditing}
+              editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ latitude: selected.id })
               }}
@@ -190,18 +221,45 @@ function NewTrackDataset({
               datasetMetadata={datasetMetadata}
               property="longitude"
               label={t('common.longitude', 'longitude')}
-              editable={!isEditing}
+              editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ longitude: selected.id })
               }}
             />
+          </div>
+        )}
+        <div className={styles.row}>
+          <TimeFieldsGroup
+            datasetMetadata={datasetMetadata}
+            setDatasetMetadataConfig={setDatasetMetadataConfig}
+          />
+        </div>
+        {isCSVFile && (
+          <div className={styles.row}>
             <NewDatasetField
               datasetMetadata={datasetMetadata}
-              property="timestamp"
-              label={t('datasetUpload.tracks.segmentTimes', 'Track point times')}
-              editable={!isEditing}
+              property="lineId"
+              label={t('datasetUpload.tracks.lineId', 'Individual line id')}
+              editable={!isEditing && !loading}
               onSelect={(selected) => {
-                setDatasetMetadataConfig({ timestamp: selected.id })
+                setDatasetMetadataConfig({ lineId: selected.id })
+              }}
+              onCleanClick={() => {
+                setDatasetMetadata({ fieldsAllowed: [] })
+                setDatasetMetadataConfig({ lineId: undefined })
+              }}
+            />
+            <NewDatasetField
+              datasetMetadata={datasetMetadata}
+              property="segmentId"
+              label={t('datasetUpload.tracks.segmentId', 'Individual segment id')}
+              editable={!isEditing && !loading}
+              onSelect={(selected) => {
+                setDatasetMetadataConfig({ segmentId: selected.id })
+              }}
+              onCleanClick={() => {
+                setDatasetMetadata({ fieldsAllowed: [] })
+                setDatasetMetadataConfig({ segmentId: undefined })
               }}
             />
           </div>
@@ -216,24 +274,9 @@ function NewTrackDataset({
           label={t('datasetUpload.datasetDescription', 'Dataset description')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
+          disabled={loading}
         />
-        {isCSVFile && (
-          <Fragment>
-            <NewDatasetField
-              datasetMetadata={datasetMetadata}
-              property="idProperty"
-              label={t('datasetUpload.tracks.segmentId', 'Individual segment id')}
-              editable={!isEditing}
-              onSelect={(selected) => {
-                setDatasetMetadataConfig({ idProperty: selected.id })
-              }}
-              onCleanClick={() => {
-                setDatasetMetadata({ fieldsAllowed: [] })
-                setDatasetMetadataConfig({ idProperty: undefined })
-              }}
-            />
-          </Fragment>
-        )}
+
         <MultiSelect
           label={t('datasetUpload.tracks.filters', 'Line filters')}
           placeholder={
@@ -243,8 +286,12 @@ function NewTrackDataset({
           }
           direction="top"
           disabled={
-            isCSVFile &&
-            !getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'idProperty' })
+            loading ||
+            (isCSVFile &&
+              !getDatasetConfigurationProperty({
+                dataset: datasetMetadata,
+                property: 'idProperty',
+              }))
           }
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
@@ -266,7 +313,7 @@ function NewTrackDataset({
           )}
           // disabled={!!mapDrawEditDataset}
           active={isPublic}
-          disabled={isEditing}
+          disabled={isEditing || loading}
           onClick={() => setDatasetMetadata({ public: !isPublic })}
         />
       </Collapsable>
