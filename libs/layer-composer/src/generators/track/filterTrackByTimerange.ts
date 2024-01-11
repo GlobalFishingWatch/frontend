@@ -1,3 +1,4 @@
+import { MultiLineString } from '@turf/helpers'
 import {
   FeatureCollection,
   Feature,
@@ -32,37 +33,40 @@ const filterTrackByTimerange = (
     (filteredFeatures: Feature<Geometry, GeoJsonProperties>[], feature) => {
       const hasTimes = feature?.properties?.coordinateProperties?.times?.length > 0
       if (hasTimes) {
-        const filtered: SegmentData = (feature.geometry as LineString).coordinates.reduce(
-          (filteredCoordinates, coordinate, index) => {
-            const timeCoordinate: number = feature.properties?.coordinateProperties?.times[index]
-            const isInTimeline = timeCoordinate >= start && timeCoordinate <= end
-            if (isInTimeline) {
-              if (leadingPoint && index > 0) {
-                leadingPoint = false
-                const leadingIndex = index - 1
-                const leadingCoordinatePoint = (feature.geometry as LineString).coordinates[
-                  leadingIndex
-                ]
-                const leadingCoordinateTime: number =
-                  feature.properties?.coordinateProperties?.times[leadingIndex]
-                filteredCoordinates.coordinates.push(leadingCoordinatePoint)
-                filteredCoordinates.times.push(leadingCoordinateTime)
+        let filtered: SegmentData = { coordinates: [] as Position[], times: [] as number[] }
+        ;(feature.geometry as MultiLineString).coordinates.forEach((lineCoordinates) => {
+          const filteredLines = lineCoordinates.reduce(
+            (filteredCoordinates, coordinate, index) => {
+              const timeCoordinate: number = feature.properties?.coordinateProperties?.times[index]
+              const isInTimeline = timeCoordinate >= start && timeCoordinate <= end
+              if (isInTimeline) {
+                if (leadingPoint && index > 0) {
+                  leadingPoint = false
+                  const leadingIndex = index - 1
+                  const leadingCoordinatePoint = (feature.geometry as LineString).coordinates[
+                    leadingIndex
+                  ]
+                  const leadingCoordinateTime: number =
+                    feature.properties?.coordinateProperties?.times[leadingIndex]
+                  filteredCoordinates.coordinates.push(leadingCoordinatePoint)
+                  filteredCoordinates.times.push(leadingCoordinateTime)
+                }
+
+                filteredCoordinates.coordinates.push(coordinate)
+                filteredCoordinates.times.push(timeCoordinate)
               }
 
-              filteredCoordinates.coordinates.push(coordinate)
-              filteredCoordinates.times.push(timeCoordinate)
-            }
-
-            return filteredCoordinates
-          },
-          { coordinates: [] as Position[], times: [] as number[] }
-        )
+              return filteredCoordinates
+            },
+            { coordinates: [] as Position[], times: [] as number[] }
+          )
+          filtered = filteredLines
+        })
 
         if (!filtered.coordinates.length) return filteredFeatures
-
         //
-        const geometry: LineString = {
-          type: 'LineString',
+        const geometry: MultiLineString = {
+          type: 'MultiLineString',
           coordinates: filtered.coordinates,
         }
 
