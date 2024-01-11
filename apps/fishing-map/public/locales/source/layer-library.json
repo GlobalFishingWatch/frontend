@@ -1,4 +1,9 @@
 {
+  "bathymetry": {
+    "name": "Bathymetry",
+    "description": "",
+    "moreInfoLink": ""
+  },
   "chlorophyl": {
     "name": "Chlorophyll-a concentration",
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen.",

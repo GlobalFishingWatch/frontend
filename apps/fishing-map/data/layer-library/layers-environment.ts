@@ -1,3 +1,4 @@
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { PATH_BASENAME } from 'data/config'
 import { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import { TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG } from 'data/workspaces'
@@ -194,6 +195,23 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
       {
         ...heatmapDatasetConfig,
         datasetId: 'public-global-thgt:v20231213',
+      },
+    ],
+  },
+  {
+    id: 'bathymetry',
+    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry.jpg`,
+    config: {
+      type: GeneratorType.Heatmap,
+      color: '#FFAE9B',
+      colorRamp: 'salmon',
+      static: true,
+    },
+    datasetsConfig: [
+      {
+        ...heatmapDatasetConfig,
+        datasetId: 'public-global-bathymetry',
       },
     ],
   },
