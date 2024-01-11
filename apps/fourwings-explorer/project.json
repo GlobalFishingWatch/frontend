@@ -24,14 +24,7 @@
         ]
       }
     },
-    "zip": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": ["zip -r dist.zip dist/apps/fourwings-explorer/exported/*"]
-      }
-    },
-    "compile": {
+    "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -42,67 +35,35 @@
         "production": {}
       }
     },
-    "clean-locales": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": ["rm -rf dist/apps/fourwings-explorer/public/locales"]
-      }
-    },
     "start": {
       "executor": "@nx/next:server",
       "options": {
-        "buildTarget": "fourwings-explorer:compile",
+        "buildTarget": "fourwings-explorer:build",
         "dev": true,
         "port": 3000
       },
       "configurations": {
         "production": {
-          "buildTarget": "fourwings-explorer:compile:production",
+          "buildTarget": "fourwings-explorer:build:production",
           "dev": false
         }
       }
     },
-    "build": {
+    "export": {
       "executor": "@nx/next:export",
       "options": {
-        "buildTarget": "fourwings-explorer:compile:production"
+        "buildTarget": "fourwings-explorer:build:production"
       }
     },
-    "rename-export": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "rm -rf dist/apps/fourwings-explorer/map",
-          "mv dist/apps/fourwings-explorer/exported dist/apps/fourwings-explorer/map"
-        ],
-        "parallel": false
-      }
-    },
-    "serve:export": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "nx build fourwings-explorer --parallel",
-          "nx rename-export fourwings-explorer",
-          "serve dist/apps/fourwings-explorer"
-        ],
-        "parallel": false
-      }
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/fourwings-explorer"],
       "options": {
-        "jestConfig": "apps/fourwings-explorer/jest.config.ts",
-        "passWithNoTests": true
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/fourwings-explorer/**/*.{ts,tsx,js,jsx}"]
+        "jestConfig": "apps/fourwings-explorer/jest.config.ts"
       }
     }
   },

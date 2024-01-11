@@ -5,12 +5,12 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { useTranslation } from 'react-i18next'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetCategory, DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
-import { selectEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
-import { selectUserDatasetsByCategory } from 'features/user/user.selectors'
+import { selectUserEnvironmentDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { getEventLabel } from 'utils/analytics'
-import { selectReadOnly } from 'features/app/app.selectors'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
@@ -23,7 +23,7 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)
-  const userDatasets = useSelector(selectUserDatasetsByCategory(DatasetCategory.Environment))
+  const userDatasets = useSelector(selectUserEnvironmentDatasets)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const locationCategory = useSelector(selectLocationCategory)
 

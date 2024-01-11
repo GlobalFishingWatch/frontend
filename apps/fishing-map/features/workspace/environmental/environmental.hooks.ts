@@ -6,7 +6,7 @@ import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectActiveNonTrackEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveNonTrackEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   DataviewFeature,
   areDataviewsFeatureLoaded,

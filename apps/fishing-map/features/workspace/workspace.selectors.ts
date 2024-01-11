@@ -1,15 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { RootState } from 'reducers'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, WorkspaceCategory } from 'data/workspaces'
+import { RootState } from 'store'
 
-export const selectLastVisitedWorkspace = (state: RootState) => state.workspace.lastVisited
-export const selectWorkspace = (state: RootState) => state.workspace.data
-export const selectWorkspaceStatus = (state: RootState) => state.workspace.status
-export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace.customStatus
-export const selectWorkspaceError = (state: RootState) => state.workspace.error
+export const selectWorkspace = (state: RootState) => state.workspace?.data
+export const selectWorkspaceError = (state: RootState) => state.workspace?.error
+export const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
+export const selectLastVisitedWorkspace = (state: RootState) => state.workspace?.lastVisited
+export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace?.customStatus
 
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id
@@ -38,18 +38,23 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
   return workspace?.dataviewInstances || [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
 })
 
+const EMPTY_OBJECT: {} = {}
 export const selectWorkspaceState = createSelector(
   [selectWorkspace],
   (workspace): WorkspaceState => {
-    return workspace?.state || ({} as WorkspaceState)
+    return workspace?.state || (EMPTY_OBJECT as WorkspaceState)
   }
 )
 
-export const selectWorkspaceStateProperty = (property: WorkspaceStateProperty) =>
-  createSelector(
+type WorkspaceProperty<P extends WorkspaceStateProperty> = Required<WorkspaceState>[P]
+export function selectWorkspaceStateProperty<P extends WorkspaceStateProperty>(property: P) {
+  return createSelector(
     [selectQueryParam(property), selectWorkspaceState],
-    (urlProperty, workspaceState) => {
+    (urlProperty, workspaceState): WorkspaceProperty<P> => {
       if (urlProperty !== undefined) return urlProperty
-      return workspaceState[property] ?? DEFAULT_WORKSPACE[property]
+      return (workspaceState[property] ?? DEFAULT_WORKSPACE[property]) as WorkspaceProperty<P>
     }
   )
+}
+
+export const selectDaysFromLatest = selectWorkspaceStateProperty('daysFromLatest')

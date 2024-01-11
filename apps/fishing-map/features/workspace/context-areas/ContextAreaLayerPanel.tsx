@@ -10,11 +10,11 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { selectViewport } from 'features/app/app.selectors'
-import { selectUserId } from 'features/user/user.selectors'
+import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
+import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAddDataset } from 'features/datasets/datasets.hook'
-import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
@@ -27,7 +27,7 @@ import {
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
   HIDDEN_DATAVIEW_FILTERS,
 } from 'data/workspaces'
-import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
+import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
 import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import {
   CONTEXT_FEATURES_LIMIT,
@@ -80,7 +80,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     closest: [],
   })
   const [colorOpen, setColorOpen] = useState(false)
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const userId = useSelector(selectUserId)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {

@@ -1,6 +1,7 @@
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
-import { IconButton, Modal } from '@globalfishingwatch/ui-components'
+import { IconButton } from '../icon-button'
+import { Modal } from '../modal'
 import styles from './ProgressBar.module.css'
 
 interface ProgressBarProps {

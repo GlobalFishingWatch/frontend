@@ -5,7 +5,7 @@ const withNx = require('@nx/next/plugins/with-nx')
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: process.env.ANALYZE === 'true',
 // })
-// const CircularDependencyPlugin = require('circular-dependency-plugin')
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const basePath =
   process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/map' : '')
@@ -64,19 +64,19 @@ const nextConfig = {
     }
     config.externals = [...config.externals, 'mapbox-gl']
     // config.optimization.minimize = false
-    // config.plugins.push(
-    //   new CircularDependencyPlugin({
-    //     // exclude detection of files based on a RegExp
-    //     exclude: /node_modules/,
-    //     // add errors to webpack instead of warnings
-    //     failOnError: true,
-    //     // allow import cycles that include an asyncronous import,
-    //     // e.g. via import(/* webpackMode: "weak" */ './file.js')
-    //     allowAsyncCycles: true,
-    //     // set the current working directory for displaying module paths
-    //     cwd: process.cwd(),
-    //   })
-    // )
+    config.plugins.push(
+      new CircularDependencyPlugin({
+        // exclude detection of files based on a RegExp
+        exclude: /node_modules/,
+        // add errors to webpack instead of warnings
+        failOnError: false,
+        // allow import cycles that include an asyncronous import,
+        // e.g. via import(/* webpackMode: "weak" */ './file.js')
+        allowAsyncCycles: true,
+        // set the current working directory for displaying module paths
+        cwd: process.cwd(),
+      })
+    )
     return config
   },
   // productionBrowserSourceMaps: true,
@@ -88,7 +88,6 @@ const nextConfig = {
   outputFileTracing: true,
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
-    serverActions: true,
   },
   // pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
   cleanDistDir: true,

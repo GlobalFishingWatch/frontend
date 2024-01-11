@@ -6,9 +6,9 @@ import Script from 'next/script'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { Locale } from 'types'
 import { CROWDIN_IN_CONTEXT_LANG, LocaleLabels } from 'features/i18n/i18n'
-import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
+import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { isGFWDeveloper } from 'features/user/user.slice'
+import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './LanguageToggle.module.css'
 
@@ -23,7 +23,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const gfwDeveloper = useSelector(isGFWDeveloper)
+  const gfwDeveloper = useSelector(selectIsGFWDeveloper)
   const basemapDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
   const toggleLanguage = (lang: Locale) => {
     trackEvent({

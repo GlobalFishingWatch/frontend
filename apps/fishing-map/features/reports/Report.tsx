@@ -8,14 +8,8 @@ import { isAuthError } from '@globalfishingwatch/api-client'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
-  isActivityReport,
-  selectActiveReportDataviews,
-  selectReportAreaSource,
-  selectReportCategory,
-  selectTimeRange,
-} from 'features/app/app.selectors'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import WorkspaceError, { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
@@ -27,7 +21,6 @@ import {
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
-import { selectIsGuestUser, selectUserData } from 'features/user/user.slice'
 import { ReportCategory, TimebarVisualisations } from 'types'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
@@ -44,7 +37,14 @@ import {
   setDateRangeHash,
 } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectReportAreaId, selectReportDatasetId } from 'features/app/app.selectors'
+import {
+  isActivityReport,
+  selectActiveReportDataviews,
+  selectReportAreaId,
+  selectReportAreaSource,
+  selectReportCategory,
+  selectReportDatasetId,
+} from 'features/app/selectors/app.reports.selector'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useSetTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -53,6 +53,8 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
 import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { useFetchReportArea, useFetchReportVessel, useFitAreaInViewport } from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
@@ -65,6 +67,7 @@ import styles from './Report.module.css'
 export type ReportActivityUnit = 'hour' | 'detection'
 
 function ActivityReport({ reportName }: { reportName: string }) {
+  useFetchDataviewResources()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [lastReports] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])

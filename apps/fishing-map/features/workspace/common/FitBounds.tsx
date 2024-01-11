@@ -46,6 +46,7 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
       } else {
         if (
           infoResource &&
+          // TODO not used selfReportedInfo?.[0] but get the current vessel identity
           (!infoResource.data?.selfReportedInfo?.[0]?.transmissionDateFrom ||
             !infoResource.data?.selfReportedInfo?.[0]?.transmissionDateTo)
         ) {
@@ -73,6 +74,8 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
             let minTimestamp = Number.POSITIVE_INFINITY
             let maxTimestamp = Number.NEGATIVE_INFINITY
             segments.forEach((seg) => {
+              // TODO get the timestamp value from the timestamp field configured in the dataset
+              // this only works for datasets with the timestamp field named 'timestamp'
               seg.forEach((pt) => {
                 if (pt.timestamp && pt.timestamp < minTimestamp) minTimestamp = pt.timestamp
                 if (pt.timestamp && pt.timestamp > maxTimestamp) maxTimestamp = pt.timestamp

@@ -9,9 +9,9 @@ import {
 import { createWrapper } from 'next-redux-wrapper'
 import { dataviewStatsApi } from 'queries/stats-api'
 import { vesselSearchApi } from 'queries/search-api'
-import { rootReducer } from 'reducers'
 import connectedRoutes from 'routes/routes'
 import { routerQueryMiddleware, routerWorkspaceMiddleware } from 'routes/routes.middlewares'
+import { rootReducer } from './reducers'
 
 const {
   middleware: routerMiddleware,
@@ -53,12 +53,12 @@ export const makeStore = () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware(defaultMiddlewareOptions).concat(
         dataviewStatsApi.middleware,
-        vesselSearchApi.middleware as Middleware,
+        vesselSearchApi.middleware,
         routerQueryMiddleware,
         routerWorkspaceMiddleware,
-        routerMiddleware
+        routerMiddleware as Middleware
       ),
-    enhancers: (defaultEnhancers) => [routerEnhancer, ...defaultEnhancers] as any,
+    enhancers: (getDefaultEnhancers) => [routerEnhancer, ...getDefaultEnhancers()] as any,
     // preloadedState,
   })
 }

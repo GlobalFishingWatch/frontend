@@ -30,11 +30,12 @@ import { getEventLabel } from 'utils/analytics'
 import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
 import { updateLocation } from 'routes/routes.actions'
 import { ROUTE_TYPES } from 'routes/routes'
-import { resetSidebarScroll } from 'features/sidebar/Sidebar'
+import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getVesselId } from 'features/vessel/vessel.utils'
+import { ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
 import {
   IdField,
   resetVesselGroup,
@@ -60,14 +61,6 @@ import {
 import styles from './VesselGroupModal.module.css'
 
 export type CSV = Record<string, any>[]
-
-// Look for these ID columns by order of preference
-export const ID_COLUMN_LOOKUP: IdField[] = ['vesselId', 'mmsi']
-
-const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
-  id: key,
-  label: key.toUpperCase(),
-}))
 
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
@@ -177,7 +170,7 @@ function VesselGroupModal(): React.ReactElement {
             },
           }
           const currentDataviewInstance = urlDataviewInstances?.find(
-            (dvi) => dvi.id === currentDataviewId
+            (dvi) => dvi?.id === currentDataviewId
           )
 
           if (currentDataviewInstance) {
@@ -291,8 +284,8 @@ function VesselGroupModal(): React.ReactElement {
         defaultValue: 'Maximum number of vessels is {{count}}',
       })
     : hasVesselGroupsVessels && groupName === ''
-    ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
-    : ''
+      ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
+      : ''
 
   return (
     <Modal

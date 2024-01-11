@@ -20,9 +20,12 @@ import {
   fetchDatasetsByIdsThunk,
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
   VesselInstanceDatasets,
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.utils'
+import {
   getVesselDataviewInstance,
   getVesselInfoDataviewInstanceDatasetConfig,
 } from 'features/dataviews/dataviews.utils'
@@ -30,7 +33,7 @@ import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselId } from 'routes/routes.selectors'
-import { selectIsGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum

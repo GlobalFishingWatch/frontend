@@ -5,7 +5,7 @@ import { MapGeoJSONFeature, MapMouseEvent } from '@globalfishingwatch/maplibre-g
 import { RulerPointProperties } from '@globalfishingwatch/layer-composer'
 import useMapInstance from 'features/map/map-context.hooks'
 import { RULERS_LAYER_ID } from 'features/map/map.config'
-import { selectMapRulersVisible } from 'features/app/app.selectors'
+import { selectMapRulersVisible } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 
 export function useMapRulersDrag() {

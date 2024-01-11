@@ -2,8 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
 import { Query, RouteObject } from 'redux-first-router'
 import { RootState } from 'reducers'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { BufferUnit, WorkspaceParam, UserTab, BufferOperation } from 'types'
+import { WorkspaceParam, QueryParams } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
 import {
   REPORT,
@@ -19,6 +18,7 @@ import {
 } from './routes'
 
 const selectLocation = (state: RootState) => state.location
+
 export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
   const routeMap = routesMap[type] as RouteObject
   return { type: type as ROUTE_TYPES, ...routeMap }
@@ -97,10 +97,12 @@ export const selectLocationSearch = createSelector(
   (location) => location.search as string
 )
 
-export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
-  createSelector([selectLocationQuery], (query: any): T => {
-    return query?.[param]
+type QueryParamProperty<P extends WorkspaceParam> = Required<QueryParams>[P]
+export function selectQueryParam<P extends WorkspaceParam>(param: P) {
+  return createSelector([selectLocationQuery], (query: any): QueryParamProperty<P> => {
+    return query?.[param] as QueryParamProperty<P>
   })
+}
 
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
 
@@ -151,24 +153,21 @@ export const selectIsMarineManagerLocation = createSelector(
   }
 )
 
-export const selectUserTab = selectQueryParam<UserTab>('userTab')
-export const selectUrlMapZoomQuery = selectQueryParam<number>('zoom')
-export const selectUrlMapLatitudeQuery = selectQueryParam<number>('latitude')
-export const selectUrlMapLongitudeQuery = selectQueryParam<number>('longitude')
-export const selectUrlStartQuery = selectQueryParam<string>('start')
-export const selectUrlEndQuery = selectQueryParam<string>('end')
-export const selectUrlBufferValueQuery = selectQueryParam<number>('reportBufferValue')
-export const selectUrlBufferUnitQuery = selectQueryParam<BufferUnit>('reportBufferUnit')
-export const selectUrlBufferOperationQuery =
-  selectQueryParam<BufferOperation>('reportBufferOperation')
-export const selectUrlDataviewInstances =
-  selectQueryParam<UrlDataviewInstance[]>('dataviewInstances')
+export const selectUserTab = selectQueryParam('userTab')
+export const selectUrlMapZoomQuery = selectQueryParam('zoom')
+export const selectUrlMapLatitudeQuery = selectQueryParam('latitude')
+export const selectUrlMapLongitudeQuery = selectQueryParam('longitude')
+export const selectUrlStartQuery = selectQueryParam('start')
+export const selectUrlEndQuery = selectQueryParam('end')
+export const selectUrlBufferValueQuery = selectQueryParam('reportBufferValue')
+export const selectUrlBufferUnitQuery = selectQueryParam('reportBufferUnit')
+export const selectUrlBufferOperationQuery = selectQueryParam('reportBufferOperation')
+export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')
 
-export const selectUrlDataviewInstancesOrder =
-  selectQueryParam<UrlDataviewInstance['id'][]>('dataviewInstancesOrder')
+export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstancesOrder')
 
-export const selectIsMapDrawing = selectQueryParam<boolean>('mapDrawing')
-export const selectMapDrawingEditId = selectQueryParam<string>('mapDrawingEditId')
+export const selectIsMapDrawing = selectQueryParam('mapDrawing')
+export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
 
 export const selectUrlViewport = createSelector(
   [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],
@@ -190,6 +189,6 @@ export const selectUrlDataviewInstancesById = memoize((id: string) =>
   createSelector(
     [selectUrlDataviewInstances],
     (urlDataviewInstances) =>
-      urlDataviewInstances?.find((dataviewInstance) => dataviewInstance.id === id)
+      urlDataviewInstances?.find((dataviewInstance) => dataviewInstance?.id === id)
   )
 )

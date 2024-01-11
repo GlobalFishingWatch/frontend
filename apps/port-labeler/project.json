@@ -45,7 +45,7 @@
       "options": {
         "buildTarget": "port-labeler:build",
         "dev": true,
-        "port": 3003
+        "port": 3000
       },
       "configurations": {
         "production": {
@@ -60,19 +60,25 @@
         "buildTarget": "port-labeler:build:production"
       }
     },
+    "docker-prepare": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "commands": [
+          "cp config/entrypoint.sh dist/apps/port-labeler",
+          "cp apps/port-labeler/nginx.conf dist/apps/port-labeler"
+        ]
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/port-labeler/**/*.{ts,tsx,js,jsx}"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/port-labeler"],
       "options": {
-        "jestConfig": "apps/port-labeler/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/port-labeler/jest.config.ts"
       }
     }
   },

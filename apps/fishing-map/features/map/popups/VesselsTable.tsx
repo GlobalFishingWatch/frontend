@@ -9,6 +9,7 @@ import {
   formatInfoField,
   getDetectionsTimestamps,
   getVesselGearType,
+  getVesselOtherNamesLabel,
   getVesselShipType,
 } from 'utils/info'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -144,7 +145,9 @@ function VesselsTable({
                 'name'
               )
 
-              const otherVesselsLabel = vessel ? getOtherVesselNames(vessel) : ''
+              const otherVesselsLabel = vessel
+                ? getVesselOtherNamesLabel(getOtherVesselNames(vessel))
+                : ''
               const vesselFlag = getVesselProperty(vessel, 'flag', getVesselPropertyParams)
 
               const vesselType = isPresenceActivity

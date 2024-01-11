@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Resource } from '@globalfishingwatch/api-types'
-import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
+import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { parseUserTrackCallback } from './resources.utils'
 
 export const useFetchResources = (resources: Resource[]) => {

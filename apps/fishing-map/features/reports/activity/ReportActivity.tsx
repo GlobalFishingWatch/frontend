@@ -10,7 +10,7 @@ import {
 } from 'features/reports/reports-timeseries.hooks'
 import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
-import { selectReportActivityGraph } from 'features/app/app.selectors'
+import { selectReportActivityGraph } from 'features/app/selectors/app.reports.selector'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'

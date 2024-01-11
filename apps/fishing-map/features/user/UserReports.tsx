@@ -14,7 +14,7 @@ import {
   selectReportsStatusId,
 } from 'features/reports/reports.slice'
 import { REPORT } from 'routes/routes'
-import { selectUserReports } from 'features/user/user.selectors'
+import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
 import { resetReportData } from 'features/reports/report.slice'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
 import styles from './User.module.css'

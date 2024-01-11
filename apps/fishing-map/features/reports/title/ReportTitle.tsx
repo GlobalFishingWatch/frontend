@@ -25,7 +25,7 @@ import {
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
-} from 'features/app/app.selectors'
+} from 'features/app/selectors/app.reports.selector'
 import { useLocationConnect } from 'routes/routes.hook'
 import { BufferOperation, BufferUnit } from 'types'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -157,8 +157,8 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     const areaName = report
       ? report.name
       : areaDataview?.config?.type === GeneratorType.UserContext
-      ? areaDataview?.datasets?.[0]?.name
-      : area?.name
+        ? areaDataview?.datasets?.[0]?.name
+        : area?.name
 
     if (!urlBufferValue) {
       return areaName

@@ -7,7 +7,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
-import { selectVesselProfileStateProperty } from 'features/vessel/vessel.config.selectors'
+import { selectVesselSelfReportedId } from 'features/vessel/vessel.config.selectors'
 
 export type VesselDataviewInstanceParams = { id: string; dataset: Dataset }
 
@@ -38,7 +38,7 @@ export const useAddVesselDataviewInstance = () => {
 export const useUpdateVesselEventsVisibility = () => {
   const { setVesselEventVisibility } = useVesselEvents()
   const vessel = useSelector(selectVesselInfoData)
-  const identityId = useSelector(selectVesselProfileStateProperty('vesselSelfReportedId'))
+  const identityId = useSelector(selectVesselSelfReportedId)
   useEffect(() => {
     if (vessel) {
       const shiptypes = getVesselProperty(vessel, 'shiptypes', {

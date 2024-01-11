@@ -3,8 +3,8 @@ import { DateTime, Duration } from 'luxon'
 import { range } from 'lodash'
 import { EventTypes, Resource, ThinningConfig } from '@globalfishingwatch/api-types'
 import {
+  resourcesReducer,
   ResourcesState as CommonResourcesState,
-  resourcesSlice,
   selectResources as originalSelectResource,
 } from '@globalfishingwatch/dataviews-client'
 import {
@@ -145,4 +145,4 @@ export const selectTrackChunksConfig = createSelector(
   }
 )
 export type ResourcesState = CommonResourcesState
-export default resourcesSlice.reducer
+export default resourcesReducer

@@ -1,10 +1,7 @@
 import { polygon } from '@turf/helpers'
 import { bbox, buffer } from '@turf/turf'
 import { Feature, GeoJsonProperties, MultiPolygon, Polygon } from 'geojson'
-import {
-  BUFFERED_ANTIMERIDIAN_LON,
-  wrapFeatureLongitudes,
-} from '@globalfishingwatch/data-transforms'
+import { BUFFERED_ANTIMERIDIAN_LON, wrapFeatureLongitudes } from '../wrap-longitudes'
 
 type BufferedFeature = Feature<Polygon | MultiPolygon>
 
