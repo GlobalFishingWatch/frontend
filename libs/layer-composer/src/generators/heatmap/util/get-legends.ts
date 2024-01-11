@@ -27,7 +27,7 @@ export const getSublayersColorRamps = (config: GlobalHeatmapAnimatedGeneratorCon
       visible &&
       colorRampWhiteEnd
     const finalColorRamp = useToWhiteRamp ? (`${colorRamp}_toWhite` as ColorRampsIds) : colorRamp
-    return HEATMAP_COLOR_RAMPS[finalColorRamp]
+    return HEATMAP_COLOR_RAMPS[finalColorRamp] || HEATMAP_COLOR_RAMPS[colorRamp]
   })
 }
 

@@ -271,7 +271,6 @@ class HeatmapAnimatedGenerator {
       }
 
       const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams)
-      // console.log(serializedBaseSourceParams)
 
       const sourceParams = [serializedBaseSourceParams]
 
