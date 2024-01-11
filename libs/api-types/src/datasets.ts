@@ -97,7 +97,6 @@ export interface DatasetConfigurationUI {
   pointSize?: string
   maxPointSize?: number
   minPointSize?: number
-  pointTime?: string[]
   startTime?: string | number
   endTime?: string | number
   timeFilterType?: TimeFilterType

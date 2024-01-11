@@ -12,12 +12,13 @@ const MAX_SCHEMA_ENUM_VALUES = 100
 export const getFieldSchema = (
   field: string,
   values: any[],
-  { includeEnum, maxSchemaEnumValues = MAX_SCHEMA_ENUM_VALUES }: GetFieldSchemaParams = {}
+  { includeEnum, maxSchemaEnumValues = MAX_SCHEMA_ENUM_VALUES } = {} as GetFieldSchemaParams
 ): DatasetSchemaItem | null => {
   // As soon as we find a string, there are no compatibility with others
   // this is needed because there are cases where are mixed types in the same column
   const isStringType = values.some((d) => typeof d === 'string')
   const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType)
+
   if (values?.length) {
     const schema: DatasetSchemaItem = {
       type:
@@ -25,8 +26,8 @@ export const getFieldSchema = (
         GUESS_COLUMN_DICT.longitude.some((t) => t === field)
           ? 'coordinate'
           : type === 'number'
-          ? 'range'
-          : type,
+            ? 'range'
+            : type,
     }
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {
@@ -46,7 +47,7 @@ export const getFieldSchema = (
 
 export const getDatasetSchemaFromGeojson = (
   geojson: FeatureCollection,
-  getFieldSchemaParams: GetFieldSchemaParams
+  getFieldSchemaParams = {} as GetFieldSchemaParams
 ) => {
   const fields = geojson?.features?.[0]?.properties && Object.keys(geojson.features[0].properties)
   if (!fields?.length) {
@@ -69,7 +70,7 @@ export const getDatasetSchemaFromGeojson = (
 type ListedData = Record<string, any>[]
 export const getDatasetSchemaFromList = (
   data: ListedData,
-  getFieldSchemaParams: GetFieldSchemaParams
+  getFieldSchemaParams = {} as GetFieldSchemaParams
 ) => {
   const fields = Object.keys(data[0])
   if (!fields?.length) {
@@ -91,7 +92,7 @@ export const getDatasetSchemaFromList = (
 
 export const getDatasetSchema = (
   data: ListedData | FeatureCollection,
-  getFieldSchemaParams: GetFieldSchemaParams
+  getFieldSchemaParams = {} as GetFieldSchemaParams
 ) => {
   if (Array.isArray(data)) {
     return getDatasetSchemaFromList(data, getFieldSchemaParams)

@@ -104,9 +104,10 @@ export function Select(props: SelectProps) {
         className={cx(
           styles.container,
           styles[type],
-          { [styles.isOpen]: isOpen },
+          { [styles.isOpen]: !disabled && isOpen },
           { [styles.placeholderShown]: !selectedOption },
           { [styles.error]: error !== '' },
+          { [styles.disabled]: disabled },
           className
         )}
       >
@@ -119,19 +120,22 @@ export function Select(props: SelectProps) {
         </div>
         <div className={styles.buttonsContainer}>
           {onCleanClick !== undefined && hasSelectedOptions && !disabled && (
-            <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
+            <IconButton icon="delete" size="small" onClick={onCleanClick} />
           )}
-          <IconButton
-            icon={isOpen ? 'arrow-top' : 'arrow-down'}
-            size="small"
-            {...getToggleButtonProps()}
-          ></IconButton>
+          {!disabled && (
+            <IconButton
+              icon={isOpen ? 'arrow-top' : 'arrow-down'}
+              size="small"
+              {...getToggleButtonProps()}
+            />
+          )}
         </div>
         <ul
           {...getMenuProps()}
           className={cx(styles.optionsContainer, styles[direction], styles[align])}
         >
-          {isOpen &&
+          {!disabled &&
+            isOpen &&
             options.length > 0 &&
             options.map((item, index) => {
               const highlight = highlightedIndex === index

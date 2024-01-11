@@ -5,7 +5,7 @@ import { uniq } from 'lodash'
 import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { LIBRARY_LAYERS, LibraryLayer } from 'data/library-layers'
+import { LIBRARY_LAYERS, LibraryLayer } from 'data/layer-library'
 import { upperFirst } from 'utils/info'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
@@ -32,12 +32,17 @@ const LayerLibrary: FC = () => {
           ...layer,
           name: t(`layer-library:${layer.id}.name`),
           description: t(`layer-library:${layer.id}.description`),
+          moreInfoLink: t(`layer-library:${layer.id}.moreInfoLink`),
           category: dataview.category as DataviewCategory,
-          dataview,
+          dataview: {
+            ...dataview,
+            datasetsConfig: [...(dataview.datasetsConfig || []), ...(layer.datasetsConfig || [])],
+          },
         }
       }),
     [dataviews, t]
   )
+
   const uniqCategories = useMemo(
     () => uniq(layersResolved.map(({ category }) => category)),
     [layersResolved]
@@ -139,16 +144,16 @@ const LayerLibrary: FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.search}>
-        <InputText
-          onChange={onInputChange}
-          value={searchQuery || ''}
-          className={styles.input}
-          type="search"
-          placeholder={t('search.title', 'Search')}
-        />
-      </div>
-      <div className={styles.categoriesContainer}>
+      <div className={styles.sidebarContainer}>
+        <div className={styles.search}>
+          <InputText
+            onChange={onInputChange}
+            value={searchQuery || ''}
+            className={styles.input}
+            type="search"
+            placeholder={t('search.title', 'Search')}
+          />
+        </div>
         <div className={styles.categories}>
           {uniqCategoriesPlusUser.map((category) => (
             <button
@@ -166,29 +171,25 @@ const LayerLibrary: FC = () => {
             </button>
           ))}
         </div>
-        <ul className={styles.layerList} onScroll={onLayerListScroll}>
-          {uniqCategories.map((category) => (
-            <Fragment key={category}>
-              <label
-                id={category}
-                className={cx(styles.categoryLabel, {
-                  [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
-                })}
-              >
-                {t(`common.${category as DataviewCategory}`, upperFirst(category))}
-              </label>
-              {layersByCategory[category].map((layer) => (
-                <LayerLibraryItem
-                  key={layer.dataviewId}
-                  layer={layer}
-                  highlightedText={searchQuery}
-                />
-              ))}
-            </Fragment>
-          ))}
-          <LayerLibraryUserPanel searchQuery={searchQuery} />
-        </ul>
       </div>
+      <ul className={styles.layerList} onScroll={onLayerListScroll}>
+        {uniqCategories.map((category) => (
+          <Fragment key={category}>
+            <label
+              id={category}
+              className={cx(styles.categoryLabel, {
+                [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
+              })}
+            >
+              {t(`common.${category as DataviewCategory}`, upperFirst(category))}
+            </label>
+            {layersByCategory[category].map((layer) => (
+              <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
+            ))}
+          </Fragment>
+        ))}
+        <LayerLibraryUserPanel searchQuery={searchQuery} />
+      </ul>
     </div>
   )
 }

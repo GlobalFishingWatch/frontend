@@ -152,7 +152,7 @@ const AppModals = () => {
         isOpen={isLayerLibraryModalOpen}
         onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
         contentClassName={styles.layerLibraryModal}
-        fullScreen={true}
+        fullScreen
       >
         <LayerLibrary />
       </Modal>

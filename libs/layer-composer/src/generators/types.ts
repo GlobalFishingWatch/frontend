@@ -599,6 +599,7 @@ export type ColorRampId =
   | 'yellow'
   | 'green'
   | 'orange'
+  | 'bathymetry' // Custom one for the bathymetry dataset
 
 export type ColorRampWhiteId =
   | 'teal_toWhite'

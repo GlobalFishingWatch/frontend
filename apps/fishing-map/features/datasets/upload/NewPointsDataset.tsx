@@ -9,6 +9,7 @@ import {
   MultiSelectOption,
   Select,
   SelectOption,
+  Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 import {
@@ -51,15 +52,11 @@ function NewPointDataset({
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataParsed | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
-  const {
-    datasetMetadata,
-    setDatasetMetadata,
-    setDatasetMetadataConfig,
-    setDatasetMetadataSchema,
-  } = useDatasetMetadata()
+  const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
     useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
@@ -67,7 +64,7 @@ function NewPointDataset({
   const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const fileType = getFileType(file)
-  const isCSVFile = fileType === 'csv' || sourceFormat === 'csv'
+  const isCSVFile = fileType === 'CSV' || sourceFormat === 'csv'
 
   const latitudeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -89,7 +86,8 @@ function NewPointDataset({
 
   const handleRawData = useCallback(
     async (file: File) => {
-      const data = await getDatasetParsed(file)
+      setProcessingData(true)
+      const data = await getDatasetParsed(file, 'points')
       const fileType = getFileType(file)
       const datasetMetadata = getPointsDatasetMetadata({
         data,
@@ -97,7 +95,7 @@ function NewPointDataset({
         sourceFormat: fileType,
       })
       setDatasetMetadata(datasetMetadata)
-      if (fileType === 'csv') {
+      if (fileType === 'CSV') {
         setSourceData(data as DataList)
         const geojson = getGeojsonFromPointsList(
           data as DataList,
@@ -112,6 +110,7 @@ function NewPointDataset({
         ) as FeatureCollection<Point>
         setGeojson(geojson)
       }
+      setProcessingData(false)
     },
     [setDatasetMetadata]
   )
@@ -156,7 +155,7 @@ function NewPointDataset({
     if (datasetMetadata) {
       if (sourceData) {
         const config = getDatasetConfiguration(datasetMetadata)
-        if (fileType === 'csv' && (!config?.latitude || !config?.longitude)) {
+        if (fileType === 'CSV' && (!config?.latitude || !config?.longitude)) {
           const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
           error = t('dataset.requiredFields', {
             fields,
@@ -171,11 +170,20 @@ function NewPointDataset({
         // setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
         setLoading(true)
         const file = geojson ? getFileFromGeojson(geojson) : undefined
-        await onConfirm(datasetMetadata, file)
+        await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }
     }
-  }, [datasetMetadata, sourceData, onConfirm, fileType, geojson, t])
+  }, [datasetMetadata, sourceData, onConfirm, fileType, geojson, t, isEditing])
+
+  if (processingData) {
+    return (
+      <div className={styles.processingData}>
+        <Spinner className={styles.processingDataSpinner} />
+        <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>
@@ -191,6 +199,7 @@ function NewPointDataset({
         label={t('datasetUpload.datasetName', 'Dataset Name')}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}
+        disabled={loading}
       />
       {isCSVFile && (
         <div className={styles.row}>
@@ -201,7 +210,7 @@ function NewPointDataset({
               'common.latitude',
               'Latitude'
             )}`}
-            editable={!isEditing}
+            editable={!isEditing && !loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ latitude: selected.id })
             }}
@@ -210,7 +219,7 @@ function NewPointDataset({
             datasetMetadata={datasetMetadata}
             property="longitude"
             label={t('common.longitude', 'Longitude')}
-            editable={!isEditing}
+            editable={!isEditing && !loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ longitude: selected.id })
             }}
@@ -221,6 +230,7 @@ function NewPointDataset({
         <TimeFieldsGroup
           datasetMetadata={datasetMetadata}
           setDatasetMetadataConfig={setDatasetMetadataConfig}
+          disabled={loading}
         />
       </div>
       <Collapsable
@@ -232,12 +242,13 @@ function NewPointDataset({
           label={t('datasetUpload.datasetDescription', 'Dataset description')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
+          disabled={loading}
         />
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="propertyToInclude"
           label={t('datasetUpload.points.name', 'Point name')}
-          editable={!isEditing}
+          editable={!loading}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
@@ -266,6 +277,7 @@ function NewPointDataset({
             onCleanClick={() => {
               setDatasetMetadataConfig({ pointSize: undefined })
             }}
+            disabled={loading}
           />
           {getDatasetConfigurationProperty({
             dataset: datasetMetadata,
@@ -286,6 +298,7 @@ function NewPointDataset({
                 onChange={(e) =>
                   setDatasetMetadataConfig({ minPointSize: parseFloat(e.target.value) })
                 }
+                disabled={loading}
               />
               <InputText
                 type="number"
@@ -301,6 +314,7 @@ function NewPointDataset({
                 onChange={(e) =>
                   setDatasetMetadataConfig({ maxPointSize: parseFloat(e.target.value) })
                 }
+                disabled={loading}
               />
             </Fragment>
           )}
@@ -325,6 +339,7 @@ function NewPointDataset({
           onCleanClick={() => {
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
+          disabled={loading}
         />
         <SwitchRow
           className={styles.saveAsPublic}
@@ -332,7 +347,7 @@ function NewPointDataset({
             'dataset.uploadPublic',
             'Allow other users to see this dataset when you share a workspace'
           )}
-          disabled={isEditing}
+          disabled={isEditing || loading}
           active={isPublic}
           onClick={() => setDatasetMetadata({ public: !isPublic })}
         />

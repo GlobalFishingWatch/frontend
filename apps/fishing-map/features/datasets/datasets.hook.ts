@@ -1,11 +1,11 @@
 import { useSelector, batch } from 'react-redux'
 import { useCallback, useEffect } from 'react'
-import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetStatus } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import { AsyncError } from 'utils/async-slice'
 import {
   getContextDataviewInstance,
-  getEnvironmentDataviewInstance,
+  getUserPolygonsDataviewInstance,
   getUserPointsDataviewInstance,
   getUserTrackDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
@@ -38,17 +38,14 @@ const DATASET_REFRESH_TIMEOUT = 10000
 
 export const getDataviewInstanceByDataset = (dataset: Dataset) => {
   const config = getDatasetConfiguration(dataset)
-  if (dataset.category === DatasetCategory.Context) {
-    return config?.geometryType === 'points'
-      ? getUserPointsDataviewInstance(dataset)
-      : getContextDataviewInstance(dataset.id)
-  } else if (dataset.category === DatasetCategory.Environment) {
-    if (config?.geometryType === 'polygons') {
-      return getEnvironmentDataviewInstance(dataset.id)
-    } else if (config?.geometryType === 'tracks') {
-      return getUserTrackDataviewInstance(dataset)
-    }
+  if (config?.geometryType === 'points') {
+    return getUserPointsDataviewInstance(dataset)
+  } else if (config?.geometryType === 'polygons') {
+    return getUserPolygonsDataviewInstance(dataset.id)
+  } else if (config?.geometryType === 'tracks') {
+    return getUserTrackDataviewInstance(dataset)
   }
+  return getContextDataviewInstance(dataset.id)
 }
 
 export const useAddDataviewFromDatasetToWorkspace = () => {

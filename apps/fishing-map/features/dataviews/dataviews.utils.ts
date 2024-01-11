@@ -123,7 +123,7 @@ export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> =>
   }
 }
 
-export const getEnvironmentDataviewInstance = (
+export const getUserPolygonsDataviewInstance = (
   datasetId: string
 ): DataviewInstance<GeneratorType> => {
   return {

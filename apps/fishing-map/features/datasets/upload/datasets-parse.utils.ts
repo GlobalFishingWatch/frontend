@@ -19,20 +19,18 @@ import { getFileType, readBlobAs } from 'utils/files'
 export type DataList = Record<string, any>[]
 export type DataParsed = FeatureCollection | DataList
 
-export async function getDatasetParsed(
-  file: File,
-  type?: DatasetGeometryType
-): Promise<DataParsed> {
+export async function getDatasetParsed(file: File, type: DatasetGeometryType): Promise<DataParsed> {
   const fileType = getFileType(file)
   if (!fileType) {
     throw new Error('File type not supported')
   }
-  if (fileType === 'shapefile') {
+  if (fileType === 'Shapefile') {
     try {
+      // TODO support multi-dataset shapefiles
+      //  - filter by type to show only relevant datasets
+      //  - process only selected dataset
       const shpjs = await import('shpjs').then((module) => module.default)
-
       const fileData = await readBlobAs(file, 'arrayBuffer')
-      // TODO support multiple files in shapefile
       const expandedShp = await shpjs(fileData)
       if (Array.isArray(expandedShp)) {
         // geojson = expandedShp[0]
@@ -60,8 +58,7 @@ export async function getDatasetParsed(
       console.log('Error loading shapefile file', e)
       throw new Error(e)
     }
-  } else if (fileType === 'csv') {
-    // return load(file, CSVLoader)
+  } else if (fileType === 'CSV') {
     const fileText = await file.text()
     // TODO: CHECK IF CSV CONTAINS HEADERS ?
     const { data } = parse(fileText, {
@@ -70,8 +67,8 @@ export async function getDatasetParsed(
       header: true,
     })
     return data.slice(1) as DataList
-  } else if (fileType === 'kml') {
-    return kmlToGeoJSON(file, type as DatasetGeometryType)
+  } else if (fileType === 'KML') {
+    return kmlToGeoJSON(file, type)
   }
   const fileText = await file.text()
   return JSON.parse(fileText)
