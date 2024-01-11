@@ -633,7 +633,7 @@ export const getCommonSchemaFieldsInDataview = (
   let schemaFields: (string | boolean)[][] = (activeDatasets || [])?.map((d) => {
     const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
     const schemaEnum = schemaItem?.enum || schemaItem?.items?.enum || []
-    return schemaEnum.filter((e) => !!e)
+    return Array.isArray(schemaEnum) ? schemaEnum.filter((e) => !!e) : schemaEnum
   })
   if (schemaType === 'number' || schemaType === 'range') {
     const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)
