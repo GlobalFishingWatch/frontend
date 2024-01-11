@@ -44,8 +44,9 @@ class HeatmapGenerator {
     let url = new URL(
       tilesUrl.replace('{{type}}', 'heatmap').replace(/{{/g, '{').replace(/}}/g, '}')
     )
-    url.searchParams.set('geom-type', 'rectangle')
-    url.searchParams.set('single-frame', 'true')
+
+    url.searchParams.set('temporal-aggregation', 'true')
+    url.searchParams.set('format', 'INTARRAY')
     url = addURLSearchParams(url, 'datasets', config.datasets)
 
     if (!staticHeatmap && config.start && config.end) {
