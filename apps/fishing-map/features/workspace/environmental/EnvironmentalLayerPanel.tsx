@@ -17,6 +17,7 @@ import ActivityFilters, {
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -24,7 +25,6 @@ import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import { getDatasetNameTranslated } from '../../i18n/utils.datasets'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
