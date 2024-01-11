@@ -11,7 +11,7 @@
     "resolveJsonModule": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2019", "dom"],
+    "lib": ["es2019", "dom", "ES2023.Array"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
