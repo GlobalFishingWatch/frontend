@@ -1,3 +1,4 @@
+import { PATH_BASENAME } from 'data/config'
 import { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   EEZ_DATAVIEW_SLUG,
@@ -14,8 +15,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'graticules',
     dataviewId: GRATICULES_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-graticules.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/graticules.jpg`,
     config: {
       color: '#FCA26F',
     },
@@ -23,7 +23,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'eez',
     dataviewId: EEZ_DATAVIEW_SLUG,
-    previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-eezs-2.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/eezs-2.jpg`,
     config: {
       color: '#069688',
     },
@@ -31,7 +31,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'mpa',
     dataviewId: MPA_DATAVIEW_SLUG,
-    previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-mpa.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/mpa.jpg`,
     config: {
       color: '#1AFF6B',
     },
@@ -39,8 +39,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'protectedseas',
     dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-protected-seas.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/protected-seas.jpg`,
     config: {
       color: '#4184F4',
     },
@@ -48,7 +47,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'fao-major',
     dataviewId: FAO_AREAS_DATAVIEW_SLUG,
-    previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-fao-2.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/fao-2.jpg`,
     config: {
       color: '#F09300',
     },
@@ -56,7 +55,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'rfmo',
     dataviewId: RFMO_DATAVIEW_SLUG,
-    previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-rfmos.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/rfmos.jpg`,
     config: {
       color: '#8E24A9',
     },
@@ -64,8 +63,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'high-seas',
     dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-high-seas.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
     config: {
       color: '#4184F4',
     },
@@ -73,8 +71,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'marine-ecoregions',
     dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-high-seas.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
     config: {
       color: '#4184F4',
     },
@@ -89,8 +86,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'mangroves',
     dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-high-seas.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
     config: {
       color: '#4184F4',
     },
@@ -105,8 +101,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'seamounts',
     dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-high-seas.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
     config: {
       color: '#4184F4',
     },
@@ -121,8 +116,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'coral-reefs',
     dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-high-seas.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
     config: {
       color: '#4184F4',
     },
@@ -137,8 +131,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'seagrasses',
     dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-high-seas.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
     config: {
       color: '#4184F4',
     },

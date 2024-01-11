@@ -1,3 +1,4 @@
+import { PATH_BASENAME } from 'data/config'
 import { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import { TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG } from 'data/workspaces'
 
@@ -16,25 +17,24 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   //   id: 'gee-water-temperature',
   //   dataviewId: GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG,
   //   previewImageUrl:
-  //     'https://globalfishingwatch.org/wp-content/uploads/layer-library-temperature-1.jpg',
+  //     `${PATH_BASENAME}/images/layer-library/temperature-1.jpg`,
   // },
   // {
   //   id: 'gee-water-salinity',
   //   dataviewId: GLOBAL_SALINITY_DATAVIEW_SLUG,
   //   previewImageUrl:
-  //     'https://globalfishingwatch.org/wp-content/uploads/layer-library-salinity-1.jpg',
+  //     `${PATH_BASENAME}/images/layer-library/salinity-1.jpg`,
   // },
   // {
   //   id: 'gee-chlorophyl',
   //   dataviewId: GLOBAL_CHLOROPHYL_DATAVIEW_SLUG,
   //   previewImageUrl:
-  //     'https://globalfishingwatch.org/wp-content/uploads/layer-library-chlorophyl-1.jpg',
+  //     `${PATH_BASENAME}/images/layer-library/chlorophyl-1.jpg`,
   // },
   {
     id: 'chlorophyl',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-chlorophyl-1.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/chlorophyl.jpg`,
     config: {
       color: '#FFEA00',
       colorRamp: 'yellow',
@@ -49,7 +49,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'nitrate',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-nitrate.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/nitrate.jpg`,
     config: {
       color: '#FF6854',
       colorRamp: 'red',
@@ -64,7 +64,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'oxygen',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-oxygen.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/oxygen.jpg`,
     config: {
       color: '#FF6854',
       colorRamp: 'red',
@@ -79,8 +79,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'phosphate',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-phosphate.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/phosphate.jpg`,
     config: {
       color: '#A6FF59',
       colorRamp: 'green',
@@ -95,8 +94,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'salinity',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-salinity-1.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/salinity.jpg`,
     config: {
       color: '#FF6854',
       colorRamp: 'red',
@@ -111,8 +109,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'sst',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-temperature-1.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/temperature.jpg`,
     config: {
       color: '#FF6854',
       colorRamp: 'red',
@@ -127,7 +124,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'ph',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-ph.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/ph.jpg`,
     config: {
       color: '#FFAA0D',
       colorRamp: 'orange',
@@ -143,8 +140,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'sst-anomalies',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-sst-anomalies-mean.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-mean.jpg`,
     config: {
       color: '#FFAA0D',
       colorRamp: 'orange',
@@ -159,8 +155,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'sst-anomalies-min',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-sst-anomalies-min.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-min.jpg`,
     config: {
       color: '#FFEA00',
       colorRamp: 'yellow',
@@ -175,8 +170,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'sst-anomalies-max',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl:
-      'https://globalfishingwatch.org/wp-content/uploads/layer-library-sst-anomalies-max.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-max.jpg`,
     config: {
       color: '##FF6854',
       colorRamp: 'red',
@@ -191,7 +185,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'thgt',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-thgt.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/thgt.jpg`,
     config: {
       color: '#FFAE9B',
       colorRamp: 'salmon',

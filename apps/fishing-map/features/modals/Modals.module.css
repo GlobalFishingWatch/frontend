@@ -7,7 +7,8 @@
 }
 
 .layerLibraryModal {
-  height: calc(100vh - 20rem);
+  height: calc(100vh - 14rem);
+  min-height: 40rem;
   padding: 0;
 }
 

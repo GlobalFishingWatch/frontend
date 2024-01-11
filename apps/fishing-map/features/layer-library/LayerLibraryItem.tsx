@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { Button, Icon, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -16,8 +16,17 @@ type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
 
 const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const { layer, highlightedText = '' } = props
-  const { id, dataviewId, config, previewImageUrl, dataview, name, description, datasetsConfig } =
-    layer
+  const {
+    id,
+    dataviewId,
+    config,
+    previewImageUrl,
+    dataview,
+    name,
+    description,
+    moreInfoLink,
+    datasetsConfig,
+  } = layer
   const dataset = useSelector(selectDatasetById(dataview.datasetsConfig?.[0].datasetId || ''))
   const ids = (datasetsConfig || []).map(({ datasetId }) => datasetId)
   const [loading, setLoading] = useState(false)
@@ -66,7 +75,17 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
           </p>
           <div className={styles.actions}>
             {datasetTypeIcon && <Icon icon={datasetTypeIcon} />}
-            {datasetSourceIcon && <Icon icon={datasetSourceIcon} type="original-colors" />}
+            {datasetSourceIcon ? (
+              moreInfoLink ? (
+                <Tooltip content={t('common.seeMore', 'See more')}>
+                  <a href={moreInfoLink} target="_blank" rel="noreferrer" style={{ lineHeight: 1 }}>
+                    <Icon icon={datasetSourceIcon} type="original-colors" />
+                  </a>
+                </Tooltip>
+              ) : (
+                <Icon icon={datasetSourceIcon} type="original-colors" />
+              )
+            ) : null}
             <Button className={styles.cta} loading={loading} onClick={onAddToWorkspaceClick}>
               {t('workspace.addLayer', 'Add to workspace')}
             </Button>

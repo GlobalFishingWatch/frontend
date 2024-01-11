@@ -1,3 +1,4 @@
+import { PATH_BASENAME } from 'data/config'
 import { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import { SAR_DATAVIEW_SLUG, VIIRS_MATCH_DATAVIEW_SLUG } from 'data/workspaces'
 
@@ -5,7 +6,7 @@ export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
   {
     id: 'viirs',
     dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
-    previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-VIIRS.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/VIIRS.jpg`,
     config: {
       color: '#FFEA00',
     },
@@ -13,7 +14,7 @@ export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
   {
     id: 'sar',
     dataviewId: SAR_DATAVIEW_SLUG,
-    previewImageUrl: 'https://globalfishingwatch.org/wp-content/uploads/layer-library-SAR.jpg',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/SAR.jpg`,
     config: {
       color: '#9CA4FF',
     },

@@ -13,6 +13,7 @@ import libraryTranslations from '../../public/locales/source/layer-library.json'
 export type LibraryLayerConfig = Omit<DataviewInstance, 'id'> & {
   id: keyof typeof libraryTranslations
   previewImageUrl: string
+  moreInfoLink?: string
 }
 
 export type LibraryLayer = LibraryLayerConfig & {
