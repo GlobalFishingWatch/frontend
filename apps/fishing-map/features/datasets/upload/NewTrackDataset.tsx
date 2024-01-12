@@ -119,9 +119,8 @@ function NewTrackDataset({
   useEffect(() => {
     if (sourceData) {
       const geojson = getTrackFromList(sourceData, datasetMetadata)
-      console.log('🚀 ~ file: NewTrackDataset.tsx:113 ~ useEffect ~ geojson:', geojson)
       setGeojson(geojson)
-      if (!geojson.features.some((f) => f.geometry.coordinates?.length >= 2)) {
+      if (!geojson.features.some((f) => f.geometry.coordinates?.[0]?.length >= 2)) {
         setIdGroupError(
           t('errors.trackSegmentIdGrup', "Grouping by this field doesn't generate valid tracks")
         )
@@ -320,6 +319,7 @@ function NewTrackDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
+          {idGroupError && <span className={styles.errorMsg}>{idGroupError}</span>}
           {/* // TODO update sections by categoreies */}
           <UserGuideLink section="uploadReference" />
         </div>

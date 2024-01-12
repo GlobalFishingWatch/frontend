@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { FeatureCollection } from 'geojson'
 import { useTranslation } from 'react-i18next'
+import { uniqBy } from 'lodash'
 import { NO_RECORD_ID } from '@globalfishingwatch/data-transforms'
 import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
 import {
@@ -59,25 +60,32 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
   if (!featuresColoredByField || !resource?.data?.features) {
     return null
   }
+  const dataset = getUserDataviewDataset(dataview)
+  const lineIdProperty = getDatasetConfigurationProperty({
+    dataset,
+    property: 'lineId',
+  }) as string
+  const features = uniqBy(resource.data?.features, (f) => f.properties?.[lineIdProperty])
   return (
     <Fragment>
-      {resource.data?.features
-        .slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH)
-        .map((feature, index) => {
-          return (
-            <div
-              key={index}
-              className={styles.trackColor}
-              style={
-                {
-                  '--color': feature.properties?.color,
-                } as React.CSSProperties
-              }
-            >
-              {feature.properties?.id}
-            </div>
-          )
-        })}
+      {features.slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH).map((feature, index) => {
+        if (!feature.properties?.[lineIdProperty]) {
+          return null
+        }
+        return (
+          <div
+            key={index}
+            className={styles.trackColor}
+            style={
+              {
+                '--color': feature.properties?.color,
+              } as React.CSSProperties
+            }
+          >
+            {feature.properties?.[lineIdProperty]}
+          </div>
+        )
+      })}
       {resource.data?.features!?.length > SEE_MORE_LENGTH && (
         <button
           className={cx(styles.link, {

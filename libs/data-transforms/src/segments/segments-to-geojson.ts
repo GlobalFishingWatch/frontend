@@ -1,31 +1,29 @@
-import type { FeatureCollection, LineString, Feature, MultiLineString, Position } from 'geojson'
+import type { FeatureCollection, LineString, Feature, Position } from 'geojson'
 import { Segment, Point } from '@globalfishingwatch/api-types'
 
-const segmentsToFeatures = (segment: Segment | Segment[]): Feature<MultiLineString>[] => {
-  const arraySegment: Segment[] = Array.isArray(segment)
+const segmentsToFeatures = (segment: Segment | Segment[]): Feature<LineString>[] => {
+  // This checks converts always to bi-dimensional array
+  const arraySegment: Segment[] = Array.isArray(segment?.[0])
     ? (segment as Segment[])
     : [segment as Segment]
-  const features = arraySegment.map((segment) => {
-    const coordinates: Position[][] = [
-      segment.map((point) => {
-        return [point.longitude as number, point.latitude as number] as Position
-      }),
-    ]
-    const geometry: MultiLineString = {
-      type: 'MultiLineString',
-      coordinates,
+
+  const features = arraySegment.flatMap((segment) => {
+    if (!segment.length || segment.length <= 1) {
+      return []
     }
-    const times = arraySegment.map((segment) =>
-      segment ? segment.flatMap((point) => point.timestamp || []) : []
-    )
-    const feature: Feature<MultiLineString> = {
+    const feature: Feature<LineString> = {
       type: 'Feature',
-      geometry,
+      geometry: {
+        type: 'LineString',
+        coordinates: segment.map((point) => {
+          return [point.longitude as number, point.latitude as number] as Position
+        }),
+      },
       properties: {
-        id: segment[0].id,
-        ...segment[0].properties,
+        id: segment[0]?.id,
+        ...segment[0]?.properties,
         coordinateProperties: {
-          times,
+          times: segment.map((point) => point.timestamp),
         },
       },
     }
@@ -35,7 +33,7 @@ const segmentsToFeatures = (segment: Segment | Segment[]): Feature<MultiLineStri
 }
 
 const segmentsToGeoJSON = (segments: Segment[] | Segment[][]) => {
-  const geoJSON: FeatureCollection<MultiLineString> = {
+  const geoJSON: FeatureCollection<LineString> = {
     type: 'FeatureCollection',
     features: [],
   }
