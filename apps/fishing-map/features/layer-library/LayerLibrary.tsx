@@ -82,12 +82,14 @@ const LayerLibrary: FC = () => {
 
   const filteredLayers = useMemo(
     () =>
-      layersResolved.filter((layer) => {
-        return (
-          layer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          layer.description?.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      }),
+      layersResolved
+        .filter((layer) => {
+          return (
+            layer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            layer.description?.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        })
+        .sort((a, b) => ((a.name?.toLowerCase() || '') < (b.name?.toLowerCase() || '') ? -1 : 1)),
     [layersResolved, searchQuery]
   )
 
