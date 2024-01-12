@@ -1,7 +1,9 @@
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { PATH_BASENAME } from 'data/config'
 import { LibraryLayerConfig } from 'data/layer-library/layers.types'
-import { TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG } from 'data/workspaces'
+import {
+  TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
+  TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+} from 'data/workspaces'
 
 const heatmapDatasetConfig = {
   params: [
@@ -32,6 +34,23 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   //   previewImageUrl:
   //     `${PATH_BASENAME}/images/layer-library/chlorophyl-1.jpg`,
   // },
+  {
+    id: 'bathymetry',
+    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry.jpg`,
+    config: {
+      color: 'bathymetry',
+      colorRamp: 'bathymetry',
+      static: true,
+      maxZoom: 9,
+    },
+    datasetsConfig: [
+      {
+        ...heatmapDatasetConfig,
+        datasetId: 'public-global-bathymetry',
+      },
+    ],
+  },
   {
     id: 'chlorophyl',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
@@ -74,6 +93,22 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
       {
         ...heatmapDatasetConfig,
         datasetId: 'public-global-oxygen:v20231213',
+      },
+    ],
+  },
+  {
+    id: 'ph',
+    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/ph.jpg`,
+    config: {
+      color: '#9CA4FF',
+      colorRamp: 'lilac',
+      intervals: ['MONTH'],
+    },
+    datasetsConfig: [
+      {
+        ...heatmapDatasetConfig,
+        datasetId: 'public-global-ph:v20231213',
       },
     ],
   },
@@ -122,22 +157,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
       },
     ],
   },
-  {
-    id: 'ph',
-    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/ph.jpg`,
-    config: {
-      color: '#FFAA0D',
-      colorRamp: 'orange',
-      intervals: ['MONTH'],
-    },
-    datasetsConfig: [
-      {
-        ...heatmapDatasetConfig,
-        datasetId: 'public-global-ph:v20231213',
-      },
-    ],
-  },
+
   {
     id: 'sst-anomalies',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
@@ -199,19 +219,77 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
     ],
   },
   {
-    id: 'bathymetry',
-    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry.jpg`,
+    id: 'marine-ecoregions',
+    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/marine-ecoregions.jpg`,
     config: {
-      color: 'bathymetry',
-      colorRamp: 'bathymetry',
-      static: true,
-      maxZoom: 9,
+      color: '#4184F4',
     },
     datasetsConfig: [
       {
-        ...heatmapDatasetConfig,
-        datasetId: 'public-global-bathymetry',
+        params: [],
+        endpoint: 'context-tiles',
+        datasetId: 'public-marine-ecoregions',
+      },
+    ],
+  },
+  {
+    id: 'mangroves',
+    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/mangroves.jpg`,
+    config: {
+      color: '#A6FF59',
+    },
+    datasetsConfig: [
+      {
+        params: [],
+        endpoint: 'context-tiles',
+        datasetId: 'public-mangroves',
+      },
+    ],
+  },
+  {
+    id: 'seamounts',
+    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/seamounts.jpg`,
+    config: {
+      color: '#00EEFF',
+    },
+    datasetsConfig: [
+      {
+        params: [],
+        endpoint: 'context-tiles',
+        datasetId: 'public-seamounts',
+      },
+    ],
+  },
+  {
+    id: 'coral-reefs',
+    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/coral-reefs.jpg`,
+    config: {
+      color: '#FFAE9B',
+    },
+    datasetsConfig: [
+      {
+        params: [],
+        endpoint: 'context-tiles',
+        datasetId: 'public-coral-reefs',
+      },
+    ],
+  },
+  {
+    id: 'seagrasses',
+    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/seagrasses.jpg`,
+    config: {
+      color: '#FFEA00',
+    },
+    datasetsConfig: [
+      {
+        params: [],
+        endpoint: 'context-tiles',
+        datasetId: 'public-seagrasses',
       },
     ],
   },

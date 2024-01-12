@@ -31,6 +31,7 @@ const getPaintPropertyByType = (layer: LayerSpecification, config: any) => {
     const linePaint: LineLayerSpecification['paint'] = {
       ...layer.paint,
       ...getLinePaintWithFeatureState(color, opacity),
+      'line-width': 3,
     }
     return linePaint
   } else if (layer.type === 'fill') {

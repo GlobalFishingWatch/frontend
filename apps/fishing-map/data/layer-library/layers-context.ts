@@ -8,7 +8,6 @@ import {
   MPA_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
-  TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
 } from 'data/workspaces'
 
 export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
@@ -67,80 +66,5 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     config: {
       color: '#4184F4',
     },
-  },
-  {
-    id: 'marine-ecoregions',
-    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
-    config: {
-      color: '#4184F4',
-    },
-    datasetsConfig: [
-      {
-        params: [],
-        endpoint: 'context-tiles',
-        datasetId: 'public-marine-ecoregions',
-      },
-    ],
-  },
-  {
-    id: 'mangroves',
-    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
-    config: {
-      color: '#4184F4',
-    },
-    datasetsConfig: [
-      {
-        params: [],
-        endpoint: 'context-tiles',
-        datasetId: 'public-mangroves',
-      },
-    ],
-  },
-  {
-    id: 'seamounts',
-    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
-    config: {
-      color: '#4184F4',
-    },
-    datasetsConfig: [
-      {
-        params: [],
-        endpoint: 'context-tiles',
-        datasetId: 'public-seamounts',
-      },
-    ],
-  },
-  {
-    id: 'coral-reefs',
-    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
-    config: {
-      color: '#4184F4',
-    },
-    datasetsConfig: [
-      {
-        params: [],
-        endpoint: 'context-tiles',
-        datasetId: 'public-coral-reefs',
-      },
-    ],
-  },
-  {
-    id: 'seagrasses',
-    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
-    config: {
-      color: '#4184F4',
-    },
-    datasetsConfig: [
-      {
-        params: [],
-        endpoint: 'context-tiles',
-        datasetId: 'public-seagrasses',
-      },
-    ],
   },
 ]
