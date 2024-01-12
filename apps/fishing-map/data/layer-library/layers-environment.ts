@@ -1,3 +1,4 @@
+import { Group } from '@globalfishingwatch/layer-composer'
 import { PATH_BASENAME } from 'data/config'
 import { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
@@ -42,7 +43,8 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
       color: 'bathymetry',
       colorRamp: 'bathymetry',
       static: true,
-      maxZoom: 9,
+      maxZoom: 8,
+      group: Group.Bathymetry,
     },
     datasetsConfig: [
       {
@@ -86,8 +88,8 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/oxygen.jpg`,
     config: {
-      color: '#FF6854',
-      colorRamp: 'red',
+      color: '#00EEFF',
+      colorRamp: 'sky',
     },
     datasetsConfig: [
       {

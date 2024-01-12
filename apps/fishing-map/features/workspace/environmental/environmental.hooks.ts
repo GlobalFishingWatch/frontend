@@ -6,7 +6,7 @@ import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectActiveNonTrackEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveHeatmapEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   DataviewFeature,
   areDataviewsFeatureLoaded,
@@ -15,7 +15,7 @@ import {
 import { useMapBounds } from 'features/map/map-viewport.hooks'
 
 export const useEnvironmentalBreaksUpdate = () => {
-  const dataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
+  const dataviews = useSelector(selectActiveHeatmapEnvironmentalDataviews)
   const { bounds } = useMapBounds()
   const dataviewFeatures = useMapDataviewFeatures(dataviews)
   const sourcesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
@@ -69,7 +69,6 @@ export const useEnvironmentalBreaksUpdate = () => {
                   cleanBreaks.push(k)
                 }
               })
-
               return {
                 id: dataviewsId[0],
                 config: {

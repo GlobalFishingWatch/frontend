@@ -158,6 +158,7 @@ export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
   if (source.includes('Copernicus')) return 'copernicus-logo'
   if (source.includes('NASA')) return 'nasa-logo'
   if (source.includes('PacIOOS')) return 'pacioos-logo'
+  if (source.includes('gebco')) return 'gebco-logo'
   if (source.includes('Geospatial Conservation Atlas')) return 'gca-logo'
   if (source.includes('UNEP')) return 'unep-logo'
   if (source.includes('Blue Habitats')) return 'blue-habitats-logo'
