@@ -1,6 +1,5 @@
 import { useState, useMemo, useTransition } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
@@ -8,8 +7,6 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
-import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import ActivityFilters, {
   isHistogramDataviewSupported,
@@ -18,6 +15,7 @@ import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
+import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -36,9 +34,6 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const [filterOpen, setFiltersOpen] = useState(false)
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const userId = useSelector(selectUserId)
-  const guestUser = useSelector(selectIsGuestUser)
-  const gfwUser = useSelector(selectIsGFWUser)
   const [colorOpen, setColorOpen] = useState(false)
   const {
     items,
@@ -99,8 +94,6 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       d.type === DatasetTypes.UserContext
   )
   const hasLegend = dataset?.type === DatasetTypes.Fourwings
-
-  const isCustomUserLayer = !guestUser && dataset?.ownerId === userId
 
   if (!dataset || dataset.status === 'deleted') {
     return <DatasetNotFound dataview={dataview} />
@@ -178,7 +171,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               </div>
             </ExpandedContainer>
           )}
-          {layerActive && (
+          {layerActive && !isBathymetryDataview(dataview) && (
             <Color
               dataview={dataview}
               open={colorOpen}
@@ -189,7 +182,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             />
           )}
           <InfoModal dataview={dataview} />
-          {(isCustomUserLayer || gfwUser) && <Remove dataview={dataview} />}
+          <Remove dataview={dataview} />
           {items.length > 1 && (
             <IconButton
               size="small"

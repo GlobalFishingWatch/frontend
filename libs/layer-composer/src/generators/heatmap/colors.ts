@@ -11,7 +11,7 @@ export const HEATMAP_COLORS_BY_ID = {
   yellow: '#FFEA00',
   green: '#A6FF59',
   orange: '#FFAA0D',
-  bathymetry: '#000000',
+  bathymetry: '#4069a6',
 }
 
 export const TIME_COMPARE_COLOR_RAMP = [
@@ -23,19 +23,6 @@ export const TIME_COMPARE_COLOR_RAMP = [
   '#844A7F',
   '#B0547F',
   '#FF677D',
-]
-
-const BATHYMETRY_COLOR_RAMP = [
-  'rgba(0, 0, 0, 0)',
-  'rgba(0, 0, 0, 0)',
-  'rgba(0, 0, 0, 0)',
-  'rgba(0, 0, 0, 0)',
-  'rgba(0, 0, 0, 0)',
-  'rgba(0, 0, 0, 0)',
-  'rgba(0, 0, 0, 0)',
-  'rgba(0, 0, 0, 0)',
-  'rgba(0, 0, 0, 0)',
-  'rgba(0, 0, 0, 0)',
 ]
 
 export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
@@ -57,5 +44,6 @@ export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
   green_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.green),
   orange: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.orange),
   orange_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.orange),
-  bathymetry: BATHYMETRY_COLOR_RAMP,
+  bathymetry: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.bathymetry).reverse(),
+  bathymetry_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.bathymetry).reverse(),
 }

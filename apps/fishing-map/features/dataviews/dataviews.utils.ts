@@ -355,3 +355,7 @@ export const getContextAreaLink = (
       return undefined
   }
 }
+
+export const isBathymetryDataview = (dataview: UrlDataviewInstance) => {
+  return dataview.id.includes('bathymetry')
+}

@@ -41,6 +41,7 @@ export interface Generator {
 export enum Group {
   Background = 'background', // Solid bg color
   Basemap = 'basemap', // Satellite tiles
+  Bathymetry = 'bathymetry', // 4Wings Bathymetry layer
   Heatmap = 'heatmap', // Fill/gradient-based heatmaps
   OutlinePolygons = 'outlinePolygons', // Context layers with an outlined/hollow style such as RFMOs, MPAs, etc
   OutlinePolygonsFill = 'outlinePolygonsFill', // User context layers with a filled styles, below OutlinePolygons

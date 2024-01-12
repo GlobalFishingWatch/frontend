@@ -611,6 +611,7 @@ export type ColorRampWhiteId =
   | 'yellow_toWhite'
   | 'green_toWhite'
   | 'orange_toWhite'
+  | 'bathymetry_toWhite'
 
 export type ColorRampsIds = ColorRampId | ColorRampWhiteId
 

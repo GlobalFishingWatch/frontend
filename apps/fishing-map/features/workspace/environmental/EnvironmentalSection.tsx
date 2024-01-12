@@ -16,6 +16,7 @@ import { selectLocationCategory } from 'routes/routes.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 
@@ -23,6 +24,8 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)
+  const dataviewsMinusBathymetry = dataviews.filter((d) => !isBathymetryDataview(d))
+  const bathymetryDataview = dataviews.find((d) => isBathymetryDataview(d))
   const userDatasets = useSelector(selectUserEnvironmentDatasets)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const locationCategory = useSelector(selectLocationCategory)
@@ -75,15 +78,23 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
           />
         )}
       </div>
-      <SortableContext items={dataviews}>
-        {dataviews.length > 0
-          ? dataviews?.map((dataview) => (
+      <SortableContext items={dataviewsMinusBathymetry}>
+        {dataviewsMinusBathymetry.length > 0
+          ? dataviewsMinusBathymetry?.map((dataview) => (
               <LayerPanelContainer key={dataview.id} dataview={dataview}>
                 <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
               </LayerPanelContainer>
             ))
           : null}
       </SortableContext>
+      {bathymetryDataview && (
+        <LayerPanelContainer key={bathymetryDataview.id} dataview={bathymetryDataview}>
+          <EnvironmentalLayerPanel
+            dataview={bathymetryDataview}
+            onToggle={onToggleLayer(bathymetryDataview)}
+          />
+        </LayerPanelContainer>
+      )}
       {locationCategory === WorkspaceCategory.MarineManager && (
         <div className={styles.surveyLink}>
           <a
