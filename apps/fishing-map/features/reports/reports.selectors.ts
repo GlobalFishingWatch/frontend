@@ -456,14 +456,22 @@ export const selectReportVesselsGraphDataOthers = createSelector(
   }
 )
 
-const selectReportAreaData = createSelector(
+const selectCurrentReportArea = createSelector(
   [selectReportAreaIds, selectAreas],
   (areaIds, areas) => {
     if (!areaIds || !areas) return null
     const { datasetId, areaId } = areaIds
-    return areas?.[datasetId]?.detail?.[areaId]?.data
+    return areas?.[datasetId]?.detail?.[areaId]
   }
 )
+
+export const selectReportAreaData = createSelector([selectCurrentReportArea], (reportArea) => {
+  return reportArea?.data
+})
+
+export const selectReportAreaStatus = createSelector([selectCurrentReportArea], (reportArea) => {
+  return reportArea?.status
+})
 
 export const selectReportAreaName = createSelector(
   [
