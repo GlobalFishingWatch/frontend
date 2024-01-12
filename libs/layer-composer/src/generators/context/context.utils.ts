@@ -23,8 +23,6 @@ export const getLinePaintWithFeatureState = (
       HIGHLIGHT_LINE_COLOR,
       color,
     ],
-
-    'line-width': 3,
   }
 }
 
