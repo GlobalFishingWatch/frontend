@@ -23,7 +23,11 @@
 }
 
 .placeholder {
-  margin: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .label {
@@ -72,6 +76,10 @@
   height: 54rem;
   display: flex;
   flex-direction: column;
+}
+
+.fullheight {
+  height: 100vh;
 }
 
 .footerMsg {

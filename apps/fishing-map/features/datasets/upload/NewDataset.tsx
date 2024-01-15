@@ -1,5 +1,5 @@
 import { useState, useCallback, Fragment } from 'react'
-import type { FeatureCollectionWithFilename } from 'shpjs'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, Modal } from '@globalfishingwatch/ui-components'
@@ -49,6 +49,7 @@ export type DatasetMetadata = Partial<
 
 function NewDataset() {
   const { t } = useTranslation()
+  const [isGuestUserDismissVisible, setIsGuestUserDismissVisible] = useState(false)
   const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { type, style, id, fileRejected, dispatchDatasetModalConfig } =
     useDatasetModalConfigConnect()
@@ -142,15 +143,35 @@ function NewDataset() {
           : t('dataset.uploadNew', 'Upload new dataset')
       }
       isOpen={datasetModalOpen}
-      contentClassName={styles.modalContainer}
+      contentClassName={cx(styles.modalContainer, {
+        [styles.fullheight]: isGuestUser,
+      })}
       header={style !== 'transparent'}
       className={style === 'transparent' ? styles.transparentOverlay : undefined}
       fullScreen={style === 'transparent'}
       onClose={onClose}
     >
       {isGuestUser ? (
-        <div className={styles.placeholder}>
-          <RegisterOrLoginToUpload />
+        <div
+          className={styles.placeholder}
+          onDrop={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setIsGuestUserDismissVisible(true)
+          }}
+          onDragOver={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+          }}
+        >
+          <p className={styles.instructions}>
+            <RegisterOrLoginToUpload />
+          </p>
+          {isGuestUserDismissVisible && (
+            <Button onClick={onClose} className={styles.dismiss}>
+              {t('common.dismiss', 'Dismiss')}
+            </Button>
+          )}
         </div>
       ) : type && (rawFile || dataset) ? (
         <div className={styles.modalContent}>{getDatasetComponentByType(type)}</div>

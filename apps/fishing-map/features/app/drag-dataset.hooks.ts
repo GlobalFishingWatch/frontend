@@ -42,7 +42,7 @@ export function useDatasetDrag() {
     [dispatchDatasetModalConfig, dispatchDatasetModalOpen]
   )
 
-  const onDrop = useCallback(
+  const onDragEnd = useCallback(
     (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
@@ -58,24 +58,23 @@ export function useDatasetDrag() {
   )
 
   useEffect(() => {
-    let dragEnterListener: any
-    let dragLeaveListener: any
-    let dragEndListener: any
+    const eventsConfig: { event: keyof WindowEventMap; callback: any; listener: any }[] = [
+      { event: 'dragenter', callback: onDragEnter, listener: undefined },
+      { event: 'dragleave', callback: onDragLeave, listener: undefined },
+      { event: 'dragend', callback: onDragEnd, listener: undefined },
+    ]
+
     if (typeof window !== 'undefined') {
-      dragEnterListener = window.addEventListener('dragenter', onDragEnter)
-      dragLeaveListener = window.addEventListener('dragleave', onDragLeave)
-      dragEndListener = window.addEventListener('drop', onDrop)
+      eventsConfig.forEach(({ event, listener, callback }) => {
+        listener = window.addEventListener(event, callback)
+      })
     }
     return () => {
-      if (dragEnterListener) {
-        window.removeEventListener('dragover', dragEnterListener)
-      }
-      if (dragLeaveListener) {
-        window.removeEventListener('dragleave', dragLeaveListener)
-      }
-      if (dragEndListener) {
-        window.removeEventListener('dragend', dragEndListener)
-      }
+      eventsConfig.forEach(({ event, listener }) => {
+        if (listener) {
+          window.removeEventListener(event, listener)
+        }
+      })
     }
-  }, [onDrop, onDragEnter, onDragLeave])
+  }, [onDragEnter, onDragLeave, onDragEnd])
 }
