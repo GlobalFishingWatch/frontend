@@ -22,7 +22,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'eez',
     dataviewId: EEZ_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/eezs-2.jpg`,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/eezs.jpg`,
     config: {
       color: '#069688',
     },
@@ -46,7 +46,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'fao-major',
     dataviewId: FAO_AREAS_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/fao-2.jpg`,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/fao.jpg`,
     config: {
       color: '#F09300',
     },

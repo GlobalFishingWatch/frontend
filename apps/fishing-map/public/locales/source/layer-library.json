@@ -97,7 +97,7 @@
   "salinity": {
     "name": "Salinity",
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses.",
-    "moreInfoLink": ""
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description"
   },
   "sar": {
     "name": "Radar detections (SAR)",

@@ -175,36 +175,36 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
       },
     ],
   },
-  {
-    id: 'sst-anomalies-min',
-    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-min.jpg`,
-    config: {
-      color: '#FFEA00',
-      colorRamp: 'yellow',
-    },
-    datasetsConfig: [
-      {
-        ...heatmapDatasetConfig,
-        datasetId: 'public-global-sst-anomalies-min:v20231213',
-      },
-    ],
-  },
-  {
-    id: 'sst-anomalies-max',
-    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-max.jpg`,
-    config: {
-      color: '##FF6854',
-      colorRamp: 'red',
-    },
-    datasetsConfig: [
-      {
-        ...heatmapDatasetConfig,
-        datasetId: 'public-global-sst-anomalies-max:v20231213',
-      },
-    ],
-  },
+  // {
+  //   id: 'sst-anomalies-min',
+  //   dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+  //   previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-min.jpg`,
+  //   config: {
+  //     color: '#FFEA00',
+  //     colorRamp: 'yellow',
+  //   },
+  //   datasetsConfig: [
+  //     {
+  //       ...heatmapDatasetConfig,
+  //       datasetId: 'public-global-sst-anomalies-min:v20231213',
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: 'sst-anomalies-max',
+  //   dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+  //   previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-max.jpg`,
+  //   config: {
+  //     color: '##FF6854',
+  //     colorRamp: 'red',
+  //   },
+  //   datasetsConfig: [
+  //     {
+  //       ...heatmapDatasetConfig,
+  //       datasetId: 'public-global-sst-anomalies-max:v20231213',
+  //     },
+  //   ],
+  // },
   {
     id: 'thgt',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
