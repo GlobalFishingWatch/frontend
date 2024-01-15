@@ -99,6 +99,7 @@
     "comingSoon": "¡próximamente!",
     "confirm": "Confirmar",
     "confirmLeave": "¿Estás seguro de que quieres irte sin guardar tu espacio de trabajo?",
+    "context": "Reference",
     "context_area_other": "Areas de contexto",
     "continue": "Continuar",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles.",
@@ -138,6 +139,7 @@
     "in": "en",
     "include": "Incluir",
     "latitude": "Latitud",
+    "layerLibrary": "Layer Library",
     "layerList": "Lista de capas",
     "learnMore": "Ver más",
     "less": "menos",
@@ -182,6 +184,7 @@
     "sources": "Fuentes",
     "summary": "Resumen",
     "timerange": "Período",
+    "timestamp": "Timestamp",
     "to": "hasta",
     "toggleVisibility": "Toggle visibility",
     "tutorials": "Tutoriales",
@@ -189,12 +192,14 @@
     "unknown": "Desconocido",
     "unknownVessel": "Buque desconocido",
     "update": "Actualizar",
+    "user": "Usuario",
     "userGuide": "Guía de usuario",
     "value": "value",
     "vessel": "Embarcación",
     "vessel_one": "Embarcación",
     "vessel_other": "Embarcaciones",
     "vesselId": "Identificador de embarcación",
+    "vessels": "Embarcaciones",
     "view_layer": "Ver la capa",
     "viirs": "Detección de luz nocturna",
     "visibleValues": "Valores visibles",
@@ -205,10 +210,14 @@
   "dataset": {
     "addContext": "Añadir una capa de referencia",
     "addEnvironmental": "Añadir datos ambientales",
+    "addUser": "Add an uploaded dataset",
     "colorByValue": "Características de color por valor",
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente estos datos?",
     "dragActive": "Soltar el archivo aquí ...",
+    "dragNotAccepted": "This file is not compatible with this type of dataset.",
     "dragFileFormatsPlaceholder": "Arrastra y suelta un archivo {{formats}} aquí o haz clic para seleccionarlo",
+    "dragAndDropFileToCreateDataset": "Drag and drop a file in one of the boxes or click on them to upload your dataset",
+    "dropFileToCreateDataset": "Drop your file in one of the boxes to upload your dataset",
     "edit": "Modificar los datos",
     "emptyFilters": "No hay filtros disponibles",
     "emptyState": "Sus datos aparecerán aquí",
@@ -244,11 +253,48 @@
     "typePolygonsDescription": "Mostrar una o varias áreas coloreadas por cualquier valor cuantitativo en sus datos.",
     "typeTracks": " Pistas",
     "typeTracksDescription": "Mostrar el movimiento de uno o varios animales o embarcaciones.",
+    "upload": "Upload dataset",
     "uploadLogin": "<0>Registrar</0> o <2>iniciar sesión</2>para subir datos (gratis, 2 minutos)",
     "uploadNewContext": "Subir nuevas capas de referencia",
     "uploadNewEnviroment": "Subir un nuevo dato ambiental",
     "uploadPublic": "Permitir a otros usuarios ver estos datos cuando comparta un espacio de trabajo",
     "uploadYourOwn": "Subir una propia"
+  },
+  "datasetUpload": {
+    "datasetDescription": "Dataset description",
+    "datasetName": "Dataset name",
+    "fieldPlaceholder": "Select a field from your dataset",
+    "fieldMultiplePlaceholder": "Select fields from your dataset",
+    "fieldNumericPlaceholder": "Select a numeric field from your dataset",
+    "optionalFields": "Optional fields",
+    "processingData": "Processing data...",
+    "timePeriodTypePlaceholder": "Select a time period type",
+    "points": {
+      "coordinates": "Point coordinates",
+      "filters": "Point filters",
+      "name": "Point name",
+      "size": "Point size",
+      "sizeMax": "Maximum size",
+      "sizeMin": "Minimum size",
+      "time": "Point time"
+    },
+    "polygons": {
+      "coordinates": "Polygon coordinates",
+      "filters": "Polygon filters",
+      "name": "Polygon name",
+      "size": "Polygon size",
+      "time": "Polygon time"
+    },
+    "tracks": {
+      "filters": "track filters",
+      "name": "Point name",
+      "lineId": "Individual line ids",
+      "segmentId": "Individual segment ids",
+      "segmentTimes": "Track segment times",
+      "size": "Point size",
+      "time": "Track point times"
+    },
+    "segment": ""
   },
   "dataview": {
     "basemap-labels": {
@@ -591,6 +637,7 @@
     "tracksDisabled": "Seleccione al menos una embarcación"
   },
   "user": {
+    "datasets": "User datasets",
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
     "groups": "Grupos",
     "info": "Información de usuario",
@@ -813,6 +860,7 @@
     "vesselGroups": "Grupos de embarcaciones"
   },
   "workspace": {
+    "add": "Add to workspace",
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
     "create": "Crear nuevo",
     "createNeeded": "Cambiar la visibilidad del espacio de trabajo requiere crear uno nuevo",
