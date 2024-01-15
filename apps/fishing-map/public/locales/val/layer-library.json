@@ -1,0 +1,147 @@
+{
+  "bathymetry": {
+    "name": "crwdns70478:0crwdne70478:0",
+    "description": "crwdns70480:0crwdne70480:0",
+    "moreInfoLink": "crwdns70482:0crwdne70482:0"
+  },
+  "chlorophyl": {
+    "name": "crwdns70484:0crwdne70484:0",
+    "description": "crwdns70486:0crwdne70486:0",
+    "moreInfoLink": "crwdns70488:0crwdne70488:0"
+  },
+  "coral-reefs": {
+    "name": "crwdns70490:0crwdne70490:0",
+    "description": "crwdns70492:0crwdne70492:0",
+    "moreInfoLink": "crwdns70494:0crwdne70494:0"
+  },
+  "eez": {
+    "name": "crwdns70496:0crwdne70496:0",
+    "description": "crwdns70498:0crwdne70498:0",
+    "moreInfoLink": "crwdns70500:0crwdne70500:0"
+  },
+  "encounters": {
+    "name": "crwdns70502:0crwdne70502:0",
+    "description": "crwdns70504:0crwdne70504:0",
+    "moreInfoLink": "crwdns70506:0crwdne70506:0"
+  },
+  "fao-major": {
+    "name": "crwdns70508:0crwdne70508:0",
+    "description": "crwdns70510:0crwdne70510:0",
+    "moreInfoLink": "crwdns70512:0crwdne70512:0"
+  },
+  "fishing-effort": {
+    "name": "crwdns70514:0crwdne70514:0",
+    "description": "crwdns70516:0crwdne70516:0",
+    "moreInfoLink": "crwdns70518:0crwdne70518:0"
+  },
+  "graticules": {
+    "name": "crwdns70520:0crwdne70520:0",
+    "description": "crwdns70522:0crwdne70522:0",
+    "moreInfoLink": "crwdns70524:0crwdne70524:0"
+  },
+  "high-seas": {
+    "name": "crwdns70526:0crwdne70526:0",
+    "description": "crwdns70528:0crwdne70528:0",
+    "moreInfoLink": "crwdns70530:0crwdne70530:0"
+  },
+  "mangroves": {
+    "name": "crwdns70532:0crwdne70532:0",
+    "description": "crwdns70534:0crwdne70534:0",
+    "moreInfoLink": "crwdns70536:0crwdne70536:0"
+  },
+  "marine-ecoregions": {
+    "name": "crwdns70538:0crwdne70538:0",
+    "description": "crwdns70540:0crwdne70540:0",
+    "moreInfoLink": "crwdns70542:0crwdne70542:0"
+  },
+  "mpa": {
+    "name": "crwdns70544:0crwdne70544:0",
+    "description": "crwdns70546:0crwdne70546:0",
+    "moreInfoLink": "crwdns70548:0crwdne70548:0"
+  },
+  "nitrate": {
+    "name": "crwdns70550:0crwdne70550:0",
+    "description": "crwdns70552:0crwdne70552:0",
+    "moreInfoLink": "crwdns70554:0crwdne70554:0"
+  },
+  "oxygen": {
+    "name": "crwdns70556:0crwdne70556:0",
+    "description": "crwdns70558:0crwdne70558:0",
+    "moreInfoLink": "crwdns70560:0crwdne70560:0"
+  },
+  "ph": {
+    "name": "crwdns70562:0crwdne70562:0",
+    "description": "crwdns70564:0crwdne70564:0",
+    "moreInfoLink": "crwdns70566:0crwdne70566:0"
+  },
+  "phosphate": {
+    "name": "crwdns70568:0crwdne70568:0",
+    "description": "crwdns70570:0crwdne70570:0",
+    "moreInfoLink": "crwdns70572:0crwdne70572:0"
+  },
+  "presence": {
+    "name": "crwdns70574:0crwdne70574:0",
+    "description": "crwdns70576:0crwdne70576:0",
+    "moreInfoLink": "crwdns70578:0crwdne70578:0"
+  },
+  "protectedseas": {
+    "name": "crwdns70580:0crwdne70580:0",
+    "description": "crwdns70582:0crwdne70582:0",
+    "moreInfoLink": "crwdns70584:0crwdne70584:0"
+  },
+  "rfmo": {
+    "name": "crwdns70586:0crwdne70586:0",
+    "description": "crwdns70588:0crwdne70588:0",
+    "moreInfoLink": "crwdns70590:0crwdne70590:0"
+  },
+  "salinity": {
+    "name": "crwdns70592:0crwdne70592:0",
+    "description": "crwdns70594:0crwdne70594:0",
+    "moreInfoLink": "crwdns70596:0crwdne70596:0"
+  },
+  "sar": {
+    "name": "crwdns70598:0crwdne70598:0",
+    "description": "crwdns70600:0crwdne70600:0",
+    "moreInfoLink": "crwdns70602:0crwdne70602:0"
+  },
+  "seagrasses": {
+    "name": "crwdns70604:0crwdne70604:0",
+    "description": "crwdns70606:0crwdne70606:0",
+    "moreInfoLink": "crwdns70608:0crwdne70608:0"
+  },
+  "seamounts": {
+    "name": "crwdns70610:0crwdne70610:0",
+    "description": "crwdns70612:0crwdne70612:0",
+    "moreInfoLink": "crwdns70614:0crwdne70614:0"
+  },
+  "sst": {
+    "name": "crwdns70616:0crwdne70616:0",
+    "description": "crwdns70618:0crwdne70618:0",
+    "moreInfoLink": "crwdns70620:0crwdne70620:0"
+  },
+  "sst-anomalies": {
+    "name": "crwdns70622:0crwdne70622:0",
+    "description": "crwdns70624:0crwdne70624:0",
+    "moreInfoLink": "crwdns70626:0crwdne70626:0"
+  },
+  "sst-anomalies-max": {
+    "name": "crwdns70628:0crwdne70628:0",
+    "description": "crwdns70630:0crwdne70630:0",
+    "moreInfoLink": "crwdns70632:0crwdne70632:0"
+  },
+  "sst-anomalies-min": {
+    "name": "crwdns70634:0crwdne70634:0",
+    "description": "crwdns70636:0crwdne70636:0",
+    "moreInfoLink": "crwdns70638:0crwdne70638:0"
+  },
+  "thgt": {
+    "name": "crwdns70640:0crwdne70640:0",
+    "description": "crwdns70642:0crwdne70642:0",
+    "moreInfoLink": "crwdns70644:0crwdne70644:0"
+  },
+  "viirs": {
+    "name": "crwdns70646:0crwdne70646:0",
+    "description": "crwdns70648:0crwdne70648:0",
+    "moreInfoLink": "crwdns70650:0crwdne70650:0"
+  }
+}
