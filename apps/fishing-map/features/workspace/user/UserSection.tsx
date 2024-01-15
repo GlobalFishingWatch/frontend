@@ -7,6 +7,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventLabel } from 'utils/analytics'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -46,6 +47,7 @@ function UserSection(): React.ReactElement {
   const { dispatchSetMapDrawing } = useMapDrawConnect()
   const guestUser = useSelector(selectIsGuestUser)
   const dispatch = useAppDispatch()
+  const isSmallScreen = useSmallScreen()
 
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectCustomUserDataviews)
@@ -105,19 +107,21 @@ function UserSection(): React.ReactElement {
         </h2>
         {!readOnly && (
           <Fragment>
-            <UserLoggedIconButton
-              icon="upload"
-              type="border"
-              size="medium"
-              className="print-hidden"
-              onClick={onUploadClick}
-              tooltip={t('dataset.upload', 'Upload dataset')}
-              tooltipPlacement="top"
-              loginTooltip={t(
-                'download.eventsDownloadLogin',
-                'Register and login to download vessel events (free, 2 minutes)'
-              )}
-            />
+            {!isSmallScreen && (
+              <UserLoggedIconButton
+                icon="upload"
+                type="border"
+                size="medium"
+                className="print-hidden"
+                onClick={onUploadClick}
+                tooltip={t('dataset.upload', 'Upload dataset')}
+                tooltipPlacement="top"
+                loginTooltip={t(
+                  'download.eventsDownloadLogin',
+                  'Register and login to download vessel events (free, 2 minutes)'
+                )}
+              />
+            )}
             <UserLoggedIconButton
               icon="draw"
               type="border"
