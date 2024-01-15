@@ -99,6 +99,7 @@
     "comingSoon": "segera akan datang!",
     "confirm": "Konfirmasi",
     "confirmLeave": "Anda yakin ingin keluar tanpa menyimpan ruang kerja?",
+    "context": "Reference",
     "context_area_other": "Area konteks",
     "continue": "Lanjutkan",
     "copiedToClipboard": "Tautan untuk membagikan tampilan ini telah disalin ke papan klip Anda.",
@@ -138,6 +139,7 @@
     "in": "di",
     "include": "Memasukkan",
     "latitude": "Lintang",
+    "layerLibrary": "Layer Library",
     "layerList": "Layer tabel",
     "learnMore": "Pelajari lebih lanjut",
     "less": "lebih sedikit",
@@ -182,6 +184,7 @@
     "sources": "Sumber",
     "summary": "Ringkasan",
     "timerange": "Rentang waktu",
+    "timestamp": "Timestamp",
     "to": "to",
     "toggleVisibility": "Toggle visibility",
     "tutorials": "Tutorial",
@@ -189,12 +192,14 @@
     "unknown": "Tidak diketahui",
     "unknownVessel": "Kapal tidak dikenal",
     "update": "Memperbarui",
+    "user": "Pengguna",
     "userGuide": "Panduan pengguna",
     "value": "value",
     "vessel": "Kapal",
     "vessel_one": "Kapal",
     "vessel_other": "Kapal",
     "vesselId": "id Kapal",
+    "vessels": "Kapal",
     "view_layer": "Lihat lapisan",
     "viirs": "Deteksi cahaya malam (VIIRS)",
     "visibleValues": "Nilai yang terlihat",
@@ -205,10 +210,14 @@
   "dataset": {
     "addContext": "Menambah layer referensi",
     "addEnvironmental": "Menambah dataset lingkungan",
+    "addUser": "Add an uploaded dataset",
     "colorByValue": "Fitur warna berdasarkan nilai",
     "confirmRemove": "Anda yakin ingin menghapus dataset ini secara permanen?",
     "dragActive": "Jatuhkan file di sini ...",
+    "dragNotAccepted": "This file is not compatible with this type of dataset.",
     "dragFileFormatsPlaceholder": "Seret dan jatuhkan {{formats}} di sini atau klik untuk memilihnya",
+    "dragAndDropFileToCreateDataset": "Drag and drop a file in one of the boxes or click on them to upload your dataset",
+    "dropFileToCreateDataset": "Drop your file in one of the boxes to upload your dataset",
     "edit": "Ubah dataset",
     "emptyFilters": "Tidak tersedia filter",
     "emptyState": "Dataset Anda akan muncul di sini",
@@ -244,11 +253,48 @@
     "typePolygonsDescription": "Tampilkan satu atau beberapa area yang diwarnai oleh nilai kuantitatif apa pun dalam kumpulan data Anda.",
     "typeTracks": " Trek",
     "typeTracksDescription": "Menampilkan pergerakan satu atau beberapa hewan atau kapal.",
+    "upload": "Upload dataset",
     "uploadLogin": "<0>Anda perlu</0> <2> masuk </2> untuk mengunggah dataset (gratis, 2 menit)",
     "uploadNewContext": "Unggah layer referensi baru",
     "uploadNewEnviroment": "Unggah dataset lingkungan baru",
     "uploadPublic": "Izinkan pengguna lain untuk melihat dataset ini saat Anda berbagi ruang kerja",
     "uploadYourOwn": "Unggah milik Anda sendiri"
+  },
+  "datasetUpload": {
+    "datasetDescription": "Dataset description",
+    "datasetName": "Dataset name",
+    "fieldPlaceholder": "Select a field from your dataset",
+    "fieldMultiplePlaceholder": "Select fields from your dataset",
+    "fieldNumericPlaceholder": "Select a numeric field from your dataset",
+    "optionalFields": "Optional fields",
+    "processingData": "Processing data...",
+    "timePeriodTypePlaceholder": "Select a time period type",
+    "points": {
+      "coordinates": "Point coordinates",
+      "filters": "Point filters",
+      "name": "Point name",
+      "size": "Point size",
+      "sizeMax": "Maximum size",
+      "sizeMin": "Minimum size",
+      "time": "Point time"
+    },
+    "polygons": {
+      "coordinates": "Polygon coordinates",
+      "filters": "Polygon filters",
+      "name": "Polygon name",
+      "size": "Polygon size",
+      "time": "Polygon time"
+    },
+    "tracks": {
+      "filters": "track filters",
+      "name": "Point name",
+      "lineId": "Individual line ids",
+      "segmentId": "Individual segment ids",
+      "segmentTimes": "Track segment times",
+      "size": "Point size",
+      "time": "Track point times"
+    },
+    "segment": ""
   },
   "dataview": {
     "basemap-labels": {
@@ -591,6 +637,7 @@
     "tracksDisabled": "Pilih setidaknya satu kapal"
   },
   "user": {
+    "datasets": "User datasets",
     "groupMissing": "Apakah Anda termasuk dalam grup pengguna yang tidak muncul di sini? <2>Meminta akses</2>",
     "groups": "Grup Pengguna",
     "info": "Info Pengguna",
@@ -813,6 +860,7 @@
     "vesselGroups": "Kelompok kapal"
   },
   "workspace": {
+    "add": "Add to workspace",
     "confirmRemove": "Anda yakin ingin menghapus ruang kerja ini secara permanen?",
     "create": "Buat sebagai baru",
     "createNeeded": "Mengganti visibilitas ruang kerja membutuhkan pembuatan ruang kerja baru",
