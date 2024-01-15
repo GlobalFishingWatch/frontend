@@ -276,7 +276,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
     [
       selectActiveReportActivityDataviews,
       selectActiveDetectionsDataviews,
-      selectActiveHeatmapEnvironmentalDataviews,
+      selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry,
       selectTimebarSelectedEnvId,
     ],
     (activityDataviews, detectionsDataviews, environmentDataviews, timebarSelectedEnvId) => {
