@@ -31,6 +31,7 @@ export const TimeFieldsGroup = ({
   const { t } = useTranslation()
   const { fieldsOptions, getSelectedOption } = useDatasetMetadataOptions(datasetMetadata)
   const timeFilterOptions = getTimeFilterOptions()
+  const geometryType = datasetMetadata?.configuration?.configurationUI?.geometryType
 
   const isTimestampFilter =
     getDatasetConfigurationProperty({
@@ -84,7 +85,11 @@ export const TimeFieldsGroup = ({
         )}
         options={timeFilterOptions}
         direction="top"
-        label={t('datasetUpload.points.time', 'Point time')}
+        label={
+          geometryType === 'polygons'
+            ? t('datasetUpload.polygons.time', 'Polygon time')
+            : t('datasetUpload.points.time', 'Point time')
+        }
         selectedOption={
           getSelectedOption(
             getDatasetConfigurationProperty({
