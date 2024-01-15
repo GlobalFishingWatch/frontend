@@ -3243,11 +3243,11 @@
       "removal_of": {
         "keyword": "Nível de Proteção à Pesca",
         "enum": {
-          "1": "1. Pouco restritivo",
-          "2": "2. Menos restritivo",
-          "3": "3. Moderadamente restritivo",
+          "1": "1",
+          "2": "2",
+          "3": "3",
           "4": "4. Fortemente restritivo",
-          "5": "5. Totalmente restritivo"
+          "5": "5"
         }
       }
     }
