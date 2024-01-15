@@ -67,6 +67,11 @@
 }
 
 .errorMessage {
-  color: var(--color-danger-red);
   font: var(--font-S);
+  opacity: 1;
+  background-color: var(--color-danger-red);
+  color: var(--color-white);
+  min-height: auto;
+  padding: 1rem;
+  display: inline-block;
 }
