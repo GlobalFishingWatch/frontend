@@ -47,11 +47,11 @@ import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
-import Filters from '../activity/ActivityFilters'
+import Filters from '../common/LayerFilters'
 import InfoModal from '../common/InfoModal'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
-import { showSchemaFilter } from '../activity/ActivitySchemaFilter'
+import { showSchemaFilter } from '../common/LayerSchemaFilter'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance

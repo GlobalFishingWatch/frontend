@@ -17,7 +17,7 @@ import {
   SchemaFilter,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
-import { showSchemaFilter } from 'features/workspace/activity/ActivitySchemaFilter'
+import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectAdvancedSearchDatasets } from 'features/search/search.selectors'
 import {

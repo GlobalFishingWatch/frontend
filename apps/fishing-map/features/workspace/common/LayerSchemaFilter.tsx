@@ -14,9 +14,9 @@ import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfis
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
-import styles from './ActivityFilters.module.css'
+import styles from './LayerFilters.module.css'
 
-type ActivitySchemaFilterProps = {
+type LayerSchemaFilterProps = {
   schemaFilter: SchemaFilter
   onSelect: (
     filterKey: string,
@@ -139,14 +139,14 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
     : [rangeValues[0], rangeValues[rangeValues.length - 1]]
 }
 
-function ActivitySchemaFilter({
+function LayerSchemaFilter({
   schemaFilter,
   onSelect,
   onRemove,
   onClean,
   onIsOpenChange,
   onSelectOperation,
-}: ActivitySchemaFilterProps) {
+}: LayerSchemaFilterProps) {
   const {
     id,
     label,
@@ -292,4 +292,4 @@ function ActivitySchemaFilter({
   )
 }
 
-export default ActivitySchemaFilter
+export default LayerSchemaFilter
