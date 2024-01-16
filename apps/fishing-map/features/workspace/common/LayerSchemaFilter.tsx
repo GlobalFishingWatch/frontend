@@ -56,12 +56,10 @@ export const getValueByUnit = (
 ): number => {
   const transformConfig = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
   if (transformConfig) {
-    return Math.round(
-      VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit][transformDirection](value)
-    )
+    return VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit][transformDirection](value)
   }
   if (typeof value === 'number') return value
-  return parseInt(value as string)
+  return parseFloat(value)
 }
 
 export const getValueLabelByUnit = (
