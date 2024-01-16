@@ -52,10 +52,12 @@ class UserPointsGenerator {
     }
     let filters: FilterSpecification | undefined
     if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
+      const startMs = new Date(config.start).getTime()
+      const endMs = new Date(config.end).getTime()
       filters = [
         'all',
-        ['<=', ['to-number', ['get', config.endTimeFilterProperty]], config.end],
-        ['>=', ['to-number', ['get', config.startTimeFilterProperty]], config.start],
+        ['<=', ['to-number', ['get', config.endTimeFilterProperty]], endMs],
+        ['>=', ['to-number', ['get', config.startTimeFilterProperty]], startMs],
       ]
     }
     const circleLayer: CircleLayerSpecification = {
