@@ -16,7 +16,7 @@ import DatasetNotFound from '../shared/DatasetNotFound'
 import LayerSwitch from '../common/LayerSwitch'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
-import Filters from '../activity/ActivityFilters'
+import Filters from '../common/LayerFilters'
 
 type EventsLayerPanelProps = {
   dataview: UrlDataviewInstance

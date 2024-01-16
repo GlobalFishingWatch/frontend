@@ -25,9 +25,7 @@ import {
   VESSEL_GROUPS_MODAL_ID,
 } from 'features/datasets/datasets.utils'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import ActivitySchemaFilter, {
-  showSchemaFilter,
-} from 'features/workspace/activity/ActivitySchemaFilter'
+import LayerSchemaFilter, { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
 import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectVessselGroupsAllowed } from 'features/vessel-groups/vessel-groups.selectors'
@@ -39,14 +37,14 @@ import {
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { listAsSentence } from 'utils/shared'
 import UserGuideLink from 'features/help/UserGuideLink'
-import styles from './ActivityFilters.module.css'
 import {
   areAllSourcesSelectedInDataview,
   getSourcesOptionsInDataview,
   getSourcesSelectedInDataview,
-} from './activity.utils'
+} from '../activity/activity.utils'
+import styles from './LayerFilters.module.css'
 
-type ActivityFiltersProps = {
+type LayerFiltersProps = {
   dataview: UrlDataviewInstance
   onConfirmCallback?: () => void
 }
@@ -99,10 +97,10 @@ export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
   )
 }
 
-function ActivityFilters({
+function LayerFilters({
   dataview: baseDataview,
   onConfirmCallback,
-}: ActivityFiltersProps): React.ReactElement {
+}: LayerFiltersProps): React.ReactElement {
   const { t } = useTranslation()
 
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
@@ -380,7 +378,7 @@ function ActivityFilters({
           return null
         }
         return (
-          <ActivitySchemaFilter
+          <LayerSchemaFilter
             key={schemaFilter.id}
             schemaFilter={schemaFilter}
             onSelect={onSelectFilterClick}
@@ -409,4 +407,4 @@ function ActivityFilters({
   )
 }
 
-export default ActivityFilters
+export default LayerFilters
