@@ -132,14 +132,30 @@ function PopupWrapper({
                     showFeaturesDetails={type === 'click'}
                   />
                 )
-              case DataviewCategory.Environment:
-                return (
-                  <EnvironmentTooltipSection
-                    key={featureCategory}
-                    features={features}
-                    showFeaturesDetails={type === 'click'}
-                  />
+              case DataviewCategory.Environment: {
+                const contextEnvironmentalFeatures = features.filter(
+                  (feature) =>
+                    feature.type === GeneratorType.Context ||
+                    feature.type === GeneratorType.UserContext
                 )
+                const environmentalFeatures = features.filter(
+                  (feature) =>
+                    feature.type !== GeneratorType.Context &&
+                    feature.type !== GeneratorType.UserContext
+                )
+                return (
+                  <Fragment key={featureCategory}>
+                    <ContextTooltipSection
+                      features={contextEnvironmentalFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                    <EnvironmentTooltipSection
+                      features={environmentalFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  </Fragment>
+                )
+              }
               case DataviewCategory.Context: {
                 const defaultContextFeatures = features.filter(
                   (feature) => feature.type === GeneratorType.Context

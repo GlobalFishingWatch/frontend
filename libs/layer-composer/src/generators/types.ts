@@ -148,6 +148,10 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    * Disable interaction (needed when user uploaded a non-polygon layer)
    */
   disableInteraction?: boolean
+  /**
+   * Properties to be used as value
+   */
+  valueProperties?: string[]
 }
 
 /**
@@ -358,7 +362,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
   /**
    * Filter the tracks displayed https://docs.mapbox.com/help/glossary/filter/
    */
-  filters?: Record<string, Array<string>>
+  filters?: Record<string, Array<string | number>>
 }
 
 export interface PolygonsGeneratorConfig extends GeneratorConfig {
