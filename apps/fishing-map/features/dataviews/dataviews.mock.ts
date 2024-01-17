@@ -2,62 +2,219 @@ import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
 
 export const dataviews: Dataview[] = [
   {
-    id: 330,
-    name: 'User track',
-    slug: 'user-track',
-    description: 'User track',
+    id: 341,
+    name: 'Fishing map vessel with identity dataset',
+    slug: 'fishing-map-vessel-track',
     app: 'fishing-map',
     config: {
       type: 'TRACK',
       color: '#F95E5E',
     },
-    category: DataviewCategory.User,
-    createdAt: '2023-02-21T20:32:02.152Z',
-    updatedAt: '2023-02-21T20:32:02.152Z',
-  },
-  {
-    id: 353,
-    name: 'Default context layer',
-    slug: 'default-context-layer',
-    description: 'Default context layer',
-    app: 'fishing-map',
-    config: {
-      type: 'USER_CONTEXT',
-      color: '#F95E5E',
-    },
-    category: DataviewCategory.User,
-    createdAt: '2023-02-21T20:32:32.709Z',
-    updatedAt: '2023-02-21T20:32:32.709Z',
-  },
-  {
-    id: 339,
-    name: 'Default points layer',
-    slug: 'default-points-layer',
-    description: 'Default points layer',
-    app: 'fishing-map',
-    config: {
-      type: 'USER_POINTS',
-      color: '#00FFBC',
-      colorRamp: 'teal',
-    },
-    category: DataviewCategory.User,
-    createdAt: '2023-02-21T20:32:04.646Z',
-    updatedAt: '2023-02-21T20:32:04.646Z',
-  },
-  {
-    id: 347,
-    name: 'Default environmental layer',
-    slug: 'default-environmental-layer',
-    description: 'Default environmental layer',
-    app: 'fishing-map',
-    config: {
-      type: 'USER_CONTEXT',
-      color: '#00FFBC',
-      colorRamp: 'teal',
-    },
-    category: DataviewCategory.User,
-    createdAt: '2023-02-21T20:32:23.719Z',
-    updatedAt: '2023-02-21T20:32:23.719Z',
+    infoConfig: {},
+    filtersConfig: null,
+    eventsConfig: {},
+    datasetsConfig: [
+      {
+        query: [
+          {
+            id: 'binary',
+            value: true,
+          },
+          {
+            id: 'wrap-longitudes',
+            value: false,
+          },
+          {
+            id: 'fields',
+            value: ['LONLAT', 'TIMESTAMP', 'SPEED'],
+          },
+          {
+            id: 'format',
+            value: 'VALUE_ARRAY',
+          },
+        ],
+        params: [
+          {
+            id: 'vesselId',
+            value: '',
+          },
+        ],
+        endpoint: 'tracks',
+        datasetId: 'public-global-all-tracks:v20201001',
+      },
+      {
+        params: [
+          {
+            id: 'vesselId',
+            value: '',
+          },
+        ],
+        endpoint: 'vessel',
+        datasetId: 'public-global-vessel-identity:v20231026',
+      },
+      {
+        query: [
+          {
+            id: 'vessels',
+            value: '',
+          },
+          {
+            id: 'vessel-types',
+            value: ['FISHING'],
+          },
+          {
+            id: 'includes',
+            value: [
+              'id',
+              'type',
+              'start',
+              'end',
+              'position',
+              'regions.mpa',
+              'regions.eez',
+              'regions.fao',
+              'regions.rfmo',
+              'fishing.averageSpeedKnots',
+            ],
+          },
+          {
+            id: 'limit',
+            value: 9999999,
+          },
+          {
+            id: 'offset',
+            value: 0,
+          },
+        ],
+        params: [],
+        endpoint: 'events',
+        datasetId: 'public-global-fishing-events:v20231026',
+      },
+      {
+        query: [
+          {
+            id: 'vessels',
+            value: '',
+          },
+          {
+            id: 'includes',
+            value: [
+              'id',
+              'type',
+              'start',
+              'end',
+              'position',
+              'regions.mpa',
+              'regions.eez',
+              'regions.fao',
+              'regions.rfmo',
+              'loitering.totalDistanceKm',
+              'loitering.averageSpeedKnots',
+            ],
+          },
+          {
+            id: 'limit',
+            value: 9999999,
+          },
+          {
+            id: 'offset',
+            value: 0,
+          },
+        ],
+        params: [],
+        endpoint: 'events',
+        datasetId: 'public-global-loitering-events:v20231026',
+      },
+      {
+        query: [
+          {
+            id: 'vessels',
+            value: '',
+          },
+          {
+            id: 'includes',
+            value: [
+              'id',
+              'type',
+              'start',
+              'end',
+              'position',
+              'regions.mpa',
+              'regions.eez',
+              'regions.fao',
+              'regions.rfmo',
+              'vessel.name',
+              'encounter.mainVesselAuthorizationStatus',
+              'encounter.encounteredVesselAuthorizationStatus',
+              'encounter.medianSpeedKnots',
+              'encounter.vessel.id',
+              'encounter.vessel.ssvid',
+              'encounter.vessel.type',
+              'encounter.vessel.name',
+              'encounter.vessel.flag',
+            ],
+          },
+          {
+            id: 'encounter-types',
+            value: ['CARRIER-FISHING', 'FISHING-CARRIER', 'FISHING-SUPPORT', 'SUPPORT-FISHING'],
+          },
+          {
+            id: 'limit',
+            value: 9999999,
+          },
+          {
+            id: 'offset',
+            value: 0,
+          },
+        ],
+        params: [],
+        endpoint: 'events',
+        datasetId: 'public-global-encounters-events:v20231026',
+      },
+      {
+        query: [
+          {
+            id: 'vessels',
+            value: '',
+          },
+          {
+            id: 'confidences',
+            value: [4],
+          },
+          {
+            id: 'includes',
+            value: [
+              'id',
+              'type',
+              'start',
+              'end',
+              'position',
+              'regions.mpa',
+              'regions.eez',
+              'regions.fao',
+              'regions.rfmo',
+              'port_visit.intermediateAnchorage.name',
+              'port_visit.intermediateAnchorage.flag',
+            ],
+          },
+          {
+            id: 'limit',
+            value: 9999999,
+          },
+          {
+            id: 'offset',
+            value: 0,
+          },
+        ],
+        params: [],
+        endpoint: 'events',
+        datasetId: 'public-global-port-visits-c2-events:v20231026',
+      },
+    ],
+    description: 'Fishing map vessel with track, info and events',
+    createdAt: '2023-01-16T15:35:34.588Z',
+    updatedAt: '2023-11-16T14:04:08.289Z',
+    category: 'vessels',
   },
 ]
 
