@@ -120,17 +120,17 @@
     "moreInfoLink": "https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/description"
   },
   "sst-anomalies": {
-    "name": "Sea surface temperature anommalies (mean)",
+    "name": "Sea surface temperature anomalies (mean)",
     "description": "",
     "moreInfoLink": ""
   },
   "sst-anomalies-max": {
-    "name": "Sea surface temperature anommalies (max)",
+    "name": "Sea surface temperature anomalies (max)",
     "description": "",
     "moreInfoLink": ""
   },
   "sst-anomalies-min": {
-    "name": "Sea surface temperature anommalies (min)",
+    "name": "Sea surface temperature anomalies (min)",
     "description": "",
     "moreInfoLink": ""
   },
