@@ -29,7 +29,167 @@ type FilterTrackByCoordinatePropertiesFn = (
   ...args: FilterTrackByCoordinatePropertiesArgs
 ) => FeatureCollection
 
-// TODO TS types wont work with MultiPoint geoms
+type LineCoordinateProperties = Record<string, (string | number)[]>
+type MultiLineCoordinateProperties = Record<string, [(string | number)[]]>
+type CoordinateProperties = LineCoordinateProperties | MultiLineCoordinateProperties
+type CoordinatesAccumulator = {
+  coordinates: Position[][]
+  coordinateProperties: CoordinateProperties
+}
+
+type GetCoordinatePropertyValueParams = {
+  coordinateProperties: CoordinateProperties
+  coordinateIndex: number
+  multiLineStringIndex?: number
+  id: string
+}
+const getCoordinatePropertyValue = ({
+  id,
+  coordinateProperties,
+  coordinateIndex,
+  multiLineStringIndex,
+}: GetCoordinatePropertyValueParams) => {
+  return multiLineStringIndex !== undefined
+    ? (coordinateProperties as MultiLineCoordinateProperties)?.[id][multiLineStringIndex][
+        coordinateIndex
+      ]
+    : (coordinateProperties as LineCoordinateProperties)?.[id][coordinateIndex]
+}
+
+type AddPropertyIndexToCoordinateParams = {
+  id: string
+  coordinateIndex: number
+  coordinateValue: string | number
+  coordinates: CoordinatesAccumulator
+}
+const addCoordinatePropertyToCoordinate = ({
+  id,
+  coordinateIndex,
+  coordinateValue,
+  coordinates,
+}: AddPropertyIndexToCoordinateParams) => {
+  if (!coordinates.coordinateProperties[id]) {
+    coordinates.coordinateProperties[id] = []
+  }
+  if (!coordinates.coordinateProperties[id][coordinateIndex]) {
+    coordinates.coordinateProperties[id][coordinateIndex] = []
+  }
+  ;(coordinates.coordinateProperties as MultiLineCoordinateProperties)[id][coordinateIndex].push(
+    coordinateValue
+  )
+}
+
+type GetFilteredCoordinatesParams = {
+  coordinates: Position[]
+  filters: TrackCoordinatesPropertyFilter[]
+  coordinateProperties: CoordinateProperties
+  multiLineStringIndex?: number
+}
+const getFilteredCoordinates = ({
+  coordinates,
+  filters,
+  coordinateProperties,
+  multiLineStringIndex,
+}: GetFilteredCoordinatesParams) => {
+  let leadingPoint = true
+  const filteredLines = coordinates.reduce(
+    (filteredCoordinates, coordinate, index) => {
+      const matchesPropertyFilters = filters.every(({ id, min, max, values }) => {
+        const currentValue = getCoordinatePropertyValue({
+          id,
+          coordinateProperties,
+          coordinateIndex: index,
+          multiLineStringIndex,
+        })
+        if (min !== undefined && max !== undefined) {
+          return (currentValue as number) >= min && (currentValue as number) <= max
+        }
+        if (values?.length) {
+          return values.includes(currentValue)
+        }
+        return true
+      })
+      const coordinatesIndex = filteredCoordinates.coordinates.length
+        ? filteredCoordinates.coordinates.length - 1
+        : 0
+      if (matchesPropertyFilters) {
+        if (leadingPoint && index > 0) {
+          leadingPoint = false
+          const leadingIndex = index - 1
+          const leadingCoordinatePoint = coordinates[leadingIndex]
+          if (!filteredCoordinates.coordinates[coordinatesIndex]) {
+            filteredCoordinates.coordinates[coordinatesIndex] = []
+          }
+          filteredCoordinates.coordinates[coordinatesIndex].push(leadingCoordinatePoint)
+          filters.forEach(({ id }) => {
+            const leadingCoordinateValue = getCoordinatePropertyValue({
+              id,
+              coordinateProperties,
+              coordinateIndex: leadingIndex,
+              multiLineStringIndex,
+            })
+            addCoordinatePropertyToCoordinate({
+              id,
+              coordinates: filteredCoordinates,
+              coordinateIndex: coordinatesIndex,
+              coordinateValue: leadingCoordinateValue,
+            })
+          })
+        }
+        if (!filteredCoordinates.coordinates[coordinatesIndex]) {
+          filteredCoordinates.coordinates[coordinatesIndex] = []
+        }
+        filteredCoordinates.coordinates[coordinatesIndex].push(coordinate)
+        filters.forEach(({ id }) => {
+          const coordinateValue = getCoordinatePropertyValue({
+            id,
+            coordinateProperties,
+            coordinateIndex: index,
+            multiLineStringIndex,
+          })
+          addCoordinatePropertyToCoordinate({
+            id,
+            coordinates: filteredCoordinates,
+            coordinateIndex: coordinatesIndex,
+            coordinateValue,
+          })
+        })
+      } else if (filteredCoordinates.coordinates[coordinatesIndex]?.length) {
+        filteredCoordinates.coordinates.push([])
+      }
+
+      return filteredCoordinates
+    },
+    { coordinates: [], coordinateProperties: {} } as CoordinatesAccumulator
+  )
+  return filteredLines
+}
+
+const getFilteredLines = (
+  feature: Feature<Geometry, GeoJsonProperties>,
+  filters: TrackCoordinatesPropertyFilter[]
+) => {
+  const isMultiLineString = feature.geometry.type === 'MultiLineString'
+  const coordinateProperties = feature.properties?.coordinateProperties
+  const lines = isMultiLineString
+    ? (feature.geometry as MultiLineString).coordinates.map((coordinates, multiLineStringIndex) =>
+        getFilteredCoordinates({
+          coordinates,
+          filters,
+          coordinateProperties,
+          multiLineStringIndex,
+        })
+      )
+    : [
+        getFilteredCoordinates({
+          coordinates: (feature.geometry as LineString).coordinates,
+          filters,
+          coordinateProperties,
+        }),
+      ]
+  return lines.filter((l) => l.coordinates.length)
+}
+
 export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertiesFn = (
   geojson,
   {
@@ -37,12 +197,12 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
     includeNonTemporalFeatures = false,
   } = {} as FilterTrackByCoordinatePropertiesParams
 ): FeatureCollection => {
-  if (!geojson || !geojson.features)
+  if (!geojson || !geojson.features) {
     return {
       type: 'FeatureCollection',
       features: [],
     }
-  let leadingPoint = true
+  }
 
   const featuresFiltered: Feature<Geometry, GeoJsonProperties>[] = geojson.features.reduce(
     (filteredFeatures: Feature<Geometry, GeoJsonProperties>[], feature) => {
@@ -51,84 +211,34 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
         .map((p) => p.id)
         .some((id) => feature?.properties?.coordinateProperties?.[id]?.length > 0)
       if (hasValues) {
-        const filteredLines = (feature.geometry as LineString).coordinates.reduce(
-          (filteredCoordinates, coordinate, index) => {
-            const matchesPropertyFilters = filters.every(({ id, min, max, values }) => {
-              const currentValue: number = feature.properties?.coordinateProperties?.[id][index]
-              if (min !== undefined && max !== undefined) {
-                return currentValue >= min && currentValue <= max
-              }
-              if (values?.length) {
-                return values.includes(currentValue)
-              }
-              return true
-            })
-            // TODO generate a new segment when false so we can cut by properties without generating non existing lines
-            if (matchesPropertyFilters) {
-              const coordinatesIndex = filteredCoordinates.coordinates.length
-                ? filteredCoordinates.coordinates.length - 1
-                : 0
-              if (leadingPoint && index > 0) {
-                leadingPoint = false
-                const leadingIndex = index - 1
-                const leadingCoordinatePoint = (feature.geometry as LineString).coordinates[
-                  leadingIndex
-                ]
-                if (!filteredCoordinates.coordinates[coordinatesIndex]) {
-                  filteredCoordinates.coordinates[coordinatesIndex] = []
-                }
-                filteredCoordinates.coordinates[coordinatesIndex].push(leadingCoordinatePoint)
-                filters.forEach(({ id }) => {
-                  const leadingCoordinateValue: string | number =
-                    feature.properties?.coordinateProperties?.[id][leadingIndex]
-                  if (!filteredCoordinates.coordinateProperties[id]) {
-                    filteredCoordinates.coordinateProperties[id] = []
-                  }
-                  filteredCoordinates.coordinateProperties[id].push(leadingCoordinateValue)
-                })
-              }
-              if (!filteredCoordinates.coordinates[coordinatesIndex]) {
-                filteredCoordinates.coordinates[coordinatesIndex] = []
-              }
-              filteredCoordinates.coordinates[coordinatesIndex].push(coordinate)
-              filters.forEach(({ id }) => {
-                const coordinateValue: string | number =
-                  feature.properties?.coordinateProperties?.[id][index]
-                if (!filteredCoordinates.coordinateProperties[id]) {
-                  filteredCoordinates.coordinateProperties[id] = []
-                }
-                filteredCoordinates.coordinateProperties[id].push(coordinateValue)
-              })
-            } else {
-              filteredCoordinates.coordinates.push([])
-            }
+        const filteredLines = getFilteredLines(feature, filters)
 
-            return filteredCoordinates
+        if (!filteredLines.length) {
+          return filteredFeatures
+        }
+
+        const coordinateProperties = filters.reduce(
+          (acc, { id }) => {
+            const properties = filteredLines.flatMap(
+              (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[id]
+            )
+            acc[id] = properties
+            return acc
           },
-          {
-            coordinates: [] as Position[][],
-            coordinateProperties: {} as Record<string, (string | number)[]>,
-          }
+          {} as Record<string, (string | number)[][]>
         )
 
-        if (!filteredLines.coordinates.length) return filteredFeatures
-
-        const geometry: MultiLineString = {
-          type: 'MultiLineString',
-          coordinates: filteredLines.coordinates.filter((c) => c.length > 1),
-        }
-
-        const properties: GeoJsonProperties = {
-          ...feature.properties,
-          coordinateProperties: filteredLines.coordinateProperties,
-        }
-
-        const filteredFeature: Feature = {
-          ...feature,
-          geometry,
-          properties,
-        }
-        filteredFeatures.push(filteredFeature)
+        filteredFeatures.push({
+          type: 'Feature',
+          geometry: {
+            type: 'MultiLineString',
+            coordinates: filteredLines.flatMap((line) => line.coordinates),
+          } as MultiLineString,
+          properties: {
+            ...feature.properties,
+            coordinateProperties,
+          } as GeoJsonProperties,
+        })
       } else if (includeNonTemporalFeatures) {
         filteredFeatures.push(feature)
       }

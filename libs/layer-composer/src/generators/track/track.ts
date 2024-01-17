@@ -44,29 +44,17 @@ const simplifyTrackWithZoomLevel = (
   return simplifiedData
 }
 
-// const filterByTimerange = (data: FeatureCollection, filters: TrackCoordinatesPropertyFilter[]) => {
-//   const filteredData = filterTrackByCoordinateProperties(data, {
-//     filters,
-//     includeNonTemporalFeatures: true,
-//   })
-//   return filteredData
-// }
-
-const getHighlightedData = (
-  data: FeatureCollection,
-  highlightedStart: string,
-  highlightedEnd: string
-) => {
-  const startMs = new Date(highlightedStart).getTime()
-  const endMs = new Date(highlightedEnd).getTime()
-
-  const filters = [
-    { id: 'times', min: startMs, max: endMs },
-    // { id: 'speed', min: 3, max: 20 },
+const getTimeFilter = (start?: string, end?: string): TrackCoordinatesPropertyFilter[] => {
+  if (!start || !end) {
+    return []
+  }
+  return [
+    {
+      id: 'times',
+      min: new Date(start).getTime(),
+      max: new Date(end).getTime(),
+    },
   ]
-  const filteredData = filterTrackByCoordinateProperties(data, { filters })
-
-  return filteredData
 }
 
 const getHighlightedLayer = (
@@ -134,28 +122,19 @@ class TrackGenerator {
         .filter((f: any) => f.properties?.id !== undefined)
         .map((f: any) => f.properties?.id)
     )
-    let propertiesFilter: TrackCoordinatesPropertyFilter[] = Object.entries(
+
+    const propertiesFilter: TrackCoordinatesPropertyFilter[] = Object.entries(
       config.filters || {}
     ).map(([id, values]) => ({
       id,
       min: parseFloat(values[0] as string),
       max: parseFloat(values[1] as string),
     }))
-    // TODO improve memoization for the filters array needed here
-    if (config.start && config.end) {
-      const startMs = new Date(config.start).getTime()
-      const endMs = new Date(config.end).getTime()
-      propertiesFilter.push({ id: 'times', min: startMs, max: endMs })
-    }
-    console.log('🚀 ~ source.data:', source.data)
-    if (propertiesFilter.length > 0) {
-      console.log('🚀 ~ propertiesFilter:', propertiesFilter)
-      source.data = memoizeCache[config.id].filterTrackByCoordinateProperties(source.data, {
-        filter: propertiesFilter,
-        includeNonTemporalFeatures: true,
-      })
-    }
-    console.log('🚀 ~ source.data:', source.data)
+
+    source.data = memoizeCache[config.id].filterTrackByCoordinateProperties(source.data, {
+      filters: [...getTimeFilter(config.start, config.end), ...propertiesFilter],
+      includeNonTemporalFeatures: true,
+    })
 
     // if (config.highlightedEvent) {
     //   const highlightedData = memoizeCache[config.id].getHighlightedEventData(
@@ -172,10 +151,17 @@ class TrackGenerator {
     // }
 
     if (config.highlightedTime) {
-      const highlightedData = memoizeCache[config.id].getHighlightedData(
+      const highlightedData = memoizeCache[config.id].filterTrackByCoordinatePropertiesHighlight(
+        // using source.data here to avoid filtering the entire track again
+        // this makes everything much faster but also harder because the filterTrackByCoordinateProperties
+        // needs support to filter LineStrings and also
         source.data,
-        config.highlightedTime.start,
-        config.highlightedTime.end
+        {
+          filters: [
+            ...getTimeFilter(config.highlightedTime.start, config.highlightedTime.end),
+            ...propertiesFilter,
+          ],
+        }
       )
       const highlightedSource = {
         id: `${config.id}${this.highlightSufix}`,
@@ -210,7 +196,6 @@ class TrackGenerator {
     //     }
     //   })
     // }
-    // console.log('🚀 ~ Object.entries ~ filters:', filters)
 
     if (uniqIds.length > 1) {
       let exprLineColor
@@ -283,9 +268,10 @@ class TrackGenerator {
         filterTrackByCoordinateProperties,
         filterByTimerangeMemoizeEqualityCheck
       ),
-      // TODO: the same for filters memoization here
-      getHighlightedData: memoizeOne(getHighlightedData),
-      getHighlightedEventData: memoizeOne(getHighlightedData),
+      filterTrackByCoordinatePropertiesHighlight: memoizeOne(
+        filterTrackByCoordinateProperties,
+        filterByTimerangeMemoizeEqualityCheck
+      ),
     })
 
     const { sources, uniqIds } = this._getStyleSources(config)
