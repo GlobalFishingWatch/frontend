@@ -16,6 +16,7 @@ type NewDatasetFieldProps = {
   placeholder?: string
   onSelect: SelectOnChange
   onCleanClick?: (e: React.MouseEvent) => void
+  infoTooltip?: string
 }
 
 export function NewDatasetField({
@@ -26,6 +27,7 @@ export function NewDatasetField({
   placeholder,
   onSelect,
   onCleanClick,
+  infoTooltip,
 }: NewDatasetFieldProps) {
   const { t } = useTranslation()
   const { fieldsOptions, filtersFieldsOptions, getSelectedOption } =
@@ -61,6 +63,7 @@ export function NewDatasetField({
         onSelect={onSelect}
         onCleanClick={onCleanClick}
         className={styles.input}
+        infoTooltip={infoTooltip}
       />
     )
   }

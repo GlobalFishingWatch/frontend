@@ -248,6 +248,10 @@ function NewTrackDataset({
                 setDatasetMetadata({ fieldsAllowed: [] })
                 setDatasetMetadataConfig({ lineId: undefined })
               }}
+              infoTooltip={t(
+                'datasetUpload.tracks.lineIdHelp',
+                'Select the property of your dataset that defines which track is each point part of (e.g. each vessel or animal)'
+              )}
             />
             <NewDatasetField
               datasetMetadata={datasetMetadata}
@@ -261,6 +265,10 @@ function NewTrackDataset({
                 setDatasetMetadata({ fieldsAllowed: [] })
                 setDatasetMetadataConfig({ segmentId: undefined })
               }}
+              infoTooltip={t(
+                'datasetUpload.tracks.segmentIdHelp',
+                'Select the property of your dataset that defines which segment of a track is each point part of (i.e. each trip)'
+              )}
             />
           </div>
         )}
@@ -297,6 +305,10 @@ function NewTrackDataset({
           onCleanClick={() => {
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
+          infoTooltip={t(
+            'datasetUpload.tracks.filtersHelp',
+            'Select properties of the lines or their points to be able to dinamically filter them in the sidebar after'
+          )}
         />
         <SwitchRow
           className={styles.saveAsPublic}

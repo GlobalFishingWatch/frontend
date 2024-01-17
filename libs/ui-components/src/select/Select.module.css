@@ -31,10 +31,13 @@
   margin-left: var(--space-S);
 }
 
-.labelContainer {
+.label {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+}
+
+.infoIcon {
+  cursor: help;
 }
 
 .labelIconWarning {

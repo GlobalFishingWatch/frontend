@@ -10,6 +10,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { useDatasetMetadataOptions } from './datasets-upload.hooks'
 import { DatasetMetadata } from './NewDataset'
+import styles from './NewDataset.module.css'
 
 const TIME_FILTER_OPTIONS: TimeFilterType[] = ['timerange', 'timestamp']
 
@@ -90,6 +91,17 @@ export const TimeFieldsGroup = ({
             ? t('datasetUpload.polygons.time', 'Polygon time')
             : t('datasetUpload.points.time', 'Point time')
         }
+        infoTooltip={
+          geometryType === 'polygons'
+            ? t(
+                'datasetUpload.polygons.timeHelp',
+                'Select the property that defines the date or date range of each polygon to filter them with the time bar'
+              )
+            : t(
+                'datasetUpload.points.timeHelp',
+                'Select the property that defines the date or date range of each point to filter them with the time bar'
+              )
+        }
         selectedOption={
           getSelectedOption(
             getDatasetConfigurationProperty({
@@ -102,6 +114,7 @@ export const TimeFieldsGroup = ({
         onSelect={onFilterSelect}
         onCleanClick={onFilterClean}
         disabled={disabled}
+        className={styles.input}
       />
       <Select
         placeholder={t('datasetUploadUI.fieldPlaceholder', 'Select a field from your dataset')}
@@ -123,6 +136,7 @@ export const TimeFieldsGroup = ({
         }
         onSelect={onStartSelect}
         onCleanClick={onStartClean}
+        className={styles.input}
       />
       {(getDatasetConfigurationProperty({
         dataset: datasetMetadata,
@@ -143,6 +157,7 @@ export const TimeFieldsGroup = ({
           onSelect={onEndSelect}
           onCleanClick={onEndClean}
           disabled={disabled}
+          className={styles.input}
         />
       )}
     </Fragment>

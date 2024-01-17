@@ -25,6 +25,7 @@ interface SelectProps {
   align?: 'left' | 'right'
   disabled?: boolean
   type?: 'primary' | 'secondary'
+  infoTooltip?: string
 }
 
 const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOption) => {
@@ -50,6 +51,7 @@ export function Select(props: SelectProps) {
     disabled = false,
     onToggleButtonClick,
     type = 'primary',
+    infoTooltip,
   } = props
   const {
     isOpen,
@@ -95,9 +97,14 @@ export function Select(props: SelectProps) {
   return (
     <div className={containerClassName}>
       {label && (
-        <label className={cx(styles.label, labelContainerClassName)} {...getLabelProps()}>
+        <label className={cx(styles.label, labelContainerClassName)}>
           {label}
           {error && <span className={styles.errorLabel}>{error}</span>}
+          {infoTooltip && (
+            <Tooltip content={infoTooltip}>
+              <IconButton icon="info" size="tiny" className={styles.infoIcon} />
+            </Tooltip>
+          )}
         </label>
       )}
       <div
