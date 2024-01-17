@@ -73,7 +73,7 @@ export function Choice({
   return (
     <div>
       {label && (
-        <label>
+        <label className={styles.label}>
           {label}
           {infoTooltip && (
             <Tooltip content={infoTooltip}>
