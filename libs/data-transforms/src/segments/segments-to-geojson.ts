@@ -12,6 +12,20 @@ const segmentsToFeatures = (segment: Segment | Segment[]): Feature<LineString>[]
       return []
     }
     const times = segment.map((point) => point.timestamp)
+    const coordinateProperties = segment?.reduce(
+      (acc, point) => {
+        const properties = point.properties || {}
+        Object.keys(properties).forEach((key) => {
+          if (!acc[key]) {
+            acc[key] = []
+          }
+          acc[key].push(properties[key])
+        })
+        return acc
+      },
+      {} as Record<string, (string | number)[]>
+    )
+    console.log('🚀 ~ coordinateProperties ~ coordinateProperties:', coordinateProperties)
     const feature: Feature<LineString> = {
       type: 'Feature',
       geometry: {
@@ -22,8 +36,8 @@ const segmentsToFeatures = (segment: Segment | Segment[]): Feature<LineString>[]
       },
       properties: {
         id: segment[0]?.id,
-        ...segment[0]?.properties,
         coordinateProperties: {
+          ...coordinateProperties,
           times: times.some((time) => !!time) ? times : undefined,
         },
       },

@@ -8,8 +8,12 @@ import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Group } from '../../types'
 import { GeneratorType, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-import { isConfigVisible } from '../utils'
-import filterTrackByTimerange from './filterTrackByTimerange'
+import { isConfigVisible, isNumeric } from '../utils'
+import {
+  filterByTimerangeMemoizeEqualityCheck,
+  filterTrackByCoordinateProperties,
+  TrackCoordinatesPropertyFilter,
+} from './filterTrackByCoordinateProperties'
 import { simplifyTrack } from './simplify-track'
 
 export const TRACK_HIGHLIGHT_SUFFIX = '_highlighted'
@@ -40,17 +44,13 @@ const simplifyTrackWithZoomLevel = (
   return simplifiedData
 }
 
-const filterByTimerange = (data: FeatureCollection, start: string, end: string) => {
-  const startMs = new Date(start).getTime()
-  const endMs = new Date(end).getTime()
-
-  const filteredData = filterTrackByTimerange(data, {
-    start: startMs,
-    end: endMs,
-    includeNonTemporalFeatures: true,
-  })
-  return filteredData
-}
+// const filterByTimerange = (data: FeatureCollection, filters: TrackCoordinatesPropertyFilter[]) => {
+//   const filteredData = filterTrackByCoordinateProperties(data, {
+//     filters,
+//     includeNonTemporalFeatures: true,
+//   })
+//   return filteredData
+// }
 
 const getHighlightedData = (
   data: FeatureCollection,
@@ -60,7 +60,11 @@ const getHighlightedData = (
   const startMs = new Date(highlightedStart).getTime()
   const endMs = new Date(highlightedEnd).getTime()
 
-  const filteredData = filterTrackByTimerange(data, { start: startMs, end: endMs })
+  const filters = [
+    { id: 'times', min: startMs, max: endMs },
+    // { id: 'speed', min: 3, max: 20 },
+  ]
+  const filteredData = filterTrackByCoordinateProperties(data, { filters })
 
   return filteredData
 }
@@ -130,10 +134,28 @@ class TrackGenerator {
         .filter((f: any) => f.properties?.id !== undefined)
         .map((f: any) => f.properties?.id)
     )
-
+    let propertiesFilter: TrackCoordinatesPropertyFilter[] = Object.entries(
+      config.filters || {}
+    ).map(([id, values]) => ({
+      id,
+      min: parseFloat(values[0] as string),
+      max: parseFloat(values[1] as string),
+    }))
+    // TODO improve memoization for the filters array needed here
     if (config.start && config.end) {
-      source.data = memoizeCache[config.id].filterByTimerange(source.data, config.start, config.end)
+      const startMs = new Date(config.start).getTime()
+      const endMs = new Date(config.end).getTime()
+      propertiesFilter.push({ id: 'times', min: startMs, max: endMs })
     }
+    console.log('🚀 ~ source.data:', source.data)
+    if (propertiesFilter.length > 0) {
+      console.log('🚀 ~ propertiesFilter:', propertiesFilter)
+      source.data = memoizeCache[config.id].filterTrackByCoordinateProperties(source.data, {
+        filter: propertiesFilter,
+        includeNonTemporalFeatures: true,
+      })
+    }
+    console.log('🚀 ~ source.data:', source.data)
 
     // if (config.highlightedEvent) {
     //   const highlightedData = memoizeCache[config.id].getHighlightedEventData(
@@ -176,12 +198,19 @@ class TrackGenerator {
       'line-opacity': 1,
     }
     let filters: Array<any> = []
-    if (config?.filters) {
-      filters = ['all']
-      Object.entries(config.filters).forEach(([key, values]) => {
-        filters.push(['match', ['get', key], values, true, false])
-      })
-    }
+    // if (config?.filters && Object.keys(config?.filters).length > 0) {
+    //   filters = ['all']
+    //   Object.entries(config.filters).forEach(([key, values]) => {
+    //     // TODO: fix this as the edge case of having a filter of two numeric ids will fail
+    //     if (values.length === 2 && values.some(isNumeric)) {
+    //       filters.push(['<=', ['to-number', ['get', key]], parseFloat(values[1] as string)])
+    //       filters.push(['>=', ['to-number', ['get', key]], parseFloat(values[0] as string)])
+    //     } else {
+    //       filters.push(['match', ['get', key], values, true, false])
+    //     }
+    //   })
+    // }
+    // console.log('🚀 ~ Object.entries ~ filters:', filters)
 
     if (uniqIds.length > 1) {
       let exprLineColor
@@ -250,7 +279,11 @@ class TrackGenerator {
     memoizeByLayerId(config.id, {
       convertToGeoJSON: memoizeOne(segmentsToGeoJSON),
       simplifyTrackWithZoomLevel: memoizeOne(simplifyTrackWithZoomLevel),
-      filterByTimerange: memoizeOne(filterByTimerange),
+      filterTrackByCoordinateProperties: memoizeOne(
+        filterTrackByCoordinateProperties,
+        filterByTimerangeMemoizeEqualityCheck
+      ),
+      // TODO: the same for filters memoization here
       getHighlightedData: memoizeOne(getHighlightedData),
       getHighlightedEventData: memoizeOne(getHighlightedData),
     })
