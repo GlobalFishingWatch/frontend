@@ -78,7 +78,7 @@ export enum DatasetStatus {
 }
 
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
-export type TimeFilterType = 'timerange' | 'timestamp'
+export type TimeFilterType = 'date' | 'dateRange'
 
 export interface DatasetDocumentation {
   type?: string

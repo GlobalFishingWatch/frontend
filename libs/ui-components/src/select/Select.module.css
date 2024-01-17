@@ -64,9 +64,7 @@
   cursor: pointer;
   flex: 1;
   padding: 0 var(--space-S);
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .buttonsContainer {

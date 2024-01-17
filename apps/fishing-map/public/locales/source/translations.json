@@ -268,7 +268,11 @@
     "fieldNumericPlaceholder": "Select a numeric field from your dataset",
     "optionalFields": "Optional fields",
     "processingData": "Processing data...",
-    "timePeriodTypePlaceholder": "Select a time period type",
+    "timePeriodType": "Time filter",
+    "timePeriodTypePlaceholder": "Choose whether to filter your dataset by dates or time ranges",
+    "none": "None",
+    "date": "Date",
+    "dateRange": "Date Range",
     "points": {
       "coordinates": "Point coordinates",
       "filters": "Point filters",
@@ -279,8 +283,12 @@
       "sizeHelp": "Select a numeric property of each point to change its radius",
       "sizeMax": "Maximum size",
       "sizeMin": "Minimum size",
-      "time": "Point time",
-      "timeHelp": "Select the property that defines the date or date range of each point to filter them with the time bar"
+      "time": "Point date",
+      "timeStart": "Point start",
+      "timeEnd": "Point end",
+      "timestampHelp": "Select the property that defines the date of each point to filter them with the time bar",
+      "timerangeStartHelp": "Select the property that defines the start of the date range of each point to filter them with the time bar",
+      "timerangeEndHelp": "Select the property that defines the start of the date range of each point to filter them with the time bar"
     },
     "polygons": {
       "coordinates": "Polygon coordinates",
@@ -290,7 +298,11 @@
       "nameHelp": "Select a property of each polygon to make it appear as its label",
       "opacity": "Polygon opacity",
       "time": "Polygon time",
-      "timeHelp": "Select the property that defines the date or date range of each polygon to filter them with the time bar"
+      "timeStart": "Polygon start",
+      "timeEnd": "Polygon end",
+      "timestampHelp": "Select the property that defines the date of each polygon to filter them with the time bar",
+      "timerangeStartHelp": "Select the property that defines the start of the date range of each polygon to filter them with the time bar",
+      "timerangeEndHelp": "Select the property that defines the start of the date range of each polygon to filter them with the time bar"
     },
     "tracks": {
       "filters": "track filters",
