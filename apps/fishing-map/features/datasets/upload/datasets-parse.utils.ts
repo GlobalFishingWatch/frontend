@@ -25,27 +25,27 @@ export async function getDatasetParsed(file: File, type: DatasetGeometryType): P
   if (!fileType) {
     throw new Error('File type not supported')
   }
-  if (fileType === 'Shapefile') {
-    try {
+  try {
+    if (fileType === 'Shapefile') {
       const fileData = await readBlobAs(file, 'arrayBuffer')
       return shpToGeoJSON(fileData, type)
-    } catch (e: any) {
-      throw new Error(e)
+    } else if (fileType === 'CSV') {
+      const fileText = await file.text()
+      // TODO: CHECK IF CSV CONTAINS HEADERS ?
+      const { data } = parse(fileText, {
+        download: false,
+        dynamicTyping: true,
+        header: true,
+      })
+      return data.slice(1) as DataList
+    } else if (fileType === 'KML') {
+      return kmlToGeoJSON(file, type)
     }
-  } else if (fileType === 'CSV') {
     const fileText = await file.text()
-    // TODO: CHECK IF CSV CONTAINS HEADERS ?
-    const { data } = parse(fileText, {
-      download: false,
-      dynamicTyping: true,
-      header: true,
-    })
-    return data.slice(1) as DataList
-  } else if (fileType === 'KML') {
-    return kmlToGeoJSON(file, type)
+    return JSON.parse(fileText)
+  } catch (e: any) {
+    throw new Error(e)
   }
-  const fileText = await file.text()
-  return JSON.parse(fileText)
 }
 
 export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
