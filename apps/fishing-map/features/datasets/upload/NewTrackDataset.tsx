@@ -232,6 +232,7 @@ function NewTrackDataset({
           <TimeFieldsGroup
             datasetMetadata={datasetMetadata}
             setDatasetMetadataConfig={setDatasetMetadataConfig}
+            disabled={loading || isEditing}
           />
         </div>
         {isCSVFile && (
