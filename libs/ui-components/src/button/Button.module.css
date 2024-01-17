@@ -74,6 +74,10 @@ a.button:visited,
   height: var(--size-S);
 }
 
+.medium {
+  height: var(--size-SM);
+}
+
 .big {
   height: var(--size-L);
 }

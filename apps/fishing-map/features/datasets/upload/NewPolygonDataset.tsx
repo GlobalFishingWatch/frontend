@@ -125,6 +125,10 @@ function NewPolygonDataset({
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
           editable={!loading}
+          infoTooltip={t(
+            'datasetUpload.polygons.nameHelp',
+            'Select a property of each polygon to make it appear as its label'
+          )}
         />
         <div className={styles.row}>
           <TimeFieldsGroup
@@ -153,6 +157,10 @@ function NewPolygonDataset({
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
           disabled={loading}
+          infoTooltip={t(
+            'datasetUpload.polygons.filtersHelp',
+            'Select properties of the polygons to be able to dinamically filter them in the sidebar after'
+          )}
         />
         <SwitchRow
           className={styles.saveAsPublic}

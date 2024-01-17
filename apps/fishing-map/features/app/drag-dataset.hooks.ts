@@ -42,7 +42,7 @@ export function useDatasetDrag() {
     [dispatchDatasetModalConfig, dispatchDatasetModalOpen]
   )
 
-  const onDragEnd = useCallback(
+  const onDrop = useCallback(
     (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
@@ -61,7 +61,7 @@ export function useDatasetDrag() {
     const eventsConfig: { event: keyof WindowEventMap; callback: any; listener: any }[] = [
       { event: 'dragenter', callback: onDragEnter, listener: undefined },
       { event: 'dragleave', callback: onDragLeave, listener: undefined },
-      { event: 'dragend', callback: onDragEnd, listener: undefined },
+      { event: 'drop', callback: onDrop, listener: undefined },
     ]
 
     if (typeof window !== 'undefined') {
@@ -76,5 +76,5 @@ export function useDatasetDrag() {
         }
       })
     }
-  }, [onDragEnter, onDragLeave, onDragEnd])
+  }, [onDragEnter, onDragLeave, onDrop])
 }

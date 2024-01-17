@@ -5,7 +5,13 @@ import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import { uniqBy } from 'lodash'
 import { DatasetTypes, DatasetStatus, Dataset } from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
+import {
+  Tooltip,
+  ColorBarOption,
+  Modal,
+  IconButton,
+  Collapsable,
+} from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
@@ -344,45 +350,54 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
             { [styles.properties]: featuresOnScreen?.total > 0 },
             'print-hidden'
           )}
-          style={{ height: closestAreasHeight }}
+          style={{ maxHeight: closestAreasHeight }}
         >
           {featuresOnScreen?.total > 0 && (
             <Fragment>
-              <label>
-                {t('layer.areasOnScreen', 'Areas on screen')} ({featuresOnScreen?.total})
-              </label>
-              <ul>
-                {featuresOnScreen.closest.map((feature) => {
-                  const id =
-                    feature?.properties?.[uniqKey] || feature?.properties!.id || feature?.id
-                  let title =
-                    feature.properties.value || feature.properties.name || feature.properties.id
-                  if (dataset?.configuration?.valueProperties?.length) {
-                    title = dataset.configuration.valueProperties
-                      .flatMap((prop) => feature.properties[prop] || [])
-                      .join(', ')
-                  }
-                  return (
-                    <li
-                      key={`${id}-${title}`}
-                      className={styles.area}
-                      onMouseEnter={() => handleHoverArea(feature)}
-                      onMouseLeave={() => cleanFeatureState('highlight')}
-                    >
-                      <span
-                        title={title.length > 40 ? title : undefined}
-                        className={styles.areaTitle}
+              <Collapsable
+                label={`${t(
+                  'layer.areasOnScreen',
+                  'Areas on screen'
+                )} (${featuresOnScreen?.total})`}
+                open={false}
+                className={styles.areasOnScreen}
+              >
+                <ul>
+                  {featuresOnScreen.closest.map((feature) => {
+                    const id =
+                      feature?.properties?.[uniqKey] || feature?.properties!.id || feature?.id
+                    let title =
+                      feature.properties.value || feature.properties.name || feature.properties.id
+                    if (dataset?.configuration?.valueProperties?.length) {
+                      title = dataset.configuration.valueProperties
+                        .flatMap((prop) => feature.properties[prop] || [])
+                        .join(', ')
+                    }
+                    return (
+                      <li
+                        key={`${id}-${title}`}
+                        className={styles.area}
+                        onMouseEnter={() => handleHoverArea(feature)}
+                        onMouseLeave={() => cleanFeatureState('highlight')}
                       >
-                        {title}
-                      </span>
-                      <ReportPopupLink feature={feature} onClick={onReportClick}></ReportPopupLink>
-                    </li>
-                  )
-                })}
-                {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
-                  <li className={cx(styles.area, styles.ellipsis)}>...</li>
-                )}
-              </ul>
+                        <span
+                          title={title.length > 40 ? title : undefined}
+                          className={styles.areaTitle}
+                        >
+                          {title}
+                        </span>
+                        <ReportPopupLink
+                          feature={feature}
+                          onClick={onReportClick}
+                        ></ReportPopupLink>
+                      </li>
+                    )
+                  })}
+                  {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
+                    <li className={cx(styles.area, styles.ellipsis)}>...</li>
+                  )}
+                </ul>
+              </Collapsable>
             </Fragment>
           )}
         </div>

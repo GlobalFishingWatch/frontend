@@ -247,11 +247,15 @@ function NewPointDataset({
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="propertyToInclude"
-          label={t('datasetUpload.points.name', 'Point name')}
+          label={t('datasetUpload.points.name', 'Point label')}
           editable={!loading}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
+          infoTooltip={t(
+            'datasetUpload.points.nameHelp',
+            'Select a property of each point to make it appear as its label'
+          )}
         />
         <div className={styles.row}>
           <Select
@@ -278,6 +282,10 @@ function NewPointDataset({
               setDatasetMetadataConfig({ pointSize: undefined })
             }}
             disabled={loading}
+            infoTooltip={t(
+              'datasetUpload.points.sizeHelp',
+              'Select a numeric property of each point to change its radius'
+            )}
           />
           {getDatasetConfigurationProperty({
             dataset: datasetMetadata,
@@ -340,6 +348,10 @@ function NewPointDataset({
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
           disabled={loading}
+          infoTooltip={t(
+            'datasetUpload.points.filtersHelp',
+            'Select properties of the points to be able to dinamically filter them in the sidebar after'
+          )}
         />
         <SwitchRow
           className={styles.saveAsPublic}
