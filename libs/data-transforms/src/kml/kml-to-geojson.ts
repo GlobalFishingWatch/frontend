@@ -36,8 +36,8 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
         const { features } = kml(kmlDoc)
         results.push(...features)
       }
-    } catch (e) {
-      console.log(e)
+    } catch (e: any) {
+      throw new Error(e)
     }
   }
 
