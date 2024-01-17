@@ -14,9 +14,9 @@ import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfis
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
-import styles from './ActivityFilters.module.css'
+import styles from './LayerFilters.module.css'
 
-type ActivitySchemaFilterProps = {
+type LayerSchemaFilterProps = {
   schemaFilter: SchemaFilter
   onSelect: (
     filterKey: string,
@@ -56,12 +56,10 @@ export const getValueByUnit = (
 ): number => {
   const transformConfig = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
   if (transformConfig) {
-    return Math.round(
-      VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit][transformDirection](value)
-    )
+    return VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit][transformDirection](value)
   }
   if (typeof value === 'number') return value
-  return parseInt(value as string)
+  return parseFloat(value)
 }
 
 export const getValueLabelByUnit = (
@@ -128,7 +126,7 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
     optionsSelected?.length > 0
       ? optionsSelected
           .map((option) => {
-            const value = Array.isArray(option) ? parseInt(option[0].id) : parseInt(option.id)
+            const value = Array.isArray(option) ? parseFloat(option[0].id) : parseFloat(option.id)
             return getValueByUnit(value, { unit })
           })
           .sort((a, b) => a - b)
@@ -139,14 +137,14 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
     : [rangeValues[0], rangeValues[rangeValues.length - 1]]
 }
 
-function ActivitySchemaFilter({
+function LayerSchemaFilter({
   schemaFilter,
   onSelect,
   onRemove,
   onClean,
   onIsOpenChange,
   onSelectOperation,
-}: ActivitySchemaFilterProps) {
+}: LayerSchemaFilterProps) {
   const {
     id,
     label,
@@ -169,6 +167,8 @@ function ActivitySchemaFilter({
         onSelect(id, value, true)
       } else {
         const selection = rangeSelected.map((range: number) => ({
+          // This id ideally would be a number but as the url parser always consider number as arrays
+          // TODO: find a way to identify when a filter is a range so we can parse properly
           id: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
           label: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
         }))
@@ -292,4 +292,4 @@ function ActivitySchemaFilter({
   )
 }
 
-export default ActivitySchemaFilter
+export default LayerSchemaFilter

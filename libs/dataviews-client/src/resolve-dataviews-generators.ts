@@ -383,6 +383,9 @@ export function getGeneratorConfig(
         if (dataset?.source) {
           generator.attribution = getDatasetAttribution(dataset)
         }
+        if (dataset?.configuration?.valueProperties) {
+          generator.valueProperties = dataset?.configuration?.valueProperties
+        }
 
         const propertyToInclude = (dataset.configuration as EnviromentalDatasetConfiguration)
           ?.propertyToInclude

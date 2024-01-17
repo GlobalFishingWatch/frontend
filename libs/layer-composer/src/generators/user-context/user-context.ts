@@ -118,6 +118,7 @@ class UserContextGenerator {
         interactive,
         generatorId: generatorId,
         datasetId: config.datasetId,
+        valueProperties: config.valueProperties,
         group: Group.OutlinePolygonsBackground,
       },
     }

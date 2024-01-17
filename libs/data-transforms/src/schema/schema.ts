@@ -34,8 +34,7 @@ export const getFieldSchema = (
         const stringEnumSupported = values.length < maxSchemaEnumValues
         schema.enum = stringEnumSupported ? values.map((v) => v.toString()) : []
       } else if (schema.type === 'range' || schema.type === 'coordinate') {
-        schema.min = min(values)
-        schema.max = max(values)
+        schema.enum = [min(values), max(values)]
       } else if (schema.type === 'boolean') {
         schema.enum = [true, false]
       }

@@ -119,7 +119,7 @@ export function useDatasetMetadataOptions(datasetMetadata?: DatasetMetadata) {
           const schema = datasetMetadata.schema?.[field]
           const isEnumAllowed =
             (schema?.type === 'string' || schema?.type === 'boolean') && schema?.enum?.length
-          const isRangeAllowed = schema?.type === 'range' && schema?.min && schema?.max
+          const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
           return isEnumAllowed || isRangeAllowed
             ? { id: field, label: <DatasetFieldLabel field={field} fieldSchema={schema} /> }
             : []

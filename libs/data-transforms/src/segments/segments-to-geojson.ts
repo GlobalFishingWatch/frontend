@@ -11,6 +11,7 @@ const segmentsToFeatures = (segment: Segment | Segment[]): Feature<LineString>[]
     if (!segment.length || segment.length <= 1) {
       return []
     }
+    const times = segment.map((point) => point.timestamp)
     const feature: Feature<LineString> = {
       type: 'Feature',
       geometry: {
@@ -23,7 +24,7 @@ const segmentsToFeatures = (segment: Segment | Segment[]): Feature<LineString>[]
         id: segment[0]?.id,
         ...segment[0]?.properties,
         coordinateProperties: {
-          times: segment.map((point) => point.timestamp),
+          times: times.some((time) => !!time) ? times : undefined,
         },
       },
     }

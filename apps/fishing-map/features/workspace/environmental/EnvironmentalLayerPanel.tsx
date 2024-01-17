@@ -10,7 +10,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import ActivityFilters, {
   isHistogramDataviewSupported,
-} from 'features/workspace/activity/ActivityFilters'
+} from 'features/workspace/common/LayerFilters'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -52,6 +52,8 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       { field: 'flag', label: t('layer.flagState_others', 'Flags') },
       { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
       { field: 'speed', label: t('layer.speed', 'Speed') },
+      { field: 'Height', label: t('layer.height', 'Height') },
+      { field: 'REALM', label: t('layer.REALM', 'REALM') },
     ],
     [t]
   )
@@ -121,7 +123,8 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     dataview.config?.maxVisibleValue !== undefined
       ? dataview.config?.maxVisibleValue !== layerRange.max
       : false
-  const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter
+  const hasFilters = dataview.config?.filters && Object.keys(dataview.config?.filters).length > 0
+  const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter || hasFilters
 
   return (
     <div

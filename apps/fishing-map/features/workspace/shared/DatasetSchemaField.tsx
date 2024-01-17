@@ -11,7 +11,7 @@ import {
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { getValueLabelByUnit } from 'features/workspace/activity/ActivitySchemaFilter'
+import { getValueLabelByUnit } from 'features/workspace/common/LayerSchemaFilter'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance

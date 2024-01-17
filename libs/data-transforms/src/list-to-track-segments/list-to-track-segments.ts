@@ -75,7 +75,7 @@ export const listToTrackSegments = ({
             if (coords) {
               return [
                 {
-                  ...(hasIdGroup && { properties }),
+                  properties,
                   latitude: coords.latitude as number,
                   longitude: coords.longitude as number,
                   ...(startTime &&

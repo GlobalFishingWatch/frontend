@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FeatureCollection } from 'geojson'
 import {
   Button,
@@ -58,6 +58,7 @@ function NewTrackDataset({
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const isCSVFile = fileType === 'CSV' || sourceFormat === 'csv'
   const fieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
+
   const isPublic = !!datasetMetadata?.public
 
   const lineIdProperty = getDatasetConfigurationProperty({
@@ -246,6 +247,7 @@ function NewTrackDataset({
           <TimeFieldsGroup
             datasetMetadata={datasetMetadata}
             setDatasetMetadataConfig={setDatasetMetadataConfig}
+            disabled={loading || isEditing}
           />
         </div>
         {isCSVFile && (
@@ -262,6 +264,10 @@ function NewTrackDataset({
                 setDatasetMetadata({ fieldsAllowed: [] })
                 setDatasetMetadataConfig({ lineId: undefined })
               }}
+              infoTooltip={t(
+                'datasetUpload.tracks.lineIdHelp',
+                'Select the property of your dataset that defines which track is each point part of (e.g. each vessel or animal)'
+              )}
             />
             <NewDatasetField
               datasetMetadata={datasetMetadata}
@@ -275,6 +281,10 @@ function NewTrackDataset({
                 setDatasetMetadata({ fieldsAllowed: [] })
                 setDatasetMetadataConfig({ segmentId: undefined })
               }}
+              infoTooltip={t(
+                'datasetUpload.tracks.segmentIdHelp',
+                'Select the property of your dataset that defines which segment of a track is each point part of (i.e. each trip)'
+              )}
             />
           </div>
         )}
@@ -299,14 +309,7 @@ function NewTrackDataset({
               : t('datasetUpload.fieldMultiplePlaceholder', 'Select fields from your dataset')
           }
           direction="top"
-          disabled={
-            loading ||
-            (isCSVFile &&
-              !getDatasetConfigurationProperty({
-                dataset: datasetMetadata,
-                property: 'idProperty',
-              }))
-          }
+          disabled={loading}
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {
@@ -318,6 +321,10 @@ function NewTrackDataset({
           onCleanClick={() => {
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
+          infoTooltip={t(
+            'datasetUpload.tracks.filtersHelp',
+            'Select properties of the lines or their points to be able to dinamically filter them in the sidebar after'
+          )}
         />
         <SwitchRow
           className={styles.saveAsPublic}

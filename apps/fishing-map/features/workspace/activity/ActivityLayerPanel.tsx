@@ -36,7 +36,7 @@ import Remove from '../common/Remove'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
 import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import Filters from './ActivityFilters'
+import Filters from '../common/LayerFilters'
 import { isActivityDataview, isDetectionsDataview } from './activity.utils'
 import activityStyles from './ActivitySection.module.css'
 

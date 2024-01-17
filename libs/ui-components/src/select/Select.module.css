@@ -31,10 +31,13 @@
   margin-left: var(--space-S);
 }
 
-.labelContainer {
+.label {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+}
+
+.infoIcon {
+  cursor: help;
 }
 
 .labelIconWarning {
@@ -61,9 +64,7 @@
   cursor: pointer;
   flex: 1;
   padding: 0 var(--space-S);
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .buttonsContainer {

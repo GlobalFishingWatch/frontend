@@ -236,6 +236,18 @@
   white-space: nowrap;
 }
 
+.areasOnScreen summary {
+  justify-content: left;
+}
+
+.areasOnScreen summary::before {
+  content: unset;
+}
+
+.areasOnScreen summary span {
+  padding: 0;
+}
+
 @media print {
   .tagList > li > div {
     border: var(--border);

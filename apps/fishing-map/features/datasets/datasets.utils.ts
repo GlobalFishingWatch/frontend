@@ -83,7 +83,14 @@ export type SupportedActivityDatasetSchema =
   | 'label'
 
 // Speed flag and vessels only added to debug purposes of vessel speed dataset
-export type SupportedEnvDatasetSchema = 'type' | 'speed' | 'flag' | 'vessel_type'
+// Context env layers filtesr: Seamounts => height & Ecoregions => REALM
+export type SupportedEnvDatasetSchema =
+  | 'type'
+  | 'speed'
+  | 'flag'
+  | 'vessel_type'
+  | 'Height'
+  | 'REALM'
 export type SupportedContextDatasetSchema = 'removal_of'
 export type SupportedEventsDatasetSchema = 'duration'
 
@@ -634,7 +641,9 @@ export const getCommonSchemaFieldsInDataview = (
   let schemaFields: (string | boolean)[][] = (activeDatasets || [])?.map((d) => {
     const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
     const schemaEnum = schemaItem?.enum || schemaItem?.items?.enum || []
-    return Array.isArray(schemaEnum) ? schemaEnum.filter((e) => !!e) : schemaEnum
+    return Array.isArray(schemaEnum)
+      ? schemaEnum.filter((e) => e !== null && e !== undefined)
+      : schemaEnum
   })
   if (schemaType === 'number' || schemaType === 'range') {
     const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)

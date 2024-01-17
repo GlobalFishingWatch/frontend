@@ -75,11 +75,7 @@ const DatasetType = ({
       {icon}
       <input {...getInputProps()} />
       {isDragActive ? (
-        isDragAccept ? (
-          <div className={styles.textContainer}>
-            <p>{t('dataset.dragActive', 'Drop the file here ...')}</p>
-          </div>
-        ) : (
+        dragError ? (
           <div className={styles.textContainer}>
             <p>
               {t(
@@ -87,6 +83,10 @@ const DatasetType = ({
                 'This file is not compatible with this type of dataset.'
               )}
             </p>
+          </div>
+        ) : (
+          <div className={styles.textContainer}>
+            <p>{t('dataset.dragActive', 'Drop the file here ...')}</p>
           </div>
         )
       ) : (
