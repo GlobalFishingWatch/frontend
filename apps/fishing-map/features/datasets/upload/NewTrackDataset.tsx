@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FeatureCollection } from 'geojson'
 import {
   Button,
@@ -56,6 +56,7 @@ function NewTrackDataset({
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const isCSVFile = fileType === 'CSV' || sourceFormat === 'csv'
   const fieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
+
   const isPublic = !!datasetMetadata?.public
 
   const lineIdProperty = getDatasetConfigurationProperty({

@@ -126,7 +126,7 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
     optionsSelected?.length > 0
       ? optionsSelected
           .map((option) => {
-            const value = Array.isArray(option) ? parseInt(option[0].id) : parseInt(option.id)
+            const value = Array.isArray(option) ? parseFloat(option[0].id) : parseFloat(option.id)
             return getValueByUnit(value, { unit })
           })
           .sort((a, b) => a - b)
@@ -167,6 +167,8 @@ function LayerSchemaFilter({
         onSelect(id, value, true)
       } else {
         const selection = rangeSelected.map((range: number) => ({
+          // This id ideally would be a number but as the url parser always consider number as arrays
+          // TODO: find a way to identify when a filter is a range so we can parse properly
           id: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
           label: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
         }))
