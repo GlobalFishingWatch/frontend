@@ -79,6 +79,10 @@ export enum DatasetStatus {
 
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
 export type TimeFilterType = 'timerange' | 'timestamp'
+export type DatasetGeometryToGeoJSONGeometry<Type> = {
+  [Property in keyof Type]: string
+}
+export type MappedGeometries = DatasetGeometryToGeoJSONGeometry<Partial<DatasetGeometryType>>
 
 export interface DatasetDocumentation {
   type?: string

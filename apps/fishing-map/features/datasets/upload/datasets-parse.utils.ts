@@ -6,6 +6,7 @@ import {
   listToTrackSegments,
   segmentsToGeoJSON,
   kmlToGeoJSON,
+  shpToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
 import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
@@ -26,37 +27,10 @@ export async function getDatasetParsed(file: File, type: DatasetGeometryType): P
   }
   if (fileType === 'Shapefile') {
     try {
-      // TODO support multi-dataset shapefiles
-      //  - filter by type to show only relevant datasets
-      //  - process only selected dataset
-      const shpjs = await import('shpjs').then((module) => module.default)
       const fileData = await readBlobAs(file, 'arrayBuffer')
-      const expandedShp = await shpjs(fileData)
-      if (Array.isArray(expandedShp)) {
-        // geojson = expandedShp[0]
-        // return t(
-        //   'errors.datasetShapefileMultiple',
-        //   'Shapefiles containing multiple components (multiple file names) are not supported yet'
-        // )
-      } else {
-        // if (
-        //   expandedShp.extensions &&
-        //   (!expandedShp.extensions.includes('.shp') ||
-        //     !expandedShp.extensions.includes('.shx') ||
-        //     !expandedShp.extensions.includes('.prj') ||
-        //     !expandedShp.extensions.includes('.dbf'))
-        // ) {
-        //   return t(
-        //     'errors.uploadShapefileComponents',
-        //     'Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.'
-        //   )
-        // } else {
-        // }
-        return expandedShp
-      }
-    } catch (e: any) {
-      console.log('Error loading shapefile file', e)
-      throw new Error(e)
+      return shpToGeoJSON(fileData, type)
+    } catch (e) {
+      console.log(e)
     }
   } else if (fileType === 'CSV') {
     const fileText = await file.text()
