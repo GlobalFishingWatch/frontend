@@ -285,14 +285,7 @@ function NewTrackDataset({
               : t('datasetUpload.fieldMultiplePlaceholder', 'Select fields from your dataset')
           }
           direction="top"
-          disabled={
-            loading ||
-            (isCSVFile &&
-              !getDatasetConfigurationProperty({
-                dataset: datasetMetadata,
-                property: 'idProperty',
-              }))
-          }
+          disabled={loading}
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {
