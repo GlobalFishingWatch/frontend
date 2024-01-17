@@ -827,7 +827,9 @@ export const getFiltersBySchema = (
       ? activeDatasets.some((d) => datasetsWithSchema.includes(d))
       : activeDatasets.every((d) => datasetsWithSchema.includes(d))
   const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)!?.length > 0
-  const disabled = !hasDatasetsWithSchema || incompatibleFilterSelection
+  const disabled =
+    // TODO:deck remove this once we know why speed is disabled
+    schema === 'speed' ? false : !hasDatasetsWithSchema || incompatibleFilterSelection
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)!?.[0]?.id)
   let label: string = CONTEXT_DATASETS_SCHEMAS.includes(schema as SupportedContextDatasetSchema)
     ? t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
@@ -872,10 +874,16 @@ export const getSchemaFiltersInDataview = (
         })
       : fieldsAllowed
   const filtersAllowed = fielsAllowedOrdered.map((id) => {
-    return getFiltersBySchema(dataview, id, { vesselGroups })
+    return getFiltersBySchema(dataview, id, {
+      vesselGroups,
+      compatibilityOperation: id === 'speed' ? 'some' : 'every',
+    })
   })
   const filtersDisabled = fieldsDisabled.map((id) => {
-    return getFiltersBySchema(dataview, id, { vesselGroups })
+    return getFiltersBySchema(dataview, id, {
+      vesselGroups,
+      compatibilityOperation: id === 'speed' ? 'some' : 'every',
+    })
   })
   return {
     filtersAllowed,

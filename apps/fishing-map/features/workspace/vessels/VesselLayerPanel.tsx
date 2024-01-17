@@ -35,6 +35,8 @@ import { getOtherVesselNames } from 'features/vessel/vessel.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { t } from 'features/i18n/i18n'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import Filters from '../common/LayerFilters'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -95,6 +97,7 @@ export const getVesselIdentityTooltipSummary = (
 
 function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
+  const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const resources = useSelector(selectResources)
@@ -125,6 +128,10 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
 
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
+  }
+
+  const onToggleFilterOpen = () => {
+    setFiltersOpen(!filterOpen)
   }
 
   // const onToggleInfoOpen = () => {
@@ -293,6 +300,27 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
               onClickOutside={closeExpandedContainer}
             />
             {layerActive && !infoLoading && TrackIconComponent}
+            {layerActive && (
+              <ExpandedContainer
+                visible={filterOpen}
+                onClickOutside={closeExpandedContainer}
+                component={<Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />}
+              >
+                <div className={styles.filterButtonWrapper}>
+                  <IconButton
+                    icon={filterOpen ? 'filter-on' : 'filter-off'}
+                    size="small"
+                    onClick={onToggleFilterOpen}
+                    tooltip={
+                      filterOpen
+                        ? t('layer.filterClose', 'Close filters')
+                        : t('layer.filterOpen', 'Open filters')
+                    }
+                    tooltipPlacement="top"
+                  />
+                </div>
+              </ExpandedContainer>
+            )}
             <Remove dataview={dataview} />
           </Fragment>
           {infoResource && InfoIconComponent}

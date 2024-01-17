@@ -13,6 +13,7 @@ const segmentsToFeatures = (segment: TrackSegment | TrackSegment[]): Feature<Lin
       return []
     }
     const times = segment.map((point) => point.timestamp)
+    const speed = segment.map((point) => point.speed)
     const coordinateProperties = segment?.reduce((acc, point) => {
       const properties = point.coordinateProperties || {}
       Object.keys(properties).forEach((key) => {
@@ -38,6 +39,7 @@ const segmentsToFeatures = (segment: TrackSegment | TrackSegment[]): Feature<Lin
         coordinateProperties: {
           ...coordinateProperties,
           times: times.some((time) => !!time) ? times : undefined,
+          speed: speed.some((time) => !!time) ? speed : undefined,
         },
       },
     }
