@@ -41,9 +41,11 @@ function NewTrackDataset({
   file,
   dataset,
   onFileUpdate,
+  onDatasetParseError,
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [dataParseError, setDataParseError] = useState<string>('')
   const [idGroupError, setIdGroupError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -87,24 +89,29 @@ function NewTrackDataset({
   const handleRawData = useCallback(
     async (file: File) => {
       setProcessingData(true)
-      const data = await getDatasetParsed(file, 'tracks')
-      const fileType = getFileType(file)
-      const datasetMetadata = getTracksDatasetMetadata({
-        data,
-        name: getFileName(file),
-        sourceFormat: fileType as FileType,
-      })
-      setDatasetMetadata(datasetMetadata)
-      if (fileType === 'CSV') {
-        setSourceData(data as DataList)
-        const geojson = getTrackFromList(data as DataList, datasetMetadata)
-        setGeojson(geojson)
-      } else {
-        setGeojson(data as FeatureCollection)
+      try {
+        const data = await getDatasetParsed(file, 'tracks')
+        const fileType = getFileType(file)
+        const datasetMetadata = getTracksDatasetMetadata({
+          data,
+          name: getFileName(file),
+          sourceFormat: fileType as FileType,
+        })
+        setDatasetMetadata(datasetMetadata)
+        if (fileType === 'CSV') {
+          setSourceData(data as DataList)
+          const geojson = getTrackFromList(data as DataList, datasetMetadata)
+          setGeojson(geojson)
+        } else {
+          setGeojson(data as FeatureCollection)
+        }
+        setProcessingData(false)
+      } catch (e: any) {
+        setProcessingData(false)
+        onDatasetParseError(e, fileType, setDataParseError)
       }
-      setProcessingData(false)
     },
-    [setDatasetMetadata]
+    [setDatasetMetadata, onDatasetParseError, fileType]
   )
 
   useEffect(() => {
@@ -181,6 +188,14 @@ function NewTrackDataset({
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
         <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+      </div>
+    )
+  }
+
+  if (dataParseError) {
+    return (
+      <div className={styles.processingData}>
+        <p className={styles.errorMsg}>{dataParseError}</p>
       </div>
     )
   }

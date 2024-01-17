@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useState } from 'react'
 import { FeatureCollection, Polygon } from 'geojson'
+import Error from 'next/error'
 import {
   Button,
   Collapsable,
@@ -32,9 +33,11 @@ function NewPolygonDataset({
   file,
   dataset,
   onFileUpdate,
+  onDatasetParseError,
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [geojson, setGeojson] = useState<FeatureCollection<Polygon> | undefined>()
@@ -49,18 +52,23 @@ function NewPolygonDataset({
   const handleRawData = useCallback(
     async (file: File) => {
       setProcessingData(true)
-      const data = await getDatasetParsed(file, 'polygons')
-      const fileType = getFileType(file)
-      const datasetMetadata = getPolygonsDatasetMetadata({
-        data,
-        name: getFileName(file),
-        sourceFormat: fileType,
-      })
-      setDatasetMetadata(datasetMetadata)
-      setGeojson(data as FeatureCollection<Polygon>)
-      setProcessingData(false)
+      try {
+        const data = await getDatasetParsed(file, 'polygons')
+        const fileType = getFileType(file)
+        const datasetMetadata = getPolygonsDatasetMetadata({
+          data,
+          name: getFileName(file),
+          sourceFormat: fileType,
+        })
+        setDatasetMetadata(datasetMetadata)
+        setGeojson(data as FeatureCollection<Polygon>)
+        setProcessingData(false)
+      } catch (e: any) {
+        setProcessingData(false)
+        onDatasetParseError(e, fileType, setDataParseError)
+      }
     },
-    [setDatasetMetadata]
+    [setDatasetMetadata, onDatasetParseError, fileType]
   )
 
   useEffect(() => {
@@ -86,6 +94,14 @@ function NewPolygonDataset({
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
         <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+      </div>
+    )
+  }
+
+  if (dataParseError) {
+    return (
+      <div className={styles.processingData}>
+        <p className={styles.errorMsg}>{dataParseError}</p>
       </div>
     )
   }

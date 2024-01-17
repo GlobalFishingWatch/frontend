@@ -49,9 +49,11 @@ function NewPointDataset({
   file,
   dataset,
   onFileUpdate,
+  onDatasetParseError,
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataParsed | undefined>()
@@ -87,32 +89,37 @@ function NewPointDataset({
   const handleRawData = useCallback(
     async (file: File) => {
       setProcessingData(true)
-      const data = await getDatasetParsed(file, 'points')
-      const fileType = getFileType(file)
-      const datasetMetadata = getPointsDatasetMetadata({
-        data,
-        name: getFileName(file),
-        sourceFormat: fileType,
-      })
-      setDatasetMetadata(datasetMetadata)
-      if (fileType === 'CSV') {
-        setSourceData(data as DataList)
-        const geojson = getGeojsonFromPointsList(
-          data as DataList,
-          datasetMetadata
-        ) as FeatureCollection<Point>
-        setGeojson(geojson)
-      } else {
-        setSourceData(data as FeatureCollection)
-        const geojson = getNormalizedGeojsonFromPointsGeojson(
-          data as FeatureCollection,
-          datasetMetadata
-        ) as FeatureCollection<Point>
-        setGeojson(geojson)
+      try {
+        const data = await getDatasetParsed(file, 'points')
+        const fileType = getFileType(file)
+        const datasetMetadata = getPointsDatasetMetadata({
+          data,
+          name: getFileName(file),
+          sourceFormat: fileType,
+        })
+        setDatasetMetadata(datasetMetadata)
+        if (fileType === 'CSV') {
+          setSourceData(data as DataList)
+          const geojson = getGeojsonFromPointsList(
+            data as DataList,
+            datasetMetadata
+          ) as FeatureCollection<Point>
+          setGeojson(geojson)
+        } else {
+          setSourceData(data as FeatureCollection)
+          const geojson = getNormalizedGeojsonFromPointsGeojson(
+            data as FeatureCollection,
+            datasetMetadata
+          ) as FeatureCollection<Point>
+          setGeojson(geojson)
+        }
+        setProcessingData(false)
+      } catch (e: any) {
+        setProcessingData(false)
+        onDatasetParseError(e, fileType, setDataParseError)
       }
-      setProcessingData(false)
     },
-    [setDatasetMetadata]
+    [setDatasetMetadata, setDataParseError, onDatasetParseError, fileType]
   )
 
   useEffect(() => {
@@ -181,6 +188,14 @@ function NewPointDataset({
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
         <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+      </div>
+    )
+  }
+
+  if (dataParseError) {
+    return (
+      <div className={styles.processingData}>
+        <p className={styles.errorMsg}>{dataParseError}</p>
       </div>
     )
   }

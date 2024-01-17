@@ -29,8 +29,8 @@ export async function getDatasetParsed(file: File, type: DatasetGeometryType): P
     try {
       const fileData = await readBlobAs(file, 'arrayBuffer')
       return shpToGeoJSON(fileData, type)
-    } catch (e) {
-      console.log(e)
+    } catch (e: any) {
+      throw new Error(e)
     }
   } else if (fileType === 'CSV') {
     const fileText = await file.text()
