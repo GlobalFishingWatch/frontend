@@ -88,11 +88,12 @@ export interface DatasetDocumentation {
   provider?: string
 }
 
+export type DatasetConfigurationSourceFormat = 'GeoJSON' | 'Shapefile' | 'CSV' | 'KML'
 export interface DatasetConfigurationUI {
   latitude?: string
   longitude?: string
   timestamp?: string
-  sourceFormat?: 'csv' | 'geojson' | 'shapefile' | 'kml'
+  sourceFormat?: DatasetConfigurationSourceFormat
   pointName?: string
   pointSize?: string
   maxPointSize?: number

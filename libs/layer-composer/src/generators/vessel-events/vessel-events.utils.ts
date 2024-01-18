@@ -3,7 +3,7 @@ import { Feature, FeatureCollection } from 'geojson'
 import { EventType, Segment } from '@globalfishingwatch/api-types'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { Dictionary } from '../../types'
-import filterTrackByTimerange from '../track/filterTrackByTimerange'
+import { filterTrackByCoordinateProperties } from '../track/filterTrackByCoordinateProperties'
 import { AuthorizationOptions, RawEvent } from '../types'
 
 export const EVENTS_COLORS: Dictionary<string> = {
@@ -240,47 +240,47 @@ export const getVesselEventsSegmentsGeojson: GetVesselEventsSegmentsGeojsonFn = 
     : segmentsToGeoJSON(track as Segment[])
   if (!geojson) return featureCollection
   featureCollection.features = events.flatMap((event: RawEvent) => {
-    return filterTrackByTimerange(geojson, { start: event.start, end: event.end }).features.map(
-      (feature) => {
-        const isEncounterEvent = event.type === 'encounter'
-        const authorized = event.encounter?.authorized === true
-        const authorizationStatus = event?.encounter
-          ? event.encounter?.authorizationStatus
-          : ('unmatched' as AuthorizationOptions)
-        const startDT = getDateTimeDate(event.start).toUTC()
-        const endDT = getDateTimeDate(event.end).toUTC()
+    return filterTrackByCoordinateProperties(geojson, {
+      filters: [{ id: 'times', min: event.start, max: event.end }],
+    }).features.map((feature) => {
+      const isEncounterEvent = event.type === 'encounter'
+      const authorized = event.encounter?.authorized === true
+      const authorizationStatus = event?.encounter
+        ? event.encounter?.authorizationStatus
+        : ('unmatched' as AuthorizationOptions)
+      const startDT = getDateTimeDate(event.start).toUTC()
+      const endDT = getDateTimeDate(event.end).toUTC()
 
-        return {
-          ...feature,
-          properties: {
-            id: event.id,
-            vesselId,
-            type: event.type,
-            startMs: +startDT,
-            endMs: +endDT,
-            start: startDT.toISO(),
-            end: endDT.toISO(),
-            width: event.type === 'fishing' ? 4 : 1,
-            color:
-              isEncounterEvent && showAuthorizationStatus
-                ? getEncounterAuthColor(authorizationStatus)
-                : EVENTS_COLORS[event.type],
-            ...(event.vessel && {
-              vesselId: event.vessel.id,
-              vesselName: event.vessel.name,
+      return {
+        ...feature,
+        properties: {
+          id: event.id,
+          vesselId,
+          type: event.type,
+          startMs: +startDT,
+          endMs: +endDT,
+          start: startDT.toISO(),
+          end: endDT.toISO(),
+          width: event.type === 'fishing' ? 4 : 1,
+          color:
+            isEncounterEvent && showAuthorizationStatus
+              ? getEncounterAuthColor(authorizationStatus)
+              : EVENTS_COLORS[event.type],
+          ...(event.vessel && {
+            vesselId: event.vessel.id,
+            vesselName: event.vessel.name,
+          }),
+          ...(isEncounterEvent && {
+            encounterVesselId: event.encounter?.vessel.id,
+            encounterVesselName: event.encounter?.vessel.name,
+            ...(showAuthorizationStatus && {
+              authorized,
+              authorizationStatus,
             }),
-            ...(isEncounterEvent && {
-              encounterVesselId: event.encounter?.vessel.id,
-              encounterVesselName: event.encounter?.vessel.name,
-              ...(showAuthorizationStatus && {
-                authorized,
-                authorizationStatus,
-              }),
-            }),
-          },
-        }
+          }),
+        },
       }
-    )
+    })
   })
   return featureCollection
 }

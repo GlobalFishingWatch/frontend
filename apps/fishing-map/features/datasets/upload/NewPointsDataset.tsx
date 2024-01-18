@@ -64,7 +64,7 @@ function NewPointDataset({
   const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const fileType = getFileType(file)
-  const isCSVFile = fileType === 'CSV' || sourceFormat === 'csv'
+  const isCSVFile = fileType === 'CSV' || sourceFormat === 'CSV'
 
   const latitudeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
