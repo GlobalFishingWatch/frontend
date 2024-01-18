@@ -84,7 +84,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
-
+  const hasLegend = dataset.configuration?.configurationUI?.polygonColor
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
@@ -263,6 +263,16 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
             </div>
           )}
           {datasetGeometryType === 'tracks' && <UserLayerTrackPanel dataview={dataview} />}
+        </div>
+      )}
+
+      {layerActive && hasLegend && (
+        <div
+          className={cx(styles.properties, styles.drag, {
+            [styles.dragging]: isSorting && activeIndex > -1,
+          })}
+        >
+          <div id={`legend_${dataview.id}`}></div>
         </div>
       )}
     </div>
