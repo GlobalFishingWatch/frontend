@@ -241,7 +241,6 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     <VesselLink vesselId={vesselId} datasetId={dataset?.id}>
       <IconButton
         size="small"
-        loading={loading}
         icon={infoError ? 'warning' : 'info'}
         type={infoError ? 'warning' : 'default'}
         disabled={infoError}

@@ -26,7 +26,7 @@ export const dataviews: Dataview[] = [
           },
           {
             id: 'fields',
-            value: ['LONLAT', 'TIMESTAMP', 'SPEED'],
+            value: ['LONLAT', 'TIMESTAMP', 'SPEED', 'ELEVATION'],
           },
           {
             id: 'format',
