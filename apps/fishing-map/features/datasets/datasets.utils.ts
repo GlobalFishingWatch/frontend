@@ -90,6 +90,7 @@ export type SupportedActivityDatasetSchema =
 export type SupportedEnvDatasetSchema =
   | 'type'
   | 'speed'
+  | 'elevation'
   | 'flag'
   | 'vessel_type'
   | 'Height'
@@ -876,13 +877,13 @@ export const getSchemaFiltersInDataview = (
   const filtersAllowed = fielsAllowedOrdered.map((id) => {
     return getFiltersBySchema(dataview, id, {
       vesselGroups,
-      compatibilityOperation: id === 'speed' ? 'some' : 'every',
+      compatibilityOperation: id === 'speed' || id === 'elevation' ? 'some' : 'every',
     })
   })
   const filtersDisabled = fieldsDisabled.map((id) => {
     return getFiltersBySchema(dataview, id, {
       vesselGroups,
-      compatibilityOperation: id === 'speed' ? 'some' : 'every',
+      compatibilityOperation: id === 'speed' || id === 'elevation' ? 'some' : 'every',
     })
   })
   return {

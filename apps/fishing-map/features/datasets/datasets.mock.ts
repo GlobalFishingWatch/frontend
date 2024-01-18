@@ -80,8 +80,8 @@ export const datasets: Dataset[] = [
         type: 'string',
       },
       elevation: {
-        min: 0,
-        type: 'number',
+        enum: [-2000, 0],
+        type: 'range',
       },
       timestamp: {
         type: 'string',
@@ -96,7 +96,7 @@ export const datasets: Dataset[] = [
         type: 'number',
       },
     },
-    fieldsAllowed: ['lat', 'lon', 'timestamp', 'latlon', 'seg_id', 'speed'],
+    fieldsAllowed: ['lat', 'lon', 'timestamp', 'latlon', 'seg_id', 'speed', 'elevation'],
     createdAt: '2023-10-17T12:34:21.417Z',
     endpoints: [
       {
@@ -143,7 +143,7 @@ export const datasets: Dataset[] = [
             type: 'enum',
             label: 'fields',
             array: true,
-            enum: ['LAT', 'LON', 'TIMESTAMP', 'SPEED', 'COURSE'],
+            enum: ['LAT', 'LON', 'TIMESTAMP', 'SPEED', 'COURSE', 'ELEVATION'],
           },
           {
             label: 'format',
