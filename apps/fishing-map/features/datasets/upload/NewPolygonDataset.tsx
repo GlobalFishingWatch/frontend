@@ -1,16 +1,18 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useState } from 'react'
 import { FeatureCollection, Polygon } from 'geojson'
-import Error from 'next/error'
 import {
   Button,
   Collapsable,
   InputText,
   MultiSelect,
   MultiSelectOption,
+  Select,
+  SelectOption,
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -154,6 +156,7 @@ function NewPolygonDataset({
           />
         </div>
         <MultiSelect
+          className={styles.input}
           label={t('datasetUpload.polygons.filters', 'Polygon filters')}
           placeholder={
             datasetFieldsAllowed.length > 0
@@ -176,6 +179,35 @@ function NewPolygonDataset({
           infoTooltip={t(
             'datasetUpload.polygons.filtersHelp',
             'Select properties of the polygons to be able to dinamically filter them in the sidebar after'
+          )}
+        />
+        <Select
+          label={t('datasetUpload.polygons.color', 'polygon color')}
+          placeholder={t(
+            'datasetUpload.fieldNumericPlaceholder',
+            'Select a numeric field from your dataset'
+          )}
+          options={schemaRangeOptions}
+          direction="top"
+          className={styles.input}
+          selectedOption={
+            getSelectedOption(
+              getDatasetConfigurationProperty({
+                dataset: datasetMetadata,
+                property: 'polygonColor',
+              })
+            ) as SelectOption
+          }
+          onSelect={(selected) => {
+            setDatasetMetadataConfig({ polygonColor: selected.id })
+          }}
+          onCleanClick={() => {
+            setDatasetMetadataConfig({ polygonColor: undefined })
+          }}
+          disabled={loading}
+          infoTooltip={t(
+            'datasetUpload.polygons.colorHelp',
+            'Select a numeric property of each polygon to change its color'
           )}
         />
         <SwitchRow

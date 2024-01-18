@@ -103,6 +103,7 @@ export interface DatasetConfigurationUI {
   startTime?: string | number
   endTime?: string | number
   timeFilterType?: TimeFilterType
+  polygonColor?: string
   geometryType?: DatasetGeometryType
   lineId?: string | number
   segmentId?: string | number
