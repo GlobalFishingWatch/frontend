@@ -12,6 +12,7 @@ export enum Field {
   timestamp = 'timestamp',
   fishing = 'fishing',
   speed = 'speed',
+  depth = 'depth',
   course = 'course',
   night = 'night',
   distanceFromPort = 'distance_from_port',

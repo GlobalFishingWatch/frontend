@@ -38,8 +38,9 @@ const borderColor =
     : fallbackBorderColor
 
 export const formatSliderNumber = (num: number): string => {
-  if (num >= 1000) return format('.2s')(num)
-  if (num > 9) return format('.0f')(num)
+  const absNum = Math.abs(num)
+  if (absNum >= 1000) return format('.2s')(num)
+  if (absNum > 9) return format('.0f')(num)
   return format('.1f')(num)
 }
 
