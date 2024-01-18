@@ -363,6 +363,10 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
    * Filter the tracks displayed https://docs.mapbox.com/help/glossary/filter/
    */
   filters?: Record<string, Array<string | number>>
+  /**
+   * Filter segment points by its coordinateProperties
+   */
+  coordinateFilters?: Record<string, Array<string | number>>
 }
 
 export interface PolygonsGeneratorConfig extends GeneratorConfig {

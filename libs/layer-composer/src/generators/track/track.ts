@@ -123,8 +123,8 @@ class TrackGenerator {
         .map((f: any) => f.properties?.id)
     )
 
-    const propertiesFilter: TrackCoordinatesPropertyFilter[] = Object.entries(
-      config.filters || {}
+    const coordinateFilters: TrackCoordinatesPropertyFilter[] = Object.entries(
+      config.coordinateFilters || {}
     ).map(([id, values]) => ({
       id,
       min: parseFloat(values[0] as string),
@@ -132,7 +132,7 @@ class TrackGenerator {
     }))
 
     source.data = memoizeCache[config.id].filterTrackByCoordinateProperties(source.data, {
-      filters: [...getTimeFilter(config.start, config.end), ...propertiesFilter],
+      filters: [...getTimeFilter(config.start, config.end), ...coordinateFilters],
       includeNonTemporalFeatures: true,
     })
 
@@ -159,7 +159,7 @@ class TrackGenerator {
         {
           filters: [
             ...getTimeFilter(config.highlightedTime.start, config.highlightedTime.end),
-            ...propertiesFilter,
+            ...coordinateFilters,
           ],
         }
       )
@@ -184,18 +184,18 @@ class TrackGenerator {
       'line-opacity': 1,
     }
     let filters: Array<any> = []
-    // if (config?.filters && Object.keys(config?.filters).length > 0) {
-    //   filters = ['all']
-    //   Object.entries(config.filters).forEach(([key, values]) => {
-    //     // TODO: fix this as the edge case of having a filter of two numeric ids will fail
-    //     if (values.length === 2 && values.some(isNumeric)) {
-    //       filters.push(['<=', ['to-number', ['get', key]], parseFloat(values[1] as string)])
-    //       filters.push(['>=', ['to-number', ['get', key]], parseFloat(values[0] as string)])
-    //     } else {
-    //       filters.push(['match', ['get', key], values, true, false])
-    //     }
-    //   })
-    // }
+    if (config?.filters && Object.keys(config?.filters).length > 0) {
+      filters = ['all']
+      Object.entries(config.filters).forEach(([key, values]) => {
+        // TODO: fix this as the edge case of having a filter of two numeric ids will fail
+        if (values.length === 2 && values.some(isNumeric)) {
+          filters.push(['<=', ['to-number', ['get', key]], parseFloat(values[1] as string)])
+          filters.push(['>=', ['to-number', ['get', key]], parseFloat(values[0] as string)])
+        } else {
+          filters.push(['match', ['get', key], values, true, false])
+        }
+      })
+    }
 
     if (uniqIds.length > 1) {
       let exprLineColor
