@@ -197,6 +197,16 @@
   text-decoration: underline;
 }
 
+.trackColor {
+  color: var(--color-secondary-blue);
+  transition: var(--transition);
+  cursor: default;
+}
+
+.trackColor:hover {
+  color: var(--color-primary-blue);
+}
+
 .trackColor::before {
   content: ' ';
   display: inline-block;

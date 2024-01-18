@@ -73,8 +73,14 @@ export const listToTrackSegments = ({
             const { [latitude]: latitudeValue, [longitude]: longitudeValue, ...properties } = record
             const coords = parseCoords(latitudeValue, longitudeValue)
             if (coords) {
+              const segmentProperties = {
+                ...(hasIdGroup && { [lineId]: properties[lineId] }),
+                ...(hasSegmentId && { [segmentId]: properties[segmentId] }),
+              }
               return [
                 {
+                  properties: segmentProperties,
+                  // We need the property at the root level for sidebar lines leyend
                   coordinateProperties: properties,
                   latitude: coords.latitude as number,
                   longitude: coords.longitude as number,

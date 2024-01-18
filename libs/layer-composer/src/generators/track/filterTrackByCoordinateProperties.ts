@@ -9,6 +9,8 @@ import {
 } from 'geojson'
 import { isEqual } from 'lodash'
 
+// TODO define types for this filter so we can avoid the buggy isNumeric approach
+// to extract when using min or max or the list of values
 export type TrackCoordinatesPropertyFilter = {
   id: string
   min?: number
@@ -50,10 +52,10 @@ const getCoordinatePropertyValue = ({
   multiLineStringIndex,
 }: GetCoordinatePropertyValueParams) => {
   return multiLineStringIndex !== undefined
-    ? (coordinateProperties as MultiLineCoordinateProperties)?.[id][multiLineStringIndex][
+    ? (coordinateProperties as MultiLineCoordinateProperties)?.[id][multiLineStringIndex]?.[
         coordinateIndex
       ]
-    : (coordinateProperties as LineCoordinateProperties)?.[id][coordinateIndex]
+    : (coordinateProperties as LineCoordinateProperties)?.[id]?.[coordinateIndex]
 }
 
 type AddPropertyIndexToCoordinateParams = {
@@ -101,13 +103,14 @@ const getFilteredCoordinates = ({
           coordinateIndex: index,
           multiLineStringIndex,
         })
+        if (currentValue === undefined) {
+          // This means the property is not defined for this coordinate so we can't filter by it
+          return true
+        }
         if (min !== undefined && max !== undefined) {
           return (currentValue as number) >= min && (currentValue as number) <= max
         }
-        if (values?.length) {
-          return values.includes(currentValue)
-        }
-        return true
+        return values?.includes(currentValue)
       })
       const coordinatesIndex = filteredCoordinates.coordinates.length
         ? filteredCoordinates.coordinates.length - 1

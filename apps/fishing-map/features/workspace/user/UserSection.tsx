@@ -147,28 +147,26 @@ function UserSection(): React.ReactElement {
           </Fragment>
         )}
       </div>
-      {guestUser ? (
-        <div className={styles.emptyStateBig}>
-          <RegisterOrLoginToUpload />
-        </div>
-      ) : (
-        <SortableContext items={dataviews}>
-          {dataviews?.length ? (
-            dataviews?.map((dataview) => (
+      <Fragment>
+        {dataviews?.length > 0 && (
+          <SortableContext items={dataviews}>
+            {dataviews?.map((dataview, index) => (
               <LayerPanelContainer key={dataview.id} dataview={dataview}>
                 <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
               </LayerPanelContainer>
-            ))
-          ) : (
-            <div className={styles.emptyStateBig}>
-              {t(
-                'workspace.emptyStateEnvironment',
-                'Upload custom datasets like animal telemetry clicking on the plus icon.'
-              )}
-            </div>
-          )}
-        </SortableContext>
-      )}
+            ))}
+          </SortableContext>
+        )}
+        {guestUser ? (
+          <div className={styles.emptyStateBig}>
+            <RegisterOrLoginToUpload />
+          </div>
+        ) : !dataviews.length ? (
+          <div className={styles.emptyStateBig}>
+            {t('workspace.emptyStateUser', 'Upload custom datasets clicking on the plus icon.')}
+          </div>
+        ) : null}
+      </Fragment>
     </div>
   )
 }

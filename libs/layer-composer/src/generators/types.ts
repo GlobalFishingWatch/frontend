@@ -367,6 +367,10 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
    * Filter segment points by its coordinateProperties
    */
   coordinateFilters?: Record<string, Array<string | number>>
+  /**
+   * Property to use as id internally in mapbox
+   */
+  promoteId?: string
 }
 
 export interface PolygonsGeneratorConfig extends GeneratorConfig {
