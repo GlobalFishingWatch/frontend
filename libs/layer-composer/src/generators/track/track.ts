@@ -107,6 +107,7 @@ class TrackGenerator {
       id: config.id,
       type: 'geojson',
       data: defaultGeoJSON,
+      promoteId: config.promoteId || 'id',
     }
     const sources = [source]
 
@@ -183,17 +184,13 @@ class TrackGenerator {
       })
     }
 
-    if (uniqIds.length > 1) {
-      if (config.useOwnColor) {
-        paint['line-color'] = [
-          'case',
-          ['boolean', ['feature-state', 'highlight'], false],
-          HIGHLIGHT_LINE_COLOR,
-          ['get', 'color'],
-        ] as any
-      } else {
-        paint['line-color'] = config.color as string
-      }
+    if (uniqIds.length > 1 && config.useOwnColor) {
+      paint['line-color'] = [
+        'case',
+        ['boolean', ['feature-state', 'highlight'], false],
+        HIGHLIGHT_LINE_COLOR,
+        ['get', 'color'],
+      ] as any
     }
 
     const visibility = isConfigVisible(config)

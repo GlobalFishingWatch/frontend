@@ -16,7 +16,6 @@ import {
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -77,7 +76,6 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
     if (source && id) {
       const featureState = {
         source,
-        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
         id,
       }
       updateFeatureState([featureState], 'highlight')
