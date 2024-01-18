@@ -2,7 +2,6 @@ import { scaleLinear, scalePow } from 'd3-scale'
 import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import { uniq } from 'lodash'
-import convert from 'color-convert'
 import type { FilterSpecification, LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
 import { HIGHLIGHT_LINE_COLOR } from '../context/context.utils'
@@ -185,32 +184,16 @@ class TrackGenerator {
     }
 
     if (uniqIds.length > 1) {
-      let exprLineColor
       if (config.useOwnColor) {
-        exprLineColor = [
+        paint['line-color'] = [
           'case',
           ['boolean', ['feature-state', 'highlight'], false],
           HIGHLIGHT_LINE_COLOR,
           ['get', 'color'],
-        ]
+        ] as any
       } else {
-        const HUE_CHANGE_DELTA = 40
-        const hueIncrement = HUE_CHANGE_DELTA / (uniqIds.length - 1)
-        const hsl = convert.hex.hsl(config.color || '')
-        const baseHue = hsl[0]
-        exprLineColor = [
-          'match',
-          ['get', 'id'],
-          ...uniqIds.flatMap((id, index) => {
-            const rawHue = baseHue - HUE_CHANGE_DELTA / 2 + hueIncrement * index
-            const hue = (rawHue + 360) % 360
-            const color = `#${convert.hsl.hex([hue, hsl[1], hsl[2]])}`
-            return [id, color]
-          }),
-          config.color,
-        ]
+        paint['line-color'] = config.color as string
       }
-      paint['line-color'] = exprLineColor as any
     }
 
     const visibility = isConfigVisible(config)
