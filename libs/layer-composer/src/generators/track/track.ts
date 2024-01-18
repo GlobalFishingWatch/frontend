@@ -5,6 +5,7 @@ import { uniq } from 'lodash'
 import convert from 'color-convert'
 import type { FilterSpecification, LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import { HIGHLIGHT_LINE_COLOR } from '../context/context.utils'
 import { Group } from '../../types'
 import { GeneratorType, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
@@ -186,7 +187,12 @@ class TrackGenerator {
     if (uniqIds.length > 1) {
       let exprLineColor
       if (config.useOwnColor) {
-        exprLineColor = ['get', 'color']
+        exprLineColor = [
+          'case',
+          ['boolean', ['feature-state', 'highlight'], false],
+          HIGHLIGHT_LINE_COLOR,
+          ['get', 'color'],
+        ]
       } else {
         const HUE_CHANGE_DELTA = 40
         const hueIncrement = HUE_CHANGE_DELTA / (uniqIds.length - 1)
