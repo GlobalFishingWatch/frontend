@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
-import { IconButton, SelectOption, Tooltip, Button, ButtonSize } from '..'
+import { IconButton } from '../icon-button'
+import { Button, ButtonSize } from '../button'
+import { SelectOption } from '../select'
+import { Tooltip } from '../tooltip'
 import styles from './Choice.module.css'
 
 export type ChoiceOption<Option = string> = SelectOption<Option>
