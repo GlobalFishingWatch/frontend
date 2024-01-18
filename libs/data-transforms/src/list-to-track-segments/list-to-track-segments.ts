@@ -75,6 +75,9 @@ export const listToTrackSegments = ({
             if (coords) {
               return [
                 {
+                  // We need the property at the root level for sidebar lines leyend
+                  ...(hasIdGroup && { properties: { [lineId]: properties[lineId] } }),
+                  ...(hasSegmentId && { properties: { [segmentId]: properties[segmentId] } }),
                   coordinateProperties: properties,
                   latitude: coords.latitude as number,
                   longitude: coords.longitude as number,

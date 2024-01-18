@@ -126,11 +126,16 @@ class TrackGenerator {
 
     const coordinateFilters: TrackCoordinatesPropertyFilter[] = Object.entries(
       config.coordinateFilters || {}
-    ).map(([id, values]) => ({
-      id,
-      min: parseFloat(values[0] as string),
-      max: parseFloat(values[1] as string),
-    }))
+    ).map(([id, values]) => {
+      if (isNumeric(values[0]) && isNumeric(values[1])) {
+        return {
+          id,
+          min: parseFloat(values[0] as string),
+          max: parseFloat(values[1] as string),
+        }
+      }
+      return { id, values }
+    })
 
     source.data = memoizeCache[config.id].filterTrackByCoordinateProperties(source.data, {
       filters: [...getTimeFilter(config.start, config.end), ...coordinateFilters],
