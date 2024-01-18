@@ -6,7 +6,7 @@ import {
 export const shpToGeoJSON = async (data: string, type: DatasetGeometryType) => {
   const shpjs = await import('shpjs').then((module) => module.default)
   const expandedShp = await shpjs(data)
-  const normalizedTypes: DatasetGeometryToGeoJSONGeometry<DatasetGeometryType> = {
+  const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
     points: 'Point',
     tracks: 'LineString',
     polygons: 'Polygon',
