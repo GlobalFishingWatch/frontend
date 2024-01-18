@@ -156,7 +156,7 @@ export const getUserPointsDataviewInstance = (
   })
   const properties = [circleRadiusProperty, startTimeFilterProperty, endTimeFilterProperty]
     .filter(Boolean)
-    .map((p) => p.toLowerCase())
+    .map((p) => p.toString().toLowerCase())
   return {
     id: `user-points-${dataset?.id}`,
     dataviewId: TEMPLATE_POINTS_DATAVIEW_SLUG,

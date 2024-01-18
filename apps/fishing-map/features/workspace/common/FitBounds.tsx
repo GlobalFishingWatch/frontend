@@ -38,7 +38,7 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
         start,
         end,
         // Datasets uploaded as shapefile, geojson or kml are not temporal
-        includeNonTemporalSegments: sourceFormat ? sourceFormat !== 'csv' : false,
+        includeNonTemporalSegments: sourceFormat ? sourceFormat !== 'CSV' : false,
       })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
       if (bbox) {
