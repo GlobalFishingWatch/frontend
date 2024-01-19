@@ -20,6 +20,7 @@ export enum GeneratorType {
   Context = 'CONTEXT',
   GL = 'GL',
   Heatmap = 'HEATMAP',
+  HeatmapStatic = 'HEATMAP_STATIC',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
   Polygons = 'POLYGONS',
   Rulers = 'RULERS',
@@ -467,6 +468,19 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   filters?: string
   statsFilter?: string
   colorRamp?: ColorRampsIds
+}
+
+export interface HeatmapStaticGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.HeatmapStatic
+  tilesAPI?: string
+  maxZoom?: number
+  numBreaks?: number
+  breaks?: number[]
+  datasets: string[]
+  filters?: string
+  colorRamp?: ColorRampsIds
+  interactive?: boolean
+  aggregationOperation?: AggregationOperation
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {

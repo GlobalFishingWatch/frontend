@@ -95,7 +95,7 @@ const getGridAreaByZoom = (zoom: number): number => {
   return gridArea
 }
 
-const getLegendsCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
+export const getLegendsCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, breaks: Breaks) => {
   const ramps = getSublayersColorRamps(config)
 
   if (!breaks?.length) {

@@ -125,6 +125,7 @@ export interface HeatmapLayerMeta {
   sublayerCombinationMode: SublayerCombinationMode
   sublayers: HeatmapAnimatedGeneratorSublayer[]
   temporalgrid: true
+  static: true
   timeChunks: TimeChunks
   minVisibleValue?: number
   maxVisibleValue?: number

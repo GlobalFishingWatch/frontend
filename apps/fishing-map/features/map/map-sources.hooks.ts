@@ -194,7 +194,7 @@ function getGeneratorsMetadataChangeKey(
   return Object.keys(generatorsMetadata)
     .flatMap((key) => {
       const metadata = generatorsMetadata[key]
-      if (metadata.sublayers.some((s) => dataviewIds.includes(s.id))) {
+      if (metadata.sublayers?.some((s) => dataviewIds.includes(s.id))) {
         const timeChunks = [
           metadata.timeChunks.activeSourceId,
           (metadata.timeChunks.chunks || [])
@@ -319,7 +319,6 @@ export const useMapDataviewFeatures = (
           : sourceTilesLoaded[sourceId] || ({} as TilesAtomSourceState)
 
         let features: GeoJSONFeature[] = []
-
         if (!chunks && state?.loaded && !state?.error) {
           if (queryMethod === 'render') {
             features = map?.queryRenderedFeatures(undefined, { layers: [sourceId] })

@@ -83,7 +83,7 @@ const getExtendedFeature = (
   const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
   const stopPropagation = feature.layer?.metadata?.stopPropagation ?? false
   const properties = feature.properties || {}
-  let value = properties.value || properties.name || properties.id
+  let value = properties.value || properties.name || properties.id || properties?.count
   if (feature.layer.metadata?.valueProperties?.length) {
     value = feature.layer.metadata.valueProperties
       .flatMap((prop) => properties[prop] || [])
@@ -275,6 +275,7 @@ export const useMapClick = (
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
     (event: MapLayerMouseEvent) => {
+      console.log(event.features)
       cleanFeatureState('click')
       if (!clickCallback) return
       const interactionEvent: InteractionEvent = {
