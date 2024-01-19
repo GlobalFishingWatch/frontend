@@ -6,8 +6,10 @@ import {
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
+import { getUTCDateTime } from 'utils/dates'
 import { FileType } from 'utils/files'
 
 export type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
@@ -39,7 +41,7 @@ export const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMeta
         sourceFormat,
       },
     } as DatasetConfiguration,
-  }
+  } as Partial<Dataset>
 }
 export const getTracksDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
@@ -92,4 +94,28 @@ export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: Extract
       },
     } as DatasetConfiguration,
   }
+}
+
+export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) => {
+  const baseDataset: Partial<Dataset> = {
+    ...datasetMetadata,
+    unit: 'TBD',
+    subcategory: 'info',
+  }
+  const timestampProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'startTime',
+  })
+  const timestampSchema = datasetMetadata.schema?.[timestampProperty]
+  if (timestampSchema) {
+    const startDate = getUTCDateTime(timestampSchema.enum?.[0] as string)?.toISO()
+    if (startDate) {
+      baseDataset.startDate = startDate
+    }
+    const endDate = getUTCDateTime(timestampSchema.enum?.[1] as string)?.toISO()
+    if (endDate) {
+      baseDataset.endDate = endDate
+    }
+  }
+  return baseDataset
 }
