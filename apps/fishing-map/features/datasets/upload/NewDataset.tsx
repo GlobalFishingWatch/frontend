@@ -45,8 +45,8 @@ export type DatasetMetadata = Partial<
     | 'category'
     | 'configuration'
     | 'fieldsAllowed'
-  >
-> & { public: boolean }
+  > & { public: boolean }
+>
 
 function NewDataset() {
   const { t } = useTranslation()
