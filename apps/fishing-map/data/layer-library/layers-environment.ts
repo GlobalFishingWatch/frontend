@@ -4,6 +4,7 @@ import { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+  TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
 } from 'data/workspaces'
 
 const heatmapDatasetConfig = {
@@ -37,14 +38,13 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   // },
   {
     id: 'bathymetry',
-    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+    dataviewId: TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry.jpg`,
     config: {
       color: 'bathymetry',
       colorRamp: 'bathymetry',
-      static: true,
-      maxZoom: 8,
       group: Group.Bathymetry,
+      maxZoom: 8,
     },
     datasetsConfig: [
       {

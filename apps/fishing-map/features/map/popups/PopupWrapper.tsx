@@ -136,12 +136,14 @@ function PopupWrapper({
                 const contextEnvironmentalFeatures = features.filter(
                   (feature) =>
                     feature.type === GeneratorType.Context ||
-                    feature.type === GeneratorType.UserContext
+                    feature.type === GeneratorType.UserContext ||
+                    feature.type === GeneratorType.HeatmapStatic
                 )
                 const environmentalFeatures = features.filter(
                   (feature) =>
                     feature.type !== GeneratorType.Context &&
-                    feature.type !== GeneratorType.UserContext
+                    feature.type !== GeneratorType.UserContext &&
+                    feature.type !== GeneratorType.HeatmapStatic
                 )
                 return (
                   <Fragment key={featureCategory}>
