@@ -154,9 +154,10 @@ export type DatasetSchemaType =
   | 'coordinate'
   | 'timestamp'
 
+export type DatasetSchemaItemEnum = (string | number | boolean)[]
 export type DatasetSchemaItem = {
   type: DatasetSchemaType
-  enum?: (string | boolean)[]
+  enum?: DatasetSchemaItemEnum
   maxLength?: number
   minLength?: number
   min?: number

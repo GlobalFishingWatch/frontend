@@ -19,6 +19,7 @@ import {
   DatasetSchema,
   DatasetSchemaItem,
   IdentityVessel,
+  DatasetSchemaItemEnum,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -632,7 +633,7 @@ export const getCommonSchemaFieldsInDataview = (
     return []
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  let schemaFields: (string | boolean)[][] = (activeDatasets || [])?.map((d) => {
+  let schemaFields: DatasetSchemaItemEnum[] = (activeDatasets || [])?.map((d) => {
     const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
     const schemaEnum = schemaItem?.enum || schemaItem?.items?.enum || []
     return Array.isArray(schemaEnum)
