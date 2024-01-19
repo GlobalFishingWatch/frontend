@@ -44,7 +44,6 @@ export const getFieldSchema = (
         if (isDate) {
           const valuesOrdered = values.sort((a, b) => a - b)
           schema.type = 'timestamp'
-          debugger
           schema.enum = [
             new Date(valuesOrdered[0]).getTime(),
             new Date(valuesOrdered[valuesOrdered.length - 1]).getTime(),
