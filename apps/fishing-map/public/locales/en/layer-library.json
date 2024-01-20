@@ -135,7 +135,7 @@
     "moreInfoLink": ""
   },
   "thgt": {
-    "name": "Waves height",
+    "name": "Wave height",
     "description": "Wave height is the vertical distance of a sea surface wave from trough (bottom) to crest (top). It is plotted here using significant wave height, traditionally defined as the average of the highest one-third of all wave heights over a given sample period.",
     "moreInfoLink": "https://www.pacioos.hawaii.edu/waves/model-global/#about"
   },
