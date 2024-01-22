@@ -1,3 +1,4 @@
+import { GlobalHeatmapStaticGeneratorConfig } from 'libs/layer-composer/src/generators/heatmap/heatmap-static'
 import {
   SymbolLayerSpecification,
   FillLayerSpecification,
@@ -59,8 +60,21 @@ export function getBaseInteractionLayer(
   }
 }
 
+export const hoverInteractionPaint = {
+  'line-color': 'white',
+  'line-width': [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    4,
+    ['boolean', ['feature-state', 'click'], false],
+    4,
+    0,
+  ],
+  'line-offset': -2,
+} as LineLayerSpecification['paint']
+
 export function getBaseInteractionHoverLayer(
-  config: GlobalHeatmapAnimatedGeneratorConfig,
+  config: GlobalHeatmapAnimatedGeneratorConfig | GlobalHeatmapStaticGeneratorConfig,
   id: string,
   source: string
 ): LineLayerSpecification {
@@ -69,18 +83,7 @@ export function getBaseInteractionHoverLayer(
     source,
     'source-layer': TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
     type: 'line',
-    paint: {
-      'line-color': 'white',
-      'line-width': [
-        'case',
-        ['boolean', ['feature-state', 'hover'], false],
-        4,
-        ['boolean', ['feature-state', 'click'], false],
-        4,
-        0,
-      ],
-      'line-offset': -2,
-    },
+    paint: hoverInteractionPaint,
     metadata: {
       interactive: false,
       group: config.group || Group.Heatmap,

@@ -269,6 +269,28 @@ export function getGeneratorConfig(
       }
       return generator
     }
+    case GeneratorType.HeatmapStatic: {
+      const heatmapDataset = dataview.datasets?.find(
+        (dataset) => dataset.type === DatasetTypes.Fourwings
+      )
+
+      generator = {
+        ...generator,
+        maxZoom: dataview.config.maxZoom || 8,
+        breaks: dataview.config.breaks,
+        datasets: [heatmapDataset?.id],
+        metadata: {
+          color: dataview?.config?.color,
+          group: Group.Heatmap,
+          interactive: true,
+          legend: {
+            label: heatmapDataset?.name,
+            unit: heatmapDataset?.unit,
+          },
+        },
+      }
+      return generator
+    }
     case GeneratorType.HeatmapAnimated: {
       const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
       let environmentalConfig: Partial<HeatmapAnimatedGeneratorConfig> = {}
@@ -493,6 +515,10 @@ export function isTrackDataview(dataview: UrlDataviewInstance) {
 
 export function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
   return isActivityDataview(dataview) || isDetectionsDataview(dataview)
+}
+
+export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
+  return dataview?.config?.type === GeneratorType.HeatmapStatic
 }
 
 export function getMergedHeatmapAnimatedDataview(

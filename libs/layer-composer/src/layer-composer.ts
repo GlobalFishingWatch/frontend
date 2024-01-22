@@ -168,8 +168,9 @@ export class LayerComposer {
     }
     const extendedGlobalGeneratorConfig = {
       ...globalGeneratorConfig,
-      totalHeatmapAnimatedGenerators: layers.filter((l) => l.type === GeneratorType.HeatmapAnimated)
-        ?.length,
+      totalHeatmapAnimatedGenerators: layers.filter(
+        (l) => l.type === GeneratorType.HeatmapAnimated || l.type === GeneratorType.HeatmapStatic
+      )?.length,
     }
     let layersPromises: GeneratorPromise[] = []
     const singleTrackLayersVisible =

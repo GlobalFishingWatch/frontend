@@ -20,6 +20,7 @@ export enum GeneratorType {
   Context = 'CONTEXT',
   GL = 'GL',
   Heatmap = 'HEATMAP',
+  HeatmapStatic = 'HEATMAP_STATIC',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
   Polygons = 'POLYGONS',
   Rulers = 'RULERS',
@@ -469,6 +470,21 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   colorRamp?: ColorRampsIds
 }
 
+export interface HeatmapStaticGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.HeatmapStatic
+  tilesAPI?: string
+  maxZoom?: number
+  numBreaks?: number
+  breaks?: number[]
+  breaksMultiplier?: number
+  datasets: string[]
+  group?: Group
+  filters?: string
+  colorRamp?: ColorRampsIds
+  interactive?: boolean
+  aggregationOperation?: AggregationOperation
+}
+
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.HeatmapAnimated
   sublayers: HeatmapAnimatedGeneratorSublayer[]
@@ -502,6 +518,7 @@ export type AnyGeneratorConfig =
   | CartoPolygonsGeneratorConfig
   | ContextGeneratorConfig
   | GlGeneratorConfig
+  | HeatmapStaticGeneratorConfig
   | HeatmapAnimatedGeneratorConfig
   | HeatmapGeneratorConfig
   | PolygonsGeneratorConfig
@@ -598,6 +615,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   legend?: GeneratorLegend
   interactionType?: HeatmapAnimatedInteractionType
   availableIntervals?: Interval[]
+  metadata?: GeneratorMetadata
 }
 
 // ---- Heatmap Generator color ramps types
