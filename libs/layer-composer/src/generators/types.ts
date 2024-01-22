@@ -614,6 +614,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   legend?: GeneratorLegend
   interactionType?: HeatmapAnimatedInteractionType
   availableIntervals?: Interval[]
+  metadata?: GeneratorMetadata
 }
 
 // ---- Heatmap Generator color ramps types

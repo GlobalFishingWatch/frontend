@@ -1,4 +1,4 @@
-import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
+import { VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import { FilterSpecification } from '@globalfishingwatch/maplibre-gl'
 import {
   GeneratorType,
@@ -37,7 +37,6 @@ const DEFAULT_CONFIG: Partial<HeatmapStaticGeneratorConfig> = {
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
   breaks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-  aggregationOperation: AggregationOperation.Sum,
 }
 
 class HeatmapStaticGenerator {
@@ -61,6 +60,7 @@ class HeatmapStaticGenerator {
 
   _getStyleLayers = (config: GlobalHeatmapStaticGeneratorConfig) => {
     const { breaks, colorRamp: colorRampId, visible } = config
+    const sourceId = getHeatmapStaticSourceId(config.id)
 
     const exprPick: FilterSpecification = ['coalesce', ['get', HEATMAP_STATIC_PROPERTY_ID], 0]
 
@@ -92,8 +92,8 @@ class HeatmapStaticGenerator {
 
     const layers = [
       {
-        id: getHeatmapStaticSourceId(config.id),
-        source: getHeatmapStaticSourceId(config.id),
+        id: sourceId,
+        source: sourceId,
         'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
         type: 'fill',
         metadata: {
@@ -113,13 +113,14 @@ class HeatmapStaticGenerator {
         },
       },
       {
-        id: getHeatmapStaticSourceId(config.id) + '-hover',
-        source: getHeatmapStaticSourceId(config.id),
+        id: sourceId + '_hover',
+        source: sourceId,
         'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
         type: 'line',
         paint: hoverInteractionPaint,
         metadata: {
           interactive: false,
+          group: config.group || Group.Heatmap,
         } as ExtendedLayerMeta,
       },
     ]
@@ -132,6 +133,7 @@ class HeatmapStaticGenerator {
       ...DEFAULT_CONFIG,
       ...generatorConfig,
       breaks: generatorConfig.breaks || DEFAULT_CONFIG.breaks,
+      metadata: generatorConfig.metadata,
     }
     const legends = getLegendsCompare(
       { ...config, sublayers: [config] } as any,

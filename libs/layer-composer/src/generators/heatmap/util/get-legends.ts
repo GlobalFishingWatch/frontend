@@ -143,7 +143,9 @@ export const getLegendsCompare = (config: GlobalHeatmapAnimatedGeneratorConfig, 
 
     const sublayerLegend: LayerMetadataLegend = {
       id: config.sublayers[sublayerIndex].id,
-      unit: config.sublayers[sublayerIndex].legend?.unit,
+      unit:
+        config.sublayers[sublayerIndex].legend?.unit ||
+        config.sublayers[sublayerIndex].metadata?.legend?.unit,
       type: LegendType.ColorRampDiscrete,
       loading: false,
       ramp: legendRamp,
