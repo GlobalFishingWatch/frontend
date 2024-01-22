@@ -477,6 +477,7 @@ export interface HeatmapStaticGeneratorConfig extends GeneratorConfig {
   numBreaks?: number
   breaks?: number[]
   datasets: string[]
+  group?: Group
   filters?: string
   colorRamp?: ColorRampsIds
   interactive?: boolean
@@ -516,6 +517,7 @@ export type AnyGeneratorConfig =
   | CartoPolygonsGeneratorConfig
   | ContextGeneratorConfig
   | GlGeneratorConfig
+  | HeatmapStaticGeneratorConfig
   | HeatmapAnimatedGeneratorConfig
   | HeatmapGeneratorConfig
   | PolygonsGeneratorConfig

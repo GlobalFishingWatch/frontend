@@ -64,7 +64,7 @@ class HeatmapStaticGenerator {
 
     const exprPick: FilterSpecification = ['coalesce', ['get', HEATMAP_STATIC_PROPERTY_ID], 0]
 
-    const useToWhiteRamp = true
+    const useToWhiteRamp = config.totalHeatmapAnimatedGenerators === 1 && visible
     const finalColorRamp = useToWhiteRamp
       ? (`${colorRampId}_toWhite` as ColorRampsIds)
       : colorRampId
