@@ -1,4 +1,3 @@
-import { GlobalHeatmapStaticGeneratorConfig } from 'libs/layer-composer/src/generators/heatmap/heatmap-static'
 import {
   SymbolLayerSpecification,
   FillLayerSpecification,
@@ -9,6 +8,7 @@ import {
   FormattedSpecification,
   ExpressionSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+import { GlobalHeatmapStaticGeneratorConfig } from '../heatmap-static'
 import { ExtendedLayerMeta, Group } from '../../../types'
 import { GeneratorType } from '../../types'
 import {
