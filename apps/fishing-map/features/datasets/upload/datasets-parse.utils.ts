@@ -1,5 +1,5 @@
 import { parse } from 'papaparse'
-import { FeatureCollection } from 'geojson'
+import { Feature, FeatureCollection } from 'geojson'
 import {
   pointsListToGeojson,
   pointsGeojsonToNormalizedGeojson,
@@ -8,7 +8,10 @@ import {
   kmlToGeoJSON,
   shpToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
-import { DatasetGeometryType } from '@globalfishingwatch/api-types'
+import {
+  DatasetGeometryToGeoJSONGeometry,
+  DatasetGeometryType,
+} from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getFileType, readBlobAs } from 'utils/files'
@@ -42,9 +45,28 @@ export async function getDatasetParsed(file: File, type: DatasetGeometryType): P
       return kmlToGeoJSON(file, type)
     }
     const fileText = await file.text()
-    return JSON.parse(fileText)
+    return validatedGeoJSON(fileText, type)
   } catch (e: any) {
     throw new Error(e)
+  }
+}
+
+export const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) => {
+  const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
+    points: 'Point',
+    tracks: 'LineString',
+    polygons: 'Polygon',
+  }
+  const geoJSON = JSON.parse(fileText)
+  const validFeatures = geoJSON.features.filter((feature: Feature) => {
+    return feature.geometry.type.includes(normalizedTypes[type]!)
+  })
+  if (!validFeatures.length) {
+    throw new Error('No valid type')
+  }
+  return {
+    ...geoJSON,
+    features: validFeatures,
   }
 }
 
