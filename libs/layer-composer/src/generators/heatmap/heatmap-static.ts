@@ -97,7 +97,7 @@ class HeatmapStaticGenerator {
         'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
         type: 'fill',
         metadata: {
-          group: Group.Bathymetry,
+          group: Group.HeatmapStatic,
           generatorType: GeneratorType.HeatmapStatic,
           generatorId: config.id,
           interactive: true,
@@ -120,7 +120,6 @@ class HeatmapStaticGenerator {
         paint: hoverInteractionPaint,
         metadata: {
           interactive: false,
-          group: Group.Bathymetry,
         } as ExtendedLayerMeta,
       },
     ]
@@ -144,6 +143,7 @@ class HeatmapStaticGenerator {
       layers: this._getStyleLayers(config),
       metadata: {
         legends,
+        group: config.group || Group.HeatmapStatic,
       },
     }
   }

@@ -42,7 +42,8 @@ export enum Group {
   Background = 'background', // Solid bg color
   Basemap = 'basemap', // Satellite tiles
   Bathymetry = 'bathymetry', // 4Wings Bathymetry layer
-  Heatmap = 'heatmap', // Fill/gradient-based heatmaps
+  HeatmapStatic = 'heatmapStatic', // Fill/gradient-based heatmaps
+  Heatmap = 'heatmap', // Fill/gradient-based temporal heatmaps
   OutlinePolygons = 'outlinePolygons', // Context layers with an outlined/hollow style such as RFMOs, MPAs, etc
   OutlinePolygonsFill = 'outlinePolygonsFill', // User context layers with a filled styles, below OutlinePolygons
   BasemapFill = 'basemapFill', // Landmass
