@@ -42,6 +42,7 @@ export type ExtendedFeature = {
   temporalgrid?: TemporalGridFeature
   stopPropagation?: boolean
   uniqueFeatureInteraction?: boolean
+  unit?: string
 }
 
 export type InteractionEventCallback = (event: InteractionEvent | null) => void

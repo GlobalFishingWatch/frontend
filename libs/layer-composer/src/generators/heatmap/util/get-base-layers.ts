@@ -1,3 +1,4 @@
+import { GlobalHeatmapStaticGeneratorConfig } from 'libs/layer-composer/src/generators/heatmap/heatmap-static'
 import {
   SymbolLayerSpecification,
   FillLayerSpecification,
@@ -73,7 +74,7 @@ export const hoverInteractionPaint = {
 } as LineLayerSpecification['paint']
 
 export function getBaseInteractionHoverLayer(
-  config: GlobalHeatmapAnimatedGeneratorConfig,
+  config: GlobalHeatmapAnimatedGeneratorConfig | GlobalHeatmapStaticGeneratorConfig,
   id: string,
   source: string
 ): LineLayerSpecification {

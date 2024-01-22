@@ -476,6 +476,7 @@ export interface HeatmapStaticGeneratorConfig extends GeneratorConfig {
   maxZoom?: number
   numBreaks?: number
   breaks?: number[]
+  breaksMultiplier?: number
   datasets: string[]
   group?: Group
   filters?: string

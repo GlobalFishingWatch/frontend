@@ -37,6 +37,7 @@ const DEFAULT_CONFIG: Partial<HeatmapStaticGeneratorConfig> = {
   maxZoom: HEATMAP_DEFAULT_MAX_ZOOM,
   interactive: true,
   breaks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+  breaksMultiplier: VALUE_MULTIPLIER,
 }
 
 class HeatmapStaticGenerator {
@@ -132,7 +133,9 @@ class HeatmapStaticGenerator {
     const config = {
       ...DEFAULT_CONFIG,
       ...generatorConfig,
-      breaks: generatorConfig.breaks || DEFAULT_CONFIG.breaks,
+      breaks: (generatorConfig.breaks || DEFAULT_CONFIG.breaks)?.map((b) =>
+        DEFAULT_CONFIG.breaksMultiplier ? b / DEFAULT_CONFIG.breaksMultiplier : b
+      ),
       metadata: generatorConfig.metadata,
     }
     const legends = getLegendsCompare(
