@@ -159,7 +159,7 @@ export type DatasetSchemaType =
 
 export type DatasetSchemaItem = {
   type: DatasetSchemaType
-  enum?: (string | boolean)[]
+  enum?: (string | boolean | number)[]
   maxLength?: number
   minLength?: number
   min?: number
