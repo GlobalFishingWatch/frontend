@@ -2,14 +2,18 @@ import { scaleLinear, scalePow } from 'd3-scale'
 import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import { uniq } from 'lodash'
-import convert from 'color-convert'
 import type { FilterSpecification, LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import { HIGHLIGHT_LINE_COLOR } from '../context/context.utils'
 import { Group } from '../../types'
 import { GeneratorType, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
-import { isConfigVisible } from '../utils'
-import filterTrackByTimerange from './filterTrackByTimerange'
+import { isConfigVisible, isNumeric } from '../utils'
+import {
+  filterByTimerangeMemoizeEqualityCheck,
+  filterTrackByCoordinateProperties,
+  TrackCoordinatesPropertyFilter,
+} from './filterTrackByCoordinateProperties'
 import { simplifyTrack } from './simplify-track'
 
 export const TRACK_HIGHLIGHT_SUFFIX = '_highlighted'
@@ -40,29 +44,17 @@ const simplifyTrackWithZoomLevel = (
   return simplifiedData
 }
 
-const filterByTimerange = (data: FeatureCollection, start: string, end: string) => {
-  const startMs = new Date(start).getTime()
-  const endMs = new Date(end).getTime()
-
-  const filteredData = filterTrackByTimerange(data, {
-    start: startMs,
-    end: endMs,
-    includeNonTemporalFeatures: true,
-  })
-  return filteredData
-}
-
-const getHighlightedData = (
-  data: FeatureCollection,
-  highlightedStart: string,
-  highlightedEnd: string
-) => {
-  const startMs = new Date(highlightedStart).getTime()
-  const endMs = new Date(highlightedEnd).getTime()
-
-  const filteredData = filterTrackByTimerange(data, { start: startMs, end: endMs })
-
-  return filteredData
+const getTimeFilter = (start?: string, end?: string): TrackCoordinatesPropertyFilter[] => {
+  if (!start || !end) {
+    return []
+  }
+  return [
+    {
+      id: 'times',
+      min: new Date(start).getTime(),
+      max: new Date(end).getTime(),
+    },
+  ]
 }
 
 const getHighlightedLayer = (
@@ -107,6 +99,7 @@ class TrackGenerator {
       id: config.id,
       type: 'geojson',
       data: defaultGeoJSON,
+      promoteId: config.promoteId || 'id',
     }
     const sources = [source]
 
@@ -131,9 +124,23 @@ class TrackGenerator {
         .map((f: any) => f.properties?.id)
     )
 
-    if (config.start && config.end) {
-      source.data = memoizeCache[config.id].filterByTimerange(source.data, config.start, config.end)
-    }
+    const coordinateFilters: TrackCoordinatesPropertyFilter[] = Object.entries(
+      config.coordinateFilters || {}
+    ).map(([id, values]) => {
+      if (isNumeric(values[0]) && isNumeric(values[1])) {
+        return {
+          id,
+          min: parseFloat(values[0] as string),
+          max: parseFloat(values[1] as string),
+        }
+      }
+      return { id, values }
+    })
+
+    source.data = memoizeCache[config.id].filterTrackByCoordinateProperties(source.data, {
+      filters: [...getTimeFilter(config.start, config.end), ...coordinateFilters],
+      includeNonTemporalFeatures: true,
+    })
 
     // if (config.highlightedEvent) {
     //   const highlightedData = memoizeCache[config.id].getHighlightedEventData(
@@ -150,10 +157,17 @@ class TrackGenerator {
     // }
 
     if (config.highlightedTime) {
-      const highlightedData = memoizeCache[config.id].getHighlightedData(
+      const highlightedData = memoizeCache[config.id].filterTrackByCoordinatePropertiesHighlight(
+        // using source.data here to avoid filtering the entire track again
+        // this makes everything much faster but also harder because the filterTrackByCoordinateProperties
+        // needs support to filter LineStrings and also
         source.data,
-        config.highlightedTime.start,
-        config.highlightedTime.end
+        {
+          filters: [
+            ...getTimeFilter(config.highlightedTime.start, config.highlightedTime.end),
+            ...coordinateFilters,
+          ],
+        }
       )
       const highlightedSource = {
         id: `${config.id}${this.highlightSufix}`,
@@ -176,35 +190,26 @@ class TrackGenerator {
       'line-opacity': 1,
     }
     let filters: Array<any> = []
-    if (config?.filters) {
+    if (config?.filters && Object.keys(config?.filters).length > 0) {
       filters = ['all']
       Object.entries(config.filters).forEach(([key, values]) => {
-        filters.push(['match', ['get', key], values, true, false])
+        // TODO: fix this as the edge case of having a filter of two numeric ids will fail
+        if (values.length === 2 && values.some(isNumeric)) {
+          filters.push(['<=', ['to-number', ['get', key]], parseFloat(values[1] as string)])
+          filters.push(['>=', ['to-number', ['get', key]], parseFloat(values[0] as string)])
+        } else {
+          filters.push(['match', ['get', key], values, true, false])
+        }
       })
     }
 
-    if (uniqIds.length > 1) {
-      let exprLineColor
-      if (config.useOwnColor) {
-        exprLineColor = ['get', 'color']
-      } else {
-        const HUE_CHANGE_DELTA = 40
-        const hueIncrement = HUE_CHANGE_DELTA / (uniqIds.length - 1)
-        const hsl = convert.hex.hsl(config.color || '')
-        const baseHue = hsl[0]
-        exprLineColor = [
-          'match',
-          ['get', 'id'],
-          ...uniqIds.flatMap((id, index) => {
-            const rawHue = baseHue - HUE_CHANGE_DELTA / 2 + hueIncrement * index
-            const hue = (rawHue + 360) % 360
-            const color = `#${convert.hsl.hex([hue, hsl[1], hsl[2]])}`
-            return [id, color]
-          }),
-          config.color,
-        ]
-      }
-      paint['line-color'] = exprLineColor as any
+    if (uniqIds.length > 1 && config.useOwnColor) {
+      paint['line-color'] = [
+        'case',
+        ['boolean', ['feature-state', 'highlight'], false],
+        HIGHLIGHT_LINE_COLOR,
+        ['get', 'color'],
+      ] as any
     }
 
     const visibility = isConfigVisible(config)
@@ -250,9 +255,14 @@ class TrackGenerator {
     memoizeByLayerId(config.id, {
       convertToGeoJSON: memoizeOne(segmentsToGeoJSON),
       simplifyTrackWithZoomLevel: memoizeOne(simplifyTrackWithZoomLevel),
-      filterByTimerange: memoizeOne(filterByTimerange),
-      getHighlightedData: memoizeOne(getHighlightedData),
-      getHighlightedEventData: memoizeOne(getHighlightedData),
+      filterTrackByCoordinateProperties: memoizeOne(
+        filterTrackByCoordinateProperties,
+        filterByTimerangeMemoizeEqualityCheck
+      ),
+      filterTrackByCoordinatePropertiesHighlight: memoizeOne(
+        filterTrackByCoordinateProperties,
+        filterByTimerangeMemoizeEqualityCheck
+      ),
     })
 
     const { sources, uniqIds } = this._getStyleSources(config)

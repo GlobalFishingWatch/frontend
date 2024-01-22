@@ -20,6 +20,7 @@ export enum GeneratorType {
   Context = 'CONTEXT',
   GL = 'GL',
   Heatmap = 'HEATMAP',
+  HeatmapStatic = 'HEATMAP_STATIC',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
   Polygons = 'POLYGONS',
   Rulers = 'RULERS',
@@ -363,6 +364,14 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
    * Filter the tracks displayed https://docs.mapbox.com/help/glossary/filter/
    */
   filters?: Record<string, Array<string | number>>
+  /**
+   * Filter segment points by its coordinateProperties
+   */
+  coordinateFilters?: Record<string, Array<string | number>>
+  /**
+   * Property to use as id internally in mapbox
+   */
+  promoteId?: string
 }
 
 export interface PolygonsGeneratorConfig extends GeneratorConfig {
@@ -461,6 +470,21 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   colorRamp?: ColorRampsIds
 }
 
+export interface HeatmapStaticGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.HeatmapStatic
+  tilesAPI?: string
+  maxZoom?: number
+  numBreaks?: number
+  breaks?: number[]
+  breaksMultiplier?: number
+  datasets: string[]
+  group?: Group
+  filters?: string
+  colorRamp?: ColorRampsIds
+  interactive?: boolean
+  aggregationOperation?: AggregationOperation
+}
+
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.HeatmapAnimated
   sublayers: HeatmapAnimatedGeneratorSublayer[]
@@ -494,6 +518,7 @@ export type AnyGeneratorConfig =
   | CartoPolygonsGeneratorConfig
   | ContextGeneratorConfig
   | GlGeneratorConfig
+  | HeatmapStaticGeneratorConfig
   | HeatmapAnimatedGeneratorConfig
   | HeatmapGeneratorConfig
   | PolygonsGeneratorConfig
@@ -590,6 +615,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   legend?: GeneratorLegend
   interactionType?: HeatmapAnimatedInteractionType
   availableIntervals?: Interval[]
+  metadata?: GeneratorMetadata
 }
 
 // ---- Heatmap Generator color ramps types

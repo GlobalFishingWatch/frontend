@@ -58,6 +58,7 @@ export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer'
 export const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer'
 export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = 'gfw-environmental-layer'
 export const TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG = 'heatmap-environmental-layer'
+export const TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG = 'heatmap-static-layer'
 export const TEMPLATE_ACTIVITY_DATAVIEW_SLUG = 'activity-template'
 export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-events'
 

@@ -1,6 +1,9 @@
 import type { Feature, FeatureCollection } from 'geojson'
 import { capitalize, lowerCase } from 'lodash'
-import { DatasetGeometryType } from '@globalfishingwatch/api-types'
+import {
+  DatasetConfigurationSourceFormat,
+  DatasetGeometryType,
+} from '@globalfishingwatch/api-types'
 
 export function getFileName(file: File): string {
   const name =
@@ -8,7 +11,7 @@ export function getFileName(file: File): string {
   return capitalize(lowerCase(name))
 }
 
-export type FileType = 'GeoJSON' | 'Shapefile' | 'CSV' | 'KML'
+export type FileType = DatasetConfigurationSourceFormat
 export type MimeExtention =
   | '.json'
   | '.geojson'

@@ -15,6 +15,7 @@ import { DatasetUploadStyle } from 'features/modals/modals.slice'
 import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { FileType } from 'utils/files'
+import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -50,8 +51,8 @@ export type DatasetMetadata = Partial<
     | 'category'
     | 'configuration'
     | 'fieldsAllowed'
-  >
-> & { public: boolean }
+  > & { public: boolean }
+>
 
 function NewDataset() {
   const { t } = useTranslation()
@@ -88,11 +89,7 @@ function NewDataset() {
     async (datasetMetadata, { file, isEditing } = {} as OnConfirmParams) => {
       if (datasetMetadata) {
         const { payload, error: createDatasetError } = await dispatchUpsertDataset({
-          dataset: {
-            ...datasetMetadata,
-            unit: 'TBD',
-            subcategory: 'info',
-          },
+          dataset: getFinalDatasetFromMetadata(datasetMetadata),
           file,
           createAsPublic: datasetMetadata?.public ?? true,
         })

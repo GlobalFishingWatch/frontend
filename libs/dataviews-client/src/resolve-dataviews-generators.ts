@@ -170,11 +170,11 @@ export function getGeneratorConfig(
       if (highlightedTime) {
         generator.highlightedTime = highlightedTime
       }
-
+      const dataset = dataview.datasets?.find(
+        (dataset) => dataset.type === DatasetTypes.Tracks || DatasetTypes.UserTracks
+      )
       const endpointType =
-        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
-          ? EndpointId.UserTracks
-          : EndpointId.Tracks
+        dataset?.type === DatasetTypes.UserTracks ? EndpointId.UserTracks : EndpointId.Tracks
 
       let trackResource
       if (endpointType === EndpointId.Tracks) {
@@ -188,6 +188,22 @@ export function getGeneratorConfig(
 
       if (params?.singleTrack) {
         generator.useOwnColor = true
+      }
+
+      const sourceFormat = getDatasetConfigurationProperty({
+        dataset,
+        property: 'sourceFormat',
+      })
+
+      if (
+        // When the uploaded dataset was generated from a CSV it needs to be filtered by its point coordinates
+        ((dataset?.type === DatasetTypes.UserTracks && sourceFormat === 'CSV') ||
+          // but also the tracks datasets from the vessels api can include speed or elevation filters
+          dataset?.type === DatasetTypes.Tracks) &&
+        dataview.config?.filters
+      ) {
+        delete generator.filters
+        generator.coordinateFilters = dataview.config?.filters
       }
 
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
@@ -247,6 +263,28 @@ export function getGeneratorConfig(
         metadata: {
           color: dataview?.config?.color,
           group: Group.OutlinePolygonsBackground,
+          interactive: true,
+          legend: {
+            label: heatmapDataset?.name,
+            unit: heatmapDataset?.unit,
+          },
+        },
+      }
+      return generator
+    }
+    case GeneratorType.HeatmapStatic: {
+      const heatmapDataset = dataview.datasets?.find(
+        (dataset) => dataset.type === DatasetTypes.Fourwings
+      )
+
+      generator = {
+        ...generator,
+        maxZoom: dataview.config.maxZoom || 8,
+        breaks: dataview.config.breaks,
+        datasets: [heatmapDataset?.id],
+        metadata: {
+          color: dataview?.config?.color,
+          group: Group.Heatmap,
           interactive: true,
           legend: {
             label: heatmapDataset?.name,
@@ -444,6 +482,10 @@ export function isTrackDataview(dataview: UrlDataviewInstance) {
 
 export function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
   return isActivityDataview(dataview) || isDetectionsDataview(dataview)
+}
+
+export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
+  return dataview?.config?.type === GeneratorType.HeatmapStatic
 }
 
 export function getMergedHeatmapAnimatedDataview(

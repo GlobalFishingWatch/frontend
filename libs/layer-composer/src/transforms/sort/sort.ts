@@ -5,6 +5,7 @@ export const GROUP_ORDER = [
   Group.Basemap,
   Group.OutlinePolygonsBackground,
   Group.Bathymetry,
+  Group.HeatmapStatic,
   Group.Heatmap,
   Group.OutlinePolygonsFill,
   Group.Track,

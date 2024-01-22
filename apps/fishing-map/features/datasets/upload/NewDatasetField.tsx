@@ -56,7 +56,7 @@ export function NewDatasetField({
             getDatasetConfigurationProperty({
               dataset: datasetMetadata,
               property,
-            }),
+            }) as string,
             options
           ) as SelectOption
         }
@@ -69,10 +69,12 @@ export function NewDatasetField({
   }
   return (
     <InputText
-      value={getDatasetConfigurationProperty({
-        dataset: datasetMetadata,
-        property,
-      })}
+      value={
+        getDatasetConfigurationProperty({
+          dataset: datasetMetadata,
+          property,
+        }) as string
+      }
       label={label}
       className={styles.input}
       disabled

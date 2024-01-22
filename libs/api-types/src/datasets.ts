@@ -91,11 +91,12 @@ export interface DatasetDocumentation {
   provider?: string
 }
 
+export type DatasetConfigurationSourceFormat = 'GeoJSON' | 'Shapefile' | 'CSV' | 'KML'
 export interface DatasetConfigurationUI {
   latitude?: string
   longitude?: string
   timestamp?: string
-  sourceFormat?: 'csv' | 'geojson' | 'shapefile' | 'kml'
+  sourceFormat?: DatasetConfigurationSourceFormat
   pointName?: string
   pointSize?: string
   maxPointSize?: number
@@ -166,9 +167,10 @@ export type DatasetSchemaType =
   | 'coordinate'
   | 'timestamp'
 
+export type DatasetSchemaItemEnum = (string | number | boolean)[]
 export type DatasetSchemaItem = {
   type: DatasetSchemaType
-  enum?: (string | boolean | number)[]
+  enum?: DatasetSchemaItemEnum
   maxLength?: number
   minLength?: number
   min?: number

@@ -1,10 +1,15 @@
 import { useCallback, useEffect } from 'react'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { useSelector } from 'react-redux'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS, HeatmapLayerMeta } from '@globalfishingwatch/layer-composer'
+import {
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
+  HEATMAP_STATIC_PROPERTY_ID,
+  HeatmapLayerMeta,
+} from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
+import { VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveHeatmapEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
@@ -27,12 +32,16 @@ export const useEnvironmentalBreaksUpdate = () => {
   const updateBreaksByViewportValues = useCallback(
     (dataviewFeatures: DataviewFeature[], bounds: MiniglobeBounds) => {
       const dataviewInstances = dataviewFeatures?.flatMap(
-        ({ chunksFeatures, dataviewsId, metadata }) => {
-          const { features } = chunksFeatures?.[0] || ({} as ChunkFeature)
-          if (features && features.length) {
+        ({ features, chunksFeatures, dataviewsId, metadata }) => {
+          const resolvedFeatures = chunksFeatures?.[0]?.features || features || ({} as ChunkFeature)
+          if (resolvedFeatures && resolvedFeatures.length) {
             const config = dataviews.find(({ id }) => dataviewsId.includes(id))?.config
-            const filteredFeatures = filterFeaturesByBounds(features, bounds)
-            const rawData = aggregateFeatures(filteredFeatures, metadata as HeatmapLayerMeta)
+            const filteredFeatures = filterFeaturesByBounds(resolvedFeatures, bounds)
+            const rawData = metadata?.static
+              ? features.map(
+                  (f) => (f.properties[HEATMAP_STATIC_PROPERTY_ID] / VALUE_MULTIPLIER) as number
+                )
+              : aggregateFeatures(filteredFeatures, metadata as HeatmapLayerMeta)
             const data = rawData.filter((d) => {
               const matchesMin =
                 config?.minVisibleValue !== undefined ? d >= config?.minVisibleValue : true

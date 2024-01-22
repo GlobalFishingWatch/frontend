@@ -24,7 +24,6 @@ import {
   useActivityMetadata,
   useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
-import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import useViewport from 'features/map/map-viewport.hooks'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
@@ -46,7 +45,13 @@ import {
 } from 'features/app/selectors/app.timebar.selectors'
 import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import { selectTracksData, selectTracksGraphData, selectTracksEvents } from './timebar.selectors'
+import {
+  selectTracksData,
+  selectTracksGraphData,
+  selectTracksEvents,
+  selectAvailableStart,
+  selectAvailableEnd,
+} from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
@@ -139,6 +144,8 @@ const TimebarWrapper = () => {
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setMapCoordinates, viewport } = useViewport()
+  const availableStart = useSelector(selectAvailableStart)
+  const availableEnd = useSelector(selectAvailableEnd)
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracks = useSelector(selectTracksData)
   const tracksGraphsData = useSelector(selectTracksGraphData)
@@ -337,8 +344,8 @@ const TimebarWrapper = () => {
         labels={labels}
         start={internalRange ? internalRange.start : start}
         end={internalRange ? internalRange.end : end}
-        absoluteStart={AVAILABLE_START}
-        absoluteEnd={AVAILABLE_END}
+        absoluteStart={availableStart}
+        absoluteEnd={availableEnd}
         latestAvailableDataDate={latestAvailableDataDate}
         onChange={onChange}
         showLastUpdate={false}

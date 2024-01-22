@@ -142,7 +142,7 @@ export const TimeFieldsGroup = ({
               getDatasetConfigurationProperty({
                 dataset: datasetMetadata,
                 property: 'startTime',
-              })
+              })?.toString()
             ) as SelectOption
           }
           onSelect={onStartSelect}
@@ -160,7 +160,7 @@ export const TimeFieldsGroup = ({
               getDatasetConfigurationProperty({
                 dataset: datasetMetadata,
                 property: 'endTime',
-              })
+              })?.toString()
             ) as SelectOption
           }
           label={

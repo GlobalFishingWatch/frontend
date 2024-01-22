@@ -19,6 +19,7 @@ import {
   DatasetSchema,
   DatasetSchemaItem,
   IdentityVessel,
+  DatasetSchemaItemEnum,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -91,7 +92,7 @@ export type SupportedEnvDatasetSchema =
   | 'vessel_type'
   | 'Height'
   | 'REALM'
-export type SupportedContextDatasetSchema = 'removal_of'
+export type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
 export type SupportedEventsDatasetSchema = 'duration'
 
 const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
@@ -632,7 +633,7 @@ export const getCommonSchemaFieldsInDataview = (
     return []
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  let schemaFields: (string | boolean)[][] = (activeDatasets || [])?.map((d) => {
+  let schemaFields: DatasetSchemaItemEnum[] = (activeDatasets || [])?.map((d) => {
     const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
     const schemaEnum = schemaItem?.enum || schemaItem?.items?.enum || []
     return Array.isArray(schemaEnum)
@@ -655,7 +656,7 @@ export const getCommonSchemaFieldsInDataview = (
             ? field
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field!?.toString())
         if (label === field) {
-          if (dataview.category !== DataviewCategory.Context) {
+          if (dataview.category !== DataviewCategory.Context && schema !== 'vessel_id') {
             label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
           }
           if (schema === 'geartypes') {
@@ -811,9 +812,13 @@ export const getSchemaFiltersInDataview = (
   dataview: SchemaFieldDataview,
   { vesselGroups } = {} as GetSchemaInDataviewParams
 ): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
-  const fieldsIds = uniq(
-    dataview.datasets?.flatMap((d) => d.fieldsAllowed || []).filter((f) => f !== 'vessel_id')
+  let fieldsIds = uniq(
+    dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
+  if (dataview.datasets?.some((t) => t.type === DatasetTypes.Fourwings)) {
+    // This filter avoids to show the selector for the vessel ids in fourwings layers
+    fieldsIds = fieldsIds.filter((f) => f !== 'vessel_id')
+  }
   const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetSchema[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewSchemaSupported(dataview, f))
   const fieldsDisabled = fieldsIds.filter((f) => !isDataviewSchemaSupported(dataview, f))

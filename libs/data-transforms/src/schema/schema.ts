@@ -1,6 +1,7 @@
 import { max, min, uniq } from 'lodash'
 import { FeatureCollection } from 'geojson'
 import { Dataset, DatasetSchemaItem, DatasetSchemaType } from '@globalfishingwatch/api-types'
+import { parseCoords } from '../coordinates'
 import { GUESS_COLUMN_DICT } from './guess-columns'
 
 type GetFieldSchemaParams = {
@@ -20,7 +21,7 @@ export const getFieldSchema = (
   const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType)
 
   if (values?.length) {
-    const schema: DatasetSchemaItem = {
+    let schema: DatasetSchemaItem = {
       type:
         GUESS_COLUMN_DICT.latitude.some((t) => t === field) ||
         GUESS_COLUMN_DICT.longitude.some((t) => t === field)
@@ -31,8 +32,38 @@ export const getFieldSchema = (
     }
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {
-        const stringEnumSupported = values.length < maxSchemaEnumValues
-        schema.enum = stringEnumSupported ? values.map((v) => v.toString()) : []
+        const isDate = values.some((d) => !isNaN(Date.parse(d)))
+        const isCoordinate = values.some((d) => {
+          try {
+            const coords = parseCoords(d, d)
+            return coords && coords.latitude && coords.longitude
+          } catch (e) {
+            return false
+          }
+        })
+        if (isDate) {
+          const valuesOrdered = values.sort((a, b) => a - b)
+          schema.type = 'timestamp'
+          schema.enum = [
+            new Date(valuesOrdered[0]).getTime(),
+            new Date(valuesOrdered[valuesOrdered.length - 1]).getTime(),
+          ]
+        } else if (isCoordinate) {
+          const valuesOrdered = values.sort((a, b) => a - b)
+          try {
+            const coordinates = parseCoords(
+              valuesOrdered[0],
+              valuesOrdered[valuesOrdered.length - 1]
+            )
+            if (coordinates) {
+              schema.type = 'coordinate'
+              schema.enum = [coordinates.latitude, coordinates.longitude]
+            }
+          } catch (e) {}
+        } else {
+          const stringEnumSupported = values.length < maxSchemaEnumValues
+          schema.enum = stringEnumSupported ? values.map((v) => v.toString()) : []
+        }
       } else if (schema.type === 'range' || schema.type === 'coordinate') {
         schema.enum = [min(values), max(values)]
       } else if (schema.type === 'boolean') {

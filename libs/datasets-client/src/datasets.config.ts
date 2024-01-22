@@ -15,11 +15,10 @@ export type DatasetSchemaGeneratorProps = {
   data: DataList
 }
 
-export type DatasetConfigurationProperty = keyof DatasetConfigurationUI | keyof DatasetConfiguration
-type DatasetProperty<P extends DatasetConfigurationProperty> = P extends 'geometryType'
-  ? DatasetGeometryType
-  : string
+export type MergedDatasetConfig = DatasetConfigurationUI & DatasetConfiguration
+export type DatasetConfigurationProperty = keyof MergedDatasetConfig
 
+type DatasetProperty<P extends DatasetConfigurationProperty> = Required<MergedDatasetConfig>[P]
 export function getDatasetConfigurationProperty<P extends DatasetConfigurationProperty>({
   dataset,
   property,
@@ -38,7 +37,7 @@ export const getDatasetConfiguration = (
   ...dataset?.configuration?.configurationUI,
 })
 
-export function getDatasetGeometryType(dataset?: Dataset): DatasetGeometryType {
+export function getDatasetGeometryType(dataset?: Dataset) {
   if (!dataset) {
     return '' as DatasetGeometryType
   }
