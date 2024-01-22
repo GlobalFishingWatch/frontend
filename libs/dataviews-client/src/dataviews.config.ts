@@ -63,14 +63,14 @@ export const setGeneratorConfigPolygonColor = ({
   dataset: Dataset
   generator: GeneratorDataviewConfig
 }) => {
-  const polygonOpacityColor = getDatasetConfigurationProperty({
+  const polygonColor = getDatasetConfigurationProperty({
     dataset,
     property: 'polygonColor',
   })
 
-  if (dataset?.schema?.[polygonOpacityColor]?.enum) {
-    const [min, max] = dataset.schema[polygonOpacityColor].enum as number[]
+  if (dataset?.schema?.[polygonColor]?.enum) {
+    const [min, max] = dataset.schema[polygonColor].enum as number[]
     generator.steps = getDatasetRangeSteps({ min, max })
-    generator.pickValueAt = polygonOpacityColor
+    generator.pickValueAt = polygonColor
   }
 }
