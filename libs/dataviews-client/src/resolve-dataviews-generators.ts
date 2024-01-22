@@ -28,7 +28,10 @@ import type {
   HeatmapAnimatedInteractionType,
 } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
-import { getDatasetRangeSteps } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetRangeSteps,
+} from '@globalfishingwatch/datasets-client'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
