@@ -12,7 +12,10 @@ import {
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetConfiguration,
+} from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -44,7 +47,7 @@ function NewPolygonDataset({
   const [loading, setLoading] = useState<boolean>(false)
   const [geojson, setGeojson] = useState<FeatureCollection<Polygon> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
-  const { fieldsOptions, getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
+  const { getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
     useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
@@ -199,10 +202,16 @@ function NewPolygonDataset({
             ) as SelectOption
           }
           onSelect={(selected) => {
+            const config = getDatasetConfiguration(dataset)
+            const valueProperties = config.valueProperties || []
             setDatasetMetadataConfig({ polygonColor: selected.id })
+            setDatasetMetadataConfig({ valueProperties: [...valueProperties, selected.id] })
           }}
           onCleanClick={() => {
+            const config = getDatasetConfiguration(dataset)
+            const valueProperties = config.valueProperties
             setDatasetMetadataConfig({ polygonColor: undefined })
+            setDatasetMetadataConfig({ valueProperties })
           }}
           disabled={loading}
           infoTooltip={t(

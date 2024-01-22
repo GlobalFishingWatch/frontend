@@ -104,6 +104,11 @@ export interface DatasetConfigurationUI {
   endTime?: string | number
   timeFilterType?: TimeFilterType
   polygonColor?: string
+  /**
+   * Feature properties array to inform the API
+   * which data is to be be added to tiles features
+   */
+  valueProperties?: string[]
   geometryType?: DatasetGeometryType
   lineId?: string | number
   segmentId?: string | number
@@ -122,6 +127,10 @@ export interface DatasetConfiguration {
   documentation?: DatasetDocumentation
   fields?: string[]
   idProperty?: string
+  /**
+   * Feature properties array to inform the API
+   * which data is to be be added to tiles features
+   */
   valueProperties?: string[]
   propertyToInclude?: string
   min?: number
