@@ -32,6 +32,12 @@ class UserContextGenerator {
       url.searchParams.set('filter', config.filter)
     }
 
+    if (config.valueProperties) {
+      config.valueProperties.forEach((property, index) => {
+        url.searchParams.set(`properties[${index}]`, property)
+      })
+    }
+
     // As user can modify the dataset, we need to avoid the cache
     url.searchParams.set('cache', 'false')
 
@@ -60,7 +66,8 @@ class UserContextGenerator {
       const legendRamp = zip(config.steps, originalColorRamp)
       const valueExpression: ExpressionSpecification = [
         'to-number',
-        ['get', config.pickValueAt || 'value'],
+        // feature properties are set as lowercase on the backend
+        ['get', config.pickValueAt?.toLowerCase() || 'value'],
       ]
       const colorRamp: DataDrivenPropertyValueSpecification<FormattedSpecification> = [
         'interpolate',
