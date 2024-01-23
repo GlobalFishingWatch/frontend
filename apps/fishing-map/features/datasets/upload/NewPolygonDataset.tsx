@@ -151,6 +151,28 @@ function NewPolygonDataset({
             'Select a property of each polygon to make it appear as its label'
           )}
         />
+        <NewDatasetField
+          datasetMetadata={datasetMetadata}
+          property="polygonColor"
+          label={t('datasetUpload.polygons.color', 'polygon color')}
+          onSelect={(selected) => {
+            const config = getDatasetConfiguration(dataset)
+            const valueProperties = config.valueProperties || []
+            setDatasetMetadataConfig({ polygonColor: selected.id })
+            setDatasetMetadataConfig({ valueProperties: [...valueProperties, selected.id] })
+          }}
+          onCleanClick={() => {
+            const config = getDatasetConfiguration(dataset)
+            const valueProperties = config.valueProperties
+            setDatasetMetadataConfig({ polygonColor: undefined })
+            setDatasetMetadataConfig({ valueProperties })
+          }}
+          editable={!loading}
+          infoTooltip={t(
+            'datasetUpload.polygons.colorHelp',
+            'Select a numeric property of each polygon to change its fill color'
+          )}
+        />
         <div className={styles.row}>
           <TimeFieldsGroup
             datasetMetadata={datasetMetadata}
@@ -182,41 +204,6 @@ function NewPolygonDataset({
           infoTooltip={t(
             'datasetUpload.polygons.filtersHelp',
             'Select properties of the polygons to be able to dinamically filter them in the sidebar after'
-          )}
-        />
-        <Select
-          label={t('datasetUpload.polygons.color', 'polygon color')}
-          placeholder={t(
-            'datasetUpload.fieldNumericPlaceholder',
-            'Select a numeric field from your dataset'
-          )}
-          options={schemaRangeOptions}
-          direction="top"
-          className={styles.input}
-          selectedOption={
-            getSelectedOption(
-              getDatasetConfigurationProperty({
-                dataset: datasetMetadata,
-                property: 'polygonColor',
-              })
-            ) as SelectOption
-          }
-          onSelect={(selected) => {
-            const config = getDatasetConfiguration(dataset)
-            const valueProperties = config.valueProperties || []
-            setDatasetMetadataConfig({ polygonColor: selected.id })
-            setDatasetMetadataConfig({ valueProperties: [...valueProperties, selected.id] })
-          }}
-          onCleanClick={() => {
-            const config = getDatasetConfiguration(dataset)
-            const valueProperties = config.valueProperties
-            setDatasetMetadataConfig({ polygonColor: undefined })
-            setDatasetMetadataConfig({ valueProperties })
-          }}
-          disabled={loading}
-          infoTooltip={t(
-            'datasetUpload.polygons.colorHelp',
-            'Select a numeric property of each polygon to change its color'
           )}
         />
         <SwitchRow
