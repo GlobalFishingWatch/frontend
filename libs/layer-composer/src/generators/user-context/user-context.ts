@@ -79,8 +79,9 @@ class UserContextGenerator {
         ...baseLayer,
         type: 'fill' as const,
         paint: {
-          'fill-outline-color': 'transparent',
+          'fill-outline-color': originalColorRamp[originalColorRamp.length - 1] || 'transparent',
           'fill-color': colorRamp,
+          'fill-antialias': true,
         },
         metadata: {
           color: config.color,
