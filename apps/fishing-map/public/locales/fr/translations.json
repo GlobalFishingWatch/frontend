@@ -291,6 +291,8 @@
       "timerangeEndHelp": "Select the property that defines the start of the date range of each point to filter them with the time bar"
     },
     "polygons": {
+      "color": "Polygon color",
+      "colorHelp": "Select a numeric property of each polygon to change its fill color",
       "coordinates": "Polygon coordinates",
       "filters": "Polygon filters",
       "filtersHelp": "Select properties of the polygons to be able to dinamically filter them in the sidebar after",
@@ -402,6 +404,7 @@
     "switchAccount": "Changer de compte",
     "trackLoading": "Une erreur s'est produite lors du chargement de la trajectoire du navire",
     "uploadCsv": "Erreur de lecture du fichier CSV : {{error}}",
+    "uploadKML": "Error reading KML file: {{error}}",
     "uploadError": "Il y a eu une erreur lors du téléchargement de votre jeu de données",
     "uploadGeojson": "Erreur de lecture du fichier GeoJSON : {{error}}",
     "uploadShapefile": "Erreur de lecture du shapefile : {{error}}",
