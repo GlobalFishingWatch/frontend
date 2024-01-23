@@ -203,9 +203,6 @@ export const upsertDatasetThunk = createAsyncThunk<
     // Properties that are to be used as SQL params on the server
     // need to be lowercase
     const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
-    const valueProperties = dataset.configuration?.valueProperties?.map((property) =>
-      property.toLowerCase()
-    )
     const generatedId = dataset.id || `${kebabCase(dataset.name)}-${Date.now()}`
     const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
     const { id: originalId, ...rest } = dataset
@@ -220,7 +217,6 @@ export const upsertDatasetThunk = createAsyncThunk<
       configuration: {
         ...dataset.configuration,
         ...(propertyToInclude && { propertyToInclude }),
-        ...(valueProperties && { valueProperties }),
         filePath: filePath || dataset.configuration?.filePath,
       },
     }

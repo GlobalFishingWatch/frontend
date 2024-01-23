@@ -88,7 +88,7 @@ export const getDatasetSchemaFromGeojson = (
       const uniqDataValues = uniq(geojson.features.flatMap((d) => d.properties?.[field] || []))
       const schema = getFieldSchema(field, uniqDataValues, getFieldSchemaParams)
       if (schema) {
-        return { ...acc, [field]: schema }
+        return { ...acc, [field.toLowerCase()]: schema }
       }
       return acc
     },
