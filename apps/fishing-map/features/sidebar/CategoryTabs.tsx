@@ -42,7 +42,6 @@ function getLinkToSearch(workspace: Workspace) {
       category: workspace?.category || WorkspaceCategory.FishingActivity,
       workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
     },
-    replaceQuery: true,
   }
 }
 
