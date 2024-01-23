@@ -291,6 +291,8 @@
       "timerangeEndHelp": "crwdns82392:0crwdne82392:0"
     },
     "polygons": {
+      "color": "crwdns82418:0crwdne82418:0",
+      "colorHelp": "crwdns82420:0crwdne82420:0",
       "coordinates": "crwdns81262:0crwdne81262:0",
       "filters": "crwdns81264:0crwdne81264:0",
       "filtersHelp": "crwdns82394:0crwdne82394:0",
@@ -402,6 +404,7 @@
     "switchAccount": "crwdns81426:0crwdne81426:0",
     "trackLoading": "crwdns81428:0crwdne81428:0",
     "uploadCsv": "crwdns81430:0{{error}}crwdne81430:0",
+    "uploadKML": "crwdns82422:0{{error}}crwdne82422:0",
     "uploadError": "crwdns81432:0crwdne81432:0",
     "uploadGeojson": "crwdns81434:0{{error}}crwdne81434:0",
     "uploadShapefile": "crwdns81436:0{{error}}crwdne81436:0",
