@@ -1,3 +1,4 @@
+import { scaleLinear } from 'd3-scale'
 import {
   DRAW_DATASET_SOURCE,
   Dataset,
@@ -6,6 +7,7 @@ import {
   DatasetGeometryType,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 
 export type DataList = Record<string, any>[]
 
@@ -63,4 +65,15 @@ export const getEnvironmentalDatasetRange = (dataset: Dataset) => {
     min: cleanMin,
     max: cleanMax,
   }
+}
+
+export const getDatasetRangeSteps = ({ min, max }: { min: number; max: number }) => {
+  const rampScale = scaleLinear()
+    .range([min, max || min + 0.00001])
+    .domain([0, 1])
+  const numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
+  const steps = [...Array(numSteps)]
+    .map((_, i) => i / (numSteps - 1))
+    .map((value) => rampScale(value) as number)
+  return steps
 }

@@ -1,4 +1,3 @@
-import { scaleLinear } from 'd3-scale'
 import { uniq } from 'lodash'
 import {
   Resource,
@@ -19,7 +18,6 @@ import {
   GeneratorDataviewConfig,
   GeneratorType,
   Group,
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
   HeatmapAnimatedMode,
   HeatmapAnimatedGeneratorConfig,
   Interval,
@@ -30,13 +28,21 @@ import type {
   HeatmapAnimatedInteractionType,
 } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetRangeSteps,
+} from '@globalfishingwatch/datasets-client'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
   UrlDataviewInstance,
 } from './resolve-dataviews'
 import { pickTrackResource } from './resources'
+import {
+  setGeneratorConfigCircleRadius,
+  setGeneratorConfigPolygonColor,
+  setGeneratorConfigTimeFilter,
+} from './dataviews.config'
 
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedActivityHeatmap'
@@ -431,54 +437,18 @@ export function getGeneratorConfig(
           const { min = 0, max } =
             (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
             {}
-          const rampScale = scaleLinear()
-            .range([min, max || min + 0.00001])
-            .domain([0, 1])
-          const numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
-          const steps = [...Array(numSteps)]
-            .map((_, i) => i / (numSteps - 1))
-            .map((value) => rampScale(value) as number)
-          generator.steps = steps
+          generator.steps = getDatasetRangeSteps({ min, max })
         } else if (
           dataset.category === DatasetCategory.Context &&
           (dataview.config?.type === GeneratorType.UserContext ||
             dataview.config?.type === GeneratorType.UserPoints)
         ) {
-          const circleRadiusProperty = getDatasetConfigurationProperty({
-            dataset,
-            property: 'pointSize',
-          })
-          if (circleRadiusProperty) {
-            generator.circleRadiusProperty = circleRadiusProperty.toLowerCase()
-            generator.circleRadiusRange = circleRadiusProperty && [
-              dataset.schema?.[circleRadiusProperty].min,
-              dataset.schema?.[circleRadiusProperty].max,
-            ]
+          setGeneratorConfigCircleRadius({ dataset, generator })
+          setGeneratorConfigTimeFilter({ dataset, generator })
+          setGeneratorConfigPolygonColor({ dataset, generator })
+          if (dataset?.configuration?.disableInteraction) {
+            generator.disableInteraction = dataset.configuration?.disableInteraction
           }
-          generator.minPointSize = getDatasetConfigurationProperty({
-            dataset,
-            property: 'minPointSize',
-          })
-          generator.maxPointSize = getDatasetConfigurationProperty({
-            dataset,
-            property: 'maxPointSize',
-          })
-
-          const startTimeFilterProperty = getDatasetConfigurationProperty({
-            dataset,
-            property: 'startTime',
-          })
-          const endTimeFilterProperty = getDatasetConfigurationProperty({
-            dataset,
-            property: 'endTime',
-          })
-          if (startTimeFilterProperty) {
-            generator.startTimeFilterProperty = startTimeFilterProperty
-          }
-          if (endTimeFilterProperty) {
-            generator.endTimeFilterProperty = endTimeFilterProperty
-          }
-          generator.disableInteraction = dataset.configuration?.disableInteraction
         }
       }
       if (!generator.tilesUrl) {

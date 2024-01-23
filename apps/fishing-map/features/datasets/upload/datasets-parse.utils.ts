@@ -1,13 +1,17 @@
 import { parse } from 'papaparse'
-import { FeatureCollection } from 'geojson'
+import { Feature, FeatureCollection } from 'geojson'
 import {
   pointsListToGeojson,
   pointsGeojsonToNormalizedGeojson,
   listToTrackSegments,
   segmentsToGeoJSON,
   kmlToGeoJSON,
+  shpToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
-import { DatasetGeometryType } from '@globalfishingwatch/api-types'
+import {
+  DatasetGeometryToGeoJSONGeometry,
+  DatasetGeometryType,
+} from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getFileType, readBlobAs } from 'utils/files'
@@ -24,54 +28,46 @@ export async function getDatasetParsed(file: File, type: DatasetGeometryType): P
   if (!fileType) {
     throw new Error('File type not supported')
   }
-  if (fileType === 'Shapefile') {
-    try {
-      // TODO support multi-dataset shapefiles
-      //  - filter by type to show only relevant datasets
-      //  - process only selected dataset
-      const shpjs = await import('shpjs').then((module) => module.default)
+  try {
+    if (fileType === 'Shapefile') {
       const fileData = await readBlobAs(file, 'arrayBuffer')
-      const expandedShp = await shpjs(fileData)
-      if (Array.isArray(expandedShp)) {
-        // geojson = expandedShp[0]
-        // return t(
-        //   'errors.datasetShapefileMultiple',
-        //   'Shapefiles containing multiple components (multiple file names) are not supported yet'
-        // )
-      } else {
-        // if (
-        //   expandedShp.extensions &&
-        //   (!expandedShp.extensions.includes('.shp') ||
-        //     !expandedShp.extensions.includes('.shx') ||
-        //     !expandedShp.extensions.includes('.prj') ||
-        //     !expandedShp.extensions.includes('.dbf'))
-        // ) {
-        //   return t(
-        //     'errors.uploadShapefileComponents',
-        //     'Error reading shapefile: must contain files with *.shp, *.shx, *.dbf and *.prj extensions.'
-        //   )
-        // } else {
-        // }
-        return expandedShp
-      }
-    } catch (e: any) {
-      console.log('Error loading shapefile file', e)
-      throw new Error(e)
+      return shpToGeoJSON(fileData, type)
+    } else if (fileType === 'CSV') {
+      const fileText = await file.text()
+      // TODO: CHECK IF CSV CONTAINS HEADERS ?
+      const { data } = parse(fileText, {
+        download: false,
+        dynamicTyping: true,
+        header: true,
+      })
+      return data.slice(1) as DataList
+    } else if (fileType === 'KML') {
+      return kmlToGeoJSON(file, type)
     }
-  } else if (fileType === 'CSV') {
     const fileText = await file.text()
-    // TODO: CHECK IF CSV CONTAINS HEADERS ?
-    const { data } = parse(fileText, {
-      download: false,
-      dynamicTyping: true,
-      header: true,
-    })
-    return data.slice(1) as DataList
-  } else if (fileType === 'KML') {
-    return kmlToGeoJSON(file, type)
+    return validatedGeoJSON(fileText, type)
+  } catch (e: any) {
+    throw new Error(e)
   }
-  const fileText = await file.text()
-  return JSON.parse(fileText)
+}
+
+export const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) => {
+  const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
+    points: 'Point',
+    tracks: 'LineString',
+    polygons: 'Polygon',
+  }
+  const geoJSON = JSON.parse(fileText)
+  const validFeatures = geoJSON.features.filter((feature: Feature) => {
+    return feature.geometry.type.includes(normalizedTypes[type]!)
+  })
+  if (!validFeatures.length) {
+    throw new Error('No valid type')
+  }
+  return {
+    ...geoJSON,
+    features: validFeatures,
+  }
 }
 
 export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {

@@ -35,9 +35,11 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
       if (hasFeaturesOfDesiredType) {
         const { features } = kml(kmlDoc)
         results.push(...features)
+      } else {
+        throw new Error(`No ${type} found in this KML file`)
       }
-    } catch (e) {
-      console.log(e)
+    } catch (e: any) {
+      throw new Error(e)
     }
   }
 

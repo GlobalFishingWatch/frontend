@@ -1,4 +1,4 @@
-import { useState, useCallback, Fragment } from 'react'
+import { useState, useCallback, Fragment, SetStateAction, Dispatch } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -14,6 +14,7 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
 import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { FileType } from 'utils/files'
 import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
 import {
   useDatasetsAPI,
@@ -32,6 +33,11 @@ export type NewDatasetProps = {
   style?: DatasetUploadStyle
   onFileUpdate: (file: File) => void
   onConfirm: (datasetMetadata: DatasetMetadata, { isEditing, file }: OnConfirmParams) => void
+  onDatasetParseError: (
+    error: any,
+    fileType: FileType | undefined,
+    errorHandleCallback: Dispatch<SetStateAction<string>>
+  ) => void
 }
 
 export type DatasetMetadata = Partial<
@@ -112,6 +118,43 @@ function NewDataset() {
     [addDataviewFromDatasetToWorkspace, dispatchUpsertDataset, locationType, onClose, t]
   )
 
+  const onDatasetParseError: NewDatasetProps['onDatasetParseError'] = useCallback(
+    (error, fileType, errorHandleCallback) => {
+      if (fileType === 'Shapefile') {
+        errorHandleCallback(
+          t('error.uploadShapefile', {
+            error: error?.message,
+            defaultValue: `Error reading shapefile: ${error?.message}`,
+          })
+        )
+      } else if (fileType === 'CSV') {
+        errorHandleCallback(
+          t('error.uploadCsv', {
+            error: error?.message,
+            defaultValue: `Error reading CSV file: ${error?.message}`,
+          })
+        )
+      } else if (fileType === 'GeoJSON') {
+        errorHandleCallback(
+          t('error.uploadGeojson', {
+            error: error?.message,
+            defaultValue: `Error reading GeoJSON file: ${error?.message}`,
+          })
+        )
+      } else if (fileType === 'KML') {
+        errorHandleCallback(
+          t('error.uploadKML', {
+            error: error?.message,
+            defaultValue: `Error reading KML file: ${error?.message}`,
+          })
+        )
+      } else {
+        errorHandleCallback(t('error.uploadKML', 'There was an error uploading your dataset'))
+      }
+    },
+    [t]
+  )
+
   const getDatasetComponentByType = useCallback(
     (type: DatasetGeometryType) => {
       const DatasetComponent = {
@@ -125,10 +168,11 @@ function NewDataset() {
           dataset={dataset}
           onConfirm={onConfirmClick}
           onFileUpdate={onFileLoaded}
+          onDatasetParseError={onDatasetParseError}
         />
       )
     },
-    [dataset, onConfirmClick, onFileLoaded, rawFile]
+    [dataset, onConfirmClick, onDatasetParseError, onFileLoaded, rawFile]
   )
 
   return (

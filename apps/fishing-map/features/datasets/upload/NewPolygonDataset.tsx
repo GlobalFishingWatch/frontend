@@ -7,9 +7,15 @@ import {
   InputText,
   MultiSelect,
   MultiSelectOption,
+  Select,
+  SelectOption,
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetConfiguration,
+} from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -32,14 +38,16 @@ function NewPolygonDataset({
   file,
   dataset,
   onFileUpdate,
+  onDatasetParseError,
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [geojson, setGeojson] = useState<FeatureCollection<Polygon> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
-  const { fieldsOptions, getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
+  const { getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
     useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
@@ -49,18 +57,23 @@ function NewPolygonDataset({
   const handleRawData = useCallback(
     async (file: File) => {
       setProcessingData(true)
-      const data = await getDatasetParsed(file, 'polygons')
-      const fileType = getFileType(file)
-      const datasetMetadata = getPolygonsDatasetMetadata({
-        data,
-        name: getFileName(file),
-        sourceFormat: fileType,
-      })
-      setDatasetMetadata(datasetMetadata)
-      setGeojson(data as FeatureCollection<Polygon>)
-      setProcessingData(false)
+      try {
+        const data = await getDatasetParsed(file, 'polygons')
+        const fileType = getFileType(file)
+        const datasetMetadata = getPolygonsDatasetMetadata({
+          data,
+          name: getFileName(file),
+          sourceFormat: fileType,
+        })
+        setDatasetMetadata(datasetMetadata)
+        setGeojson(data as FeatureCollection<Polygon>)
+        setProcessingData(false)
+      } catch (e: any) {
+        setProcessingData(false)
+        onDatasetParseError(e, fileType, setDataParseError)
+      }
     },
-    [setDatasetMetadata]
+    [setDatasetMetadata, onDatasetParseError, fileType]
   )
 
   useEffect(() => {
@@ -86,6 +99,14 @@ function NewPolygonDataset({
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
         <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+      </div>
+    )
+  }
+
+  if (dataParseError) {
+    return (
+      <div className={styles.processingData}>
+        <p className={styles.errorMsg}>{dataParseError}</p>
       </div>
     )
   }
@@ -130,6 +151,28 @@ function NewPolygonDataset({
             'Select a property of each polygon to make it appear as its label'
           )}
         />
+        <NewDatasetField
+          datasetMetadata={datasetMetadata}
+          property="polygonColor"
+          label={t('datasetUpload.polygons.color', 'polygon color')}
+          onSelect={(selected) => {
+            const config = getDatasetConfiguration(dataset)
+            const valueProperties = config.valueProperties || []
+            setDatasetMetadataConfig({ polygonColor: selected.id })
+            setDatasetMetadataConfig({ valueProperties: [...valueProperties, selected.id] })
+          }}
+          onCleanClick={() => {
+            const config = getDatasetConfiguration(dataset)
+            const valueProperties = config.valueProperties
+            setDatasetMetadataConfig({ polygonColor: undefined })
+            setDatasetMetadataConfig({ valueProperties })
+          }}
+          editable={!loading}
+          infoTooltip={t(
+            'datasetUpload.polygons.colorHelp',
+            'Select a numeric property of each polygon to change its fill color'
+          )}
+        />
         <div className={styles.row}>
           <TimeFieldsGroup
             datasetMetadata={datasetMetadata}
@@ -138,6 +181,7 @@ function NewPolygonDataset({
           />
         </div>
         <MultiSelect
+          className={styles.input}
           label={t('datasetUpload.polygons.filters', 'Polygon filters')}
           placeholder={
             datasetFieldsAllowed.length > 0
