@@ -42,22 +42,27 @@ steps:
       - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID'
       - 'NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE=$_NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG_MODE'
 
-  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+  - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'
     waitFor: ['build-app']
-    args:
-      [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/port-labeler:$COMMIT_SHA',
-        '--cache=true',
-        '--build-arg',
-        'APP_NAME=port-labeler',
-        '--target',
-        'production',
-        '-f',
-        './apps/port-labeler/Dockerfile',
-        '-c',
-        './dist/apps/port-labeler',
-      ]
+    entrypoint: ''
+    env:
+      - 'REF_NAME=$REF_NAME'
+      - 'SHORT_SHA=$SHORT_SHA'
+    script: |
+      image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "port-labeler@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
+      /kaniko/executor \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/port-labeler:latest \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/port-labeler:$image_version \
+        --cache=true \
+        --build-arg \
+          APP_NAME=port-labeler \
+        --target \
+          production \
+        -f \
+          ./apps/port-labeler/Dockerfile \
+        -c \
+          ./dist/apps/port-labeler
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'

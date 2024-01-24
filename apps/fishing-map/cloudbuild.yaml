@@ -91,22 +91,28 @@ steps:
       - 'NEXT_PUBLIC_REPORT_DAYS_LIMIT=$_NEXT_PUBLIC_REPORT_DAYS_LIMIT'
       - 'NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID=$_NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID'
 
-  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+  - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'
     waitFor: ['build-app']
-    args:
-      [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
-        '--cache=true',
-        '--build-arg',
-        'APP_NAME=fishing-map',
-        '--target',
-        'production',
-        '-f',
-        './apps/fishing-map/Dockerfile',
-        '-c',
-        './dist/apps/fishing-map',
-      ]
+    entrypoint: ''
+    env:
+      - 'REF_NAME=$REF_NAME'
+      - 'SHORT_SHA=$SHORT_SHA'
+    script: |
+      image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "fishing-map@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
+      /kaniko/executor \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:latest \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$image_version \
+        --cache=true \
+        --build-arg \
+          APP_NAME=fishing-map \
+        --target \
+          production \
+        -f \
+          ./apps/fishing-map/Dockerfile \
+        -c \
+          ./dist/apps/fishing-map
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
