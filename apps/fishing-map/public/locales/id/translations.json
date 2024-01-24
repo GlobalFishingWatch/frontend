@@ -55,6 +55,14 @@
     "searchHelpExamples": "mis. \"bendera:tiongkok, penangkap:pukat\", \"-spanyol\", \"kargo|penumpang\"...",
     "searchPlaceholder": "Filter kapal berdasarkan nama, MMSI, bendera, atau jenis penangkap",
     "share": "Bagikan laporan",
+    "stats": {
+      "min": "Min",
+      "minHelp": "Minimum value of a cell contained or overlapping your area of interest",
+      "mean": "Avg",
+      "meanHelp": "Average value of the cells contained or overlapping your area of interest",
+      "max": "Maks",
+      "maxHelp": "Maximum value of a cell contained or overlapping your area of interest"
+    },
     "summary": "<strong>{{vessels}} kapal{{sources}} </strong> selama <strong>{{activityQuantity}} {{activityUnit}}</strong> melakukan <strong>{{activityType}}</strong> di area ini antara <strong>{{start}}</strong> dan <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> di area ini antara <strong>{{start}}</strong> dan <strong>{{end}}</strong>",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
