@@ -39,6 +39,7 @@ export const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMeta
     configuration: {
       configurationUI: {
         sourceFormat,
+        valueProperties: schema ? Object.keys(schema) : [],
       },
     } as DatasetConfiguration,
   } as Partial<Dataset>
@@ -86,8 +87,11 @@ export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: Extract
   return {
     ...baseMetadata,
     configuration: {
+      ...(baseMetadata?.configuration && baseMetadata.configuration),
       format: 'geojson',
       configurationUI: {
+        ...(baseMetadata?.configuration?.configurationUI &&
+          baseMetadata.configuration.configurationUI),
         sourceFormat,
         timestamp: guessedColumns.timestamp,
         geometryType: 'polygons' as DatasetGeometryType,
