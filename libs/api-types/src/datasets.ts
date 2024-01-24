@@ -105,6 +105,7 @@ export interface DatasetConfigurationUI {
   endTime?: string | number
   timeFilterType?: TimeFilterType
   polygonColor?: string
+  labelProperty?: string
   /**
    * Feature properties array to inform the API
    * which data is to be be added to tiles features
