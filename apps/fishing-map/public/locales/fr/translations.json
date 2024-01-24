@@ -55,6 +55,14 @@
     "searchHelpExamples": "par exemple \"pavillon:chine, engin:chalutier\", \"-espagne\", \"fret|passager\"...",
     "searchPlaceholder": "Filtrer les navires par nom, MMSI, pavillon ou type d'engin",
     "share": "Partager le rapport",
+    "stats": {
+      "min": "Min",
+      "minHelp": "Minimum value of a cell contained or overlapping your area of interest",
+      "mean": "Avg",
+      "meanHelp": "Average value of the cells contained or overlapping your area of interest",
+      "max": "Max",
+      "maxHelp": "Maximum value of a cell contained or overlapping your area of interest"
+    },
     "summary": "<strong>{{vessels}} navires{{sources}} </strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> d'<strong>{{activityType}}</strong> dans la zone située entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> dans la zone située entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
