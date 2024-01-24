@@ -55,6 +55,14 @@
     "searchHelpExamples": "ex: \"bandeira:china, petrecho:arrastões\", \"-espanha\", \"carga|passageiro\"...",
     "searchPlaceholder": "Filtre embarcações por nome, MMSI, bandeira ou tipo de petrecho",
     "share": "Compartilhar relatório",
+    "stats": {
+      "min": "Min",
+      "minHelp": "Minimum value of a cell contained or overlapping your area of interest",
+      "mean": "Avg",
+      "meanHelp": "Average value of the cells contained or overlapping your area of interest",
+      "max": "Máx",
+      "maxHelp": "Maximum value of a cell contained or overlapping your area of interest"
+    },
     "summary": "<strong>{{vessels}} embarcações{{sources}} </strong> tiveram <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> na área entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> na área entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
