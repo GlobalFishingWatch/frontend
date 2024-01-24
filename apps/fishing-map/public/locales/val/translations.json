@@ -55,6 +55,14 @@
     "searchHelpExamples": "crwdns80834:0crwdne80834:0",
     "searchPlaceholder": "crwdns80836:0crwdne80836:0",
     "share": "crwdns80838:0crwdne80838:0",
+    "stats": {
+      "min": "crwdns82424:0crwdne82424:0",
+      "minHelp": "crwdns82426:0crwdne82426:0",
+      "mean": "crwdns82428:0crwdne82428:0",
+      "meanHelp": "crwdns82430:0crwdne82430:0",
+      "max": "crwdns82432:0crwdne82432:0",
+      "maxHelp": "crwdns82434:0crwdne82434:0"
+    },
     "summary": "crwdns80840:0{{vessels}}crwdnd80840:0{{sources}}crwdnd80840:0{{activityQuantity}}crwdnd80840:0{{activityUnit}}crwdnd80840:0{{activityType}}crwdnd80840:0{{start}}crwdnd80840:0{{end}}crwdne80840:0",
     "summaryNoVessels": "crwdns80842:0{{sources}}crwdnd80842:0{{activityQuantity}}crwdnd80842:0{{activityUnit}}crwdnd80842:0{{activityType}}crwdnd80842:0{{start}}crwdnd80842:0{{end}}crwdne80842:0",
     "timeRangeTooLong": "crwdns80844:0crwdne80844:0",
