@@ -4,6 +4,7 @@ export const parseCoords = (
   latitude: number | string,
   longitude: number | string
 ): { latitude: number; longitude: number } | null => {
+  if (!latitude || !longitude) return null
   if (typeof latitude === 'number' && typeof longitude === 'number') {
     return { latitude, longitude }
   }
