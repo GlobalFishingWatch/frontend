@@ -19,6 +19,11 @@
   gap: var(--space-M);
 }
 
+.stats label {
+  display: flex;
+  align-items: center;
+}
+
 .marginTop {
   margin-top: var(--space-M);
 }

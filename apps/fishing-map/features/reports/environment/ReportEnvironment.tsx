@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
 import { useFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
@@ -56,15 +57,45 @@ function ReportEnvironment() {
             {!loading && min && mean && max && (
               <div className={cx(styles.stats, { [styles.marginTop]: isDynamic })}>
                 <div>
-                  <label>MIN</label>
+                  <label>
+                    {t('analysis.stats.min', 'Min')}{' '}
+                    <Tooltip
+                      content={t(
+                        'analysis.stats.minHelp',
+                        'Minimum value of a cell contained or overlapping your area of interest'
+                      )}
+                    >
+                      <IconButton icon="info" size="tiny" />
+                    </Tooltip>
+                  </label>
                   <p>{formatI18nNumber(min, { maximumFractionDigits: 2 })}</p>
                 </div>
                 <div>
-                  <label>MEAN</label>
+                  <label>
+                    {t('analysis.stats.mean', 'Avg')}{' '}
+                    <Tooltip
+                      content={t(
+                        'analysis.stats.meanHelp',
+                        'Average value of the cells contained or overlapping your area of interest'
+                      )}
+                    >
+                      <IconButton icon="info" size="tiny" />
+                    </Tooltip>
+                  </label>
                   <p>{formatI18nNumber(mean, { maximumFractionDigits: 2 })}</p>
                 </div>
                 <div>
-                  <label>MAX</label>
+                  <label>
+                    {t('analysis.stats.max', 'Max')}{' '}
+                    <Tooltip
+                      content={t(
+                        'analysis.stats.maxHelp',
+                        'Maximum value of a cell contained or overlapping your area of interest'
+                      )}
+                    >
+                      <IconButton icon="info" size="tiny" />
+                    </Tooltip>
+                  </label>
                   <p>{formatI18nNumber(max, { maximumFractionDigits: 2 })}</p>
                 </div>
               </div>
