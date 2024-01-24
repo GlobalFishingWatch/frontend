@@ -88,6 +88,12 @@ function NewDataset() {
   const onConfirmClick: NewDatasetProps['onConfirm'] = useCallback(
     async (datasetMetadata, { file, isEditing } = {} as OnConfirmParams) => {
       if (datasetMetadata) {
+        if (!file) {
+          setError(
+            `${t('errors.generic', 'Something went wrong, try again or contact:')} ${SUPPORT_EMAIL}`
+          )
+          return
+        }
         const { payload, error: createDatasetError } = await dispatchUpsertDataset({
           dataset: getFinalDatasetFromMetadata(datasetMetadata),
           file,
@@ -192,7 +198,9 @@ function NewDataset() {
       fullScreen={style === 'transparent'}
       onClose={onClose}
     >
-      {isGuestUser ? (
+      {error ? (
+        <div className={cx(styles.errorMsgContainer, styles.errorMsg)}>{error}</div>
+      ) : isGuestUser ? (
         <div
           className={styles.placeholder}
           onDrop={(e) => {

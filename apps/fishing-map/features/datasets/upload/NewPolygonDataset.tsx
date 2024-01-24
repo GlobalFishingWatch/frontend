@@ -7,15 +7,10 @@ import {
   InputText,
   MultiSelect,
   MultiSelectOption,
-  Select,
-  SelectOption,
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import {
-  getDatasetConfigurationProperty,
-  getDatasetConfiguration,
-} from '@globalfishingwatch/datasets-client'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'

@@ -115,7 +115,7 @@ export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): any {
   })
 }
 
-export function getFileFromGeojson(geojson: Feature | FeatureCollection) {
+export function getFileFromGeojson(geojson: FeatureCollection) {
   try {
     return new File([JSON.stringify(geojson)], 'file.json', {
       type: 'application/json',
