@@ -411,6 +411,8 @@
     "showError": "Show error",
     "switchAccount": "Switch account",
     "trackLoading": "There was an error loading the vessel track",
+    "trackCoordinateFields": "The fields selected to define point coordinates don't generate valid lines",
+    "trackSegmentIdFields": "Grouping by this field doesn't generate valid tracks",
     "uploadCsv": "Error reading CSV file: {{error}}",
     "uploadKML": "Error reading KML file: {{error}}",
     "uploadError": "There was an error uploading your dataset",

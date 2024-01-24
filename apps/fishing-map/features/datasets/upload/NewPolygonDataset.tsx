@@ -47,8 +47,7 @@ function NewPolygonDataset({
   const [loading, setLoading] = useState<boolean>(false)
   const [geojson, setGeojson] = useState<FeatureCollection<Polygon> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
-  const { getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
-    useDatasetMetadataOptions(datasetMetadata)
+  const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
   const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []

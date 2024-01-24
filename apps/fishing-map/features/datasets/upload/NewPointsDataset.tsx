@@ -381,7 +381,7 @@ function NewPointDataset({
       </Collapsable>
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
-          {/* {error && <span className={styles.errorMsg}>{error}</span>} */}
+          {error && <span className={styles.errorMsg}>{error}</span>}
           {/* // TODO update sections by categoreies */}
           <UserGuideLink section="uploadReference" />
         </div>
