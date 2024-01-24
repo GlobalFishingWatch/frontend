@@ -3,11 +3,8 @@ import { groupBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { DRAW_DATASET_SOURCE, Dataset } from '@globalfishingwatch/api-types'
-import {
-  DatasetConfigurationProperty,
-  getDatasetConfigurationProperty,
-} from '@globalfishingwatch/datasets-client'
+import { DRAW_DATASET_SOURCE, Dataset, DatasetConfigurationUI } from '@globalfishingwatch/api-types'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import styles from './Popup.module.css'
@@ -24,11 +21,10 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
   const { onReportClick, onDownloadClick } = useContextInteractions()
   const datasetId: string = features[0]?.datasetId || ''
   const dataset: Dataset = useSelector(selectDatasetById(datasetId))
-  const labelProperty: DatasetConfigurationProperty['labelProperty'] =
-    getDatasetConfigurationProperty({
-      dataset,
-      property: 'labelProperty',
-    })
+  const labelProperty: DatasetConfigurationUI['labelProperty'] = getDatasetConfigurationProperty({
+    dataset,
+    property: 'labelProperty',
+  })
   const featuresByType = groupBy(features, 'layerId')
   return (
     <Fragment>
