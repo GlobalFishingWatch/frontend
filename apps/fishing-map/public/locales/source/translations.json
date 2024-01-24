@@ -273,6 +273,15 @@
     "none": "None",
     "date": "Date",
     "dateRange": "Date Range",
+    "errors": {
+      "shapefile": {
+        "noPointData": "No point data found in the shapefile",
+        "noLineData": "No lineString data found in the shapefile",
+        "noPolygonData": "No polygon data found in the shapefile",
+        "invalidData": "Shapefile data does not have a valid geometry type",
+        "invalidMultipleFiles": "Shapefiles containing multiple components (multiple file names) are not supported yet"
+      }
+    },
     "points": {
       "coordinates": "Point coordinates",
       "filters": "Point filters",
