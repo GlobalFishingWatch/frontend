@@ -55,14 +55,6 @@
     "searchHelpExamples": "e.g. \"flag:china, gear:trawlers\", \"-spain\", \"cargo|passenger\"...",
     "searchPlaceholder": "Filter vessels by name, MMSI, flag or gear type",
     "share": "Share report",
-    "stats": {
-      "min": "Min",
-      "minHelp": "Minimum value of a cell contained or overlapping your area of interest",
-      "mean": "Avg",
-      "meanHelp": "Average value of the cells contained or overlapping your area of interest",
-      "max": "Max",
-      "maxHelp": "Maximum value of a cell contained or overlapping your area of interest"
-    },
     "summary": "<strong>{{vessels}} vessels{{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeRangeTooLong": "Reports are only allowed for time ranges up to one year",
