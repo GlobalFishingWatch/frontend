@@ -66,14 +66,18 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
   const guessedColumns = guessColumnsFromSchema(baseMetadata.schema)
   const isNotGeoStandard = data.type !== 'FeatureCollection'
+  const baseConfig = baseMetadata?.configuration
+  const baseConfigUI = baseMetadata?.configuration?.configurationUI
   return {
     ...baseMetadata,
     configuration: {
+      ...(baseConfig && baseConfig),
       format: 'geojson',
       configurationUI: {
-        sourceFormat,
+        ...(baseConfigUI && baseConfigUI),
         ...(isNotGeoStandard && { longitude: guessedColumns.longitude }),
         ...(isNotGeoStandard && { latitude: guessedColumns.latitude }),
+        sourceFormat,
         timestamp: guessedColumns.timestamp,
         geometryType: 'points' as DatasetGeometryType,
       },
@@ -84,14 +88,15 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
 export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
   const guessedColumns = guessColumnsFromSchema(baseMetadata.schema)
+  const baseConfig = baseMetadata?.configuration
+  const baseConfigUI = baseMetadata?.configuration?.configurationUI
   return {
     ...baseMetadata,
     configuration: {
-      ...(baseMetadata?.configuration && baseMetadata.configuration),
+      ...(baseConfig && baseConfig),
       format: 'geojson',
       configurationUI: {
-        ...(baseMetadata?.configuration?.configurationUI &&
-          baseMetadata.configuration.configurationUI),
+        ...(baseConfigUI && baseConfigUI),
         sourceFormat,
         timestamp: guessedColumns.timestamp,
         geometryType: 'polygons' as DatasetGeometryType,

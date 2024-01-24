@@ -3,7 +3,6 @@ import type {
   CircleLayerSpecification,
   FilterSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
 import { GeneratorType, MergedGeneratorConfig, UserPointsGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
@@ -29,6 +28,12 @@ class UserPointsGenerator {
 
     if (config.filter) {
       url.searchParams.set('filter', config.filter)
+    }
+
+    if (config.valueProperties) {
+      config.valueProperties.forEach((property, index) => {
+        url.searchParams.set(`properties[${index}]`, property)
+      })
     }
     // As user can modify the dataset, we need to avoid the cache
     url.searchParams.set('cache', 'false')

@@ -140,10 +140,9 @@ function NewPolygonDataset({
         />
         <NewDatasetField
           datasetMetadata={datasetMetadata}
-          property="propertyToInclude"
+          property="labelProperty"
           label={t('datasetUpload.polygons.name', 'Polygon name')}
           onSelect={(selected) => {
-            setDatasetMetadataConfig({ propertyToInclude: selected.id })
             setDatasetMetadataConfig({ labelProperty: selected.id })
           }}
           editable={!loading}
@@ -157,16 +156,10 @@ function NewPolygonDataset({
           property="polygonColor"
           label={t('datasetUpload.polygons.color', 'polygon color')}
           onSelect={(selected) => {
-            const config = getDatasetConfiguration(datasetMetadata)
-            const valueProperties = config.valueProperties || []
             setDatasetMetadataConfig({ polygonColor: selected.id })
-            setDatasetMetadataConfig({ valueProperties: [...valueProperties, selected.id] })
           }}
           onCleanClick={() => {
-            const config = getDatasetConfiguration(dataset)
-            const valueProperties = config.valueProperties
             setDatasetMetadataConfig({ polygonColor: undefined })
-            setDatasetMetadataConfig({ valueProperties })
           }}
           editable={!loading}
           infoTooltip={t(
