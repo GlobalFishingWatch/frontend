@@ -116,10 +116,10 @@ function NewPointDataset({
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
-        onDatasetParseError(e, fileType, setDataParseError)
+        onDatasetParseError(e, setDataParseError)
       }
     },
-    [setDatasetMetadata, setDataParseError, onDatasetParseError, fileType]
+    [setDatasetMetadata, setDataParseError, onDatasetParseError]
   )
 
   useEffect(() => {

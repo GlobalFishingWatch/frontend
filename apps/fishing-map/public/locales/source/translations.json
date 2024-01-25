@@ -273,6 +273,12 @@
     "none": "None",
     "date": "Date",
     "dateRange": "Date Range",
+    "time": "{{geometryType}} time",
+    "timeStart": "{{geometryType}} start",
+    "timeEnd": "{{geometryType}} end",
+    "timestampHelp": "Select the property that defines the date of each {{geometryType}} to filter them with the time bar",
+    "timerangeStartHelp": "Select the property that defines the start of the date range of each {{geometryType}} to filter them with the time bar",
+    "timerangeEndHelp": "Select the property that defines the start of the date range of each {{geometryType}} to filter them with the time bar",
     "errors": {
       "default": "There was an error uploading your dataset",
       "geoJSON": {
@@ -317,13 +323,7 @@
       "filtersHelp": "Select properties of the polygons to be able to dinamically filter them in the sidebar after",
       "name": "Polygon label",
       "nameHelp": "Select a property of each polygon to make it appear as its label",
-      "opacity": "Polygon opacity",
-      "time": "Polygon time",
-      "timeStart": "Polygon start",
-      "timeEnd": "Polygon end",
-      "timestampHelp": "Select the property that defines the date of each polygon to filter them with the time bar",
-      "timerangeStartHelp": "Select the property that defines the start of the date range of each polygon to filter them with the time bar",
-      "timerangeEndHelp": "Select the property that defines the start of the date range of each polygon to filter them with the time bar"
+      "opacity": "Polygon opacity"
     },
     "tracks": {
       "filters": "track filters",
