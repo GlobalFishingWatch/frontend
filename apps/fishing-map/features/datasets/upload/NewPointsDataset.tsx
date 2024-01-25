@@ -351,7 +351,10 @@ function NewPointDataset({
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
-              : t('datasetUpload.fieldMultiplePlaceholder', 'Select fields from your dataset')
+              : t(
+                  'datasetUpload.fieldMultiplePlaceholder',
+                  'Select one or multiple fields from your dataset'
+                )
           }
           direction="top"
           options={filtersFieldsOptions}

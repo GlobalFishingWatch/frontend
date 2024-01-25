@@ -314,7 +314,10 @@ function NewTrackDataset({
           placeholder={
             fieldsAllowed.length > 0
               ? fieldsAllowed.join(', ')
-              : t('datasetUpload.fieldMultiplePlaceholder', 'Select fields from your dataset')
+              : t(
+                  'datasetUpload.fieldMultiplePlaceholder',
+                  'Select one or multiple fields from your dataset'
+                )
           }
           direction="top"
           disabled={loading}
