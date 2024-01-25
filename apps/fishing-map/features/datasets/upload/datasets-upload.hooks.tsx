@@ -30,9 +30,9 @@ export function useDatasetMetadata() {
           ...meta,
           configuration: {
             ...meta?.configuration,
-            ...(idProperty && { idProperty }),
-            ...(valueProperties && { valueProperties }),
-            ...(propertyToInclude && { propertyToInclude }),
+            idProperty,
+            valueProperties,
+            propertyToInclude,
             configurationUI: {
               ...meta?.configuration?.configurationUI,
               ...(configurationUI as DatasetConfigurationUI),

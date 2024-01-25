@@ -267,6 +267,9 @@ function NewPointDataset({
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
+          onCleanClick={() => {
+            setDatasetMetadataConfig({ propertyToInclude: undefined })
+          }}
           infoTooltip={t(
             'datasetUpload.points.nameHelp',
             'Select a property of each point to make it appear as its label'

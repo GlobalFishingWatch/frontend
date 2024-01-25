@@ -139,6 +139,9 @@ function NewPolygonDataset({
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
+          onCleanClick={() => {
+            setDatasetMetadataConfig({ propertyToInclude: undefined })
+          }}
           editable={!loading}
           infoTooltip={t(
             'datasetUpload.polygons.nameHelp',
