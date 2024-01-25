@@ -9,10 +9,7 @@ export const pointsListToGeojson = (
 ) => {
   const features: Feature<Point>[] = data.flatMap((point, index) => {
     if (!point[latitude] || !point[longitude]) return []
-    let coords
-    try {
-      coords = parseCoords(point[latitude] as number, point[longitude] as number)
-    } catch (error) {}
+    const coords = parseCoords(point[latitude] as number, point[longitude] as number)
     if (coords) {
       return {
         type: 'Feature',

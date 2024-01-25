@@ -8,6 +8,10 @@ export const parseCoords = (
   if (typeof latitude === 'number' && typeof longitude === 'number') {
     return { latitude, longitude }
   }
-  const coords = convert(`${latitude},${longitude}`)
-  return { latitude: coords.decimalLatitude, longitude: coords.decimalLongitude }
+  try {
+    const coords = convert(`${latitude},${longitude}`)
+    return { latitude: coords.decimalLatitude, longitude: coords.decimalLongitude }
+  } catch (error: any) {
+    return null
+  }
 }

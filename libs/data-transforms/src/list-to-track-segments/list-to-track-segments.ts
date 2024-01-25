@@ -71,12 +71,7 @@ export const listToTrackSegments = ({
           const recordId = lineId && record[lineId] ? record[lineId] : NO_RECORD_ID
           if (record[latitude] && record[longitude]) {
             const { [latitude]: latitudeValue, [longitude]: longitudeValue, ...properties } = record
-            let coords
-            try {
-              coords = parseCoords(latitudeValue, longitudeValue)
-            } catch (error) {
-              console.warn(error)
-            }
+            const coords = parseCoords(latitudeValue, longitudeValue)
             if (coords) {
               const segmentProperties = {
                 ...(hasIdGroup && { [lineId]: properties[lineId] }),
