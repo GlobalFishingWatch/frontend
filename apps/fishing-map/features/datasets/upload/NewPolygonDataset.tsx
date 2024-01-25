@@ -140,7 +140,7 @@ function NewPolygonDataset({
             setDatasetMetadataConfig({ labelProperty: selected.id })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ propertyToInclude: undefined })
+            setDatasetMetadataConfig({ labelProperty: undefined })
           }}
           editable={!loading}
           infoTooltip={t(

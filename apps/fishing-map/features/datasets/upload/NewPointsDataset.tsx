@@ -268,7 +268,7 @@ function NewPointDataset({
             setDatasetMetadataConfig({ labelProperty: selected.id })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ propertyToInclude: undefined })
+            setDatasetMetadataConfig({ labelProperty: undefined })
           }}
           infoTooltip={t(
             'datasetUpload.points.nameHelp',
