@@ -108,10 +108,10 @@ function NewTrackDataset({
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
-        onDatasetParseError(e, fileType, setDataParseError)
+        onDatasetParseError(e, setDataParseError)
       }
     },
-    [setDatasetMetadata, onDatasetParseError, fileType]
+    [setDatasetMetadata, onDatasetParseError]
   )
 
   useEffect(() => {

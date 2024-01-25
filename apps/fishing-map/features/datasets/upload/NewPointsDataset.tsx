@@ -116,10 +116,10 @@ function NewPointDataset({
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
-        onDatasetParseError(e, fileType, setDataParseError)
+        onDatasetParseError(e, setDataParseError)
       }
     },
-    [setDatasetMetadata, setDataParseError, onDatasetParseError, fileType]
+    [setDatasetMetadata, setDataParseError, onDatasetParseError]
   )
 
   useEffect(() => {
@@ -261,14 +261,14 @@ function NewPointDataset({
         />
         <NewDatasetField
           datasetMetadata={datasetMetadata}
-          property="propertyToInclude"
+          property="labelProperty"
           label={t('datasetUpload.points.name', 'Point label')}
           editable={!loading}
           onSelect={(selected) => {
-            setDatasetMetadataConfig({ propertyToInclude: selected.id })
+            setDatasetMetadataConfig({ labelProperty: selected.id })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ propertyToInclude: undefined })
+            setDatasetMetadataConfig({ labelProperty: undefined })
           }}
           infoTooltip={t(
             'datasetUpload.points.nameHelp',

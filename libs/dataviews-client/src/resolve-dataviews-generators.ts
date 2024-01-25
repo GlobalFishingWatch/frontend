@@ -29,6 +29,7 @@ import type {
 } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import {
+  getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getDatasetRangeSteps,
 } from '@globalfishingwatch/datasets-client'
@@ -427,8 +428,9 @@ export function getGeneratorConfig(
         if (dataset?.source) {
           generator.attribution = getDatasetAttribution(dataset)
         }
-        if (dataset?.configuration?.valueProperties) {
-          generator.valueProperties = dataset?.configuration?.valueProperties
+        const config = getDatasetConfiguration(dataset)
+        if (config?.valueProperties) {
+          generator.valueProperties = config.valueProperties
         }
 
         const propertyToInclude = (dataset.configuration as EnviromentalDatasetConfiguration)

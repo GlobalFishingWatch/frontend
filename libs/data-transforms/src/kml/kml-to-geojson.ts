@@ -36,12 +36,25 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
         const { features } = kml(kmlDoc)
         results.push(...features)
       } else {
-        throw new Error(`No ${type} found in this KML file`)
+        invalidDataErrorHandler(type)
       }
     } catch (e: any) {
-      throw new Error(e)
+      throw new Error('datasetUpload.errors.kml.invalidData')
     }
   }
 
   return featureCollection(results) as FeatureCollection
+}
+
+const invalidDataErrorHandler = (type: DatasetGeometryType) => {
+  switch (type) {
+    case 'tracks':
+      throw new Error('datasetUpload.errors.kml.noLineData')
+    case 'points':
+      throw new Error('datasetUpload.errors.kml.noPointData')
+    case 'polygons':
+      throw new Error('datasetUpload.errors.kml.noPolygonData')
+    default:
+      throw new Error('datasetUpload.errors.kml.invalidData')
+  }
 }

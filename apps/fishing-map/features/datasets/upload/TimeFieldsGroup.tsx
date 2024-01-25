@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { capitalize } from 'lodash'
 import { t } from 'i18next'
 import { Choice, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
@@ -82,6 +83,13 @@ export const TimeFieldsGroup = ({
     setDatasetMetadataConfig({ endTime: undefined })
   }, [setDatasetMetadataConfig])
 
+  const translatedGeometryType =
+    geometryType === 'tracks'
+      ? t('dataset.typeTracks', 'Tracks')
+      : geometryType === 'polygons'
+        ? t('dataset.typePolygons', 'Polygons')
+        : t('dataset.typePoints', 'Points')
+
   return (
     <div className={styles.row}>
       <Choice
@@ -102,33 +110,27 @@ export const TimeFieldsGroup = ({
           options={fieldsOptions}
           label={
             timeFilterType === 'date'
-              ? geometryType === 'polygons'
-                ? t('datasetUpload.polygons.time', 'Polygon date')
-                : t('datasetUpload.points.time', 'Point date')
-              : geometryType === 'polygons'
-                ? t('datasetUpload.polygons.timeStart', 'Polygon start')
-                : t('datasetUpload.points.timeStart', 'Point start')
+              ? t('datasetUpload.time', {
+                  geometryType: translatedGeometryType,
+                  defaultValue: `${translatedGeometryType} time`,
+                })
+              : t('datasetUpload.timeStart', {
+                  geometryType: translatedGeometryType,
+                  defaultValue: `${translatedGeometryType} start`,
+                })
           }
           infoTooltip={
-            timeFilterType === 'dateRange'
-              ? geometryType === 'polygons'
-                ? t(
-                    'datasetUpload.polygons.timestampHelp',
-                    'Select the property that defines the date of each polygon to filter them with the time bar'
-                  )
-                : t(
-                    'datasetUpload.points.timestampHelp',
-                    'Select the property that defines the date of each point to filter them with the time bar'
-                  )
-              : geometryType === 'polygons'
-                ? t(
-                    'datasetUpload.polygons.timerangeStartHelp',
-                    'Select the property that defines the start of the date range of each polygon to filter them with the time bar'
-                  )
-                : t(
-                    'datasetUpload.points.timerangeStartHelp',
-                    'Select the property that defines the start of the date range of each point to filter them with the time bar'
-                  )
+            timeFilterType === 'date'
+              ? t('datasetUpload.timestampHelp', {
+                  geometryType: translatedGeometryType,
+                  defaultValue: `Select the property that defines the date of each
+                   ${translatedGeometryType} to filter them with the time bar`,
+                })
+              : t('datasetUpload.timerangeStartHelp', {
+                  geometryType: translatedGeometryType,
+                  defaultValue: `Select the property that defines the start of the date range of
+                   each ${translatedGeometryType} to filter them with the time bar`,
+                })
           }
           disabled={
             disabled ||
@@ -163,22 +165,14 @@ export const TimeFieldsGroup = ({
               })?.toString()
             ) as SelectOption
           }
-          label={
-            geometryType === 'polygons'
-              ? t('datasetUpload.polygons.timeEnd', 'Polygon end')
-              : t('datasetUpload.points.timeStart', 'Point end')
-          }
-          infoTooltip={
-            geometryType === 'polygons'
-              ? t(
-                  'datasetUpload.polygons.timerangeEndHelp',
-                  'Select the property that defines the end of the date range of each polygon to filter them with the time bar'
-                )
-              : t(
-                  'datasetUpload.points.timerangeEndHelp',
-                  'Select the property that defines the end of the date range of each point to filter them with the time bar'
-                )
-          }
+          label={t('datasetUpload.timeEnd', {
+            geometryType: translatedGeometryType,
+            defaultValue: `${translatedGeometryType} end`,
+          })}
+          infoTooltip={t('datasetUpload.timerangeEndHelp', {
+            geometryType: translatedGeometryType,
+            defaultValue: `Select the property that defines the start of the date range of each ${translatedGeometryType} to filter them with the time bar`,
+          })}
           onSelect={onEndSelect}
           onCleanClick={onEndClean}
           disabled={disabled}

@@ -150,7 +150,8 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    */
   disableInteraction?: boolean
   /**
-   * Properties to be used as value
+   * Properties added to generated url search params
+   * These properties would be available on the tile features
    */
   valueProperties?: string[]
 }
@@ -209,6 +210,11 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    * Disable interaction (needed when user uploaded a non-polygon layer)
    */
   disableInteraction?: boolean
+  /**
+   * Properties added to generated url search params
+   * These properties would be available on the tile features
+   */
+  valueProperties?: string[]
 }
 
 /**

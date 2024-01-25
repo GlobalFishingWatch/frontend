@@ -67,7 +67,7 @@ class UserContextGenerator {
       const valueExpression: ExpressionSpecification = [
         'to-number',
         // feature properties are set as lowercase on the backend
-        ['get', config.pickValueAt?.toLowerCase() || 'value'],
+        ['get', config.pickValueAt || 'value'],
       ]
       const colorRamp: DataDrivenPropertyValueSpecification<FormattedSpecification> = [
         'interpolate',
@@ -90,7 +90,6 @@ class UserContextGenerator {
           group: Group.CustomLayer,
           datasetId: config.datasetId,
           uniqueFeatureInteraction: true,
-          valueProperties: config.valueProperties,
           legend: {
             type: 'colorramp',
             ...config.metadata?.legend,

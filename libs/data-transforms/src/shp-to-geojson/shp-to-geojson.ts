@@ -16,18 +16,29 @@ export const shpToGeoJSON = async (data: string, type: DatasetGeometryType) => {
       (shp) => shp.features?.[0].geometry.type === normalizedTypes[type]
     )
     if (!matchedTypeCollections.length) {
-      throw new Error(`No ${type} data found in the shapefile`)
+      return invalidDataErrorHandler(type)
     } else if (matchedTypeCollections.length > 1) {
-      throw new Error(
-        'Shapefiles containing multiple components (multiple file names) are not supported yet'
-      )
+      throw new Error('datasetUpload.errors.shapefile.invalidMultipleFiles')
     } else {
       return matchedTypeCollections[0]
     }
   } else {
     if (expandedShp.features?.[0].geometry.type !== normalizedTypes[type]) {
-      throw new Error(`No ${type} data found in the shapefile`)
+      invalidDataErrorHandler(type)
     }
     return expandedShp
+  }
+}
+
+const invalidDataErrorHandler = (type: DatasetGeometryType) => {
+  switch (type) {
+    case 'tracks':
+      throw new Error('datasetUpload.errors.shapefile.noLineData')
+    case 'points':
+      throw new Error('datasetUpload.errors.shapefile.noPointData')
+    case 'polygons':
+      throw new Error('datasetUpload.errors.shapefile.noPolygonData')
+    default:
+      throw new Error('datasetUpload.errors.shapefile.invalidData')
   }
 }

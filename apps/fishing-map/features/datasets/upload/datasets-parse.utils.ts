@@ -47,7 +47,7 @@ export async function getDatasetParsed(file: File, type: DatasetGeometryType): P
     const fileText = await file.text()
     return validatedGeoJSON(fileText, type)
   } catch (e: any) {
-    throw new Error(e)
+    throw new Error('datasetUpload.errors.default')
   }
 }
 
@@ -62,7 +62,7 @@ export const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) =>
     return feature.geometry.type.includes(normalizedTypes[type]!)
   })
   if (!validFeatures.length) {
-    throw new Error('No valid type')
+    throw new Error('datasetUpload.errors.geoJSON.noValidFeatures')
   }
   return {
     ...geoJSON,
