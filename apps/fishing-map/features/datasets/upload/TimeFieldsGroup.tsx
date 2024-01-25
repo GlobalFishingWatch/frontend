@@ -83,6 +83,13 @@ export const TimeFieldsGroup = ({
     setDatasetMetadataConfig({ endTime: undefined })
   }, [setDatasetMetadataConfig])
 
+  const translatedGeometryType =
+    geometryType === 'tracks'
+      ? t('dataset.typeTracks', 'Tracks')
+      : geometryType === 'polygons'
+        ? t('dataset.typePolygons', 'Polygons')
+        : t('dataset.typePoints', 'Points')
+
   return (
     <div className={styles.row}>
       <Choice
@@ -104,25 +111,25 @@ export const TimeFieldsGroup = ({
           label={
             timeFilterType === 'date'
               ? t('datasetUpload.time', {
-                  geometryType: capitalize(geometryType),
-                  defaultValue: `${geometryType} time`,
+                  geometryType: translatedGeometryType,
+                  defaultValue: `${translatedGeometryType} time`,
                 })
               : t('datasetUpload.timeStart', {
-                  geometryType: capitalize(geometryType),
-                  defaultValue: `${geometryType} start`,
+                  geometryType: translatedGeometryType,
+                  defaultValue: `${translatedGeometryType} start`,
                 })
           }
           infoTooltip={
             timeFilterType === 'date'
               ? t('datasetUpload.timestampHelp', {
-                  geometryType,
+                  geometryType: translatedGeometryType,
                   defaultValue: `Select the property that defines the date of each
-                   ${geometryType} to filter them with the time bar`,
+                   ${translatedGeometryType} to filter them with the time bar`,
                 })
               : t('datasetUpload.timerangeStartHelp', {
-                  geometryType,
+                  geometryType: translatedGeometryType,
                   defaultValue: `Select the property that defines the start of the date range of
-                   each ${geometryType} to filter them with the time bar`,
+                   each ${translatedGeometryType} to filter them with the time bar`,
                 })
           }
           disabled={
@@ -159,12 +166,12 @@ export const TimeFieldsGroup = ({
             ) as SelectOption
           }
           label={t('datasetUpload.timeEnd', {
-            geometryType: capitalize(geometryType),
-            defaultValue: `${geometryType} end`,
+            geometryType: translatedGeometryType,
+            defaultValue: `${translatedGeometryType} end`,
           })}
           infoTooltip={t('datasetUpload.timerangeEndHelp', {
-            geometryType,
-            defaultValue: `Select the property that defines the start of the date range of each ${geometryType} to filter them with the time bar`,
+            geometryType: translatedGeometryType,
+            defaultValue: `Select the property that defines the start of the date range of each ${translatedGeometryType} to filter them with the time bar`,
           })}
           onSelect={onEndSelect}
           onCleanClick={onEndClean}
