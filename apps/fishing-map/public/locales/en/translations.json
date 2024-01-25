@@ -272,7 +272,7 @@
     "datasetDescription": "Dataset description",
     "datasetName": "Dataset name",
     "fieldPlaceholder": "Select a field from your dataset",
-    "fieldMultiplePlaceholder": "Select fields from your dataset",
+    "fieldMultiplePlaceholder": "Select one or multiple fields from your dataset",
     "fieldNumericPlaceholder": "Select a numeric field from your dataset",
     "optionalFields": "Optional fields",
     "processingData": "Processing data...",
@@ -316,7 +316,7 @@
     },
     "tracks": {
       "filters": "track filters",
-      "filtersHelp": "Select properties of the lines or their points to be able to dinamically filter them in the sidebar after",
+      "filtersHelp": "Select properties of the lines or their points to be able to dynamically filter them in the sidebar after",
       "lineId": "Individual line ids",
       "lineIdHelp": "Select the property of your dataset that defines which track is each point part of (e.g. each vessel or animal)",
       "segmentId": "Individual segment ids",
