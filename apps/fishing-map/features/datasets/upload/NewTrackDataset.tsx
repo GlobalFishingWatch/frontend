@@ -46,7 +46,6 @@ function NewTrackDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [dataParseError, setDataParseError] = useState<string>('')
-  const [idGroupError, setIdGroupError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataList | undefined>()
@@ -129,11 +128,20 @@ function NewTrackDataset({
       const geojson = getTrackFromList(sourceData, datasetMetadata)
       setGeojson(geojson)
       if (!geojson.features.some((f) => f.geometry.coordinates?.[0]?.length >= 2)) {
-        setIdGroupError(
-          t('errors.trackSegmentIdGrup', "Grouping by this field doesn't generate valid tracks")
-        )
+        if (lineIdProperty || segmentIdProperty) {
+          setError(
+            t('errors.trackSegmentIdFields', "Grouping by this field doesn't generate valid lines")
+          )
+        } else {
+          setError(
+            t(
+              'errors.trackCoordinateFields',
+              "The fields selected to define point coordinates don't generate valid lines"
+            )
+          )
+        }
       } else {
-        setIdGroupError('')
+        setError('')
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -306,7 +314,10 @@ function NewTrackDataset({
           placeholder={
             fieldsAllowed.length > 0
               ? fieldsAllowed.join(', ')
-              : t('datasetUpload.fieldMultiplePlaceholder', 'Select fields from your dataset')
+              : t(
+                  'datasetUpload.fieldMultiplePlaceholder',
+                  'Select one or multiple fields from your dataset'
+                )
           }
           direction="top"
           disabled={loading}
@@ -341,14 +352,13 @@ function NewTrackDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          {idGroupError && <span className={styles.errorMsg}>{idGroupError}</span>}
           {/* // TODO update sections by categoreies */}
           <UserGuideLink section="uploadReference" />
         </div>
         <Button
           className={styles.saveBtn}
           onClick={onConfirmClick}
-          disabled={!datasetMetadata || error !== '' || idGroupError !== ''}
+          disabled={!datasetMetadata || error !== ''}
           loading={loading}
         >
           {t('common.confirm', 'Confirm') as string}

@@ -32,7 +32,7 @@ export const getFieldSchema = (
     }
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {
-        const isDate = values.some((d) => !isNaN(Date.parse(d)))
+        const isDate = values.every((d) => !isNaN(Date.parse(d)))
         const isCoordinate = values.some((d) => {
           try {
             const coords = parseCoords(d, d)

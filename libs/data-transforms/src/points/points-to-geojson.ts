@@ -8,7 +8,11 @@ export const pointsListToGeojson = (
   { latitude, longitude, id, startTime, endTime }: PointColumns
 ) => {
   const features: Feature<Point>[] = data.flatMap((point, index) => {
-    const coords = parseCoords(point[latitude] as number, point[longitude] as number)
+    if (!point[latitude] || !point[longitude]) return []
+    let coords
+    try {
+      coords = parseCoords(point[latitude] as number, point[longitude] as number)
+    } catch (error) {}
     if (coords) {
       return {
         type: 'Feature',

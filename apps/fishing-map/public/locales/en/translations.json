@@ -291,6 +291,8 @@
       "timerangeEndHelp": "Select the property that defines the start of the date range of each point to filter them with the time bar"
     },
     "polygons": {
+      "color": "Polygon color",
+      "colorHelp": "Select a numeric property of each polygon to change its fill color",
       "coordinates": "Polygon coordinates",
       "filters": "Polygon filters",
       "filtersHelp": "Select properties of the polygons to be able to dinamically filter them in the sidebar after",
@@ -402,6 +404,7 @@
     "switchAccount": "Switch account",
     "trackLoading": "There was an error loading the vessel track.",
     "uploadCsv": "Error reading CSV file: {{error}}",
+    "uploadKML": "Error reading KML file: {{error}}",
     "uploadError": "There was an error uploading your dataset.",
     "uploadGeojson": "Error reading GeoJSON file: {{error}}",
     "uploadShapefile": "Error reading shapefile: {{error}}",

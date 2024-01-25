@@ -16,12 +16,10 @@ import {
   BASEMAP_LABELS_DATAVIEW_SLUG,
   BASEMAP_DATAVIEW_INSTANCE_ID,
   FIXED_SAR_INFRASTRUCTURE,
-  TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
-import { Group } from '../../../../libs/layer-composer/src/types'
 
 const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
@@ -106,28 +104,6 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         visible: false,
       },
-    },
-    {
-      id: 'bathymetry-heatmap',
-      dataviewId: TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
-      config: {
-        color: 'bathymetry',
-        colorRamp: 'bathymetry',
-        group: Group.Bathymetry,
-        maxZoom: 8,
-      },
-      datasetsConfig: [
-        {
-          params: [
-            {
-              id: 'type',
-              value: 'heatmap',
-            },
-          ],
-          endpoint: '4wings-tiles',
-          datasetId: 'public-global-bathymetry',
-        },
-      ],
     },
     {
       id: 'context-layer-graticules',

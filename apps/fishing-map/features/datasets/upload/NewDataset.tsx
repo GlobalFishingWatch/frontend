@@ -158,7 +158,9 @@ function NewDataset() {
       fullScreen={style === 'transparent'}
       onClose={onClose}
     >
-      {isGuestUser ? (
+      {error ? (
+        <div className={cx(styles.errorMsgContainer, styles.errorMsg)}>{error}</div>
+      ) : isGuestUser ? (
         <div
           className={styles.placeholder}
           onDrop={(e) => {
