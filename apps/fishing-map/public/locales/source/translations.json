@@ -274,12 +274,22 @@
     "date": "Date",
     "dateRange": "Date Range",
     "errors": {
+      "default": "There was an error uploading your dataset",
+      "geoJSON": {
+        "noValidFeatures": "No valid feature types found in this geoJSON file"
+      },
       "shapefile": {
         "noPointData": "No point data found in the shapefile",
         "noLineData": "No lineString data found in the shapefile",
         "noPolygonData": "No polygon data found in the shapefile",
         "invalidData": "Shapefile data does not have a valid geometry type",
         "invalidMultipleFiles": "Shapefiles containing multiple components (multiple file names) are not supported yet"
+      },
+      "kml": {
+        "noPointData": "No point data found in the KML",
+        "noLineData": "No lineString data found in the KML",
+        "noPolygonData": "No polygon data found in the KML",
+        "invalidData": "KML data does not have a valid geometry type"
       }
     },
     "points": {

@@ -33,11 +33,7 @@ export type NewDatasetProps = {
   style?: DatasetUploadStyle
   onFileUpdate: (file: File) => void
   onConfirm: (datasetMetadata: DatasetMetadata, { isEditing, file }: OnConfirmParams) => void
-  onDatasetParseError: (
-    error: any,
-    fileType: FileType | undefined,
-    errorHandleCallback: Dispatch<SetStateAction<string>>
-  ) => void
+  onDatasetParseError: (error: any, errorHandleCallback: Dispatch<SetStateAction<string>>) => void
 }
 
 export type DatasetMetadata = Partial<
@@ -119,38 +115,8 @@ function NewDataset() {
   )
 
   const onDatasetParseError: NewDatasetProps['onDatasetParseError'] = useCallback(
-    (error, fileType, errorHandleCallback) => {
-      if (fileType === 'Shapefile') {
-        errorHandleCallback(
-          t('error.uploadShapefile', {
-            error: error?.message,
-            defaultValue: `Error reading shapefile: ${error?.message}`,
-          })
-        )
-      } else if (fileType === 'CSV') {
-        errorHandleCallback(
-          t('error.uploadCsv', {
-            error: error?.message,
-            defaultValue: `Error reading CSV file: ${error?.message}`,
-          })
-        )
-      } else if (fileType === 'GeoJSON') {
-        errorHandleCallback(
-          t('error.uploadGeojson', {
-            error: error?.message,
-            defaultValue: `Error reading GeoJSON file: ${error?.message}`,
-          })
-        )
-      } else if (fileType === 'KML') {
-        errorHandleCallback(
-          t('error.uploadKML', {
-            error: error?.message,
-            defaultValue: `Error reading KML file: ${error?.message}`,
-          })
-        )
-      } else {
-        errorHandleCallback(t('error.uploadKML', 'There was an error uploading your dataset'))
-      }
+    (error, errorHandleCallback) => {
+      errorHandleCallback(t(`${error?.message}`, 'There was an error uploading your dataset'))
     },
     [t]
   )
