@@ -53,7 +53,7 @@ export const selectDatasetsExtent = createSelector(
 export const selectAvailableStart = createSelector([selectDatasetsExtent], (datasetsExtent) => {
   const defaultAvailableStartMs = new Date(AVAILABLE_START).getTime()
   const availableStart = new Date(
-    Math.min(defaultAvailableStartMs, datasetsExtent.extentStart as number)
+    Math.min(defaultAvailableStartMs, (datasetsExtent.extentStart as number) || Infinity)
   ).toISOString()
   return availableStart
 })
@@ -61,7 +61,7 @@ export const selectAvailableStart = createSelector([selectDatasetsExtent], (data
 export const selectAvailableEnd = createSelector([selectDatasetsExtent], (datasetsExtent) => {
   const defaultAvailableEndMs = new Date(AVAILABLE_END).getTime()
   const availableEndMs = new Date(
-    Math.max(defaultAvailableEndMs, datasetsExtent.extentEnd as number)
+    Math.max(defaultAvailableEndMs, (datasetsExtent.extentEnd as number) || -Infinity)
   ).toISOString()
   return availableEndMs
 })

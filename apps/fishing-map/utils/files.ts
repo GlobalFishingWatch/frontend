@@ -7,37 +7,30 @@ import {
 
 export function getFileName(file: File): string {
   const name =
-    file.name.lastIndexOf('.') > 0 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name
+    file.name.lastIndexOf('.') > 0 ? file.name.slice(0, file.name.lastIndexOf('.')) : file.name
   return capitalize(lowerCase(name))
 }
 
 export type FileType = DatasetConfigurationSourceFormat
-export type MimeExtention =
-  | '.json'
-  | '.geojson'
-  | '.zip'
-  | '.csv'
-  | '.dsv'
-  | '.tsv'
-  | '.kml'
-  | '.kmz'
+export type MimeExtention = '.json' | '.geojson' | '.zip' | '.csv' | '.tsv' | '.kml' | '.kmz'
 export type MimeType =
+  | 'application/json'
   | 'application/geo+json'
   | 'application/zip'
   | 'text/csv'
-  | 'text/dsv'
+  | 'text/comma-separated-values'
   | 'text/tsv'
+  | 'text/tab-separated-values'
   | 'application/vnd.google-earth.kml+xml'
   | 'application/vnd.google-earth.kmz'
-export const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType> = {
-  '.json': 'application/geo+json',
-  '.geojson': 'application/geo+json',
-  '.zip': 'application/zip',
-  '.csv': 'text/csv',
-  '.dsv': 'text/dsv',
-  '.tsv': 'text/tsv',
-  '.kml': 'application/vnd.google-earth.kml+xml',
-  '.kmz': 'application/vnd.google-earth.kmz',
+export const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType[]> = {
+  '.json': ['application/json'],
+  '.geojson': ['application/geo+json'],
+  '.zip': ['application/zip'],
+  '.csv': ['text/csv', 'text/comma-separated-values'],
+  '.tsv': ['text/tsv', 'text/tab-separated-values'],
+  '.kml': ['application/vnd.google-earth.kml+xml'],
+  '.kmz': ['application/vnd.google-earth.kmz'],
 }
 
 export type DatasetGeometryTypesSupported = Extract<
@@ -63,7 +56,7 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
     icon: 'geojson',
   },
   Shapefile: { id: 'Shapefile', files: ['.zip'], icon: 'zip' },
-  CSV: { id: 'CSV', files: ['.csv', '.tsv', '.dsv'], icon: 'csv' },
+  CSV: { id: 'CSV', files: ['.csv', '.tsv'], icon: 'csv' },
   KML: { id: 'KML', files: ['.kml', '.kmz'], icon: 'kml' },
 }
 
@@ -84,11 +77,13 @@ export function getFilesAcceptedByMime(fileTypes: FileType[]) {
   const fileAcceptedByMime = filesAcceptedExtensions.reduce(
     (acc, extension) => {
       const mime = MIME_TYPES_BY_EXTENSION[extension]
-      if (!acc[mime]) {
-        acc[mime] = [extension]
-      } else {
-        acc[mime].push(extension)
-      }
+      mime.forEach((m) => {
+        if (!acc[m]) {
+          acc[m] = [extension]
+        } else {
+          acc[m].push(extension)
+        }
+      })
       return acc
     },
     {} as Record<MimeType, MimeExtention[]>
@@ -120,8 +115,12 @@ export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): any {
   })
 }
 
-export function getFileFromGeojson(geojson: Feature | FeatureCollection) {
-  return new File([JSON.stringify(geojson)], 'file.json', {
-    type: 'application/json',
-  })
+export function getFileFromGeojson(geojson: FeatureCollection) {
+  try {
+    return new File([JSON.stringify(geojson)], 'file.json', {
+      type: 'application/json',
+    })
+  } catch (error) {
+    console.warn(error)
+  }
 }

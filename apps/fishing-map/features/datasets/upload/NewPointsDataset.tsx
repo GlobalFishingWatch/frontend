@@ -267,6 +267,9 @@ function NewPointDataset({
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
+          onCleanClick={() => {
+            setDatasetMetadataConfig({ propertyToInclude: undefined })
+          }}
           infoTooltip={t(
             'datasetUpload.points.nameHelp',
             'Select a property of each point to make it appear as its label'
@@ -348,7 +351,10 @@ function NewPointDataset({
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
-              : t('datasetUpload.fieldMultiplePlaceholder', 'Select fields from your dataset')
+              : t(
+                  'datasetUpload.fieldMultiplePlaceholder',
+                  'Select one or multiple fields from your dataset'
+                )
           }
           direction="top"
           options={filtersFieldsOptions}
@@ -381,7 +387,7 @@ function NewPointDataset({
       </Collapsable>
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
-          {/* {error && <span className={styles.errorMsg}>{error}</span>} */}
+          {error && <span className={styles.errorMsg}>{error}</span>}
           {/* // TODO update sections by categoreies */}
           <UserGuideLink section="uploadReference" />
         </div>

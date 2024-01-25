@@ -7,15 +7,10 @@ import {
   InputText,
   MultiSelect,
   MultiSelectOption,
-  Select,
-  SelectOption,
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import {
-  getDatasetConfigurationProperty,
-  getDatasetConfiguration,
-} from '@globalfishingwatch/datasets-client'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -47,8 +42,7 @@ function NewPolygonDataset({
   const [loading, setLoading] = useState<boolean>(false)
   const [geojson, setGeojson] = useState<FeatureCollection<Polygon> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
-  const { getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
-    useDatasetMetadataOptions(datasetMetadata)
+  const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
   const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
@@ -145,6 +139,9 @@ function NewPolygonDataset({
           onSelect={(selected) => {
             setDatasetMetadataConfig({ propertyToInclude: selected.id })
           }}
+          onCleanClick={() => {
+            setDatasetMetadataConfig({ propertyToInclude: undefined })
+          }}
           editable={!loading}
           infoTooltip={t(
             'datasetUpload.polygons.nameHelp',
@@ -186,7 +183,10 @@ function NewPolygonDataset({
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
-              : t('datasetUpload.fieldMultiplePlaceholder', 'Select fields from your dataset')
+              : t(
+                  'datasetUpload.fieldMultiplePlaceholder',
+                  'Select one or multiple fields from your dataset'
+                )
           }
           direction="top"
           options={filtersFieldsOptions}
