@@ -288,7 +288,6 @@ export const useMapClick = (
   const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
     (event: MapLayerMouseEvent) => {
-      console.log(event.features)
       cleanFeatureState('click')
       if (!clickCallback) return
       const interactionEvent: InteractionEvent = {
