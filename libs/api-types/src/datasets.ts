@@ -78,6 +78,10 @@ export enum DatasetStatus {
 }
 
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
+export type DatasetGeometryToGeoJSONGeometry = {
+  [Property in DatasetGeometryType]: string
+}
+export type TimeFilterType = 'date' | 'dateRange'
 
 export interface DatasetDocumentation {
   type?: string
@@ -87,7 +91,33 @@ export interface DatasetDocumentation {
   provider?: string
 }
 
+export type DatasetConfigurationSourceFormat = 'GeoJSON' | 'Shapefile' | 'CSV' | 'KML'
+export interface DatasetConfigurationUI {
+  latitude?: string
+  longitude?: string
+  timestamp?: string
+  sourceFormat?: DatasetConfigurationSourceFormat
+  pointName?: string
+  pointSize?: string
+  maxPointSize?: number
+  minPointSize?: number
+  startTime?: string | number
+  endTime?: string | number
+  timeFilterType?: TimeFilterType
+  polygonColor?: string
+  labelProperty?: string
+  /**
+   * Feature properties array to inform the API
+   * which data is to be be added to tiles features
+   */
+  valueProperties?: string[]
+  geometryType?: DatasetGeometryType
+  lineId?: string | number
+  segmentId?: string | number
+}
+
 export interface DatasetConfiguration {
+  id?: string
   index?: string
   filePath?: string
   srid?: number
@@ -99,9 +129,18 @@ export interface DatasetConfiguration {
   documentation?: DatasetDocumentation
   fields?: string[]
   idProperty?: string
+  /**
+   * Feature properties array to inform the API
+   * which data is to be be added to tiles features
+   */
   valueProperties?: string[]
+  propertyToInclude?: string
+  min?: number
+  max?: number
+  intervals?: string[]
+  disableInteraction?: boolean
   apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
-  [key: string]: unknown
+  configurationUI?: DatasetConfigurationUI
 }
 
 export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
@@ -120,15 +159,23 @@ export type RelatedDataset = {
   type: DatasetTypes
 }
 
-export type DatasetSchemaType = 'range' | 'number' | 'string' | 'boolean' | 'array'
+export type DatasetSchemaType =
+  | 'range'
+  | 'number'
+  | 'string'
+  | 'boolean'
+  | 'array'
+  | 'coordinate'
+  | 'timestamp'
 
+export type DatasetSchemaItemEnum = (string | number | boolean)[]
 export type DatasetSchemaItem = {
   type: DatasetSchemaType
-  maxLength: number
-  minLength: number
-  enum: string[]
-  min: number
-  max: number
+  enum?: DatasetSchemaItemEnum
+  maxLength?: number
+  minLength?: number
+  min?: number
+  max?: number
   stats?: boolean
   unit?: string
   singleSelection?: boolean

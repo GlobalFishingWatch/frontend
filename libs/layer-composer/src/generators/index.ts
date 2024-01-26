@@ -6,8 +6,9 @@ import BasemapLabelsGenerator from './basemap-labels/basemap-labels'
 import CartoGenerator, { CARTO_FISHING_MAP_API } from './carto-polygons/carto-polygons'
 import ContextGenerator from './context/context'
 import GLStyleGenerator from './gl/gl'
-import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
 import HeatmapGenerator from './heatmap/heatmap'
+import HeatmapStaticGenerator from './heatmap/heatmap-static'
+import HeatmapAnimatedGenerator from './heatmap/heatmap-animated'
 import PolygonsGenerator from './polygons/polygons'
 import RulersGenerator from './rulers/rulers'
 import TileClusterGenerator from './tile-cluster/tile-cluster'
@@ -21,9 +22,11 @@ export * from './heatmap/types'
 export * from './heatmap/util'
 export * from './heatmap/util/get-time-chunks-interval'
 export * from './vessel-events/vessel-events.utils'
+export * from './user-points/user-points.utils'
 export * from './rulers/rulers'
 export { TRACK_HIGHLIGHT_SUFFIX } from './track/track'
 export { HEATMAP_COLOR_RAMPS, HEATMAP_COLORS_BY_ID } from './heatmap/colors'
+export { getHeatmapStaticSourceId, HEATMAP_STATIC_PROPERTY_ID } from './heatmap/heatmap-static'
 export { rgbaStringToComponents, hexToComponents, rgbaToString } from './heatmap/util/colors'
 export { DEFAULT_BACKGROUND_COLOR } from './background/config'
 export { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/config'
@@ -36,7 +39,7 @@ export {
   TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
   TEMPORALGRID_LAYER_INTERACTIVE_SUFIX,
 } from './heatmap/config'
-
+export { MIN_POINT_SIZE, MAX_POINT_SIZE, POINT_SIZES_DEFAULT_RANGE } from './user-points/config'
 export type AnyGeneratorClass =
   | AnnotationsGenerator
   | BackgroundGenerator
@@ -46,6 +49,7 @@ export type AnyGeneratorClass =
   | ContextGenerator
   | GLStyleGenerator
   | HeatmapGenerator
+  | HeatmapStaticGenerator
   | HeatmapAnimatedGenerator
   | PolygonsGenerator
   | RulersGenerator
@@ -67,6 +71,7 @@ const GeneratorConfig: GeneratorsRecord = {
   [GeneratorType.Context]: new ContextGenerator(),
   [GeneratorType.GL]: new GLStyleGenerator(),
   [GeneratorType.Heatmap]: new HeatmapGenerator(),
+  [GeneratorType.HeatmapStatic]: new HeatmapStaticGenerator(),
   [GeneratorType.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
   [GeneratorType.Polygons]: new PolygonsGenerator(),
   [GeneratorType.Rulers]: new RulersGenerator(),

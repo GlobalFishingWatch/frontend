@@ -1,6 +1,7 @@
 import {
   isDetectionsDataview,
   isHeatmapAnimatedDataview,
+  isHeatmapStaticDataview,
   MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
   MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
   MULTILAYER_SEPARATOR,
@@ -11,6 +12,7 @@ import {
   DEFAULT_POINTS_SOURCE_LAYER,
   ExtendedStyle,
   GeneratorType,
+  getHeatmapStaticSourceId,
   HeatmapLayerMeta,
   TRACK_HIGHLIGHT_SUFFIX,
 } from '@globalfishingwatch/layer-composer'
@@ -42,6 +44,16 @@ export const getSourceMetadata = (style: ExtendedStyle, dataview: UrlDataviewIns
       : MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
     const metadata = getHeatmapSourceMetadata(style, generatorSourceId)
     return { metadata, generatorSourceId }
+  }
+  const heatmapStaticDataview = isHeatmapStaticDataview(dataview)
+  if (heatmapStaticDataview) {
+    return {
+      metadata: {
+        static: true,
+        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
+      } as HeatmapLayerMeta,
+      generatorSourceId: getHeatmapStaticSourceId(dataview.id),
+    }
   }
   const environmentMetadata = getHeatmapSourceMetadata(style, dataview.id)
   if (environmentMetadata) {

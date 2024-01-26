@@ -4,7 +4,7 @@ import { parse as parseCSV } from 'papaparse'
 import { useSelector } from 'react-redux'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { TextArea } from '@globalfishingwatch/ui-components'
-import FileDropzone from 'features/common/FileDropzone'
+import FileDropzone from 'features/datasets/upload/FileDropzone'
 import { readBlobAs } from 'utils/files'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { ID_COLUMN_LOOKUP } from 'features/vessel-groups/vessel-groups.config'
@@ -99,7 +99,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
         />
       </div>
       <div className={styles.dropzoneContainer}>
-        <FileDropzone className={styles.dropzone} onFileLoaded={onCSVLoaded} fileTypes={['csv']} />
+        <FileDropzone className={styles.dropzone} onFileLoaded={onCSVLoaded} fileTypes={['CSV']} />
       </div>
     </div>
   )

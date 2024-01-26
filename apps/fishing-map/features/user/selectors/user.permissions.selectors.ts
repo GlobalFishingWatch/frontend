@@ -108,7 +108,11 @@ export const selectUserWorkspacesPrivate = createSelector(
 export const selectUserDatasets = createSelector(
   [selectAllDatasets, selectUserId],
   (datasets, userId) =>
-    datasets?.filter((d) => d.ownerId === userId && d.status !== DatasetStatus.Deleted)
+    datasets
+      ?.filter((d) => d.ownerId === userId && d.status !== DatasetStatus.Deleted)
+      // TODO sort by creation while included in the api, for now using reverse as API returns chronological order
+      // .sort((a, b) => (a.createdAt <= b.createdAt ? -1 : 1))
+      .reverse()
 )
 
 export const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
@@ -116,6 +120,11 @@ export const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =
     [selectUserDatasets],
     (datasets) => datasets?.filter((d) => d.category === datasetCategory)
   )
+
+export const selectUserContextDatasets = selectUserDatasetsByCategory(DatasetCategory.Context)
+export const selectUserEnvironmentDatasets = selectUserDatasetsByCategory(
+  DatasetCategory.Environment
+)
 
 export const selectUserDatasetsNotUsed = (datasetCategory: DatasetCategory) => {
   const dataviewsSelector =

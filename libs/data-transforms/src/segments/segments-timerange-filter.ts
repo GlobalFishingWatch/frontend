@@ -9,14 +9,20 @@ import { Segment } from '@globalfishingwatch/api-types'
 type TimeRange = { start: string | number; end: string | number }
 export function filterSegmentsByTimerange(
   segments: Segment[],
-  { start, end }: TimeRange
+  {
+    start,
+    end,
+    includeNonTemporalSegments = false,
+  }: TimeRange & { includeNonTemporalSegments?: boolean }
 ): Segment[] {
   const startTimestamp = typeof start === 'number' ? start : new Date(start).getTime()
   const endTimestamp = typeof end === 'number' ? end : new Date(end).getTime()
   const filteredSegments = segments
     .map((segment) => {
       return (segment || []).flatMap((point) => {
-        if (!point.timestamp) return []
+        if (!point.timestamp) {
+          return includeNonTemporalSegments ? point : []
+        }
         return point.timestamp > startTimestamp && point.timestamp < endTimestamp ? point : []
       })
     })

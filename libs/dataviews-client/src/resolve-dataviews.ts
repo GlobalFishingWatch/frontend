@@ -381,9 +381,9 @@ export function resolveDataviews(
             const datasetSchema = getDatasetSchemaItem(dataset as Dataset, filterKey)
 
             if (datasetSchema && datasetSchema.type === 'range') {
-              const minPossible = Number(datasetSchema?.enum[0])
+              const minPossible = Number(datasetSchema?.enum?.[0])
               const minSelected = Number(filterValues[0])
-              const maxPossible = Number(datasetSchema?.enum[datasetSchema.enum.length - 1])
+              const maxPossible = Number(datasetSchema?.enum?.[datasetSchema.enum.length - 1])
               const maxSelected = Number(filterValues[filterValues.length - 1])
               if (minSelected !== minPossible && maxSelected !== maxPossible) {
                 return `${filterKey} >= ${minSelected} AND ${filterKey} <= ${maxSelected}`

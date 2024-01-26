@@ -41,7 +41,9 @@ export interface Generator {
 export enum Group {
   Background = 'background', // Solid bg color
   Basemap = 'basemap', // Satellite tiles
-  Heatmap = 'heatmap', // Fill/gradient-based heatmaps
+  Bathymetry = 'bathymetry', // 4Wings Bathymetry layer
+  HeatmapStatic = 'heatmapStatic', // Fill/gradient-based heatmaps
+  Heatmap = 'heatmap', // Fill/gradient-based temporal heatmaps
   OutlinePolygons = 'outlinePolygons', // Context layers with an outlined/hollow style such as RFMOs, MPAs, etc
   OutlinePolygonsFill = 'outlinePolygonsFill', // User context layers with a filled styles, below OutlinePolygons
   BasemapFill = 'basemapFill', // Landmass
@@ -124,6 +126,7 @@ export interface HeatmapLayerMeta {
   sublayerCombinationMode: SublayerCombinationMode
   sublayers: HeatmapAnimatedGeneratorSublayer[]
   temporalgrid: true
+  static: true
   timeChunks: TimeChunks
   minVisibleValue?: number
   maxVisibleValue?: number

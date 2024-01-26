@@ -31,6 +31,7 @@ import {
   selectDataviewInstancesMergedOrdered,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 
 const VESSEL_ONLY_VISIBLE_LAYERS = [
   GeneratorType.Basemap,
@@ -161,6 +162,8 @@ export const selectContextAreasDataviews = selectDataviewInstancesByCategory(
   DataviewCategory.Context
 )
 
+export const selectCustomUserDataviews = selectDataviewInstancesByCategory(DataviewCategory.User)
+
 export const selectActiveContextAreasDataviews = createSelector(
   [selectContextAreasDataviews],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
@@ -232,10 +235,17 @@ export const selectActiveEnvironmentalDataviews = createSelector(
   (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectActiveNonTrackEnvironmentalDataviews = createSelector(
+export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
   [selectActiveEnvironmentalDataviews],
   (dataviews) => {
-    return dataviews.filter((dv) => dv.datasets?.every((ds) => ds.type !== DatasetTypes.UserTracks))
+    return dataviews.filter((dv) => dv.datasets?.every((ds) => ds.type === DatasetTypes.Fourwings))
+  }
+)
+
+export const selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry = createSelector(
+  [selectActiveHeatmapEnvironmentalDataviews],
+  (dataviews) => {
+    return dataviews.filter((dv) => !isBathymetryDataview(dv))
   }
 )
 
@@ -266,7 +276,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
     [
       selectActiveReportActivityDataviews,
       selectActiveDetectionsDataviews,
-      selectActiveNonTrackEnvironmentalDataviews,
+      selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry,
       selectTimebarSelectedEnvId,
     ],
     (activityDataviews, detectionsDataviews, environmentDataviews, timebarSelectedEnvId) => {

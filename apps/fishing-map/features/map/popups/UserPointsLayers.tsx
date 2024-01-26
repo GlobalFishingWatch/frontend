@@ -1,7 +1,11 @@
 import { Fragment } from 'react'
 import { groupBy } from 'lodash'
+import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
+import { Dataset, DatasetConfigurationUI } from '@globalfishingwatch/api-types'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { TooltipEventFeature } from 'features/map/map.hooks'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
@@ -16,6 +20,12 @@ function UserPointsTooltipSection({
   showFeaturesDetails = false,
 }: UserPointsLayersProps) {
   const { onReportClick } = useContextInteractions()
+  const datasetId: string = features[0]?.datasetId || ''
+  const dataset: Dataset = useSelector(selectDatasetById(datasetId))
+  const labelProperty: DatasetConfigurationUI['labelProperty'] = getDatasetConfigurationProperty({
+    dataset,
+    property: 'labelProperty',
+  })
   const featuresByType = groupBy(features, 'layerId')
   return (
     <Fragment>
@@ -32,7 +42,7 @@ function UserPointsTooltipSection({
             )}
             {featureByType.map((feature, index) => {
               const { gfw_id } = feature.properties
-              const label = feature.value ?? feature.title
+              const label = feature.properties[labelProperty] ?? feature.value ?? feature.title
               const id = `${feature.value}-${gfw_id}`
               return (
                 <ContextLayersRow

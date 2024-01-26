@@ -8,6 +8,7 @@ import {
   FormattedSpecification,
   ExpressionSpecification,
 } from '@globalfishingwatch/maplibre-gl'
+import { GlobalHeatmapStaticGeneratorConfig } from '../heatmap-static'
 import { ExtendedLayerMeta, Group } from '../../../types'
 import { GeneratorType } from '../../types'
 import {
@@ -59,8 +60,21 @@ export function getBaseInteractionLayer(
   }
 }
 
+export const hoverInteractionPaint = {
+  'line-color': 'white',
+  'line-width': [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    4,
+    ['boolean', ['feature-state', 'click'], false],
+    4,
+    0,
+  ],
+  'line-offset': -2,
+} as LineLayerSpecification['paint']
+
 export function getBaseInteractionHoverLayer(
-  config: GlobalHeatmapAnimatedGeneratorConfig,
+  config: GlobalHeatmapAnimatedGeneratorConfig | GlobalHeatmapStaticGeneratorConfig,
   id: string,
   source: string
 ): LineLayerSpecification {
@@ -69,18 +83,7 @@ export function getBaseInteractionHoverLayer(
     source,
     'source-layer': TEMPORALGRID_SOURCE_LAYER_INTERACTIVE,
     type: 'line',
-    paint: {
-      'line-color': 'white',
-      'line-width': [
-        'case',
-        ['boolean', ['feature-state', 'hover'], false],
-        4,
-        ['boolean', ['feature-state', 'click'], false],
-        4,
-        0,
-      ],
-      'line-offset': -2,
-    },
+    paint: hoverInteractionPaint,
     metadata: {
       interactive: false,
       group: config.group || Group.Heatmap,

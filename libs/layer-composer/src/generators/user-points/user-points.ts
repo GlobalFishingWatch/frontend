@@ -1,16 +1,25 @@
-import type { LayerSpecification, CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import type {
+  LayerSpecification,
+  CircleLayerSpecification,
+  FilterSpecification,
+} from '@globalfishingwatch/maplibre-gl'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
-import { GeneratorType, UserPointsGeneratorConfig } from '../types'
+import { GeneratorType, MergedGeneratorConfig, UserPointsGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
 import { getCirclePaintWithFeatureState } from '../context/context.utils'
+import { getCircleRadiusWithPointSizeProperty } from '../user-points/user-points.utils'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
+
+export type GlobalUserPointsGeneratorConfig = Required<
+  MergedGeneratorConfig<UserPointsGeneratorConfig>
+>
 
 class UserPointsGenerator {
   type = GeneratorType.UserPoints
 
-  _getStyleSources = (config: UserPointsGeneratorConfig) => {
+  _getStyleSources = (config: GlobalUserPointsGeneratorConfig) => {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
@@ -20,6 +29,14 @@ class UserPointsGenerator {
     if (config.filter) {
       url.searchParams.set('filter', config.filter)
     }
+
+    if (config.valueProperties) {
+      config.valueProperties.forEach((property, index) => {
+        url.searchParams.set(`properties[${index}]`, property)
+      })
+    }
+    // As user can modify the dataset, we need to avoid the cache
+    url.searchParams.set('cache', 'false')
 
     return [
       {
@@ -31,24 +48,34 @@ class UserPointsGenerator {
     ]
   }
 
-  _getStyleLayers = (config: UserPointsGeneratorConfig): LayerSpecification[] => {
+  _getStyleLayers = (config: GlobalUserPointsGeneratorConfig): LayerSpecification[] => {
     const generatorId = config.id
     const baseLayer = {
       id: generatorId,
       source: config.id,
       'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
     }
-
+    let filters: FilterSpecification | undefined
+    if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
+      const startMs = new Date(config.start).getTime()
+      const endMs = new Date(config.end).getTime()
+      filters = [
+        'all',
+        ['<=', ['to-number', ['get', config.endTimeFilterProperty]], endMs],
+        ['>=', ['to-number', ['get', config.startTimeFilterProperty]], startMs],
+      ]
+    }
     const circleLayer: CircleLayerSpecification = {
       ...baseLayer,
       type: 'circle',
       paint: {
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 2, 5, 4],
         'circle-stroke-color': DEFAULT_BACKGROUND_COLOR,
         'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 3, 0.1, 5, 0.5],
         'circle-stroke-opacity': 0.5,
         ...getCirclePaintWithFeatureState(config.color, 0.7),
+        ...getCircleRadiusWithPointSizeProperty(config),
       },
+      ...(filters && { filter: filters }),
       metadata: {
         color: config.color,
         interactive: !config.disableInteraction,
@@ -65,7 +92,7 @@ class UserPointsGenerator {
     return [circleLayer]
   }
 
-  getStyle = (config: UserPointsGeneratorConfig) => {
+  getStyle = (config: GlobalUserPointsGeneratorConfig) => {
     return {
       id: config.id,
       sources: this._getStyleSources(config),
