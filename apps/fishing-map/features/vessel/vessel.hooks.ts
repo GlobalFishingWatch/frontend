@@ -45,12 +45,10 @@ export const useUpdateVesselEventsVisibility = () => {
         identityId,
         identitySource: VesselIdentitySourceEnum.SelfReported,
       })
-      if (shiptypes) {
-        if (shiptypes.includes('FISHING')) {
-          setVesselEventVisibility({ event: 'loitering', visible: false })
-        } else {
-          setVesselEventVisibility({ event: 'fishing', visible: false })
-        }
+      if (shiptypes?.includes('FISHING')) {
+        setVesselEventVisibility({ event: 'loitering', visible: false })
+      } else {
+        setVesselEventVisibility({ event: 'fishing', visible: false })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
