@@ -90,8 +90,8 @@ const getExtendedFeature = (
   let value = properties.value || properties.name || properties.id || properties?.count
   if (feature.layer.metadata?.valueProperties?.length) {
     value = feature.layer.metadata.valueProperties
-      .flatMap((prop) => properties[prop] || [])
-      .join(', ')
+      .flatMap((prop) => (properties[prop] ? `${prop}: ${properties[prop]}` : []))
+      .join('<br/>')
   }
 
   const extendedFeature: ExtendedFeature | null = {
