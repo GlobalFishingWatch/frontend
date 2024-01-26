@@ -55,6 +55,14 @@
     "searchHelpExamples": "e.g. \"flag:china, gear:palangre\", \"-España\", \"cargo|passenger\"...",
     "searchPlaceholder": "Filtre embarcaciones por nombre, MMSI, bandera o arte de pesca",
     "share": "Compartir informe",
+    "stats": {
+      "min": "Mínimo",
+      "minHelp": "Minimum value of a cell contained or overlapping your area of interest",
+      "mean": "Avg",
+      "meanHelp": "Average value of the cells contained or overlapping your area of interest",
+      "max": "Máximo",
+      "maxHelp": "Maximum value of a cell contained or overlapping your area of interest"
+    },
     "summary": "<strong>{{vessels}} embarcaciones{{sources}} </strong> tuvieron <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
@@ -99,6 +107,7 @@
     "comingSoon": "¡próximamente!",
     "confirm": "Confirmar",
     "confirmLeave": "¿Estás seguro de que quieres irte sin guardar tu espacio de trabajo?",
+    "context": "Reference",
     "context_area_other": "Areas de contexto",
     "continue": "Continuar",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles.",
@@ -138,6 +147,7 @@
     "in": "en",
     "include": "Incluir",
     "latitude": "Latitud",
+    "layerLibrary": "Layer Library",
     "layerList": "Lista de capas",
     "learnMore": "Ver más",
     "less": "menos",
@@ -182,6 +192,7 @@
     "sources": "Fuentes",
     "summary": "Resumen",
     "timerange": "Período",
+    "timestamp": "Timestamp",
     "to": "hasta",
     "toggleVisibility": "Toggle visibility",
     "tutorials": "Tutoriales",
@@ -189,12 +200,14 @@
     "unknown": "Desconocido",
     "unknownVessel": "Buque desconocido",
     "update": "Actualizar",
+    "user": "Usuario",
     "userGuide": "Guía de usuario",
     "value": "value",
     "vessel": "Embarcación",
     "vessel_one": "Embarcación",
     "vessel_other": "Embarcaciones",
     "vesselId": "Identificador de embarcación",
+    "vessels": "Embarcaciones",
     "view_layer": "Ver la capa",
     "viirs": "Detección de luz nocturna",
     "visibleValues": "Valores visibles",
@@ -205,10 +218,14 @@
   "dataset": {
     "addContext": "Añadir una capa de referencia",
     "addEnvironmental": "Añadir datos ambientales",
+    "addUser": "Add an uploaded dataset",
     "colorByValue": "Características de color por valor",
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente estos datos?",
     "dragActive": "Soltar el archivo aquí ...",
+    "dragNotAccepted": "This file is not compatible with this type of dataset.",
     "dragFileFormatsPlaceholder": "Arrastra y suelta un archivo {{formats}} aquí o haz clic para seleccionarlo",
+    "dragAndDropFileToCreateDataset": "Drag and drop a file in one of the boxes or click on them to upload your dataset",
+    "dropFileToCreateDataset": "Drop your file in one of the boxes to upload your dataset",
     "edit": "Modificar los datos",
     "emptyFilters": "No hay filtros disponibles",
     "emptyState": "Sus datos aparecerán aquí",
@@ -244,11 +261,84 @@
     "typePolygonsDescription": "Mostrar una o varias áreas coloreadas por cualquier valor cuantitativo en sus datos.",
     "typeTracks": " Pistas",
     "typeTracksDescription": "Mostrar el movimiento de uno o varios animales o embarcaciones.",
+    "upload": "Upload dataset",
     "uploadLogin": "<0>Registrar</0> o <2>iniciar sesión</2>para subir datos (gratis, 2 minutos)",
     "uploadNewContext": "Subir nuevas capas de referencia",
     "uploadNewEnviroment": "Subir un nuevo dato ambiental",
     "uploadPublic": "Permitir a otros usuarios ver estos datos cuando comparta un espacio de trabajo",
     "uploadYourOwn": "Subir una propia"
+  },
+  "datasetUpload": {
+    "datasetDescription": "Dataset description",
+    "datasetName": "Dataset name",
+    "fieldPlaceholder": "Select a field from your dataset",
+    "fieldMultiplePlaceholder": "Select fields from your dataset",
+    "fieldNumericPlaceholder": "Select a numeric field from your dataset",
+    "optionalFields": "Optional fields",
+    "processingData": "Processing data...",
+    "timePeriodType": "Time filter",
+    "timePeriodTypePlaceholder": "Choose whether to filter your dataset by dates or time ranges",
+    "none": "Ninguna",
+    "date": "Fecha",
+    "dateRange": "Date Range",
+    "time": "{{geometryType}} time",
+    "timeStart": "{{geometryType}} start",
+    "timeEnd": "{{geometryType}} end",
+    "timestampHelp": "Select the property that defines the date of each {{geometryType}} to filter them with the time bar",
+    "timerangeStartHelp": "Select the property that defines the start of the date range of each {{geometryType}} to filter them with the time bar",
+    "timerangeEndHelp": "Select the property that defines the start of the date range of each {{geometryType}} to filter them with the time bar",
+    "errors": {
+      "default": "Hubo un error al cargar los datos",
+      "geoJSON": {
+        "noValidFeatures": "No valid feature types found in this geoJSON file"
+      },
+      "shapefile": {
+        "noPointData": "No point data found in the shapefile",
+        "noLineData": "No lineString data found in the shapefile",
+        "noPolygonData": "No polygon data found in the shapefile",
+        "invalidData": "Shapefile data does not have a valid geometry type",
+        "invalidMultipleFiles": "Shapefiles containing multiple components (multiple file names) are not supported yet"
+      },
+      "kml": {
+        "noPointData": "No point data found in the KML",
+        "noLineData": "No lineString data found in the KML",
+        "noPolygonData": "No polygon data found in the KML",
+        "invalidData": "KML data does not have a valid geometry type"
+      }
+    },
+    "points": {
+      "coordinates": "Point coordinates",
+      "filters": "Point filters",
+      "filtersHelp": "Select properties of the points to be able to dinamically filter them in the sidebar after",
+      "name": "Point label",
+      "nameHelp": "Select a property of each point to make it appear as its label",
+      "size": "Point size",
+      "sizeHelp": "Select a numeric property of each point to change its radius",
+      "sizeMax": "Maximum size",
+      "sizeMin": "Minimum size"
+    },
+    "polygons": {
+      "color": "Polygon color",
+      "colorHelp": "Select a numeric property of each polygon to change its fill color",
+      "coordinates": "Polygon coordinates",
+      "filters": "Polygon filters",
+      "filtersHelp": "Select properties of the polygons to be able to dinamically filter them in the sidebar after",
+      "name": "Polygon label",
+      "nameHelp": "Select a property of each polygon to make it appear as its label",
+      "opacity": "Polygon opacity"
+    },
+    "tracks": {
+      "filters": "track filters",
+      "filtersHelp": "Select properties of the lines or their points to be able to dinamically filter them in the sidebar after",
+      "lineId": "Individual line ids",
+      "lineIdHelp": "Select the property of your dataset that defines which track is each point part of (e.g. each vessel or animal)",
+      "segmentId": "Individual segment ids",
+      "segmentIdHelp": "Select the property of your dataset that defines which segment of a track is each point part of (i.e. each trip)",
+      "segmentTimes": "Track segment times",
+      "size": "Point size",
+      "time": "Track point times"
+    },
+    "segment": ""
   },
   "dataview": {
     "basemap-labels": {
@@ -334,7 +424,10 @@
     "showError": "Mostrar error",
     "switchAccount": "Cambiar de cuenta",
     "trackLoading": "Se ha producido un error al cargar la trayectoria de la embarcación",
+    "trackCoordinateFields": "The fields selected to define point coordinates don't generate valid lines",
+    "trackSegmentIdFields": "Grouping by this field doesn't generate valid tracks",
     "uploadCsv": "Error leyendo archivo CSV: {{error}}",
+    "uploadKML": "Error reading KML file: {{error}}",
     "uploadError": "Hubo un error al cargar los datos",
     "uploadGeojson": "Error leyendo el archivo GeoJSON: {{error}}",
     "uploadShapefile": "Error leyendo el shapefile: {{error}}",
@@ -591,6 +684,7 @@
     "tracksDisabled": "Seleccione al menos una embarcación"
   },
   "user": {
+    "datasets": "User datasets",
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
     "groups": "Grupos",
     "info": "Información de usuario",
@@ -813,6 +907,7 @@
     "vesselGroups": "Grupos de embarcaciones"
   },
   "workspace": {
+    "add": "Add to workspace",
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
     "create": "Crear nuevo",
     "createNeeded": "Cambiar la visibilidad del espacio de trabajo requiere crear uno nuevo",
