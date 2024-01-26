@@ -55,6 +55,14 @@
     "searchHelpExamples": "ex: \"bandeira:china, petrecho:arrastões\", \"-espanha\", \"carga|passageiro\"...",
     "searchPlaceholder": "Filtre embarcações por nome, MMSI, bandeira ou tipo de petrecho",
     "share": "Compartilhar relatório",
+    "stats": {
+      "min": "Min",
+      "minHelp": "Minimum value of a cell contained or overlapping your area of interest",
+      "mean": "Avg",
+      "meanHelp": "Average value of the cells contained or overlapping your area of interest",
+      "max": "Máx",
+      "maxHelp": "Maximum value of a cell contained or overlapping your area of interest"
+    },
     "summary": "<strong>{{vessels}} embarcações{{sources}} </strong> tiveram <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> na área entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> na área entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
@@ -273,6 +281,31 @@
     "none": "Nenhum",
     "date": "Data",
     "dateRange": "Date Range",
+    "time": "{{geometryType}} time",
+    "timeStart": "{{geometryType}} start",
+    "timeEnd": "{{geometryType}} end",
+    "timestampHelp": "Select the property that defines the date of each {{geometryType}} to filter them with the time bar",
+    "timerangeStartHelp": "Select the property that defines the start of the date range of each {{geometryType}} to filter them with the time bar",
+    "timerangeEndHelp": "Select the property that defines the start of the date range of each {{geometryType}} to filter them with the time bar",
+    "errors": {
+      "default": "Houve um erro ao carregar seus dados",
+      "geoJSON": {
+        "noValidFeatures": "No valid feature types found in this geoJSON file"
+      },
+      "shapefile": {
+        "noPointData": "No point data found in the shapefile",
+        "noLineData": "No lineString data found in the shapefile",
+        "noPolygonData": "No polygon data found in the shapefile",
+        "invalidData": "Shapefile data does not have a valid geometry type",
+        "invalidMultipleFiles": "Shapefiles containing multiple components (multiple file names) are not supported yet"
+      },
+      "kml": {
+        "noPointData": "No point data found in the KML",
+        "noLineData": "No lineString data found in the KML",
+        "noPolygonData": "No polygon data found in the KML",
+        "invalidData": "KML data does not have a valid geometry type"
+      }
+    },
     "points": {
       "coordinates": "Point coordinates",
       "filters": "Point filters",
@@ -282,13 +315,7 @@
       "size": "Point size",
       "sizeHelp": "Select a numeric property of each point to change its radius",
       "sizeMax": "Maximum size",
-      "sizeMin": "Minimum size",
-      "time": "Point date",
-      "timeStart": "Point start",
-      "timeEnd": "Point end",
-      "timestampHelp": "Select the property that defines the date of each point to filter them with the time bar",
-      "timerangeStartHelp": "Select the property that defines the start of the date range of each point to filter them with the time bar",
-      "timerangeEndHelp": "Select the property that defines the start of the date range of each point to filter them with the time bar"
+      "sizeMin": "Minimum size"
     },
     "polygons": {
       "color": "Polygon color",
@@ -298,13 +325,7 @@
       "filtersHelp": "Select properties of the polygons to be able to dinamically filter them in the sidebar after",
       "name": "Polygon label",
       "nameHelp": "Select a property of each polygon to make it appear as its label",
-      "opacity": "Polygon opacity",
-      "time": "Polygon time",
-      "timeStart": "Polygon start",
-      "timeEnd": "Polygon end",
-      "timestampHelp": "Select the property that defines the date of each polygon to filter them with the time bar",
-      "timerangeStartHelp": "Select the property that defines the start of the date range of each polygon to filter them with the time bar",
-      "timerangeEndHelp": "Select the property that defines the start of the date range of each polygon to filter them with the time bar"
+      "opacity": "Polygon opacity"
     },
     "tracks": {
       "filters": "track filters",
@@ -403,6 +424,8 @@
     "showError": "Mostrar erros",
     "switchAccount": "Alterar conta",
     "trackLoading": "Ocorreu um erro ao carregar a rota da embarcação",
+    "trackCoordinateFields": "The fields selected to define point coordinates don't generate valid lines",
+    "trackSegmentIdFields": "Grouping by this field doesn't generate valid tracks",
     "uploadCsv": "Erro ao ler arquivo CSV: {{error}}",
     "uploadKML": "Error reading KML file: {{error}}",
     "uploadError": "Houve um erro ao carregar seus dados",

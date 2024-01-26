@@ -55,6 +55,14 @@
     "searchHelpExamples": "crwdns80834:0crwdne80834:0",
     "searchPlaceholder": "crwdns80836:0crwdne80836:0",
     "share": "crwdns80838:0crwdne80838:0",
+    "stats": {
+      "min": "crwdns82424:0crwdne82424:0",
+      "minHelp": "crwdns82426:0crwdne82426:0",
+      "mean": "crwdns82428:0crwdne82428:0",
+      "meanHelp": "crwdns82430:0crwdne82430:0",
+      "max": "crwdns82432:0crwdne82432:0",
+      "maxHelp": "crwdns82434:0crwdne82434:0"
+    },
     "summary": "crwdns80840:0{{vessels}}crwdnd80840:0{{sources}}crwdnd80840:0{{activityQuantity}}crwdnd80840:0{{activityUnit}}crwdnd80840:0{{activityType}}crwdnd80840:0{{start}}crwdnd80840:0{{end}}crwdne80840:0",
     "summaryNoVessels": "crwdns80842:0{{sources}}crwdnd80842:0{{activityQuantity}}crwdnd80842:0{{activityUnit}}crwdnd80842:0{{activityType}}crwdnd80842:0{{start}}crwdnd80842:0{{end}}crwdne80842:0",
     "timeRangeTooLong": "crwdns80844:0crwdne80844:0",
@@ -264,7 +272,7 @@
     "datasetDescription": "crwdns81232:0crwdne81232:0",
     "datasetName": "crwdns81234:0crwdne81234:0",
     "fieldPlaceholder": "crwdns81236:0crwdne81236:0",
-    "fieldMultiplePlaceholder": "crwdns81238:0crwdne81238:0",
+    "fieldMultiplePlaceholder": "crwdns82436:0crwdne82436:0",
     "fieldNumericPlaceholder": "crwdns81240:0crwdne81240:0",
     "optionalFields": "crwdns81242:0crwdne81242:0",
     "processingData": "crwdns81244:0crwdne81244:0",
@@ -273,6 +281,31 @@
     "none": "crwdns82368:0crwdne82368:0",
     "date": "crwdns82370:0crwdne82370:0",
     "dateRange": "crwdns82372:0crwdne82372:0",
+    "time": "crwdns82442:0{{geometryType}}crwdne82442:0",
+    "timeStart": "crwdns82444:0{{geometryType}}crwdne82444:0",
+    "timeEnd": "crwdns82446:0{{geometryType}}crwdne82446:0",
+    "timestampHelp": "crwdns82448:0{{geometryType}}crwdne82448:0",
+    "timerangeStartHelp": "crwdns82450:0{{geometryType}}crwdne82450:0",
+    "timerangeEndHelp": "crwdns82452:0{{geometryType}}crwdne82452:0",
+    "errors": {
+      "default": "crwdns82454:0crwdne82454:0",
+      "geoJSON": {
+        "noValidFeatures": "crwdns82456:0crwdne82456:0"
+      },
+      "shapefile": {
+        "noPointData": "crwdns82458:0crwdne82458:0",
+        "noLineData": "crwdns82460:0crwdne82460:0",
+        "noPolygonData": "crwdns82462:0crwdne82462:0",
+        "invalidData": "crwdns82464:0crwdne82464:0",
+        "invalidMultipleFiles": "crwdns82466:0crwdne82466:0"
+      },
+      "kml": {
+        "noPointData": "crwdns82468:0crwdne82468:0",
+        "noLineData": "crwdns82470:0crwdne82470:0",
+        "noPolygonData": "crwdns82472:0crwdne82472:0",
+        "invalidData": "crwdns82474:0crwdne82474:0"
+      }
+    },
     "points": {
       "coordinates": "crwdns81248:0crwdne81248:0",
       "filters": "crwdns81250:0crwdne81250:0",
@@ -282,13 +315,7 @@
       "size": "crwdns81254:0crwdne81254:0",
       "sizeHelp": "crwdns82380:0crwdne82380:0",
       "sizeMax": "crwdns81256:0crwdne81256:0",
-      "sizeMin": "crwdns81258:0crwdne81258:0",
-      "time": "crwdns82382:0crwdne82382:0",
-      "timeStart": "crwdns82384:0crwdne82384:0",
-      "timeEnd": "crwdns82386:0crwdne82386:0",
-      "timestampHelp": "crwdns82388:0crwdne82388:0",
-      "timerangeStartHelp": "crwdns82390:0crwdne82390:0",
-      "timerangeEndHelp": "crwdns82392:0crwdne82392:0"
+      "sizeMin": "crwdns81258:0crwdne81258:0"
     },
     "polygons": {
       "color": "crwdns82418:0crwdne82418:0",
@@ -298,13 +325,7 @@
       "filtersHelp": "crwdns82394:0crwdne82394:0",
       "name": "crwdns82396:0crwdne82396:0",
       "nameHelp": "crwdns82398:0crwdne82398:0",
-      "opacity": "crwdns82400:0crwdne82400:0",
-      "time": "crwdns81270:0crwdne81270:0",
-      "timeStart": "crwdns82402:0crwdne82402:0",
-      "timeEnd": "crwdns82404:0crwdne82404:0",
-      "timestampHelp": "crwdns82406:0crwdne82406:0",
-      "timerangeStartHelp": "crwdns82408:0crwdne82408:0",
-      "timerangeEndHelp": "crwdns82410:0crwdne82410:0"
+      "opacity": "crwdns82400:0crwdne82400:0"
     },
     "tracks": {
       "filters": "crwdns81272:0crwdne81272:0",
@@ -403,6 +424,8 @@
     "showError": "crwdns81424:0crwdne81424:0",
     "switchAccount": "crwdns81426:0crwdne81426:0",
     "trackLoading": "crwdns81428:0crwdne81428:0",
+    "trackCoordinateFields": "crwdns82438:0crwdne82438:0",
+    "trackSegmentIdFields": "crwdns82440:0crwdne82440:0",
     "uploadCsv": "crwdns81430:0{{error}}crwdne81430:0",
     "uploadKML": "crwdns82422:0{{error}}crwdne82422:0",
     "uploadError": "crwdns81432:0crwdne81432:0",
