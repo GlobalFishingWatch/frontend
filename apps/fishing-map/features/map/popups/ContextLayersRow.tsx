@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux'
+import parse from 'html-react-parser'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -172,10 +173,10 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   handleReportClick,
 }: ContextLayersRowProps) => {
   const { t } = useTranslation()
-
+  const parsedLabel = typeof label === 'string' ? parse(label) : label
   return (
     <div className={styles.row} key={id}>
-      <span className={styles.rowText}>{label}</span>
+      <span className={styles.rowText}>{parsedLabel}</span>
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
           {handleDownloadClick && <DownloadPopupButton onClick={handleDownloadClick} />}

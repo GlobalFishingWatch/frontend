@@ -90,9 +90,11 @@ class UserContextGenerator {
           group: Group.CustomLayer,
           datasetId: config.datasetId,
           uniqueFeatureInteraction: true,
+          valueProperties: config.valueProperties,
           legend: {
             type: 'colorramp',
             ...config.metadata?.legend,
+            unit: config.pickValueAt,
             ramp: legendRamp,
           },
         },
