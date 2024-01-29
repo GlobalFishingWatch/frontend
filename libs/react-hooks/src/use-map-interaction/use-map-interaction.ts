@@ -88,10 +88,14 @@ const getExtendedFeature = (
   const stopPropagation = feature.layer?.metadata?.stopPropagation ?? false
   const properties = feature.properties || {}
   let value = properties.value || properties.name || properties.id || properties?.count
-  if (feature.layer.metadata?.valueProperties?.length) {
-    value = feature.layer.metadata.valueProperties
-      .flatMap((prop) => (properties[prop] ? `${prop}: ${properties[prop]}` : []))
-      .join('<br/>')
+  const { valueProperties } = feature.layer.metadata || {}
+  if (valueProperties?.length) {
+    value =
+      valueProperties.length === 1
+        ? properties[valueProperties[0]]
+        : valueProperties
+            .flatMap((prop) => (properties[prop] ? `${prop}: ${properties[prop]}` : []))
+            .join('<br/>')
   }
 
   const extendedFeature: ExtendedFeature | null = {
