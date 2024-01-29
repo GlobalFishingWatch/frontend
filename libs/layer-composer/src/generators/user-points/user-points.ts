@@ -29,9 +29,11 @@ class UserPointsGenerator {
     if (config.filter) {
       url.searchParams.set('filter', config.filter)
     }
-
-    if (config.valueProperties) {
-      config.valueProperties.forEach((property, index) => {
+    const properties = [...(config.valueProperties || []), config.circleRadiusProperty].filter(
+      Boolean
+    )
+    if (properties.length) {
+      properties.forEach((property, index) => {
         url.searchParams.set(`properties[${index}]`, property)
       })
     }
