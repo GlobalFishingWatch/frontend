@@ -2,12 +2,9 @@ import { scaleLinear, scalePow } from 'd3-scale'
 import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import { uniq } from 'lodash'
-import type {
-  Expression,
-  FilterSpecification,
-  LineLayerSpecification,
-} from '@globalfishingwatch/maplibre-gl'
+import type { FilterSpecification, LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { HIGHLIGHT_LINE_COLOR } from '../context/context.utils'
 import { Group } from '../../types'
 import { GeneratorType, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
@@ -128,10 +125,6 @@ class TrackGenerator {
         .map((f: any) => f.properties?.id)
     )
 
-    const uniqColors: string[] = uniqIds.map(
-      (id) => source.data.features.find((f: any) => f.properties?.id === id)?.properties.color
-    )
-
     const coordinateFilters: TrackCoordinatesPropertyFilter[] = Object.entries(
       config.coordinateFilters || {}
     ).map(([id, values]) => {
@@ -190,8 +183,7 @@ class TrackGenerator {
 
   _getStyleLayers = (
     config: GlobalTrackGeneratorConfig,
-    uniqIds: string[],
-    uniqColors: string[]
+    uniqIds: string[]
   ): LineLayerSpecification[] => {
     const paint = {
       'line-color': config.color || DEFAULT_TRACK_COLOR,
@@ -213,11 +205,11 @@ class TrackGenerator {
     }
 
     if (uniqIds.length > 1 && config.useOwnColor) {
-      const getUniqColorsExpression = (uniqIds: string[], uniqColors: string[]) => {
+      const getUniqColorsExpression = (uniqIds: string[]) => {
         const idsAndColors: string[] = []
         uniqIds.forEach((id: string, index: number) => {
           idsAndColors.push(id || '')
-          idsAndColors.push(uniqColors[index])
+          idsAndColors.push(LineColorBarOptions[index % LineColorBarOptions.length].value)
         })
         return ['match', ['get', 'id'], ...idsAndColors, config.color]
       }
@@ -225,7 +217,7 @@ class TrackGenerator {
         'case',
         ['boolean', ['feature-state', 'highlight'], false],
         HIGHLIGHT_LINE_COLOR,
-        getUniqColorsExpression(uniqIds, uniqColors),
+        getUniqColorsExpression(uniqIds),
       ] as any
     }
     const visibility = isConfigVisible(config)
@@ -281,11 +273,11 @@ class TrackGenerator {
       ),
     })
 
-    const { sources, uniqIds, uniqColors } = this._getStyleSources(config)
+    const { sources, uniqIds } = this._getStyleSources(config)
     return {
       id: config.id,
       sources,
-      layers: this._getStyleLayers(config, uniqIds, uniqColors),
+      layers: this._getStyleLayers(config, uniqIds),
     }
   }
 }
