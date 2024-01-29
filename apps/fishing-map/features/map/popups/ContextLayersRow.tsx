@@ -16,7 +16,7 @@ import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationAreaId, selectLocationQuery } from 'routes/routes.selectors'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { TooltipEventFeature } from 'features/map/map.hooks'
-import { getFeatureAreaId, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
+import { getAreaIdFromFeature, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { resetReportData } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -84,7 +84,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const query = useSelector(selectLocationQuery)
   const bounds = getFeatureBounds(feature)
   const reportAreaId = useSelector(selectLocationAreaId)
-  const areaId = getFeatureAreaId(feature)
+  const areaId = getAreaIdFromFeature(feature)
   const isSameArea = reportAreaId?.toString() === areaId?.toString()
   if (!hasAnalysableLayer || isSameArea) {
     return (
@@ -107,7 +107,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     trackEvent({
       category: TrackCategory.Analysis,
       action: 'Open analysis panel',
-      label: areaId,
+      label: areaId as string,
     })
     resetSidebarScroll()
     dispatch(resetReportData())

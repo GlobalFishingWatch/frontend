@@ -432,6 +432,9 @@ export function getGeneratorConfig(
         if (config?.valueProperties) {
           generator.valueProperties = config.valueProperties
         }
+        if (config?.idProperty) {
+          generator.promoteId = config.idProperty
+        }
 
         const propertyToInclude = (dataset.configuration as EnviromentalDatasetConfiguration)
           ?.propertyToInclude

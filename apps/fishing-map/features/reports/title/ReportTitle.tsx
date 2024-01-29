@@ -172,7 +172,8 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     if (!areaName) {
       if (areaDataview?.config?.type === GeneratorType.UserContext) {
         if (reportAreaStatus === AsyncReducerStatus.Finished) {
-          areaName = reportArea?.properties?.[propertyToInclude] || dataset?.name
+          areaName =
+            reportArea?.properties?.[propertyToInclude] || reportArea?.name || dataset?.name
         }
       } else {
         areaName = area?.name
@@ -209,7 +210,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     urlBufferOperation,
     areaDataview?.config?.type,
     reportAreaStatus,
-    reportArea?.properties,
+    reportArea,
     area?.name,
     t,
     urlBufferUnit,

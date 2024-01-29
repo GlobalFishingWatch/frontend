@@ -154,6 +154,10 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    * These properties would be available on the tile features
    */
   valueProperties?: string[]
+  /**
+   * Property to use as id internally in mapbox
+   */
+  promoteId?: string
 }
 
 /**
