@@ -1,8 +1,8 @@
 {
   "bathymetry": {
     "name": "Bathymetry",
-    "description": "",
-    "moreInfoLink": ""
+    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid. ",
+    "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/"
   },
   "chlorophyl": {
     "name": "dan Konsentrasi Klorofil-a",
@@ -11,8 +11,8 @@
   },
   "coral-reefs": {
     "name": "Coral reefs",
-    "description": "",
-    "moreInfoLink": ""
+    "description": "Warm-water coral reefs are found in clear, shallow waters and are highly dynamic ecosystems that support the most biodiverse marine habitat. This dataset shows the global distribution of coral reefs in tropical and subtropical regions.",
+    "moreInfoLink": "https://data.unep-wcmc.org/datasets/1"
   },
   "eez": {
     "name": "EEZs",
@@ -46,13 +46,13 @@
   },
   "mangroves": {
     "name": "Mangroves",
-    "description": "",
-    "moreInfoLink": ""
+    "description": "Mangroves are trees or shrubs that can survive in saline environments and typically grow within the intertidal zone of tropical and subtropical regions. Considered blue carbon habitats, mangrove forests improve water quality, stabilize and protect coastlines, and provide shelter for birds, animals and marine organisms. This dataset uses earth observation satellite imagery to show the global distribution of mangroves.  ",
+    "moreInfoLink": "https://data.unep-wcmc.org/datasets/4"
   },
   "marine-ecoregions": {
     "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
+    "description": "Marine ecoregions are a biogeographic classification of the world's coastal and continental shelf waters. The dataset provides a geographic framework for a broad range of analyses relating to biodiversity in the marine environment.",
+    "moreInfoLink": "https://geospatial.tnc.org/datasets/ed2be4cf8b7a451f84fd093c2e7660e3/explore"
   },
   "mpa": {
     "name": "MPAs (WDPA)",
@@ -61,17 +61,17 @@
   },
   "nitrate": {
     "name": "Nitrate concentration (NO3)",
-    "description": "",
+    "description": "Nitrate is required by marine plants for photosynthesis and is a major nutrient for the ocean's productivity, but high concentrations can be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including nitrate, over the global ocean displayed with a 1/4 degree horizontal resolution.   ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "oxygen": {
     "name": "Oxygen concentration (O2)",
-    "description": "",
+    "description": "Dissolved oxygen is the amount of oxygen present in water and is crucial for the growth and survival of marine organisms. Warming ocean temperatures can lead to an expansion of low oxygen zones, which can impact the distribution and abundance of marine life. This dataset is comprised of biogeochemical parameters, including dissolved oxygen, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "ph": {
     "name": "pH",
-    "description": "",
+    "description": "The acidity of the ocean is measured by pH. Increased carbon dioxide absorption has lowered the ocean's pH, resulting in ocean acidification which can have wide-ranging impacts on marine organisms. This dataset is comprised of biogeochemical parameters, including pH, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "phosphate": {
