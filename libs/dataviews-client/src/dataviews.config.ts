@@ -19,8 +19,8 @@ export const setGeneratorConfigCircleRadius = ({
   if (circleRadiusProperty) {
     generator.circleRadiusProperty = circleRadiusProperty.toLowerCase()
     generator.circleRadiusRange = circleRadiusProperty && [
-      dataset.schema?.[circleRadiusProperty].min,
-      dataset.schema?.[circleRadiusProperty].max,
+      dataset.schema?.[circleRadiusProperty].enum?.[0],
+      dataset.schema?.[circleRadiusProperty].enum?.[1],
     ]
     generator.minPointSize = getDatasetConfigurationProperty({
       dataset,

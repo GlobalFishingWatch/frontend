@@ -39,7 +39,6 @@ export const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMeta
     configuration: {
       configurationUI: {
         sourceFormat,
-        valueProperties: schema ? Object.keys(schema) : [],
       },
     } as DatasetConfiguration,
   } as Partial<Dataset>

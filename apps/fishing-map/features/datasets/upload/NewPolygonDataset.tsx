@@ -134,13 +134,13 @@ function NewPolygonDataset({
         />
         <NewDatasetField
           datasetMetadata={datasetMetadata}
-          property="labelProperty"
+          property="valueProperties"
           label={t('datasetUpload.polygons.name', 'Polygon name')}
           onSelect={(selected) => {
-            setDatasetMetadataConfig({ labelProperty: selected.id })
+            setDatasetMetadataConfig({ valueProperties: [selected.id] })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ labelProperty: undefined })
+            setDatasetMetadataConfig({ valueProperties: undefined })
           }}
           editable={!loading}
           infoTooltip={t(
