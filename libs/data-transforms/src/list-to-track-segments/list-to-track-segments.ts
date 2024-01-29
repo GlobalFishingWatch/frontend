@@ -1,5 +1,6 @@
 import { groupBy, toNumber } from 'lodash'
 import { DateTime, DateTimeOptions } from 'luxon'
+import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { Segment } from '@globalfishingwatch/api-types'
 import { SegmentColumns } from '../types'
 import { parseCoords } from '../coordinates'
@@ -76,7 +77,10 @@ export const listToTrackSegments = ({
             const coords = parseCoords(latitudeValue, longitudeValue)
             if (coords) {
               const segmentProperties = {
-                ...(hasIdGroup && { [lineId]: properties[lineId] }),
+                ...(hasIdGroup && {
+                  [lineId]: properties[lineId],
+                  color: LineColorBarOptions[index % LineColorBarOptions.length].value,
+                }),
                 ...(hasSegmentId && { [segmentId]: properties[segmentId] }),
               }
               return [
@@ -97,6 +101,5 @@ export const listToTrackSegments = ({
       })
       .filter((segment) => segment.length > 0)
   })
-  console.log('🚀 ~ lines:', lines)
   return lines
 }

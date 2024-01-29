@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { FeatureCollection } from 'geojson'
 import { useTranslation } from 'react-i18next'
-import { uniq, uniqBy } from 'lodash'
+import { uniqBy } from 'lodash'
 import { NO_RECORD_ID } from '@globalfishingwatch/data-transforms'
 import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
 import {
@@ -71,8 +71,9 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
   }) as string
   const filterValues = dataview.config?.filters?.[lineIdProperty] || []
 
-  const features = uniqBy(resource.data?.features, (f) => f.properties?.[lineIdProperty])
-
+  const features = uniqBy(resource.data?.features, (f) => {
+    return f.properties?.[lineIdProperty]
+  })
   const handleHoverLine = (feature: any) => {
     const id = feature.properties?.[lineIdProperty]
     const source = `user-track-${dataset.id}`
@@ -100,7 +101,7 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
             className={styles.trackColor}
             style={
               {
-                '--color': feature.properties?.color,
+                '--color': feature.properties?.color || dataview.config?.color,
               } as React.CSSProperties
             }
             onMouseEnter={() => handleHoverLine(feature)}
