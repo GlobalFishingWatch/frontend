@@ -1,7 +1,7 @@
 {
   "bathymetry": {
     "name": "Bathymetry",
-    "description": "The gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid. ",
+    "description": "The gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid.",
     "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/"
   },
   "chlorophyl": {
@@ -11,7 +11,7 @@
   },
   "coral-reefs": {
     "name": "Coral reefs",
-    "description": "This dataset  shows the global distribution of coral reefs in tropical and subtropical regions. It is the most comprehensive global dataset of warm-water coral reefs to date. ",
+    "description": "This dataset shows the global distribution of coral reefs in tropical and subtropical regions. It is the most comprehensive global dataset of warm-water coral reefs to date.",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/1"
   },
   "eez": {
