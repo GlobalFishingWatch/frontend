@@ -4,6 +4,7 @@ import memoizeOne from 'memoize-one'
 import { uniq } from 'lodash'
 import type { FilterSpecification, LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { HIGHLIGHT_LINE_COLOR } from '../context/context.utils'
 import { Group } from '../../types'
 import { GeneratorType, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
@@ -204,14 +205,21 @@ class TrackGenerator {
     }
 
     if (uniqIds.length > 1 && config.useOwnColor) {
+      const getUniqColorsExpression = (uniqIds: string[]) => {
+        const idsAndColors: string[] = []
+        uniqIds.forEach((id: string, index: number) => {
+          idsAndColors.push(id || '')
+          idsAndColors.push(LineColorBarOptions[index % LineColorBarOptions.length].value)
+        })
+        return ['match', ['get', 'id'], ...idsAndColors, config.color]
+      }
       paint['line-color'] = [
         'case',
         ['boolean', ['feature-state', 'highlight'], false],
         HIGHLIGHT_LINE_COLOR,
-        ['get', 'color'],
+        getUniqColorsExpression(uniqIds),
       ] as any
     }
-
     const visibility = isConfigVisible(config)
     const layer: LineLayerSpecification = {
       id: config.id,

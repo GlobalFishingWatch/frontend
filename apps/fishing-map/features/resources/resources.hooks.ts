@@ -5,7 +5,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { parseUserTrackCallback } from './resources.utils'
 
 export const useFetchResources = (resources: Resource[]) => {
   const dispatch = useAppDispatch()
@@ -17,7 +16,6 @@ export const useFetchResources = (resources: Resource[]) => {
             resource,
             resourceKey: resource.key,
             parseEventCb: parseTrackEventChunkProps,
-            parseUserTrackCb: parseUserTrackCallback,
           })
         )
       })

@@ -1,5 +1,6 @@
 import { groupBy, toNumber } from 'lodash'
 import { DateTime, DateTimeOptions } from 'luxon'
+import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { Segment } from '@globalfishingwatch/api-types'
 import { SegmentColumns } from '../types'
 import { parseCoords } from '../coordinates'
@@ -63,8 +64,10 @@ export const listToTrackSegments = ({
     ? sortRecordsByTimestamp({ recordsArray, timestampProperty: startTime })
     : recordsArray
   const groupedLines = hasIdGroup ? groupBy(sortedRecords, lineId) : { no_id: sortedRecords }
-  const lines = Object.values(groupedLines).map((line) => {
-    const groupedSegments = hasSegmentId ? groupBy(line, segmentId) : { no_id: line }
+  const lines = Object.values(groupedLines).map((line, index) => {
+    const groupedSegments = hasSegmentId
+      ? groupBy(line, segmentId)
+      : { [Object.keys(groupedLines)[index]]: line }
     return Object.values(groupedSegments)
       .map((segment) => {
         return segment.flatMap((record) => {
@@ -74,7 +77,10 @@ export const listToTrackSegments = ({
             const coords = parseCoords(latitudeValue, longitudeValue)
             if (coords) {
               const segmentProperties = {
-                ...(hasIdGroup && { [lineId]: properties[lineId] }),
+                ...(hasIdGroup && {
+                  [lineId]: properties[lineId],
+                  color: LineColorBarOptions[index % LineColorBarOptions.length].value,
+                }),
                 ...(hasSegmentId && { [segmentId]: properties[segmentId] }),
               }
               return [
