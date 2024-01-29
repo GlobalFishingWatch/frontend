@@ -167,13 +167,20 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       dataset,
       property: 'propertyToInclude',
     }) as string
+    const labelProperty = getDatasetConfigurationProperty({
+      dataset,
+      property: 'labelProperty',
+    }) as string
 
     let areaName = report?.name
     if (!areaName) {
       if (areaDataview?.config?.type === GeneratorType.UserContext) {
         if (reportAreaStatus === AsyncReducerStatus.Finished) {
           areaName =
-            reportArea?.properties?.[propertyToInclude] || reportArea?.name || dataset?.name
+            reportArea?.properties?.[propertyToInclude] ||
+            reportArea?.properties?.[labelProperty] ||
+            reportArea?.name ||
+            dataset?.name
         }
       } else {
         areaName = area?.name
