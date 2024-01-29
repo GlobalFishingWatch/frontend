@@ -261,14 +261,14 @@ function NewPointDataset({
         />
         <NewDatasetField
           datasetMetadata={datasetMetadata}
-          property="labelProperty"
+          property="valueProperties"
           label={t('datasetUpload.points.name', 'Point label')}
           editable={!loading}
           onSelect={(selected) => {
-            setDatasetMetadataConfig({ labelProperty: selected.id })
+            setDatasetMetadataConfig({ valueProperties: [selected.id] })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ labelProperty: undefined })
+            setDatasetMetadataConfig({ valueProperties: undefined })
           }}
           infoTooltip={t(
             'datasetUpload.points.nameHelp',

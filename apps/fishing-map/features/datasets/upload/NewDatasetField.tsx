@@ -42,6 +42,13 @@ export function NewDatasetField({
   ]
   const isNotEditableField = notEditableOptions.some((option) => option === property)
   const options = isNotEditableField ? fieldsOptions : filtersFieldsOptions
+  const configurationProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property,
+  })
+  const configurationPropertyString = Array.isArray(configurationProperty)
+    ? (configurationProperty[0] as string)
+    : (configurationProperty as string)
 
   if (editable) {
     return (
@@ -51,15 +58,7 @@ export function NewDatasetField({
           placeholder || t('dataset.fieldPlaceholder', 'Select a field from your dataset')
         }
         options={options}
-        selectedOption={
-          getSelectedOption(
-            getDatasetConfigurationProperty({
-              dataset: datasetMetadata,
-              property,
-            }) as string,
-            options
-          ) as SelectOption
-        }
+        selectedOption={getSelectedOption(configurationPropertyString, options) as SelectOption}
         onSelect={onSelect}
         onCleanClick={onCleanClick}
         className={styles.input}
@@ -69,12 +68,7 @@ export function NewDatasetField({
   }
   return (
     <InputText
-      value={
-        getDatasetConfigurationProperty({
-          dataset: datasetMetadata,
-          property,
-        }) as string
-      }
+      value={configurationPropertyString}
       label={label}
       className={styles.input}
       disabled

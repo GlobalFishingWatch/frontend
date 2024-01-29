@@ -79,6 +79,7 @@ class UserPointsGenerator {
       metadata: {
         color: config.color,
         interactive: !config.disableInteraction,
+        valueProperties: config.valueProperties,
         generatorId,
         uniqueFeatureInteraction: true,
         datasetId: config.datasetId,
