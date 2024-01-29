@@ -51,6 +51,9 @@ export const getFieldSchema = (
             if (coordinates) {
               schema.type = 'coordinate'
               schema.enum = [coordinates.latitude, coordinates.longitude]
+            } else {
+              schema.type = 'range'
+              schema.enum = [valuesOrdered[0], valuesOrdered[valuesOrdered.length - 1]]
             }
           } catch (e) {}
         } else {
