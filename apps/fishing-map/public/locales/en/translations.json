@@ -322,7 +322,7 @@
       "colorHelp": "Select a numeric property of each polygon to change its fill color",
       "coordinates": "Polygon coordinates",
       "filters": "Polygon filters",
-      "filtersHelp": "Select properties of the polygons to be able to dinamically filter them in the sidebar after",
+      "filtersHelp": "Select properties of the polygons to be able to dynamically filter them in the sidebar after",
       "name": "Polygon label",
       "nameHelp": "Select a property of each polygon to make it appear as its label",
       "opacity": "Polygon opacity"
