@@ -178,7 +178,7 @@ class TrackGenerator {
       sources.push(highlightedSource)
     }
 
-    return { sources, uniqIds, uniqColors }
+    return { sources, uniqIds }
   }
 
   _getStyleLayers = (
