@@ -63,8 +63,10 @@ export const listToTrackSegments = ({
     ? sortRecordsByTimestamp({ recordsArray, timestampProperty: startTime })
     : recordsArray
   const groupedLines = hasIdGroup ? groupBy(sortedRecords, lineId) : { no_id: sortedRecords }
-  const lines = Object.values(groupedLines).map((line) => {
-    const groupedSegments = hasSegmentId ? groupBy(line, segmentId) : { no_id: line }
+  const lines = Object.values(groupedLines).map((line, index) => {
+    const groupedSegments = hasSegmentId
+      ? groupBy(line, segmentId)
+      : { [Object.keys(groupedLines)[index]]: line }
     return Object.values(groupedSegments)
       .map((segment) => {
         return segment.flatMap((record) => {
@@ -95,5 +97,6 @@ export const listToTrackSegments = ({
       })
       .filter((segment) => segment.length > 0)
   })
+  console.log('🚀 ~ lines:', lines)
   return lines
 }
