@@ -1,8 +1,8 @@
 {
   "bathymetry": {
     "name": "Bathymetry",
-    "description": "",
-    "moreInfoLink": ""
+    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid. ",
+    "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/"
   },
   "chlorophyl": {
     "name": "dan Konsentrasi Klorofil-a",
@@ -11,7 +11,7 @@
   },
   "coral-reefs": {
     "name": "Coral reefs",
-    "description": "",
+    "description": "Warm-water coral reefs are found in clear, shallow waters and are highly dynamic ecosystems that support the most biodiverse marine habitat. This dataset shows the global distribution of coral reefs in tropical and subtropical regions.",
     "moreInfoLink": ""
   },
   "eez": {
@@ -46,13 +46,13 @@
   },
   "mangroves": {
     "name": "Mangroves",
-    "description": "",
-    "moreInfoLink": ""
+    "description": "Mangroves are trees or shrubs that can survive in saline environments and typically grow within the intertidal zone of tropical and subtropical regions. Considered blue carbon habitats, mangrove forests improve water quality, stabilize and protect coastlines, and provide shelter for birds, animals and marine organisms. This dataset uses earth observation satellite imagery to show the global distribution of mangroves.  ",
+    "moreInfoLink": "https://data.unep-wcmc.org/datasets/4"
   },
   "marine-ecoregions": {
     "name": "Marine ecoregions",
-    "description": "",
-    "moreInfoLink": ""
+    "description": "Marine ecoregions are a biogeographic classification of the world's coastal and continental shelf waters. The dataset provides a geographic framework for a broad range of analyses relating to biodiversity in the marine environment.",
+    "moreInfoLink": "https://geospatial.tnc.org/datasets/ed2be4cf8b7a451f84fd093c2e7660e3/explore"
   },
   "mpa": {
     "name": "MPAs (WDPA)",
