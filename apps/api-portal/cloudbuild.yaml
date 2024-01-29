@@ -59,7 +59,7 @@ steps:
       tag=`cat image-tag`
       /kaniko/executor \
         --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/api-portal:$tag \
-        --cache=false \
+        --cache=true \
         --build-arg \
           APP_NAME=api-portal \
         --target \

@@ -13,6 +13,7 @@ import {
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getFileType, readBlobAs } from 'utils/files'
 
@@ -79,6 +80,7 @@ export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
     endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
     segmentId: getDatasetConfigurationProperty({ dataset, property: 'segmentId' }),
     lineId: getDatasetConfigurationProperty({ dataset, property: 'lineId' }),
+    lineColorBarOptions: LineColorBarOptions,
   })
   return segmentsToGeoJSON(segments)
 }
