@@ -222,10 +222,10 @@ class TrackGenerator {
         return ['match', ['get', 'id'], ...idsAndColors, config.color]
       }
       paint['line-color'] = [
-        // 'case',
-        // ['boolean', ['feature-state', 'highlight'], false],
-        // HIGHLIGHT_LINE_COLOR,
-        ...getUniqColorsExpression(uniqIds, uniqColors),
+        'case',
+        ['boolean', ['feature-state', 'highlight'], false],
+        HIGHLIGHT_LINE_COLOR,
+        getUniqColorsExpression(uniqIds, uniqColors),
       ] as any
     }
     const visibility = isConfigVisible(config)
