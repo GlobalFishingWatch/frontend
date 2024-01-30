@@ -52,7 +52,7 @@ steps:
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/user-groups-admin:$COMMIT_SHA',
-        '--cache=false',
+        '--cache=true',
         '--build-arg',
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
         '--build-arg',
