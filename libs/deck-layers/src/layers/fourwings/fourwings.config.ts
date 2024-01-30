@@ -1,6 +1,9 @@
 import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 
+export const HEATMAP_ID = 'heatmap'
+export const POSITIONS_ID = 'positions'
+
 export const CHUNKS_BY_INTERVAL: Record<
   Interval,
   { unit: DateTimeUnit; value: number } | undefined

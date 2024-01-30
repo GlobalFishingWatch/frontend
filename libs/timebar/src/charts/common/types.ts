@@ -17,6 +17,8 @@ export type TrackEventChunkProps = {
   colorLabels?: string
   description: string
   descriptionGeneric: string
+  latitude: number
+  longitude: number
 }
 
 export type TimebarChartValue = {

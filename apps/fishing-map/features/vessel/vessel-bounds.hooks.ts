@@ -13,7 +13,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectVesselTracksData,
   selectVesselEventsFilteredByTimerange,
-} from 'features/vessel/vessel.selectors'
+} from 'features/vessel/selectors/vessel.resources.selectors'
 import {
   selectVesselFitBoundsOnLoad,
   setVesselFitBoundsOnLoad,

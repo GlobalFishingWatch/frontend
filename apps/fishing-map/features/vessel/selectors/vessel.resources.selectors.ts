@@ -10,13 +10,13 @@ import {
 } from '@globalfishingwatch/api-types'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { selectResources } from 'features/resources/resources.slice'
-import { selectSelfReportedVesselIds } from 'features/vessel/vessel.slice'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
-import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectSelfReportedVesselIds } from 'features/vessel/selectors/vessel.selectors'
 
 export const selectVesselDataset = createSelector(
   [selectVesselDatasetId, selectAllDatasets],

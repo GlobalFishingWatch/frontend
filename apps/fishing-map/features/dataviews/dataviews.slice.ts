@@ -44,7 +44,6 @@ import { selectTrackThinningConfig } from 'features/resources/resources.slice'
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
@@ -55,6 +54,7 @@ import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { selectTrackChunksConfig } from 'features/resources/resources.selectors.thinning'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
   // eventsDatasetConfigsCallback,
   // infoDatasetConfigsCallback,

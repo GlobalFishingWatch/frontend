@@ -7,9 +7,8 @@ import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { getUrlViewstateNumericParam } from 'utils/url'
 import { useDeckMap } from 'features/map/map-context.hooks'
-import store from '../../store' // <<<<< HEAD
-// import { wrapper } from '../../store' // <<<<< HEAD
-// const { store } = wrapper.useWrappedStore()
+import { useAppDispatch } from 'features/app/app.hooks'
+
 export const viewStateAtom = atom<MapCoordinates>({
   key: 'localViewport',
   default: {
@@ -62,15 +61,13 @@ const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 
 export const useUpdateViewStateUrlParams = () => {
   const viewState = useRecoilValue(viewStateAtom)
-  const updateUrlViewportDebounced = debounce(
-    store
-      ? store.dispatch(updateUrlViewport)
-      : () => {
-          console.warn('No store provided')
-          return {}
-        }, // <<<<<<< HEAD
-    URL_VIEWPORT_DEBOUNCED_TIME
+  const dispatch = useAppDispatch()
+
+  const updateUrlViewportDebounced = useCallback(
+    debounce(dispatch(updateUrlViewport), URL_VIEWPORT_DEBOUNCED_TIME),
+    []
   )
+
   useEffect(() => {
     const { longitude, latitude, zoom } = viewState
     updateUrlViewportDebounced({ longitude, latitude, zoom })

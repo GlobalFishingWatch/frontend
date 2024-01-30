@@ -11,7 +11,8 @@ import {
   generateUniqueId,
   getCellCoordinates,
 } from '../../loaders/fourwings/fourwingsTileParser'
-import { aggregateCell, FourwingsHeatmapLayerProps } from './FourwingsHeatmapLayer'
+import { FourwingsHeatmapLayerProps } from './FourwingsHeatmapLayer'
+import { aggregateCell } from './fourwings.utils'
 
 const defaultProps: DefaultProps<FourwingsHeatmapCellLayerProps> = {
   getIndex: { type: 'accessor', value: (d) => d.index },

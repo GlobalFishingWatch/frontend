@@ -1,6 +1,6 @@
 import { indexOf } from 'lodash'
-import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { FourwingsDataviewCategory } from '../layer-composer/types/fourwings'
+import { FourwingsLayer } from '../layers/fourwings/FourwingsLayer'
 
 export const HEATMAP_GROUP_ORDER: FourwingsDataviewCategory[] = [
   FourwingsDataviewCategory.Activity,

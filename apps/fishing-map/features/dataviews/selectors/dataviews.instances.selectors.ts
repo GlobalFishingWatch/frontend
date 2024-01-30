@@ -34,7 +34,7 @@ import {
 } from 'features/resources/resources.utils'
 import { selectUserLogged } from 'features/user/selectors/user.selectors'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import {
   selectWorkspaceDataviewInstances,

@@ -6,56 +6,38 @@ import {
 } from '@globalfishingwatch/timebar'
 import { TileCell } from '@globalfishingwatch/deck-layers'
 import { getEventColors, getEventDescription } from 'utils/events'
+import { getUTCDateTime } from 'utils/dates'
 
 export const getTimebarChunkEventColor = (ev: TimebarChartChunk<TrackEventChunkProps>) => {
   return ev.type ? getEventColors({ type: ev.type })?.color : 'white'
 }
 
 export const parseTrackEventChunkProps = (
-  // <<<<<<< HEAD
-  event: TimebarChartChunk,
-  // event: ApiEvent,
+  event: ApiEvent,
   eventKey?: string
-  // ): TimebarChartChunk<TrackEventChunkProps> => {
 ): ApiEvent & { props: TrackEventChunkProps } => {
   const { description, descriptionGeneric } = getEventDescription({
-    start: event.start,
+    start: event.start as number,
     end: event.end as number,
     type: event.type as EventTypes,
-    encounterVesselName: event.encounter?.vessel?.shipname,
+    encounterVesselName: event.encounter?.vessel?.name,
     portName: event.port_visit?.intermediateAnchorage?.name,
     portFlag: event.port_visit?.intermediateAnchorage?.flag,
-    // =======
-    //   event: ApiEvent,
-    //   eventKey: string
-    // ): ApiEvent & { props: TrackEventChunkProps } => {
-    //   const { description, descriptionGeneric, color, colorLabels } = getEventDescription({
-    //     start: event.start as string,
-    //     end: event.end as string,
-    //     type: event.type,
-    //     encounterVesselName: event.encounter?.vessel?.name,
-    //     portName: event.port_visit?.intermediateAnchorage?.name,
-    //     portFlag: event.port_visit?.intermediateAnchorage?.flag,
-    // >>>>>>> develop
   })
   const { color, colorLabels } = getEventColors({ type: event.type as EventTypes })
 
   return {
     ...event,
     id: eventKey || event.id,
-    // =====
-    // start: getUTCDateTime(event.start as string).toMillis(),
-    // end: getUTCDateTime(event.end as string).toMillis(),
-    // >>>>>>> develop
+    start: getUTCDateTime(event.start as string).toMillis(),
+    end: getUTCDateTime(event.end as string).toMillis(),
     props: {
       color,
       colorLabels,
       description,
       descriptionGeneric,
-      // =====
-      // latitude: event.position.lat,
-      // longitude: event.position.lon,
-      // >>>>>>> develop
+      latitude: event.position.lat,
+      longitude: event.position.lon,
     },
   }
 }

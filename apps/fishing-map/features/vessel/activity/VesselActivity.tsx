@@ -13,7 +13,7 @@ import {
   selectVesselEventsResources,
   selectVesselEventsResourcesLoading,
   selectVesselHasEventsDatasets,
-} from 'features/vessel/vessel.selectors'
+} from 'features/vessel/selectors/vessel.resources.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './VesselActivity.module.css'

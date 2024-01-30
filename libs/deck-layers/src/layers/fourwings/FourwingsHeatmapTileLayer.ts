@@ -24,13 +24,19 @@ import { parseFourWings } from '../../loaders/fourwings/fourwingsLayerLoader'
 import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
+  aggregateCell,
   aggregateCellTimeseries,
   asyncAwaitMS,
   getDataUrlByChunk,
 } from './fourwings.utils'
-import { aggregateCell, FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
-import { HEATMAP_ID } from './FourwingsLayer'
-import { Chunk, getChunkBuffer, getChunksByInterval, getInterval } from './fourwings.config'
+import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
+import {
+  Chunk,
+  HEATMAP_ID,
+  getChunkBuffer,
+  getChunksByInterval,
+  getInterval,
+} from './fourwings.config'
 import { FourwingsDeckSublayer, FourwingsSublayerId } from './fourwings.types'
 
 export type FourwingsLayerResolution = 'default' | 'high'

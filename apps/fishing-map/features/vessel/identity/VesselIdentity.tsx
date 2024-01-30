@@ -14,7 +14,7 @@ import {
   REGISTRY_FIELD_GROUPS,
 } from 'features/vessel/vessel.config'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,

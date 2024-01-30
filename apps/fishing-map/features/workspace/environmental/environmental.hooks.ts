@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { ckmeans, sample, mean, standardDeviation, min, max } from 'simple-statistics'
 import { useSelector } from 'react-redux'
-import { Feature, GeoJsonProperties, Geometry } from 'geojson'
+import { Feature, Geometry, GeoJsonProperties } from 'geojson'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   GeneratorType,
@@ -10,9 +10,9 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
-import { GeoJSONFeature, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
+import { ChunkFeature, aggregateFeatures } from '@globalfishingwatch/features-aggregate'
 import { DataviewConfig } from '@globalfishingwatch/api-types'
+import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveHeatmapEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
@@ -20,7 +20,31 @@ import {
   areDataviewsFeatureLoaded,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
-import { useMapBounds } from 'features/map/map-viewport.hooks'
+import { selectReportArea } from 'features/reports/reports.selectors'
+import { useMapBounds } from 'features/map/map-bounds.hooks'
+import { filterByPolygon } from 'features/reports/reports-geo.utils'
+
+const filterVisibleValues = (
+  rawData: number[],
+  config: DataviewConfig<GeneratorType> | undefined
+) => {
+  return rawData.filter((d) => {
+    const matchesMin = config?.minVisibleValue !== undefined ? d >= config?.minVisibleValue : true
+    const matchesMax = config?.maxVisibleValue !== undefined ? d <= config?.maxVisibleValue : true
+    return matchesMin && matchesMax
+  })
+}
+const getValues = (
+  features: Feature<Geometry, GeoJsonProperties>[],
+  metadata: HeatmapLayerMeta | undefined
+) => {
+  return metadata?.static
+    ? features.map((f) => f.properties?.[HEATMAP_STATIC_PROPERTY_ID] as number)
+    : aggregateFeatures(
+        features as GeoJSONFeature<Record<string, any>>[],
+        metadata as HeatmapLayerMeta
+      )
+}
 
 export const useEnvironmentalBreaksUpdate = () => {
   const dataviews = useSelector(selectActiveHeatmapEnvironmentalDataviews)

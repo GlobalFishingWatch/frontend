@@ -58,16 +58,16 @@ type VesselInfoEntry = {
 }
 type VesselInfoState = Record<string, VesselInfoEntry>
 
-type VesselState =
-  | {
-      fitBoundsOnLoad: boolean
-      printMode: boolean
-    }
-  | VesselInfoState
+type VesselState = {
+  fitBoundsOnLoad: boolean
+  printMode: boolean
+  data: VesselInfoState
+}
 
 const initialState: VesselState = {
   fitBoundsOnLoad: false,
   printMode: false,
+  data: {},
 }
 
 type VesselSliceState = { vessel: VesselState }
@@ -213,27 +213,5 @@ const vesselSlice = createSlice({
 
 export const { setVesselFitBoundsOnLoad, setVesselPrintMode, resetVesselState } =
   vesselSlice.actions
-
-export const selectVessel = (state: VesselSliceState) => {
-  const vesselId = selectVesselId(state as any) as string
-  return (state as any).vessel[vesselId] as VesselInfoEntry
-}
-export const selectVesselInfoData = createSelector(
-  [selectVessel],
-  (vessel) => vessel?.data as IdentityVesselData
-)
-export const selectVesselInfoDataId = createSelector([selectVessel], (vessel) => vessel?.data?.id)
-export const selectSelfReportedVesselIds = createSelector(
-  [selectVessel],
-  (vessel) =>
-    vessel?.data?.identities
-      ?.filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
-      .map((i) => i.id)
-)
-export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)
-export const selectVesselInfoError = createSelector([selectVessel], (vessel) => vessel?.error)
-export const selectVesselPrintMode = (state: VesselSliceState) => state.vessel.printMode as boolean
-export const selectVesselFitBoundsOnLoad = (state: VesselSliceState) =>
-  state.vessel.fitBoundsOnLoad as boolean
 
 export default vesselSlice.reducer

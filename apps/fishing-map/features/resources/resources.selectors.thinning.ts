@@ -6,8 +6,8 @@ import { ThinningConfig } from '@globalfishingwatch/api-types'
 import {
   AVAILABLE_START,
   AVAILABLE_END,
-  THINNING_LEVEL_BY_ZOOM,
-  THINNING_LEVEL_ZOOMS,
+  // THINNING_LEVEL_BY_ZOOM,
+  // THINNING_LEVEL_ZOOMS,
 } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
@@ -30,15 +30,16 @@ export const selectTrackThinningConfig = createSelector(
   (guestUser, { thinning }, currentZoom) => {
     if (!thinning) return null
     let config = {} as ThinningConfig
-    let selectedZoom = 0 as number
-    for (let i = 0; i < THINNING_LEVEL_ZOOMS.length; i++) {
-      const zoom = THINNING_LEVEL_ZOOMS[i]
-      if (currentZoom < zoom) break
-      config = THINNING_LEVEL_BY_ZOOM[zoom][guestUser ? 'guest' : 'user']
-      selectedZoom = zoom
-    }
+    // let selectedZoom = 0 as number
+    // for (let i = 0; i < THINNING_LEVEL_ZOOMS.length; i++) {
+    //   const zoom = THINNING_LEVEL_ZOOMS[i]
+    //   if (currentZoom < zoom) break
+    //   config = THINNING_LEVEL_BY_ZOOM[zoom][guestUser ? 'guest' : 'user']
+    //   selectedZoom = zoom
+    // }
+    // return { config, zoom: selectedZoom }
 
-    return { config, zoom: selectedZoom }
+    return { config }
   }
 )
 

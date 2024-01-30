@@ -4,9 +4,27 @@ import { DateTime } from 'luxon'
 import { Feature } from 'geojson'
 import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
 import { getUTCDateTime } from '../../utils/dates'
+import { Cell } from '../../loaders/fourwings/fourwingsLayerLoader'
 import { Chunk } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
 import { FourwingsDeckSublayer } from './fourwings.types'
+import { AggregateCellParams } from './FourwingsHeatmapLayer'
+
+export const aggregateCell = (
+  cell: Cell | TileCell,
+  { minFrame, maxFrame }: AggregateCellParams
+) => {
+  if (!cell) return []
+  return Object.keys(cell.timeseries).map((key) => ({
+    id: key,
+    value: Object.keys(cell.timeseries[key]).reduce((acc, frame: any) => {
+      if (parseInt(frame) >= minFrame && parseInt(frame) <= maxFrame) {
+        return acc + cell.timeseries[key][frame]
+      }
+      return acc
+    }, 0) as number,
+  }))
+}
 
 export function asyncAwaitMS(millisec: any) {
   return new Promise((resolve) => {
@@ -137,25 +155,28 @@ export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsD
   // [{index:number, timeseries: {id: {frame:value, ...}  }}]
   // What we want for the timebar is
   // [{date: date, 0:number, 1:number ...}, ...]
-  const timeseries = cells.reduce((acc: any, { timeseries }) => {
-    if (!timeseries) {
-      return acc
-    }
-    sublayers.forEach((sublayer, index) => {
-      const sublayerTimeseries = timeseries[sublayer.id]
-      if (sublayerTimeseries) {
-        const frames = Object.keys(sublayerTimeseries)
-        frames.forEach((frame: any) => {
-          if (!acc[frame]) {
-            // We populate the frame with 0s for all the sublayers
-            acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
-          }
-          acc[frame][index] += sublayerTimeseries[frame]
-        })
+  const timeseries = cells.reduce(
+    (acc: any, { timeseries }) => {
+      if (!timeseries) {
+        return acc
       }
-    })
-    return acc
-  }, {} as Record<number, Record<number, number>>)
+      sublayers.forEach((sublayer, index) => {
+        const sublayerTimeseries = timeseries[sublayer.id]
+        if (sublayerTimeseries) {
+          const frames = Object.keys(sublayerTimeseries)
+          frames.forEach((frame: any) => {
+            if (!acc[frame]) {
+              // We populate the frame with 0s for all the sublayers
+              acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
+            }
+            acc[frame][index] += sublayerTimeseries[frame]
+          })
+        }
+      })
+      return acc
+    },
+    {} as Record<number, Record<number, number>>
+  )
 
   return Object.entries(timeseries)
     .map(([frame, values]) => ({
@@ -173,15 +194,18 @@ export const aggregatePositionsTimeseries = (positions: Feature[]) => {
   if (!positions) {
     return []
   }
-  const timeseries = positions.reduce((acc, position) => {
-    const { htime, value } = position.properties as any
-    const activityStart = getMillisFromHtime(htime)
-    if (acc[activityStart]) {
-      acc[activityStart] += value
-    } else {
-      acc[activityStart] = value
-    }
-    return acc
-  }, {} as Record<number, number>)
+  const timeseries = positions.reduce(
+    (acc, position) => {
+      const { htime, value } = position.properties as any
+      const activityStart = getMillisFromHtime(htime)
+      if (acc[activityStart]) {
+        acc[activityStart] += value
+      } else {
+        acc[activityStart] = value
+      }
+      return acc
+    },
+    {} as Record<number, number>
+  )
   return timeseries
 }

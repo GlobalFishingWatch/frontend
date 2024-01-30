@@ -12,6 +12,7 @@ import {
   SublayerColorRanges,
 } from './FourwingsHeatmapTileLayer'
 import { getDatesInIntervalResolution } from './fourwings.config'
+import { aggregateCell } from './fourwings.utils'
 
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   id: string
@@ -26,22 +27,6 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
 export type AggregateCellParams = {
   minFrame: number
   maxFrame: number
-}
-
-export const aggregateCell = (
-  cell: Cell | TileCell,
-  { minFrame, maxFrame }: AggregateCellParams
-) => {
-  if (!cell) return []
-  return Object.keys(cell.timeseries).map((key) => ({
-    id: key,
-    value: Object.keys(cell.timeseries[key]).reduce((acc, frame: any) => {
-      if (parseInt(frame) >= minFrame && parseInt(frame) <= maxFrame) {
-        return acc + cell.timeseries[key][frame]
-      }
-      return acc
-    }, 0) as number,
-  }))
 }
 
 export type GetFillColorParams = {

@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { FourwingsDataviewCategory, TileCell } from '@globalfishingwatch/deck-layers'
 import { useFourwingsLayers } from '@globalfishingwatch/deck-layers'
 import { DECK_CATEGORY_BY_TIMEBAR_VISUALIZATION } from 'data/config'
-import { selectTimebarVisualisation } from 'features/app/app.selectors'
+import { selectTimebarVisualisation } from 'features/app/selectors/app.timebar.selectors'
 import { getGraphFromGridCellsData } from './timebar.utils'
 
 export const useHeatmapActivityGraph = () => {

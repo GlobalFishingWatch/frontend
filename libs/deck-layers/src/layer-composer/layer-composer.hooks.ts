@@ -1,19 +1,18 @@
-import {
-  useBasemapLayer,
-  useContextsLayer,
-  useSetFourwingsLayers,
-  zIndexSortedArray,
-  DeckLayersGeneratorDictionary,
-  BasemapDeckLayerGenerator,
-  DeckLayersGeneratorType,
-  VesselDeckLayersGenerator,
-  FourwingsDeckLayerGenerator,
-  useSetVesselLayers,
-  VesselDeckLayersParams,
-  AnyDeckLayersGenerator,
-  ContextDeckLayerGenerator,
-} from '@globalfishingwatch/deck-layers'
 import { GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
+import { VesselDeckLayersParams, useSetVesselLayers } from '../layers/vessel/vessel.hooks'
+import {
+  AnyDeckLayersGenerator,
+  BasemapDeckLayerGenerator,
+  ContextDeckLayerGenerator,
+  DeckLayersGeneratorDictionary,
+  DeckLayersGeneratorType,
+  FourwingsDeckLayerGenerator,
+  VesselDeckLayersGenerator,
+} from '../layer-composer/types'
+import { useBasemapLayer } from '../layers/basemap/basemap.hooks'
+import { useContextsLayer } from '../layers/context/context.hooks'
+import { useSetFourwingsLayers } from '../layers/fourwings/fourwings.hooks'
+import { zIndexSortedArray } from '../utils/layers'
 
 export type DeckLayerComposerParams = VesselDeckLayersParams
 export function useDeckLayerComposer({

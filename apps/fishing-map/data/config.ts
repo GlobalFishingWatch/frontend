@@ -144,5 +144,5 @@ export const DECK_CATEGORY_BY_TIMEBAR_VISUALIZATION = {
   [TimebarVisualisations.HeatmapActivity]: 'activity',
   [TimebarVisualisations.HeatmapDetections]: 'detections',
   [TimebarVisualisations.Environment]: 'environment',
-  [TimebarVisualisations.Vessel]: 'vessel', // <<<<<<< HEAD
+  [TimebarVisualisations.Vessel]: 'vessel',
 }

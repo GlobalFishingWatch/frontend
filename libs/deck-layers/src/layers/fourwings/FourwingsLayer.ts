@@ -8,9 +8,7 @@ import {
   FourwingsPositionsTileLayer,
   FourwingsPositionsTileLayerProps,
 } from './FourwingsPositionsTileLayer'
-
-export const HEATMAP_ID = 'heatmap'
-export const POSITIONS_ID = 'positions'
+import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 
 export type FourwingsLayerMode = typeof HEATMAP_ID | typeof POSITIONS_ID
 export type FourwingsColorRamp = {

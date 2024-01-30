@@ -82,8 +82,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return chunks.map(({ start, end }) => {
       const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}`
       const trackUrl = new URL(this.props.trackUrl as string)
-      trackUrl.searchParams.append('start-date', start)
-      trackUrl.searchParams.append('end-date', end)
+      trackUrl.searchParams.append('start-date', start as string)
+      trackUrl.searchParams.append('end-date', end as string)
       return new VesselTrackLayer<any, { type: VesselDataType }>(
         this.getSubLayerProps({
           id: chunkId,

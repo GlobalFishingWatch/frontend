@@ -10,12 +10,7 @@ import {
   selectVesselId,
   selectWorkspaceId,
 } from 'routes/routes.selectors'
-import {
-  fetchVesselInfoThunk,
-  selectVesselInfoData,
-  selectVesselInfoError,
-  selectVesselInfoStatus,
-} from 'features/vessel/vessel.slice'
+import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselHeader from 'features/vessel/VesselHeader'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -36,7 +31,7 @@ import VesselAreas from 'features/vessel/areas/VesselAreas'
 import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VesselSection } from 'types'
-import { selectVesselHasEventsDatasets } from 'features/vessel/vessel.selectors'
+import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
@@ -47,6 +42,11 @@ import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import {
+  selectVesselInfoStatus,
+  selectVesselInfoError,
+  selectVesselInfoData,
+} from 'features/vessel/selectors/vessel.selectors'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 import styles from './Vessel.module.css'

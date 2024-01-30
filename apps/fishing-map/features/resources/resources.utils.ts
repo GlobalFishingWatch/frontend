@@ -9,7 +9,6 @@ import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
-// <<<<<<< HEAD
 type ThinningConfigParam = { config: ThinningConfig }
 export const trackDatasetConfigsCallback = (
   thinningConfig: ThinningConfigParam | null,

@@ -8,7 +8,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import RelatedEncounterVessels from 'features/vessel/related-vessels/RelatedEncounterVessels'
 import RelatedOwnersVessels from 'features/vessel/related-vessels/RelatedOwnersVessels'
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
-import { selectVesselEventsResourcesLoading } from 'features/vessel/vessel.selectors'
+import { selectVesselEventsResourcesLoading } from 'features/vessel/selectors/vessel.resources.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './RelatedVessels.module.css'
 
