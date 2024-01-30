@@ -55,6 +55,8 @@ export const getTracksDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
         latitude: guessedColumns.latitude,
         longitude: guessedColumns.longitude,
         timestamp: guessedColumns.timestamp,
+        timeFilterType: guessedColumns.timestamp ? 'date' : null,
+        startTime: guessedColumns.timestamp || null,
         geometryType: 'tracks' as DatasetGeometryType,
       },
     } as DatasetConfiguration,
