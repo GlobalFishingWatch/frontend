@@ -46,7 +46,7 @@ steps:
     entrypoint: yarn
     args: ['nx', 'docker-prepare', 'user-groups-admin']
 
-  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+  - name: 'gcr.io/kaniko-project/executor:latest'
     id: 'build-image'
     waitFor: ['docker-prepare']
     args:
