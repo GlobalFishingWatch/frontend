@@ -1,5 +1,9 @@
-import { ColorBarOption, LINE_COLOR_BAR_OPTIONS } from '@globalfishingwatch/layer-composer'
-export { ColorBarOption } from '@globalfishingwatch/layer-composer'
+import { LINE_COLOR_BAR_OPTIONS } from '@globalfishingwatch/layer-composer'
+
+export type ColorBarOption = {
+  id: string
+  value: string
+}
 
 export const FillColorBarOptions: ColorBarOption[] = [
   { id: 'teal', value: '#00FFBC' },
