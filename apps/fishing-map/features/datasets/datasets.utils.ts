@@ -136,6 +136,9 @@ export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string =
 }
 
 export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
+  if (!dataset) {
+    return null
+  }
   if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
   if (dataset.type === DatasetTypes.Events) return 'clusters'
   const geometryType = getDatasetGeometryType(dataset)
