@@ -27,7 +27,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/tile-inspector/exported"
+        "outputPath": "dist/apps/tile-inspector"
       },
       "configurations": {
         "production": {}

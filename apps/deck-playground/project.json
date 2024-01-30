@@ -27,7 +27,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/deck-playground/exported"
+        "outputPath": "dist/apps/deck-playground"
       },
       "configurations": {
         "production": {}

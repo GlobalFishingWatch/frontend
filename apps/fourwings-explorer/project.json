@@ -30,7 +30,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/fourwings-explorer/exported"
+        "outputPath": "dist/apps/fourwings-explorer"
       },
       "configurations": {
         "production": {}

@@ -25,7 +25,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/<%= name %>/exported"
+        "outputPath": "dist/apps/<%= name %>"
       },
       "configurations": {
         "production": {}
