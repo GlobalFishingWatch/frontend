@@ -8,6 +8,19 @@ import { ColorBarOption } from '../types'
 export const DEFAULT_LINE_COLOR = 'white'
 export const HIGHLIGHT_LINE_COLOR = 'white'
 export const HIGHLIGHT_FILL_COLOR = 'rgba(0, 0, 0, 0.3)'
+
+export const FILL_COLOR_BAR_OPTIONS: ColorBarOption[] = [
+  { id: 'teal', value: '#00FFBC' },
+  { id: 'magenta', value: '#FF64CE' },
+  { id: 'lilac', value: '#9CA4FF' },
+  { id: 'salmon', value: '#FFAE9B' },
+  { id: 'sky', value: '#00EEFF' },
+  { id: 'red', value: '#FF6854' },
+  { id: 'yellow', value: '#FFEA00' },
+  { id: 'green', value: '#A6FF59' },
+  { id: 'orange', value: '#FFAA0D' },
+]
+
 export const LINE_COLOR_BAR_OPTIONS: ColorBarOption[] = [
   { id: 'carnation', value: '#F95E5E' },
   { id: 'jungle-green', value: '#33B679' },
