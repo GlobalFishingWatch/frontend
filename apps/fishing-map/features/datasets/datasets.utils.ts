@@ -152,7 +152,7 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
 }
 
 export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
-  const { source } = dataset
+  const source = dataset?.source
   if (!source) {
     return null
   }
