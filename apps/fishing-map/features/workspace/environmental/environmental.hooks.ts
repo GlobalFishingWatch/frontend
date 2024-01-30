@@ -40,7 +40,7 @@ const getValues = (
   metadata: HeatmapLayerMeta | undefined
 ) => {
   return metadata?.static
-    ? features.map((f) => (f.properties?.[HEATMAP_STATIC_PROPERTY_ID] / VALUE_MULTIPLIER) as number)
+    ? features.map((f) => f.properties?.[HEATMAP_STATIC_PROPERTY_ID] as number)
     : aggregateFeatures(
         features as GeoJSONFeature<Record<string, any>>[],
         metadata as HeatmapLayerMeta
