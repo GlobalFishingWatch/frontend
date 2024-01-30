@@ -1,4 +1,3 @@
-import { FeatureCollection } from 'geojson'
 import { maxBy, minBy } from 'lodash'
 import {
   Dataset,
@@ -12,7 +11,6 @@ import {
   getTracksChunkSetId,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
@@ -155,18 +153,4 @@ export const trackDatasetConfigsCallback = (
     }
     return [track].filter(Boolean)
   }
-}
-
-export const parseUserTrackCallback = (geoJSON: FeatureCollection) => {
-  geoJSON.features = geoJSON.features.map((feature, i) => {
-    const color = LineColorBarOptions[i % LineColorBarOptions.length].value
-    return {
-      ...feature,
-      properties: {
-        ...feature.properties,
-        color,
-      },
-    }
-  })
-  return geoJSON
 }

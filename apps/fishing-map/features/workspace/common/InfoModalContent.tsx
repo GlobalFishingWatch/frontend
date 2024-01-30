@@ -2,8 +2,8 @@ import { Fragment } from 'react'
 import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import { Dataset } from '@globalfishingwatch/api-types'
-import { getDatasetDescriptionTranslated } from 'features/i18n/utils'
-import { isGFWUser } from 'features/user/user.slice'
+import { getDatasetDescriptionTranslated } from 'features/i18n/utils.datasets'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import GFWOnly from 'features/user/GFWOnly'
 import styles from './InfoModal.module.css'
 
@@ -20,7 +20,7 @@ type InfoModalContentProps = {
 }
 
 const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   if (!dataset) {
     return null
   }

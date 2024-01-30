@@ -11,6 +11,7 @@ interface ModalProps {
   className?: string
   closeButtonClassName?: string
   shouldCloseOnEsc?: boolean
+  headerClassName?: string
   contentClassName?: string
   overlayClassName?: string
   portalClassName?: string
@@ -32,6 +33,7 @@ export function Modal(props: ModalProps) {
     title,
     portalClassName,
     className,
+    headerClassName,
     contentClassName,
     overlayClassName,
     closeButtonClassName,
@@ -58,7 +60,7 @@ export function Modal(props: ModalProps) {
       onRequestClose={onClose}
     >
       {header ? (
-        <div className={cx(styles.header, { [styles.withTitle]: title })}>
+        <div className={cx(styles.header, headerClassName, { [styles.withTitle]: title })}>
           <h1 className={styles.title}>{title}</h1>
           <IconButton icon="close" className={closeButtonClassName} onClick={onClose} />
         </div>

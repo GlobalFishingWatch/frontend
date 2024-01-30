@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from 'reducers'
-import { isGFWUser } from 'features/user/user.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 
 type DebugMenu = [boolean, () => void]
@@ -14,7 +14,7 @@ type SecretMenuProps = {
 }
 
 export const useSecretKeyboardCombo = ({ key, onToggle, repeatNumber = 7 }: SecretMenuProps) => {
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const numTimesDebugKeyDown = useRef(0)
   const debugKeyDownInterval = useRef<number>(0)
 

@@ -1,5 +1,4 @@
-import { IS_PRODUCTION_BUILD, IS_PRODUCTION_WORKSPACE_ENV } from 'data/config'
-import { PATH_BASENAME } from 'routes/routes'
+import { IS_PRODUCTION_BUILD, IS_PRODUCTION_WORKSPACE_ENV, PATH_BASENAME } from 'data/config'
 import { Locale } from 'types'
 
 type HighlighPanelConfigLocale = {

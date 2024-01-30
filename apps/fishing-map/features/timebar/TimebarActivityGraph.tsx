@@ -8,7 +8,7 @@ import {
   HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { selectActiveActivityDataviewsByVisualisation } from 'features/dataviews/dataviews.selectors'
+import { selectActiveActivityDataviewsByVisualisation } from 'features/dataviews/selectors/dataviews.selectors'
 import { useStackedActivity } from 'features/timebar/TimebarActivityGraph.hooks'
 import { formatNumber } from 'utils/info'
 import { useMapStyle } from 'features/map/map-style.hooks'

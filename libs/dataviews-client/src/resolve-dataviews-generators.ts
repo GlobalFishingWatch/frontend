@@ -1,4 +1,3 @@
-import { scaleLinear } from 'd3-scale'
 import { uniq } from 'lodash'
 import {
   Resource,
@@ -19,7 +18,6 @@ import {
   GeneratorDataviewConfig,
   GeneratorType,
   Group,
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
   HeatmapAnimatedMode,
   HeatmapAnimatedGeneratorConfig,
   Interval,
@@ -31,11 +29,21 @@ import type {
 } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
 import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+  getDatasetRangeSteps,
+} from '@globalfishingwatch/datasets-client'
+import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
   UrlDataviewInstance,
 } from './resolve-dataviews'
 import { pickTrackResource } from './resources'
+import {
+  setGeneratorConfigCircleRadius,
+  setGeneratorConfigPolygonColor,
+  setGeneratorConfigTimeFilter,
+} from './dataviews.config'
 
 export const MULTILAYER_SEPARATOR = '__'
 export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedActivityHeatmap'
@@ -166,11 +174,11 @@ export function getGeneratorConfig(
       if (highlightedTime) {
         generator.highlightedTime = highlightedTime
       }
-
+      const dataset = dataview.datasets?.find(
+        (dataset) => dataset.type === DatasetTypes.Tracks || DatasetTypes.UserTracks
+      )
       const endpointType =
-        dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
-          ? EndpointId.UserTracks
-          : EndpointId.Tracks
+        dataset?.type === DatasetTypes.UserTracks ? EndpointId.UserTracks : EndpointId.Tracks
 
       let trackResource
       if (endpointType === EndpointId.Tracks) {
@@ -184,6 +192,22 @@ export function getGeneratorConfig(
 
       if (params?.singleTrack) {
         generator.useOwnColor = true
+      }
+
+      const sourceFormat = getDatasetConfigurationProperty({
+        dataset,
+        property: 'sourceFormat',
+      })
+
+      if (
+        // When the uploaded dataset was generated from a CSV it needs to be filtered by its point coordinates
+        ((dataset?.type === DatasetTypes.UserTracks && sourceFormat === 'CSV') ||
+          // but also the tracks datasets from the vessels api can include speed or elevation filters
+          dataset?.type === DatasetTypes.Tracks) &&
+        dataview.config?.filters
+      ) {
+        delete generator.filters
+        generator.coordinateFilters = dataview.config?.filters
       }
 
       const eventsResources = resolveDataviewDatasetResources(dataview, DatasetTypes.Events)
@@ -243,6 +267,28 @@ export function getGeneratorConfig(
         metadata: {
           color: dataview?.config?.color,
           group: Group.OutlinePolygonsBackground,
+          interactive: true,
+          legend: {
+            label: heatmapDataset?.name,
+            unit: heatmapDataset?.unit,
+          },
+        },
+      }
+      return generator
+    }
+    case GeneratorType.HeatmapStatic: {
+      const heatmapDataset = dataview.datasets?.find(
+        (dataset) => dataset.type === DatasetTypes.Fourwings
+      )
+
+      generator = {
+        ...generator,
+        maxZoom: dataview.config.maxZoom || 8,
+        breaks: dataview.config.breaks,
+        datasets: [heatmapDataset?.id],
+        metadata: {
+          color: dataview?.config?.color,
+          group: Group.Heatmap,
           interactive: true,
           legend: {
             label: heatmapDataset?.name,
@@ -382,6 +428,13 @@ export function getGeneratorConfig(
         if (dataset?.source) {
           generator.attribution = getDatasetAttribution(dataset)
         }
+        const config = getDatasetConfiguration(dataset)
+        if (config?.valueProperties) {
+          generator.valueProperties = config.valueProperties
+        }
+        if (config?.idProperty) {
+          generator.promoteId = config.idProperty
+        }
 
         const propertyToInclude = (dataset.configuration as EnviromentalDatasetConfiguration)
           ?.propertyToInclude
@@ -389,20 +442,18 @@ export function getGeneratorConfig(
           const { min = 0, max } =
             (dataset.configuration as EnviromentalDatasetConfiguration)?.propertyToIncludeRange ||
             {}
-          const rampScale = scaleLinear()
-            .range([min, max || min + 0.00001])
-            .domain([0, 1])
-          const numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
-          const steps = [...Array(numSteps)]
-            .map((_, i) => i / (numSteps - 1))
-            .map((value) => rampScale(value) as number)
-          generator.steps = steps
+          generator.steps = getDatasetRangeSteps({ min, max })
         } else if (
           dataset.category === DatasetCategory.Context &&
           (dataview.config?.type === GeneratorType.UserContext ||
             dataview.config?.type === GeneratorType.UserPoints)
         ) {
-          generator.disableInteraction = dataset.configuration?.disableInteraction
+          setGeneratorConfigCircleRadius({ dataset, generator })
+          setGeneratorConfigTimeFilter({ dataset, generator })
+          setGeneratorConfigPolygonColor({ dataset, generator })
+          if (dataset?.configuration?.disableInteraction) {
+            generator.disableInteraction = dataset.configuration?.disableInteraction
+          }
         }
       }
       if (!generator.tilesUrl) {
@@ -439,6 +490,10 @@ export function isTrackDataview(dataview: UrlDataviewInstance) {
 
 export function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
   return isActivityDataview(dataview) || isDetectionsDataview(dataview)
+}
+
+export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
+  return dataview?.config?.type === GeneratorType.HeatmapStatic
 }
 
 export function getMergedHeatmapAnimatedDataview(

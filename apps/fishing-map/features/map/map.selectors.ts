@@ -20,7 +20,7 @@ import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/
 import {
   selectDataviewInstancesResolvedVisible,
   selectDefaultBasemapGenerator,
-} from 'features/dataviews/dataviews.selectors'
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import { ResourcesState } from 'features/resources/resources.slice'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
@@ -34,9 +34,7 @@ import {
   selectBivariateDataviews,
   selectMapAnnotationsVisible,
   selectMapRulersVisible,
-  selectTimeRange,
-} from 'features/app/app.selectors'
-import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/dataviews.slice'
+} from 'features/app/selectors/app.selectors'
 import {
   selectIsMarineManagerLocation,
   selectIsVesselLocation,
@@ -44,7 +42,6 @@ import {
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
   selectMapDrawingEditId,
-  selectIsMapDrawing,
 } from 'routes/routes.selectors'
 import {
   selectShowTimeComparison,
@@ -57,6 +54,8 @@ import { BivariateDataviews } from 'types'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectMapControlRuler } from 'features/map/controls/map-controls.slice'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   ANNOTATIONS_GENERATOR_ID,
   PREVIEW_BUFFER_GENERATOR_ID,
@@ -65,6 +64,8 @@ import {
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
 } from './map.config'
+
+const EMPTY_ARRAY: [] = []
 
 type GetGeneratorConfigParams = {
   dataviews: UrlDataviewInstance[] | undefined
@@ -170,7 +171,7 @@ const getGeneratorsConfig = ({
     return finalGenerators
   } catch (e) {
     console.error(e)
-    return []
+    return EMPTY_ARRAY
   }
 }
 
@@ -271,7 +272,7 @@ export const selectWorkspacesListGenerator = createSelector(
             type: 'FeatureCollection',
             features: workspaces.flatMap((workspace) => {
               if (!workspace.viewport) {
-                return []
+                return EMPTY_ARRAY
               }
 
               const { latitude, longitude, zoom } = workspace.viewport
@@ -413,7 +414,7 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     isReportLocation,
     isVesselLocation,
     basemapGenerator,
-    workspaceGenerators = [] as AnyGeneratorConfig[],
+    workspaceGenerators = EMPTY_ARRAY as AnyGeneratorConfig[],
     workspaceListGenerators,
     mapReportGenerators
   ): AnyGeneratorConfig[] => {
@@ -463,12 +464,5 @@ export const selectDrawEditDataset = createSelector(
   [selectAllDatasets, selectMapDrawingEditId],
   (datasets, datasetId) => {
     return datasets.find((dataset) => dataset.id === datasetId)
-  }
-)
-
-export const selectIsMapInteractionDisabled = createSelector(
-  [selectIsMapDrawing],
-  (isMapDrawing) => {
-    return isMapDrawing
   }
 )

@@ -26,7 +26,7 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk, selectIsUserLogged } from 'features/user/user.slice'
+import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
@@ -51,8 +51,11 @@ import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/help/hints.slice'
 import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
+import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
+import { selectReportAreaBounds } from 'features/app/selectors/app.reports.selector'
+import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { useAppDispatch } from './app.hooks'
-import { selectReadOnly, selectReportAreaBounds, selectSidebarOpen } from './app.selectors'
+import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
@@ -64,19 +67,6 @@ declare global {
     gtag: any
   }
 }
-
-export const COLOR_PRIMARY_BLUE =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.documentElement).getPropertyValue('--color-primary-blue')) ||
-  'rgb(22, 63, 137)'
-export const COLOR_SECONDARY_BLUE =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.documentElement).getPropertyValue('--color-secondary-blue')) ||
-  'rgb(22, 63, 137, .75)'
-export const COLOR_GRADIENT =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.documentElement).getPropertyValue('--color-gradient')) ||
-  'rgb(229, 240, 242)'
 
 const Main = () => {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
@@ -122,6 +112,7 @@ const setMobileSafeVH = () => {
 
 function App() {
   useAnalytics()
+  useDatasetDrag()
   useReplaceLoginUrl()
   const map = useMapInstance()
   const dispatch = useAppDispatch()

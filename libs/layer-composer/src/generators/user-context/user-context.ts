@@ -7,7 +7,7 @@ import type {
   FormattedSpecification,
   ExpressionSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
+import { DEFAULT_CONTEXT_PROMOTE_ID, DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
 import { GeneratorType, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
@@ -25,12 +25,28 @@ class UserContextGenerator {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
+
+    const url = new URL(tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}'))
+
+    if (config.filter) {
+      url.searchParams.set('filter', config.filter)
+    }
+
+    if (config.valueProperties) {
+      config.valueProperties.forEach((property, index) => {
+        url.searchParams.set(`properties[${index}]`, property)
+      })
+    }
+
+    // As user can modify the dataset, we need to avoid the cache
+    url.searchParams.set('cache', 'false')
+
     return [
       {
         id: config.id,
         type: 'vector',
-        promoteId: 'gfw_id',
-        tiles: [tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}')],
+        promoteId: config.promoteId || DEFAULT_CONTEXT_PROMOTE_ID,
+        tiles: [decodeURI(url.toString())],
       },
     ]
   }
@@ -50,6 +66,7 @@ class UserContextGenerator {
       const legendRamp = zip(config.steps, originalColorRamp)
       const valueExpression: ExpressionSpecification = [
         'to-number',
+        // feature properties are set as lowercase on the backend
         ['get', config.pickValueAt || 'value'],
       ]
       const colorRamp: DataDrivenPropertyValueSpecification<FormattedSpecification> = [
@@ -62,8 +79,9 @@ class UserContextGenerator {
         ...baseLayer,
         type: 'fill' as const,
         paint: {
-          'fill-outline-color': 'transparent',
+          'fill-outline-color': originalColorRamp[originalColorRamp.length - 1] || 'transparent',
           'fill-color': colorRamp,
+          'fill-antialias': true,
         },
         metadata: {
           color: config.color,
@@ -72,9 +90,11 @@ class UserContextGenerator {
           group: Group.CustomLayer,
           datasetId: config.datasetId,
           uniqueFeatureInteraction: true,
+          valueProperties: config.valueProperties,
           legend: {
             type: 'colorramp',
             ...config.metadata?.legend,
+            unit: config.pickValueAt,
             ramp: legendRamp,
           },
         },
@@ -108,6 +128,7 @@ class UserContextGenerator {
         interactive,
         generatorId: generatorId,
         datasetId: config.datasetId,
+        valueProperties: config.valueProperties,
         group: Group.OutlinePolygonsBackground,
       },
     }

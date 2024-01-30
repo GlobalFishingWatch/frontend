@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { selectReadOnly } from 'features/app/app.selectors'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import {
   selectIsAnyReportLocation,
   selectIsAnySearchLocation,
@@ -13,13 +13,12 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { selectIsUserLogged } from 'features/user/user.slice'
-import { selectUserGroupsPermissions } from 'features/user/user.selectors'
-import { useDatasetModalConnect } from 'features/datasets/datasets.hook'
+import { selectUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
+import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import Report from 'features/reports/Report'
-import VesselDetailWrapper from '../vessel/Vessel'
+import VesselDetailWrapper from 'features/vessel/Vessel'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -32,23 +31,9 @@ const WorkspacesList = dynamic(
   () => import(/* webpackChunkName: "WorkspacesList" */ 'features/workspaces-list/WorkspacesList')
 )
 const Search = dynamic(() => import(/* webpackChunkName: "Search" */ 'features/search/Search'))
-const NewDataset = dynamic(
-  () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/NewDataset')
-)
 
 type SidebarProps = {
   onMenuClick: () => void
-}
-
-export function getScrollElement() {
-  return document.querySelector('.scrollContainer') as HTMLElement
-}
-
-export function resetSidebarScroll() {
-  const scrollContainer = getScrollElement()
-  if (scrollContainer) {
-    scrollContainer.scrollTo({ top: 0 })
-  }
 }
 
 function Sidebar({ onMenuClick }: SidebarProps) {
@@ -63,7 +48,6 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const userLogged = useSelector(selectIsUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
-  const { datasetModal } = useDatasetModalConnect()
 
   useEffect(() => {
     if (hasUserGroupsPermissions) {
@@ -115,7 +99,6 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     <div className={styles.container}>
       {!readOnly && !isSmallScreen && <CategoryTabs onMenuClick={onMenuClick} />}
       {/* New dataset modal is used in user and workspace pages*/}
-      {datasetModal === 'new' && <NewDataset />}
       <div className="scrollContainer" data-test="sidebar-container">
         <SidebarHeader />
         {sidebarComponent}

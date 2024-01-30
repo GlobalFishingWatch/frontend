@@ -8,14 +8,15 @@ import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectReportVesselFilter, selectTimeRange } from 'features/app/app.selectors'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectReportVesselFilter } from 'features/app/selectors/app.reports.selector'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   setVesselGroupConfirmationMode,
   setVesselGroupCurrentDataviewIds,
 } from 'features/vessel-groups/vessel-groups.slice'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveHeatmapDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectReportVesselsFiltered,

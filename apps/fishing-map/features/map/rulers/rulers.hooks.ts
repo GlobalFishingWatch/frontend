@@ -5,7 +5,7 @@ import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { Ruler } from '@globalfishingwatch/layer-composer'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/app.selectors'
+import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
 
 const useRulers = () => {
@@ -77,7 +77,7 @@ const useRulers = () => {
         setRuleStart(point)
       } else {
         dispatchQueryParams({
-          mapRulers: [...rulers, { ...(value as Ruler) }],
+          mapRulers: [...(rulers || []), { ...(value as Ruler) }],
           mapRulersVisible: true,
         })
         resetMapControlValue()

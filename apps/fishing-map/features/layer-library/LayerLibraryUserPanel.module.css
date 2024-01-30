@@ -1,0 +1,41 @@
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+}
+
+.categoryLabel {
+  flex: 1;
+  padding-top: var(--space-M);
+  padding-bottom: var(--space-S);
+}
+
+.dataset {
+  height: 5rem;
+  padding: var(--space-XS) var(--space-XS) var(--space-XS) 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dataset:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.placeholder {
+  min-height: 15rem;
+  padding-right: var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary-blue);
+}
+
+.link {
+  text-decoration: underline;
+}
+
+.highlighted {
+  display: inline-block;
+  background: var(--color-highlight-blue);
+}

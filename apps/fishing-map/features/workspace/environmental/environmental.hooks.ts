@@ -1,21 +1,55 @@
 import { useCallback, useEffect } from 'react'
-import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
+import { ckmeans, sample, mean, standardDeviation, min, max } from 'simple-statistics'
 import { useSelector } from 'react-redux'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS, HeatmapLayerMeta } from '@globalfishingwatch/layer-composer'
+import { Feature, GeoJsonProperties, Geometry } from 'geojson'
+import {
+  COLOR_RAMP_DEFAULT_NUM_STEPS,
+  GeneratorType,
+  HEATMAP_STATIC_PROPERTY_ID,
+  HeatmapLayerMeta,
+} from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
+import { GeoJSONFeature, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
+import { DataviewConfig } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectActiveNonTrackEnvironmentalDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveHeatmapEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   DataviewFeature,
   areDataviewsFeatureLoaded,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
 import { useMapBounds } from 'features/map/map-viewport.hooks'
+import { filterByPolygon } from 'features/reports/reports-geo.utils'
+import { selectReportArea } from 'features/reports/reports.selectors'
+
+const filterVisibleValues = (
+  rawData: number[],
+  config: DataviewConfig<GeneratorType> | undefined
+) => {
+  return rawData.filter((d) => {
+    const matchesMin = config?.minVisibleValue !== undefined ? d >= config?.minVisibleValue : true
+    const matchesMax = config?.maxVisibleValue !== undefined ? d <= config?.maxVisibleValue : true
+    return matchesMin && matchesMax
+  })
+}
+
+const getValues = (
+  features: Feature<Geometry, GeoJsonProperties>[],
+  metadata: HeatmapLayerMeta | undefined
+) => {
+  return metadata?.static
+    ? features.map((f) => (f.properties?.[HEATMAP_STATIC_PROPERTY_ID] / VALUE_MULTIPLIER) as number)
+    : aggregateFeatures(
+        features as GeoJSONFeature<Record<string, any>>[],
+        metadata as HeatmapLayerMeta
+      )
+}
 
 export const useEnvironmentalBreaksUpdate = () => {
-  const dataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
+  const dataviews = useSelector(selectActiveHeatmapEnvironmentalDataviews)
+  const area = useSelector(selectReportArea)
   const { bounds } = useMapBounds()
   const dataviewFeatures = useMapDataviewFeatures(dataviews)
   const sourcesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
@@ -27,20 +61,13 @@ export const useEnvironmentalBreaksUpdate = () => {
   const updateBreaksByViewportValues = useCallback(
     (dataviewFeatures: DataviewFeature[], bounds: MiniglobeBounds) => {
       const dataviewInstances = dataviewFeatures?.flatMap(
-        ({ chunksFeatures, dataviewsId, metadata }) => {
-          const { features } = chunksFeatures?.[0] || ({} as ChunkFeature)
-          if (features && features.length) {
+        ({ features, chunksFeatures, dataviewsId, metadata }) => {
+          const resolvedFeatures = chunksFeatures?.[0]?.features || features || ({} as ChunkFeature)
+          if (resolvedFeatures && resolvedFeatures.length) {
             const config = dataviews.find(({ id }) => dataviewsId.includes(id))?.config
-            const filteredFeatures = filterFeaturesByBounds(features, bounds)
-            const rawData = aggregateFeatures(filteredFeatures, metadata as HeatmapLayerMeta)
-            const data = rawData.filter((d) => {
-              const matchesMin =
-                config?.minVisibleValue !== undefined ? d >= config?.minVisibleValue : true
-              const matchesMax =
-                config?.maxVisibleValue !== undefined ? d <= config?.maxVisibleValue : true
-              return matchesMin && matchesMax
-            })
-
+            const filteredFeatures = filterFeaturesByBounds(resolvedFeatures, bounds)
+            const rawData = getValues(filteredFeatures, metadata)
+            const data = filterVisibleValues(rawData, config)
             if (data && data.length) {
               const dataSampled = data.length > 1000 ? sample(data, 1000, Math.random) : data
               // filter data to 2 standard deviations from mean to remove outliers
@@ -69,11 +96,27 @@ export const useEnvironmentalBreaksUpdate = () => {
                   cleanBreaks.push(k)
                 }
               })
-
+              let areaStats
+              if (area?.geometry) {
+                const featuresInReportArea =
+                  area?.geometry && filterByPolygon([filteredFeatures], area?.geometry)[0]
+                const allFeaturesInReportArea = [
+                  ...(featuresInReportArea?.contained || []),
+                  ...(featuresInReportArea?.overlapping || []),
+                ]
+                const values = getValues(allFeaturesInReportArea, metadata)
+                const visibleValues = filterVisibleValues(values, config)
+                areaStats = {
+                  min: min(visibleValues),
+                  mean: mean(visibleValues),
+                  max: max(visibleValues),
+                }
+              }
               return {
                 id: dataviewsId[0],
                 config: {
                   breaks: cleanBreaks,
+                  stats: areaStats,
                 },
               }
             }
@@ -86,7 +129,7 @@ export const useEnvironmentalBreaksUpdate = () => {
         upsertDataviewInstance(dataviewInstances)
       }
     },
-    [dataviews, upsertDataviewInstance]
+    [area?.geometry, dataviews, upsertDataviewInstance]
   )
 
   useEffect(() => {

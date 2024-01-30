@@ -9,7 +9,11 @@ import {
   ExtendedLayer,
   Group,
 } from '@globalfishingwatch/layer-composer'
-import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
+import {
+  aggregateCell,
+  SublayerCombinationMode,
+  VALUE_MULTIPLIER,
+} from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
@@ -83,11 +87,15 @@ const getExtendedFeature = (
   const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
   const stopPropagation = feature.layer?.metadata?.stopPropagation ?? false
   const properties = feature.properties || {}
-  let value = properties.value || properties.name || properties.id
-  if (feature.layer.metadata?.valueProperties?.length) {
-    value = feature.layer.metadata.valueProperties
-      .flatMap((prop) => properties[prop] || [])
-      .join(', ')
+  let value = properties.value || properties.name || properties.id || properties?.count
+  const { valueProperties } = feature.layer.metadata || {}
+  if (valueProperties?.length) {
+    value =
+      valueProperties.length === 1
+        ? properties[valueProperties[0]]
+        : valueProperties
+            .flatMap((prop) => (properties[prop] ? `${prop}: ${properties[prop]}` : []))
+            .join('<br/>')
   }
 
   const extendedFeature: ExtendedFeature | null = {
@@ -172,6 +180,15 @@ const getExtendedFeature = (
         }
         return [temporalGridExtendedFeature]
       })
+    case GeneratorType.HeatmapStatic: {
+      return [
+        {
+          ...extendedFeature,
+          value: extendedFeature.value / VALUE_MULTIPLIER,
+          unit: generatorMetadata.legends[0]?.unit,
+        },
+      ]
+    }
     case GeneratorType.Context:
     case GeneratorType.UserPoints:
     case GeneratorType.UserContext: {

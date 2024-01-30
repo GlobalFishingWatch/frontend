@@ -16,7 +16,6 @@ type UserContextLayersProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
   const { t } = useTranslation()
   const { onReportClick, onDownloadClick } = useContextInteractions()
-
   const featuresByType = groupBy(features, 'layerId')
   return (
     <Fragment>

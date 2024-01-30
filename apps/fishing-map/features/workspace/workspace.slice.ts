@@ -28,7 +28,6 @@ import {
 } from 'routes/routes.selectors'
 import { HOME, REPORT, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
-import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
   DEFAULT_DATAVIEW_SLUGS,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
@@ -41,14 +40,19 @@ import {
   getDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
-import { isGFWUser, selectIsGuestUser } from 'features/user/user.slice'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { AppDispatch } from 'store'
-import { selectCurrentWorkspaceId, selectWorkspaceStatus } from './workspace.selectors'
+import { LIBRARY_LAYERS } from 'data/layer-library'
+import {
+  selectCurrentWorkspaceId,
+  selectDaysFromLatest,
+  selectWorkspaceStatus,
+} from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
 
@@ -89,7 +93,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = selectIsGuestUser(state)
-    const gfwUser = isGFWUser(state)
+    const gfwUser = selectIsGFWUser(state)
     const reportId = selectReportId(state)
     try {
       let workspace: Workspace<any> | null = null
@@ -164,6 +168,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         const dataviewInstances: UrlDataviewInstance[] = [
           ...(workspace?.dataviewInstances || []),
           ...(urlDataviewInstances || []),
+          // Load dataviews from layer library
+          ...LIBRARY_LAYERS,
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))

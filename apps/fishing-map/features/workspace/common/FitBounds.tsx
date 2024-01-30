@@ -8,6 +8,7 @@ import {
   geoJSONToSegments,
 } from '@globalfishingwatch/data-transforms'
 import { IdentityVessel, Resource, Segment } from '@globalfishingwatch/api-types'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { Bbox } from 'types'
@@ -26,16 +27,26 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
 
   const onFitBoundsClick = useCallback(() => {
     if (trackResource?.data && start && end) {
+      const sourceFormat = getDatasetConfigurationProperty({
+        dataset: trackResource?.dataset,
+        property: 'sourceFormat',
+      })
       const segments = (trackResource.data as FeatureCollection).features
         ? geoJSONToSegments(trackResource.data as FeatureCollection)
         : (trackResource?.data as Segment[])
-      const filteredSegments = filterSegmentsByTimerange(segments, { start, end })
+      const filteredSegments = filterSegmentsByTimerange(segments, {
+        start,
+        end,
+        // Datasets uploaded as shapefile, geojson or kml are not temporal
+        includeNonTemporalSegments: sourceFormat ? sourceFormat !== 'CSV' : false,
+      })
       const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
       if (bbox) {
         fitBounds(bbox)
       } else {
         if (
           infoResource &&
+          // TODO not used selfReportedInfo?.[0] but get the current vessel identity
           (!infoResource.data?.selfReportedInfo?.[0]?.transmissionDateFrom ||
             !infoResource.data?.selfReportedInfo?.[0]?.transmissionDateTo)
         ) {
@@ -63,6 +74,8 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
             let minTimestamp = Number.POSITIVE_INFINITY
             let maxTimestamp = Number.NEGATIVE_INFINITY
             segments.forEach((seg) => {
+              // TODO get the timestamp value from the timestamp field configured in the dataset
+              // this only works for datasets with the timestamp field named 'timestamp'
               seg.forEach((pt) => {
                 if (pt.timestamp && pt.timestamp < minTimestamp) minTimestamp = pt.timestamp
                 if (pt.timestamp && pt.timestamp > maxTimestamp) maxTimestamp = pt.timestamp
@@ -80,7 +93,16 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
         }
       }
     }
-  }, [trackResource?.data, start, end, fitBounds, infoResource, t, setTimerange])
+  }, [
+    trackResource?.data,
+    trackResource?.dataset,
+    start,
+    end,
+    fitBounds,
+    infoResource,
+    t,
+    setTimerange,
+  ])
 
   return (
     <IconButton

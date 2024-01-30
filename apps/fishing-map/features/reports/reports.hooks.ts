@@ -2,14 +2,14 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
-import { useLocalStorage, useMemoCompare } from '@globalfishingwatch/react-hooks'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
-  selectTimeRange,
-} from 'features/app/app.selectors'
+} from 'features/app/selectors/app.reports.selector'
 import {
   fetchAreaDetailThunk,
   selectDatasetAreaDetail,
@@ -29,7 +29,6 @@ import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewp
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import { HighlightedAreaParams, useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
