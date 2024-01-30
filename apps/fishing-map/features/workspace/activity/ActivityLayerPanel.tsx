@@ -21,7 +21,6 @@ import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAux
 import { SAR_DATAVIEW_SLUG } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import ActivityFitBounds from 'features/workspace/activity/ActivityFitBounds'
 import Color from 'features/workspace/common/Color'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DatasetFilterSource from '../shared/DatasetSourceField'
@@ -233,7 +232,7 @@ function ActivityLayerPanel({
                   </div>
                 </ExpandedContainer>
               )}
-              {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />}
+              {/* {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />} */}
               <InfoModal
                 dataview={dataview}
                 // Workaround to always show the auxiliar dataset too
