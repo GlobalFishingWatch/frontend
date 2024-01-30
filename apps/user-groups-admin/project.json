@@ -31,7 +31,7 @@
       "defaultConfiguration": "production",
       "options": {
         "debug": true,
-        "outputPath": "dist/apps/user-groups-admin/exported"
+        "outputPath": "dist/apps/user-groups-admin"
       },
       "configurations": {
         "production": {}
