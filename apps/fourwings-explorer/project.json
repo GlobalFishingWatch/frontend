@@ -26,10 +26,11 @@
     },
     "build": {
       "executor": "@nx/next:build",
+      "output": "export",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/fourwings-explorer"
+        "outputPath": "dist/apps/fourwings-explorer/exported"
       },
       "configurations": {
         "production": {}

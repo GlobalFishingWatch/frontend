@@ -23,10 +23,11 @@
     },
     "build": {
       "executor": "@nx/next:build",
+      "output": "export",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/tile-inspector"
+        "outputPath": "dist/apps/tile-inspector/exported"
       },
       "configurations": {
         "production": {}

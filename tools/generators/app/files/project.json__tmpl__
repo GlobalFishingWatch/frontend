@@ -21,10 +21,11 @@
     },
     "compile": {
       "executor": "@nx/next:build",
+      "output": "export",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/<%= name %>"
+        "outputPath": "dist/apps/<%= name %>/exported"
       },
       "configurations": {
         "production": {}
