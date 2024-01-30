@@ -167,10 +167,11 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       dataset,
       property: 'propertyToInclude',
     }) as string
-    const labelProperty = getDatasetConfigurationProperty({
+    const valueProperties = getDatasetConfigurationProperty({
       dataset,
-      property: 'labelProperty',
-    }) as string
+      property: 'valueProperties',
+    })
+    const valueProperty = Array.isArray(valueProperties) ? valueProperties[0] : valueProperties
 
     let areaName = report?.name
     if (!areaName) {
@@ -178,7 +179,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
         if (reportAreaStatus === AsyncReducerStatus.Finished) {
           areaName =
             reportArea?.properties?.[propertyToInclude] ||
-            reportArea?.properties?.[labelProperty] ||
+            reportArea?.properties?.[valueProperty] ||
             reportArea?.name ||
             dataset?.name
         }

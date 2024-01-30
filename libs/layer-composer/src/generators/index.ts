@@ -30,6 +30,7 @@ export { getHeatmapStaticSourceId, HEATMAP_STATIC_PROPERTY_ID } from './heatmap/
 export { rgbaStringToComponents, hexToComponents, rgbaToString } from './heatmap/util/colors'
 export { DEFAULT_BACKGROUND_COLOR } from './background/config'
 export { DEFAULT_CONTEXT_SOURCE_LAYER } from './context/config'
+export { LINE_COLOR_BAR_OPTIONS, FILL_COLOR_BAR_OPTIONS } from './context/context.utils'
 export { DEFAULT_POINTS_SOURCE_LAYER, MAX_ZOOM_TO_CLUSTER_POINTS } from './tile-cluster/config'
 export {
   COLOR_RAMP_DEFAULT_NUM_STEPS,

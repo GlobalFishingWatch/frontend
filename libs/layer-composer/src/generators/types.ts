@@ -673,3 +673,8 @@ export enum HeatmapAnimatedMode {
 export interface VesselsEventsSource extends GeoJSONSourceSpecification {
   id: string
 }
+
+export type ColorBarOption = {
+  id: string
+  value: string
+}
