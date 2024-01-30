@@ -4,19 +4,56 @@ div.modalContent {
 
 .content {
   padding: var(--space-L);
-  line-height: 1.8;
+  font: var(--font-S);
 }
 
 .content strong {
   font-weight: bold;
 }
 
-.defaultCursor {
-  cursor: default;
+.content p {
+  margin-bottom: var(--space-M);
 }
 
 .content a {
   text-decoration: underline;
+}
+
+.content * {
+  /* Needed to override the library inline color style */
+  color: var(--color-primary-blue) !important;
+}
+
+.content img {
+  max-width: 100%;
+}
+
+.infoButton {
+  vertical-align: text-bottom;
+}
+
+.content h2 {
+  font: var(--font-L);
+}
+
+.content h3 {
+  font: var(--font-M);
+}
+
+.content ol,
+.content ul {
+  padding-left: var(--space-M);
+  list-style-type: circle;
+}
+
+.content > ol,
+.content > ul {
+  list-style: disc;
+  margin-bottom: var(--space-M);
+}
+
+.content > *:nth-last-child(1) {
+  padding-bottom: var(--space-XL);
 }
 
 .subtitle {
@@ -30,6 +67,15 @@ div.modalContent {
   margin-right: var(--space-S);
 }
 
+.queriesContainer {
+  display: flex;
+  align-items: center;
+}
+
 .title {
   flex: 1;
+}
+
+.defaultCursor {
+  cursor: default;
 }

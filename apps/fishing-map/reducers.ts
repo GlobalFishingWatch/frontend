@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit'
 import { dataviewStatsApi } from 'queries/stats-api'
 import { vesselSearchApi } from 'queries/search-api'
 import descriptionReducer from 'routes/description.reducer'
+import mapControlsReducer from 'features/map/controls/map-controls.slice'
 import areasReducer from 'features/areas/areas.slice'
 import bigQueryReducer from 'features/bigquery/bigquery.slice'
 import connectedRoutes from 'routes/routes'
@@ -18,7 +19,6 @@ import regionsReducer from 'features/regions/regions.slice'
 import reportReducer from 'features/reports/report.slice'
 import reportsReducer from 'features/reports/reports.slice'
 import resourcesReducer from 'features/resources/resources.slice'
-import rulersReducer from 'features/map/rulers/rulers.slice'
 import searchReducer from 'features/search/search.slice'
 import timebarReducer from 'features/timebar/timebar.slice'
 import titleReducer from 'routes/title.reducer'
@@ -43,12 +43,12 @@ export const rootReducer = combineReducers({
   hints: hintsReducer,
   location: connectedRoutes.reducer,
   map: mapReducer,
+  mapControls: mapControlsReducer,
   modals: modalsReducer,
   regions: regionsReducer,
   report: reportReducer,
   reports: reportsReducer,
   resources: resourcesReducer,
-  rulers: rulersReducer,
   search: searchReducer,
   timebar: timebarReducer,
   title: titleReducer,

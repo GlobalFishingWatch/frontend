@@ -22,10 +22,22 @@
   color: var(--color-primary-blue);
 }
 
-.labelContainer {
+.error {
+  border-bottom: 1px solid var(--color-danger-red);
+}
+
+.errorLabel {
+  color: var(--color-danger-red);
+  margin-left: var(--space-S);
+}
+
+.label {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+}
+
+.infoIcon {
+  cursor: help;
 }
 
 .labelIconWarning {
@@ -52,9 +64,7 @@
   cursor: pointer;
   flex: 1;
   padding: 0 var(--space-S);
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .buttonsContainer {
@@ -126,8 +136,9 @@
   cursor: not-allowed;
 }
 
-.disabled {
-  pointer-events: none;
+.disabled,
+.disabled * {
+  cursor: not-allowed !important;
 }
 
 .icon {

@@ -11,6 +11,7 @@ import {
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
@@ -21,7 +22,7 @@ import {
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { isPrivateDataset } from 'features/datasets/datasets.utils'
+import { VesselInstanceDatasets, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { Area } from 'features/areas/areas.slice'
 
 // used in workspaces with encounter events layers
@@ -35,12 +36,22 @@ export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
-// Datasets ids for vessel instances
-export type VesselInstanceDatasets = {
-  track?: string
-  info?: string
-  events?: string[]
-  relatedVesselIds?: string[]
+export const getVesselInfoDataviewInstanceDatasetConfig = (
+  vesselId: string,
+  { info }: VesselInstanceDatasets
+) => {
+  return {
+    datasetId: info,
+    params: [{ id: 'vesselId', value: vesselId }],
+    query: [
+      { id: 'dataset', value: info },
+      {
+        id: 'includes',
+        value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+      },
+    ],
+    endpoint: EndpointId.Vessel,
+  } as DataviewDatasetConfig
 }
 
 export const getVesselDataviewInstanceDatasetConfig = (
@@ -49,12 +60,9 @@ export const getVesselDataviewInstanceDatasetConfig = (
 ) => {
   const datasetsConfig: DataviewDatasetConfig[] = []
   if (info) {
-    datasetsConfig.push({
-      datasetId: info,
-      params: [{ id: 'vesselId', value: vesselId }],
-      query: [{ id: 'dataset', value: info }],
-      endpoint: EndpointId.Vessel,
-    })
+    datasetsConfig.push(
+      getVesselInfoDataviewInstanceDatasetConfig(vesselId, { info: info as string })
+    )
   }
   if (track) {
     const vesselIds = relatedVesselIds ? [vesselId, ...relatedVesselIds].join(',') : vesselId
@@ -115,7 +123,7 @@ export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> =>
   }
 }
 
-export const getEnvironmentDataviewInstance = (
+export const getUserPolygonsDataviewInstance = (
   datasetId: string
 ): DataviewInstance<GeneratorType> => {
   return {
@@ -135,19 +143,40 @@ export const getEnvironmentDataviewInstance = (
 }
 
 export const getUserPointsDataviewInstance = (
-  datasetId: string
+  dataset: Dataset
 ): DataviewInstance<GeneratorType> => {
+  const circleRadiusProperty = getDatasetConfigurationProperty({ dataset, property: 'pointSize' })
+  const startTimeFilterProperty = getDatasetConfigurationProperty({
+    dataset,
+    property: 'startTime',
+  })
+  const endTimeFilterProperty = getDatasetConfigurationProperty({
+    dataset,
+    property: 'endTime',
+  })
+  const properties = [circleRadiusProperty, startTimeFilterProperty, endTimeFilterProperty]
+    .filter(Boolean)
+    .map((p) => p.toString().toLowerCase())
   return {
-    id: `user-points-${datasetId}`,
+    id: `user-points-${dataset?.id}`,
     dataviewId: TEMPLATE_POINTS_DATAVIEW_SLUG,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
     datasetsConfig: [
       {
-        datasetId: datasetId,
+        datasetId: dataset?.id,
         endpoint: EndpointId.ContextTiles,
-        params: [{ id: 'id', value: datasetId }],
+        params: [{ id: 'id', value: dataset?.id }],
+
+        ...(properties.length && {
+          query: [
+            {
+              id: 'properties',
+              value: properties,
+            },
+          ],
+        }),
       },
     ],
   }
@@ -325,4 +354,8 @@ export const getContextAreaLink = (
     default:
       return undefined
   }
+}
+
+export const isBathymetryDataview = (dataview: UrlDataviewInstance) => {
+  return dataview.id.includes('bathymetry')
 }

@@ -2,7 +2,7 @@ import { useMemo, useCallback, useState } from 'react'
 import cx from 'classnames'
 import { Range, getTrackBackground } from 'react-range'
 import { scaleLinear } from 'd3-scale'
-import { SliderThumbsSize, formatSliderNumber } from '@globalfishingwatch/ui-components'
+import { SliderThumbsSize, formatSliderNumber } from '../slider'
 import styles from '../slider/slider.module.css'
 
 export type SliderRangeValues = number[]
@@ -56,7 +56,9 @@ export function SliderRange(props: SliderRangeProps) {
       .nice()
   }, [steps])
 
-  const initialValues = (initialRange || [min, max]).map((v) => scale.invert(v))
+  const initialValues = (initialRange || [min, max]).map((v) => {
+    return Math.round(scale.invert(v))
+  })
   const [values, setValues] = useState(initialValues)
 
   const handleChange = useCallback(

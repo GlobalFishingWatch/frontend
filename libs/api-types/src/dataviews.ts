@@ -1,7 +1,7 @@
-import { ApiAppName, Dataset } from '.'
+import { ApiAppName } from './workspaces'
+import { Dataset } from './datasets'
 
 export type ColorCyclingType = 'fill' | 'line'
-
 export const INCLUDE_FILTER_ID = 'include'
 export const EXCLUDE_FILTER_ID = 'exclude'
 export type FilterOperator = typeof INCLUDE_FILTER_ID | typeof EXCLUDE_FILTER_ID
@@ -81,13 +81,14 @@ export interface DataviewFiltersConfig {
 }
 
 export enum DataviewCategory {
-  Context = 'context',
-  Events = 'events',
-  Environment = 'environment',
   Activity = 'activity',
-  Detections = 'detections',
-  Vessels = 'vessels',
   Comparison = 'comparison',
+  Context = 'context',
+  Detections = 'detections',
+  Environment = 'environment',
+  Events = 'events',
+  User = 'user',
+  Vessels = 'vessels',
 }
 
 export interface Dataview<Type = any, Category = DataviewCategory> {

@@ -197,6 +197,16 @@
   text-decoration: underline;
 }
 
+.trackColor {
+  color: var(--color-secondary-blue);
+  transition: var(--transition);
+  cursor: default;
+}
+
+.trackColor:hover {
+  color: var(--color-primary-blue);
+}
+
 .trackColor::before {
   content: ' ';
   display: inline-block;
@@ -234,6 +244,18 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.areasOnScreen summary {
+  justify-content: left;
+}
+
+.areasOnScreen summary::before {
+  content: unset;
+}
+
+.areasOnScreen summary span {
+  padding: 0;
 }
 
 @media print {
@@ -280,7 +302,8 @@
   display: none !important;
 }
 
-.faded {
+.faded,
+.secondary {
   color: var(--color-secondary-blue);
 }
 

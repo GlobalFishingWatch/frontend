@@ -53,6 +53,13 @@
   background-image: url('../../../assets/images/basemap-default.jpg');
 }
 
+.active,
+.active:hover,
+.active:focus {
+  background-color: var(--color-white);
+  color: var(--color-primary-blue);
+}
+
 .loadingBtn {
   transform: scale(0);
   height: 0;

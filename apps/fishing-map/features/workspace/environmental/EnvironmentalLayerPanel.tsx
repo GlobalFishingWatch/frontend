@@ -1,22 +1,21 @@
 import { useState, useMemo, useTransition } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectUserId } from 'features/user/user.selectors'
-import { useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { isGFWUser, isGuestUser } from 'features/user/user.slice'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import ActivityFilters, {
   isHistogramDataviewSupported,
-} from 'features/workspace/activity/ActivityFilters'
+} from 'features/workspace/common/LayerFilters'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
+import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -24,8 +23,6 @@ import InfoModal from '../common/InfoModal'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
 import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import { getDatasetNameTranslated } from '../../i18n/utils'
-import { getLayerDatasetRange } from './HistogramRangeFilter'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -37,9 +34,6 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const [filterOpen, setFiltersOpen] = useState(false)
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const userId = useSelector(selectUserId)
-  const guestUser = useSelector(isGuestUser)
-  const gfwUser = useSelector(isGFWUser)
   const [colorOpen, setColorOpen] = useState(false)
   const {
     items,
@@ -53,7 +47,14 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   } = useLayerPanelDataviewSort(dataview.id)
 
   const datasetFields: { field: SupportedEnvDatasetSchema; label: string }[] = useMemo(
-    () => [{ field: 'type', label: t('layer.type', 'Type') }],
+    () => [
+      { field: 'type', label: t('layer.type', 'Type') },
+      { field: 'flag', label: t('layer.flagState_others', 'Flags') },
+      { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
+      { field: 'speed', label: t('layer.speed', 'Speed') },
+      { field: 'Height', label: t('layer.height', 'Height') },
+      { field: 'REALM', label: t('layer.REALM', 'REALM') },
+    ],
     [t]
   )
 
@@ -89,12 +90,14 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   }
 
   const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
+    (d) =>
+      d.type === DatasetTypes.Fourwings ||
+      d.type === DatasetTypes.Context ||
+      d.type === DatasetTypes.UserContext
   )
-  useAutoRefreshImportingDataset(dataset)
-  const isCustomUserLayer = !guestUser && dataset?.ownerId === userId
+  const hasLegend = dataset?.type === DatasetTypes.Fourwings
 
-  if (!dataset) {
+  if (!dataset || dataset.status === 'deleted') {
     return <DatasetNotFound dataview={dataview} />
   }
 
@@ -111,7 +114,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     />
   )
 
-  const layerRange = getLayerDatasetRange(dataset)
+  const layerRange = getEnvironmentalDatasetRange(dataset)
   const showMinVisibleFilter =
     dataview.config?.minVisibleValue !== undefined
       ? dataview.config?.minVisibleValue !== layerRange.min
@@ -120,7 +123,8 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     dataview.config?.maxVisibleValue !== undefined
       ? dataview.config?.maxVisibleValue !== layerRange.max
       : false
-  const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter
+  const hasFilters = dataview.config?.filters && Object.keys(dataview.config?.filters).length > 0
+  const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter || hasFilters
 
   return (
     <div
@@ -150,7 +154,9 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
-              component={<ActivityFilters dataview={dataview} />}
+              component={
+                <ActivityFilters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />
+              }
             >
               <div className={styles.filterButtonWrapper}>
                 <IconButton
@@ -168,7 +174,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               </div>
             </ExpandedContainer>
           )}
-          {layerActive && isCustomUserLayer && (
+          {layerActive && !isBathymetryDataview(dataview) && (
             <Color
               dataview={dataview}
               open={colorOpen}
@@ -179,7 +185,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             />
           )}
           <InfoModal dataview={dataview} />
-          {(isCustomUserLayer || gfwUser) && <Remove dataview={dataview} />}
+          <Remove dataview={dataview} />
           {items.length > 1 && (
             <IconButton
               size="small"
@@ -191,7 +197,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           )}
         </div>
       </div>
-      {layerActive && (
+      {layerActive && showVisibleFilterValues && (
         <div className={styles.properties}>
           <div className={styles.filters}>
             <div className={styles.filters}>
@@ -211,7 +217,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           </div>
         </div>
       )}
-      {layerActive && (
+      {layerActive && hasLegend && (
         <div
           className={cx(styles.properties, styles.drag, {
             [styles.dragging]: isSorting && activeIndex > -1,

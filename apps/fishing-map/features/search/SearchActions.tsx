@@ -11,7 +11,7 @@ import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveHeatmapDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   setVesselGroupConfirmationMode,
   setVesselGroupCurrentDataviewIds,
@@ -81,6 +81,8 @@ function SearchActions() {
     })
   }
 
+  const hasVesselsSelected = vesselsSelected.length !== 0
+
   return (
     <Fragment>
       <VesselGroupAddButton
@@ -92,12 +94,17 @@ function SearchActions() {
       <Button
         className={styles.footerAction}
         onClick={onConfirmSelection}
-        disabled={vesselsSelected.length === 0}
+        disabled={!hasVesselsSelected}
         testId="search-vessels-add-vessel"
+        tooltip={
+          !hasVesselsSelected
+            ? t('search.selectVesselResults', 'Select results to see vessels on map')
+            : ''
+        }
       >
         {t('search.seeVesselsOnMap', {
           defaultValue: 'See vessels on map',
-          ...(vesselsSelected.length !== 0 && { count: vesselsSelected.length }),
+          ...(hasVesselsSelected && { count: vesselsSelected.length }),
         })}
       </Button>
     </Fragment>

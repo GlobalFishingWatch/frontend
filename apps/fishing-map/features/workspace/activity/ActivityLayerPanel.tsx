@@ -2,15 +2,14 @@ import { Fragment, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { DEFAULT_STATS_FIELDS, useGetStatsByDataviewQuery } from 'queries/stats-api'
 import { ColorBarOption, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import {
   getDatasetConfigByDatasetType,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetSchemaItem, DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectBivariateDataviews, selectReadOnly } from 'features/app/app.selectors'
+import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
@@ -18,14 +17,10 @@ import { getDatasetTitleByDataview, SupportedDatasetSchema } from 'features/data
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import I18nNumber from 'features/i18n/i18nNumber'
-import { isGuestUser } from 'features/user/user.slice'
-import { selectUrlTimeRange } from 'routes/routes.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
 import { SAR_DATAVIEW_SLUG } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import ActivityFitBounds from 'features/workspace/activity/ActivityFitBounds'
 import Color from 'features/workspace/common/Color'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DatasetFilterSource from '../shared/DatasetSourceField'
@@ -36,7 +31,7 @@ import Remove from '../common/Remove'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
 import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
-import Filters from './ActivityFilters'
+import Filters from '../common/LayerFilters'
 import { isActivityDataview, isDetectionsDataview } from './activity.utils'
 import activityStyles from './ActivitySection.module.css'
 
@@ -60,31 +55,30 @@ function ActivityLayerPanel({
 
   const { deleteDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
-  const urlTimeRange = useSelector(selectUrlTimeRange)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const hintsDismissed = useSelector(selectHintsDismissed)
-  const guestUser = useSelector(isGuestUser)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
-  const datasetStatsFields = dataview.datasets!?.flatMap((d) =>
-    Object.entries(d.schema || {}).flatMap(([id, schema]) =>
-      (schema as DatasetSchemaItem).stats ? id.toUpperCase() : []
-    )
-  )
-
-  const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
-
-  const { data: stats, isFetching } = useGetStatsByDataviewQuery(
-    {
-      dataview,
-      timerange: urlTimeRange as any,
-      fields: fields as any,
-    },
-    {
-      skip: guestUser || !urlTimeRange || !layerActive,
-    }
-  )
-
+  // TODO remove when final decission on stats display is taken
+  // const urlTimeRange = useSelector(selectUrlTimeRange)
+  // const guestUser = useSelector(selectIsGuestUser)
+  // const datasetStatsFields = dataview.datasets!?.flatMap((d) =>
+  //   Object.entries(d.schema || {}).flatMap(([id, schema]) =>
+  //     (schema as DatasetSchemaItem).stats ? id.toUpperCase() : []
+  //   )
+  // )
+  // const fields = datasetStatsFields?.length > 0 ? datasetStatsFields : DEFAULT_STATS_FIELDS
+  // const { data: stats, isFetching } = useGetStatsByDataviewQuery(
+  //   {
+  //     dataview,
+  //     timerange: urlTimeRange as any,
+  //     fields: fields as any,
+  //   },
+  //   {
+  //     skip: guestUser || !urlTimeRange || !layerActive,
+  //   }
+  // )
+  // const statsValue = stats && (stats.vesselIds || stats.id)
   const disableBivariate = () => {
     dispatchQueryParams({ bivariateDataviews: undefined })
   }
@@ -174,11 +168,10 @@ function ActivityLayerPanel({
       { field: 'license_category', label: t('vessel.license_category', 'License category') },
       { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
       { field: 'vessel-groups', label: t('vesselGroup.vesselGroup', 'Vessel Group') },
+      { field: 'neural_vessel_type', label: t('vessel.neuralVesselType', 'Neural vessel type') },
     ]
     return fields
   }, [t])
-
-  const statsValue = stats && (stats.vesselIds || stats.id)
 
   return (
     <div
@@ -239,7 +232,7 @@ function ActivityLayerPanel({
                   </div>
                 </ExpandedContainer>
               )}
-              {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />}
+              {/* {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />} */}
               <InfoModal
                 dataview={dataview}
                 // Workaround to always show the auxiliar dataset too
@@ -250,6 +243,7 @@ function ActivityLayerPanel({
           </div>
           {layerActive && (
             <div className={styles.properties}>
+              {/* TODO remove when final decission on stats display is taken
               {stats && (
                 <div
                   className={cx(
@@ -312,7 +306,7 @@ function ActivityLayerPanel({
                     </div>
                   </Tooltip>
                 </div>
-              )}
+              )} */}
               <div className={styles.filters}>
                 <div className={styles.filters}>
                   <OutOfTimerangeDisclaimer dataview={dataview} />

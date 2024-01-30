@@ -9,7 +9,9 @@ import {
 const arrayQueryParams: EndpointParamType[] = ['4wings-datasets', 'sql']
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
 export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
-  const endpoint = dataset.endpoints?.find((endpoint) => endpoint.id === datasetConfig.endpoint)
+  const endpoint = dataset.endpoints?.find((endpoint) => {
+    return endpoint.id === datasetConfig.endpoint
+  })
 
   if (!endpoint) return null
 
@@ -61,6 +63,7 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
     if (
       endpoint.query.some((q) => q.id === 'datasets') &&
       !resolvedQuery.toString().includes('datasets') &&
+      !resolvedQuery.toString().includes('dataset') &&
       datasetConfig.datasetId
     ) {
       const datasetString = API_VERSION === 'v2' ? 'datasets' : 'datasets[0]'
@@ -74,12 +77,14 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
       resolvedQuery.set('dataset', datasetConfig.datasetId)
     }
     url = `${url}?${resolvedQuery.toString()}`
-  } else if (
-    dataset.type !== DatasetTypes.Fourwings &&
-    endpoint.query.some((q) => q.id === 'datasets')
-  ) {
-    // Fallback when no dataset query is defined but we already know which dataset want to search in
-    url = `${url}?datasets=${dataset.id}`
+  } else if (dataset.type !== DatasetTypes.Fourwings) {
+    if (endpoint.query.some((q) => q.id === 'dataset')) {
+      // Fallback when no dataset query is defined but we already know which dataset want to search in
+      url = `${url}?dataset=${dataset.id}`
+    } else if (endpoint.query.some((q) => q.id === 'datasets')) {
+      // Fallback when no dataset query is defined but we already know which datasets want to search in
+      url = `${url}?datasets=${dataset.id}`
+    }
   }
 
   return decodeURI(url)

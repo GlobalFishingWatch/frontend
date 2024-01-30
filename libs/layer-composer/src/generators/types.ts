@@ -12,6 +12,7 @@ import { Interval } from './heatmap/types'
 export type LayerVisibility = 'visible' | 'none'
 
 export enum GeneratorType {
+  Annotation = 'ANNOTATION',
   Background = 'BACKGROUND',
   Basemap = 'BASEMAP',
   BasemapLabels = 'BASEMAP_LABELS',
@@ -19,6 +20,7 @@ export enum GeneratorType {
   Context = 'CONTEXT',
   GL = 'GL',
   Heatmap = 'HEATMAP',
+  HeatmapStatic = 'HEATMAP_STATIC',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
   Polygons = 'POLYGONS',
   Rulers = 'RULERS',
@@ -53,7 +55,7 @@ export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
   totalHeatmapAnimatedGenerators?: number
 }
 
-export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | null
+export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | MapAnnotation[] | null
 
 export interface GeneratorLegend {
   type?: string
@@ -133,6 +135,10 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    */
   datasetId?: string
   /**
+   * SQL filter to apply to the dataset
+   */
+  filter?: string
+  /**
    * Custom color ramp for filled layers
    */
   steps?: number[]
@@ -144,6 +150,15 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    * Disable interaction (needed when user uploaded a non-polygon layer)
    */
   disableInteraction?: boolean
+  /**
+   * Properties added to generated url search params
+   * These properties would be available on the tile features
+   */
+  valueProperties?: string[]
+  /**
+   * Property to use as id internally in mapbox
+   */
+  promoteId?: string
 }
 
 /**
@@ -164,6 +179,35 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    */
   datasetId?: string
   /**
+   * SQL filter to apply to the dataset
+   */
+  filter?: string
+  /**
+   * Feature property to drive timestamps filtering
+   */
+  startTimeFilterProperty?: string
+  /**
+   * Feature property to drive timestamps filtering
+   */
+  endTimeFilterProperty?: string
+  /**
+   * Feature property to drive circle radius
+   */
+  circleRadiusProperty?: string
+  /**
+   * min max values of the circleRadiusProperty
+   * circle radius linear interpolation will be based on this range
+   */
+  circleRadiusRange?: number[]
+  /**
+   * min point size of the values range lower end
+   */
+  minPointSize?: number
+  /**
+   * man point size of the values range higher end
+   */
+  maxPointSize?: number
+  /**
    * Property to get value to display the ramp
    */
   pickValueAt?: string
@@ -171,6 +215,11 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    * Disable interaction (needed when user uploaded a non-polygon layer)
    */
   disableInteraction?: boolean
+  /**
+   * Properties added to generated url search params
+   * These properties would be available on the tile features
+   */
+  valueProperties?: string[]
 }
 
 /**
@@ -322,6 +371,18 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
     start: string
     end: string
   }
+  /**
+   * Filter the tracks displayed https://docs.mapbox.com/help/glossary/filter/
+   */
+  filters?: Record<string, Array<string | number>>
+  /**
+   * Filter segment points by its coordinateProperties
+   */
+  coordinateFilters?: Record<string, Array<string | number>>
+  /**
+   * Property to use as id internally in mapbox
+   */
+  promoteId?: string
 }
 
 export interface PolygonsGeneratorConfig extends GeneratorConfig {
@@ -384,9 +445,20 @@ export interface VesselEventsShapesGeneratorConfig extends GeneratorConfig {
 export interface RulersGeneratorConfig extends GeneratorConfig {
   type: GeneratorType.Rulers
   /**
-   * An array defining rulers with start and end coordinates, and an isNew flag
+   * An array defining rulers with start and end coordinates
    */
   data: Ruler[]
+}
+
+/**
+ * Renders map text annotations
+ */
+export interface AnnotationsGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.Annotation
+  /**
+   * An array defining annotations with label, color and start and end coordinates
+   */
+  data: MapAnnotation[]
 }
 
 export interface HeatmapGeneratorConfig extends GeneratorConfig {
@@ -407,6 +479,21 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
   filters?: string
   statsFilter?: string
   colorRamp?: ColorRampsIds
+}
+
+export interface HeatmapStaticGeneratorConfig extends GeneratorConfig {
+  type: GeneratorType.HeatmapStatic
+  tilesAPI?: string
+  maxZoom?: number
+  numBreaks?: number
+  breaks?: number[]
+  breaksMultiplier?: number
+  datasets: string[]
+  group?: Group
+  filters?: string
+  colorRamp?: ColorRampsIds
+  interactive?: boolean
+  aggregationOperation?: AggregationOperation
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
@@ -435,12 +522,14 @@ export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
 }
 
 export type AnyGeneratorConfig =
+  | AnnotationsGeneratorConfig
   | BackgroundGeneratorConfig
   | BasemapGeneratorConfig
   | BasemapLabelsGeneratorConfig
   | CartoPolygonsGeneratorConfig
   | ContextGeneratorConfig
   | GlGeneratorConfig
+  | HeatmapStaticGeneratorConfig
   | HeatmapAnimatedGeneratorConfig
   | HeatmapGeneratorConfig
   | PolygonsGeneratorConfig
@@ -504,6 +593,7 @@ export type RawEvent = {
 export type AuthorizationOptions = 'authorized' | 'partially' | 'unmatched'
 
 export type Ruler = {
+  id: number
   start: {
     latitude: number
     longitude: number
@@ -512,7 +602,14 @@ export type Ruler = {
     latitude: number
     longitude: number
   }
-  isNew?: boolean
+}
+
+export type MapAnnotation = {
+  id: number
+  lon: number | string
+  lat: number | string
+  label: string
+  color?: string
 }
 
 export type HeatmapAnimatedInteractionType = 'activity' | 'detections'
@@ -529,6 +626,7 @@ export interface HeatmapAnimatedGeneratorSublayer {
   legend?: GeneratorLegend
   interactionType?: HeatmapAnimatedInteractionType
   availableIntervals?: Interval[]
+  metadata?: GeneratorMetadata
 }
 
 // ---- Heatmap Generator color ramps types
@@ -542,6 +640,7 @@ export type ColorRampId =
   | 'yellow'
   | 'green'
   | 'orange'
+  | 'bathymetry' // Custom one for the bathymetry dataset
 
 export type ColorRampWhiteId =
   | 'teal_toWhite'
@@ -553,6 +652,7 @@ export type ColorRampWhiteId =
   | 'yellow_toWhite'
   | 'green_toWhite'
   | 'orange_toWhite'
+  | 'bathymetry_toWhite'
 
 export type ColorRampsIds = ColorRampId | ColorRampWhiteId
 
@@ -572,4 +672,9 @@ export enum HeatmapAnimatedMode {
 }
 export interface VesselsEventsSource extends GeoJSONSourceSpecification {
   id: string
+}
+
+export type ColorBarOption = {
+  id: string
+  value: string
 }

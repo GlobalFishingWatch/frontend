@@ -11,7 +11,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useSetViewState } from 'features/map/map-viewport.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { sortByCreationDate } from 'utils/dates'
-import { selectUserWorkspacesPrivate } from './user.selectors'
+import { selectUserWorkspacesPrivate } from './selectors/user.permissions.selectors'
 import styles from './User.module.css'
 
 function UserWorkspacesPrivate() {

@@ -13,6 +13,7 @@
 // import translations from '../../public/locales/source/translations.json'
 // import helphints from '../../public/locales/source/helphints.json'
 // import dataTerminology from '../../public/locales/source/data-terminology.json'
+// import layerLibrary from '../../public/locales/source/layer-library.json'
 
 // export declare module 'i18next' {
 //   // Extend CustomTypeOptions
@@ -24,6 +25,7 @@
 //       translations: typeof translations
 //       helphints: typeof helphints
 //       'data-terminology': typeof dataTerminology
+//       'layer-library': typeof layerLibrary
 //       datasets: typeof datasets
 //       timebar: typeof timebar
 //       flags: typeof flags

@@ -7,7 +7,7 @@ import {
   HighlighterCallbackFn,
   HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
-import { selectActiveActivityDataviewsByVisualisation } from 'features/dataviews/dataviews.selectors'
+import { selectActiveActivityDataviewsByVisualisation } from 'features/dataviews/selectors/dataviews.selectors'
 import { useHeatmapActivityGraph } from 'features/timebar/TimebarActivityGraph.hooks'
 import { formatNumber } from 'utils/info'
 import { useMapStyle } from 'features/map/map-style.hooks'

@@ -59,6 +59,7 @@ interface MultiSelectProps {
   selectedOptions?: MultiSelectOption[]
   disabled?: boolean
   disabledMsg?: string
+  direction?: 'bottom' | 'top'
   onFilterOptions?: MultiSelectOnFilter
   onIsOpenChange?: (open: boolean) => void
   onSelect: MultiSelectOnChange
@@ -67,6 +68,7 @@ interface MultiSelectProps {
   className?: string
   labelContainerClassName?: string
   testId?: string
+  infoTooltip?: string
 }
 
 const getPlaceholderBySelections = (
@@ -81,8 +83,8 @@ const getPlaceholderBySelections = (
         })
         .join(', ')
     : selections.length > 1
-    ? `${selections.length} selected`
-    : selections[0]?.label.toString()
+      ? `${selections.length} selected`
+      : selections[0]?.label.toString()
 }
 
 const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOption) => {
@@ -107,6 +109,7 @@ export function MultiSelect(props: MultiSelectProps) {
     placeholder,
     className = '',
     labelContainerClassName = '',
+    direction = 'bottom',
     onSelect,
     onRemove,
     onCleanClick,
@@ -115,6 +118,7 @@ export function MultiSelect(props: MultiSelectProps) {
     disabledMsg = '',
     onFilterOptions,
     testId = 'multi-select',
+    infoTooltip,
   } = props
 
   const handleRemove = useCallback(
@@ -242,8 +246,13 @@ export function MultiSelect(props: MultiSelectProps) {
     <div className={className}>
       <div className={cx(styles.labelContainer, labelContainerClassName)}>
         {label !== undefined && (
-          <label {...getLabelProps()} className={cx(styles.label, { [styles.disabled]: disabled })}>
+          <label className={cx(styles.label, { [styles.disabled]: disabled })}>
             {label}
+            {infoTooltip && (
+              <Tooltip content={infoTooltip}>
+                <IconButton icon="info" size="tiny" className={styles.infoIcon} />
+              </Tooltip>
+            )}
           </label>
         )}
         {disabled && disabledMsg && (
@@ -293,7 +302,7 @@ export function MultiSelect(props: MultiSelectProps) {
             </Fragment>
           )}
         </div>
-        <ul {...getMenuProps()} className={styles.optionsContainer}>
+        <ul {...getMenuProps()} className={cx(styles.optionsContainer, styles[direction])}>
           {isOpen &&
             filteredItems.length > 0 &&
             filteredItems.map((item, index) => {
@@ -306,8 +315,8 @@ export function MultiSelect(props: MultiSelectProps) {
                 highlight && isSelected
                   ? 'close'
                   : (highlight || isSelected) && !item.disableSelection
-                  ? 'tick'
-                  : ('' as IconType)
+                    ? 'tick'
+                    : ('' as IconType)
               return (
                 <Tooltip key={item.id} content={item.tooltip} placement="top-start">
                   <li

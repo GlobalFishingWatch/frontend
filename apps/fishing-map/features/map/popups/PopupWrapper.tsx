@@ -15,6 +15,8 @@ import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { WORKSPACE_GENERATOR_ID, REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
+import AnnotationTooltip from 'features/map/popups/AnnotationTooltip'
+import RulerTooltip from 'features/map/popups/RulerTooltip'
 import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.slice'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
@@ -59,6 +61,7 @@ function PopupWrapper({
   const visibleFeatures = event.features.filter(
     (feature) => feature.visible || feature.source === WORKSPACE_GENERATOR_ID
   )
+
   const featureByCategory = groupBy(
     visibleFeatures.sort(
       (a, b) => POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
@@ -129,22 +132,31 @@ function PopupWrapper({
                     showFeaturesDetails={type === 'click'}
                   />
                 )
-              case DataviewCategory.Environment:
+              case DataviewCategory.Environment: {
+                const contextEnvironmentalFeatures = features.filter(
+                  (feature) =>
+                    feature.type === GeneratorType.Context ||
+                    feature.type === GeneratorType.UserContext
+                )
+                const environmentalFeatures = features.filter(
+                  (feature) =>
+                    feature.type !== GeneratorType.Context &&
+                    feature.type !== GeneratorType.UserContext
+                )
                 return (
-                  <EnvironmentTooltipSection
-                    key={featureCategory}
-                    features={features}
-                    showFeaturesDetails={type === 'click'}
-                  />
+                  <Fragment key={featureCategory}>
+                    <ContextTooltipSection
+                      features={contextEnvironmentalFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                    <EnvironmentTooltipSection
+                      features={environmentalFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  </Fragment>
                 )
-              // TODO: merge UserContextTooltipSection and ContextTooltipSection
+              }
               case DataviewCategory.Context: {
-                const userPointFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserPoints
-                )
-                const userContextFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserContext
-                )
                 const defaultContextFeatures = features.filter(
                   (feature) => feature.type === GeneratorType.Context
                 )
@@ -154,20 +166,43 @@ function PopupWrapper({
                 const areaBufferFeatures = features.filter(
                   (feature) => feature.source === REPORT_BUFFER_GENERATOR_ID
                 )
+                const annotationFeatures = features.filter(
+                  (feature) => feature.type === GeneratorType.Annotation
+                )
+                const rulersFeatures = features.filter(
+                  (feature) => feature.type === GeneratorType.Rulers
+                )
+                return (
+                  <Fragment key={featureCategory}>
+                    <AnnotationTooltip features={annotationFeatures} />
+                    <RulerTooltip
+                      features={rulersFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                    <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
+                    <ReportBufferTooltip features={areaBufferFeatures} />
+                    <ContextTooltipSection
+                      features={defaultContextFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  </Fragment>
+                )
+              }
+              case DataviewCategory.User: {
+                const userPointFeatures = features.filter(
+                  (feature) => feature.type === GeneratorType.UserPoints
+                )
+                const userContextFeatures = features.filter(
+                  (feature) => feature.type === GeneratorType.UserContext
+                )
                 return (
                   <Fragment key={featureCategory}>
                     <UserPointsTooltipSection
                       features={userPointFeatures}
                       showFeaturesDetails={type === 'click'}
                     />
-                    <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
-                    <ReportBufferTooltip features={areaBufferFeatures} />
                     <UserContextTooltipSection
                       features={userContextFeatures}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                    <ContextTooltipSection
-                      features={defaultContextFeatures}
                       showFeaturesDetails={type === 'click'}
                     />
                   </Fragment>

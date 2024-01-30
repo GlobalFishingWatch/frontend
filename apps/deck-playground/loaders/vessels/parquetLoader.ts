@@ -64,7 +64,6 @@ const parseTrack = (parquetBuffer) => {
 
     return data
   } catch (e) {
-    console.log('Error parsing track:', e)
-    return
+    console.warn('parse track error', e)
   }
 }

@@ -24,6 +24,16 @@
   padding: 0;
 }
 
+.optionsContainer.bottom {
+  top: calc(100% + 1px);
+}
+
+.optionsContainer.top {
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  bottom: calc(100% + 1px);
+  top: auto;
+}
+
 .input {
   flex: 1;
   white-space: nowrap;

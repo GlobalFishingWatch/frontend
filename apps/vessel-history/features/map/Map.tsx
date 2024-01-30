@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { useLayerComposer, useMapClick, useMemoCompare } from '@globalfishingwatch/react-hooks'
-import { ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DatasetCategory, DatasetSubCategory } from '@globalfishingwatch/api-types'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
-import { selectActiveVesselsDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectActiveVesselsDataviews, selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import Info from 'features/map/info/Info'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
@@ -15,12 +16,14 @@ import useVoyagesConnect from 'features/vessels/voyages/voyages.hook'
 import { EventTypeVoyage } from 'types/voyage'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectFilters } from 'features/event-filters/filters.slice'
+import { getUTCDateTime } from 'utils/dates'
+import { parseVesselProfileId } from 'features/vessels/vessels.utils'
 import { useGeneratorsConnect } from './map.hooks'
 import useMapInstance from './map-context.hooks'
 import useViewport from './map-viewport.hooks'
 import MapControls from './controls/MapControls'
 import useMapEvents from './map-events.hooks'
-import { selectHighlightedEvent } from './map.slice'
+import { selectHighlightedEvent, selectMapVoyageTime } from './map.slice'
 import PopupWrapper from './popups/PopupWrapper'
 import styles from './Map.module.css'
 
@@ -68,6 +71,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
   const vesselDataviewLoaded = useMemo(() => !!vesselDataview, [vesselDataview])
   const filters = useSelector(selectFilters)
   const [prevFilters, setPrevFilters] = useState(filters)
+  const contextLayers = useSelector(selectDataviewInstancesByType(GeneratorType.Context))
 
   useEffect(() => {
     if (!vesselLoaded || !vesselDataviewLoaded || eventsLoading || highlightedEvent) return
@@ -170,6 +174,7 @@ const MapWrapper: React.FC = (): React.ReactElement => {
         //with this change we will center the event in the available map on the screen
         const coordinates = map.project([nextEvent.position.lon, nextEvent.position.lat])
         const offsetCoordinates = map.unproject([coordinates.x, coordinates.y + padding / 2])
+        highlightEvent(nextEvent)
         setMapCoordinates({
           latitude: offsetCoordinates.lat,
           longitude: offsetCoordinates.lng,
@@ -179,8 +184,92 @@ const MapWrapper: React.FC = (): React.ReactElement => {
         })
       }
     },
-    [map, setMapCoordinates]
+    [highlightEvent, map, setMapCoordinates]
   )
+
+  const currentVoyageTime = useSelector(selectMapVoyageTime)
+
+  const viewInGFWMap = useCallback(() => {
+    const start = currentVoyageTime
+      ? `${currentVoyageTime.start.substring(0, 10)}T00%3A00%3A00.000Z`
+      : ''
+    const end = currentVoyageTime
+      ? getUTCDateTime(`${currentVoyageTime.end.substring(0, 10)}`)
+          .plus({ days: 1 })
+          .toISO()
+      : ''
+
+    const [mainVessel, ...otherVessels] = vessel.id.split('|').map((id) => parseVesselProfileId(id)).filter((x) => x.id)
+
+    let i = 0
+    let eventsCount = 0
+    const datasets = Array.from(new Set(vesselDataview.datasets.map(({ id }) => id)))
+      .map((id) => {
+        const d = vesselDataview.datasets.find((d) => d.id === id)
+        if ([DatasetSubCategory.Info, DatasetSubCategory.Track].includes(d.subcategory as DatasetSubCategory))
+          return `dvIn[${i}][cfg][${d.subcategory}]=${id}`
+
+        if ([DatasetCategory.Event].includes(d.category))
+          return `dvIn[${i}][cfg][events][${eventsCount++}]=${id}`
+        return ''
+      })
+      .filter((x) => x)
+
+    const fishingMapVesselDataview = [
+      `dvIn[${i}][id]=vessel-${mainVessel.id}`,
+      `dvIn[${i}][dvId]=fishing-map-vessel-track`,
+      ...datasets,
+      `dvIn[${i}][cfg][clr]=%23F95E5E`,
+    ]
+    if (otherVessels?.length) {
+      otherVessels.forEach((vessel, index) => {
+        fishingMapVesselDataview.push(`dvIn[${i}][cfg][relatedVesselIds][${index}]=${vessel.id}`)
+      })
+    }
+    const contextLayersDataviews = contextLayers.filter(x => x?.config?.visible).map(layer => {
+      i++
+      return [
+        `dvIn[${i}][id]=${layer.id}`,
+        `dvIn[${i}][cfg][vis]=true`,
+      ]
+    }).flat()
+
+    const fishingEffortLayersHidden = [
+      'fishing-ais',
+      // Update this dataviewId when a the vms layer dataview id is changed in
+      // https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/fishing-map/features/workspace/highlight-panel/highlight-panel.content.ts#L43
+      'vms-with-png'
+    ].map(layer => {
+      i++
+      return [
+        `dvIn[${i}][id]=${layer}`,
+        `dvIn[${i}][cfg][vis]=false`,
+      ]
+    }).flat()
+
+    const urlSegments = [
+      `https://globalfishingwatch.org/map/index?`,
+      `start=${start}`,
+      `latitude=${viewport.latitude}`,
+      `longitude=${viewport.longitude}`,
+      `zoom=${viewport.zoom}`,
+      `end=${end}`,
+      ...fishingMapVesselDataview,
+      ...contextLayersDataviews,
+      ...fishingEffortLayersHidden,
+      `timebarVisualisation=vessel`,
+    ]
+    const url = urlSegments.join('&')
+    window.open(url)
+  }, [
+    currentVoyageTime,
+    vessel,
+    vesselDataview,
+    viewport.latitude,
+    viewport.longitude,
+    viewport.zoom,
+    contextLayers,
+  ])
 
   return (
     <div className={styles.container}>
@@ -208,7 +297,10 @@ const MapWrapper: React.FC = (): React.ReactElement => {
           )}
         </Map>
       )}
-      <MapControls mapLoading={layerComposerLoading || resourcesLoading}></MapControls>
+      <MapControls
+        mapLoading={layerComposerLoading || resourcesLoading}
+        onViewInGFWMap={viewInGFWMap}
+      ></MapControls>
       <Info onEventChange={onEventChange}></Info>
     </div>
   )

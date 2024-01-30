@@ -2,8 +2,8 @@ import { Fragment } from 'react'
 import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import { Dataset } from '@globalfishingwatch/api-types'
-import { getDatasetDescriptionTranslated } from 'features/i18n/utils'
-import { isGFWUser } from 'features/user/user.slice'
+import { getDatasetDescriptionTranslated } from 'features/i18n/utils.datasets'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import GFWOnly from 'features/user/GFWOnly'
 import styles from './InfoModal.module.css'
 
@@ -20,7 +20,7 @@ type InfoModalContentProps = {
 }
 
 const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   if (!dataset) {
     return null
   }
@@ -38,10 +38,10 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
       </p>
       {gfwUser && queries!?.length > 0 && (
         <div className={styles.content}>
-          <h2 className={styles.subtitle}>
-            Queries used
+          <div className={styles.queriesContainer}>
+            <h2 className={styles.subtitle}>Queries used</h2>
             <GFWOnly />
-          </h2>
+          </div>
           {queries?.map((query: string, index: number) => (
             <div key={index}>
               <a target="_blank" href={query} rel="noreferrer">

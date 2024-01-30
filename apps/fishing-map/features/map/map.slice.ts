@@ -20,11 +20,11 @@ import { AppDispatch } from 'store'
 import {
   selectEventsDataviews,
   selectActiveTemporalgridDataviews,
-} from 'features/dataviews/dataviews.selectors'
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { isGuestUser } from 'features/user/user.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
 export const MAX_TOOLTIP_LIST = 5
 
@@ -58,7 +58,6 @@ export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
 type MapState = {
   clicked: SliceInteractionEvent | null
   hovered: SliceInteractionEvent | null
-  isDrawing: boolean
   fishingStatus: AsyncReducerStatus
   currentFishingRequestId: string
   apiEventStatus: AsyncReducerStatus
@@ -67,7 +66,6 @@ type MapState = {
 const initialState: MapState = {
   clicked: null,
   hovered: null,
-  isDrawing: false,
   fishingStatus: AsyncReducerStatus.Idle,
   currentFishingRequestId: '',
   apiEventStatus: AsyncReducerStatus.Idle,
@@ -158,6 +156,10 @@ export const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: stri
         id: 'ids',
         value: vesselIds,
       },
+      {
+        id: 'includes',
+        value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
+      },
     ],
   }
   return resolveEndpoint(vesselDatasets[0], datasetConfig)
@@ -200,7 +202,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   'map/fetchFishingActivityInteraction',
   async ({ fishingActivityFeatures, activityProperties }, { getState, signal, dispatch }) => {
     const state = getState() as any
-    const guestUser = isGuestUser(state)
+    const guestUser = selectIsGuestUser(state)
     const temporalgridDataviews = selectActiveTemporalgridDataviews(state) || []
     if (!fishingActivityFeatures.length) {
       console.warn('fetchInteraction not possible, 0 features')
@@ -294,8 +296,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
             .flatMap((vessels) => {
               return vessels.map((vessel) => {
                 const vesselInfo = vesselsInfo?.find((vesselInfo) => {
-                  const vesselInfoId = vesselInfo.selfReportedInfo?.[0]?.id
-                  return vesselInfoId === vessel.id
+                  const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) => s.id)
+                  return vesselInfoIds.includes(vessel.id)
                 })
                 const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                 const trackFromRelatedDataset = infoDataset || vessel.dataset
@@ -431,7 +433,7 @@ export const fetchBQEventThunk = createAsyncThunk<
     dispatch: AppDispatch
   }
 >('map/fetchBQEvent', async (eventFeature, { signal, getState }) => {
-  const state = getState()
+  const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
@@ -457,9 +459,6 @@ const slice = createSlice({
   name: 'map',
   initialState,
   reducers: {
-    setMapDrawing: (state, action: PayloadAction<boolean>) => {
-      state.isDrawing = action.payload
-    },
     setClickedEvent: (state, action: PayloadAction<SliceInteractionEvent | null>) => {
       if (action.payload === null) {
         state.clicked = null
@@ -538,9 +537,8 @@ const slice = createSlice({
 })
 
 export const selectClickedEvent = (state: { map: MapState }) => state.map.clicked
-export const selectIsMapDrawing = (state: { map: MapState }) => state.map.isDrawing
 export const selectFishingInteractionStatus = (state: { map: MapState }) => state.map.fishingStatus
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 
-export const { setClickedEvent, setMapDrawing } = slice.actions
+export const { setClickedEvent } = slice.actions
 export default slice.reducer

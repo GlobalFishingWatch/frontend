@@ -1,13 +1,12 @@
 import { useSelector } from 'react-redux'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconButton, IconButtonType } from '@globalfishingwatch/ui-components'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import { IconButtonType } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselDatasetsDownloadTrackSupported } from 'features/datasets/datasets.utils'
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
-import { isGuestUser, selectUserData } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { VesselLayerPanelProps } from 'features/workspace/vessels/VesselLayerPanel'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 
 type VesselDownloadButtonProps = VesselLayerPanelProps & {
   vesselIds: string[]
@@ -26,8 +25,6 @@ function VesselDownloadButton({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
-  const [isHover, setIsHover] = useState(false)
-  const guestUser = useSelector(isGuestUser)
   const downloadDatasetsSupported = getVesselDatasetsDownloadTrackSupported(
     dataview,
     userData?.permissions
@@ -44,32 +41,17 @@ function VesselDownloadButton({
     )
   }
 
-  if (guestUser) {
-    return (
-      <LocalStorageLoginLink>
-        <IconButton
-          type={iconType}
-          icon={isHover ? 'user' : 'download'}
-          tooltip={
-            t(
-              'download.trackLogin',
-              'Register and login to download vessel tracks (free, 2 minutes)'
-            ) as string
-          }
-          tooltipPlacement="top"
-          onMouseEnter={() => setIsHover(true)}
-          onMouseLeave={() => setIsHover(false)}
-          size="small"
-        />
-      </LocalStorageLoginLink>
-    )
-  }
-
   return (
-    <IconButton
+    <UserLoggedIconButton
       icon="download"
       type={iconType}
       disabled={!downloadSupported}
+      loginTooltip={
+        t(
+          'download.trackLogin',
+          'Register and login to download vessel tracks (free, 2 minutes)'
+        ) as string
+      }
       tooltip={
         downloadSupported
           ? t('download.trackAction', 'Download vessel track')

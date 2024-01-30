@@ -1,5 +1,10 @@
 import { AnyGeneratorConfig, LayerVisibility } from './types'
 
+export function isNumeric(str: string | number) {
+  if (typeof str == 'number') return true
+  return !isNaN(parseFloat(str))
+}
+
 export function isConfigVisible(config: AnyGeneratorConfig): LayerVisibility {
   return config.visible !== undefined && config.visible !== null
     ? config.visible

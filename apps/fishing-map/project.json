@@ -60,6 +60,12 @@
         "buildTarget": "fishing-map:build:production"
       }
     },
+    "i18n": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "i18n:parser"
+      }
+    },
     "rename-export": {
       "executor": "nx:run-commands",
       "options": {
@@ -85,16 +91,12 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
       "options": {
-        "jestConfig": "apps/fishing-map/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/fishing-map/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/fishing-map/**/*.{ts,tsx,js,jsx}"]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

@@ -2,7 +2,7 @@ import { Children, isValidElement, cloneElement } from 'react'
 import { Placement } from 'tippy.js'
 import { useSelector } from 'react-redux'
 import { IconButtonProps, ButtonProps } from '@globalfishingwatch/ui-components'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import LocalStorageLoginLink from './LoginLink'
 
 interface LoginButtonWrapperProps {
@@ -16,7 +16,7 @@ const LoginButtonWrapper = ({
   tooltip,
   tooltipPlacement = 'auto',
 }: LoginButtonWrapperProps) => {
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
 
   if (!guestUser) {
     return children

@@ -4,7 +4,6 @@ import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-c
 import {
   Dataset,
   DatasetTypes,
-  EndpointId,
   IdentityVessel,
   Resource,
   ResourceStatus,
@@ -15,21 +14,26 @@ import {
 import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { selectResources } from 'features/resources/resources.slice'
 import {
   fetchDatasetByIdThunk,
   fetchDatasetsByIdsThunk,
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
   VesselInstanceDatasets,
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from 'features/datasets/datasets.utils'
+import {
   getVesselDataviewInstance,
+  getVesselInfoDataviewInstanceDatasetConfig,
 } from 'features/dataviews/dataviews.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselId } from 'routes/routes.selectors'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum
@@ -77,8 +81,11 @@ export const fetchVesselInfoThunk = createAsyncThunk(
   ) => {
     try {
       const state = getState() as any
+      // TODO: skip dataset fetch if already loaded in the
+      // const dataset = selectAllDatasets(state).find((d: Dataset) => d.id === datasetId)
       const action = await dispatch(fetchDatasetByIdThunk(datasetId))
-      const guestUser = isGuestUser(state)
+      const guestUser = selectIsGuestUser(state)
+      const resources = selectResources(state)
       if (fetchDatasetByIdThunk.fulfilled.match(action)) {
         const dataset = action.payload as Dataset
         // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
@@ -92,38 +99,23 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         })
         dispatch(fetchDatasetsByIdsThunk({ ids: datasetsToFetch }))
 
-        const datasetConfig = {
-          endpoint: EndpointId.Vessel,
-          datasetId: dataset.id,
-          params: [{ id: 'vesselId', value: vesselId }],
-          query: [
-            {
-              id: 'dataset',
-              value: datasetId,
-            },
-          ],
-        }
-        // Adding the custom query to include the self-reported info but only for the vessel profile
-        // this way we can prepolate the vessel info resouce and avoid requesting the resource again
-        const vesselProfileDatasetConfig = {
-          ...datasetConfig,
-          query: [
-            ...datasetConfig.query,
-            {
-              id: 'includes',
-              value: ['POTENTIAL_RELATED_SELF_REPORTED_INFO'],
-            },
-          ],
-        }
+        const datasetConfig = getVesselInfoDataviewInstanceDatasetConfig(vesselId, {
+          info: dataset.id,
+        })
         if (guestUser) {
           // This changes the order of the query params to avoid the cache
-          vesselProfileDatasetConfig.query.reverse()
+          datasetConfig.query?.reverse()
         }
-        const url = resolveEndpoint(dataset, vesselProfileDatasetConfig)
+        const url = resolveEndpoint(dataset, datasetConfig)
+
         if (!url) {
           return rejectWithValue({ message: 'Error resolving endpoint' })
         }
-        const vessel = await GFWAPI.fetch<IdentityVessel>(url)
+
+        const vessel = resources[url]
+          ? (resources[url].data as IdentityVessel)
+          : await GFWAPI.fetch<IdentityVessel>(url)
+
         const resource: Resource = {
           url: resolveEndpoint(dataset, datasetConfig) as string,
           dataset: dataset,

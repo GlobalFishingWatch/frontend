@@ -10,7 +10,7 @@ import { Workspace } from '@globalfishingwatch/api-types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { HOME, SEARCH, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
-import { selectUserData } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { useClickedEventConnect } from 'features/map/map.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
@@ -24,17 +24,12 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import UserButton from 'features/user/UserButton'
+import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
 import styles from './CategoryTabs.module.css'
 
 const FeedbackModal = dynamic(
   () => import(/* webpackChunkName: "FeedbackModal" */ 'features/feedback/FeedbackModal')
 )
-
-export const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
-  latitude: 10,
-  longitude: -90,
-  zoom: 1,
-}
 
 type CategoryTabsProps = {
   onMenuClick: () => void
@@ -47,7 +42,6 @@ function getLinkToSearch(workspace: Workspace) {
       category: workspace?.category || WorkspaceCategory.FishingActivity,
       workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
     },
-    replaceQuery: true,
   }
 }
 

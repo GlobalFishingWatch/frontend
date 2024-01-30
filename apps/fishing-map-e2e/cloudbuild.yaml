@@ -1,0 +1,118 @@
+steps:
+  - name: gcr.io/cloud-builders/git
+    args: [fetch, --depth=1000]
+  - id: 'switch_tag'
+    waitFor: ['-']
+    name: node:18
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+    script: |
+      if [ $_NEXT_PUBLIC_WORKSPACE_ENV = "production" ]; then
+          tag=$(git describe --match "@globalfishingwatchapp/fishing-map*" --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          git checkout $tag
+      fi
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cache
+    waitFor: ['switch_tag']
+    script: |
+      #!/usr/bin/env bash
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock ) \
+        --key_fallback=yarn3-cache
+
+  - id: 'generate-cypress-lock'
+    waitFor: ['restore_cache']
+    name: node:18
+    script: |
+      if [ -d "node_modules" ]; then
+        yarn info cypress version > cypress.lock
+      fi
+
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cypress_cache
+    waitFor: ['generate-cypress-lock']
+    script: |
+      #!/usr/bin/env bash
+      if [ -d "node_modules" ]; then
+        restore_cache \
+          --bucket=gs://frontend-cache-dependencies \
+          --key=cypress-$( checksum cypress.lock ) \
+          --key_fallback=cypress-cache
+      fi
+
+  - id: 'save_cache'
+    waitFor: ['restore_cypress_cache']
+    name: 'gcr.io/$PROJECT_ID/restore_cache'
+    env:
+      - 'BRANCH_NAME=$BRANCH_NAME'
+    script: |
+      #!/usr/bin/env bash
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock ) \
+        --path=./node_modules \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=cypress-$( checksum cypress.lock ) \
+        --path=.cypress-cache \
+        --no-clobber
+      if [ -d ".yarn/cache" ]; then
+        if [ $BRANCH_NAME == "develop" ]; then
+          save_cache \
+            --bucket=gs://frontend-cache-dependencies \
+            --key=yarn3-cache \
+            --path=./.yarn/cache
+        fi
+      fi
+
+  - id: 'smoke-test-e2e-live'
+    name: cypress/included:12.17.1
+    waitFor: ['restore_cypress_cache']
+    allowFailure: true
+    entrypoint: 'bash'
+    env:
+      - 'CYPRESS_publicApiGateway=$_NEXT_PUBLIC_API_GATEWAY'
+      - 'CYPRESS_basicAuth=$_BASIC_AUTH'
+      - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
+      - 'CYPRESS_basicAuthPass=$_BASIC_AUTH_PASS'
+      - 'CYPRESS_apiAuthUser=$_CYPRESS_API_AUTH_USER'
+      - 'CYPRESS_apiAuthPass=$_CYPRESS_API_AUTH_PASS'
+      - 'CYPRESS_apiUserInitials=$_CYPRESS_API_USER_INITIALS'
+      - 'CYPRESS_BASE_URL=$_CYPRESS_BASE_URL'
+      - 'CYPRESS_DEFAULT_COMMAND_TIMEOUT=$_CYPRESS_DEFAULT_COMMAND_TIMEOUT'
+      - 'CYPRESS_REQUEST_TIMEOUT=$_CYPRESS_REQUEST_TIMEOUT'
+      - 'CYPRESS_RESPONSE_TIMEOUT=$_CYPRESS_RESPONSE_TIMEOUT'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
+          CYPRESS_CACHE_FOLDER=.cypress-cache \
+          yarn nx run fishing-map-e2e:test-env --parallel
+
+  - id: 'save-test-videos'
+    name: gcr.io/cloud-builders/gcloud
+    waitFor: ['smoke-test-e2e-live']
+    entrypoint: bash
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - '_E2E_BUCKET=$_E2E_BUCKET'
+      - 'BUILD_ID=$BUILD_ID'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        if [ -d "dist/cypress/apps/fishing-map-e2e/screenshots" ] && [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
+          gsutil -m cp -r dist/cypress/apps/fishing-map-e2e gs://$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
+          echo "You can see the testing videos of this deploy in: "
+          echo "https://console.cloud.google.com/storage/browser/$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
+          exit 1
+        fi
+
+timeout: 1800s
+options:
+  machineType: 'E2_HIGHCPU_8'

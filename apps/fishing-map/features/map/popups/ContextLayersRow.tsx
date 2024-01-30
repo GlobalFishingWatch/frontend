@@ -1,22 +1,23 @@
 import { useSelector } from 'react-redux'
+import parse from 'html-react-parser'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import {
   selectActiveHeatmapDataviews,
   selectHasReportLayersVisible,
-} from 'features/dataviews/dataviews.selectors'
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
-import { isGuestUser, selectUserData } from 'features/user/user.slice'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationAreaId, selectLocationQuery } from 'routes/routes.selectors'
-import { selectSidebarOpen } from 'features/app/app.selectors'
+import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { TooltipEventFeature } from 'features/map/map.hooks'
-import { getFeatureAreaId, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
-import { resetSidebarScroll } from 'features/sidebar/Sidebar'
+import { getAreaIdFromFeature, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
+import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { resetReportData } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -35,7 +36,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   onClick,
 }: DownloadPopupButtonProps) => {
   const { t } = useTranslation()
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const userData = useSelector(selectUserData)
   const activityDataviews = useSelector(selectActiveHeatmapDataviews)
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
@@ -83,7 +84,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const query = useSelector(selectLocationQuery)
   const bounds = getFeatureBounds(feature)
   const reportAreaId = useSelector(selectLocationAreaId)
-  const areaId = getFeatureAreaId(feature)
+  const areaId = getAreaIdFromFeature(feature)
   const isSameArea = reportAreaId?.toString() === areaId?.toString()
   if (!hasAnalysableLayer || isSameArea) {
     return (
@@ -106,7 +107,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     trackEvent({
       category: TrackCategory.Analysis,
       action: 'Open analysis panel',
-      label: areaId,
+      label: areaId as string,
     })
     resetSidebarScroll()
     dispatch(resetReportData())
@@ -172,10 +173,10 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   handleReportClick,
 }: ContextLayersRowProps) => {
   const { t } = useTranslation()
-
+  const parsedLabel = typeof label === 'string' ? parse(label) : label
   return (
     <div className={styles.row} key={id}>
-      <span className={styles.rowText}>{label}</span>
+      <span className={styles.rowText}>{parsedLabel}</span>
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
           {handleDownloadClick && <DownloadPopupButton onClick={handleDownloadClick} />}

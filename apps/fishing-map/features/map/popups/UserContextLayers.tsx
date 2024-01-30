@@ -1,6 +1,8 @@
 import { Fragment } from 'react'
 import { groupBy } from 'lodash'
+import { useTranslation } from 'react-i18next'
 import { Icon } from '@globalfishingwatch/ui-components'
+import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
@@ -12,8 +14,8 @@ type UserContextLayersProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
+  const { t } = useTranslation()
   const { onReportClick, onDownloadClick } = useContextInteractions()
-
   const featuresByType = groupBy(features, 'layerId')
   return (
     <Fragment>
@@ -30,7 +32,11 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
             )}
             {featureByType.map((feature, index) => {
               const { gfw_id } = feature.properties
-              const label = feature.value ?? feature.title
+              const defaultLabel = feature.value ?? feature.title
+              const label =
+                feature.datasetSource === DRAW_DATASET_SOURCE
+                  ? `${t('common.polygon', 'Polygon')} ${defaultLabel}`
+                  : defaultLabel
               const id = `${feature.value}-${gfw_id}}`
               return (
                 <ContextLayersRow

@@ -2,6 +2,11 @@
   position: relative;
 }
 
+.label {
+  display: flex;
+  align-items: center;
+}
+
 .list {
   display: flex;
   flex-direction: row;

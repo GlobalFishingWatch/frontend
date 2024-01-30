@@ -7,7 +7,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { ReactComponent as VesselSearchImage } from 'assets/images/vessel-search.svg'
 import { ReactComponent as VesselSearchNoSesultsImage } from 'assets/images/vessel-search-no-results.svg'
-import { isGuestUser } from 'features/user/user.slice'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
 import { selectQueryParam } from 'routes/routes.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
@@ -48,7 +48,7 @@ export function SearchNoResultsState({ className = '' }: SearchPlaceholderProps)
 export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
   const { t } = useTranslation()
   const searchStatus = useSelector(selectSearchStatus)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const noGuestDatasets = useSelector(selectSearchDatasetsNotGuestAllowedLabels)
   const activeSearchOption = useSelector(selectQueryParam('searchOption')) || 'basic'
   const isSmallScreen = useSmallScreen()

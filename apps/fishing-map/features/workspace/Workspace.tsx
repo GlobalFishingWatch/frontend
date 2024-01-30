@@ -9,12 +9,11 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectWorkspaceStatus, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { isGFWUser } from 'features/user/user.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectLocationCategory } from 'routes/routes.selectors'
-import { selectReadOnly } from 'features/app/app.selectors'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/config'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
-import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/dataviews.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
@@ -27,6 +26,9 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
+import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
+import UserSection from 'features/workspace/user/UserSection'
+import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
@@ -39,7 +41,7 @@ function Workspace() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const workspace = useSelector(selectWorkspace)
   const dataviews = useSelector(selectDataviewInstancesMergedOrdered)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -100,6 +102,9 @@ function Workspace() {
           description: workspaceEditDescription,
         })
       )
+      if (workspaceEditName) {
+        dispatch(setWorkspaceProperty({ key: 'name', value: workspaceEditName }))
+      }
       onWorkspaceUpdateClose()
     },
     [dispatch, onWorkspaceUpdateClose, workspaceEditDescription, workspaceEditName]
@@ -135,7 +140,7 @@ function Workspace() {
             {isUserWorkspace && (
               <label className={styles.subTitle}>{t('workspace.user', 'User workspace')}</label>
             )}
-            <h2 className={styles.title}>
+            <h2 className={styles.title} data-test="user-workspace-title">
               {getWorkspaceLabel(workspace)}
               {gfwUser && (
                 <IconButton
@@ -181,10 +186,11 @@ function Workspace() {
         )}
       <ActivitySection />
       <DetectionsSection />
-      <VesselsSection />
       <EventsSection />
+      <VesselsSection />
       <EnvironmentalSection />
       <ContextAreaSection />
+      <UserSection />
     </DndContext>
   )
 }

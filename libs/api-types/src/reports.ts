@@ -1,4 +1,4 @@
-import { OwnerType, Workspace } from '@globalfishingwatch/api-types'
+import { OwnerType, Workspace } from './workspaces'
 
 export type Report = {
   id: string

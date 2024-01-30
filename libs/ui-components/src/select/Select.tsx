@@ -10,6 +10,7 @@ import { SelectOption, SelectOnChange } from './index'
 interface SelectProps {
   id?: string
   label?: string
+  error?: string
   placeholder?: string
   options: SelectOption[]
   selectedOption?: SelectOption
@@ -24,6 +25,7 @@ interface SelectProps {
   align?: 'left' | 'right'
   disabled?: boolean
   type?: 'primary' | 'secondary'
+  infoTooltip?: string
 }
 
 const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOption) => {
@@ -34,6 +36,7 @@ export function Select(props: SelectProps) {
   const {
     id,
     label = '',
+    error = '',
     placeholder = 'Select an option',
     options,
     selectedOption,
@@ -48,6 +51,7 @@ export function Select(props: SelectProps) {
     disabled = false,
     onToggleButtonClick,
     type = 'primary',
+    infoTooltip,
   } = props
   const {
     isOpen,
@@ -93,16 +97,24 @@ export function Select(props: SelectProps) {
   return (
     <div className={containerClassName}>
       {label && (
-        <label className={cx(styles.label, labelContainerClassName)} {...getLabelProps()}>
+        <label className={cx(styles.label, labelContainerClassName)}>
           {label}
+          {error && <span className={styles.errorLabel}>{error}</span>}
+          {infoTooltip && (
+            <Tooltip content={infoTooltip}>
+              <IconButton icon="info" size="tiny" className={styles.infoIcon} />
+            </Tooltip>
+          )}
         </label>
       )}
       <div
         className={cx(
           styles.container,
           styles[type],
-          { [styles.isOpen]: isOpen },
+          { [styles.isOpen]: !disabled && isOpen },
           { [styles.placeholderShown]: !selectedOption },
+          { [styles.error]: error !== '' },
+          { [styles.disabled]: disabled },
           className
         )}
       >
@@ -114,20 +126,23 @@ export function Select(props: SelectProps) {
           {selectedOption ? selectedOption.label : placeholder}
         </div>
         <div className={styles.buttonsContainer}>
-          {onCleanClick !== undefined && hasSelectedOptions && (
-            <IconButton icon="delete" size="small" onClick={onCleanClick}></IconButton>
+          {onCleanClick !== undefined && hasSelectedOptions && !disabled && (
+            <IconButton icon="delete" size="small" onClick={onCleanClick} />
           )}
-          <IconButton
-            icon={isOpen ? 'arrow-top' : 'arrow-down'}
-            size="small"
-            {...getToggleButtonProps()}
-          ></IconButton>
+          {!disabled && (
+            <IconButton
+              icon={isOpen ? 'arrow-top' : 'arrow-down'}
+              size="small"
+              {...getToggleButtonProps()}
+            />
+          )}
         </div>
         <ul
           {...getMenuProps()}
           className={cx(styles.optionsContainer, styles[direction], styles[align])}
         >
-          {isOpen &&
+          {!disabled &&
+            isOpen &&
             options.length > 0 &&
             options.map((item, index) => {
               const highlight = highlightedIndex === index

@@ -2,27 +2,27 @@ import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolki
 import { uniqBy } from 'lodash'
 import { stringify } from 'qs'
 import {
-  mergeWorkspaceUrlDataviewInstances,
-  resolveDataviews,
-  UrlDataviewInstance,
-  getResources,
-  GetDatasetConfigsCallbacks,
-} from '@globalfishingwatch/dataviews-client'
-import {
-  DatasetTypes,
-  DataviewCategory,
-  DataviewInstance,
   Dataview,
   APIPagination,
   DataviewDatasetConfig,
+  DataviewInstance,
+  DatasetTypes,
+  DataviewCategory,
 } from '@globalfishingwatch/api-types'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
   GFWAPI,
   parseAPIError,
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
+import {
+  GetDatasetConfigsCallbacks,
+  getResources,
+  mergeWorkspaceUrlDataviewInstances,
+  resolveDataviews,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
+import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
   selectWorkspaceStateProperty,
   selectWorkspaceDataviewInstances,
@@ -41,7 +41,7 @@ import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from '
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { selectTrackThinningConfig } from 'features/resources/resources.slice'
-import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
@@ -49,11 +49,12 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import { selectUserLogged } from 'features/user/user.slice'
+import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
+import { selectTrackChunksConfig } from 'features/resources/resources.selectors.thinning'
 import {
   // eventsDatasetConfigsCallback,
   // infoDatasetConfigsCallback,
@@ -77,7 +78,7 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
 )
 
 const USE_MOCKED_DATAVIEWS =
-  process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
+  IS_DEVELOPMENT_ENV || process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
 let mockedDataviewsImported = false
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',
@@ -185,13 +186,11 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState
 })
 
 export const { addDataviewEntity } = dataviewsSlice.actions
-export const { selectAll, selectById, selectIds } = entityAdapter.getSelectors(
-  (state: DataviewsSliceState) => state.dataviews
-)
-
-export function selectAllDataviews(state: DataviewsSliceState) {
-  return selectAll(state)
-}
+export const {
+  selectAll: selectAllDataviews,
+  selectById,
+  selectIds,
+} = entityAdapter.getSelectors((state: DataviewsSliceState) => state.dataviews)
 
 export function selectDataviewBySlug(slug: string) {
   return createSelector([selectAllDataviews], (dataviews) => {
@@ -277,7 +276,7 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
 )
 
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets, selectUserLogged],
+  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets, selectIsUserLogged],
   (dataviewInstances, dataviews, datasets, loggedUser): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
       return []
@@ -341,18 +340,21 @@ export const selectDataviewsResources = createSelector(
   [
     selectAllDataviewInstancesResolved,
     selectTrackThinningConfig,
+    selectTrackChunksConfig,
     selectWorkspaceStateProperty('timebarGraph'),
   ],
-  (dataviewInstances, thinningConfig, timebarGraph) => {
+  (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
+    // const callbacks: GetDatasetConfigsCallbacks = {
+    //   track: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
+    //   events: eventsDatasetConfigsCallback,
+    //   info: infoDatasetConfigsCallback,
+    // }
     const callbacks: any = {
       // const callbacks: GetDatasetConfigsCallbacks = {
-      // <<<<<<< HEAD
       tracks: trackDatasetConfigsCallback(thinningConfig, timebarGraph),
-      // =======
       //       track: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
       //       events: eventsDatasetConfigsCallback,
       //       info: infoDatasetConfigsCallback,
-      // >>>>>>> develop
     }
     return getResources(dataviewInstances || [], callbacks)
   }

@@ -23,7 +23,6 @@ import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { ErrorPlaceHolder, WorkspaceLoginError } from 'features/workspace/WorkspaceError'
-import { isGuestUser } from 'features/user/user.slice'
 import {
   selectVesselAreaSubsection,
   selectVesselDatasetId,
@@ -47,6 +46,7 @@ import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
 import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 import styles from './Vessel.module.css'
@@ -66,7 +66,7 @@ const Vessel = () => {
   const infoError = useSelector(selectVesselInfoError)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const regionsDatasets = useSelector(selectRegionsDatasets)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const vesselData = useSelector(selectVesselInfoData)
   const hasSelfReportedData =
     getVesselIdentities(vesselData, {
@@ -101,18 +101,21 @@ const Vessel = () => {
         id: 'activity',
         title: t('vessel.sectionSummary', 'Summary'),
         content: <VesselActivity />,
+        testId: 'vv-summary-tab',
       },
       {
         id: 'areas',
         title: t('vessel.sectionAreas', 'Areas'),
         content: <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />,
         disabled: !hasEventsDataset,
+        testId: 'vv-areas-tab',
       },
       {
         id: 'related_vessels',
         title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
         content: <RelatedVessels />,
         disabled: !hasEventsDataset,
+        testId: 'vv-related-tab',
       },
     ],
     [t, updateAreaLayersVisibility, hasEventsDataset]

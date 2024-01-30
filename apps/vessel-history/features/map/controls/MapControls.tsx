@@ -17,9 +17,11 @@ import styles from './MapControls.module.css'
 const MapControls = ({
   mapLoading = false,
   onMouseEnter = () => {},
+  onViewInGFWMap = () => {},
 }: {
   mapLoading?: boolean
   onMouseEnter?: () => void
+  onViewInGFWMap?: () => void
 }): React.ReactElement => {
   const { t } = useTranslation()
   const domElement = useRef<HTMLElement>()
@@ -141,6 +143,14 @@ const MapControls = ({
                   </div>
                 </Modal>
               )}
+              <IconButton
+                icon="gfw-logo"
+                type="map-tool"
+                size="medium"
+                tooltip={t('map.viewInGFWMap', 'View in GFW Map')}
+                loading={mapLoading}
+                onClick={onViewInGFWMap}
+              />
               {/* <Rulers /> */}
               <IconButton
                 type="map-tool"

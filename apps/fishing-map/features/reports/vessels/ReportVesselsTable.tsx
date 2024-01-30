@@ -2,27 +2,23 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
-import { IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
-import { getVesselDataviewInstance, getVesselInWorkspace } from 'features/dataviews/dataviews.utils'
-import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import {
-  getDatasetsReportNotSupported,
-  getRelatedDatasetsByType,
-} from 'features/datasets/datasets.utils'
+import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import ReportVesselsTableFooter from 'features/reports/vessels/ReportVesselsTableFooter'
-import { selectActiveReportDataviews, selectReportCategory } from 'features/app/app.selectors'
+import {
+  selectActiveReportDataviews,
+  selectReportCategory,
+} from 'features/app/selectors/app.reports.selector'
 import { ReportCategory } from 'types'
-import { selectUserData } from 'features/user/user.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { EMPTY_API_VALUES } from 'features/reports/reports.config'
 import VesselLink from 'features/vessel/VesselLink'
-import { ReportVesselWithDatasets, selectReportVesselsPaginated } from '../reports.selectors'
+import VesselPin from 'features/vessel/VesselPin'
+import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
+import { selectReportVesselsPaginated } from '../reports.selectors'
 import { ReportActivityUnit } from '../Report'
 import styles from './ReportVesselsTable.module.css'
 
@@ -34,9 +30,7 @@ type ReportVesselTableProps = {
 export default function ReportVesselsTable({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vessels = useSelector(selectReportVesselsPaginated)
-  const vesselsInWorkspace = useSelector(selectActiveTrackDataviews)
   const reportCategory = useSelector(selectReportCategory)
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -44,31 +38,6 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     dataviews,
     userData?.permissions || []
   )
-
-  const onVesselClick = async (
-    ev: React.MouseEvent<Element, MouseEvent>,
-    vessel: ReportVesselWithDatasets
-  ) => {
-    const vesselInWorkspace = getVesselInWorkspace(vesselsInWorkspace, vessel.vesselId)
-    if (vesselInWorkspace) {
-      deleteDataviewInstance(vesselInWorkspace.id)
-      return
-    }
-    const vesselEventsDatasets = getRelatedDatasetsByType(vessel.infoDataset, DatasetTypes.Events)
-    const eventsDatasetsId =
-      vesselEventsDatasets && vesselEventsDatasets?.length
-        ? vesselEventsDatasets.map((d) => d.id)
-        : []
-    const vesselDataviewInstance: DataviewInstance = getVesselDataviewInstance(
-      { id: vessel.vesselId },
-      {
-        info: vessel.infoDataset?.id,
-        track: vessel.trackDataset?.id,
-        ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
-      }
-    )
-    upsertDataviewInstance(vesselDataviewInstance)
-  }
 
   const onFilterClick = (reportVesselFilter: any) => {
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
@@ -110,41 +79,27 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
               : t('common.detection_other', 'detections')}
           </div>
           {vessels?.map((vessel, i) => {
-            const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
-              ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
-              : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
-            const vesselInWorkspace = getVesselInWorkspace(
-              vesselsInWorkspace,
-              vessel.vesselId as string
-            )
-            const pinTrackDisabled = !hasDatasets
             const isLastRow = i === vessels.length - 1
             const flag = t(`flags:${vessel.flag as string}` as any, EMPTY_FIELD_PLACEHOLDER)
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vessel.flag)
             const type = isFishingReport ? vessel.geartype : vessel.vesselType
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
+            const hasDatasets = vessel.infoDataset?.id?.includes(GLOBAL_VESSELS_DATASET_ID)
+              ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
+              : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const pinTrackDisabled = !hasDatasets
             return (
               <Fragment key={vessel.vesselId}>
                 <div
                   className={cx({ [styles.border]: !isLastRow }, styles.icon)}
                   data-test={`vessel-${vessel.vesselId}`}
                 >
-                  <IconButton
-                    icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
-                    style={{
-                      color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
+                  <VesselPin
+                    vesselToResolve={{
+                      id: vessel.id || vessel.vesselId,
+                      datasetId: vessel.infoDataset?.id || vessel.dataset,
                     }}
                     disabled={pinTrackDisabled}
-                    tooltip={
-                      pinTrackDisabled
-                        ? ''
-                        : vesselInWorkspace
-                        ? t('search.removeVessel', 'Remove vessel')
-                        : t('search.seeVessel', 'See vessel')
-                    }
-                    onClick={(e) => onVesselClick(e, vessel)}
-                    className="print-hidden"
-                    size="small"
                   />
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>

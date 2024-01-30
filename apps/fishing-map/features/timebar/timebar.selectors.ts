@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { maxBy, minBy } from 'lodash'
 import {
   DatasetTypes,
   Resource,
@@ -11,6 +12,7 @@ import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
   pickTrackResource,
+  getDatasetsExtent,
 } from '@globalfishingwatch/dataviews-client'
 import { geoJSONToSegments, getSegmentExtents } from '@globalfishingwatch/data-transforms'
 import {
@@ -21,16 +23,50 @@ import {
   TrackEventChunkProps,
   HighlighterCallbackFnArgs,
 } from '@globalfishingwatch/timebar'
-import { selectTimebarGraph, selectVisibleEvents } from 'features/app/app.selectors'
+import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { t } from 'features/i18n/i18n'
 import { selectResources } from 'features/resources/resources.slice'
-import {
-  selectActiveTrackDataviews,
-  selectActiveVesselsDataviews,
-} from 'features/dataviews/dataviews.slice'
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import { TimebarGraphs } from 'types'
+import {
+  selectActiveTrackDataviews,
+  selectActiveVesselsDataviews,
+  selectDataviewInstancesResolved,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
+import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
+import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
+
+export const selectDatasetsExtent = createSelector(
+  [selectDataviewInstancesResolved, selectAllDatasets],
+  (dataviews, datasets) => {
+    const activeDataviewDatasets = getDatasetsInDataviews(dataviews)
+    const activeDatasets = datasets.filter((d) => activeDataviewDatasets.includes(d.id))
+    return getDatasetsExtent(activeDatasets, {
+      format: 'timestamp',
+    })
+  }
+)
+
+export const selectAvailableStart = createSelector([selectDatasetsExtent], (datasetsExtent) => {
+  const defaultAvailableStartMs = new Date(AVAILABLE_START).getTime()
+  const availableStart = new Date(
+    Math.min(defaultAvailableStartMs, (datasetsExtent.extentStart as number) || Infinity)
+  ).toISOString()
+  return availableStart
+})
+
+export const selectAvailableEnd = createSelector([selectDatasetsExtent], (datasetsExtent) => {
+  const defaultAvailableEndMs = new Date(AVAILABLE_END).getTime()
+  const availableEndMs = new Date(
+    Math.max(defaultAvailableEndMs, (datasetsExtent.extentEnd as number) || -Infinity)
+  ).toISOString()
+  return availableEndMs
+})
+
+const EMPTY_ARRAY: [] = []
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
@@ -151,7 +187,10 @@ export const selectTracksGraphData = createSelector(
       const resourceQuery = resourcesQueries.find(
         (r) =>
           r.datasetConfig.query?.find(
-            (q) => q.id === 'fields' && q.value.toString().includes(timebarGraphType)
+            (q) =>
+              q.id === 'fields' &&
+              (q.value.toString().includes(timebarGraphType) ||
+                q.value.toString().toLowerCase().includes(timebarGraphType))
           )
       )
       const graphUrl = resourceQuery?.url
@@ -168,7 +207,7 @@ export const selectTracksGraphData = createSelector(
       }
       const graphChunks: TimebarChartChunk[] = graphResource.data!?.flatMap((segment) => {
         if (!segment) {
-          return []
+          return EMPTY_ARRAY
         }
         return {
           start: segment[0].timestamp || Number.POSITIVE_INFINITY,
@@ -208,7 +247,7 @@ export const selectTracksEvents = createSelector(
   [selectActiveTrackDataviews, selectResources, selectVisibleEvents],
   (trackDataviews, resources, visibleEvents) => {
     if (!trackDataviews || trackDataviews.length > MAX_TIMEBAR_VESSELS) {
-      return []
+      return EMPTY_ARRAY
     }
     const tracksEvents: TimebarChartData<TrackEventChunkProps> = trackDataviews.map((dataview) => {
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
@@ -238,7 +277,7 @@ export const selectTracksEvents = createSelector(
 
       trackEvents.chunks = eventsResourcesFiltered.flatMap(({ url }) => {
         if (!url || !resources[url] || !resources[url].data) {
-          return []
+          return EMPTY_ARRAY
         }
 
         return resources[url].data as TimebarChartChunk<TrackEventChunkProps>[]

@@ -4,22 +4,23 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import { uniqBy } from 'lodash'
+import { DatasetTypes, DatasetStatus, Dataset } from '@globalfishingwatch/api-types'
 import {
-  DatasetTypes,
-  DatasetStatus,
-  DatasetCategory,
-  Dataset,
-} from '@globalfishingwatch/api-types'
-import { Tooltip, ColorBarOption, Modal, IconButton } from '@globalfishingwatch/ui-components'
+  Tooltip,
+  ColorBarOption,
+  Modal,
+  IconButton,
+  Collapsable,
+} from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { selectViewport } from 'features/app/app.selectors'
-import { selectUserId } from 'features/user/user.selectors'
+import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
+import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useAddDataset, useAutoRefreshImportingDataset } from 'features/datasets/datasets.hook'
-import { isGFWUser, isGuestUser } from 'features/user/user.slice'
+import { useAddDataset } from 'features/datasets/datasets.hook'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
@@ -32,7 +33,7 @@ import {
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
   HIDDEN_DATAVIEW_FILTERS,
 } from 'data/workspaces'
-import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/dataviews.selectors'
+import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
 import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import {
   CONTEXT_FEATURES_LIMIT,
@@ -52,11 +53,11 @@ import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
-import Filters from '../activity/ActivityFilters'
+import Filters from '../common/LayerFilters'
 import InfoModal from '../common/InfoModal'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
-import { showSchemaFilter } from '../activity/ActivitySchemaFilter'
+import { showSchemaFilter } from '../common/LayerSchemaFilter'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -85,15 +86,15 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     closest: [],
   })
   const [colorOpen, setColorOpen] = useState(false)
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const userId = useSelector(selectUserId)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
   }, [setModalDataWarningOpen])
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const viewport = useSelector(selectViewport)
-  const onAddNewClick = useAddDataset({ datasetCategory: DatasetCategory.Context })
+  const onAddNewClick = useAddDataset({})
   const layerActive = dataview?.config?.visible ?? true
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
@@ -173,8 +174,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   }
 
   const isUserLayer = !guestUser && dataset?.ownerId === userId
-
-  useAutoRefreshImportingDataset(dataset, 5000)
 
   const basemapLabelsDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
   if (!dataset && dataview.id !== basemapLabelsDataviewInstance.id) {
@@ -264,7 +263,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               <ExpandedContainer
                 visible={filterOpen}
                 onClickOutside={closeExpandedContainer}
-                component={<Filters dataview={dataview} />}
+                component={<Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />}
               >
                 <div className={styles.filterButtonWrapper}>
                   <IconButton
@@ -346,46 +345,59 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
       )}
       {layerActive && (
         <div
-          className={cx(styles.closestAreas, { [styles.properties]: featuresOnScreen?.total > 0 })}
-          style={{ height: closestAreasHeight }}
+          className={cx(
+            styles.closestAreas,
+            { [styles.properties]: featuresOnScreen?.total > 0 },
+            'print-hidden'
+          )}
+          style={{ maxHeight: closestAreasHeight }}
         >
           {featuresOnScreen?.total > 0 && (
             <Fragment>
-              <label>
-                {t('layer.areasOnScreen', 'Areas on screen')} ({featuresOnScreen?.total})
-              </label>
-              <ul>
-                {featuresOnScreen.closest.map((feature) => {
-                  const id =
-                    feature?.properties?.[uniqKey] || feature?.properties!.id || feature?.id
-                  let title =
-                    feature.properties.value || feature.properties.name || feature.properties.id
-                  if (dataset?.configuration?.valueProperties?.length) {
-                    title = dataset.configuration.valueProperties
-                      .flatMap((prop) => feature.properties[prop] || [])
-                      .join(', ')
-                  }
-                  return (
-                    <li
-                      key={`${id}-${title}`}
-                      className={styles.area}
-                      onMouseEnter={() => handleHoverArea(feature)}
-                      onMouseLeave={() => cleanFeatureState('highlight')}
-                    >
-                      <span
-                        title={title.length > 40 ? title : undefined}
-                        className={styles.areaTitle}
+              <Collapsable
+                label={`${t(
+                  'layer.areasOnScreen',
+                  'Areas on screen'
+                )} (${featuresOnScreen?.total})`}
+                open={false}
+                className={styles.areasOnScreen}
+              >
+                <ul>
+                  {featuresOnScreen.closest.map((feature) => {
+                    const id =
+                      feature?.properties?.[uniqKey] || feature?.properties!.id || feature?.id
+                    let title =
+                      feature.properties.value || feature.properties.name || feature.properties.id
+                    if (dataset?.configuration?.valueProperties?.length) {
+                      title = dataset.configuration.valueProperties
+                        .flatMap((prop) => feature.properties[prop] || [])
+                        .join(', ')
+                    }
+                    return (
+                      <li
+                        key={`${id}-${title}`}
+                        className={styles.area}
+                        onMouseEnter={() => handleHoverArea(feature)}
+                        onMouseLeave={() => cleanFeatureState('highlight')}
                       >
-                        {title}
-                      </span>
-                      <ReportPopupLink feature={feature} onClick={onReportClick}></ReportPopupLink>
-                    </li>
-                  )
-                })}
-                {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
-                  <li className={cx(styles.area, styles.ellipsis)}>...</li>
-                )}
-              </ul>
+                        <span
+                          title={title.length > 40 ? title : undefined}
+                          className={styles.areaTitle}
+                        >
+                          {title}
+                        </span>
+                        <ReportPopupLink
+                          feature={feature}
+                          onClick={onReportClick}
+                        ></ReportPopupLink>
+                      </li>
+                    )
+                  })}
+                  {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
+                    <li className={cx(styles.area, styles.ellipsis)}>...</li>
+                  )}
+                </ul>
+              </Collapsable>
             </Fragment>
           )}
         </div>

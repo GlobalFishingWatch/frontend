@@ -25,11 +25,34 @@
         "testingType": "e2e"
       }
     },
-    "test-pro": {
+    "test-env": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
+        "testingType": "e2e"
+      }
+    },
+    "test-env:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx e2e fishing-map-e2e --watch"],
+        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
+        "testingType": "e2e"
+      }
+    },
+    "test-production": {
       "executor": "@nx/cypress:cypress",
       "options": {
         "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
         "baseUrl": "https://globalfishingwatch.org/map",
+        "testingType": "e2e"
+      }
+    },
+    "test-develop": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
+        "baseUrl": "https://fishing-map.dev.globalfishingwatch.org/map",
         "testingType": "e2e"
       }
     },
@@ -65,10 +88,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/fishing-map-e2e/**/*.{js,ts}"]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": [],

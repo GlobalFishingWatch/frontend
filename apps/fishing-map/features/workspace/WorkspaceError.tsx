@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { selectWorkspaceError } from 'features/workspace/workspace.selectors'
-import { isGuestUser, logoutUserThunk, selectUserData } from 'features/user/user.slice'
+import { logoutUserThunk } from 'features/user/user.slice'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
@@ -12,6 +12,7 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import { SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-groups.slice'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import styles from './Workspace.module.css'
 
 export function ErrorPlaceHolder({
@@ -39,7 +40,7 @@ export function WorkspaceLoginError({
 }) {
   const { t } = useTranslation()
   const [logoutLoading, setLogoutLoading] = useState(false)
-  const guestUser = useSelector(isGuestUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const userData = useSelector(selectUserData)
   const dispatch = useAppDispatch()
   return (

@@ -45,7 +45,7 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
           <a href="https://skytruth.org/" rel="noopener noreferrer" target="_blank">
             <img src={LogoSkytruth.src} alt="Skytruth" width="79px" height="24px" />
           </a>
-          <a href="https://google.com/" rel="noopener noreferrer" target="_blank">
+          <a href="https://google.com" rel="noopener noreferrer" target="_blank">
             <img src={LogoGoogle.src} alt="Google" width="57px" height="24px" />
           </a>
         </div>
@@ -54,7 +54,7 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
 }
 
 function Footer(): React.ReactElement {
-  const isSmallScreen = useSmallScreen(500)
+  const isSmallScreen = useSmallScreen(900)
   const copyright = isSmallScreen ? '© GFW ' : '© Global Fishing Watch '
   return (
     <footer className={cx('print-hidden', styles.footer)}>

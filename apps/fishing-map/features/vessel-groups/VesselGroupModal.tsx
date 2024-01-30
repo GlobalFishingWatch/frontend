@@ -30,12 +30,12 @@ import { getEventLabel } from 'utils/analytics'
 import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
 import { updateLocation } from 'routes/routes.actions'
 import { ROUTE_TYPES } from 'routes/routes'
-import { resetSidebarScroll } from 'features/sidebar/Sidebar'
+import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getVesselId } from 'features/vessel/vessel.utils'
+import { ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
 import {
   IdField,
   resetVesselGroup,
@@ -62,14 +62,6 @@ import styles from './VesselGroupModal.module.css'
 
 export type CSV = Record<string, any>[]
 
-// Look for these ID columns by order of preference
-export const ID_COLUMN_LOOKUP: IdField[] = ['vesselId', 'mmsi']
-
-const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
-  id: key,
-  label: key.toUpperCase(),
-}))
-
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -84,7 +76,6 @@ function VesselGroupModal(): React.ReactElement {
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
-  const { dispatchQueryParams } = useLocationConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const loading =
     searchVesselStatus === AsyncReducerStatus.Loading ||
@@ -141,12 +132,14 @@ function VesselGroupModal(): React.ReactElement {
 
   const onBackClick = useCallback(
     (action: 'back' | 'close' = 'back') => {
-      const confirmed = window.confirm(
-        t(
-          'vesselGroup.confirmAbort',
-          'You will lose any changes made in this vessel group. Are you sure?'
-        )
-      )
+      const confirmed = hasVesselGroupsVessels
+        ? window.confirm(
+            t(
+              'vesselGroup.confirmAbort',
+              'You will lose any changes made in this vessel group. Are you sure?'
+            )
+          )
+        : true
       if (confirmed) {
         if (action === 'back') {
           setError('')
@@ -157,7 +150,7 @@ function VesselGroupModal(): React.ReactElement {
         }
       }
     },
-    [close, dispatch, t]
+    [close, dispatch, t, hasVesselGroupsVessels]
   )
 
   const onSearchVesselsClick = useCallback(async () => {
@@ -177,7 +170,7 @@ function VesselGroupModal(): React.ReactElement {
             },
           }
           const currentDataviewInstance = urlDataviewInstances?.find(
-            (dvi) => dvi.id === currentDataviewId
+            (dvi) => dvi?.id === currentDataviewId
           )
 
           if (currentDataviewInstance) {
@@ -277,7 +270,6 @@ function VesselGroupModal(): React.ReactElement {
       lastVisitedWorkspace,
       searchQuery,
       upsertDataviewInstance,
-      dispatchQueryParams,
     ]
   )
 
@@ -292,8 +284,8 @@ function VesselGroupModal(): React.ReactElement {
         defaultValue: 'Maximum number of vessels is {{count}}',
       })
     : hasVesselGroupsVessels && groupName === ''
-    ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
-    : ''
+      ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
+      : ''
 
   return (
     <Modal
@@ -370,15 +362,18 @@ function VesselGroupModal(): React.ReactElement {
             </span>
           )}
         </div>
-        {hasVesselGroupsVessels && showBackButton && (
-          <Button
-            type="secondary"
-            className={styles.backButton}
-            onClick={() => onBackClick('back')}
-          >
-            {t('common.back', 'back')}
-          </Button>
-        )}
+        {searchVesselStatus === AsyncReducerStatus.Finished
+          ? showBackButton && hasVesselGroupsVessels
+          : showBackButton && (
+              <Button
+                type="secondary"
+                disabled={loading}
+                className={styles.backButton}
+                onClick={() => onBackClick('back')}
+              >
+                {t('common.back', 'back')}
+              </Button>
+            )}
         {!fullModalLoading &&
           (confirmationMode === 'save' ? (
             <Button

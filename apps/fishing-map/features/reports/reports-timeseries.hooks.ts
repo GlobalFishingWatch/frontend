@@ -9,8 +9,7 @@ import {
   selectReportActivityGraph,
   selectReportCategory,
   selectReportTimeComparison,
-  selectTimeRange,
-} from 'features/app/app.selectors'
+} from 'features/app/selectors/app.reports.selector'
 import {
   DataviewFeature,
   areDataviewsFeatureLoaded,
@@ -31,6 +30,7 @@ import {
   selectShowTimeComparison,
 } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 
 export interface EvolutionGraphData {
   date: string

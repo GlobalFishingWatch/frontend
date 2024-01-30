@@ -1,7 +1,7 @@
 import { Feature, featureCollection, Point, point, Position } from '@turf/helpers'
 import bbox from '@turf/bbox'
 import { Segment } from '@globalfishingwatch/api-types'
-import { wrapPointLongitudes } from '@globalfishingwatch/data-transforms'
+import { wrapPointLongitudes } from '../wrap-longitudes'
 import { BBox } from '../types'
 
 export function getBboxFromPoints(points: Feature<Point>[]): BBox {

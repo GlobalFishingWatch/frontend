@@ -1,23 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="161px" height="109px" viewBox="0 0 161 109" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
-    <title>Group 7</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <g id="marine-reserves/galapagos-private/upload-popup-dataset-type" transform="translate(-560.000000, -248.000000)" stroke="#FF64CE" stroke-width="2">
-            <g id="Group-8">
-                <g id="Group-5" transform="translate(250.000000, 77.000000)">
-                    <g id="form/drag-and-drop" transform="translate(20.000000, 102.000000)">
-                        <g id="Group-11" transform="translate(250.000000, -0.000000)">
-                            <g id="Group-7" transform="translate(41.000000, 28.000000)">
-                                <polyline id="Path-12" points="9.03598511 138.089666 30.9947753 131.973636 52.9535656 117.857607 57.7546289 89.5155137 77.7171655 65.0530871 105.233207 62.1547666 135.25514 80.589666 146.33388 105.089666 139.626789 125.089666 128.866291 108.589666 151.750941 79.5155137 158.814285 55.089666"></polyline>
-                                <polyline id="Path-13" transform="translate(68.359756, 73.346391) rotate(39.000000) translate(-68.359756, -73.346391) " points="34.8497164 140.589666 54.0330228 119.089666 62.2215546 96.5293004 49.6540425 102.089666 34.8497164 122.256107 49.4692624 113.453891 75.53375 96.8753706 87.2403777 80.6273336 87.2403777 51.6816056 92.0686723 30.7940195 101.869796 6.10311591"></polyline>
-                                <polyline id="Path-14" points="6.05162076 149 12.5 148 22.7413837 142 36.1131664 137 48.3597562 132.5 63.9251351 126.5 75.702448 120.5 84.0749301 111 96.9012598 116"></polyline>
-                            </g>
-                        </g>
-                    </g>
-                </g>
-            </g>
-        </g>
-    </g>
+
+<svg width="163" height="150" viewBox="0 0 161 110" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#FF64CE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <polyline points="9.04655165 95.9125633 31.0310201 89.7965337 53.0154886 75.6805041 57.8221663 47.3384111 77.8080467 22.8759845 105.356266 19.977664 135.413306 38.4125633 146.505001 62.9125633 139.790067 82.9125633 129.016985 66.4125633 151.928396 37.3384111 159 12.9125633"></polyline>
+    <polyline points="0 62.3385766 28.4718732 57.7023843 49.0572998 45.3228974 35.775744 41.7351214 11.5511744 48.0907254 28.4718732 50.4504972 59.1968728 53.9694804 78.5424483 48.7096036 96.7798868 26.214548 113.69692 13.020389 136.87939 0"></polyline>
+    <polyline points="6.05869742 106.822897 12.5146173 105.822897 22.7679771 99.8228974 36.1553966 94.8228974 48.4163073 90.3228974 63.9998881 84.3228974 75.7909732 78.3228974 84.173246 68.8228974 97.0145746 73.8228974"></polyline>
+  </g>
 </svg>

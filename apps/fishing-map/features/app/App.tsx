@@ -15,6 +15,7 @@ import {
   selectUrlTimeRange,
   selectUrlViewport,
   selectWorkspaceId,
+  selectIsMapDrawing,
 } from 'routes/routes.selectors'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
@@ -25,7 +26,7 @@ import {
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { fetchUserThunk, isUserLogged } from 'features/user/user.slice'
+import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
@@ -51,8 +52,11 @@ import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useSetViewState } from 'features/map/map-viewport.hooks'
+import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
+import { selectReportAreaBounds } from 'features/app/selectors/app.reports.selector'
+import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { useAppDispatch } from './app.hooks'
-import { selectReadOnly, selectReportAreaBounds, selectSidebarOpen } from './app.selectors'
+import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
 
@@ -64,19 +68,6 @@ declare global {
     gtag: any
   }
 }
-
-export const COLOR_PRIMARY_BLUE =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.documentElement).getPropertyValue('--color-primary-blue')) ||
-  'rgb(22, 63, 137)'
-export const COLOR_SECONDARY_BLUE =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.documentElement).getPropertyValue('--color-secondary-blue')) ||
-  'rgb(22, 63, 137, .75)'
-export const COLOR_GRADIENT =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.documentElement).getPropertyValue('--color-gradient')) ||
-  'rgb(229, 240, 242)'
 
 const Main = () => {
   const workspaceLocation = useSelector(selectIsWorkspaceLocation)
@@ -122,10 +113,12 @@ const setMobileSafeVH = () => {
 
 function App() {
   useAnalytics()
+  useDatasetDrag()
   useReplaceLoginUrl()
   const map = useMapInstance()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
+  const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
   const i18n = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
@@ -171,7 +164,7 @@ function App() {
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  const userLogged = useSelector(isUserLogged)
+  const userLogged = useSelector(selectIsUserLogged)
   const urlViewport = useSelector(selectUrlViewport)
   const urlTimeRange = useSelector(selectUrlTimeRange)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
@@ -277,7 +270,7 @@ function App() {
         <Logo className={styles.logo} />
       </a>
       <SplitView
-        isOpen={sidebarOpen}
+        isOpen={sidebarOpen && !isMapDrawing}
         showToggle={workspaceLocation || vesselLocation}
         onToggle={onToggle}
         aside={<Sidebar onMenuClick={onMenuClick} />}

@@ -137,6 +137,7 @@ const getFinalurl = (
     // We want proxy active as default when api tiles auth is required
     proxy: params.proxy !== 'false',
   }
+
   const finalUrlParamsArr = Object.entries(finalUrlParams)
     .filter(([_, value]) => {
       return value !== undefined && value !== null && value !== 'undefined' && value !== 'null'
@@ -144,6 +145,7 @@ const getFinalurl = (
     .map(([key, value]) => {
       return `${key}=${value}`
     })
+
   if (datasets) {
     finalUrlParamsArr.push(datasets)
   }
@@ -154,7 +156,8 @@ const getFinalurl = (
     finalUrlParamsArr.push(vesselGroups)
   }
   const tilesUrl = getTilesUrl(config).replace(/{{/g, '{').replace(/}}/g, '}')
-  const finalUrlStr = `${tilesUrl}?${finalUrlParamsArr.join('&')}`
+  const hasQueryParams = new URL(tilesUrl)?.searchParams.size > 0
+  const finalUrlStr = `${tilesUrl}${hasQueryParams ? '&' : '?'}${finalUrlParamsArr.join('&')}`
   return decodeURI(finalUrlStr)
 }
 
@@ -268,7 +271,6 @@ class HeatmapAnimatedGenerator {
       }
 
       const serializedBaseSourceParams = serializeBaseSourceParams(baseSourceParams)
-      // console.log(serializedBaseSourceParams)
 
       const sourceParams = [serializedBaseSourceParams]
 

@@ -24,13 +24,8 @@ import {
   useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
 import { useViewStateAtom } from 'features/map/map-viewport.hooks'
-import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
-import {
-  selectLatestAvailableDataDate,
-  selectTimebarGraph,
-  selectTimebarVisualisation,
-} from 'features/app/app.selectors'
+import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
@@ -48,9 +43,19 @@ import {
   useTimebarVesselTracks,
 } from 'features/timebar/timebar-vessel.hooks'
 import { getTimebarChunkEventColor } from 'features/timebar/timebar.utils'
+import {
+  selectTimebarGraph,
+  selectTimebarVisualisation,
+} from 'features/app/selectors/app.timebar.selectors'
 import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
-import { selectTracksGraphData } from './timebar.selectors'
+import {
+  selectTracksData,
+  selectTracksGraphData,
+  selectTracksEvents,
+  selectAvailableStart,
+  selectAvailableEnd,
+} from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
@@ -143,6 +148,8 @@ const TimebarWrapper = () => {
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setViewState, viewState } = useViewStateAtom()
+  const availableStart = useSelector(selectAvailableStart)
+  const availableEnd = useSelector(selectAvailableEnd)
   const timebarGraph = useSelector(selectTimebarGraph)
   const tracksGraphsData = useSelector(selectTracksGraphData)
   const { isMapDrawing } = useMapDrawConnect()
@@ -346,8 +353,8 @@ const TimebarWrapper = () => {
         labels={labels}
         start={internalRange ? internalRange.start : start}
         end={internalRange ? internalRange.end : end}
-        absoluteStart={AVAILABLE_START}
-        absoluteEnd={AVAILABLE_END}
+        absoluteStart={availableStart}
+        absoluteEnd={availableEnd}
         latestAvailableDataDate={latestAvailableDataDate}
         onChange={onChange}
         showLastUpdate={false}

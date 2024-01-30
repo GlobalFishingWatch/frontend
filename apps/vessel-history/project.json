@@ -64,16 +64,12 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/vessel-history"],
       "options": {
-        "jestConfig": "apps/vessel-history/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/vessel-history/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/vessel-history/**/*.{ts,tsx,js,jsx}"]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

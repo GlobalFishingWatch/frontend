@@ -36,7 +36,7 @@
 .icon {
   position: absolute;
   bottom: 0;
-  right: 0;
+  right: var(--space-S);
   opacity: var(--opacity-secondary);
 }
 
@@ -54,10 +54,6 @@
 
 .input::placeholder {
   color: var(--color-secondary-blue);
-}
-
-.input:focus::placeholder {
-  color: var(--color-primary-blue);
 }
 
 .input:disabled {

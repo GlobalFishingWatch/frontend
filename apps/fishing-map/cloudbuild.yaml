@@ -11,7 +11,7 @@ steps:
 
   - id: 'generate-cypress-lock'
     waitFor: ['restore_cache']
-    name: node:18
+    name: node:21
     script: |
       if [ -d "node_modules" ]; then
         yarn info cypress version > cypress.lock
@@ -31,11 +31,11 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:18
+    name: node:21
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
-        yarn set version 3.6.1
+        yarn set version 4.0.2
         yarn -v
         CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
         yarn info cypress version > cypress.lock
@@ -69,7 +69,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:18
+    name: node:21
     entrypoint: yarn
     args: ['nx', 'build', 'fishing-map', '--parallel']
     env:
@@ -78,6 +78,7 @@ steps:
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
       - 'NEXT_PUBLIC_API_VERSION=$_NEXT_PUBLIC_API_VERSION'
       - 'NEXT_PUBLIC_CARRIER_PORTAL_URL=$_NEXT_PUBLIC_CARRIER_PORTAL_URL'
+      - 'NEXT_PUBLIC_MAP_ERRORS_SPREADSHEET_ID=$_NEXT_PUBLIC_MAP_ERRORS_SPREADSHEET_ID'
       - 'NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID=$_NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID'
       - 'NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID'
       - 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$_NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID'
@@ -114,6 +115,7 @@ steps:
     entrypoint: 'bash'
     env:
       - '_RUN_SERVICE_NAME=$_RUN_SERVICE_NAME'
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
     args:
       - '-eEuo'
       - 'pipefail'
@@ -137,11 +139,16 @@ steps:
           --set-env-vars \
           BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
           --allow-unauthenticated
-        gcloud run services describe $service_name \
+        workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
+        echo "https://globalfishingwatch.org/map" > app_url
+        if [ $workspace_env != 'production' ]; then
+          printf %s `gcloud run services describe $service_name \
            --project $_RUN_PROJECT \
            --platform managed \
            --region $_RUN_REGION \
-           --format 'value(status.url)' > app_url
+           --format 'value(status.url)'` > app_url
+           printf %s "/map" >> app_url
+        fi
 
   - id: 'i18n-labels publish stable'
     name: gcr.io/cloud-builders/gcloud
@@ -161,15 +168,20 @@ steps:
 
   - id: 'smoke-test-e2e'
     waitFor: ['deploy-cloud-run']
+    allowFailure: true
     name: cypress/included:12.17.1
     entrypoint: 'bash'
     env:
+      - 'CYPRESS_publicApiGateway=$_NEXT_PUBLIC_API_GATEWAY'
       - 'CYPRESS_basicAuth=$_BASIC_AUTH'
       - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
       - 'CYPRESS_basicAuthPass=$_BASIC_AUTH_PASS'
       - 'CYPRESS_apiAuthUser=$_CYPRESS_API_AUTH_USER'
       - 'CYPRESS_apiAuthPass=$_CYPRESS_API_AUTH_PASS'
       - 'CYPRESS_apiUserInitials=$_CYPRESS_API_USER_INITIALS'
+      - 'CYPRESS_DEFAULT_COMMAND_TIMEOUT=$_CYPRESS_DEFAULT_COMMAND_TIMEOUT'
+      - 'CYPRESS_REQUEST_TIMEOUT=$_CYPRESS_REQUEST_TIMEOUT'
+      - 'CYPRESS_RESPONSE_TIMEOUT=$_CYPRESS_RESPONSE_TIMEOUT'
     args:
       - '-eEuo'
       - 'pipefail'
@@ -179,6 +191,26 @@ steps:
         CYPRESS_BASE_URL=`cat app_url` \
           CYPRESS_CACHE_FOLDER=.cypress-cache \
           yarn nx run fishing-map-e2e:test-pr --parallel
+
+  - id: 'save-test-videos'
+    name: gcr.io/cloud-builders/gcloud
+    waitFor: ['smoke-test-e2e']
+    entrypoint: bash
+    env:
+      - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
+      - '_E2E_BUCKET=$_E2E_BUCKET'
+      - 'BUILD_ID=$BUILD_ID'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        if [ -d "dist/cypress/apps/fishing-map-e2e/screenshots" ] && [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
+          gsutil -m cp -r dist/cypress/apps/fishing-map-e2e gs://$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
+          echo "You can see the testing videos of this deploy in: "
+          echo "https://console.cloud.google.com/storage/browser/$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
+          exit 1
+        fi
 
 timeout: 1800s
 options:

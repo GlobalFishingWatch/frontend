@@ -9,14 +9,14 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel, getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import Remove from 'features/workspace/common/Remove'
-import { isGFWUser } from 'features/user/user.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import LayerSwitch from '../common/LayerSwitch'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
-import Filters from '../activity/ActivityFilters'
+import Filters from '../common/LayerFilters'
 
 type EventsLayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -31,7 +31,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
-  const gfwUser = useSelector(isGFWUser)
+  const gfwUser = useSelector(selectIsGFWUser)
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
 
@@ -45,7 +45,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
     setFiltersOpen(!filterOpen)
   }
 
-  if (!dataset) {
+  if (!dataset || dataset.status === 'deleted') {
     return <DatasetNotFound dataview={dataview} />
   }
 
@@ -81,7 +81,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
             <ExpandedContainer
               visible={filterOpen}
               onClickOutside={closeExpandedContainer}
-              component={<Filters dataview={dataview} />}
+              component={<Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />}
             >
               <div className={styles.filterButtonWrapper}>
                 <IconButton
@@ -111,8 +111,8 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
           )}
         </div>
       </div>
-      <div className={styles.properties}>
-        {hasSchemaFilterSelection && (
+      {hasSchemaFilterSelection && (
+        <div className={styles.properties}>
           <div className={styles.filters}>
             <div className={styles.filters}>
               {filtersAllowed.map(({ id, label }) => (
@@ -120,8 +120,8 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
               ))}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

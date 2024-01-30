@@ -96,7 +96,7 @@ export const selectRegions = (state: RootState) => {
   return state.regions
 }
 
-const selectRegionsById = memoize((id: RegionId) =>
+const selectRegionsById = memoize((id: RegionType) =>
   createSelector([selectRegions], (regions) => {
     const regionList = selectById(regions, id)
     return regionList?.data ?? []

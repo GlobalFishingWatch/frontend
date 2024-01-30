@@ -1,8 +1,13 @@
-import { Dictionary } from '@reduxjs/toolkit'
 import { invert, isObject, isString, transform } from 'lodash'
 import { stringify, parse } from 'qs'
 import { UrlDataviewInstance } from '..'
-import { removeLegacyEndpointPrefix, runDatasetMigrations } from './migrations'
+import {
+  removeLegacyEndpointPrefix,
+  runDatasetMigrations,
+  migrateEventsLegacyDatasets,
+} from './migrations'
+
+export type Dictionary<Value> = Record<string, Value>
 
 /**
  * A generic workspace to be extended by apps
@@ -42,7 +47,7 @@ const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
 const TOKEN_PREFIX = '~'
 export const TOKEN_REGEX = /~(\d+)/
 
-const BASE_URL_TO_OBJECT_TRANSFORMATION: Dictionary<(value: any) => any> = {
+const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
   latitude: (latitude) => parseFloat(latitude),
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),
@@ -152,6 +157,9 @@ export const parseLegacyDataviewInstanceConfig = (
       ...(dataviewInstance?.config?.info && {
         info: runDatasetMigrations(dataviewInstance?.config?.info),
       }),
+      ...(dataviewInstance?.config?.events?.length && {
+        events: dataviewInstance?.config?.events.map((d) => migrateEventsLegacyDatasets(d)),
+      }),
     },
     ...(dataviewInstance.datasetsConfig && {
       datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
@@ -246,12 +254,14 @@ export const parseWorkspace = (
   return parsedDetokenized
 }
 
+export const URL_STRINGIFY_CONFIG = {
+  encodeValuesOnly: true,
+  strictNullHandling: true,
+}
+
 export const stringifyWorkspace = (object: BaseUrlWorkspace) => {
   const objectWithAbbr = deepReplaceKeys(object, PARAMS_TO_ABBREVIATED)
   const tokenized = deepTokenizeValues(objectWithAbbr)
-  const stringified = stringify(tokenized, {
-    encodeValuesOnly: true,
-    strictNullHandling: true,
-  })
+  const stringified = stringify(tokenized, URL_STRINGIFY_CONFIG)
   return stringified
 }

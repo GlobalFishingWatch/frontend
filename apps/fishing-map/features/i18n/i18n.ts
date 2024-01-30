@@ -3,8 +3,8 @@ import Backend from 'i18next-http-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import { Locale } from 'types'
-import { PATH_BASENAME } from 'routes/routes'
 import { WORKSPACE_ENV } from 'data/workspaces'
+import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
 
 export const CROWDIN_IN_CONTEXT_LANG = 'val'
 
@@ -17,10 +17,9 @@ export const LocaleLabels = [
 ]
 
 const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
-export const SHARED_LABELS_PATH =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:8000'
-    : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@${NPM_SCOPE}`
+export const SHARED_LABELS_PATH = IS_DEVELOPMENT_ENV
+  ? 'http://localhost:8000'
+  : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@${NPM_SCOPE}`
 
 export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 

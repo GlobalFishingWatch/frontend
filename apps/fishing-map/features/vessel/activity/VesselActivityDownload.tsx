@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import saveAs from 'file-saver'
-import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { parseEventsToCSV } from 'features/vessel/vessel.download'
@@ -14,8 +13,9 @@ import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
-import { selectTimeRange } from 'features/app/app.selectors'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 
 const VesselActivityDownload = () => {
   const { t } = useTranslation()
@@ -48,7 +48,7 @@ const VesselActivityDownload = () => {
   }
 
   return (
-    <IconButton
+    <UserLoggedIconButton
       icon="download"
       size="medium"
       className="print-hidden"
@@ -56,6 +56,10 @@ const VesselActivityDownload = () => {
       disabled={eventsLoading}
       onClick={onDownloadClick}
       tooltip={t('download.dataDownload', 'Download Data')}
+      loginTooltip={t(
+        'download.eventsDownloadLogin',
+        'Register and login to download vessel events (free, 2 minutes)'
+      )}
       tooltipPlacement="top"
     />
   )

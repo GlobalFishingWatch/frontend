@@ -25,7 +25,7 @@ import NewWorkspaceModal from 'features/workspace/shared/NewWorkspaceModal'
 import { cleanCurrentWorkspaceData } from 'features/workspace/workspace.slice'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import styles from './User.module.css'
-import { selectUserWorkspaces } from './user.selectors'
+import { selectUserWorkspaces } from './selectors/user.permissions.selectors'
 
 function UserWorkspaces() {
   const { t } = useTranslation()
@@ -205,7 +205,9 @@ function UserWorkspaces() {
                     }}
                     onClick={() => onWorkspaceClick(workspace)}
                   >
-                    <span className={styles.workspaceTitle}>{getWorkspaceLabel(workspace)}</span>
+                    <span className={styles.workspaceTitle} data-test="workspace-name">
+                      {getWorkspaceLabel(workspace)}
+                    </span>
                     <IconButton icon="arrow-right" />
                   </Link>
                   <IconButton
@@ -220,12 +222,13 @@ function UserWorkspaces() {
                     loading={workspace.id === workspacesStatusId && deleteLoading}
                     tooltip={t('workspace.remove', 'Remove workspace')}
                     onClick={() => onDeleteClick(workspace)}
+                    testId="remove-workspace-button"
                   />
                 </li>
               )
             })
           ) : (
-            <div className={styles.placeholder}>
+            <div className={styles.placeholder} data-test="user-workspaces">
               {t('workspace.emptyState', 'Your workspaces will appear here')}
             </div>
           )}

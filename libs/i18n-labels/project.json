@@ -68,17 +68,13 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/i18n-labels/**/*.{ts,tsx,js,jsx}"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/i18n-labels"],
       "options": {
-        "jestConfig": "libs/i18n-labels/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/i18n-labels/jest.config.ts"
       }
     },
     "deploy": {

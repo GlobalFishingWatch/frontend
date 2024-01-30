@@ -13,22 +13,22 @@ import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
   selectTimebarVisualisation,
-} from 'features/app/app.selectors'
+} from 'features/app/selectors/app.timebar.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
-  selectActiveNonTrackEnvironmentalDataviews,
-} from 'features/dataviews/dataviews.selectors'
+  selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry,
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 import { DEFAULT_TIME_RANGE } from 'data/config'
+import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   changeSettings,
   setHighlightedEvents,
@@ -226,7 +226,7 @@ export const useTimebarVisualisation = () => {
   const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
-  const activeEnvDataviews = useSelector(selectActiveNonTrackEnvironmentalDataviews)
+  const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 
   // const prevTimebarVisualisation = usePrevious(timebarVisualisation)

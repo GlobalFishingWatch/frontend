@@ -1,24 +1,10 @@
-import { FeatureCollection } from 'geojson'
 import {
-  // <<<<<<< HEAD
-  // =======
-  //   Dataset,
-  //   DataviewDatasetConfig,
-  // >>>>>>> develop
+  DataviewDatasetConfig,
   DataviewDatasetConfigParam,
   EndpointId,
   ThinningConfig,
 } from '@globalfishingwatch/api-types'
-// <<<<<<< HEAD
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-// =======
-// import {
-//   GetDatasetConfigCallback,
-//   getTracksChunkSetId,
-//   UrlDataviewInstance,
-// } from '@globalfishingwatch/dataviews-client'
-// >>>>>>> develop
-import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
@@ -29,50 +15,7 @@ export const trackDatasetConfigsCallback = (
   thinningConfig: ThinningConfigParam | null,
   timebarGraph: any
 ) => {
-  return ([info, track, ...events], dataview: UrlDataviewInstance) => {
-    // =======
-    // type ThinningConfigParam = { zoom: number; config: ThinningConfig }
-
-    // export const infoDatasetConfigsCallback: GetDatasetConfigCallback = ([info]) => {
-    //   // Clean resources when mandatory vesselId is missing
-    //   // needed for vessels with no info datasets (zebraX)
-    //   const vesselData = hasDatasetConfigVesselData(info)
-    //   return vesselData ? [info] : []
-    // }
-
-    // export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) => {
-    //   const allEvents = events.map((event) => {
-    //     const hasPaginationAdded = Object.keys(DEFAULT_PAGINATION_PARAMS).every(
-    //       (id) => event.query?.map((q) => q.id).includes(id)
-    //     )
-    //     if (hasPaginationAdded) {
-    //       // Pagination already included, not needed to add it
-    //       return event
-    //     }
-    //     return {
-    //       ...event,
-    //       query: [
-    //         ...(Object.entries(DEFAULT_PAGINATION_PARAMS).map(([id, value]) => ({
-    //           id,
-    //           value,
-    //         })) as DataviewDatasetConfigParam[]),
-    //         ...(event?.query || []),
-    //       ],
-    //     }
-    //   })
-    //   return allEvents.filter(Boolean)
-    // }
-
-    // export const trackDatasetConfigsCallback = (
-    //   thinningConfig: ThinningConfigParam | null,
-    //   chunks: { start: string; end: string }[] | null,
-    //   timebarGraph: TimebarGraphs
-    // ): GetDatasetConfigCallback => {
-    //   return (
-    //     [track]: DataviewDatasetConfig[],
-    //     dataview?: UrlDataviewInstance
-    //   ): DataviewDatasetConfig[] => {
-    // >>>>>>> develop
+  return ([info, track, ...events]: DataviewDatasetConfig[], dataview: UrlDataviewInstance) => {
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
         id,
@@ -102,7 +45,6 @@ export const trackDatasetConfigsCallback = (
         query: [...(track.query || []), ...thinningQuery],
       }
 
-      // <<<<<<< HEAD
       const allEvents = events.map((event) => ({
         ...event,
         query: [
@@ -110,7 +52,7 @@ export const trackDatasetConfigsCallback = (
             id,
             value,
           })) as DataviewDatasetConfigParam[]),
-          ...event?.query,
+          ...(event?.query || []),
         ],
       }))
       // Clean resources when mandatory vesselId is missing
@@ -175,18 +117,4 @@ export const trackDatasetConfigsCallback = (
     }
     return [track].filter(Boolean)
   }
-}
-
-export const parseUserTrackCallback = (geoJSON: FeatureCollection) => {
-  geoJSON.features = geoJSON.features.map((feature, i) => {
-    const color = LineColorBarOptions[i % LineColorBarOptions.length].value
-    return {
-      ...feature,
-      properties: {
-        ...feature.properties,
-        color,
-      },
-    }
-  })
-  return geoJSON
 }

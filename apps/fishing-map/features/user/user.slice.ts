@@ -1,9 +1,8 @@
-import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {
   GFWAPI,
   getAccessTokenFromUrl,
   removeAccessTokenFromUrl,
-  GUEST_USER_TYPE,
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
@@ -26,27 +25,6 @@ const initialState: UserState = {
 }
 
 type UserSliceState = { user: UserState }
-
-export const GFW_GROUP_ID = 'GFW Staff'
-export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'
-export const GFW_DEV_GROUP_ID = 'development-group'
-export const ADMIN_GROUP_ID = 'admin-group'
-export const DEFAULT_GROUP_ID = 'Default'
-export const PRIVATE_SUPPORTED_GROUPS = [
-  'Belize',
-  'Brazil',
-  'Chile',
-  'Costa Rica',
-  'Ecuador',
-  'Indonesia',
-  'Mexico',
-  'Panama',
-  'Papua New Guinea',
-  'Peru',
-  'SSF-Aruna',
-  'SSF-Ipnlf',
-  'SSF-Rare',
-]
 
 export type UserGroup = 'costa rica' | 'papua new guinea' | 'ssf-aruna' | 'ssf-rare' | 'ssf-ipnlf'
 export const USER_GROUP_WORKSPACE: Record<UserGroup, string> = {
@@ -124,24 +102,4 @@ const userSlice = createSlice({
   },
 })
 
-export const selectUserData = (state: UserSliceState) => state.user.data
-export const selectUserStatus = (state: UserSliceState) => state.user.status
-export const selectUserLogged = (state: UserSliceState) => state.user.logged
-export const isGFWUser = (state: UserSliceState) => state.user.data?.groups.includes(GFW_GROUP_ID)
-export const isJACUser = (state: UserSliceState) => state.user.data?.groups.includes(JAC_GROUP_ID)
-export const isGFWAdminUser = (state: UserSliceState) =>
-  state.user.data?.groups.includes(ADMIN_GROUP_ID)
-export const isGFWDeveloper = (state: UserSliceState) =>
-  state.user.data?.groups.includes(GFW_DEV_GROUP_ID)
-
-export const isGuestUser = createSelector([selectUserData], (userData) => {
-  return userData?.type === GUEST_USER_TYPE
-})
-
-export const isUserLogged = createSelector(
-  [selectUserStatus, selectUserLogged],
-  (status, logged) => {
-    return status === AsyncReducerStatus.Finished && logged
-  }
-)
 export default userSlice.reducer

@@ -181,6 +181,7 @@
       "registryInfo": "crwdns68824:0crwdne68824:0",
       "registryOwners": "crwdns68826:0crwdne68826:0",
       "selfReportedInfo": "crwdns68828:0crwdne68828:0",
+      "combinedSourcesInfo": "crwdns70174:0crwdne70174:0",
       "lastTransmissionDate": "crwdns68830:0crwdne68830:0",
       "firstTransmissionDate": "crwdns68832:0crwdne68832:0",
       "registryAuthorizations": "crwdns68834:0crwdne68834:0"
@@ -194,6 +195,7 @@
       "registryInfo": "crwdns68842:0crwdne68842:0",
       "registryOwners": "crwdns68844:0crwdne68844:0",
       "selfReportedInfo": "crwdns68846:0crwdne68846:0",
+      "combinedSourcesInfo": "crwdns70176:0crwdne70176:0",
       "lastTransmissionDate": "crwdns68848:0crwdne68848:0",
       "firstTransmissionDate": "crwdns68850:0crwdne68850:0",
       "registryAuthorizations": "crwdns68852:0crwdne68852:0"
@@ -439,6 +441,7 @@
     "schema": {
       "id": "crwdns68876:0crwdne68876:0",
       "selfReportedInfo": "crwdns68878:0crwdne68878:0",
+      "combinedSourcesInfo": "crwdns70178:0crwdne70178:0",
       "lastTransmissionDate": "crwdns68880:0crwdne68880:0",
       "firstTransmissionDate": "crwdns68882:0crwdne68882:0"
     }
@@ -449,6 +452,7 @@
     "schema": {
       "id": "crwdns68888:0crwdne68888:0",
       "selfReportedInfo": "crwdns68890:0crwdne68890:0",
+      "combinedSourcesInfo": "crwdns70180:0crwdne70180:0",
       "lastTransmissionDate": "crwdns68892:0crwdne68892:0",
       "firstTransmissionDate": "crwdns68894:0crwdne68894:0"
     }
@@ -1323,15 +1327,15 @@
       "matched": {
         "keyword": "crwdns65507:0crwdne65507:0",
         "enum": {
-          "true": true,
-          "false": true
+          "true": "crwdns70368:0crwdne70368:0",
+          "false": "crwdns70370:0crwdne70370:0"
         }
       },
       "radiance": {
         "keyword": "crwdns65513:0crwdne65513:0",
         "enum": {
-          "0": 0,
-          "10000": 0
+          "0": "crwdns65515:0crwdne65515:0",
+          "10000": "crwdns65517:0crwdne65517:0"
         }
       },
       "shiptype": {
@@ -1347,12 +1351,12 @@
       "qf_detect": {
         "keyword": "crwdns65531:0crwdne65531:0",
         "enum": {
-          "1": 0,
-          "2": 0,
-          "3": 0,
-          "5": 0,
-          "7": 0,
-          "10": 0
+          "1": "crwdns65533:0crwdne65533:0",
+          "2": "crwdns65535:0crwdne65535:0",
+          "3": "crwdns65537:0crwdne65537:0",
+          "5": "crwdns65539:0crwdne65539:0",
+          "7": "crwdns65541:0crwdne65541:0",
+          "10": "crwdns65543:0crwdne65543:0"
         }
       },
       "timestamp": "crwdns65545:0crwdne65545:0",
@@ -1372,15 +1376,15 @@
       "matched": {
         "keyword": "crwdns69846:0crwdne69846:0",
         "enum": {
-          "true": true,
-          "false": true
+          "true": "crwdns70372:0crwdne70372:0",
+          "false": "crwdns70374:0crwdne70374:0"
         }
       },
       "radiance": {
         "keyword": "crwdns69852:0crwdne69852:0",
         "enum": {
-          "0": 0,
-          "10000": 0
+          "0": "crwdns69854:0crwdne69854:0",
+          "10000": "crwdns69856:0crwdne69856:0"
         }
       },
       "shiptype": {
@@ -1396,12 +1400,12 @@
       "qf_detect": {
         "keyword": "crwdns69870:0crwdne69870:0",
         "enum": {
-          "1": 0,
-          "2": 0,
-          "3": 0,
-          "5": 0,
-          "7": 0,
-          "10": 0
+          "1": "crwdns69872:0crwdne69872:0",
+          "2": "crwdns69874:0crwdne69874:0",
+          "3": "crwdns69876:0crwdne69876:0",
+          "5": "crwdns69878:0crwdne69878:0",
+          "7": "crwdns69880:0crwdne69880:0",
+          "10": "crwdns69882:0crwdne69882:0"
         }
       },
       "timestamp": "crwdns69884:0crwdne69884:0",
@@ -1463,6 +1467,7 @@
       "registryInfo": "crwdns69010:0crwdne69010:0",
       "registryOwners": "crwdns69012:0crwdne69012:0",
       "selfReportedInfo": "crwdns69014:0crwdne69014:0",
+      "combinedSourcesInfo": "crwdns70182:0crwdne70182:0",
       "lastTransmissionDate": "crwdns69016:0crwdne69016:0",
       "firstTransmissionDate": "crwdns69018:0crwdne69018:0",
       "registryAuthorizations": "crwdns69020:0crwdne69020:0"
@@ -1611,6 +1616,7 @@
     "schema": {
       "id": "crwdns69044:0crwdne69044:0",
       "selfReportedInfo": "crwdns69046:0crwdne69046:0",
+      "combinedSourcesInfo": "crwdns70184:0crwdne70184:0",
       "lastTransmissionDate": "crwdns69048:0crwdne69048:0",
       "firstTransmissionDate": "crwdns69050:0crwdne69050:0"
     }
@@ -1939,6 +1945,20 @@
     "description": "crwdns66113:0crwdne66113:0",
     "schema": {}
   },
+  "public-fixed-infrastructure": {
+    "name": "crwdns70318:0crwdne70318:0",
+    "description": "crwdns70320:0crwdne70320:0",
+    "schema": {
+      "label": {
+        "keyword": "crwdns70322:0crwdne70322:0",
+        "enum": {
+          "oil": "crwdns70324:0crwdne70324:0",
+          "wind": "crwdns70326:0crwdne70326:0",
+          "unknown": "crwdns70328:0crwdne70328:0"
+        }
+      }
+    }
+  },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
     "description": "crwdns69890:0crwdne69890:0",
@@ -2013,6 +2033,16 @@
       "firstTransmissionDate": "crwdns66203:0crwdne66203:0"
     }
   },
+  "public-global-chlorophyl-max": {
+    "name": "crwdns70240:0crwdne70240:0",
+    "description": "crwdns70242:0crwdne70242:0",
+    "schema": {}
+  },
+  "public-global-chlorophyl-min": {
+    "name": "crwdns70244:0crwdne70244:0",
+    "description": "crwdns70246:0crwdne70246:0",
+    "schema": {}
+  },
   "public-global-chlorophyl": {
     "name": "crwdns66205:0crwdne66205:0",
     "description": "crwdns66207:0crwdne66207:0",
@@ -2044,7 +2074,13 @@
     "schema": {
       "flag": "crwdns69916:0crwdne69916:0",
       "fields": "crwdns66237:0crwdne66237:0",
-      "duration": "crwdns69918:0crwdne69918:0",
+      "duration": {
+        "keyword": "crwdns70220:0crwdne70220:0",
+        "enum": {
+          "120": "crwdns70222:0crwdne70222:0",
+          "4320": "crwdns70224:0crwdne70224:0"
+        }
+      },
       "event_id": "crwdns66239:0crwdne66239:0",
       "event_end": "crwdns66241:0crwdne66241:0",
       "vessel_id": "crwdns66243:0crwdne66243:0",
@@ -2228,7 +2264,7 @@
   },
   "public-global-sar-presence": {
     "name": "crwdns69930:0crwdne69930:0",
-    "description": "crwdns66487:0crwdne66487:0",
+    "description": "crwdns70350:0crwdne70350:0",
     "schema": {
       "id": "crwdns66489:0crwdne66489:0",
       "lat": "crwdns66491:0crwdne66491:0",
@@ -2241,8 +2277,8 @@
       "matched": {
         "keyword": "crwdns66503:0crwdne66503:0",
         "enum": {
-          "true": true,
-          "false": true
+          "true": "crwdns70376:0crwdne70376:0",
+          "false": "crwdns70378:0crwdne70378:0"
         }
       },
       "geartype": {
@@ -2305,6 +2341,21 @@
         }
       }
     }
+  },
+  "public-global-sst-anomalies-max": {
+    "name": "crwdns70290:0crwdne70290:0",
+    "description": "crwdns70292:0crwdne70292:0",
+    "schema": {}
+  },
+  "public-global-sst-anomalies-min": {
+    "name": "crwdns70294:0crwdne70294:0",
+    "description": "crwdns70296:0crwdne70296:0",
+    "schema": {}
+  },
+  "public-global-sst-anomalies": {
+    "name": "crwdns70298:0crwdne70298:0",
+    "description": "crwdns70300:0crwdne70300:0",
+    "schema": {}
   },
   "public-global-support-vessels": {
     "name": "crwdns66513:0crwdne66513:0",
@@ -2371,28 +2422,48 @@
       "radiance": {
         "keyword": "crwdns66577:0crwdne66577:0",
         "enum": {
-          "1": 0,
-          "1000": 0
+          "1": "crwdns66579:0crwdne66579:0",
+          "1000": "crwdns66581:0crwdne66581:0"
         }
       },
       "detect_id": "crwdns66583:0crwdne66583:0",
       "qf_detect": {
         "keyword": "crwdns66585:0crwdne66585:0",
         "enum": {
-          "1": 0,
-          "2": 0,
-          "3": 0,
-          "5": 0,
-          "7": 0,
-          "10": 0
+          "1": "crwdns66587:0crwdne66587:0",
+          "2": "crwdns66589:0crwdne66589:0",
+          "3": "crwdns66591:0crwdne66591:0",
+          "5": "crwdns66593:0crwdne66593:0",
+          "7": "crwdns66595:0crwdne66595:0",
+          "10": "crwdns66597:0crwdne66597:0"
         }
       },
       "timestamp": "crwdns66599:0crwdne66599:0"
     }
   },
+  "public-global-water-salinity-max": {
+    "name": "crwdns70248:0crwdne70248:0",
+    "description": "crwdns70250:0crwdne70250:0",
+    "schema": {}
+  },
+  "public-global-water-salinity-min": {
+    "name": "crwdns70252:0crwdne70252:0",
+    "description": "crwdns70254:0crwdne70254:0",
+    "schema": {}
+  },
   "public-global-water-salinity": {
     "name": "crwdns66601:0crwdne66601:0",
     "description": "crwdns66603:0crwdne66603:0",
+    "schema": {}
+  },
+  "public-global-water-temperature-max": {
+    "name": "crwdns70256:0crwdne70256:0",
+    "description": "crwdns70258:0crwdne70258:0",
+    "schema": {}
+  },
+  "public-global-water-temperature-min": {
+    "name": "crwdns70260:0crwdne70260:0",
+    "description": "crwdns70262:0crwdne70262:0",
     "schema": {}
   },
   "public-global-water-temperature": {
@@ -2775,6 +2846,7 @@
       "registryInfo": "crwdns69148:0crwdne69148:0",
       "registryOwners": "crwdns69150:0crwdne69150:0",
       "selfReportedInfo": "crwdns69152:0crwdne69152:0",
+      "combinedSourcesInfo": "crwdns70186:0crwdne70186:0",
       "lastTransmissionDate": "crwdns69154:0crwdne69154:0",
       "firstTransmissionDate": "crwdns69156:0crwdne69156:0",
       "registryAuthorizations": "crwdns69158:0crwdne69158:0"
@@ -2786,6 +2858,7 @@
     "schema": {
       "id": "crwdns69164:0crwdne69164:0",
       "selfReportedInfo": "crwdns69166:0crwdne69166:0",
+      "combinedSourcesInfo": "crwdns70188:0crwdne70188:0",
       "lastTransmissionDate": "crwdns69168:0crwdne69168:0",
       "firstTransmissionDate": "crwdns69170:0crwdne69170:0"
     }
@@ -2830,13 +2903,23 @@
     }
   },
   "public-panama-vessel-identity-fishing": {
-    "name": "crwdns70156:0crwdne70156:0",
-    "description": "crwdns70158:0crwdne70158:0",
+    "name": "crwdns70430:0crwdne70430:0",
+    "description": "crwdns70432:0crwdne70432:0",
     "schema": {
       "id": "crwdns69176:0crwdne69176:0",
       "selfReportedInfo": "crwdns69178:0crwdne69178:0",
       "lastTransmissionDate": "crwdns69180:0crwdne69180:0",
       "firstTransmissionDate": "crwdns69182:0crwdne69182:0"
+    }
+  },
+  "public-panama-vessel-identity-non-fishing": {
+    "name": "crwdns70434:0crwdne70434:0",
+    "description": "crwdns70436:0crwdne70436:0",
+    "schema": {
+      "id": "crwdns70438:0crwdne70438:0",
+      "selfReportedInfo": "crwdns70440:0crwdne70440:0",
+      "lastTransmissionDate": "crwdns70442:0crwdne70442:0",
+      "firstTransmissionDate": "crwdns70444:0crwdne70444:0"
     }
   },
   "public-peru-fishing-effort": {
@@ -3044,8 +3127,8 @@
       "matched": {
         "keyword": "crwdns67369:0crwdne67369:0",
         "enum": {
-          "true": true,
-          "false": true
+          "true": "crwdns70380:0crwdne70380:0",
+          "false": "crwdns70382:0crwdne70382:0"
         }
       },
       "geartype": {
@@ -3124,8 +3207,8 @@
       "radiance": {
         "keyword": "crwdns67513:0crwdne67513:0",
         "enum": {
-          "1": 0,
-          "1000": 0
+          "1": "crwdns67515:0crwdne67515:0",
+          "1000": "crwdns67517:0crwdne67517:0"
         }
       },
       "shiptype": {
@@ -3141,12 +3224,12 @@
       "qf_detect": {
         "keyword": "crwdns67531:0crwdne67531:0",
         "enum": {
-          "1": 0,
-          "2": 0,
-          "3": 0,
-          "5": 0,
-          "7": 0,
-          "10": 0
+          "1": "crwdns67533:0crwdne67533:0",
+          "2": "crwdns67535:0crwdne67535:0",
+          "3": "crwdns67537:0crwdne67537:0",
+          "5": "crwdns67539:0crwdne67539:0",
+          "7": "crwdns67541:0crwdne67541:0",
+          "10": "crwdns67543:0crwdne67543:0"
         }
       },
       "timestamp": "crwdns67545:0crwdne67545:0",

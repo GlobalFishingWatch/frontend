@@ -7,9 +7,9 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import {
-  getCurrentIdentityVessel,
   getVesselProperty,
   filterRegistryInfoByDateAndSSVID,
+  getVesselId,
 } from 'features/vessel/vessel.utils'
 import { formatInfoField } from 'utils/info'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
@@ -53,10 +53,9 @@ const OwnerVessels = ({ owner, dataset, ignoreVessel }: OwnerVesselsProps) => {
   return (
     <ul className={styles.ownersList}>
       {vessels?.map((vessel) => {
-        const vesselIdentity = getCurrentIdentityVessel(vessel)
         return (
-          <li key={vesselIdentity.id} className={styles.vessel}>
-            <RelatedVessel vessel={vesselIdentity} showTooltip />
+          <li key={getVesselId(vessel)} className={styles.vessel}>
+            <RelatedVessel vessel={vessel} />
           </li>
         )
       })}

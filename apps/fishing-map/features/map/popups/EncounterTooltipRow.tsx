@@ -1,26 +1,18 @@
 import { Fragment, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetTypes, EventVessel } from '@globalfishingwatch/api-types'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { EventVessel } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
-import {
-  ENCOUNTER_EVENTS_SOURCE_ID,
-  getVesselDataviewInstance,
-  getVesselInWorkspace,
-} from 'features/dataviews/dataviews.utils'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectActiveTrackDataviews } from 'features/dataviews/dataviews.slice'
-import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import VesselLink from 'features/vessel/VesselLink'
+import VesselPin from 'features/vessel/VesselPin'
 import { useViewStateAtom } from '../map-viewport.hooks'
 import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
 import styles from './Popup.module.css'
@@ -50,48 +42,16 @@ type EncountersLayerProps = {
 
 function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerProps) {
   const { t } = useTranslation()
-  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const datasets = useSelector(selectAllDatasets)
   const { start, end } = useTimerangeConnect()
   const { viewState } = useViewStateAtom()
   const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
     useCarrierLatestConnect()
-  const vessels = useSelector(selectActiveTrackDataviews)
 
   useEffect(() => {
     if (!carrierLatest) {
       dispatchFetchLatestCarrier()
     }
   }, [carrierLatest, dispatchFetchLatestCarrier])
-
-  const onPinClick = (ev: React.MouseEvent<Element, MouseEvent>, vessel: ExtendedEventVessel) => {
-    const vesselInWorkspace = getVesselInWorkspace(vessels, vessel.id)
-    if (vesselInWorkspace) {
-      deleteDataviewInstance(vesselInWorkspace.id)
-      return
-    }
-
-    const infoDataset = datasets.find((dataset) => dataset.id === vessel.dataset)
-    const trackDataset = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)
-    const eventsRelatedDatasets = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)
-
-    const eventsDatasetsId =
-      eventsRelatedDatasets && eventsRelatedDatasets?.length
-        ? eventsRelatedDatasets.map((d) => d.id)
-        : []
-
-    if (infoDataset || trackDataset) {
-      const vesselDataviewInstance = getVesselDataviewInstance(
-        { id: vessel.id },
-        {
-          info: infoDataset?.id,
-          track: trackDataset?.id,
-          ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
-        }
-      )
-      upsertDataviewInstance(vesselDataviewInstance)
-    }
-  }
 
   const event = parseEvent(feature.event)
   const linkParams = {
@@ -123,9 +83,6 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
     )
   }
 
-  const carrierInWorkspace = getVesselInWorkspace(vessels, event!?.vessel!?.id)
-  const donorInWorkspace = getVesselInWorkspace(vessels, event!?.encounter!?.vessel!?.id)
-
   return (
     <div className={styles.popupSection}>
       <Icon icon="encounters" className={styles.layerIcon} style={{ color: feature.color }} />
@@ -149,22 +106,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                           </VesselLink>
                         </span>
                         {(event.vessel as ExtendedEventVessel).dataset && (
-                          <IconButton
-                            icon={carrierInWorkspace ? 'pin-filled' : 'pin'}
-                            style={{
-                              color: carrierInWorkspace ? carrierInWorkspace.config?.color : '',
-                            }}
-                            size="small"
-                            tooltip={
-                              carrierInWorkspace
-                                ? t(
-                                    'search.vesselAlreadyInWorkspace',
-                                    'This vessel is already in your workspace'
-                                  )
-                                : t('vessel.addToWorkspace', 'Add vessel to view')
-                            }
-                            onClick={(e) => onPinClick(e, event.vessel as ExtendedEventVessel)}
-                          />
+                          <VesselPin vesselToResolve={event.vessel} />
                         )}
                       </div>
                     </div>
@@ -183,24 +125,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                             </VesselLink>
                           </span>
                           {(event.encounter?.vessel as ExtendedEventVessel).dataset && (
-                            <IconButton
-                              icon={donorInWorkspace ? 'pin-filled' : 'pin'}
-                              style={{
-                                color: donorInWorkspace ? donorInWorkspace.config?.color : '',
-                              }}
-                              size="small"
-                              tooltip={
-                                donorInWorkspace
-                                  ? t(
-                                      'search.vesselAlreadyInWorkspace',
-                                      'This vessel is already in your workspace'
-                                    )
-                                  : t('vessel.addToWorkspace', 'Add vessel to view')
-                              }
-                              onClick={(e) =>
-                                onPinClick(e, event.encounter?.vessel as ExtendedEventVessel)
-                              }
-                            />
+                            <VesselPin vesselToResolve={event.encounter.vessel} />
                           )}
                         </div>
                       </div>

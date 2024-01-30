@@ -8,7 +8,7 @@ import { TooltipTypes } from '../types/types'
 import styles from './Button.module.css'
 
 export type ButtonType = 'default' | 'secondary' | 'border-secondary'
-export type ButtonSize = 'tiny' | 'small' | 'default' | 'big' | 'verybig'
+export type ButtonSize = 'tiny' | 'small' | 'medium' | 'default' | 'big' | 'verybig'
 export type HTMLButtonType = 'submit' | 'reset' | 'button' | undefined
 
 export interface ButtonProps {

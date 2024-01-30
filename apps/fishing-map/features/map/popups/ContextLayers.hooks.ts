@@ -12,10 +12,10 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectReportAreaSource } from 'features/app/app.selectors'
+import { selectReportAreaSource } from 'features/app/selectors/app.reports.selector'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectContextAreasDataviews } from 'features/dataviews/dataviews.selectors'
+import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getBufferedAreaBbox } from 'features/reports/reports.utils'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
@@ -27,10 +27,6 @@ export const getFeatureBounds = (feature: TooltipEventFeature) => {
     const bounds = getBufferedAreaBbox({ area: { geometry } } as any)
     return bounds
   }
-}
-
-export const getFeatureAreaId = (feature: TooltipEventFeature) => {
-  return feature.properties.gfw_id || feature.properties[feature.promoteId as string]
 }
 
 export type HighlightedAreaParams = {
@@ -54,8 +50,12 @@ export const useHighlightArea = () => {
   )
 }
 
-const getAreaIdFromFeature = (feature: TooltipEventFeature): AreaKeyId => {
-  return feature.properties?.gfw_id || feature.properties?.[feature.promoteId as string]
+export const getAreaIdFromFeature = (feature: TooltipEventFeature): AreaKeyId => {
+  return (
+    feature.properties?.gfw_id ||
+    feature.properties?.[feature.promoteId as string] ||
+    (feature.id as string)
+  )
 }
 
 export const useContextInteractions = () => {
@@ -101,7 +101,7 @@ export const useContextInteractions = () => {
   const setReportArea = useCallback(
     (feature: TooltipEventFeature) => {
       const { source: sourceId, title, value } = feature
-      const areaId = getFeatureAreaId(feature)
+      const areaId = getAreaIdFromFeature(feature) as string
       // Report already does it on page reload but to avoid waiting
       // this moves the map to the same position
       const bounds = getFeatureBounds(feature)

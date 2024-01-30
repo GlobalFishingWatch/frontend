@@ -172,7 +172,8 @@
   "map": {
     "filters": "crwdns61081:0crwdne61081:0",
     "loading": "crwdns61083:0crwdne61083:0",
-    "toggleLayers": "crwdns61085:0crwdne61085:0"
+    "toggleLayers": "crwdns61085:0crwdne61085:0",
+    "viewInGFWMap": "crwdns70230:0crwdne70230:0"
   },
   "risk": {
     "aisDisabling": "crwdns61087:0crwdne61087:0",
@@ -350,7 +351,7 @@
     "historyLabelByField": "crwdns61379:0{{label}}crwdnd61379:0{{vesselName}}crwdne61379:0",
     "imo": "crwdns61381:0crwdne61381:0",
     "iuuStatus": "crwdns61383:0crwdne61383:0",
-    "iuuStatusDescription": "crwdns61385:0[TDB]crwdne61385:0",
+    "iuuStatusDescription": "crwdns61385:0crwdne61385:0",
     "iuuStatusModalTitle": "crwdns61387:0{{vesselName}}crwdne61387:0",
     "iuuStatusOptions": {
       "0": "crwdns61389:0crwdne61389:0",

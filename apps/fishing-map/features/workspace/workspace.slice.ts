@@ -28,7 +28,6 @@ import {
 } from 'routes/routes.selectors'
 import { HOME, REPORT, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
 import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
-import { selectDaysFromLatest } from 'features/app/app.selectors'
 import {
   DEFAULT_DATAVIEW_SLUGS,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
@@ -41,14 +40,19 @@ import {
   getDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
-import { isGFWUser, isGuestUser } from 'features/user/user.slice'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { AppDispatch } from 'store'
-import { selectCurrentWorkspaceId, selectWorkspaceStatus } from './workspace.selectors'
+import { LIBRARY_LAYERS } from 'data/layer-library'
+import {
+  selectCurrentWorkspaceId,
+  selectDaysFromLatest,
+  selectWorkspaceStatus,
+} from './workspace.selectors'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
 
@@ -88,8 +92,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const state = getState() as any
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
-    const guestUser = isGuestUser(state)
-    const gfwUser = isGFWUser(state)
+    const guestUser = selectIsGuestUser(state)
+    const gfwUser = selectIsGFWUser(state)
     const reportId = selectReportId(state)
     try {
       let workspace: Workspace<any> | null = null
@@ -164,10 +168,13 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         const dataviewInstances: UrlDataviewInstance[] = [
           ...(workspace?.dataviewInstances || []),
           ...(urlDataviewInstances || []),
+          // Load dataviews from layer library
+          ...LIBRARY_LAYERS,
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
-        signal.addEventListener('abort', fetchDatasetsAction.abort)
+        // Don't abort datasets as they are needed in the search
+        // signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
         datasets = payload as Dataset[]
 
@@ -336,6 +343,15 @@ const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
+    setWorkspaceProperty: (
+      state,
+      action: PayloadAction<{ key: keyof Workspace<WorkspaceState, string>; value: string }>
+    ) => {
+      const { key, value } = action.payload
+      if (state.data && state.data[key]) {
+        ;(state.data as any)[key] = value
+      }
+    },
     resetWorkspaceSlice: (state) => {
       state.status = initialState.status
       state.customStatus = initialState.customStatus
@@ -417,6 +433,7 @@ const workspaceSlice = createSlice({
 })
 
 export const {
+  setWorkspaceProperty,
   resetWorkspaceSlice,
   setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,

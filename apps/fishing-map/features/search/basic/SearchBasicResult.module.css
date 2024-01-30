@@ -8,22 +8,25 @@
   border-bottom: var(--border);
 }
 
-.searchResult:not(.inWorkspace):hover,
-.searchResult:not(.inWorkspace).highlighted,
+.searchResult.highlighted:has(.icon:hover),
 .selected {
   background: var(--color-terthiary-blue);
+}
+
+.icon {
+  border: 1px solid var(--color-secondary-blue);
+  top: 3px;
 }
 
 .selectedIcon {
   cursor: pointer;
   opacity: 1;
   background: var(--color-terthiary-blue);
-  border: none;
+  border: var(--border);
 }
 
 .container {
   display: flex;
-  align-items: center;
   gap: var(--space-SM);
 }
 
@@ -81,8 +84,10 @@
   flex: 1;
 }
 
-.searchResult:not(.inWorkspace):hover .properties,
-.searchResult:not(.inWorkspace):hover .properties label {
+.selected .properties,
+.selected .properties label,
+.searchResult.highlighted:has(.icon:hover) .properties,
+.searchResult.highlighted:has(.icon:hover) .properties label {
   opacity: var(--opacity-primary);
 }
 

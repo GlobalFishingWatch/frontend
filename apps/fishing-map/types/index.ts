@@ -1,4 +1,4 @@
-import { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
+import { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   DatasetSubCategory,
   DataviewCategory,
@@ -7,6 +7,7 @@ import {
   VesselIdentitySourceEnum,
   VesselType,
 } from '@globalfishingwatch/api-types'
+import { MapAnnotation, Ruler } from '@globalfishingwatch/layer-composer'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -80,7 +81,12 @@ export type ReportVesselGraph =
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
 
 export interface WorkspaceState extends BaseUrlWorkspace {
+  dataviewInstances?: UrlDataviewInstance[]
   bivariateDataviews?: BivariateDataviews
+  mapAnnotations?: MapAnnotation[]
+  mapAnnotationsVisible?: boolean
+  mapRulers?: Ruler[]
+  mapRulersVisible?: boolean
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   readOnly?: boolean
   reportActivityGraph?: ReportActivityGraph
@@ -156,6 +162,8 @@ export enum UserTab {
 
 export type AppState = {
   userTab?: UserTab
+  mapDrawing?: boolean
+  mapDrawingEditId?: string
 }
 
 export type QueryParams = Partial<WorkspaceViewport> &

@@ -14,7 +14,6 @@ import {
 import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import { useSetMapCoordinates, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import {
   selectIsAnyVesselLocation,
@@ -28,6 +27,9 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 
@@ -38,7 +40,13 @@ const MapScreenshot = dynamic(
   () => import(/* webpackChunkName: "MapScreenshot" */ '../MapScreenshot')
 )
 const MapSearch = dynamic(() => import(/* webpackChunkName: "MapSearch" */ './MapSearch'))
-const Rulers = dynamic(() => import(/* webpackChunkName: "Rulers" */ 'features/map/rulers/Rulers'))
+const Rulers = dynamic(
+  () => import(/* webpackChunkName: "Rulers" */ 'features/map/controls/RulersControl')
+)
+const MapAnnotations = dynamic(
+  () =>
+    import(/* webpackChunkName: "AnnotationsControl" */ 'features/map/controls/AnnotationsControl')
+)
 
 const MapControls = ({
   mapLoading = false,
@@ -52,6 +60,7 @@ const MapControls = ({
   const modalOpen = useSelector(selectScreenshotModalOpen)
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
+  const gfwUser = useSelector(selectIsGFWUser)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -67,6 +76,7 @@ const MapControls = ({
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const reportLocation = useSelector(selectIsAnyReportLocation)
+  const { isErrorNotificationEditing, toggleErrorNotification } = useMapErrorNotification()
   const showExtendedControls = isWorkspaceLocation || isVesselLocation || reportLocation
   const showScreenshot = !isVesselLocation && !reportLocation
 
@@ -187,6 +197,17 @@ const MapControls = ({
           {showExtendedControls && (
             <Fragment>
               <Rulers />
+              {gfwUser && <MapAnnotations />}
+              {gfwUser && (
+                <IconButton
+                  icon="feedback-error"
+                  type="map-tool"
+                  disabled={mapLoading || loading}
+                  tooltip={t('map.errorAction', 'Log an issue at a specific location')}
+                  onClick={toggleErrorNotification}
+                  className={cx({ [styles.active]: isErrorNotificationEditing })}
+                />
+              )}
               {showScreenshot && (
                 <IconButton
                   icon="camera"

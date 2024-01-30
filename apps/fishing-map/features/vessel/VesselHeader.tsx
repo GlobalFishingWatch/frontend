@@ -11,14 +11,10 @@ import {
   selectVesselPrintMode,
   setVesselPrintMode,
 } from 'features/vessel/vessel.slice'
-import { formatInfoField } from 'utils/info'
+import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
-import {
-  selectVesselProfileColor,
-  selectVesselProfileDataview,
-} from 'features/dataviews/dataviews.slice'
-import { COLOR_PRIMARY_BLUE } from 'features/app/App'
+import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectVesselIdentityId,
@@ -31,6 +27,10 @@ import { useVesselBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import {
+  selectVesselProfileColor,
+  selectVesselProfileDataview,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -95,7 +95,7 @@ const VesselHeader = () => {
 
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
-  const otherNamesLabel = getOtherVesselNames(vessel, nShipname)
+  const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
 
   const onVesselFitBoundsClick = () => {
     if (vesselBounds) {
@@ -118,7 +118,7 @@ const VesselHeader = () => {
   return (
     <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
       <div className={cx(styles.summaryContainer, styles.titleContainer)}>
-        <h1 className={styles.title}>
+        <h1 data-test="vv-vessel-name" className={styles.title}>
           <svg className={styles.vesselIcon} width="16" height="16">
             <path
               fill={vesselColor || COLOR_PRIMARY_BLUE}
