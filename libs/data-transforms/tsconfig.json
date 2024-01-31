@@ -3,6 +3,8 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "allowJs": true,
+
+    "lib": ["es2019", "dom", "ES2023.Array"],
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
