@@ -36,7 +36,7 @@ export class ContextLayer extends CompositeLayer<ContextLayerProps> {
   _getBaseLayer() {
     return new MVTLayer({
       id: `base-layer`,
-      data: `${API_PATH}/${this.props.datasetId}/user-context-layer-v1/{z}/{x}/{y}`,
+      data: `${API_PATH}/${this.props.datasetId}/context-layers/{z}/{x}/{y}`,
       zIndex: GROUP_ORDER.indexOf(Group.OutlinePolygons),
       getLineColor: hexToRgb(this.props.color),
       getFillColor: [0, 0, 0, 0],
@@ -54,7 +54,7 @@ export class ContextLayer extends CompositeLayer<ContextLayerProps> {
   _getHighlightLineLayer() {
     return new MVTLayer({
       id: `highlight-line-layer`,
-      data: `${API_PATH}/${this.props.datasetId}/user-context-layer-v1/{z}/{x}/{y}`,
+      data: `${API_PATH}/${this.props.datasetId}/context-layers/{z}/{x}/{y}`,
       zIndex: GROUP_ORDER.indexOf(Group.OutlinePolygonsHighlighted),
       getFillColor: [0, 0, 0, 0],
       getLineColor: (d: any) => this.getLineColor(d),
@@ -71,7 +71,7 @@ export class ContextLayer extends CompositeLayer<ContextLayerProps> {
   _getHighlightFillLayer() {
     return new MVTLayer({
       id: `highlight-fill-layer`,
-      data: `${API_PATH}/${this.props.datasetId}/user-context-layer-v1/{z}/{x}/{y}`,
+      data: `${API_PATH}/${this.props.datasetId}/context-layers/{z}/{x}/{y}`,
       zIndex: GROUP_ORDER.indexOf(Group.OutlinePolygonsFill),
       getLineColor: [255, 255, 255, 0],
       getFillColor: (d: any) => this.getFillColor(d),

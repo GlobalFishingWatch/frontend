@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
-import { LayersList } from '@deck.gl/core/typed'
+import { LayersList, PickingInfo } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
@@ -263,6 +263,22 @@ const MapWrapper = () => {
   //   return styleInteractiveLayerIds
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
 
+  const onClick = useCallback((info: PickingInfo) => {
+    const features = deckRef?.current?.pickMultipleObjects({
+      x: info.x,
+      y: info.y,
+    })
+    console.log('🚀 ~ features:', features)
+  }, [])
+
+  const onHover = useCallback((info: PickingInfo) => {
+    const features = deckRef?.current?.pickMultipleObjects({
+      x: info.x,
+      y: info.y,
+    })
+    console.log('🚀 ~ features:', features)
+  }, [])
+
   return (
     <div className={styles.container}>
       <DeckGL
@@ -286,8 +302,8 @@ const MapWrapper = () => {
         }}
         viewState={viewState}
         onViewStateChange={onViewStateChange}
-        // onClick={onClick}
-        // onHover={onHover}
+        onClick={onClick}
+        onHover={onHover}
       />
       {/* {style && (
         <Map

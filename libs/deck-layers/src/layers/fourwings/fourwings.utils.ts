@@ -78,11 +78,11 @@ type GetDataUrlByChunk = {
 }
 
 const API_BASE_URL =
-  'https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/heatmap/{z}/{x}/{y}'
+  'https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/heatmap/{z}/{x}/{y}'
 export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) => {
   const params = {
     interval: chunk.interval,
-    format: '4wings',
+    format: '4WINGS',
     'temporal-aggregation': false,
     proxy: true,
     'date-range': [

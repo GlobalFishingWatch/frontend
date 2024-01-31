@@ -208,7 +208,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return [
       new MVTLayer(this.props, {
         id: 'position-tiles',
-        data: `https://gateway.api.dev.globalfishingwatch.org/v2/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&${getDateRangeParam(
+        data: `https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&${getDateRangeParam(
           minFrame,
           maxFrame
         )}`,

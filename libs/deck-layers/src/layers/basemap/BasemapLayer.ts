@@ -57,7 +57,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
   _getSatelliteLayer() {
     return new TileLayer({
       id: 'basemap-satellite',
-      data: 'https://gateway.api.dev.globalfishingwatch.org/v2/tileset/sat/tile?x={x}&y={y}&z={z}',
+      data: 'https://gateway.api.dev.globalfishingwatch.org/v3/tileset/sat/tile?x={x}&y={y}&z={z}',
       minZoom: 0,
       maxZoom: 9,
       onDataLoad: this.props.onDataLoad,
