@@ -8,6 +8,8 @@ const withNx = require('@nx/next/plugins/with-nx')
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
+  output: 'export',
+  distDir: 'exported',
   async rewrites() {
     return [
       // Rewrite everything to `pages/index`
