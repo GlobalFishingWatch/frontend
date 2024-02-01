@@ -280,7 +280,7 @@
     "timePeriodTypePlaceholder": "Choose to filter your dataset by a specific timestamp or a time range",
     "none": "Ninguna",
     "date": "Fecha",
-    "dateRange": "Time Range",
+    "dateRange": "Rango de tiempo",
     "time": "{{geometryType}} time",
     "timeStart": "{{geometryType}} start",
     "timeEnd": "{{geometryType}} end",
