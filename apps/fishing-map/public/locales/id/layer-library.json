@@ -6,7 +6,7 @@
   },
   "chlorophyl": {
     "name": "dan Konsentrasi Klorofil-a",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen.",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Marine phytoplankton chemically fix carbon through photosynthesis by taking in dissolved carbon dioxide and producing oxygen. This dataset is comprised of biogeochemical parameters, including chlorophyll, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "coral-reefs": {
