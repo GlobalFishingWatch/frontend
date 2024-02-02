@@ -138,6 +138,10 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    */
   filter?: string
   /**
+   * Maximum zoom level for which tiles are available https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-maxzoom
+   */
+  maxzoom: number
+  /**
    * Custom color ramp for filled layers
    */
   steps?: number[]

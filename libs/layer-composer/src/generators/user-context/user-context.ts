@@ -7,7 +7,11 @@ import type {
   FormattedSpecification,
   ExpressionSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { DEFAULT_CONTEXT_PROMOTE_ID, DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
+import {
+  DEFAULT_CONTEXT_MAX_ZOOM,
+  DEFAULT_CONTEXT_PROMOTE_ID,
+  DEFAULT_CONTEXT_SOURCE_LAYER,
+} from '../context/config'
 import { GeneratorType, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
@@ -46,6 +50,7 @@ class UserContextGenerator {
         id: config.id,
         type: 'vector',
         promoteId: config.promoteId || DEFAULT_CONTEXT_PROMOTE_ID,
+        maxzoom: config.maxzoom || DEFAULT_CONTEXT_MAX_ZOOM,
         tiles: [decodeURI(url.toString())],
       },
     ]
