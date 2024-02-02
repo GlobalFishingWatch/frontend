@@ -11,7 +11,7 @@
   },
   "coral-reefs": {
     "name": "Récifs coralliens",
-    "description": "Les récifs coralliens d'eau chaude se trouvent dans des eaux claires et peu profondes, ce sont des écosystèmes hautement dynamiques qui soutiennent l'habitat marin à la plus grande biodiversité. Ce jeu de données montre la distribution mondiale des récifs coralliens dans les régions tropicales et subtropicales.",
+    "description": "Les récifs coralliens d'eau chaude se trouvent dans des eaux claires et peu profondes, ce sont des écosystèmes hautement dynamiques qui soutiennent l'habitat marin à la plus grande biodiversité. Ce jeu de données affiche la distribution mondiale des récifs coralliens dans les régions tropicales et subtropicales.",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/1"
   },
   "eez": {
@@ -106,7 +106,7 @@
   },
   "seagrasses": {
     "name": "Herbiers marins",
-    "description": "Les herbiers marins sont des écosystèmes productifs présents dans des zones marines peu profondes partout dans le monde, où elles fournissent de la nourriture et de l'habitat aux organismes et jouent un rôle clé dans le cyclisme des nutriments. Ce jeu de données montre la distribution globale des herbiers marins. ",
+    "description": "Les herbiers marins sont des écosystèmes productifs présents dans des zones marines peu profondes partout dans le monde, où elles fournissent de la nourriture et de l'habitat aux organismes et jouent un rôle clé dans le cyclisme des nutriments. Ce jeu de données affiche la distribution globale des herbiers marins. ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/7"
   },
   "seamounts": {
@@ -115,33 +115,33 @@
     "moreInfoLink": "https://bluehabitats.org/"
   },
   "sst": {
-    "name": "Température de la surface de la mer",
-    "description": "Sea surface temperature is the water temperature at or near the surface. It can impact weather and regional climates, and together with salinity can drive ocean circulation and large-scale movement of ocean currents globally. This dataset provides sea surface temperature at 1/20 degree horizontal grid resolution, using in-situ and satellite data from both infrared and microwave radiometers.",
+    "name": "Température à la surface de la mer",
+    "description": "La température à la surface de la mer est la température de l'eau à la surface ou près de la surface. Elle peut affecter les conditions météorologiques et les climats régionaux. Tout comme la salinité, elle sert de moteur à la circulation des océans et au mouvement à grande échelle des courants océaniques dans le monde. Ce jeu de données fournit la température à la surface de la mer à une résolution horizontale de 1/20 degré, en utilisant des données de terrain et par satellite provenant à la fois de radiomètres infrarouges et micro-ondes.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/description"
   },
   "sst-anomalies": {
-    "name": "Sea surface temperature anomalies",
-    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
+    "name": "Anomalies de température à surface de la mer",
+    "description": "Une anomalie de température à la surface de la mer est la différence entre la température de surface quotidienne de la mer et la moyenne climatologique de 30 ans. Les anomalies de température à la surface de la mer peuvent affecter la distribution et les habitats des espèces et peuvent représenter des événements transitoires ou des cycles climatiques spécifiques comme El Niño et La Niña, qui influencent les régimes météorologiques dans le monde entier. Sur la carte, un nombre positif représente une température plus chaude que la moyenne. ",
     "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1"
   },
   "sst-anomalies-max": {
-    "name": "Sea surface temperature anomalies (max)",
+    "name": "Anomalies de température à la surface de la mer (max.)",
     "description": "",
     "moreInfoLink": ""
   },
   "sst-anomalies-min": {
-    "name": "Sea surface temperature anomalies (min)",
+    "name": "Anomalies de température à la surface de la mer (min.)",
     "description": "",
     "moreInfoLink": ""
   },
   "thgt": {
-    "name": "Wave height",
-    "description": "Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.",
+    "name": "Hauteur de houle",
+    "description": "La hauteur de houle est la distance verticale entre le creux (bas) et la crête (haut) d'une vague à la surface de la mer. Ce jeu de données utilise la hauteur de houle significative, qui est la moyenne du tiers le plus élevé de toutes les hauteurs de houle sur une période d'échantillonnage donnée.",
     "moreInfoLink": "https://www.pacioos.hawaii.edu/waves/model-global/#about"
   },
   "viirs": {
     "name": "Détection de lumière de nuit (VIIRS)",
-    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.",
+    "description": "Le calque de détection des navires par lumière nocturne, connu sous le nom de suite de radiomètres pour imageurs dans l'infrarouge et le visible (ou VIIRS), affiche les navires en mer que les satellites ont détecté par la lumière qu'ils émettent la nuit. Bien qu'il ne soit pas exclusivement associé aux navires de pêche, ce calque d'activité est susceptible d'afficher des navires associés à des activités telles que la pêche aux calamars, qui utilisent des lumières vives et ont lieu la nuit.",
     "moreInfoLink": ""
   }
 }
