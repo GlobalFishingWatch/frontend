@@ -19,6 +19,7 @@ const getTracksWithCoords = (
     if (!track) {
       return
     }
+
     const baseTrackY = getTrackY(tracks.length, trackIndex, graphHeight, orientation)
     const trackItemWithCoords: TimebarChartItem<TrackChunkProps> = {
       ...track,
@@ -70,7 +71,7 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
                     data-test="tracks-segment"
                     style={{
                       backgroundColor: chunk.props?.color || track.color,
-                      top: track.props?.segmentsOffsetY ? (track.y || 0) + i : track.y,
+                      top: track.props?.segmentsOffsetY ? (track.y || 0) + (i % 3) : track.y,
                       left: chunk.x,
                       width: chunk.width,
                       height: chunk.props?.height || 1,

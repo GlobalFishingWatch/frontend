@@ -2,7 +2,6 @@ import { Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
 import {
-  WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
   SAR_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
@@ -16,6 +15,7 @@ import {
   BASEMAP_LABELS_DATAVIEW_SLUG,
   BASEMAP_DATAVIEW_INSTANCE_ID,
   FIXED_SAR_INFRASTRUCTURE,
+  DEFAULT_WORKSPACE_CATEGORY,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -26,7 +26,7 @@ const workspace: Workspace<WorkspaceState> = {
   app: APP_NAME,
   name: 'Default public Fishing Map workspace',
   description: '',
-  category: WorkspaceCategory.FishingActivity,
+  category: DEFAULT_WORKSPACE_CATEGORY,
   startAt: DEFAULT_TIME_RANGE.start,
   endAt: DEFAULT_TIME_RANGE.end,
   viewport: DEFAULT_VIEWPORT,

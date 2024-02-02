@@ -1,4 +1,4 @@
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
@@ -88,12 +88,10 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   }
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    batch(() => {
-      dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
-      if (dataviewIds?.length) {
-        dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-      }
-    })
+    dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
+    if (dataviewIds?.length) {
+      dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
+    }
     trackEvent({
       category: TrackCategory.VesselGroups,
       action: 'add_to_vessel_group',

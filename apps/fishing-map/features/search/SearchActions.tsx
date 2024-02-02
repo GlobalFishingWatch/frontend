@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -50,10 +50,8 @@ function SearchActions() {
       return vesselDataviewInstance
     })
     addNewDataviewInstances(instances)
-    batch(() => {
-      dispatch(cleanVesselSearchResults())
-      dispatchQueryParams(EMPTY_FILTERS)
-    })
+    dispatch(cleanVesselSearchResults())
+    dispatchQueryParams(EMPTY_FILTERS)
     if (workspaceId) {
       dispatchLocation(WORKSPACE, {
         payload: { workspaceId },
@@ -68,12 +66,10 @@ function SearchActions() {
 
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    batch(() => {
-      dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
-      if (dataviewIds?.length) {
-        dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-      }
-    })
+    dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
+    if (dataviewIds?.length) {
+      dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
+    }
     trackEvent({
       category: TrackCategory.VesselGroups,
       action: 'add_to_vessel_group',

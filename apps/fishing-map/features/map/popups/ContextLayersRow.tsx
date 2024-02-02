@@ -11,7 +11,7 @@ import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.u
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { WORKSPACE_REPORT } from 'routes/routes'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationAreaId, selectLocationQuery } from 'routes/routes.selectors'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
@@ -123,7 +123,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
       to={{
         type: WORKSPACE_REPORT,
         payload: {
-          category: workspace?.category || WorkspaceCategory.FishingActivity,
+          category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
           workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
           datasetId: feature.datasetId,
           areaId,
