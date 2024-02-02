@@ -701,8 +701,10 @@
     "detectionsVIIRS": "Detecções VIIRS",
     "downloadActivity": "Dados de download",
     "title": "Guia do Usuário",
-    "uploadEnvironment": "Carregar dados de camadas de ambiente",
-    "uploadReference": "Carregar dados de camadas de referência",
+    "uploadData": "Upload datasets",
+    "uploadPolygons": "Upload polygon datasets",
+    "uploadTracks": "Upload track datasets",
+    "uploadPoints": "Upload point datasets",
     "vesselGroups": "Grupos de embarcações",
     "vesselSearch": "Pesquisar Embarcação"
   },
