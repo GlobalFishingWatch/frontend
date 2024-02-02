@@ -63,7 +63,7 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
       _normalize: false,
       positionFormat: 'XY',
       getPolygon: (x: DataT, objectInfo) => {
-        const cellIndex: any = getIndex(x, objectInfo)
+        const cellIndex: any = objectInfo.index
         const uniqueId = generateUniqueId(tile.index.x, tile.index.y, cellIndex)
         const params: GetCellCoordinatesParams = {
           id: uniqueId,

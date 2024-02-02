@@ -37,7 +37,11 @@ export function useViewStateAtom() {
 
 export function useMapViewport() {
   const deckMap = useDeckMap()
-  return (deckMap as any)?.getViewports().find((v: any) => v.id === MAP_VIEW_ID)
+  try {
+    return (deckMap as any)?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
+  } catch (e) {
+    return null
+  }
 }
 
 export function useSetMapCoordinates() {

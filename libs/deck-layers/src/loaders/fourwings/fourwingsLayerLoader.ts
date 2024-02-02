@@ -10,6 +10,7 @@ import {
   CELL_VALUES_START_INDEX,
   FEATURE_COL_INDEX,
   FEATURE_ROW_INDEX,
+  VALUE_MULTIPLIER,
 } from '../constants'
 
 function readData(_: any, data: any, pbf: any) {
@@ -26,22 +27,31 @@ export type GetTimeseriesParams = {
   bufferMs: number
 }
 
+// TODO make this dynamic to get the data from the header
+// const NO_DATA_VALUE = 0
+export const NO_DATA_VALUE = 4294967295
+// export const SCALE_VALUE = 0.01
+export const SCALE_VALUE = 1
+export const OFFSET_VALUE = 0
+
 export type FourwingsRawData = number[]
 const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwingsParams): Cell[] => {
-  const { minFrame, maxFrame, interval, sublayers } = params
+  const { minFrame, maxFrame, interval, sublayers, cols, rows } = params
+  // TODO ensure we use the UTC dates here to avoid the .ceil
+  const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame))
+  const tileMaxIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame))
   const sublayerCount = sublayers.length
-  const sublayerIds = sublayers.map((s) => s.id)
-  const cells: ChunkCell = {}
+  let cells = new Array(cols * rows).fill(null) as Cell[]
   let cellNum = 0
   let startFrame = 0
   let endFrame = 0
   let startIndex = 0
   let endIndex = 0
   let indexInCell = 0
-  const bufferMs = getChunkBuffer(interval)
+
   for (let index = 0; index < intArrays.length; index++) {
     const intArray = intArrays[index]
-    for (let i = 2; i < intArray.length; i++) {
+    for (let i = 0; i < intArray.length; i++) {
       const value = intArray[i]
       if (indexInCell === CELL_NUM_INDEX) {
         startIndex = i
@@ -52,54 +62,35 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
       } else if (indexInCell === CELL_END_INDEX) {
         // endFrame = getDateInIntervalResolution(value, interval)
         endFrame = value
-        endIndex =
-          startIndex + CELL_VALUES_START_INDEX + (endFrame - startFrame + 1) * sublayerCount
+
+        const numCellValues = (endFrame - startFrame + 1) * sublayerCount
+        const startOffset = startIndex + CELL_VALUES_START_INDEX
+        endIndex = startOffset + numCellValues - 1
+
+        cells[cellNum] = new Array(sublayerCount).fill(null)
+        for (let j = 0; j < numCellValues; j++) {
+          const subLayerIndex = j % sublayerCount
+          const cellValue = intArray[j + startOffset]
+          if (cellValue !== NO_DATA_VALUE) {
+            if (!cells[cellNum]?.[subLayerIndex]) {
+              cells[cellNum]![subLayerIndex] = new Array(
+                tileMaxIntervalFrame - tileMinIntervalFrame
+              ).fill(null)
+            }
+            cells[cellNum]![subLayerIndex][
+              startFrame - tileMinIntervalFrame + Math.floor(j / sublayerCount)
+            ] = cellValue * SCALE_VALUE + OFFSET_VALUE
+          }
+        }
+        i = endIndex
+        // TODO make this clearer, probably using enum of string for what indexInCell means
+        indexInCell = -1
       }
       indexInCell++
-      if (i === endIndex - 1) {
-        indexInCell = 0
-        const timeseries = intArray.slice(startIndex + CELL_VALUES_START_INDEX, endIndex).reduce(
-          // eslint-disable-next-line no-loop-func
-          (acc: any, v, i) => {
-            if (v > 0) {
-              const timestamp = CONFIG_BY_INTERVAL[interval].getTime(
-                Math.ceil(i / sublayerCount) + startFrame
-              )
-              if (timestamp >= minFrame - bufferMs && timestamp <= maxFrame + bufferMs) {
-                acc[i % sublayerCount][timestamp] = v / 100
-              }
-            }
-            return acc
-          },
-          Array.from(Array(sublayerCount).keys()).map(() => ({}))
-        )
-        // eslint-disable-next-line no-loop-func
-        sublayerIds.forEach((id, sublayerIndex) => {
-          const sublayerTimeseries = timeseries[sublayerIndex]
-          if (!cells[cellNum]?.[id]) {
-            if (Object.keys(sublayerTimeseries).length) {
-              if (!cells[cellNum]) {
-                cells[cellNum] = {}
-              }
-              cells[cellNum][id] = sublayerTimeseries
-            }
-          } else {
-            cells[cellNum][id] = {
-              ...cells[cellNum][id],
-              ...sublayerTimeseries,
-            }
-          }
-        })
-      }
     }
   }
 
-  return Object.keys(cells).map((cellId) => {
-    return {
-      index: parseInt(cellId),
-      timeseries: cells[cellId as any],
-    }
-  })
+  return cells
 }
 
 export type CellFrame = number
@@ -107,18 +98,23 @@ export type CellValue = number
 export type CellTimeseries = Record<CellFrame, CellValue>
 export type CellIndex = number
 export type ChunkCell = Record<CellIndex, Record<FourwingsDatasetId, CellTimeseries>>
-export type Cell = {
-  index: CellIndex
-  timeseries: Record<FourwingsDatasetId, CellTimeseries>
-}
+export type Cell = (number | null)[][] | null
 
-export type FourwingsTileData = {
+export type RawFourwingsTileData = {
+  bins: number[][]
   cols: number
   rows: number
+  data: ArrayBuffer
+}
+
+export type FourwingsTileData = Omit<RawFourwingsTileData, 'data'> & {
   cells: Cell[]
 }
 
 export type ParseFourwingsParams = {
+  cols: number
+  rows: number
+  bins: number[][]
   minFrame: number
   maxFrame: number
   interval: Interval
@@ -126,12 +122,12 @@ export type ParseFourwingsParams = {
 }
 
 export const parseFourWings = async (
-  arrayBuffers: ArrayBuffer[],
+  rawData: RawFourwingsTileData[],
   params: ParseFourwingsParams
 ): Promise<FourwingsTileData> => {
-  const data = arrayBuffers.map((arrayBuffer) => new Pbf(arrayBuffer).readFields(readData, [])[0])
-  const rows = data[0]?.[FEATURE_ROW_INDEX]
-  const cols = data[0]?.[FEATURE_COL_INDEX]
+  const data = rawData.map(
+    (arrayBuffer) => new Pbf(arrayBuffer.data).readFields(readData, [])[0]
+  ) as FourwingsRawData[]
 
   return new Promise((resolve) => {
     // const worker =
@@ -157,8 +153,9 @@ export const parseFourWings = async (
     //   })
     // }
     resolve({
-      cols,
-      rows,
+      bins: params.bins,
+      cols: params.cols,
+      rows: params.rows,
       cells: getCellTimeseries(data, params),
     })
   })

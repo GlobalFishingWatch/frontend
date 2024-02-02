@@ -6,25 +6,54 @@ import { Feature } from 'geojson'
 import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
 import { getUTCDateTime } from '../../utils/dates'
 import { Cell } from '../../loaders/fourwings/fourwingsLayerLoader'
-import { Chunk } from './fourwings.config'
+import { CONFIG_BY_INTERVAL } from '../../utils/time'
+import { Chunk, getChunksByInterval, getInterval } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
 import { FourwingsDeckSublayer } from './fourwings.types'
 import { AggregateCellParams } from './FourwingsHeatmapLayer'
 
-export const aggregateCell = (
-  cell: Cell | TileCell,
-  { minFrame, maxFrame }: AggregateCellParams
-) => {
+// TODO use the existing class function instead of repeating the logic
+const getChunks = (minFrame: number, maxFrame: number) => {
+  const interval = getInterval(minFrame, maxFrame)
+  const chunks = getChunksByInterval(minFrame, maxFrame, interval)
+  return chunks
+}
+
+export const aggregateCell = (cell: Cell, { minFrame, maxFrame }: AggregateCellParams) => {
+  const chunks = getChunks(minFrame, maxFrame)
+  const tileMinIntervalFrame = Math.ceil(
+    CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks[0].start)
+  )
+  const minIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame))
+  const maxIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame))
   if (!cell) return []
-  return Object.keys(cell.timeseries).map((key) => ({
-    id: key,
-    value: Object.keys(cell.timeseries[key]).reduce((acc, frame: any) => {
-      if (parseInt(frame) >= minFrame && parseInt(frame) <= maxFrame) {
-        return acc + cell.timeseries[key][frame]
-      }
-      return acc
-    }, 0) as number,
-  }))
+
+  const data = cell.map((dataset) => {
+    if (!dataset) {
+      return 0
+    }
+    // const allSum = dataset.reduce((acc, value) => (value ? acc + value : acc), 0)
+    // if (allSum && allSum > 1000000) {
+    //   console.count('allSum')
+    // }
+    // TODO decide if we want the last day to be included or not in maxIntervalFrame - tileMinIntervalFrame
+    const data = dataset
+      .slice(minIntervalFrame - tileMinIntervalFrame, maxIntervalFrame - tileMinIntervalFrame)
+      .reduce((acc, value) => {
+        return value ? (acc as number) + value : acc
+      }, 0)
+    return data
+  })
+  return data as number[]
+  // return Object.keys(cell.timeseries).map((key) => ({
+  //   id: key,
+  //   value: Object.keys(cell.timeseries[key]).reduce((acc, frame: any) => {
+  //     if (parseInt(frame) >= minFrame && parseInt(frame) <= maxFrame) {
+  //       return acc + cell.timeseries[key][frame]
+  //     }
+  //     return acc
+  //   }, 0) as number,
+  // }))
 }
 
 export function asyncAwaitMS(millisec: any) {
@@ -78,8 +107,9 @@ type GetDataUrlByChunk = {
   datasets: FourwingsDeckSublayer['datasets']
 }
 
-const API_BASE_URL =
-  'https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/heatmap/{z}/{x}/{y}'
+// const API_BASE_URL =
+//   'https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/heatmap/{z}/{x}/{y}'
+const API_BASE_URL = 'http://192.168.68.114:5001/v3/4wings/tile/heatmap/{z}/{x}/{y}'
 export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) => {
   const params = {
     interval: chunk.interval,
@@ -152,39 +182,41 @@ export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsD
   if (!cells) {
     return []
   }
+  return []
+  // TODO: fix this with new Deck.gl data format
   // What we have from the data is
   // [{index:number, timeseries: {id: {frame:value, ...}  }}]
   // What we want for the timebar is
   // [{date: date, 0:number, 1:number ...}, ...]
-  const timeseries = cells.reduce(
-    (acc: any, { timeseries }) => {
-      if (!timeseries) {
-        return acc
-      }
-      sublayers.forEach((sublayer, index) => {
-        const sublayerTimeseries = timeseries[sublayer.id]
-        if (sublayerTimeseries) {
-          const frames = Object.keys(sublayerTimeseries)
-          frames.forEach((frame: any) => {
-            if (!acc[frame]) {
-              // We populate the frame with 0s for all the sublayers
-              acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
-            }
-            acc[frame][index] += sublayerTimeseries[frame]
-          })
-        }
-      })
-      return acc
-    },
-    {} as Record<number, Record<number, number>>
-  )
+  // const timeseries = cells.reduce(
+  //   (acc: any, { timeseries }) => {
+  //     if (!timeseries) {
+  //       return acc
+  //     }
+  //     sublayers.forEach((sublayer, index) => {
+  //       const sublayerTimeseries = timeseries[sublayer.id]
+  //       if (sublayerTimeseries) {
+  //         const frames = Object.keys(sublayerTimeseries)
+  //         frames.forEach((frame: any) => {
+  //           if (!acc[frame]) {
+  //             // We populate the frame with 0s for all the sublayers
+  //             acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
+  //           }
+  //           acc[frame][index] += sublayerTimeseries[frame]
+  //         })
+  //       }
+  //     })
+  //     return acc
+  //   },
+  //   {} as Record<number, Record<number, number>>
+  // )
 
-  return Object.entries(timeseries)
-    .map(([frame, values]) => ({
-      date: parseInt(frame),
-      ...(values as any),
-    }))
-    .sort((a, b) => a.date - b.date)
+  // return Object.entries(timeseries)
+  //   .map(([frame, values]) => ({
+  //     date: parseInt(frame),
+  //     ...(values as any),
+  //   }))
+  //   .sort((a, b) => a.date - b.date)
 }
 
 const getMillisFromHtime = (htime: number) => {
