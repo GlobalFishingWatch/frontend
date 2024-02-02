@@ -701,8 +701,10 @@
     "detectionsVIIRS": "Détections VIIRS",
     "downloadActivity": "Télécharger les données",
     "title": "Guide utilisateur",
-    "uploadEnvironment": "Télécharger les données des calques d'environnement",
-    "uploadReference": "Télécharger les données des calques de référence",
+    "uploadData": "Upload datasets",
+    "uploadPolygons": "Upload polygon datasets",
+    "uploadTracks": "Upload track datasets",
+    "uploadPoints": "Upload point datasets",
     "vesselGroups": "Groupes de navires",
     "vesselSearch": "Recherche de navire"
   },
