@@ -11,7 +11,7 @@ import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { WORKSPACE_SEARCH } from 'routes/routes'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -53,7 +53,7 @@ function VesselsSection(): React.ReactElement {
     })
     dispatchLocation(WORKSPACE_SEARCH, {
       payload: {
-        category: workspace?.category || WorkspaceCategory.FishingActivity,
+        category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
         workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
       },
     })

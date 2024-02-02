@@ -7,7 +7,11 @@ import { useSelector } from 'react-redux'
 import { Icon, IconButton, IconType, Tooltip } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { Workspace } from '@globalfishingwatch/api-types'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import {
+  DEFAULT_WORKSPACE_CATEGORY,
+  DEFAULT_WORKSPACE_ID,
+  WorkspaceCategory,
+} from 'data/workspaces'
 import { HOME, SEARCH, USER, WORKSPACES_LIST } from 'routes/routes'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
@@ -39,7 +43,7 @@ function getLinkToSearch(workspace: Workspace) {
   return {
     type: SEARCH,
     payload: {
-      category: workspace?.category || WorkspaceCategory.FishingActivity,
+      category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
       workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
     },
   }
@@ -48,7 +52,7 @@ function getLinkToSearch(workspace: Workspace) {
 function getLinkToCategory(category: WorkspaceCategory) {
   return {
     type: WORKSPACES_LIST,
-    payload: { workspaceId: undefined, category },
+    payload: { workspaceId: undefined, category: category || DEFAULT_WORKSPACE_CATEGORY },
     replaceQuery: true,
   }
 }

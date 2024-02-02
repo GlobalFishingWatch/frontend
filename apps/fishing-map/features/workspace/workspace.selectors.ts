@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectQueryParam } from 'routes/routes.selectors'
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, WorkspaceCategory } from 'data/workspaces'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { RootState } from 'store'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
@@ -16,7 +16,7 @@ export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (works
 })
 
 export const selectCurrentWorkspaceCategory = createSelector([selectWorkspace], (workspace) => {
-  return workspace?.category || WorkspaceCategory.FishingActivity
+  return workspace?.category || DEFAULT_WORKSPACE_CATEGORY
 })
 
 export const selectIsGFWWorkspace = createSelector([selectWorkspace], (workspace) => {
