@@ -388,8 +388,7 @@ function NewPointDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          {/* // TODO update sections by categoreies */}
-          <UserGuideLink section="uploadReference" />
+          <UserGuideLink section="uploadPoints" />
         </div>
         <Button
           className={styles.saveBtn}
