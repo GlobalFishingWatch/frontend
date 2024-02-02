@@ -2,11 +2,11 @@
   "bathymetry": {
     "name": "Bathymetry",
     "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid. ",
-    "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/"
+    "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/"
   },
   "chlorophyl": {
     "name": "Concentração de clorofila-a",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen.",
+    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Marine phytoplankton chemically fix carbon through photosynthesis by taking in dissolved carbon dioxide and producing oxygen. This dataset is comprised of biogeochemical parameters, including chlorophyll, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "coral-reefs": {
@@ -96,7 +96,7 @@
   },
   "salinity": {
     "name": "Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses.",
+    "description": "Sea surface salinity is the measurement of salt concentration at the ocean surface. It determines the density of ocean water along with temperature and is a key parameter to estimate the ocean's influence on climate. This dataset salinity is displayed with a 1/12 degree horizontal resolution.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description"
   },
   "sar": {
@@ -116,27 +116,27 @@
   },
   "sst": {
     "name": "Temperatura da superfície do mar",
-    "description": "Sea surface temperature is the water temperature at or near the surface of the ocean. Sea surface temperature impacts weather and regional climates. Temperature and salinity drive global ocean circulation and large-scale movement of ocean currents.",
+    "description": "Sea surface temperature is the water temperature at or near the surface. It can impact weather and regional climates, and together with salinity can drive ocean circulation and large-scale movement of ocean currents globally. This dataset provides sea surface temperature at 1/20 degree horizontal grid resolution, using in-situ and satellite data from both infrared and microwave radiometers.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/description"
   },
   "sst-anomalies": {
-    "name": "Sea surface temperature anommalies (mean)",
+    "name": "Sea surface temperature anomalies",
     "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
     "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1"
   },
   "sst-anomalies-max": {
-    "name": "Sea surface temperature anommalies (max)",
+    "name": "Sea surface temperature anomalies (max)",
     "description": "",
     "moreInfoLink": ""
   },
   "sst-anomalies-min": {
-    "name": "Sea surface temperature anommalies (min)",
+    "name": "Sea surface temperature anomalies (min)",
     "description": "",
     "moreInfoLink": ""
   },
   "thgt": {
-    "name": "Waves height",
-    "description": "Wave height is the vertical distance of a sea surface wave from trough (bottom) to crest (top). It is plotted here using significant wave height, traditionally defined as the average of the highest one-third of all wave heights over a given sample period.",
+    "name": "Wave height",
+    "description": "Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.",
     "moreInfoLink": "https://www.pacioos.hawaii.edu/waves/model-global/#about"
   },
   "viirs": {

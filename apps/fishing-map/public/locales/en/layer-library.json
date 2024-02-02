@@ -41,7 +41,7 @@
   },
   "high-seas": {
     "name": "High seas",
-    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them. See more detailed <a href='https://globalfishingwatch. org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
+    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
     "moreInfoLink": ""
   },
   "mangroves": {
@@ -91,7 +91,7 @@
   },
   "rfmo": {
     "name": "RFMOs",
-    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch. org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
+    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations.",
     "moreInfoLink": ""
   },
   "salinity": {
@@ -122,7 +122,7 @@
   "sst-anomalies": {
     "name": "Sea surface temperature anomalies",
     "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
-    "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1#bands"
+    "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1"
   },
   "sst-anomalies-max": {
     "name": "Sea surface temperature anomalies (max)",

@@ -10,7 +10,6 @@ import {
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -214,8 +213,7 @@ function NewPolygonDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          {/* // TODO update sections by categories */}
-          <UserGuideLink section="uploadReference" />
+          <UserGuideLink section="uploadPolygons" />
         </div>
         <Button
           className={styles.saveBtn}
