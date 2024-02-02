@@ -206,6 +206,25 @@ export const selectActiveHeatmapDataviews = createSelector(
   ]
 )
 
+export const selectEnvironmentalDataviews = selectDataviewInstancesByCategory(
+  DataviewCategory.Environment
+)
+
+export const selectActiveEnvironmentalDataviews = createSelector(
+  [selectEnvironmentalDataviews],
+  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectActiveReportDataviews = createSelector(
+  [selectActiveHeatmapDataviews, selectActiveEnvironmentalDataviews],
+  (activityHeatmapDataviews = [], environmentalDataviews = []) => {
+    const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(
+      ({ config }) => config?.type === GeneratorType.HeatmapAnimated
+    )
+    return [...activityHeatmapDataviews, ...heatmapEnvironmentalDataviews]
+  }
+)
+
 export const selectActiveHeatmapVesselDatasets = createSelector(
   [selectActiveHeatmapDataviews, selectAllDatasets],
   (heatmapDataviews = [], datasets = []) => {
@@ -224,15 +243,6 @@ export const selectActiveHeatmapVesselDatasets = createSelector(
     )
     return datasets.filter((dataset) => vesselDatasetIds.includes(dataset.id))
   }
-)
-
-export const selectEnvironmentalDataviews = selectDataviewInstancesByCategory(
-  DataviewCategory.Environment
-)
-
-export const selectActiveEnvironmentalDataviews = createSelector(
-  [selectEnvironmentalDataviews],
-  (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
@@ -295,16 +305,9 @@ export const selectActiveActivityDataviewsByVisualisation = (
   )
 
 export const selectHasReportLayersVisible = createSelector(
-  [selectActivityDataviews, selectDetectionsDataviews, selectEnvironmentalDataviews],
-  (activityDataviews = [], detectionsDataviews = [], environmentalDataviews = []) => {
-    const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(
-      ({ config }) => config?.type === GeneratorType.HeatmapAnimated
-    )
-    const visibleDataviews = [
-      ...activityDataviews,
-      ...detectionsDataviews,
-      ...heatmapEnvironmentalDataviews,
-    ]?.filter(({ config }) => config?.visible === true)
+  [selectActiveReportDataviews],
+  (reportDataviews) => {
+    const visibleDataviews = reportDataviews?.filter(({ config }) => config?.visible === true)
     return visibleDataviews && visibleDataviews.length > 0
   }
 )

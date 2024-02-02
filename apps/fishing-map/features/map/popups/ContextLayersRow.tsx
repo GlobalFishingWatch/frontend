@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import {
-  selectActiveHeatmapDataviews,
+  selectActiveReportDataviews,
   selectHasReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
@@ -38,7 +38,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const userData = useSelector(selectUserData)
-  const activityDataviews = useSelector(selectActiveHeatmapDataviews)
+  const activityDataviews = useSelector(selectActiveReportDataviews)
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsReportSupported(
     activityDataviews,

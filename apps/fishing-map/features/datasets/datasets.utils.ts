@@ -20,6 +20,8 @@ import {
   DatasetSchemaItem,
   IdentityVessel,
   DatasetSchemaItemEnum,
+  UserPermissionType,
+  UserPermissionValue,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -342,16 +344,27 @@ export const getActivityDatasetsReportSupported = (
   permissions: UserPermission[] = []
 ) => {
   return dataviews.flatMap((dataview) => {
-    const permissionDatasetsIds: string[] = getActiveDatasetsInActivityDataviews([dataview]).filter(
-      (datasetId: string) => {
-        return datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
-      }
-    )
+    const datasets = getActiveDatasetsInDataview(dataview)?.flatMap((d) => d?.id || []) || []
+    const permissionDatasetsIds: string[] = datasets.filter((datasetId: string) => {
+      const fakePermissions = [
+        ...permissions,
+        // TODO remove this fake permission
+        {
+          type: 'dataset' as UserPermissionType,
+          value: 'public-global-chlorophyl:v20231213' as UserPermissionValue,
+          action: 'report',
+        },
+      ]
+      const valid = datasetId ? checkDatasetReportPermission(datasetId, fakePermissions) : false
+      return valid
+    })
     return dataview.datasets
       ?.filter(
         (d) =>
           permissionDatasetsIds.includes(d.id) &&
-          (d.category === DatasetCategory.Activity || d.category === DatasetCategory.Detections)
+          (d.category === DatasetCategory.Activity ||
+            d.category === DatasetCategory.Detections ||
+            d.category === DatasetCategory.Environment)
       )
       .map((d) => d.id)
   })
