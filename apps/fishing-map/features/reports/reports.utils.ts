@@ -185,7 +185,7 @@ export const getCommonProperties = (dataviews: UrlDataviewInstance[]) => {
           dataviews[0],
           filterKey as SupportedDatasetSchema
         )
-          .map((f: any) => f.label.toLocaleLowerCase())
+          .map((f: any) => f.label?.toLocaleLowerCase())
           .join(', ')
 
         if (getSchemaFilterOperationInDataview(dataviews[0], filterKey) === EXCLUDE_FILTER_ID) {
