@@ -284,23 +284,23 @@
     "time": "{{geometryType}} heure",
     "timeStart": "{{geometryType}} début",
     "timeEnd": "{{geometryType}} fin",
-    "timestampHelp": "Sélectionnez la propriété qui définit la date et l'heure de chaque {{geometryType}} pour visualiser votre jeu de données avec la barre de temps",
-    "timerangeStartHelp": "Select the property that defines the start of the time range of each {{geometryType}} to visualize your dataset with the time bar",
-    "timerangeEndHelp": "Select the property that defines the start of the date range of each {{geometryType}} to filter them with the time bar",
+    "timestampHelp": "Sélectionnez la propriété qui définit la date et l'heure de chaque {{geometryType}} pour visualiser votre jeu de données avec la barre temporelle",
+    "timerangeStartHelp": "Sélectionnez la propriété qui définit le début de la plage de temps de chaque {{geometryType}} pour visualiser votre jeu de données avec la barre temporelle",
+    "timerangeEndHelp": "Sélectionnez la propriété qui définit le début de la plage de temps de chaque {{geometryType}} pour les filtrer avec la barre temporelle",
     "errors": {
       "default": "There was an error uploading your dataset",
       "geoJSON": {
-        "noValidFeatures": "No valid feature types found in the geoJSON file"
+        "noValidFeatures": "Aucune donnée géospatiale valide trouvée dans le fichier geoJSON"
       },
       "shapefile": {
-        "noPointData": "No point data found in the shapefile",
-        "noLineData": "No line data found in the shapefile",
-        "noPolygonData": "No polygon data found in the shapefile",
-        "invalidData": "Shapefile data does not have a valid geometry type",
-        "invalidMultipleFiles": "Shapefiles containing multiple components (multiple file names) are not supported yet"
+        "noPointData": "Aucune donnée de point trouvée dans le fichier de formes",
+        "noLineData": "Aucune donnée de tracé trouvée dans le fichier de formes",
+        "noPolygonData": "Aucune donnée de polygone trouvée dans le fichier de formes",
+        "invalidData": "Aucun type de géométrie valide dans les données du fichier de formes",
+        "invalidMultipleFiles": "Les fichiers de formes contenant plusieurs composants (noms de fichiers multiples) ne sont pas encore pris en charge"
       },
       "kml": {
-        "noPointData": "No point data found in the KML",
+        "noPointData": "Aucune donnée de point trouvée dans le KML",
         "noLineData": "No line data found in the KML",
         "noPolygonData": "No polygon data found in the KML",
         "invalidData": "KML data does not have a valid geometry type"
