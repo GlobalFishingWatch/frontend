@@ -29,8 +29,8 @@ import {
 } from 'features/resources/resources.selectors.thinning'
 import {
   trackDatasetConfigsCallback,
-  eventsDatasetConfigsCallback,
-  infoDatasetConfigsCallback,
+  // eventsDatasetConfigsCallback,
+  // infoDatasetConfigsCallback,
 } from 'features/resources/resources.utils'
 import { selectUserLogged } from 'features/user/selectors/user.selectors'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
@@ -201,9 +201,9 @@ export const selectDataviewsResources = createSelector(
   ],
   (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
     const callbacks: GetDatasetConfigsCallbacks = {
-      track: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
-      events: eventsDatasetConfigsCallback,
-      info: infoDatasetConfigsCallback,
+      track: trackDatasetConfigsCallback(thinningConfig, chunks) as any,
+      // events: eventsDatasetConfigsCallback,
+      // info: infoDatasetConfigsCallback,
     }
     return getResources(dataviewInstances || [], callbacks)
   }

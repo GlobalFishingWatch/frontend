@@ -1,5 +1,5 @@
 import { useMap as useMapboxMap } from 'react-map-gl'
-import { useSetAtom, atom, useAtomValue } from 'jotai'
+import { useSetAtom, atom, useAtomValue, Atom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { DeckGLRef } from '@deck.gl/react/typed'
 import { RefObject, useEffect } from 'react'
@@ -12,7 +12,7 @@ export default function useMapInstance() {
 
 const mapInstanceAtom = atom<DeckGLRef | undefined>(undefined)
 export const mapInstanceAtomSelector = (map: Deck | undefined) => map
-export const selectMapInstance = selectAtom(mapInstanceAtom, mapInstanceAtomSelector)
+export const selectMapInstance = selectAtom(mapInstanceAtom, mapInstanceAtomSelector as any)
 
 export function useSetMapInstance(mapRef: RefObject<DeckGLRef> | undefined) {
   const setMapInstance = useSetAtom(mapInstanceAtom)
@@ -24,6 +24,6 @@ export function useSetMapInstance(mapRef: RefObject<DeckGLRef> | undefined) {
   }, [mapRef?.current])
 }
 
-export function useDeckMap() {
+export function useDeckMap(): any {
   return useAtomValue(selectMapInstance)
 }

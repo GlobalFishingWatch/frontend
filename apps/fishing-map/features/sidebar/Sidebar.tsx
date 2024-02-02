@@ -70,7 +70,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
             resource,
             resourceKey: resource.key,
             // parseEventCb: parseTrackEventChunkProps,
-            parseUserTrackCb: parseUserTrackCallback,
+            // parseUserTrackCb: parseUserTrackCallback,
           })
         )
       })

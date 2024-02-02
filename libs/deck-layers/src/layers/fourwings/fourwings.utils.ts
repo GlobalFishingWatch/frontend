@@ -1,5 +1,6 @@
 import { stringify } from 'qs'
-import { TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
+// import { TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
+import { TileIndex } from '@deck.gl/geo-layers/typed/tileset-2d/types'
 import { DateTime } from 'luxon'
 import { Feature } from 'geojson'
 import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import useViewport from 'features/map/map-viewport.hooks'
+import { useMapViewport } from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
@@ -15,7 +15,6 @@ import {
   selectEventsGroupedByVoyages,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import {
   disableHighlightedTime,
   setHighlightedEvents,
@@ -25,10 +24,11 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
 import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
@@ -48,7 +48,7 @@ const ActivityByVoyage = () => {
     setSelectedEvent((state) => (state?.id === event.id ? undefined : event))
   }, [])
 
-  const { viewport, setMapCoordinates } = useViewport()
+  const { viewport, setMapCoordinates } = useMapViewport()
 
   const selectVoyageOnMap = useCallback(
     (voyageId: ActivityEvent['voyage']) => {

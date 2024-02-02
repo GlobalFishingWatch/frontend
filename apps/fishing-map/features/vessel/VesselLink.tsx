@@ -11,7 +11,6 @@ import {
 import {
   VesselDataIdentity,
   resetVesselState,
-  selectVesselInfoDataId,
   setVesselFitBoundsOnLoad,
 } from 'features/vessel/vessel.slice'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
@@ -23,6 +22,7 @@ import {
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { QueryParams } from 'types'
 import { getVesselIdentityId } from 'features/vessel/vessel.utils'
+import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 
 export type VesselLinkProps = {
   datasetId?: string

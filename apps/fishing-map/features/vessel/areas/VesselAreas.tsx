@@ -25,10 +25,10 @@ import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySu
 import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileColor } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {

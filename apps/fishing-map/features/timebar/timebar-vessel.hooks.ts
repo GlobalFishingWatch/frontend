@@ -13,35 +13,35 @@ const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
 }
 
-const getVesselTimebarTrackMemoHash = (vessels: VesselLayerState[]) => {
-  return vessels
-    .flatMap((v) => {
-      const visible = v.instance.props.visible
-      const dataStatus = v.dataStatus
-        .flatMap((s) => (s.type === 'track' && s.status === ResourceStatus.Finished ? s.type : []))
-        .join('|')
-      return [visible, dataStatus].join('-')
-    })
-    .join(',')
-}
+// const getVesselTimebarTrackMemoHash = (vessels: VesselLayerState[]) => {
+//   return vessels
+//     .flatMap((v) => {
+//       const visible = v.instance?.props.visible
+//       const dataStatus = v.dataStatus
+//         .flatMap((s) => (s.type === 'track' && s.status === ResourceStatus.Finished ? s.type : []))
+//         .join('|')
+//       return [visible, dataStatus].join('-')
+//     })
+//     .join(',')
+// }
 
-const getVesselTimebarEventsMemoHash = (vessels: VesselLayerState[]) => {
-  return vessels
-    .flatMap((v) => {
-      const visible = v.instance.props.visible
-      const visibleEvents = v.instance.props.visibleEvents?.join('|')
-      const dataStatus = v.dataStatus
-        .flatMap((s) => (s.type !== 'track' && s.status === ResourceStatus.Finished ? s.type : []))
-        .join('|')
-      return [visible, visibleEvents, dataStatus].join('-')
-    })
-    .join(',')
-}
+// const getVesselTimebarEventsMemoHash = (vessels: VesselLayerState[]) => {
+//   return vessels
+//     .flatMap((v) => {
+//       const visible = v.instance.props.visible
+//       const visibleEvents = v.instance.props.visibleEvents?.join('|')
+//       const dataStatus = v.dataStatus
+//         .flatMap((s) => (s.type !== 'track' && s.status === ResourceStatus.Finished ? s.type : []))
+//         .join('|')
+//       return [visible, visibleEvents, dataStatus].join('-')
+//     })
+//     .join(',')
+// }
 
 export const useTimebarVesselTracks = () => {
   const vessels = useVesselLayers()
   const [tracks, setVesselTracks] = useState<TimebarChartData<any> | null>(null)
-  const tracksMemoHash = getVesselTimebarTrackMemoHash(vessels)
+  // const tracksMemoHash = getVesselTimebarTrackMemoHash(vessels)
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -74,28 +74,30 @@ export const useTimebarVesselTracks = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksMemoHash])
+  }, [])
   return tracks
 }
 
 const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs): string => {
-  const chunkWithProps = parseTrackEventChunkProps(chunk)
-  if (chunkWithProps.cluster) {
-    return `${chunkWithProps.props?.descriptionGeneric} (${chunkWithProps.cluster.numChunks} ${t(
-      'event.events',
-      'events'
-    )})`
-  }
-  if (expanded) {
-    return chunkWithProps.props?.description as string
-  }
-  return chunkWithProps.props?.descriptionGeneric as string
+  return ''
+  // TODO fix this for Deck.gl
+  // const chunkWithProps = parseTrackEventChunkProps(chunk)
+  // if (chunkWithProps.cluster) {
+  //   return `${chunkWithProps.props?.descriptionGeneric} (${chunkWithProps.cluster.numChunks} ${t(
+  //     'event.events',
+  //     'events'
+  //   )})`
+  // }
+  // if (expanded) {
+  //   return chunkWithProps.props?.description as string
+  // }
+  // return chunkWithProps.props?.descriptionGeneric as string
 }
 
 export const useTimebarVesselEvents = () => {
   const vessels = useVesselLayers()
   const [events, setVesselEvents] = useState<TimebarChartData<TrackEventChunkProps> | null>(null)
-  const tracksMemoHash = getVesselTimebarEventsMemoHash(vessels)
+  // const tracksMemoHash = getVesselTimebarEventsMemoHash(vessels)
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels.length) {
@@ -120,7 +122,8 @@ export const useTimebarVesselEvents = () => {
         setVesselEvents(vesselEvents)
       }
     })
+    // TODO tracksMemoHash below in Deck.gl fixes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksMemoHash])
+  }, [])
   return events
 }

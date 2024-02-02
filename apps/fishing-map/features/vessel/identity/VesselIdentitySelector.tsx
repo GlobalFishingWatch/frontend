@@ -8,7 +8,7 @@ import {
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselDataIdentity, selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   getVesselIdentities,
@@ -17,6 +17,7 @@ import {
 } from 'features/vessel/vessel.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import styles from './VesselIdentitySelector.module.css'
 
 function isRegistryInTimerange(registry: VesselDataIdentity, start: string, end: string) {

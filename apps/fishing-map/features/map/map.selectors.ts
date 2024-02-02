@@ -200,7 +200,7 @@ export const selectMapGeneratorsDictionary = createDeepEqualSelector(
     ] as VesselDeckLayersGenerator[]
     return {
       ...generatorsDictionary,
-      [DeckLayersGeneratorType.Vessels]: vesselGenerators.map((generator) => ({
+      [DeckLayersGeneratorType.Vessels as any]: vesselGenerators.map((generator) => ({
         ...generator,
         visibleEvents,
       })),

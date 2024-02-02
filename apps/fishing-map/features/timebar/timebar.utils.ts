@@ -45,20 +45,21 @@ export const parseTrackEventChunkProps = (
 const getSublayersAggregateTimeseriesFromGridCellsData = (cells: TileCell[]) => {
   const result: Record<string, Record<number, number>> = {}
   const timestamps = new Set<number>()
-  cells.forEach((cell) => {
-    const { timeseries } = cell
-    Object.keys(timeseries).forEach((sublayer) => {
-      const sublayerData = timeseries[sublayer]
-      Object.keys(sublayerData).forEach((timestamp) => {
-        // Extract the unique timestamps from the timeseries
-        timestamps.add(parseInt(timestamp))
-        const value = sublayerData[timestamp]
-        if (!result[sublayer]) result[sublayer] = {}
-        if (!result[sublayer][timestamp]) result[sublayer][timestamp] = 0
-        result[sublayer][timestamp] += value
-      })
-    })
-  })
+  // TODO: restore this in Deck.gl fixes
+  // cells.forEach((cell) => {
+  //   const { timeseries } = cell
+  //   Object.keys(timeseries).forEach((sublayer) => {
+  //     const sublayerData = timeseries[sublayer]
+  //     Object.keys(sublayerData).forEach((timestamp) => {
+  //       // Extract the unique timestamps from the timeseries
+  //       timestamps.add(parseInt(timestamp))
+  //       const value = sublayerData[timestamp]
+  //       if (!result[sublayer]) result[sublayer] = {}
+  //       if (!result[sublayer][timestamp]) result[sublayer][timestamp] = 0
+  //       result[sublayer][timestamp] += value
+  //     })
+  //   })
+  // })
   return { timeseries: result, timestamps }
 }
 

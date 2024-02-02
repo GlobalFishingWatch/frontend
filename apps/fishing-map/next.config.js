@@ -15,6 +15,10 @@ const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'staging' ||
   process.env.NODE_ENV === 'production'
 
+/**
+ * @param {{ experiments: any; optimization: { moduleIds: string; }; module: { rules: { test: RegExp; type: string; }[]; }; output: { webassemblyModuleFilename: string; }; }} config
+ * @param {boolean} isServer
+ */
 function patchWasmModuleImport(config, isServer) {
   config.experiments = Object.assign(config.experiments || {}, {
     asyncWebAssembly: true,

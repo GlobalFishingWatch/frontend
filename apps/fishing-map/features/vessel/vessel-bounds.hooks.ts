@@ -8,20 +8,20 @@ import {
 } from '@globalfishingwatch/data-transforms'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectVesselTracksData,
   selectVesselEventsFilteredByTimerange,
 } from 'features/vessel/selectors/vessel.resources.selectors'
-import {
-  selectVesselFitBoundsOnLoad,
-  setVesselFitBoundsOnLoad,
-  selectVesselInfoData,
-} from 'features/vessel/vessel.slice'
+import { setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsVesselLocation, selectUrlTimeRange } from 'routes/routes.selectors'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import {
+  selectVesselFitBoundsOnLoad,
+  selectVesselInfoData,
+} from 'features/vessel/selectors/vessel.selectors'
 
 export type UseVesselBoundsType = 'events' | 'track'
 export const useVesselBounds = (type?: UseVesselBoundsType) => {
