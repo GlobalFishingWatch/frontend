@@ -1,4 +1,4 @@
-import { useSelector, batch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useCallback, useEffect } from 'react'
 import { Dataset, DatasetStatus } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
@@ -207,9 +207,7 @@ export const useAddDataset = ({ onSelect }: NewDatasetProps) => {
       category: TrackCategory.ReferenceLayer,
       action: 'Start uploading user dataset',
     })
-    batch(() => {
-      dispatchDatasetModalOpen(true)
-    })
+    dispatchDatasetModalOpen(true)
     if (onSelect) {
       onSelect()
     }
