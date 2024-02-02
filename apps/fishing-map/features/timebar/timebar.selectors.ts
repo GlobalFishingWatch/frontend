@@ -142,9 +142,6 @@ export const selectTracksData = createSelector(
             : undefined,
         getHighlighterIcon:
           trackResource.dataset.type === DatasetTypes.UserTracks ? 'track' : 'vessel',
-        props: {
-          segmentsOffsetY: trackResource.dataset.type === DatasetTypes.UserTracks,
-        },
       }
       return item
     })
