@@ -10,7 +10,6 @@ import {
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
