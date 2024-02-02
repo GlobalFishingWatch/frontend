@@ -701,8 +701,10 @@
     "detectionsVIIRS": "Deteksi VIIRS",
     "downloadActivity": "Unduh data",
     "title": "Panduan Pengguna",
-    "uploadEnvironment": "Unggah data lapisan lingkungan",
-    "uploadReference": "Unggah data lapisan referensi",
+    "uploadData": "Upload datasets",
+    "uploadPolygons": "Upload polygon datasets",
+    "uploadTracks": "Upload track datasets",
+    "uploadPoints": "Upload point datasets",
     "vesselGroups": "Kelompok kapal",
     "vesselSearch": "Pencarian Kapal"
   },
