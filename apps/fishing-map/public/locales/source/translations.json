@@ -701,8 +701,10 @@
     "detectionsVIIRS": "Detections VIIRS",
     "downloadActivity": "Download data",
     "title": "User Guide",
-    "uploadEnvironment": "Upload environment layers data",
-    "uploadReference": "Upload reference layers data",
+    "uploadData": "Upload datasets",
+    "uploadPolygons": "Upload polygon datasets",
+    "uploadTracks": "Upload track datasets",
+    "uploadPoints": "Upload point datasets",
     "vesselGroups": "Vessel groups",
     "vesselSearch": "Vessel Search"
   },
