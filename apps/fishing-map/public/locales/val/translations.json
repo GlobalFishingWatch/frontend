@@ -701,8 +701,10 @@
     "detectionsVIIRS": "crwdns60481:0crwdne60481:0",
     "downloadActivity": "crwdns60467:0crwdne60467:0",
     "title": "crwdns60459:0crwdne60459:0",
-    "uploadEnvironment": "crwdns60463:0crwdne60463:0",
-    "uploadReference": "crwdns60461:0crwdne60461:0",
+    "uploadData": "crwdns82804:0crwdne82804:0",
+    "uploadPolygons": "crwdns82806:0crwdne82806:0",
+    "uploadTracks": "crwdns82808:0crwdne82808:0",
+    "uploadPoints": "crwdns82810:0crwdne82810:0",
     "vesselGroups": "crwdns60471:0crwdne60471:0",
     "vesselSearch": "crwdns60469:0crwdne60469:0"
   },
