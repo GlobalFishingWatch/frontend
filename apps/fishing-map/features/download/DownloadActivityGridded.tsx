@@ -24,13 +24,14 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
-  selectActiveHeatmapDataviews,
   selectActiveHeatmapVesselDatasets,
+  selectActiveReportDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import {
   checkDatasetReportPermission,
+  getActiveDatasetsInDataview,
   getDatasetsReportNotSupported,
 } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
@@ -65,7 +66,7 @@ function DownloadActivityByVessel() {
   const { disclaimer } = getSourceSwitchContentByLng(i18n.language)
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
-  const dataviews = useSelector(selectActiveHeatmapDataviews)
+  const dataviews = useSelector(selectActiveReportDataviews)
   const vesselDatasets = useSelector(selectActiveHeatmapVesselDatasets)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { start, end, timerange } = useTimerangeConnect()
@@ -128,11 +129,11 @@ function DownloadActivityByVessel() {
   const onDownloadClick = async () => {
     const downloadDataviews = dataviews
       .map((dataview) => {
-        const activityDatasets: string[] = (dataview?.config?.datasets || []).filter(
-          (id: string) => {
-            return id ? checkDatasetReportPermission(id, userData!.permissions) : false
-          }
-        )
+        const datasets = getActiveDatasetsInDataview(dataview)?.flatMap((d) => d.id || []) || []
+        const activityDatasets = datasets.filter((id: string) => {
+          return id ? checkDatasetReportPermission(id, userData!.permissions) : false
+        })
+        console.log('🚀 ~ activityDatasets ~ activityDatasets:', activityDatasets)
         return {
           filter: dataview.config?.filter || [],
           filters: dataview.config?.filters || {},

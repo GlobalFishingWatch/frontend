@@ -5,6 +5,7 @@ import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dat
 import { GeneratorType, BasemapGeneratorConfig } from '@globalfishingwatch/layer-composer'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
+  getActiveDatasetsInDataview,
   getDatasetsInDataviews,
   getRelatedDatasetByType,
   isPrivateDataset,
@@ -39,8 +40,6 @@ const VESSEL_ONLY_VISIBLE_LAYERS = [
   GeneratorType.UserContext,
   GeneratorType.UserPoints,
 ]
-
-const EMPTY_ARRAY: [] = []
 
 export const selectBasemapDataview = createSelector([selectAllDataviews], (dataviews) => {
   const basemapDataview = dataviews.find((d) => d.config?.type === GeneratorType.Basemap)
@@ -231,12 +230,9 @@ export const selectActiveHeatmapVesselDatasets = createSelector(
     const vesselDatasetIds = Array.from(
       new Set(
         heatmapDataviews.flatMap((dataview) => {
-          const activeDatasets = dataview.config?.datasets
-          return dataview.datasets?.flatMap((dataset) => {
-            if (activeDatasets.includes(dataset.id)) {
-              return getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id || []
-            }
-            return EMPTY_ARRAY
+          const activeDatasets = getActiveDatasetsInDataview(dataview)
+          return activeDatasets?.flatMap((dataset) => {
+            return getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id || []
           })
         })
       )
