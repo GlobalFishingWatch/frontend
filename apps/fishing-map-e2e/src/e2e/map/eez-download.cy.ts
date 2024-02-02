@@ -126,7 +126,6 @@ describe('Download reports for an area', () => {
     cy.getBySel(`download-activity-gridded-button`).should('not.be.disabled').click()
     // This request takes for me 17s, so I use 40 just in case
     cy.wait('@downloadReport', getRequestTimeout(40000)).should((xhr) => {
-      console.log('🚀 ~ cy.wait ~ xhr:', xhr)
       expect(xhr.response).to.have.property('statusCode', 200)
     })
     // verifyFileDownload(zipPath, 'activity-gridded')
