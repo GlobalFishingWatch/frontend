@@ -6,7 +6,7 @@
   },
   "chlorophyl": {
     "name": "Concentração de clorofila-a",
-    "description": "A clorofila a é o pigmento captador de luz encontrado em todas as plantas fotossintéticas. O fitoplâncton marinho fixa quimicamente o carbono através da fotossíntese, absorvendo dióxido de carbono dissolvido e produzindo oxigênio. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo a clorofila, sobre o oceano global, exibido com uma resolução horizontal de 1/4 de grau. ",
+    "description": "A clorofila a é o pigmento captador de luz encontrado em todas as plantas fotossintéticas. O fitoplâncton marinho fixa quimicamente o carbono através da fotossíntese, absorvendo dióxido de carbono dissolvido e produzindo oxigênio. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo a clorofila, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "coral-reefs": {
@@ -40,53 +40,53 @@
     "moreInfoLink": ""
   },
   "high-seas": {
-    "name": "High seas",
-    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "name": "Alto-mar",
+    "description": "O Alto-mar é qualquer área do oceano além das Zonas Econômicas Exclusivas (ZEEs). Os bolsões de alto-mar são áreas totalmente cercadas por ZEEs. Esses bolsões podem ser difíceis de distinguir das múltiplas jurisdições das ZEEs que os cercam, portanto, temos uma camada que os destaca.",
     "moreInfoLink": ""
   },
   "mangroves": {
-    "name": "Mangroves",
-    "description": "Mangroves are trees or shrubs that can survive in saline environments and typically grow within the intertidal zone of tropical and subtropical regions. Considered blue carbon habitats, mangrove forests improve water quality, stabilize and protect coastlines, and provide shelter for birds, animals and marine organisms. This dataset uses earth observation satellite imagery to show the global distribution of mangroves.  ",
+    "name": "Mangues",
+    "description": "Os mangues são árvores ou arbustos que podem sobreviver em ambientes salinos e normalmente crescem na zona entremarés de regiões tropicais e subtropicais. Considerados habitats de carbono azul, os manguezais melhoram a qualidade da água, estabilizam e protegem as costas e fornecem abrigo para pássaros, animais e organismos marinhos. Este conjunto de dados utiliza imagens de satélite de observação da Terra para mostrar a distribuição global dos mangues.  ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/4"
   },
   "marine-ecoregions": {
-    "name": "Marine ecoregions",
-    "description": "Marine ecoregions are a biogeographic classification of the world's coastal and continental shelf waters. The dataset provides a geographic framework for a broad range of analyses relating to biodiversity in the marine environment.",
+    "name": "Ecorregiões marinhas",
+    "description": "As ecorregiões marinhas são uma classificação biogeográfica das águas costeiras e da plataforma continental do mundo. O conjunto de dados fornece um quadro geográfico para uma ampla gama de análises relacionadas com a biodiversidade no ambiente marinho.",
     "moreInfoLink": "https://geospatial.tnc.org/datasets/ed2be4cf8b7a451f84fd093c2e7660e3/explore"
   },
   "mpa": {
-    "name": "MPAs (WDPA)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas.",
+    "name": "AMPs (WDPA)",
+    "description": "As áreas marinhas protegidas (AMPs) são áreas do oceano reservadas para conservação a longo prazo. Elas podem ter níveis diferentes de proteção, e a variedade de atividades permitidas ou proibidas dentro dos seus limites varia consideravelmente. Fonte: Base de Dados Mundial de Áreas Protegidas (World Database on Protected Areas, WDPA).",
     "moreInfoLink": ""
   },
   "nitrate": {
-    "name": "Nitrate concentration (NO3)",
-    "description": "Nitrate is required by marine plants for photosynthesis and is a major nutrient for the ocean's productivity, but high concentrations can be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including nitrate, over the global ocean displayed with a 1/4 degree horizontal resolution.   ",
+    "name": "Concentração de nitrato (NO3)",
+    "description": "O nitrato é necessário para as plantas marinhas para a fotossíntese e é um nutriente importante para a produtividade dos oceanos. No entanto, concentrações elevadas podem ser um indicador de poluição. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo nitrato, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau.   ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "oxygen": {
-    "name": "Oxygen concentration (O2)",
-    "description": "Dissolved oxygen is the amount of oxygen present in water and is crucial for the growth and survival of marine organisms. Warming ocean temperatures can lead to an expansion of low oxygen zones, which can impact the distribution and abundance of marine life. This dataset is comprised of biogeochemical parameters, including dissolved oxygen, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "name": "Concentração de oxigênio (O2)",
+    "description": "Oxigênio dissolvido é a quantidade de oxigênio presente na água e é fundamental para o crescimento e a sobrevivência dos organismos marinhos. O aquecimento das temperaturas dos oceanos pode levar a uma expansão de zonas com baixo teor de oxigénio, o que pode impactar a distribuição e a abundância da vida marinha. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o oxigênio dissolvido, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "ph": {
     "name": "pH",
-    "description": "The acidity of the ocean is measured by pH. Increased carbon dioxide absorption has lowered the ocean's pH, resulting in ocean acidification which can have wide-ranging impacts on marine organisms. This dataset is comprised of biogeochemical parameters, including pH, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "description": "A acidez dos oceanos é medida pelo pH. O aumento da absorção de dióxido de carbono reduziu o pH dos oceanos, resultando na acidificação dos oceanos, que pode ter um amplo impacto nos organismos marinhos. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o pH, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "phosphate": {
-    "name": "Phosphate concentration (PO4)",
-    "description": "Phosphate is a major nutrient for marine foodwebs and ocean productivity, but high concentrations can also be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including phosphate, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "name": "Concentração de fosfato (PO4)",
+    "description": "O fosfato é um nutriente importante para as cadeias alimentares marinhas e para a produtividade dos oceanos. No entanto, concentrações elevadas podem ser também um indicador de poluição. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o fosfato, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "presence": {
-    "name": "Vessel presence",
-    "description": "The presence layer analyzes automatic identification system (AIS) data collected from vessels that our research has identified. The presence is determined by taking positions transmitted by the vessel’s AIS and is displayed as a heatmap. ",
+    "name": "Presença de embarcações",
+    "description": "A camada de presença analisa dados do sistema de identificação automática (AIS) coletados de embarcações identificadas pela nossa pesquisa. A presença é determinada pelas posições assumidas e transmitidas pelo AIS da embarcação e é exibida como um mapa de calor. ",
     "moreInfoLink": ""
   },
   "protectedseas": {
-    "name": "MPAs (ProtectedSeas)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably.",
+    "name": "AMPs (ProtectedSeas)",
+    "description": "As áreas marinhas protegidas (AMPs) são áreas do oceano reservadas para conservação a longo prazo. Elas podem ter níveis diferentes de proteção, e a variedade de atividades permitidas ou proibidas dentro de seus limites varia consideravelmente.",
     "moreInfoLink": ""
   },
   "rfmo": {
