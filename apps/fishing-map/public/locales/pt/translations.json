@@ -1,7 +1,7 @@
 {
   "analysis": {
     "activityChange": "Mudança de atividade",
-    "around": "around",
+    "around": "ao redor",
     "beforeAfter": "antes/depois",
     "beforeAfterDate": "data",
     "beforeAfterRange": "entre {{duration}} antes e depois de {{compareStart}}",
