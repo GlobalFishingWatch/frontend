@@ -90,58 +90,58 @@
     "moreInfoLink": ""
   },
   "rfmo": {
-    "name": "RFMOs",
-    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations.",
+    "name": "ORGPs",
+    "description": "As organizações regionais de gestão de pesca (ORGPs) são órgãos internacionais formados por países com um interesse em comum na gestão ou conservação dos estoques de peixes em uma determinada região. Alguns gerenciam todos os estoques de peixes existentes em uma determinada área, enquanto outros se concentram em espécies específicas altamente migratórias, especialmente o atum. A organização regional de gestão de pesca do mapa do Global Fishing Watch inclui atualmente as cinco organizações regionais de gestão de pesca do atum.",
     "moreInfoLink": ""
   },
   "salinity": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is the measurement of salt concentration at the ocean surface. It determines the density of ocean water along with temperature and is a key parameter to estimate the ocean's influence on climate. This dataset salinity is displayed with a 1/12 degree horizontal resolution.",
+    "name": "Salinidade",
+    "description": "A salinidade da superfície do mar é a medição da concentração de sal na superfície do oceano. Ela determina a densidade da água do oceano juntamente com a temperatura e é um parâmetro-chave para estimar a influência do oceano no clima. A salinidade deste conjunto de dados é exibida com uma resolução horizontal de 1/12 grau.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description"
   },
   "sar": {
-    "name": "Radar detections (SAR)",
-    "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. SAR is a satellite-based sensor that shoots microwaves to the Earth surface and measures the amplitude and phase of the signals that are reflected back from objects on the ground and water, known as backscatter.",
+    "name": "Detecções de radar (SAR)",
+    "description": "O radar de abertura sintética (SAR) pode detectar embarcações e estruturas no mar em quaisquer condições climáticas. O SAR é um sensor baseado em satélite que dispara micro-ondas para a superfície da Terra e mede a amplitude e a fase dos sinais que são refletidos de objetos no solo e na água, conhecidos como retroespalhamento.",
     "moreInfoLink": ""
   },
   "seagrasses": {
-    "name": "Seagrasses",
-    "description": "Seagrasses are a productive ecosystem found globally in shallow marine areas where they provide food and habitat for organisms and play a key role in nutrient cycling. This dataset shows the global distribution of seagrasses. ",
+    "name": "Ervas marinhas",
+    "description": "As ervas marinhas são um ecossistema produtivo encontrado globalmente em áreas marinhas rasas, onde elas fornecem alimento e habitat para organismos e desempenham um papel fundamental na ciclagem nutrientes. Este conjunto de dados mostra a distribuição global das ervas marinhas. ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/7"
   },
   "seamounts": {
-    "name": "Seamounts",
-    "description": "Seamounts are underwater mountains of volcanic origin that can generate an upwelling of nutrients, supporting increased biological productivity, species richness and distinct communities. This dataset of global seafloor geomorphic features includes seamounts, which are defined as peaks that rise over 1,000 m above the seafloor.",
+    "name": "Montes marinhos",
+    "description": "Os montes marinhos são montanhas subaquáticas de origem vulcânica que podem gerar uma ressurgência de nutrientes, apoiando o aumento da produtividade biológica, a riqueza de espécies e comunidades distintas. Este conjunto de dados de características geomórficas globais do fundo do mar inclui montes marinhos, que são definidos como picos que se elevam mais de 1.000 m acima do fundo do mar.",
     "moreInfoLink": "https://bluehabitats.org/"
   },
   "sst": {
     "name": "Temperatura da superfície do mar",
-    "description": "Sea surface temperature is the water temperature at or near the surface. It can impact weather and regional climates, and together with salinity can drive ocean circulation and large-scale movement of ocean currents globally. This dataset provides sea surface temperature at 1/20 degree horizontal grid resolution, using in-situ and satellite data from both infrared and microwave radiometers.",
+    "description": "A temperatura da superfície do mar é a temperatura da água na superfície ou perto dela. Ela pode impactar o clima e os climas regionais e, juntamente com a salinidade, pode impulsionar a circulação oceânica e o movimento em grande escala das correntes oceânicas globalmente. Este conjunto de dados fornece a temperatura da superfície do mar com uma resolução de grade horizontal de 1/20 de grau, usando dados in-situ e de satélite de radiômetros infravermelhos e de micro-ondas.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/description"
   },
   "sst-anomalies": {
-    "name": "Sea surface temperature anomalies",
-    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
+    "name": "Anomalias na temperatura da superfície do mar",
+    "description": "A anomalia da temperatura da superfície do mar é a diferença entre a temperatura diária da superfície do mar e a média climatológica de 30 anos. As anomalias da temperatura da superfície do mar podem impactar a variedade e os habitats das espécies e podem representar eventos transitórios ou ciclos climáticos específicos, como o El Niño e o La Niña, que afetam os padrões climáticos a nível global. No mapa, um número positivo representa uma temperatura mais quente que a média. ",
     "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1"
   },
   "sst-anomalies-max": {
-    "name": "Sea surface temperature anomalies (max)",
+    "name": "Anomalias na temperatura da superfície do mar (máx.)",
     "description": "",
     "moreInfoLink": ""
   },
   "sst-anomalies-min": {
-    "name": "Sea surface temperature anomalies (min)",
+    "name": "Anomalias na temperatura da superfície do mar (mín.)",
     "description": "",
     "moreInfoLink": ""
   },
   "thgt": {
-    "name": "Wave height",
-    "description": "Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.",
+    "name": "Altura da onda",
+    "description": "A altura da onda é a distância vertical do vale (fundo) até a crista (topo) de uma onda na superfície do mar. Este conjunto de dados usa a altura significativa da onda, que é a média do terço mais alto de todas as alturas das ondas durante um determinado período de amostragem.",
     "moreInfoLink": "https://www.pacioos.hawaii.edu/waves/model-global/#about"
   },
   "viirs": {
     "name": "Detecção de luz noturna (VIIRS)",
-    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.",
+    "description": "A camada de detecção de embarcações com luzes noturnas, conhecida como conjunto de radiômetros de imagens infravermelhas visíveis ou VIIRS, mostra as embarcações no mar que os satélites detectaram pela luz que elas emitem à noite. Embora não esteja exclusivamente associada a embarcações de pesca, essa camada de atividade provavelmente mostra embarcações associadas a atividades como a pesca de lula, que utiliza luzes fortes, e a pesca noturna.",
     "moreInfoLink": ""
   }
 }
