@@ -1,22 +1,22 @@
 {
   "bathymetry": {
-    "name": "Bathymetry",
-    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid. ",
+    "name": "Batimetria",
+    "description": "A batimetria é a medição da profundidade da água e fornece detalhes das características físicas do fundo do oceano. Esse conjunto de dados batimétricos em grade é um modelo de terreno global contínuo que fornece dados de elevação do oceano em metros em uma grade com intervalo de 15 segundos de arco. ",
     "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/"
   },
   "chlorophyl": {
     "name": "Concentração de clorofila-a",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Marine phytoplankton chemically fix carbon through photosynthesis by taking in dissolved carbon dioxide and producing oxygen. This dataset is comprised of biogeochemical parameters, including chlorophyll, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "description": "A clorofila a é o pigmento captador de luz encontrado em todas as plantas fotossintéticas. O fitoplâncton marinho fixa quimicamente o carbono através da fotossíntese, absorvendo dióxido de carbono dissolvido e produzindo oxigênio. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo a clorofila, sobre o oceano global, exibido com uma resolução horizontal de 1/4 de grau. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "coral-reefs": {
-    "name": "Coral reefs",
-    "description": "Warm-water coral reefs are found in clear, shallow waters and are highly dynamic ecosystems that support the most biodiverse marine habitat. This dataset shows the global distribution of coral reefs in tropical and subtropical regions.",
+    "name": "Recifes de coral",
+    "description": "Os recifes de coral de águas quentes são encontrados em águas claras e rasas e são ecossistemas altamente dinâmicos que sustentam o habitat marinho mais biodiverso. Este conjunto de dados mostra a distribuição global dos recifes de coral em regiões tropicais e subtropicais.",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/1"
   },
   "eez": {
     "name": "EEZs",
-    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.",
+    "description": "As zonas econômicas exclusivas (ZEEs) estendem-se até 200 milhas náuticas da costa de um país. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.",
     "moreInfoLink": ""
   },
   "encounters": {
