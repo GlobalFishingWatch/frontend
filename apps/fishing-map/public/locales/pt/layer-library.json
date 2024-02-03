@@ -20,23 +20,23 @@
     "moreInfoLink": ""
   },
   "encounters": {
-    "name": "Encounter events (AIS)",
-    "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
+    "name": "Eventos de encontro (AIS)",
+    "description": "Identificados a partir de dados AIS como localizações onde duas embarcações, uma transportadora e uma embarcação de pesca, estiveram a uma distância de 500 metros durante pelo menos 2 horas e viajaram a uma velocidade média inferior a 2 nós, enquanto estavam a pelo menos 10 km de um ancoradouro costeiro.",
     "moreInfoLink": ""
   },
   "fao-major": {
-    "name": "FAO major fishing areas",
-    "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas.",
+    "name": "Principais áreas de pesca da FAO",
+    "description": "As principais áreas de pesca da FAO para fins estatísticos são áreas arbitrárias, cujos limites foram determinados em consulta com agências internacionais de pesca. As principais áreas de pesca, interiores e marítimas, estão listadas abaixo por códigos de dois dígitos com seus nomes. Para acessar os mapas e a descrição dos limites de cada zona de pesca, clique no item relevante da lista abaixo ou no mapa que mostra as 19 principais áreas de pesca marítima.",
     "moreInfoLink": ""
   },
   "fishing-effort": {
-    "name": "Apparent fishing effort",
-    "description": "To determine “apparent fishing effort”, Global Fishing Watch analyzes automatic identification system (AIS) and vessel monitoring system (VMS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a fishing detection algorithm based on changes in vessel speed and direction.",
+    "name": "Esforço de pesca aparente",
+    "description": "Para determinar o “esforço de pesca aparente”, o Global Fishing Watch analisa dados do sistema de identificação automática (AIS) e do sistema de monitoramento de embarcações (VMS) coletados de embarcações que nossa pesquisa identificou como embarcações de pesca comercial conhecidas ou possíveis e aplica um algoritmo de detecção de pesca baseado em mudanças de velocidade e direção da embarcação.",
     "moreInfoLink": ""
   },
   "graticules": {
-    "name": "Latitude longitude grids",
-    "description": "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map",
+    "name": "Grades de latitude e longitude",
+    "description": "Grades ou quadrículas de latitude e longitude em intervalos de 1, 5, 10 e 30° dependendo do nível de zoom do mapa",
     "moreInfoLink": ""
   },
   "high-seas": {
