@@ -31,7 +31,7 @@
   },
   "fishing-effort": {
     "name": "Effort de pêche apparent",
-    "description": "Déterminer l' \"effort de pêche apparent\", Global Fishing Watch analyse les données du système d'identification automatique (AIS) et du système de surveillance des navires (VMS) recueillies auprès des navires que nos recherches ont identifiés comme étant des navires de pêche commerciaux connus ou potentiels et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires.",
+    "description": "Déterminer l'« effort de pêche apparent », Global Fishing Watch analyse les données du système d'identification automatique (AIS) et du système de surveillance des navires (VMS) recueillies auprès des navires que nos recherches ont identifiés comme étant des navires de pêche commerciaux connus ou potentiels et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires.",
     "moreInfoLink": ""
   },
   "graticules": {
@@ -46,7 +46,7 @@
   },
   "mangroves": {
     "name": "Mangroves",
-    "description": "Les palétuviers sont des arbres ou arbustes qui peuvent survivre dans des environnements salins et qui poussent généralement dans la zone intertidale des régions tropicales et subtropicales. Considérées comme des habitats de carbone bleu, les mangroves améliorent la qualité de l'eau, stabilisent et protègent les côtes, et sont un refuge pour les oiseaux, les animaux et les organismes marins. Ce jeu de données utilise des images satellites d'observation de la Terre pour afficher la distribution globale des mangroves.  ",
+    "description": "Les palétuviers sont des arbres ou arbustes qui peuvent survivre dans des environnements salins et qui poussent généralement dans la zone intertidale des régions tropicales et subtropicales. Considérées comme des habitats de carbone bleu, les mangroves améliorent la qualité de l'eau, stabilisent et protègent les côtes, et sont un refuge pour les oiseaux, les animaux et les organismes marins. Ce jeu de données utilise des images satellite d'observation de la Terre pour afficher la distribution globale des mangroves.  ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/4"
   },
   "marine-ecoregions": {
