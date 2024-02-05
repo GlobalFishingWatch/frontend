@@ -346,16 +346,7 @@ export const getActivityDatasetsReportSupported = (
   return dataviews.flatMap((dataview) => {
     const datasets = getActiveDatasetsInDataview(dataview)?.flatMap((d) => d?.id || []) || []
     const permissionDatasetsIds: string[] = datasets.filter((datasetId: string) => {
-      const fakePermissions = [
-        ...permissions,
-        // TODO remove this fake permission
-        {
-          type: 'dataset' as UserPermissionType,
-          value: 'public-global-chlorophyl:v20231213' as UserPermissionValue,
-          action: 'report',
-        },
-      ]
-      const valid = datasetId ? checkDatasetReportPermission(datasetId, fakePermissions) : false
+      const valid = datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
       return valid
     })
     return dataview.datasets
