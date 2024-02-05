@@ -36,14 +36,12 @@ class UserContextGenerator {
       url.searchParams.set('filter', config.filter)
     }
 
+    // Needed for invalidate caches on user changes
     if (config.valueProperties) {
       config.valueProperties.forEach((property, index) => {
         url.searchParams.set(`properties[${index}]`, property)
       })
     }
-
-    // As user can modify the dataset, we need to avoid the cache
-    url.searchParams.set('cache', 'false')
 
     return [
       {

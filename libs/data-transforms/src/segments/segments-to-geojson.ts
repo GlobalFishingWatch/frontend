@@ -80,7 +80,11 @@ export const geoJSONToSegments = (
         longitude: coordinate[0],
         latitude: coordinate[1],
       }
-      point.timestamp = timestamps[i]
+      if (onlyExtents && i === 1) {
+        point.timestamp = timestamps[coordinates.length - 1]
+      } else {
+        point.timestamp = timestamps[i]
+      }
       return point
     })
     segment[0].id = id

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -19,9 +19,7 @@ export default function ReportDownload() {
       action: 'Download report',
       label: areaId?.toString(),
     })
-    batch(() => {
-      dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
-    })
+    dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
   }
 
   return (

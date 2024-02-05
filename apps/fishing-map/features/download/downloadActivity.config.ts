@@ -1,12 +1,13 @@
 import { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { t } from 'features/i18n/i18n'
 
-export enum Downloads {
+export enum HeatmapDownloadTab {
   ByVessel = 'byVessel',
   Gridded = 'gridded',
+  Environment = 'environment',
 }
 
-export enum Format {
+export enum HeatmapDownloadFormat {
   GeoTIFF = 'TIF',
   Json = 'JSON',
   Csv = 'CSV',
@@ -36,21 +37,21 @@ export enum SpatialResolution {
   VeryHigh = 'VERY-HIGH',
 }
 
-export const GRIDDED_FORMAT_OPTIONS: ChoiceOption[] = [
+export const GRIDDED_FORMAT_OPTIONS: ChoiceOption<HeatmapDownloadFormat>[] = [
   {
-    id: Format.GeoTIFF,
+    id: HeatmapDownloadFormat.GeoTIFF,
     label: 'geotiff',
   },
   {
-    id: Format.Csv,
+    id: HeatmapDownloadFormat.Csv,
     label: 'csv',
   },
   {
-    id: Format.Json,
+    id: HeatmapDownloadFormat.Json,
     label: 'json',
   },
   {
-    id: Format.Geopackage,
+    id: HeatmapDownloadFormat.Geopackage,
     label: 'Geopackage',
     disabled: true,
     tooltip: t('common.comingSoon', 'Coming Soon!'),
@@ -58,18 +59,29 @@ export const GRIDDED_FORMAT_OPTIONS: ChoiceOption[] = [
   },
 ]
 
-export const VESSEL_FORMAT_OPTIONS: ChoiceOption[] = [
+export const VESSEL_FORMAT_OPTIONS: ChoiceOption<HeatmapDownloadFormat>[] = [
   {
-    id: Format.Csv,
+    id: HeatmapDownloadFormat.Csv,
     label: 'csv',
   },
   {
-    id: Format.Json,
+    id: HeatmapDownloadFormat.Json,
     label: 'json',
   },
 ]
 
-const BASE_GROUP_BY_OPTIONS: ChoiceOption[] = [
+export const ENVIRONMENT_FORMAT_OPTIONS: ChoiceOption<HeatmapDownloadFormat>[] = [
+  {
+    id: HeatmapDownloadFormat.GeoTIFF,
+    label: 'geotiff',
+  },
+  {
+    id: HeatmapDownloadFormat.Csv,
+    label: 'csv',
+  },
+]
+
+const BASE_GROUP_BY_OPTIONS: ChoiceOption<GroupBy>[] = [
   {
     id: GroupBy.MMSI,
     label: t('vessel.mmsi', 'MMSI'),
@@ -87,7 +99,7 @@ const BASE_GROUP_BY_OPTIONS: ChoiceOption[] = [
     label: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
   },
 ]
-export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption[] = [
+export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption<GroupBy>[] = [
   {
     id: GroupBy.Vessel,
     label: t('common.none', 'None'),
@@ -95,7 +107,7 @@ export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption[] = [
   ...BASE_GROUP_BY_OPTIONS,
 ]
 
-export const GRIDDED_GROUP_BY_OPTIONS: ChoiceOption[] = [
+export const GRIDDED_GROUP_BY_OPTIONS: ChoiceOption<GroupBy>[] = [
   {
     id: GroupBy.None,
     label: t('common.none', 'None'),
@@ -103,7 +115,7 @@ export const GRIDDED_GROUP_BY_OPTIONS: ChoiceOption[] = [
   ...BASE_GROUP_BY_OPTIONS,
 ]
 
-export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
+export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption<SpatialResolution>[] = [
   {
     id: SpatialResolution.Low,
     label: '0.1º',
@@ -121,7 +133,7 @@ export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
   },
 ]
 
-export const TEMPORAL_RESOLUTION_OPTIONS: ChoiceOption[] = [
+export const TEMPORAL_RESOLUTION_OPTIONS: ChoiceOption<TemporalResolution>[] = [
   {
     id: TemporalResolution.Full,
     label: t('download.fullTimeRange', 'Selected time range'),

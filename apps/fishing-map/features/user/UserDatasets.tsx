@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button, Spinner, IconButton, Modal, Icon } from '@globalfishingwatch/ui-components'
 import { Dataset, DatasetGeometryType, DatasetStatus } from '@globalfishingwatch/api-types'
 import {
@@ -39,9 +39,7 @@ function UserDatasets() {
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
 
   const onNewDatasetClick = useCallback(async () => {
-    batch(() => {
-      dispatchDatasetModalOpen(true)
-    })
+    dispatchDatasetModalOpen(true)
   }, [dispatchDatasetModalOpen])
 
   const onDatasetClick = useCallback(
@@ -74,14 +72,12 @@ function UserDatasets() {
 
   const onEditClick = useCallback(
     (dataset: Dataset) => {
-      batch(() => {
-        dispatchDatasetModalOpen(true)
-        dispatchDatasetModalConfig({
-          id: dataset?.id,
-          type:
-            (dataset?.configuration?.configurationUI?.geometryType as DatasetGeometryType) ||
-            dataset?.configuration?.geometryType,
-        })
+      dispatchDatasetModalOpen(true)
+      dispatchDatasetModalConfig({
+        id: dataset?.id,
+        type:
+          (dataset?.configuration?.configurationUI?.geometryType as DatasetGeometryType) ||
+          dataset?.configuration?.geometryType,
       })
     },
     [dispatchDatasetModalOpen, dispatchDatasetModalConfig]

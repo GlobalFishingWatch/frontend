@@ -1,4 +1,4 @@
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
@@ -16,7 +16,7 @@ import {
   setVesselGroupConfirmationMode,
   setVesselGroupCurrentDataviewIds,
 } from 'features/vessel-groups/vessel-groups.slice'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectReportVesselsFiltered,
@@ -41,7 +41,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectReportVesselsPagination)
-  const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
+  const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
   const onDownloadVesselsClick = () => {
@@ -88,12 +88,10 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   }
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    batch(() => {
-      dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
-      if (dataviewIds?.length) {
-        dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-      }
-    })
+    dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
+    if (dataviewIds?.length) {
+      dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
+    }
     trackEvent({
       category: TrackCategory.VesselGroups,
       action: 'add_to_vessel_group',

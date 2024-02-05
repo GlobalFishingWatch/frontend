@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -11,7 +11,7 @@ import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   setVesselGroupConfirmationMode,
   setVesselGroupCurrentDataviewIds,
@@ -30,7 +30,7 @@ function SearchActions() {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const { dispatchQueryParams, dispatchLocation } = useLocationConnect()
-  const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
+  const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const vesselsSelected = useSelector(selectSelectedVessels)
 
   const onConfirmSelection = () => {
@@ -50,10 +50,8 @@ function SearchActions() {
       return vesselDataviewInstance
     })
     addNewDataviewInstances(instances)
-    batch(() => {
-      dispatch(cleanVesselSearchResults())
-      dispatchQueryParams(EMPTY_FILTERS)
-    })
+    dispatch(cleanVesselSearchResults())
+    dispatchQueryParams(EMPTY_FILTERS)
     if (workspaceId) {
       dispatchLocation(WORKSPACE, {
         payload: { workspaceId },
@@ -68,12 +66,10 @@ function SearchActions() {
 
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    batch(() => {
-      dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
-      if (dataviewIds?.length) {
-        dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-      }
-    })
+    dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
+    if (dataviewIds?.length) {
+      dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
+    }
     trackEvent({
       category: TrackCategory.VesselGroups,
       action: 'add_to_vessel_group',

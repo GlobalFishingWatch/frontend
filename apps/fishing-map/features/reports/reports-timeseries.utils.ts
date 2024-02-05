@@ -79,7 +79,7 @@ export const featuresToTimeseries = (
     compareDeltaMillis: number
   }
 ) => {
-  return filteredFeatures.flatMap((filteredFeatures, sourceIndex) => {
+  return filteredFeatures.flatMap((filteredFeature, sourceIndex) => {
     const sourceMetadata = layersWithFeatures[sourceIndex]?.metadata
     if (!sourceMetadata) {
       return []
@@ -90,7 +90,7 @@ export const featuresToTimeseries = (
     const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
     const sourceInterval = sourceMetadata.timeChunks.interval
     const { values: valuesContainedRaw } = getTimeSeries({
-      features: (filteredFeatures.contained as any) || ([] as any),
+      features: (filteredFeature.contained as any) || ([] as any),
       numSublayers: sourceNumSublayers,
       quantizeOffset: sourceQuantizeOffset,
       aggregationOperation: sourceMetadata.aggregationOperation,
@@ -103,8 +103,8 @@ export const featuresToTimeseries = (
     )
 
     const featuresContainedAndOverlapping = [
-      ...(filteredFeatures.contained || []),
-      ...(filteredFeatures.overlapping || []),
+      ...(filteredFeature.contained || []),
+      ...(filteredFeature.overlapping || []),
     ]
     const { values: valuesContainedAndOverlappingRaw } = getTimeSeries({
       features: featuresContainedAndOverlapping as any,

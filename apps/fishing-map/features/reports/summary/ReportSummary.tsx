@@ -13,7 +13,10 @@ import ReportSummaryTags from 'features/reports/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
 import { ReportActivityUnit } from 'features/reports/Report'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
-import { useFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks'
+import {
+  useReportFilteredTimeSeries,
+  useReportFeaturesLoading,
+} from 'features/reports/reports-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/reports-timeseries.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -39,7 +42,8 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const timerange = useSelector(selectTimeRange)
   const category = useSelector(selectReportCategory)
   const reportVessels = useSelector(selectReportVesselsNumber)
-  const { loading: timeseriesLoading, layersTimeseriesFiltered } = useFilteredTimeSeries()
+  const timeseriesLoading = useReportFeaturesLoading()
+  const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours) as number
   const dataviews = useSelector(selectActiveReportDataviews)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)

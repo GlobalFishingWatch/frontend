@@ -6,7 +6,8 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   getReportGraphMode,
   ReportGraphProps,
-  useFilteredTimeSeries,
+  useReportFeaturesLoading,
+  useReportFilteredTimeSeries,
 } from 'features/reports/reports-timeseries.hooks'
 import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
@@ -15,7 +16,6 @@ import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActiv
 import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { getSourceSwitchContentByLng } from 'features/welcome/SourceSwitch.content'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
@@ -40,11 +40,10 @@ const GRAPH_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> |
 
 const emptyGraphData = {} as ReportGraphProps
 export default function ReportActivity() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
-  const { disclaimer } = getSourceSwitchContentByLng(i18n.language)
 
   const SelectorsComponent = useMemo(
     () => SELECTORS_BY_TYPE[reportActivityGraph],
@@ -54,7 +53,8 @@ export default function ReportActivity() {
     () => GRAPH_BY_TYPE[reportActivityGraph] as any,
     [reportActivityGraph]
   )
-  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
+  const loading = useReportFeaturesLoading()
+  const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportGraphMode = getReportGraphMode(reportActivityGraph)
   const isSameTimeseriesMode = layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
   const showSelectors = layersTimeseriesFiltered !== undefined
@@ -84,9 +84,6 @@ export default function ReportActivity() {
             <p>
               {t('analysis.disclaimer', 'The data shown above should be taken as an estimate.')}
             </p>
-          </div>
-          <div className={styles.disclaimer}>
-            <p className={styles.disclaimerText} dangerouslySetInnerHTML={{ __html: disclaimer }} />
           </div>
         </Fragment>
       )}
