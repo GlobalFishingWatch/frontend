@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { InputDate, InputText, Select } from '@globalfishingwatch/ui-components'
 import { useReportTimeCompareConnect } from 'features/reports/reports-timecomparison.hooks'
 import { selectReportTimeComparison } from 'features/app/selectors/app.reports.selector'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
@@ -17,7 +17,7 @@ import styles from './ReportActivityBeforeAfter.module.css'
 export default function ReportActivityGraph() {
   const { t } = useTranslation()
   const timeComparison = useSelector(selectReportTimeComparison)
-  const dataviews = useSelector(selectActiveHeatmapDataviews)
+  const dataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const reportAreaIds = useSelector(selectReportAreaIds)
   const reportArea = useSelector(selectDatasetAreaDetail(reportAreaIds))
   const {

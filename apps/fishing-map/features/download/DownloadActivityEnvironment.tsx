@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import type { Placement } from 'tippy.js'
-import { Icon, Button, Choice, Tag, ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Icon, Button, Choice, Tag } from '@globalfishingwatch/ui-components'
 import {
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
@@ -23,23 +23,18 @@ import {
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import {
-  selectActiveHeatmapVesselDatasets,
-  selectActiveHeatmapDowloadDataviewsByTab,
-} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveHeatmapDowloadDataviewsByTab } from 'features/dataviews/selectors/dataviews.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import {
   checkDatasetReportPermission,
   getActiveDatasetsInDataview,
-  getDatasetsReportNotSupported,
 } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDownloadActivityArea } from 'features/download/download.selectors'
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import DatasetLabel from 'features/datasets/DatasetLabel'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { AreaKeyId } from 'features/areas/areas.slice'
@@ -51,27 +46,17 @@ import {
   SPATIAL_RESOLUTION_OPTIONS,
   GRIDDED_FORMAT_OPTIONS,
   TemporalResolution,
-  GRIDDED_GROUP_BY_OPTIONS,
-  GroupBy,
+  ENVIRONMENT_FORMAT_OPTIONS,
 } from './downloadActivity.config'
-import {
-  getDownloadReportSupported,
-  getSupportedGroupByOptions,
-  getSupportedTemporalResolutions,
-} from './download.utils'
+import { getDownloadReportSupported, getSupportedTemporalResolutions } from './download.utils'
 
 function DownloadActivityGridded() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveHeatmapDowloadDataviewsByTab)
-  const vesselDatasets = useSelector(selectActiveHeatmapVesselDatasets)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { start, end, timerange } = useTimerangeConnect()
-  const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
-    dataviews,
-    userData?.permissions || []
-  )
   const downloadLoading = useSelector(selectDownloadActivityLoading)
   const downloadError = useSelector(selectDownloadActivityError)
   const downloadFinished = useSelector(selectDownloadActivityFinished)
@@ -94,12 +79,6 @@ function DownloadActivityGridded() {
       ? area(downloadAreaGeometry) > MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION
       : false
   }, [downloadAreaGeometry])
-
-  const filteredGroupByOptions: ChoiceOption<GroupBy>[] = useMemo(
-    () => getSupportedGroupByOptions(GRIDDED_GROUP_BY_OPTIONS, vesselDatasets),
-    [vesselDatasets]
-  )
-  const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0].id)
 
   const filteredSpatialResolutionOptions = SPATIAL_RESOLUTION_OPTIONS.map((option) => {
     if (option.id === SpatialResolution.High && areaIsTooBigForHighRes) {
@@ -152,14 +131,13 @@ function DownloadActivityGridded() {
           ),
         }),
       })
-    } else if (format === HeatmapDownloadFormat.Csv || format === HeatmapDownloadFormat.Json) {
+    } else if (format === HeatmapDownloadFormat.Csv) {
       trackEvent({
         category: TrackCategory.DataDownloads,
         action: `Download ${format} file`,
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
           spatialResolution,
-          groupBy,
           temporalResolution,
           sourceNames: dataviews.flatMap((dataview) =>
             getSourcesSelectedInDataview(dataview).map((source) => source.label)
@@ -175,7 +153,6 @@ function DownloadActivityGridded() {
       areaName: downloadAreaName as string,
       dataviews: downloadDataviews,
       format,
-      ...(groupBy !== GroupBy.None && { groupBy }),
       spatialResolution,
       spatialAggregation: false,
       temporalResolution,
@@ -221,7 +198,7 @@ function DownloadActivityGridded() {
         <div>
           <label>{t('download.format', 'Format')}</label>
           <Choice
-            options={GRIDDED_FORMAT_OPTIONS}
+            options={ENVIRONMENT_FORMAT_OPTIONS}
             size="small"
             activeOption={format}
             onSelect={(option) => setFormat(option.id as HeatmapDownloadFormat)}
@@ -229,28 +206,16 @@ function DownloadActivityGridded() {
           />
         </div>
         {(format === HeatmapDownloadFormat.Csv || format === HeatmapDownloadFormat.Json) && (
-          <Fragment>
-            <div>
-              <label>{t('download.groupActivityBy', 'Group activity by vessel property')}</label>
-              <Choice
-                options={filteredGroupByOptions}
-                size="small"
-                testId="group-vessels-by"
-                activeOption={groupBy}
-                onSelect={(option) => setGroupBy(option.id as GroupBy)}
-              />
-            </div>
-            <div>
-              <label>{t('download.temporalResolution', 'Group time by')}</label>
-              <Choice
-                options={filteredTemporalResolutionOptions}
-                size="small"
-                testId="group-time-by"
-                activeOption={temporalResolution}
-                onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
-              />
-            </div>
-          </Fragment>
+          <div>
+            <label>{t('download.temporalResolution', 'Group time by')}</label>
+            <Choice
+              options={filteredTemporalResolutionOptions}
+              size="small"
+              testId="group-time-by"
+              activeOption={temporalResolution}
+              onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
+            />
+          </div>
         )}
         <div>
           <label>{t('download.spatialResolution', 'Spatial Resolution')}</label>
@@ -264,24 +229,11 @@ function DownloadActivityGridded() {
         </div>
         <UserGuideLink section="downloadActivity" />
         <div className={styles.footer}>
-          {!isDownloadReportSupported ? (
+          {!isDownloadReportSupported && (
             <p className={cx(styles.footerLabel, styles.error)}>
               {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
             </p>
-          ) : datasetsDownloadNotSupported.length > 0 ? (
-            <p className={styles.footerLabel}>
-              {t(
-                'download.datasetsNotAllowed',
-                "You don't have permissions to download the following datasets:"
-              )}{' '}
-              {datasetsDownloadNotSupported.map((dataset, index) => (
-                <Fragment>
-                  <DatasetLabel key={dataset} dataset={{ id: dataset }} />
-                  {index < datasetsDownloadNotSupported.length - 1 && ', '}
-                </Fragment>
-              ))}
-            </p>
-          ) : null}
+          )}
           {downloadError && (
             <p className={cx(styles.footerLabel, styles.error)}>
               {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}

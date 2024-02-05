@@ -16,7 +16,7 @@ import {
   setVesselGroupConfirmationMode,
   setVesselGroupCurrentDataviewIds,
 } from 'features/vessel-groups/vessel-groups.slice'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectReportVesselsFiltered,
@@ -41,7 +41,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectReportVesselsPagination)
-  const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
+  const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
   const onDownloadVesselsClick = () => {

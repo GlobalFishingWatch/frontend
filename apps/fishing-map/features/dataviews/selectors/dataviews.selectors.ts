@@ -33,6 +33,8 @@ import {
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
+import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
+import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 
 const VESSEL_ONLY_VISIBLE_LAYERS = [
   GeneratorType.Basemap,
@@ -197,7 +199,7 @@ export const selectActiveDetectionsDataviews = createSelector(
   (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectActiveHeatmapDataviews = createSelector(
+export const selectActiveActivityAndDetectionsDataviews = createSelector(
   [selectActiveReportActivityDataviews, selectActiveDetectionsDataviews],
   (activityDataviews = [], detectionsDataviews = []) => [
     ...activityDataviews,
@@ -214,18 +216,32 @@ export const selectActiveEnvironmentalDataviews = createSelector(
   (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
-export const selectActiveReportDataviews = createSelector(
-  [selectActiveHeatmapDataviews, selectActiveEnvironmentalDataviews],
-  (activityHeatmapDataviews = [], environmentalDataviews = []) => {
-    const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(
-      ({ config }) => config?.type === GeneratorType.HeatmapAnimated
-    )
-    return [...activityHeatmapDataviews, ...heatmapEnvironmentalDataviews]
+export const selectActiveHeatmapDowloadDataviews = createSelector(
+  [selectActiveActivityAndDetectionsDataviews, selectActiveEnvironmentalDataviews],
+  (activityAndDetectionsDataviews = [], environmentalDataviews = []) => {
+    return [...activityAndDetectionsDataviews, ...environmentalDataviews]
+  }
+)
+
+export const selectActiveHeatmapDowloadDataviewsByTab = createSelector(
+  [
+    selectActiveActivityAndDetectionsDataviews,
+    selectActiveEnvironmentalDataviews,
+    selectDownloadActiveTabId,
+  ],
+  (activityAndDetectionsDataviews = [], environmentalDataviews = [], downloadTabId) => {
+    if (downloadTabId === HeatmapDownloadTab.Environment) {
+      const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(
+        ({ config }) => config?.type === GeneratorType.HeatmapAnimated
+      )
+      return heatmapEnvironmentalDataviews
+    }
+    return activityAndDetectionsDataviews
   }
 )
 
 export const selectActiveHeatmapVesselDatasets = createSelector(
-  [selectActiveHeatmapDataviews, selectAllDatasets],
+  [selectActiveActivityAndDetectionsDataviews, selectAllDatasets],
   (heatmapDataviews = [], datasets = []) => {
     const vesselDatasetIds = Array.from(
       new Set(
@@ -301,7 +317,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
   )
 
 export const selectHasReportLayersVisible = createSelector(
-  [selectActiveReportDataviews],
+  [selectActiveHeatmapDowloadDataviews],
   (reportDataviews) => {
     const visibleDataviews = reportDataviews?.filter(({ config }) => config?.visible === true)
     return visibleDataviews && visibleDataviews.length > 0
@@ -310,7 +326,7 @@ export const selectHasReportLayersVisible = createSelector(
 
 export const selectActiveDataviews = createSelector(
   [
-    selectActiveHeatmapDataviews,
+    selectActiveActivityAndDetectionsDataviews,
     selectActiveVesselsDataviews,
     selectActiveEventsDataviews,
     selectActiveEnvironmentalDataviews,

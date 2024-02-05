@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import {
-  selectActiveReportDataviews,
+  selectActiveHeatmapDowloadDataviews,
   selectHasReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
@@ -38,7 +38,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const userData = useSelector(selectUserData)
-  const activityDataviews = useSelector(selectActiveReportDataviews)
+  const activityDataviews = useSelector(selectActiveHeatmapDowloadDataviews)
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsReportSupported(
     activityDataviews,
@@ -49,8 +49,8 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   return (
     <LoginButtonWrapper
       tooltip={t(
-        'download.activityLogin',
-        'Register and login to download activity (free, 2 minutes)'
+        'download.heatmapLogin',
+        'Register and login to download activity, detections or environment data (free, 2 minutes)'
       )}
     >
       <IconButton
@@ -59,8 +59,11 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
         testId="download-activity-layers"
         tooltip={
           datasetsReportSupported
-            ? t('download.activityAction', 'Download visible activity layers for this area')
-            : t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
+            ? t('download.heatmapLayers', 'Download visible layers for this area')
+            : t(
+                'download.noHeatmapLayers',
+                'Turn on an activity, detections or environment layer to download its data for this area'
+              )
         }
         onClick={onClick}
         size="small"

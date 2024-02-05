@@ -9,7 +9,13 @@ import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
 import { getUTCDateTime } from 'utils/dates'
 import { BufferOperation, BufferUnit } from 'types'
-import { Format, GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
+import {
+  HeatmapDownloadTab,
+  HeatmapDownloadFormat,
+  GroupBy,
+  SpatialResolution,
+  TemporalResolution,
+} from './downloadActivity.config'
 
 export type DateRange = {
   start: string
@@ -20,12 +26,14 @@ export interface DownloadActivityState {
   areaKey: AreaKeys | undefined
   areaDataview: Dataview | UrlDataviewInstance | undefined
   status: AsyncReducerStatus
+  activeTabId: HeatmapDownloadTab
 }
 
 const initialState: DownloadActivityState = {
   areaKey: undefined,
   areaDataview: undefined,
   status: AsyncReducerStatus.Idle,
+  activeTabId: HeatmapDownloadTab.ByVessel,
 }
 
 export type DownloadActivityParams = {
@@ -38,7 +46,7 @@ export type DownloadActivityParams = {
     filter?: string
   }[]
   areaName: string
-  format: Format
+  format: HeatmapDownloadFormat
   bufferUnit?: BufferUnit
   bufferValue?: number
   bufferOperation?: BufferOperation
@@ -94,7 +102,7 @@ export const downloadActivityThunk = createAsyncThunk<
       }
 
       const fileName = `${areaName} - ${downloadActivityParams['date-range']}.${
-        format === Format.Json ? 'json' : 'zip'
+        format === HeatmapDownloadFormat.Json ? 'json' : 'zip'
       }`
       const downloadUrl = `/4wings/report?${stringify(downloadActivityParams, {
         arrayFormat: 'indices',
@@ -118,6 +126,9 @@ const downloadActivitySlice = createSlice({
   name: 'downloadActivity',
   initialState,
   reducers: {
+    setDownloadActiveTab: (state, action: PayloadAction<HeatmapDownloadTab>) => {
+      state.activeTabId = action.payload
+    },
     setDownloadActivityAreaKey: (state, action: PayloadAction<AreaKeys>) => {
       state.areaKey = action.payload
     },
@@ -144,6 +155,7 @@ const downloadActivitySlice = createSlice({
 })
 
 export const {
+  setDownloadActiveTab,
   setDownloadActivityAreaKey,
   resetDownloadActivityStatus,
   resetDownloadActivityState,
@@ -151,6 +163,7 @@ export const {
 
 export const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
 export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey
+export const selectDownloadActiveTabId = (state: RootState) => state.downloadActivity.activeTabId
 
 export const selectDownloadActivityLoading = createSelector(
   [selectDownloadActivityStatus],

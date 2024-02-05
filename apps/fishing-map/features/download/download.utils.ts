@@ -17,9 +17,9 @@ export function getDownloadReportSupported(start: string, end: string) {
 }
 
 export function getSupportedGroupByOptions(
-  options: ChoiceOption[],
+  options: ChoiceOption<GroupBy>[],
   vesselDatasets: Dataset[]
-): ChoiceOption[] {
+): ChoiceOption<GroupBy>[] {
   if (!options?.length) {
     return []
   }
@@ -43,7 +43,10 @@ export function getSupportedGroupByOptions(
   })
 }
 
-export function getSupportedTemporalResolutions(start: string, end: string): ChoiceOption[] {
+export function getSupportedTemporalResolutions(
+  start: string,
+  end: string
+): ChoiceOption<TemporalResolution>[] {
   if (!start || !end) {
     return []
   }

@@ -2,7 +2,7 @@ import { useMemo, useRef, useState, Fragment } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Icon, Button, Choice, ChoiceOption, Tag } from '@globalfishingwatch/ui-components'
+import { Icon, Button, Choice, Tag } from '@globalfishingwatch/ui-components'
 import {
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
@@ -22,7 +22,7 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
-  selectActiveReportDataviews,
+  selectActiveHeatmapDowloadDataviewsByTab,
   selectActiveHeatmapVesselDatasets,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
@@ -41,7 +41,7 @@ import UserGuideLink from 'features/help/UserGuideLink'
 import { AreaKeyId } from 'features/areas/areas.slice'
 import styles from './DownloadModal.module.css'
 import {
-  Format,
+  HeatmapDownloadFormat,
   GroupBy,
   TemporalResolution,
   VESSEL_GROUP_BY_OPTIONS,
@@ -57,7 +57,7 @@ function DownloadActivityByVessel() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
-  const dataviews = useSelector(selectActiveReportDataviews)
+  const dataviews = useSelector(selectActiveHeatmapDowloadDataviewsByTab)
   const vesselDatasets = useSelector(selectActiveHeatmapVesselDatasets)
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { start, end, timerange } = useTimerangeConnect()
@@ -68,7 +68,7 @@ function DownloadActivityByVessel() {
   const downloadLoading = useSelector(selectDownloadActivityLoading)
   const downloadError = useSelector(selectDownloadActivityError)
   const downloadFinished = useSelector(selectDownloadActivityFinished)
-  const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id as Format)
+  const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
 
@@ -76,18 +76,18 @@ function DownloadActivityByVessel() {
   const bufferValue = useSelector(selectUrlBufferValueQuery)
   const bufferOperation = useSelector(selectUrlBufferOperationQuery)
 
-  const filteredGroupByOptions: ChoiceOption[] = useMemo(
+  const filteredGroupByOptions = useMemo(
     () => getSupportedGroupByOptions(VESSEL_GROUP_BY_OPTIONS, vesselDatasets),
     [vesselDatasets]
   )
-  const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0]?.id as GroupBy)
+  const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0]?.id)
 
-  const filteredTemporalResolutionOptions: ChoiceOption[] = useMemo(
+  const filteredTemporalResolutionOptions = useMemo(
     () => getSupportedTemporalResolutions(start, end),
     [start, end]
   )
   const [temporalResolution, setTemporalResolution] = useState(
-    filteredTemporalResolutionOptions[0].id as TemporalResolution
+    filteredTemporalResolutionOptions[0].id
   )
 
   const onDownloadClick = async () => {
@@ -174,7 +174,7 @@ function DownloadActivityByVessel() {
             size="small"
             testId="report-format"
             activeOption={format}
-            onSelect={(option) => setFormat(option.id as Format)}
+            onSelect={(option) => setFormat(option.id as HeatmapDownloadFormat)}
           />
         </div>
         <div>
@@ -199,7 +199,11 @@ function DownloadActivityByVessel() {
         </div>
         <UserGuideLink section="downloadActivity" />
         <div className={styles.footer}>
-          {datasetsDownloadNotSupported.length > 0 && (
+          {!isDownloadReportSupported ? (
+            <p className={cx(styles.footerLabel, styles.error)}>
+              {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
+            </p>
+          ) : datasetsDownloadNotSupported.length > 0 ? (
             <p className={styles.footerLabel}>
               {t(
                 'download.datasetsNotAllowed',
@@ -212,8 +216,12 @@ function DownloadActivityByVessel() {
                 </Fragment>
               ))}
             </p>
+          ) : null}
+          {downloadError && (
+            <p className={cx(styles.footerLabel, styles.error)}>
+              {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
+            </p>
           )}
-
           <Button
             testId="download-activity-vessel-button"
             onClick={onDownloadClick}
@@ -224,15 +232,6 @@ function DownloadActivityByVessel() {
             {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
           </Button>
         </div>
-        {!isDownloadReportSupported ? (
-          <p className={cx(styles.footerLabel, styles.error)}>
-            {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
-          </p>
-        ) : downloadError ? (
-          <p className={cx(styles.footerLabel, styles.error)}>
-            {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
-          </p>
-        ) : null}
       </div>
       <DownloadActivityProductsBanner format={format} />
     </Fragment>
