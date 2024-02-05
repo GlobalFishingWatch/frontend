@@ -216,8 +216,15 @@ export const selectActiveEnvironmentalDataviews = createSelector(
   (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
 )
 
+export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
+  [selectActiveEnvironmentalDataviews],
+  (dataviews) => {
+    return dataviews.filter((dv) => dv.datasets?.every((ds) => ds.type === DatasetTypes.Fourwings))
+  }
+)
+
 export const selectActiveHeatmapDowloadDataviews = createSelector(
-  [selectActiveActivityAndDetectionsDataviews, selectActiveEnvironmentalDataviews],
+  [selectActiveActivityAndDetectionsDataviews, selectActiveHeatmapEnvironmentalDataviews],
   (activityAndDetectionsDataviews = [], environmentalDataviews = []) => {
     return [...activityAndDetectionsDataviews, ...environmentalDataviews]
   }
@@ -226,15 +233,12 @@ export const selectActiveHeatmapDowloadDataviews = createSelector(
 export const selectActiveHeatmapDowloadDataviewsByTab = createSelector(
   [
     selectActiveActivityAndDetectionsDataviews,
-    selectActiveEnvironmentalDataviews,
+    selectActiveHeatmapEnvironmentalDataviews,
     selectDownloadActiveTabId,
   ],
   (activityAndDetectionsDataviews = [], environmentalDataviews = [], downloadTabId) => {
     if (downloadTabId === HeatmapDownloadTab.Environment) {
-      const heatmapEnvironmentalDataviews = environmentalDataviews?.filter(
-        ({ config }) => config?.type === GeneratorType.HeatmapAnimated
-      )
-      return heatmapEnvironmentalDataviews
+      return environmentalDataviews
     }
     return activityAndDetectionsDataviews
   }
@@ -257,13 +261,6 @@ export const selectActiveHeatmapVesselDatasets = createSelector(
   }
 )
 
-export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
-  [selectActiveEnvironmentalDataviews],
-  (dataviews) => {
-    return dataviews.filter((dv) => dv.datasets?.every((ds) => ds.type === DatasetTypes.Fourwings))
-  }
-)
-
 export const selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry = createSelector(
   [selectActiveHeatmapEnvironmentalDataviews],
   (dataviews) => {
@@ -277,7 +274,7 @@ export const selectActiveTemporalgridDataviews: (
   [
     selectActiveActivityDataviews,
     selectActiveDetectionsDataviews,
-    selectActiveEnvironmentalDataviews,
+    selectActiveHeatmapEnvironmentalDataviews,
   ],
   (activityDataviews = [], detectionsDataviews = [], environmentalDataviews = []) => {
     return [...activityDataviews, ...detectionsDataviews, ...environmentalDataviews]

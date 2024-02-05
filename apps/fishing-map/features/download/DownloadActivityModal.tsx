@@ -14,7 +14,7 @@ import { selectDownloadActivityModalOpen } from 'features/download/download.sele
 import useMapInstance from 'features/map/map-context.hooks'
 import DownloadActivityEnvironment from 'features/download/DownloadActivityEnvironment'
 import {
-  selectActiveEnvironmentalDataviews,
+  selectActiveHeatmapEnvironmentalDataviews,
   selectActiveActivityAndDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import DownloadActivityByVessel from './DownloadActivityByVessel'
@@ -28,7 +28,7 @@ function DownloadActivityModal() {
   const { cleanFeatureState } = useFeatureState(useMapInstance())
   const activeTabId = useSelector(selectDownloadActiveTabId)
   const activityAndDetectionsDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
-  const environmentalDataviews = useSelector(selectActiveEnvironmentalDataviews)
+  const environmentalDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviews)
   const downloadModalOpen = useSelector(selectDownloadActivityModalOpen)
 
   useEffect(() => {
