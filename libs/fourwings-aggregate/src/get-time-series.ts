@@ -105,6 +105,7 @@ export const getTimeSeries = ({
   })
 
   const numValues = maxFrame - minFrame
+  console.log('🚀 ~ numValues:', numValues)
 
   const finalValues = new Array(numValues)
   for (let i = 0; i <= numValues; i++) {

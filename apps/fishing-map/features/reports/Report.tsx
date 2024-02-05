@@ -46,7 +46,10 @@ import {
   selectReportDatasetId,
 } from 'features/app/selectors/app.reports.selector'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { useSetTimeseries } from 'features/reports/reports-timeseries.hooks'
+import {
+  useComputeReportTimeSeries,
+  useSetTimeseries,
+} from 'features/reports/reports-timeseries.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
@@ -318,6 +321,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
 }
 
 export default function Report() {
+  useComputeReportTimeSeries()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const setTimeseries = useSetTimeseries()

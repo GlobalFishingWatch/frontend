@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
 import dynamic from 'next/dynamic'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
+import { useAtom } from 'jotai'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -30,7 +31,7 @@ import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
+import { hasMapTimeseriesAtom } from 'features/reports/reports-timeseries.hooks'
 import {
   useMapCursor,
   useMapMouseClick,
@@ -97,7 +98,7 @@ const MapWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const setMapReady = useSetRecoilState(mapReadyAtom)
-  const hasTimeseries = useRecoilValue(selectMapTimeseries)
+  const [hasTimeseries] = useAtom(hasMapTimeseriesAtom)
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const isMapInteractionDisabled = useSelector(selectIsMapDrawing)
 
