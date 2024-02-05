@@ -87,6 +87,9 @@ export const featuresToTimeseries = (
     const sourceNumSublayers = showTimeComparison ? 2 : sourceMetadata.numSublayers
     // TODO handle multiple timechunks
     const sourceActiveTimeChunk = pickActiveTimeChunk(sourceMetadata.timeChunks)
+    if (!sourceActiveTimeChunk) {
+      return []
+    }
     const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
     const sourceInterval = sourceMetadata.timeChunks.interval
     const { values: valuesContainedRaw } = getTimeSeries({

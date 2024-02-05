@@ -104,31 +104,32 @@ export const getTimeSeries = ({
     }
   })
 
+  let finalValues: TimeSeriesFrame[] = []
   const numValues = maxFrame - minFrame
-  console.log('🚀 ~ numValues:', numValues)
-
-  const finalValues = new Array(numValues)
-  for (let i = 0; i <= numValues; i++) {
-    const frame = minFrame + i
-    const frameValues = valuesByFrame[frame - quantizeOffset] ?? {
-      sublayersValues: new Array(numSublayers).fill(0),
-      numValues: 0,
-    }
-    let sublayersValues
-    if (frameValues) {
-      sublayersValues = frameValues.sublayersValues
-      if (aggregationOperation === AggregationOperation.Avg) {
-        sublayersValues = sublayersValues.map((sublayerValue) => {
-          if (sublayerValue === 0 || frameValues.numValues === 0) {
-            return 0
-          }
-          return sublayerValue / frameValues.numValues
-        })
+  if (numValues > 0) {
+    finalValues = new Array(numValues)
+    for (let i = 0; i <= numValues; i++) {
+      const frame = minFrame + i
+      const frameValues = valuesByFrame[frame - quantizeOffset] ?? {
+        sublayersValues: new Array(numSublayers).fill(0),
+        numValues: 0,
       }
-    }
-    finalValues[i] = {
-      frame,
-      ...sublayersValues,
+      let sublayersValues
+      if (frameValues) {
+        sublayersValues = frameValues.sublayersValues
+        if (aggregationOperation === AggregationOperation.Avg) {
+          sublayersValues = sublayersValues.map((sublayerValue) => {
+            if (sublayerValue === 0 || frameValues.numValues === 0) {
+              return 0
+            }
+            return sublayerValue / frameValues.numValues
+          })
+        }
+      }
+      finalValues[i] = {
+        frame,
+        ...sublayersValues,
+      } as TimeSeriesFrame
     }
   }
 

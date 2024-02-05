@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import {
   selectActiveDetectionsDataviews,
-  selectActiveEnvironmentalDataviews,
   selectActiveHeatmapEnvironmentalDataviews,
   selectActiveReportActivityDataviews,
   selectReportActiveCategories,
