@@ -378,7 +378,7 @@
     "gridded": "Grid aktivitas",
     "groupActivityBy": "Kelompok aktivitas berdasarkan properti kapal",
     "groupVesselsBy": "Kelompok kapal berdasarkan",
-    "heatmapLayers": "Download visible layers for this area",
+    "heatmapLayers": "Unduh lapisan yang terlihat untuk area ini",
     "heatmapLogin": "Register and login to download activity, detections or environment layer (free, 2 minutes)",
     "highResNotAvailable": "Area Anda terlalu besar",
     "mmsiNotSupported": "Dataset yang dipilih tidak mendukung pengelompokan berdasarkan MMSI",
