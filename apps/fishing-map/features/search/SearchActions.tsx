@@ -11,7 +11,7 @@ import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectActiveHeatmapDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   setVesselGroupConfirmationMode,
   setVesselGroupCurrentDataviewIds,
@@ -30,7 +30,7 @@ function SearchActions() {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const { dispatchQueryParams, dispatchLocation } = useLocationConnect()
-  const heatmapDataviews = useSelector(selectActiveHeatmapDataviews)
+  const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const vesselsSelected = useSelector(selectSelectedVessels)
 
   const onConfirmSelection = () => {
