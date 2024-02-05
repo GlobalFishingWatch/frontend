@@ -115,8 +115,8 @@ function DownloadActivityGridded() {
   const [spatialResolution, setSpatialResolution] = useState(filteredSpatialResolutionOptions[0].id)
 
   const filteredTemporalResolutionOptions = useMemo(
-    () => getSupportedTemporalResolutions(start, end),
-    [start, end]
+    () => getSupportedTemporalResolutions(dataviews, { start, end }),
+    [dataviews, start, end]
   )
   const [temporalResolution, setTemporalResolution] = useState(
     filteredTemporalResolutionOptions[0].id

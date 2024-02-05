@@ -115,6 +115,8 @@ export interface DatasetConfigurationUI {
   segmentId?: string | number
 }
 
+export type DatasetConfigurationInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
+
 export interface DatasetConfiguration {
   id?: string
   index?: string
@@ -136,7 +138,7 @@ export interface DatasetConfiguration {
   propertyToInclude?: string
   min?: number
   max?: number
-  intervals?: string[]
+  intervals?: DatasetConfigurationInterval[]
   disableInteraction?: boolean
   apiSupportedVersions?: ('v1' | 'v2' | 'v3')[]
   configurationUI?: DatasetConfigurationUI

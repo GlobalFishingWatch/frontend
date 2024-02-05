@@ -83,8 +83,8 @@ function DownloadActivityByVessel() {
   const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0]?.id)
 
   const filteredTemporalResolutionOptions = useMemo(
-    () => getSupportedTemporalResolutions(start, end),
-    [start, end]
+    () => getSupportedTemporalResolutions(dataviews, { start, end }),
+    [dataviews, start, end]
   )
   const [temporalResolution, setTemporalResolution] = useState(
     filteredTemporalResolutionOptions[0].id
