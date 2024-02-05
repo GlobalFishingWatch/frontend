@@ -1,8 +1,16 @@
 import { t } from 'i18next'
 import { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetConfigurationInterval,
+  DataviewCategory,
+} from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  DEFAULT_ENVIRONMENT_INTERVALS,
+  DEFAULT_HEATMAP_INTERVALS,
+} from '@globalfishingwatch/layer-composer'
 import { getUTCDateTime } from 'utils/dates'
 import { REPORT_DAYS_LIMIT } from 'data/config'
 import { getActiveDatasetsInDataview, getDatasetSchemaItem } from 'features/datasets/datasets.utils'
@@ -52,7 +60,15 @@ function hasDataviewWithIntervalSupported(
   return dataviews.every((dataview) => {
     const datasets = getActiveDatasetsInDataview(dataview)
     return datasets?.every((dataset) => {
-      const intervals = getDatasetConfigurationProperty({ dataset, property: 'intervals' })
+      const datasetIntervalsConfig = getDatasetConfigurationProperty({
+        dataset,
+        property: 'intervals',
+      })
+      const intervals = datasetIntervalsConfig?.length
+        ? datasetIntervalsConfig
+        : dataview.category === DataviewCategory.Environment
+          ? DEFAULT_ENVIRONMENT_INTERVALS
+          : DEFAULT_HEATMAP_INTERVALS
       return intervals.includes(interval) || intervals.includes(interval.toLowerCase() as any)
     })
   })
