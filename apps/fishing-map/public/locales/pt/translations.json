@@ -378,7 +378,7 @@
     "gridded": "Atividade por quadrantes",
     "groupActivityBy": "Agrupar atividade por",
     "groupVesselsBy": "Agrupar embarcações por",
-    "heatmapLayers": "Download visible layers for this area",
+    "heatmapLayers": "Baixar camadas para esta área",
     "heatmapLogin": "Register and login to download activity, detections or environment layer (free, 2 minutes)",
     "highResNotAvailable": "Sua área é muito grande",
     "mmsiNotSupported": "Os conjuntos de dados selecionados não suportam agrupamento por MMSI",
