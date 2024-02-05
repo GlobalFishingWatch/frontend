@@ -85,47 +85,50 @@ export const getChunksTimeseries = ({
             date: quantizeOffsetToDate(frameValues.frame, interval).getTime(),
           }
         })
-        if (aggregationOperation === AggregationOperation.Avg) {
-          const lastItem = finalValues[finalValues.length - 1]
-          const month = DateTime.fromMillis(lastItem.date, { zone: 'utc' })
-          const nextMonth = DateTime.fromMillis(lastItem.date, { zone: 'utc' }).plus({
-            [interval]: 1,
-          })
-          const millisOffset = nextMonth.diff(month).milliseconds
-          return finalValues.concat({
-            ...lastItem,
-            frame: lastItem.frame + 1,
-            date: lastItem.date + millisOffset,
-          })
-        }
-        // Replace the initial and the last date with the dataset extend instead of the interval
-        if (startDataTimestamps && startDataTimestamps?.length) {
-          startDataTimestamps.forEach((startDataTimestamp, index) => {
-            const closestStartIndex = finalValues.findIndex((v) => v.date >= startDataTimestamp) - 1
-            if (closestStartIndex >= 0) {
-              // Use the initial date as a new element with all values 0
-              const initialStartDate = finalValues[closestStartIndex].date
-              const startData = {
-                ...finalValues[closestStartIndex],
-                date: initialStartDate,
-                [index]: 0,
+        if (finalValues.length) {
+          if (aggregationOperation === AggregationOperation.Avg) {
+            const lastItem = finalValues[finalValues.length - 1]
+            const month = DateTime.fromMillis(lastItem.date, { zone: 'utc' })
+            const nextMonth = DateTime.fromMillis(lastItem.date, { zone: 'utc' }).plus({
+              [interval]: 1,
+            })
+            const millisOffset = nextMonth.diff(month).milliseconds
+            return finalValues.concat({
+              ...lastItem,
+              frame: lastItem.frame + 1,
+              date: lastItem.date + millisOffset,
+            })
+          }
+          // Replace the initial and the last date with the dataset extend instead of the interval
+          if (startDataTimestamps && startDataTimestamps?.length) {
+            startDataTimestamps.forEach((startDataTimestamp, index) => {
+              const closestStartIndex =
+                finalValues.findIndex((v) => v.date >= startDataTimestamp) - 1
+              if (closestStartIndex >= 0) {
+                // Use the initial date as a new element with all values 0
+                const initialStartDate = finalValues[closestStartIndex].date
+                const startData = {
+                  ...finalValues[closestStartIndex],
+                  date: initialStartDate,
+                  [index]: 0,
+                }
+                finalValues.splice(closestStartIndex, 0, startData)
+                // And replace the original first element with the dataset start extent
+                finalValues[closestStartIndex + 1].date = startDataTimestamp
               }
-              finalValues.splice(closestStartIndex, 0, startData)
-              // And replace the original first element with the dataset start extent
-              finalValues[closestStartIndex + 1].date = startDataTimestamp
-            }
-          })
-        }
-        if (endDataTimestamps && endDataTimestamps?.length) {
-          endDataTimestamps.forEach((endDataTimestamp) => {
-            const closestEndIndex = finalValues.findIndex((v) => v.date > endDataTimestamp)
-            if (closestEndIndex >= 0) {
-              finalValues.splice(closestEndIndex, 0, {
-                ...finalValues[closestEndIndex],
-                date: endDataTimestamp,
-              })
-            }
-          })
+            })
+          }
+          if (endDataTimestamps && endDataTimestamps?.length) {
+            endDataTimestamps.forEach((endDataTimestamp) => {
+              const closestEndIndex = finalValues.findIndex((v) => v.date > endDataTimestamp)
+              if (closestEndIndex >= 0) {
+                finalValues.splice(closestEndIndex, 0, {
+                  ...finalValues[closestEndIndex],
+                  date: endDataTimestamp,
+                })
+              }
+            })
+          }
         }
         return finalValues
       } else {
