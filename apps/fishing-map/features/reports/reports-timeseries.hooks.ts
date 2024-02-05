@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
+import memoizeOne from 'memoize-one'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
-import { atom, selector, useRecoilState, useSetRecoilState } from 'recoil'
+import { atom, useAtom } from 'jotai'
+// import { useAtomDevtools } from 'jotai-devtools'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
@@ -61,17 +63,19 @@ export interface ReportGraphProps {
   mode?: ReportGraphMode
 }
 
-export const mapTimeseriesAtom = atom<ReportGraphProps[] | undefined>({
-  key: 'mapTimeseriesState',
-  default: undefined,
-})
+export const mapTimeseriesAtom = atom([] as ReportGraphProps[] | undefined)
+if (process.env.NODE_ENV !== 'production') {
+  mapTimeseriesAtom.debugLabel = 'mapTimeseries'
+}
 
-export const selectMapTimeseries = selector({
-  key: 'mapTimeseriesStateLoaded',
-  get: ({ get }) => {
-    const timeseries = get(mapTimeseriesAtom)
-    return timeseries && timeseries.length > 0
-  },
+export const mapReportFeaturesAtom = atom([] as DataviewFeature[])
+if (process.env.NODE_ENV !== 'production') {
+  mapTimeseriesAtom.debugLabel = 'mapReportFeatures'
+}
+
+export const hasMapTimeseriesAtom = atom((get) => {
+  const timeseries = get(mapTimeseriesAtom)
+  return timeseries && timeseries.length > 0
 })
 
 export type DateTimeSeries = {
@@ -81,23 +85,48 @@ export type DateTimeSeries = {
 }[]
 
 export function useSetTimeseries() {
-  return useSetRecoilState(mapTimeseriesAtom)
+  return useAtom(mapTimeseriesAtom)[1]
 }
+
 const emptyArray: UrlDataviewInstance[] = []
-export const useFilteredTimeSeries = () => {
-  const [timeseries, setTimeseries] = useRecoilState(mapTimeseriesAtom)
+
+export const useReportFeaturesLoading = () => {
+  const areaInViewport = useReportAreaInViewport()
+  const reportFeatures = useAtom(mapReportFeaturesAtom)[0]
+  const reportFeaturesLoaded = areDataviewsFeatureLoaded(reportFeatures)
+  return areaInViewport && !reportFeaturesLoaded
+}
+
+export const useReportFeaturesError = () => {
+  const reportFeatures = useAtom(mapReportFeaturesAtom)[0]
+  return hasDataviewsFeatureError(reportFeatures)
+}
+
+const useReportFeatures = () => {
+  const [reportFeatures, setReportFeatures] = useAtom(mapReportFeaturesAtom)
+  const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
+  const areaInViewport = useReportAreaInViewport()
+  const activityFeatures = useMapDataviewFeatures(
+    areaInViewport ? currentCategoryDataviews : emptyArray
+  )
+
+  useEffect(() => {
+    setReportFeatures(activityFeatures)
+  }, [activityFeatures, setReportFeatures])
+
+  return reportFeatures
+}
+
+const useReportTimeseries = (reportFeatures: DataviewFeature[]) => {
+  const [timeseries, setTimeseries] = useAtom(mapTimeseriesAtom)
   const area = useSelector(selectReportArea)
+  const areaInViewport = useReportAreaInViewport()
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportCategory = useSelector(selectReportCategory)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const reportBufferHash = useSelector(selectReportBufferHash)
-  const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
-  const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
-  const areaInViewport = useReportAreaInViewport()
-  const activityFeatures = useMapDataviewFeatures(
-    areaInViewport ? currentCategoryDataviews : emptyArray
-  )
+  const reportFeaturesLoaded = areDataviewsFeatureLoaded(reportFeatures)
 
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {
@@ -148,27 +177,38 @@ export const useFilteredTimeSeries = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportGraphMode])
-  const activityFeaturesLoaded = areDataviewsFeatureLoaded(activityFeatures)
   useEffect(() => {
-    if (activityFeaturesLoaded && area?.geometry && areaInViewport) {
-      computeTimeseries(activityFeatures, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
+    if (reportFeaturesLoaded && area?.geometry && areaInViewport) {
+      computeTimeseries(reportFeatures, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityFeaturesLoaded, area?.geometry, areaInViewport, reportCategory, reportBufferHash])
+  }, [reportFeaturesLoaded, area?.geometry, areaInViewport, reportCategory, reportBufferHash])
 
+  return timeseries
+}
+
+// Run only once in Report.tsx parent component
+export const useComputeReportTimeSeries = () => {
+  const reportFeatures = useReportFeatures()
+  useReportTimeseries(reportFeatures)
+}
+
+const memoizedFilterTimeseriesByTimerange = memoizeOne(filterTimeseriesByTimerange)
+export const useReportFilteredTimeSeries = () => {
+  const [timeseries] = useAtom(mapTimeseriesAtom)
+  const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
+  const showTimeComparison = useSelector(selectShowTimeComparison)
   const layersTimeseriesFiltered = useMemo(() => {
+    if (!timeseries) {
+      return []
+    }
     if (showTimeComparison) {
       return removeTimeseriesPadding(timeseries)
     } else {
       if (timebarStart && timebarEnd && timeseries) {
-        return filterTimeseriesByTimerange(timeseries, timebarStart, timebarEnd)
+        return memoizedFilterTimeseriesByTimerange(timeseries, timebarStart, timebarEnd)
       }
     }
   }, [timeseries, showTimeComparison, timebarStart, timebarEnd])
-
-  return {
-    loading: areaInViewport && !activityFeaturesLoaded,
-    error: hasDataviewsFeatureError(activityFeatures),
-    layersTimeseriesFiltered,
-  }
+  return layersTimeseriesFiltered
 }

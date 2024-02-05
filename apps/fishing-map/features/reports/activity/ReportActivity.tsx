@@ -6,7 +6,8 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   getReportGraphMode,
   ReportGraphProps,
-  useFilteredTimeSeries,
+  useReportFeaturesLoading,
+  useReportFilteredTimeSeries,
 } from 'features/reports/reports-timeseries.hooks'
 import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
 import { ReportActivityGraph } from 'types'
@@ -52,7 +53,8 @@ export default function ReportActivity() {
     () => GRAPH_BY_TYPE[reportActivityGraph] as any,
     [reportActivityGraph]
   )
-  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
+  const loading = useReportFeaturesLoading()
+  const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportGraphMode = getReportGraphMode(reportActivityGraph)
   const isSameTimeseriesMode = layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
   const showSelectors = layersTimeseriesFiltered !== undefined

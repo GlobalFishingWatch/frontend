@@ -6,7 +6,10 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
-import { useFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks'
+import {
+  useReportFeaturesLoading,
+  useReportFilteredTimeSeries,
+} from 'features/reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -18,7 +21,8 @@ import styles from './ReportEnvironment.module.css'
 function ReportEnvironment() {
   const { t } = useTranslation()
   const timerange = useSelector(selectTimeRange)
-  const { loading, layersTimeseriesFiltered } = useFilteredTimeSeries()
+  const loading = useReportFeaturesLoading()
+  const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
 
   if (!environmentalDataviews?.length) return null
