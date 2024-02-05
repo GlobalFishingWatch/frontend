@@ -36,7 +36,6 @@ import { getSourcesSelectedInDataview } from 'features/workspace/activity/activi
 import { useAppDispatch } from 'features/app/app.hooks'
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { getSourceSwitchContentByLng } from 'features/welcome/SourceSwitch.content'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { AreaKeyId } from 'features/areas/areas.slice'
@@ -55,8 +54,7 @@ import {
 } from './download.utils'
 
 function DownloadActivityByVessel() {
-  const { t, i18n } = useTranslation()
-  const { disclaimer } = getSourceSwitchContentByLng(i18n.language)
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -234,12 +232,7 @@ function DownloadActivityByVessel() {
           <p className={cx(styles.footerLabel, styles.error)}>
             {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
           </p>
-        ) : (
-          <p
-            className={styles.disclaimerContainer}
-            dangerouslySetInnerHTML={{ __html: disclaimer }}
-          />
-        )}
+        ) : null}
       </div>
       <DownloadActivityProductsBanner format={format} />
     </Fragment>

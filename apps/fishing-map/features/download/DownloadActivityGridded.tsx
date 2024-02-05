@@ -40,7 +40,6 @@ import { selectDownloadActivityArea } from 'features/download/download.selectors
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { getSourceSwitchContentByLng } from 'features/welcome/SourceSwitch.content'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { AreaKeyId } from 'features/areas/areas.slice'
@@ -61,9 +60,8 @@ import {
   getSupportedTemporalResolutions,
 } from './download.utils'
 
-function DownloadActivityByVessel() {
-  const { t, i18n } = useTranslation()
-  const { disclaimer } = getSourceSwitchContentByLng(i18n.language)
+function DownloadActivityGridded() {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -301,16 +299,11 @@ function DownloadActivityByVessel() {
           <p className={cx(styles.footerLabel, styles.error)}>
             {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
           </p>
-        ) : (
-          <p
-            className={styles.disclaimerContainer}
-            dangerouslySetInnerHTML={{ __html: disclaimer }}
-          />
-        )}
+        ) : null}
       </div>
       <DownloadActivityProductsBanner format={format} />
     </Fragment>
   )
 }
 
-export default DownloadActivityByVessel
+export default DownloadActivityGridded
