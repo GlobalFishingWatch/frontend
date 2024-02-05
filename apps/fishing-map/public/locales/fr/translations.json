@@ -378,7 +378,7 @@
     "gridded": "Activité par grille",
     "groupActivityBy": "Grouper l'activité par type de navire",
     "groupVesselsBy": "Grouper les navires par",
-    "heatmapLayers": "Download visible layers for this area",
+    "heatmapLayers": "Télécharger les calques visibles pour cette zone",
     "heatmapLogin": "Register and login to download activity, detections or environment layer (free, 2 minutes)",
     "highResNotAvailable": "Votre zone est trop grande",
     "mmsiNotSupported": "Les données sélectionnées ne prennent pas en charge le regroupement par MMSI",
