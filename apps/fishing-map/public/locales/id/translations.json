@@ -1,11 +1,11 @@
 {
   "analysis": {
     "activityChange": "Perubahan aktivitas",
-    "around": "around",
+    "around": "sekitar",
     "beforeAfter": "sebelum/sesudah",
     "beforeAfterDate": "tanggal",
     "beforeAfterRange": "antara {{duration}} sebelum dan sesudah {{compareStart}}",
-    "buffer": "Buffer area",
+    "buffer": "Penyangga wilayah",
     "bufferedArea": "{{value}} {{unit}} buffered area",
     "bufferOperationLabel": "Analysis area",
     "change": "Ubah",
@@ -16,7 +16,7 @@
     "datasetsNotAllowed": "Kapal-kapal yang tidak termasuk dari sumber berikut:",
     "datasetsNotAllowedAll": "Tidak ada set data Anda yang diizinkan untuk digunakan dalam laporan",
     "deleteBuffer": "Delete current buffer",
-    "difference": "buffer only",
+    "difference": "hanya penyangga",
     "disclaimer": "Data yang ditunjukkan di atas harus diambil sebagai perkiraan.",
     "dissolve": "combined",
     "downloadVesselsList": "Unduh daftar (CSV)",
