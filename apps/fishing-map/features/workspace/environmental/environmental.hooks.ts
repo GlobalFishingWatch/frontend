@@ -100,7 +100,7 @@ export const useEnvironmentalBreaksUpdate = () => {
               let areaStats
               if (area?.geometry) {
                 const featuresInReportArea =
-                  area?.geometry && filterByPolygon([filteredFeatures], area?.geometry)[0]
+                  area?.geometry && filterByPolygon([filteredFeatures], area?.geometry, 'point')[0]
                 const allFeaturesInReportArea = [
                   ...(featuresInReportArea?.contained || []),
                   ...(featuresInReportArea?.overlapping || []),
