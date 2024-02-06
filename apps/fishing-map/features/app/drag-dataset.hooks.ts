@@ -22,7 +22,7 @@ export function useDatasetDrag() {
       e.preventDefault()
       e.stopPropagation()
       const datasetModalOpen = selectDatasetUploadModalOpen(store.getState() as RootState)
-      if (workspaceLocation && !datasetModalOpen) {
+      if (workspaceLocation && !datasetModalOpen && e.dataTransfer?.types?.includes('Files')) {
         dispatchDatasetModalOpen(true)
         dispatchDatasetModalConfig({ style: 'transparent' })
       }
