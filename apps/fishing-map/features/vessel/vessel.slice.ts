@@ -35,6 +35,8 @@ import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.u
 import { selectVesselId } from 'routes/routes.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
+export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
+
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum
   combinedSourcesInfo?: VesselCombinedSourcesInfo
@@ -104,7 +106,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         })
         if (guestUser) {
           // This changes the order of the query params to avoid the cache
-          datasetConfig.query?.reverse()
+          datasetConfig.query?.push(CACHE_FALSE_PARAM)
         }
         const url = resolveEndpoint(dataset, datasetConfig)
 
