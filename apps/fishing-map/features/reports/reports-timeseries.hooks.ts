@@ -139,27 +139,22 @@ const useReportTimeseries = (reportFeatures: DataviewFeature[]) => {
     (
       layersWithFeatures: DataviewFeature[],
       geometry: Polygon | MultiPolygon,
-      reportGraphMode: ReportGraphMode
+      graphMode: ReportGraphMode
     ) => {
-      const features = layersWithFeatures
-        .map(({ chunksFeatures }) =>
-          chunksFeatures
-            ? chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
-            : []
-        )
-        .filter((features) => features.length > 0)
+      const features = layersWithFeatures.map(({ chunksFeatures }) =>
+        chunksFeatures
+          ? chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
+          : []
+      )
+
       const filteredFeatures = filterByPolygon(features, geometry)
       const timeseries = featuresToTimeseries(filteredFeatures, {
         layersWithFeatures,
         showTimeComparison,
         compareDeltaMillis: compareDeltaMillis as number,
+        graphMode,
       })
-      setTimeseries(
-        timeseries.map((timeseries: any) => {
-          timeseries.mode = reportGraphMode
-          return timeseries
-        })
-      )
+      setTimeseries(timeseries)
     },
     [showTimeComparison, compareDeltaMillis, setTimeseries]
   )
