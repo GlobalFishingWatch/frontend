@@ -1,42 +1,42 @@
 {
   "bathymetry": {
     "name": "Batimetría",
-    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid. ",
+    "description": "La batimetría es la medición de la profundidad del agua y proporciona detalles de las características físicas del fondo del océano. Este conjunto de datos de cuadrícula batimétrica es un modelo global continuo que proporciona datos de elevación para el océano en metros en una cuadrícula con intervalos de 15 arco segundos. ",
     "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/"
   },
   "chlorophyl": {
     "name": "Concentración de clorofila-a",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Marine phytoplankton chemically fix carbon through photosynthesis by taking in dissolved carbon dioxide and producing oxygen. This dataset is comprised of biogeochemical parameters, including chlorophyll, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "description": "La clorofila a es el pigmento cosechador de luz que se encuentra en todas las plantas fotosintéticas. El fitoplancton marino fija el carbono químicamente a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo la clorofila, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "coral-reefs": {
-    "name": "Coral reefs",
-    "description": "Warm-water coral reefs are found in clear, shallow waters and are highly dynamic ecosystems that support the most biodiverse marine habitat. This dataset shows the global distribution of coral reefs in tropical and subtropical regions.",
+    "name": "Arrecifes de coral",
+    "description": "Los arrecifes de coral de aguas cálidas se encuentran en aguas claras y poco profundas y son ecosistemas altamente dinámicos que sustentan el hábitat marino con más biodiversidad. Este conjunto de datos muestra la distribución global de los arrecifes de coral en regiones tropicales y subtropicales.",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/1"
   },
   "eez": {
     "name": "ZEE",
-    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.",
+    "description": "Las zonas económicas exclusivas (EEZs) se extienden hasta 200 millas náuticas desde la costa de un país. Instituto Marino de Flandes (2019). Conjunto de datos geográficos de Límites Marinos: Límites Marinos y Zonas Económicas Exclusivas (200NM), versión 11.",
     "moreInfoLink": ""
   },
   "encounters": {
-    "name": "Encounter events (AIS)",
-    "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
+    "name": "Eventos de encuentro (AIS)",
+    "description": "Identificados de los datos AIS como lugares donde dos buques, un transportador y uno pesquero, estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media menor a 2 nudos mientras se encontraban a menos de 10 km de un anclaje costero.",
     "moreInfoLink": ""
   },
   "fao-major": {
     "name": "Zonas de pesca de la FAO",
-    "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas.",
+    "description": "Las principales zonas pesqueras de la FAO con fines estadísticos son áreas arbitrarias, cuyas fronteras se consultaron con las agencias internacionales de pesca. Las áreas principales de pesca, interiores y marinas, se enumeran a continuación con códigos de dos dígitos y sus nombres. Para tener acceso a los mapas y la descripción de las fronteras de cada área pesquera, haga clic en el artículo correspondiente en la lista a continuación o en el mapa que muestra las 19 áreas principales de pesca marina.",
     "moreInfoLink": ""
   },
   "fishing-effort": {
-    "name": "Apparent fishing effort",
-    "description": "To determine “apparent fishing effort”, Global Fishing Watch analyzes automatic identification system (AIS) and vessel monitoring system (VMS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a fishing detection algorithm based on changes in vessel speed and direction.",
+    "name": "Esfuerzo de pesca aparente",
+    "description": "Para determinar el \"esfuerzo de pesca aparente\", Global Fishing Watch analiza los datos del sistema de identificación automática (AIS) y del sistema de monitoreo de buques (VMS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un algoritmo de detección de pesca basado en los cambios de velocidad y dirección de los buques.",
     "moreInfoLink": ""
   },
   "graticules": {
     "name": "Latitud y longitud",
-    "description": "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map",
+    "description": "Rejillas o cuadrículas de latitud y longitud en intervalos de 1, 5, 10 y 30° dependiendo del nivel de acercamiento del mapa",
     "moreInfoLink": ""
   },
   "high-seas": {
@@ -45,103 +45,103 @@
     "moreInfoLink": ""
   },
   "mangroves": {
-    "name": "Mangroves",
-    "description": "Mangroves are trees or shrubs that can survive in saline environments and typically grow within the intertidal zone of tropical and subtropical regions. Considered blue carbon habitats, mangrove forests improve water quality, stabilize and protect coastlines, and provide shelter for birds, animals and marine organisms. This dataset uses earth observation satellite imagery to show the global distribution of mangroves.  ",
+    "name": "Manglares",
+    "description": "Los manglares son árboles o arbustos que pueden sobrevivir en ambientes salinos y normalmente crecen dentro de la zona intermareal de las regiones tropicales y subtropicales. Considerados hábitats de carbono azul, los bosques de manglares mejoran la calidad del agua, estabilizan y protegen las costas y proporcionan protección para aves, animales y organismos marinos. Este conjunto de datos utiliza imágenes satelitales de observación de la tierra para mostrar la distribución global de manglares.  ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/4"
   },
   "marine-ecoregions": {
-    "name": "Marine ecoregions",
-    "description": "Marine ecoregions are a biogeographic classification of the world's coastal and continental shelf waters. The dataset provides a geographic framework for a broad range of analyses relating to biodiversity in the marine environment.",
+    "name": "Eco-regiones marinas",
+    "description": "Las eco-regiones marinas son una clasificación biogeográfica de las aguas costeras y continentales del mundo. El conjunto de datos proporciona un marco geográfico para una amplia gama de análisis relacionados con la diversidad en el entorno marino.",
     "moreInfoLink": "https://geospatial.tnc.org/datasets/ed2be4cf8b7a451f84fd093c2e7660e3/explore"
   },
   "mpa": {
     "name": "MPAs (WDPA)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas.",
+    "description": "Las áreas marinas protegidas (MPAs) son áreas del océano reservadas para la conservación a largo plazo. Estas pueden tener diferentes niveles de protección y la gama de actividades permitidas o prohibidas dentro de sus límites varían considerablemente. Fuente: Base de datos mundial sobre áreas protegidas.",
     "moreInfoLink": ""
   },
   "nitrate": {
-    "name": "Nitrate concentration (NO3)",
-    "description": "Nitrate is required by marine plants for photosynthesis and is a major nutrient for the ocean's productivity, but high concentrations can be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including nitrate, over the global ocean displayed with a 1/4 degree horizontal resolution.   ",
+    "name": "Concentración de nitrato (NO3)",
+    "description": "El nitrato es requerido por las plantas marinas para su fotosíntesis y es un nutriente importante para la productividad del océano, pero las altas concentraciones pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el nitrato, sobre el océano global mostrado con una resolución horizontal de 1/4 grados.   ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "oxygen": {
-    "name": "Oxygen concentration (O2)",
-    "description": "Dissolved oxygen is the amount of oxygen present in water and is crucial for the growth and survival of marine organisms. Warming ocean temperatures can lead to an expansion of low oxygen zones, which can impact the distribution and abundance of marine life. This dataset is comprised of biogeochemical parameters, including dissolved oxygen, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "name": "Concentración de oxígeno (O2)",
+    "description": "El oxígeno disuelto es la cantidad de oxígeno presente en el agua y es crucial para el crecimiento y la supervivencia de los organismos marinos. El calentamiento de las aguas del océano pueden llevar a una expansión de zonas bajas en oxígeno, lo cual puede impactar la distribución y la abundancia de vida marina. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el oxígeno disuelto, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "ph": {
     "name": "pH",
-    "description": "The acidity of the ocean is measured by pH. Increased carbon dioxide absorption has lowered the ocean's pH, resulting in ocean acidification which can have wide-ranging impacts on marine organisms. This dataset is comprised of biogeochemical parameters, including pH, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "description": "La acidez del océano se mide con el pH. El aumento de la absorción de dióxido de carbono ha reducido el pH del océano, lo que ha dado lugar a la acidificación del océano, lo cual puede tener un impacto amplio en los organismos marinos. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el pH, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "phosphate": {
-    "name": "Phosphate concentration (PO4)",
-    "description": "Phosphate is a major nutrient for marine foodwebs and ocean productivity, but high concentrations can also be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including phosphate, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "name": "Concentración de fosfato (PO4)",
+    "description": "El fosfato es un nutriente importante para las redes alimentarias marinas y la productividad del océano, pero las altas concentraciones también pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el fosfato, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "presence": {
-    "name": "Vessel presence",
-    "description": "The presence layer analyzes automatic identification system (AIS) data collected from vessels that our research has identified. The presence is determined by taking positions transmitted by the vessel’s AIS and is displayed as a heatmap. ",
+    "name": "Presencia de buques",
+    "description": "La capa de presencia analiza los datos del sistema de identificación automática (AIS) recopilados de buques identificados por nuestra investigación. La presencia está determinada por la toma de posiciones transmitidas por el AIS del buque y se despliegan como un mapa del calor. ",
     "moreInfoLink": ""
   },
   "protectedseas": {
     "name": "MPAs (ProtectedSeas)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably.",
+    "description": "Las áreas marinas protegidas (MPAs) son áreas del océano reservadas para la conservación a largo plazo. Estas pueden tener diferentes niveles de protección y la gama de actividades permitidas o prohibidas dentro de sus límites varían considerablemente.",
     "moreInfoLink": ""
   },
   "rfmo": {
-    "name": "RFMOs",
-    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations.",
+    "name": "OROP",
+    "description": "Las Organizaciones Regionales de Ordenación de Pesca (OROP) son organizaciones internacionales formadas por países con un interés compartido en gestionar o conservar las poblaciones de peces en una región particular. Algunas OROP gestionan todas las poblaciones de peces que se encuentran en un área específica, mientras que otras se centran en especies altamente migratorias, en particular el atún. Las OROP en el mapa de Global Fishing Watch actualmente incluyen las cinco OROP atuneras.",
     "moreInfoLink": ""
   },
   "salinity": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is the measurement of salt concentration at the ocean surface. It determines the density of ocean water along with temperature and is a key parameter to estimate the ocean's influence on climate. This dataset salinity is displayed with a 1/12 degree horizontal resolution.",
+    "name": "Salinidad",
+    "description": "La salinidad de la superficie del mar es la medida de concentración de sal en la superficie del océano. Esta determina la densidad del agua del océano junto con la temperatura y es un parámetro clave para estimar la influencia de océano en el clima. Este conjunto de datos de salinidad se muestra con una resolución horizontal de 1/12 grados.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description"
   },
   "sar": {
-    "name": "Radar detections (SAR)",
-    "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. SAR is a satellite-based sensor that shoots microwaves to the Earth surface and measures the amplitude and phase of the signals that are reflected back from objects on the ground and water, known as backscatter.",
+    "name": "Detecciones de radar (SAR)",
+    "description": "Un radar de apertura sintética (SAR) puede detectar embarcaciones en el mar y estructuras en cualquier condición meteorológica. SAR es un sensor basado en satélite que dispara microondas a la superficie terrestre y mide la amplitud y la fase de las señales que se reflejan de los objetos sobre el suelo y el agua, lo cual se conoce como retrodispersión.",
     "moreInfoLink": ""
   },
   "seagrasses": {
-    "name": "Seagrasses",
-    "description": "Seagrasses are a productive ecosystem found globally in shallow marine areas where they provide food and habitat for organisms and play a key role in nutrient cycling. This dataset shows the global distribution of seagrasses. ",
+    "name": "Praderas marinas",
+    "description": "Las praderas marinas con un ecosistema productivo que se encuentra globalmente en áreas marinas poco profundas donde proporcionan alimentos y hábitat para organismos y juegan un papel clave en el ciclo de nutrientes. Este conjunto de datos muestra la distribución global de praderas marinas. ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/7"
   },
   "seamounts": {
-    "name": "Seamounts",
-    "description": "Seamounts are underwater mountains of volcanic origin that can generate an upwelling of nutrients, supporting increased biological productivity, species richness and distinct communities. This dataset of global seafloor geomorphic features includes seamounts, which are defined as peaks that rise over 1,000 m above the seafloor.",
+    "name": "Montes submarinos",
+    "description": "Los montes submarinos son montañas submarinas de origen volcánico que pueden generar una afluencia de nutrientes, apoyando una mayor productividad biológica, la riqueza de especies y comunidades distintas. Este conjunto de datos de características geomórficas de los suelos marinos en todo el mundo incluye a los montes submarinos, los cuales se definen como picos que se elevan a más de 1.000 m sobre el suelo marino.",
     "moreInfoLink": "https://bluehabitats.org/"
   },
   "sst": {
     "name": "Temperatura de la superficie del mar",
-    "description": "Sea surface temperature is the water temperature at or near the surface. It can impact weather and regional climates, and together with salinity can drive ocean circulation and large-scale movement of ocean currents globally. This dataset provides sea surface temperature at 1/20 degree horizontal grid resolution, using in-situ and satellite data from both infrared and microwave radiometers.",
+    "description": "La temperatura de la superficie del mar es la temperatura del agua en o cerca de la superficie. Puede afectar a la meteorología y a los climas regionales, y junto con la salinidad puede conducir a la circulación de los océanos y al movimiento a gran escala de las corrientes oceánicas a nivel global. Este conjunto de datos proporciona la temperatura de la superficie del mar a una resolución de cuadrícula horizontal de 1/20 grados, utilizando datos in situ y satelitales tanto de radiómetros infrarrojos como de microondas.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/description"
   },
   "sst-anomalies": {
-    "name": "Sea surface temperature anomalies",
-    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
+    "name": "Anomalías de temperatura de la superficie del mar",
+    "description": "La anomalía de temperatura de la superficie del mar es la diferencia entre la temperatura diaria de la superficie del mar y la media climatológica de 30 años. Las anomalías de temperatura de la superficie del mar pueden impactar la gama y los hábitats de las especies y pueden representar eventos transitorios o ciclos climáticos específicos como El Niño o La Niña que afectan a los patrones climáticos globales. Dentro de un mapa, un número positivo representa una temperatura más cálida que el promedio. ",
     "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1"
   },
   "sst-anomalies-max": {
-    "name": "Sea surface temperature anomalies (max)",
+    "name": "Anomalías de temperatura de la superficie del mar (máx.)",
     "description": "",
     "moreInfoLink": ""
   },
   "sst-anomalies-min": {
-    "name": "Sea surface temperature anomalies (min)",
+    "name": "Anomalías de temperatura de la superficie del mar (mín.)",
     "description": "",
     "moreInfoLink": ""
   },
   "thgt": {
-    "name": "Wave height",
-    "description": "Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.",
+    "name": "Altura de ola",
+    "description": "La altura de ola es la distancia vertical desde el valle (abajo) hasta la cresta (arriba) de una ola sobre la superficie del mar. Este conjunto de datos utiliza la altura de ola significante, la cual es el promedio del tercio más alto de todas las alturas de ola durante un período de muestra determinado.",
     "moreInfoLink": "https://www.pacioos.hawaii.edu/waves/model-global/#about"
   },
   "viirs": {
     "name": "Detección de luz nocturna",
-    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.",
+    "description": "La capa de detección de luces nocturnas de buques, conocida como suite de radiómetro de imagen infrarroja visible o VIIRS, muestra las embarcaciones en el mar que los satélites han detectado por la luz que emiten por la noche. Aunque no se asocia exclusivamente con los buques de pesca, es probable que esta capa de actividad muestre buques asociados con actividades como la pesca de calamar, la cual utiliza luces brillantes y se realiza por la noche.",
     "moreInfoLink": ""
   }
 }
