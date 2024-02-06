@@ -21,7 +21,7 @@
   },
   "encounters": {
     "name": "Eventos de encuentro (AIS)",
-    "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
+    "description": "Identificados de los datos AIS como lugares donde dos buques, un transportador y uno pesquero, estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media menor a 2 nudos mientras se encontraban a menos de 10 km de un anclaje costero.",
     "moreInfoLink": ""
   },
   "fao-major": {
