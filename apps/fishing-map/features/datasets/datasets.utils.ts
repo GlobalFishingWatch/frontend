@@ -20,8 +20,6 @@ import {
   DatasetSchemaItem,
   IdentityVessel,
   DatasetSchemaItemEnum,
-  UserPermissionType,
-  UserPermissionValue,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -610,6 +608,9 @@ export type SchemaFieldSelection = {
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
 
 export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
+  if (dataview.category === DataviewCategory.User) {
+    return dataview.datasets
+  }
   return dataview.config?.datasets
     ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
     : dataview?.datasets
