@@ -1,6 +1,7 @@
 import {
   getRealValues,
   getTimeSeries,
+  TimeSeries,
   TimeSeriesFrame,
 } from '@globalfishingwatch/fourwings-aggregate'
 import {
@@ -117,18 +118,22 @@ export const featuresToTimeseries = (
       compareDeltaMillis
     )
 
-    const featuresContainedAndOverlapping = [
-      ...(filteredFeature.contained || []),
-      ...(filteredFeature.overlapping || []),
-    ]
-    const { values: valuesContainedAndOverlappingRaw } = getTimeSeries({
-      features: featuresContainedAndOverlapping as any,
-      numSublayers: sourceNumSublayers,
-      quantizeOffset: sourceQuantizeOffset,
-      aggregationOperation: sourceMetadata.aggregationOperation,
-      minVisibleValue: sourceMetadata.minVisibleValue,
-      maxVisibleValue: sourceMetadata.minVisibleValue,
-    })
+    const featuresContainedAndOverlapping =
+      filteredFeature.overlapping.length > 0
+        ? [...(filteredFeature.contained || []), ...(filteredFeature.overlapping || [])]
+        : []
+
+    let valuesContainedAndOverlappingRaw: TimeSeries['values'] = []
+    if (featuresContainedAndOverlapping.length > 0) {
+      valuesContainedAndOverlappingRaw = getTimeSeries({
+        features: featuresContainedAndOverlapping as any,
+        numSublayers: sourceNumSublayers,
+        quantizeOffset: sourceQuantizeOffset,
+        aggregationOperation: sourceMetadata.aggregationOperation,
+        minVisibleValue: sourceMetadata.minVisibleValue,
+        maxVisibleValue: sourceMetadata.minVisibleValue,
+      }).values
+    }
 
     const valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(
       valuesContainedAndOverlappingRaw,
@@ -138,18 +143,22 @@ export const featuresToTimeseries = (
 
     featureToTimeseries.interval = sourceInterval
     featureToTimeseries.sublayers = sourceMetadata.sublayers as any
-    featureToTimeseries.timeseries = valuesContainedAndOverlapping.map(
-      ({ values, date, compareDate }) => {
-        const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
-        return {
-          date,
-          compareDate,
-          // TODO take into account multiplier when calling getRealValue
-          min: minValues ? getRealValues(minValues) : new Array(values.length).fill(0),
-          max: getRealValues(values),
-        } as ComparisonGraphData
-      }
-    )
+    featureToTimeseries.timeseries = valuesContained.map(({ values, date, compareDate }) => {
+      const maxValues = valuesContainedAndOverlapping.find((overlap) => overlap.date === date)
+        ?.values
+      const minValues = getRealValues(values)
+      return {
+        date,
+        compareDate,
+        // TODO take into account multiplier when calling getRealValue
+        min: minValues,
+        max: maxValues
+          ? getRealValues(maxValues)
+          : valuesContainedAndOverlapping.length > 0
+            ? new Array(values.length).fill(0)
+            : minValues,
+      } as ComparisonGraphData
+    })
     return featureToTimeseries
   })
 }
