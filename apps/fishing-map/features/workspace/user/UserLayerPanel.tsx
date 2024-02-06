@@ -182,7 +182,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
           TitleComponent
         )}
         <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
-          {layerActive && (
+          {layerActive && isUserLayer && (
             <IconButton
               icon="edit"
               size="small"
