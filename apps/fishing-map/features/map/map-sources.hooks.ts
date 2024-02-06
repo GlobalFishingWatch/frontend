@@ -206,7 +206,13 @@ function getGeneratorsMetadataChangeKey(
             ])
             .join('|'),
         ].join('-')
-        return [metadata.sourceLayer, timeChunks, metadata.visibleSublayers].join('_')
+        return [
+          metadata.sourceLayer,
+          timeChunks,
+          metadata.visibleSublayers,
+          metadata.minVisibleValue,
+          metadata.minVisibleValue,
+        ].join('_')
       }
       return []
     })

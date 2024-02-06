@@ -14,15 +14,12 @@ import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfis
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
+import { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
 import styles from './LayerFilters.module.css'
 
 type LayerSchemaFilterProps = {
   schemaFilter: SchemaFilter
-  onSelect: (
-    filterKey: string,
-    selection: number | MultiSelectOption | MultiSelectOption[],
-    singleValue?: boolean
-  ) => void
+  onSelect: (args: OnSelectFilterArgs) => void
   onSelectOperation: (filterKey: string, filterOperator: FilterOperator) => void
   onIsOpenChange?: (open: boolean) => void
   onRemove: (filterKey: string, selection: MultiSelectOption[]) => void
@@ -163,8 +160,8 @@ function LayerSchemaFilter({
       if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
         onClean(id)
       } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
-        const value = getValueByUnit(rangeSelected, { unit, transformDirection: 'out' })
-        onSelect(id, value, true)
+        const selection = getValueByUnit(rangeSelected, { unit, transformDirection: 'out' })
+        onSelect({ filterKey: id, selection, singleValue: true })
       } else {
         const selection = rangeSelected.map((range: number) => ({
           // This id ideally would be a number but as the url parser always consider number as arrays
@@ -172,7 +169,7 @@ function LayerSchemaFilter({
           id: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
           label: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
         }))
-        onSelect(id, selection)
+        onSelect({ filterKey: id, selection })
       }
     },
     [id, onClean, onSelect, schemaFilter, unit]
@@ -229,7 +226,7 @@ function LayerSchemaFilter({
         containerClassName={cx(styles.multiSelect, {
           [styles.experimental]: EXPERIMENTAL_FILTERS.includes(id),
         })}
-        onSelect={(selection) => onSelect(id, [selection])}
+        onSelect={(selection) => onSelect({ filterKey: id, selection: [selection] })}
         onRemove={() => onRemove(id, [])}
         onCleanClick={() => onClean(id)}
       />
@@ -263,7 +260,7 @@ function LayerSchemaFilter({
             [styles.experimental]: EXPERIMENTAL_FILTERS.includes(id),
           })}
           labelContainerClassName={styles.labelContainer}
-          onSelect={(selection) => onSelect(id, selection, true)}
+          onSelect={(selection) => onSelect({ filterKey: id, selection, singleValue: true })}
           onCleanClick={() => onClean(id)}
         />
       ) : (
@@ -281,7 +278,7 @@ function LayerSchemaFilter({
           })}
           options={options}
           selectedOptions={optionsSelected}
-          onSelect={(selection) => onSelect(id, selection)}
+          onSelect={(selection) => onSelect({ filterKey: id, selection })}
           labelContainerClassName={styles.labelContainer}
           onRemove={(selection, rest) => onRemove(id, rest)}
           onIsOpenChange={onIsOpenChange}
