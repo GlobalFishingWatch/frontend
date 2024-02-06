@@ -126,6 +126,8 @@ export const featuresToTimeseries = (
       numSublayers: sourceNumSublayers,
       quantizeOffset: sourceQuantizeOffset,
       aggregationOperation: sourceMetadata.aggregationOperation,
+      minVisibleValue: sourceMetadata.minVisibleValue,
+      maxVisibleValue: sourceMetadata.minVisibleValue,
     })
 
     const valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(
