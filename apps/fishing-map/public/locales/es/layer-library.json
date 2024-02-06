@@ -6,7 +6,7 @@
   },
   "chlorophyl": {
     "name": "Concentración de clorofila-a",
-    "description": "La clorofila a es el pigmento cosechador de luz que se encuentra en todas las plantas fotosintéticas. El fitoplancton marino fija el carbono químicamente a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo la clorofila, sobre el océano global mostrado con una resolución horizontal de 1/4°. ",
+    "description": "La clorofila a es el pigmento cosechador de luz que se encuentra en todas las plantas fotosintéticas. El fitoplancton marino fija el carbono químicamente a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo la clorofila, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "coral-reefs": {
@@ -61,22 +61,22 @@
   },
   "nitrate": {
     "name": "Concentración de nitrato (NO3)",
-    "description": "El nitrato es requerido por las plantas marinas para su fotosíntesis y es un nutriente importante para la productividad del océano, pero las altas concentraciones pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el nitrato, sobre el océano global mostrado con una resolución horizontal de 1/4°.   ",
+    "description": "El nitrato es requerido por las plantas marinas para su fotosíntesis y es un nutriente importante para la productividad del océano, pero las altas concentraciones pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el nitrato, sobre el océano global mostrado con una resolución horizontal de 1/4 grados.   ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "oxygen": {
     "name": "Concentración de oxígeno (O2)",
-    "description": "El oxígeno disuelto es la cantidad de oxígeno presente en el agua y es crucial para el crecimiento y la supervivencia de los organismos marinos. El calentamiento de las aguas del océano pueden llevar a una expansión de zonas bajas en oxígeno, lo cual puede impactar la distribución y la abundancia de vida marina. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el oxígeno disuelto, sobre el océano global mostrado con una resolución horizontal de 1/4°. ",
+    "description": "El oxígeno disuelto es la cantidad de oxígeno presente en el agua y es crucial para el crecimiento y la supervivencia de los organismos marinos. El calentamiento de las aguas del océano pueden llevar a una expansión de zonas bajas en oxígeno, lo cual puede impactar la distribución y la abundancia de vida marina. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el oxígeno disuelto, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "ph": {
     "name": "pH",
-    "description": "La acidez del océano se mide con el pH. El aumento de la absorción de dióxido de carbono ha reducido el pH del océano, lo que ha dado lugar a la acidificación del océano, lo cual puede tener un impacto amplio en los organismos marinos. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el pH, sobre el océano global mostrado con una resolución horizontal de 1/4°. ",
+    "description": "La acidez del océano se mide con el pH. El aumento de la absorción de dióxido de carbono ha reducido el pH del océano, lo que ha dado lugar a la acidificación del océano, lo cual puede tener un impacto amplio en los organismos marinos. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el pH, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "phosphate": {
     "name": "Concentración de fosfato (PO4)",
-    "description": "El fosfato es un nutriente importante para las redes alimentarias marinas y la productividad del océano, pero las altas concentraciones también pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el fosfato, sobre el océano global mostrado con una resolución horizontal de 1/4°. ",
+    "description": "El fosfato es un nutriente importante para las redes alimentarias marinas y la productividad del océano, pero las altas concentraciones también pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el fosfato, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "presence": {
@@ -90,58 +90,58 @@
     "moreInfoLink": ""
   },
   "rfmo": {
-    "name": "RFMOs",
-    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations.",
+    "name": "OROP",
+    "description": "Las Organizaciones Regionales de Ordenación de Pesca (OROP) son organizaciones internacionales formadas por países con un interés compartido en gestionar o conservar las poblaciones de peces en una región particular. Algunas OROP gestionan todas las poblaciones de peces que se encuentran en un área específica, mientras que otras se centran en especies altamente migratorias, en particular el atún. Las OROP en el mapa de Global Fishing Watch actualmente incluyen las cinco OROP atuneras.",
     "moreInfoLink": ""
   },
   "salinity": {
     "name": "Salinidad",
-    "description": "La salinidad de la superficie del mar es la medida de concentración de sal en la superficie del océano. Esta determina la densidad del agua del océano junto con la temperatura y es un parámetro clave para estimar la influencia de océano en el clima. Este conjunto de datos de salinidad se muestra con una resolución horizontal de 1/12°.",
+    "description": "La salinidad de la superficie del mar es la medida de concentración de sal en la superficie del océano. Esta determina la densidad del agua del océano junto con la temperatura y es un parámetro clave para estimar la influencia de océano en el clima. Este conjunto de datos de salinidad se muestra con una resolución horizontal de 1/12 grados.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description"
   },
   "sar": {
     "name": "Detecciones de radar (SAR)",
-    "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. SAR is a satellite-based sensor that shoots microwaves to the Earth surface and measures the amplitude and phase of the signals that are reflected back from objects on the ground and water, known as backscatter.",
+    "description": "Un radar de apertura sintética (SAR) puede detectar embarcaciones en el mar y estructuras en cualquier condición meteorológica. SAR es un sensor basado en satélite que dispara microondas a la superficie terrestre y mide la amplitud y la fase de las señales que se reflejan de los objetos sobre el suelo y el agua, lo cual se conoce como retrodispersión.",
     "moreInfoLink": ""
   },
   "seagrasses": {
-    "name": "Seagrasses",
-    "description": "Seagrasses are a productive ecosystem found globally in shallow marine areas where they provide food and habitat for organisms and play a key role in nutrient cycling. This dataset shows the global distribution of seagrasses. ",
+    "name": "Praderas marinas",
+    "description": "Las praderas marinas con un ecosistema productivo que se encuentra globalmente en áreas marinas poco profundas donde proporcionan alimentos y hábitat para organismos y juegan un papel clave en el ciclo de nutrientes. Este conjunto de datos muestra la distribución global de praderas marinas. ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/7"
   },
   "seamounts": {
-    "name": "Seamounts",
-    "description": "Seamounts are underwater mountains of volcanic origin that can generate an upwelling of nutrients, supporting increased biological productivity, species richness and distinct communities. This dataset of global seafloor geomorphic features includes seamounts, which are defined as peaks that rise over 1,000 m above the seafloor.",
+    "name": "Montes submarinos",
+    "description": "Los montes submarinos son montañas submarinas de origen volcánico que pueden generar una afluencia de nutrientes, apoyando una mayor productividad biológica, la riqueza de especies y comunidades distintas. Este conjunto de datos de características geomórficas de los suelos marinos en todo el mundo incluye a los montes submarinos, los cuales se definen como picos que se elevan a más de 1.000 m sobre el suelo marino.",
     "moreInfoLink": "https://bluehabitats.org/"
   },
   "sst": {
     "name": "Temperatura de la superficie del mar",
-    "description": "Sea surface temperature is the water temperature at or near the surface. It can impact weather and regional climates, and together with salinity can drive ocean circulation and large-scale movement of ocean currents globally. This dataset provides sea surface temperature at 1/20 degree horizontal grid resolution, using in-situ and satellite data from both infrared and microwave radiometers.",
+    "description": "La temperatura de la superficie del mar es la temperatura del agua en o cerca de la superficie. Puede afectar a la meteorología y a los climas regionales, y junto con la salinidad puede conducir a la circulación de los océanos y al movimiento a gran escala de las corrientes oceánicas a nivel global. Este conjunto de datos proporciona la temperatura de la superficie del mar a una resolución de cuadrícula horizontal de 1/20 grados, utilizando datos in situ y satelitales tanto de radiómetros infrarrojos como de microondas.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/description"
   },
   "sst-anomalies": {
-    "name": "Sea surface temperature anomalies",
-    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
+    "name": "Anomalías de temperatura de la superficie del mar",
+    "description": "La anomalía de temperatura de la superficie del mar es la diferencia entre la temperatura diaria de la superficie del mar y la media climatológica de 30 años. Las anomalías de temperatura de la superficie del mar pueden impactar la gama y los hábitats de las especies y pueden representar eventos transitorios o ciclos climáticos específicos como El Niño o La Niña que afectan a los patrones climáticos globales. Dentro de un mapa, un número positivo representa una temperatura más cálida que el promedio. ",
     "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1"
   },
   "sst-anomalies-max": {
-    "name": "Sea surface temperature anomalies (max)",
+    "name": "Anomalías de temperatura de la superficie del mar (máx.)",
     "description": "",
     "moreInfoLink": ""
   },
   "sst-anomalies-min": {
-    "name": "Sea surface temperature anomalies (min)",
+    "name": "Anomalías de temperatura de la superficie del mar (mín.)",
     "description": "",
     "moreInfoLink": ""
   },
   "thgt": {
-    "name": "Wave height",
-    "description": "Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.",
+    "name": "Altura de ola",
+    "description": "La altura de ola es la distancia vertical desde el valle (abajo) hasta la cresta (arriba) de una ola sobre la superficie del mar. Este conjunto de datos utiliza la altura de ola significante, la cual es el promedio del tercio más alto de todas las alturas de ola durante un período de muestra determinado.",
     "moreInfoLink": "https://www.pacioos.hawaii.edu/waves/model-global/#about"
   },
   "viirs": {
     "name": "Detección de luz nocturna",
-    "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.",
+    "description": "La capa de detección de luces nocturnas de buques, conocida como suite de radiómetro de imagen infrarroja visible o VIIRS, muestra las embarcaciones en el mar que los satélites han detectado por la luz que emiten por la noche. Aunque no se asocia exclusivamente con los buques de pesca, es probable que esta capa de actividad muestre buques asociados con actividades como la pesca de calamar, la cual utiliza luces brillantes y se realiza por la noche.",
     "moreInfoLink": ""
   }
 }
