@@ -1,3 +1,5 @@
+import { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
+
 export type BBox = [number, number, number, number]
 
 export type SegmentColumns = {
@@ -16,4 +18,5 @@ export type PointColumns = {
   startTime?: string | number
   endTime?: string | number
   id?: string | number
+  schema: Record<string, DatasetSchema | DatasetSchemaItem> | undefined
 }

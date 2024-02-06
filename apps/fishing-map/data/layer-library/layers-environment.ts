@@ -159,22 +159,21 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
       },
     ],
   },
-
-  {
-    id: 'sst-anomalies',
-    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-mean.jpg`,
-    config: {
-      color: '#FFAA0D',
-      colorRamp: 'orange',
-    },
-    datasetsConfig: [
-      {
-        ...heatmapDatasetConfig,
-        datasetId: 'public-global-sst-anomalies:v20231213',
-      },
-    ],
-  },
+  // {
+  //   id: 'sst-anomalies',
+  //   dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+  //   previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-mean.jpg`,
+  //   config: {
+  //     color: '#FFAA0D',
+  //     colorRamp: 'orange',
+  //   },
+  //   datasetsConfig: [
+  //     {
+  //       ...heatmapDatasetConfig,
+  //       datasetId: 'public-global-sst-anomalies:v20231213',
+  //     },
+  //   ],
+  // },
   // {
   //   id: 'sst-anomalies-min',
   //   dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,

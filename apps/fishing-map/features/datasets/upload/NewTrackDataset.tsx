@@ -159,10 +159,8 @@ function NewTrackDataset({
     if (datasetMetadata) {
       const config = getDatasetConfiguration(datasetMetadata)
       if (sourceData) {
-        if (!config?.latitude || !config?.longitude || !config?.timestamp) {
-          const fields = ['latitude', 'longitude', 'timestamp'].map((f) =>
-            t(`common.${f}` as any, f)
-          )
+        if (!config?.latitude || !config?.longitude) {
+          const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
           error = t('dataset.requiredFields', {
             fields,
             defaultValue: `Required fields ${fields}`,

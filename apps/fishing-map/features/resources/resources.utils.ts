@@ -14,14 +14,26 @@ import {
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
+import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.slice'
 
 type ThinningConfigParam = { zoom: number; config: ThinningConfig }
 
-export const infoDatasetConfigsCallback: GetDatasetConfigCallback = ([info]) => {
-  // Clean resources when mandatory vesselId is missing
-  // needed for vessels with no info datasets (zebraX)
-  const vesselData = hasDatasetConfigVesselData(info)
-  return vesselData ? [info] : []
+export const infoDatasetConfigsCallback = (guestUser: boolean): GetDatasetConfigCallback => {
+  return ([info]: DataviewDatasetConfig[]): DataviewDatasetConfig[] => {
+    const vesselData = hasDatasetConfigVesselData(info)
+    // Clean resources when mandatory vesselId is missing
+    // needed for vessels with no info datasets (zebraX)
+    if (!vesselData) {
+      return []
+    }
+    if (guestUser) {
+      if (!info.query) {
+        info.query = []
+      }
+      info.query.push(CACHE_FALSE_PARAM)
+    }
+    return [info]
+  }
 }
 
 export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) => {
