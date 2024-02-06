@@ -101,11 +101,14 @@ export const featuresToTimeseries = (
     const sourceNumSublayers = showTimeComparison ? 2 : sourceMetadata.numSublayers
     const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
     const sourceInterval = sourceMetadata.timeChunks.interval
+
     const { values: valuesContainedRaw } = getTimeSeries({
       features: (filteredFeature.contained as any) || ([] as any),
       numSublayers: sourceNumSublayers,
       quantizeOffset: sourceQuantizeOffset,
       aggregationOperation: sourceMetadata.aggregationOperation,
+      minVisibleValue: sourceMetadata.minVisibleValue,
+      maxVisibleValue: sourceMetadata.minVisibleValue,
     })
 
     const valuesContained = frameTimeseriesToDateTimeseries(

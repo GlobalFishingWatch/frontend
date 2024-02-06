@@ -28,6 +28,7 @@ const filterVisibleValues = (
   rawData: number[],
   config: DataviewConfig<GeneratorType> | undefined
 ) => {
+  if (!config?.minVisibleValue && !config?.maxVisibleValue) return rawData
   return rawData.filter((d) => {
     const matchesMin = config?.minVisibleValue !== undefined ? d >= config?.minVisibleValue : true
     const matchesMax = config?.maxVisibleValue !== undefined ? d <= config?.maxVisibleValue : true
