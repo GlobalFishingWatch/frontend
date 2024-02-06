@@ -26,7 +26,7 @@
   },
   "fao-major": {
     "name": "Zonas de pesca de la FAO",
-    "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas.",
+    "description": "Las principales zonas pesqueras de la FAO con fines estadísticos son áreas arbitrarias, cuyas fronteras se consultaron con las agencias internacionales de pesca. Las áreas principales de pesca, interiores y marinas, se enumeran a continuación con códigos de dos dígitos y sus nombres. Para tener acceso a los mapas y la descripción de las fronteras de cada área pesquera, haga clic en el artículo correspondiente en la lista a continuación o en el mapa que muestra las 19 áreas principales de pesca marina.",
     "moreInfoLink": ""
   },
   "fishing-effort": {
@@ -66,27 +66,27 @@
   },
   "oxygen": {
     "name": "Concentración de oxígeno (O2)",
-    "description": "Dissolved oxygen is the amount of oxygen present in water and is crucial for the growth and survival of marine organisms. Warming ocean temperatures can lead to an expansion of low oxygen zones, which can impact the distribution and abundance of marine life. This dataset is comprised of biogeochemical parameters, including dissolved oxygen, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "description": "El oxígeno disuelto es la cantidad de oxígeno presente en el agua y es crucial para el crecimiento y la supervivencia de los organismos marinos. El calentamiento de las aguas del océano pueden llevar a una expansión de zonas bajas en oxígeno, lo cual puede impactar la distribución y la abundancia de vida marina. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el oxígeno disuelto, sobre el océano global mostrado con una resolución horizontal de 1/4°. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "ph": {
     "name": "pH",
-    "description": "The acidity of the ocean is measured by pH. Increased carbon dioxide absorption has lowered the ocean's pH, resulting in ocean acidification which can have wide-ranging impacts on marine organisms. This dataset is comprised of biogeochemical parameters, including pH, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "description": "La acidez del océano se mide con el pH. El aumento de la absorción de dióxido de carbono ha reducido el pH del océano, lo que ha dado lugar a la acidificación del océano, lo cual puede tener un impacto amplio en los organismos marinos. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el pH, sobre el océano global mostrado con una resolución horizontal de 1/4°. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "phosphate": {
-    "name": "Phosphate concentration (PO4)",
-    "description": "Phosphate is a major nutrient for marine foodwebs and ocean productivity, but high concentrations can also be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including phosphate, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
+    "name": "Concentración de fosfato (PO4)",
+    "description": "El fosfato es un nutriente importante para las redes alimentarias marinas y la productividad del océano, pero las altas concentraciones también pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el fosfato, sobre el océano global mostrado con una resolución horizontal de 1/4°. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "presence": {
-    "name": "Vessel presence",
-    "description": "The presence layer analyzes automatic identification system (AIS) data collected from vessels that our research has identified. The presence is determined by taking positions transmitted by the vessel’s AIS and is displayed as a heatmap. ",
+    "name": "Presencia de buques",
+    "description": "La capa de presencia analiza los datos del sistema de identificación automática (AIS) recopilados de buques identificados por nuestra investigación. La presencia está determinada por la toma de posiciones transmitidas por el AIS del buque y se despliegan como un mapa del calor. ",
     "moreInfoLink": ""
   },
   "protectedseas": {
     "name": "MPAs (ProtectedSeas)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably.",
+    "description": "Las áreas marinas protegidas (MPAs) son áreas del océano reservadas para la conservación a largo plazo. Estas pueden tener diferentes niveles de protección y la gama de actividades permitidas o prohibidas dentro de sus límites varían considerablemente.",
     "moreInfoLink": ""
   },
   "rfmo": {
@@ -95,12 +95,12 @@
     "moreInfoLink": ""
   },
   "salinity": {
-    "name": "Salinity",
-    "description": "Sea surface salinity is the measurement of salt concentration at the ocean surface. It determines the density of ocean water along with temperature and is a key parameter to estimate the ocean's influence on climate. This dataset salinity is displayed with a 1/12 degree horizontal resolution.",
+    "name": "Salinidad",
+    "description": "La salinidad de la superficie del mar es la medida de concentración de sal en la superficie del océano. Esta determina la densidad del agua del océano junto con la temperatura y es un parámetro clave para estimar la influencia de océano en el clima. Este conjunto de datos de salinidad se muestra con una resolución horizontal de 1/12°.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description"
   },
   "sar": {
-    "name": "Radar detections (SAR)",
+    "name": "Detecciones de radar (SAR)",
     "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. SAR is a satellite-based sensor that shoots microwaves to the Earth surface and measures the amplitude and phase of the signals that are reflected back from objects on the ground and water, known as backscatter.",
     "moreInfoLink": ""
   },
