@@ -10,7 +10,7 @@ const DatasetFieldLabel = ({
   return (
     <span>
       <label style={{ display: 'inline', marginRight: 'var(--space-XS)' }}>
-        {fieldSchema.type === 'range' ? '123' : 'ABC'}
+        {fieldSchema.type === 'range' || fieldSchema.type === 'coordinate' ? '123' : 'ABC'}
       </label>
       {field}
     </span>
