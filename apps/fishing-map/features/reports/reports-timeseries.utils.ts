@@ -84,12 +84,12 @@ export const featuresToTimeseries = (
   }
 ): ReportGraphProps[] => {
   return filteredFeatures.map((filteredFeature, sourceIndex) => {
-    const featureToTimeseries = {
+    const featureToTimeseries: ReportGraphProps = {
       interval: '' as Interval,
-      graphMode,
+      mode: graphMode,
       sublayers: [],
       timeseries: [],
-    } as ReportGraphProps
+    }
     const sourceMetadata = layersWithFeatures[sourceIndex]?.metadata
     if (!sourceMetadata || sourceMetadata?.static === true) {
       return featureToTimeseries
