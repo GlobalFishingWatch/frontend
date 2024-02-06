@@ -146,14 +146,19 @@ const useReportTimeseries = (reportFeatures: DataviewFeature[]) => {
           ? chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
           : []
       )
-
+      const a = performance.now()
       const filteredFeatures = filterByPolygon(features, geometry)
+      const b = performance.now()
+      console.log('filtering features', b - a)
+      const c = performance.now()
       const timeseries = featuresToTimeseries(filteredFeatures, {
         layersWithFeatures,
         showTimeComparison,
         compareDeltaMillis: compareDeltaMillis as number,
         graphMode,
       })
+      const d = performance.now()
+      console.log('calculating timeseries', d - c)
       setTimeseries(timeseries)
     },
     [showTimeComparison, compareDeltaMillis, setTimeseries]
