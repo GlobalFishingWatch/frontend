@@ -12,7 +12,21 @@ export function getFileName(file: File): string {
 }
 
 export type FileType = DatasetConfigurationSourceFormat
-export type MimeExtention = '.json' | '.geojson' | '.zip' | '.csv' | '.tsv' | '.kml' | '.kmz'
+export type MimeExtention =
+  | '.json'
+  | '.JSON'
+  | '.geojson'
+  | '.GEOJSON'
+  | '.zip'
+  | '.ZIP'
+  | '.csv'
+  | '.CSV'
+  | '.tsv'
+  | '.TSV'
+  | '.kml'
+  | '.KML'
+  | '.kmz'
+  | '.KMZ'
 export type MimeType =
   | 'application/json'
   | 'application/geo+json'
@@ -25,12 +39,19 @@ export type MimeType =
   | 'application/vnd.google-earth.kmz'
 export const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType[]> = {
   '.json': ['application/json'],
+  '.JSON': ['application/json'],
   '.geojson': ['application/geo+json'],
+  '.GEOJSON': ['application/geo+json'],
   '.zip': ['application/zip'],
+  '.ZIP': ['application/zip'],
   '.csv': ['text/csv', 'text/comma-separated-values'],
+  '.CSV': ['text/csv', 'text/comma-separated-values'],
   '.tsv': ['text/tsv', 'text/tab-separated-values'],
+  '.TSV': ['text/tsv', 'text/tab-separated-values'],
   '.kml': ['application/vnd.google-earth.kml+xml'],
+  '.KML': ['application/vnd.google-earth.kml+xml'],
   '.kmz': ['application/vnd.google-earth.kmz'],
+  '.KMZ': ['application/vnd.google-earth.kmz'],
 }
 
 export type DatasetGeometryTypesSupported = Extract<
@@ -47,7 +68,7 @@ export const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported,
 export const getFileTypes = (datasetGeometryType: DatasetGeometryTypesSupported) =>
   FILES_TYPES_BY_GEOMETRY_TYPE[datasetGeometryType]
 
-type FileConfig = { id: FileType; files: string[]; icon: string }
+type FileConfig = { id: FileType; files: MimeExtention[]; icon: string }
 
 export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
   GeoJSON: {
@@ -55,9 +76,9 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
     files: ['.json', '.geojson'],
     icon: 'geojson',
   },
-  Shapefile: { id: 'Shapefile', files: ['.zip'], icon: 'zip' },
-  CSV: { id: 'CSV', files: ['.csv', '.tsv'], icon: 'csv' },
-  KML: { id: 'KML', files: ['.kml', '.kmz'], icon: 'kml' },
+  Shapefile: { id: 'Shapefile', files: ['.zip', '.ZIP'], icon: 'zip' },
+  CSV: { id: 'CSV', files: ['.csv', '.tsv', '.CSV', '.TSV'], icon: 'csv' },
+  KML: { id: 'KML', files: ['.kml', '.kmz', '.KML', '.KMZ'], icon: 'kml' },
 }
 
 export function getFileType(file?: File) {
@@ -77,7 +98,7 @@ export function getFilesAcceptedByMime(fileTypes: FileType[]) {
   const fileAcceptedByMime = filesAcceptedExtensions.reduce(
     (acc, extension) => {
       const mime = MIME_TYPES_BY_EXTENSION[extension]
-      mime.forEach((m) => {
+      mime?.forEach((m) => {
         if (!acc[m]) {
           acc[m] = [extension]
         } else {
