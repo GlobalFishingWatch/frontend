@@ -312,13 +312,13 @@
       "name": "Label titik",
       "nameHelp": "Pilih properti untuk menambahkan label ke setiap titik di peta",
       "size": "Point size",
-      "sizeHelp": "Select a numerical property to determine the radius of the each point",
+      "sizeHelp": "Select a numerical property to determine the radius of each point",
       "sizeMax": "Maximum size",
       "sizeMin": "Minimum size"
     },
     "polygons": {
       "color": "Polygon color",
-      "colorHelp": "Select a numerical property to determine the transparency of the each polygon",
+      "colorHelp": "Select a numerical property to determine the transparency of each polygon",
       "coordinates": "Polygon coordinates",
       "filters": "Polygon filters",
       "filtersHelp": "Select properties (or fields) of this dataset to be able to dynamically filter the polygons in the sidebar",
