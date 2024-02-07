@@ -103,7 +103,7 @@ export const useReportFeaturesError = () => {
 }
 
 const useReportFeatures = () => {
-  const [reportFeatures, setReportFeatures] = useAtom(mapReportFeaturesAtom)
+  const setReportFeatures = useAtom(mapReportFeaturesAtom)[1]
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
   const areaInViewport = useReportAreaInViewport()
   const activityFeatures = useMapDataviewFeatures(
@@ -114,7 +114,7 @@ const useReportFeatures = () => {
     setReportFeatures(activityFeatures)
   }, [activityFeatures, setReportFeatures])
 
-  return reportFeatures
+  return activityFeatures
 }
 
 const useReportTimeseries = (reportFeatures: DataviewFeature[]) => {
@@ -175,12 +175,20 @@ const useReportTimeseries = (reportFeatures: DataviewFeature[]) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportGraphMode])
+
   useEffect(() => {
     if (reportFeaturesLoaded && area?.geometry && areaInViewport) {
       computeTimeseries(reportFeatures, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportFeaturesLoaded, area?.geometry, areaInViewport, reportCategory, reportBufferHash])
+  }, [
+    reportFeaturesLoaded,
+    area?.geometry,
+    areaInViewport,
+    reportCategory,
+    reportBufferHash,
+    reportGraphMode,
+  ])
 
   return timeseries
 }
