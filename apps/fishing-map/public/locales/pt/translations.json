@@ -547,7 +547,7 @@
     "add": "Adicionar camada",
     "areas": {
       "eez": "ZEE",
-      "eez_other": "EEZs",
+      "eez_other": "ZEE",
       "fao": "FAO",
       "mpa": "AMP",
       "mpa_other": "MPAs (WDPA)",

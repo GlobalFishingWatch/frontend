@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { maxBy, minBy } from 'lodash'
+import { FeatureCollection } from 'geojson'
 import {
   DatasetTypes,
   Resource,
@@ -14,7 +14,14 @@ import {
   pickTrackResource,
   getDatasetsExtent,
 } from '@globalfishingwatch/dataviews-client'
-import { geoJSONToSegments, getSegmentExtents } from '@globalfishingwatch/data-transforms'
+import {
+  TrackCoordinatesPropertyFilter,
+  geoJSONToSegments,
+  getSegmentExtents,
+  getTimeFilter,
+  getTrackFilters,
+  filterTrackByCoordinateProperties,
+} from '@globalfishingwatch/data-transforms'
 import {
   TimebarChartData,
   TimebarChartChunk,
@@ -107,8 +114,22 @@ export const selectTracksData = createSelector(
         return { ...timebarTrack, status: ResourceStatus.Error }
       }
 
-      const segmentExtents: any = (trackResource.data as any)?.features
-        ? geoJSONToSegments(trackResource.data as any, { onlyExtents: true })
+      const dataviewFilters = dataview?.config?.filters
+      const isGeoJSONTrack = (trackResource.data as FeatureCollection)?.features.length > 0
+
+      const filters: TrackCoordinatesPropertyFilter[] = [
+        ...getTrackFilters(dataviewFilters),
+        // This is done to allow times property to pass the filtering
+        // and reach the timebar, where timebased filtering is done
+        ...getTimeFilter(AVAILABLE_START, AVAILABLE_END),
+      ]
+      const filteredFeatures =
+        isGeoJSONTrack && dataviewFilters
+          ? filterTrackByCoordinateProperties(trackResource.data as FeatureCollection, { filters })
+          : (trackResource.data as FeatureCollection)
+
+      const segmentExtents: any = isGeoJSONTrack
+        ? geoJSONToSegments(filteredFeatures as FeatureCollection, { onlyExtents: true })
         : getSegmentExtents((trackResource.data as any) || ([] as any))
 
       const chunks: TimebarChartChunk[] = segmentExtents.map((segment: any) => {
@@ -119,11 +140,13 @@ export const selectTracksData = createSelector(
           end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
           values: segment as TimebarChartValue[],
           props: {
+            ...segment[0],
             id: segment[0]?.id,
             color: useOwnColor ? segment[0]?.color : undefined,
           },
         }
       })
+
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
       const vessel = (resources[infoUrl] as any)?.data
       const shipname =
