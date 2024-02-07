@@ -162,6 +162,14 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    * Property to use as id internally in mapbox
    */
   promoteId?: string
+  /**
+   * Feature property to drive timestamps filtering
+   */
+  startTimeFilterProperty?: string
+  /**
+   * Feature property to drive timestamps filtering
+   */
+  endTimeFilterProperty?: string
 }
 
 /**

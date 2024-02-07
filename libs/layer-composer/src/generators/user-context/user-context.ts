@@ -6,13 +6,14 @@ import type {
   DataDrivenPropertyValueSpecification,
   FormattedSpecification,
   ExpressionSpecification,
+  FilterSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import {
   DEFAULT_CONTEXT_MAX_ZOOM,
   DEFAULT_CONTEXT_PROMOTE_ID,
   DEFAULT_CONTEXT_SOURCE_LAYER,
 } from '../context/config'
-import { GeneratorType, UserContextGeneratorConfig } from '../types'
+import { GeneratorType, MergedGeneratorConfig, UserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
@@ -21,6 +22,10 @@ import {
   getFillPaintWithFeatureState,
   getLinePaintWithFeatureState,
 } from '../context/context.utils'
+
+export type GlobalUserContextGeneratorConfig = Required<
+  MergedGeneratorConfig<UserContextGeneratorConfig>
+>
 
 class UserContextGenerator {
   type = GeneratorType.UserContext
@@ -37,9 +42,14 @@ class UserContextGenerator {
     }
 
     // Needed for invalidate caches on user changes
-    if (config.valueProperties) {
-      config.valueProperties.forEach((property, index) => {
-        url.searchParams.set(`properties[${index}]`, property)
+    const properties = [
+      ...(config.valueProperties || []),
+      config.startTimeFilterProperty,
+      config.endTimeFilterProperty,
+    ].filter(Boolean)
+    if (properties) {
+      properties.forEach((property, index) => {
+        url.searchParams.set(`properties[${index}]`, property as string)
       })
     }
 
@@ -54,7 +64,7 @@ class UserContextGenerator {
     ]
   }
 
-  _getStyleLayers = (config: UserContextGeneratorConfig): LayerSpecification[] => {
+  _getStyleLayers = (config: GlobalUserContextGeneratorConfig): LayerSpecification[] => {
     const generatorId = config.id
     const baseLayer = {
       id: generatorId,
@@ -63,7 +73,16 @@ class UserContextGenerator {
     }
 
     const interactive = !config.disableInteraction
-
+    let filters: FilterSpecification | undefined
+    if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
+      const startMs = new Date(config.start).getTime()
+      const endMs = new Date(config.end).getTime()
+      filters = [
+        'all',
+        ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs],
+        ['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs],
+      ]
+    }
     if (config.steps?.length && config.colorRamp) {
       const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp]
       const legendRamp = zip(config.steps, originalColorRamp)
@@ -86,6 +105,7 @@ class UserContextGenerator {
           'fill-color': colorRamp,
           'fill-antialias': true,
         },
+        ...(filters && { filter: filters }),
         metadata: {
           color: config.color,
           interactive,
@@ -112,6 +132,7 @@ class UserContextGenerator {
         'line-width': 1,
         ...getLinePaintWithFeatureState(config.color),
       },
+      ...(filters && { filter: filters }),
       metadata: {
         color: config.color,
         interactive: false,
@@ -127,6 +148,7 @@ class UserContextGenerator {
         'fill-outline-color': 'transparent',
         ...getFillPaintWithFeatureState('transparent'),
       },
+      ...(filters && { filter: filters }),
       metadata: {
         interactive,
         generatorId: generatorId,
@@ -138,7 +160,7 @@ class UserContextGenerator {
     return [lineLayer, interactionLayer]
   }
 
-  getStyle = (config: UserContextGeneratorConfig) => {
+  getStyle = (config: GlobalUserContextGeneratorConfig) => {
     return {
       id: config.id,
       sources: this._getStyleSources(config),
