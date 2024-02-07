@@ -269,8 +269,9 @@ export const filterByTimerangeMemoizeEqualityCheck = (
 }
 
 export const getTrackFilters = (
-  dataviewFilters: Record<string, (string | number)[]>
+  dataviewFilters: Record<string, (string | number)[]> | undefined
 ): TrackCoordinatesPropertyFilter[] => {
+  if (!dataviewFilters) return []
   return Object.entries(dataviewFilters || {}).map(([id, values]) => {
     if (isNumeric(values[0]) && isNumeric(values[1])) {
       return {
