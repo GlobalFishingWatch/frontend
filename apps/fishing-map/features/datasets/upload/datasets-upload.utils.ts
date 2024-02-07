@@ -1,3 +1,4 @@
+import { Feature, FeatureCollection, GeoJsonProperties, Point, Polygon } from 'geojson'
 import {
   Dataset,
   DatasetCategory,
@@ -6,7 +7,10 @@ import {
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  DatasetConfigurationProperty,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getUTCDateTime } from 'utils/dates'
@@ -132,4 +136,35 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
     }
   }
   return baseDataset
+}
+
+export const parseGeoJsonProperties = <T extends Polygon | Point>(
+  geojson: FeatureCollection<T, GeoJsonProperties>,
+  datasetMetadata: DatasetMetadata
+): FeatureCollection<T, GeoJsonProperties> => {
+  return {
+    ...geojson,
+    features: geojson.features.map((feature) => {
+      const properties = { ...feature.properties }
+      const propertiesToDateMillis: DatasetConfigurationProperty[] = [
+        'timestamp',
+        'startTime',
+        'endTime',
+      ]
+      propertiesToDateMillis.forEach((property: DatasetConfigurationProperty) => {
+        const propertyKey = getDatasetConfigurationProperty({
+          dataset: { configuration: datasetMetadata.configuration } as Dataset,
+          property,
+        }) as string
+        if (properties[propertyKey]) {
+          const value = properties[propertyKey]
+          properties[propertyKey] = getUTCDateTime(value).toMillis()
+        }
+      })
+      return {
+        ...feature,
+        properties,
+      }
+    }) as Feature<T, GeoJsonProperties>[],
+  }
 }

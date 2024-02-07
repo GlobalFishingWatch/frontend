@@ -20,6 +20,7 @@ import {
 import {
   getMetadataFromDataset,
   getPolygonsDatasetMetadata,
+  parseGeoJsonProperties,
 } from 'features/datasets/upload/datasets-upload.utils'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import { TimeFieldsGroup } from 'features/datasets/upload/TimeFieldsGroup'
@@ -81,7 +82,9 @@ function NewPolygonDataset({
   const onConfirmClick = useCallback(async () => {
     if (datasetMetadata && onConfirm) {
       setLoading(true)
-      const file = geojson ? getFileFromGeojson(geojson) : undefined
+      const file = geojson
+        ? getFileFromGeojson(parseGeoJsonProperties<Polygon>(geojson, datasetMetadata))
+        : undefined
       await onConfirm(datasetMetadata, { file, isEditing })
       setLoading(false)
     }

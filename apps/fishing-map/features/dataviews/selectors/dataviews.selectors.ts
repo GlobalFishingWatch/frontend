@@ -223,6 +223,13 @@ export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
   }
 )
 
+export const selectActiveHeatmapAnimatedEnvironmentalDataviews = createSelector(
+  [selectActiveHeatmapEnvironmentalDataviews],
+  (dataviews) => {
+    return dataviews.filter((dv) => dv.config?.type === GeneratorType.HeatmapAnimated)
+  }
+)
+
 export const selectActiveHeatmapDowloadDataviews = createSelector(
   [selectActiveActivityAndDetectionsDataviews, selectActiveHeatmapEnvironmentalDataviews],
   (activityAndDetectionsDataviews = [], environmentalDataviews = []) => {
