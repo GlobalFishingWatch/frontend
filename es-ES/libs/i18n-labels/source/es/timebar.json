@@ -1,0 +1,52 @@
+{
+  "playback": {
+    "playAnimation": "Reproducir animación",
+    "pauseAnimation": "Pausar animación",
+    "toogleAnimationLooping": "Activar / Desactivar el inicio automático de la animación",
+    "moveBack": "Retroceder",
+    "moveForward": "Avanzar",
+    "changeAnimationSpeed": "Cambiar velocidad de animación"
+  },
+  "timerange": {
+    "title": "Seleccione un intervalo de tiempo",
+    "year": "Year",
+    "month": "Month",
+    "day": "Day",
+    "start": "Inicio",
+    "end": "Fin",
+    "selectAValidDate": "Por favor, introduzca una fecha válida",
+    "endBeforeStart": "El final debe ser después del inicio",
+    "tooLongForMonths": "Tu intervalo es demasiado largo para ver meses individuales",
+    "tooLongForDays": "Tu intervalo es demasiado largo para ver días individuales",
+    "last30days": "Últimos 30 días",
+    "last3months": "Últimos 3 meses",
+    "last6months": "Últimos 6 meses",
+    "lastYear": "Útimo año",
+    "done": "Hecho",
+    "errorEarlyStart": "Su fecha de inicio es la más temprana con los datos disponibles",
+    "errorLatestEnd": "Su fecha de fin es la última con los datos disponibles",
+    "errorMinRange": "Tu fecha de inicio y fin debe tener al menos un día de diferencia",
+    "errorMaxRange": "Su intervalo de tiempo es el rango máximo con los datos disponibles"
+  },
+  "bookmark": {
+    "goToBookmark": "Ir al rango de tiempo marcado",
+    "deleteBookmark": "Eliminar marcador de intervalo de tiempo"
+  },
+  "trackEvents": {
+    "events": "events"
+  },
+  "dragLabel": "Arrastre para cambiar el rango de tiempo",
+  "lastUpdate": "Última actualización",
+  "setBookmark": "Rango de tiempo actual del marcador",
+  "intervals": {
+    "hour": "hora",
+    "hourTooltip": "Ver datos horarios",
+    "day": "día",
+    "dayTooltip": "Ver datos diarios",
+    "month": "month",
+    "monthTooltip": "Ver datos mensuales",
+    "year": "año",
+    "yearTooltip": "Ver datos anuales"
+  },
+  "zoomTo": "Acercar a"
+}
