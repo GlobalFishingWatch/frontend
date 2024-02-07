@@ -3,6 +3,7 @@ import {
   DatasetConfiguration,
   DatasetConfigurationUI,
   DatasetSchemaItem,
+  DatasetSchemaType,
 } from '@globalfishingwatch/api-types'
 import { SelectOption } from '@globalfishingwatch/ui-components'
 import { MultiSelectOption } from '@globalfishingwatch/api-client'
@@ -74,18 +75,24 @@ export function useDatasetMetadata() {
   )
 }
 
-export function useDatasetMetadataOptions(datasetMetadata?: DatasetMetadata) {
+export function useDatasetMetadataOptions(
+  datasetMetadata?: DatasetMetadata,
+  schemaTypes = [] as DatasetSchemaType[]
+) {
   const fieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
-    const options = datasetMetadata?.schema
-      ? Object.entries(datasetMetadata.schema).map(([field, fieldSchema]) => {
-          return {
-            id: field,
-            label: <DatasetFieldLabel field={field} fieldSchema={fieldSchema} />,
-          }
-        })
-      : []
+    if (!datasetMetadata?.schema) return []
+
+    const options = Object.entries(datasetMetadata.schema).flatMap(([field, fieldSchema]) => {
+      if (schemaTypes.length > 0 && !schemaTypes.includes(fieldSchema.type)) {
+        return []
+      }
+      return {
+        id: field,
+        label: <DatasetFieldLabel field={field} fieldSchema={fieldSchema} />,
+      }
+    })
     return options.sort(sortFields)
-  }, [datasetMetadata])
+  }, [datasetMetadata?.schema, schemaTypes])
 
   const getSelectedOption = useCallback(
     (
@@ -103,24 +110,13 @@ export function useDatasetMetadataOptions(datasetMetadata?: DatasetMetadata) {
     [fieldsOptions]
   )
 
-  const schemaRangeOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
-    const options = datasetMetadata?.schema
-      ? Object.entries(datasetMetadata.schema)
-          .filter(([_, fieldSchema]) => fieldSchema.type === 'range')
-          .map(([field, fieldSchema]) => {
-            return {
-              id: field,
-              label: <DatasetFieldLabel field={field} fieldSchema={fieldSchema} />,
-            }
-          })
-      : []
-    return options.sort(sortFields)
-  }, [datasetMetadata])
-
   const filtersFieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
     const options = datasetMetadata?.schema
       ? Object.keys(datasetMetadata.schema).flatMap((field) => {
           const schema = datasetMetadata.schema?.[field]
+          if (schemaTypes.length > 0 && !schemaTypes.includes(schema?.type as DatasetSchemaType)) {
+            return []
+          }
           const isEnumAllowed = schema?.type === 'string' || schema?.type === 'boolean'
           const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
           return isEnumAllowed || isRangeAllowed
@@ -140,10 +136,10 @@ export function useDatasetMetadataOptions(datasetMetadata?: DatasetMetadata) {
         )
       })
       .sort(sortFields)
-  }, [datasetMetadata])
+  }, [datasetMetadata, schemaTypes])
 
   return useMemo(
-    () => ({ fieldsOptions, getSelectedOption, schemaRangeOptions, filtersFieldsOptions }),
-    [fieldsOptions, filtersFieldsOptions, getSelectedOption, schemaRangeOptions]
+    () => ({ fieldsOptions, getSelectedOption, filtersFieldsOptions }),
+    [fieldsOptions, filtersFieldsOptions, getSelectedOption]
   )
 }

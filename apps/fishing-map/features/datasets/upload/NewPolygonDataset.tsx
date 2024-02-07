@@ -151,6 +151,10 @@ function NewPolygonDataset({
           datasetMetadata={datasetMetadata}
           property="polygonColor"
           label={t('datasetUpload.polygons.color', 'polygon color')}
+          placeholder={t(
+            'datasetUpload.fieldNumericPlaceholder',
+            'Select a numeric field from your dataset'
+          )}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ polygonColor: selected.id })
           }}
