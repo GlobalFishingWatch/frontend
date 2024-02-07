@@ -10,6 +10,7 @@ import {
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -156,9 +157,15 @@ function NewPolygonDataset({
             'Select a numeric field from your dataset'
           )}
           onSelect={(selected) => {
+            const config = getDatasetConfiguration(dataset)
+            const valueProperties = config.valueProperties || []
             setDatasetMetadataConfig({ polygonColor: selected.id })
+            setDatasetMetadataConfig({ valueProperties: [...valueProperties, selected.id] })
           }}
           onCleanClick={() => {
+            const config = getDatasetConfiguration(dataset)
+            const valueProperties = config.valueProperties
+            setDatasetMetadataConfig({ valueProperties })
             setDatasetMetadataConfig({ polygonColor: '' })
           }}
           editable={!loading}
