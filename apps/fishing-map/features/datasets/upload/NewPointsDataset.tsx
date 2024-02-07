@@ -174,12 +174,11 @@ function NewPointDataset({
         // TODO update the schema with the selected field with type timestamp
         // setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
         setLoading(true)
-        if (geojson) {
-          const parsedGeoJson = parseGeoJsonProperties<Point>(geojson, datasetMetadata)
-          const file = getFileFromGeojson(parsedGeoJson)
-          await onConfirm(datasetMetadata, { file, isEditing })
-          setLoading(false)
-        }
+        const file = geojson
+          ? getFileFromGeojson(parseGeoJsonProperties<Point>(geojson, datasetMetadata))
+          : undefined
+        await onConfirm(datasetMetadata, { file, isEditing })
+        setLoading(false)
       }
     }
   }, [datasetMetadata, sourceData, onConfirm, fileType, geojson, t, isEditing])

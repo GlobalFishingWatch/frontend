@@ -82,12 +82,11 @@ function NewPolygonDataset({
   const onConfirmClick = useCallback(async () => {
     if (datasetMetadata && onConfirm) {
       setLoading(true)
-      if (geojson) {
-        const parsedGeoJson = parseGeoJsonProperties<Polygon>(geojson, datasetMetadata)
-        const file = getFileFromGeojson(parsedGeoJson)
-        await onConfirm(datasetMetadata, { file, isEditing })
-        setLoading(false)
-      }
+      const file = geojson
+        ? getFileFromGeojson(parseGeoJsonProperties<Polygon>(geojson, datasetMetadata))
+        : undefined
+      await onConfirm(datasetMetadata, { file, isEditing })
+      setLoading(false)
     }
   }, [datasetMetadata, onConfirm, geojson, isEditing])
 
