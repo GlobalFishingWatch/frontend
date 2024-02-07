@@ -31,7 +31,7 @@ export type TimeChunks = {
 export const toDT = (dateISO: string) => DateTime.fromISO(dateISO, { zone: 'utc' })
 
 export const pickActiveTimeChunk = (timeChunks: TimeChunks) =>
-  timeChunks.chunks.find((t) => t.active) || timeChunks.chunks[0]
+  timeChunks?.chunks?.find((t) => t.active) || timeChunks?.chunks[0]
 
 // Buffer size relative to active time delta
 const TIME_CHUNK_BUFFER_RELATIVE_SIZE = 0.2

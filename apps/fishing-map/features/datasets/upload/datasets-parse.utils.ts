@@ -92,6 +92,7 @@ export const getGeojsonFromPointsList = (data: Record<string, any>[], dataset: D
     startTime: getDatasetConfigurationProperty({ dataset, property: 'startTime' }),
     endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
     id: getDatasetConfigurationProperty({ dataset, property: 'idProperty' }),
+    schema: dataset.schema,
   })
 }
 

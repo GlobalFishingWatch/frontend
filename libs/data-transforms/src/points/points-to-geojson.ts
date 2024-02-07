@@ -1,20 +1,43 @@
 import { Feature, FeatureCollection, Point } from 'geojson'
+import { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
 import { PointColumns } from '../types'
 import { parseCoords } from '../coordinates'
 import { getUTCDate } from '../list-to-track-segments'
 
+const cleanProperties = (
+  object: Record<string, any>,
+  schema: Record<string, DatasetSchema | DatasetSchemaItem> | undefined
+) => {
+  const result = { ...object }
+  for (const property in result) {
+    const propertySchema = schema?.[property]
+    if (result[property]) {
+      if (propertySchema?.type === 'string') {
+        result[property] = result[property].toString()
+      } else if (
+        (propertySchema?.type === 'coordinate' || propertySchema?.type === 'range') &&
+        isNaN(result[property])
+      ) {
+        delete result[property]
+      }
+    }
+  }
+  return result
+}
+
 export const pointsListToGeojson = (
   data: Record<string, any>[],
-  { latitude, longitude, id, startTime, endTime }: PointColumns
+  { latitude, longitude, id, startTime, endTime, schema }: PointColumns
 ) => {
   const features: Feature<Point>[] = data.flatMap((point, index) => {
     if (!point[latitude] || !point[longitude]) return []
     const coords = parseCoords(point[latitude] as number, point[longitude] as number)
     if (coords) {
+      const cleanedProperties = cleanProperties(point, schema)
       return {
         type: 'Feature',
         properties: {
-          ...point,
+          ...cleanedProperties,
           ...(startTime && { [startTime]: getUTCDate(point[startTime]).getTime() }),
           ...(endTime && { [endTime]: getUTCDate(point[endTime]).getTime() }),
           id: id && point[id] ? point[id] : index,

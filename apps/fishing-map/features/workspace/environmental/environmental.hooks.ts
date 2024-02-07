@@ -28,6 +28,7 @@ const filterVisibleValues = (
   rawData: number[],
   config: DataviewConfig<GeneratorType> | undefined
 ) => {
+  if (!config?.minVisibleValue && !config?.maxVisibleValue) return rawData
   return rawData.filter((d) => {
     const matchesMin = config?.minVisibleValue !== undefined ? d >= config?.minVisibleValue : true
     const matchesMax = config?.maxVisibleValue !== undefined ? d <= config?.maxVisibleValue : true
@@ -99,7 +100,7 @@ export const useEnvironmentalBreaksUpdate = () => {
               let areaStats
               if (area?.geometry) {
                 const featuresInReportArea =
-                  area?.geometry && filterByPolygon([filteredFeatures], area?.geometry)[0]
+                  area?.geometry && filterByPolygon([filteredFeatures], area?.geometry, 'point')[0]
                 const allFeaturesInReportArea = [
                   ...(featuresInReportArea?.contained || []),
                   ...(featuresInReportArea?.overlapping || []),

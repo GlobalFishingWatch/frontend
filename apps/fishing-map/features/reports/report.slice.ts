@@ -1,11 +1,11 @@
-import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { APIPagination, ReportVesselsByDataset } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 import {
-  Format,
+  HeatmapDownloadFormat,
   GroupBy,
   SpatialResolution,
   TemporalResolution,
@@ -49,7 +49,7 @@ type FetchReportVesselsThunkParams = {
   temporalResolution?: TemporalResolution
   groupBy?: GroupBy
   spatialResolution?: SpatialResolution
-  format?: Format.Csv | Format.Json
+  format?: HeatmapDownloadFormat.Csv | HeatmapDownloadFormat.Json
   spatialAggregation?: boolean
   reportBufferUnit?: BufferUnit
   reportBufferValue?: number
@@ -67,7 +67,7 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
     groupBy = GroupBy.Vessel,
     spatialResolution = SpatialResolution.Low,
     spatialAggregation = true,
-    format = Format.Json,
+    format = HeatmapDownloadFormat.Json,
     reportBufferUnit,
     reportBufferValue,
     reportBufferOperation,
