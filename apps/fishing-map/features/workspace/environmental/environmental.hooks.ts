@@ -11,7 +11,7 @@ import {
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { aggregateFeatures, ChunkFeature } from '@globalfishingwatch/features-aggregate'
-import { GeoJSONFeature, VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
+import { GeoJSONFeature } from '@globalfishingwatch/fourwings-aggregate'
 import { DataviewConfig } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveHeatmapEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
@@ -23,6 +23,7 @@ import {
 import { useMapBounds } from 'features/map/map-viewport.hooks'
 import { filterByPolygon } from 'features/reports/reports-geo.utils'
 import { selectReportArea } from 'features/reports/reports.selectors'
+import { AreaGeometry } from 'features/areas/areas.slice'
 
 const filterVisibleValues = (
   rawData: number[],
@@ -97,27 +98,10 @@ export const useEnvironmentalBreaksUpdate = () => {
                   cleanBreaks.push(k)
                 }
               })
-              let areaStats
-              if (area?.geometry) {
-                const featuresInReportArea =
-                  area?.geometry && filterByPolygon([filteredFeatures], area?.geometry, 'point')[0]
-                const allFeaturesInReportArea = [
-                  ...(featuresInReportArea?.contained || []),
-                  ...(featuresInReportArea?.overlapping || []),
-                ]
-                const values = getValues(allFeaturesInReportArea, metadata)
-                const visibleValues = filterVisibleValues(values, config)
-                areaStats = {
-                  min: min(visibleValues),
-                  mean: mean(visibleValues),
-                  max: max(visibleValues),
-                }
-              }
               return {
                 id: dataviewsId[0],
                 config: {
                   breaks: cleanBreaks,
-                  stats: areaStats,
                 },
               }
             }
@@ -130,7 +114,43 @@ export const useEnvironmentalBreaksUpdate = () => {
         upsertDataviewInstance(dataviewInstances)
       }
     },
-    [area?.geometry, dataviews, upsertDataviewInstance]
+    [dataviews, upsertDataviewInstance]
+  )
+
+  const updateStatsByArea = useCallback(
+    (dataviewFeatures: DataviewFeature[], geometry: AreaGeometry) => {
+      const dataviewInstances = dataviewFeatures?.flatMap(
+        ({ features, chunksFeatures, dataviewsId, metadata }) => {
+          const resolvedFeatures = chunksFeatures?.[0]?.features || features || ({} as ChunkFeature)
+          if (resolvedFeatures && resolvedFeatures.length && geometry) {
+            const config = dataviews.find(({ id }) => dataviewsId.includes(id))?.config
+            const featuresInReportArea = filterByPolygon([resolvedFeatures], geometry, 'point')[0]
+            const allFeaturesInReportArea = [
+              ...(featuresInReportArea?.contained || []),
+              ...(featuresInReportArea?.overlapping || []),
+            ]
+            const values = getValues(allFeaturesInReportArea, metadata)
+            const visibleValues = filterVisibleValues(values, config)
+            const areaStats = {
+              min: min(visibleValues),
+              mean: mean(visibleValues),
+              max: max(visibleValues),
+            }
+            return {
+              id: dataviewsId[0],
+              config: {
+                stats: areaStats,
+              },
+            }
+          }
+          return []
+        }
+      )
+      if (dataviewInstances) {
+        upsertDataviewInstance(dataviewInstances)
+      }
+    },
+    [dataviews, upsertDataviewInstance]
   )
 
   useEffect(() => {
@@ -139,4 +159,11 @@ export const useEnvironmentalBreaksUpdate = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sourcesLoaded, layersFilterHash])
+
+  useEffect(() => {
+    if (sourcesLoaded && area?.geometry) {
+      updateStatsByArea(dataviewFeatures, area.geometry)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [area?.geometry, sourcesLoaded, layersFilterHash])
 }

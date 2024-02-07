@@ -204,21 +204,22 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   //     },
   //   ],
   // },
-  {
-    id: 'thgt',
-    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/thgt.jpg`,
-    config: {
-      color: '#FFAE9B',
-      colorRamp: 'salmon',
-    },
-    datasetsConfig: [
-      {
-        ...heatmapDatasetConfig,
-        datasetId: 'public-global-thgt:v20231213',
-      },
-    ],
-  },
+  // TODO: Release this when 360 degrees issues in ingest are solved
+  // {
+  //   id: 'thgt',
+  //   dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+  //   previewImageUrl: `${PATH_BASENAME}/images/layer-library/thgt.jpg`,
+  //   config: {
+  //     color: '#FFAE9B',
+  //     colorRamp: 'salmon',
+  //   },
+  //   datasetsConfig: [
+  //     {
+  //       ...heatmapDatasetConfig,
+  //       datasetId: 'public-global-thgt:v20231213',
+  //     },
+  //   ],
+  // },
   {
     id: 'marine-ecoregions',
     dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
