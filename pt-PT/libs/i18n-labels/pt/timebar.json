@@ -1,0 +1,52 @@
+{
+  "playback": {
+    "playAnimation": "Reproduzir animação",
+    "pauseAnimation": "Pausar animação",
+    "toogleAnimationLooping": "Alternar repetição de animação",
+    "moveBack": "Mover para trás",
+    "moveForward": "Mover para frente",
+    "changeAnimationSpeed": "Mudar velocidade da animação"
+  },
+  "timerange": {
+    "title": "Selecione um intervalo de tempo",
+    "year": "Year",
+    "month": "Month",
+    "day": "Day",
+    "start": "Início",
+    "end": "fim",
+    "selectAValidDate": "Please select a valid date",
+    "endBeforeStart": "The end needs to be after the start",
+    "tooLongForMonths": "Your timerange is too long to see individual months",
+    "tooLongForDays": "Your timerange is too long to see individual days",
+    "last30days": "Últimos 30 dias",
+    "last3months": "Last 3 months",
+    "last6months": "Last 6 months",
+    "lastYear": "Last year",
+    "done": "Concluído",
+    "errorEarlyStart": "Sua data de início é a data mais recente com dados disponíveis",
+    "errorLatestEnd": "Sua data final é a última data com dados disponíveis",
+    "errorMinRange": "Sua data inicial e final deve ser pelo menos um dia de diferença",
+    "errorMaxRange": "Seu intervalo de tempo é o máximo com dados disponíveis"
+  },
+  "bookmark": {
+    "goToBookmark": "Vá para o seu intervalo de tempo marcado",
+    "deleteBookmark": "Excluir intervalo de tempo marcado"
+  },
+  "trackEvents": {
+    "events": "events"
+  },
+  "dragLabel": "Arraste para alterar o intervalo de tempo",
+  "lastUpdate": "Última atualização",
+  "setBookmark": "Marcar intervalo de tempo atual",
+  "intervals": {
+    "hour": "hour",
+    "hourTooltip": "See hourly data",
+    "day": "day",
+    "dayTooltip": "See daily data",
+    "month": "month",
+    "monthTooltip": "See monthly data",
+    "year": "year",
+    "yearTooltip": "See yearly data"
+  },
+  "zoomTo": "Ampliar para"
+}
