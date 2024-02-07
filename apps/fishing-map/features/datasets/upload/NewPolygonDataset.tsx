@@ -139,7 +139,7 @@ function NewPolygonDataset({
             setDatasetMetadataConfig({ valueProperties: [selected.id] })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ valueProperties: undefined })
+            setDatasetMetadataConfig({ valueProperties: [] })
           }}
           editable={!loading}
           infoTooltip={t(
@@ -155,7 +155,7 @@ function NewPolygonDataset({
             setDatasetMetadataConfig({ polygonColor: selected.id })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ polygonColor: undefined })
+            setDatasetMetadataConfig({ polygonColor: '' })
           }}
           editable={!loading}
           infoTooltip={t(

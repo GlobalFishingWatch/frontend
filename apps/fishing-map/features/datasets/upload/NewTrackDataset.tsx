@@ -268,7 +268,7 @@ function NewTrackDataset({
               }}
               onCleanClick={() => {
                 setDatasetMetadata({ fieldsAllowed: [] })
-                setDatasetMetadataConfig({ lineId: undefined })
+                setDatasetMetadataConfig({ lineId: '' })
               }}
               infoTooltip={t(
                 'datasetUpload.tracks.lineIdHelp',
@@ -285,7 +285,7 @@ function NewTrackDataset({
               }}
               onCleanClick={() => {
                 setDatasetMetadata({ fieldsAllowed: [] })
-                setDatasetMetadataConfig({ segmentId: undefined })
+                setDatasetMetadataConfig({ segmentId: '' })
               }}
               infoTooltip={t(
                 'datasetUpload.tracks.segmentIdHelp',

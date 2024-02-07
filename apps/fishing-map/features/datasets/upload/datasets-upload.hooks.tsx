@@ -24,8 +24,12 @@ export function useDatasetMetadata() {
   const setDatasetMetadataConfig = useCallback(
     (newConfig: Partial<DatasetConfiguration | DatasetConfigurationUI>) => {
       setDatasetMetadataState((meta = {} as DatasetMetadata) => {
-        const { idProperty, valueProperties, propertyToInclude, ...configurationUI } =
-          newConfig as DatasetConfiguration
+        const {
+          idProperty = meta.configuration?.idProperty,
+          valueProperties = meta.configuration?.valueProperties,
+          propertyToInclude = meta.configuration?.propertyToInclude,
+          ...configurationUI
+        } = newConfig as DatasetConfiguration
         return {
           ...meta,
           configuration: {

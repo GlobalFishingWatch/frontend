@@ -268,7 +268,7 @@ function NewPointDataset({
             setDatasetMetadataConfig({ valueProperties: [selected.id] })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ valueProperties: undefined })
+            setDatasetMetadataConfig({ valueProperties: [] })
           }}
           infoTooltip={t(
             'datasetUpload.points.nameHelp',
@@ -297,9 +297,8 @@ function NewPointDataset({
               setDatasetMetadataConfig({ pointSize: selected.id })
             }}
             onCleanClick={() => {
-              setDatasetMetadataConfig({ pointSize: undefined })
+              setDatasetMetadataConfig({ pointSize: '' })
             }}
-            disabled={loading}
             infoTooltip={t(
               'datasetUpload.points.sizeHelp',
               'Select a numeric property of each point to change its radius'
