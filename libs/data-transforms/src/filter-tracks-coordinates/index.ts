@@ -8,6 +8,7 @@ import {
   MultiLineString,
 } from 'geojson'
 import { isEqual } from 'lodash'
+import { isNumeric } from './utils'
 
 // TODO define types for this filter so we can avoid the buggy isNumeric approach
 // to extract when using min or max or the list of values
@@ -267,16 +268,18 @@ export const filterByTimerangeMemoizeEqualityCheck = (
   return newData.features.length === lastData.features.length && isEqual(newFilters, lastFilters)
 }
 
-export const getTrackFilters = (dataviewFilters): TrackCoordinatesPropertyFilter[] => {
+export const getTrackFilters = (
+  dataviewFilters: Record<string, (string | number)[]>
+): TrackCoordinatesPropertyFilter[] => {
   return Object.entries(dataviewFilters || {}).map(([id, values]) => {
-    return {
-      id,
-      min: parseFloat(values[0] as string),
-      max: parseFloat(values[1] as string),
+    if (isNumeric(values[0]) && isNumeric(values[1])) {
+      return {
+        id,
+        min: parseFloat(values[0] as string),
+        max: parseFloat(values[1] as string),
+      }
     }
-    // if (isNumeric(values[0]) && isNumeric(values[1])) {
-    // }
-    // return { id, values }
+    return { id, values }
   })
 }
 
