@@ -41,7 +41,7 @@
   },
   "high-seas": {
     "name": "Laut lepas",
-    "description": "Laut lepas adalah wilayah lautan di luar zona ekonomi eksklusif (ZEE). Kantong laut lepas adalah area yang benar-benar tertutup oleh ZEE. Kantong-kantong ini mungkin sulit dibedakan dari beberapa yurisdiksi ZEE yang mengelilinginya, oleh karena itu, kami memiliki layer yang menyorotinya.",
+    "description": "Laut lepas adalah wilayah lautan di luar zona ekonomi eksklusif (ZEE). Kantong laut lepas adalah area yang benar-benar tertutup oleh ZEE. Kantong-kantong ini mungkin sulit dibedakan dari beberapa yurisdiksi ZEE yang mengelilinginya, oleh karena itu, kami memiliki lapisan (layer) yang menyorotinya.",
     "moreInfoLink": ""
   },
   "mangroves": {
@@ -56,7 +56,7 @@
   },
   "mpa": {
     "name": "KKP/Kawasan Konservasi Perairan (WDPA)",
-    "description": "KKP (Kawasan Konservasi Perairan) adalah kawasan laut yang diperuntukkan bagi konservasi jangka panjang. Kawasan ini mempunyai tingkat perlindungan yang berbeda-beda, dan cakupan aktivitas yang diperbolehkan atau dilarang di dalam kawasan tersebut sangat bervariasi. Sumber: Basis Data Dunia tentang Kawasan Konservasi.",
+    "description": "KKP (Kawasan Konservasi Perairan) adalah kawasan laut yang diperuntukkan bagi konservasi jangka panjang. Kawasan ini mempunyai tingkat perlindungan yang berbeda-beda, dan cakupan aktivitas yang diperbolehkan atau dilarang di dalam kawasan tersebut sangat bervariasi. Sumber: Basis Data Dunia tentang Kawasan Konservasi (World Database on Protected Areas).",
     "moreInfoLink": ""
   },
   "nitrate": {
@@ -85,13 +85,13 @@
     "moreInfoLink": ""
   },
   "protectedseas": {
-    "name": "KKP (Kawasan Konservasi Perairan)",
+    "name": "KKP/Kawasan Konservasi Perairan (MPA/ProtectedSeas)",
     "description": "KKP (Kawasan Konservasi Perairan) adalah wilayah lautan yang disisihkan untuk konservasi jangka panjang. Kawasan ini mempunyai tingkat perlindungan yang berbeda-beda, dan cakupan aktivitas yang diperbolehkan atau dilarang di dalam kawasan tersebut sangat bervariasi. Source: https://navigatormap.org/methodology/",
     "moreInfoLink": ""
   },
   "rfmo": {
-    "name": "RFMO",
-    "description": "Organisasi pengelolaan perikanan regional (RFMO) adalah badan internasional yang dibentuk oleh negara-negara yang mempunyai kepentingan bersama dalam mengelola atau melestarikan stok ikan di suatu wilayah tertentu. Beberapa perusahaan mengelola seluruh stok ikan yang ditemukan di wilayah tertentu, sementara yang lain fokus pada spesies tertentu yang bermigrasi jauh, terutama tuna. Organisasi pengelolaan perikanan regional pada peta Global Fishing Watch saat ini mencakup lima organisasi pengelolaan perikanan regional tuna.",
+    "name": "Organisasi pengelolaan perikanan regional (Regional fisheries management organizations/RFMO) ",
+    "description": "Organisasi pengelolaan perikanan regional (Regional fisheries management organizations/RFMO) adalah badan internasional yang dibentuk oleh negara-negara yang mempunyai kepentingan bersama dalam mengelola atau melestarikan stok ikan di suatu wilayah tertentu. Beberapa perusahaan mengelola seluruh stok ikan yang ditemukan di wilayah tertentu, sementara yang lain fokus pada spesies tertentu yang bermigrasi jauh, terutama tuna. Organisasi pengelolaan perikanan regional pada peta Global Fishing Watch saat ini mencakup lima organisasi pengelolaan perikanan regional tuna.",
     "moreInfoLink": ""
   },
   "salinity": {
@@ -140,7 +140,7 @@
     "moreInfoLink": "https://www.pacioos.hawaii.edu/waves/model-global/#about"
   },
   "viirs": {
-    "name": "Deteksi cahaya malam (VIIRS)",
+    "name": "Deteksi cahaya malam (Night light detections/VIIRS)",
     "description": "Lapisan pendeteksi kapal lampu malam, yang dikenal sebagai suite radiometer pencitraan inframerah tampak atau VIIRS, menunjukkan kapal di laut yang telah dideteksi oleh satelit melalui cahaya yang dipancarkannya di malam hari. Meskipun tidak secara eksklusif dikaitkan dengan kapal penangkap ikan, lapisan aktivitas ini kemungkinan besar menampilkan kapal yang terkait dengan aktivitas seperti penangkapan cumi-cumi, yang menggunakan lampu terang dan menangkap ikan di malam hari.",
     "moreInfoLink": ""
   }
