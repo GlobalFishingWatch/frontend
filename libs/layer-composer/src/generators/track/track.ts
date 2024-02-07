@@ -3,17 +3,17 @@ import { FeatureCollection, LineString } from 'geojson'
 import memoizeOne from 'memoize-one'
 import { uniq } from 'lodash'
 import type { FilterSpecification, LineLayerSpecification } from '@globalfishingwatch/maplibre-gl'
-import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import {
+  segmentsToGeoJSON,
+  filterTrackByCoordinateProperties,
+  filterByTimerangeMemoizeEqualityCheck,
+  TrackCoordinatesPropertyFilter,
+} from '@globalfishingwatch/data-transforms'
 import { HIGHLIGHT_LINE_COLOR, LINE_COLOR_BAR_OPTIONS } from '../context/context.utils'
 import { Group } from '../../types'
 import { GeneratorType, TrackGeneratorConfig, MergedGeneratorConfig } from '../types'
 import { memoizeByLayerId, memoizeCache } from '../../utils'
 import { isConfigVisible, isNumeric } from '../utils'
-import {
-  filterByTimerangeMemoizeEqualityCheck,
-  filterTrackByCoordinateProperties,
-  TrackCoordinatesPropertyFilter,
-} from './filterTrackByCoordinateProperties'
 import { simplifyTrack } from './simplify-track'
 
 export const TRACK_HIGHLIGHT_SUFFIX = '_highlighted'
