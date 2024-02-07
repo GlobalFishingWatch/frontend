@@ -1,7 +1,6 @@
 import type { FeatureCollection, LineString, Feature, Position, MultiLineString } from 'geojson'
 import { lineString } from '@turf/helpers'
 import { Segment, Point } from '@globalfishingwatch/api-types'
-import { TimebarChartChunk } from '@globalfishingwatch/timebar'
 
 const segmentsToFeatures = (segment: Segment | Segment[]): Feature<LineString>[] => {
   // This checks converts always to bi-dimensional array
