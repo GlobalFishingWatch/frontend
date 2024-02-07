@@ -29,6 +29,7 @@ import {
 import {
   getMetadataFromDataset,
   getPointsDatasetMetadata,
+  parseGeoJsonProperties,
 } from 'features/datasets/upload/datasets-upload.utils'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import styles from './NewDataset.module.css'
@@ -173,7 +174,9 @@ function NewPointDataset({
         // TODO update the schema with the selected field with type timestamp
         // setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
         setLoading(true)
-        const file = geojson ? getFileFromGeojson(geojson) : undefined
+        const file = geojson
+          ? getFileFromGeojson(parseGeoJsonProperties<Point>(geojson, datasetMetadata))
+          : undefined
         await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }

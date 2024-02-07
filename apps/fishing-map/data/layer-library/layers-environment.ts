@@ -134,8 +134,8 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/salinity.jpg`,
     config: {
-      color: '#FF6854',
-      colorRamp: 'red',
+      color: '#9CA4FF',
+      colorRamp: 'lilac',
     },
     datasetsConfig: [
       {

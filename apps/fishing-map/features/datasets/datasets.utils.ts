@@ -353,7 +353,8 @@ export const getActivityDatasetsReportSupported = (
           permissionDatasetsIds.includes(d.id) &&
           (d.category === DatasetCategory.Activity ||
             d.category === DatasetCategory.Detections ||
-            d.category === DatasetCategory.Environment)
+            (d.category === DatasetCategory.Environment &&
+              dataview.config?.type === GeneratorType.HeatmapAnimated))
       )
       .map((d) => d.id)
   })
