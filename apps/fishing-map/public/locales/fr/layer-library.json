@@ -86,7 +86,7 @@
   },
   "protectedseas": {
     "name": "AMP (ProtectedSeas)",
-    "description": "Les aires marines protégées (AMP) sont des zones de l'océan réservées à la conservation à long terme. Elles peuvent bénéficier de niveaux de protection différents et la gamme des activités autorisées ou interdites à l'intérieur de leurs limites varie considérablement.",
+    "description": "Les aires marines protégées (AMP) sont des zones de l'océan réservées à la conservation à long terme. Elles peuvent bénéficier de niveaux de protection différents et la gamme des activités autorisées ou interdites à l'intérieur de leurs limites varie considérablement. Source: https://navigatormap.org/methodology/",
     "moreInfoLink": ""
   },
   "rfmo": {
