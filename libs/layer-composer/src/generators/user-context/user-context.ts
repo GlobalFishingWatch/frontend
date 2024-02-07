@@ -44,15 +44,13 @@ class UserContextGenerator {
     // Needed for invalidate caches on user changes
     const properties = [
       ...(config.valueProperties || []),
-      config.pickValueAt,
-      config.startTimeFilterProperty,
-      config.endTimeFilterProperty,
-    ]
-    if (properties?.length) {
+      config.pickValueAt || '',
+      config.startTimeFilterProperty || '',
+      config.endTimeFilterProperty || '',
+    ].filter((p) => !!p)
+    if (properties.length) {
       properties.forEach((property, index) => {
-        if (property) {
-          url.searchParams.set(`properties[${index}]`, property)
-        }
+        url.searchParams.set(`properties[${index}]`, property)
       })
     }
 
