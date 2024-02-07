@@ -283,9 +283,9 @@
     "time": "{{geometryType}} time",
     "timeStart": "{{geometryType}} start",
     "timeEnd": "{{geometryType}} end",
-    "timestampHelp": "Select the property that defines the date and time of each {{geometryType}} to visualize your dataset with the time bar",
-    "timerangeStartHelp": "Select the property that defines the start of the time range of each {{geometryType}} to visualize your dataset with the time bar",
-    "timerangeEndHelp": "Select the property that defines the start of the date range of each {{geometryType}} to filter them with the time bar",
+    "timestampHelp": "Select the property that defines the date and time of the {{geometryType}} to visualize your dataset with the time bar",
+    "timerangeStartHelp": "Select the property that defines the start of the time range of the {{geometryType}} to visualize your dataset with the time bar",
+    "timerangeEndHelp": "Select the property that defines the start of the date range of the {{geometryType}} to filter them with the time bar",
     "errors": {
       "default": "There was an error uploading your dataset.",
       "geoJSON": {
@@ -312,13 +312,13 @@
       "name": "Point label",
       "nameHelp": "Select a property to add a label to each point on the map",
       "size": "Point size",
-      "sizeHelp": "Select a numerical property to determine the radius of the each point",
+      "sizeHelp": "Select a numerical property to determine the radius of each point",
       "sizeMax": "Maximum size",
       "sizeMin": "Minimum size"
     },
     "polygons": {
       "color": "Polygon color",
-      "colorHelp": "Select a numerical property to determine the transparency of the each polygon",
+      "colorHelp": "Select a numerical property to determine the transparency of each polygon",
       "coordinates": "Polygon coordinates",
       "filters": "Polygon filters",
       "filtersHelp": "Select properties (or fields) of this dataset to be able to dynamically filter the polygons in the sidebar",

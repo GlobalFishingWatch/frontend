@@ -86,7 +86,7 @@
   },
   "protectedseas": {
     "name": "MPAs (ProtectedSeas)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably.",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: https://navigatormap.org/methodology/",
     "moreInfoLink": ""
   },
   "rfmo": {

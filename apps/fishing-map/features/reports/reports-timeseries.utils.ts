@@ -109,7 +109,7 @@ export const featuresToTimeseries = (
       quantizeOffset: sourceQuantizeOffset,
       aggregationOperation: sourceMetadata.aggregationOperation,
       minVisibleValue: sourceMetadata.minVisibleValue,
-      maxVisibleValue: sourceMetadata.minVisibleValue,
+      maxVisibleValue: sourceMetadata.maxVisibleValue,
     })
 
     const valuesContained = frameTimeseriesToDateTimeseries(
@@ -131,7 +131,7 @@ export const featuresToTimeseries = (
         quantizeOffset: sourceQuantizeOffset,
         aggregationOperation: sourceMetadata.aggregationOperation,
         minVisibleValue: sourceMetadata.minVisibleValue,
-        maxVisibleValue: sourceMetadata.minVisibleValue,
+        maxVisibleValue: sourceMetadata.maxVisibleValue,
       }).values
     }
 
