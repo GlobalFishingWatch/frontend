@@ -787,7 +787,7 @@
     }
   },
   "private-indonesia-pelagic-presence": {
-    "name": "Indonesia Pelagic (Pilot)",
+    "name": "Indonesia Pelagic",
     "description": "Pelagic Presence",
     "schema": {
       "lat": "lat",

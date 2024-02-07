@@ -1,22 +1,22 @@
 {
   "bathymetry": {
     "name": "Batimetri",
-    "description": "Batimetri adalah pengukuran kedalaman air dan memberikan rincian ciri fisik dasar laut. Kumpulan data batimetri berkisi ini adalah model medan global berkelanjutan yang menyediakan data ketinggian lautan dalam meter pada kisi interval 15 detik busur. ",
+    "description": "Batimetri adalah pengukuran kedalaman air dan memberikan rincian ciri fisik dasar laut. Kumpulan data batimetri berkisi ini adalah model medan global berkelanjutan yang menyediakan data ketinggian lautan dalam meter, pada kisi interval 15 detik busur. ",
     "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/"
   },
   "chlorophyl": {
-    "name": "dan Konsentrasi Klorofil-a",
+    "name": "Konsentrasi Klorofil-a",
     "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tanaman fotosintesis. Fitoplankton laut secara kimia memfiksasi karbon melalui fotosintesis dengan mengambil karbon dioksida terlarut dan menghasilkan oksigen. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk klorofil, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
   "coral-reefs": {
     "name": "Terumbu karang",
-    "description": "Terumbu karang air hangat ditemukan di perairan jernih dan dangkal dan merupakan ekosistem yang sangat dinamis yang mendukung habitat laut dengan keanekaragaman hayati paling tinggi. Rangkaian data ini menunjukkan sebaran global terumbu karang di wilayah tropis dan subtropis.",
+    "description": "Terumbu karang air hangat ditemukan di perairan jernih dan dangkal serta merupakan ekosistem yang sangat dinamis yang mendukung habitat laut dengan keanekaragaman hayati tertinggi. Rangkaian data ini menunjukkan sebaran global terumbu karang di wilayah tropis dan subtropis.",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/1"
   },
   "eez": {
-    "name": "EEZs",
-    "description": "Zona ekonomi eksklusif (ZEE) terbentang hingga 200 mil laut dari pantai suatu negara. Institut Kelautan Flanders (2019). Basis Geodata Batas Maritim: Batas Maritim dan Zona Ekonomi Eksklusif (200NM), versi 11.",
+    "name": "Zona Ekonomi Eksklusif (ZEE)",
+    "description": "Zona ekonomi eksklusif/ZEE (Exclusive economic zones/EEZ) terbentang hingga 200 mil laut dari pantai sebuah negara. Institut Kelautan Flanders (2019). Basis Geodata Batas Maritim: Batas Maritim dan Zona Ekonomi Eksklusif (200NM), versi 11.",
     "moreInfoLink": ""
   },
   "encounters": {
@@ -30,13 +30,13 @@
     "moreInfoLink": ""
   },
   "fishing-effort": {
-    "name": "Upaya penangkapan ikan yang terlihat",
-    "description": "Untuk menentukan “upaya penangkapan ikan yang terlihat”, Global Fishing Watch menganalisis data sistem identifikasi otomatis (AIS) dan sistem pemantauan kapal (VMS) yang dikumpulkan dari kapal-kapal yang menurut penelitian kami telah diidentifikasi sebagai diketahui atau mungkin merupakan kapal penangkapan ikan komersial dan menerapkan algoritma deteksi penangkapan ikan berdasarkan perubahan. dalam kecepatan dan arah kapal.",
+    "name": "Upaya penangkapan ikan yang nyata",
+    "description": "Untuk menentukan “upaya penangkapan ikan yang nyata”, Global Fishing Watch menganalisis data sistem identifikasi otomatis (AIS) dan sistem pemantauan kapal (VMS) yang dikumpulkan dari kapal-kapal yang menurut penelitian kami telah diidentifikasi sebagai diketahui atau mungkin merupakan kapal penangkapan ikan komersial dan menerapkan algoritma deteksi penangkapan ikan berdasarkan perubahan. dalam kecepatan dan arah kapal.",
     "moreInfoLink": ""
   },
   "graticules": {
     "name": "Grid garis lintang dan bujur",
-    "description": "Grid atau gratikula garis lintang dan bujur pada interval 1, 5, 10 dan 30° tergantung pada tingkat zoom peta",
+    "description": "Grid atau gratikula garis lintang dan bujur pada interval 1, 5, 10 dan 30° tergantung pada tingkat pembesaran (zoom) peta",
     "moreInfoLink": ""
   },
   "high-seas": {
