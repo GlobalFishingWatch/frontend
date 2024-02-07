@@ -1,5 +1,7 @@
-import type { FeatureCollection, LineString, Feature, Position } from 'geojson'
+import type { FeatureCollection, LineString, Feature, Position, MultiLineString } from 'geojson'
+import { lineString } from '@turf/helpers'
 import { Segment, Point } from '@globalfishingwatch/api-types'
+import { TimebarChartChunk } from '@globalfishingwatch/timebar'
 
 const segmentsToFeatures = (segment: Segment | Segment[]): Feature<LineString>[] => {
   // This checks converts always to bi-dimensional array
@@ -67,7 +69,33 @@ export const geoJSONToSegments = (
   geoJSON: FeatureCollection,
   { onlyExtents }: { onlyExtents?: boolean } = {}
 ): Segment[] => {
-  return geoJSON.features.map((feature) => {
+  const lineStringGeoJSONFeatures =
+    geoJSON.features[0].geometry.type === 'MultiLineString'
+      ? geoJSON.features.flatMap((multiline) => {
+          const coordinateProperties = multiline.properties?.coordinateProperties
+          const linestring = (multiline as Feature<MultiLineString>).geometry.coordinates.flatMap(
+            (line, index) =>
+              line.length < 2
+                ? []
+                : lineString(line, {
+                    color: multiline.properties?.color,
+                    id: multiline.properties?.id,
+                    coordinateProperties:
+                      coordinateProperties &&
+                      Object.keys(coordinateProperties).reduce(
+                        (acc, prop) => ({
+                          ...acc,
+                          [prop]: coordinateProperties[prop][index],
+                        }),
+                        {}
+                      ),
+                  })
+          )
+          return linestring
+        })
+      : geoJSON.features
+  return lineStringGeoJSONFeatures.map((feature) => {
+    const coordinateProperties = feature.properties?.coordinateProperties
     const timestamps = feature.properties?.coordinateProperties?.times || []
     const id = feature.properties?.id
     const color = feature.properties?.color
@@ -77,6 +105,13 @@ export const geoJSONToSegments = (
       : coordinates
     const segment = segmentCoordinates.map((coordinate, i) => {
       const point: Point = {
+        coordinateProperties: Object.keys(coordinateProperties).reduce(
+          (acc, prop) => ({
+            ...acc,
+            [prop]: coordinateProperties[prop][i],
+          }),
+          {}
+        ),
         longitude: coordinate[0],
         latitude: coordinate[1],
       }
