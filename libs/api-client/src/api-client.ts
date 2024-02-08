@@ -14,10 +14,6 @@ export const API_GATEWAY =
   process.env.REACT_APP_API_GATEWAY ||
   process.env.NEXT_PUBLIC_API_GATEWAY ||
   'https://gateway.api.dev.globalfishingwatch.org'
-console.log('🚀 ~ API_GATEWAY:', process.env.API_GATEWAY)
-console.log('🚀 ~ REACT_APP_API_GATEWAY:', process.env.REACT_APP_API_GATEWAY)
-console.log('🚀 ~ NEXT_PUBLIC_API_GATEWAY:', process.env.NEXT_PUBLIC_API_GATEWAY)
-console.log('🚀 ~ API_GATEWAY:', API_GATEWAY)
 
 export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
