@@ -76,7 +76,7 @@ class HeatmapStaticGenerator {
       ['linear'],
       // we'll need to minus the offset (TBD: 50 or from dataset) once we are ready for negative values
       // ['-', ['/', exprPick, VALUE_MULTIPLIER], 50],
-      ['/', exprPick, VALUE_MULTIPLIER],
+      exprPick,
       ...colorRamp.flatMap((color, index) => {
         return breaks
           ? [
@@ -133,9 +133,7 @@ class HeatmapStaticGenerator {
     const config = {
       ...DEFAULT_CONFIG,
       ...generatorConfig,
-      breaks: (generatorConfig.breaks || DEFAULT_CONFIG.breaks)?.map((b) =>
-        DEFAULT_CONFIG.breaksMultiplier ? b / DEFAULT_CONFIG.breaksMultiplier : b
-      ),
+      breaks: generatorConfig.breaks || DEFAULT_CONFIG.breaks,
       metadata: generatorConfig.metadata,
     }
     const legends = getLegendsCompare(
