@@ -6,7 +6,11 @@ import {
   DatasetGeometryType,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
-import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
+import {
+  cleanProperties,
+  getDatasetSchema,
+  guessColumnsFromSchema,
+} from '@globalfishingwatch/data-transforms'
 import {
   DatasetConfigurationProperty,
   getDatasetConfigurationProperty,
@@ -145,7 +149,7 @@ export const parseGeoJsonProperties = <T extends Polygon | Point>(
   return {
     ...geojson,
     features: geojson.features.map((feature) => {
-      const properties = { ...feature.properties }
+      const cleanedProperties = cleanProperties(feature.properties, datasetMetadata.schema)
       const propertiesToDateMillis: DatasetConfigurationProperty[] = [
         'timestamp',
         'startTime',
@@ -156,14 +160,14 @@ export const parseGeoJsonProperties = <T extends Polygon | Point>(
           dataset: { configuration: datasetMetadata.configuration } as Dataset,
           property,
         }) as string
-        if (properties[propertyKey]) {
-          const value = properties[propertyKey]
-          properties[propertyKey] = getUTCDateTime(value).toMillis()
+        if (cleanedProperties[propertyKey]) {
+          const value = cleanedProperties[propertyKey]
+          cleanedProperties[propertyKey] = getUTCDateTime(value).toMillis()
         }
       })
       return {
         ...feature,
-        properties,
+        properties: cleanedProperties,
       }
     }) as Feature<T, GeoJsonProperties>[],
   }

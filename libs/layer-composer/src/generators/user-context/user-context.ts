@@ -6,14 +6,13 @@ import type {
   DataDrivenPropertyValueSpecification,
   FormattedSpecification,
   ExpressionSpecification,
-  FilterSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import {
   DEFAULT_CONTEXT_MAX_ZOOM,
   DEFAULT_CONTEXT_PROMOTE_ID,
   DEFAULT_CONTEXT_SOURCE_LAYER,
 } from '../context/config'
-import { GeneratorType, MergedGeneratorConfig, UserContextGeneratorConfig } from '../types'
+import { GeneratorType, GlobalUserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
@@ -22,14 +21,12 @@ import {
   getLinePaintWithFeatureState,
 } from '../context/context.utils'
 import { getColorRampByOpacitySteps } from '../heatmap/util/colors'
-export type GlobalUserContextGeneratorConfig = Required<
-  MergedGeneratorConfig<UserContextGeneratorConfig>
->
+import { getTimeFilterForUserContextLayer } from '../utils'
 
 class UserContextGenerator {
   type = GeneratorType.UserContext
 
-  _getStyleSources = (config: UserContextGeneratorConfig) => {
+  _getStyleSources = (config: GlobalUserContextGeneratorConfig) => {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
@@ -73,16 +70,8 @@ class UserContextGenerator {
     }
 
     const interactive = !config.disableInteraction
-    let filters: FilterSpecification | undefined
-    if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
-      const startMs = new Date(config.start).getTime()
-      const endMs = new Date(config.end).getTime()
-      filters = [
-        'all',
-        ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs],
-        ['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs],
-      ]
-    }
+
+    const filters = getTimeFilterForUserContextLayer(config)
     if (config.steps?.length) {
       const generatedRamp = getColorRampByOpacitySteps(config.color, config.steps?.length)
       const legendRamp = zip(config.steps, generatedRamp)
