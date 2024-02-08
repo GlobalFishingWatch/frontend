@@ -208,6 +208,10 @@ class HeatmapAnimatedGenerator {
       config.mode === HeatmapAnimatedMode.TimeCompare
     )
 
+    const attributtion = config.sublayers
+      .flatMap((sublayer) => sublayer.attribution || [])
+      .join(',')
+
     // TODO should be an array per sublayer?
     const vesselGroups = getSubLayersVesselGroups(config.sublayers)
 
@@ -282,6 +286,7 @@ class HeatmapAnimatedGenerator {
           tiles: [url],
           updateDebounce: config.updateDebounce && timeChunk.active,
           maxzoom: config.maxZoom,
+          ...(attributtion.length > 0 && { attribution: attributtion }),
         }
         return source
       })

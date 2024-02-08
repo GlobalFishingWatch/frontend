@@ -628,6 +628,7 @@ export type HeatmapAnimatedInteractionType = 'activity' | 'detections'
 export interface HeatmapAnimatedGeneratorSublayer {
   id: string
   datasets: string[]
+  attribution?: string
   filter?: string
   vesselGroups?: string
   colorRamp: ColorRampsIds
