@@ -1758,7 +1758,7 @@
   },
   "public-coral-reefs": {
     "name": "crwdns82818:0crwdne82818:0",
-    "description": "crwdns82820:0crwdne82820:0",
+    "description": "crwdns83008:0crwdne83008:0",
     "schema": {}
   },
   "public-costa-rica-fishing-effort": {
@@ -2026,7 +2026,7 @@
   },
   "public-global-bathymetry": {
     "name": "crwdns82824:0crwdne82824:0",
-    "description": "crwdns82826:0crwdne82826:0",
+    "description": "crwdns83010:0crwdne83010:0",
     "schema": {}
   },
   "public-global-carrier-vessels": {
@@ -2056,7 +2056,7 @@
   },
   "public-global-chlorophyl": {
     "name": "crwdns66205:0crwdne66205:0",
-    "description": "crwdns82922:0crwdne82922:0",
+    "description": "crwdns83012:0crwdne83012:0",
     "schema": {}
   },
   "public-global-encounters-events-carriers-fishing": {
@@ -2223,7 +2223,7 @@
   },
   "public-global-nitrate": {
     "name": "crwdns82830:0crwdne82830:0",
-    "description": "crwdns82832:0crwdne82832:0",
+    "description": "crwdns83014:0crwdne83014:0",
     "schema": {}
   },
   "public-global-other-vessels": {
@@ -2251,17 +2251,17 @@
   },
   "public-global-oxygen": {
     "name": "crwdns82834:0crwdne82834:0",
-    "description": "crwdns82836:0crwdne82836:0",
+    "description": "crwdns83016:0crwdne83016:0",
     "schema": {}
   },
   "public-global-ph": {
-    "name": "crwdns82838:0crwdne82838:0",
-    "description": "crwdns82840:0crwdne82840:0",
+    "name": "crwdns83018:0crwdne83018:0",
+    "description": "crwdns83020:0crwdne83020:0",
     "schema": {}
   },
   "public-global-phosphate": {
     "name": "crwdns82842:0crwdne82842:0",
-    "description": "crwdns82844:0crwdne82844:0",
+    "description": "crwdns83022:0crwdne83022:0",
     "schema": {}
   },
   "public-global-presence": {
@@ -2289,8 +2289,8 @@
     }
   },
   "public-global-salinity": {
-    "name": "crwdns82846:0crwdne82846:0",
-    "description": "crwdns82924:0crwdne82924:0",
+    "name": "crwdns83024:0crwdne83024:0",
+    "description": "crwdns83026:0crwdne83026:0",
     "schema": {}
   },
   "public-global-sar-footprints": {
@@ -2405,7 +2405,7 @@
   },
   "public-global-sst": {
     "name": "crwdns82926:0crwdne82926:0",
-    "description": "crwdns82928:0crwdne82928:0",
+    "description": "crwdns83028:0crwdne83028:0",
     "schema": {}
   },
   "public-global-support-vessels": {
@@ -2434,8 +2434,8 @@
     }
   },
   "public-global-thgt": {
-    "name": "crwdns82862:0crwdne82862:0",
-    "description": "crwdns82864:0crwdne82864:0",
+    "name": "crwdns83030:0crwdne83030:0",
+    "description": "crwdns83032:0crwdne83032:0",
     "schema": {}
   },
   "public-global-vessel-identity": {
@@ -2659,12 +2659,12 @@
   },
   "public-mangroves": {
     "name": "crwdns82866:0crwdne82866:0",
-    "description": "crwdns82868:0crwdne82868:0",
+    "description": "crwdns83034:0crwdne83034:0",
     "schema": {}
   },
   "public-marine-ecoregions": {
     "name": "crwdns82870:0crwdne82870:0",
-    "description": "crwdns82872:0crwdne82872:0",
+    "description": "crwdns83036:0crwdne83036:0",
     "schema": {
       "REALM": {
         "keyword": "crwdns82874:0crwdne82874:0",
@@ -3417,7 +3417,7 @@
   },
   "public-seagrasses": {
     "name": "crwdns82900:0crwdne82900:0",
-    "description": "crwdns82902:0crwdne82902:0",
+    "description": "crwdns83038:0crwdne83038:0",
     "schema": {
       "GENUS": {
         "keyword": "crwdns82904:0crwdne82904:0",
@@ -3428,7 +3428,7 @@
         "enum": {}
       },
       "habitat": {
-        "keyword": "crwdns82908:0crwdne82908:0",
+        "keyword": "crwdns83040:0crwdne83040:0",
         "enum": {}
       },
       "BIO_CLASS": {
@@ -3439,7 +3439,7 @@
   },
   "public-seamounts": {
     "name": "crwdns82912:0crwdne82912:0",
-    "description": "crwdns82914:0crwdne82914:0",
+    "description": "crwdns83042:0crwdne83042:0",
     "schema": {
       "Height": {
         "keyword": "crwdns82916:0crwdne82916:0",
