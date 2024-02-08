@@ -11,7 +11,7 @@ const cleanProperties = (
   const result = { ...object }
   for (const property in result) {
     const propertySchema = schema?.[property]
-    if (result[property]) {
+    if (result[property] !== null) {
       if (propertySchema?.type === 'string') {
         result[property] = result[property].toString()
       } else if (
