@@ -4,6 +4,8 @@ import {
   DatasetCategory,
   DatasetConfiguration,
   DatasetGeometryType,
+  DatasetSchema,
+  DatasetSchemaItem,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
@@ -138,6 +140,27 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
   return baseDataset
 }
 
+const cleanProperties = (
+  object: GeoJsonProperties,
+  schema: Record<string, DatasetSchema | DatasetSchemaItem> | undefined
+) => {
+  const result = { ...object }
+  for (const property in result) {
+    const propertySchema = schema?.[property]
+    if (result[property] !== null) {
+      if (propertySchema?.type === 'string') {
+        result[property] = result[property].toString()
+      } else if (
+        (propertySchema?.type === 'coordinate' || propertySchema?.type === 'range') &&
+        isNaN(Number(result[property]))
+      ) {
+        delete result[property]
+      }
+    }
+  }
+  return result
+}
+
 export const parseGeoJsonProperties = <T extends Polygon | Point>(
   geojson: FeatureCollection<T, GeoJsonProperties>,
   datasetMetadata: DatasetMetadata
@@ -145,7 +168,7 @@ export const parseGeoJsonProperties = <T extends Polygon | Point>(
   return {
     ...geojson,
     features: geojson.features.map((feature) => {
-      const properties = { ...feature.properties }
+      const cleanedProperties = cleanProperties(feature.properties, datasetMetadata.schema)
       const propertiesToDateMillis: DatasetConfigurationProperty[] = [
         'timestamp',
         'startTime',
@@ -156,14 +179,14 @@ export const parseGeoJsonProperties = <T extends Polygon | Point>(
           dataset: { configuration: datasetMetadata.configuration } as Dataset,
           property,
         }) as string
-        if (properties[propertyKey]) {
-          const value = properties[propertyKey]
-          properties[propertyKey] = getUTCDateTime(value).toMillis()
+        if (cleanedProperties[propertyKey]) {
+          const value = cleanedProperties[propertyKey]
+          cleanedProperties[propertyKey] = getUTCDateTime(value).toMillis()
         }
       })
       return {
         ...feature,
-        properties,
+        properties: cleanedProperties,
       }
     }) as Feature<T, GeoJsonProperties>[],
   }

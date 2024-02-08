@@ -16,7 +16,7 @@ const cleanProperties = (
         result[property] = result[property].toString()
       } else if (
         (propertySchema?.type === 'coordinate' || propertySchema?.type === 'range') &&
-        isNaN(result[property])
+        isNaN(Number(result[property]))
       ) {
         delete result[property]
       }
