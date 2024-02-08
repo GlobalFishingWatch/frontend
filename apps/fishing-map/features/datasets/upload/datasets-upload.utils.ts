@@ -4,11 +4,13 @@ import {
   DatasetCategory,
   DatasetConfiguration,
   DatasetGeometryType,
-  DatasetSchema,
-  DatasetSchemaItem,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
-import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
+import {
+  cleanProperties,
+  getDatasetSchema,
+  guessColumnsFromSchema,
+} from '@globalfishingwatch/data-transforms'
 import {
   DatasetConfigurationProperty,
   getDatasetConfigurationProperty,
@@ -138,27 +140,6 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
     }
   }
   return baseDataset
-}
-
-const cleanProperties = (
-  object: GeoJsonProperties,
-  schema: Record<string, DatasetSchema | DatasetSchemaItem> | undefined
-) => {
-  const result = { ...object }
-  for (const property in result) {
-    const propertySchema = schema?.[property]
-    if (result[property] !== null) {
-      if (propertySchema?.type === 'string') {
-        result[property] = result[property].toString()
-      } else if (
-        (propertySchema?.type === 'coordinate' || propertySchema?.type === 'range') &&
-        isNaN(Number(result[property]))
-      ) {
-        delete result[property]
-      }
-    }
-  }
-  return result
 }
 
 export const parseGeoJsonProperties = <T extends Polygon | Point>(
