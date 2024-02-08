@@ -27,10 +27,7 @@ export const infoDatasetConfigsCallback = (guestUser: boolean): GetDatasetConfig
       return []
     }
     if (guestUser) {
-      if (!info.query) {
-        info.query = []
-      }
-      info.query.push(CACHE_FALSE_PARAM)
+      return [{ ...info, query: [...(info.query || []), CACHE_FALSE_PARAM] }]
     }
     return [info]
   }

@@ -69,7 +69,7 @@ export const geoJSONToSegments = (
   { onlyExtents }: { onlyExtents?: boolean } = {}
 ): Segment[] => {
   const lineStringGeoJSONFeatures =
-    geoJSON.features[0].geometry.type === 'MultiLineString'
+    geoJSON.features[0]?.geometry?.type === 'MultiLineString'
       ? geoJSON.features.flatMap((multiline) => {
           const coordinateProperties = multiline.properties?.coordinateProperties
           const linestring = (multiline as Feature<MultiLineString>).geometry.coordinates.flatMap(

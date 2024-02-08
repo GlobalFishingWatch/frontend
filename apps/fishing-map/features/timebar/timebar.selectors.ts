@@ -115,7 +115,7 @@ export const selectTracksData = createSelector(
       }
 
       const dataviewFilters = dataview?.config?.filters
-      const isGeoJSONTrack = (trackResource.data as FeatureCollection)?.features.length > 0
+      const isGeoJSONTrack = (trackResource.data as FeatureCollection)?.features?.length > 0
 
       const filters: TrackCoordinatesPropertyFilter[] = [
         ...getTrackFilters(dataviewFilters),
