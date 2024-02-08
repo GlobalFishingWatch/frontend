@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniq } from 'lodash'
