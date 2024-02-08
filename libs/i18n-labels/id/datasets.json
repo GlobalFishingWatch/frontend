@@ -1758,7 +1758,7 @@
   },
   "public-coral-reefs": {
     "name": "Coral reefs",
-    "description": "Coral reefs",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Warm-water coral reefs are found in clear, shallow waters and are highly dynamic ecosystems that support the most biodiverse marine habitat. This dataset shows the global distribution of coral reefs in tropical and subtropical regions.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n  <a href='https://data.unep-wcmc.org/datasets/1'>UNEP-WCMC, WorldFish Centre, WRI, TNC (2021). Global distribution of warm-water coral reefs, compiled from multiple sources including the Millennium Coral Reef Mapping Project. Version 4.1. Includes contributions from IMaRS-USF and IRD (2005), IMaRS-USF (2005) and Spalding et al. (2001). Cambridge (UK): UN Environment World Conservation Monitoring Centre. Data DOI: https://doi.org/10.34892/t2wk-5t34.</a></li>",
     "schema": {}
   },
   "public-costa-rica-fishing-effort": {
@@ -2026,7 +2026,7 @@
   },
   "public-global-bathymetry": {
     "name": "Bathymetry",
-    "description": "Bathymetry",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n  <a href='https://www.gebco.net/data_and_products/gridded_bathymetry_data/#global'>GEBCO Compilation Group (2023) GEBCO 2023 Grid (doi:10.5285/f98b053b-0cbc-6c23-e053-6c86abc0af7b).</a></li>",
     "schema": {}
   },
   "public-global-carrier-vessels": {
@@ -2056,7 +2056,7 @@
   },
   "public-global-chlorophyl": {
     "name": "dan Konsentrasi Klorofil-a",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies.",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Marine phytoplankton chemically fix carbon through photosynthesis by taking in dissolved carbon dioxide and producing oxygen. This dataset is comprised of biogeochemical parameters, including chlorophyll, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n  <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>\"",
     "schema": {}
   },
   "public-global-encounters-events-carriers-fishing": {
@@ -2223,7 +2223,7 @@
   },
   "public-global-nitrate": {
     "name": "Nitrate concentration (NO3)",
-    "description": "Nitrate concentration (NO3)",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Nitrate is required by marine plants for photosynthesis and is a major nutrient for the ocean's productivity, but high concentrations can be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including nitrate, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>\"",
     "schema": {}
   },
   "public-global-other-vessels": {
@@ -2251,17 +2251,17 @@
   },
   "public-global-oxygen": {
     "name": "Oxygen concentration (O2)",
-    "description": "Oxygen concentration (O2)",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Dissolved oxygen is the amount of oxygen present in water and is crucial for the growth and survival of marine organisms. Warming ocean temperatures can lead to an expansion of low oxygen zones, which can impact the distribution and abundance of marine life. This dataset is comprised of biogeochemical parameters, including dissolved oxygen, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>\"",
     "schema": {}
   },
   "public-global-ph": {
-    "name": "potential of hydrogen (PH)",
-    "description": "pH",
+    "name": "potential of hydrogen (pH)",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>The acidity of the ocean is measured by pH. Increased carbon dioxide absorption has lowered the ocean's pH, resulting in ocean acidification which can have wide-ranging impacts on marine organisms. This dataset is comprised of biogeochemical parameters, including pH, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>\"",
     "schema": {}
   },
   "public-global-phosphate": {
     "name": "Phosphate concentration (PO4)",
-    "description": "Phosphate concentration (PO4)",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Phosphate is a major nutrient for marine foodwebs and ocean productivity, but high concentrations can also be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including phosphate, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>\"",
     "schema": {}
   },
   "public-global-presence": {
@@ -2289,8 +2289,8 @@
     }
   },
   "public-global-salinity": {
-    "name": "Surface Salinity",
-    "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses.<br/>\n<br/>\nGlobal circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of large-scale circulation, known as “thermohaline” circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa.<br/>\n<br/>\nThis thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons",
+    "name": "Salinity",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Sea surface salinity is the measurement of salt concentration at the ocean surface. It determines the density of ocean water along with temperature and is a key parameter to estimate the ocean's influence on climate. This dataset salinity is displayed with a 1/12 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n  <a href='https://doi.org/10.48670/moi-00016'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00016.</a></li>\"",
     "schema": {}
   },
   "public-global-sar-footprints": {
@@ -2405,7 +2405,7 @@
   },
   "public-global-sst": {
     "name": "Sea Surface Temperature",
-    "description": "Sea surface temperature is the water temperature at or near the surface of the ocean. Sea surface temperature impacts weather and regional climates. Temperature and salinity drive global ocean circulation and large-scale movement of ocean currents.",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Sea surface temperature is the water temperature at or near the surface. It can impact weather and regional climates, and together with salinity can drive ocean circulation and large-scale movement of ocean currents globally. This dataset provides sea surface temperature at 1/20 degree horizontal grid resolution, using in-situ and satellite data from both infrared and microwave radiometers.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n  <a href='https://doi.org/10.48670/moi-00165'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00165.</a></li>\"",
     "schema": {}
   },
   "public-global-support-vessels": {
@@ -2434,8 +2434,8 @@
     }
   },
   "public-global-thgt": {
-    "name": "Waves height",
-    "description": "Waves Height",
+    "name": "Wave height",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n  <a href='https://www.pacioos.hawaii.edu/metadata/ww3_global.html'>Cheung, K.F. 2010, updated 2021. WaveWatch III (WW3) Global Wave Model. Distributed by the Pacific Islands Ocean Observing System (PacIOOS), which is a part of the U.S. Integrated Ocean Observing System (IOOS®), funded in part by National Oceanic and Atmospheric Administration (NOAA) Awards #NA16NOS0120024 and #NA21NOS0120091.</a></li>\"",
     "schema": {}
   },
   "public-global-vessel-identity": {
@@ -2659,12 +2659,12 @@
   },
   "public-mangroves": {
     "name": "Mangroves",
-    "description": "Mangroves",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Mangroves are trees or shrubs that can survive in saline environments and typically grow within the intertidal zone of tropical and subtropical regions. Considered blue carbon habitats, mangrove forests improve water quality, stabilize and protect coastlines, and provide shelter for birds, animals and marine organisms. This dataset uses earth observation satellite imagery to show the global distribution of mangroves.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n  <a href='https://data.unep-wcmc.org/datasets/4'>Giri C, Ochieng E, Tieszen LL, Zhu Z, Singh A, Loveland T, Masek J, Duke N (2011). Status and distribution of mangrove forests of the world using earth observation satellite data (version 1.4, updated by UNEP-WCMC). Global Ecology and Biogeography 20: 154-159. DOI: https://doi.org/10.34892/1411-w728.</a></li>\"",
     "schema": {}
   },
   "public-marine-ecoregions": {
     "name": "Marine ecoregions (MEOW)",
-    "description": "Marine ecoregions (MEOW)",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Marine ecoregions are a biogeographic classification of the world's coastal and continental shelf waters. The dataset provides a geographic framework for a broad range of analyses relating to biodiversity in the marine environment.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n  <a href='https://geospatial.tnc.org/datasets/ed2be4cf8b7a451f84fd093c2e7660e3/explore'>The Nature Conservancy.</a></li>\"",
     "schema": {
       "REALM": {
         "keyword": "REALM",
@@ -3417,7 +3417,7 @@
   },
   "public-seagrasses": {
     "name": "Seagrasses",
-    "description": "Seagrasses",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Seagrasses are a productive ecosystem found globally in shallow marine areas where they provide food and habitat for organisms and play a key role in nutrient cycling. This dataset shows the global distribution of seagrasses.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n  <a href='https://data.unep-wcmc.org/datasets/7'>UNEP-WCMC, Short FT (2021). Global distribution of seagrasses (version 7.1). Seventh update to the data layer used in Green and Short (2003). Cambridge (UK): UN Environment World Conservation Monitoring Centre. Data DOI: https://doi.org/10.34892/x6r3-d211. </a></li>\"",
     "schema": {
       "GENUS": {
         "keyword": "GENUS",
@@ -3428,7 +3428,7 @@
         "enum": {}
       },
       "habitat": {
-        "keyword": "habitat",
+        "keyword": "Habitat",
         "enum": {}
       },
       "BIO_CLASS": {
@@ -3439,7 +3439,7 @@
   },
   "public-seamounts": {
     "name": "Seamounts",
-    "description": "Seamounts",
+    "description": "\"<h2>Overview</h2>\n<ul>\n<li>Seamounts are underwater mountains of volcanic origin that can generate an upwelling of nutrients, supporting increased biological productivity, species richness and distinct communities. This dataset of global seafloor geomorphic features includes seamounts, which are defined as peaks that rise over 1,000 m above the seafloor.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n  <a href='https://bluehabitats.org/'>Blue Habitats. Seafloor Geomorphic Features Map by Harris, P.T., Macmillan-Lawler, M., Rupp, J. and Baker, E.K. 2014. Geomorphology of the oceans. Marine Geology, 352: 4-24.</a></li>\"",
     "schema": {
       "Height": {
         "keyword": "Height",
