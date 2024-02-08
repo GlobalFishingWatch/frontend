@@ -233,6 +233,10 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
   valueProperties?: string[]
 }
 
+export type GlobalUserPointsGeneratorConfig = Required<
+  MergedGeneratorConfig<UserPointsGeneratorConfig>
+>
+
 /**
  * Contextual layers provided by GFW
  */
@@ -271,6 +275,10 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    */
   filters?: Record<string, Array<string>>
 }
+
+export type GlobalUserContextGeneratorConfig = Required<
+  MergedGeneratorConfig<UserContextGeneratorConfig>
+>
 
 export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
 /**
