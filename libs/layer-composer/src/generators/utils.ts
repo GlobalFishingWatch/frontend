@@ -47,16 +47,20 @@ export const addURLSearchParams = (url: URL, key: string, values: any[]): URL =>
 export const getTimeFilterForUserContextLayer = (
   config: GlobalUserContextGeneratorConfig | GlobalUserPointsGeneratorConfig
 ): FilterSpecification | undefined => {
-  if (!config?.startTimeFilterProperty) return undefined
+  if (!config?.startTimeFilterProperty && config?.endTimeFilterProperty) return undefined
   const startMs = new Date(config.start).getTime()
   const endMs = new Date(config.end).getTime()
-  if (config?.endTimeFilterProperty) {
+  if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
     return [
       'all',
       ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs],
       ['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs],
     ]
-  } else {
+  }
+  // Show for every time range after the start
+  if (config?.startTimeFilterProperty) {
     return ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs]
   }
+  // Show for every time range before the end
+  return ['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs]
 }
