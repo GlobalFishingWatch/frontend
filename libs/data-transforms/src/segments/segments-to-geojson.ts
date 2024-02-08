@@ -81,7 +81,7 @@ export const geoJSONToSegments = (
                     id: multiline.properties?.id,
                     coordinateProperties:
                       coordinateProperties &&
-                      Object.keys(coordinateProperties).reduce(
+                      Object.keys(coordinateProperties || {}).reduce(
                         (acc, prop) => ({
                           ...acc,
                           [prop]: coordinateProperties[prop][index],
@@ -104,7 +104,7 @@ export const geoJSONToSegments = (
       : coordinates
     const segment = segmentCoordinates.map((coordinate, i) => {
       const point: Point = {
-        coordinateProperties: Object.keys(coordinateProperties).reduce(
+        coordinateProperties: Object.keys(coordinateProperties || {}).reduce(
           (acc, prop) => ({
             ...acc,
             [prop]: coordinateProperties[prop][i],
