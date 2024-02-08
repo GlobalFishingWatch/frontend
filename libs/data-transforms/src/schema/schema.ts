@@ -33,7 +33,7 @@ export const getFieldSchema = (
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {
         const isDates = values.every((d) => !isNaN(Date.parse(d)))
-        const isCoordinates = values.some((d) => parseCoords(d, d))
+        const isNumeric = values.some((d) => parseCoords(d, d))
         if (isDates) {
           const valuesOrdered = values.sort((a, b) => a - b)
           schema.type = 'timestamp'
@@ -41,22 +41,11 @@ export const getFieldSchema = (
             new Date(valuesOrdered[0]).getTime(),
             new Date(valuesOrdered[valuesOrdered.length - 1]).getTime(),
           ]
-        } else if (isCoordinates) {
-          const valuesOrdered = values.sort((a, b) => a - b)
-          try {
-            const numericalValues = valuesOrdered.filter((v) => !isNaN(v))
-            const coordinates = parseCoords(
-              numericalValues[0],
-              numericalValues[numericalValues.length - 1]
-            )
-            if (coordinates) {
-              schema.type = 'coordinate'
-              schema.enum = [coordinates.latitude, coordinates.longitude]
-            } else {
-              schema.type = 'range'
-              schema.enum = [numericalValues[0], numericalValues[numericalValues.length - 1]]
-            }
-          } catch (e) {}
+        } else if (isNumeric) {
+          const numericalValues = values.filter((v) => !isNaN(Number(v)))
+          const valuesOrdered = numericalValues.sort((a, b) => a - b)
+          schema.type = 'range'
+          schema.enum = [valuesOrdered[0], valuesOrdered[valuesOrdered.length - 1]]
         } else {
           const stringEnumSupported = values.length < maxSchemaEnumValues
           schema.enum = stringEnumSupported ? values.map((v) => v.toString()) : []

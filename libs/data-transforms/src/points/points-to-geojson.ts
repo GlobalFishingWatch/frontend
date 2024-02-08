@@ -1,22 +1,30 @@
-import { Feature, FeatureCollection, Point } from 'geojson'
+import { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojson'
 import { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
 import { PointColumns } from '../types'
 import { parseCoords } from '../coordinates'
 import { getUTCDate } from '../list-to-track-segments'
 
-const cleanProperties = (
-  object: Record<string, any>,
+export const cleanProperties = (
+  object: GeoJsonProperties,
   schema: Record<string, DatasetSchema | DatasetSchemaItem> | undefined
 ) => {
-  const result = { ...object }
+  const result = Object.entries(object || {}).reduce(
+    (acc, [key, value]) => {
+      if (acc) {
+        acc[key.toLowerCase()] = value
+      }
+      return acc
+    },
+    {} as Record<string, any>
+  )
   for (const property in result) {
     const propertySchema = schema?.[property]
-    if (result[property]) {
+    if (result[property] !== null) {
       if (propertySchema?.type === 'string') {
         result[property] = result[property].toString()
       } else if (
         (propertySchema?.type === 'coordinate' || propertySchema?.type === 'range') &&
-        isNaN(result[property])
+        isNaN(Number(result[property]))
       ) {
         delete result[property]
       }
