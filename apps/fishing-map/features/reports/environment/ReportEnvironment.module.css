@@ -14,16 +14,14 @@
   color: var(--color-primary-blue);
 }
 
-.stats {
-  display: flex;
-  gap: var(--space-M);
-}
-
-.stats label {
-  display: flex;
-  align-items: center;
-}
-
 .marginTop {
   margin-top: var(--space-M);
+}
+
+.disclaimer {
+  color: var(--color-secondary-blue);
+}
+
+.disclaimer a {
+  text-decoration: underline;
 }
