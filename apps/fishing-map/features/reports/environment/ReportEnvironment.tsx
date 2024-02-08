@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react'
 import cx from 'classnames'
+import htmlParse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { GeneratorType, Interval, getInterval } from '@globalfishingwatch/layer-composer'
 import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
 import {
   useReportFeaturesLoading,
@@ -24,6 +24,7 @@ function ReportEnvironment() {
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
+  const interval = getInterval(timerange.start, timerange.end, [['MONTH', 'DAY']] as Interval[][])
 
   if (!environmentalDataviews?.length) return null
 
@@ -59,50 +60,30 @@ function ReportEnvironment() {
               )
             ) : null}
             {!loading && min && mean && max && (
-              <div className={cx(styles.stats, { [styles.marginTop]: isDynamic })}>
-                <div>
-                  <label>
-                    {t('analysis.stats.min', 'Min')}{' '}
-                    <Tooltip
-                      content={t(
-                        'analysis.stats.minHelp',
-                        'Minimum value of a cell contained or overlapping your area of interest'
-                      )}
-                    >
-                      <IconButton icon="info" size="tiny" />
-                    </Tooltip>
-                  </label>
-                  <p>{formatI18nNumber(min, { maximumFractionDigits: 2 })}</p>
-                </div>
-                <div>
-                  <label>
-                    {t('analysis.stats.mean', 'Avg')}{' '}
-                    <Tooltip
-                      content={t(
-                        'analysis.stats.meanHelp',
-                        'Average value of the cells contained or overlapping your area of interest'
-                      )}
-                    >
-                      <IconButton icon="info" size="tiny" />
-                    </Tooltip>
-                  </label>
-                  <p>{formatI18nNumber(mean, { maximumFractionDigits: 2 })}</p>
-                </div>
-                <div>
-                  <label>
-                    {t('analysis.stats.max', 'Max')}{' '}
-                    <Tooltip
-                      content={t(
-                        'analysis.stats.maxHelp',
-                        'Maximum value of a cell contained or overlapping your area of interest'
-                      )}
-                    >
-                      <IconButton icon="info" size="tiny" />
-                    </Tooltip>
-                  </label>
-                  <p>{formatI18nNumber(max, { maximumFractionDigits: 2 })}</p>
-                </div>
-              </div>
+              <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
+                {isDynamic
+                  ? t('analysis.statsDisclaimerDinamic', {
+                      defaultValue:
+                        'During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.',
+                      interval: t(`common.${interval.toLowerCase()}s`, { count: 1 }).toLowerCase(),
+                      min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
+                      max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
+                      unit,
+                    })
+                  : t('analysis.statsDisclaimerStatic', {
+                      defaultValue:
+                        'The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.',
+                      min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
+                      max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
+                      mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }),
+                      unit,
+                    })}{' '}
+                {dataset?.source && (
+                  <span>
+                    {t('analysis.dataSource', 'Data source')}: {htmlParse(dataset.source)}
+                  </span>
+                )}
+              </p>
             )}
           </div>
         )
