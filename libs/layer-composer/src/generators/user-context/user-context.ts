@@ -17,12 +17,11 @@ import { GeneratorType, MergedGeneratorConfig, UserContextGeneratorConfig } from
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
-import { HEATMAP_COLOR_RAMPS } from '../heatmap/colors'
 import {
   getFillPaintWithFeatureState,
   getLinePaintWithFeatureState,
 } from '../context/context.utils'
-
+import { getColorRampByOpacitySteps } from '../heatmap/util/colors'
 export type GlobalUserContextGeneratorConfig = Required<
   MergedGeneratorConfig<UserContextGeneratorConfig>
 >
@@ -84,9 +83,9 @@ class UserContextGenerator {
         ['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs],
       ]
     }
-    if (config.steps?.length && config.colorRamp) {
-      const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp]
-      const legendRamp = zip(config.steps, originalColorRamp)
+    if (config.steps?.length) {
+      const generatedRamp = getColorRampByOpacitySteps(config.color, config.steps?.length)
+      const legendRamp = zip(config.steps, generatedRamp)
       const valueExpression: ExpressionSpecification = [
         'to-number',
         // feature properties are set as lowercase on the backend
@@ -102,7 +101,7 @@ class UserContextGenerator {
         ...baseLayer,
         type: 'fill' as const,
         paint: {
-          'fill-outline-color': originalColorRamp[originalColorRamp.length - 1] || 'transparent',
+          'fill-outline-color': generatedRamp[generatedRamp.length - 1] || 'transparent',
           'fill-color': colorRamp,
           'fill-antialias': true,
         },
