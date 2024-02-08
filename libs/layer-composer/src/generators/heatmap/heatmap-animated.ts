@@ -209,7 +209,7 @@ class HeatmapAnimatedGenerator {
     )
 
     const attributtion = config.sublayers
-      .flatMap((sublayer) => sublayer.attribution || [])
+      .flatMap((sublayer) => (sublayer.visible ? sublayer.attribution || [] : []))
       .join(',')
 
     // TODO should be an array per sublayer?
