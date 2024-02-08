@@ -59,6 +59,7 @@ export const useEnvironmentalBreaksUpdate = () => {
     .flatMap(({ config }) => `${config?.minVisibleValue}-${config?.maxVisibleValue}`)
     .join(',')
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const hasDataviewStats = dataviews.every((d) => d.config?.stats)
 
   const updateBreaksByViewportValues = useCallback(
     (dataviewFeatures: DataviewFeature[], bounds: MiniglobeBounds) => {
@@ -131,6 +132,7 @@ export const useEnvironmentalBreaksUpdate = () => {
             ]
             const values = getValues(allFeaturesInReportArea, metadata)
             const visibleValues = filterVisibleValues(values, config)
+            if (!visibleValues.length) return []
             const areaStats = {
               min: min(visibleValues),
               mean: mean(visibleValues),
@@ -161,9 +163,16 @@ export const useEnvironmentalBreaksUpdate = () => {
   }, [sourcesLoaded, layersFilterHash])
 
   useEffect(() => {
-    if (sourcesLoaded && area?.geometry) {
+    if (hasDataviewStats) {
+      upsertDataviewInstance(dataviews.map(({ id }) => ({ id, config: { stats: undefined } })))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [area?.geometry])
+
+  useEffect(() => {
+    if (sourcesLoaded && area?.geometry && !hasDataviewStats) {
       updateStatsByArea(dataviewFeatures, area.geometry)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.geometry, sourcesLoaded, layersFilterHash])
+  }, [area?.geometry, sourcesLoaded, layersFilterHash, hasDataviewStats])
 }
