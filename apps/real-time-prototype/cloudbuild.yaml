@@ -52,7 +52,7 @@ steps:
       image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "real-time-prototype@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
       /kaniko/executor \
         --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:latest \
-        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$COMMIT_SHA \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$SHORT_SHA \
         --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$image_version \
         --cache=true \
         --build-arg \
@@ -83,7 +83,7 @@ steps:
         --project \
         $_RUN_PROJECT \
         --image \
-        gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$COMMIT_SHA \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$SHORT_SHA \
         --region \
         $_RUN_REGION \
         --platform managed \
