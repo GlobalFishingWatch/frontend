@@ -35,16 +35,30 @@ const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
  *
  */
 const NEXT_YEAR = Date.now() + 1000 * 60 * 60 * 24 * 365
-
+const BASE_HIGHLIGHT_CONFIG = {
+  localStorageKey: HIGHLIGHT_POPUP_KEY,
+  delayed: 1000,
+}
 // To display a new highlight popup, just add a HighlightPanelConfig element to this array.
 // It's important to define a unique dataviewInstanceId and the releaseDateTimestamp
 // so that the popup is shown in production only after that date
 const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
   {
+    ...BASE_HIGHLIGHT_CONFIG,
+    dataviewInstanceId: 'bathymetry-workspace',
+    releaseDateTimestamp: Date.parse('2024-01-08T00:00:00Z'),
+    imageUrl: `${PATH_BASENAME}/images/chlorophyl@2x.jpg`,
+    learnMoreUrl: 'https://globalfishingwatch.org/platform-updates/',
+    en: {
+      title: 'New environmental data sources added',
+      description:
+        'Global Fishing Watch has added new datasets, including dynamic oceanographic and ecosystem data following your feedback. Explore the new datasets alongside human activity, and analyze them through space and time using dynamic reports to learn more about your area of interest.',
+    },
+  },
+  {
+    ...BASE_HIGHLIGHT_CONFIG,
     dataviewInstanceId: 'sar',
     releaseDateTimestamp: Date.parse('2024-01-04T00:00:00Z'),
-    localStorageKey: HIGHLIGHT_POPUP_KEY,
-    delayed: 1000,
     imageUrl: `${PATH_BASENAME}/images/sar.webp`,
     learnMoreUrl:
       'https://globalfishingwatch.org/press-release/new-research-harnesses-ai-and-satellite-imagery-to-reveal-the-expanding-footprint-of-human-activity-at-sea',
@@ -55,10 +69,9 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
     },
   },
   {
+    ...BASE_HIGHLIGHT_CONFIG,
     dataviewInstanceId: 'vms-with-png',
     releaseDateTimestamp: Date.parse('2023-06-01T00:00:00Z'),
-    localStorageKey: HIGHLIGHT_POPUP_KEY,
-    delayed: 1000,
     imageUrl: `${PATH_BASENAME}/images/papua_new_guinea-vms.webp`,
     learnMoreUrl: 'https://globalfishingwatch.org/papua-new-guinea',
     en: {
