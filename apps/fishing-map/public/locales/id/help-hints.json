@@ -4,5 +4,6 @@
   "clickingOnAGridCellToShowVessels": "Klik pada sel grid manapun untuk menampilkan kapal paling aktif di area itu selama rentang waktu yang dipilih.",
   "filterActivityLayers": "Klik ikon filter untuk memfilter aktivitas menggunakan berbagai kriteria yang tersedia, termasuk tipe sumber data, bendera, dan tipe alat tangkap.",
   "fishingEffortHeatmap": "Peta menunjukkan aktivitas peta panas interaktif. Sel grid yang lebih terang adalah area dengan lebih banyak aktivitas.",
-  "periodComparisonBaseline": "Pilih garis dasar untuk membandingkan perubahan aktivitas, misalnya, antara sekarang dan tanggal yang sama tahun lalu, atau untuk membandingkan aktivitas pada waktu yang berbeda dalam setahun."
+  "periodComparisonBaseline": "Pilih garis dasar untuk membandingkan perubahan aktivitas, misalnya, antara sekarang dan tanggal yang sama tahun lalu, atau untuk membandingkan aktivitas pada waktu yang berbeda dalam setahun.",
+  "userContextLayers": "Upload and combine your area, track or point data in more formats with flexible color, size, labeling, time and filter options to best visualize and analyze your datasets alongside Global Fishing Watch layers."
 }
