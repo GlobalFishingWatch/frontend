@@ -91,7 +91,7 @@ steps:
       - 'NEXT_PUBLIC_REPORT_DAYS_LIMIT=$_NEXT_PUBLIC_REPORT_DAYS_LIMIT'
       - 'NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID=$_NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID'
 
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'
     waitFor: ['build-app']
     entrypoint: ''
