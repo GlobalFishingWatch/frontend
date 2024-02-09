@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
 // import TooltipContainer, { TooltipListContainer } from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
-import { WorkspaceCategory } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import {
   AppWorkspace,
   deleteWorkspaceThunk,
@@ -85,7 +85,7 @@ function UserWorkspaces() {
           WORKSPACE,
           {
             payload: {
-              category: workspace.category || WorkspaceCategory.FishingActivity,
+              category: workspace.category || DEFAULT_WORKSPACE_CATEGORY,
               workspaceId: workspace.id,
             },
           },
@@ -198,7 +198,7 @@ function UserWorkspaces() {
                     to={{
                       type: WORKSPACE,
                       payload: {
-                        category: workspace.category || WorkspaceCategory.FishingActivity,
+                        category: workspace.category || DEFAULT_WORKSPACE_CATEGORY,
                         workspaceId: workspace.id,
                       },
                       query: {},

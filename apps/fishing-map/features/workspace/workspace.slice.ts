@@ -47,6 +47,7 @@ import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook
 import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { AppDispatch } from 'store'
+import { LIBRARY_LAYERS } from 'data/layer-library'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
@@ -109,6 +110,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
               },
             })
           }
+        } else {
+          if (resolvedAction.payload?.status === 401) {
+            return rejectWithValue({ error: { status: 401, message: 'Private report' } })
+          }
+          throw new Error('Error fetching report')
         }
         // TODO fetch report and use the workspace within it
       } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
@@ -167,6 +173,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         const dataviewInstances: UrlDataviewInstance[] = [
           ...(workspace?.dataviewInstances || []),
           ...(urlDataviewInstances || []),
+          // Load dataviews from layer library
+          ...LIBRARY_LAYERS,
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
         const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))

@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
@@ -29,10 +29,6 @@ export const getFeatureBounds = (feature: TooltipEventFeature) => {
   }
 }
 
-export const getFeatureAreaId = (feature: TooltipEventFeature) => {
-  return feature.properties.gfw_id || feature.properties[feature.promoteId as string]
-}
-
 export type HighlightedAreaParams = {
   sourceId: string
   areaId: string
@@ -54,8 +50,12 @@ export const useHighlightArea = () => {
   )
 }
 
-const getAreaIdFromFeature = (feature: TooltipEventFeature): AreaKeyId => {
-  return feature.properties?.gfw_id || feature.properties?.[feature.promoteId as string]
+export const getAreaIdFromFeature = (feature: TooltipEventFeature): AreaKeyId => {
+  return (
+    feature.properties?.gfw_id ||
+    feature.properties?.[feature.promoteId as string] ||
+    (feature.id as string)
+  )
 }
 
 export const useContextInteractions = () => {
@@ -86,10 +86,8 @@ export const useContextInteractions = () => {
           dataview?.config?.type === GeneratorType.UserContext
             ? dataview?.datasets?.[0]?.name
             : feature.value || feature.title
-        batch(() => {
-          dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
-          dispatch(setClickedEvent(null))
-        })
+        dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
+        dispatch(setClickedEvent(null))
         dispatch(fetchAreaDetailThunk({ dataset, areaId, areaName }))
       }
 
@@ -101,7 +99,7 @@ export const useContextInteractions = () => {
   const setReportArea = useCallback(
     (feature: TooltipEventFeature) => {
       const { source: sourceId, title, value } = feature
-      const areaId = getFeatureAreaId(feature)
+      const areaId = getAreaIdFromFeature(feature) as string
       // Report already does it on page reload but to avoid waiting
       // this moves the map to the same position
       const bounds = getFeatureBounds(feature)

@@ -77,7 +77,7 @@ const useRulers = () => {
         setRuleStart(point)
       } else {
         dispatchQueryParams({
-          mapRulers: [...rulers, { ...(value as Ruler) }],
+          mapRulers: [...(rulers || []), { ...(value as Ruler) }],
           mapRulersVisible: true,
         })
         resetMapControlValue()

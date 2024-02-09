@@ -5,3 +5,15 @@
 .bqModal {
   height: 56rem;
 }
+
+.layerLibraryModal {
+  height: calc(100vh - 14rem);
+  min-height: 40rem;
+  padding: 0;
+}
+
+@media only screen and (width <= 800px) {
+  .layerLibraryModal {
+    height: unset;
+  }
+}

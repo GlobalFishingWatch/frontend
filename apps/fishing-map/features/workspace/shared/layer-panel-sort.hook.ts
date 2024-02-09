@@ -11,7 +11,9 @@ export function useLayerPanelDataviewSort(id: string) {
     transition,
     ...(isSorting && { overflow: 'hidden', zIndex: index === activeIndex ? 1 : 0 }),
     backgroundColor:
-      index === activeIndex ? 'rgba(var(--white-rgb), var(--opacity-secondary))' : 'transparent',
+      index >= 0 && activeIndex >= 0 && index === activeIndex
+        ? 'rgba(var(--white-rgb), var(--opacity-secondary))'
+        : 'transparent',
   }
 
   return { ...sort, style }

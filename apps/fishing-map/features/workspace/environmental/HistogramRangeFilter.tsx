@@ -3,12 +3,8 @@ import { BarChart, Bar, ResponsiveContainer } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { SliderRange, SliderRangeValues } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import {
-  Dataset,
-  DatasetTypes,
-  EnviromentalDatasetConfiguration,
-} from '@globalfishingwatch/api-types'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
+import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import { useDataviewHistogram } from 'features/workspace/environmental/histogram.hooks'
 import { getEventLabel } from 'utils/analytics'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -16,32 +12,17 @@ import styles from './HistogramRangeFilter.module.css'
 
 type HistogramRangeFilterProps = {
   dataview: UrlDataviewInstance
+  onSelect: (args: {
+    minVisibleValue: number | undefined
+    maxVisibleValue: number | undefined
+  }) => void
 }
 
-// TODO move to datasets-client lib and also the histogram.hook
-export const getLayerDatasetRange = (dataset: Dataset) => {
-  const {
-    max,
-    min,
-    scale = 1,
-    offset = 0,
-  } = dataset?.configuration as EnviromentalDatasetConfiguration
-
-  // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
-  const cleanMin = Math.max(0, Math.floor(min * scale + offset))
-  const cleanMax = Math.ceil(max * scale + offset)
-  return {
-    min: cleanMin,
-    max: cleanMax,
-  }
-}
-
-function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
+function HistogramRangeFilter({ dataview, onSelect }: HistogramRangeFilterProps) {
   const { t } = useTranslation()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const histogram = useDataviewHistogram(dataview)
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
-  const layerRange = getLayerDatasetRange(dataset)
+  const layerRange = getEnvironmentalDatasetRange(dataset)
   const minSliderValue = dataview.config?.minVisibleValue ?? layerRange.min
   const maxSliderValue = dataview.config?.maxVisibleValue ?? layerRange.max
   const sliderConfig = {
@@ -53,14 +34,14 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
   const onSliderChange = useCallback(
     (rangeSelected: SliderRangeValues) => {
       if (rangeSelected[0] === layerRange.min && rangeSelected[1] === layerRange.max) {
-        // onClean(id)
+        onSelect({
+          minVisibleValue: undefined,
+          maxVisibleValue: undefined,
+        })
       } else {
-        upsertDataviewInstance({
-          id: dataview.id,
-          config: {
-            minVisibleValue: rangeSelected[0],
-            maxVisibleValue: rangeSelected[1],
-          },
+        onSelect({
+          minVisibleValue: rangeSelected[0],
+          maxVisibleValue: rangeSelected[1],
         })
       }
       trackEvent({
@@ -69,7 +50,7 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
         label: getEventLabel([dataview.name as string, ...rangeSelected.map((r) => r.toString())]),
       })
     },
-    [layerRange?.min, layerRange?.max, dataview.name, dataview.id, upsertDataviewInstance]
+    [layerRange?.min, layerRange?.max, dataview?.name, onSelect]
   )
 
   return (

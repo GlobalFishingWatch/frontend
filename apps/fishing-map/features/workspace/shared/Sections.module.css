@@ -44,10 +44,15 @@
 }
 
 .emptyState,
+.emptyStateBig,
 .disclaimer {
   font: var(--font-S);
   opacity: var(--opacity-secondary);
   padding: 0 var(--space-S);
+}
+
+.emptyStateBig {
+  padding: var(--space-L) var(--space-S);
 }
 
 .disclaimer {

@@ -1,17 +1,14 @@
 .modalOverlay {
-  background: var(--color-secondary-blue);
+  background: rgba(var(--primary-blue-rgb), 0.85);
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-@media only screen and (max-width: 720px) {
+@media only screen and (width <= 720px) {
   .modalOverlay {
     align-items: flex-start;
   }
@@ -29,13 +26,7 @@
 }
 
 .fullScreen {
-  max-width: unset;
-}
-
-@media only screen and (min-width: 720px) {
-  .modalContentWrapper {
-    width: 90%;
-  }
+  max-width: 140rem;
 }
 
 .header {
@@ -79,7 +70,11 @@
   right: var(--space-M);
 }
 
-@media only screen and (min-width: 720px) {
+@media only screen and (width >= 720px) {
+  .modalContentWrapper {
+    width: 90%;
+  }
+
   .content {
     height: 50rem;
     max-height: calc(100vh - var(--size-L));

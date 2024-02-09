@@ -16,7 +16,7 @@ import DatasetNotFound from '../shared/DatasetNotFound'
 import LayerSwitch from '../common/LayerSwitch'
 import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
-import Filters from '../activity/ActivityFilters'
+import Filters from '../common/LayerFilters'
 
 type EventsLayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -111,8 +111,8 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
           )}
         </div>
       </div>
-      <div className={styles.properties}>
-        {hasSchemaFilterSelection && (
+      {hasSchemaFilterSelection && (
+        <div className={styles.properties}>
           <div className={styles.filters}>
             <div className={styles.filters}>
               {filtersAllowed.map(({ id, label }) => (
@@ -120,8 +120,8 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
               ))}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

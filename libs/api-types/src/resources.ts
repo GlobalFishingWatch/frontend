@@ -20,7 +20,11 @@ export enum Field {
   color = 'color',
 }
 
-export type Point = Partial<Record<Field, number | null>>
+export type PointProperties = Record<string, any>
+export type Point = Partial<Record<Field, number | null>> & {
+  properties?: PointProperties
+  coordinateProperties?: PointProperties
+}
 
 export type Segment = Point[]
 

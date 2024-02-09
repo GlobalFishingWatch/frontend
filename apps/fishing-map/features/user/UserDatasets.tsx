@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button, Spinner, IconButton, Modal, Icon } from '@globalfishingwatch/ui-components'
-import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetGeometryType, DatasetStatus } from '@globalfishingwatch/api-types'
 import {
   getDataviewInstanceByDataset,
-  useDatasetModalConnect,
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
-import { getDatasetIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
+import { getDatasetTypeIcon, getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
   deleteDatasetThunk,
   selectDatasetsStatus,
@@ -23,30 +24,23 @@ import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selecto
 import { HOME } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { sortByCreationDate } from 'utils/dates'
+import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import styles from './User.module.css'
-import { selectUserDatasetsByCategory } from './selectors/user.permissions.selectors'
 
-interface UserDatasetsProps {
-  datasetCategory: DatasetCategory
-}
-
-function UserDatasets({ datasetCategory }: UserDatasetsProps) {
+function UserDatasets() {
   const [infoDataset, setInfoDataset] = useState<Dataset | undefined>()
-  const datasets = useSelector(selectUserDatasetsByCategory(datasetCategory))
+  const datasets = useSelector(selectUserDatasets)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const datasetStatusId = useSelector(selectDatasetsStatusId)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchDatasetModal, dispatchDatasetCategory, dispatchEditingDatasetId } =
-    useDatasetModalConnect()
+  const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
+  const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
 
   const onNewDatasetClick = useCallback(async () => {
-    batch(() => {
-      dispatchDatasetModal('new')
-      dispatchDatasetCategory(datasetCategory)
-    })
-  }, [datasetCategory, dispatchDatasetModal, dispatchDatasetCategory])
+    dispatchDatasetModalOpen(true)
+  }, [dispatchDatasetModalOpen])
 
   const onDatasetClick = useCallback(
     (dataset: Dataset) => {
@@ -78,13 +72,15 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
 
   const onEditClick = useCallback(
     (dataset: Dataset) => {
-      batch(() => {
-        dispatchDatasetModal('edit')
-        dispatchEditingDatasetId(dataset.id)
-        dispatchDatasetCategory(datasetCategory)
+      dispatchDatasetModalOpen(true)
+      dispatchDatasetModalConfig({
+        id: dataset?.id,
+        type:
+          (dataset?.configuration?.configurationUI?.geometryType as DatasetGeometryType) ||
+          dataset?.configuration?.geometryType,
       })
     },
-    [datasetCategory, dispatchDatasetModal, dispatchDatasetCategory, dispatchEditingDatasetId]
+    [dispatchDatasetModalOpen, dispatchDatasetModalConfig]
   )
 
   const onDeleteClick = useCallback(
@@ -107,11 +103,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>
-          {datasetCategory === DatasetCategory.Context
-            ? t('common.context_area_other', 'Context areas')
-            : t('common.environment', 'Environment')}
-        </label>
+        <label>{t('user.datasets', 'User datasets')}</label>
         <Button disabled={loading} type="secondary" onClick={onNewDatasetClick}>
           {t('dataset.new', 'New dataset') as string}
         </Button>
@@ -137,7 +129,7 @@ function UserDatasets({ datasetCategory }: UserDatasetsProps) {
                   'There was an error uploading your dataset'
                 )} - ${dataset.importLogs}`
               }
-              const datasetIcon = getDatasetIcon(dataset)
+              const datasetIcon = getDatasetTypeIcon(dataset)
               return (
                 <li className={styles.dataset} key={dataset.id}>
                   <span>

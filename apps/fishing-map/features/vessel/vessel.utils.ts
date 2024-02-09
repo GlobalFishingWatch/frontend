@@ -175,7 +175,7 @@ export function getVesselProperty<P extends VesselIdentityProperty>(
     const combinedSourcesInfoData = getVesselCombinedSourceProperty(vessel, {
       vesselId,
       property,
-    })?.filter((i) => i === null)
+    })?.filter((i) => i !== null)
     if (combinedSourcesInfoData?.length) {
       return combinedSourcesInfoData.map((i) => `${i.name}`) as VesselProperty<P>
     }

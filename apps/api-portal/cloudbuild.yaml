@@ -51,7 +51,7 @@ steps:
       echo $tag > image-tag
       echo Docker Image Tag: $tag
 
-  - name: 'gcr.io/kaniko-project/executor:debug'
+  - name: 'gcr.io/kaniko-project/executor:latest'
     id: 'build-image'
     waitFor: ['build-app']
     entrypoint: ''

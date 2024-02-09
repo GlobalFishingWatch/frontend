@@ -1,21 +1,22 @@
 import { useSelector } from 'react-redux'
+import parse from 'html-react-parser'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import {
-  selectActiveHeatmapDataviews,
+  selectActiveHeatmapDowloadDataviews,
   selectHasReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { WORKSPACE_REPORT } from 'routes/routes'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationAreaId, selectLocationQuery } from 'routes/routes.selectors'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { TooltipEventFeature } from 'features/map/map.hooks'
-import { getFeatureAreaId, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
+import { getAreaIdFromFeature, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { resetReportData } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -37,7 +38,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const userData = useSelector(selectUserData)
-  const activityDataviews = useSelector(selectActiveHeatmapDataviews)
+  const activityDataviews = useSelector(selectActiveHeatmapDowloadDataviews)
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const datasetsReportAllowed = getActivityDatasetsReportSupported(
     activityDataviews,
@@ -48,8 +49,8 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
   return (
     <LoginButtonWrapper
       tooltip={t(
-        'download.activityLogin',
-        'Register and login to download activity (free, 2 minutes)'
+        'download.heatmapLogin',
+        'Register and login to download activity, detections or environment data (free, 2 minutes)'
       )}
     >
       <IconButton
@@ -58,8 +59,11 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
         testId="download-activity-layers"
         tooltip={
           datasetsReportSupported
-            ? t('download.activityAction', 'Download visible activity layers for this area')
-            : t('analysis.onlyAISAllowed', 'Only AIS datasets are allowed to download')
+            ? t('download.heatmapLayers', 'Download visible layers for this area')
+            : t(
+                'download.noHeatmapLayers',
+                'Turn on an activity, detections or environment layer to download its data for this area'
+              )
         }
         onClick={onClick}
         size="small"
@@ -83,7 +87,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const query = useSelector(selectLocationQuery)
   const bounds = getFeatureBounds(feature)
   const reportAreaId = useSelector(selectLocationAreaId)
-  const areaId = getFeatureAreaId(feature)
+  const areaId = getAreaIdFromFeature(feature)
   const isSameArea = reportAreaId?.toString() === areaId?.toString()
   if (!hasAnalysableLayer || isSameArea) {
     return (
@@ -106,7 +110,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     trackEvent({
       category: TrackCategory.Analysis,
       action: 'Open analysis panel',
-      label: areaId,
+      label: areaId as string,
     })
     resetSidebarScroll()
     dispatch(resetReportData())
@@ -122,7 +126,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
       to={{
         type: WORKSPACE_REPORT,
         payload: {
-          category: workspace?.category || WorkspaceCategory.FishingActivity,
+          category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
           workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
           datasetId: feature.datasetId,
           areaId,
@@ -172,10 +176,10 @@ const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
   handleReportClick,
 }: ContextLayersRowProps) => {
   const { t } = useTranslation()
-
+  const parsedLabel = typeof label === 'string' ? parse(label) : label
   return (
     <div className={styles.row} key={id}>
-      <span className={styles.rowText}>{label}</span>
+      <span className={styles.rowText}>{parsedLabel}</span>
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
           {handleDownloadClick && <DownloadPopupButton onClick={handleDownloadClick} />}

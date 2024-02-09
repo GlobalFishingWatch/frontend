@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { FeatureCollection } from 'geojson'
 import {
   DatasetTypes,
   Resource,
@@ -11,8 +12,16 @@ import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
   pickTrackResource,
+  getDatasetsExtent,
 } from '@globalfishingwatch/dataviews-client'
-import { geoJSONToSegments, getSegmentExtents } from '@globalfishingwatch/data-transforms'
+import {
+  TrackCoordinatesPropertyFilter,
+  geoJSONToSegments,
+  getSegmentExtents,
+  getTimeFilter,
+  getTrackFilters,
+  filterTrackByCoordinateProperties,
+} from '@globalfishingwatch/data-transforms'
 import {
   TimebarChartData,
   TimebarChartChunk,
@@ -30,8 +39,39 @@ import { TimebarGraphs } from 'types'
 import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
+  selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
+import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
+import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
+
+export const selectDatasetsExtent = createSelector(
+  [selectDataviewInstancesResolved, selectAllDatasets],
+  (dataviews, datasets) => {
+    const activeDataviewDatasets = getDatasetsInDataviews(dataviews)
+    const activeDatasets = datasets.filter((d) => activeDataviewDatasets.includes(d.id))
+    return getDatasetsExtent(activeDatasets, {
+      format: 'timestamp',
+    })
+  }
+)
+
+export const selectAvailableStart = createSelector([selectDatasetsExtent], (datasetsExtent) => {
+  const defaultAvailableStartMs = new Date(AVAILABLE_START).getTime()
+  const availableStart = new Date(
+    Math.min(defaultAvailableStartMs, (datasetsExtent.extentStart as number) || Infinity)
+  ).toISOString()
+  return availableStart
+})
+
+export const selectAvailableEnd = createSelector([selectDatasetsExtent], (datasetsExtent) => {
+  const defaultAvailableEndMs = new Date(AVAILABLE_END).getTime()
+  const availableEndMs = new Date(
+    Math.max(defaultAvailableEndMs, (datasetsExtent.extentEnd as number) || -Infinity)
+  ).toISOString()
+  return availableEndMs
+})
 
 const EMPTY_ARRAY: [] = []
 
@@ -74,8 +114,22 @@ export const selectTracksData = createSelector(
         return { ...timebarTrack, status: ResourceStatus.Error }
       }
 
-      const segmentExtents: any = (trackResource.data as any)?.features
-        ? geoJSONToSegments(trackResource.data as any, { onlyExtents: true })
+      const dataviewFilters = dataview?.config?.filters
+      const isGeoJSONTrack = (trackResource.data as FeatureCollection)?.features?.length > 0
+
+      const filters: TrackCoordinatesPropertyFilter[] = [
+        ...getTrackFilters(dataviewFilters),
+        // This is done to allow times property to pass the filtering
+        // and reach the timebar, where timebased filtering is done
+        ...getTimeFilter(AVAILABLE_START, AVAILABLE_END),
+      ]
+      const filteredFeatures =
+        isGeoJSONTrack && dataviewFilters
+          ? filterTrackByCoordinateProperties(trackResource.data as FeatureCollection, { filters })
+          : (trackResource.data as FeatureCollection)
+
+      const segmentExtents: any = isGeoJSONTrack
+        ? geoJSONToSegments(filteredFeatures as FeatureCollection, { onlyExtents: true })
         : getSegmentExtents((trackResource.data as any) || ([] as any))
 
       const chunks: TimebarChartChunk[] = segmentExtents.map((segment: any) => {
@@ -86,11 +140,13 @@ export const selectTracksData = createSelector(
           end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
           values: segment as TimebarChartValue[],
           props: {
+            ...segment[0],
             id: segment[0]?.id,
             color: useOwnColor ? segment[0]?.color : undefined,
           },
         }
       })
+
       const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
       const vessel = (resources[infoUrl] as any)?.data
       const shipname =

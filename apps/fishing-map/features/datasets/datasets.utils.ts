@@ -11,7 +11,6 @@ import {
   EndpointId,
   EventTypes,
   UserPermission,
-  DatasetGeometryType,
   FilterOperator,
   INCLUDE_FILTER_ID,
   DatasetSubCategory,
@@ -20,16 +19,19 @@ import {
   DatasetSchema,
   DatasetSchemaItem,
   IdentityVessel,
-  EnviromentalDatasetConfiguration,
+  DatasetSchemaItemEnum,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
+import {
+  getDatasetGeometryType,
+  getEnvironmentalDatasetRange,
+} from '@globalfishingwatch/datasets-client'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getFlags, getFlagsByIds } from 'utils/flags'
-import { FileType } from 'features/common/FileDropzone'
 import { getVesselGearType } from 'utils/info'
 import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils.datasets'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
@@ -82,8 +84,15 @@ export type SupportedActivityDatasetSchema =
   | 'label'
 
 // Speed flag and vessels only added to debug purposes of vessel speed dataset
-export type SupportedEnvDatasetSchema = 'type' | 'speed' | 'flag' | 'vessel_type'
-export type SupportedContextDatasetSchema = 'removal_of'
+// Context env layers filtesr: Seamounts => height & Ecoregions => REALM
+export type SupportedEnvDatasetSchema =
+  | 'type'
+  | 'speed'
+  | 'flag'
+  | 'vessel_type'
+  | 'Height'
+  | 'REALM'
+export type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
 export type SupportedEventsDatasetSchema = 'duration'
 
 const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
@@ -102,19 +111,6 @@ export type GetSchemaInDataviewParams = {
 export type SchemaFieldDataview =
   | UrlDataviewInstance
   | Pick<Dataview, 'category' | 'config' | 'datasets' | 'filtersConfig'>
-
-export type DatasetGeometryTypesSupported = Extract<
-  DatasetGeometryType,
-  'polygons' | 'tracks' | 'points'
->
-export const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
-  polygons: ['shapefile', 'geojson'],
-  tracks: ['csv'],
-  points: ['shapefile', 'geojson', 'csv'],
-}
-
-export const getFileTypes = (datasetGeometryType: DatasetGeometryTypesSupported) =>
-  FILES_TYPES_BY_GEOMETRY_TYPE[datasetGeometryType || ('polygons' as DatasetGeometryTypesSupported)]
 
 export const isPrivateDataset = (dataset: Partial<Dataset>) =>
   !(dataset?.id || '').startsWith(`${PUBLIC_SUFIX}-`)
@@ -139,10 +135,44 @@ export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string =
   return label
 }
 
-export const getDatasetIcon = (dataset: Dataset): IconType | null => {
-  if (dataset.type === DatasetTypes.UserTracks) return 'track'
-  if (dataset.configuration?.geometryType === 'points') return 'dots'
-  if (dataset.type === DatasetTypes.UserContext) return 'polygons'
+export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
+  if (!dataset) {
+    return null
+  }
+  if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
+  if (dataset.type === DatasetTypes.Events) return 'clusters'
+  const geometryType = getDatasetGeometryType(dataset)
+  if (geometryType === 'points') {
+    return 'dots'
+  }
+  if (geometryType === 'tracks') {
+    return 'track'
+  }
+  return 'polygons'
+}
+
+export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
+  const source = dataset?.source
+  if (!source) {
+    return null
+  }
+  // Activity, Detections & Events
+  if (source === 'Global Fishing Watch' || source === 'GFW') return 'gfw-logo'
+  // Environment
+  if (source.includes('HYCOM')) return 'hycom-logo'
+  if (source.includes('Copernicus')) return 'copernicus-logo'
+  if (source.includes('NASA')) return 'nasa-logo'
+  if (source.includes('PacIOOS')) return 'pacioos-logo'
+  if (source.includes('gebco')) return 'gebco-logo'
+  if (source.includes('Geospatial Conservation Atlas')) return 'gca-logo'
+  if (source.includes('UNEP')) return 'unep-logo'
+  if (source.includes('Blue Habitats')) return 'blue-habitats-logo'
+  // Reference
+  if (source.includes('protectedplanet')) return 'protected-planet-logo'
+  if (source.includes('protectedseas')) return 'protected-seas-logo'
+  if (source.includes('marineregions')) return 'marine-regions-logo'
+  if (source.includes('fao')) return 'fao-logo'
+
   return null
 }
 
@@ -312,16 +342,19 @@ export const getActivityDatasetsReportSupported = (
   permissions: UserPermission[] = []
 ) => {
   return dataviews.flatMap((dataview) => {
-    const permissionDatasetsIds: string[] = getActiveDatasetsInActivityDataviews([dataview]).filter(
-      (datasetId: string) => {
-        return datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
-      }
-    )
+    const datasets = getActiveDatasetsInDataview(dataview)?.flatMap((d) => d?.id || []) || []
+    const permissionDatasetsIds: string[] = datasets.filter((datasetId: string) => {
+      const valid = datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
+      return valid
+    })
     return dataview.datasets
       ?.filter(
         (d) =>
           permissionDatasetsIds.includes(d.id) &&
-          (d.category === DatasetCategory.Activity || d.category === DatasetCategory.Detections)
+          (d.category === DatasetCategory.Activity ||
+            d.category === DatasetCategory.Detections ||
+            (d.category === DatasetCategory.Environment &&
+              dataview.config?.type === GeneratorType.HeatmapAnimated))
       )
       .map((d) => d.id)
   })
@@ -557,13 +590,6 @@ export const getIncompatibleFilterSelection = (
   })
 }
 
-export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
-  return dataview.category === DataviewCategory.Activity ||
-    dataview.category === DataviewCategory.Detections
-    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
-    : dataview?.datasets
-}
-
 const getCommonSchemaTypeInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
@@ -581,6 +607,15 @@ export type SchemaFieldSelection = {
 }
 
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
+
+export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
+  if (dataview.category === DataviewCategory.User) {
+    return dataview.datasets
+  }
+  return dataview.config?.datasets
+    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
+    : dataview?.datasets
+}
 
 export const getCommonSchemaFieldsInDataview = (
   dataview: SchemaFieldDataview,
@@ -607,13 +642,16 @@ export const getCommonSchemaFieldsInDataview = (
     return []
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  let schemaFields: string[][] = (activeDatasets || [])?.map((d) => {
+  let schemaFields: DatasetSchemaItemEnum[] = (activeDatasets || [])?.map((d) => {
     const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
-    return schemaItem?.enum || schemaItem?.items?.enum || []
+    const schemaEnum = schemaItem?.enum || schemaItem?.items?.enum || []
+    return Array.isArray(schemaEnum)
+      ? schemaEnum.filter((e) => e !== null && e !== undefined)
+      : schemaEnum
   })
-  if (schemaType === 'number') {
+  if (schemaType === 'number' || schemaType === 'range') {
     const schemaConfig = getDatasetSchemaItem(activeDatasets!?.[0], schema)
-    if (schemaConfig) {
+    if (schemaConfig && schemaConfig.min && schemaConfig.max) {
       schemaFields = [[schemaConfig?.min?.toString(), schemaConfig?.max?.toString()]]
     }
   }
@@ -627,12 +665,12 @@ export const getCommonSchemaFieldsInDataview = (
             ? field
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field!?.toString())
         if (label === field) {
-          if (dataview.category !== DataviewCategory.Context) {
-            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field)))
+          if (dataview.category !== DataviewCategory.Context && schema !== 'vessel_id') {
+            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
           }
           if (schema === 'geartypes') {
             // There is an fixed list of gearTypes independant of the dataset
-            label = getVesselGearType({ geartypes: field })
+            label = getVesselGearType({ geartypes: field as string })
           }
         }
         return { id: field!?.toString(), label: label as string }
@@ -663,7 +701,7 @@ export const getSchemaOptionsSelectedInDataview = (
     (dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue)
   ) {
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
-    const layerRange = getLayerDatasetRange(dataset)
+    const layerRange = getEnvironmentalDatasetRange(dataset)
     const min = dataview.config?.minVisibleValue || layerRange?.min
     const max = dataview.config?.maxVisibleValue || layerRange?.max
     return [
@@ -783,9 +821,13 @@ export const getSchemaFiltersInDataview = (
   dataview: SchemaFieldDataview,
   { vesselGroups } = {} as GetSchemaInDataviewParams
 ): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
-  const fieldsIds = uniq(
-    dataview.datasets?.flatMap((d) => d.fieldsAllowed || []).filter((f) => f !== 'vessel_id')
+  let fieldsIds = uniq(
+    dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
+  if (dataview.datasets?.some((t) => t.type === DatasetTypes.Fourwings)) {
+    // This filter avoids to show the selector for the vessel ids in fourwings layers
+    fieldsIds = fieldsIds.filter((f) => f !== 'vessel_id')
+  }
   const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetSchema[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewSchemaSupported(dataview, f))
   const fieldsDisabled = fieldsIds.filter((f) => !isDataviewSchemaSupported(dataview, f))
@@ -806,22 +848,5 @@ export const getSchemaFiltersInDataview = (
   return {
     filtersAllowed,
     filtersDisabled,
-  }
-}
-
-export const getLayerDatasetRange = (dataset: Dataset) => {
-  const {
-    max,
-    min,
-    scale = 1,
-    offset = 0,
-  } = dataset?.configuration as EnviromentalDatasetConfiguration
-
-  // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
-  const cleanMin = Math.max(0, Math.floor(min * scale + offset))
-  const cleanMax = Math.ceil(max * scale + offset)
-  return {
-    min: cleanMin,
-    max: cleanMax,
   }
 }

@@ -5,6 +5,7 @@ import { Fragment } from 'react'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
 import {
@@ -17,7 +18,11 @@ import {
   selectReportPreviewBuffer,
   setPreviewBuffer,
 } from 'features/reports/report.slice'
-import { selectReportAreaDataview } from 'features/reports/reports.selectors'
+import {
+  selectReportArea,
+  selectReportAreaDataview,
+  selectReportAreaStatus,
+} from 'features/reports/reports.selectors'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
@@ -30,6 +35,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { BufferOperation, BufferUnit } from 'types'
 import useMapInstance from 'features/map/map-context.hooks'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
 
@@ -45,6 +51,8 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const dispatch = useAppDispatch()
   const areaDataview = useSelector(selectReportAreaDataview)
   const report = useSelector(selectCurrentReport)
+  const reportArea = useSelector(selectReportArea)
+  const reportAreaStatus = useSelector(selectReportAreaStatus)
   const previewBuffer = useSelector(selectReportPreviewBuffer)
   const urlBufferValue = useSelector(selectReportBufferValue)
   const urlBufferUnit = useSelector(selectReportBufferUnit)
@@ -153,12 +161,32 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     dispatch(cleanCurrentWorkspaceStateBufferParams())
   }, [dispatch, dispatchQueryParams, tooltipInstance])
 
+  const dataset = areaDataview?.datasets?.[0]
   const reportTitle = useMemo(() => {
-    const areaName = report
-      ? report.name
-      : areaDataview?.config?.type === GeneratorType.UserContext
-        ? areaDataview?.datasets?.[0]?.name
-        : area?.name
+    const propertyToInclude = getDatasetConfigurationProperty({
+      dataset,
+      property: 'propertyToInclude',
+    }) as string
+    const valueProperties = getDatasetConfigurationProperty({
+      dataset,
+      property: 'valueProperties',
+    })
+    const valueProperty = Array.isArray(valueProperties) ? valueProperties[0] : valueProperties
+
+    let areaName = report?.name
+    if (!areaName) {
+      if (areaDataview?.config?.type === GeneratorType.UserContext) {
+        if (reportAreaStatus === AsyncReducerStatus.Finished) {
+          areaName =
+            reportArea?.properties?.[propertyToInclude] ||
+            reportArea?.properties?.[valueProperty] ||
+            reportArea?.name ||
+            dataset?.name
+        }
+      } else {
+        areaName = area?.name
+      }
+    }
 
     if (!urlBufferValue) {
       return areaName
@@ -184,14 +212,16 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     }
     return ''
   }, [
-    area?.name,
-    areaDataview?.config?.type,
-    areaDataview?.datasets,
-    report,
-    t,
-    urlBufferOperation,
-    urlBufferUnit,
+    dataset,
+    report?.name,
     urlBufferValue,
+    urlBufferOperation,
+    areaDataview?.config?.type,
+    reportAreaStatus,
+    reportArea,
+    area?.name,
+    t,
+    urlBufferUnit,
   ])
 
   return (

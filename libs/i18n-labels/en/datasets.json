@@ -1756,6 +1756,11 @@
     "description": "Buffered at ~1km",
     "schema": {}
   },
+  "public-coral-reefs": {
+    "name": "Coral reefs",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Warm-water coral reefs are found in clear, shallow waters and are highly dynamic ecosystems that support the most biodiverse marine habitat. This dataset shows the global distribution of coral reefs in tropical and subtropical regions.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/1'>UNEP-WCMC, WorldFish Centre, WRI, TNC (2021). Global distribution of warm-water coral reefs, compiled from multiple sources including the Millennium Coral Reef Mapping Project. Version 4.1. Includes contributions from IMaRS-USF and IRD (2005), IMaRS-USF (2005) and Spalding et al. (2001). Cambridge (UK): UN Environment World Conservation Monitoring Centre. Data DOI: https://doi.org/10.34892/t2wk-5t34.</a></li>",
+    "schema": {}
+  },
   "public-costa-rica-fishing-effort": {
     "name": "Costa Rica VMS",
     "description": "Vessel monitoring system (VMS) data is provided by the Costa Rican Fisheries and Aquaculture Institute. Data is collected using Ecuador's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
@@ -1937,7 +1942,8 @@
     "name": "FAO major fishing areas",
     "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas. <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>Source</a>. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer",
     "schema": {
-      "FID": "FID"
+      "FID": "FID",
+      "F_CODE": "F_CODE"
     }
   },
   "public-fisheries-restricted-areas": {
@@ -2018,6 +2024,11 @@
       "firstTransmissionDate": "firstTransmissionDate"
     }
   },
+  "public-global-bathymetry": {
+    "name": "Bathymetry",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://www.gebco.net/data_and_products/gridded_bathymetry_data/#global'>GEBCO Compilation Group (2023) GEBCO 2023 Grid (doi:10.5285/f98b053b-0cbc-6c23-e053-6c86abc0af7b).</a></li>",
+    "schema": {}
+  },
   "public-global-carrier-vessels": {
     "name": "AIS (Carrier Vessels)",
     "description": "Carriers from AIS",
@@ -2045,7 +2056,7 @@
   },
   "public-global-chlorophyl": {
     "name": "Chlorophyll-a concentration",
-    "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring.<br/>\n<br/>\nChlorophyll-a concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived.<br/>\n<br/>\nScientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies.<br/>\n<br/>\n<strong>Source</strong><br/>\n<br/>\nThis level 3 product includes ocean color and satellite ocean biology data produced or collected under EOSDIS - https://earthdata.nasa.gov/about.<br/>\n<br/>\nThis dataset may be used for studying the biology and hydrology of coastal zones, changes in the diversity and geographical distribution of coastal marine habitats, biogeochemical fluxes and their influence in Earth's oceans and climate over time, and finally the impact of climate and environmental variability and change on ocean ecosystems and the biodiversity they support.<br/>\n<br/>\nScale factor and offset are already applied.<br/>\n<br/>\n<strong>Citations</strong><br/>\n<br/>\nNASA Goddard Space Flight Center, Ocean Ecology Laboratory, Ocean Biology Processing Group. Moderate-resolution Imaging Spectroradiometer (MODIS) Aqua Ocean Color Data, NASA OB.DAAC, Greenbelt, MD, USA.<br/>",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Marine phytoplankton chemically fix carbon through photosynthesis by taking in dissolved carbon dioxide and producing oxygen. This dataset is comprised of biogeochemical parameters, including chlorophyll, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
     "schema": {}
   },
   "public-global-encounters-events-carriers-fishing": {
@@ -2210,6 +2221,11 @@
       "event_mean_position": "event_mean_position"
     }
   },
+  "public-global-nitrate": {
+    "name": "Nitrate concentration (NO3)",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Nitrate is required by marine plants for photosynthesis and is a major nutrient for the ocean's productivity, but high concentrations can be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including nitrate, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>\"",
+    "schema": {}
+  },
   "public-global-other-vessels": {
     "name": "AIS (Other Vessels)",
     "description": "Other vessels from AIS",
@@ -2232,6 +2248,21 @@
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
+  },
+  "public-global-oxygen": {
+    "name": "Oxygen concentration (O2)",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Dissolved oxygen is the amount of oxygen present in water and is crucial for the growth and survival of marine organisms. Warming ocean temperatures can lead to an expansion of low oxygen zones, which can impact the distribution and abundance of marine life. This dataset is comprised of biogeochemical parameters, including dissolved oxygen, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
+    "schema": {}
+  },
+  "public-global-ph": {
+    "name": "potential of hydrogen (PH)",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>The acidity of the ocean is measured by pH. Increased carbon dioxide absorption has lowered the ocean's pH, resulting in ocean acidification which can have wide-ranging impacts on marine organisms. This dataset is comprised of biogeochemical parameters, including pH, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
+    "schema": {}
+  },
+  "public-global-phosphate": {
+    "name": "Phosphate concentration (PO4)",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Phosphate is a major nutrient for marine foodwebs and ocean productivity, but high concentrations can also be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including phosphate, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
+    "schema": {}
   },
   "public-global-presence": {
     "name": "AIS",
@@ -2256,6 +2287,11 @@
       },
       "vessel-groups": "vessel-groups"
     }
+  },
+  "public-global-salinity": {
+    "name": "Salinity",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Sea surface salinity is the measurement of salt concentration at the ocean surface. It determines the density of ocean water along with temperature and is a key parameter to estimate the ocean's influence on climate. This dataset salinity is displayed with a 1/12 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00016'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00016.</a></li>",
+    "schema": {}
   },
   "public-global-sar-footprints": {
     "name": "Detection footprints",
@@ -2357,6 +2393,21 @@
     "description": "Sea surface temperatures anomalies (Mean)",
     "schema": {}
   },
+  "public-global-sst-max": {
+    "name": "Surface Temperature Max",
+    "description": "Surface Temperature",
+    "schema": {}
+  },
+  "public-global-sst-min": {
+    "name": "Surface Temperature Min",
+    "description": "Surface Temperature",
+    "schema": {}
+  },
+  "public-global-sst": {
+    "name": "Sea Surface Temperature",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Sea surface temperature is the water temperature at or near the surface. It can impact weather and regional climates, and together with salinity can drive ocean circulation and large-scale movement of ocean currents globally. This dataset provides sea surface temperature at 1/20 degree horizontal grid resolution, using in-situ and satellite data from both infrared and microwave radiometers.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00165'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00165.</a></li>",
+    "schema": {}
+  },
   "public-global-support-vessels": {
     "name": "AIS (Support Vessels)",
     "description": "Support vessels from AIS",
@@ -2381,6 +2432,11 @@
       "lastTransmissionDate": "lastTransmissionDate",
       "firstTransmissionDate": "firstTransmissionDate"
     }
+  },
+  "public-global-thgt": {
+    "name": "Waves height",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://www.pacioos.hawaii.edu/metadata/ww3_global.html'>Cheung, K.F. 2010, updated 2021. WaveWatch III (WW3) Global Wave Model. Distributed by the Pacific Islands Ocean Observing System (PacIOOS), which is a part of the U.S. Integrated Ocean Observing System (IOOS®), funded in part by National Oceanic and Atmospheric Administration (NOAA) Awards #NA16NOS0120024 and #NA21NOS0120091.</a></li>",
+    "schema": {}
   },
   "public-global-vessel-identity": {
     "name": "AIS (all vessel types)",
@@ -2600,6 +2656,34 @@
     "name": "Inshore Fishing Zone",
     "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)",
     "schema": {}
+  },
+  "public-mangroves": {
+    "name": "Mangroves",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Mangroves are trees or shrubs that can survive in saline environments and typically grow within the intertidal zone of tropical and subtropical regions. Considered blue carbon habitats, mangrove forests improve water quality, stabilize and protect coastlines, and provide shelter for birds, animals and marine organisms. This dataset uses earth observation satellite imagery to show the global distribution of mangroves.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/4'>Giri C, Ochieng E, Tieszen LL, Zhu Z, Singh A, Loveland T, Masek J, Duke N (2011). Status and distribution of mangrove forests of the world using earth observation satellite data (version 1.4, updated by UNEP-WCMC). Global Ecology and Biogeography 20: 154-159. DOI: https://doi.org/10.34892/1411-w728.</a></li>",
+    "schema": {}
+  },
+  "public-marine-ecoregions": {
+    "name": "Marine ecoregions (MEOW)",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Marine ecoregions are a biogeographic classification of the world's coastal and continental shelf waters. The dataset provides a geographic framework for a broad range of analyses relating to biodiversity in the marine environment.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://geospatial.tnc.org/datasets/ed2be4cf8b7a451f84fd093c2e7660e3/explore'>The Nature Conservancy.</a></li>",
+    "schema": {
+      "REALM": {
+        "keyword": "REALM",
+        "enum": {
+          "Temperate Southern Africa": "Temperate Southern Africa",
+          "Temperate Northern Pacific": "Temperate Northern Pacific",
+          "Tropical Atlantic": "Tropical Atlantic",
+          "Southern Ocean": "Southern Ocean",
+          "Western Indo-Pacific": "Western Indo-Pacific",
+          "Temperate South America": "Temperate South America",
+          "Central Indo-Pacific": "Central Indo-Pacific",
+          "Temperate Northern Atlantic": "Temperate Northern Atlantic",
+          "Arctic": "Arctic",
+          "Temperate Australasia": "Temperate Australasia",
+          "Tropical Eastern Pacific": "Tropical Eastern Pacific",
+          "Eastern Indo-Pacific": "Eastern Indo-Pacific"
+        }
+      }
+    }
   },
   "public-mediterranean-area-of-interest-1": {
     "name": "Area of Interest",
@@ -3327,6 +3411,41 @@
           "SRFC": "SRFC - Sub-Regional Fisheries Commission",
           "SWIOFC": "SWIOFC - South West Indian Ocean Fisheries Commission",
           "WCPFC": "WCPFC - Western and Central Pacific Fisheries Commission"
+        }
+      }
+    }
+  },
+  "public-seagrasses": {
+    "name": "Seagrasses",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Seagrasses are a productive ecosystem found globally in shallow marine areas where they provide food and habitat for organisms and play a key role in nutrient cycling. This dataset shows the global distribution of seagrasses.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/7'>UNEP-WCMC, Short FT (2021). Global distribution of seagrasses (version 7.1). Seventh update to the data layer used in Green and Short (2003). Cambridge (UK): UN Environment World Conservation Monitoring Centre. Data DOI: https://doi.org/10.34892/x6r3-d211. </a></li>",
+    "schema": {
+      "GENUS": {
+        "keyword": "GENUS",
+        "enum": {}
+      },
+      "FAMILY": {
+        "keyword": "FAMILY",
+        "enum": {}
+      },
+      "habitat": {
+        "keyword": "habitat",
+        "enum": {}
+      },
+      "BIO_CLASS": {
+        "keyword": "BIO_CLASS",
+        "enum": {}
+      }
+    }
+  },
+  "public-seamounts": {
+    "name": "Seamounts",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Seamounts are underwater mountains of volcanic origin that can generate an upwelling of nutrients, supporting increased biological productivity, species richness and distinct communities. This dataset of global seafloor geomorphic features includes seamounts, which are defined as peaks that rise over 1,000 m above the seafloor.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://bluehabitats.org/'>Blue Habitats. Seafloor Geomorphic Features Map by Harris, P.T., Macmillan-Lawler, M., Rupp, J. and Baker, E.K. 2014. Geomorphology of the oceans. Marine Geology, 352: 4-24.</a></li>",
+    "schema": {
+      "Height": {
+        "keyword": "Height",
+        "enum": {
+          "0": "0",
+          "8000": "8000"
         }
       }
     }

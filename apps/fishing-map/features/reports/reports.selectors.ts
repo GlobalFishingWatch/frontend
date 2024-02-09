@@ -35,7 +35,6 @@ import {
   getReportCategoryFromDataview,
 } from 'features/reports/reports.utils'
 import { ReportCategory } from 'types'
-import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
 import { sortStrings } from 'utils/shared'
@@ -45,6 +44,7 @@ import {
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
 } from 'features/reports/reports.config'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
 
 const EMPTY_ARRAY: [] = []
@@ -91,9 +91,9 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
 )
 
 export const selectReportAreaDataview = createSelector(
-  [selectContextAreasDataviews, selectReportDatasetId],
-  (contextDataviews, datasetId) => {
-    const areaDataview = contextDataviews?.find((dataview) => {
+  [selectDataviewInstancesResolved, selectReportDatasetId],
+  (dataviewsInstances, datasetId) => {
+    const areaDataview = dataviewsInstances?.find((dataview) => {
       return dataview.datasets?.some((dataset) => dataset.id === datasetId)
     })
     return areaDataview
@@ -456,14 +456,22 @@ export const selectReportVesselsGraphDataOthers = createSelector(
   }
 )
 
-const selectReportAreaData = createSelector(
+const selectCurrentReportArea = createSelector(
   [selectReportAreaIds, selectAreas],
   (areaIds, areas) => {
     if (!areaIds || !areas) return null
     const { datasetId, areaId } = areaIds
-    return areas?.[datasetId]?.detail?.[areaId]?.data
+    return areas?.[datasetId]?.detail?.[areaId]
   }
 )
+
+export const selectReportAreaData = createSelector([selectCurrentReportArea], (reportArea) => {
+  return reportArea?.data
+})
+
+export const selectReportAreaStatus = createSelector([selectCurrentReportArea], (reportArea) => {
+  return reportArea?.status
+})
 
 export const selectReportAreaName = createSelector(
   [

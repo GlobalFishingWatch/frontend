@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
-import { SelectOption } from '..'
-import { Button } from '../button'
+import { IconButton } from '../icon-button'
+import { Button, ButtonSize } from '../button'
+import { SelectOption } from '../select'
+import { Tooltip } from '../tooltip'
 import styles from './Choice.module.css'
 
 export type ChoiceOption<Option = string> = SelectOption<Option>
@@ -16,9 +18,11 @@ interface ChoiceProps {
   activeOption: string
   disabled?: boolean
   onSelect?: (option: ChoiceOption<any>, e: React.MouseEvent) => void
-  size?: 'default' | 'small' | 'tiny'
+  size?: ButtonSize
   className?: string
   testId?: string
+  label?: string
+  infoTooltip?: string
 }
 
 export function Choice({
@@ -29,6 +33,8 @@ export function Choice({
   size = 'default',
   className = '',
   testId,
+  label,
+  infoTooltip,
 }: ChoiceProps) {
   const activeOptionId = activeOption || options?.[0]?.id
 
@@ -68,46 +74,58 @@ export function Choice({
   }, [updateActiveElementPoperties])
 
   return (
-    <div className={cx(styles.Choice, className)}>
-      <ul className={styles.list} role="radiogroup" {...(testId && { 'data-test': `${testId}` })}>
-        {options.map((option, index) => {
-          const optionSelected = activeOptionId === option.id
-          return (
-            <li
-              key={option.id}
-              className={styles.option}
-              role="radio"
-              aria-checked={optionSelected}
-              ref={optionSelected ? activeRef : null}
-            >
-              <Button
-                disabled={disabled || option.disabled}
-                className={cx(styles.optionButton, {
-                  [styles.optionActive]: optionSelected,
-                  [styles.disabled]: disabled || option.disabled,
-                })}
-                tooltip={option.tooltip}
-                tooltipPlacement={option.tooltipPlacement}
-                type="secondary"
-                testId={testId && `${testId}-${option.id}`}
-                onClick={(e) => !option.disabled && onOptionClickHandle(option, e)}
-                size={size}
+    <div>
+      {label && (
+        <label className={styles.label}>
+          {label}
+          {infoTooltip && (
+            <Tooltip content={infoTooltip}>
+              <IconButton icon="info" size="tiny" className={styles.infoIcon} />
+            </Tooltip>
+          )}
+        </label>
+      )}
+      <div className={cx(styles.Choice, className)}>
+        <ul className={styles.list} role="radiogroup" {...(testId && { 'data-test': `${testId}` })}>
+          {options.map((option, index) => {
+            const optionSelected = activeOptionId === option.id
+            return (
+              <li
+                key={option.id}
+                className={styles.option}
+                role="radio"
+                aria-checked={optionSelected}
+                ref={optionSelected ? activeRef : null}
               >
-                {option.label}
-              </Button>
-            </li>
-          )
-        })}
-        {activeElementProperties && (
-          <div
-            className={styles.activeChip}
-            style={{
-              width: activeElementProperties.width,
-              left: activeElementProperties.left,
-            }}
-          />
-        )}
-      </ul>
+                <Button
+                  disabled={disabled || option.disabled}
+                  className={cx(styles.optionButton, {
+                    [styles.optionActive]: optionSelected,
+                    [styles.disabled]: disabled || option.disabled,
+                  })}
+                  tooltip={option.tooltip}
+                  tooltipPlacement={option.tooltipPlacement}
+                  type="secondary"
+                  testId={testId && `${testId}-${option.id}`}
+                  onClick={(e) => !option.disabled && onOptionClickHandle(option, e)}
+                  size={size}
+                >
+                  {option.label}
+                </Button>
+              </li>
+            )
+          })}
+          {activeElementProperties && (
+            <div
+              className={styles.activeChip}
+              style={{
+                width: activeElementProperties.width,
+                left: activeElementProperties.left,
+              }}
+            />
+          )}
+        </ul>
+      </div>
     </div>
   )
 }

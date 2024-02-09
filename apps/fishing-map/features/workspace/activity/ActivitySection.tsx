@@ -1,64 +1,40 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   selectActivityDataviews,
-  selectAvailableActivityDataviews,
   selectDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
-  getFishingDataviewInstance,
-  getActivityDataviewInstanceFromDataview,
-} from 'features/dataviews/dataviews.utils'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import TooltipContainer, { TooltipListContainer } from '../shared/TooltipContainer'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
 import activityStyles from './ActivitySection.module.css'
 
 function ActivitySection(): React.ReactElement {
   const { t } = useTranslation()
-  const [addedDataviewId, setAddedDataviewId] = useState<string | undefined>()
-  const [newLayerOpen, setNewLayerOpen] = useState<boolean>(false)
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
   const detectionsDataviews = useSelector(selectDetectionsDataviews)
-  const activityDataviews = useSelector(selectAvailableActivityDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const dispatch = useAppDispatch()
 
-  const addDataviewInstance = useCallback(
-    (dataviewInstance: UrlDataviewInstance) => {
-      dispatchQueryParams({ bivariateDataviews: undefined })
-      upsertDataviewInstance(dataviewInstance)
-      setAddedDataviewId(dataviewInstance.id)
-    },
-    [dispatchQueryParams, upsertDataviewInstance]
-  )
-
-  const onAddFishingClick = useCallback(
-    (dataviewId?: number) => {
-      const dataview = activityDataviews.find((d) => d.id === dataviewId)
-      const dataviewInstance = dataview
-        ? getActivityDataviewInstanceFromDataview(dataview)
-        : getFishingDataviewInstance()
-      if (dataviewInstance) {
-        addDataviewInstance(dataviewInstance)
-      }
-    },
-    [addDataviewInstance, activityDataviews]
-  )
+  const onAddLayerClick = useCallback(() => {
+    dispatch(setModalOpen({ id: 'layerLibrary', open: DataviewCategory.Activity }))
+  }, [dispatch])
 
   const onBivariateDataviewsClick = useCallback(
     (dataview1: UrlDataviewInstance, dataview2: UrlDataviewInstance) => {
@@ -115,16 +91,6 @@ function ActivitySection(): React.ReactElement {
     []
   )
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
-  const activityOptions = useMemo(() => {
-    const options = activityDataviews.map((dataview) => {
-      const option = {
-        id: dataview.id,
-        label: getDatasetTitleByDataview(dataview, { withSources: true }),
-      }
-      return option
-    })
-    return options.sort((a, b) => a.label.localeCompare(b.label))
-  }, [activityDataviews])
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
@@ -134,44 +100,14 @@ function ActivitySection(): React.ReactElement {
         </h2>
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
-            {activityOptions &&
-              (activityOptions.length > 1 ? (
-                <TooltipContainer
-                  visible={newLayerOpen}
-                  onClickOutside={() => {
-                    setNewLayerOpen(false)
-                  }}
-                  component={
-                    <TooltipListContainer>
-                      {activityOptions.map(({ id, label }) => (
-                        <li key={id}>
-                          <button onClick={() => onAddFishingClick(id)}>{label}</button>
-                        </li>
-                      ))}
-                    </TooltipListContainer>
-                  }
-                >
-                  <div className={styles.lastBtn}>
-                    <IconButton
-                      icon="plus"
-                      type="border"
-                      size="medium"
-                      tooltip={t('layer.add', 'Add layer')}
-                      tooltipPlacement="top"
-                      onClick={() => setNewLayerOpen(true)}
-                    />
-                  </div>
-                </TooltipContainer>
-              ) : (
-                <IconButton
-                  icon="plus"
-                  type="border"
-                  size="medium"
-                  tooltip={t('layer.add', 'Add layer')}
-                  tooltipPlacement="top"
-                  onClick={() => onAddFishingClick()}
-                />
-              ))}
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('layer.add', 'Add layer')}
+              tooltipPlacement="top"
+              onClick={() => onAddLayerClick()}
+            />
           </div>
         )}
       </div>
@@ -187,7 +123,7 @@ function ActivitySection(): React.ReactElement {
               <LayerPanel
                 dataview={dataview}
                 showBorder={!showBivariateIcon}
-                isOpen={dataview.id === addedDataviewId}
+                isOpen={false}
                 onToggle={onToggleLayer(dataview)}
               />
             </LayerPanelContainer>

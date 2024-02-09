@@ -1,9 +1,11 @@
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection } from 'geojson'
 import { EventType, Segment } from '@globalfishingwatch/api-types'
-import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import {
+  segmentsToGeoJSON,
+  filterTrackByCoordinateProperties,
+} from '@globalfishingwatch/data-transforms'
 import { Dictionary } from '../../types'
-import filterTrackByTimerange from '../track/filterTrackByTimerange'
 import { AuthorizationOptions, RawEvent } from '../types'
 
 export const EVENTS_COLORS: Dictionary<string> = {
@@ -240,7 +242,9 @@ export const getVesselEventsSegmentsGeojson: GetVesselEventsSegmentsGeojsonFn = 
     : segmentsToGeoJSON(track as Segment[])
   if (!geojson) return featureCollection
   featureCollection.features = events.flatMap((event: RawEvent) => {
-    return filterTrackByTimerange(geojson, event.start, event.end).features.map((feature) => {
+    return filterTrackByCoordinateProperties(geojson, {
+      filters: [{ id: 'times', min: event.start, max: event.end }],
+    }).features.map((feature) => {
       const isEncounterEvent = event.type === 'encounter'
       const authorized = event.encounter?.authorized === true
       const authorizationStatus = event?.encounter

@@ -1,4 +1,4 @@
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, IconButtonSize } from '@globalfishingwatch/ui-components'
 
 type InfoErrorProps = {
   error?: boolean
@@ -6,14 +6,22 @@ type InfoErrorProps = {
   tooltip: string
   className?: string
   onClick?: () => void
+  size?: IconButtonSize
 }
 
-const InfoError = ({ error, loading, tooltip, className, onClick }: InfoErrorProps) => {
+const InfoError = ({
+  error,
+  loading,
+  tooltip,
+  className,
+  onClick,
+  size = 'small',
+}: InfoErrorProps) => {
   return (
     <IconButton
       icon={error ? 'warning' : 'info'}
       type={error ? 'warning' : 'default'}
-      size="small"
+      size={size}
       loading={loading}
       className={className}
       tooltip={tooltip}

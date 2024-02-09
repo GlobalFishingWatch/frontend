@@ -27,6 +27,7 @@ import {
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
+import UserSection from 'features/workspace/user/UserSection'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
@@ -185,10 +186,11 @@ function Workspace() {
         )}
       <ActivitySection />
       <DetectionsSection />
-      <VesselsSection />
       <EventsSection />
+      <VesselsSection />
       <EnvironmentalSection />
       <ContextAreaSection />
+      <UserSection />
     </DndContext>
   )
 }

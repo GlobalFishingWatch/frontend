@@ -1,0 +1,141 @@
+.transparentOverlay {
+  background: none;
+  background-color: transparent;
+}
+
+.instructions {
+  color: var(--color-secondary-blue);
+  margin-bottom: var(--space-S);
+}
+
+.transparentOverlay .instructions {
+  color: var(--color-white);
+  text-align: center;
+  margin-bottom: var(--space-M);
+}
+
+.container {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  flex-direction: column;
+  padding-bottom: var(--space-M);
+}
+
+.placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  font: var(--font-S);
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
+  height: var(--size-S);
+  line-height: 2em;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  gap: var(--space-S);
+  align-items: flex-end;
+}
+
+.row > * {
+  flex: 1;
+}
+
+.input {
+  margin-bottom: var(--space-S);
+}
+
+.optional {
+  margin-top: var(--space-S);
+}
+
+.optional summary {
+  margin-bottom: var(--space-S);
+}
+
+.saveAsPublic {
+  margin-top: var(--space-M);
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: var(--space-M);
+}
+
+.modalContainer {
+  height: 54rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullheight {
+  height: 100vh;
+}
+
+.footerMsg {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.saveBtn {
+  min-width: 15rem;
+}
+
+.errorMsgContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorMsg {
+  color: var(--color-danger-red);
+}
+
+.modalContent {
+  display: flex;
+  flex: 1;
+}
+
+.userGuideLink {
+  margin-top: var(--space-S);
+}
+
+.processingData {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary-blue);
+}
+
+.processingDataSpinner {
+  height: 10rem;
+}
+
+.dismiss {
+  margin-top: var(--space-S);
+  margin-inline: auto;
+  width: 20rem;
+  color: var(--color-secondary-blue);
+  background: var(--color-white);
+}
+
+.dismiss:not(:disabled):hover,
+.dismiss:not(:disabled):focus {
+  color: var(--color-primary-blue);
+  background: var(--color-white);
+}

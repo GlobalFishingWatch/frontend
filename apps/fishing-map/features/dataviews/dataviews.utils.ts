@@ -11,6 +11,7 @@ import {
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
@@ -31,7 +32,6 @@ export const BIG_QUERY_PREFIX = 'bq-'
 export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
 export const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 export const VESSEL_LAYER_PREFIX = 'vessel-'
-export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
@@ -122,11 +122,11 @@ export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> =>
   }
 }
 
-export const getEnvironmentDataviewInstance = (
+export const getUserPolygonsDataviewInstance = (
   datasetId: string
 ): DataviewInstance<GeneratorType> => {
   return {
-    id: `${ENVIRONMENTAL_LAYER_PREFIX}${Date.now()}`,
+    id: `user-polygons-${Date.now()}`,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },
@@ -142,19 +142,40 @@ export const getEnvironmentDataviewInstance = (
 }
 
 export const getUserPointsDataviewInstance = (
-  datasetId: string
+  dataset: Dataset
 ): DataviewInstance<GeneratorType> => {
+  const circleRadiusProperty = getDatasetConfigurationProperty({ dataset, property: 'pointSize' })
+  const startTimeFilterProperty = getDatasetConfigurationProperty({
+    dataset,
+    property: 'startTime',
+  })
+  const endTimeFilterProperty = getDatasetConfigurationProperty({
+    dataset,
+    property: 'endTime',
+  })
+  const properties = [circleRadiusProperty, startTimeFilterProperty, endTimeFilterProperty]
+    .filter(Boolean)
+    .map((p) => p.toString().toLowerCase())
   return {
-    id: `user-points-${datasetId}`,
+    id: `user-points-${dataset?.id}`,
     dataviewId: TEMPLATE_POINTS_DATAVIEW_SLUG,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },
     datasetsConfig: [
       {
-        datasetId: datasetId,
+        datasetId: dataset?.id,
         endpoint: EndpointId.ContextTiles,
-        params: [{ id: 'id', value: datasetId }],
+        params: [{ id: 'id', value: dataset?.id }],
+
+        ...(properties.length && {
+          query: [
+            {
+              id: 'properties',
+              value: properties,
+            },
+          ],
+        }),
       },
     ],
   }
@@ -332,4 +353,8 @@ export const getContextAreaLink = (
     default:
       return undefined
   }
+}
+
+export const isBathymetryDataview = (dataview: UrlDataviewInstance) => {
+  return dataview.id.includes('bathymetry')
 }
