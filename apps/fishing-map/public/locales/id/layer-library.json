@@ -60,7 +60,7 @@
     "moreInfoLink": ""
   },
   "nitrate": {
-    "name": "Nitrate concentration (NO3)",
+    "name": "Konsentrasi nitrat (NO3)",
     "description": "Nitrat diperlukan oleh tanaman laut untuk fotosintesis dan merupakan nutrisi utama bagi produktivitas laut, namun konsentrasi yang tinggi dapat menjadi indikator polusi. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk nitrat, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description"
   },
