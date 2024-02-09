@@ -1757,7 +1757,7 @@
     "schema": {}
   },
   "public-coral-reefs": {
-    "name": "Coral reefs",
+    "name": "Arrecifes de coral",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Warm-water coral reefs are found in clear, shallow waters and are highly dynamic ecosystems that support the most biodiverse marine habitat. This dataset shows the global distribution of coral reefs in tropical and subtropical regions.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/1'>UNEP-WCMC, WorldFish Centre, WRI, TNC (2021). Global distribution of warm-water coral reefs, compiled from multiple sources including the Millennium Coral Reef Mapping Project. Version 4.1. Includes contributions from IMaRS-USF and IRD (2005), IMaRS-USF (2005) and Spalding et al. (2001). Cambridge (UK): UN Environment World Conservation Monitoring Centre. Data DOI: https://doi.org/10.34892/t2wk-5t34.</a></li>",
     "schema": {}
   },
@@ -2025,7 +2025,7 @@
     }
   },
   "public-global-bathymetry": {
-    "name": "Bathymetry",
+    "name": "Batimetría",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://www.gebco.net/data_and_products/gridded_bathymetry_data/#global'>GEBCO Compilation Group (2023) GEBCO 2023 Grid (doi:10.5285/f98b053b-0cbc-6c23-e053-6c86abc0af7b).</a></li>",
     "schema": {}
   },
@@ -2222,7 +2222,7 @@
     }
   },
   "public-global-nitrate": {
-    "name": "Nitrate concentration (NO3)",
+    "name": "Concentración de nitrato (NO3)",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Nitrate is required by marine plants for photosynthesis and is a major nutrient for the ocean's productivity, but high concentrations can be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including nitrate, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>\"",
     "schema": {}
   },
@@ -2250,17 +2250,17 @@
     }
   },
   "public-global-oxygen": {
-    "name": "Oxygen concentration (O2)",
+    "name": "Concentración de oxígeno (O2)",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Dissolved oxygen is the amount of oxygen present in water and is crucial for the growth and survival of marine organisms. Warming ocean temperatures can lead to an expansion of low oxygen zones, which can impact the distribution and abundance of marine life. This dataset is comprised of biogeochemical parameters, including dissolved oxygen, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
     "schema": {}
   },
   "public-global-ph": {
-    "name": "potential of hydrogen (PH)",
+    "name": "pH",
     "description": "<h2>Overview</h2>\n<ul>\n<li>The acidity of the ocean is measured by pH. Increased carbon dioxide absorption has lowered the ocean's pH, resulting in ocean acidification which can have wide-ranging impacts on marine organisms. This dataset is comprised of biogeochemical parameters, including pH, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
     "schema": {}
   },
   "public-global-phosphate": {
-    "name": "Phosphate concentration (PO4)",
+    "name": "Concentración de fosfato (PO4)",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Phosphate is a major nutrient for marine foodwebs and ocean productivity, but high concentrations can also be an indicator of pollution. This dataset is comprised of biogeochemical parameters, including phosphate, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
     "schema": {}
   },
@@ -2289,7 +2289,7 @@
     }
   },
   "public-global-salinity": {
-    "name": "Surface Salinity",
+    "name": "Salinidad",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Sea surface salinity is the measurement of salt concentration at the ocean surface. It determines the density of ocean water along with temperature and is a key parameter to estimate the ocean's influence on climate. This dataset salinity is displayed with a 1/12 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00016'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00016.</a></li>",
     "schema": {}
   },
@@ -2395,7 +2395,7 @@
   },
   "public-global-sst-max": {
     "name": "Surface Temperature Max",
-    "description": "Surface Temperature",
+    "description": "Temperatura de la superficie del mar",
     "schema": {}
   },
   "public-global-sst-min": {
@@ -2434,7 +2434,7 @@
     }
   },
   "public-global-thgt": {
-    "name": "Waves height",
+    "name": "Altura de ola",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://www.pacioos.hawaii.edu/metadata/ww3_global.html'>Cheung, K.F. 2010, updated 2021. WaveWatch III (WW3) Global Wave Model. Distributed by the Pacific Islands Ocean Observing System (PacIOOS), which is a part of the U.S. Integrated Ocean Observing System (IOOS®), funded in part by National Oceanic and Atmospheric Administration (NOAA) Awards #NA16NOS0120024 and #NA21NOS0120091.</a></li>",
     "schema": {}
   },
@@ -2658,7 +2658,7 @@
     "schema": {}
   },
   "public-mangroves": {
-    "name": "Mangroves",
+    "name": "Manglares",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Mangroves are trees or shrubs that can survive in saline environments and typically grow within the intertidal zone of tropical and subtropical regions. Considered blue carbon habitats, mangrove forests improve water quality, stabilize and protect coastlines, and provide shelter for birds, animals and marine organisms. This dataset uses earth observation satellite imagery to show the global distribution of mangroves.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/4'>Giri C, Ochieng E, Tieszen LL, Zhu Z, Singh A, Loveland T, Masek J, Duke N (2011). Status and distribution of mangrove forests of the world using earth observation satellite data (version 1.4, updated by UNEP-WCMC). Global Ecology and Biogeography 20: 154-159. DOI: https://doi.org/10.34892/1411-w728.</a></li>",
     "schema": {}
   },
@@ -3416,7 +3416,7 @@
     }
   },
   "public-seagrasses": {
-    "name": "Seagrasses",
+    "name": "Praderas marinas",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Seagrasses are a productive ecosystem found globally in shallow marine areas where they provide food and habitat for organisms and play a key role in nutrient cycling. This dataset shows the global distribution of seagrasses.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/7'>UNEP-WCMC, Short FT (2021). Global distribution of seagrasses (version 7.1). Seventh update to the data layer used in Green and Short (2003). Cambridge (UK): UN Environment World Conservation Monitoring Centre. Data DOI: https://doi.org/10.34892/x6r3-d211. </a></li>",
     "schema": {
       "GENUS": {
@@ -3438,7 +3438,7 @@
     }
   },
   "public-seamounts": {
-    "name": "Seamounts",
+    "name": "Montes submarinos",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Seamounts are underwater mountains of volcanic origin that can generate an upwelling of nutrients, supporting increased biological productivity, species richness and distinct communities. This dataset of global seafloor geomorphic features includes seamounts, which are defined as peaks that rise over 1,000 m above the seafloor.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://bluehabitats.org/'>Blue Habitats. Seafloor Geomorphic Features Map by Harris, P.T., Macmillan-Lawler, M., Rupp, J. and Baker, E.K. 2014. Geomorphology of the oceans. Marine Geology, 352: 4-24.</a></li>",
     "schema": {
       "Height": {
