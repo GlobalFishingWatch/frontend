@@ -205,6 +205,7 @@ steps:
     env:
       - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
       - '_E2E_BUCKET=$_E2E_BUCKET'
+      - '_E2E_BASE_URL=$_E2E_BASE_URL'
       - 'BUILD_ID=$BUILD_ID'
     args:
       - '-eEuo'
@@ -214,7 +215,7 @@ steps:
         if [ -d "dist/cypress/apps/fishing-map-e2e/screenshots" ] && [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
           gsutil -m cp -r dist/cypress/apps/fishing-map-e2e gs://$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
           echo "You can see the testing videos of this deploy in: "
-          echo "https://console.cloud.google.com/storage/browser/$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
+          echo "$_E2E_BASE_URL/$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
           exit 1
         fi
 
