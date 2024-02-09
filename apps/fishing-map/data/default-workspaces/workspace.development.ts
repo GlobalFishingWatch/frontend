@@ -1,6 +1,7 @@
 import { Workspace } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
+import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/layer-library/layers-environment'
 import {
   DEFAULT_WORKSPACE_ID,
   SAR_DATAVIEW_SLUG,
@@ -92,7 +93,7 @@ const workspace: Workspace<WorkspaceState> = {
       datasetsConfig: [],
     },
     {
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'sar',
       dataviewId: SAR_DATAVIEW_SLUG,
       config: {
         visible: false,
@@ -111,6 +112,11 @@ const workspace: Workspace<WorkspaceState> = {
         visible: true,
       },
       dataviewId: GRATICULES_DATAVIEW_SLUG,
+    },
+    {
+      ...BATHYMETRY_DATAVIEW_INSTANCE,
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
     {
