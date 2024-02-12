@@ -10,7 +10,6 @@ import {
   CELL_VALUES_START_INDEX,
   FEATURE_COL_INDEX,
   FEATURE_ROW_INDEX,
-  VALUE_MULTIPLIER,
 } from '../constants'
 
 function readData(_: any, data: any, pbf: any) {
@@ -101,7 +100,8 @@ export type ChunkCell = Record<CellIndex, Record<FourwingsDatasetId, CellTimeser
 export type Cell = (number | null)[][] | null
 
 export type RawFourwingsTileData = {
-  bins: number[][]
+  // bins: number[][]
+  // binCounts: number[][]
   cols: number
   rows: number
   data: ArrayBuffer
@@ -114,7 +114,8 @@ export type FourwingsTileData = Omit<RawFourwingsTileData, 'data'> & {
 export type ParseFourwingsParams = {
   cols: number
   rows: number
-  bins: number[][]
+  // bins: number[][]
+  // binCounts: number[][]
   minFrame: number
   maxFrame: number
   interval: Interval
@@ -153,7 +154,8 @@ export const parseFourWings = async (
     //   })
     // }
     resolve({
-      bins: params.bins,
+      // bins: params.bins,
+      // binCounts: params.binCounts,
       cols: params.cols,
       rows: params.rows,
       cells: getCellTimeseries(data, params),

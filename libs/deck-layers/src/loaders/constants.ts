@@ -8,7 +8,6 @@ export const CELL_END_INDEX = 2
 export const CELL_VALUES_START_INDEX = 3
 
 // Values from the 4wings API in intArray form can't be floats, so they are multiplied by a factor, here we get back to the original value
-export const VALUE_MULTIPLIER = 100
 
 // Because timestamps are stored as 32-bit floating numbers, raw unix epoch time can not be used.
 // You may test the validity of a timestamp by calling Math.fround(t) to check if there would be any loss of precision.

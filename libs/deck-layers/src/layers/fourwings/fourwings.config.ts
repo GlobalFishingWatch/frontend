@@ -152,3 +152,10 @@ export const getChunksByInterval = (start: number, end: number, interval: Interv
   }))
   return data
 }
+
+// TODO use the existing class function instead of repeating the logic
+export const getChunks = (minFrame: number, maxFrame: number) => {
+  const interval = getInterval(minFrame, maxFrame)
+  const chunks = getChunksByInterval(minFrame, maxFrame, interval)
+  return chunks
+}

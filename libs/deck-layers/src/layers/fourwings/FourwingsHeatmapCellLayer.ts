@@ -14,6 +14,7 @@ import {
 } from '../../loaders/fourwings/fourwingsTileParser'
 import { FourwingsHeatmapLayerProps } from './FourwingsHeatmapLayer'
 import { aggregateCell } from './fourwings.utils'
+import { getChunks } from './fourwings.config'
 
 const defaultProps: DefaultProps<FourwingsHeatmapCellLayerProps> = {
   getIndex: { type: 'accessor', value: (d) => d.index },
@@ -47,7 +48,8 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
   getPickingInfo({ info }: GetPickingInfoParams): PickingInfo {
     const { minFrame, maxFrame } = this.props
     if (info.object) {
-      const value = aggregateCell(info.object, { minFrame, maxFrame })
+      const chunks = getChunks(minFrame, maxFrame)
+      const value = aggregateCell(info.object, { minFrame, maxFrame, chunks })
       info.object = {
         ...info.object,
         value,
@@ -57,7 +59,7 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
   }
 
   indexToBounds(): Partial<_GeoCellLayer['props']> | null {
-    const { data, getIndex, tile, cols, rows } = this.props
+    const { data, tile, cols, rows } = this.props
     return {
       data,
       _normalize: false,

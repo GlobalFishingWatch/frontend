@@ -7,22 +7,14 @@ import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
 import { getUTCDateTime } from '../../utils/dates'
 import { Cell } from '../../loaders/fourwings/fourwingsLayerLoader'
 import { CONFIG_BY_INTERVAL } from '../../utils/time'
-import { Chunk, getChunksByInterval, getInterval } from './fourwings.config'
+import { Chunk } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
 import { FourwingsDeckSublayer } from './fourwings.types'
 import { AggregateCellParams } from './FourwingsHeatmapLayer'
 
-// TODO use the existing class function instead of repeating the logic
-const getChunks = (minFrame: number, maxFrame: number) => {
-  const interval = getInterval(minFrame, maxFrame)
-  const chunks = getChunksByInterval(minFrame, maxFrame, interval)
-  return chunks
-}
-
-export const aggregateCell = (cell: Cell, { minFrame, maxFrame }: AggregateCellParams) => {
-  const chunks = getChunks(minFrame, maxFrame)
+export const aggregateCell = (cell: Cell, { minFrame, maxFrame, chunks }: AggregateCellParams) => {
   const tileMinIntervalFrame = Math.ceil(
-    CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks[0].start)
+    CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
   )
   const minIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame))
   const maxIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame))
@@ -32,10 +24,6 @@ export const aggregateCell = (cell: Cell, { minFrame, maxFrame }: AggregateCellP
     if (!dataset) {
       return 0
     }
-    // const allSum = dataset.reduce((acc, value) => (value ? acc + value : acc), 0)
-    // if (allSum && allSum > 1000000) {
-    //   console.count('allSum')
-    // }
     // TODO decide if we want the last day to be included or not in maxIntervalFrame - tileMinIntervalFrame
     const data = dataset
       .slice(minIntervalFrame - tileMinIntervalFrame, maxIntervalFrame - tileMinIntervalFrame)
@@ -45,15 +33,6 @@ export const aggregateCell = (cell: Cell, { minFrame, maxFrame }: AggregateCellP
     return data
   })
   return data as number[]
-  // return Object.keys(cell.timeseries).map((key) => ({
-  //   id: key,
-  //   value: Object.keys(cell.timeseries[key]).reduce((acc, frame: any) => {
-  //     if (parseInt(frame) >= minFrame && parseInt(frame) <= maxFrame) {
-  //       return acc + cell.timeseries[key][frame]
-  //     }
-  //     return acc
-  //   }, 0) as number,
-  // }))
 }
 
 export function asyncAwaitMS(millisec: any) {
@@ -107,9 +86,8 @@ type GetDataUrlByChunk = {
   datasets: FourwingsDeckSublayer['datasets']
 }
 
-// const API_BASE_URL =
-//   'https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/heatmap/{z}/{x}/{y}'
-const API_BASE_URL = 'http://192.168.68.114:5001/v3/4wings/tile/heatmap/{z}/{x}/{y}'
+const API_BASE_URL =
+  'https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/heatmap/{z}/{x}/{y}'
 export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) => {
   const params = {
     interval: chunk.interval,

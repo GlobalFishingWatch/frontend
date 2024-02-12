@@ -7,18 +7,10 @@ import {
   DefaultProps,
 } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import {
-  ckmeans,
-  sample,
-  mean,
-  standardDeviation,
-  equalIntervalBreaks,
-  jenks,
-  median,
-} from 'simple-statistics'
+import { ckmeans, sample } from 'simple-statistics'
 // import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 // import { TileLoadProps } from '@deck.gl/geo-layers/typed/tile-layer/types'
-import { debounce, range } from 'lodash'
+import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
@@ -28,18 +20,15 @@ import {
   Group,
   GROUP_ORDER,
 } from '@globalfishingwatch/layer-composer'
-import { VALUE_MULTIPLIER } from '../../loaders/constants'
 import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
 import {
   FourwingsTileData,
   RawFourwingsTileData,
-  SCALE_VALUE,
   parseFourWings,
 } from '../../loaders/fourwings/fourwingsLayerLoader'
 import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
-  aggregateCell,
   aggregateCellTimeseries,
   asyncAwaitMS,
   getDataUrlByChunk,
@@ -52,7 +41,7 @@ import {
   getChunksByInterval,
   getInterval,
 } from './fourwings.config'
-import { FourwingsDeckSublayer, FourwingsSublayerId } from './fourwings.types'
+import { FourwingsDeckSublayer } from './fourwings.types'
 
 export type FourwingsLayerResolution = 'default' | 'high'
 export type _FourwingsHeatmapTileLayerProps = {
@@ -77,6 +66,8 @@ const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
 export type ColorDomain = number[]
 export type ColorRange = Color[]
 export type SublayerColorRanges = ColorRange[]
+
+const MAX_VALUES = 2000
 
 export class FourwingsHeatmapTileLayer extends CompositeLayer<
   FourwingsHeatmapTileLayerProps & TileLayerProps
@@ -106,7 +97,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     }
   }
 
-  calculateColorDomain = (tiles: Tile2DHeader[]) => {
+  calculateColorDomain = (tiles: Tile2DHeader<FourwingsTileData>[]) => {
     // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
@@ -117,86 +108,105 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     // return bins.map((b) => (b * SCALE_VALUE * 180) / 365)
 
     // Bins from API are calculated based on the sum of all values for each cell
-    const binsInViewport = tiles.map((tile) => {
-      // TODO we have to keep all the bins
-      // TODO review why we dividing by VALUE_MULTIPLIER again makes the ramp much better
-      // return ((tile.content?.bins as number[][]) || []).flat().map((d) => (d / 100) * SCALE_VALUE)
-      return ((tile.content?.bins as number[][]) || []).flat().map((d) => d * SCALE_VALUE)
+
+    // const fa = performance.now()
+    const allValues = tiles.flatMap((tile) => {
+      let cells = (tile.content?.cells || []).filter(Boolean)
+      if (cells.length > MAX_VALUES) {
+        // Randomly select ~1% of cells to speed up next steps
+        cells = cells.filter((v) => v && Math.random() - 0.99 > 0)
+      }
+      return cells.flat().filter(Boolean).flat().filter(Boolean) || []
     })
-    // const binsInViewport = tiles.flatMap((tile) => {
-    //   // TODO we have to keep all the bins
-    //   // TODO review why we dividing by VALUE_MULTIPLIER again makes the ramp much better
-    //   // return ((tile.content?.bins as number[][]) || []).flat().map((d) => (d / 100) * SCALE_VALUE)
-    //   return ((tile.content?.bins as number[][]) || []).flat().map((d) => d * SCALE_VALUE)
-    // })
-    // const meanValue = mean(binsInViewport)
-    // const standardDeviationValue = standardDeviation(binsInViewport)
-    // const upperCut = meanValue + standardDeviationValue
-    // const lowerCut = meanValue - standardDeviationValue
-    // const binsInViewportWithoutOutlayer = binsInViewport.filter(
-    //   (a) => a >= lowerCut && a <= upperCut
-    // )
-    // const stepsNum = Math.min(binsInViewport.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
-    // const steps = ckmeans(binsInViewport, stepsNum).map(([clusterFirst]) => {
-    //   return clusterFirst / 100
-    // })
-    // return steps
+    // const fb = performance.now()
+    // console.log('allValues flat time:', fb - fa)
+    // console.log('allValues:', allValues.length)
+    // const sa = performance.now()
+    const finalValues =
+      allValues.length > MAX_VALUES ? sample(allValues, MAX_VALUES, Math.random) : allValues
+    // const sb = performance.now()
+    // console.log('sample time:', sb - sa)
+    // const a = performance.now()
+    const steps = ckmeans(
+      finalValues as number[],
+      Math.min(allValues.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
+    ).map((step) => step[0])
+    // const b = performance.now()
+    // console.log('ckmeans time:', b - a)
+    return steps
 
-    if (binsInViewport.length) {
-      const avgSteps = range(COLOR_RAMP_DEFAULT_NUM_STEPS - 1).map((r, i, ramp) => {
-        const binsInStep = binsInViewport.map((tile) => tile?.[i])
-        console.log(
-          '🚀 ~ avgSteps ~ binsInStep:',
-          binsInStep.sort((a, b) => a - b)
-        )
-        const medianValue = median(binsInStep)
-        const standardDeviationValue = standardDeviation(binsInStep)
-        const upperCut = medianValue + standardDeviationValue * 0.1
-        const lowerCut = medianValue - standardDeviationValue * 0.1
-        const binsInViewportWithoutOutlayer = binsInStep
-          .filter((a) => a <= upperCut)
-          .sort((a, b) => a - b)
-        console.log('🚀 ~ avgSteps ~ binsInViewportWithoutOutlayer:', binsInViewportWithoutOutlayer)
-        return median(
-          binsInViewportWithoutOutlayer.length ? binsInViewportWithoutOutlayer : binsInStep
-        )
-      })
-      // TODO review if multiply for the interval of the timerange in comparison to the tile range
-      // TODO: ADD MUTIPLY WITH THE NUM OF INTERVAL UNITS / TOTAL TILE INTERVAL UNITS
-      console.log('🚀 ~ avgSteps:', avgSteps)
-      return avgSteps.map((s) => s)
+    // const binCountsInViewport = tiles.map((tile) => {
+    //   return (tile.content?.binCounts as number[][]) || []
+    // })
+    // const totalBinCount = binCountsInViewport
+    //   .flat()
+    //   .flat()
+    //   .reduce((acc, num) => acc + num, 0)
+    // const totalCount = tiles.reduce((acc, tile) => {
+    //   return acc + tile.content.rows * tile.content.cols * tile.content.bins.length
+    // }, 0)
+    // const geoCoverage = totalBinCount / totalCount
+    // const timeCoverage = 155 / 365
 
-      // const data = tiles.flatMap((t) => t.content?.bins.flat() || ([] as number[])) as number[]
-      // const steps = jenks(data, COLOR_RAMP_DEFAULT_NUM_STEPS).map((step) => {
-      //   return step * SCALE_VALUE
-      // })
-      // return steps.map((s) => (s * 60) / 365)
-    } else {
-      // // TODO: remove this when all the bins comes in the response headers
-      // const { maxFrame, minFrame } = this.props
-      // const viewportData = this.getData()
-      // if (viewportData?.length && viewportData?.length > 0) {
-      //   const cells = viewportData.flatMap((cell) => {
-      //     return aggregateCell(cell, { minFrame, maxFrame })
-      //   })
-      //   const dataSampled = (cells.length > 1000 ? sample(cells, 1000, Math.random) : cells).map(
-      //     (c) => c
-      //   )
-      //   // filter data to 2 standard deviations from mean to remove outliers
-      //   const meanValue = mean(dataSampled)
-      //   const standardDeviationValue = standardDeviation(dataSampled)
-      //   const upperCut = meanValue + standardDeviationValue * 2
-      //   const lowerCut = meanValue - standardDeviationValue * 2
-      //   const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
-      //   const stepsNum = Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
-      //   // using ckmeans as jenks
-      //   const steps = ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) => {
-      //     return parseFloat(clusterFirst.toFixed(3))
-      //   })
-      //   return steps
-      // }
-      return this.state.colorDomain
-    }
+    // const binsInViewport = tiles.map((tile) => {
+    //   const binCountsLayer = (tile.content?.bins as number[][]) || []
+    //   return binCountsLayer.map((bins) => {
+    //     return bins.map((step) => {
+    //       return step * timeCoverage * geoCoverage
+    //     })
+    //   })
+    // })
+    // const weightsInViewport = tiles.map((tile) => {
+    //   const binCountsLayer = (tile.content?.binCounts as number[][]) || []
+    //   return binCountsLayer.map((binCounts) => {
+    //     return binCounts.map((step) => {
+    //       return step
+    //     })
+    //   })
+    // })
+    // if (binsInViewport.length) {
+    //   const avgSteps = range(COLOR_RAMP_DEFAULT_NUM_STEPS - 1).map((_, stepIndex) => {
+    //     const binsInStep = binsInViewport.map((tile) => tile[0]?.[stepIndex])
+    //     const weightsInStep = weightsInViewport?.map((tile) => tile[0]?.[stepIndex])
+    //     return weightedAverage(binsInStep, weightsInStep) || mean(binsInStep)
+    //   })
+    //   console.log(
+    //     'avgSteps:',
+    //     avgSteps.sort((a, b) => a - b)
+    //   )
+    //   return avgSteps.sort((a, b) => a - b)
+
+    // const data = tiles.flatMap((t) => t.content?.bins.flat() || ([] as number[])) as number[]
+    // const steps = jenks(data, COLOR_RAMP_DEFAULT_NUM_STEPS).map((step) => {
+    //   return step * SCALE_VALUE
+    // })
+    // return steps.map((s) => (s * 60) / 365)
+    // } else {
+    // // TODO: remove this when all the bins comes in the response headers
+    // const { maxFrame, minFrame } = this.props
+    // const viewportData = this.getData()
+    // if (viewportData?.length && viewportData?.length > 0) {
+    //   const cells = viewportData.flatMap((cell) => {
+    //     return aggregateCell(cell, { minFrame, maxFrame })
+    //   })
+    //   const dataSampled = (cells.length > 1000 ? sample(cells, 1000, Math.random) : cells).map(
+    //     (c) => c
+    //   )
+    //   // filter data to 2 standard deviations from mean to remove outliers
+    //   const meanValue = mean(dataSampled)
+    //   const standardDeviationValue = standardDeviation(dataSampled)
+    //   const upperCut = meanValue + standardDeviationValue * 2
+    //   const lowerCut = meanValue - standardDeviationValue * 2
+    //   const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
+    //   const stepsNum = Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
+    //   // using ckmeans as jenks
+    //   const steps = ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) => {
+    //     return parseFloat(clusterFirst.toFixed(3))
+    //   })
+    //   return steps
+    // }
+    //   return this.state.colorDomain
+    // }
   }
 
   updateColorDomain = debounce((tiles) => {
@@ -225,7 +235,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const { minFrame, maxFrame, sublayers } = this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     const datasets = visibleSublayers.map((sublayer) => sublayer.datasets.join(','))
-    const bins = [] as number[][]
+    // const bins = [] as number[][]
+    // const binCounts = [] as number[][]
     const getChunkData: any = async (chunk: any) => {
       // if (cache[chunk]) {
       //   return Promise.resolve(cache[chunk])
@@ -237,9 +248,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         throw new Error()
       }
       // TODO: get bins based of the number of datasets, not just 0
-      datasets.forEach((dataset, i) => {
-        bins[i] = JSON.parse(response.headers.get(`X-bins-${i}`) as string)
-      })
+      // datasets.forEach((_, i) => {
+      //   bins[i] = JSON.parse(response.headers.get(`X-bins-${i}`) as string)
+      // })
+      // datasets.forEach((_, i) => {
+      //   binCounts[i] = JSON.parse(response.headers.get(`X-bins-count-${i}`) as string)
+      // })
       const cols = parseInt(response.headers.get('X-columns') as string)
       const rows = parseInt(response.headers.get('X-rows') as string)
       const data = await response.arrayBuffer()
@@ -267,7 +281,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const mergeChunkDataCells = await parseFourWings(data, {
       cols: data[0].cols,
       rows: data[0].rows,
-      bins: bins,
+      // bins: bins,
+      // binCounts: binCounts,
       sublayers: visibleSublayers,
       // TODO rename variables with tile in the name
       minFrame: chunks[0].start,
