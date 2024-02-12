@@ -55,7 +55,7 @@
     "@mui/material": "^5.15.3",
     "@mui/x-date-pickers": "^6.19.3",
     "@popperjs/core": "2.10.2",
-    "@reduxjs/toolkit": "^2.0.1",
+    "@reduxjs/toolkit": "^2.1.0",
     "@tippyjs/react": "4.2.6",
     "@tmcw/togeojson": "^5.8.1",
     "@turf/area": "^6.5.0",

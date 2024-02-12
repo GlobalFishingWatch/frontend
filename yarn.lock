@@ -2637,7 +2637,7 @@ __metadata:
     "@globalfishingwatch/api-types": 6.x
     "@globalfishingwatch/data-transforms": 1.x
     "@globalfishingwatch/layer-composer": 10.x
-    "@reduxjs/toolkit": 1.x
+    "@reduxjs/toolkit": 2.x
     lodash: 4.x
   languageName: unknown
   linkType: soft
@@ -2894,7 +2894,7 @@ __metadata:
     "@nx/workspace": "npm:17.2.8"
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.11"
     "@popperjs/core": "npm:2.10.2"
-    "@reduxjs/toolkit": "npm:^2.0.1"
+    "@reduxjs/toolkit": "npm:^2.1.0"
     "@svgr/rollup": "npm:8.1.0"
     "@svgr/webpack": "npm:^8.1.0"
     "@swc-jotai/react-refresh": "npm:^0.1.0"
@@ -6350,7 +6350,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reduxjs/toolkit@npm:^2.0.1":
+"@reduxjs/toolkit@npm:^2.1.0":
   version: 2.1.0
   resolution: "@reduxjs/toolkit@npm:2.1.0"
   dependencies:
