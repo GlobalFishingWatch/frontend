@@ -4,6 +4,7 @@ import {
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
 import { InputText, Select, SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components'
+import { DatasetSchemaType } from '@globalfishingwatch/api-types'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { useDatasetMetadataOptions } from 'features/datasets/upload/datasets-upload.hooks'
 import styles from './NewDataset.module.css'
@@ -19,6 +20,13 @@ type NewDatasetFieldProps = {
   infoTooltip?: string
 }
 
+const STRICT_PROPERTY_SELECTION_TYPES: Partial<
+  Record<DatasetConfigurationProperty, DatasetSchemaType[]>
+> = {
+  polygonColor: ['range'],
+  pointSize: ['range'],
+}
+
 export function NewDatasetField({
   datasetMetadata,
   property,
@@ -30,8 +38,11 @@ export function NewDatasetField({
   infoTooltip,
 }: NewDatasetFieldProps) {
   const { t } = useTranslation()
-  const { fieldsOptions, filtersFieldsOptions, getSelectedOption } =
-    useDatasetMetadataOptions(datasetMetadata)
+  const schemaTypes = STRICT_PROPERTY_SELECTION_TYPES[property]
+  const { fieldsOptions, filtersFieldsOptions, getSelectedOption } = useDatasetMetadataOptions(
+    datasetMetadata,
+    schemaTypes
+  )
   const notEditableOptions = [
     'latitude',
     'longitude',

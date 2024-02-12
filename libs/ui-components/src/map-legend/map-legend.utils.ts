@@ -40,7 +40,7 @@ export const formatLegendValue = ({
     formattedValue = `${(number / 1000000).toFixed(DECIMALS).replace(/\.?0+$/, '')}M`
   else if (Math.abs(number) >= 1000)
     formattedValue = `${(number / 1000).toFixed(1).replace(/\.?0+$/, '')}K`
-  else if (Math.abs(number) < 1) formattedValue = number.toString()
+  else if (Math.abs(number) < 1) formattedValue = number.toFixed(DECIMALS).toString()
 
   if (divergent && number > 0 && !isLast) {
     formattedValue = ['+', formattedValue].join('')

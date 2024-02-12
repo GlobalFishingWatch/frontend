@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE } from 'routes/routes'
-import { WorkspaceCategory } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useSetViewState } from 'features/map/map-viewport.hooks'
@@ -51,7 +51,7 @@ function UserWorkspacesPrivate() {
                 to={{
                   type: WORKSPACE,
                   payload: {
-                    category: workspace.category || WorkspaceCategory.FishingActivity,
+                    category: workspace.category || DEFAULT_WORKSPACE_CATEGORY,
                     workspaceId: workspace.id,
                   },
                   query: {},

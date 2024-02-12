@@ -139,6 +139,10 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    */
   filter?: string
   /**
+   * Maximum zoom level for which tiles are available https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-maxzoom
+   */
+  maxzoom: number
+  /**
    * Custom color ramp for filled layers
    */
   steps?: number[]
@@ -159,6 +163,14 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    * Property to use as id internally in mapbox
    */
   promoteId?: string
+  /**
+   * Feature property to drive timestamps filtering
+   */
+  startTimeFilterProperty?: string
+  /**
+   * Feature property to drive timestamps filtering
+   */
+  endTimeFilterProperty?: string
 }
 
 /**
@@ -222,6 +234,10 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
   valueProperties?: string[]
 }
 
+export type GlobalUserPointsGeneratorConfig = Required<
+  MergedGeneratorConfig<UserPointsGeneratorConfig>
+>
+
 /**
  * Contextual layers provided by GFW
  */
@@ -260,6 +276,10 @@ export interface ContextGeneratorConfig extends GeneratorConfig {
    */
   filters?: Record<string, Array<string>>
 }
+
+export type GlobalUserContextGeneratorConfig = Required<
+  MergedGeneratorConfig<UserContextGeneratorConfig>
+>
 
 export type TileClusterEventType = 'encounter' | 'loitering' | 'port'
 /**
@@ -617,6 +637,7 @@ export type HeatmapAnimatedInteractionType = 'activity' | 'detections'
 export interface HeatmapAnimatedGeneratorSublayer {
   id: string
   datasets: string[]
+  attribution?: string
   filter?: string
   vesselGroups?: string
   colorRamp: ColorRampsIds

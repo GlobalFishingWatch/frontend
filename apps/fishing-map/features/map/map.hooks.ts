@@ -25,7 +25,7 @@ import { AnyDeckLayersGenerator } from '@globalfishingwatch/deck-layers'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import useMapInstance from 'features/map/map-context.hooks'
 import {
   getActiveDatasetsInActivityDataviews,
@@ -181,7 +181,7 @@ export const useClickedEventConnect = () => {
                   category:
                     workspace.properties?.category && workspace.properties.category !== 'null'
                       ? workspace.properties.category
-                      : WorkspaceCategory.FishingActivity,
+                      : DEFAULT_WORKSPACE_CATEGORY,
                   workspaceId: workspace.properties.id,
                 },
               },

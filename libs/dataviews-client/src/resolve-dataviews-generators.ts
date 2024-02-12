@@ -316,6 +316,7 @@ export function getGeneratorConfig(
             visible: dataview.config?.visible ?? true,
             breaks: dataview.config?.breaks,
             datasets: datasetsIds,
+            attribution: getDatasetAttribution(dataset),
             legend: {
               label: dataset?.name,
               unit: dataset?.unit,

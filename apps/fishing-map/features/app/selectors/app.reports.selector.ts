@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import {
   selectActiveDetectionsDataviews,
-  selectActiveEnvironmentalDataviews,
+  selectActiveHeatmapEnvironmentalDataviews,
   selectActiveReportActivityDataviews,
   selectReportActiveCategories,
 } from 'features/dataviews/selectors/dataviews.selectors'
@@ -58,7 +58,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     selectReportCategory,
     selectActiveReportActivityDataviews,
     selectActiveDetectionsDataviews,
-    selectActiveEnvironmentalDataviews,
+    selectActiveHeatmapEnvironmentalDataviews,
   ],
   (
     reportCategory,

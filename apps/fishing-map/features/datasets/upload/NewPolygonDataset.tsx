@@ -10,7 +10,6 @@ import {
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
-import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -21,6 +20,7 @@ import {
 import {
   getMetadataFromDataset,
   getPolygonsDatasetMetadata,
+  parseGeoJsonProperties,
 } from 'features/datasets/upload/datasets-upload.utils'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import { TimeFieldsGroup } from 'features/datasets/upload/TimeFieldsGroup'
@@ -82,7 +82,9 @@ function NewPolygonDataset({
   const onConfirmClick = useCallback(async () => {
     if (datasetMetadata && onConfirm) {
       setLoading(true)
-      const file = geojson ? getFileFromGeojson(geojson) : undefined
+      const file = geojson
+        ? getFileFromGeojson(parseGeoJsonProperties<Polygon>(geojson, datasetMetadata))
+        : undefined
       await onConfirm(datasetMetadata, { file, isEditing })
       setLoading(false)
     }
@@ -140,7 +142,7 @@ function NewPolygonDataset({
             setDatasetMetadataConfig({ valueProperties: [selected.id] })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ valueProperties: undefined })
+            setDatasetMetadataConfig({ valueProperties: [] })
           }}
           editable={!loading}
           infoTooltip={t(
@@ -152,11 +154,15 @@ function NewPolygonDataset({
           datasetMetadata={datasetMetadata}
           property="polygonColor"
           label={t('datasetUpload.polygons.color', 'polygon color')}
+          placeholder={t(
+            'datasetUpload.fieldNumericPlaceholder',
+            'Select a numeric field from your dataset'
+          )}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ polygonColor: selected.id })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ polygonColor: undefined })
+            setDatasetMetadataConfig({ polygonColor: '' })
           }}
           editable={!loading}
           infoTooltip={t(
@@ -214,8 +220,7 @@ function NewPolygonDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          {/* // TODO update sections by categories */}
-          <UserGuideLink section="uploadReference" />
+          <UserGuideLink section="uploadPolygons" />
         </div>
         <Button
           className={styles.saveBtn}

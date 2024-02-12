@@ -108,6 +108,10 @@
   flex: 1;
 }
 
+.userGuideLink {
+  margin-top: var(--space-S);
+}
+
 .processingData {
   width: 100%;
   height: 100%;

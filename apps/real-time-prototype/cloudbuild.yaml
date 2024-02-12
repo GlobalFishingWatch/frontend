@@ -41,22 +41,28 @@ steps:
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
       - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
 
-  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+  - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'
     waitFor: ['build-app']
-    args:
-      [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$COMMIT_SHA',
-        '--cache=true',
-        '--build-arg',
-        'APP_NAME=real-time-prototype',
-        '--target',
-        'production',
-        '-f',
-        './apps/real-time-prototype/Dockerfile',
-        '-c',
-        './dist/apps/real-time-prototype',
-      ]
+    entrypoint: ''
+    env:
+      - 'REF_NAME=$REF_NAME'
+      - 'SHORT_SHA=$SHORT_SHA'
+    script: |
+      image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "real-time-prototype@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
+      /kaniko/executor \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:latest \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$SHORT_SHA \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$image_version \
+        --cache=true \
+        --build-arg \
+          APP_NAME=real-time-prototype \
+        --target \
+          production \
+        -f \
+          ./apps/real-time-prototype/Dockerfile \
+        -c \
+          ./dist/apps/real-time-prototype
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -77,7 +83,7 @@ steps:
         --project \
         $_RUN_PROJECT \
         --image \
-        gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$COMMIT_SHA \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$SHORT_SHA \
         --region \
         $_RUN_REGION \
         --platform managed \

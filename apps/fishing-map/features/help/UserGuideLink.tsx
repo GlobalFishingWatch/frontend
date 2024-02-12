@@ -4,8 +4,10 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import styles from './UserGuideLink.module.css'
 
 export type UserGuideSection =
-  | 'uploadReference'
-  | 'uploadEnvironment'
+  | 'uploadData'
+  | 'uploadPolygons'
+  | 'uploadTracks'
+  | 'uploadPoints'
   | 'analysis'
   | 'downloadActivity'
   | 'vesselSearch'
@@ -20,8 +22,11 @@ const USER_GUIDE_LINK_EN: string = 'https://globalfishingwatch.org/user-guide/'
 const USER_GUIDE_LINK_ES: string = 'https://globalfishingwatch.org/es/guia-de-usuario/'
 
 const USER_GUIDE_SECTIONS_EN: Record<UserGuideSection, string> = {
-  uploadReference: '#Uploading data',
-  uploadEnvironment: '#Environment data',
+  uploadData: '#Uploading data',
+  // TODO update sections by categoreies
+  uploadPolygons: '#Uploading data',
+  uploadTracks: '#Uploading data',
+  uploadPoints: '#Uploading data',
   analysis: '#Analysis',
   downloadActivity: '#Downloading data',
   vesselSearch: '#Vessel search',
@@ -34,8 +39,11 @@ const USER_GUIDE_SECTIONS_EN: Record<UserGuideSection, string> = {
 }
 
 const USER_GUIDE_SECTIONS_ES: Record<UserGuideSection, string> = {
-  uploadReference: '#Carga de datos',
-  uploadEnvironment: '#Datos ambientales',
+  uploadData: '#Carga de datos',
+  // TODO update sections by categoreies
+  uploadPolygons: '#Carga de datos',
+  uploadTracks: '#Carga de datos',
+  uploadPoints: '#Carga de datos',
   analysis: '#Análisis',
   downloadActivity: '#Descarga de datos',
   vesselSearch: '#Búsqueda de embarcaciones',

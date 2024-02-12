@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { format } from 'd3-format'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { GeneratorType, HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/layer-composer'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 
@@ -30,6 +30,10 @@ function EnvironmentTooltipSection({
         const isHeatmapFeature =
           feature.type === GeneratorType.HeatmapAnimated ||
           feature.type === GeneratorType.HeatmapStatic
+        const value =
+          feature.type === GeneratorType.HeatmapAnimated
+            ? feature.value
+            : feature.properties[HEATMAP_STATIC_PROPERTY_ID]
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <Icon
@@ -41,7 +45,7 @@ function EnvironmentTooltipSection({
               {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
               <div className={styles.row}>
                 <span className={styles.rowText}>
-                  {parseEnvironmentalValue(feature.value)}{' '}
+                  {parseEnvironmentalValue(value)}{' '}
                   {/* TODO will need to not pick from temporalgrid once user polygons support units  */}
                   {feature.temporalgrid?.unit && <span>{feature.temporalgrid?.unit}</span>}
                   {feature.unit && <span>{feature.unit}</span>}

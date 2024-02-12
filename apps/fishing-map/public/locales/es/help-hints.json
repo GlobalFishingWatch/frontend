@@ -4,5 +4,6 @@
   "clickingOnAGridCellToShowVessels": "Haga clic en cualquier celda para mostrar los buques más activos en esa zona durante el rango de tiempo elegido.",
   "filterActivityLayers": "Haga clic en el icono de filtro para filtrar la actividad utilizando diferentes criterios disponibles, incluyendo la fuente de datos, el estado de bandera y el arte de pesca.",
   "fishingEffortHeatmap": "El mapa muestra un mapa de calor interactivo de actividad. Las celdas más claras indican áreas con mayor actividad.",
-  "periodComparisonBaseline": "Seleccione una línea base para comparar los cambios en la actividad p.ej. entre ahora y la misma fecha del año pasado, o para comparar la actividad en diferentes momentos del año."
+  "periodComparisonBaseline": "Seleccione una línea base para comparar los cambios en la actividad p.ej. entre ahora y la misma fecha del año pasado, o para comparar la actividad en diferentes momentos del año.",
+  "userContextLayers": "Upload and combine your area, track or point data in more formats with flexible color, size, labeling, time and filter options to best visualize and analyze your datasets alongside Global Fishing Watch layers."
 }

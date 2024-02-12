@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { WorkspaceCategory } from 'data/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { selectBigQueryActive } from 'features/bigquery/bigquery.slice'
 import { selectDebugActive } from 'features/debug/debug.slice'
 import {
@@ -67,7 +67,7 @@ export const selectWelcomeModalKey = createSelector(
   (locationCategory, isAnyVesselLocation, isStandaloneSearchLocation): WelcomeContentKey => {
     return isAnyVesselLocation || isStandaloneSearchLocation
       ? 'vessel-profile'
-      : locationCategory || WorkspaceCategory.FishingActivity
+      : locationCategory || DEFAULT_WORKSPACE_CATEGORY
   }
 )
 

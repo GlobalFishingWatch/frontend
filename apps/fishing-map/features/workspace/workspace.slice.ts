@@ -110,6 +110,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
               },
             })
           }
+        } else {
+          if (resolvedAction.payload?.status === 401) {
+            return rejectWithValue({ error: { status: 401, message: 'Private report' } })
+          }
+          throw new Error('Error fetching report')
         }
         // TODO fetch report and use the workspace within it
       } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {

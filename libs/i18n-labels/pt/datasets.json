@@ -1756,6 +1756,11 @@
     "description": "Buffered at ~1km",
     "schema": {}
   },
+  "public-coral-reefs": {
+    "name": "Recifes de coral",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>Os recifes de coral de águas quentes são encontrados em águas claras e rasas e são ecossistemas altamente dinâmicos que sustentam o habitat marinho mais biodiverso. Este conjunto de dados mostra a distribuição global dos recifes de coral em regiões tropicais e subtropicais.</li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/1'>UNEP-WCMC, WorldFish Centre, WRI, TNC (2021). Global distribution of warm-water coral reefs, compiled from multiple sources including the Millennium Coral Reef Mapping Project. Version 4.1. Includes contributions from IMaRS-USF and IRD (2005), IMaRS-USF (2005) and Spalding et al. (2001). Cambridge (UK): UN Environment World Conservation Monitoring Centre. Data DOI: https://doi.org/10.34892/t2wk-5t34.</a></li>",
+    "schema": {}
+  },
   "public-costa-rica-fishing-effort": {
     "name": "Costa Rica VMS",
     "description": "Dados de rastreamento por satélite são fornecidos pelo Instituto Costarriquenho de Pesca e Aquicultura. Os dados são coletados do sistema de rastreamento de embarcações pesqueira da Costa Rica e publicados com atraso de três dias, contendo informações sobre a localização, velocidade, rumo, e movimentos. Global Fishing Watch analisa os dados usando os mesmos algoritmos desenvolvidos para o sistema de identificação automática (AIS) para identificar atividade de pesca e comportamentos. O algoritmo classifica as posições em “pesca aparente” e “não pesca” e apresenta a atividade de pesca na forma de mapa de calor. As transmissões de rastreamento por satélite diferente do AIS podem fornecer diferentes medidas de integridade, precisão e qualidade. O Global Fishing Watch está continuamente melhorando seus algoritmos em todos os formatos de dados de transmissão para identificar algoritmicamente a \"atividade aparente de pesca\". É possível que alguma atividade de pesca não seja identificada ou que o mapa de calor possa mostrar uma atividade de pesca aparente quando a pesca não está realmente ocorrendo. Por essas razões, o Global Fishing Watch qualifica os termos \"atividade de pesca\", \"pesca\" ou \"esforço de pesca\" como aparentes em vez de certos. Toda e qualquer informação do Global Fishing Watch sobre \"atividade de pesca aparente\" deve ser considerada uma estimativa e deve ser considerada apenas a critério do usuário. Os algoritmos de detecção de pesca do Global Fishing Watch são desenvolvidos e testados usando dados reais de eventos de pesca coletados por observadores e são combinados com a análise de especialistas de dados de movimento de embarcações, resultando na classificação manual de milhares de eventos de pesca conhecidos. O Global Fishing Watch também colabora extensivamente com pesquisadores acadêmicos por meio de nosso programa de pesquisa para compartilhar dados de classificação de atividades de pesca e melhorar as técnicas de classificação automatizada",
@@ -1937,7 +1942,8 @@
     "name": "FAO major fishing areas",
     "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas. <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>Source</a>. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer",
     "schema": {
-      "FID": "FID"
+      "FID": "FID",
+      "F_CODE": "F_CODE"
     }
   },
   "public-fisheries-restricted-areas": {
@@ -2018,6 +2024,11 @@
       "firstTransmissionDate": "primeira data de transmissão"
     }
   },
+  "public-global-bathymetry": {
+    "name": "Batimetria",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>A batimetria é a medição da profundidade da água e fornece detalhes das características físicas do fundo do oceano. Esse conjunto de dados batimétricos em grade é um modelo de terreno global contínuo que fornece dados de elevação do oceano em metros em uma grade com intervalo de 15 segundos de arco. </li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://www.gebco.net/data_and_products/gridded_bathymetry_data/#global'>GEBCO Compilation Group (2023) GEBCO 2023 Grid (doi:10.5285/f98b053b-0cbc-6c23-e053-6c86abc0af7b).</a></li>",
+    "schema": {}
+  },
   "public-global-carrier-vessels": {
     "name": "AIS (Carrier Vessels)",
     "description": "Carriers from AIS",
@@ -2045,7 +2056,7 @@
   },
   "public-global-chlorophyl": {
     "name": "Concentração de clorofila-a",
-    "description": "Clorofila é o pigmento encontrado em todas as plantas fotossintéticas. A sua concentração no oceano é utilizada como um índice da biomassa fitoplanctônica e, como tal, é um elemento fundamental para os modelos de produtividade primária. O instrumento moderado de resolução que imagina o espectro (MODIS) a bordo dos satélites Terra e de Aqua da NASA mede a cor do oceano todos os dias, da qual as concentrações globais de clorofila-a são derivadas. o fitoplâncton oceaânico fixa quimicamente o carbono através da fotossíntese, absorvendo dióxido de carbono dissolvido e produzindo oxigênio. Através deste processo, as plantas marinhas capturam uma quantidade igual de carbono do que a fotossíntese por vegetação terrestre. Mudanças na quantidade de fittoplâncton indicam a mudança na produtividade dos oceanos e fornecem uma ligação oceânica fundamental para o acompanhamento global das alterações climáticas. Os cientistas utilizam a clorofila na modelagem dos ciclos biogeoquímicos da Terra, como o ciclo do carbono ou o ciclo do nitrogênio. Além disso, em curto período, a clorofila pode ser usada para rastrear correntes oceanográficas, jatos e plumas estuarinas. A resolução de 1 quilômetro e cobertura global quase diária dos dados MODIS, permite assim que os cientistas observem características oceanográficas de mesoescala em ambientes costeiros e estuarinos, que são cada vez mais importantes nos estudos das ciências marinhas. Fonte: Observações à Terra da NASA.",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>A clorofila a é o pigmento captador de luz encontrado em todas as plantas fotossintéticas. O fitoplâncton marinho fixa quimicamente o carbono através da fotossíntese, absorvendo dióxido de carbono dissolvido e produzindo oxigênio. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo a clorofila, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. </li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
     "schema": {}
   },
   "public-global-encounters-events-carriers-fishing": {
@@ -2210,6 +2221,11 @@
       "event_mean_position": "event_mean_position"
     }
   },
+  "public-global-nitrate": {
+    "name": "Concentração de nitrato (NO3)",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>O nitrato é necessário para as plantas marinhas para a fotossíntese e é um nutriente importante para a produtividade dos oceanos. No entanto, concentrações elevadas podem ser um indicador de poluição. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo nitrato, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau.</li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
+    "schema": {}
+  },
   "public-global-other-vessels": {
     "name": "AIS (Other Vessels)",
     "description": "Other vessels from AIS",
@@ -2232,6 +2248,21 @@
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
+  },
+  "public-global-oxygen": {
+    "name": "Concentração de oxigênio (O2)",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>Oxigênio dissolvido é a quantidade de oxigênio presente na água e é fundamental para o crescimento e a sobrevivência dos organismos marinhos. O aquecimento das temperaturas dos oceanos pode levar a uma expansão de zonas com baixo teor de oxigénio, o que pode impactar a distribuição e a abundância da vida marinha. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o oxigênio dissolvido, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. </li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
+    "schema": {}
+  },
+  "public-global-ph": {
+    "name": "pH",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>A acidez dos oceanos é medida pelo pH. O aumento da absorção de dióxido de carbono reduziu o pH dos oceanos, resultando na acidificação dos oceanos, que pode ter um amplo impacto nos organismos marinhos. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o pH, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. </li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
+    "schema": {}
+  },
+  "public-global-phosphate": {
+    "name": "Concentração de fosfato (PO4)",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>O fosfato é um nutriente importante para as cadeias alimentares marinhas e para a produtividade dos oceanos. No entanto, concentrações elevadas podem ser também um indicador de poluição. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o fosfato, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. </li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>",
+    "schema": {}
   },
   "public-global-presence": {
     "name": "AIS",
@@ -2256,6 +2287,11 @@
       },
       "vessel-groups": "vessel-groups"
     }
+  },
+  "public-global-salinity": {
+    "name": "Salinidade",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>A salinidade da superfície do mar é a medição da concentração de sal na superfície do oceano. Ela determina a densidade da água do oceano juntamente com a temperatura e é um parâmetro-chave para estimar a influência do oceano no clima. A salinidade deste conjunto de dados é exibida com uma resolução horizontal de 1/12 grau.</li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00016'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00016.</a></li>",
+    "schema": {}
   },
   "public-global-sar-footprints": {
     "name": "SAR Footprints",
@@ -2357,6 +2393,21 @@
     "description": "Sea surface temperatures anomalies (Mean)",
     "schema": {}
   },
+  "public-global-sst-max": {
+    "name": "Surface Temperature Max",
+    "description": "Surface Temperature",
+    "schema": {}
+  },
+  "public-global-sst-min": {
+    "name": "Surface Temperature Min",
+    "description": "Surface Temperature",
+    "schema": {}
+  },
+  "public-global-sst": {
+    "name": "Temperatura da superfície do mar",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>A temperatura da superfície do mar é a temperatura da água na superfície ou perto dela. Ela pode impactar o clima e os climas regionais e, juntamente com a salinidade, pode impulsionar a circulação oceânica e o movimento em grande escala das correntes oceânicas globalmente. Este conjunto de dados fornece a temperatura da superfície do mar com uma resolução de grade horizontal de 1/20 de grau, usando dados in-situ e de satélite de radiômetros infravermelhos e de micro-ondas.</li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00165'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00165.</a></li>",
+    "schema": {}
+  },
   "public-global-support-vessels": {
     "name": "AIS (Support Vessels)",
     "description": "Support vessels from AIS",
@@ -2381,6 +2432,11 @@
       "lastTransmissionDate": "última data de transmissão",
       "firstTransmissionDate": "primeira data de transmissão"
     }
+  },
+  "public-global-thgt": {
+    "name": "Altura da onda",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>A altura da onda é a distância vertical do vale (fundo) até a crista (topo) de uma onda na superfície do mar. Este conjunto de dados usa a altura significativa da onda, que é a média do terço mais alto de todas as alturas das ondas durante um determinado período de amostragem.</li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://www.pacioos.hawaii.edu/metadata/ww3_global.html'>Cheung, K.F. 2010, updated 2021. WaveWatch III (WW3) Global Wave Model. Distributed by the Pacific Islands Ocean Observing System (PacIOOS), which is a part of the U.S. Integrated Ocean Observing System (IOOS®), funded in part by National Oceanic and Atmospheric Administration (NOAA) Awards #NA16NOS0120024 and #NA21NOS0120091.</a></li>",
+    "schema": {}
   },
   "public-global-vessel-identity": {
     "name": "AIS (all vessel types)",
@@ -2600,6 +2656,34 @@
     "name": "Inshore Fishing Zone",
     "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)",
     "schema": {}
+  },
+  "public-mangroves": {
+    "name": "Mangues",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>Os mangues são árvores ou arbustos que podem sobreviver em ambientes salinos e normalmente crescem na zona entremarés de regiões tropicais e subtropicais. Considerados habitats de carbono azul, os manguezais melhoram a qualidade da água, estabilizam e protegem as costas e fornecem abrigo para pássaros, animais e organismos marinhos. Este conjunto de dados utiliza imagens de satélite de observação da Terra para mostrar a distribuição global dos mangues.  </li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/4'>Giri C, Ochieng E, Tieszen LL, Zhu Z, Singh A, Loveland T, Masek J, Duke N (2011). Status and distribution of mangrove forests of the world using earth observation satellite data (version 1.4, updated by UNEP-WCMC). Global Ecology and Biogeography 20: 154-159. DOI: https://doi.org/10.34892/1411-w728.</a></li>",
+    "schema": {}
+  },
+  "public-marine-ecoregions": {
+    "name": "Ecorregiões marinhas",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>As ecorregiões marinhas são uma classificação biogeográfica das águas costeiras e da plataforma continental do mundo. O conjunto de dados fornece um quadro geográfico para uma ampla gama de análises relacionadas com a biodiversidade no ambiente marinho.</li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://geospatial.tnc.org/datasets/ed2be4cf8b7a451f84fd093c2e7660e3/explore'>The Nature Conservancy.</a></li>",
+    "schema": {
+      "REALM": {
+        "keyword": "REALM",
+        "enum": {
+          "Temperate Southern Africa": "Temperate Southern Africa",
+          "Temperate Northern Pacific": "Temperate Northern Pacific",
+          "Tropical Atlantic": "Tropical Atlantic",
+          "Southern Ocean": "Southern Ocean",
+          "Western Indo-Pacific": "Western Indo-Pacific",
+          "Temperate South America": "Temperate South America",
+          "Central Indo-Pacific": "Central Indo-Pacific",
+          "Temperate Northern Atlantic": "Temperate Northern Atlantic",
+          "Arctic": "Arctic",
+          "Temperate Australasia": "Temperate Australasia",
+          "Tropical Eastern Pacific": "Tropical Eastern Pacific",
+          "Eastern Indo-Pacific": "Eastern Indo-Pacific"
+        }
+      }
+    }
   },
   "public-mediterranean-area-of-interest-1": {
     "name": "Area of Interest",
@@ -3327,6 +3411,41 @@
           "SRFC": "SRFC",
           "SWIOFC": "SWIOFC",
           "WCPFC": "WCPFC"
+        }
+      }
+    }
+  },
+  "public-seagrasses": {
+    "name": "Ervas marinhas",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>As ervas marinhas são um ecossistema produtivo encontrado globalmente em áreas marinhas rasas, onde elas fornecem alimento e habitat para organismos e desempenham um papel fundamental na ciclagem nutrientes. Este conjunto de dados mostra a distribuição global das ervas marinhas. </li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/7'>UNEP-WCMC, Short FT (2021). Global distribution of seagrasses (version 7.1). Seventh update to the data layer used in Green and Short (2003). Cambridge (UK): UN Environment World Conservation Monitoring Centre. Data DOI: https://doi.org/10.34892/x6r3-d211. </a></li>",
+    "schema": {
+      "GENUS": {
+        "keyword": "GENUS",
+        "enum": {}
+      },
+      "FAMILY": {
+        "keyword": "FAMILY",
+        "enum": {}
+      },
+      "habitat": {
+        "keyword": "habitat",
+        "enum": {}
+      },
+      "BIO_CLASS": {
+        "keyword": "BIO_CLASS",
+        "enum": {}
+      }
+    }
+  },
+  "public-seamounts": {
+    "name": "Montes marinhos",
+    "description": "<h2>Visão geral</h2>\n<ul>\n<li>Os montes marinhos são montanhas subaquáticas de origem vulcânica que podem gerar uma ressurgência de nutrientes, apoiando o aumento da produtividade biológica, a riqueza de espécies e comunidades distintas. Este conjunto de dados de características geomórficas globais do fundo do mar inclui montes marinhos, que são definidos como picos que se elevam mais de 1.000 m acima do fundo do mar.</li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://bluehabitats.org/'>Blue Habitats. Seafloor Geomorphic Features Map by Harris, P.T., Macmillan-Lawler, M., Rupp, J. and Baker, E.K. 2014. Geomorphology of the oceans. Marine Geology, 352: 4-24.</a></li>",
+    "schema": {
+      "Height": {
+        "keyword": "Height",
+        "enum": {
+          "0": "0",
+          "8000": "8000"
         }
       }
     }

@@ -7,21 +7,26 @@ import type {
   FormattedSpecification,
   ExpressionSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { DEFAULT_CONTEXT_PROMOTE_ID, DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
-import { GeneratorType, UserContextGeneratorConfig } from '../types'
+import {
+  DEFAULT_CONTEXT_MAX_ZOOM,
+  DEFAULT_CONTEXT_PROMOTE_ID,
+  DEFAULT_CONTEXT_SOURCE_LAYER,
+} from '../context/config'
+import { GeneratorType, GlobalUserContextGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
-import { HEATMAP_COLOR_RAMPS } from '../heatmap/colors'
 import {
   getFillPaintWithFeatureState,
   getLinePaintWithFeatureState,
 } from '../context/context.utils'
+import { getColorRampByOpacitySteps } from '../heatmap/util/colors'
+import { getTimeFilterForUserContextLayer } from '../utils'
 
 class UserContextGenerator {
   type = GeneratorType.UserContext
 
-  _getStyleSources = (config: UserContextGeneratorConfig) => {
+  _getStyleSources = (config: GlobalUserContextGeneratorConfig) => {
     const tilesUrl = isUrlAbsolute(config.tilesUrl)
       ? config.tilesUrl
       : API_GATEWAY + config.tilesUrl
@@ -32,26 +37,31 @@ class UserContextGenerator {
       url.searchParams.set('filter', config.filter)
     }
 
-    if (config.valueProperties) {
-      config.valueProperties.forEach((property, index) => {
+    // Needed for invalidate caches on user changes
+    const properties = [
+      ...(config.valueProperties || []),
+      config.pickValueAt || '',
+      config.startTimeFilterProperty || '',
+      config.endTimeFilterProperty || '',
+    ].filter((p) => !!p)
+    if (properties.length) {
+      properties.forEach((property, index) => {
         url.searchParams.set(`properties[${index}]`, property)
       })
     }
-
-    // As user can modify the dataset, we need to avoid the cache
-    url.searchParams.set('cache', 'false')
 
     return [
       {
         id: config.id,
         type: 'vector',
         promoteId: config.promoteId || DEFAULT_CONTEXT_PROMOTE_ID,
+        maxzoom: config.maxzoom || DEFAULT_CONTEXT_MAX_ZOOM,
         tiles: [decodeURI(url.toString())],
       },
     ]
   }
 
-  _getStyleLayers = (config: UserContextGeneratorConfig): LayerSpecification[] => {
+  _getStyleLayers = (config: GlobalUserContextGeneratorConfig): LayerSpecification[] => {
     const generatorId = config.id
     const baseLayer = {
       id: generatorId,
@@ -61,9 +71,10 @@ class UserContextGenerator {
 
     const interactive = !config.disableInteraction
 
-    if (config.steps?.length && config.colorRamp) {
-      const originalColorRamp = HEATMAP_COLOR_RAMPS[config.colorRamp]
-      const legendRamp = zip(config.steps, originalColorRamp)
+    const filters = getTimeFilterForUserContextLayer(config)
+    if (config.steps?.length) {
+      const generatedRamp = getColorRampByOpacitySteps(config.color, config.steps?.length)
+      const legendRamp = zip(config.steps, generatedRamp)
       const valueExpression: ExpressionSpecification = [
         'to-number',
         // feature properties are set as lowercase on the backend
@@ -79,10 +90,11 @@ class UserContextGenerator {
         ...baseLayer,
         type: 'fill' as const,
         paint: {
-          'fill-outline-color': originalColorRamp[originalColorRamp.length - 1] || 'transparent',
+          'fill-outline-color': generatedRamp[generatedRamp.length - 1] || 'transparent',
           'fill-color': colorRamp,
           'fill-antialias': true,
         },
+        ...(filters && { filter: filters }),
         metadata: {
           color: config.color,
           interactive,
@@ -109,6 +121,7 @@ class UserContextGenerator {
         'line-width': 1,
         ...getLinePaintWithFeatureState(config.color),
       },
+      ...(filters && { filter: filters }),
       metadata: {
         color: config.color,
         interactive: false,
@@ -124,6 +137,7 @@ class UserContextGenerator {
         'fill-outline-color': 'transparent',
         ...getFillPaintWithFeatureState('transparent'),
       },
+      ...(filters && { filter: filters }),
       metadata: {
         interactive,
         generatorId: generatorId,
@@ -135,7 +149,7 @@ class UserContextGenerator {
     return [lineLayer, interactionLayer]
   }
 
-  getStyle = (config: UserContextGeneratorConfig) => {
+  getStyle = (config: GlobalUserContextGeneratorConfig) => {
     return {
       id: config.id,
       sources: this._getStyleSources(config),

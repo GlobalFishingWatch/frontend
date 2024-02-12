@@ -27,9 +27,8 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/datasets-client/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["{projectRoot}/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {

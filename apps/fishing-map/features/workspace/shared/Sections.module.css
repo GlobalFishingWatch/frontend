@@ -23,6 +23,10 @@
   padding: var(--space-XS) var(--space-S);
 }
 
+.relative {
+  position: relative;
+}
+
 .sectionTitle {
   font: var(--font-S);
   color: var(--color-secondary-blue);

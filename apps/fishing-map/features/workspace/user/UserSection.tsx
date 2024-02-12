@@ -21,6 +21,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
+import Hint from 'features/help/Hint'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './UserLayerPanel'
 
@@ -99,6 +100,7 @@ function UserSection(): React.ReactElement {
     },
     []
   )
+
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
@@ -108,19 +110,22 @@ function UserSection(): React.ReactElement {
         {!readOnly && (
           <Fragment>
             {!isSmallScreen && (
-              <UserLoggedIconButton
-                icon="upload"
-                type="border"
-                size="medium"
-                className="print-hidden"
-                onClick={onUploadClick}
-                tooltip={t('dataset.upload', 'Upload dataset')}
-                tooltipPlacement="top"
-                loginTooltip={t(
-                  'download.eventsDownloadLogin',
-                  'Register and login to download vessel events (free, 2 minutes)'
-                )}
-              />
+              <div className={styles.relative}>
+                <Hint id="userContextLayers" />
+                <UserLoggedIconButton
+                  icon="upload"
+                  type="border"
+                  size="medium"
+                  className="print-hidden"
+                  onClick={onUploadClick}
+                  tooltip={t('dataset.upload', 'Upload dataset')}
+                  tooltipPlacement="top"
+                  loginTooltip={t(
+                    'download.eventsDownloadLogin',
+                    'Register and login to download vessel events (free, 2 minutes)'
+                  )}
+                />
+              </div>
             )}
             <UserLoggedIconButton
               icon="draw"
