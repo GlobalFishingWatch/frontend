@@ -85,7 +85,7 @@ const API_BASE_URL =
 export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) => {
   const params = {
     interval: chunk.interval,
-    format: 'INTARRAY',
+    format: '4WINGS',
     'temporal-aggregation': false,
     proxy: true,
     'date-range': [
