@@ -4,6 +4,7 @@ import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { max } from 'lodash'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
+import { CONFIG_BY_INTERVAL } from '../../utils/time'
 import { Cell } from '../../loaders/fourwings/fourwingsLayerLoader'
 import FourwingsTileCellLayer from './FourwingsHeatmapCellLayer'
 import {
@@ -25,38 +26,43 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
 }
 
 export type AggregateCellParams = {
-  minFrame: number
-  maxFrame: number
-  chunks: Chunk[]
+  minIntervalFrame: number
+  maxIntervalFrame: number
 }
 
 export type GetFillColorParams = {
-  minFrame: number
-  maxFrame: number
   colorDomain: number[]
   colorRanges: FourwingsHeatmapLayerProps['colorRanges']
   chunks: Chunk[]
+  minIntervalFrame: number
+  maxIntervalFrame: number
 }
 
 const EMPTY_CELL_COLOR = [0, 0, 0, 0] as Color
 
-let getFillColorTime = 0
-let getFillColorCount = 0
+let fillColorTime = 0
+let fillColorCount = 0
 
 export const getFillColor = (
   cell: Cell,
-  { minFrame, maxFrame, colorDomain, colorRanges, chunks }: GetFillColorParams
+  { colorDomain, colorRanges, chunks, minIntervalFrame, maxIntervalFrame }: GetFillColorParams
 ): Color => {
+  const a = performance.now()
+  fillColorCount++
   if (!colorDomain || !colorRanges) {
     return EMPTY_CELL_COLOR
   }
   if (!chunks) return EMPTY_CELL_COLOR
-  // const a = performance.now()
   // getFillColorCount++
-  const aggregatedCellValues = aggregateCell(cell, { minFrame, maxFrame, chunks })
+  const aggregatedCellValues = aggregateCell(cell, {
+    minIntervalFrame,
+    maxIntervalFrame,
+  })
   // TODO add more comparison modes (bivariate)
   const aggregatedCellValue = max(aggregatedCellValues) as number
   if (!aggregatedCellValue) {
+    const b = performance.now()
+    fillColorTime += b - a
     return EMPTY_CELL_COLOR
   }
   // TODO review performance here
@@ -66,11 +72,11 @@ export const getFillColor = (
     if (aggregatedCellValue <= d) return i
     return 0
   })
-  // const b = performance.now()
-  // getFillColorTime += b - a
-  // if (getFillColorCount >= 334932) {
-  //   console.log('aggregateCell count:', getFillColorCount, 'time:', getFillColorTime)
-  // }
+  const b = performance.now()
+  fillColorTime += b - a
+  if (fillColorCount >= 970182) {
+    console.log('aggregateCell count:', fillColorCount, 'time:', fillColorTime)
+  }
   return colorRanges[maxCellValueIndex][colorIndex]
 }
 
@@ -85,6 +91,13 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
     const { start, end } = getDatesInIntervalResolution(minFrame, maxFrame)
     const chunks = getChunks(minFrame, maxFrame)
+    const tileMinIntervalFrame = Math.ceil(
+      CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
+    )
+    const minIntervalFrame =
+      Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame)) - tileMinIntervalFrame
+    const maxIntervalFrame =
+      Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
     const fourwingsLayer = new FourwingsTileCellLayerClass(
       this.props,
       this.getSubLayerProps({
@@ -97,7 +110,13 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         getFillColor: (cell: Cell) =>
           // TODO check if this needs updating for different resolutions
           this.props.tile.zoom === Math.round(this.context.viewport.zoom)
-            ? getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges, chunks })
+            ? getFillColor(cell, {
+                colorDomain,
+                colorRanges,
+                chunks,
+                minIntervalFrame,
+                maxIntervalFrame,
+              })
             : [0, 0, 0, 0],
         updateTriggers: {
           // This tells deck.gl to recalculate fillColor on changes

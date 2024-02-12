@@ -6,18 +6,15 @@ import { Feature } from 'geojson'
 import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
 import { getUTCDateTime } from '../../utils/dates'
 import { Cell } from '../../loaders/fourwings/fourwingsLayerLoader'
-import { CONFIG_BY_INTERVAL } from '../../utils/time'
 import { Chunk } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
 import { FourwingsDeckSublayer } from './fourwings.types'
 import { AggregateCellParams } from './FourwingsHeatmapLayer'
 
-export const aggregateCell = (cell: Cell, { minFrame, maxFrame, chunks }: AggregateCellParams) => {
-  const tileMinIntervalFrame = Math.ceil(
-    CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
-  )
-  const minIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame))
-  const maxIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame))
+export const aggregateCell = (
+  cell: Cell,
+  { minIntervalFrame, maxIntervalFrame }: AggregateCellParams
+) => {
   if (!cell) return []
 
   const data = cell.map((dataset) => {
@@ -25,12 +22,9 @@ export const aggregateCell = (cell: Cell, { minFrame, maxFrame, chunks }: Aggreg
       return 0
     }
     // TODO decide if we want the last day to be included or not in maxIntervalFrame - tileMinIntervalFrame
-    const data = dataset
-      .slice(minIntervalFrame - tileMinIntervalFrame, maxIntervalFrame - tileMinIntervalFrame)
-      .reduce((acc, value) => {
-        return value ? (acc as number) + value : acc
-      }, 0)
-    return data
+    return dataset.slice(minIntervalFrame, maxIntervalFrame).reduce((acc: number, value) => {
+      return value ? acc + value : acc
+    }, 0)
   })
   return data as number[]
 }

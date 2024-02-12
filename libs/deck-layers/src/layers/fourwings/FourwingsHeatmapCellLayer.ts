@@ -12,6 +12,7 @@ import {
   generateUniqueId,
   getCellCoordinates,
 } from '../../loaders/fourwings/fourwingsTileParser'
+import { CONFIG_BY_INTERVAL } from '../../utils/time'
 import { FourwingsHeatmapLayerProps } from './FourwingsHeatmapLayer'
 import { aggregateCell } from './fourwings.utils'
 import { getChunks } from './fourwings.config'
@@ -49,7 +50,14 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
     const { minFrame, maxFrame } = this.props
     if (info.object) {
       const chunks = getChunks(minFrame, maxFrame)
-      const value = aggregateCell(info.object, { minFrame, maxFrame, chunks })
+      const tileMinIntervalFrame = Math.ceil(
+        CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
+      )
+      const minIntervalFrame =
+        Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame)) - tileMinIntervalFrame
+      const maxIntervalFrame =
+        Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
+      const value = aggregateCell(info.object, { minIntervalFrame, maxIntervalFrame })
       info.object = {
         ...info.object,
         value,

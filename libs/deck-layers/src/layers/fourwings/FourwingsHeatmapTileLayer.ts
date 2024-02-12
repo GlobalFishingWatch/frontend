@@ -67,7 +67,7 @@ export type ColorDomain = number[]
 export type ColorRange = Color[]
 export type SublayerColorRanges = ColorRange[]
 
-const MAX_VALUES = 2000
+const MAX_VALUES_PER_TILE = 1000
 
 export class FourwingsHeatmapTileLayer extends CompositeLayer<
   FourwingsHeatmapTileLayerProps & TileLayerProps
@@ -102,111 +102,40 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
-    // TODO get the bigger bin values from every tile
-    // const bins = tiles[0]?.content?.bins[0]
-    // return bins
-    // return bins.map((b) => (b * SCALE_VALUE * 180) / 365)
 
-    // Bins from API are calculated based on the sum of all values for each cell
-
-    // const fa = performance.now()
+    const fa = performance.now()
     const allValues = tiles.flatMap((tile) => {
       let cells = (tile.content?.cells || []).filter(Boolean)
-      if (cells.length > MAX_VALUES) {
-        // Randomly select ~1% of cells to speed up next steps
-        cells = cells.filter((v) => v && Math.random() - 0.99 > 0)
+      if (cells.length > MAX_VALUES_PER_TILE) {
+        // Select only 2% of cells to speed up next steps
+        cells = cells.filter((v, i) => v && i % 50 === 1)
       }
-      return cells.flat().filter(Boolean).flat().filter(Boolean) || []
+      return cells
+        .flat()
+        .flatMap((layer) => {
+          // Select only 2% of values to speed up next steps
+          return layer?.filter((v, i) => v && i % 50 === 1)
+        })
+        .filter(Boolean)
     })
-    // const fb = performance.now()
-    // console.log('allValues flat time:', fb - fa)
     // console.log('allValues:', allValues.length)
     // const sa = performance.now()
-    const finalValues =
-      allValues.length > MAX_VALUES ? sample(allValues, MAX_VALUES, Math.random) : allValues
+    // const finalValues =
+    //   allValues.length > MAX_VALUES_FOR_CLUSTERING
+    //     ? sample(allValues, MAX_VALUES_FOR_CLUSTERING, Math.random)
+    //     : allValues
     // const sb = performance.now()
     // console.log('sample time:', sb - sa)
     // const a = performance.now()
     const steps = ckmeans(
-      finalValues as number[],
+      allValues as number[],
       Math.min(allValues.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
     ).map((step) => step[0])
     // const b = performance.now()
     // console.log('ckmeans time:', b - a)
+    const fb = performance.now()
+    console.log('calculateColorDomain time:', fb - fa)
     return steps
-
-    // const binCountsInViewport = tiles.map((tile) => {
-    //   return (tile.content?.binCounts as number[][]) || []
-    // })
-    // const totalBinCount = binCountsInViewport
-    //   .flat()
-    //   .flat()
-    //   .reduce((acc, num) => acc + num, 0)
-    // const totalCount = tiles.reduce((acc, tile) => {
-    //   return acc + tile.content.rows * tile.content.cols * tile.content.bins.length
-    // }, 0)
-    // const geoCoverage = totalBinCount / totalCount
-    // const timeCoverage = 155 / 365
-
-    // const binsInViewport = tiles.map((tile) => {
-    //   const binCountsLayer = (tile.content?.bins as number[][]) || []
-    //   return binCountsLayer.map((bins) => {
-    //     return bins.map((step) => {
-    //       return step * timeCoverage * geoCoverage
-    //     })
-    //   })
-    // })
-    // const weightsInViewport = tiles.map((tile) => {
-    //   const binCountsLayer = (tile.content?.binCounts as number[][]) || []
-    //   return binCountsLayer.map((binCounts) => {
-    //     return binCounts.map((step) => {
-    //       return step
-    //     })
-    //   })
-    // })
-    // if (binsInViewport.length) {
-    //   const avgSteps = range(COLOR_RAMP_DEFAULT_NUM_STEPS - 1).map((_, stepIndex) => {
-    //     const binsInStep = binsInViewport.map((tile) => tile[0]?.[stepIndex])
-    //     const weightsInStep = weightsInViewport?.map((tile) => tile[0]?.[stepIndex])
-    //     return weightedAverage(binsInStep, weightsInStep) || mean(binsInStep)
-    //   })
-    //   console.log(
-    //     'avgSteps:',
-    //     avgSteps.sort((a, b) => a - b)
-    //   )
-    //   return avgSteps.sort((a, b) => a - b)
-
-    // const data = tiles.flatMap((t) => t.content?.bins.flat() || ([] as number[])) as number[]
-    // const steps = jenks(data, COLOR_RAMP_DEFAULT_NUM_STEPS).map((step) => {
-    //   return step * SCALE_VALUE
-    // })
-    // return steps.map((s) => (s * 60) / 365)
-    // } else {
-    // // TODO: remove this when all the bins comes in the response headers
-    // const { maxFrame, minFrame } = this.props
-    // const viewportData = this.getData()
-    // if (viewportData?.length && viewportData?.length > 0) {
-    //   const cells = viewportData.flatMap((cell) => {
-    //     return aggregateCell(cell, { minFrame, maxFrame })
-    //   })
-    //   const dataSampled = (cells.length > 1000 ? sample(cells, 1000, Math.random) : cells).map(
-    //     (c) => c
-    //   )
-    //   // filter data to 2 standard deviations from mean to remove outliers
-    //   const meanValue = mean(dataSampled)
-    //   const standardDeviationValue = standardDeviation(dataSampled)
-    //   const upperCut = meanValue + standardDeviationValue * 2
-    //   const lowerCut = meanValue - standardDeviationValue * 2
-    //   const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
-    //   const stepsNum = Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
-    //   // using ckmeans as jenks
-    //   const steps = ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) => {
-    //     return parseFloat(clusterFirst.toFixed(3))
-    //   })
-    //   return steps
-    // }
-    //   return this.state.colorDomain
-    // }
   }
 
   updateColorDomain = debounce((tiles) => {
@@ -340,11 +269,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
-        maxRequests: 9,
+        maxRequests: 20,
         onTileLoad: this._onTileLoad,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey /*visibleSublayersIds*/],
+          getTileData: [cacheKey, visibleSublayersIds],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
