@@ -47,37 +47,38 @@ export const getFillColor = (
   cell: Cell,
   { colorDomain, colorRanges, chunks, minIntervalFrame, maxIntervalFrame }: GetFillColorParams
 ): Color => {
-  const a = performance.now()
+  // const a = performance.now()
   // fillColorCount++
-  if (!colorDomain || !colorRanges) {
+  if (!colorDomain || !colorRanges || !chunks) {
     return EMPTY_CELL_COLOR
   }
-  if (!chunks) return EMPTY_CELL_COLOR
-  // getFillColorCount++
   const aggregatedCellValues = aggregateCell(cell, {
     minIntervalFrame,
     maxIntervalFrame,
   })
-  // TODO add more comparison modes (bivariate)
-  const aggregatedCellValue = max(aggregatedCellValues) as number
-  if (!aggregatedCellValue) {
-    const b = performance.now()
+  let chosenValueIndex = 0
+  let chosenValue = -Infinity
+  aggregatedCellValues.forEach((value, index) => {
+    // TODO add more comparison modes (bivariate)
+    if (value && value > chosenValue) {
+      chosenValue = value
+      chosenValueIndex = index
+    }
+  })
+  if (chosenValue === -Infinity) {
+    // const b = performance.now()
     // fillColorTime += b - a
     return EMPTY_CELL_COLOR
   }
-  // TODO review performance here
-  const maxCellValueIndex = aggregatedCellValues.findIndex((v) => v === aggregatedCellValue)
-  const colorIndex = colorDomain.findIndex((d, i) => {
-    if (i === colorRanges[0].length - 1) return colorRanges[0].length - 1
-    if (aggregatedCellValue <= d) return i
-    return 0
-  })
+  const colorIndex = colorDomain.findIndex((d, i) =>
+    chosenValue <= d || i === colorRanges[0].length - 1 ? i : 0
+  )
   // const b = performance.now()
   // fillColorTime += b - a
-  // if (fillColorCount >= 970182) {
+  // if (fillColorCount % 10000 === 0) {
   //   console.log('aggregateCell count:', fillColorCount, 'time:', fillColorTime)
   // }
-  return colorRanges[maxCellValueIndex][colorIndex]
+  return colorRanges[chosenValueIndex][colorIndex]
 }
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
@@ -102,7 +103,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       this.props,
       this.getSubLayerProps({
         id: `fourwings-tile-${this.props.tile.id}`,
-        data: data,
+        data,
         cols,
         rows,
         pickable: true,

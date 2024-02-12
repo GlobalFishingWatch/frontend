@@ -72,10 +72,10 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
       data,
       _normalize: false,
       positionFormat: 'XY',
-      getPolygon: (x: DataT, objectInfo) => {
+      getPolygon: (_, objectInfo) => {
         const cellIndex: any = objectInfo.index
         const uniqueId = generateUniqueId(tile.index.x, tile.index.y, cellIndex)
-        const params: GetCellCoordinatesParams = {
+        return getCellCoordinates({
           id: uniqueId,
           cellIndex,
           cols,
@@ -86,8 +86,7 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
             (tile.bbox as GeoBoundingBox).east,
             (tile.bbox as GeoBoundingBox).north,
           ],
-        }
-        return getCellCoordinates(params)
+        })
       },
     }
   }

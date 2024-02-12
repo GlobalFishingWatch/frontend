@@ -146,9 +146,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         throw new Error()
       }
       return await response.arrayBuffer()
-      // return parseFourWings(await response.arrayBuffer(), {
-      //   sublayers: this.props.sublayers,
-      // })
     })
     if (tile.signal?.aborted) {
       throw new Error('tile aborted')

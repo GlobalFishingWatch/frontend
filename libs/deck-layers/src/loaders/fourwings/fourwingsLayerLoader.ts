@@ -154,8 +154,6 @@ export const parseFourWings = async (
     //   })
     // }
     resolve({
-      // bins: params.bins,
-      // binCounts: params.binCounts,
       cols: params.cols,
       rows: params.rows,
       cells: getCellTimeseries(data, params),
