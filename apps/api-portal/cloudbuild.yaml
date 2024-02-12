@@ -55,10 +55,16 @@ steps:
     id: 'build-image'
     waitFor: ['build-app']
     entrypoint: ''
+    env:
+      - 'REF_NAME=$REF_NAME'
+      - 'SHORT_SHA=$SHORT_SHA'
     script: |
+      image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "api-portal@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
       tag=`cat image-tag`
       /kaniko/executor \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/api-portal:latest \
         --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/api-portal:$tag \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/api-portal:$image_version \
         --cache=true \
         --build-arg \
           APP_NAME=api-portal \

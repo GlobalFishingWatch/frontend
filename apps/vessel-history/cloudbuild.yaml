@@ -61,11 +61,16 @@ steps:
     waitFor: ['build-app']
     env:
       - 'USE_CACHE=$_USE_CACHE'
+      - 'REF_NAME=$REF_NAME'
+      - 'SHORT_SHA=$SHORT_SHA'
     entrypoint: ''
     script: |
+      image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "vessel-history@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
       tag=`cat image-tag`
       /kaniko/executor \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:latest \
         --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$tag \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/vessel-history:$image_version \
         --cache=$USE_CACHE \
         --build-arg \
           APP_NAME=vessel-history \
