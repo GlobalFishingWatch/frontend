@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
 import { LayersList, PickingInfo } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useAtom } from 'jotai'
 import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
 import { ViewState } from 'react-map-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -33,7 +33,7 @@ import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/e
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
-import { selectMapTimeseries } from 'features/reports/reports-timeseries.hooks'
+import { hasMapTimeseriesAtom } from 'features/reports/reports-timeseries.hooks'
 import {
   useMapCursor,
   useMapMouseClick,
@@ -136,7 +136,7 @@ const MapWrapper = () => {
   // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
 
   // const setMapReady = useSetRecoilState(mapReadyAtom)
-  // const hasTimeseries = useRecoilValue(selectMapTimeseries)
+  // const [hasTimeseries] = useAtom(hasMapTimeseriesAtom)
   // const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   // const isMapInteractionDisabled = useSelector(selectIsMapDrawing)
 

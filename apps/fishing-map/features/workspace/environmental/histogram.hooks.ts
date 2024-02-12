@@ -41,11 +41,13 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
           return matchesMin && matchesMax
         })
         const scale = scaleLinear().domain([layerRange.min, layerRange.max]).nice()
-        const histogram = bin()
-          .domain(scale.domain() as [number, number])
-          .thresholds(50)(data)
-        const values = histogram.map((bin) => ({ data: bin.length }))
-        setHistogram(values)
+        if (data?.length) {
+          const histogram = bin()
+            .domain(scale.domain() as [number, number])
+            .thresholds(50)(data)
+          const values = histogram.map((bin) => ({ data: bin.length }))
+          setHistogram(values)
+        }
       }
     },
     [dataset]

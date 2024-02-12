@@ -32,7 +32,6 @@ export const BIG_QUERY_PREFIX = 'bq-'
 export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
 export const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 export const VESSEL_LAYER_PREFIX = 'vessel-'
-export const ENVIRONMENTAL_LAYER_PREFIX = 'environment-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 
@@ -127,7 +126,7 @@ export const getUserPolygonsDataviewInstance = (
   datasetId: string
 ): DataviewInstance<GeneratorType> => {
   return {
-    id: `${ENVIRONMENTAL_LAYER_PREFIX}${Date.now()}`,
+    id: `user-polygons-${Date.now()}`,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },

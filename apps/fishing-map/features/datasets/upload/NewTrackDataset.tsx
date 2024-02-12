@@ -159,10 +159,8 @@ function NewTrackDataset({
     if (datasetMetadata) {
       const config = getDatasetConfiguration(datasetMetadata)
       if (sourceData) {
-        if (!config?.latitude || !config?.longitude || !config?.timestamp) {
-          const fields = ['latitude', 'longitude', 'timestamp'].map((f) =>
-            t(`common.${f}` as any, f)
-          )
+        if (!config?.latitude || !config?.longitude) {
+          const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
           error = t('dataset.requiredFields', {
             fields,
             defaultValue: `Required fields ${fields}`,
@@ -270,7 +268,7 @@ function NewTrackDataset({
               }}
               onCleanClick={() => {
                 setDatasetMetadata({ fieldsAllowed: [] })
-                setDatasetMetadataConfig({ lineId: undefined })
+                setDatasetMetadataConfig({ lineId: '' })
               }}
               infoTooltip={t(
                 'datasetUpload.tracks.lineIdHelp',
@@ -287,7 +285,7 @@ function NewTrackDataset({
               }}
               onCleanClick={() => {
                 setDatasetMetadata({ fieldsAllowed: [] })
-                setDatasetMetadataConfig({ segmentId: undefined })
+                setDatasetMetadataConfig({ segmentId: '' })
               }}
               infoTooltip={t(
                 'datasetUpload.tracks.segmentIdHelp',
@@ -352,8 +350,7 @@ function NewTrackDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          {/* // TODO update sections by categoreies */}
-          <UserGuideLink section="uploadReference" />
+          <UserGuideLink section="uploadTracks" />
         </div>
         <Button
           className={styles.saveBtn}

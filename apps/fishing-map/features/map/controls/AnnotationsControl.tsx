@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { batch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
@@ -26,11 +25,9 @@ const MapAnnotationsControls = () => {
   }, [cleanFeatureState, isMapAnnotating, toggleMapAnnotationEdit])
 
   const onRemoveClick = useCallback(() => {
-    batch(() => {
-      resetMapAnnotation()
-      setMapAnnotationEdit(false)
-      cleanMapAnnotations()
-    })
+    resetMapAnnotation()
+    setMapAnnotationEdit(false)
+    cleanMapAnnotations()
   }, [cleanMapAnnotations, resetMapAnnotation, setMapAnnotationEdit])
 
   return (

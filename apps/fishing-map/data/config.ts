@@ -21,8 +21,6 @@ export const REPORT_DAYS_LIMIT =
     ? parseInt(process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT)
     : 366 // 1 year
 
-// Never actually used?
-export const API_GATEWAY = process.env.API_GATEWAY || process.env.NEXT_PUBLIC_API_GATEWAY || ''
 export const CARRIER_PORTAL_API_URL =
   process.env.NEXT_PUBLIC_CARRIER_PORTAL_API_URL || 'https://gateway.api.globalfishingwatch.org'
 export const CARRIER_PORTAL_URL =

@@ -7,8 +7,6 @@ import {
   InputText,
   MultiSelect,
   MultiSelectOption,
-  Select,
-  SelectOption,
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
@@ -31,6 +29,7 @@ import {
 import {
   getMetadataFromDataset,
   getPointsDatasetMetadata,
+  parseGeoJsonProperties,
 } from 'features/datasets/upload/datasets-upload.utils'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import styles from './NewDataset.module.css'
@@ -59,8 +58,7 @@ function NewPointDataset({
   const [sourceData, setSourceData] = useState<DataParsed | undefined>()
   const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
-  const { getSelectedOption, schemaRangeOptions, filtersFieldsOptions } =
-    useDatasetMetadataOptions(datasetMetadata)
+  const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
   const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
@@ -176,7 +174,9 @@ function NewPointDataset({
         // TODO update the schema with the selected field with type timestamp
         // setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
         setLoading(true)
-        const file = geojson ? getFileFromGeojson(geojson) : undefined
+        const file = geojson
+          ? getFileFromGeojson(parseGeoJsonProperties<Point>(geojson, datasetMetadata))
+          : undefined
         await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }
@@ -268,7 +268,7 @@ function NewPointDataset({
             setDatasetMetadataConfig({ valueProperties: [selected.id] })
           }}
           onCleanClick={() => {
-            setDatasetMetadataConfig({ valueProperties: undefined })
+            setDatasetMetadataConfig({ valueProperties: [] })
           }}
           infoTooltip={t(
             'datasetUpload.points.nameHelp',
@@ -276,30 +276,21 @@ function NewPointDataset({
           )}
         />
         <div className={styles.row}>
-          <Select
+          <NewDatasetField
+            datasetMetadata={datasetMetadata}
+            property="pointSize"
             label={t('datasetUpload.points.size', 'point size')}
             placeholder={t(
               'datasetUpload.fieldNumericPlaceholder',
               'Select a numeric field from your dataset'
             )}
-            options={schemaRangeOptions}
-            direction="top"
-            className={styles.input}
-            selectedOption={
-              getSelectedOption(
-                getDatasetConfigurationProperty({
-                  dataset: datasetMetadata,
-                  property: 'pointSize',
-                })
-              ) as SelectOption
-            }
+            editable={!loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ pointSize: selected.id })
             }}
             onCleanClick={() => {
-              setDatasetMetadataConfig({ pointSize: undefined })
+              setDatasetMetadataConfig({ pointSize: '' })
             }}
-            disabled={loading}
             infoTooltip={t(
               'datasetUpload.points.sizeHelp',
               'Select a numeric property of each point to change its radius'
@@ -388,8 +379,7 @@ function NewPointDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          {/* // TODO update sections by categoreies */}
-          <UserGuideLink section="uploadReference" />
+          <UserGuideLink section="uploadPoints" />
         </div>
         <Button
           className={styles.saveBtn}

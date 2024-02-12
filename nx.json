@@ -62,10 +62,6 @@
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
       "cache": true
     },
-    "lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.js"],
-      "cache": true
-    },
     "@nx/jest:jest": {
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
       "cache": true,
@@ -78,6 +74,10 @@
           "codeCoverage": true
         }
       }
+    },
+    "@nx/eslint:lint": {
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.js"],
+      "cache": true
     }
   },
   "namedInputs": {

@@ -2,12 +2,6 @@ import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { PUBLIC_SUFIX } from './config'
 
-export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
-
-export const DEFAULT_WORKSPACE_KEY = 'default'
-export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${PUBLIC_SUFIX}`
-export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap'
-
 export type WorkspaceEnv = 'development' | 'production'
 export const WORKSPACE_ENV =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
@@ -22,6 +16,13 @@ export enum WorkspaceCategory {
   FishingActivity = 'fishing-activity',
   MarineManager = 'marine-manager',
 }
+
+export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
+
+export const DEFAULT_WORKSPACE_KEY = 'default'
+export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${PUBLIC_SUFIX}`
+export const DEFAULT_WORKSPACE_CATEGORY = WorkspaceCategory.FishingActivity
+export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap'
 
 // IMPORTANT: When updating this list, also update it's corresponding
 // values in:

@@ -113,6 +113,7 @@ const nextConfig = {
   outputFileTracing: true,
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
+    swcPlugins: [['@swc-jotai/react-refresh', {}]],
   },
   // pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
   cleanDistDir: true,

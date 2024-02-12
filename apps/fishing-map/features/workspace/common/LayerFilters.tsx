@@ -97,6 +97,12 @@ export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
   )
 }
 
+export type OnSelectFilterArgs = {
+  filterKey: string | SupportedDatasetSchema
+  selection: number | MultiSelectOption | MultiSelectOption[]
+  singleValue?: boolean
+}
+
 function LayerFilters({
   dataview: baseDataview,
   onConfirmCallback,
@@ -209,6 +215,22 @@ function LayerFilters({
     })
   }
 
+  const onSelectHistogramRangeFilterClick = ({
+    minVisibleValue,
+    maxVisibleValue,
+  }: {
+    minVisibleValue: number | undefined
+    maxVisibleValue: number | undefined
+  }) => {
+    setNewDataviewInstanceConfig({
+      id: dataview.id,
+      config: {
+        minVisibleValue,
+        maxVisibleValue,
+      },
+    })
+  }
+
   const onRemoveSourceClick: MultiSelectOnChange = (source) => {
     const datasets =
       dataview.config?.datasets?.filter((datasetId: string) => datasetId !== source.id) || null
@@ -218,23 +240,28 @@ function LayerFilters({
     })
   }
 
-  const onSelectFilterClick = (
-    filterKey: string | SupportedDatasetSchema,
-    selection: any,
-    singleValue: boolean = false
-  ) => {
+  const onSelectFilterClick = ({
+    filterKey,
+    selection,
+    singleValue = false,
+  }: OnSelectFilterArgs) => {
     if ((selection as MultiSelectOption)?.id === VESSEL_GROUPS_MODAL_ID) {
       dispatch(setVesselGroupsModalOpen(true))
       dispatch(setVesselGroupCurrentDataviewIds([dataview.id]))
       return
     }
-    let filterValues: string[]
+    let filterValues: number | string[]
     if (Array.isArray(selection)) {
       filterValues = selection.map(({ id }) => id).sort((a, b) => a - b)
     } else if (singleValue) {
-      filterValues = [selection.id]
+      if (typeof selection === 'number') {
+        filterValues = selection
+      } else {
+        filterValues = [selection.id]
+      }
     } else {
-      filterValues = [...(dataview.config?.filters?.[filterKey] || []), selection.id]
+      const value = typeof selection === 'number' ? selection : selection.id
+      filterValues = [...(dataview.config?.filters?.[filterKey] || []), value]
     }
     const newDataviewConfig = {
       filters: {
@@ -365,7 +392,9 @@ function LayerFilters({
           onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
         />
       )}
-      {showHistogramFilter && <HistogramRangeFilter dataview={dataview} />}
+      {showHistogramFilter && (
+        <HistogramRangeFilter dataview={dataview} onSelect={onSelectHistogramRangeFilterClick} />
+      )}
       {filtersAllowed.map((schemaFilter) => {
         if (
           schemaFilter.id === 'vessel-groups' &&

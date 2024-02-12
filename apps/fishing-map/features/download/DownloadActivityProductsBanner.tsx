@@ -2,12 +2,12 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Button } from '@globalfishingwatch/ui-components'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { Format } from 'features/download/downloadActivity.config'
+import { HeatmapDownloadFormat } from 'features/download/downloadActivity.config'
 import styles from './DownloadModal.module.css'
 import { getDownloadReportSupported } from './download.utils'
 
 type DownloadActivityProductsBannerProps = {
-  format: Format
+  format: HeatmapDownloadFormat
 }
 
 function DownloadActivityProductsBanner({ format }: DownloadActivityProductsBannerProps) {

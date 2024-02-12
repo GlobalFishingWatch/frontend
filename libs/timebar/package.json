@@ -12,7 +12,6 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "dependencies": {
-    "@globalfishingwatch/map-convert": "github:GlobalFishingWatch/map-convert",
     "@mapbox/tile-cover": "^3.0.2",
     "@turf/area": "^6.5.0",
     "@turf/bbox": "6.5.0",

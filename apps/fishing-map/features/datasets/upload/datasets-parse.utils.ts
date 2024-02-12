@@ -48,10 +48,14 @@ export async function getDatasetParsed(file: File, type: DatasetGeometryType): P
     const fileText = await file.text()
     return validatedGeoJSON(fileText, type)
   } catch (e: any) {
+    if (e.message === NOT_VALID_GEOJSON_FEATURES_ERROR) {
+      throw new Error('datasetUpload.errors.geoJSON.noValidFeatures')
+    }
     throw new Error('datasetUpload.errors.default')
   }
 }
 
+const NOT_VALID_GEOJSON_FEATURES_ERROR = 'Not valid geojson features'
 export const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) => {
   const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
     points: 'Point',
@@ -63,7 +67,7 @@ export const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) =>
     return feature.geometry.type.includes(normalizedTypes[type]!)
   })
   if (!validFeatures.length) {
-    throw new Error('datasetUpload.errors.geoJSON.noValidFeatures')
+    throw new Error(NOT_VALID_GEOJSON_FEATURES_ERROR)
   }
   return {
     ...geoJSON,
@@ -92,6 +96,7 @@ export const getGeojsonFromPointsList = (data: Record<string, any>[], dataset: D
     startTime: getDatasetConfigurationProperty({ dataset, property: 'startTime' }),
     endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
     id: getDatasetConfigurationProperty({ dataset, property: 'idProperty' }),
+    schema: dataset.schema,
   })
 }
 

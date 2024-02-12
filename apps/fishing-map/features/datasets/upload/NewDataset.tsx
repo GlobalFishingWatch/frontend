@@ -14,8 +14,8 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { DatasetUploadStyle } from 'features/modals/modals.slice'
 import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { FileType } from 'utils/files'
 import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
+import UserGuideLink from 'features/help/UserGuideLink'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -200,6 +200,9 @@ function NewDataset() {
           <div className={styles.modalContent}>
             <DatasetTypeSelect style={style} onFileLoaded={onFileLoaded} />
           </div>
+          {style !== 'transparent' && (
+            <UserGuideLink section="uploadData" className={styles.userGuideLink} />
+          )}
           {style === 'transparent' && fileRejected && (
             <Button onClick={onClose} className={styles.dismiss}>
               {t('common.dismiss', 'Dismiss')}

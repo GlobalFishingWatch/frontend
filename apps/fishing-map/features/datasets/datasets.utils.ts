@@ -342,16 +342,19 @@ export const getActivityDatasetsReportSupported = (
   permissions: UserPermission[] = []
 ) => {
   return dataviews.flatMap((dataview) => {
-    const permissionDatasetsIds: string[] = getActiveDatasetsInActivityDataviews([dataview]).filter(
-      (datasetId: string) => {
-        return datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
-      }
-    )
+    const datasets = getActiveDatasetsInDataview(dataview)?.flatMap((d) => d?.id || []) || []
+    const permissionDatasetsIds: string[] = datasets.filter((datasetId: string) => {
+      const valid = datasetId ? checkDatasetReportPermission(datasetId, permissions) : false
+      return valid
+    })
     return dataview.datasets
       ?.filter(
         (d) =>
           permissionDatasetsIds.includes(d.id) &&
-          (d.category === DatasetCategory.Activity || d.category === DatasetCategory.Detections)
+          (d.category === DatasetCategory.Activity ||
+            d.category === DatasetCategory.Detections ||
+            (d.category === DatasetCategory.Environment &&
+              dataview.config?.type === GeneratorType.HeatmapAnimated))
       )
       .map((d) => d.id)
   })
@@ -606,6 +609,9 @@ export type SchemaFieldSelection = {
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
 
 export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
+  if (dataview.category === DataviewCategory.User) {
+    return dataview.datasets
+  }
   return dataview.config?.datasets
     ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
     : dataview?.datasets

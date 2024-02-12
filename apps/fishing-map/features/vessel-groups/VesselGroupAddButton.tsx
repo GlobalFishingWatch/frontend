@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { batch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
@@ -54,16 +54,14 @@ function VesselGroupAddButton({
           (vessel as ReportVesselWithDatasets)?.infoDataset?.id,
       }))
       if (vesselsWithDataset?.length) {
-        batch(() => {
-          if (vesselGroupId) {
-            dispatch(setVesselGroupEditId(vesselGroupId))
-          }
-          dispatch(setNewVesselGroupSearchVessels(vesselsWithDataset))
-          dispatch(setVesselGroupsModalOpen(true))
-          if (onAddToVesselGroup) {
-            onAddToVesselGroup(vesselGroupId)
-          }
-        })
+        if (vesselGroupId) {
+          dispatch(setVesselGroupEditId(vesselGroupId))
+        }
+        dispatch(setNewVesselGroupSearchVessels(vesselsWithDataset))
+        dispatch(setVesselGroupsModalOpen(true))
+        if (onAddToVesselGroup) {
+          onAddToVesselGroup(vesselGroupId)
+        }
       } else {
         console.warn('No related activity datasets founds for', vesselsWithDataset)
       }

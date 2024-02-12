@@ -1,3 +1,4 @@
+import { Feature, FeatureCollection, GeoJsonProperties, Point, Polygon } from 'geojson'
 import {
   Dataset,
   DatasetCategory,
@@ -5,8 +6,15 @@ import {
   DatasetGeometryType,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
-import { getDatasetSchema, guessColumnsFromSchema } from '@globalfishingwatch/data-transforms'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  cleanProperties,
+  getDatasetSchema,
+  guessColumnsFromSchema,
+} from '@globalfishingwatch/data-transforms'
+import {
+  DatasetConfigurationProperty,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getUTCDateTime } from 'utils/dates'
@@ -132,4 +140,35 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
     }
   }
   return baseDataset
+}
+
+export const parseGeoJsonProperties = <T extends Polygon | Point>(
+  geojson: FeatureCollection<T, GeoJsonProperties>,
+  datasetMetadata: DatasetMetadata
+): FeatureCollection<T, GeoJsonProperties> => {
+  return {
+    ...geojson,
+    features: geojson.features.map((feature) => {
+      const cleanedProperties = cleanProperties(feature.properties, datasetMetadata.schema)
+      const propertiesToDateMillis: DatasetConfigurationProperty[] = [
+        'timestamp',
+        'startTime',
+        'endTime',
+      ]
+      propertiesToDateMillis.forEach((property: DatasetConfigurationProperty) => {
+        const propertyKey = getDatasetConfigurationProperty({
+          dataset: { configuration: datasetMetadata.configuration } as Dataset,
+          property,
+        }) as string
+        if (cleanedProperties[propertyKey]) {
+          const value = cleanedProperties[propertyKey]
+          cleanedProperties[propertyKey] = getUTCDateTime(value).toMillis()
+        }
+      })
+      return {
+        ...feature,
+        properties: cleanedProperties,
+      }
+    }) as Feature<T, GeoJsonProperties>[],
+  }
 }

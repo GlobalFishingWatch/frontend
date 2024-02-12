@@ -23,6 +23,7 @@ import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { QueryParams } from 'types'
 import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
+import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 
 export type VesselLinkProps = {
   datasetId?: string
@@ -89,7 +90,7 @@ const VesselLink = ({
         payload: {
           ...(!standaloneLink &&
             workspaceId && {
-              category: workspaceCategory,
+              category: workspaceCategory || DEFAULT_WORKSPACE_CATEGORY,
               workspaceId: workspaceId,
             }),
           vesselId,

@@ -5,7 +5,6 @@ import { SliderRange, SliderRangeValues } from '@globalfishingwatch/ui-component
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useDataviewHistogram } from 'features/workspace/environmental/histogram.hooks'
 import { getEventLabel } from 'utils/analytics'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -13,11 +12,14 @@ import styles from './HistogramRangeFilter.module.css'
 
 type HistogramRangeFilterProps = {
   dataview: UrlDataviewInstance
+  onSelect: (args: {
+    minVisibleValue: number | undefined
+    maxVisibleValue: number | undefined
+  }) => void
 }
 
-function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
+function HistogramRangeFilter({ dataview, onSelect }: HistogramRangeFilterProps) {
   const { t } = useTranslation()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const histogram = useDataviewHistogram(dataview)
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
   const layerRange = getEnvironmentalDatasetRange(dataset)
@@ -32,14 +34,14 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
   const onSliderChange = useCallback(
     (rangeSelected: SliderRangeValues) => {
       if (rangeSelected[0] === layerRange.min && rangeSelected[1] === layerRange.max) {
-        // onClean(id)
+        onSelect({
+          minVisibleValue: undefined,
+          maxVisibleValue: undefined,
+        })
       } else {
-        upsertDataviewInstance({
-          id: dataview.id,
-          config: {
-            minVisibleValue: rangeSelected[0],
-            maxVisibleValue: rangeSelected[1],
-          },
+        onSelect({
+          minVisibleValue: rangeSelected[0],
+          maxVisibleValue: rangeSelected[1],
         })
       }
       trackEvent({
@@ -48,7 +50,7 @@ function HistogramRangeFilter({ dataview }: HistogramRangeFilterProps) {
         label: getEventLabel([dataview.name as string, ...rangeSelected.map((r) => r.toString())]),
       })
     },
-    [layerRange?.min, layerRange?.max, dataview.name, dataview.id, upsertDataviewInstance]
+    [layerRange?.min, layerRange?.max, dataview?.name, onSelect]
   )
 
   return (

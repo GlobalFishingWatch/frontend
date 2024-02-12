@@ -17,6 +17,23 @@ const heatmapDatasetConfig = {
   endpoint: '4wings-tiles',
 }
 
+export const BATHYMETRY_DATAVIEW_INSTANCE: Omit<LibraryLayerConfig, 'previewImageUrl'> = {
+  id: 'bathymetry',
+  dataviewId: TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
+  config: {
+    color: 'bathymetry',
+    colorRamp: 'bathymetry',
+    group: Group.Bathymetry,
+    maxZoom: 8,
+  },
+  datasetsConfig: [
+    {
+      ...heatmapDatasetConfig,
+      datasetId: 'public-global-bathymetry',
+    },
+  ],
+}
+
 export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   // {
   //   id: 'gee-water-temperature',
@@ -37,21 +54,9 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   //     `${PATH_BASENAME}/images/layer-library/chlorophyl-1.jpg`,
   // },
   {
+    ...BATHYMETRY_DATAVIEW_INSTANCE,
     id: 'bathymetry',
-    dataviewId: TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry.jpg`,
-    config: {
-      color: 'bathymetry',
-      colorRamp: 'bathymetry',
-      group: Group.Bathymetry,
-      maxZoom: 8,
-    },
-    datasetsConfig: [
-      {
-        ...heatmapDatasetConfig,
-        datasetId: 'public-global-bathymetry',
-      },
-    ],
   },
   {
     id: 'chlorophyl',
@@ -134,8 +139,8 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/salinity.jpg`,
     config: {
-      color: '#FF6854',
-      colorRamp: 'red',
+      color: '#9CA4FF',
+      colorRamp: 'lilac',
     },
     datasetsConfig: [
       {
@@ -159,22 +164,21 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
       },
     ],
   },
-
-  {
-    id: 'sst-anomalies',
-    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-mean.jpg`,
-    config: {
-      color: '#FFAA0D',
-      colorRamp: 'orange',
-    },
-    datasetsConfig: [
-      {
-        ...heatmapDatasetConfig,
-        datasetId: 'public-global-sst-anomalies:v20231213',
-      },
-    ],
-  },
+  // {
+  //   id: 'sst-anomalies',
+  //   dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+  //   previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-mean.jpg`,
+  //   config: {
+  //     color: '#FFAA0D',
+  //     colorRamp: 'orange',
+  //   },
+  //   datasetsConfig: [
+  //     {
+  //       ...heatmapDatasetConfig,
+  //       datasetId: 'public-global-sst-anomalies:v20231213',
+  //     },
+  //   ],
+  // },
   // {
   //   id: 'sst-anomalies-min',
   //   dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,

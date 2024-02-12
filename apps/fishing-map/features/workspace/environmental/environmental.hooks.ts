@@ -22,12 +22,14 @@ import {
 } from 'features/map/map-sources.hooks'
 import { selectReportArea } from 'features/reports/reports.selectors'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
+import { AreaGeometry } from 'features/areas/areas.slice'
 import { filterByPolygon } from 'features/reports/reports-geo.utils'
 
 const filterVisibleValues = (
   rawData: number[],
   config: DataviewConfig<GeneratorType> | undefined
 ) => {
+  if (!config?.minVisibleValue && !config?.maxVisibleValue) return rawData
   return rawData.filter((d) => {
     const matchesMin = config?.minVisibleValue !== undefined ? d >= config?.minVisibleValue : true
     const matchesMax = config?.maxVisibleValue !== undefined ? d <= config?.maxVisibleValue : true
@@ -56,6 +58,7 @@ export const useEnvironmentalBreaksUpdate = () => {
     .flatMap(({ config }) => `${config?.minVisibleValue}-${config?.maxVisibleValue}`)
     .join(',')
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const hasDataviewStats = dataviews.every((d) => d.config?.stats)
 
   const updateBreaksByViewportValues = useCallback(
     (dataviewFeatures: DataviewFeature[], bounds: MiniglobeBounds) => {
@@ -95,27 +98,10 @@ export const useEnvironmentalBreaksUpdate = () => {
                   cleanBreaks.push(k)
                 }
               })
-              let areaStats
-              if (area?.geometry) {
-                const featuresInReportArea =
-                  area?.geometry && filterByPolygon([filteredFeatures], area?.geometry)[0]
-                const allFeaturesInReportArea = [
-                  ...(featuresInReportArea?.contained || []),
-                  ...(featuresInReportArea?.overlapping || []),
-                ]
-                const values = getValues(allFeaturesInReportArea, metadata)
-                const visibleValues = filterVisibleValues(values, config)
-                areaStats = {
-                  min: min(visibleValues),
-                  mean: mean(visibleValues),
-                  max: max(visibleValues),
-                }
-              }
               return {
                 id: dataviewsId[0],
                 config: {
                   breaks: cleanBreaks,
-                  stats: areaStats,
                 },
               }
             }
@@ -128,7 +114,44 @@ export const useEnvironmentalBreaksUpdate = () => {
         upsertDataviewInstance(dataviewInstances)
       }
     },
-    [area?.geometry, dataviews, upsertDataviewInstance]
+    [dataviews, upsertDataviewInstance]
+  )
+
+  const updateStatsByArea = useCallback(
+    (dataviewFeatures: DataviewFeature[], geometry: AreaGeometry) => {
+      const dataviewInstances = dataviewFeatures?.flatMap(
+        ({ features, chunksFeatures, dataviewsId, metadata }) => {
+          const resolvedFeatures = chunksFeatures?.[0]?.features || features || ({} as ChunkFeature)
+          if (resolvedFeatures && resolvedFeatures.length && geometry) {
+            const config = dataviews.find(({ id }) => dataviewsId.includes(id))?.config
+            const featuresInReportArea = filterByPolygon([resolvedFeatures], geometry, 'point')[0]
+            const allFeaturesInReportArea = [
+              ...(featuresInReportArea?.contained || []),
+              ...(featuresInReportArea?.overlapping || []),
+            ]
+            const values = getValues(allFeaturesInReportArea, metadata)
+            const visibleValues = filterVisibleValues(values, config)
+            if (!visibleValues.length) return []
+            const areaStats = {
+              min: min(visibleValues),
+              mean: mean(visibleValues),
+              max: max(visibleValues),
+            }
+            return {
+              id: dataviewsId[0],
+              config: {
+                stats: areaStats,
+              },
+            }
+          }
+          return []
+        }
+      )
+      if (dataviewInstances) {
+        upsertDataviewInstance(dataviewInstances)
+      }
+    },
+    [dataviews, upsertDataviewInstance]
   )
 
   useEffect(() => {
@@ -137,4 +160,18 @@ export const useEnvironmentalBreaksUpdate = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sourcesLoaded, layersFilterHash])
+
+  useEffect(() => {
+    if (hasDataviewStats) {
+      upsertDataviewInstance(dataviews.map(({ id }) => ({ id, config: { stats: undefined } })))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [area?.geometry])
+
+  useEffect(() => {
+    if (sourcesLoaded && area?.geometry && !hasDataviewStats) {
+      updateStatsByArea(dataviewFeatures, area.geometry)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [area?.geometry, sourcesLoaded, layersFilterHash, hasDataviewStats])
 }

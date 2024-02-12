@@ -32,36 +32,27 @@ export const getFieldSchema = (
     }
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {
-        const isDate = values.every((d) => !isNaN(Date.parse(d)))
-        const isCoordinate = values.some((d) => parseCoords(d, d))
-        if (isDate) {
+        const isDates = values.every((d) => !isNaN(Date.parse(d)))
+        const isNumeric = values.some((d) => parseCoords(d, d))
+        if (isDates) {
           const valuesOrdered = values.sort((a, b) => a - b)
           schema.type = 'timestamp'
           schema.enum = [
             new Date(valuesOrdered[0]).getTime(),
             new Date(valuesOrdered[valuesOrdered.length - 1]).getTime(),
           ]
-        } else if (isCoordinate) {
-          const valuesOrdered = values.sort((a, b) => a - b)
-          try {
-            const coordinates = parseCoords(
-              valuesOrdered[0],
-              valuesOrdered[valuesOrdered.length - 1]
-            )
-            if (coordinates) {
-              schema.type = 'coordinate'
-              schema.enum = [coordinates.latitude, coordinates.longitude]
-            } else {
-              schema.type = 'range'
-              schema.enum = [valuesOrdered[0], valuesOrdered[valuesOrdered.length - 1]]
-            }
-          } catch (e) {}
+        } else if (isNumeric) {
+          const numericalValues = values.filter((v) => !isNaN(Number(v)))
+          const valuesOrdered = numericalValues.sort((a, b) => a - b)
+          schema.type = 'range'
+          schema.enum = [valuesOrdered[0], valuesOrdered[valuesOrdered.length - 1]]
         } else {
           const stringEnumSupported = values.length < maxSchemaEnumValues
           schema.enum = stringEnumSupported ? values.map((v) => v.toString()) : []
         }
       } else if (schema.type === 'range' || schema.type === 'coordinate') {
-        schema.enum = [min(values), max(values)]
+        const numericalValues = values.filter((v) => !isNaN(v))
+        schema.enum = [min(numericalValues), max(numericalValues)]
       } else if (schema.type === 'boolean') {
         schema.enum = [true, false]
       }

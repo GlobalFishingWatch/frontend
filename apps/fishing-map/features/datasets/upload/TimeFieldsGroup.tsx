@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { capitalize } from 'lodash'
 import { t } from 'i18next'
 import { Choice, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
@@ -68,8 +67,8 @@ export const TimeFieldsGroup = ({
 
   const onStartClean = useCallback(() => {
     isDateFilter
-      ? setDatasetMetadataConfig({ startTime: undefined, endTime: undefined })
-      : setDatasetMetadataConfig({ startTime: undefined })
+      ? setDatasetMetadataConfig({ startTime: '', endTime: '' })
+      : setDatasetMetadataConfig({ startTime: '' })
   }, [setDatasetMetadataConfig, isDateFilter])
 
   const onEndSelect = useCallback(
@@ -80,7 +79,7 @@ export const TimeFieldsGroup = ({
   )
 
   const onEndClean = useCallback(() => {
-    setDatasetMetadataConfig({ endTime: undefined })
+    setDatasetMetadataConfig({ endTime: '' })
   }, [setDatasetMetadataConfig])
 
   const translatedGeometryType =

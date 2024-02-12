@@ -1,20 +1,13 @@
-import type {
-  LayerSpecification,
-  CircleLayerSpecification,
-  FilterSpecification,
-} from '@globalfishingwatch/maplibre-gl'
+import type { LayerSpecification, CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '../context/config'
-import { GeneratorType, MergedGeneratorConfig, UserPointsGeneratorConfig } from '../types'
+import { GeneratorType, GlobalUserPointsGeneratorConfig } from '../types'
 import { isUrlAbsolute } from '../../utils'
 import { Group } from '../../types'
 import { API_GATEWAY } from '../../config'
 import { getCirclePaintWithFeatureState } from '../context/context.utils'
 import { getCircleRadiusWithPointSizeProperty } from '../user-points/user-points.utils'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
-
-export type GlobalUserPointsGeneratorConfig = Required<
-  MergedGeneratorConfig<UserPointsGeneratorConfig>
->
+import { getTimeFilterForUserContextLayer } from '../utils'
 
 class UserPointsGenerator {
   type = GeneratorType.UserPoints
@@ -29,9 +22,12 @@ class UserPointsGenerator {
     if (config.filter) {
       url.searchParams.set('filter', config.filter)
     }
-    const properties = [...(config.valueProperties || []), config.circleRadiusProperty].filter(
-      Boolean
-    )
+    const properties = [
+      ...(config.valueProperties || []),
+      config.startTimeFilterProperty || '',
+      config.endTimeFilterProperty || '',
+      config.circleRadiusProperty || '',
+    ].filter((p) => !!p)
     if (properties.length) {
       properties.forEach((property, index) => {
         url.searchParams.set(`properties[${index}]`, property)
@@ -57,16 +53,7 @@ class UserPointsGenerator {
       source: config.id,
       'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
     }
-    let filters: FilterSpecification | undefined
-    if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
-      const startMs = new Date(config.start).getTime()
-      const endMs = new Date(config.end).getTime()
-      filters = [
-        'all',
-        ['<=', ['to-number', ['get', config.endTimeFilterProperty]], endMs],
-        ['>=', ['to-number', ['get', config.startTimeFilterProperty]], startMs],
-      ]
-    }
+    const filters = getTimeFilterForUserContextLayer(config)
     const circleLayer: CircleLayerSpecification = {
       ...baseLayer,
       type: 'circle',

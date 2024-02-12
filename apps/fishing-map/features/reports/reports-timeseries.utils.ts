@@ -1,6 +1,7 @@
 import {
   getRealValues,
   getTimeSeries,
+  TimeSeries,
   TimeSeriesFrame,
 } from '@globalfishingwatch/fourwings-aggregate'
 import {
@@ -8,11 +9,12 @@ import {
   pickActiveTimeChunk,
   quantizeOffsetToDate,
 } from '@globalfishingwatch/layer-composer'
-import { ReportGraphProps, ReportSublayerGraph } from 'features/reports/reports-timeseries.hooks'
+import { ReportGraphMode, ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import { DateTimeSeries } from 'features/reports/reports.hooks'
 import { DataviewFeature } from 'features/map/map-sources.hooks'
 import { getUTCDateTime } from 'utils/dates'
+import { ComparisonGraphData } from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 
 export const removeTimeseriesPadding = (timeseries?: ReportGraphProps[]) => {
   return timeseries?.map((timeserie) => {
@@ -73,27 +75,41 @@ export const featuresToTimeseries = (
     layersWithFeatures,
     showTimeComparison,
     compareDeltaMillis,
+    graphMode = 'evolution',
   }: {
     layersWithFeatures: DataviewFeature[]
     showTimeComparison: boolean
     compareDeltaMillis: number
+    graphMode?: ReportGraphMode
   }
-) => {
-  return filteredFeatures.flatMap((filteredFeatures, sourceIndex) => {
-    const sourceMetadata = layersWithFeatures[sourceIndex]?.metadata
-    if (!sourceMetadata) {
-      return []
+): ReportGraphProps[] => {
+  return filteredFeatures.map((filteredFeature, sourceIndex) => {
+    const featureToTimeseries: ReportGraphProps = {
+      interval: '' as Interval,
+      mode: graphMode,
+      sublayers: [],
+      timeseries: [],
     }
-    const sourceNumSublayers = showTimeComparison ? 2 : sourceMetadata.numSublayers
+    const sourceMetadata = layersWithFeatures[sourceIndex]?.metadata
+    if (!sourceMetadata || sourceMetadata?.static === true) {
+      return featureToTimeseries
+    }
     // TODO handle multiple timechunks
     const sourceActiveTimeChunk = pickActiveTimeChunk(sourceMetadata.timeChunks)
+    if (!sourceActiveTimeChunk) {
+      return featureToTimeseries
+    }
+    const sourceNumSublayers = showTimeComparison ? 2 : sourceMetadata.numSublayers
     const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
     const sourceInterval = sourceMetadata.timeChunks.interval
+
     const { values: valuesContainedRaw } = getTimeSeries({
-      features: (filteredFeatures.contained as any) || ([] as any),
+      features: (filteredFeature.contained as any) || ([] as any),
       numSublayers: sourceNumSublayers,
       quantizeOffset: sourceQuantizeOffset,
       aggregationOperation: sourceMetadata.aggregationOperation,
+      minVisibleValue: sourceMetadata.minVisibleValue,
+      maxVisibleValue: sourceMetadata.maxVisibleValue,
     })
 
     const valuesContained = frameTimeseriesToDateTimeseries(
@@ -102,16 +118,22 @@ export const featuresToTimeseries = (
       compareDeltaMillis
     )
 
-    const featuresContainedAndOverlapping = [
-      ...(filteredFeatures.contained || []),
-      ...(filteredFeatures.overlapping || []),
-    ]
-    const { values: valuesContainedAndOverlappingRaw } = getTimeSeries({
-      features: featuresContainedAndOverlapping as any,
-      numSublayers: sourceNumSublayers,
-      quantizeOffset: sourceQuantizeOffset,
-      aggregationOperation: sourceMetadata.aggregationOperation,
-    })
+    const featuresContainedAndOverlapping =
+      filteredFeature.overlapping.length > 0
+        ? [...(filteredFeature.contained || []), ...(filteredFeature.overlapping || [])]
+        : []
+
+    let valuesContainedAndOverlappingRaw: TimeSeries['values'] = []
+    if (featuresContainedAndOverlapping.length > 0) {
+      valuesContainedAndOverlappingRaw = getTimeSeries({
+        features: featuresContainedAndOverlapping as any,
+        numSublayers: sourceNumSublayers,
+        quantizeOffset: sourceQuantizeOffset,
+        aggregationOperation: sourceMetadata.aggregationOperation,
+        minVisibleValue: sourceMetadata.minVisibleValue,
+        maxVisibleValue: sourceMetadata.maxVisibleValue,
+      }).values
+    }
 
     const valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(
       valuesContainedAndOverlappingRaw,
@@ -119,22 +141,25 @@ export const featuresToTimeseries = (
       compareDeltaMillis
     )
 
-    const timeseries = valuesContainedAndOverlapping.map(({ values, date, compareDate }) => {
-      const minValues = valuesContained.find((overlap) => overlap.date === date)?.values
+    featureToTimeseries.interval = sourceInterval
+    featureToTimeseries.sublayers = sourceMetadata.sublayers as any
+    featureToTimeseries.timeseries = valuesContained.map(({ values, date, compareDate }) => {
+      const maxValues = valuesContainedAndOverlapping.find((overlap) => overlap.date === date)
+        ?.values
+      const minValues = getRealValues(values)
       return {
         date,
         compareDate,
         // TODO take into account multiplier when calling getRealValue
-        min: minValues ? getRealValues(minValues) : new Array(values.length).fill(0),
-        max: getRealValues(values),
-      }
+        min: minValues,
+        max: maxValues
+          ? getRealValues(maxValues)
+          : valuesContainedAndOverlapping.length > 0
+            ? new Array(values.length).fill(0)
+            : minValues,
+      } as ComparisonGraphData
     })
-
-    return {
-      timeseries,
-      interval: sourceInterval,
-      sublayers: sourceMetadata.sublayers as unknown as ReportSublayerGraph[],
-    }
+    return featureToTimeseries
   })
 }
 

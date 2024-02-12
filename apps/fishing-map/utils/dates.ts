@@ -6,13 +6,22 @@ import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
 export type SupportedDateType = string | number
 export const getUTCDateTime = (d: SupportedDateType) => {
-  if (!d || (typeof d !== 'string' && typeof d !== 'number')) {
-    console.warn('Not a valid date', d)
+  if (!d || (typeof d !== 'string' && typeof d !== 'number' && typeof d !== 'object')) {
+    console.warn('Not a valid date', typeof d, d)
     return DateTime.utc()
   }
-  return typeof d === 'string'
-    ? DateTime.fromISO(d, { zone: 'utc' })
-    : DateTime.fromMillis(d, { zone: 'utc' })
+  if (typeof d === 'object') {
+    try {
+      return DateTime.fromJSDate(d, { zone: 'utc' })
+    } catch (error) {
+      console.warn('Not a valid date', typeof d, d)
+      return DateTime.utc()
+    }
+  }
+  if (typeof d === 'string') {
+    return DateTime.fromISO(d, { zone: 'utc' })
+  }
+  return DateTime.fromMillis(d, { zone: 'utc' })
 }
 
 export const getTimeRangeDuration = (

@@ -50,7 +50,8 @@
     "**/*.js",
     "**/*.jsx",
     "next-env.d.ts",
-    "../../dist/apps/tile-inspector/.next/types/**/*.ts"
+    "../../dist/apps/tile-inspector/.next/types/**/*.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules", "jest.config.ts"]
 }
