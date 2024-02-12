@@ -37,7 +37,7 @@ export const verifyTracksInTimebar = (segments?: number) => {
 export const disablePopups = () => {
   localStorage.setItem('DisableWelcomePopup', 'true')
   localStorage.setItem('DisableSourceSwitchPopup', 'true')
-  localStorage.setItem('HighlightPopup', '"sar"')
+  localStorage.setItem('HighlightPopup', '"bathymetry-workspace"')
   localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
   localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
   localStorage.setItem(
