@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
 import {
@@ -32,10 +32,8 @@ import {
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
-import { selectVesselId } from 'routes/routes.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-
-export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
+import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum

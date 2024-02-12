@@ -8,7 +8,7 @@ import { GetDatasetConfigCallback, UrlDataviewInstance } from '@globalfishingwat
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.slice'
+import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
 
 type ThinningConfigParam = { zoom: number; config: ThinningConfig }
 

@@ -48,7 +48,7 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser, selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
@@ -57,7 +57,7 @@ import { selectTrackChunksConfig } from 'features/resources/resources.selectors.
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
   // eventsDatasetConfigsCallback,
-  // infoDatasetConfigsCallback,
+  infoDatasetConfigsCallback,
   trackDatasetConfigsCallback,
 } from '../resources/resources.utils'
 
@@ -342,8 +342,9 @@ export const selectDataviewsResources = createSelector(
     selectTrackThinningConfig,
     selectTrackChunksConfig,
     selectWorkspaceStateProperty('timebarGraph'),
+    selectIsGuestUser,
   ],
-  (dataviewInstances, thinningConfig, chunks, timebarGraph) => {
+  (dataviewInstances, thinningConfig, chunks, timebarGraph, guestUser) => {
     // const callbacks: GetDatasetConfigsCallbacks = {
     //   track: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
     //   events: eventsDatasetConfigsCallback,
@@ -354,7 +355,7 @@ export const selectDataviewsResources = createSelector(
       tracks: trackDatasetConfigsCallback(thinningConfig, timebarGraph),
       //       track: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
       //       events: eventsDatasetConfigsCallback,
-      //       info: infoDatasetConfigsCallback,
+      info: infoDatasetConfigsCallback(guestUser),
     }
     return getResources(dataviewInstances || [], callbacks)
   }

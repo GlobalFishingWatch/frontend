@@ -28,6 +28,7 @@ import {
   selectTrackChunksConfig,
 } from 'features/resources/resources.selectors.thinning'
 import {
+  infoDatasetConfigsCallback,
   trackDatasetConfigsCallback,
   // eventsDatasetConfigsCallback,
   // infoDatasetConfigsCallback,
@@ -202,7 +203,7 @@ export const selectDataviewsResources = createSelector(
   ],
   (dataviewInstances, thinningConfig, chunks, timebarGraph, guestUser) => {
     const callbacks: GetDatasetConfigsCallbacks = {
-      track: trackDatasetConfigsCallback(thinningConfig, chunks) as any,
+      track: trackDatasetConfigsCallback(thinningConfig as any, chunks) as any,
       // events: eventsDatasetConfigsCallback,
       info: infoDatasetConfigsCallback(guestUser),
     }
