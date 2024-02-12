@@ -40,15 +40,15 @@ export type GetFillColorParams = {
 
 const EMPTY_CELL_COLOR = [0, 0, 0, 0] as Color
 
-let fillColorTime = 0
-let fillColorCount = 0
+// let fillColorTime = 0
+// let fillColorCount = 0
 
 export const getFillColor = (
   cell: Cell,
   { colorDomain, colorRanges, chunks, minIntervalFrame, maxIntervalFrame }: GetFillColorParams
 ): Color => {
   const a = performance.now()
-  fillColorCount++
+  // fillColorCount++
   if (!colorDomain || !colorRanges) {
     return EMPTY_CELL_COLOR
   }
@@ -62,7 +62,7 @@ export const getFillColor = (
   const aggregatedCellValue = max(aggregatedCellValues) as number
   if (!aggregatedCellValue) {
     const b = performance.now()
-    fillColorTime += b - a
+    // fillColorTime += b - a
     return EMPTY_CELL_COLOR
   }
   // TODO review performance here
@@ -72,11 +72,11 @@ export const getFillColor = (
     if (aggregatedCellValue <= d) return i
     return 0
   })
-  const b = performance.now()
-  fillColorTime += b - a
-  if (fillColorCount >= 970182) {
-    console.log('aggregateCell count:', fillColorCount, 'time:', fillColorTime)
-  }
+  // const b = performance.now()
+  // fillColorTime += b - a
+  // if (fillColorCount >= 970182) {
+  //   console.log('aggregateCell count:', fillColorCount, 'time:', fillColorTime)
+  // }
   return colorRanges[maxCellValueIndex][colorIndex]
 }
 
