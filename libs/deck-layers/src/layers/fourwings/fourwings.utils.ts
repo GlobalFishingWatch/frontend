@@ -77,12 +77,12 @@ type GetDataUrlByChunk = {
     id: string
   }
   chunk: Chunk
-  datasets: FourwingsDeckSublayer['datasets']
+  sublayer: FourwingsDeckSublayer
 }
 
 const API_BASE_URL =
   'https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/heatmap/{z}/{x}/{y}'
-export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) => {
+export const getDataUrlBySublayer = ({ tile, chunk, sublayer }: GetDataUrlByChunk) => {
   const params = {
     interval: chunk.interval,
     format: '4WINGS',
@@ -92,7 +92,7 @@ export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) 
       DateTime.fromMillis(chunk.start).toISODate(),
       DateTime.fromMillis(chunk.end).toISODate(),
     ].join(','),
-    datasets,
+    datasets: [sublayer.datasets.join(',')],
   }
   const url = `${API_BASE_URL}?${stringify(params, {
     arrayFormat: 'indices',
