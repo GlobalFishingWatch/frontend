@@ -1,7 +1,6 @@
 import { Color, CompositeLayer } from '@deck.gl/core/typed'
 // import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
-import { max } from 'lodash'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
 import { CONFIG_BY_INTERVAL } from '../../utils/time'
@@ -69,8 +68,8 @@ export const chooseColor = (
   if (!chosenValue) {
     // const b = performance.now()
     // fillColorTime += b - a
-    return [255, 0, 0, 100]
-    // return EMPTY_CELL_COLOR
+    // return [255, 0, 0, 100]
+    return EMPTY_CELL_COLOR
   }
   const colorIndex = colorDomain.findIndex((d, i) =>
     (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0

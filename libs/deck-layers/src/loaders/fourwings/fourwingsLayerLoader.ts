@@ -18,14 +18,6 @@ function readData(_: any, data: any, pbf: any) {
 
 export type BBox = [number, number, number, number]
 
-export type GetTimeseriesParams = {
-  startFrame: number
-  minFrame: number
-  maxFrame: number
-  sublayerCount: number
-  bufferMs: number
-}
-
 // TODO make this dynamic to get the data from the header
 // const NO_DATA_VALUE = 0
 export const NO_DATA_VALUE = 4294967295
@@ -34,29 +26,28 @@ export const SCALE_VALUE = 1
 export const OFFSET_VALUE = 0
 
 export type FourwingsRawData = number[]
-const getCellTimeseries = (
+export const getCellTimeseries = (
   intArrays: FourwingsRawData[],
-  params: ParseFourwingsParams
+  options: ParseFourwingsParams
 ): { cells: Cell[]; indexes: number[] } => {
-  const { minFrame, maxFrame, interval, sublayers, cols, rows } = params
+  const { minFrame, maxFrame, interval, sublayers } = options || ({} as ParseFourwingsParams)
   // TODO ensure we use the UTC dates here to avoid the .ceil
   const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame))
   const tileMaxIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame))
-  const sublayerCount = sublayers.length
-  // let cells = new Array(cols * rows).fill(null) as Cell[]
-  let cells = [] as Cell[]
-  let indexes = []
-  let cellNum = 0
-  let startFrame = 0
-  let endFrame = 0
-  let startIndex = 0
-  let endIndex = 0
-  let indexInCell = 0
-
-  for (let index = 0; index < intArrays.length; index++) {
-    const intArray = intArrays[index]
-    for (let i = 0; i < intArray.length; i++) {
-      const value = intArray[i]
+  // const sublayerCount = sublayers.length
+  const cells = [] as Cell[]
+  const indexes = [] as number[]
+  const dataLength = intArrays.length
+  for (let subLayerIndex = 0; subLayerIndex < dataLength; subLayerIndex++) {
+    let cellNum = 0
+    let startFrame = 0
+    let endFrame = 0
+    let startIndex = 0
+    let endIndex = 0
+    let indexInCell = 0
+    const subLayerIntArray = intArrays[subLayerIndex]
+    for (let i = 0; i < subLayerIntArray.length; i++) {
+      const value = subLayerIntArray[i]
       if (indexInCell === CELL_NUM_INDEX) {
         startIndex = i
         cellNum = value
@@ -67,24 +58,27 @@ const getCellTimeseries = (
         // endFrame = getDateInIntervalResolution(value, interval)
         endFrame = value
 
-        const numCellValues = (endFrame - startFrame + 1) * sublayerCount
+        const numCellValues = (endFrame - startFrame + 1) * sublayers
         const startOffset = startIndex + CELL_VALUES_START_INDEX
         endIndex = startOffset + numCellValues - 1
 
-        // cells[cellNum] = new Array(sublayerCount).fill(null)
-        cells.push(new Array(sublayerCount).fill(null))
-        indexes.push(cellNum)
+        if (!cells[cellNum]) {
+          cells.push(new Array(dataLength).fill(null))
+          indexes.push(cellNum)
+        }
         for (let j = 0; j < numCellValues; j++) {
-          const subLayerIndex = j % sublayerCount
-          const cellValue = intArray[j + startOffset]
+          // const subLayerIndex = j % sublayers
+          const cellValue = subLayerIntArray[j + startOffset]
+          // eslint-disable-next-line max-depth
           if (cellValue !== NO_DATA_VALUE) {
+            // eslint-disable-next-line max-depth
             if (!cells[cells.length - 1]?.[subLayerIndex]) {
               cells[cells.length - 1]![subLayerIndex] = new Array(
                 tileMaxIntervalFrame - tileMinIntervalFrame
               ).fill(null)
             }
             cells[cells.length - 1]![subLayerIndex][
-              startFrame - tileMinIntervalFrame + Math.floor(j / sublayerCount)
+              startFrame - tileMinIntervalFrame + Math.floor(j / sublayers)
             ] = cellValue * SCALE_VALUE + OFFSET_VALUE
           }
         }
@@ -127,7 +121,7 @@ export type ParseFourwingsParams = {
   minFrame: number
   maxFrame: number
   interval: Interval
-  sublayers: FourwingsDeckSublayer[]
+  sublayers: number
 }
 
 export const parseFourWings = async (

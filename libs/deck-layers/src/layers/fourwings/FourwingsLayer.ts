@@ -1,5 +1,6 @@
 import { Color, CompositeLayer, Layer, LayersList, PickingInfo } from '@deck.gl/core/typed'
 import { TileLayerProps } from '@deck.gl/geo-layers/typed'
+// import { FourwingsLoader } from '@loaders.gl/4wings'
 import {
   FourwingsHeatmapTileLayerProps,
   FourwingsHeatmapTileLayer,
@@ -36,7 +37,18 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
     this.layers =
       mode === HEATMAP_ID
-        ? [new FourwingsHeatmapTileLayer(this.props)]
+        ? [
+            new FourwingsHeatmapTileLayer({
+              ...this.props,
+              // loaders: [FourwingsLoader],
+              // loadOptions: {
+              //   worker: true,
+              //   '4wings': {
+              //     workerUrl: 'http://127.0.0.1:8080/dist/4wings-worker.js',
+              //   },
+              // },
+            }),
+          ]
         : [
             new FourwingsPositionsTileLayer({
               ...this.props,
