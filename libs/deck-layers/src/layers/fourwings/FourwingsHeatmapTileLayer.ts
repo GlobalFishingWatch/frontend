@@ -13,7 +13,7 @@ import { load } from '@loaders.gl/core'
 // import { TileLoadProps } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
-import { FourwingsLoader } from '@loaders.gl/fourwings'
+import { FourwingsLoader } from '@globalfishingwatch/loaders.gl-fourwings'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
