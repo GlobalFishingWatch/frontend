@@ -1,6 +1,9 @@
 import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 
+export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
+
 export const HEATMAP_ID = 'heatmap'
 export const POSITIONS_ID = 'positions'
 

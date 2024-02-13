@@ -37,6 +37,7 @@ import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import {
   Chunk,
   HEATMAP_ID,
+  PATH_BASENAME,
   getChunkBuffer,
   getChunksByInterval,
   getInterval,
@@ -194,7 +195,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     }
     const data = await load(arrayBuffers, FourwingsLoader, {
       worker: true,
-      workerUrl: '/workers/fourwings-worker.js',
       fourwings: {
         sublayers: 1,
         cols,
@@ -202,7 +202,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         minFrame: chunks[0].start,
         maxFrame: chunks[0].end,
         interval: 'DAY',
-        workerUrl: '/workers/fourwings-worker.js',
+        workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
         buffersLength: arrayBuffers.map((b) => b.byteLength),
       },
     })
