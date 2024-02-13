@@ -28,7 +28,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       maxZoom: 9,
       onDataLoad: this.props.onDataLoad,
       zIndex: GROUP_ORDER.indexOf(Group.Basemap),
-      tileSize: 256,
+      tileSize: 512,
       renderSubLayers: (props: any) => {
         const {
           bbox: { west, south, east, north },

@@ -21,6 +21,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   data: any
   cols: number
   rows: number
+  indexes: number[]
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
 }
@@ -43,7 +44,7 @@ const EMPTY_CELL_COLOR = [0, 0, 0, 0] as Color
 // let fillColorTime = 0
 // let fillColorCount = 0
 
-export const getFillColor = (
+export const chooseColor = (
   cell: Cell,
   { colorDomain, colorRanges, chunks, minIntervalFrame, maxIntervalFrame }: GetFillColorParams
 ): Color => {
@@ -57,26 +58,30 @@ export const getFillColor = (
     maxIntervalFrame,
   })
   let chosenValueIndex = 0
-  let chosenValue = -Infinity
+  let chosenValue: number | undefined
   aggregatedCellValues.forEach((value, index) => {
     // TODO add more comparison modes (bivariate)
-    if (value && value > chosenValue) {
+    if (value && (!chosenValue || value > chosenValue)) {
       chosenValue = value
       chosenValueIndex = index
     }
   })
-  if (chosenValue === -Infinity) {
+  if (!chosenValue) {
     // const b = performance.now()
     // fillColorTime += b - a
-    return EMPTY_CELL_COLOR
+    return [255, 0, 0, 100]
+    // return EMPTY_CELL_COLOR
   }
   const colorIndex = colorDomain.findIndex((d, i) =>
-    chosenValue <= d || i === colorRanges[0].length - 1 ? i : 0
+    (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
   )
   // const b = performance.now()
   // fillColorTime += b - a
-  // if (fillColorCount % 10000 === 0) {
-  //   console.log('aggregateCell count:', fillColorCount, 'time:', fillColorTime)
+
+  // if (fillColorCount === 125385) {
+  //   // console.log('time to get fill color for 10000:', fillColorTime, fillColorCount)
+  //   // fillColorCount = 0
+  //   // fillColorTime = 0
   // }
   return colorRanges[chosenValueIndex][colorIndex]
 }
@@ -84,7 +89,7 @@ export const getFillColor = (
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
   renderLayers() {
-    const { data, maxFrame, minFrame, rows, cols, colorDomain, colorRanges } = this.props
+    const { data, indexes, maxFrame, minFrame, rows, cols, colorDomain, colorRanges } = this.props
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
@@ -99,26 +104,29 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame)) - tileMinIntervalFrame
     const maxIntervalFrame =
       Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
+
+    const getFillColor = (cell: Cell, { target }: { target: Color }): Color => {
+      target = chooseColor(cell, {
+        colorDomain,
+        colorRanges,
+        chunks,
+        minIntervalFrame,
+        maxIntervalFrame,
+      })
+      return target
+    }
+
     const fourwingsLayer = new FourwingsTileCellLayerClass(
       this.props,
       this.getSubLayerProps({
         id: `fourwings-tile-${this.props.tile.id}`,
         data,
+        indexes,
         cols,
         rows,
         pickable: true,
         stroked: false,
-        getFillColor: (cell: Cell) =>
-          // TODO check if this needs updating for different resolutions
-          this.props.tile.zoom === Math.round(this.context.viewport.zoom)
-            ? getFillColor(cell, {
-                colorDomain,
-                colorRanges,
-                chunks,
-                minIntervalFrame,
-                maxIntervalFrame,
-              })
-            : [0, 0, 0, 0],
+        getFillColor,
         updateTriggers: {
           // This tells deck.gl to recalculate fillColor on changes
           getFillColor: [start, end, colorDomain, colorRanges],

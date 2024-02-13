@@ -105,18 +105,15 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
     const fa = performance.now()
     const allValues = tiles.flatMap((tile) => {
-      let cells = (tile.content?.cells || []).filter(Boolean)
+      let cells = tile.content?.cells || []
       if (cells.length > MAX_VALUES_PER_TILE) {
         // Select only 2% of cells to speed up next steps
         cells = cells.filter((v, i) => v && i % 50 === 1)
       }
-      return cells
-        .flat()
-        .flatMap((layer) => {
-          // Select only 2% of values to speed up next steps
-          return layer?.filter((v, i) => v && i % 50 === 1)
-        })
-        .filter(Boolean)
+      return cells.flat().flatMap((layer) => {
+        // Select only 2% of values to speed up next steps
+        return layer?.filter((v, i) => v && i % 50 === 1)
+      })
     })
     // console.log('allValues:', allValues.length)
     // const sa = performance.now()
@@ -262,14 +259,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       this.props,
       this.getSubLayerProps({
         id: `${this.props.category}-${HEATMAP_ID}`,
-        // tileSize: 512,
+        tileSize: 512,
         colorDomain,
         colorRanges,
         minZoom: 0,
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
-        maxRequests: 20,
+        maxRequests: -1,
         onTileLoad: this._onTileLoad,
         getTileData: this._getTileData,
         updateTriggers: {
@@ -282,6 +279,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
             cols: props.data?.cols,
             rows: props.data?.rows,
             data: props.data?.cells,
+            indexes: props.data?.indexes,
           })
         },
       })

@@ -34,13 +34,18 @@ export const SCALE_VALUE = 1
 export const OFFSET_VALUE = 0
 
 export type FourwingsRawData = number[]
-const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwingsParams): Cell[] => {
+const getCellTimeseries = (
+  intArrays: FourwingsRawData[],
+  params: ParseFourwingsParams
+): { cells: Cell[]; indexes: number[] } => {
   const { minFrame, maxFrame, interval, sublayers, cols, rows } = params
   // TODO ensure we use the UTC dates here to avoid the .ceil
   const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame))
   const tileMaxIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame))
   const sublayerCount = sublayers.length
-  let cells = new Array(cols * rows).fill(null) as Cell[]
+  // let cells = new Array(cols * rows).fill(null) as Cell[]
+  let cells = [] as Cell[]
+  let indexes = []
   let cellNum = 0
   let startFrame = 0
   let endFrame = 0
@@ -66,17 +71,19 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
         const startOffset = startIndex + CELL_VALUES_START_INDEX
         endIndex = startOffset + numCellValues - 1
 
-        cells[cellNum] = new Array(sublayerCount).fill(null)
+        // cells[cellNum] = new Array(sublayerCount).fill(null)
+        cells.push(new Array(sublayerCount).fill(null))
+        indexes.push(cellNum)
         for (let j = 0; j < numCellValues; j++) {
           const subLayerIndex = j % sublayerCount
           const cellValue = intArray[j + startOffset]
           if (cellValue !== NO_DATA_VALUE) {
-            if (!cells[cellNum]?.[subLayerIndex]) {
-              cells[cellNum]![subLayerIndex] = new Array(
+            if (!cells[cells.length - 1]?.[subLayerIndex]) {
+              cells[cells.length - 1]![subLayerIndex] = new Array(
                 tileMaxIntervalFrame - tileMinIntervalFrame
               ).fill(null)
             }
-            cells[cellNum]![subLayerIndex][
+            cells[cells.length - 1]![subLayerIndex][
               startFrame - tileMinIntervalFrame + Math.floor(j / sublayerCount)
             ] = cellValue * SCALE_VALUE + OFFSET_VALUE
           }
@@ -89,7 +96,7 @@ const getCellTimeseries = (intArrays: FourwingsRawData[], params: ParseFourwings
     }
   }
 
-  return cells
+  return { cells, indexes }
 }
 
 export type CellFrame = number
@@ -109,6 +116,7 @@ export type RawFourwingsTileData = {
 
 export type FourwingsTileData = Omit<RawFourwingsTileData, 'data'> & {
   cells: Cell[]
+  indexes: number[]
 }
 
 export type ParseFourwingsParams = {
@@ -156,7 +164,7 @@ export const parseFourWings = async (
     resolve({
       cols: params.cols,
       rows: params.rows,
-      cells: getCellTimeseries(data, params),
+      ...getCellTimeseries(data, params),
     })
   })
 }
