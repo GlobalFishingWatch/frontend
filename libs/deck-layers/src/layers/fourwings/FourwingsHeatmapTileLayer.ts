@@ -13,7 +13,7 @@ import { load } from '@loaders.gl/core'
 // import { TileLoadProps } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
-import { FourwingsLoader } from '@globalfishingwatch/loaders.gl-fourwings'
+import { FourwingsLoader } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
@@ -23,8 +23,8 @@ import {
   GROUP_ORDER,
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
-import { FourwingsTileData } from '../../loaders/fourwings/fourwingsLayerLoader'
+import { FourwingsTileData } from '@globalfishingwatch/deck-loaders'
+import { TileCell } from '@globalfishingwatch/deck-loaders'
 import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
 // import { fourWingsDatasetLoader } from '../../loaders/fourwings/fourwingsDatasetsLoader'
 import {

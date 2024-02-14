@@ -1,5 +1,4 @@
-// import { Cell } from 'loaders/fourwings/fourwingsLayerLoader'
-import { Cell } from '../../loaders/fourwings/fourwingsLayerLoader'
+import { Cell } from '../lib/types'
 
 export type BBox = [number, number, number, number]
 

@@ -3,8 +3,8 @@ import { Color, CompositeLayer } from '@deck.gl/core/typed'
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
+import { Cell } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL } from '../../utils/time'
-import { Cell } from '../../loaders/fourwings/fourwingsLayerLoader'
 import FourwingsTileCellLayer from './FourwingsHeatmapCellLayer'
 import {
   ColorDomain,

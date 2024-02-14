@@ -43,7 +43,6 @@
     "@deck.gl/react": "^8.9.33",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
-    "@globalfishingwatch/loaders.gl-fourwings": "^4.2.0-alpha.2",
     "@loaders.gl/core": "^3.4.14",
     "@loaders.gl/csv": "^3.4.14",
     "@loaders.gl/json": "^3.4.14",

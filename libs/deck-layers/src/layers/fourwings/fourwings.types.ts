@@ -1,5 +1,4 @@
 import { ColorRampsIds } from '@globalfishingwatch/layer-composer'
-export type * from '../../loaders/fourwings/fourwingsTileParser'
 
 export type FourwingsSublayerId = string
 export type FourwingsDatasetId = string
