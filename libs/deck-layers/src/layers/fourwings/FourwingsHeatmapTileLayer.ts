@@ -114,11 +114,15 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         // Select only 2% of cells to speed up next steps
         cells = cells.filter((v, i) => v && i % 50 === 1)
       }
-      return cells.flat().flatMap((layer) => {
+      return cells
+        .flat()
+        .flatMap((layer) => {
         // Select only 2% of values to speed up next steps
         return layer?.filter((v, i) => v && i % 50 === 1)
       })
+        .filter(Boolean)
     })
+    // console.log('allValues:', allValues)
     // console.log('allValues:', allValues.length)
     // const sa = performance.now()
     // const finalValues =
@@ -138,6 +142,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     // const b = performance.now()
     // console.log('ckmeans time:', b - a)
     const fb = performance.now()
+    console.log('steps:', steps)
     console.log('calculateColorDomain time:', fb - fa)
     return steps
   }

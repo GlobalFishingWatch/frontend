@@ -157,7 +157,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         id: `tile-id-${this.props.category}-${this.props.tile.id}`,
         data: [
           {
-            text: this.props.tile.id,
+            text: `${this.props.tile.index.z}/${this.props.tile.index.x}/${this.props.tile.index.y}`,
           },
         ],
         getText: (d) => d.text,

@@ -844,19 +844,21 @@
           const numCellValues = (endFrame - startFrame + 1) * sublayers;
           const startOffset = startIndex + CELL_VALUES_START_INDEX;
           endIndex = startOffset + numCellValues - 1;
-          if (!cells[cellNum]) {
+          let cellIndex = indexes.findIndex((v) => v === cellNum);
+          if (cellIndex === -1) {
             cells.push(new Array(dataLength).fill(null));
             indexes.push(cellNum);
+            cellIndex = cells.length - 1;
           }
           for (let j = 0; j < numCellValues; j++) {
             const cellValue = subLayerIntArray[j + startOffset];
             if (cellValue !== NO_DATA_VALUE) {
-              if (!cells[cells.length - 1]?.[subLayerIndex]) {
-                cells[cells.length - 1][subLayerIndex] = new Array(
+              if (!cells[cellIndex]?.[subLayerIndex]) {
+                cells[cellIndex][subLayerIndex] = new Array(
                   tileMaxIntervalFrame - tileMinIntervalFrame
                 ).fill(null);
               }
-              cells[cells.length - 1][subLayerIndex][startFrame - tileMinIntervalFrame + Math.floor(j / sublayers)] = cellValue * SCALE_VALUE + OFFSET_VALUE;
+              cells[cellIndex][subLayerIndex][startFrame - tileMinIntervalFrame + Math.floor(j / sublayers)] = cellValue * SCALE_VALUE + OFFSET_VALUE;
             }
           }
           i = endIndex;
@@ -876,6 +878,8 @@
       return [];
     }
     const data = buffersLength.map((length, index, buffers) => {
+      if (!length)
+        return [];
       const start = index === 0 ? 0 : buffersLength[index - 1];
       const endOffset = index === buffers.length - 1 ? 1 : 0;
       const end = start + length + endOffset;
@@ -890,7 +894,7 @@
   };
 
   // src/fourwings-loader.ts
-  var VERSION = true ? "4.2.0-alpha.1" : "latest";
+  var VERSION = true ? "4.2.0-alpha.2" : "latest";
   var FourwingsWorkerLoader = {
     name: "fourwings tiles",
     id: "fourwings",
