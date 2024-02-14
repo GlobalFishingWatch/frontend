@@ -192,13 +192,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
     const promises = visibleSublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
     // TODO decide what to do when a chunk load fails
-    const arrayBuffers = (await Promise.allSettled(promises)).map((d) => {
-      return d.status === 'fulfilled' && d.value !== undefined ? (d.value as ArrayBuffer) : null
+    const settledPromises = await Promise.allSettled(promises)
+    const arrayBuffers = settledPromises.flatMap((d) => {
+      return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
     if (tile.signal?.aborted) {
       throw new Error('tile aborted')
     }
-    const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
+    const data = await load(arrayBuffers, FourwingsLoader, {
       worker: true,
       fourwings: {
         sublayers: 1,
@@ -208,7 +209,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         maxFrame: chunks[0].end,
         interval: 'DAY',
         workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
-        buffersLength: arrayBuffers.map((b) => b?.byteLength || 0),
+        buffersLength: settledPromises.map((p) =>
+          p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
+        ),
       },
     })
 
