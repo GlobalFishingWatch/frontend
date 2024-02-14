@@ -10,7 +10,11 @@ import {
 } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getDatasetGeometryType, getUserDataviewDataset } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetGeometryType,
+  getUserDataviewDataset,
+} from '@globalfishingwatch/datasets-client'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -84,7 +88,8 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
-  const hasLegend = dataset.configuration?.configurationUI?.polygonColor
+  const polygonColor = getDatasetConfigurationProperty({ dataset, property: 'polygonColor' })
+  const hasLegend = polygonColor !== undefined
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
