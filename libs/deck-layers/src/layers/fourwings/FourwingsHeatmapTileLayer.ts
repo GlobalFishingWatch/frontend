@@ -107,12 +107,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
-
     const fa = performance.now()
-    if (!tiles?.length) {
+    const currentZoomTiles = tiles.filter(
+      (tile) => tile.zoom === Math.round(this.context.viewport.zoom)
+    )
+    if (!currentZoomTiles?.length) {
       return this.getColorDomain()
     }
-    const allValues = tiles.flatMap((tile) => {
+    const allValues = currentZoomTiles.flatMap((tile) => {
       return (
         (tile.content?.cells as Cell[]).length > MAX_VALUES_PER_TILE
           ? (tile.content?.cells as Cell[]).filter(this.filterElementByPercentOfIndex)
