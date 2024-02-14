@@ -117,9 +117,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       return cells
         .flat()
         .flatMap((layer) => {
-        // Select only 2% of values to speed up next steps
-        return layer?.filter((v, i) => v && i % 50 === 1)
-      })
+          // Select only 2% of values to speed up next steps
+          return layer?.filter((v, i) => v && i % 50 === 1)
+        })
         .filter(Boolean)
     })
     // console.log('allValues:', allValues)
@@ -192,13 +192,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
     const promises = visibleSublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
     // TODO decide what to do when a chunk load fails
-    const arrayBuffers = (await Promise.allSettled(promises)).flatMap((d) => {
-      return d.status === 'fulfilled' && d.value !== undefined ? (d.value as ArrayBuffer) : []
+    const arrayBuffers = (await Promise.allSettled(promises)).map((d) => {
+      return d.status === 'fulfilled' && d.value !== undefined ? (d.value as ArrayBuffer) : null
     })
     if (tile.signal?.aborted) {
       throw new Error('tile aborted')
     }
-    const data = await load(arrayBuffers, FourwingsLoader, {
+    const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
       fourwings: {
         sublayers: 1,
@@ -208,7 +208,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         maxFrame: chunks[0].end,
         interval: 'DAY',
         workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
-        buffersLength: arrayBuffers.map((b) => b.byteLength),
+        buffersLength: arrayBuffers.map((b) => b?.byteLength || 0),
       },
     })
 
@@ -261,6 +261,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
+        debug: true,
         maxRequests: -1,
         onTileLoad: this._onTileLoad,
         getTileData: this._getTileData,
