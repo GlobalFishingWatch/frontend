@@ -144,7 +144,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
             : {
                 id: 'where',
                 value: encodeURIComponent(
-                  `${uniqVesselIds.map((ssvid) => `ssvid = '${ssvid}'`).join(' OR ')}`
+                  `${uniqVesselIds.map((ssvid) => `ssvid='${ssvid}'`).join(' OR ')}`
                 ),
               },
         ],
