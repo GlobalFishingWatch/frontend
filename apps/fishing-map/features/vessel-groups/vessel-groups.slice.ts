@@ -29,6 +29,9 @@ import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.s
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
+// Limitation of the API as we have a limitation of 2000 characters in GET requests
+export const MAX_VESSEL_GROUP_SEARCH_VESSELS = 400
+
 export type IdField = 'vesselId' | 'mmsi'
 export type VesselGroupConfirmationMode = 'save' | 'saveAndNavigate'
 

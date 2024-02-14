@@ -52,6 +52,7 @@ import {
   setVesselGroupSearchVessels,
   updateVesselGroupThunk,
   searchVesselGroupsVesselsThunk,
+  MAX_VESSEL_GROUP_SEARCH_VESSELS,
   MAX_VESSEL_GROUP_VESSELS,
   getVesselInVesselGroupThunk,
   selectCurrentDataviewIds,
@@ -96,6 +97,9 @@ function VesselGroupModal(): React.ReactElement {
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const searchVesselGroupsVesselsRef = useRef<any>()
+  const searchVesselGroupsVesselsAllowed = vesselGroupVessels
+    ? vesselGroupVessels?.length < MAX_VESSEL_GROUP_SEARCH_VESSELS
+    : true
 
   const dispatchSearchVesselsGroupsThunk = useCallback(
     async (vessels: VesselGroupVessel[], idField: IdField = 'vesselId') => {
@@ -289,6 +293,7 @@ function VesselGroupModal(): React.ReactElement {
     loading ||
     hasVesselsOverflow ||
     searchVesselStatus === AsyncReducerStatus.Error ||
+    !searchVesselGroupsVesselsAllowed ||
     (hasVesselGroupsVessels && groupName === '')
   const confirmButtonTooltip = hasVesselsOverflow
     ? t('vesselGroup.tooManyVessels', {
@@ -368,6 +373,14 @@ function VesselGroupModal(): React.ReactElement {
         <UserGuideLink section="vesselGroups" />
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
+          {!searchVesselGroupsVesselsAllowed && (
+            <span className={styles.errorMsg}>
+              {t('vesselGroup.searchLimit', {
+                defaultValue: 'Search is limited up to {{limit}} vessels',
+                limit: MAX_VESSEL_GROUP_SEARCH_VESSELS,
+              })}
+            </span>
+          )}
           {vesselGroupAPIError && !error && (
             <span className={styles.errorMsg}>
               {t('errors.genericShort', 'Something went wrong')}
