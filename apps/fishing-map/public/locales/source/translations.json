@@ -897,6 +897,7 @@
     "saveAndFilter": "Save and filter workspace",
     "saveForLater": "Save for later",
     "saveForLaterTooltip": "You'll find the group in the activity layers filters or your user panel button",
+    "searchLimit": "Search is limited up to {{limit}} vessels",
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
     "tooManyVessels_other": "Maximum number of vessels is {{count}}",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
