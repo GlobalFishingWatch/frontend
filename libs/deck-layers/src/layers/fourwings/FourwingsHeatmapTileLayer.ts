@@ -7,7 +7,7 @@ import {
   DefaultProps,
 } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { ckmeans, sample } from 'simple-statistics'
+import { ckmeans } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 // import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 // import { TileLoadProps } from '@deck.gl/geo-layers/typed/tile-layer/types'
