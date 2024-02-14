@@ -16,9 +16,9 @@ export const CELL_VALUES_START_INDEX = 3
 // eslint-disable-next-line max-statements
 export const getCellTimeseries = (
   intArrays: FourwingsRawData[],
-  options: FourwingsLoaderOptions
+  options?: FourwingsLoaderOptions
 ): { cells: Cell[]; indexes: number[] } => {
-  const { minFrame, maxFrame, interval, sublayers } = options.fourwings || ({} as FourwingsOptions)
+  const { minFrame, maxFrame, interval, sublayers } = options?.fourwings || ({} as FourwingsOptions)
   // TODO ensure we use the UTC dates here to avoid the .ceil
   const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame))
   const tileMaxIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame))
@@ -91,27 +91,29 @@ function readData(_: any, data: any, pbf: any) {
 
 export const parseFourwings = async (
   datasetsBuffer: ArrayBuffer,
-  options: FourwingsLoaderOptions
+  options?: FourwingsLoaderOptions
 ) => {
-  const { buffersLength, cols, rows } = options.fourwings || {}
+  const { buffersLength, cols, rows } = options?.fourwings || {}
   if (!buffersLength?.length) {
     return []
   }
   let start = 0
-  const data = buffersLength.map((length, index) => {
-    if (length === 0) {
-      return []
-    }
-    const buffer = datasetsBuffer.slice(
-      start,
-      index !== buffersLength.length ? start + length : undefined
-    )
-    start += length
-    return new Pbf(buffer).readFields(readData, [])[0]
-  })
   return {
     cols,
     rows,
-    ...getCellTimeseries(data, options),
+    ...getCellTimeseries(
+      buffersLength.map((length, index) => {
+        if (length === 0) {
+          return []
+        }
+        const buffer = datasetsBuffer.slice(
+          start,
+          index !== buffersLength.length ? start + length : undefined
+        )
+        start += length
+        return new Pbf(buffer).readFields(readData, [])[0]
+      }),
+      options
+    ),
   }
 }

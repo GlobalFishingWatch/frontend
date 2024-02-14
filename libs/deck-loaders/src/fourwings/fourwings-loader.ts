@@ -11,7 +11,6 @@ export const FourwingsWorkerLoader: Loader = {
   id: 'fourwings',
   module: 'fourwings',
   version: packageJson?.version,
-  // Note: ArcGIS uses '.pbf' extension and 'application/octet-stream'
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
   worker: true,
@@ -26,9 +25,7 @@ export const FourwingsWorkerLoader: Loader = {
  */
 export const FourwingsLoader: LoaderWithParser = {
   ...FourwingsWorkerLoader,
-  parse: async (arrayBuffer: ArrayBuffer, options = {} as FourwingsLoaderOptions) =>
-    parseFourwings(arrayBuffer, options),
-  parseSync: async (arrayBuffer: ArrayBuffer, options = {} as FourwingsLoaderOptions) =>
-    parseFourwings(arrayBuffer, options),
+  parse: parseFourwings,
+  parseSync: parseFourwings,
   binary: true,
 }

@@ -1280,6 +1280,28 @@ $({ target: 'Object', stat: true, arity: 2, forced: Object.assign !== assign }, 
   assign: assign
 });
 
+var name = "@globalfishingwatch/deck-loaders";
+var version = "0.0.1";
+var description = "";
+var main = "index.js";
+var typings = "src/index.d.ts";
+var license = "MIT";
+var author = "satellitestudio <contact@satellitestud.io>";
+var repository = {
+	type: "git",
+	url: "git+https://github.com/GlobalFishingWatch/frontend.git"
+};
+var packageJson = {
+	name: name,
+	version: version,
+	description: description,
+	main: main,
+	typings: typings,
+	license: license,
+	author: author,
+	repository: repository
+};
+
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -1309,8 +1331,6 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
-
-var version = "0.0.1";
 
 var ieee754$1 = {};
 
@@ -2099,7 +2119,7 @@ const getCellTimeseries = (intArrays, options) => {
     maxFrame,
     interval,
     sublayers
-  } = options.fourwings || {};
+  } = (options === null || options === void 0 ? void 0 : options.fourwings) || {};
   // TODO ensure we use the UTC dates here to avoid the .ceil
   const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame));
   const tileMaxIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame));
@@ -2168,23 +2188,22 @@ const parseFourwings = (datasetsBuffer, options) => __awaiter(void 0, void 0, vo
     buffersLength,
     cols,
     rows
-  } = options.fourwings || {};
+  } = (options === null || options === void 0 ? void 0 : options.fourwings) || {};
   if (!(buffersLength === null || buffersLength === void 0 ? void 0 : buffersLength.length)) {
     return [];
   }
   let start = 0;
-  const data = buffersLength.map((length, index) => {
+  return Object.assign({
+    cols,
+    rows
+  }, getCellTimeseries(buffersLength.map((length, index) => {
     if (length === 0) {
       return [];
     }
     const buffer = datasetsBuffer.slice(start, index !== buffersLength.length ? start + length : undefined);
     start += length;
     return new pbf(buffer).readFields(readData, [])[0];
-  });
-  return Object.assign({
-    cols,
-    rows
-  }, getCellTimeseries(data, options));
+  }), options));
 });
 
 /**
@@ -2194,7 +2213,7 @@ const FourwingsWorkerLoader = {
   name: 'fourwings tiles',
   id: 'fourwings',
   module: 'fourwings',
-  version,
+  version: packageJson === null || packageJson === void 0 ? void 0 : packageJson.version,
   // Note: ArcGIS uses '.pbf' extension and 'application/octet-stream'
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
@@ -2208,12 +2227,8 @@ const FourwingsWorkerLoader = {
  * Loader for the 4wings tile format
  */
 const FourwingsLoader = Object.assign(Object.assign({}, FourwingsWorkerLoader), {
-  parse: (arrayBuffer, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    return parseFourwings(arrayBuffer, options);
-  }),
-  parseSync: (arrayBuffer, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    return parseFourwings(arrayBuffer, options);
-  }),
+  parse: parseFourwings,
+  parseSync: parseFourwings,
   binary: true
 });
 

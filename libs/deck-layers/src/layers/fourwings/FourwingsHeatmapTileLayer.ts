@@ -13,7 +13,7 @@ import { load } from '@loaders.gl/core'
 // import { TileLoadProps } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
-import { FourwingsLoader } from '@globalfishingwatch/deck-loaders'
+import { Cell, FourwingsLoader } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
@@ -23,7 +23,6 @@ import {
   GROUP_ORDER,
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { FourwingsTileData } from '@globalfishingwatch/deck-loaders'
 import { TileCell } from '@globalfishingwatch/deck-loaders'
 import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
 // import { fourWingsDatasetLoader } from '../../loaders/fourwings/fourwingsDatasetsLoader'
@@ -98,7 +97,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     }
   }
 
-  calculateColorDomain = (tiles: Tile2DHeader<FourwingsTileData>[]) => {
+  filterElementByPercentOfIndex = (value: any, index: number) => {
+    // Select only 2% of elements
+    return value && index % 50 === 1
+  }
+
+  calculateColorDomain = (tiles: Tile2DHeader[]) => {
     // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
@@ -109,28 +113,15 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       return this.getColorDomain()
     }
     const allValues = tiles.flatMap((tile) => {
-      let cells = tile.content?.cells || []
-      if (cells.length > MAX_VALUES_PER_TILE) {
-        // Select only 2% of cells to speed up next steps
-        cells = cells.filter((v, i) => v && i % 50 === 1)
-      }
-      return cells
+      return (
+        (tile.content?.cells as Cell[]).length > MAX_VALUES_PER_TILE
+          ? (tile.content?.cells as Cell[]).filter(this.filterElementByPercentOfIndex)
+          : (tile.content?.cells as Cell[])
+      )
         .flat()
-        .flatMap((layer) => {
-          // Select only 2% of values to speed up next steps
-          return layer?.filter((v, i) => v && i % 50 === 1)
-        })
-        .filter(Boolean)
+        .flatMap((value) => (value || []).filter(this.filterElementByPercentOfIndex))
     })
-    // console.log('allValues:', allValues)
-    // console.log('allValues:', allValues.length)
-    // const sa = performance.now()
-    // const finalValues =
-    //   allValues.length > MAX_VALUES_FOR_CLUSTERING
-    //     ? sample(allValues, MAX_VALUES_FOR_CLUSTERING, Math.random)
-    //     : allValues
-    // const sb = performance.now()
-    // console.log('sample time:', sb - sa)
+    console.log('allValues:', allValues.length)
     // const a = performance.now()
     if (!allValues.length) {
       return this.getColorDomain()
