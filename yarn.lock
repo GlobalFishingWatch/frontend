@@ -2794,6 +2794,7 @@ __metadata:
     "@deck.gl/react": ^8.9.19
     "@globalfishingwatch/api-types": "*"
     "@globalfishingwatch/dataviews-client": "*"
+    "@globalfishingwatch/deck-loaders": "*"
     "@globalfishingwatch/layer-composer": "*"
     "@globalfishingwatch/react-hooks": "*"
     luxon: ^3.x

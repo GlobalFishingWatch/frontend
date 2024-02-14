@@ -1,18 +1,4 @@
-import { Cell } from '../lib/types'
-
 export type BBox = [number, number, number, number]
-
-export type TileCell = Cell & {
-  coordinates: [number[]]
-}
-
-export type GetCellCoordinatesParams = {
-  tileBBox: BBox
-  cellIndex: number
-  cols: number
-  rows: number
-  id: number
-}
 
 const getCellProperties = (tileBBox: BBox, cellIndex: number, numCols: number) => {
   const col = cellIndex % numCols
@@ -26,6 +12,14 @@ const getCellProperties = (tileBBox: BBox, cellIndex: number, numCols: number) =
     width,
     height,
   }
+}
+
+export type GetCellCoordinatesParams = {
+  tileBBox: BBox
+  cellIndex: number
+  cols: number
+  rows: number
+  id: number
 }
 
 export const getCellCoordinates = ({

@@ -7,7 +7,7 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build fishing-map --parallel"],
+        "commands": ["nx prepare-loaders fishing-map", "nx build fishing-map --parallel"],
         "parallel": false
       }
     },
