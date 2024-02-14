@@ -14,18 +14,14 @@ export const aggregateCell = (
   cell: Cell,
   { minIntervalFrame, maxIntervalFrame }: AggregateCellParams
 ) => {
-  if (!cell) return []
-
-  const data = cell.map((dataset) => {
-    if (!dataset) {
-      return 0
-    }
-    // TODO decide if we want the last day to be included or not in maxIntervalFrame - tileMinIntervalFrame
-    return dataset.slice(minIntervalFrame, maxIntervalFrame).reduce((acc: number, value) => {
-      return value ? acc + value : acc
-    }, 0)
-  })
-  return data as number[]
+  // TODO decide if we want the last day to be included or not in maxIntervalFrame - tileMinIntervalFrame
+  return (cell || []).map((dataset) =>
+    dataset
+      ? dataset
+          .slice(minIntervalFrame, maxIntervalFrame)
+          .reduce((acc: number, value) => (value ? acc + value : acc), 0)
+      : 0
+  )
 }
 
 export function asyncAwaitMS(millisec: any) {

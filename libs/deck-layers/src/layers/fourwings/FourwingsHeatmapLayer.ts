@@ -77,10 +77,15 @@ export const chooseColor = (
   // const b = performance.now()
   // fillColorTime += b - a
 
-  // if (fillColorCount === 125385) {
-  //   // console.log('time to get fill color for 10000:', fillColorTime, fillColorCount)
-  //   // fillColorCount = 0
-  //   // fillColorTime = 0
+  // if (fillColorCount >= 293405) {
+  //   console.log(
+  //     'time to get fill color:',
+  //     fillColorTime,
+  //     'per cell:',
+  //     fillColorTime / fillColorCount
+  //   )
+  // fillColorCount = 0
+  // fillColorTime = 0
   // }
   return colorRanges[chosenValueIndex][colorIndex]
 }
