@@ -46,24 +46,30 @@ steps:
     entrypoint: yarn
     args: ['nx', 'docker-prepare', 'user-groups-admin']
 
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'
     waitFor: ['docker-prepare']
-    args:
-      [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/user-groups-admin:$COMMIT_SHA',
-        '--cache=true',
-        '--build-arg',
-        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
-        '--build-arg',
-        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
-        '--target',
-        'production',
-        '-f',
-        './apps/user-groups-admin/Dockerfile',
-        '-c',
-        './dist/apps/user-groups-admin',
-      ]
+    entrypoint: ''
+    env:
+      - 'REF_NAME=$REF_NAME'
+      - 'SHORT_SHA=$SHORT_SHA'
+    script: |
+      image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "user-groups-admin@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
+      /kaniko/executor \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/user-groups-admin:latest \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/user-groups-admin:$SHORT_SHA \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/user-groups-admin:$image_version \
+        --cache=true \
+        --build-arg \
+          BASIC_AUTH_USER=$_BASIC_AUTH_USER \
+        --build-arg \
+          BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
+        --target \
+          production \
+        -f \
+          ./apps/user-groups-admin/Dockerfile \
+        -c \
+          ./dist/apps/user-groups-admin
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -84,7 +90,7 @@ steps:
         --project \
         $_RUN_PROJECT \
         --image \
-        gcr.io/world-fishing-827/github.com/globalfishingwatch/user-groups-admin:$COMMIT_SHA \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/user-groups-admin:$SHORT_SHA \
         --region \
         $_RUN_REGION \
         --platform managed \

@@ -47,12 +47,12 @@ steps:
     entrypoint: yarn
     args: ['nx', 'docker-prepare', 'deck-playground']
 
-  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+  - name: 'gcr.io/kaniko-project/executor:latest'
     id: 'build-image'
     waitFor: ['docker-prepare']
     args:
       [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/deck-playground:$COMMIT_SHA',
+        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/deck-playground:$SHORT_SHA',
         '--cache=true',
         '--build-arg',
         'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
@@ -85,7 +85,7 @@ steps:
         --project \
         $_RUN_PROJECT \
         --image \
-        gcr.io/world-fishing-827/github.com/globalfishingwatch/deck-playground:$COMMIT_SHA \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/deck-playground:$SHORT_SHA \
         --region \
         $_RUN_REGION \
         --platform managed \

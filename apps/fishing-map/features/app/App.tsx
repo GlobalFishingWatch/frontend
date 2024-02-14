@@ -54,6 +54,7 @@ import useMapInstance from 'features/map/map-context.hooks'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import { selectReportAreaBounds } from 'features/app/selectors/app.reports.selector'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
+import ErrorBoundary from 'features/app/ErrorBoundary'
 import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import styles from './App.module.css'
@@ -270,29 +271,32 @@ function App() {
       <a href="https://globalfishingwatch.org" className="print-only">
         <Logo className={styles.logo} />
       </a>
-      <SplitView
-        isOpen={sidebarOpen && !isMapDrawing}
-        showToggle={workspaceLocation || vesselLocation}
-        onToggle={onToggle}
-        aside={<Sidebar onMenuClick={onMenuClick} />}
-        main={<Main />}
-        asideWidth={asideWidth}
-        showAsideLabel={getSidebarName()}
-        showMainLabel={t('common.map', 'Map')}
-        className={styles.splitContainer}
-        asideClassName={styles.aside}
-        mainClassName={styles.main}
-      />
-      {!readOnly && (
-        <Menu
-          appSelector={ROOT_DOM_ELEMENT}
-          bgImage={menuBgImage.src}
-          isOpen={menuOpen}
-          onClose={() => setMenuOpen(false)}
-          activeLinkId="map-data"
+
+      <ErrorBoundary>
+        <SplitView
+          isOpen={sidebarOpen && !isMapDrawing}
+          showToggle={workspaceLocation || vesselLocation}
+          onToggle={onToggle}
+          aside={<Sidebar onMenuClick={onMenuClick} />}
+          main={<Main />}
+          asideWidth={asideWidth}
+          showAsideLabel={getSidebarName()}
+          showMainLabel={t('common.map', 'Map')}
+          className={styles.splitContainer}
+          asideClassName={styles.aside}
+          mainClassName={styles.main}
         />
-      )}
-      <AppModals />
+        {!readOnly && (
+          <Menu
+            appSelector={ROOT_DOM_ELEMENT}
+            bgImage={menuBgImage.src}
+            isOpen={menuOpen}
+            onClose={() => setMenuOpen(false)}
+            activeLinkId="map-data"
+          />
+        )}
+        <AppModals />
+      </ErrorBoundary>
     </Fragment>
   )
 }

@@ -91,22 +91,28 @@ steps:
       - 'NEXT_PUBLIC_REPORT_DAYS_LIMIT=$_NEXT_PUBLIC_REPORT_DAYS_LIMIT'
       - 'NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID=$_NEXT_PUBLIC_WORKSPACES_SPREADSHEET_ID'
 
-  - name: 'gcr.io/kaniko-project/executor:v1.6.0'
+  - name: 'gcr.io/kaniko-project/executor:debug'
     id: 'build-image'
     waitFor: ['build-app']
-    args:
-      [
-        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA',
-        '--cache=true',
-        '--build-arg',
-        'APP_NAME=fishing-map',
-        '--target',
-        'production',
-        '-f',
-        './apps/fishing-map/Dockerfile',
-        '-c',
-        './dist/apps/fishing-map',
-      ]
+    entrypoint: ''
+    env:
+      - 'REF_NAME=$REF_NAME'
+      - 'SHORT_SHA=$SHORT_SHA'
+    script: |
+      image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "fishing-map@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
+      /kaniko/executor \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:latest \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$SHORT_SHA \
+        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$image_version \
+        --cache=true \
+        --build-arg \
+          APP_NAME=fishing-map \
+        --target \
+          production \
+        -f \
+          ./apps/fishing-map/Dockerfile \
+        -c \
+          ./dist/apps/fishing-map
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -128,7 +134,7 @@ steps:
           --project \
           $_RUN_PROJECT \
           --image \
-          gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$COMMIT_SHA \
+          gcr.io/world-fishing-827/github.com/globalfishingwatch/fishing-map:$SHORT_SHA \
           --region \
           $_RUN_REGION \
           --platform managed \
@@ -199,6 +205,7 @@ steps:
     env:
       - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
       - '_E2E_BUCKET=$_E2E_BUCKET'
+      - '_E2E_BASE_URL=$_E2E_BASE_URL'
       - 'BUILD_ID=$BUILD_ID'
     args:
       - '-eEuo'
@@ -208,7 +215,7 @@ steps:
         if [ -d "dist/cypress/apps/fishing-map-e2e/screenshots" ] && [ "$(ls -A dist/cypress/apps/fishing-map-e2e/screenshots)" ]; then
           gsutil -m cp -r dist/cypress/apps/fishing-map-e2e gs://$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID
           echo "You can see the testing videos of this deploy in: "
-          echo "https://console.cloud.google.com/storage/browser/$_E2E_BUCKET/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
+          echo "$_E2E_BASE_URL/${_E2E_BUCKET#*/}/$_NEXT_PUBLIC_WORKSPACE_ENV/$BUILD_ID"
           exit 1
         fi
 

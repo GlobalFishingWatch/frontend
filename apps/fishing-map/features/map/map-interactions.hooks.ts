@@ -26,7 +26,11 @@ import { getEventLabel } from 'utils/analytics'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
 import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
-import { ANNOTATIONS_GENERATOR_ID, RULERS_LAYER_ID } from 'features/map/map.config'
+import {
+  ANNOTATIONS_GENERATOR_ID,
+  RULERS_LAYER_ID,
+  WORKSPACES_POINTS_TYPE,
+} from 'features/map/map.config'
 import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -129,7 +133,11 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
         action: `Click in grid cell`,
         label: getEventLabel(clickedCellLayers ?? []),
       })
-      if (isMapDrawing || isMarineManagerLocation) {
+      const hasWorkspacesFeatures =
+        event?.features?.find(
+          (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
+        ) !== undefined
+      if (isMapDrawing || (isMarineManagerLocation && !hasWorkspacesFeatures)) {
         return undefined
       }
 
