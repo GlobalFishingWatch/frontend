@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, Fragment } from 'react'
+import parse from 'html-react-parser'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -89,6 +90,7 @@ function DownloadActivityByVessel() {
   const [temporalResolution, setTemporalResolution] = useState(
     filteredTemporalResolutionOptions[0].id
   )
+  const downloadAreaName = downloadAreaKey?.areaName
 
   const onDownloadClick = async () => {
     const downloadDataviews = dataviews
@@ -112,7 +114,7 @@ function DownloadActivityByVessel() {
       category: TrackCategory.DataDownloads,
       action: `Download ${format.toUpperCase()} file`,
       label: JSON.stringify({
-        regionName: downloadAreaKey?.areaName || EMPTY_FIELD_PLACEHOLDER,
+        regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
         temporalResolution,
         groupBy,
         sourceNames: dataviews.flatMap((dataview) =>
@@ -125,7 +127,7 @@ function DownloadActivityByVessel() {
       areaId: downloadAreaKey?.areaId as AreaKeyId,
       datasetId: downloadAreaKey?.datasetId as string,
       dateRange: timerange as DateRange,
-      areaName: downloadAreaKey?.areaName as string,
+      areaName: downloadAreaName as string,
       dataviews: downloadDataviews,
       format,
       temporalResolution,
@@ -141,7 +143,7 @@ function DownloadActivityByVessel() {
       category: TrackCategory.DataDownloads,
       action: `Activity download`,
       label: getEventLabel([
-        downloadAreaKey?.areaName || EMPTY_FIELD_PLACEHOLDER,
+        downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
         ...downloadDataviews
           .map(({ datasets, filters }) => [datasets.join(','), ...getActivityFilters(filters)])
           .flat(),
@@ -152,13 +154,15 @@ function DownloadActivityByVessel() {
       dispatch(resetDownloadActivityStatus())
     }, 3000)
   }
+  const parsedLabel =
+    typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName
   return (
     <Fragment>
       <div className={styles.container} data-test="download-activity-byvessel">
         <div className={styles.info}>
           <div>
             <label>{t('download.area', 'Area')}</label>
-            <Tag testId="area-name">{downloadAreaKey?.areaName || EMPTY_FIELD_PLACEHOLDER}</Tag>
+            <Tag testId="area-name">{parsedLabel || EMPTY_FIELD_PLACEHOLDER}</Tag>
           </div>
           <div>
             <label>{t('download.timeRange', 'Time Range')}</label>
