@@ -2794,9 +2794,16 @@ __metadata:
     "@deck.gl/react": ^8.9.19
     "@globalfishingwatch/api-types": "*"
     "@globalfishingwatch/dataviews-client": "*"
+    "@globalfishingwatch/deck-loaders": "*"
     "@globalfishingwatch/layer-composer": "*"
     "@globalfishingwatch/react-hooks": "*"
     luxon: ^3.x
+  languageName: unknown
+  linkType: soft
+
+"@globalfishingwatch/deck-loaders@workspace:libs/deck-loaders":
+  version: 0.0.0-use.local
+  resolution: "@globalfishingwatch/deck-loaders@workspace:libs/deck-loaders"
   languageName: unknown
   linkType: soft
 
@@ -3159,6 +3166,7 @@ __metadata:
     serve: "npm:^14.2.1"
     sharp: "npm:^0.33.1"
     simple-statistics: "npm:^7.8.3"
+    skmeans: "npm:^0.11.3"
     style-loader: "npm:^3.3.3"
     stylelint: "npm:^15.10.3"
     stylelint-config-css-modules: "npm:^4.4.0"
@@ -28306,6 +28314,13 @@ __metadata:
   version: 0.9.7
   resolution: "skmeans@npm:0.9.7"
   checksum: 4649ef25e23635f86ead837c372d57d3fc11a67be711a8b872e61c61ffa50ebd3dc01b2f4330321d4719d704592951b9ab1c860028200f37f48a56bec49d3d05
+  languageName: node
+  linkType: hard
+
+"skmeans@npm:^0.11.3":
+  version: 0.11.3
+  resolution: "skmeans@npm:0.11.3"
+  checksum: 0e6cd69815c8807b4b1714092d376cd865795e04f16d25244f7721e5c52e624df5756f9e66216e137f6db55ced3dfe14c519d70559413a0a25bae956e1cf0132
   languageName: node
   linkType: hard
 

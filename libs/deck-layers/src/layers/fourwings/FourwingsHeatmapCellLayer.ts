@@ -7,13 +7,11 @@ import {
 import { _GeoCellLayer, GeoBoundingBox, _GeoCellLayerProps } from '@deck.gl/geo-layers/typed'
 // import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
-import {
-  GetCellCoordinatesParams,
-  generateUniqueId,
-  getCellCoordinates,
-} from '../../loaders/fourwings/fourwingsTileParser'
+import { Cell, generateUniqueId, getCellCoordinates } from '@globalfishingwatch/deck-loaders'
+import { CONFIG_BY_INTERVAL } from '../../utils/time'
 import { FourwingsHeatmapLayerProps } from './FourwingsHeatmapLayer'
 import { aggregateCell } from './fourwings.utils'
+import { getChunks } from './fourwings.config'
 
 const defaultProps: DefaultProps<FourwingsHeatmapCellLayerProps> = {
   getIndex: { type: 'accessor', value: (d) => d.index },
@@ -34,6 +32,7 @@ type _FourwingsHeatmapCellLayerProps<DataT> = FourwingsHeatmapLayerProps & {
   cols: number
   rows: number
   tile: Tile2DHeader
+  indexes: number[]
 }
 
 /** Render filled and/or stroked polygons based on the fourwings indexing system. */
@@ -47,7 +46,15 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
   getPickingInfo({ info }: GetPickingInfoParams): PickingInfo {
     const { minFrame, maxFrame } = this.props
     if (info.object) {
-      const value = aggregateCell(info.object, { minFrame, maxFrame })
+      const chunks = getChunks(minFrame, maxFrame)
+      const tileMinIntervalFrame = Math.ceil(
+        CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
+      )
+      const minIntervalFrame =
+        Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame)) - tileMinIntervalFrame
+      const maxIntervalFrame =
+        Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
+      const value = aggregateCell(info.object, { minIntervalFrame, maxIntervalFrame })
       info.object = {
         ...info.object,
         value,
@@ -57,28 +64,28 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
   }
 
   indexToBounds(): Partial<_GeoCellLayer['props']> | null {
-    const { data, getIndex, tile, cols, rows } = this.props
+    const { data, indexes, tile, cols, rows } = this.props
+    const getPolygon = (_: Cell, { index, target }: { index: number; target: number[] }) => {
+      const cellIndex = indexes[index]
+      target = getCellCoordinates({
+        id: generateUniqueId(tile.index.x, tile.index.y, cellIndex),
+        cellIndex,
+        cols,
+        rows,
+        tileBBox: [
+          (tile.bbox as GeoBoundingBox).west,
+          (tile.bbox as GeoBoundingBox).south,
+          (tile.bbox as GeoBoundingBox).east,
+          (tile.bbox as GeoBoundingBox).north,
+        ],
+      })
+      return target
+    }
     return {
       data,
       _normalize: false,
       positionFormat: 'XY',
-      getPolygon: (x: DataT, objectInfo) => {
-        const cellIndex: any = getIndex(x, objectInfo)
-        const uniqueId = generateUniqueId(tile.index.x, tile.index.y, cellIndex)
-        const params: GetCellCoordinatesParams = {
-          id: uniqueId,
-          cellIndex,
-          cols,
-          rows,
-          tileBBox: [
-            (tile.bbox as GeoBoundingBox).west,
-            (tile.bbox as GeoBoundingBox).south,
-            (tile.bbox as GeoBoundingBox).east,
-            (tile.bbox as GeoBoundingBox).north,
-          ],
-        }
-        return getCellCoordinates(params)
-      },
+      getPolygon,
     }
   }
 }

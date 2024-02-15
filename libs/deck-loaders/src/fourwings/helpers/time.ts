@@ -1,4 +1,4 @@
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { Interval } from '../lib/types'
 
 export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
   HOUR: {

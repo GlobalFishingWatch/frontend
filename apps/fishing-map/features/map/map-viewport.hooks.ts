@@ -38,9 +38,9 @@ export function useViewStateAtom() {
 export function useMapViewport() {
   const deckMap = useDeckMap()
   try {
-    return (deckMap as any)?.getViewports().find((v: any) => v.id === MAP_VIEW_ID)
+    return (deckMap as any)?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
   } catch (e) {
-    console.warn(e)
+    return null
   }
 }
 

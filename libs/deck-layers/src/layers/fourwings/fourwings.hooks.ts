@@ -5,11 +5,8 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { DeckLayerBaseState, FourwingsDeckLayerGenerator } from '../../layer-composer/types'
 import { sortFourwingsLayers } from '../../utils/sort'
 import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
+import { getUTCDateTime } from '../../utils/dates'
 import { FourwingsLayer } from './FourwingsLayer'
-
-const dateToMs = (date: string) => {
-  return new Date(date).getTime()
-}
 
 export interface FourwingsLayerState extends DeckLayerBaseState {
   layerInstance: FourwingsLayer
@@ -67,8 +64,8 @@ export const useSetFourwingsLayers = (
     setFourwingsLoadedState({ id })
   }
 
-  const startTime = useMemo(() => (start ? dateToMs(start) : undefined), [start])
-  const endTime = useMemo(() => (end ? dateToMs(end) : undefined), [end])
+  const startTime = useMemo(() => (start ? getUTCDateTime(start).toMillis() : undefined), [start])
+  const endTime = useMemo(() => (end ? getUTCDateTime(end).toMillis() : undefined), [end])
 
   useEffect(() => {
     fourwingsLayerGenerators.forEach(({ id, sublayers }) => {

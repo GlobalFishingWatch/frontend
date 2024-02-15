@@ -1,18 +1,17 @@
 import { Color, CompositeLayer } from '@deck.gl/core/typed'
 // import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
-import { maxBy } from 'lodash'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
-import { Cell } from '../../loaders/fourwings/fourwingsLayerLoader'
-import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
+import { Cell } from '@globalfishingwatch/deck-loaders'
+import { CONFIG_BY_INTERVAL } from '../../utils/time'
 import FourwingsTileCellLayer from './FourwingsHeatmapCellLayer'
 import {
   ColorDomain,
   FourwingsHeatmapTileLayerProps,
   SublayerColorRanges,
 } from './FourwingsHeatmapTileLayer'
-import { getDatesInIntervalResolution } from './fourwings.config'
+import { Chunk, getChunks, getDatesInIntervalResolution } from './fourwings.config'
 import { aggregateCell } from './fourwings.utils'
 
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
@@ -21,65 +20,117 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   data: any
   cols: number
   rows: number
+  indexes: number[]
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
 }
 
 export type AggregateCellParams = {
-  minFrame: number
-  maxFrame: number
+  minIntervalFrame: number
+  maxIntervalFrame: number
 }
 
 export type GetFillColorParams = {
-  minFrame: number
-  maxFrame: number
   colorDomain: number[]
   colorRanges: FourwingsHeatmapLayerProps['colorRanges']
+  chunks: Chunk[]
+  minIntervalFrame: number
+  maxIntervalFrame: number
 }
 
-export const getFillColor = (
+const EMPTY_CELL_COLOR = [0, 0, 0, 0] as Color
+
+// let fillColorTime = 0
+// let fillColorCount = 0
+
+export const chooseColor = (
   cell: Cell,
-  { minFrame, maxFrame, colorDomain, colorRanges }: GetFillColorParams
+  { colorDomain, colorRanges, chunks, minIntervalFrame, maxIntervalFrame }: GetFillColorParams
 ): Color => {
-  const filteredCellValues = aggregateCell(cell, { minFrame, maxFrame })
-  // TODO add more comparison modes
-  const cellValueByMode = maxBy(filteredCellValues, 'value')
-  if (!colorDomain || !colorRanges || !cellValueByMode?.value) {
-    return [0, 0, 0, 0]
+  // const a = performance.now()
+  // fillColorCount++
+  if (!colorDomain || !colorRanges || !chunks) {
+    return EMPTY_CELL_COLOR
   }
-  const colorIndex = colorDomain.findIndex((d, i) => {
-    if (colorDomain[i + 1]) {
-      return cellValueByMode?.value > d && cellValueByMode?.value <= colorDomain[i + 1]
-    }
-    return i
+  const aggregatedCellValues = aggregateCell(cell, {
+    minIntervalFrame,
+    maxIntervalFrame,
   })
-  return colorIndex >= 0 ? colorRanges[cellValueByMode?.id][colorIndex] : [0, 0, 0, 0]
+  let chosenValueIndex = 0
+  let chosenValue: number | undefined
+  aggregatedCellValues.forEach((value, index) => {
+    // TODO add more comparison modes (bivariate)
+    if (value && (!chosenValue || value > chosenValue)) {
+      chosenValue = value
+      chosenValueIndex = index
+    }
+  })
+  if (!chosenValue) {
+    // const b = performance.now()
+    // fillColorTime += b - a
+    // return [255, 0, 0, 100]
+    return EMPTY_CELL_COLOR
+  }
+  const colorIndex = colorDomain.findIndex((d, i) =>
+    (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
+  )
+  // const b = performance.now()
+  // fillColorTime += b - a
+
+  // if (fillColorCount >= 293405) {
+  //   console.log(
+  //     'time to get fill color:',
+  //     fillColorTime,
+  //     'per cell:',
+  //     fillColorTime / fillColorCount
+  //   )
+  // fillColorCount = 0
+  // fillColorTime = 0
+  // }
+  return colorRanges[chosenValueIndex][colorIndex]
 }
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
   renderLayers() {
-    const { data, maxFrame, minFrame, rows, cols, colorDomain, colorRanges } = this.props
+    const { data, indexes, maxFrame, minFrame, rows, cols, colorDomain, colorRanges } = this.props
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
     const FourwingsTileCellLayerClass = this.getSubLayerClass('cell', FourwingsTileCellLayer)
     const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
     const { start, end } = getDatesInIntervalResolution(minFrame, maxFrame)
+    const chunks = getChunks(minFrame, maxFrame)
+    const tileMinIntervalFrame = Math.ceil(
+      CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
+    )
+    const minIntervalFrame =
+      Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame)) - tileMinIntervalFrame
+    const maxIntervalFrame =
+      Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
+
+    const getFillColor = (cell: Cell, { target }: { target: Color }): Color => {
+      target = chooseColor(cell, {
+        colorDomain,
+        colorRanges,
+        chunks,
+        minIntervalFrame,
+        maxIntervalFrame,
+      })
+      return target
+    }
+
     const fourwingsLayer = new FourwingsTileCellLayerClass(
       this.props,
       this.getSubLayerProps({
         id: `fourwings-tile-${this.props.tile.id}`,
-        data: data,
+        data,
+        indexes,
         cols,
         rows,
         pickable: true,
         stroked: false,
-        getFillColor: (cell: Cell) =>
-          // TODO check if this needs updating for different resolutions
-          this.props.tile.zoom === Math.round(this.context.viewport.zoom)
-            ? getFillColor(cell, { minFrame, maxFrame, colorDomain, colorRanges })
-            : [0, 0, 0, 0],
+        getFillColor,
         updateTriggers: {
           // This tells deck.gl to recalculate fillColor on changes
           getFillColor: [start, end, colorDomain, colorRanges],
@@ -111,7 +162,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         id: `tile-id-${this.props.category}-${this.props.tile.id}`,
         data: [
           {
-            text: this.props.tile.id,
+            text: `${this.props.tile.index.z}/${this.props.tile.index.x}/${this.props.tile.index.y}`,
           },
         ],
         getText: (d) => d.text,

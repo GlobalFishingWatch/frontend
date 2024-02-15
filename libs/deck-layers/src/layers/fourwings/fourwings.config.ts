@@ -1,6 +1,9 @@
 import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 
+export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
+
 export const HEATMAP_ID = 'heatmap'
 export const POSITIONS_ID = 'positions'
 
@@ -151,4 +154,11 @@ export const getChunksByInterval = (start: number, end: number, interval: Interv
     endISO: DateTime.fromMillis(c.end).toISODate(),
   }))
   return data
+}
+
+// TODO use the existing class function instead of repeating the logic
+export const getChunks = (minFrame: number, maxFrame: number) => {
+  const interval = getInterval(minFrame, maxFrame)
+  const chunks = getChunksByInterval(minFrame, maxFrame, interval)
+  return chunks
 }

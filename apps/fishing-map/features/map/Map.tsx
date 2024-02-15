@@ -268,7 +268,7 @@ const MapWrapper = () => {
       x: info.x,
       y: info.y,
     })
-    console.log('🚀 ~ features:', features)
+    console.log('🚀 ~ values:', features?.flatMap((f) => f.object?.value || []).join(','))
   }, [])
 
   const onHover = useCallback((info: PickingInfo) => {
@@ -276,7 +276,7 @@ const MapWrapper = () => {
       x: info.x,
       y: info.y,
     })
-    console.log('🚀 ~ features:', features)
+    // console.log('🚀 ~ features:', features)
   }, [])
 
   return (

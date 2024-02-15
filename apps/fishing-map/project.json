@@ -7,7 +7,7 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build fishing-map --parallel"],
+        "commands": ["nx prepare-loaders fishing-map", "nx build fishing-map --parallel"],
         "parallel": false
       }
     },
@@ -27,10 +27,21 @@
       "options": {
         "commands": [
           "nx clean-locales fishing-map",
+          "nx prepare-loaders fishing-map",
           "nx serve i18n-labels",
           "nx serve fishing-map --hostname=0.0.0.0"
         ],
         "parallel": true
+      }
+    },
+    "prepare-loaders": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx build deck-loaders",
+          "cp dist/libs/deck-loaders/fourwings/fourwings-worker.js apps/fishing-map/public/workers"
+        ],
+        "parallel": false
       }
     },
     "clean-locales": {

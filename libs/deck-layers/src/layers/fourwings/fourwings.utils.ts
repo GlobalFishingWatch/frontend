@@ -3,28 +3,25 @@ import { stringify } from 'qs'
 import { TileIndex } from '@deck.gl/geo-layers/typed/tileset-2d/types'
 import { DateTime } from 'luxon'
 import { Feature } from 'geojson'
-import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
+import { Cell, TileCell } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '../../utils/dates'
-import { Cell } from '../../loaders/fourwings/fourwingsLayerLoader'
 import { Chunk } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
 import { FourwingsDeckSublayer } from './fourwings.types'
 import { AggregateCellParams } from './FourwingsHeatmapLayer'
 
 export const aggregateCell = (
-  cell: Cell | TileCell,
-  { minFrame, maxFrame }: AggregateCellParams
+  cell: Cell,
+  { minIntervalFrame, maxIntervalFrame }: AggregateCellParams
 ) => {
-  if (!cell) return []
-  return Object.keys(cell.timeseries).map((key) => ({
-    id: key,
-    value: Object.keys(cell.timeseries[key]).reduce((acc, frame: any) => {
-      if (parseInt(frame) >= minFrame && parseInt(frame) <= maxFrame) {
-        return acc + cell.timeseries[key][frame]
-      }
-      return acc
-    }, 0) as number,
-  }))
+  // TODO decide if we want the last day to be included or not in maxIntervalFrame - tileMinIntervalFrame
+  return (cell || []).map((dataset) =>
+    dataset
+      ? dataset
+          .slice(minIntervalFrame, maxIntervalFrame)
+          .reduce((acc: number, value) => (value ? acc + value : acc), 0)
+      : 0
+  )
 }
 
 export function asyncAwaitMS(millisec: any) {
@@ -75,22 +72,22 @@ type GetDataUrlByChunk = {
     id: string
   }
   chunk: Chunk
-  datasets: FourwingsDeckSublayer['datasets']
+  sublayer: FourwingsDeckSublayer
 }
 
 const API_BASE_URL =
   'https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/heatmap/{z}/{x}/{y}'
-export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) => {
+export const getDataUrlBySublayer = ({ tile, chunk, sublayer }: GetDataUrlByChunk) => {
   const params = {
     interval: chunk.interval,
-    format: 'INTARRAY',
+    format: '4WINGS',
     'temporal-aggregation': false,
     proxy: true,
     'date-range': [
       DateTime.fromMillis(chunk.start).toISODate(),
       DateTime.fromMillis(chunk.end).toISODate(),
     ].join(','),
-    datasets,
+    datasets: [sublayer.datasets.join(',')],
   }
   const url = `${API_BASE_URL}?${stringify(params, {
     arrayFormat: 'indices',
@@ -152,39 +149,41 @@ export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsD
   if (!cells) {
     return []
   }
+  return []
+  // TODO: fix this with new Deck.gl data format
   // What we have from the data is
   // [{index:number, timeseries: {id: {frame:value, ...}  }}]
   // What we want for the timebar is
   // [{date: date, 0:number, 1:number ...}, ...]
-  const timeseries = cells.reduce(
-    (acc: any, { timeseries }) => {
-      if (!timeseries) {
-        return acc
-      }
-      sublayers.forEach((sublayer, index) => {
-        const sublayerTimeseries = timeseries[sublayer.id]
-        if (sublayerTimeseries) {
-          const frames = Object.keys(sublayerTimeseries)
-          frames.forEach((frame: any) => {
-            if (!acc[frame]) {
-              // We populate the frame with 0s for all the sublayers
-              acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
-            }
-            acc[frame][index] += sublayerTimeseries[frame]
-          })
-        }
-      })
-      return acc
-    },
-    {} as Record<number, Record<number, number>>
-  )
+  // const timeseries = cells.reduce(
+  //   (acc: any, { timeseries }) => {
+  //     if (!timeseries) {
+  //       return acc
+  //     }
+  //     sublayers.forEach((sublayer, index) => {
+  //       const sublayerTimeseries = timeseries[sublayer.id]
+  //       if (sublayerTimeseries) {
+  //         const frames = Object.keys(sublayerTimeseries)
+  //         frames.forEach((frame: any) => {
+  //           if (!acc[frame]) {
+  //             // We populate the frame with 0s for all the sublayers
+  //             acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
+  //           }
+  //           acc[frame][index] += sublayerTimeseries[frame]
+  //         })
+  //       }
+  //     })
+  //     return acc
+  //   },
+  //   {} as Record<number, Record<number, number>>
+  // )
 
-  return Object.entries(timeseries)
-    .map(([frame, values]) => ({
-      date: parseInt(frame),
-      ...(values as any),
-    }))
-    .sort((a, b) => a.date - b.date)
+  // return Object.entries(timeseries)
+  //   .map(([frame, values]) => ({
+  //     date: parseInt(frame),
+  //     ...(values as any),
+  //   }))
+  //   .sort((a, b) => a.date - b.date)
 }
 
 const getMillisFromHtime = (htime: number) => {

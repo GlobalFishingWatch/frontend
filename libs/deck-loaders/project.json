@@ -1,0 +1,51 @@
+{
+  "name": "deck-loaders",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/deck-loaders/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/deck-loaders",
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "project": "libs/deck-loaders/package.json",
+        "extractCss": false,
+        "entryFile": "libs/deck-loaders/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "libs/deck-loaders/rollup.config.js",
+        "assets": [
+          {
+            "glob": "libs/deck-loaders/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ],
+        "styles": "libs/deck-loaders/src/base.css"
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/deck-loaders/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/deck-loaders"],
+      "options": {
+        "jestConfig": "libs/deck-loaders/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  }
+}
