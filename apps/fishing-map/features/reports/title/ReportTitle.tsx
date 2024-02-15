@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
+import turfArea from '@turf/area'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
@@ -36,6 +37,7 @@ import { BufferOperation, BufferUnit } from 'types'
 import useMapInstance from 'features/map/map-context.hooks'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
 
@@ -224,12 +226,24 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     urlBufferUnit,
   ])
 
+  const reportAreaSpace = reportArea?.geometry ? turfArea(reportArea?.geometry) : null
+
   return (
     <div className={styles.container}>
       {reportTitle ? (
         <Fragment>
           <h1 className={styles.title} data-test="report-title">
             {reportTitle}
+            {reportAreaSpace && (
+              <span className={styles.secondary}>
+                {' '}
+                (
+                {reportAreaSpace > 1000
+                  ? formatI18nNumber(reportAreaSpace / 1000)
+                  : formatI18nNumber(reportAreaSpace)}
+                km²)
+              </span>
+            )}
           </h1>
           <a className={styles.reportLink} href={window.location.href}>
             {t('analysis.linkToReport', 'Check the dynamic report here')}
