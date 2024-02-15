@@ -897,6 +897,7 @@
     "saveAndFilter": "Enregistrer et filtrer l'espace de travail",
     "saveForLater": "Enregistrer pour plus tard",
     "saveForLaterTooltip": "Vous trouverez le groupe dans les filtres des calques d'activité ou sur le bouton du panneau utilisateur",
+    "searchLimit": "Search is limited up to {{limit}} vessels",
     "tooManyVessels_one": "Le nombre maximum de navires est de {{count}}",
     "tooManyVessels_other": "Le nombre maximum de navires est de {{count}}",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir ce groupe de navires lorsque vous partagez un espace de travail",
