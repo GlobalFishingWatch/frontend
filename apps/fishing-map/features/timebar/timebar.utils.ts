@@ -4,7 +4,7 @@ import {
   TrackEventChunkProps,
   ActivityTimeseriesFrame,
 } from '@globalfishingwatch/timebar'
-import { TileCell } from '@globalfishingwatch/deck-layers'
+import { TileCell } from '@globalfishingwatch/deck-loaders'
 import { getEventColors, getEventDescription } from 'utils/events'
 import { getUTCDateTime } from 'utils/dates'
 

@@ -3,9 +3,8 @@ import { stringify } from 'qs'
 import { TileIndex } from '@deck.gl/geo-layers/typed/tileset-2d/types'
 import { DateTime } from 'luxon'
 import { Feature } from 'geojson'
-import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
+import { Cell, TileCell } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '../../utils/dates'
-import { Cell } from '../../loaders/fourwings/fourwingsLayerLoader'
 import { Chunk } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
 import { FourwingsDeckSublayer } from './fourwings.types'
@@ -15,18 +14,14 @@ export const aggregateCell = (
   cell: Cell,
   { minIntervalFrame, maxIntervalFrame }: AggregateCellParams
 ) => {
-  if (!cell) return []
-
-  const data = cell.map((dataset) => {
-    if (!dataset) {
-      return 0
-    }
-    // TODO decide if we want the last day to be included or not in maxIntervalFrame - tileMinIntervalFrame
-    return dataset.slice(minIntervalFrame, maxIntervalFrame).reduce((acc: number, value) => {
-      return value ? acc + value : acc
-    }, 0)
-  })
-  return data as number[]
+  // TODO decide if we want the last day to be included or not in maxIntervalFrame - tileMinIntervalFrame
+  return (cell || []).map((dataset) =>
+    dataset
+      ? dataset
+          .slice(minIntervalFrame, maxIntervalFrame)
+          .reduce((acc: number, value) => (value ? acc + value : acc), 0)
+      : 0
+  )
 }
 
 export function asyncAwaitMS(millisec: any) {
@@ -77,12 +72,12 @@ type GetDataUrlByChunk = {
     id: string
   }
   chunk: Chunk
-  datasets: FourwingsDeckSublayer['datasets']
+  sublayer: FourwingsDeckSublayer
 }
 
 const API_BASE_URL =
   'https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/heatmap/{z}/{x}/{y}'
-export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) => {
+export const getDataUrlBySublayer = ({ tile, chunk, sublayer }: GetDataUrlByChunk) => {
   const params = {
     interval: chunk.interval,
     format: '4WINGS',
@@ -92,7 +87,7 @@ export const getDataUrlByChunk = ({ tile, chunk, datasets }: GetDataUrlByChunk) 
       DateTime.fromMillis(chunk.start).toISODate(),
       DateTime.fromMillis(chunk.end).toISODate(),
     ].join(','),
-    datasets,
+    datasets: [sublayer.datasets.join(',')],
   }
   const url = `${API_BASE_URL}?${stringify(params, {
     arrayFormat: 'indices',

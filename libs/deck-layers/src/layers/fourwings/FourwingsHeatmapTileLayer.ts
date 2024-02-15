@@ -7,11 +7,13 @@ import {
   DefaultProps,
 } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { ckmeans, sample } from 'simple-statistics'
+import { ckmeans } from 'simple-statistics'
+import { load } from '@loaders.gl/core'
 // import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 // import { TileLoadProps } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
+import { Cell, FourwingsLoader, TileCell } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
@@ -20,23 +22,20 @@ import {
   Group,
   GROUP_ORDER,
 } from '@globalfishingwatch/layer-composer'
-import { TileCell } from '../../loaders/fourwings/fourwingsTileParser'
-import {
-  FourwingsTileData,
-  RawFourwingsTileData,
-  parseFourWings,
-} from '../../loaders/fourwings/fourwingsLayerLoader'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
+// import { fourWingsDatasetLoader } from '../../loaders/fourwings/fourwingsDatasetsLoader'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
   asyncAwaitMS,
-  getDataUrlByChunk,
+  getDataUrlBySublayer,
 } from './fourwings.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import {
   Chunk,
   HEATMAP_ID,
+  PATH_BASENAME,
   getChunkBuffer,
   getChunksByInterval,
   getInterval,
@@ -97,33 +96,37 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     }
   }
 
-  calculateColorDomain = (tiles: Tile2DHeader<FourwingsTileData>[]) => {
+  filterElementByPercentOfIndex = (value: any, index: number) => {
+    // Select only 2% of elements
+    return value && index % 50 === 1
+  }
+
+  calculateColorDomain = (tiles: Tile2DHeader[]) => {
     // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
-
     const fa = performance.now()
-    const allValues = tiles.flatMap((tile) => {
-      let cells = tile.content?.cells || []
-      if (cells.length > MAX_VALUES_PER_TILE) {
-        // Select only 2% of cells to speed up next steps
-        cells = cells.filter((v, i) => v && i % 50 === 1)
-      }
-      return cells.flat().flatMap((layer) => {
-        // Select only 2% of values to speed up next steps
-        return layer?.filter((v, i) => v && i % 50 === 1)
-      })
+    const currentZoomTiles = tiles.filter(
+      (tile) => tile.zoom === Math.round(this.context.viewport.zoom)
+    )
+    if (!currentZoomTiles?.length) {
+      return this.getColorDomain()
+    }
+    const allValues = currentZoomTiles.flatMap((tile) => {
+      return (
+        (tile.content?.cells as Cell[]).length > MAX_VALUES_PER_TILE
+          ? (tile.content?.cells as Cell[]).filter(this.filterElementByPercentOfIndex)
+          : (tile.content?.cells as Cell[])
+      )
+        .flat()
+        .flatMap((value) => (value || []).filter(this.filterElementByPercentOfIndex))
     })
-    // console.log('allValues:', allValues.length)
-    // const sa = performance.now()
-    // const finalValues =
-    //   allValues.length > MAX_VALUES_FOR_CLUSTERING
-    //     ? sample(allValues, MAX_VALUES_FOR_CLUSTERING, Math.random)
-    //     : allValues
-    // const sb = performance.now()
-    // console.log('sample time:', sb - sa)
+    console.log('allValues:', allValues.length)
     // const a = performance.now()
+    if (!allValues.length) {
+      return this.getColorDomain()
+    }
     const steps = ckmeans(
       allValues as number[],
       Math.min(allValues.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
@@ -131,6 +134,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     // const b = performance.now()
     // console.log('ckmeans time:', b - a)
     const fb = performance.now()
+    console.log('steps:', steps)
     console.log('calculateColorDomain time:', fb - fa)
     return steps
   }
@@ -160,64 +164,50 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   _fetchTileData: any = async (tile: TileLoadProps) => {
     const { minFrame, maxFrame, sublayers } = this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
-    const datasets = visibleSublayers.map((sublayer) => sublayer.datasets.join(','))
-    // const bins = [] as number[][]
-    // const binCounts = [] as number[][]
-    const getChunkData: any = async (chunk: any) => {
-      // if (cache[chunk]) {
-      //   return Promise.resolve(cache[chunk])
-      // }
-      const response = await fetch(getDataUrlByChunk({ tile, chunk, datasets })!, {
+    let cols: number = 0
+    let rows: number = 0
+
+    const chunks = this._getChunks(minFrame, maxFrame)
+    const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
+      const url = getDataUrlBySublayer({ tile, chunk: chunks[0], sublayer }) as string
+      const response = await GFWAPI.fetch<Response>(url!, {
         signal: tile.signal,
+        responseType: 'default',
       })
       if (tile.signal?.aborted || response.status !== 200) {
         throw new Error()
       }
-      // TODO: get bins based of the number of datasets, not just 0
-      // datasets.forEach((_, i) => {
-      //   bins[i] = JSON.parse(response.headers.get(`X-bins-${i}`) as string)
-      // })
-      // datasets.forEach((_, i) => {
-      //   binCounts[i] = JSON.parse(response.headers.get(`X-bins-count-${i}`) as string)
-      // })
-      const cols = parseInt(response.headers.get('X-columns') as string)
-      const rows = parseInt(response.headers.get('X-rows') as string)
-      const data = await response.arrayBuffer()
-      return { data, cols, rows } as RawFourwingsTileData
-      // return parseFourWings(await response.arrayBuffer(), {
-      //   sublayers: this.props.sublayers,
-      // })
+      cols = parseInt(response.headers.get('X-columns') as string)
+      rows = parseInt(response.headers.get('X-rows') as string)
+      return await response.arrayBuffer()
     }
-    const chunks = this._getChunks(minFrame, maxFrame)
-    const promises = chunks.map(getChunkData)
+
+    const promises = visibleSublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
+    // TODO decide what to do when a chunk load fails
+    const settledPromises = await Promise.allSettled(promises)
+    const arrayBuffers = settledPromises.flatMap((d) => {
+      return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
+    })
     if (tile.signal?.aborted) {
       throw new Error('tile aborted')
     }
-    // TODO decide what to do when a chunk load fails
-    const data = (await Promise.allSettled(promises)).flatMap((d) => {
-      return d.status === 'fulfilled' && d.value !== undefined
-        ? (d.value as RawFourwingsTileData)
-        : []
+    const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
+      worker: true,
+      fourwings: {
+        sublayers: 1,
+        cols,
+        rows,
+        minFrame: chunks[0].start,
+        maxFrame: chunks[0].end,
+        interval: 'DAY',
+        workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
+        buffersLength: settledPromises.map((p) =>
+          p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
+        ),
+      },
     })
 
-    if (!data.length) {
-      return null
-    }
-
-    const mergeChunkDataCells = await parseFourWings(data, {
-      cols: data[0].cols,
-      rows: data[0].rows,
-      // bins: bins,
-      // binCounts: binCounts,
-      sublayers: visibleSublayers,
-      // TODO rename variables with tile in the name
-      minFrame: chunks[0].start,
-      maxFrame: chunks[0].end,
-      interval: getInterval(minFrame, maxFrame),
-    })
-    // return data[0]
-
-    return mergeChunkDataCells
+    return data
   }
 
   _getTileData: TileLayerProps['getTileData'] = async (tile) => {
@@ -266,6 +256,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
+        debug: true,
         maxRequests: -1,
         onTileLoad: this._onTileLoad,
         getTileData: this._getTileData,

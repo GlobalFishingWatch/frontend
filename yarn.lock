@@ -2794,9 +2794,16 @@ __metadata:
     "@deck.gl/react": ^8.9.19
     "@globalfishingwatch/api-types": "*"
     "@globalfishingwatch/dataviews-client": "*"
+    "@globalfishingwatch/deck-loaders": "*"
     "@globalfishingwatch/layer-composer": "*"
     "@globalfishingwatch/react-hooks": "*"
     luxon: ^3.x
+  languageName: unknown
+  linkType: soft
+
+"@globalfishingwatch/deck-loaders@workspace:libs/deck-loaders":
+  version: 0.0.0-use.local
+  resolution: "@globalfishingwatch/deck-loaders@workspace:libs/deck-loaders"
   languageName: unknown
   linkType: soft
 
