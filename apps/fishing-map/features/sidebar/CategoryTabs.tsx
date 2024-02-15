@@ -12,8 +12,12 @@ import {
   DEFAULT_WORKSPACE_ID,
   WorkspaceCategory,
 } from 'data/workspaces'
-import { HOME, SEARCH, USER, WORKSPACES_LIST } from 'routes/routes'
-import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
+import { HOME, SEARCH, USER, WORKSPACES_LIST, WORKSPACE_SEARCH } from 'routes/routes'
+import {
+  selectIsWorkspaceLocation,
+  selectLocationCategory,
+  selectLocationType,
+} from 'routes/routes.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { useClickedEventConnect } from 'features/map/map.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -39,16 +43,6 @@ type CategoryTabsProps = {
   onMenuClick: () => void
 }
 
-function getLinkToSearch(workspace: Workspace) {
-  return {
-    type: SEARCH,
-    payload: {
-      category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-    },
-  }
-}
-
 function getLinkToCategory(category: WorkspaceCategory) {
   return {
     type: WORKSPACES_LIST,
@@ -65,6 +59,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const locationType = useSelector(selectLocationType)
   const { setMapCoordinates } = useViewport()
   const workspace = useSelector(selectWorkspace)
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectLocationCategory)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
@@ -105,7 +100,13 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         >
           <Link
             className={styles.tabContent}
-            to={getLinkToSearch(workspace as Workspace)}
+            to={{
+              type: isWorkspaceLocation ? WORKSPACE_SEARCH : SEARCH,
+              payload: {
+                category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+                workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+              },
+            }}
             onClick={onSearchClick}
           >
             <Tooltip content={t('search.vessels', 'Search vessels')} placement="right">

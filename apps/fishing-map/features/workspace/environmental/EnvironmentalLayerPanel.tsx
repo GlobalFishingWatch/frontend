@@ -12,10 +12,14 @@ import ActivityFilters, {
   isHistogramDataviewSupported,
 } from 'features/workspace/common/LayerFilters'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
-import { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
+import {
+  SupportedEnvDatasetSchema,
+  getSchemaFiltersInDataview,
+} from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
+import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -102,7 +106,9 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   }
 
   const title = getDatasetNameTranslated(dataset)
-  const showFilters = dataset.fieldsAllowed?.length > 0 || isHistogramDataviewSupported(dataview)
+  const showFilters =
+    isHistogramDataviewSupported(dataview) ||
+    getSchemaFiltersInDataview(dataview)?.filtersAllowed?.some(showSchemaFilter)
 
   const TitleComponent = (
     <Title

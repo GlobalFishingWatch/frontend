@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, Fragment } from 'react'
+import parse from 'html-react-parser'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -179,6 +180,8 @@ function DownloadActivityGridded() {
   }
 
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
+  const parsedLabel =
+    typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName
 
   return (
     <Fragment>
@@ -186,7 +189,7 @@ function DownloadActivityGridded() {
         <div className={styles.info}>
           <div>
             <label>{t('download.area', 'Area')}</label>
-            <Tag>{downloadAreaName || EMPTY_FIELD_PLACEHOLDER}</Tag>
+            <Tag>{parsedLabel || EMPTY_FIELD_PLACEHOLDER}</Tag>
           </div>
           <div>
             <label>{t('download.timeRange', 'Time Range')}</label>
