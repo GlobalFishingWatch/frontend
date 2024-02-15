@@ -22,8 +22,7 @@
             "input": ".",
             "output": "."
           }
-        ],
-        "styles": "libs/deck-loaders/src/base.css"
+        ]
       }
     },
     "lint": {

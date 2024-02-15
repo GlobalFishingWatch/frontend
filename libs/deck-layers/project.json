@@ -14,7 +14,7 @@
         "project": "libs/deck-layers/package.json",
         "extractCss": false,
         "entryFile": "libs/deck-layers/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": ["react/jsx-runtime", "@globalfishingwatch/deck-loaders"],
         "rollupConfig": "libs/deck-layers/rollup.config.js",
         "assets": [
           {
@@ -22,8 +22,7 @@
             "input": ".",
             "output": "."
           }
-        ],
-        "styles": "libs/deck-layers/src/base.css"
+        ]
       }
     },
     "lint": {

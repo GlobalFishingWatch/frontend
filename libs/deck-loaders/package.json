@@ -9,5 +9,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "dependencies": {
+    "pbf": "^3.2.1"
   }
 }

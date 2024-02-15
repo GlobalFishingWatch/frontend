@@ -2804,6 +2804,8 @@ __metadata:
 "@globalfishingwatch/deck-loaders@workspace:libs/deck-loaders":
   version: 0.0.0-use.local
   resolution: "@globalfishingwatch/deck-loaders@workspace:libs/deck-loaders"
+  dependencies:
+    pbf: "npm:^3.2.1"
   languageName: unknown
   linkType: soft
 

@@ -21,6 +21,8 @@ dataviews-client:
   - libs/dataviews-client/**/*
 deck-layers:
   - libs/deck-layers/**/*
+deck-loaders:
+  - libs/deck-loaders/**/*
 features-aggregate:
   - libs/features-aggregate/**/*
 fourwings-aggregate:
