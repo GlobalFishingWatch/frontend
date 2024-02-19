@@ -1,12 +1,12 @@
 {
   "name": "@globalfishingwatch/data-transforms",
-  "version": "1.6.0",
+  "version": "3.0.0",
   "license": "MIT",
   "description": "Utils to decode various data formats",
   "main": "./index.cjs",
   "module": "./index.js",
   "dependencies": {
-    "@globalfishingwatch/api-types": "*",
+    "@globalfishingwatch/api-types": "8.0.0",
     "@globalfishingwatch/maplibre-gl": "*",
     "@tmcw/togeojson": "5.x",
     "@turf/bbox": "6.x",

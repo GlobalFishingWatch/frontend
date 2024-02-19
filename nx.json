@@ -58,7 +58,7 @@
     },
     "@nx/rollup:rollup": {
       "cache": true,
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^dist"],
       "inputs": ["production", "^production"]
     },
     "@nx/esbuild:esbuild": {
@@ -76,6 +76,7 @@
     }
   },
   "release": {
+    "projects": ["!linting", "libs/*", "!libs/i18n-labels"],
     "projectsRelationship": "independent",
     "releaseTagPattern": "@gfw/{projectName}-{version}",
     "changelog": {

@@ -1,13 +1,13 @@
 {
   "name": "@globalfishingwatch/features-aggregate",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "main": "./index.cjs",
   "module": "./index.js",
   "dependencies": {
-    "@globalfishingwatch/layer-composer":"*",
-    "@globalfishingwatch/maplibre-gl":"*",
-    "@globalfishingwatch/fourwings-aggregate":"*",
-    "lodash":"4.x",
-    "luxon":"3.x"
+    "@globalfishingwatch/layer-composer": "12.0.0",
+    "@globalfishingwatch/maplibre-gl": "*",
+    "@globalfishingwatch/fourwings-aggregate": "6.0.0",
+    "lodash": "4.x",
+    "luxon": "3.x"
   }
 }
