@@ -2,12 +2,11 @@
   "name": "@globalfishingwatch/fourwings-aggregate",
   "version": "4.4.0",
   "description": "Logic to turn fourwings tiles or cells into meaningful values for the frontend",
-  "main": "index.js",
-  "typings": "src/index.d.ts",
+  "main": "./index.cjs",
+  "module": "./index.js",
   "license": "MIT",
   "author": "satellitestudio <contact@satellitestud.io>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  "dependencies": {
+    "@mapbox/vector-tile": "1.x"
   }
 }

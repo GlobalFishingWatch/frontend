@@ -1,11 +1,10 @@
 {
   "name": "@globalfishingwatch/i18n-labels",
   "version": "1.2.184",
-  "license": "MIT",
-  "scripts": {
-    "start": "kill-port 8000 && serve -p 8000 --cors=true",
-    "kill": "kill-port 8000"
-  },
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "typings": "./index.d.ts",
+  "scripts": {},
   "files": [
     "en",
     "es",
@@ -14,13 +13,5 @@
     "pt",
     "source",
     "val"
-  ],
-  "devDependencies": {
-    "kill-port": "^2.0.1",
-    "serve": "14.2.1"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  }
+  ]
 }

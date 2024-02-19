@@ -14,14 +14,7 @@
         "project": "libs/ui-components/package.json",
         "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",
-        "external": [
-          "react/jsx-runtime",
-          "react",
-          "react-dom",
-          "@globalfishingwatch/layer-composer",
-          "@globalfishingwatch/react-hooks",
-          "luxon"
-        ],
+        "external": ["countryflag"],
         "rollupConfig": "libs/ui-components/rollup.config.js",
         "assets": [
           {
@@ -39,35 +32,11 @@
         "updateBuildableProjectDepsInPackageJson": true
       }
     },
-    "prerender": {
-      "executor": "nx:run-script",
-      "options": {
-        "script": "prerender"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/ui-components"],
-      "options": {
-        "jestConfig": "libs/ui-components/jest.config.ts"
-      }
-    },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/ui-components"
-      }
-    },
     "publish": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
       "options": {
-        "commands": ["nx prerender ui-components", "nx deploy ui-components"],
-        "parallel": false
+        "packageRoot": "dist/libs/ui-components"
       }
     }
   }

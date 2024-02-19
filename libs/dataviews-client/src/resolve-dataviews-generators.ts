@@ -679,6 +679,5 @@ export function getDataviewsGeneratorConfigs(
   ].flatMap((dataview) => {
     return getGeneratorConfig(dataview, params, resources)
   })
-
   return generatorsConfig
 }

@@ -1,5 +1,11 @@
 # @globalfishingwatch/linting
 
+## 2.1.0
+
+### Minor Changes
+
+- Fixes ESLint couldn't determine the plugin "import" uniquely.
+
 ## 2.0.0
 
 ### Breaking Changes

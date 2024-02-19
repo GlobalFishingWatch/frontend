@@ -1,4 +1,5 @@
 {
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "affected": {
     "defaultBase": "develop"
   },
@@ -24,21 +25,49 @@
       }
     }
   },
-  "generators": {
-    "@nx/react": {
-      "application": {
-        "style": "css",
-        "linter": "eslint",
-        "babel": true
-      },
-      "component": {
-        "style": "css"
-      },
-      "library": {
-        "style": "css",
-        "linter": "eslint"
+  "plugins": [
+    // {
+    //   "plugin": "@nx/cypress/plugin",
+    //   "options": {
+    //     "targetName": "e2e",
+    //     "componentTestingTargetName": "component-test"
+    //   }
+    // },
+    // {
+    //   "plugin": "@nx/jest/plugin",
+    //   "options": {
+    //     "targetName": "test"
+    //   }
+    // },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
       }
+    }
+  ],
+  "targetDefaults": {
+    "@nx/eslint:lint": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.js"
+      ]
     },
+    "@nx/rollup:rollup": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
+    "@nx/esbuild:esbuild": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    }
+  },
+  "generators": {
     "@nx/next": {
       "application": {
         "style": "css",
@@ -46,51 +75,42 @@
       }
     }
   },
-  "defaultProject": "fishing-map",
-  "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"],
-      "cache": true
-    },
-    "e2e": {
-      "inputs": ["default", "^production"],
-      "cache": true
-    },
-    "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "cache": true
-    },
-    "@nx/jest:jest": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "cache": true,
-      "options": {
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+  "release": {
+    "projectsRelationship": "independent",
+    "releaseTagPattern": "@gfw/{projectName}-{version}",
+    "changelog": {
+      "projectChangelogs": {
+        "createRelease": "github",
+        "file": false
       }
     },
-    "@nx/eslint:lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.js"],
-      "cache": true
+    // "version": {
+    //   "generatorOptions": {
+    //     "packageRoot": "dist/libs/{projectName}"
+    //   }
+    // },
+    "git": {
+      "commit": false,
+      "tag": true
     }
   },
+
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "sharedGlobals": ["{workspaceRoot}/nx.json", "{workspaceRoot}/babel.config.json"],
     "production": [
       "default",
+      "!{projectRoot}/cypress/**/*",
+      "!{projectRoot}/**/*.cy.[jt]s?(x)",
+      "!{projectRoot}/cypress.config.[jt]s",
+      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/.eslintrc.js",
-      "!{projectRoot}/src/test-setup.[jt]s"
+      "!{projectRoot}/src/test-setup.[jt]s",
+      "!{projectRoot}/test-setup.[jt]s"
     ]
   },
-  "nxCloudAccessToken": "NzEyZWVlMmMtZjQ3OS00YzMzLWE2YzAtYjJmMDE1YzcxNjllfHJlYWQtd3JpdGU="
+  "nxCloudAccessToken": ""
 }
