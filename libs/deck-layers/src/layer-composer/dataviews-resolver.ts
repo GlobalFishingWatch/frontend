@@ -7,7 +7,7 @@ import {
   resolveDataviewDatasetResources,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { API_GATEWAY } from '@globalfishingwatch/layer-composer'
+import { API_GATEWAY } from '@globalfishingwatch/api-client'
 import {
   DeckLayersGeneratorDictionary,
   DeckLayersGeneratorType,
@@ -31,8 +31,9 @@ const getVesselDataviewGenerator = (
       name: vesselInfo?.shipname,
       visible: dataview.config?.visible ?? true,
       color: dataview.config?.color as string,
-      trackUrl: `${API_GATEWAY}${resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)
-        ?.url}`,
+      trackUrl: `${API_GATEWAY}${
+        resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
+      }`,
       events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
         const eventType = resource.dataset?.subcategory as EventTypes
         return {

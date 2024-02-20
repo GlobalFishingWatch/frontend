@@ -69,6 +69,7 @@ export function NewDatasetField({
           placeholder || t('dataset.fieldPlaceholder', 'Select a field from your dataset')
         }
         options={options}
+        disabled={!options.length}
         selectedOption={getSelectedOption(configurationPropertyString, options) as SelectOption}
         onSelect={onSelect}
         onCleanClick={onCleanClick}

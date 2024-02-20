@@ -1,20 +1,23 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "rootDir": ".",
-    "sourceMap": true,
+    "baseUrl": ".",
     "declaration": false,
-    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "resolveJsonModule": true,
-    "target": "es2015",
+    "jsx": "preserve",
+    "lib": ["es2020", "dom", "esnext"],
     "module": "esnext",
-    "lib": ["es2019", "dom", "ES2023.Array"],
-    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "noPropertyAccessFromIndexSignature": false,
+    "resolveJsonModule": true,
+    "rootDir": ".",
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "target": "es2020",
     "paths": {
       "@globalfishingwatch/api-client": ["libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["libs/api-types/src/index.ts"],
@@ -29,15 +32,12 @@
       "@globalfishingwatch/i18n-labels/*": ["libs/i18n-labels/*"],
       "@globalfishingwatch/layer-composer": ["libs/layer-composer/src/index.ts"],
       "@globalfishingwatch/ocean-areas": ["libs/ocean-areas/src/index.ts"],
-      "@globalfishingwatch/pbf": ["libs/pbf-decoders/src/index.ts"],
-      "@globalfishingwatch/pbf/*": ["libs/pbf-decoders/*"],
+      "@globalfishingwatch/pbf-decoders": ["libs/pbf-decoders/index.ts"],
       "@globalfishingwatch/react-hooks": ["libs/react-hooks/src/index.ts"],
       "@globalfishingwatch/timebar": ["libs/timebar/src/index.js"],
-      "@globalfishingwatch/ui-components": ["libs/ui-components/src/index.ts"],
-      "@globalfishingwatch/ui-components/*": ["libs/ui-components/*"]
+      "@globalfishingwatch/ui-components": ["libs/ui-components/src/index.ts"]
     }
   },
   "files": ["./vendors.d.ts"],
-  "include": ["**/*.ts"],
   "exclude": ["node_modules", "tmp", "tools/generators/*/files/*"]
 }

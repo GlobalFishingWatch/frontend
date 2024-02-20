@@ -2,7 +2,7 @@ import { stringify } from 'qs'
 // import { TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import { TileIndex } from '@deck.gl/geo-layers/typed/tileset-2d/types'
 import { DateTime } from 'luxon'
-import { Feature } from 'geojson'
+import type { Feature } from 'geojson'
 import { Cell, TileCell } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '../../utils/dates'
 import { Chunk } from './fourwings.config'
@@ -194,18 +194,15 @@ export const aggregatePositionsTimeseries = (positions: Feature[]) => {
   if (!positions) {
     return []
   }
-  const timeseries = positions.reduce(
-    (acc, position) => {
-      const { htime, value } = position.properties as any
-      const activityStart = getMillisFromHtime(htime)
-      if (acc[activityStart]) {
-        acc[activityStart] += value
-      } else {
-        acc[activityStart] = value
-      }
-      return acc
-    },
-    {} as Record<number, number>
-  )
+  const timeseries = positions.reduce((acc, position) => {
+    const { htime, value } = position.properties as any
+    const activityStart = getMillisFromHtime(htime)
+    if (acc[activityStart]) {
+      acc[activityStart] += value
+    } else {
+      acc[activityStart] = value
+    }
+    return acc
+  }, {} as Record<number, number>)
   return timeseries
 }

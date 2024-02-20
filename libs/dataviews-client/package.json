@@ -1,26 +1,26 @@
 {
   "name": "@globalfishingwatch/dataviews-client",
-  "version": "14.2.0",
+  "version": "16.0.0",
   "description": "",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "main": "index.js",
-  "typings": "src/index.d.ts",
+  "main": "./index.cjs",
+  "module": "./index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "dependencies": {
-    "qs": "^6.11.2"
-  },
-  "devDependencies": {
-    "@types/qs": "^6.9.11"
-  },
-  "peerDependencies": {
-    "@globalfishingwatch/api-types": "6.x",
-    "@globalfishingwatch/data-transforms": "1.x",
-    "@globalfishingwatch/layer-composer": "10.x",
-    "@reduxjs/toolkit": "2.x",
-    "lodash": "4.x"
+    "@globalfishingwatch/api-client": "^6.0.1",
+    "@globalfishingwatch/api-types": "^8.0.0",
+    "@globalfishingwatch/data-transforms": "^3.0.0",
+    "@globalfishingwatch/datasets-client": "^3.0.0",
+    "@globalfishingwatch/fourwings-aggregate": "^6.0.0",
+    "@globalfishingwatch/layer-composer": "^12.0.0",
+    "@reduxjs/toolkit": "*",
+    "geojson": "0.x",
+    "lodash": "4.x",
+    "luxon": "3.x",
+    "qs": "6.x"
   }
 }

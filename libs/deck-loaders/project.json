@@ -3,48 +3,45 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/deck-loaders/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "assets": [],
+        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "main": "libs/deck-loaders/src/index.ts",
         "outputPath": "dist/libs/deck-loaders",
-        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
         "project": "libs/deck-loaders/package.json",
-        "extractCss": false,
-        "entryFile": "libs/deck-loaders/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "libs/deck-loaders/rollup.config.js",
-        "assets": [
-          {
-            "glob": "libs/deck-loaders/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json"
       }
     },
-    "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+    "dist:workers": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "lintFilePatterns": ["libs/deck-loaders/**/*.{ts,tsx,js,jsx}"]
+        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputFileName": "fourwings-worker.js",
+        "main": "libs/deck-loaders/src/fourwings/workers/fourwings-worker.ts",
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "watch": false,
+        "target": "esnext",
+        "platform": "browser",
+        "deleteOutputPath": true,
+        "bundle": true,
+        "thirdParty": true,
+        "generatePackageJson": false,
+        "minify": false
       }
     },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/deck-loaders"],
+    "publish": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
       "options": {
-        "jestConfig": "libs/deck-loaders/jest.config.ts",
-        "passWithNoTests": true
-      }
-    },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public"
+        "packageRoot": "dist/libs/deck-loaders"
       }
     }
-  }
+  },
+  "tags": []
 }

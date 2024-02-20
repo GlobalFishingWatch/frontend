@@ -1,5 +1,19 @@
 export type BBox = [number, number, number, number]
 
+export const getCellProperties = (tileBBox: BBox, cellIndex: number, numCols: number) => {
+  const col = cellIndex % numCols
+  const row = Math.floor(cellIndex / numCols)
+  const [minX, minY, maxX, maxY] = tileBBox
+  const width = maxX - minX
+  const height = maxY - minY
+  return {
+    col,
+    row,
+    width,
+    height,
+  }
+}
+
 export type GetCellCoordinatesParams = {
   tileBBox: BBox
   cellIndex: number

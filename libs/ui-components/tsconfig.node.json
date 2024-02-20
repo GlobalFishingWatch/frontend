@@ -8,13 +8,12 @@
     "noImplicitThis": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
-    "baseUrl": "./src",
     "typeRoots": ["./types"],
     "types": ["node"],
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "target": "es2017",
+    "target": "es2020",
     "allowJs": true
   },
   "files": [],
@@ -22,9 +21,6 @@
   "references": [
     {
       "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
     }
   ]
 }

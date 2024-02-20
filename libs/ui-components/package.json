@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/ui-components",
-  "version": "12.6.0",
+  "version": "14.0.3",
   "description": "Set of react components to consume on the gfw ecosystem",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
@@ -12,32 +12,26 @@
   "scripts": {
     "prerender": "ts-node -P tsconfig.node.json src/header/render-html.tsx"
   },
+  "main": "./index.cjs",
+  "module": "./index.js",
   "dependencies": {
-    "@tippyjs/react": "4.2.6",
-    "countryflag": "^5.0.0",
-    "d3-format": "^3.1.0",
-    "d3-geo": "^3.1.0",
-    "d3-scale": "^4.0.2",
-    "downshift": "8.3.1",
-    "match-sorter": "^6.3.1",
-    "react-modal": "^3.16.1",
-    "react-range": "^1.8.14",
-    "topojson-client": "^3.1.0",
-    "ts-node": "^10.9.2"
-  },
-  "devDependencies": {
-    "@types/react-modal": "^3.16.3",
-    "@types/topojson-client": "^3.1.4"
-  },
-  "peerDependencies": {
-    "@globalfishingwatch/layer-composer": "10.x",
-    "@globalfishingwatch/react-hooks": "15.x",
+    "@globalfishingwatch/api-types": "^8.0.0",
+    "@globalfishingwatch/layer-composer": "^12.0.0",
+    "countryflag": "5.x",
+    "d3-format": "3.x",
+    "d3-geo": "3.x",
+    "d3-scale": "4.x",
+    "match-sorter": "6.x",
     "downshift": "8.x",
-    "luxon": "2.x",
-    "react": ">17.x",
-    "react-dom": ">17.x"
-  },
-  "publishConfig": {
-    "access": "public"
+    "classnames": "2.x",
+    "react-dom": "18.x",
+    "react": "18.x",
+    "react-range": "1.x",
+    "react-modal": "3.x",
+    "tippy.js": "6.3",
+    "@tippyjs/react": "4.x",
+    "@popperjs/core": "2.x",
+    "topojson-client": "3.x",
+    "luxon": "3.x"
   }
 }

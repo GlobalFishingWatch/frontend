@@ -1,6 +1,6 @@
 import { Interval } from '../lib/types'
 
-export const CONFIG_BY_INTERVAL: Record<Interval, Record<string, any>> = {
+export const CONFIG_BY_INTERVAL: Record<Interval, Record<'getTime' | 'getIntervalFrame', any>> = {
   HOUR: {
     getTime: (frame: number) => {
       return frame * 1000 * 60 * 60

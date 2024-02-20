@@ -1,4 +1,4 @@
-import { DataFilterExtension } from '@deck.gl/extensions'
+import { DataFilterExtension } from '@deck.gl/extensions/typed'
 import { CompositeLayer, Layer, LayersList, LayerProps, Color } from '@deck.gl/core/typed'
 // Layers
 import {

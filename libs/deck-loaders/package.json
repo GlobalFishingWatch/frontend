@@ -1,16 +1,10 @@
 {
   "name": "@globalfishingwatch/deck-loaders",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "typings": "src/index.d.ts",
-  "license": "MIT",
-  "author": "satellitestudio <contact@satellitestud.io>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
-  },
+  "main": "./index.cjs",
+  "module": "./index.js",
   "dependencies": {
-    "pbf": "^3.2.1"
+    "@loaders.gl/loader-utils": "^4.x",
+    "pbf": "3.x"
   }
 }
