@@ -11,7 +11,7 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "dependencies": {
-    "@globalfishingwatch/api-types": "8.0.0",
+    "@globalfishingwatch/api-types": "^8.0.0",
     "d3-scale": "4.x"
   }
 }

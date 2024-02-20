@@ -15,10 +15,16 @@
         "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",
         "external": ["countryflag"],
+        "format": ["esm", "cjs"],
         "rollupConfig": "libs/ui-components/rollup.config.js",
         "assets": [
           {
             "glob": "libs/ui-components/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "libs/ui-components/src/base.css",
             "input": ".",
             "output": "."
           },
