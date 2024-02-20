@@ -897,6 +897,7 @@
     "saveAndFilter": "crwdns60687:0crwdne60687:0",
     "saveForLater": "crwdns60689:0crwdne60689:0",
     "saveForLaterTooltip": "crwdns60691:0crwdne60691:0",
+    "searchLimit": "crwdns83046:0{{limit}}crwdne83046:0",
     "tooManyVessels_one": "crwdns60693:0{{count}}crwdne60693:0",
     "tooManyVessels_other": "crwdns60695:0{{count}}crwdne60695:0",
     "uploadPublic": "crwdns60697:0crwdne60697:0",

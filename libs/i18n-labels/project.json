@@ -6,21 +6,26 @@
   "tags": [],
   "targets": {
     "serve": {
-      "executor": "nx:run-script",
+      "executor": "@nx/web:file-server",
       "options": {
-        "script": "start"
+        "gzip": true,
+        "cors": true,
+        "port": 8000,
+        "staticFilePath": "libs/i18n-labels",
+        "watch": false
       }
     },
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/i18n-labels",
-        "tsConfig": "libs/i18n-labels/tsconfig.lib.json",
-        "project": "libs/i18n-labels/package.json",
+        "compiler": "swc",
         "entryFile": "libs/i18n-labels/index.ts",
         "external": ["react/jsx-runtime"],
+        "outputPath": "dist/libs/i18n-labels",
+        "project": "libs/i18n-labels/package.json",
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "tsConfig": "libs/i18n-labels/tsconfig.lib.json",
         "assets": [
           {
             "glob": "libs/i18n-labels/README.md",
@@ -66,21 +71,11 @@
         "updateBuildableProjectDepsInPackageJson": true
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/i18n-labels"],
+    "publish:npm": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
       "options": {
-        "jestConfig": "libs/i18n-labels/jest.config.ts"
-      }
-    },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
-      "options": {
-        "access": "public"
+        "packageRoot": "dist/libs/i18n-labels"
       }
     },
     "publish:stable": {
@@ -89,6 +84,13 @@
         "commands": [
           "export LATEST=`npm dist-tag ls @globalfishingwatch/i18n-labels | grep -Ew 'latest: (.*)' | sed -n 's/latest: //p'`;npm dist-tag add @globalfishingwatch/i18n-labels@$LATEST stable"
         ],
+        "parallel": false
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx publish:npm i18n-labels", "nx purge i18n-labels"],
         "parallel": false
       }
     },
@@ -103,13 +105,6 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": ["PACKAGE_TAG=stable ./libs/i18n-labels/purge_jsdelivr.sh"],
-        "parallel": false
-      }
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx deploy i18n-labels", "nx purge i18n-labels"],
         "parallel": false
       }
     },

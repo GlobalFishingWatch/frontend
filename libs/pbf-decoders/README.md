@@ -1,7 +1,7 @@
-# pbf-decoders
+# pbf
 
 This library was generated with [Nx](https://nx.dev).
 
-## Running unit tests
+## Building
 
-Run `nx test pbf-decoders` to execute the unit tests via [Jest](https://jestjs.io).
+Run `nx build pbf` to build the library.

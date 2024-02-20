@@ -3,45 +3,27 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/dataviews-client/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "assets": [],
+        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "main": "libs/dataviews-client/src/index.ts",
         "outputPath": "dist/libs/dataviews-client",
-        "tsConfig": "libs/dataviews-client/tsconfig.lib.json",
         "project": "libs/dataviews-client/package.json",
-        "entryFile": "libs/dataviews-client/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/dataviews-client/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/dataviews-client"],
-      "options": {
-        "jestConfig": "libs/dataviews-client/jest.config.ts"
+        "tsConfig": "libs/dataviews-client/tsconfig.lib.json"
       }
     },
     "publish": {
-      "executor": "ngx-deploy-npm:deploy",
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
       "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/dataviews-client"
+        "packageRoot": "dist/libs/dataviews-client"
       }
     }
-  }
+  },
+  "tags": []
 }

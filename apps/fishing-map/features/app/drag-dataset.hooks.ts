@@ -13,7 +13,7 @@ import {
 
 export function useDatasetDrag() {
   const store = useStore()
-  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
 
@@ -22,12 +22,12 @@ export function useDatasetDrag() {
       e.preventDefault()
       e.stopPropagation()
       const datasetModalOpen = selectDatasetUploadModalOpen(store.getState() as RootState)
-      if (workspaceLocation && !datasetModalOpen && e.dataTransfer?.types?.includes('Files')) {
+      if (isWorkspaceLocation && !datasetModalOpen && e.dataTransfer?.types?.includes('Files')) {
         dispatchDatasetModalOpen(true)
         dispatchDatasetModalConfig({ style: 'transparent' })
       }
     },
-    [dispatchDatasetModalConfig, dispatchDatasetModalOpen, store, workspaceLocation]
+    [dispatchDatasetModalConfig, dispatchDatasetModalOpen, store, isWorkspaceLocation]
   )
 
   const onDragLeave = useCallback(
@@ -64,7 +64,7 @@ export function useDatasetDrag() {
       { event: 'drop', callback: onDrop, listener: undefined },
     ]
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && isWorkspaceLocation) {
       eventsConfig.forEach(({ event, listener, callback }) => {
         listener = window.addEventListener(event, callback)
       })
@@ -76,5 +76,5 @@ export function useDatasetDrag() {
         }
       })
     }
-  }, [onDragEnter, onDragLeave, onDrop])
+  }, [isWorkspaceLocation, onDragEnter, onDragLeave, onDrop])
 }

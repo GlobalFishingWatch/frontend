@@ -897,6 +897,7 @@
     "saveAndFilter": "Salvar e filtrar espaço de trabalho",
     "saveForLater": "Salvar para mais tarde",
     "saveForLaterTooltip": "Você encontrará o grupo nos filtros das camadas de atividade ou no botão do painel do usuário",
+    "searchLimit": "Search is limited up to {{limit}} vessels",
     "tooManyVessels_one": "O número máximo de embarcações é {{count}}",
     "tooManyVessels_other": "O número máximo de embarcações é {{count}}",
     "uploadPublic": "Permitir que outros usuários vejam este grupo de embarcações quando você compartilhar uma área de trabalho",
