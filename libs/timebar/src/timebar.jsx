@@ -252,7 +252,7 @@ class Timebar extends Component {
               )}
               <button
                 type="button"
-                title={labels.timerange.title}
+                title={labels.timerange?.title}
                 className={cx(styles.uiButton)}
                 disabled={immediate}
                 onClick={this.toggleTimeRangeSelector}

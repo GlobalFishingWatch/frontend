@@ -1,4 +1,5 @@
 import { partition } from 'lodash'
+import type { JSX } from 'react'
 
 // Copied from ui-components to avoid circular dependencies
 export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {

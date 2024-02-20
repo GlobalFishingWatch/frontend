@@ -1,3 +1,7 @@
 # i18n-labels
 
-Released automatically to npm using this [github action](https://github.com/GlobalFishingWatch/frontend/actions/workflows/i18n-labels-publish.yml)
+This library was generated with [Nx](https://nx.dev).
+
+## Building
+
+Run `nx build i18n-labels` to build the library.

@@ -12,7 +12,7 @@ module.exports = {
   ],
   // plugins: ['@typescript-eslint', 'react', 'import'],
   // TODO fix ESLint couldn't determine the plugin "import" uniquely.
-  plugins: ['react' /*'import'*/],
+  plugins: ['react', '@nx' /*'import'*/],
   settings: {
     react: {
       version: 'detect',
@@ -67,5 +67,14 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/camelcase': 0,
     '@typescript-eslint/no-empty-function': 0,
+    '@nx/dependency-checks': [
+      'error',
+      {
+        ignoredFiles: [
+          '{projectRoot}/vite.config.{js,ts,mjs,mts}',
+          '{projectRoot}/rollup.config.{js,ts,mjs,mts}',
+        ],
+      },
+    ],
   },
 }

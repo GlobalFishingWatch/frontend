@@ -1,33 +1,21 @@
 {
   "name": "@globalfishingwatch/ocean-areas",
-  "version": "0.3.0",
-  "description": "",
-  "author": "satellitestudio <contact@satellitestud.io>",
-  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
-  "license": "MIT",
-  "main": "index.js",
-  "typings": "src/index.d.ts",
+  "version": "2.0.0",
+  "main": "./index.cjs",
+  "module": "./index.js",
   "scripts": {
     "mpas": "ts-node -P tsconfig.node.json src/scripts/mpas.ts",
     "locales": "ts-node -P tsconfig.node.json src/scripts/names.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
-  },
-  "bugs": {
-    "url": "https://github.com/GlobalFishingWatch/frontend/issues"
-  },
   "dependencies": {
-    "@turf/helpers": "^6.5.0",
-    "@turf/turf": "^6.5.0",
-    "match-sorter": "^6.3.1"
-  },
-  "peerDependencies": {
-    "geojson": "^0.5.0"
-  },
-  "devDependencies": {
-    "geojson": "^0.5.0",
-    "ts-node": "^10.9.2"
+    "@turf/bbox": "6.x",
+    "@turf/boolean-point-in-polygon": "6.x",
+    "@turf/distance": "6.x",
+    "@turf/explode": "6.x",
+    "@turf/helpers": "6.x",
+    "@turf/nearest-point": "6.x",
+    "geojson": "0.x",
+    "lodash": "4.x",
+    "match-sorter": "6.x"
   }
 }

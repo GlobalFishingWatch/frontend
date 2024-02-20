@@ -1,26 +1,17 @@
 {
   "name": "@globalfishingwatch/datasets-client",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "main": "index.js",
-  "typings": "src/index.d.ts",
+  "main": "./index.cjs",
+  "module": "./index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "dependencies": {
-    "qs": "^6.11.2"
-  },
-  "devDependencies": {
-    "@types/qs": "^6.9.8"
-  },
-  "peerDependencies": {
-    "@globalfishingwatch/api-types": "6.x",
-    "@globalfishingwatch/data-transforms": "1.x",
-    "@globalfishingwatch/layer-composer": "10.x",
-    "@reduxjs/toolkit": "2.x",
-    "lodash": "4.x"
+    "@globalfishingwatch/api-types": "^8.0.0",
+    "d3-scale": "4.x"
   }
 }

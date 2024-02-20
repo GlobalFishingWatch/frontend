@@ -3,70 +3,27 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/features-aggregate/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
-    "start": {
-      "executor": "@nx/web:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/features-aggregate",
-        "tsConfig": "libs/features-aggregate/tsconfig.lib.json",
-        "project": "libs/features-aggregate/package.json",
-        "entryFile": "libs/features-aggregate/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "watch": true,
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/features-aggregate/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
-      }
-    },
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "assets": [],
+        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "main": "libs/features-aggregate/src/index.ts",
         "outputPath": "dist/libs/features-aggregate",
-        "tsConfig": "libs/features-aggregate/tsconfig.lib.json",
         "project": "libs/features-aggregate/package.json",
-        "entryFile": "libs/features-aggregate/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/features-aggregate/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
-      },
-      "configurations": {
-        "local": {
-          "outputPath": "libs/features-aggregate/dist"
-        }
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/features-aggregate"],
-      "options": {
-        "jestConfig": "libs/features-aggregate/jest.config.ts"
+        "tsConfig": "libs/features-aggregate/tsconfig.lib.json"
       }
     },
     "publish": {
-      "executor": "ngx-deploy-npm:deploy",
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
       "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/features-aggregate"
+        "packageRoot": "dist/libs/features-aggregate"
       }
     }
-  }
+  },
+  "tags": []
 }

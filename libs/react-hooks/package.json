@@ -1,26 +1,22 @@
 {
   "name": "@globalfishingwatch/react-hooks",
-  "version": "15.4.0",
+  "version": "17.0.0",
   "description": "set of react hooks to easily use pure js libraries",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
-  "license": "ISC",
-  "main": "index.js",
-  "typings": "src/index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
-  },
-  "peerDependencies": {
-    "@globalfishingwatch/api-client": "4.x",
-    "@globalfishingwatch/dataviews-client": "14.x",
-    "@globalfishingwatch/fourwings-aggregate": "4.x",
-    "@globalfishingwatch/layer-composer": "10.x",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "dependencies": {
+    "@globalfishingwatch/api-client": "^6.0.1",
+    "@globalfishingwatch/api-types": "^8.0.0",
+    "@globalfishingwatch/dataviews-client": "^16.0.0",
+    "@globalfishingwatch/fourwings-aggregate": "^6.0.0",
+    "@globalfishingwatch/layer-composer": "^12.0.0",
     "@globalfishingwatch/maplibre-gl": "^3.5.1-gfw.2",
+    "@mapbox/tilebelt": "1.x",
     "lodash": "4.x",
-    "usehooks-ts": "^2.x"
-  },
-  "publishConfig": {
-    "access": "public"
+    "usehooks-ts": "2.x",
+    "react": "18.x",
+    "react-ga4": "2.x"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/linting",
-  "version": "2.0.2",
+  "version": "2.1.1",
   "description": "linting config ready to be used in every gfw frontend project",
   "keywords": [
     "eslint",
@@ -29,14 +29,13 @@
   },
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "devDependencies": {
-    "@next/eslint-plugin-next": "14.0.4",
-    "@typescript-eslint/eslint-plugin": "6.x",
-    "@typescript-eslint/parser": "6.x",
-    "@typescript-eslint/scope-manager": "6.x",
-    "babel-eslint": "10.x",
+    "@next/eslint-plugin-next": "14.x",
+    "@typescript-eslint/eslint-plugin": "7.x",
+    "@typescript-eslint/parser": "7.x",
+    "@typescript-eslint/scope-manager": "7.x",
     "eslint": "8.x",
     "eslint-config-next": "13.x",
-    "eslint-config-prettier": "8.x",
+    "eslint-config-prettier": "9.x",
     "eslint-config-react-app": "7.x",
     "eslint-import-resolver-typescript": "3.x",
     "eslint-plugin-cypress": "2.x",
@@ -45,11 +44,11 @@
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "4.x",
-    "prettier": "2.x",
-    "prettier-eslint": "15.x",
-    "stylelint": "15.x",
+    "prettier": "3.x",
+    "prettier-eslint": "16.x",
+    "stylelint": "16.x",
     "stylelint-config-css-modules": "4.x",
     "stylelint-config-prettier": "9.x",
-    "stylelint-config-standard": "29.x"
+    "stylelint-config-standard": "36.x"
   }
 }
