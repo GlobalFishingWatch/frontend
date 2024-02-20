@@ -4,7 +4,7 @@
   "sourceRoot": "libs/deck-loaders/src",
   "projectType": "library",
   "targets": {
-    "dist:lib": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -34,10 +34,6 @@
         "generatePackageJson": false,
         "minify": false
       }
-    },
-    "dist": {
-      "executor": "nx:noop",
-      "dependsOn": ["dist:lib", "dist:workers"]
     },
     "publish": {
       "executor": "@nx/js:release-publish",

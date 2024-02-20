@@ -1,6 +1,6 @@
 export type BBox = [number, number, number, number]
 
-const getCellProperties = (tileBBox: BBox, cellIndex: number, numCols: number) => {
+export const getCellProperties = (tileBBox: BBox, cellIndex: number, numCols: number) => {
   const col = cellIndex % numCols
   const row = Math.floor(cellIndex / numCols)
   const [minX, minY, maxX, maxY] = tileBBox
