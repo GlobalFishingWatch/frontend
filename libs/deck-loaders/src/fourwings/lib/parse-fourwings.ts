@@ -17,14 +17,14 @@ export const CELL_VALUES_START_INDEX = 3
 export const getCellTimeseries = (
   intArrays: FourwingsRawData[],
   options?: FourwingsLoaderOptions
-): { cells: Cell[]; indexes: number[] } => {
-  const { minFrame, maxFrame, interval, sublayers } = options?.fourwings || ({} as FourwingsOptions)
+): { cells: Cell[]; indexes: number[]; startFrames: number[] } => {
+  const { minFrame, interval, sublayers } = options?.fourwings || ({} as FourwingsOptions)
   // TODO ensure we use the UTC dates here to avoid the .ceil
   const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame))
-  const tileMaxIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame))
   // const sublayerCount = sublayers.length
   const cells = [] as Cell[]
   const indexes = [] as number[]
+  const startFrames = [] as number[]
   const dataLength = intArrays.length
   for (let subLayerIndex = 0; subLayerIndex < dataLength; subLayerIndex++) {
     let cellNum = 0
@@ -53,8 +53,9 @@ export const getCellTimeseries = (
         // eslint-disable-next-line no-loop-func
         let cellIndex = indexes.findIndex((v) => v === cellNum)
         if (cellIndex === -1) {
-          cells.push(new Array(dataLength).fill(null))
+          cells.push(new Array(dataLength))
           indexes.push(cellNum)
+          startFrames.push(startFrame - tileMinIntervalFrame)
           cellIndex = cells.length - 1
         }
         for (let j = 0; j < numCellValues; j++) {
@@ -64,13 +65,10 @@ export const getCellTimeseries = (
           if (cellValue !== NO_DATA_VALUE) {
             // eslint-disable-next-line max-depth
             if (!cells[cellIndex]?.[subLayerIndex]) {
-              cells[cellIndex]![subLayerIndex] = new Array(
-                tileMaxIntervalFrame - tileMinIntervalFrame
-              ).fill(null)
+              cells[cellIndex]![subLayerIndex] = new Array(numCellValues)
             }
-            cells[cellIndex]![subLayerIndex][
-              startFrame - tileMinIntervalFrame + Math.floor(j / sublayers)
-            ] = cellValue * SCALE_VALUE + OFFSET_VALUE
+            cells[cellIndex]![subLayerIndex][Math.floor(j / sublayers)] =
+              cellValue * SCALE_VALUE + OFFSET_VALUE
           }
         }
         i = endIndex
@@ -82,7 +80,7 @@ export const getCellTimeseries = (
     }
   }
 
-  return { cells, indexes }
+  return { cells, indexes, startFrames }
 }
 
 function readData(_: any, data: any, pbf: any) {

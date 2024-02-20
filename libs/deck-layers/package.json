@@ -13,7 +13,7 @@
   "peerDependencies": {
     "@deck.gl/core": "^8.9.19",
     "@deck.gl/extensions": "^8.9.19",
-    "@deck.gl/geo-layers": "^8.9.19",
+    "@deck.gl/geo-layers": "^8.9.34",
     "@deck.gl/layers": "^8.9.19",
     "@deck.gl/mesh-layers": "^8.9.19",
     "@deck.gl/react": "^8.9.19",
@@ -22,6 +22,7 @@
     "@globalfishingwatch/deck-loaders": "*",
     "@globalfishingwatch/layer-composer": "*",
     "@globalfishingwatch/react-hooks": "*",
-    "luxon": "^3.x"
+    "luxon": "^3.x",
+    "simple-statistics": "^7.8.3"
   }
 }

@@ -44,20 +44,27 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
   static defaultProps = defaultProps
 
   getPickingInfo({ info }: GetPickingInfoParams): PickingInfo {
-    const { minFrame, maxFrame } = this.props
+    const { minFrame, maxFrame, startFrames } = this.props
     if (info.object) {
       const chunks = getChunks(minFrame, maxFrame)
       const tileMinIntervalFrame = Math.ceil(
         CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
       )
+      const cellStartFrame = startFrames[info.index]
       const minIntervalFrame =
-        Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame)) - tileMinIntervalFrame
+        Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame)) -
+        tileMinIntervalFrame -
+        cellStartFrame
       const maxIntervalFrame =
-        Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
+        Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame)) -
+        tileMinIntervalFrame -
+        cellStartFrame
       const value = aggregateCell(info.object, { minIntervalFrame, maxIntervalFrame })
-      info.object = {
-        ...info.object,
-        value,
+      if (value) {
+        info.object = {
+          ...info.object,
+          value,
+        }
       }
     }
     return info
