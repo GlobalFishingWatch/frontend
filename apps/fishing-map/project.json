@@ -38,8 +38,8 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx build deck-loaders",
-          "cp dist/libs/deck-loaders/fourwings/fourwings-worker.js apps/fishing-map/public/workers"
+          "nx dist:workers deck-loaders",
+          "cp dist/libs/deck-loaders/workers/fourwings-worker.js apps/fishing-map/public/workers/"
         ],
         "parallel": false
       }

@@ -1,5 +1,5 @@
 import type { NumericArray } from '@math.gl/core'
-import { AccessorFunction, DefaultProps, Layer, UpdateParameters } from '@deck.gl/core/typed'
+import { AccessorFunction, DefaultProps, UpdateParameters } from '@deck.gl/core/typed'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { Segment } from '@globalfishingwatch/api-types'
