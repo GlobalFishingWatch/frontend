@@ -63,7 +63,7 @@
     },
     "@nx/esbuild:esbuild": {
       "cache": true,
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^dist"],
       "inputs": ["production", "^production"]
     }
   },
