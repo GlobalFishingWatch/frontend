@@ -58,6 +58,7 @@ export const getCellTimeseries = (
           startFrames.push(startFrame - tileMinIntervalFrame)
           cellIndex = cells.length - 1
         }
+        startFrames[cellIndex] = Math.min(startFrames[cellIndex], startFrame - tileMinIntervalFrame)
         for (let j = 0; j < numCellValues; j++) {
           // const subLayerIndex = j % sublayers
           const cellValue = subLayerIntArray[j + startOffset]

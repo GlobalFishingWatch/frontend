@@ -27,7 +27,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
 
 export type AggregateCellParams = {
   minIntervalFrame: number
-  maxIntervalFrame: number
+  maxIntervalFrame?: number
 }
 
 export type GetFillColorParams = {
@@ -54,7 +54,7 @@ export const chooseColor = (
   }
   const aggregatedCellValues = aggregateCell(cell, {
     minIntervalFrame,
-    maxIntervalFrame,
+    maxIntervalFrame: maxIntervalFrame > 0 ? maxIntervalFrame : undefined,
   })
   let chosenValueIndex = 0
   let chosenValue: number | undefined
@@ -111,19 +111,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     const getFillColor = (cell: Cell, { index, target }: { index: number; target: Color }) => {
       const cellStartFrame = startFrames[index]
       if (maxIntervalFrame - cellStartFrame < 0) {
-        // debugger
         target = EMPTY_CELL_COLOR
       } else {
-        // console.log(
-        //   cell,
-        //   cellStartFrame,
-        //   minIntervalFrame - cellStartFrame,
-        //   maxIntervalFrame - cellStartFrame,
-        //   aggregateCell(cell, {
-        //     minIntervalFrame: minIntervalFrame - cellStartFrame,
-        //     maxIntervalFrame: maxIntervalFrame - cellStartFrame,
-        //   })
-        // )
         target = chooseColor(cell, {
           colorDomain,
           colorRanges,
