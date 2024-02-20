@@ -17,26 +17,35 @@
         "tsConfig": "libs/deck-loaders/tsconfig.lib.json"
       }
     },
-    "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+    "dist:workers": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "lintFilePatterns": ["libs/deck-loaders/**/*.{ts,tsx,js,jsx}"]
+        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputFileName": "fourwings-worker.js",
+        "main": "libs/deck-loaders/src/fourwings/workers/fourwings-worker.ts",
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "watch": false,
+        "target": "esnext",
+        "platform": "browser",
+        "deleteOutputPath": true,
+        "bundle": true,
+        "thirdParty": true,
+        "generatePackageJson": false,
+        "minify": false
       }
     },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/deck-loaders"],
-      "options": {
-        "jestConfig": "libs/deck-loaders/jest.config.ts",
-        "passWithNoTests": true
-      }
+    "dist": {
+      "executor": "nx:noop",
+      "dependsOn": ["dist:lib", "dist:workers"]
     },
-    "deploy": {
-      "executor": "ngx-deploy-npm:deploy",
+    "publish": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
       "options": {
-        "access": "public"
+        "packageRoot": "dist/libs/deck-loaders"
       }
     }
-  }
+  },
+  "tags": []
 }

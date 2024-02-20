@@ -26,19 +26,6 @@
     }
   },
   "plugins": [
-    // {
-    //   "plugin": "@nx/cypress/plugin",
-    //   "options": {
-    //     "targetName": "e2e",
-    //     "componentTestingTargetName": "component-test"
-    //   }
-    // },
-    // {
-    //   "plugin": "@nx/jest/plugin",
-    //   "options": {
-    //     "targetName": "test"
-    //   }
-    // },
     {
       "plugin": "@nx/eslint/plugin",
       "options": {
@@ -85,17 +72,11 @@
         "file": false
       }
     },
-    // "version": {
-    //   "generatorOptions": {
-    //     "packageRoot": "dist/libs/{projectName}"
-    //   }
-    // },
     "git": {
       "commit": false,
       "tag": true
     }
   },
-
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "sharedGlobals": ["{workspaceRoot}/nx.json", "{workspaceRoot}/babel.config.json"],

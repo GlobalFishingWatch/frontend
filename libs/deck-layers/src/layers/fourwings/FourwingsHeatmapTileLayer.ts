@@ -24,7 +24,6 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
-// import { fourWingsDatasetLoader } from '../../loaders/fourwings/fourwingsDatasetsLoader'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,

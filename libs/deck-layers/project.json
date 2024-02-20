@@ -12,7 +12,6 @@
         "compiler": "swc",
         "format": ["esm", "cjs"],
         "main": "libs/deck-layers/src/index.ts",
-        "external": ["@globalfishingwatch/deck-loaders"],
         "outputPath": "dist/libs/deck-layers",
         "project": "libs/deck-layers/package.json",
         "tsConfig": "libs/deck-layers/tsconfig.lib.json"

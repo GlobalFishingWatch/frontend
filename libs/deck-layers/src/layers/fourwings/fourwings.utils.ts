@@ -194,18 +194,15 @@ export const aggregatePositionsTimeseries = (positions: Feature[]) => {
   if (!positions) {
     return []
   }
-  const timeseries = positions.reduce(
-    (acc, position) => {
-      const { htime, value } = position.properties as any
-      const activityStart = getMillisFromHtime(htime)
-      if (acc[activityStart]) {
-        acc[activityStart] += value
-      } else {
-        acc[activityStart] = value
-      }
-      return acc
-    },
-    {} as Record<number, number>
-  )
+  const timeseries = positions.reduce((acc, position) => {
+    const { htime, value } = position.properties as any
+    const activityStart = getMillisFromHtime(htime)
+    if (acc[activityStart]) {
+      acc[activityStart] += value
+    } else {
+      acc[activityStart] = value
+    }
+    return acc
+  }, {} as Record<number, number>)
   return timeseries
 }
