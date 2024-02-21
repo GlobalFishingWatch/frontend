@@ -28,8 +28,7 @@
       "@globalfishingwatch/i18n-labels/*": ["../../libs/i18n-labels/*"],
       "@globalfishingwatch/layer-composer": ["../../libs/layer-composer/src/index.ts"],
       "@globalfishingwatch/ocean-areas": ["../../libs/ocean-areas/src/index.ts"],
-      "@globalfishingwatch/pbf": ["../../libs/pbf-decoders/src/index.ts"],
-      "@globalfishingwatch/pbf/*": ["../../libs/pbf-decoders/*"],
+      "@globalfishingwatch/pbf-decoders": ["../../libs/pbf-decoders/index.ts"],
       "@globalfishingwatch/react-hooks": ["../../libs/react-hooks/src/index.ts"],
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.js"],
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"]

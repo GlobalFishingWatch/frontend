@@ -3,45 +3,27 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ocean-areas/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "assets": [],
+        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "main": "libs/ocean-areas/src/index.ts",
         "outputPath": "dist/libs/ocean-areas",
-        "tsConfig": "libs/ocean-areas/tsconfig.lib.json",
         "project": "libs/ocean-areas/package.json",
-        "entryFile": "libs/ocean-areas/src/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "libs/ocean-areas/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ],
-        "updateBuildableProjectDepsInPackageJson": true
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/ocean-areas"],
-      "options": {
-        "jestConfig": "libs/ocean-areas/jest.config.ts"
+        "tsConfig": "libs/ocean-areas/tsconfig.lib.json"
       }
     },
     "publish": {
-      "executor": "ngx-deploy-npm:deploy",
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
       "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/ocean-areas"
+        "packageRoot": "dist/libs/ocean-areas"
       }
     }
-  }
+  },
+  "tags": []
 }

@@ -1,3 +1,5 @@
+import { JSX } from 'react'
+
 export interface PointCoordinate {
   lat: number
   lon: number

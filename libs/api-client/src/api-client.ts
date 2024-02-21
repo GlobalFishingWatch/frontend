@@ -1,10 +1,10 @@
 import { saveAs } from 'file-saver'
 import {
-  UserData,
-  ResourceResponseType,
-  ResourceRequestType,
-  UserPermission,
   APIPagination,
+  ResourceRequestType,
+  ResourceResponseType,
+  UserData,
+  UserPermission,
 } from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
 import { isAuthError, parseAPIError } from './utils/errors'
@@ -384,7 +384,7 @@ export class GFW_API_CLASS {
                 return res.arrayBuffer()
               case 'vessel': {
                 try {
-                  return import('@globalfishingwatch/pbf/decoders/vessels').then(({ vessels }) => {
+                  return import('@globalfishingwatch/pbf-decoders').then(({ vessels }) => {
                     return res.arrayBuffer().then((buffer) => {
                       const track = vessels.Track.decode(new Uint8Array(buffer))
                       return track.data
@@ -392,7 +392,7 @@ export class GFW_API_CLASS {
                   })
                 } catch (e: any) {
                   console.warn(
-                    '@globalfishingwatch/pbf is a mandatory external dependency when using vessel response decoding'
+                    '@globalfishingwatch/pbf-decoders is a mandatory external dependency when using vessel response decoding'
                   )
                   throw e
                 }
@@ -545,8 +545,9 @@ export class GFW_API_CLASS {
           console.log(`GFWAPI: Token wasn't valid, trying to refresh`)
         }
         try {
-          const { token, refreshToken: newRefreshToken } =
-            await this.getTokenWithRefreshToken(refreshToken)
+          const { token, refreshToken: newRefreshToken } = await this.getTokenWithRefreshToken(
+            refreshToken
+          )
           this.setToken(token)
           this.setRefreshToken(newRefreshToken)
           if (this.debug) {

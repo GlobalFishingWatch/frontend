@@ -3,24 +3,13 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/timebar/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
     "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/timebar",
-        "tsConfig": "libs/timebar/tsconfig.lib.json",
-        "project": "libs/timebar/package.json",
         "entryFile": "libs/timebar/src/index.js",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "libs/timebar/rollup.config.js",
         "assets": [
-          {
-            "glob": "libs/timebar/README.md",
-            "input": ".",
-            "output": "."
-          },
           {
             "glob": "libs/timebar/types",
             "input": ".",
@@ -32,26 +21,21 @@
             "output": "."
           }
         ],
-        "updateBuildableProjectDepsInPackageJson": true
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/timebar"],
-      "options": {
-        "jestConfig": "libs/timebar/jest.config.ts"
+        "format": ["esm", "cjs"],
+        "main": "libs/timebar/src/index.js",
+        "outputPath": "dist/libs/timebar",
+        "project": "libs/timebar/package.json",
+        "rollupConfig": "libs/ui-components/rollup.config.js",
+        "tsConfig": "libs/timebar/tsconfig.lib.json"
       }
     },
     "publish": {
-      "executor": "ngx-deploy-npm:deploy",
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
       "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/timebar"
+        "packageRoot": "dist/libs/timebar"
       }
     }
-  }
+  },
+  "tags": []
 }
