@@ -1,52 +1,35 @@
 {
-  "name": "pbf",
+  "name": "pbf-decoders",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/pbf-decoders",
+  "sourceRoot": "libs/pbf-decoders/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/pbf-decoders",
-        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json",
-        "project": "libs/pbf-decoders/package.json",
-        "entryFile": "libs/pbf-decoders/index.ts",
-        "external": ["react/jsx-runtime"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "assets": [
-          {
-            "glob": "libs/pbf-decoders/README.md",
-            "input": ".",
-            "output": "."
-          },
           {
             "glob": "libs/pbf-decoders/decoders",
             "input": ".",
             "output": "."
           }
         ],
-        "updateBuildableProjectDepsInPackageJson": true
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/pbf-decoders"],
-      "options": {
-        "jestConfig": "libs/pbf-decoders/jest.config.ts"
+        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "main": "libs/pbf-decoders/index.ts",
+        "outputPath": "dist/libs/pbf-decoders",
+        "project": "libs/pbf-decoders/package.json",
+        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json"
       }
     },
     "publish": {
-      "executor": "ngx-deploy-npm:deploy",
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
       "options": {
-        "access": "public",
-        "distFolderPath": "dist/libs/pbf-decoders"
+        "packageRoot": "dist/libs/pbf-decoders"
       }
     }
-  }
+  },
+  "tags": []
 }

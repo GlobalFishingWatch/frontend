@@ -2,6 +2,6 @@
 
 This library was generated with [Nx](https://nx.dev).
 
-## Running unit tests
+## Building
 
-Run `nx test ui-components` to execute the unit tests via [Jest](https://jestjs.io).
+Run `nx build ui-components` to build the library.
