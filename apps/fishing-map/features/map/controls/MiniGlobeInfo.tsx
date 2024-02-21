@@ -1,42 +1,30 @@
 import { useTranslation } from 'react-i18next'
 import formatcoords from 'formatcoords'
 import { useEffect, useState } from 'react'
-import type {
-  getOceanAreaName as getOceanAreaNameType,
-  OceanAreaLocale,
-} from '@globalfishingwatch/ocean-areas'
+import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 import styles from './MapControls.module.css'
 
-let getOceanAreaName: typeof getOceanAreaNameType | undefined
 const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
   const { i18n } = useTranslation()
-  const [oceanAreasReady, setOceanAreasready] = useState(getOceanAreaName !== undefined)
   const [showDMS, setShowDMS] = useState(true)
+  const [areaName, setAreaName] = useState('')
 
   useEffect(() => {
-    const importGetOceanAreaName = async () => {
-      getOceanAreaName = await import('@globalfishingwatch/ocean-areas').then(
-        (module) => module.getOceanAreaName
-      )
-      setOceanAreasready(true)
+    const updateAreaName = async (viewport: MapCoordinates, locale: OceanAreaLocale) => {
+      const areaName = await getOceanAreaName(viewport, {
+        locale,
+        combineWithEEZ: true,
+      })
+      setAreaName(areaName)
     }
-    if (!getOceanAreaName) {
-      importGetOceanAreaName()
-    }
-  }, [])
+    updateAreaName(viewport, i18n.language as OceanAreaLocale)
+  }, [i18n.language, viewport])
 
   return (
     <div className={styles.miniGlobeInfo} onClick={() => setShowDMS(!showDMS)}>
-      <div className={styles.miniGlobeInfoTitle}>
-        {oceanAreasReady &&
-          getOceanAreaName &&
-          getOceanAreaName(viewport, {
-            locale: i18n.language as OceanAreaLocale,
-            combineWithEEZ: true,
-          })}
-      </div>
+      <div className={styles.miniGlobeInfoTitle}>{areaName}</div>
       <div>
         {showDMS
           ? formatcoords(viewport.latitude, viewport.longitude).format('DDMMssX', {

@@ -119,9 +119,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     : 'id'
 
   useEffect(() => {
-    if (layerActive && layerFeatures?.features) {
+    const updateFeaturesOnScreen = async () => {
       const uniqLayerFeatures = uniqBy(layerFeatures?.features, uniqKey)
-      const filteredFeatures = filterFeaturesByDistance(uniqLayerFeatures, {
+      const filteredFeatures = await filterFeaturesByDistance(uniqLayerFeatures, {
         viewport,
         uniqKey,
       })
@@ -129,6 +129,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         total: uniqLayerFeatures.length,
         closest: parseContextFeatures(filteredFeatures, dataset as Dataset),
       })
+    }
+    if (layerActive && layerFeatures?.features) {
+      updateFeaturesOnScreen()
     }
   }, [dataset, layerActive, layerFeatures?.features, uniqKey, viewport])
 
@@ -355,10 +358,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           {featuresOnScreen?.total > 0 && (
             <Fragment>
               <Collapsable
-                label={`${t(
-                  'layer.areasOnScreen',
-                  'Areas on screen'
-                )} (${featuresOnScreen?.total})`}
+                label={`${t('layer.areasOnScreen', 'Areas on screen')} (${
+                  featuresOnScreen?.total
+                })`}
                 open={false}
                 className={styles.areasOnScreen}
               >
