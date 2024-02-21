@@ -43,6 +43,7 @@
     "@turf/bbox": "6.5.0",
     "@turf/boolean-overlap": "6.5.0",
     "@turf/boolean-point-in-polygon": "6.5.0",
+    "@turf/buffer": "^6.5.0",
     "@turf/great-circle": "^6.5.0",
     "@turf/helpers": "^6.5.0",
     "@turf/kinks": "6.5.0",
@@ -130,6 +131,7 @@
   "devDependencies": {
     "@globalfishingwatch/linting": "^2.1.1",
     "@jscutlery/semver": "^5.1.1",
+    "@next/bundle-analyzer": "^14.1.0",
     "@next/eslint-plugin-next": "14.x",
     "@nx/cypress": "^18.0.4",
     "@nx/esbuild": "18.0.4",

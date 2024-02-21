@@ -3,7 +3,7 @@
 const { join } = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
-//   enabled: process.env.ANALYZE === 'true',
+//   enabled: true, //process.env.ANALYZE === 'true' || process.env.NODE_ENV === 'development',
 // })
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 
@@ -96,6 +96,7 @@ const nextConfig = {
 }
 
 // @ts-ignore
+// const configWithNx = withNx(withBundleAnalyzer(nextConfig))
 const configWithNx = withNx(nextConfig)
 
 // @ts-ignore
