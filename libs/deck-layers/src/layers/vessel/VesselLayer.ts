@@ -8,8 +8,8 @@ import {
   ResourceStatus,
   Segment,
 } from '@globalfishingwatch/api-types'
-import { parquetLoader } from '../../loaders/vessels/trackLoader'
-import { VesselDeckLayersEventData, vesselEventsLoader } from '../../loaders/vessels/eventsLoader'
+import { VesselDeckLayersEventData, vesselEventsLoader } from '@globalfishingwatch/deck-loaders'
+import { parquetLoader } from '@globalfishingwatch/deck-loaders'
 import { deckToHexColor } from '../../utils/colors'
 import { EVENTS_COLORS, VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'

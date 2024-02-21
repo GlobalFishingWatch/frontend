@@ -2,7 +2,6 @@ import {
   AccessorFunction,
   Color,
   DefaultProps,
-  Layer,
   Position,
   UpdateParameters,
 } from '@deck.gl/core/typed'
