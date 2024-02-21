@@ -15,7 +15,6 @@
 }
 
 .secondary {
-  font: var(--font-M);
   color: var(--color-secondary-blue);
 }
 

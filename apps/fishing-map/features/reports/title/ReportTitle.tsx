@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
-import turfArea from '@turf/area'
+import geojsonArea from '@mapbox/geojson-area'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
@@ -226,7 +226,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     urlBufferUnit,
   ])
 
-  const reportAreaSpace = reportArea?.geometry ? turfArea(reportArea?.geometry) : null
+  const reportAreaSpace = reportArea?.geometry ? (geojsonArea.geometry(reportArea?.geometry) / 1000000) : null
 
   return (
     <div className={styles.container}>
@@ -237,11 +237,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
             {reportAreaSpace && (
               <span className={styles.secondary}>
                 {' '}
-                (
-                {reportAreaSpace > 1000
-                  ? formatI18nNumber(reportAreaSpace / 1000)
-                  : formatI18nNumber(reportAreaSpace)}
-                km²)
+                {formatI18nNumber(reportAreaSpace)} km²
               </span>
             )}
           </h1>
