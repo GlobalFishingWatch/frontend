@@ -14,6 +14,10 @@
   font-size: 2.2rem;
 }
 
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
 .actions {
   white-space: nowrap;
   display: flex;
@@ -56,8 +60,7 @@
 .confirmationContainer {
   width: 100%;
   display: flex;
-  align-content: center;
-  justify-content: space-between;
+  place-content: center space-between;
 }
 
 .sliderTrack {
