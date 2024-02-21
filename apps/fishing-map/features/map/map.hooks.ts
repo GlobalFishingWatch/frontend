@@ -21,7 +21,7 @@ import {
 import { DatasetSubCategory, DataviewCategory, Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import { AnyDeckLayersGenerator } from '@globalfishingwatch/deck-layers'
+import { AnyDeckLayersGenerator } from '@globalfishingwatch/deck-layer-composer'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'

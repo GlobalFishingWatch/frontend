@@ -19,7 +19,7 @@ import {
   pickTrackResource,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
-import { useMapVesselLayer } from '@globalfishingwatch/deck-layers'
+import { useMapVesselLayer } from '@globalfishingwatch/deck-layer-composer'
 import { formatInfoField, getVesselLabel, getVesselOtherNamesLabel } from 'utils/info'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'

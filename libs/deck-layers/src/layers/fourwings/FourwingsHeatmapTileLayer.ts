@@ -23,7 +23,6 @@ import {
   GROUP_ORDER,
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
@@ -49,7 +48,7 @@ export type _FourwingsHeatmapTileLayerProps = {
   minFrame: number
   maxFrame: number
   zIndex?: number
-  category: FourwingsDataviewCategory
+  category: string
   sublayers: FourwingsDeckSublayer[]
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
   onViewportLoad?: (string: string) => void
