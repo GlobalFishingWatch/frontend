@@ -1,7 +1,9 @@
 import { useSelector } from 'react-redux'
 import { useMemo } from 'react'
-import { FourwingsDataviewCategory } from '@globalfishingwatch/deck-layers'
-import { useFourwingsLayers } from '@globalfishingwatch/deck-layers'
+import {
+  FourwingsDataviewCategory,
+  useFourwingsLayers,
+} from '@globalfishingwatch/deck-layer-composer'
 import { DECK_CATEGORY_BY_TIMEBAR_VISUALIZATION } from 'data/config'
 import { selectTimebarVisualisation } from 'features/app/selectors/app.timebar.selectors'
 import { getGraphFromGridCellsData } from './timebar.utils'
