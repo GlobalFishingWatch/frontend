@@ -3,11 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
 import { InputText, IconButton } from '@globalfishingwatch/ui-components'
-import type {
-  searchOceanAreas as searchOceanAreasType,
-  OceanAreaLocale,
-  OceanArea,
-} from '@globalfishingwatch/ocean-areas'
+import { searchOceanAreas, OceanAreaLocale, OceanArea } from '@globalfishingwatch/ocean-areas'
 import { Bbox } from 'types'
 import Hint from 'features/help/Hint'
 import { setHintDismissed } from 'features/help/hints.slice'
@@ -23,7 +19,6 @@ const MapSearch = () => {
   const [query, setQuery] = useState<string>('')
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
-  const searchOceanAreas = useRef<typeof searchOceanAreasType>()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const fitBounds = useMapFitBounds()
@@ -48,28 +43,21 @@ const MapSearch = () => {
     }
   }
 
-  const onInputChange = ({ type, inputValue }: UseComboboxStateChange<OceanArea>) => {
+  const onInputChange = async ({ type, inputValue }: UseComboboxStateChange<OceanArea>) => {
     if (type === '__item_click__' || type === '__input_keydown_enter__' || !inputValue) {
       setQuery('')
       setAreasMatching([])
     } else {
       setQuery(inputValue)
-      if (searchOceanAreas.current) {
-        const areas = searchOceanAreas.current(inputValue, {
-          locale: i18n.language as OceanAreaLocale,
-        })
-        setAreasMatching(areas)
-      }
+      const areas = await searchOceanAreas(inputValue, {
+        locale: i18n.language as OceanAreaLocale,
+      })
+      setAreasMatching(areas)
     }
   }
 
   const togglePropOptions = {
     onClick: async () => {
-      if (!searchOceanAreas.current) {
-        searchOceanAreas.current = await import('@globalfishingwatch/ocean-areas').then(
-          (module) => module.searchOceanAreas
-        )
-      }
       dispatch(setHintDismissed('areaSearch'))
       setTimeout(() => {
         inputRef.current?.focus()
