@@ -20,11 +20,9 @@
     "@turf/bbox-polygon": "6.x",
     "@turf/boolean-point-in-polygon": "6.x",
     "geojson": "^0.5.0",
-    "jotai": "2.x",
     "lodash": "4.x",
     "luxon": "3.x",
     "qs": "6.x",
-    "react": "18.x",
     "simple-statistics": "7.x"
   }
 }
