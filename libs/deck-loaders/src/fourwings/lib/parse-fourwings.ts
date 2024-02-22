@@ -1,5 +1,5 @@
 import Pbf from 'pbf'
-import { CONFIG_BY_INTERVAL } from '../helpers/time'
+import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
 import type { Cell, FourwingsLoaderOptions, FourwingsOptions, FourwingsRawData } from './types'
 
 // TODO make this dynamic to get the data from the header
@@ -34,7 +34,7 @@ export const getCellTimeseries = (
   const timeRangeEndIntervalFrame =
     Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.end)) -
     tileMinIntervalFrame
-  const timeRangeKey = `${timeRangeStartIntervalFrame}-${timeRangeEndIntervalFrame}`
+  const timeRangeKey = getTimeRangeKey(timeRangeStartIntervalFrame, timeRangeEndIntervalFrame)
   const cells = [] as Cell[]
   const indexes = [] as number[]
   const startFrames = [] as number[][]

@@ -2,7 +2,7 @@ import { Color, CompositeLayer } from '@deck.gl/core/typed'
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
-import { Cell } from '@globalfishingwatch/deck-loaders'
+import { Cell, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL } from '../../utils/time'
 import FourwingsTileCellLayer from './FourwingsHeatmapCellLayer'
 import {
@@ -126,7 +126,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         minIntervalFrame: minIntervalFrame,
         maxIntervalFrame: maxIntervalFrame,
         startFrames: startFrames[index],
-        initialValues: initialValues[`${minIntervalFrame}-${maxIntervalFrame}`]?.[index],
+        initialValues: initialValues[getTimeRangeKey(minIntervalFrame, maxIntervalFrame)]?.[index],
       })
       return target
     }
