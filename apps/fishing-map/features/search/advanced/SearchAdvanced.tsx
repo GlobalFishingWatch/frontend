@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux'
 import { Trans, useTranslation } from 'react-i18next'
 import { ChangeEvent, useCallback } from 'react'
+import dynamic from 'next/dynamic'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import SearchAdvancedResults from 'features/search/advanced/SearchAdvancedResults'
 import { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
@@ -24,6 +24,10 @@ import SearchPlaceholder, {
   SearchEmptyState,
 } from 'features/search/SearchPlaceholders'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
+
+const SearchAdvancedResults = dynamic(
+  () => import(/* webpackChunkName: "SearchAdvancedResults" */ './SearchAdvancedResults')
+)
 
 function SearchAdvanced({
   onSuggestionClick,

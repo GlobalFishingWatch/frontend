@@ -3,11 +3,7 @@ import cx from 'classnames'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
-import type {
-  searchOceanAreas as searchOceanAreasType,
-  OceanAreaLocale,
-  OceanArea,
-} from '@globalfishingwatch/ocean-areas'
+import { searchOceanAreas, OceanAreaLocale, OceanArea } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { t as trans } from 'features/i18n/i18n'
@@ -55,29 +51,13 @@ function WorkspaceWizard() {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
-  const searchOceanAreas = useRef<typeof searchOceanAreasType>()
-  const [loadingOceanAreas, setLoadingOceanAreas] = useState(false)
   const [inputSearch, setInputSearch] = useState<string>('')
 
-  const loadOceanAreas = async () => {
-    if (!searchOceanAreas.current) {
-      setLoadingOceanAreas(true)
-      searchOceanAreas.current = await import('@globalfishingwatch/ocean-areas').then(
-        (module) => module.searchOceanAreas
-      )
-      setLoadingOceanAreas(false)
-    }
-  }
-
-  const updateMatchingAreas = (inputValue: string) => {
-    if (searchOceanAreas.current) {
-      const matchingAreas = searchOceanAreas
-        .current(inputValue, {
-          locale: i18n.language as OceanAreaLocale,
-        })
-        .slice(0, MAX_RESULTS_NUMBER)
-      setAreasMatching(matchingAreas)
-    }
+  const updateMatchingAreas = async (inputValue: string) => {
+    const matchingAreas = await searchOceanAreas(inputValue, {
+      locale: i18n.language as OceanAreaLocale,
+    })
+    setAreasMatching(matchingAreas.slice(0, MAX_RESULTS_NUMBER))
   }
 
   const onInputChange = ({ inputValue }: UseComboboxStateChange<OceanArea>) => {
@@ -197,11 +177,9 @@ function WorkspaceWizard() {
             className={styles.input}
             placeholder={t('map.search', 'Search areas')}
             onBlur={onInputBlur}
-            onFocus={loadOceanAreas}
           />
           <IconButton
             icon="search"
-            loading={loadingOceanAreas}
             className={cx(styles.search, { [styles.disabled]: isOpen })}
             onClick={onSearchClick}
           ></IconButton>
