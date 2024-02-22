@@ -11,7 +11,7 @@ let oceanAreas: FeatureCollection<Geometry, OceanAreaProperties> = {
   type: 'FeatureCollection',
   features: [],
 }
-let oceanAreasLocales: any = null
+let oceanAreasLocales = {} as Record<OceanAreaLocale, Record<string, string>>
 
 const importOceanAreasData = async () => {
   if (!oceanAreas.features.length) {
@@ -51,14 +51,14 @@ type GetOceanAreaNameLocaleParam = {
 }
 
 const localizeName = (name: OceanAreaLocaleKey, locale = OceanAreaLocale.en) => {
-  if (!oceanAreasLocales[locale]) {
+  if (!oceanAreasLocales?.[locale]) {
     return name
   }
-  return (oceanAreasLocales[locale][name] as OceanAreaLocaleKey) || name
+  return (oceanAreasLocales?.[locale]?.[name] as OceanAreaLocaleKey) || name
 }
 
 const localizeArea = (area: typeof oceanAreas, locale = OceanAreaLocale.en) => {
-  if (!oceanAreasLocales[locale]) {
+  if (!oceanAreasLocales?.[locale]) {
     return area
   }
 
