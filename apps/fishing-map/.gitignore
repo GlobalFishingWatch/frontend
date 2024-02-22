@@ -12,9 +12,6 @@
 /build
 .build.env
 
-# workers
-/public/workers
-
 # misc
 .DS_Store
 .env
