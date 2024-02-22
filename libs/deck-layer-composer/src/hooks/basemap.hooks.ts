@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useAtom, atom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
-import { BaseMap, BasemapLayerOwnProps } from './BasemapLayer'
+import { BaseMap, BasemapLayerOwnProps } from '@globalfishingwatch/deck-layers'
 
 type basemapLayerAtomType = {
   loaded: boolean

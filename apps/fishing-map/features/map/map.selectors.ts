@@ -21,7 +21,7 @@ import {
   DeckLayersGeneratorType,
   VesselDeckLayersGenerator,
   getDataviewsGeneratorsDictionary,
-} from '@globalfishingwatch/deck-layers'
+} from '@globalfishingwatch/deck-layer-composer'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
   selectWorkspaceError,

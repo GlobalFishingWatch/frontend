@@ -1,5 +1,5 @@
 import { GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
-import { VesselDeckLayersParams, useSetVesselLayers } from '../layers/vessel/vessel.hooks'
+import { zIndexSortedArray } from '../utils/layers'
 import {
   AnyDeckLayersGenerator,
   BasemapDeckLayerGenerator,
@@ -8,11 +8,11 @@ import {
   DeckLayersGeneratorType,
   FourwingsDeckLayerGenerator,
   VesselDeckLayersGenerator,
-} from '../layer-composer/types'
-import { useBasemapLayer } from '../layers/basemap/basemap.hooks'
-import { useContextsLayer } from '../layers/context/context.hooks'
-import { useSetFourwingsLayers } from '../layers/fourwings/fourwings.hooks'
-import { zIndexSortedArray } from '../utils/layers'
+} from '../types'
+import { VesselDeckLayersParams, useSetVesselLayers } from './vessel.hooks'
+import { useBasemapLayer } from './basemap.hooks'
+import { useContextsLayer } from './context.hooks'
+import { useSetFourwingsLayers } from './fourwings.hooks'
 
 export type DeckLayerComposerParams = VesselDeckLayersParams
 export function useDeckLayerComposer({

@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { PickingInfo } from '@deck.gl/core/typed'
 import { useAtom, atom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
-import { ContextLayer } from './ContextLayer'
+import { ContextLayer } from '@globalfishingwatch/deck-layers'
 
 type ContextsLayerAtomType = {
   loaded: boolean

@@ -8,12 +8,12 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { API_GATEWAY } from '@globalfishingwatch/api-client'
+import { FourwingsDeckSublayer } from '@globalfishingwatch/deck-layers'
 import {
   DeckLayersGeneratorDictionary,
   DeckLayersGeneratorType,
   VesselDeckLayersGenerator,
-} from '../layer-composer/types'
-import { FourwingsDeckSublayer } from '../layers/fourwings/fourwings.types'
+} from './types'
 import { FourwingsDataviewCategory, FourwingsDeckLayerGenerator } from './types/fourwings'
 
 type DataviewsGeneratorResource = Record<string, Resource>

@@ -2,11 +2,14 @@ import { useEffect, useMemo } from 'react'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { DeckLayerBaseState, FourwingsDeckLayerGenerator } from '../../layer-composer/types'
-import { sortFourwingsLayers } from '../../utils/sort'
-import { FourwingsDataviewCategory } from '../../layer-composer/types/fourwings'
-import { getUTCDateTime } from '../../utils/dates'
-import { FourwingsLayer } from './FourwingsLayer'
+import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import {
+  DeckLayerBaseState,
+  FourwingsDeckLayerGenerator,
+  FourwingsDataviewCategory,
+} from '../types'
+// import { sortFourwingsLayers } from '../utils/sort'
+import { getUTCDateTime } from '../utils/dates'
 
 export interface FourwingsLayerState extends DeckLayerBaseState {
   layerInstance: FourwingsLayer
@@ -15,8 +18,9 @@ export interface FourwingsLayerState extends DeckLayerBaseState {
 export const fourwingsLayersAtom = atom<FourwingsLayerState[]>([])
 export const fourwingsLayersSelector = (layers: FourwingsLayerState[]) => layers
 
-export const fourwingsLayersSortedSelector = atom((get) =>
-  get(fourwingsLayersAtom).sort((a, b) => sortFourwingsLayers(a.layerInstance, b.layerInstance))
+export const fourwingsLayersSortedSelector = atom(
+  (get) => get(fourwingsLayersAtom)
+  // get(fourwingsLayersAtom).sort((a, b) => sortFourwingsLayers(a.layerInstance, b.layerInstance))
 )
 
 export const selectFourwingsLayersAtom = selectAtom(fourwingsLayersAtom, fourwingsLayersSelector)

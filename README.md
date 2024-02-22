@@ -9,7 +9,8 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | [api-client](libs/api-client)                   | JS library to simplify GFW API login and resources fetch                       |
 | [api-types](libs/api-types)                     | API typescript schema definitions                                              |
 | [data-transforms](libs/data-transforms)         | Set ot shared tools for data transformations                                   |
-| [deck-layers](libs/deck-layers)                 | Deck classes for GFW layers and its react integration                          |
+| [deck-layer-composer](libs/deck-layer-composer) | Map integration of the deck-layers                                             |
+| [deck-layers](libs/deck-layers)                 | Deck classes for GFW layers                                                    |
 | [deck-loaders](libs/deck-loaders)               | Deck loaders for GFW layers                                                    |
 | [dataviews-client](libs/dataviews-client)       | Api-client wrapper to fetch and edit dataviews and associated datasets/data    |
 | [fourwings-aggregate](libs/fourwings-aggregate) | Logic to turn fourwings tiles or cells into meaningful values for the frontend |

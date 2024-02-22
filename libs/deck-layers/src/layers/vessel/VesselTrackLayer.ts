@@ -3,7 +3,7 @@ import { AccessorFunction, DefaultProps, UpdateParameters } from '@deck.gl/core/
 import { PathLayer, PathLayerProps } from '@deck.gl/layers/typed'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { Segment } from '@globalfishingwatch/api-types'
-import { TIMESTAMP_MULTIPLIER, VesselTrackData } from '../../loaders/vessels/trackLoader'
+import { TIMESTAMP_MULTIPLIER, VesselTrackData } from '@globalfishingwatch/deck-loaders'
 import { TRACK_LAYER_TYPE } from './VesselLayer'
 
 /** Properties added by VesselTrackLayer. */

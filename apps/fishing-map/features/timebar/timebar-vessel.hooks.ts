@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import { VesselLayerState, useVesselLayers } from '@globalfishingwatch/deck-layers'
+import { useVesselLayers } from '@globalfishingwatch/deck-layer-composer'
 import {
   HighlighterCallbackFnArgs,
   TimebarChartData,

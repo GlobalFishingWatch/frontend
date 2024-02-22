@@ -1,4 +1,4 @@
-import { FourwingsDeckSublayer } from '../../layers/fourwings/fourwings.types'
+import { FourwingsDeckSublayer } from '@globalfishingwatch/deck-layers'
 import { BaseDeckLayerGenerator } from './base'
 
 export enum FourwingsDataviewCategory {

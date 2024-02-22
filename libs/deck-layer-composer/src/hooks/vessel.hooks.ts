@@ -2,9 +2,9 @@ import { useEffect, useMemo } from 'react'
 import { atom, useSetAtom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { DeckLayerBaseState, VesselDeckLayersGenerator } from '../../layer-composer/types'
-import { hexToDeckColor } from '../../utils/colors'
-import { VesselLayer, VesselDataStatus } from './VesselLayer'
+import { VesselLayer, VesselDataStatus } from '@globalfishingwatch/deck-layers'
+import { DeckLayerBaseState, VesselDeckLayersGenerator } from '../types'
+import { hexToDeckColor } from '../utils/colors'
 
 const dateToMs = (date: string) => {
   return new Date(date).getTime()

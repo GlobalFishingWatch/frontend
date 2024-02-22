@@ -8,15 +8,18 @@ import {
   ResourceStatus,
   Segment,
 } from '@globalfishingwatch/api-types'
-import { parquetLoader } from '../../loaders/vessels/trackLoader'
-import { VesselDeckLayersEventData, vesselEventsLoader } from '../../loaders/vessels/eventsLoader'
-import { VesselDeckLayersEvent } from '../../layer-composer/types/vessel'
+import { VesselDeckLayersEventData, vesselEventsLoader } from '@globalfishingwatch/deck-loaders'
+import { parquetLoader } from '@globalfishingwatch/deck-loaders'
 import { deckToHexColor } from '../../utils/colors'
 import { EVENTS_COLORS, VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 import { getVesselTrackThunks } from './vessel.utils'
 
 export const TRACK_LAYER_TYPE = 'track'
+export interface VesselDeckLayersEvent {
+  type: EventTypes
+  url: string
+}
 export type VesselDataType = typeof TRACK_LAYER_TYPE | EventTypes
 export type VesselDataStatus = {
   type: VesselDataType

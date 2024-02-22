@@ -4,7 +4,7 @@ import {
   useDeckLayerComposer,
   useFourwingsLayers,
   useVesselLayers,
-} from '@globalfishingwatch/deck-layers'
+} from '@globalfishingwatch/deck-layer-composer'
 import { useGeneratorsConnect, useGeneratorsDictionaryConnect } from 'features/map/map.hooks'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { useHighlightedEventsConnect } from 'features/timebar/timebar.hooks'
