@@ -2436,7 +2436,7 @@ __metadata:
     "@globalfishingwatch/maplibre-gl": "npm:^3.5.1-gfw.2"
     "@jscutlery/semver": "npm:^5.1.1"
     "@loaders.gl/core": "npm:^3.4.14"
-    "@loaders.gl/json": "npm:^3.4.14"
+    "@loaders.gl/json": "npm:^4.1.1"
     "@loaders.gl/loader-utils": "npm:^4.1.1"
     "@loaders.gl/mvt": "npm:^4.1.1"
     "@loaders.gl/worker-utils": "npm:^4.1.1"
@@ -3133,14 +3133,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@loaders.gl/json@npm:^3.4.14":
-  version: 3.4.14
-  resolution: "@loaders.gl/json@npm:3.4.14"
+"@loaders.gl/json@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "@loaders.gl/json@npm:4.1.1"
   dependencies:
-    "@loaders.gl/gis": "npm:3.4.14"
-    "@loaders.gl/loader-utils": "npm:3.4.14"
-    "@loaders.gl/schema": "npm:3.4.14"
-  checksum: 10/daacabbaa68f78abd18f61fb663ddb97afa80fec695aa9894c51ee89a20f90149265958d4304cfbe3952a4fbec7133fb371d3c3e74a58e9eadeeda416479bc96
+    "@loaders.gl/gis": "npm:4.1.1"
+    "@loaders.gl/loader-utils": "npm:4.1.1"
+    "@loaders.gl/schema": "npm:4.1.1"
+  checksum: 10/3ebace5928bfcce8608f4b944b0783e9ed2c565b5bbccfe77cc0b4309ef0de9ba7ba5b1bde7f7ddaf319c61ae5163736d9b8cc7f51a242c0af20334b15d14a3f
   languageName: node
   linkType: hard
 

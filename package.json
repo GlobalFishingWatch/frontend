@@ -25,7 +25,7 @@
     "@emotion/styled": "^11.11.0",
     "@globalfishingwatch/maplibre-gl": "^3.5.1-gfw.2",
     "@loaders.gl/core": "^3.4.14",
-    "@loaders.gl/json": "^3.4.14",
+    "@loaders.gl/json": "^4.1.1",
     "@loaders.gl/loader-utils": "^4.1.1",
     "@loaders.gl/mvt": "^4.1.1",
     "@loaders.gl/worker-utils": "^4.1.1",

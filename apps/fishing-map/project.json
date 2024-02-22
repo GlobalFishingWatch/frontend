@@ -11,7 +11,7 @@
         "parallel": false
       }
     },
-    "build": {
+    "build:app": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -20,6 +20,13 @@
       },
       "configurations": {
         "production": {}
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx prepare-loaders fishing-map", "nx build:app fishing-map"],
+        "parallel": false
       }
     },
     "start": {

@@ -92,6 +92,7 @@ export const chooseColor = (
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
+
   renderLayers() {
     const { data, maxFrame, minFrame, startFrames, colorDomain, colorRanges } = this.props
     if (!data || !colorDomain || !colorRanges) {
