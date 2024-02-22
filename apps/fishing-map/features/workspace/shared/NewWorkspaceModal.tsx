@@ -83,10 +83,12 @@ function NewWorkspaceModal({
   const visibilityChanged = allowUpdate ? createAsPublic !== initialCreateAsPublic : false
 
   useEffect(() => {
-    if (isOpen) {
+    const updateWorkspaceName = async () => {
       let workspaceName = workspace?.name
       if ((!hasWorkspaceDefined || !workspaceName) && suggestName) {
-        const areaName = getOceanAreaName(viewport, { locale: i18n.language as OceanAreaLocale })
+        const areaName = await getOceanAreaName(viewport, {
+          locale: i18n.language as OceanAreaLocale,
+        })
         if (timerange.start && timerange.end) {
           const dateFormat = pickDateFormatByRange(
             timerange.start as string,
@@ -99,10 +101,12 @@ function NewWorkspaceModal({
           workspaceName = areaName
         }
       }
-
       if (workspaceName) {
         setName(workspaceName)
       }
+    }
+    if (isOpen) {
+      updateWorkspaceName()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
