@@ -172,6 +172,9 @@ function PopupWrapper({
                 const rulersFeatures = features.filter(
                   (feature) => feature.type === GeneratorType.Rulers
                 )
+                const userPointFeatures = features.filter(
+                  (feature) => feature.type === GeneratorType.UserPoints
+                )
                 return (
                   <Fragment key={featureCategory}>
                     <AnnotationTooltip features={annotationFeatures} />
@@ -181,6 +184,10 @@ function PopupWrapper({
                     />
                     <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
                     <ReportBufferTooltip features={areaBufferFeatures} />
+                    <UserPointsTooltipSection
+                      features={userPointFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
                     <ContextTooltipSection
                       features={defaultContextFeatures}
                       showFeaturesDetails={type === 'click'}
