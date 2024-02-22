@@ -201,6 +201,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         rows,
         minFrame: chunks[0].start,
         maxFrame: chunks[0].end,
+        initialTimeRange: {
+          start: minFrame,
+          end: maxFrame,
+        },
         interval: 'DAY',
         workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
         buffersLength: settledPromises.map((p) =>
@@ -273,6 +277,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
             data: props.data?.cells,
             indexes: props.data?.indexes,
             startFrames: props.data?.startFrames,
+            initialValues: props.data?.initialValues,
           })
         },
       })

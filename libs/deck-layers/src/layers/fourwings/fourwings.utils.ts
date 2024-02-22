@@ -12,14 +12,18 @@ import { AggregateCellParams } from './FourwingsHeatmapLayer'
 
 export const aggregateCell = (
   cell: Cell,
-  { minIntervalFrame, maxIntervalFrame }: AggregateCellParams
+  { minIntervalFrame, maxIntervalFrame, startFrames }: AggregateCellParams
 ): number[] => {
   // TODO decide if we want the last day to be included or not in maxIntervalFrame
   return cell.map(
-    (sublayer) =>
+    (sublayer, sublayerIndex) =>
       sublayer &&
+      startFrames &&
       sublayer
-        .slice(minIntervalFrame, maxIntervalFrame)
+        .slice(
+          Math.max(minIntervalFrame - startFrames[sublayerIndex], 0),
+          maxIntervalFrame ? maxIntervalFrame - startFrames[sublayerIndex] : undefined
+        )
         .reduce((acc: number, value) => (value ? acc + value : acc), 0)
   )
 }
