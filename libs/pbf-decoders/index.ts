@@ -3,6 +3,6 @@ import type { vessels as VesselType } from './decoders/vessels'
 const tileDecoder = require('./decoders/4wings-tile')
 const vesselsDecoder = require('./decoders/vessels')
 
-const tile = tileDecoder as typeof TileType
-const vessels = vesselsDecoder as typeof VesselType
+const tile = tileDecoder.tile as typeof TileType
+const vessels = vesselsDecoder.vessels as typeof VesselType
 export { vessels, tile }
