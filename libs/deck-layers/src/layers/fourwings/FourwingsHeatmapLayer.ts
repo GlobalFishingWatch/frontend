@@ -1,5 +1,4 @@
 import { Color, CompositeLayer } from '@deck.gl/core/typed'
-// import Tile2DHeader from '@deck.gl/geo-layers/typed/tile-layer/tile-2d-header'
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
@@ -11,7 +10,7 @@ import {
   FourwingsHeatmapTileLayerProps,
   SublayerColorRanges,
 } from './FourwingsHeatmapTileLayer'
-import { Chunk, getChunks, getDatesInIntervalResolution } from './fourwings.config'
+import { Chunk, getChunks } from './fourwings.config'
 import { aggregateCell } from './fourwings.utils'
 
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
@@ -21,13 +20,14 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   cols: number
   rows: number
   indexes: number[]
+  startFrames: number[]
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
 }
 
 export type AggregateCellParams = {
   minIntervalFrame: number
-  maxIntervalFrame: number
+  maxIntervalFrame?: number
 }
 
 export type GetFillColorParams = {
@@ -38,7 +38,7 @@ export type GetFillColorParams = {
   maxIntervalFrame: number
 }
 
-const EMPTY_CELL_COLOR = [0, 0, 0, 0] as Color
+const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 
 // let fillColorTime = 0
 // let fillColorCount = 0
@@ -54,7 +54,7 @@ export const chooseColor = (
   }
   const aggregatedCellValues = aggregateCell(cell, {
     minIntervalFrame,
-    maxIntervalFrame,
+    maxIntervalFrame: maxIntervalFrame > 0 ? maxIntervalFrame : undefined,
   })
   let chosenValueIndex = 0
   let chosenValue: number | undefined
@@ -93,53 +93,54 @@ export const chooseColor = (
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
   renderLayers() {
-    const { data, indexes, maxFrame, minFrame, rows, cols, colorDomain, colorRanges } = this.props
+    const { data, maxFrame, minFrame, startFrames, colorDomain, colorRanges } = this.props
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
-    const FourwingsTileCellLayerClass = this.getSubLayerClass('cell', FourwingsTileCellLayer)
-    const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
-    const { start, end } = getDatesInIntervalResolution(minFrame, maxFrame)
     const chunks = getChunks(minFrame, maxFrame)
     const tileMinIntervalFrame = Math.ceil(
       CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
     )
-    const minIntervalFrame =
-      Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame)) - tileMinIntervalFrame
-    const maxIntervalFrame =
-      Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
+    const minIntervalFrame = Math.ceil(
+      CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame) - tileMinIntervalFrame
+    )
+    const maxIntervalFrame = Math.ceil(
+      CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame) - tileMinIntervalFrame
+    )
 
-    const getFillColor = (cell: Cell, { target }: { target: Color }): Color => {
-      target = chooseColor(cell, {
-        colorDomain,
-        colorRanges,
-        chunks,
-        minIntervalFrame,
-        maxIntervalFrame,
-      })
+    const getFillColor = (cell: Cell, { index, target }: { index: number; target: Color }) => {
+      const cellStartFrame = startFrames[index]
+      if (maxIntervalFrame - cellStartFrame < 0) {
+        target = EMPTY_CELL_COLOR
+      } else {
+        target = chooseColor(cell, {
+          colorDomain,
+          colorRanges,
+          chunks,
+          minIntervalFrame: Math.max(minIntervalFrame - cellStartFrame, 0),
+          maxIntervalFrame: maxIntervalFrame - cellStartFrame,
+        })
+      }
       return target
     }
 
-    const fourwingsLayer = new FourwingsTileCellLayerClass(
+    const fourwingsLayer = new FourwingsTileCellLayer(
       this.props,
       this.getSubLayerProps({
         id: `fourwings-tile-${this.props.tile.id}`,
-        data,
-        indexes,
-        cols,
-        rows,
         pickable: true,
         stroked: false,
         getFillColor,
         updateTriggers: {
           // This tells deck.gl to recalculate fillColor on changes
-          getFillColor: [start, end, colorDomain, colorRanges],
+          getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
         },
       })
     )
 
     if (!this.props.debug) return fourwingsLayer
 
+    const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
     const debugLayers = [
       new PathLayer({
         id: `tile-boundary-${this.props.category}-${this.props.tile.id}`,

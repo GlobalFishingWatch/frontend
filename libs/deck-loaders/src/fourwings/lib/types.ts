@@ -8,7 +8,7 @@ export type FourwingsTileData = {
   cells: Cell[]
 }
 
-export type Cell = (number | null)[][] | null
+export type Cell = number[][]
 
 export type TileCell = Cell & {
   coordinates: [number[]]
