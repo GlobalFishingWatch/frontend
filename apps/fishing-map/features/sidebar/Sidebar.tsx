@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import {
   selectIsAnyReportLocation,
@@ -18,14 +19,15 @@ import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import Report from 'features/reports/Report'
 import { selectDataviewsResources } from 'features/dataviews/dataviews.slice'
-import VesselDetailWrapper from 'features/vessel/Vessel'
-import { DatasetTypes } from '../../../../libs/api-types/src/datasets'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
+const Report = dynamic(() => import(/* webpackChunkName: "Report" */ 'features/reports/Report'))
+const VesselDetailWrapper = dynamic(
+  () => import(/* webpackChunkName: "VesselDetailWrapper" */ 'features/vessel/Vessel')
+)
 const User = dynamic(() => import(/* webpackChunkName: "User" */ 'features/user/User'))
 const Workspace = dynamic(
   () => import(/* webpackChunkName: "Workspace" */ 'features/workspace/Workspace')

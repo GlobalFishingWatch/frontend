@@ -11,7 +11,7 @@ type FilterFeaturesByCenterDistanceParams = {
   uniqKey?: string
   limit?: number
 }
-export const filterFeaturesByDistance = (
+export const filterFeaturesByDistance = async (
   features: GeoJSONFeature[],
   {
     viewport,
@@ -26,7 +26,7 @@ export const filterFeaturesByDistance = (
     type: 'FeatureCollection' as const,
     features,
   }
-  const closerAreas = getAreasByDistance(featureCollection, viewport)
+  const closerAreas = await getAreasByDistance(featureCollection, viewport)
   return uniqBy(closerAreas, uniqKey).slice(0, limit)
 }
 
