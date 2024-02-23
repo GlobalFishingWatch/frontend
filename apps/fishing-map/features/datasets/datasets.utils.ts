@@ -23,7 +23,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { formatSliderNumber, IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   getDatasetGeometryType,
   getEnvironmentalDatasetRange,
@@ -34,6 +34,7 @@ import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearType } from 'utils/info'
 import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils.datasets'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 // Datasets ids for vessel instances
@@ -304,16 +305,13 @@ export const getLatestEndDateFromDatasets = (
 ): string => {
   const datasetsWithEndDate = datasets.filter((dataset) => dataset.endDate)
   if (!datasetsWithEndDate.length) return DEFAULT_TIME_RANGE.end
-  const latestDate = datasetsWithEndDate.reduce(
-    (acc, dataset) => {
-      const endDate = dataset.endDate as string
-      if (datasetCategory && dataset.category !== datasetCategory) {
-        return acc
-      }
-      return endDate > acc ? endDate : acc
-    },
-    datasetsWithEndDate?.[0].endDate || ''
-  )
+  const latestDate = datasetsWithEndDate.reduce((acc, dataset) => {
+    const endDate = dataset.endDate as string
+    if (datasetCategory && dataset.category !== datasetCategory) {
+      return acc
+    }
+    return endDate > acc ? endDate : acc
+  }, datasetsWithEndDate?.[0].endDate || '')
   return latestDate
 }
 
@@ -407,8 +405,8 @@ export const getActiveActivityDatasetsInDataviews = (
 
 export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
   const datasetsConfigured = dataview.datasetsConfig
-    ?.filter(
-      (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels' && q.value !== '')
+    ?.filter((datasetConfig) =>
+      datasetConfig.query?.find((q) => q.id === 'vessels' && q.value !== '')
     )
     .map((d) => d.datasetId)
   return (dataview?.datasets || []).filter((dataset) => {
@@ -707,18 +705,17 @@ export const getSchemaOptionsSelectedInDataview = (
     return [
       {
         id: min.toString(),
-        label: formatSliderNumber(min),
+        label: formatI18nNumber(min),
       },
       {
         id: max.toString(),
-        label: formatSliderNumber(max),
+        label: formatI18nNumber(max),
       },
     ]
   }
 
-  return options?.filter(
-    (option) =>
-      dataview.config?.filters?.[schema]?.map((o: string) => o?.toString())?.includes(option.id)
+  return options?.filter((option) =>
+    dataview.config?.filters?.[schema]?.map((o: string) => o?.toString())?.includes(option.id)
   )
 }
 
