@@ -379,29 +379,32 @@ export function resolveDataviews(
               (d) => getDatasetSchemaItem(d, filterKey) !== undefined
             )
             const datasetSchema = getDatasetSchemaItem(dataset as Dataset, filterKey)
-
+            // TODO review how backend handles characters like -
+            // so we can parse the same here or before uploading the dataset
+            // const cleanFilterKey = filterKey.replace(/-/g, '_')
+            const cleanFilterKey = filterKey
             if (datasetSchema && datasetSchema.type === 'range') {
               const minPossible = Number(datasetSchema?.enum?.[0])
               const minSelected = Number(filterValues[0])
               const maxPossible = Number(datasetSchema?.enum?.[datasetSchema.enum.length - 1])
               const maxSelected = Number(filterValues[filterValues.length - 1])
               if (minSelected !== minPossible && maxSelected !== maxPossible) {
-                return `'${filterKey}' >= ${minSelected} AND '${filterKey}' <= ${maxSelected}`
+                return `"${cleanFilterKey}" >= ${minSelected} AND "${cleanFilterKey}" <= ${maxSelected}`
               }
               if (minSelected !== minPossible) {
-                return `'${filterKey}' >= ${minSelected}`
+                return `"${cleanFilterKey}" >= ${minSelected}`
               }
               if (maxSelected !== maxPossible) {
-                return `'${filterKey}' <= ${maxSelected}`
+                return `"${cleanFilterKey}" <= ${maxSelected}`
               }
             }
             const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
-            const query = `'${filterKey}' ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
-              .map((f: string) => `'${f}'`)
-              .join(', ')})`
+            const query = `"${cleanFilterKey}" ${
+              FILTER_OPERATOR_SQL[filterOperator]
+            } (${filterValues.map((f: string) => `'${f}'`).join(', ')})`
             if (filterOperator === EXCLUDE_FILTER_ID) {
               // workaround as bigquery exludes null values
-              return `('${filterKey}' IS NULL OR ${query})`
+              return `("${cleanFilterKey}" IS NULL OR ${query})`
             }
             return query
           })
