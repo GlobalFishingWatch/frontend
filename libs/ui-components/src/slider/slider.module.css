@@ -14,7 +14,7 @@
   height: 4rem;
   display: flex;
   width: 100%;
-  padding: 0 1.8rem;
+  padding: 0 var(--space-S);
   margin-top: 2px;
 }
 
@@ -49,6 +49,14 @@
 }
 
 .miniSize {
-  width: var(--size-XS);
-  height: var(--size-XS);
+  border-radius: var(--border-radius);
+  width: var(--size-XXS);
+  height: var(--size-XXS);
+  background: var(--color-primary-blue);
+}
+
+.rangeContainerInputs {
+  width: 100%;
+  display: flex;
+  gap: var(--space-S);
 }

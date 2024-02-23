@@ -73,16 +73,6 @@
   margin-top: var(--space-S);
 }
 
-.rangeContainer {
-  display: flex;
-  align-items: center;
-}
-
-.rangeInput {
-  width: 10rem;
-  z-index: 1;
-}
-
 .range {
   width: 100%;
 }

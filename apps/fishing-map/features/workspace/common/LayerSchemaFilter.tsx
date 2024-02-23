@@ -3,20 +3,19 @@ import cx from 'classnames'
 import {
   Choice,
   ChoiceOption,
-  InputText,
   MultiSelect,
   MultiSelectOption,
   Select,
   Slider,
   SliderRange,
   SliderRangeValues,
-  formatSliderNumber,
 } from '@globalfishingwatch/ui-components'
 import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './LayerFilters.module.css'
 
 type LayerSchemaFilterProps = {
@@ -67,9 +66,9 @@ export const getValueLabelByUnit = (
 ): string => {
   const transformConfig = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
   if (transformConfig && unitLabel) {
-    return `${formatSliderNumber(getValueByUnit(value, { unit }))} ${transformConfig.label}`
+    return `${formatI18nNumber(getValueByUnit(value, { unit }))} ${transformConfig.label}`
   }
-  return formatSliderNumber(getValueByUnit(value, { unit }))
+  return formatI18nNumber(getValueByUnit(value, { unit })) as string
 }
 
 export const getLabelWithUnit = (label: string, unit?: string): string => {
@@ -180,26 +179,6 @@ function LayerSchemaFilter({
     },
     [id, onClean, onSelect, schemaFilter, unit]
   )
-  const onInitialRangeInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const values = getRangeBySchema(schemaFilter)
-      const initialRange = parseFloat(e.target.value)
-      if (initialRange < values[1]) {
-        onSliderChange([initialRange, values[1]])
-      }
-    },
-    [onSliderChange, schemaFilter]
-  )
-  const onFinalRangeInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const values = getRangeBySchema(schemaFilter)
-      const finalRange = parseFloat(e.target.value)
-      if (finalRange > values[0]) {
-        onSliderChange([values[0], finalRange])
-      }
-    },
-    [onSliderChange, schemaFilter]
-  )
 
   if (!showSchemaFilter(schemaFilter)) {
     return null
@@ -209,13 +188,6 @@ function LayerSchemaFilter({
     const values = getRangeBySchema(schemaFilter)
     return (
       <div className={styles.rangeContainer}>
-        <InputText
-          value={values[0]}
-          step="0.1"
-          onChange={onInitialRangeInputChange}
-          className={styles.rangeInput}
-          type="number"
-        />
         <SliderRange
           thumbsSize="mini"
           range={values}
@@ -225,13 +197,7 @@ function LayerSchemaFilter({
           label={getLabelWithUnit(label, unit)}
           config={getSliderConfigBySchema(schemaFilter)}
           onChange={onSliderChange}
-        />
-        <InputText
-          value={values[1]}
-          step="0.1"
-          onChange={onFinalRangeInputChange}
-          className={styles.rangeInput}
-          type="number"
+          showInputs
         />
       </div>
     )
