@@ -47,3 +47,8 @@
   width: var(--size-SM);
   height: var(--size-SM);
 }
+
+.miniSize {
+  width: var(--size-XS);
+  height: var(--size-XS);
+}

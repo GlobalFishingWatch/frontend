@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from 'react'
+import { useMemo, useCallback, useState, useEffect } from 'react'
 import cx from 'classnames'
 import { Range, getTrackBackground } from 'react-range'
 import { scaleLinear } from 'd3-scale'
@@ -15,6 +15,7 @@ interface SliderRangeProps {
   label: string
   thumbsSize?: SliderThumbsSize
   initialRange: SliderRangeValues
+  range?: SliderRangeValues
   config: SliderRangeConfig
   onChange: (range: SliderRangeValues) => void
   className?: string
@@ -41,6 +42,7 @@ const borderColor =
 export function SliderRange(props: SliderRangeProps) {
   const {
     initialRange,
+    range,
     label,
     config = {},
     onChange,
@@ -59,15 +61,26 @@ export function SliderRange(props: SliderRangeProps) {
   const initialValues = (initialRange || [min, max]).map((v) => {
     return Math.round(scale.invert(v))
   })
-  const [values, setValues] = useState(initialValues)
+  const [internalValues, setIntervalValues] = useState(initialValues)
+
+  useEffect(() => {
+    if (range?.length) {
+      setIntervalValues(
+        range.map((v) => {
+          return Math.round(scale.invert(v))
+        })
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [range])
 
   const handleChange = useCallback(
     (values: SliderRangeValues) => {
       if (values[1] > values[0]) {
-        setValues(values)
+        setIntervalValues(values)
       }
     },
-    [setValues]
+    [setIntervalValues]
   )
   const handleFinalChange = useCallback(
     (values: SliderRangeValues) => {
@@ -81,10 +94,10 @@ export function SliderRange(props: SliderRangeProps) {
       getTrackBackground({
         min: MIN,
         max: MAX,
-        values,
+        values: internalValues,
         colors: [borderColor, activeColor, borderColor],
       }),
-    [values]
+    [internalValues]
   )
 
   return (
@@ -104,7 +117,7 @@ export function SliderRange(props: SliderRangeProps) {
           </svg>
         )}
         <Range
-          values={values}
+          values={internalValues}
           step={STEP}
           min={MIN}
           max={MAX}
@@ -123,7 +136,7 @@ export function SliderRange(props: SliderRangeProps) {
             </div>
           )}
           renderThumb={({ index, props }) => {
-            const value = values[index]
+            const value = internalValues[index]
             const scaledValue = scale(value)
             const isDefaultSelection = index === 0 ? value === min : value === max
             return (
@@ -134,12 +147,14 @@ export function SliderRange(props: SliderRangeProps) {
                   ...props.style,
                 }}
               >
-                <span
-                  className={styles.sliderThumbCounter}
-                  style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
-                >
-                  {formatSliderNumber(scaledValue)}
-                </span>
+                {thumbsSize !== 'mini' && (
+                  <span
+                    className={styles.sliderThumbCounter}
+                    style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
+                  >
+                    {formatSliderNumber(scaledValue)}
+                  </span>
+                )}
               </div>
             )
           }}
