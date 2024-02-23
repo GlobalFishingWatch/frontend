@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/linting",
-  "version": "2.1.1",
+  "version": "2.1.3",
   "description": "linting config ready to be used in every gfw frontend project",
   "keywords": [
     "eslint",
@@ -48,7 +48,6 @@
     "prettier-eslint": "16.x",
     "stylelint": "16.x",
     "stylelint-config-css-modules": "4.x",
-    "stylelint-config-prettier": "9.x",
     "stylelint-config-standard": "36.x"
   }
 }
