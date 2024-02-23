@@ -3,11 +3,13 @@ import cx from 'classnames'
 import {
   Choice,
   ChoiceOption,
+  InputText,
   MultiSelect,
   MultiSelectOption,
   Select,
   Slider,
   SliderRange,
+  SliderRangeValues,
   formatSliderNumber,
 } from '@globalfishingwatch/ui-components'
 import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
@@ -155,24 +157,48 @@ function LayerSchemaFilter({
   } = schemaFilter
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSliderChange = useCallback(
-    (rangeSelected: any) => {
-      const filterRange = getRangeLimitsBySchema(schemaFilter)
-      if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
-        onClean(id)
-      } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
-        const selection = getValueByUnit(rangeSelected, { unit, transformDirection: 'out' })
-        onSelect({ filterKey: id, selection, singleValue: true })
+    (rangeSelected: SliderRangeValues | number) => {
+      if (Array.isArray(rangeSelected)) {
+        const filterRange = getRangeLimitsBySchema(schemaFilter)
+        if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
+          onClean(id)
+        } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
+          const selection = getValueByUnit(rangeSelected, { unit, transformDirection: 'out' })
+          onSelect({ filterKey: id, selection, singleValue: true })
+        } else {
+          const selection = rangeSelected.map((range: number) => ({
+            // This id ideally would be a number but as the url parser always consider number as arrays
+            // TODO: find a way to identify when a filter is a range so we can parse properly
+            id: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
+            label: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
+          }))
+          onSelect({ filterKey: id, selection })
+        }
       } else {
-        const selection = rangeSelected.map((range: number) => ({
-          // This id ideally would be a number but as the url parser always consider number as arrays
-          // TODO: find a way to identify when a filter is a range so we can parse properly
-          id: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
-          label: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
-        }))
-        onSelect({ filterKey: id, selection })
+        onSelect({ filterKey: id, selection: rangeSelected })
       }
     },
     [id, onClean, onSelect, schemaFilter, unit]
+  )
+  const onInitialRangeInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const values = getRangeBySchema(schemaFilter)
+      const initialRange = parseFloat(e.target.value)
+      if (initialRange < values[1]) {
+        onSliderChange([initialRange, values[1]])
+      }
+    },
+    [onSliderChange, schemaFilter]
+  )
+  const onFinalRangeInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const values = getRangeBySchema(schemaFilter)
+      const finalRange = parseFloat(e.target.value)
+      if (finalRange > values[0]) {
+        onSliderChange([values[0], finalRange])
+      }
+    },
+    [onSliderChange, schemaFilter]
   )
 
   if (!showSchemaFilter(schemaFilter)) {
@@ -180,15 +206,34 @@ function LayerSchemaFilter({
   }
 
   if (type === 'range') {
+    const values = getRangeBySchema(schemaFilter)
     return (
-      <SliderRange
-        className={styles.multiSelect}
-        initialRange={getRangeBySchema(schemaFilter)}
-        histogram={id === 'radiance'}
-        label={getLabelWithUnit(label, unit)}
-        config={getSliderConfigBySchema(schemaFilter)}
-        onChange={onSliderChange}
-      />
+      <div className={styles.rangeContainer}>
+        <InputText
+          value={values[0]}
+          step="0.1"
+          onChange={onInitialRangeInputChange}
+          className={styles.rangeInput}
+          type="number"
+        />
+        <SliderRange
+          thumbsSize="mini"
+          range={values}
+          className={cx(styles.multiSelect, styles.range)}
+          initialRange={values}
+          histogram={id === 'radiance'}
+          label={getLabelWithUnit(label, unit)}
+          config={getSliderConfigBySchema(schemaFilter)}
+          onChange={onSliderChange}
+        />
+        <InputText
+          value={values[1]}
+          step="0.1"
+          onChange={onFinalRangeInputChange}
+          className={styles.rangeInput}
+          type="number"
+        />
+      </div>
     )
   }
 
