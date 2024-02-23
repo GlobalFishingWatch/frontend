@@ -8,13 +8,14 @@ import {
   Select,
   Slider,
   SliderRange,
-  formatSliderNumber,
+  SliderRangeValues,
 } from '@globalfishingwatch/ui-components'
 import { EXCLUDE_FILTER_ID, FilterOperator, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { SchemaFilter } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import { OnSelectFilterArgs } from 'features/workspace/common/LayerFilters'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from './LayerFilters.module.css'
 
 type LayerSchemaFilterProps = {
@@ -65,9 +66,9 @@ export const getValueLabelByUnit = (
 ): string => {
   const transformConfig = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
   if (transformConfig && unitLabel) {
-    return `${formatSliderNumber(getValueByUnit(value, { unit }))} ${transformConfig.label}`
+    return `${formatI18nNumber(getValueByUnit(value, { unit }))} ${transformConfig.label}`
   }
-  return formatSliderNumber(getValueByUnit(value, { unit }))
+  return formatI18nNumber(getValueByUnit(value, { unit })) as string
 }
 
 export const getLabelWithUnit = (label: string, unit?: string): string => {
@@ -155,21 +156,25 @@ function LayerSchemaFilter({
   } = schemaFilter
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSliderChange = useCallback(
-    (rangeSelected: any) => {
-      const filterRange = getRangeLimitsBySchema(schemaFilter)
-      if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
-        onClean(id)
-      } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
-        const selection = getValueByUnit(rangeSelected, { unit, transformDirection: 'out' })
-        onSelect({ filterKey: id, selection, singleValue: true })
+    (rangeSelected: SliderRangeValues | number) => {
+      if (Array.isArray(rangeSelected)) {
+        const filterRange = getRangeLimitsBySchema(schemaFilter)
+        if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
+          onClean(id)
+        } else if (!Array.isArray(rangeSelected) && !Number.isNaN(rangeSelected)) {
+          const selection = getValueByUnit(rangeSelected, { unit, transformDirection: 'out' })
+          onSelect({ filterKey: id, selection, singleValue: true })
+        } else {
+          const selection = rangeSelected.map((range: number) => ({
+            // This id ideally would be a number but as the url parser always consider number as arrays
+            // TODO: find a way to identify when a filter is a range so we can parse properly
+            id: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
+            label: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
+          }))
+          onSelect({ filterKey: id, selection })
+        }
       } else {
-        const selection = rangeSelected.map((range: number) => ({
-          // This id ideally would be a number but as the url parser always consider number as arrays
-          // TODO: find a way to identify when a filter is a range so we can parse properly
-          id: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
-          label: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
-        }))
-        onSelect({ filterKey: id, selection })
+        onSelect({ filterKey: id, selection: rangeSelected })
       }
     },
     [id, onClean, onSelect, schemaFilter, unit]
@@ -180,15 +185,21 @@ function LayerSchemaFilter({
   }
 
   if (type === 'range') {
+    const values = getRangeBySchema(schemaFilter)
     return (
-      <SliderRange
-        className={styles.multiSelect}
-        initialRange={getRangeBySchema(schemaFilter)}
-        histogram={id === 'radiance'}
-        label={getLabelWithUnit(label, unit)}
-        config={getSliderConfigBySchema(schemaFilter)}
-        onChange={onSliderChange}
-      />
+      <div className={styles.rangeContainer}>
+        <SliderRange
+          thumbsSize="mini"
+          range={values}
+          className={cx(styles.multiSelect, styles.range)}
+          initialRange={values}
+          histogram={id === 'radiance'}
+          label={getLabelWithUnit(label, unit)}
+          config={getSliderConfigBySchema(schemaFilter)}
+          onChange={onSliderChange}
+          showInputs
+        />
+      </div>
     )
   }
 
