@@ -16,6 +16,8 @@ import {
   selectBasicSearchDatasets,
   selectAdvancedSearchDatasets,
 } from 'features/search/search.selectors'
+import { SupportedDatasetSchema, getFiltersBySchema } from 'features/datasets/datasets.utils'
+import { getSearchDataview } from 'features/search/advanced/advanced-search.utils'
 import {
   cleanVesselSearchResults,
   fetchVesselSearchThunk,
@@ -51,11 +53,51 @@ export const hasFiltersActive = (filters: VesselSearchState): boolean => {
   )
 }
 
+const fieldsToCheckErrors = ['mmsi', 'imo', 'callsign'] as const
+
+export const useSearchFiltersErrors = () => {
+  const datasets = useSelector(selectAdvancedSearchDatasets)
+  const { searchFilters } = useSearchFiltersConnect()
+  const searchFilterErrors: Partial<
+    Record<'date' | (typeof fieldsToCheckErrors)[number], boolean>
+  > = {}
+
+  const dataview = useMemo(() => {
+    return getSearchDataview(datasets, searchFilters, searchFilters.sources)
+  }, [datasets, searchFilters])
+
+  const disabledFieldSchemas = fieldsToCheckErrors.flatMap((field) => {
+    return getFiltersBySchema(dataview, field as SupportedDatasetSchema)?.disabled ? field : []
+  })
+  if (disabledFieldSchemas.length) {
+    disabledFieldSchemas.forEach((field) => {
+      searchFilterErrors[field] = true
+    })
+  }
+
+  if (
+    searchFilters.transmissionDateFrom &&
+    searchFilters.transmissionDateTo &&
+    searchFilters.transmissionDateFrom <= searchFilters.transmissionDateTo
+  ) {
+    searchFilterErrors.date = true
+  }
+
+  if (
+    searchFilters.transmissionDateFrom &&
+    searchFilters.transmissionDateTo &&
+    searchFilters.transmissionDateFrom <= searchFilters.transmissionDateTo
+  ) {
+    searchFilterErrors.date = true
+  }
+
+  return searchFilterErrors
+}
+
 export const useSearchFiltersConnect = () => {
   const dispatch = useAppDispatch()
   const searchFilters = useSelector(selectSearchFilters)
   const { dispatchQueryParams } = useLocationConnect()
-  const searchFilterErrors: Record<string, boolean> = {}
 
   const setSearchFilters = useCallback(
     (filter: VesselSearchState) => {
@@ -67,17 +109,8 @@ export const useSearchFiltersConnect = () => {
 
   const hasFilters = hasFiltersActive(searchFilters)
 
-  if (
-    searchFilters.transmissionDateFrom &&
-    searchFilters.transmissionDateTo &&
-    searchFilters.transmissionDateFrom <= searchFilters.transmissionDateTo
-  ) {
-    searchFilterErrors.date = true
-  }
-
   return {
     hasFilters,
-    searchFilterErrors,
     searchFilters,
     setSearchFilters,
   }

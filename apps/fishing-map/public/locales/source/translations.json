@@ -634,6 +634,7 @@
     "missingSources": "won't appear unless you <1>log in</1>",
     "noResults": "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
     "notAllowed": "The available datasets don't allow searching vessels",
+    "notValidFilterSelection": "The datasets selected doesn't allow searching by this filters",
     "placeholder": "Type to search vessels",
     "result_one": "result",
     "result_other": "results",

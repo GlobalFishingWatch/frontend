@@ -18,7 +18,11 @@ import {
 } from 'features/search/search.slice'
 import styles from 'features/search/advanced/SearchAdvanced.module.css'
 import SearchAdvancedFilters from 'features/search/advanced/SearchAdvancedFilters'
-import { useSearchConnect, useSearchFiltersConnect } from 'features/search/search.hook'
+import {
+  useSearchConnect,
+  useSearchFiltersConnect,
+  useSearchFiltersErrors,
+} from 'features/search/search.hook'
 import SearchPlaceholder, {
   SearchNoResultsState,
   SearchEmptyState,
@@ -42,7 +46,8 @@ function SearchAdvanced({
   const searchQuery = useSelector(selectSearchQuery)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const { dispatchQueryParams } = useLocationConnect()
-  const { hasFilters, searchFilterErrors } = useSearchFiltersConnect()
+  const { hasFilters } = useSearchFiltersConnect()
+  const searchFilterErrors = useSearchFiltersErrors()
   const ref = useEventKeyListener(['Enter'], fetchResults)
 
   const resetSearchState = useCallback(() => {
