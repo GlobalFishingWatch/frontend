@@ -386,22 +386,22 @@ export function resolveDataviews(
               const maxPossible = Number(datasetSchema?.enum?.[datasetSchema.enum.length - 1])
               const maxSelected = Number(filterValues[filterValues.length - 1])
               if (minSelected !== minPossible && maxSelected !== maxPossible) {
-                return `${filterKey} >= ${minSelected} AND ${filterKey} <= ${maxSelected}`
+                return `'${filterKey}' >= ${minSelected} AND '${filterKey}' <= ${maxSelected}`
               }
               if (minSelected !== minPossible) {
-                return `${filterKey} >= ${minSelected}`
+                return `'${filterKey}' >= ${minSelected}`
               }
               if (maxSelected !== maxPossible) {
-                return `${filterKey} <= ${maxSelected}`
+                return `'${filterKey}' <= ${maxSelected}`
               }
             }
             const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
-            const query = `${filterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
+            const query = `'${filterKey}' ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
               .map((f: string) => `'${f}'`)
               .join(', ')})`
             if (filterOperator === EXCLUDE_FILTER_ID) {
               // workaround as bigquery exludes null values
-              return `(${filterKey} IS NULL OR ${query})`
+              return `('${filterKey}' IS NULL OR ${query})`
             }
             return query
           })
