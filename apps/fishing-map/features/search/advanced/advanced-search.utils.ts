@@ -2,6 +2,8 @@ import { Dataset } from '@globalfishingwatch/api-types'
 import { SchemaFieldDataview } from 'features/datasets/datasets.utils'
 import { VesselSearchState } from 'types'
 
+export const ADVANCED_SEARCH_FIELDS = ['ssvid', 'imo', 'callsign', 'owner'] as const
+
 export const schemaFilterIds: (keyof VesselSearchState)[] = [
   'flag',
   'fleet',

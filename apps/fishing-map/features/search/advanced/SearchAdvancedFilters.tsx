@@ -25,7 +25,11 @@ import {
 } from 'features/vessel/vessel.config'
 import { useSearchFiltersConnect, useSearchFiltersErrors } from 'features/search/search.hook'
 import { VesselSearchState } from 'types'
-import { getSearchDataview, schemaFilterIds } from 'features/search/advanced/advanced-search.utils'
+import {
+  ADVANCED_SEARCH_FIELDS,
+  getSearchDataview,
+  schemaFilterIds,
+} from 'features/search/advanced/advanced-search.utils'
 import styles from './SearchAdvancedFilters.module.css'
 
 const FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY = ['geartypes', 'shiptypes', 'flag']
@@ -173,10 +177,9 @@ function SearchAdvancedFilters() {
 
   return (
     <div className={styles.filters}>
-      <AdvancedFilterInputField field="ssvid" onChange={onInputChange} />
-      <AdvancedFilterInputField field="imo" onChange={onInputChange} />
-      <AdvancedFilterInputField field="callsign" onChange={onInputChange} />
-      <AdvancedFilterInputField field="owner" onChange={onInputChange} />
+      {ADVANCED_SEARCH_FIELDS.map((field) => (
+        <AdvancedFilterInputField field={field} onChange={onInputChange} />
+      ))}
       <Select
         label={t('vessel.infoSource')}
         placeholder={getPlaceholderBySelections({

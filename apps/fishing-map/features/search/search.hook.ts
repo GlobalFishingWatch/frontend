@@ -16,7 +16,10 @@ import {
   selectBasicSearchDatasets,
   selectAdvancedSearchDatasets,
 } from 'features/search/search.selectors'
-import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
+import {
+  ADVANCED_SEARCH_FIELDS,
+  isDatasetSearchFieldNeededSupported,
+} from 'features/search/advanced/advanced-search.utils'
 import {
   cleanVesselSearchResults,
   fetchVesselSearchThunk,
@@ -52,14 +55,12 @@ export const hasFiltersActive = (filters: VesselSearchState): boolean => {
   )
 }
 
-const fieldsToCheckErrors = ['ssvid', 'imo', 'callsign', 'owner'] as const
-
 export const useSearchFiltersErrors = () => {
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters } = useSearchFiltersConnect()
   const searchFilterErrors: Partial<Record<'date' | keyof VesselSearchState, boolean>> = {}
 
-  const disabledFieldSchemas = fieldsToCheckErrors.flatMap((field) => {
+  const disabledFieldSchemas = ADVANCED_SEARCH_FIELDS.flatMap((field) => {
     const selectedDatasets = searchFilters.sources
       ? datasets.filter((dataset) => searchFilters.sources?.includes(dataset.id))
       : datasets
