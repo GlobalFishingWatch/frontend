@@ -2,7 +2,7 @@ import { Color, CompositeLayer } from '@deck.gl/core/typed'
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
-import { Cell } from '@globalfishingwatch/deck-loaders'
+import { Cell, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL } from '../../utils/time'
 import FourwingsTileCellLayer from './FourwingsHeatmapCellLayer'
 import {
@@ -20,7 +20,8 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   cols: number
   rows: number
   indexes: number[]
-  startFrames: number[]
+  startFrames: number[][]
+  initialValues: Record<string, number[][]>
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
 }
@@ -28,6 +29,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
 export type AggregateCellParams = {
   minIntervalFrame: number
   maxIntervalFrame?: number
+  startFrames: number[]
 }
 
 export type GetFillColorParams = {
@@ -36,6 +38,8 @@ export type GetFillColorParams = {
   chunks: Chunk[]
   minIntervalFrame: number
   maxIntervalFrame: number
+  initialValues: number[]
+  startFrames: number[]
 }
 
 const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
@@ -45,17 +49,29 @@ const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 
 export const chooseColor = (
   cell: Cell,
-  { colorDomain, colorRanges, chunks, minIntervalFrame, maxIntervalFrame }: GetFillColorParams
+  {
+    colorDomain,
+    colorRanges,
+    chunks,
+    minIntervalFrame,
+    maxIntervalFrame,
+    initialValues,
+    startFrames,
+  }: GetFillColorParams
 ): Color => {
   // const a = performance.now()
   // fillColorCount++
   if (!colorDomain || !colorRanges || !chunks) {
     return EMPTY_CELL_COLOR
   }
-  const aggregatedCellValues = aggregateCell(cell, {
-    minIntervalFrame,
-    maxIntervalFrame: maxIntervalFrame > 0 ? maxIntervalFrame : undefined,
-  })
+
+  const aggregatedCellValues =
+    initialValues ||
+    aggregateCell(cell, {
+      minIntervalFrame,
+      maxIntervalFrame: maxIntervalFrame > 0 ? maxIntervalFrame : undefined,
+      startFrames,
+    })
   let chosenValueIndex = 0
   let chosenValue: number | undefined
   aggregatedCellValues.forEach((value, index) => {
@@ -68,7 +84,6 @@ export const chooseColor = (
   if (!chosenValue) {
     // const b = performance.now()
     // fillColorTime += b - a
-    // return [255, 0, 0, 100]
     return EMPTY_CELL_COLOR
   }
   const colorIndex = colorDomain.findIndex((d, i) =>
@@ -77,15 +92,8 @@ export const chooseColor = (
   // const b = performance.now()
   // fillColorTime += b - a
 
-  // if (fillColorCount >= 293405) {
-  //   console.log(
-  //     'time to get fill color:',
-  //     fillColorTime,
-  //     'per cell:',
-  //     fillColorTime / fillColorCount
-  //   )
-  // fillColorCount = 0
-  // fillColorTime = 0
+  // if (fillColorCount === 460816) {
+  //   console.log('cells: ', fillColorCount, ', time to get fill color:', fillColorTime)
   // }
   return colorRanges[chosenValueIndex][colorIndex]
 }
@@ -94,7 +102,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   static layerName = 'FourwingsHeatmapLayer'
 
   renderLayers() {
-    const { data, maxFrame, minFrame, startFrames, colorDomain, colorRanges } = this.props
+    const { data, maxFrame, minFrame, startFrames, initialValues, colorDomain, colorRanges } =
+      this.props
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
@@ -110,18 +119,15 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     )
 
     const getFillColor = (cell: Cell, { index, target }: { index: number; target: Color }) => {
-      const cellStartFrame = startFrames[index]
-      if (maxIntervalFrame - cellStartFrame < 0) {
-        target = EMPTY_CELL_COLOR
-      } else {
-        target = chooseColor(cell, {
-          colorDomain,
-          colorRanges,
-          chunks,
-          minIntervalFrame: Math.max(minIntervalFrame - cellStartFrame, 0),
-          maxIntervalFrame: maxIntervalFrame - cellStartFrame,
-        })
-      }
+      target = chooseColor(cell, {
+        colorDomain,
+        colorRanges,
+        chunks,
+        minIntervalFrame: minIntervalFrame,
+        maxIntervalFrame: maxIntervalFrame,
+        startFrames: startFrames[index],
+        initialValues: initialValues[getTimeRangeKey(minIntervalFrame, maxIntervalFrame)]?.[index],
+      })
       return target
     }
 

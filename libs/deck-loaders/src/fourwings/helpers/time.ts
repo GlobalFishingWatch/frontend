@@ -38,3 +38,7 @@ export const CONFIG_BY_INTERVAL: Record<Interval, Record<'getTime' | 'getInterva
     },
   },
 }
+
+export const getTimeRangeKey = (start: number, end: number) => {
+  return `${start}-${end}`
+}

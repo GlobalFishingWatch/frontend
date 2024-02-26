@@ -21,6 +21,10 @@ export type FourwingsOptions = {
   rows: number
   minFrame: number
   maxFrame: number
+  initialTimeRange: {
+    start: number
+    end: number
+  }
   interval: Interval
   sublayers: number
   buffersLength: number[]
