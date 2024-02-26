@@ -11,6 +11,7 @@ import { selectAllDataviewsInWorkspace } from 'features/dataviews/selectors/data
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { SearchType } from 'features/search/search.config'
 import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
 
 const EMPTY_ARRAY: [] = []
 
@@ -45,8 +46,11 @@ export function selectSearchDatasetsInWorkspaceByType(type: SearchType) {
     [selectSearchDatasetsInWorkspace, selectUserData, selectIsGuestUser],
     (datasets, userData, guestUser): Dataset[] => {
       if (!userData || !datasets?.length) return EMPTY_ARRAY
-
-      return filterDatasetByPermissions(datasets, type, userData, guestUser)
+      // This is needed to ensure we allow searching in datasets with the minimum fields needed
+      const datasetsWithShipname = datasets.filter((dataset) =>
+        isDatasetSearchFieldNeededSupported(dataset)
+      )
+      return filterDatasetByPermissions(datasetsWithShipname, type, userData, guestUser)
     }
   )
 }

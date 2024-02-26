@@ -33,3 +33,14 @@ export const getSearchDataview = (
     datasets,
   }
 }
+
+const DEFAULT_SEARCH_FIELDS_NEEDED = ['shipname', 'mmsi', 'imo', 'callsign']
+export const isDatasetSearchFieldNeededSupported = (
+  dataset: Dataset,
+  fields = DEFAULT_SEARCH_FIELDS_NEEDED
+) => {
+  const isSupported = fields.some((field) =>
+    dataset.fieldsAllowed.some((f) => f === field || f.includes(field))
+  )
+  return isSupported
+}
