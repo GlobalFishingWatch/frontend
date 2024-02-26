@@ -228,7 +228,7 @@ class TrackGenerator {
       ...(filters.length > 0 && { filter: filters as FilterSpecification }),
       paint,
       metadata: {
-        group: Group.Track,
+        group: config.id.includes('user-track') ? Group.TrackHighlighted : Group.Track,
       },
     }
     const layers = [layer]

@@ -9,10 +9,6 @@ import { VESSEL } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { wrapper } from '../../store'
 
-// This is needed by nx/next builder to run build the standalone next app properly
-// https://github.com/nrwl/nx/issues/9017#issuecomment-1140066503
-path.resolve('./next.config.js')
-
 // type VesselPageParams = { category: WorkspaceCategory; workspace: string; vesselId: string }
 // type VesselPageProps = {
 //   params: VesselPageParams

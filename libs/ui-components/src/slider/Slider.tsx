@@ -5,7 +5,7 @@ import { format } from 'd3-format'
 import { scaleLinear } from 'd3-scale'
 import styles from './slider.module.css'
 
-export type SliderThumbsSize = 'default' | 'small'
+export type SliderThumbsSize = 'default' | 'small' | 'mini'
 type SliderConfig = {
   // step: number
   steps: number[]
@@ -115,12 +115,14 @@ export function Slider(props: SliderProps) {
                   ...props.style,
                 }}
               >
-                <span
-                  className={styles.sliderThumbCounter}
-                  style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
-                >
-                  {formatSliderNumber(scaledValue)}
-                </span>
+                {thumbsSize !== 'mini' && (
+                  <span
+                    className={styles.sliderThumbCounter}
+                    style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
+                  >
+                    {formatSliderNumber(scaledValue)}
+                  </span>
+                )}
               </div>
             )
           }}

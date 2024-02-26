@@ -8,12 +8,11 @@ import {
   Select,
   SelectOption,
 } from '@globalfishingwatch/ui-components'
-import { Dataset, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import {
   getFiltersBySchema,
-  SchemaFieldDataview,
   SchemaFilter,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
@@ -24,41 +23,14 @@ import {
   DEFAULT_VESSEL_IDENTITY_DATASET,
   DEFAULT_VESSEL_IDENTITY_ID,
 } from 'features/vessel/vessel.config'
-import { useSearchFiltersConnect } from 'features/search/search.hook'
+import { useSearchFiltersConnect, useSearchFiltersErrors } from 'features/search/search.hook'
 import { VesselSearchState } from 'types'
+import {
+  ADVANCED_SEARCH_FIELDS,
+  getSearchDataview,
+  schemaFilterIds,
+} from 'features/search/advanced/advanced-search.utils'
 import styles from './SearchAdvancedFilters.module.css'
-
-const schemaFilterIds: (keyof VesselSearchState)[] = [
-  'flag',
-  'fleet',
-  'origin',
-  'shiptypes',
-  'geartypes',
-  'codMarinha',
-  'targetSpecies',
-]
-
-const getSearchDataview = (
-  datasets: Dataset[],
-  searchFilters: VesselSearchState,
-  sources?: string[]
-): SchemaFieldDataview => {
-  return {
-    config: {
-      datasets: sources?.length ? sources?.map((id) => id) : datasets.map((d) => d.id),
-      filters: Object.fromEntries(
-        schemaFilterIds.map((id) => {
-          const filters = searchFilters[id]
-          if (Array.isArray(filters)) {
-            return [id, filters?.map((f) => f)]
-          }
-          return [id, filters]
-        })
-      ),
-    },
-    datasets,
-  }
-}
 
 const FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY = ['geartypes', 'shiptypes', 'flag']
 
@@ -95,20 +67,45 @@ const isIncompatibleFilterBySelection = (
   return false
 }
 
+function AdvancedFilterInputField({
+  onChange,
+  field,
+}: {
+  onChange: (ev: React.ChangeEvent<HTMLInputElement>) => void
+  field: keyof VesselSearchState
+}) {
+  const { t } = useTranslation()
+  const searchFilterErrors = useSearchFiltersErrors()
+  const { searchFilters } = useSearchFiltersConnect()
+  const value = searchFilters[field] || ''
+  const invalid = searchFilterErrors[field]
+
+  return (
+    <InputText
+      onChange={onChange}
+      id={field}
+      invalid={invalid}
+      invalidTooltip={
+        invalid
+          ? t('search.filterNotSupported', {
+              defaultValue: 'One of your sources selected doesn’t support filtering by {{filter}}',
+              filter: t(`vessel.${field}`, 'field').toLowerCase(),
+            })
+          : ''
+      }
+      value={value}
+      label={t(`vessel.${field}`, field)}
+    />
+  )
+}
+
 function SearchAdvancedFilters() {
   const { t } = useTranslation()
   const datasets = useSelector(selectAdvancedSearchDatasets)
-  const { searchFilters, setSearchFilters, searchFilterErrors } = useSearchFiltersConnect()
-  const {
-    sources,
-    transmissionDateFrom,
-    transmissionDateTo,
-    imo,
-    ssvid,
-    callsign,
-    owner,
-    infoSource,
-  } = searchFilters
+  const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
+  const searchFilterErrors = useSearchFiltersErrors()
+
+  const { sources, transmissionDateFrom, transmissionDateTo, infoSource } = searchFilters
 
   const sourceOptions = useMemo(() => {
     const datasetsFiltered =
@@ -180,30 +177,9 @@ function SearchAdvancedFilters() {
 
   return (
     <div className={styles.filters}>
-      <InputText
-        onChange={onInputChange}
-        id="ssvid"
-        value={ssvid || ''}
-        label={t('vessel.mmsi', 'MMSI')}
-      />
-      <InputText
-        onChange={onInputChange}
-        id="imo"
-        value={imo || ''}
-        label={t('vessel.imo', 'IMO')}
-      />
-      <InputText
-        onChange={onInputChange}
-        id="callsign"
-        value={callsign || ''}
-        label={t('vessel.callsign', 'Callsign')}
-      />
-      <InputText
-        onChange={onInputChange}
-        id="owner"
-        value={owner || ''}
-        label={t('vessel.owner', 'Owner')}
-      />
+      {ADVANCED_SEARCH_FIELDS.map((field) => (
+        <AdvancedFilterInputField field={field} onChange={onInputChange} />
+      ))}
       <Select
         label={t('vessel.infoSource')}
         placeholder={getPlaceholderBySelections({

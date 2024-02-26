@@ -75,6 +75,7 @@
   --border-radius: 0.4rem;
 
   /* SIZES */
+  --size-XXS: 1.5rem;
   --size-XS: 2rem;
   --size-S: 2.8rem;
   --size-SM: 3.2rem;

@@ -1,7 +1,7 @@
-import { useMemo, useCallback, useState } from 'react'
+import { useMemo, useCallback, useState, useEffect } from 'react'
 import cx from 'classnames'
 import { Range, getTrackBackground } from 'react-range'
-import { scaleLinear } from 'd3-scale'
+import { InputText } from '../input-text'
 import { SliderThumbsSize, formatSliderNumber } from '../slider'
 import styles from '../slider/slider.module.css'
 
@@ -15,16 +15,33 @@ interface SliderRangeProps {
   label: string
   thumbsSize?: SliderThumbsSize
   initialRange: SliderRangeValues
+  range?: SliderRangeValues
   config: SliderRangeConfig
   onChange: (range: SliderRangeValues) => void
   className?: string
   //static for now for the VIIRS release
   histogram?: boolean
+  showInputs?: boolean
 }
+type Precision = 'high' | 'mid' | 'low'
 
 const MIN = 0
 const MAX = 200
-const STEP = 1
+
+const CONFIG_BY_PRECISION: Record<Precision, { step: number; round: (v: number) => number }> = {
+  high: {
+    step: 0.01,
+    round: (v) => Math.round(v * 100) / 100,
+  },
+  mid: {
+    step: 0.1,
+    round: (v) => Math.round(v * 10) / 10,
+  },
+  low: {
+    step: 1,
+    round: (v) => Math.round(v),
+  },
+}
 
 const fallbackActiveColor = 'rgba(22, 63, 137, 1)'
 const fallbackBorderColor = 'rgba(22, 63, 137, 0.15)'
@@ -41,50 +58,73 @@ const borderColor =
 export function SliderRange(props: SliderRangeProps) {
   const {
     initialRange,
+    range,
     label,
     config = {},
     onChange,
     className,
     histogram,
     thumbsSize = 'default',
+    showInputs = false,
   } = props
-  const { min = MIN, max = MAX, steps } = config as SliderRangeConfig
-  const scale = useMemo(() => {
-    return scaleLinear()
-      .domain(steps.map((_, i) => (MAX / (steps.length - 1)) * i))
-      .range(steps)
-      .nice()
-  }, [steps])
+  const { min = MIN, max = MAX } = config as SliderRangeConfig
+  const precisionConfig =
+    CONFIG_BY_PRECISION[max - min >= 100 ? 'low' : max - min >= 10 ? 'mid' : 'high']
+  const initialValues = initialRange || [min, max]
+  const [internalValues, setInternalValues] = useState(initialValues)
 
-  const initialValues = (initialRange || [min, max]).map((v) => {
-    return Math.round(scale.invert(v))
-  })
-  const [values, setValues] = useState(initialValues)
+  useEffect(() => {
+    if (range?.length) {
+      setInternalValues(range)
+    }
+  }, [range])
 
   const handleChange = useCallback(
     (values: SliderRangeValues) => {
       if (values[1] > values[0]) {
-        setValues(values)
+        setInternalValues(values.map((v) => precisionConfig.round(v)))
       }
     },
-    [setValues]
+    [precisionConfig]
   )
+
+  const onInitialRangeInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const initialRange = precisionConfig.round(parseFloat(e.target.value))
+      if (initialRange >= min && initialRange < internalValues[1]) {
+        setInternalValues([initialRange, internalValues[1]])
+        onChange([initialRange, internalValues[1]])
+      }
+    },
+    [internalValues, min, onChange, precisionConfig]
+  )
+  const onFinalRangeInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const finalRange = precisionConfig.round(parseFloat(e.target.value))
+      if (finalRange <= max && internalValues[0] < finalRange) {
+        setInternalValues([internalValues[0], finalRange])
+        onChange([internalValues[0], finalRange])
+      }
+    },
+    [internalValues, max, onChange, precisionConfig]
+  )
+
   const handleFinalChange = useCallback(
     (values: SliderRangeValues) => {
-      onChange([scale(values[0]), scale(values[1])])
+      onChange(values)
     },
-    [onChange, scale]
+    [onChange]
   )
 
   const background = useMemo(
     () =>
       getTrackBackground({
-        min: MIN,
-        max: MAX,
-        values,
+        min: min,
+        max: max,
+        values: internalValues,
         colors: [borderColor, activeColor, borderColor],
       }),
-    [values]
+    [internalValues, max, min]
   )
 
   return (
@@ -104,10 +144,10 @@ export function SliderRange(props: SliderRangeProps) {
           </svg>
         )}
         <Range
-          values={values}
-          step={STEP}
-          min={MIN}
-          max={MAX}
+          values={internalValues}
+          step={precisionConfig.step}
+          min={min}
+          max={max}
           onChange={handleChange}
           onFinalChange={handleFinalChange}
           renderTrack={({ props, children }) => (
@@ -123,8 +163,7 @@ export function SliderRange(props: SliderRangeProps) {
             </div>
           )}
           renderThumb={({ index, props }) => {
-            const value = values[index]
-            const scaledValue = scale(value)
+            const value = internalValues[index]
             const isDefaultSelection = index === 0 ? value === min : value === max
             return (
               <div
@@ -134,17 +173,35 @@ export function SliderRange(props: SliderRangeProps) {
                   ...props.style,
                 }}
               >
-                <span
-                  className={styles.sliderThumbCounter}
-                  style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
-                >
-                  {formatSliderNumber(scaledValue)}
-                </span>
+                {thumbsSize !== 'mini' && (
+                  <span
+                    className={styles.sliderThumbCounter}
+                    style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
+                  >
+                    {formatSliderNumber(value)}
+                  </span>
+                )}
               </div>
             )
           }}
         />
       </div>
+      {showInputs && (
+        <div className={styles.rangeContainerInputs}>
+          <InputText
+            value={internalValues?.[0]}
+            step={precisionConfig.step.toString()}
+            onChange={onInitialRangeInputChange}
+            type="number"
+          />
+          <InputText
+            value={internalValues?.[1]}
+            step={precisionConfig.step.toString()}
+            onChange={onFinalRangeInputChange}
+            type="number"
+          />
+        </div>
+      )}
     </div>
   )
 }

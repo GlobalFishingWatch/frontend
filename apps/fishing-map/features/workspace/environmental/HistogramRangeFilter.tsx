@@ -27,8 +27,8 @@ function HistogramRangeFilter({ dataview, onSelect }: HistogramRangeFilterProps)
   const maxSliderValue = dataview.config?.maxVisibleValue ?? layerRange.max
   const sliderConfig = {
     steps: [layerRange.min, layerRange.max],
-    min: minSliderValue,
-    max: maxSliderValue,
+    min: layerRange.min,
+    max: layerRange.max,
   }
 
   const onSliderChange = useCallback(
@@ -69,7 +69,8 @@ function HistogramRangeFilter({ dataview, onSelect }: HistogramRangeFilterProps)
         config={sliderConfig}
         onChange={onSliderChange}
         histogram={false}
-        thumbsSize="small"
+        thumbsSize="mini"
+        showInputs
       />
     </div>
   )
