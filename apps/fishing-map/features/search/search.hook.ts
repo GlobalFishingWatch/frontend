@@ -60,10 +60,11 @@ export const useSearchFiltersErrors = () => {
   const searchFilterErrors: Partial<Record<'date' | keyof VesselSearchState, boolean>> = {}
 
   const disabledFieldSchemas = fieldsToCheckErrors.flatMap((field) => {
-    const selectedDatasets = datasets.filter((dataset) =>
-      searchFilters.sources?.includes(dataset.id)
-    )
-    const disabled = selectedDatasets.some(
+    const selectedDatasets = searchFilters.sources
+      ? datasets.filter((dataset) => searchFilters.sources?.includes(dataset.id))
+      : datasets
+
+    const disabled = selectedDatasets.every(
       (dataset) => !isDatasetSearchFieldNeededSupported(dataset, [field])
     )
     const hasFilterValue = searchFilters?.[field]
