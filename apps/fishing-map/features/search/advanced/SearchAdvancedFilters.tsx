@@ -63,21 +63,45 @@ const isIncompatibleFilterBySelection = (
   return false
 }
 
+function AdvancedFilterInputField({
+  onChange,
+  field,
+}: {
+  onChange: (ev: React.ChangeEvent<HTMLInputElement>) => void
+  field: keyof VesselSearchState
+}) {
+  const { t } = useTranslation()
+  const searchFilterErrors = useSearchFiltersErrors()
+  const { searchFilters } = useSearchFiltersConnect()
+  const value = searchFilters[field] || ''
+  const invalid = searchFilterErrors[field]
+
+  return (
+    <InputText
+      onChange={onChange}
+      id={field}
+      invalid={invalid}
+      invalidTooltip={
+        invalid
+          ? t('search.filterNotSupported', {
+              defaultValue: 'One of your sources selected doesn’t support filtering by {{filter}}',
+              filter: t(`vessel.${field}`, 'field').toLowerCase(),
+            })
+          : ''
+      }
+      value={value}
+      label={t(`vessel.${field}`, field)}
+    />
+  )
+}
+
 function SearchAdvancedFilters() {
   const { t } = useTranslation()
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const searchFilterErrors = useSearchFiltersErrors()
-  const {
-    sources,
-    transmissionDateFrom,
-    transmissionDateTo,
-    imo,
-    ssvid,
-    callsign,
-    owner,
-    infoSource,
-  } = searchFilters
+
+  const { sources, transmissionDateFrom, transmissionDateTo, infoSource } = searchFilters
 
   const sourceOptions = useMemo(() => {
     const datasetsFiltered =
@@ -149,33 +173,10 @@ function SearchAdvancedFilters() {
 
   return (
     <div className={styles.filters}>
-      <InputText
-        onChange={onInputChange}
-        id="ssvid"
-        disabled={searchFilterErrors.mmsi}
-        value={ssvid || ''}
-        label={t('vessel.mmsi', 'MMSI')}
-      />
-      <InputText
-        onChange={onInputChange}
-        id="imo"
-        value={imo || ''}
-        disabled={searchFilterErrors.imo}
-        label={t('vessel.imo', 'IMO')}
-      />
-      <InputText
-        onChange={onInputChange}
-        id="callsign"
-        disabled={searchFilterErrors.callsign}
-        value={callsign || ''}
-        label={t('vessel.callsign', 'Callsign')}
-      />
-      <InputText
-        onChange={onInputChange}
-        id="owner"
-        value={owner || ''}
-        label={t('vessel.owner', 'Owner')}
-      />
+      <AdvancedFilterInputField field="ssvid" onChange={onInputChange} />
+      <AdvancedFilterInputField field="imo" onChange={onInputChange} />
+      <AdvancedFilterInputField field="callsign" onChange={onInputChange} />
+      <AdvancedFilterInputField field="owner" onChange={onInputChange} />
       <Select
         label={t('vessel.infoSource')}
         placeholder={getPlaceholderBySelections({
@@ -308,11 +309,6 @@ function SearchAdvancedFilters() {
           t(
             'search.endDateMustBeAfterStartDate',
             'The ACTIVE BEFORE date must come after the ACTIVE AFTER date'
-          )}
-        {(searchFilterErrors.mmsi || searchFilterErrors.imo) &&
-          t(
-            'search.notValidFilterSelection',
-            "The datasets selected doesn't allow searching by this filters"
           )}
       </div>
     </div>

@@ -71,6 +71,8 @@ function SearchAdvanced({
     dispatchQueryParams({ query: e.target.value })
   }
 
+  const hasSearchFilterErrors = Object.keys(searchFilterErrors).length > 0
+
   return (
     <div className={styles.advancedLayout}>
       <div className={styles.form}>
@@ -103,7 +105,15 @@ function SearchAdvanced({
           <Button
             className={styles.confirmButton}
             onClick={fetchResults}
-            disabled={(!hasFilters && !searchQuery) || Object.keys(searchFilterErrors).length > 0}
+            disabled={(!hasFilters && !searchQuery) || hasSearchFilterErrors}
+            tooltip={
+              hasSearchFilterErrors
+                ? t(
+                    'search.notValidFilterSelection',
+                    "At least one of your selected sources doesn't allow one of your filters"
+                  )
+                : ''
+            }
             loading={
               searchStatus === AsyncReducerStatus.Loading ||
               searchStatus === AsyncReducerStatus.Aborted

@@ -16,8 +16,7 @@ import {
   selectBasicSearchDatasets,
   selectAdvancedSearchDatasets,
 } from 'features/search/search.selectors'
-import { SupportedDatasetSchema, getFiltersBySchema } from 'features/datasets/datasets.utils'
-import { getSearchDataview } from 'features/search/advanced/advanced-search.utils'
+import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
 import {
   cleanVesselSearchResults,
   fetchVesselSearchThunk,
@@ -53,22 +52,24 @@ export const hasFiltersActive = (filters: VesselSearchState): boolean => {
   )
 }
 
-const fieldsToCheckErrors = ['mmsi', 'imo', 'callsign'] as const
+const fieldsToCheckErrors = ['ssvid', 'imo', 'callsign', 'owner'] as const
 
 export const useSearchFiltersErrors = () => {
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters } = useSearchFiltersConnect()
-  const searchFilterErrors: Partial<
-    Record<'date' | (typeof fieldsToCheckErrors)[number], boolean>
-  > = {}
-
-  const dataview = useMemo(() => {
-    return getSearchDataview(datasets, searchFilters, searchFilters.sources)
-  }, [datasets, searchFilters])
+  const searchFilterErrors: Partial<Record<'date' | keyof VesselSearchState, boolean>> = {}
 
   const disabledFieldSchemas = fieldsToCheckErrors.flatMap((field) => {
-    return getFiltersBySchema(dataview, field as SupportedDatasetSchema)?.disabled ? field : []
+    const selectedDatasets = datasets.filter((dataset) =>
+      searchFilters.sources?.includes(dataset.id)
+    )
+    const disabled = selectedDatasets.some(
+      (dataset) => !isDatasetSearchFieldNeededSupported(dataset, [field])
+    )
+    const hasFilterValue = searchFilters?.[field]
+    return hasFilterValue && disabled ? field : []
   })
+
   if (disabledFieldSchemas.length) {
     disabledFieldSchemas.forEach((field) => {
       searchFilterErrors[field] = true
