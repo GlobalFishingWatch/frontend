@@ -50,16 +50,21 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
       const tileMinIntervalFrame = Math.ceil(
         CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
       )
+
       const cellStartFrame = startFrames[info.index]
       const minIntervalFrame =
         Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame)) -
         tileMinIntervalFrame -
-        cellStartFrame
+        Math.min(...cellStartFrame)
       const maxIntervalFrame =
         Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame)) -
         tileMinIntervalFrame -
-        cellStartFrame
-      const value = aggregateCell(info.object, { minIntervalFrame, maxIntervalFrame })
+        Math.max(...cellStartFrame)
+      const value = aggregateCell(info.object, {
+        minIntervalFrame,
+        maxIntervalFrame,
+        startFrames: cellStartFrame,
+      })
       if (value) {
         info.object = {
           ...info.object,
