@@ -62,6 +62,7 @@ const MapAnnotations = ({
           coordinates={coords as number[]}
         >
           <div className={styles.popup}>
+            <div className={styles.tooltipArrow} />
             <div className={styles.popupContent} ref={ref}>
               <div className={styles.flex}>
                 <InputText

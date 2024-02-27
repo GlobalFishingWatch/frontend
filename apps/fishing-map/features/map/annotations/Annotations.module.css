@@ -20,3 +20,23 @@
 .confirmBtn {
   margin-left: auto;
 }
+
+.tooltipArrow::before {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+}
+
+.tooltipArrow {
+  visibility: hidden;
+  position: relative;
+}
+
+.tooltipArrow::before {
+  visibility: visible;
+  top: 135px;
+  left: 155px;
+  content: '';
+  transform: rotate(45deg);
+}
