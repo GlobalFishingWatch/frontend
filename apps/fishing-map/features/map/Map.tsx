@@ -1,7 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import {
+  ReactEventHandler,
+  ReactNode,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
-import { LayersList, PickingInfo } from '@deck.gl/core/typed'
+import { DeckProps, LayersList, PickingInfo, Position } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
 import { useAtom } from 'jotai'
 import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
@@ -39,13 +48,14 @@ import {
   useMapMouseClick,
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
-import MapAnnotations from 'features/map/annotations/Annotations'
 import { useMapRulersDrag } from 'features/map/rulers/rulers-drag.hooks'
 import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
 import ErrorNotification from 'features/map/error-notification/ErrorNotification'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import { MapCoordinates } from 'types'
+import { DEFAULT_VIEWPORT } from 'data/config'
+import MapAnnotations from './annotations/Annotations'
 import {
   MAP_VIEW,
   useViewStateAtom,
@@ -106,7 +116,9 @@ const MapWrapper = () => {
 
   // const [viewState, setViewState] = useState<any>(DEFAULT_VIEWPORT)
   // const viewState = useRef<any>(DEFAULT_VIEWPORT)
-  const { viewState, setViewState } = useViewStateAtom()
+  // const { viewState, setViewState } = useViewStateAtom()
+
+  const [viewState, setViewState] = useState(DEFAULT_VIEWPORT)
   // const [viewState, setViewState] = useState(DEFAULT_VIEWPORT)
   const onViewStateChange = useCallback(
     (params: ViewStateChangeParameters) => {
@@ -262,21 +274,23 @@ const MapWrapper = () => {
   //   }
   //   return styleInteractiveLayerIds
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
-
-  const onClick = useCallback((info: PickingInfo) => {
-    const features = deckRef?.current?.pickMultipleObjects({
-      x: info.x,
-      y: info.y,
-    })
-    console.log('🚀 ~ values:', features?.flatMap((f) => f.object?.value || []).join(','))
+  const [tooltipCoordinates, setTooltipCoordinates] = useState<undefined | Position>(undefined)
+  const onClick: DeckProps['onClick'] = useCallback((info: PickingInfo, event: any) => {
+    if (event.srcEvent.defaultPrevented) {
+      return true
+    }
+    // const features = deckRef?.current?.pickMultipleObjects({
+    //   x: info.x,
+    //   y: info.y,
+    // })
+    setTooltipCoordinates(info?.coordinate as Position)
   }, [])
 
   const onHover = useCallback((info: PickingInfo) => {
-    const features = deckRef?.current?.pickMultipleObjects({
-      x: info.x,
-      y: info.y,
-    })
-    // console.log('🚀 ~ features:', features)
+    // const features = deckRef?.current?.pickMultipleObjects({
+    //   x: info.x,
+    //   y: info.y,
+    // })
   }, [])
 
   return (
@@ -304,7 +318,9 @@ const MapWrapper = () => {
         onViewStateChange={onViewStateChange}
         onClick={onClick}
         onHover={onHover}
-      />
+      >
+        {(props) => <MapAnnotations coords={tooltipCoordinates} {...props} />}
+      </DeckGL>
       {/* {style && (
         <Map
           id="map"
