@@ -11,7 +11,7 @@ import { Cell, generateUniqueId, getCellCoordinates } from '@globalfishingwatch/
 import { CONFIG_BY_INTERVAL } from '../../utils/time'
 import { FourwingsHeatmapLayerProps } from './FourwingsHeatmapLayer'
 import { aggregateCell } from './fourwings.utils'
-import { getChunks } from './fourwings.config'
+import { getChunks, getInterval } from './fourwings.config'
 
 const defaultProps: DefaultProps<FourwingsHeatmapCellLayerProps> = {
   getIndex: { type: 'accessor', value: (d) => d.index },
@@ -47,15 +47,15 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
     const { minFrame, maxFrame, startFrames } = this.props
     if (info.object) {
       const chunks = getChunks(minFrame, maxFrame)
+      const interval = getInterval(minFrame, maxFrame)
       const tileMinIntervalFrame = Math.ceil(
-        CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
+        CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
       )
-
       const cellStartFrame = startFrames[info.index]
       const minIntervalFrame =
-        Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame)) - tileMinIntervalFrame
+        Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame)) - tileMinIntervalFrame
       const maxIntervalFrame =
-        Math.ceil(CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
+        Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
       const value = aggregateCell(info.object, {
         minIntervalFrame,
         maxIntervalFrame,
