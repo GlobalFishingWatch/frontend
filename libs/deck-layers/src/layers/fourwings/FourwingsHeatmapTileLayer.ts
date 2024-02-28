@@ -19,6 +19,7 @@ import {
   rgbaStringToComponents,
   Group,
   GROUP_ORDER,
+  ColorRampsIds,
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -79,13 +80,18 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   initializeState(context: LayerContext): void {
     super.initializeState(context)
     this.id = `${this.props.category}`
+    const visibleSublayers = this.props.sublayers.filter((sublayer) => sublayer.config?.visible)
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
       colorDomain: [1, 20, 50, 100, 500, 5000, 10000, 500000],
       // TODO: update colorRanges only when a sublayer colorRamp prop changes
-      colorRanges: this.props.sublayers.map(
+      colorRanges: visibleSublayers.map(
         ({ config }) =>
-          HEATMAP_COLOR_RAMPS[config.colorRamp].map((c) => rgbaStringToComponents(c)) as ColorRange
+          HEATMAP_COLOR_RAMPS[
+            (visibleSublayers.length > 1
+              ? config.colorRamp
+              : `${config.colorRamp}_toWhite`) as ColorRampsIds
+          ].map((c) => rgbaStringToComponents(c)) as ColorRange
       ),
     }
   }
