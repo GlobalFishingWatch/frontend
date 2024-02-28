@@ -10,7 +10,7 @@ import {
   FourwingsHeatmapTileLayerProps,
   SublayerColorRanges,
 } from './FourwingsHeatmapTileLayer'
-import { Chunk, getChunks } from './fourwings.config'
+import { Chunk, getChunks, getInterval } from './fourwings.config'
 import { aggregateCell } from './fourwings.utils'
 
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
@@ -107,15 +107,16 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
+    const interval = getInterval(minFrame, maxFrame)
     const chunks = getChunks(minFrame, maxFrame)
     const tileMinIntervalFrame = Math.ceil(
-      CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(chunks?.[0].start)
+      CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
     )
     const minIntervalFrame = Math.ceil(
-      CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(minFrame) - tileMinIntervalFrame
+      CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileMinIntervalFrame
     )
     const maxIntervalFrame = Math.ceil(
-      CONFIG_BY_INTERVAL['DAY'].getIntervalFrame(maxFrame) - tileMinIntervalFrame
+      CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame) - tileMinIntervalFrame
     )
 
     const getFillColor = (cell: Cell, { index, target }: { index: number; target: Color }) => {

@@ -87,10 +87,12 @@ export const getDataUrlBySublayer = ({ tile, chunk, sublayer }: GetDataUrlByChun
     format: '4WINGS',
     'temporal-aggregation': false,
     proxy: true,
-    'date-range': [
-      DateTime.fromMillis(chunk.start).toISODate(),
-      DateTime.fromMillis(chunk.end).toISODate(),
-    ].join(','),
+    ...(chunk.interval !== 'YEAR' && {
+      'date-range': [
+        DateTime.fromMillis(chunk.start).toISODate(),
+        DateTime.fromMillis(chunk.end).toISODate(),
+      ].join(','),
+    }),
     datasets: [sublayer.datasets.join(',')],
   }
   const url = `${API_BASE_URL}?${stringify(params, {

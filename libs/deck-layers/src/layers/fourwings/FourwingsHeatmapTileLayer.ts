@@ -19,6 +19,7 @@ import {
   rgbaStringToComponents,
   Group,
   GROUP_ORDER,
+  ColorRampsIds,
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -54,6 +55,7 @@ export type _FourwingsHeatmapTileLayerProps = {
   zIndex?: number
   category: string
   sublayers: FourwingsDeckSublayer[]
+  colorRampWhiteEnd?: boolean
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
   onViewportLoad?: (string: string) => void
 }
@@ -85,7 +87,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       // TODO: update colorRanges only when a sublayer colorRamp prop changes
       colorRanges: this.props.sublayers.map(
         ({ config }) =>
-          HEATMAP_COLOR_RAMPS[config.colorRamp].map((c) => rgbaStringToComponents(c)) as ColorRange
+          HEATMAP_COLOR_RAMPS[
+            (this.props.colorRampWhiteEnd
+              ? `${config.colorRamp}_toWhite`
+              : config.colorRamp) as ColorRampsIds
+          ].map((c) => rgbaStringToComponents(c)) as ColorRange
       ),
     }
   }
@@ -99,8 +105,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   filterElementByPercentOfIndex = (value: any, index: number) => {
-    // Select only 2% of elements
-    return value && index % 50 === 1
+    // Select only 5% of elements
+    return value && index % 20 === 1
   }
 
   calculateColorDomain = (tiles: Tile2DHeader<FourwingsHeatmapTileData>[]) => {
@@ -169,6 +175,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     let cols: number = 0
     let rows: number = 0
 
+    const interval = getInterval(minFrame, maxFrame)
     const chunks = this._getChunks(minFrame, maxFrame)
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
       const url = getDataUrlBySublayer({ tile, chunk: chunks[0], sublayer }) as string
@@ -205,7 +212,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
           start: minFrame,
           end: maxFrame,
         },
-        interval: 'DAY',
+        interval,
         workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
         buffersLength: settledPromises.map((p) =>
           p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
