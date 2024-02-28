@@ -55,6 +55,7 @@ export type _FourwingsHeatmapTileLayerProps = {
   zIndex?: number
   category: string
   sublayers: FourwingsDeckSublayer[]
+  colorRampWhiteEnd?: boolean
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
   onViewportLoad?: (string: string) => void
 }
@@ -80,17 +81,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   initializeState(context: LayerContext): void {
     super.initializeState(context)
     this.id = `${this.props.category}`
-    const visibleSublayers = this.props.sublayers.filter((sublayer) => sublayer.config?.visible)
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
       colorDomain: [1, 20, 50, 100, 500, 5000, 10000, 500000],
       // TODO: update colorRanges only when a sublayer colorRamp prop changes
-      colorRanges: visibleSublayers.map(
+      colorRanges: this.props.sublayers.map(
         ({ config }) =>
           HEATMAP_COLOR_RAMPS[
-            (visibleSublayers.length > 1
-              ? config.colorRamp
-              : `${config.colorRamp}_toWhite`) as ColorRampsIds
+            (this.props.colorRampWhiteEnd
+              ? `${config.colorRamp}_toWhite`
+              : config.colorRamp) as ColorRampsIds
           ].map((c) => rgbaStringToComponents(c)) as ColorRange
       ),
     }

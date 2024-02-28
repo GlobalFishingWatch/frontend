@@ -72,8 +72,14 @@ export const useSetFourwingsLayers = (
   const endTime = useMemo(() => (end ? getUTCDateTime(end).toMillis() : undefined), [end])
 
   useEffect(() => {
+    const totalSublayers = fourwingsLayerGenerators.reduce(
+      (acc, { sublayers }) =>
+        (acc += sublayers.filter((sublayer) => sublayer.config?.visible).length),
+      0
+    )
     fourwingsLayerGenerators.forEach(({ id, sublayers }) => {
-      if (sublayers.some((l) => l.visible)) {
+      const visibleSublayers = sublayers.filter((sublayer) => sublayer.config?.visible)
+      if (visibleSublayers.length) {
         // const previousLayer = previousLayers.length && previousLayers.find((l) => l.id === id)
         const layerInstance = new FourwingsLayer({
           minFrame: startTime,
@@ -81,7 +87,8 @@ export const useSetFourwingsLayers = (
           // mode: activityMode,
           mode: 'heatmap',
           debug: false,
-          sublayers,
+          sublayers: visibleSublayers,
+          colorRampWhiteEnd: totalSublayers === 1,
           category: id,
           onViewportLoad,
           // onVesselHighlight: onVesselHighlight,
