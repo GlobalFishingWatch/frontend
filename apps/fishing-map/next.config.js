@@ -1,6 +1,7 @@
 // @ts-check
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { join } = require('path')
+const path = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: true, //process.env.ANALYZE === 'true' || process.env.NODE_ENV === 'development',
@@ -85,6 +86,10 @@ const nextConfig = {
       fs: false,
       net: false,
       tls: false,
+    }
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      jotai: path.resolve(__dirname, 'node_modules/jotai'),
     }
     config.externals = [...config.externals, 'mapbox-gl']
     // config.optimization.minimize = false
