@@ -1,5 +1,5 @@
 import { BitmapLayer } from '@deck.gl/layers/typed'
-import { CompositeLayer } from '@deck.gl/core/typed'
+import { CompositeLayer, LayerContext } from '@deck.gl/core/typed'
 import { TileLayer as TileLayerWrongTyping } from '@deck.gl/geo-layers'
 // import { TileLayer } from '@deck.gl/geo-layers/typed'
 import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers/typed'
@@ -12,13 +12,24 @@ export enum BasemapType {
   Default = 'basemap_default',
   Labels = 'basemap_labels',
 }
-export type BasemapLayerOwnProps = { basemap: BasemapType; zIndex: number }
-export type BaseMapLayerProps = MVTLayerProps & BasemapLayerOwnProps
-export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
+export type BasemapLayerOwnProps = { basemap: BasemapType; zIndex?: number }
+export type BaseMapLayerProps = Omit<MVTLayerProps, 'data'> & BasemapLayerOwnProps
+export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   static layerName = 'ContextLayer'
   static defaultProps = {}
 
   layers: (typeof TileLayer | MVTLayer<BaseMapLayerProps>)[] = []
+
+  initializeState(context: LayerContext): void {
+    super.initializeState(context)
+    this.state = {
+      loaded: false,
+    }
+  }
+
+  onViewportLoad = (tiles: any) => {
+    this.setState({ loaded: true })
+  }
 
   _getBathimetryLayer() {
     return new TileLayer({
@@ -48,6 +59,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       minZoom: 0,
       maxZoom: 8,
       onDataLoad: this.props.onDataLoad,
+      onViewportLoad: this.onViewportLoad,
       zIndex: GROUP_ORDER.indexOf(Group.BasemapFill),
       getFillColor: [39, 70, 119],
       data: 'https://storage.googleapis.com/public-tiles/basemap/default/{z}/{x}/{y}.pbf',
@@ -61,6 +73,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       minZoom: 0,
       maxZoom: 9,
       onDataLoad: this.props.onDataLoad,
+      onViewportLoad: this.onViewportLoad,
       zIndex: GROUP_ORDER.indexOf(Group.Basemap),
       tileSize: 256,
       renderSubLayers: (props: any) => {

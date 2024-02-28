@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
 import { LayersList, PickingInfo } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
-import { useAtom } from 'jotai'
+// import { atom, useAtom } from 'jotai'
 import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
 import { ViewState } from 'react-map-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -17,6 +17,8 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
+import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
+import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import useMapInstance, { useSetMapInstance } from 'features/map/map-context.hooks'
 import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapInfo from 'features/map/controls/MapInfo'
@@ -149,7 +151,7 @@ const MapWrapper = () => {
   //   layerComposer
   // )
 
-  const layers: LayersList = useMapDeckLayers()
+  const layers = useMapDeckLayers()
   // const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   // const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -279,13 +281,18 @@ const MapWrapper = () => {
     // console.log('🚀 ~ features:', features)
   }, [])
 
+  const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
+
   return (
     <div className={styles.container}>
       <DeckGL
         id="map"
         ref={deckRef}
         views={MAP_VIEW}
-        layers={layers}
+        layers={layers as LayersList}
+        onAfterRender={() => {
+          setDeckLayerLoadedState(layers)
+        }}
         style={mapStyles}
         // more info about preserveDrawingBuffer
         // https://github.com/visgl/deck.gl/issues/4436#issuecomment-610472868

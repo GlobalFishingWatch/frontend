@@ -1,4 +1,4 @@
-import { CONTEXT_LAYERS_IDS } from '../config'
+import { CONTEXT_LAYERS_IDS } from '@globalfishingwatch/deck-layers'
 import { BaseDeckLayerGenerator } from './base'
 
 export interface ContextDeckLayerGenerator extends BaseDeckLayerGenerator {

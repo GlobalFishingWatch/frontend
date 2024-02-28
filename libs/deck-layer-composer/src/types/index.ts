@@ -17,15 +17,12 @@ export type {
   FourwingsDeckLayerGenerator,
 }
 
+// TODO: remove this
 export type AnyDeckLayersGenerator =
   | BasemapDeckLayerGenerator
   | ContextDeckLayerGenerator
-  | VesselDeckLayersGenerator[]
-  | FourwingsDeckLayerGenerator[]
-
-export type DeckLayersGeneratorDictionary = Partial<
-  Record<DeckLayersGeneratorType, AnyDeckLayersGenerator>
->
+  | VesselDeckLayersGenerator
+  | FourwingsDeckLayerGenerator
 
 export type DeckLayerBaseState = {
   id: string

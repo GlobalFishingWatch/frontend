@@ -1,11 +1,11 @@
 import { useCallback, useEffect } from 'react'
 import { useAtom, atom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
-import { BaseMap, BasemapLayerOwnProps } from '@globalfishingwatch/deck-layers'
+import { BaseMapLayer, BasemapLayerOwnProps } from '@globalfishingwatch/deck-layers'
 
 type basemapLayerAtomType = {
   loaded: boolean
-  instance?: BaseMap
+  instance?: BaseMapLayer
 }
 
 export const basemapLayerAtom = atom<basemapLayerAtomType>({
@@ -27,7 +27,7 @@ export function useBasemapLayer({
 
   useEffect(() => {
     if (visible) {
-      const basemapLayer = new BaseMap({
+      const basemapLayer = new BaseMapLayer({
         onDataLoad: onDataLoad,
         basemap: basemap,
       })

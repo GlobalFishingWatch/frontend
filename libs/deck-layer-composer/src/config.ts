@@ -1,14 +1,5 @@
-export const API_GATEWAY =
-  process.env.API_GATEWAY ||
-  process.env.REACT_APP_API_GATEWAY ||
-  process.env.NEXT_PUBLIC_API_GATEWAY ||
-  'https://gateway.api.dev.globalfishingwatch.org'
+import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 
-const GRID = 'grid'
-const EEZ = 'eez'
-const MPAS = 'mpas'
-const FAO = 'fao'
-const RFMO = 'rfmo'
-const HIGH_SEAS = 'high-seas'
-
-export const CONTEXT_LAYERS_IDS = [GRID, EEZ, MPAS, FAO, RFMO, HIGH_SEAS]
+export const DATAVIEW_TO_DECK_LAYER_CLASS = {
+  HEATMAP_ANIMATED: FourwingsLayer,
+}
