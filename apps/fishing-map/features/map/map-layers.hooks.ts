@@ -5,12 +5,15 @@ import {
   useFourwingsLayers,
   useVesselLayers,
 } from '@globalfishingwatch/deck-layer-composer'
-import { useGeneratorsConnect, useGeneratorsDictionaryConnect } from 'features/map/map.hooks'
+import { useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { useHighlightedEventsConnect } from 'features/timebar/timebar.hooks'
 
+const dataviews = [
+  { id: 'basemap', dataviewId: 1, config: { type: 'BASEMAP', basemap: 'default' } },
+]
+
 export const useMapDeckLayers = () => {
-  const generatorsDictionary = useGeneratorsDictionaryConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const { highlightedEvents } = useHighlightedEventsConnect()
@@ -21,8 +24,7 @@ export const useMapDeckLayers = () => {
     }
   }, [highlightedEvents, highlightedTime])
   const { layers } = useDeckLayerComposer({
-    generatorsDictionary,
-    generatorsConfig,
+    dataviews,
     globalGeneratorConfig: globalConfig,
     params,
   })

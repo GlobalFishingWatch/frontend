@@ -42,7 +42,7 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
 import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
-import { selectDefaultMapGeneratorsConfig, selectMapGeneratorsDictionary } from './map.selectors'
+import { selectDefaultMapGeneratorsConfig } from './map.selectors'
 import {
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
@@ -75,10 +75,6 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
     overflowLoad: vessels.length > MAX_TOOLTIP_LIST,
     overflowLoadNumber: vessels.length - MAX_TOOLTIP_LIST,
   }
-}
-
-export const useGeneratorsDictionaryConnect = () => {
-  return useSelector(selectMapGeneratorsDictionary)
 }
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
