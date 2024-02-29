@@ -331,8 +331,8 @@ const MapWrapper = () => {
       >
         {(props) => (
           <Fragment>
-            <MapAnnotationsDialog {...props} />
             {deckRef?.current?.deck && <MapAnnotations deckRef={deckRef.current} {...props} />}
+            <MapAnnotationsDialog {...props} />
           </Fragment>
         )}
       </DeckGL>
