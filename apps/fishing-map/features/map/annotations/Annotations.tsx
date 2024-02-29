@@ -1,100 +1,58 @@
-import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
-import {
-  Button,
-  ColorBar,
-  IconButton,
-  InputText,
-  LineColorBarOptions,
-} from '@globalfishingwatch/ui-components'
-import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
-import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
-import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import styles from './Annotations.module.css'
-import { MapAnnotationComponentProps } from './annotations.types'
-/* eslint-disable react/prop-types */
-const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]
+import { DragEventHandler, useCallback, useState } from 'react'
+import { useMapAnnotations } from 'features/map/annotations/annotations.hooks'
+import { MapAnnotation, MapAnnotationComponentProps } from './annotations.types'
 
-const MapAnnotations = ({
-  coords,
-  ...rest
-}: MapAnnotationComponentProps): React.ReactNode | null => {
-  const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
-  const gfwUser = useSelector(selectIsGFWUser)
-  const { mapAnnotation, resetMapAnnotation, setMapAnnotation, addMapAnnotation } =
-    useMapAnnotation()
-  const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
-  const onConfirmClick = () => {
-    if (!mapAnnotation) {
-      return
-    }
-    upsertMapAnnotations({
-      ...mapAnnotation,
-      id: mapAnnotation.id || Date.now(),
-    })
-    resetMapAnnotation()
-    dispatchQueryParams({ mapAnnotationsVisible: true })
-  }
-  const ref = useEventKeyListener(['Enter'], onConfirmClick)
+const MapAnnotations = (props: MapAnnotationComponentProps): React.ReactNode | null => {
+  const { viewport, deckRef } = props
+  const { upsertMapAnnotations, mapAnnotations } = useMapAnnotations()
+  const [newCoordinates, setNewCoordinates] = useState([0, 0])
 
-  if (!coords || !gfwUser) {
-    return null
-  }
-
-  if (!mapAnnotation) {
-    addMapAnnotation(coords)
-  }
-
-  const onDeleteClick = () => {
-    deleteMapAnnotation(mapAnnotation.id)
-    resetMapAnnotation()
-  }
+  const handleDragStart = useCallback(() => {
+    deckRef?.deck?.setProps({ controller: { dragPan: false } })
+  }, [deckRef?.deck])
+  const handleDrag: DragEventHandler = useCallback(
+    (event) => {
+      setNewCoordinates(
+        viewport.unproject([viewport.width - event.clientX, viewport.height - event.clientY])
+      )
+    },
+    [viewport]
+  )
+  const handleDragEnd = useCallback(
+    (mapAnnotation: MapAnnotation) => {
+      deckRef?.deck?.setProps({ controller: { dragPan: true } })
+      upsertMapAnnotations({
+        ...mapAnnotation,
+        id: mapAnnotation.id || Date.now(),
+        lon: newCoordinates[0],
+        lat: newCoordinates[1],
+      })
+    },
+    [deckRef?.deck, upsertMapAnnotations, newCoordinates]
+  )
 
   return (
-    <div onPointerUp={(event) => event.preventDefault()}>
-      <HtmlOverlay {...rest} key="1">
-        <HtmlOverlayItem
-          style={{ pointerEvents: 'all', transform: 'translate(-50%,-105%)' }}
-          coordinates={coords as number[]}
-        >
-          <div className={styles.popup}>
-            <div className={styles.tooltipArrow} />
-            <div className={styles.popupContent} ref={ref}>
-              <div className={styles.flex}>
-                <InputText
-                  value={mapAnnotation?.label || ''}
-                  onChange={(e) => setMapAnnotation({ label: e.target.value })}
-                  placeholder={t('map.annotationPlaceholder', 'Type something here')}
-                />
-                <ColorBar
-                  colorBarOptions={colors}
-                  selectedColor={mapAnnotation?.color}
-                  onColorClick={(color) => {
-                    setMapAnnotation({ color: color.value })
-                  }}
-                />
-              </div>
-              <div className={styles.popupButtons}>
-                {mapAnnotation?.id && (
-                  <IconButton icon="delete" type="warning-border" onClick={onDeleteClick} />
-                )}
-                <Button
-                  onClick={onConfirmClick}
-                  className={styles.confirmBtn}
-                  disabled={!mapAnnotation?.label}
-                >
-                  {t('common.confirm', 'Confirm')}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </HtmlOverlayItem>
-      </HtmlOverlay>
-    </div>
+    <HtmlOverlay {...props} key="1">
+      {mapAnnotations &&
+        mapAnnotations.map((annotation) => (
+          <HtmlOverlayItem
+            key={annotation.id}
+            style={{ pointerEvents: 'all' }}
+            coordinates={[Number(annotation.lon), Number(annotation.lat)]}
+          >
+            <p
+              style={{ color: annotation.color }}
+              draggable={true}
+              onDragStart={handleDragStart}
+              onDrag={handleDrag}
+              onDragEnd={() => handleDragEnd(annotation)}
+            >
+              {annotation.label}
+            </p>
+          </HtmlOverlayItem>
+        ))}
+    </HtmlOverlay>
   )
 }
 

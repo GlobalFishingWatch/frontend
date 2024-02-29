@@ -1,4 +1,5 @@
 import {
+  Fragment,
   ReactEventHandler,
   ReactNode,
   SyntheticEvent,
@@ -55,7 +56,7 @@ import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selec
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
-import MapAnnotations from './annotations/Annotations'
+import MapAnnotationsDialog from './annotations/AnnotationsDialog'
 import {
   MAP_VIEW,
   useViewStateAtom,
@@ -66,6 +67,7 @@ import {
 import styles from './Map.module.css'
 import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
 import MapLegends from './MapLegends'
+import MapAnnotations from './annotations/Annotations'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 const PopupWrapper = dynamic(
@@ -319,7 +321,12 @@ const MapWrapper = () => {
         onClick={onClick}
         onHover={onHover}
       >
-        {(props) => <MapAnnotations coords={tooltipCoordinates} {...props} />}
+        {(props) => (
+          <Fragment>
+            <MapAnnotationsDialog coords={tooltipCoordinates} {...props} />
+            {deckRef?.current?.deck && <MapAnnotations deckRef={deckRef.current} {...props} />}
+          </Fragment>
+        )}
       </DeckGL>
       {/* {style && (
         <Map
