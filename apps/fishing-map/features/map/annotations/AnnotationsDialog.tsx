@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
+import { DeckGLRenderCallbackArgs } from '@deck.gl/react/typed/utils/extract-jsx-layers'
 import {
   Button,
   ColorBar,
@@ -14,30 +15,24 @@ import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import styles from './Annotations.module.css'
-import { MapAnnotationDilaogComponentProps } from './annotations.types'
 /* eslint-disable react/prop-types */
 const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]
 
-const MapAnnotationsDialog = ({
-  coords,
-  ...rest
-}: MapAnnotationDilaogComponentProps): React.ReactNode | null => {
+const MapAnnotationsDialog = (props: DeckGLRenderCallbackArgs): React.ReactNode | null => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const gfwUser = useSelector(selectIsGFWUser)
-  const { mapAnnotation, resetMapAnnotation, setMapAnnotation, addMapAnnotation, isMapAnnotating } =
+  const { mapAnnotation, resetMapAnnotation, setMapAnnotation, isMapAnnotating } =
     useMapAnnotation()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
-  const isDialogVisible = coords && gfwUser && isMapAnnotating
+  const isDialogVisible = gfwUser && isMapAnnotating && mapAnnotation
   const onConfirmClick = () => {
-    if (!mapAnnotation || !coords) {
+    if (!mapAnnotation) {
       return
     }
     upsertMapAnnotations({
       ...mapAnnotation,
       id: mapAnnotation.id || Date.now(),
-      lon: coords[0],
-      lat: coords[1],
     })
     resetMapAnnotation()
     dispatchQueryParams({ mapAnnotationsVisible: true })
@@ -48,10 +43,6 @@ const MapAnnotationsDialog = ({
     return null
   }
 
-  if (!mapAnnotation) {
-    addMapAnnotation(coords)
-  }
-
   const onDeleteClick = () => {
     deleteMapAnnotation(mapAnnotation.id)
     resetMapAnnotation()
@@ -59,10 +50,10 @@ const MapAnnotationsDialog = ({
 
   return (
     <div onPointerUp={(event) => event.preventDefault()}>
-      <HtmlOverlay {...rest} key="1">
+      <HtmlOverlay {...props} key="1">
         <HtmlOverlayItem
           style={{ pointerEvents: 'all', transform: 'translate(-50%,-105%)' }}
-          coordinates={coords as number[]}
+          coordinates={[Number(mapAnnotation.lon), Number(mapAnnotation.lat)]}
         >
           <div className={styles.popup}>
             <div className={styles.tooltipArrow} />

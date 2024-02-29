@@ -56,7 +56,6 @@ import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selec
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
-import MapAnnotationsDialog from './annotations/AnnotationsDialog'
 import {
   MAP_VIEW,
   useViewStateAtom,
@@ -68,6 +67,8 @@ import styles from './Map.module.css'
 import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
 import MapLegends from './MapLegends'
 import MapAnnotations from './annotations/Annotations'
+import MapAnnotationsDialog from './annotations/AnnotationsDialog'
+import { useMapAnnotation } from './annotations/annotations.hooks'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 const PopupWrapper = dynamic(
@@ -276,17 +277,24 @@ const MapWrapper = () => {
   //   }
   //   return styleInteractiveLayerIds
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
-  const [tooltipCoordinates, setTooltipCoordinates] = useState<undefined | Position>(undefined)
-  const onClick: DeckProps['onClick'] = useCallback((info: PickingInfo, event: any) => {
-    if (event.srcEvent.defaultPrevented) {
-      return true
-    }
-    // const features = deckRef?.current?.pickMultipleObjects({
-    //   x: info.x,
-    //   y: info.y,
-    // })
-    setTooltipCoordinates(info?.coordinate as Position)
-  }, [])
+  const { addMapAnnotation, isMapAnnotating } = useMapAnnotation()
+  const onClick: DeckProps['onClick'] = useCallback(
+    (info: PickingInfo, event: any) => {
+      console.log("🚀 ~ constonClick:DeckProps['onClick']=useCallback ~ info:", info)
+      if (event.srcEvent.defaultPrevented) {
+        // this is needed to allow interacting with overlay elements
+        return true
+      }
+      // const features = deckRef?.current?.pickMultipleObjects({
+      //   x: info.x,
+      //   y: info.y,
+      // })
+      if (isMapAnnotating) {
+        addMapAnnotation(info?.coordinate as Position)
+      }
+    },
+    [isMapAnnotating, addMapAnnotation]
+  )
 
   const onHover = useCallback((info: PickingInfo) => {
     // const features = deckRef?.current?.pickMultipleObjects({
@@ -323,7 +331,7 @@ const MapWrapper = () => {
       >
         {(props) => (
           <Fragment>
-            <MapAnnotationsDialog coords={tooltipCoordinates} {...props} />
+            <MapAnnotationsDialog {...props} />
             {deckRef?.current?.deck && <MapAnnotations deckRef={deckRef.current} {...props} />}
           </Fragment>
         )}
