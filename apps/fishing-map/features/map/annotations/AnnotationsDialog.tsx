@@ -25,23 +25,26 @@ const MapAnnotationsDialog = ({
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const gfwUser = useSelector(selectIsGFWUser)
-  const { mapAnnotation, resetMapAnnotation, setMapAnnotation, addMapAnnotation } =
+  const { mapAnnotation, resetMapAnnotation, setMapAnnotation, addMapAnnotation, isMapAnnotating } =
     useMapAnnotation()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
+  const isDialogVisible = coords && gfwUser && isMapAnnotating
   const onConfirmClick = () => {
-    if (!mapAnnotation) {
+    if (!mapAnnotation || !coords) {
       return
     }
     upsertMapAnnotations({
       ...mapAnnotation,
       id: mapAnnotation.id || Date.now(),
+      lon: coords[0],
+      lat: coords[1],
     })
     resetMapAnnotation()
     dispatchQueryParams({ mapAnnotationsVisible: true })
   }
   const ref = useEventKeyListener(['Enter'], onConfirmClick)
 
-  if (!coords || !gfwUser) {
+  if (!isDialogVisible) {
     return null
   }
 

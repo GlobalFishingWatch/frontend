@@ -5,7 +5,7 @@ import { MapAnnotation, MapAnnotationComponentProps } from './annotations.types'
 
 const MapAnnotations = (props: MapAnnotationComponentProps): React.ReactNode | null => {
   const { viewport, deckRef } = props
-  const { upsertMapAnnotations, mapAnnotations } = useMapAnnotations()
+  const { upsertMapAnnotations, mapAnnotations, areMapAnnotationsVisible } = useMapAnnotations()
   const [newCoordinates, setNewCoordinates] = useState([0, 0])
 
   const handleDragStart = useCallback(() => {
@@ -35,6 +35,7 @@ const MapAnnotations = (props: MapAnnotationComponentProps): React.ReactNode | n
   return (
     <HtmlOverlay {...props} key="1">
       {mapAnnotations &&
+        areMapAnnotationsVisible &&
         mapAnnotations.map((annotation) => (
           <HtmlOverlayItem
             key={annotation.id}
