@@ -40,29 +40,3 @@ export const getVesselDataviewGenerator = (
     }
   })
 }
-
-export const getFourwingsDataviewGenerator = (
-  dataviews: UrlDataviewInstance[]
-): FourwingsDeckLayerGenerator[] => {
-  const dataviewByGroup = groupBy(dataviews, (dataview) => dataview.category)
-  return Object.entries(dataviewByGroup).map(
-    ([category, dataviews]): FourwingsDeckLayerGenerator => {
-      // const category = dataview.category as FourwingsDataviewCategory | undefined
-      const sublayers: FourwingsDeckSublayer[] = dataviews.map((dataview) => ({
-        id: dataview.id,
-        visible: dataview.config?.visible ?? true,
-        datasets: dataview.config?.datasets,
-        config: {
-          color: dataview.config?.color as string,
-          colorRamp: dataview.config?.colorRamp,
-          visible: dataview.config?.visible,
-        },
-      }))
-      return {
-        id: category as FourwingsDataviewCategory,
-        type: DeckLayersGeneratorType.Fourwings,
-        sublayers,
-      }
-    }
-  )
-}

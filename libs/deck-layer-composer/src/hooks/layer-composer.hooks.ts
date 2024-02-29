@@ -2,8 +2,13 @@ import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { get } from 'lodash'
 import { useCallback, useEffect, useMemo } from 'react'
 import { GlobalGeneratorConfig } from '@globalfishingwatch/layer-composer'
-import { isHeatmapAnimatedDataview } from '@globalfishingwatch/dataviews-client'
-import { AnyDeckLayer, BaseMapLayer, BaseMapLayerProps } from '@globalfishingwatch/deck-layers'
+import { getDataviewsMerged, isHeatmapAnimatedDataview } from '@globalfishingwatch/dataviews-client'
+import {
+  AnyDeckLayer,
+  BaseMapLayer,
+  BaseMapLayerProps,
+  FourwingsLayer,
+} from '@globalfishingwatch/deck-layers'
 import { Dataview, DataviewInstance } from '@globalfishingwatch/api-types'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { zIndexSortedArray } from '../utils/layers'
@@ -16,44 +21,28 @@ import {
   VesselDeckLayersGenerator,
 } from '../types'
 import { getFourwingsDataviewGenerator, getVesselDataviewGenerator } from '../dataviews-resolver'
+import {
+  DataviewConfigType,
+  GlobalConfig,
+  getDeckBasemapLayerPropsFromDataview,
+  getDeckFourwingsLayerPropsFromDataview,
+} from '../resolvers'
 import { VesselDeckLayersParams, useSetVesselLayers } from './vessel.hooks'
 import { useBasemapLayer } from './basemap.hooks'
 import { useContextsLayer } from './context.hooks'
 import { useSetFourwingsLayers } from './fourwings.hooks'
 
-export enum DataviewConfigType {
-  Annotation = 'ANNOTATION',
-  Background = 'BACKGROUND',
-  Basemap = 'BASEMAP',
-  BasemapLabels = 'BASEMAP_LABELS',
-  CartoPolygons = 'CARTO_POLYGONS',
-  Context = 'CONTEXT',
-  GL = 'GL',
-  Heatmap = 'HEATMAP',
-  HeatmapStatic = 'HEATMAP_STATIC',
-  HeatmapAnimated = 'HEATMAP_ANIMATED',
-  Polygons = 'POLYGONS',
-  Rulers = 'RULERS',
-  TileCluster = 'TILE_CLUSTER',
-  Track = 'TRACK',
-  UserContext = 'USER_CONTEXT',
-  UserPoints = 'USER_POINTS',
-  VesselEvents = 'VESSEL_EVENTS',
-  VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
-}
-
-function getDeckBasemapLayerPropsFromDataview(dataview: DataviewInstance): BaseMapLayerProps {
-  return {
-    id: dataview.id,
-    visible: dataview.config?.visible || true,
-    basemap: dataview.config?.basemap || 'default',
-  }
-}
-
-const dataviewToDeckLayer = (dataview: DataviewInstance): AnyDeckLayer => {
+const dataviewToDeckLayer = (
+  dataview: DataviewInstance,
+  globalConfig: GlobalConfig
+): AnyDeckLayer => {
   if (dataview.config?.type === DataviewConfigType.Basemap) {
     const deckLayerProps = getDeckBasemapLayerPropsFromDataview(dataview)
     return new BaseMapLayer(deckLayerProps)
+  }
+  if (dataview.config?.type === DataviewConfigType.HeatmapAnimated) {
+    const deckLayerProps = getDeckFourwingsLayerPropsFromDataview(dataview, globalConfig)
+    return new FourwingsLayer(deckLayerProps)
   }
   // if (generator.type === DeckLayersGeneratorType.Context) {
   //   return {
@@ -80,6 +69,7 @@ const dataviewToDeckLayer = (dataview: DataviewInstance): AnyDeckLayer => {
   //     zIndex: generator.zIndex,
   //   }
   // }
+
   throw new Error(`Unknown deck layer generator type: ${dataview.config?.type}`)
 }
 
@@ -116,15 +106,17 @@ export const deckLayersAtom = atom<any[]>((get) => {
   })
 })
 
+export const useGetDeckLayer = (id: string) => {
+  return useAtomValue(deckLayersAtom).find((layer) => layer.id === id)
+}
+
 export type DeckLayerComposerParams = VesselDeckLayersParams
 export function useDeckLayerComposer({
   dataviews,
-  globalGeneratorConfig,
-  params,
+  globalConfig,
 }: {
   dataviews: DataviewInstance[]
-  globalGeneratorConfig: GlobalGeneratorConfig
-  params: DeckLayerComposerParams
+  globalConfig: GlobalConfig
 }) {
   // const memoDataviews = useMemoCompare(dataviews)
   // const deckLayersAtom = useMemo(
@@ -141,13 +133,20 @@ export function useDeckLayerComposer({
   // console.log('🚀 ~ deckLayers:', deckLayers)
 
   useEffect(() => {
-    const layers = dataviews?.map((dataview) => {
+    const dataviewsMerged = getDataviewsMerged(dataviews, globalConfig) as DataviewInstance[]
+    const layers = dataviewsMerged?.flatMap((dataview) => {
       // TODO research if we can use atoms here
-      return dataviewToDeckLayer(dataview)
+      try {
+        return dataviewToDeckLayer(dataview, globalConfig)
+      } catch (e) {
+        console.warn(e)
+        return []
+      }
     })
     // console.log('setting layers', layers)
+    console.log('🚀 ~ useEffect ~ layers:', layers)
     setDeckLayers(layers)
-  }, [dataviews, setDeckLayers])
+  }, [dataviews, setDeckLayers, globalConfig])
 
   // const basemapGenerator = generatorsConfig.find(
   //   (generator: any) => generator.type === 'BASEMAP'

@@ -16,7 +16,7 @@ import {
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
-import { deckLayersAtom } from '@globalfishingwatch/deck-layer-composer'
+import { deckLayersAtom, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -166,7 +166,9 @@ const TimebarWrapper = () => {
   const tracksEvents = useTimebarVesselEvents()
   // const basemapLayer = useDeckMapLayer('basemap')
   const deckLayers = useAtomValue(deckLayersAtom)
-  console.log('🚀 ~ TimebarWrapper ~ deckLayers:', deckLayers)
+  const basemapLayer = useGetDeckLayer('basemap')
+  // console.log('🚀 ~ TimebarWrapper ~ deckLayers:', deckLayers)
+  // console.log('🚀 ~ TimebarWrapper ~ basemapLayer:', basemapLayer)
 
   // useEffect(() => {
   //   console.log('LOADEDE CHANGED', basemapLayer?.state?.loaded)

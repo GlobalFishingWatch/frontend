@@ -53,7 +53,6 @@ export type _FourwingsHeatmapTileLayerProps = {
   minFrame: number
   maxFrame: number
   zIndex?: number
-  category: string
   sublayers: FourwingsDeckSublayer[]
   colorRampWhiteEnd?: boolean
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
@@ -80,7 +79,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)
-    this.id = `${this.props.category}`
+    this.id = `${FourwingsHeatmapTileLayer.layerName}-${this.props.id}`
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
       colorDomain: [1, 20, 50, 100, 500, 5000, 10000, 500000],
@@ -154,7 +153,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }, 500)
 
   _onTileLoad = (tile: Tile2DHeader) => {
-    const allTilesLoaded = this.getLayerInstance().state.tileset.tiles.every(
+    const allTilesLoaded = this.getLayerInstance()?.state.tileset.tiles.every(
       (tile: Tile2DHeader) => tile.isLoaded === true
     )
     if (this.props.onTileLoad) {
@@ -260,7 +259,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: `${this.props.category}-${HEATMAP_ID}`,
+        id: `${HEATMAP_ID}`,
         tileSize: 512,
         colorDomain,
         colorRanges,
@@ -292,9 +291,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   getLayerInstance() {
-    return this.getSubLayers().find(
-      (l) => l.id === `${FourwingsHeatmapTileLayer.layerName}-${this.props.category}-${HEATMAP_ID}`
-    ) as TileLayer
+    return this.getSubLayers().find((l) => l.id === `${this.props.id}-${HEATMAP_ID}`) as TileLayer
   }
 
   getData() {

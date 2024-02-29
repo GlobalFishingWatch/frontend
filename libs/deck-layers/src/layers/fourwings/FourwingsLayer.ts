@@ -18,6 +18,7 @@ export type FourwingsColorRamp = {
 
 export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
   FourwingsHeatmapTileLayerProps & {
+    id: string
     mode: FourwingsLayerMode
     hoveredFeatures: PickingInfo[]
     clickedFeatures: PickingInfo[]
@@ -28,7 +29,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   layers: FourwingsHeatmapTileLayer[] | FourwingsPositionsTileLayer[] | undefined
 
   initializeState() {
-    this.id = `FourwingsLayer-${this.props.category}-${this.props.mode}`
+    this.id = `${FourwingsLayer.layerName}-${this.props.id}-${this.props.mode}`
   }
 
   renderLayers(): Layer<{}> | LayersList {

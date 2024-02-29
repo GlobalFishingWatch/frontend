@@ -27,6 +27,9 @@ export interface DataviewConfig<Type = any> {
   track?: string
   events?: string[]
   /*****************/
+  /** Fourwings datasets */
+  sublayers?: any[]
+  /*****************/
   [key: string]: any
 }
 

@@ -8,13 +8,11 @@ import {
 import { useGeneratorsConnect } from 'features/map/map.hooks'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { useHighlightedEventsConnect } from 'features/timebar/timebar.hooks'
-
-const dataviews = [
-  { id: 'basemap', dataviewId: 1, config: { type: 'BASEMAP', basemap: 'default' } },
-]
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.selectors'
 
 export const useMapDeckLayers = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
+  const dataviews = useSelector(selectDataviewInstancesResolvedVisible)
   const { generatorsConfig, globalConfig } = useGeneratorsConnect()
   const { highlightedEvents } = useHighlightedEventsConnect()
   const params = useMemo(() => {
@@ -25,7 +23,7 @@ export const useMapDeckLayers = () => {
   }, [highlightedEvents, highlightedTime])
   const { layers } = useDeckLayerComposer({
     dataviews,
-    globalGeneratorConfig: globalConfig,
+    globalConfig,
     params,
   })
 
