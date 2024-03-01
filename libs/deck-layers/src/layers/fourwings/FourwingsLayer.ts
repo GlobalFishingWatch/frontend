@@ -29,7 +29,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   layers: FourwingsHeatmapTileLayer[] | FourwingsPositionsTileLayer[] | undefined
 
   initializeState() {
-    this.id = `${FourwingsLayer.layerName}-${this.props.id}-${this.props.mode}`
+    this.id = `${FourwingsLayer.layerName}-${this.props.category}-${this.props.mode}`
   }
 
   renderLayers(): Layer<{}> | LayersList {

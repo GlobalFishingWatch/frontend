@@ -167,8 +167,6 @@ const TimebarWrapper = () => {
   // const basemapLayer = useDeckMapLayer('basemap')
   const deckLayers = useAtomValue(deckLayersAtom)
   const basemapLayer = useGetDeckLayer('basemap')
-  // console.log('🚀 ~ TimebarWrapper ~ deckLayers:', deckLayers)
-  // console.log('🚀 ~ TimebarWrapper ~ basemapLayer:', basemapLayer)
 
   // useEffect(() => {
   //   console.log('LOADEDE CHANGED', basemapLayer?.state?.loaded)

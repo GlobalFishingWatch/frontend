@@ -4,7 +4,7 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '../utils/dates'
 import { GlobalConfig } from './types'
 
-export const getDeckFourwingsLayerPropsFromDataview = (
+export const resolveDeckFourwingsLayerProps = (
   dataview: UrlDataviewInstance,
   { start, end }: GlobalConfig
 ): FourwingsLayerProps => {
@@ -24,7 +24,7 @@ export const getDeckFourwingsLayerPropsFromDataview = (
     },
   }))
   return {
-    id: dataview.id,
+    category: dataview.id,
     minFrame: startTime,
     maxFrame: endTime,
     visible: true,

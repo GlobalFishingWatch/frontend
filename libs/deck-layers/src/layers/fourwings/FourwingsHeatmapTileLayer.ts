@@ -79,7 +79,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)
-    this.id = `${FourwingsHeatmapTileLayer.layerName}-${this.props.id}`
+    // this.id = `${FourwingsHeatmapTileLayer.layerName}-${this.props.id}`
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
       colorDomain: [1, 20, 50, 100, 500, 5000, 10000, 500000],
@@ -218,7 +218,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         ),
       },
     })
-
     return data
   }
 
@@ -291,7 +290,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   getLayerInstance() {
-    return this.getSubLayers().find((l) => l.id === `${this.props.id}-${HEATMAP_ID}`) as TileLayer
+    const layer = this.getSubLayers().find(
+      (l) => l.id === `${FourwingsHeatmapTileLayer.layerName}-${HEATMAP_ID}`
+    ) as TileLayer
+    return layer
   }
 
   getData() {

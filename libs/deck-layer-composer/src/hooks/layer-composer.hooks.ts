@@ -7,6 +7,7 @@ import {
   AnyDeckLayer,
   BaseMapLayer,
   BaseMapLayerProps,
+  ContextLayer,
   FourwingsLayer,
 } from '@globalfishingwatch/deck-layers'
 import { Dataview, DataviewInstance } from '@globalfishingwatch/api-types'
@@ -20,12 +21,13 @@ import {
   FourwingsDeckLayerGenerator,
   VesselDeckLayersGenerator,
 } from '../types'
-import { getFourwingsDataviewGenerator, getVesselDataviewGenerator } from '../dataviews-resolver'
+import { getVesselDataviewGenerator } from '../dataviews-resolver'
 import {
   DataviewConfigType,
   GlobalConfig,
-  getDeckBasemapLayerPropsFromDataview,
-  getDeckFourwingsLayerPropsFromDataview,
+  resolveDeckBasemapLayerProps,
+  resolveDeckContextLayerProps,
+  resolveDeckFourwingsLayerProps,
 } from '../resolvers'
 import { VesselDeckLayersParams, useSetVesselLayers } from './vessel.hooks'
 import { useBasemapLayer } from './basemap.hooks'
@@ -37,12 +39,18 @@ const dataviewToDeckLayer = (
   globalConfig: GlobalConfig
 ): AnyDeckLayer => {
   if (dataview.config?.type === DataviewConfigType.Basemap) {
-    const deckLayerProps = getDeckBasemapLayerPropsFromDataview(dataview)
+    const deckLayerProps = resolveDeckBasemapLayerProps(dataview)
     return new BaseMapLayer(deckLayerProps)
   }
   if (dataview.config?.type === DataviewConfigType.HeatmapAnimated) {
-    const deckLayerProps = getDeckFourwingsLayerPropsFromDataview(dataview, globalConfig)
-    return new FourwingsLayer(deckLayerProps)
+    const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, globalConfig)
+    const layer = new FourwingsLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewConfigType.Context) {
+    const deckLayerProps = resolveDeckContextLayerProps(dataview, globalConfig)
+    const layer = new ContextLayer(deckLayerProps)
+    return layer
   }
   // if (generator.type === DeckLayersGeneratorType.Context) {
   //   return {
@@ -130,7 +138,6 @@ export function useDeckLayerComposer({
   //   [dataviews]
   // )
   const [deckLayers, setDeckLayers] = useAtom(deckLayerInstancesAtom)
-  // console.log('🚀 ~ deckLayers:', deckLayers)
 
   useEffect(() => {
     const dataviewsMerged = getDataviewsMerged(dataviews, globalConfig) as DataviewInstance[]
@@ -144,7 +151,6 @@ export function useDeckLayerComposer({
       }
     })
     // console.log('setting layers', layers)
-    console.log('🚀 ~ useEffect ~ layers:', layers)
     setDeckLayers(layers)
   }, [dataviews, setDeckLayers, globalConfig])
 
@@ -178,17 +184,14 @@ export function useDeckLayerComposer({
   //   params
   // )
 
-  // console.log('🚀 ~ generatorsConfig:', generatorsConfig)
   // const fourwingsLayersConfig = getFourwingsDataviewGenerator(
   //   generatorsConfig.filter((config) => config.type === 'HEATMAP_ANIMATED')
   // )
-  // console.log('🚀 ~ fourwingsLayersConfig:', fourwingsLayersConfig)
 
   // const fourwingsLayers = useSetFourwingsLayers(
   //   fourwingsLayersConfig as FourwingsDeckLayerGenerator[],
   //   globalGeneratorConfig
   // )
-  // console.log('🚀 ~ fourwingsLayers:', fourwingsLayers)
 
   return {
     // layers: zIndexSortedArray([basemapLayer, contextLayer, ...vesselLayers, ...fourwingsLayers]),
