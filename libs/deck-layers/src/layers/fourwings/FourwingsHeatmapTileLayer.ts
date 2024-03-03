@@ -46,9 +46,9 @@ export type FourwingsHeatmapTileData = {
   startFrames: number[]
 }
 export type _FourwingsHeatmapTileLayerProps = {
-  data: FourwingsHeatmapTileData
+  data?: FourwingsHeatmapTileData
   debug?: boolean
-  interval: Interval
+  interval?: Interval
   resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
@@ -59,7 +59,8 @@ export type _FourwingsHeatmapTileLayerProps = {
   onViewportLoad?: (string: string) => void
 }
 
-export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps & TileLayerProps
+export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
+  Partial<TileLayerProps>
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.Heatmap) },

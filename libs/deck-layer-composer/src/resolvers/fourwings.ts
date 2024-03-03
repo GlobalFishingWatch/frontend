@@ -1,12 +1,15 @@
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { FourwingsDeckSublayer, FourwingsLayerProps } from '@globalfishingwatch/deck-layers'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { getUTCDateTime } from '../utils/dates'
-import { GlobalConfig } from './types'
+import {
+  FourwingsDeckSublayer,
+  FourwingsLayerProps,
+  getUTCDateTime,
+} from '@globalfishingwatch/deck-layers'
+import { ResolverGlobalConfig } from './types'
 
+// TODO: decide if include static here or create a new one
 export const resolveDeckFourwingsLayerProps = (
   dataview: UrlDataviewInstance,
-  { start, end }: GlobalConfig
+  { start, end }: ResolverGlobalConfig
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
@@ -24,6 +27,7 @@ export const resolveDeckFourwingsLayerProps = (
     },
   }))
   return {
+    id: dataview.id,
     category: dataview.id,
     minFrame: startTime,
     maxFrame: endTime,

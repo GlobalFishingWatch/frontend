@@ -21,7 +21,6 @@ import {
 import { DatasetSubCategory, DataviewCategory, Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import { AnyDeckLayersGenerator } from '@globalfishingwatch/deck-layer-composer'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -79,27 +78,12 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
 
 // This is a convenience hook that returns at the same time the portions of the store we interested in
 // as well as the functions we need to update the same portions
-export const useGeneratorsConnect = () => {
+export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
   const { viewState } = useViewStateAtom()
   const { i18n } = useTranslation()
-  const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
-  const sourceTilesLoaded = useMapSourceTiles()
-  const updatedGeneratorConfig = useMemo(() => {
-    return generatorsConfig.map((generatorConfig, i) => {
-      if (generatorConfig.type === GeneratorType.Polygons) {
-        // TODO fix this any
-        return {
-          ...generatorConfig,
-          visible: sourceTilesLoaded[generatorConfig.id]?.loaded ? 1 : 0,
-        } as any
-      }
-      return generatorConfig as AnyDeckLayersGenerator
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [generatorsConfig, sourceTilesLoaded])
 
   return useMemo(() => {
     let globalConfig: GlobalGeneratorConfig = {
@@ -116,18 +100,9 @@ export const useGeneratorsConnect = () => {
       }
     }
     return {
-      generatorsConfig: updatedGeneratorConfig,
       globalConfig,
     }
-  }, [
-    viewState.zoom,
-    start,
-    end,
-    i18n.language,
-    showTimeComparison,
-    timeComparisonValues,
-    updatedGeneratorConfig,
-  ])
+  }, [viewState.zoom, start, end, i18n.language, showTimeComparison, timeComparisonValues])
 }
 
 export const useClickedEventConnect = () => {

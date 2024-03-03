@@ -224,7 +224,7 @@ type DataviewsGeneratorConfigsParams = {
 }
 export function getDataviewsMerged(
   dataviews: (UrlDataviewInstance | DataviewInstance)[],
-  params: DataviewsGeneratorConfigsParams = {}
+  params: any = {}
 ) {
   const { activityDataviews, detectionDataviews, trackDataviews, otherDataviews } =
     dataviews.reduce(

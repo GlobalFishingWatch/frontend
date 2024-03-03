@@ -11,6 +11,27 @@ export interface DataviewContexLayerConfig {
   dataset: string
 }
 
+export enum DataviewConfigType {
+  Annotation = 'ANNOTATION',
+  Background = 'BACKGROUND',
+  Basemap = 'BASEMAP',
+  BasemapLabels = 'BASEMAP_LABELS',
+  CartoPolygons = 'CARTO_POLYGONS',
+  Context = 'CONTEXT',
+  GL = 'GL',
+  Heatmap = 'HEATMAP',
+  HeatmapStatic = 'HEATMAP_STATIC',
+  HeatmapAnimated = 'HEATMAP_ANIMATED',
+  Polygons = 'POLYGONS',
+  Rulers = 'RULERS',
+  TileCluster = 'TILE_CLUSTER',
+  Track = 'TRACK',
+  UserContext = 'USER_CONTEXT',
+  UserPoints = 'USER_POINTS',
+  VesselEvents = 'VESSEL_EVENTS',
+  VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
+}
+
 export interface DataviewConfig<Type = any> {
   // TODO use any property from layer-composer here?
   type?: Type

@@ -28,9 +28,12 @@ export type VesselDataStatus = {
 export type _VesselLayerProps = {
   name: string
   color: Color
-  onVesselDataLoad: (layers: VesselDataStatus[]) => void
+  visible: boolean
+  onVesselDataLoad?: (layers: VesselDataStatus[]) => void
 }
-export type VesselEventsLayerProps = _VesselEventsLayerProps & { events: VesselDeckLayersEvent[] }
+export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
+  events: VesselDeckLayersEvent[]
+}
 export type VesselLayerProps = _VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
 
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {

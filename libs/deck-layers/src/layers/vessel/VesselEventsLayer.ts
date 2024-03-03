@@ -28,12 +28,12 @@ export const EVENTS_COLORS: Record<string, Color> = {
 export type _VesselEventsLayerProps<DataT = any> = {
   type: EventTypes
   zIndex?: number
-  filterRange: Array<number>
+  filterRange?: Array<number>
   visibleEvents?: EventTypes[]
   highlightEventIds?: string[]
   getShape?: AccessorFunction<DataT, number>
   getPosition?: AccessorFunction<DataT, Position> | Position
-  getFilterValue: AccessorFunction<DataT, number>
+  getFilterValue?: AccessorFunction<DataT, number>
   getPickingInfo?: AccessorFunction<DataT, string>
   onDataChange?: (type: EventTypes, dataChange: string) => void
 }

@@ -5,7 +5,7 @@ import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 export type _VesselEventsLayerProps<DataT = any> = {
   eventType?: string
   zIndex?: number
-  filterRange: Array<number>
+  filterRange?: Array<number>
   getShape?: AccessorFunction<DataT, number>
   getPosition?: AccessorFunction<DataT, number>
   getFilterValue?: AccessorFunction<DataT, number>
@@ -14,7 +14,7 @@ export type _VesselEventsLayerProps<DataT = any> = {
 }
 
 export type VesselEventsLayerProps<DataT = any> = _VesselEventsLayerProps<DataT> &
-  ScatterplotLayerProps<DataT>
+  Partial<ScatterplotLayerProps<DataT>>
 
 const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   filled: { type: 'accessor', value: true },

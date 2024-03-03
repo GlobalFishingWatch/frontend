@@ -6,22 +6,23 @@ import { getPickedFeatureToHighlight } from '../../utils/layers'
 import { hexToRgb } from '../../utils/colors'
 import { API_PATH } from './context.config'
 
-export type ContextLayerProps = TileLayerProps &
-  MVTLayerProps & {
-    id: string
-    color: string
-    datasetId: string
-    hoveredFeatures: PickingInfo[]
-    clickedFeatures: PickingInfo[]
-  }
+export type ContextLayerProps = {
+  id: string
+  color: string
+  datasetId: string
+  hoveredFeatures?: PickingInfo[]
+  clickedFeatures?: PickingInfo[]
+}
 
-export class ContextLayer extends CompositeLayer<ContextLayerProps> {
+export class ContextLayer extends CompositeLayer<
+  TileLayerProps & MVTLayerProps & ContextLayerProps
+> {
   static layerName = 'ContextLayer'
   static defaultProps = {}
   layers: Layer[] = []
 
   getLineColor(d: Feature): Color {
-    const { hoveredFeatures, clickedFeatures } = this.props
+    const { hoveredFeatures = [], clickedFeatures = [] } = this.props
     return getPickedFeatureToHighlight(d, clickedFeatures) ||
       getPickedFeatureToHighlight(d, hoveredFeatures)
       ? [255, 255, 255]
@@ -29,7 +30,7 @@ export class ContextLayer extends CompositeLayer<ContextLayerProps> {
   }
 
   getFillColor(d: Feature): Color {
-    const { clickedFeatures } = this.props
+    const { clickedFeatures = [] } = this.props
     return getPickedFeatureToHighlight(d, clickedFeatures) ? [0, 0, 0, 50] : [0, 0, 0, 0]
   }
 

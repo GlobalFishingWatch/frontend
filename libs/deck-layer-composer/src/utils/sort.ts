@@ -1,12 +1,20 @@
-import { indexOf } from 'lodash'
-import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
-import { FourwingsDataviewCategory } from '../types'
+import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 
-export const HEATMAP_GROUP_ORDER: FourwingsDataviewCategory[] = [
-  FourwingsDataviewCategory.Activity,
-  FourwingsDataviewCategory.Detections,
-  FourwingsDataviewCategory.Environment,
-]
+export function zIndexSortedArray(layersArray: any[]) {
+  return layersArray
+    .flatMap((l) => {
+      if (!l) return []
+      if (l?.layers?.length) return recursivelyGetLayers(l.layers)
+      return l
+    })
+    .sort((a, b) => (a.props.zIndex && b.props.zIndex ? a.props.zIndex - b.props.zIndex : 0))
+}
 
-export const sortFourwingsLayers = (a: FourwingsLayer, b: FourwingsLayer) =>
-  indexOf(HEATMAP_GROUP_ORDER, b.props.category) - indexOf(HEATMAP_GROUP_ORDER, a.props.category)
+function recursivelyGetLayers(layers: any[]) {
+  const reducer: any = layers.reduce((acc, layer) => {
+    const l =
+      layer?.layers?.length && layer.internalState ? recursivelyGetLayers(layer.layers) : [layer]
+    return [...acc, ...l]
+  }, [])
+  return reducer
+}

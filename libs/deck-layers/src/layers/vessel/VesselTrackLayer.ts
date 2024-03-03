@@ -8,6 +8,7 @@ import { TRACK_LAYER_TYPE } from './VesselLayer'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
+  id: string
   /**
    * The start time of the track in milliseconds
    * @default 0

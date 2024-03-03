@@ -27,19 +27,20 @@ export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   minFrame: number
   maxFrame: number
   zIndex?: number
-  colorDomain: number[]
-  colorRange: Color[]
+  colorDomain?: number[]
+  colorRange?: Color[]
   highlightedVesselId?: string
-  clickedFeatures: PickingInfo[]
-  hoveredFeatures: PickingInfo[]
+  clickedFeatures?: PickingInfo[]
+  hoveredFeatures?: PickingInfo[]
   onDataLoad?: (data: DataT) => void
-  onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
+  // onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
   onVesselHighlight?: (vesselId: string) => void
   onVesselClick?: (vesselId: string) => void
   onViewportLoad?: (tiles: any) => void
 }
 
-export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps & TileLayerProps
+export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps &
+  Partial<TileLayerProps>
 
 const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
   zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.Point) },
@@ -180,10 +181,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   updateState() {
-    const clickedVesselId = this.props?.clickedFeatures.flatMap(
+    const clickedVesselId = this.props?.clickedFeatures?.flatMap(
       (f) => f.sourceLayer?.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
     )
-    const highlightedVesselId = this.props?.hoveredFeatures.flatMap(
+    const highlightedVesselId = this.props?.hoveredFeatures?.flatMap(
       (f) => f.sourceLayer?.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
     )
     if (highlightedVesselId && highlightedVesselId[0]) {
@@ -195,7 +196,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         highlightedVesselId: undefined,
       })
     }
-    if (clickedVesselId[0] && this.props.onVesselClick) {
+    if (clickedVesselId?.[0] && this.props.onVesselClick) {
       this.props.onVesselClick(clickedVesselId[0])
     }
   }
