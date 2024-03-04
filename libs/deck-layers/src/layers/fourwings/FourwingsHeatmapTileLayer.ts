@@ -15,7 +15,6 @@ import { Cell, FourwingsLoader, TileCell } from '@globalfishingwatch/deck-loader
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
-  Interval,
   rgbaStringToComponents,
   Group,
   GROUP_ORDER,
@@ -48,7 +47,6 @@ export type FourwingsHeatmapTileData = {
 export type _FourwingsHeatmapTileLayerProps = {
   data: FourwingsHeatmapTileData
   debug?: boolean
-  interval: Interval
   resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
@@ -79,7 +77,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)
-    // this.id = `${FourwingsHeatmapTileLayer.layerName}-${this.props.id}`
+    this.id = `${FourwingsHeatmapTileLayer.layerName}-${this.props.id}`
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
       colorDomain: [1, 20, 50, 100, 500, 5000, 10000, 500000],
@@ -254,11 +252,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
     // TODO review this to avoid rerendering when sublayers change
-    const visibleSublayersIds = this.props.sublayers.filter((s) => s.visible).join(',')
+    const visibleSublayersIds = this.props.sublayers
+      .filter((s) => s.visible)
+      .map((s) => s.id)
+      .join(',')
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: `${HEATMAP_ID}`,
+        id: `${this.id}-${HEATMAP_ID}`,
         tileSize: 512,
         colorDomain,
         colorRanges,

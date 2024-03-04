@@ -1,4 +1,4 @@
-import { Color, CompositeLayer } from '@deck.gl/core/typed'
+import { Color, CompositeLayer, LayersList } from '@deck.gl/core/typed'
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
@@ -135,7 +135,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     const fourwingsLayer = new FourwingsTileCellLayer(
       this.props,
       this.getSubLayerProps({
-        id: `fourwings-tile-${this.props.tile.id}`,
+        id: `${this.id}-fourwings-tile-${this.props.tile.id}`,
         pickable: true,
         stroked: false,
         getFillColor,
@@ -146,12 +146,12 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       })
     )
 
-    if (!this.props.debug) return fourwingsLayer
+    if (!this.props.debug) return fourwingsLayer as FourwingsTileCellLayer
 
     const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
     const debugLayers = [
       new PathLayer({
-        id: `tile-boundary-${this.props.tile.id}`,
+        id: `${this.id}-tile-boundary-${this.props.tile.id}`,
         data: [
           {
             path: [
@@ -168,7 +168,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         getColor: [255, 0, 0, 100],
       }),
       new TextLayer({
-        id: `tile-id-${this.props.tile.id}`,
+        id: `${this.id}-tile-id-${this.props.tile.id}`,
         data: [
           {
             text: `${this.props.tile.index.z}/${this.props.tile.index.x}/${this.props.tile.index.y}`,
@@ -184,7 +184,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       }),
     ]
 
-    return [fourwingsLayer, ...debugLayers]
+    return [fourwingsLayer, ...debugLayers] as LayersList
   }
 
   getData() {

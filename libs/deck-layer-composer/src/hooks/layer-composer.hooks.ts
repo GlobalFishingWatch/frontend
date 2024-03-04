@@ -150,8 +150,8 @@ export function useDeckLayerComposer({
         return []
       }
     })
-    // console.log('setting layers', layers)
-    setDeckLayers(layers)
+    // console.log('setting layers', zIndexSortedArray(layers))
+    setDeckLayers(zIndexSortedArray(layers))
   }, [dataviews, setDeckLayers, globalConfig])
 
   // const basemapGenerator = generatorsConfig.find(
