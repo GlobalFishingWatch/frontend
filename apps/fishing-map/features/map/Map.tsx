@@ -55,13 +55,7 @@ import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selec
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
-import {
-  MAP_VIEW,
-  useViewStateAtom,
-  useUpdateViewStateUrlParams,
-  useSetViewState,
-  useViewState,
-} from './map-viewport.hooks'
+import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
 import MapLegends from './MapLegends'
@@ -115,28 +109,13 @@ const MapWrapper = () => {
   // DECK related code
   const deckRef = useRef<DeckGLRef>(null)
   useSetMapInstance(deckRef)
-
-  // const [viewState, setViewState] = useState<any>(DEFAULT_VIEWPORT)
-  // const viewState = useRef<any>(DEFAULT_VIEWPORT)
-  // const { viewState, setViewState } = useViewStateAtom()
-
-  const [viewState, setViewState] = useState(DEFAULT_VIEWPORT)
-  // const [viewState, setViewState] = useState(DEFAULT_VIEWPORT)
+  const { viewState, setViewState } = useViewStateAtom()
   const onViewStateChange = useCallback(
     (params: ViewStateChangeParameters) => {
-      // const { latitude, longitude, zoom } = params.viewState
-      // viewState.current = { latitude, longitude, zoom }
       setViewState(params.viewState as ViewState)
     },
     [setViewState]
   )
-  // const onViewStateChange = useCallback(
-  //   (params: ViewStateChangeParameters) => {
-  //     console.log(params)
-  //     setViewState(params.viewState as MapCoordinates)
-  //   },
-  //   [setViewState]
-  // )
   useUpdateViewStateUrlParams()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
