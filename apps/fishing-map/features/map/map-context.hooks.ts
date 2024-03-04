@@ -24,6 +24,6 @@ export function useSetMapInstance(mapRef: RefObject<DeckGLRef> | undefined) {
   }, [mapRef?.current])
 }
 
-export function useDeckMap(): any {
-  return useAtomValue(selectMapInstance)
+export function useDeckMap(): Deck {
+  return useAtomValue(selectMapInstance) as Deck
 }
