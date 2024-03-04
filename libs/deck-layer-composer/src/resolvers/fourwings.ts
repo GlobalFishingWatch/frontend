@@ -4,6 +4,7 @@ import {
   FourwingsLayerProps,
   getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
+import { GROUP_ORDER, Group } from '@globalfishingwatch/layer-composer'
 import { ResolverGlobalConfig } from './types'
 
 // TODO: decide if include static here or create a new one
@@ -13,7 +14,6 @@ export const resolveDeckFourwingsLayerProps = (
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
-  // const category = dataview.category as FourwingsDataviewCategory | undefined
 
   const visibleSublayers = dataview.config?.sublayers?.filter((sublayer) => sublayer?.visible)
   const sublayers: FourwingsDeckSublayer[] = (visibleSublayers || []).map((sublayer) => ({
@@ -35,6 +35,7 @@ export const resolveDeckFourwingsLayerProps = (
     // mode: activityMode,
     mode: 'heatmap',
     debug: false,
+    zIndex: GROUP_ORDER.indexOf(Group.Heatmap),
     // category: dataview.category || DataviewCategory.Activity,
     sublayers,
     colorRampWhiteEnd: sublayers.length === 1,

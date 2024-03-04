@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { getDataviewsMerged } from '@globalfishingwatch/dataviews-client'
 import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
-import { ResolverGlobalConfig } from '../resolvers'
-import { dataviewToDeckLayer } from '../deck-layer-composer'
+import { dataviewToDeckLayer, ResolverGlobalConfig } from '../resolvers'
+import { zIndexSortedArray } from '../utils'
 
 // Atom used to have all deck instances available
 export const deckLayerInstancesAtom = atom<AnyDeckLayer[]>([])
@@ -41,7 +41,7 @@ export function useDeckLayerComposer({
       }
     })
     // console.log('setting layers', layers)
-    setDeckLayers(layers)
+    setDeckLayers(zIndexSortedArray(layers))
   }, [dataviews, setDeckLayers, globalConfig])
 
   return {

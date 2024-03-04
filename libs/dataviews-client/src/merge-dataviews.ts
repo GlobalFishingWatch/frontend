@@ -140,7 +140,8 @@ export function getMergedHeatmapAnimatedDataviews(
     .flatMap(({ config }) => config?.maxZoom as number)
 
   const mergedActivityDataview = {
-    id: heatmapAnimatedDataviews[0]?.id || DataviewCategory.Activity,
+    id: heatmapAnimatedDataviews?.map((d) => d.id).join(',') || DataviewCategory.Activity,
+    category: heatmapAnimatedDataviews[0]?.category,
     config: {
       type: GeneratorType.HeatmapAnimated,
       sublayers: activitySublayers,

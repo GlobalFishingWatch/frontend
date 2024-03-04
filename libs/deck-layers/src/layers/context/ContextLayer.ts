@@ -3,7 +3,7 @@ import { MVTLayer, MVTLayerProps, TileLayerProps } from '@deck.gl/geo-layers/typ
 import { Feature } from 'geojson'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { getPickedFeatureToHighlight } from '../../utils/layers'
-import { hexToRgb } from '../../utils/colors'
+import { hexToDeckColor } from '../../utils/colors'
 import { API_PATH } from './context.config'
 
 export type ContextLayerProps = {
@@ -12,6 +12,7 @@ export type ContextLayerProps = {
   datasetId: string
   hoveredFeatures?: PickingInfo[]
   clickedFeatures?: PickingInfo[]
+  zIndex: number
 }
 
 export class ContextLayer extends CompositeLayer<
@@ -36,10 +37,10 @@ export class ContextLayer extends CompositeLayer<
 
   _getBaseLayer() {
     return new MVTLayer({
-      id: `base-layer`,
+      id: `${this.id}-base-layer`,
       data: `${API_PATH}/${this.props.datasetId}/context-layers/{z}/{x}/{y}`,
-      zIndex: GROUP_ORDER.indexOf(Group.OutlinePolygons),
-      getLineColor: hexToRgb(this.props.color),
+      zIndex: this.props.zIndex || GROUP_ORDER.indexOf(Group.OutlinePolygons),
+      getLineColor: hexToDeckColor(this.props.color),
       getFillColor: [0, 0, 0, 0],
       lineWidthMinPixels: 1,
       pickable: true,
@@ -54,7 +55,7 @@ export class ContextLayer extends CompositeLayer<
 
   _getHighlightLineLayer() {
     return new MVTLayer({
-      id: `highlight-line-layer`,
+      id: `${this.id}-highlight-line-layer`,
       data: `${API_PATH}/${this.props.datasetId}/context-layers/{z}/{x}/{y}`,
       zIndex: GROUP_ORDER.indexOf(Group.OutlinePolygonsHighlighted),
       getFillColor: [0, 0, 0, 0],
@@ -71,7 +72,7 @@ export class ContextLayer extends CompositeLayer<
 
   _getHighlightFillLayer() {
     return new MVTLayer({
-      id: `highlight-fill-layer`,
+      id: `${this.id}-highlight-fill-layer`,
       data: `${API_PATH}/${this.props.datasetId}/context-layers/{z}/{x}/{y}`,
       zIndex: GROUP_ORDER.indexOf(Group.OutlinePolygonsFill),
       getLineColor: [255, 255, 255, 0],
