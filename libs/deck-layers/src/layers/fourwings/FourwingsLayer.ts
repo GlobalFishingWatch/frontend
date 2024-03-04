@@ -29,10 +29,6 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   static layerName = 'FourwingsLayer'
   layers: FourwingsHeatmapTileLayer[] | FourwingsPositionsTileLayer[] | undefined
 
-  initializeState() {
-    this.id = `${FourwingsLayer.layerName}-${this.props.category}-${this.props.mode}`
-  }
-
   renderLayers(): Layer<{}> | LayersList {
     const mode = this.getMode()
 
@@ -51,6 +47,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   getData() {
     return this.layers?.[0].getData()
+  }
+
+  getViewportData() {
+    return this.layers?.[0].getViewportData()
   }
 
   getMode() {

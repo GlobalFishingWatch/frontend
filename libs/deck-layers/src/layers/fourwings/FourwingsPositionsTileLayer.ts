@@ -310,6 +310,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.getPositionsData()
   }
 
+  getViewportData() {
+    // TODO: return only data in viewport
+    return this.getPositionsData()
+  }
+
   getColorScale() {
     return this.state.colorScale
   }

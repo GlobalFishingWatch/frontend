@@ -136,11 +136,3 @@ export const POPUP_CATEGORY_ORDER = [
 ]
 
 export const FIT_BOUNDS_REPORT_PADDING = 30
-
-// TODO import types from deck-layers library
-export const DECK_CATEGORY_BY_TIMEBAR_VISUALIZATION = {
-  [TimebarVisualisations.HeatmapActivity]: 'activity',
-  [TimebarVisualisations.HeatmapDetections]: 'detections',
-  [TimebarVisualisations.Environment]: 'environment',
-  [TimebarVisualisations.Vessel]: 'vessel',
-}

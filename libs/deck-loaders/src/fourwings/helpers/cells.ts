@@ -20,6 +20,7 @@ export type GetCellCoordinatesParams = {
   cols: number
   rows: number
   id: number
+  flat?: boolean
 }
 
 export const getCellCoordinates = ({
@@ -27,7 +28,8 @@ export const getCellCoordinates = ({
   cellIndex,
   cols,
   rows,
-}: GetCellCoordinatesParams): number[] => {
+  flat = true,
+}: GetCellCoordinatesParams): number[] | number[][] => {
   const col = cellIndex % cols
   const row = Math.floor(cellIndex / cols)
   const [minX, minY, maxX, maxY] = tileBBox
@@ -37,17 +39,26 @@ export const getCellCoordinates = ({
   const squareMinY = minY + (row / rows) * height
   const squareMaxX = minX + ((col + 1) / cols) * width
   const squareMaxY = minY + ((row + 1) / rows) * height
+  if (flat) {
+    return [
+      squareMinX,
+      squareMinY,
+      squareMaxX,
+      squareMinY,
+      squareMaxX,
+      squareMaxY,
+      squareMinX,
+      squareMaxY,
+      squareMinX,
+      squareMinY,
+    ]
+  }
   return [
-    squareMinX,
-    squareMinY,
-    squareMaxX,
-    squareMinY,
-    squareMaxX,
-    squareMaxY,
-    squareMinX,
-    squareMaxY,
-    squareMinX,
-    squareMinY,
+    [squareMinX, squareMinY],
+    [squareMaxX, squareMinY],
+    [squareMaxX, squareMaxY],
+    [squareMinX, squareMaxY],
+    [squareMinX, squareMinY],
   ]
 }
 

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import {
   HighlighterCallbackFnArgs,
@@ -7,8 +8,7 @@ import {
 } from '@globalfishingwatch/timebar'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import { VesselLayer } from '@globalfishingwatch/deck-layers'
-import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
-import { t } from 'features/i18n/i18n'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
@@ -40,7 +40,11 @@ const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
 // }
 
 export const useTimebarVesselTracks = () => {
-  const vessels = useGetDeckLayers<VesselLayer>(['vessel'])
+  const dataviews = useSelector(selectVesselsDataviews)
+  const ids = useMemo(() => {
+    return dataviews.map((d) => d.id)
+  }, [dataviews])
+  const vessels = useGetDeckLayers<VesselLayer>(ids)
   const [tracks, setVesselTracks] = useState<TimebarChartData<any> | null>(null)
   // const tracksMemoHash = getVesselTimebarTrackMemoHash(vessels)
 
