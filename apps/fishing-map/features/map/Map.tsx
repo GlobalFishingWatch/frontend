@@ -50,7 +50,6 @@ import {
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
 import { useMapRulersDrag } from 'features/map/rulers/rulers-drag.hooks'
-import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
 import ErrorNotification from 'features/map/error-notification/ErrorNotification'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
@@ -145,7 +144,6 @@ const MapWrapper = () => {
   useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   useMapRulersDrag()
-  useMapAnnotationDrag()
   // const map = useMapInstance()
   // const { isMapDrawing } = useMapDrawConnect()
   // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -280,7 +278,6 @@ const MapWrapper = () => {
   const { addMapAnnotation, isMapAnnotating } = useMapAnnotation()
   const onClick: DeckProps['onClick'] = useCallback(
     (info: PickingInfo, event: any) => {
-      console.log("🚀 ~ constonClick:DeckProps['onClick']=useCallback ~ info:", info)
       if (event.srcEvent.defaultPrevented) {
         // this is needed to allow interacting with overlay elements
         return true
@@ -331,7 +328,7 @@ const MapWrapper = () => {
       >
         {(props) => (
           <Fragment>
-            {deckRef?.current?.deck && <MapAnnotations deckRef={deckRef.current} {...props} />}
+            <MapAnnotations {...props} />
             <MapAnnotationsDialog {...props} />
           </Fragment>
         )}
