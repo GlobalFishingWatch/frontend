@@ -62,6 +62,7 @@ import MapLegends from './MapLegends'
 import MapAnnotations from './annotations/Annotations'
 import MapAnnotationsDialog from './annotations/AnnotationsDialog'
 import { useMapAnnotation } from './annotations/annotations.hooks'
+import { useMapErrorNotification } from './error-notification/error-notification.hooks'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 const PopupWrapper = dynamic(
@@ -255,6 +256,7 @@ const MapWrapper = () => {
   //   return styleInteractiveLayerIds
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
   const { addMapAnnotation, isMapAnnotating } = useMapAnnotation()
+  const { addErrorNotification, isErrorNotificationEditing } = useMapErrorNotification()
   const onClick: DeckProps['onClick'] = useCallback(
     (info: PickingInfo, event: any) => {
       if (event.srcEvent.defaultPrevented) {
@@ -268,8 +270,11 @@ const MapWrapper = () => {
       if (isMapAnnotating) {
         addMapAnnotation(info?.coordinate as Position)
       }
+      if (isErrorNotificationEditing) {
+        addErrorNotification(info?.coordinate as Position)
+      }
     },
-    [isMapAnnotating, addMapAnnotation]
+    [isMapAnnotating, isErrorNotificationEditing, addMapAnnotation, addErrorNotification]
   )
 
   const onHover = useCallback((info: PickingInfo) => {
@@ -309,6 +314,7 @@ const MapWrapper = () => {
           <Fragment>
             <MapAnnotations {...props} />
             <MapAnnotationsDialog {...props} />
+            <ErrorNotification {...props} />
           </Fragment>
         )}
       </DeckGL>

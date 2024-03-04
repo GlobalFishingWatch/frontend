@@ -28,3 +28,23 @@
 .successIcon {
   transform: scale(1.5);
 }
+
+.tooltipArrow::before {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+}
+
+.tooltipArrow {
+  visibility: hidden;
+  position: relative;
+}
+
+.tooltipArrow::before {
+  visibility: visible;
+  top: 123px;
+  left: 195px;
+  content: '';
+  transform: rotate(45deg);
+}

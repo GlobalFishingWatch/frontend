@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
-import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
-import { MapAnnotation } from '@globalfishingwatch/layer-composer'
+import { Position } from '@deck.gl/core/typed'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
+import type { MapAnnotation } from '../annotations/annotations.types'
 
 /**
  * Hook used only for the temporal annotation stored into the slice before confirming
@@ -17,11 +17,10 @@ export const useMapErrorNotification = () => {
   } = useMapControl('errorNotification')
 
   const addErrorNotification = useCallback(
-    (event: MapLayerMouseEvent) => {
+    (coords: Position) => {
       setMapControlValue({
-        lon: event.lngLat.lng,
-        lat: event.lngLat.lat,
-        label: '',
+        lon: coords[0],
+        lat: coords[1],
       } as Partial<MapAnnotation>)
     },
     [setMapControlValue]
