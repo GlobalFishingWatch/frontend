@@ -194,6 +194,10 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    */
   filter?: string
   /**
+   * Filters object without parse
+   */
+  filters?: Record<string, any>
+  /**
    * Feature property to drive timestamps filtering
    */
   startTimeFilterProperty?: string
