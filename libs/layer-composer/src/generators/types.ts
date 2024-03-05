@@ -513,6 +513,8 @@ export interface HeatmapStaticGeneratorConfig extends GeneratorConfig {
   colorRamp?: ColorRampsIds
   interactive?: boolean
   aggregationOperation?: AggregationOperation
+  minVisibleValue?: number
+  maxVisibleValue?: number
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
