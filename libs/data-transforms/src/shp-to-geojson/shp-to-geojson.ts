@@ -7,13 +7,13 @@ export const shpToGeoJSON = async (data: string, type: DatasetGeometryType) => {
   const shpjs = await import('shpjs').then((module) => module.default)
   const expandedShp = await shpjs(data)
   const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
-    points: 'Point',
-    tracks: 'LineString',
-    polygons: 'Polygon',
+    points: ['Point', 'MultiPoint'],
+    tracks: ['LineString', 'MultiLineString'],
+    polygons: ['Polygon', 'MultiPolygon'],
   }
   if (Array.isArray(expandedShp)) {
-    const matchedTypeCollections = expandedShp.filter(
-      (shp) => shp.features?.[0].geometry.type === normalizedTypes[type]
+    const matchedTypeCollections = expandedShp.filter((shp) =>
+      normalizedTypes[type]?.includes(shp.features?.[0].geometry.type)
     )
     if (!matchedTypeCollections.length) {
       return invalidDataErrorHandler(type)
@@ -23,7 +23,7 @@ export const shpToGeoJSON = async (data: string, type: DatasetGeometryType) => {
       return matchedTypeCollections[0]
     }
   } else {
-    if (expandedShp.features?.[0].geometry.type !== normalizedTypes[type]) {
+    if (!normalizedTypes[type]?.includes(expandedShp.features?.[0].geometry.type)) {
       invalidDataErrorHandler(type)
     }
     return expandedShp
