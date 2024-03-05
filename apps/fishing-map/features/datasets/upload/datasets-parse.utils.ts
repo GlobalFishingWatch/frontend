@@ -58,13 +58,13 @@ export async function getDatasetParsed(file: File, type: DatasetGeometryType): P
 const NOT_VALID_GEOJSON_FEATURES_ERROR = 'Not valid geojson features'
 export const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) => {
   const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
-    points: 'Point',
-    tracks: 'LineString',
-    polygons: 'Polygon',
+    points: ['Point', 'MultiPoint'],
+    tracks: ['LineString', 'MultiLineString'],
+    polygons: ['Polygon', 'MultiPolygon'],
   }
   const geoJSON = JSON.parse(fileText)
   const validFeatures = geoJSON.features.filter((feature: Feature) => {
-    return feature.geometry.type.includes(normalizedTypes[type]!)
+    return normalizedTypes[type]?.includes(feature.geometry.type)
   })
   if (!validFeatures.length) {
     throw new Error(NOT_VALID_GEOJSON_FEATURES_ERROR)

@@ -79,7 +79,7 @@ export enum DatasetStatus {
 
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
 export type DatasetGeometryToGeoJSONGeometry = {
-  [Property in DatasetGeometryType]: string
+  [Property in DatasetGeometryType]: string[]
 }
 export type TimeFilterType = 'date' | 'dateRange'
 
