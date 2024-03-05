@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { stringify } from 'qs'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
 import { DeckGLRenderCallbackArgs } from '@deck.gl/react/typed/utils/extract-jsx-layers'
-import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { MapAnnotation } from '@globalfishingwatch/layer-composer'
@@ -15,6 +15,7 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { PUBLIC_WORKSPACE_ENV } from 'data/config'
 import { selectLocationQuery } from 'routes/routes.selectors'
+import { useDeckMap } from '../map-context.hooks'
 import styles from './ErrorNotification.module.css'
 
 const ERRORS_SPREADSHEET_ID = process.env.NEXT_PUBLIC_MAP_ERRORS_SPREADSHEET_ID || ''
@@ -22,8 +23,14 @@ const ERRORS_SHEET_TITLE = 'errors'
 
 const ErrorNotification = (props: DeckGLRenderCallbackArgs): React.ReactNode | null => {
   const { t } = useTranslation()
-  const { errorNotification, resetErrorNotification, setErrorNotification, setNotifyingErrorEdit } =
-    useMapErrorNotification()
+  const deck = useDeckMap()
+  const {
+    errorNotification,
+    resetErrorNotification,
+    setErrorNotification,
+    setNotifyingErrorEdit,
+    isErrorNotificationEditing,
+  } = useMapErrorNotification()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const locationQuery = useSelector(selectLocationQuery)
@@ -82,6 +89,10 @@ const ErrorNotification = (props: DeckGLRenderCallbackArgs): React.ReactNode | n
     return null
   }
 
+  if (isErrorNotificationEditing) {
+    deck.setProps({ getCursor: () => 'crosshair' })
+  }
+
   const onClose = () => {
     resetErrorNotification()
     setNotifyingErrorEdit(false)
@@ -97,6 +108,11 @@ const ErrorNotification = (props: DeckGLRenderCallbackArgs): React.ReactNode | n
         >
           <div className={styles.popup}>
             <div className={styles.tooltipArrow} />
+            <IconButton
+              icon="close"
+              onClick={resetErrorNotification}
+              className={styles.closeButton}
+            />
             <div className={styles.popupContent} ref={ref}>
               <InputText
                 label={t('map.errorLabel', 'Error description')}

@@ -48,3 +48,24 @@
   content: '';
   transform: rotate(45deg);
 }
+.closeButton {
+  position: absolute;
+  cursor: pointer;
+  width: var(--size-S);
+  height: var(--size-S);
+  border-radius: 50%;
+  font: var(--font-L);
+  line-height: 1;
+  margin: var(--space-XS);
+  z-index: 1;
+  top: -2rem;
+  right: -2rem;
+  background-color: var(--color-primary-blue);
+  color: rgba(var(--white-rgb), 0.8);
+  opacity: 1;
+  border: var(--border-white);
+}
+
+.closeButton:hover:not(:disabled) {
+  background-color: var(--color-primary-blue);
+}

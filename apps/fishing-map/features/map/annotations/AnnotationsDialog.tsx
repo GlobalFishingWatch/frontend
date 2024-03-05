@@ -14,6 +14,7 @@ import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/an
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { useDeckMap } from '../map-context.hooks'
 import styles from './Annotations.module.css'
 /* eslint-disable react/prop-types */
 const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]
@@ -24,6 +25,7 @@ const MapAnnotationsDialog = (props: DeckGLRenderCallbackArgs): React.ReactNode 
   const gfwUser = useSelector(selectIsGFWUser)
   const { mapAnnotation, resetMapAnnotation, setMapAnnotation, isMapAnnotating } =
     useMapAnnotation()
+  const deck = useDeckMap()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
   const isDialogVisible = gfwUser && isMapAnnotating && mapAnnotation
   const onConfirmClick = () => {
@@ -38,6 +40,10 @@ const MapAnnotationsDialog = (props: DeckGLRenderCallbackArgs): React.ReactNode 
     dispatchQueryParams({ mapAnnotationsVisible: true })
   }
   const ref = useEventKeyListener(['Enter'], onConfirmClick)
+
+  if (isMapAnnotating) {
+    deck.setProps({ getCursor: () => 'crosshair' })
+  }
 
   if (!isDialogVisible) {
     return null
@@ -57,6 +63,7 @@ const MapAnnotationsDialog = (props: DeckGLRenderCallbackArgs): React.ReactNode 
         >
           <div className={styles.popup}>
             <div className={styles.tooltipArrow} />
+            <IconButton icon="close" onClick={resetMapAnnotation} className={styles.closeButton} />
             <div className={styles.popupContent} ref={ref}>
               <div className={styles.flex}>
                 <InputText
