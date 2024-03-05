@@ -84,13 +84,12 @@ const ErrorNotification = (props: DeckGLRenderCallbackArgs): React.ReactNode | n
     }
   }
   const ref = useEventKeyListener(['Enter'], onConfirmClick)
+  if (isErrorNotificationEditing) {
+    deck.setProps({ getCursor: () => 'crosshair' })
+  }
 
   if (!errorNotification) {
     return null
-  }
-
-  if (isErrorNotificationEditing) {
-    deck.setProps({ getCursor: () => 'crosshair' })
   }
 
   const onClose = () => {
