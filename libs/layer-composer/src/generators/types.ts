@@ -195,6 +195,10 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    */
   filter?: string
   /**
+   * Filters object without parse
+   */
+  filters?: Record<string, any>
+  /**
    * Feature property to drive timestamps filtering
    */
   startTimeFilterProperty?: string
@@ -514,6 +518,8 @@ export interface HeatmapStaticGeneratorConfig extends GeneratorConfig {
   colorRamp?: ColorRampsIds
   interactive?: boolean
   aggregationOperation?: AggregationOperation
+  minVisibleValue?: number
+  maxVisibleValue?: number
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {

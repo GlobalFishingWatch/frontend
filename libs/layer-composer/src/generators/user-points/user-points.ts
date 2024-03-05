@@ -24,6 +24,7 @@ class UserPointsGenerator {
     }
     const properties = [
       ...(config.valueProperties || []),
+      ...Object.keys(config.filters || {}),
       config.startTimeFilterProperty || '',
       config.endTimeFilterProperty || '',
       config.circleRadiusProperty || '',
@@ -33,8 +34,6 @@ class UserPointsGenerator {
         url.searchParams.set(`properties[${index}]`, property)
       })
     }
-    // As user can modify the dataset, we need to avoid the cache
-    url.searchParams.set('cache', 'false')
 
     return [
       {

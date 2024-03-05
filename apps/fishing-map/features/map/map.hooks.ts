@@ -435,7 +435,7 @@ export const parseMapTooltipFeatures = (
     const tooltipEventFeature: TooltipEventFeature = {
       title,
       type: dataview.config?.type,
-      color: dataview.config?.color || 'black',
+      color: dataview.config?.color,
       visible: dataview.config?.visible,
       category: dataview.category || DataviewCategory.Context,
       subcategory,

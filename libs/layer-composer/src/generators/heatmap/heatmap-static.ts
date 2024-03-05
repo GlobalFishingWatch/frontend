@@ -83,13 +83,26 @@ class HeatmapStaticGenerator {
               breaks[index - 1] !== undefined
                 ? breaks[index - 1]
                 : breaks[index] <= 0
-                  ? breaks[index] - 1
-                  : 0,
+                ? breaks[index] - 1
+                : 0,
               color,
             ]
           : []
       }),
     ]
+    const visibilityOffset = 0.0000001
+    const minVisibleExpression =
+      config.minVisibleValue !== undefined && config.minVisibleValue !== config.maxVisibleValue
+        ? [0, config.minVisibleValue - visibilityOffset, 1, config.minVisibleValue]
+        : []
+    const maxVisibleExpression =
+      config.maxVisibleValue !== undefined && config.minVisibleValue !== config.maxVisibleValue
+        ? [1, config.maxVisibleValue, 0, config.maxVisibleValue + visibilityOffset]
+        : []
+    const visibleValuesExpression =
+      minVisibleExpression.length || maxVisibleExpression.length
+        ? ['step', exprPick, ...minVisibleExpression, ...maxVisibleExpression, 0]
+        : []
 
     const layers = [
       {
@@ -108,6 +121,7 @@ class HeatmapStaticGenerator {
         paint: {
           'fill-color': exprColorRamp,
           'fill-outline-color': 'transparent',
+          'fill-opacity': visibleValuesExpression?.length ? visibleValuesExpression : 1,
         },
         layout: {
           visibility: visible,
