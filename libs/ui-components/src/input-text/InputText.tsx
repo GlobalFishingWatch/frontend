@@ -1,8 +1,10 @@
-import React, { useRef, forwardRef, useImperativeHandle, Ref } from 'react'
+import React, { useRef, forwardRef, useImperativeHandle, Ref, Fragment } from 'react'
 import cx from 'classnames'
 import { IconButton } from '../icon-button'
+import { Tooltip } from '../tooltip'
 import { Icon } from '../icon'
 import { Spinner } from '../spinner'
+import { TooltipTypes } from '../types/types'
 import styles from './InputText.module.css'
 
 export type InputSize = 'default' | 'small'
@@ -19,6 +21,8 @@ type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   inputSize?: InputSize
   inputKey?: string
   loading?: boolean
+  invalid?: boolean
+  invalidTooltip?: TooltipTypes
   testId?: string
   onCleanButtonClick?: (e: React.MouseEvent<Element>) => void
 }
@@ -36,6 +40,8 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
     inputSize = 'default',
     inputKey = defaultKey,
     loading = false,
+    invalid = false,
+    invalidTooltip,
     testId,
     onCleanButtonClick,
     ...rest
@@ -52,12 +58,19 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
   return (
     <div className={cx(styles.container, styles[inputSize], className)}>
       {label && (
-        <label className={labelClassName} htmlFor={inputProps.id}>
+        <label className={cx(styles.labelContainer, labelClassName)} htmlFor={inputProps.id}>
           {label}
+          {invalid && invalidTooltip && (
+            <Tooltip content={invalidTooltip as React.ReactNode}>
+              <span className={styles.invalidTooltipIcon}>
+                <Icon icon="warning" type="warning" />
+              </span>
+            </Tooltip>
+          )}
         </label>
       )}
       <input
-        className={styles.input}
+        className={cx(styles.input, { [styles.invalid]: invalid })}
         key={inputKey}
         ref={inputRef}
         type={type}

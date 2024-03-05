@@ -72,9 +72,18 @@
         "file": false
       }
     },
+    // "version": {
+    //   "generatorOptions": {
+    //     "packageRoot": "dist/libs/{projectName}"
+    //   }
+    //   // "git": {
+    //   //   "commit": false,
+    //   //   "tag": true
+    //   // }
+    // },
     "git": {
       "commit": false,
-      "tag": true
+      "tag": false
     }
   },
   "namedInputs": {

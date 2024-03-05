@@ -27,8 +27,8 @@ export const getFieldSchema = (
         GUESS_COLUMN_DICT.longitude.some((t) => t === field)
           ? 'coordinate'
           : type === 'number'
-            ? 'range'
-            : type,
+          ? 'range'
+          : type,
     }
     if (includeEnum && values?.length > 1) {
       if (schema.type === 'string') {
@@ -60,6 +60,12 @@ export const getFieldSchema = (
     return schema
   }
   return null
+}
+
+export const getSchemaIdClean = (id: string) => {
+  // TODO review how backend handles characters like -
+  // so we can parse the same here or before uploading the dataset
+  return id?.replace(/-/g, '_')?.toLowerCase()
 }
 
 export const getDatasetSchemaFromGeojson = (
@@ -95,10 +101,11 @@ export const getDatasetSchemaFromList = (
   }
   const schema: Dataset['schema'] = fields.reduce(
     (acc: Dataset['schema'], field: string): Dataset['schema'] => {
-      const uniqDataValues = uniq(data.flatMap((d) => d[field] || []))
-      const schema = getFieldSchema(field, uniqDataValues, getFieldSchemaParams)
+      const cleanField = getSchemaIdClean(field)
+      const uniqDataValues = uniq(data.flatMap((d) => d[cleanField] || []))
+      const schema = getFieldSchema(cleanField, uniqDataValues, getFieldSchemaParams)
       if (schema) {
-        return { ...acc, [field]: schema }
+        return { ...acc, [cleanField]: schema }
       }
       return acc
     },

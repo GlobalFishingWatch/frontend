@@ -18,7 +18,11 @@ import {
 } from 'features/search/search.slice'
 import styles from 'features/search/advanced/SearchAdvanced.module.css'
 import SearchAdvancedFilters from 'features/search/advanced/SearchAdvancedFilters'
-import { useSearchConnect, useSearchFiltersConnect } from 'features/search/search.hook'
+import {
+  useSearchConnect,
+  useSearchFiltersConnect,
+  useSearchFiltersErrors,
+} from 'features/search/search.hook'
 import SearchPlaceholder, {
   SearchNoResultsState,
   SearchEmptyState,
@@ -42,7 +46,8 @@ function SearchAdvanced({
   const searchQuery = useSelector(selectSearchQuery)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const { dispatchQueryParams } = useLocationConnect()
-  const { hasFilters, searchFilterErrors } = useSearchFiltersConnect()
+  const { hasFilters } = useSearchFiltersConnect()
+  const searchFilterErrors = useSearchFiltersErrors()
   const ref = useEventKeyListener(['Enter'], fetchResults)
 
   const resetSearchState = useCallback(() => {
@@ -65,6 +70,8 @@ function SearchAdvanced({
   const handleSearchQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatchQueryParams({ query: e.target.value })
   }
+
+  const hasSearchFilterErrors = Object.keys(searchFilterErrors).length > 0
 
   return (
     <div className={styles.advancedLayout}>
@@ -98,7 +105,15 @@ function SearchAdvanced({
           <Button
             className={styles.confirmButton}
             onClick={fetchResults}
-            disabled={(!hasFilters && !searchQuery) || Object.keys(searchFilterErrors).length > 0}
+            disabled={(!hasFilters && !searchQuery) || hasSearchFilterErrors}
+            tooltip={
+              hasSearchFilterErrors
+                ? t(
+                    'search.notValidFilterSelection',
+                    "At least one of your selected sources doesn't allow one of your filters"
+                  )
+                : ''
+            }
             loading={
               searchStatus === AsyncReducerStatus.Loading ||
               searchStatus === AsyncReducerStatus.Aborted

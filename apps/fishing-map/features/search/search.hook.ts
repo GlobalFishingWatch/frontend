@@ -17,6 +17,10 @@ import {
   selectAdvancedSearchDatasets,
 } from 'features/search/search.selectors'
 import {
+  ADVANCED_SEARCH_FIELDS,
+  isDatasetSearchFieldNeededSupported,
+} from 'features/search/advanced/advanced-search.utils'
+import {
   cleanVesselSearchResults,
   fetchVesselSearchThunk,
   selectSearchPagination,
@@ -51,11 +55,52 @@ export const hasFiltersActive = (filters: VesselSearchState): boolean => {
   )
 }
 
+export const useSearchFiltersErrors = () => {
+  const datasets = useSelector(selectAdvancedSearchDatasets)
+  const { searchFilters } = useSearchFiltersConnect()
+  const searchFilterErrors: Partial<Record<'date' | keyof VesselSearchState, boolean>> = {}
+
+  const disabledFieldSchemas = ADVANCED_SEARCH_FIELDS.flatMap((field) => {
+    const selectedDatasets = searchFilters.sources
+      ? datasets.filter((dataset) => searchFilters.sources?.includes(dataset.id))
+      : datasets
+
+    const disabled = selectedDatasets.every(
+      (dataset) => !isDatasetSearchFieldNeededSupported(dataset, [field])
+    )
+    const hasFilterValue = searchFilters?.[field]
+    return hasFilterValue && disabled ? field : []
+  })
+
+  if (disabledFieldSchemas.length) {
+    disabledFieldSchemas.forEach((field) => {
+      searchFilterErrors[field] = true
+    })
+  }
+
+  if (
+    searchFilters.transmissionDateFrom &&
+    searchFilters.transmissionDateTo &&
+    searchFilters.transmissionDateFrom <= searchFilters.transmissionDateTo
+  ) {
+    searchFilterErrors.date = true
+  }
+
+  if (
+    searchFilters.transmissionDateFrom &&
+    searchFilters.transmissionDateTo &&
+    searchFilters.transmissionDateFrom <= searchFilters.transmissionDateTo
+  ) {
+    searchFilterErrors.date = true
+  }
+
+  return searchFilterErrors
+}
+
 export const useSearchFiltersConnect = () => {
   const dispatch = useAppDispatch()
   const searchFilters = useSelector(selectSearchFilters)
   const { dispatchQueryParams } = useLocationConnect()
-  const searchFilterErrors: Record<string, boolean> = {}
 
   const setSearchFilters = useCallback(
     (filter: VesselSearchState) => {
@@ -67,17 +112,8 @@ export const useSearchFiltersConnect = () => {
 
   const hasFilters = hasFiltersActive(searchFilters)
 
-  if (
-    searchFilters.transmissionDateFrom &&
-    searchFilters.transmissionDateTo &&
-    searchFilters.transmissionDateFrom <= searchFilters.transmissionDateTo
-  ) {
-    searchFilterErrors.date = true
-  }
-
   return {
     hasFilters,
-    searchFilterErrors,
     searchFilters,
     setSearchFilters,
   }

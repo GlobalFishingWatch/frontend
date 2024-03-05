@@ -54,7 +54,10 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
       if (!dataviewInstanceWithDataset) {
         return
       }
-      upsertDataviewInstance(dataviewInstanceWithDataset)
+      upsertDataviewInstance({
+        ...dataviewInstanceWithDataset,
+        id: `${dataviewInstanceWithDataset.id}-${Date.now()}`,
+      })
       dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
     },
     [dispatch, upsertDataviewInstance]

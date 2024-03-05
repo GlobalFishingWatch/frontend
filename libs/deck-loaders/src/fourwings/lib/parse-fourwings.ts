@@ -1,5 +1,5 @@
 import Pbf from 'pbf'
-import { CONFIG_BY_INTERVAL } from '../helpers/time'
+import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
 import type { Cell, FourwingsLoaderOptions, FourwingsOptions, FourwingsRawData } from './types'
 
 // TODO make this dynamic to get the data from the header
@@ -17,71 +17,104 @@ export const CELL_VALUES_START_INDEX = 3
 export const getCellTimeseries = (
   intArrays: FourwingsRawData[],
   options?: FourwingsLoaderOptions
-): { cells: Cell[]; indexes: number[]; startFrames: number[] } => {
-  const { minFrame, interval, sublayers } = options?.fourwings || ({} as FourwingsOptions)
+): {
+  cells: Cell[]
+  indexes: number[]
+  startFrames: number[][]
+  initialValues: Record<string, number[][]>
+} => {
+  const { minFrame, interval, sublayers, initialTimeRange } =
+    options?.fourwings || ({} as FourwingsOptions)
+
   // TODO ensure we use the UTC dates here to avoid the .ceil
   const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame))
-  // const sublayerCount = sublayers.length
+  const timeRangeStartIntervalFrame =
+    Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.start)) -
+    tileMinIntervalFrame
+  const timeRangeEndIntervalFrame =
+    Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.end)) -
+    tileMinIntervalFrame
+  const timeRangeKey = getTimeRangeKey(timeRangeStartIntervalFrame, timeRangeEndIntervalFrame)
   const cells = [] as Cell[]
   const indexes = [] as number[]
-  const startFrames = [] as number[]
-  const dataLength = intArrays.length
-  for (let subLayerIndex = 0; subLayerIndex < dataLength; subLayerIndex++) {
+  const startFrames = [] as number[][]
+  const initialValues = {
+    [timeRangeKey]: [],
+  } as Record<string, number[][]>
+  const sublayersLength = intArrays.length
+  for (let subLayerIndex = 0; subLayerIndex < sublayersLength; subLayerIndex++) {
     let cellNum = 0
     let startFrame = 0
     let endFrame = 0
     let startIndex = 0
-    let endIndex = 0
     let indexInCell = 0
     const subLayerIntArray = intArrays[subLayerIndex]
     for (let i = 0; i < subLayerIntArray.length; i++) {
       const value = subLayerIntArray[i]
       if (indexInCell === CELL_NUM_INDEX) {
-        startIndex = i
+        // this number defines the cell index
+        startIndex = i + CELL_VALUES_START_INDEX
         cellNum = value
       } else if (indexInCell === CELL_START_INDEX) {
-        startFrame = value
-        // startFrame = getDateInIntervalResolution(value, interval)
+        // this number defines the cell start frame
+        startFrame = value - tileMinIntervalFrame
       } else if (indexInCell === CELL_END_INDEX) {
-        // endFrame = getDateInIntervalResolution(value, interval)
-        endFrame = value
+        // this number defines the cell end frame
+        endFrame = value - tileMinIntervalFrame
 
+        // calculate how many values are in the tile
         const numCellValues = (endFrame - startFrame + 1) * sublayers
-        const startOffset = startIndex + CELL_VALUES_START_INDEX
-        endIndex = startOffset + numCellValues - 1
 
+        // find the cell index if previous sublayers contained data for it
         // eslint-disable-next-line no-loop-func
         let cellIndex = indexes.findIndex((v) => v === cellNum)
+        // add the cell if previous sublayers didn't contain data for it
         if (cellIndex === -1) {
-          cells.push(new Array(dataLength))
+          cells.push(new Array(sublayersLength))
+          initialValues[timeRangeKey].push(new Array(sublayersLength))
+          startFrames.push(new Array(sublayersLength))
           indexes.push(cellNum)
-          startFrames.push(startFrame - tileMinIntervalFrame)
           cellIndex = cells.length - 1
         }
-        startFrames[cellIndex] = Math.min(startFrames[cellIndex], startFrame - tileMinIntervalFrame)
         for (let j = 0; j < numCellValues; j++) {
-          // const subLayerIndex = j % sublayers
-          const cellValue = subLayerIntArray[j + startOffset]
-          // eslint-disable-next-line max-depth
+          const cellValue = subLayerIntArray[j + startIndex]
           if (cellValue !== NO_DATA_VALUE) {
-            // eslint-disable-next-line max-depth
             if (!cells[cellIndex]?.[subLayerIndex]) {
+              // create an array of values for this sublayer if the cell dind't have it already
               cells[cellIndex]![subLayerIndex] = new Array(numCellValues)
             }
+            if (!startFrames[cellIndex]![subLayerIndex]) {
+              // set the startFrame for this sublayer if the cell dind't have it already
+              startFrames[cellIndex]![subLayerIndex] = startFrame
+            }
+            if (!initialValues[timeRangeKey][cellIndex]![subLayerIndex]) {
+              // set the initialValue for this sublayer to 0 if the cell dind't have it already
+              initialValues[timeRangeKey][cellIndex]![subLayerIndex] = 0
+            }
+            // add current value to the array of values for this sublayer
             cells[cellIndex]![subLayerIndex][Math.floor(j / sublayers)] =
               cellValue * SCALE_VALUE + OFFSET_VALUE
+
+            // sum current value to the initialValue for this sublayer
+            // TODO make this an average for the environmental layers
+            if (
+              j + startFrame >= timeRangeStartIntervalFrame &&
+              j + startFrame < timeRangeEndIntervalFrame
+            ) {
+              initialValues[timeRangeKey][cellIndex]![subLayerIndex] +=
+                cellValue * SCALE_VALUE + OFFSET_VALUE
+            }
           }
         }
-        i = endIndex
-        // TODO make this clearer, probably using enum of string for what indexInCell means
-
+        // set the i to jump to the next step where we know a cell index will be
+        i = startIndex + numCellValues - 1
+        // resseting indexInCell to start with the new cell
         indexInCell = -1
       }
       indexInCell++
     }
   }
-
-  return { cells, indexes, startFrames }
+  return { cells, indexes, startFrames, initialValues }
 }
 
 function readData(_: any, data: any, pbf: any) {

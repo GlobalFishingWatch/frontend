@@ -14,7 +14,6 @@ export interface FourwingsDeckSublayer {
   }
   // filter?: string
   // vesselGroups?: string
-  // colorRampWhiteEnd?: boolean
   // legend?: GeneratorLegend
   // availableIntervals?: Interval[]
 }

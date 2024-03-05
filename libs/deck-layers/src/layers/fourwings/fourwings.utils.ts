@@ -12,14 +12,18 @@ import { AggregateCellParams } from './FourwingsHeatmapLayer'
 
 export const aggregateCell = (
   cell: Cell,
-  { minIntervalFrame, maxIntervalFrame }: AggregateCellParams
+  { minIntervalFrame, maxIntervalFrame, startFrames }: AggregateCellParams
 ): number[] => {
   // TODO decide if we want the last day to be included or not in maxIntervalFrame
   return cell.map(
-    (sublayer) =>
+    (sublayer, sublayerIndex) =>
       sublayer &&
+      startFrames &&
       sublayer
-        .slice(minIntervalFrame, maxIntervalFrame)
+        .slice(
+          Math.max(minIntervalFrame - startFrames[sublayerIndex], 0),
+          maxIntervalFrame ? maxIntervalFrame - startFrames[sublayerIndex] : undefined
+        )
         .reduce((acc: number, value) => (value ? acc + value : acc), 0)
   )
 }
@@ -83,10 +87,12 @@ export const getDataUrlBySublayer = ({ tile, chunk, sublayer }: GetDataUrlByChun
     format: '4WINGS',
     'temporal-aggregation': false,
     proxy: true,
-    'date-range': [
-      DateTime.fromMillis(chunk.start).toISODate(),
-      DateTime.fromMillis(chunk.end).toISODate(),
-    ].join(','),
+    ...(chunk.interval !== 'YEAR' && {
+      'date-range': [
+        DateTime.fromMillis(chunk.start).toISODate(),
+        DateTime.fromMillis(chunk.end).toISODate(),
+      ].join(','),
+    }),
     datasets: [sublayer.datasets.join(',')],
   }
   const url = `${API_BASE_URL}?${stringify(params, {

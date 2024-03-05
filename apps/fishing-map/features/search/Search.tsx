@@ -26,6 +26,7 @@ import {
   useFetchSearchResults,
   useSearchConnect,
   useSearchFiltersConnect,
+  useSearchFiltersErrors,
 } from 'features/search/search.hook'
 import {
   cleanVesselSearchResults,
@@ -67,6 +68,8 @@ function Search() {
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const guestUser = useSelector(selectIsGuestUser)
   const datasetError = useSelector(selectDatasetsError)
+  const searchFilterErrors = useSearchFiltersErrors()
+  const hasSearchFiltersErrors = Object.values(searchFilterErrors).some((error) => error)
   const { fetchResults, fetchMoreResults } = useFetchSearchResults()
 
   useEffect(() => {
@@ -74,7 +77,12 @@ function Search() {
   }, [dispatch, urlWorkspaceId])
 
   useEffect(() => {
-    if (searchDatasets?.length && activeSearchOption === 'basic' && debouncedQuery) {
+    if (
+      searchDatasets?.length &&
+      activeSearchOption === 'basic' &&
+      debouncedQuery &&
+      !hasSearchFiltersErrors
+    ) {
       dispatch(cleanVesselSearchResults())
       fetchResults({
         query: debouncedQuery,
@@ -90,10 +98,15 @@ function Search() {
     fetchResults,
     hasFilters,
     dispatch,
+    hasSearchFiltersErrors,
   ])
 
   useEffect(() => {
-    if (activeSearchOption === 'advanced' && (hasFilters || debouncedQuery)) {
+    if (
+      activeSearchOption === 'advanced' &&
+      (hasFilters || debouncedQuery) &&
+      !hasSearchFiltersErrors
+    ) {
       fetchResults({
         query: searchQuery,
         datasets: searchDatasets,
@@ -132,14 +145,16 @@ function Search() {
         filters?: VesselSearchState
       }
     ) => {
-      dispatch(cleanVesselSearchResults())
-      fetchResults({
-        query,
-        filters,
-        datasets: searchDatasets,
-      })
+      if (!hasSearchFiltersErrors) {
+        dispatch(cleanVesselSearchResults())
+        fetchResults({
+          query,
+          filters,
+          datasets: searchDatasets,
+        })
+      }
     },
-    [debouncedQuery, dispatch, fetchResults, searchDatasets, searchFilters]
+    [debouncedQuery, dispatch, fetchResults, hasSearchFiltersErrors, searchDatasets, searchFilters]
   )
 
   const isWorkspaceError = workspaceStatus === AsyncReducerStatus.Error
