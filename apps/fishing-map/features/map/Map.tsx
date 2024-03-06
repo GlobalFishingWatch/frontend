@@ -310,13 +310,9 @@ const MapWrapper = () => {
         onClick={onClick}
         onHover={onHover}
       >
-        {(props) => (
-          <Fragment>
-            <MapAnnotations {...props} />
-            <MapAnnotationsDialog {...props} />
-            <ErrorNotification {...props} />
-          </Fragment>
-        )}
+        <MapAnnotations />
+        <MapAnnotationsDialog />
+        <ErrorNotification />
       </DeckGL>
       {/* {style && (
         <Map

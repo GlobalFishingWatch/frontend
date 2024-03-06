@@ -1,14 +1,16 @@
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
 import { DragEvent, useCallback } from 'react'
+import { Viewport } from '@deck.gl/core/typed'
 import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
 import { useDeckMap } from '../map-context.hooks'
-import { MapAnnotation, MapAnnotationComponentProps } from './annotations.types'
+import { useMapViewport } from '../map-viewport.hooks'
+import { MapAnnotation } from './annotations.types'
 
-const MapAnnotations = (props: MapAnnotationComponentProps): React.ReactNode | null => {
-  const { viewport } = props
+const MapAnnotations = (): React.ReactNode | null => {
   const { upsertMapAnnotations, mapAnnotations, areMapAnnotationsVisible } = useMapAnnotations()
   const { setMapAnnotation } = useMapAnnotation()
   const deck = useDeckMap()
+  const viewport: Viewport | undefined = useMapViewport()
   const handleHover = useCallback(() => {
     deck?.setProps({ getCursor: () => 'move' })
   }, [deck])
@@ -23,6 +25,7 @@ const MapAnnotations = (props: MapAnnotationComponentProps): React.ReactNode | n
   }, [deck])
   const handleDragEnd = useCallback(
     ({ event, annotation }: { event: DragEvent; annotation: MapAnnotation }) => {
+      if (!viewport) return
       deck?.setProps({ controller: { dragPan: true }, getCursor: () => 'grab' })
       const newCoords = viewport.unproject([event.clientX - 390, event.clientY])
       upsertMapAnnotations({
@@ -36,7 +39,7 @@ const MapAnnotations = (props: MapAnnotationComponentProps): React.ReactNode | n
   )
 
   return (
-    <HtmlOverlay {...props} key="1">
+    <HtmlOverlay viewport={viewport} key="1">
       {deck &&
         mapAnnotations &&
         areMapAnnotationsVisible &&

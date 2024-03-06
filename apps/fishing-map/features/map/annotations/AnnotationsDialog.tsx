@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
-import { DeckGLRenderCallbackArgs } from '@deck.gl/react/typed/utils/extract-jsx-layers'
+import { Viewport } from '@deck.gl/core/typed'
 import {
   Button,
   ColorBar,
@@ -15,17 +15,19 @@ import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useDeckMap } from '../map-context.hooks'
+import { useMapViewport } from '../map-viewport.hooks'
 import styles from './Annotations.module.css'
 /* eslint-disable react/prop-types */
 const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]
 
-const MapAnnotationsDialog = (props: DeckGLRenderCallbackArgs): React.ReactNode | null => {
+const MapAnnotationsDialog = (): React.ReactNode | null => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const gfwUser = useSelector(selectIsGFWUser)
   const { mapAnnotation, resetMapAnnotation, setMapAnnotation, isMapAnnotating } =
     useMapAnnotation()
   const deck = useDeckMap()
+  const viewport: Viewport | undefined = useMapViewport()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
   const isDialogVisible = gfwUser && isMapAnnotating && mapAnnotation
   const onConfirmClick = () => {
@@ -56,7 +58,7 @@ const MapAnnotationsDialog = (props: DeckGLRenderCallbackArgs): React.ReactNode 
 
   return (
     <div onPointerUp={(event) => event.preventDefault()}>
-      <HtmlOverlay {...props} key="1">
+      <HtmlOverlay viewport={viewport} key="1">
         <HtmlOverlayItem
           style={{ pointerEvents: 'all', transform: 'translate(-50%,-105%)' }}
           coordinates={[Number(mapAnnotation.lon), Number(mapAnnotation.lat)]}

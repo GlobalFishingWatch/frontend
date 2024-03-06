@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { stringify } from 'qs'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
-import { DeckGLRenderCallbackArgs } from '@deck.gl/react/typed/utils/extract-jsx-layers'
+import { Viewport } from '@deck.gl/core/typed'
 import { Button, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
@@ -16,14 +16,16 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { PUBLIC_WORKSPACE_ENV } from 'data/config'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { useDeckMap } from '../map-context.hooks'
+import { useMapViewport } from '../map-viewport.hooks'
 import styles from './ErrorNotification.module.css'
 
 const ERRORS_SPREADSHEET_ID = process.env.NEXT_PUBLIC_MAP_ERRORS_SPREADSHEET_ID || ''
 const ERRORS_SHEET_TITLE = 'errors'
 
-const ErrorNotification = (props: DeckGLRenderCallbackArgs): React.ReactNode | null => {
+const ErrorNotification = (): React.ReactNode | null => {
   const { t } = useTranslation()
   const deck = useDeckMap()
+  const viewport: Viewport | undefined = useMapViewport()
   const {
     errorNotification,
     resetErrorNotification,
@@ -100,7 +102,7 @@ const ErrorNotification = (props: DeckGLRenderCallbackArgs): React.ReactNode | n
 
   return (
     <div onPointerUp={(event) => event.preventDefault()}>
-      <HtmlOverlay {...props} key="1">
+      <HtmlOverlay viewport={viewport} key="1">
         <HtmlOverlayItem
           style={{ pointerEvents: 'all', transform: 'translate(-50%,-115%)' }}
           coordinates={[Number(errorNotification.lon), Number(errorNotification.lat)]}
