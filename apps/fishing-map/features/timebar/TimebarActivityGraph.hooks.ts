@@ -25,7 +25,7 @@ export const useHeatmapActivityGraph = () => {
   const fourwingsActivityLayer = useGetDeckLayers<FourwingsLayer>(ids)
   const loading = fourwingsActivityLayer?.some((layer) => !layer.loaded)
   const cellsData: TileCell[] = fourwingsActivityLayer?.[0]?.instance?.getViewportData()
-  console.log('🚀 ~ useHeatmapActivityGraph ~ cellsData:', cellsData)
+  // console.log('🚀 ~ useHeatmapActivityGraph ~ cellsData:', cellsData)
 
   const heatmapActivity = useMemo(
     () => (cellsData?.length ? getGraphFromGridCellsData(cellsData) || [] : []),

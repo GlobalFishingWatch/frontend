@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai'
+import { atom, useAtom, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 import { getDataviewsMerged } from '@globalfishingwatch/dataviews-client'
 import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
@@ -49,4 +49,8 @@ export function useDeckLayerComposer({
     // layers: zIndexSortedArray([basemapLayer, contextLayer, ...fourwingsLayers]),
     layers: deckLayers,
   }
+}
+
+export function useSetDeckLayerComposer() {
+  return useSetAtom(deckLayerInstancesAtom)
 }

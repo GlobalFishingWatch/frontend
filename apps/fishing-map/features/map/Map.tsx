@@ -28,7 +28,10 @@ import {
 import { LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
-import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
+import {
+  useSetDeckLayerComposer,
+  useSetDeckLayerLoadedState,
+} from '@globalfishingwatch/deck-layer-composer'
 import useMapInstance, { useSetMapInstance } from 'features/map/map-context.hooks'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapInfo from 'features/map/controls/MapInfo'
@@ -146,6 +149,12 @@ const MapWrapper = () => {
   // )
 
   const layers = useMapDeckLayers()
+  const setDeckLayers = useSetDeckLayerComposer()
+  useEffect(() => {
+    return () => {
+      setDeckLayers([])
+    }
+  }, [setDeckLayers])
   // const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   // const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
@@ -276,7 +285,7 @@ const MapWrapper = () => {
         id="map"
         ref={deckRef}
         views={MAP_VIEW}
-        layers={layers as LayersList}
+        layers={deckRef ? (layers as LayersList) : []}
         onAfterRender={() => {
           setDeckLayerLoadedState(layers)
         }}
