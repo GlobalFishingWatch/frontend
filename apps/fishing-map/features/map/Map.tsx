@@ -1,7 +1,17 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import {
+  Fragment,
+  ReactEventHandler,
+  ReactNode,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
-import { LayersList, PickingInfo } from '@deck.gl/core/typed'
+import { DeckProps, LayersList, PickingInfo, Position } from '@deck.gl/core/typed'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
 import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
@@ -41,23 +51,20 @@ import {
   useMapMouseClick,
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
-import MapAnnotations from 'features/map/annotations/Annotations'
 import { useMapRulersDrag } from 'features/map/rulers/rulers-drag.hooks'
-import { useMapAnnotationDrag } from 'features/map/annotations/annotations-drag.hooks'
 import ErrorNotification from 'features/map/error-notification/ErrorNotification'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import { MapCoordinates } from 'types'
-import {
-  MAP_VIEW,
-  useViewStateAtom,
-  useUpdateViewStateUrlParams,
-  useSetViewState,
-  useViewState,
-} from './map-viewport.hooks'
+import { DEFAULT_VIEWPORT } from 'data/config'
+import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
 import MapLegends from './MapLegends'
+import MapAnnotations from './annotations/Annotations'
+import MapAnnotationsDialog from './annotations/AnnotationsDialog'
+import { useMapAnnotation } from './annotations/annotations.hooks'
+import { useMapErrorNotification } from './error-notification/error-notification.hooks'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 const PopupWrapper = dynamic(
@@ -105,34 +112,21 @@ const MapWrapper = () => {
   // DECK related code
   const deckRef = useRef<DeckGLRef>(null)
   useSetMapInstance(deckRef)
-
-  // const [viewState, setViewState] = useState<any>(DEFAULT_VIEWPORT)
-  // const viewState = useRef<any>(DEFAULT_VIEWPORT)
   const { viewState, setViewState } = useViewStateAtom()
-  // const [viewState, setViewState] = useState(DEFAULT_VIEWPORT)
   const onViewStateChange = useCallback(
     (params: ViewStateChangeParameters) => {
-      // const { latitude, longitude, zoom } = params.viewState
-      // viewState.current = { latitude, longitude, zoom }
       setViewState(params.viewState as ViewState)
     },
     [setViewState]
   )
-  // const onViewStateChange = useCallback(
-  //   (params: ViewStateChangeParameters) => {
-  //     console.log(params)
-  //     setViewState(params.viewState as MapCoordinates)
-  //   },
-  //   [setViewState]
-  // )
   useUpdateViewStateUrlParams()
+  const { onMapClick } = useMapMouseClick()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
   useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   useMapRulersDrag()
-  useMapAnnotationDrag()
   // const map = useMapInstance()
   // const { isMapDrawing } = useMapDrawConnect()
   // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -264,20 +258,14 @@ const MapWrapper = () => {
   //   }
   //   return styleInteractiveLayerIds
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
-
-  const onClick = useCallback((info: PickingInfo) => {
-    const features = deckRef?.current?.pickMultipleObjects({
-      x: info.x,
-      y: info.y,
-    })
-    console.log(features?.flatMap((f) => f.object?.value || []).join(','))
-  }, [])
+  const { addMapAnnotation, isMapAnnotating } = useMapAnnotation()
+  const { addErrorNotification, isErrorNotificationEditing } = useMapErrorNotification()
 
   const onHover = useCallback((info: PickingInfo) => {
-    const features = deckRef?.current?.pickMultipleObjects({
-      x: info.x,
-      y: info.y,
-    })
+    // const features = deckRef?.current?.pickMultipleObjects({
+    //   x: info.x,
+    //   y: info.y,
+    // })
   }, [])
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
@@ -308,9 +296,13 @@ const MapWrapper = () => {
         }}
         viewState={viewState}
         onViewStateChange={onViewStateChange}
-        onClick={onClick}
+        onClick={onMapClick}
         onHover={onHover}
-      />
+      >
+        <MapAnnotations />
+        <MapAnnotationsDialog />
+        <ErrorNotification />
+      </DeckGL>
       {/* {style && (
         <Map
           id="map"

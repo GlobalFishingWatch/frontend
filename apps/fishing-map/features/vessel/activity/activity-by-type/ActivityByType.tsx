@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { EventType, EventTypes } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useMapViewport } from 'features/map/map-viewport.hooks'
+import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import {
@@ -39,7 +39,8 @@ export function ActivityByType() {
   const dispatch = useAppDispatch()
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const [expandedType, toggleExpandedType] = useActivityByType()
-  const { viewport, setMapCoordinates } = useMapViewport()
+  const viewport = useMapViewport()
+  const setMapCoordinates = useSetMapCoordinates()
   const [selectedEvent, setSelectedEvent] = useState<ActivityEvent>()
 
   const onInfoClick = useCallback((event: ActivityEvent) => {
@@ -72,15 +73,18 @@ export function ActivityByType() {
 
   const selectEventOnMap = useCallback(
     (event: ActivityEvent) => {
-      const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
-      setMapCoordinates({
-        latitude: event.position.lat,
-        longitude: event.position.lon,
-        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
-      })
-      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+      if (viewport?.zoom) {
+        const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
+        // TODO
+        setMapCoordinates({
+          latitude: event.position.lat,
+          longitude: event.position.lon,
+          zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
+        })
+        if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+      }
     },
-    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport.zoom]
+    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport?.zoom]
   )
 
   const { events, groupCounts, groups } = useMemo(() => {

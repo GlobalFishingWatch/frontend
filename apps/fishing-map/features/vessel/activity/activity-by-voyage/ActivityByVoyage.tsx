@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { useMapViewport } from 'features/map/map-viewport.hooks'
+import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
@@ -48,7 +48,8 @@ const ActivityByVoyage = () => {
     setSelectedEvent((state) => (state?.id === event.id ? undefined : event))
   }, [])
 
-  const { viewport, setMapCoordinates } = useMapViewport()
+  const viewport = useMapViewport()
+  const setMapCoordinates = useSetMapCoordinates()
 
   const selectVoyageOnMap = useCallback(
     (voyageId: ActivityEvent['voyage']) => {
@@ -96,15 +97,17 @@ const ActivityByVoyage = () => {
 
   const selectEventOnMap = useCallback(
     (event: ActivityEvent) => {
-      const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
-      setMapCoordinates({
-        latitude: event.position.lat,
-        longitude: event.position.lon,
-        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
-      })
-      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+      if (viewport?.zoom) {
+        const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
+        setMapCoordinates({
+          latitude: event.position.lat,
+          longitude: event.position.lon,
+          zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
+        })
+        if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+      }
     },
-    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport.zoom]
+    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport?.zoom]
   )
 
   const { events, groupCounts, groups } = useMemo(() => {
