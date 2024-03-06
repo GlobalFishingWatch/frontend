@@ -311,7 +311,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   getViewportData() {
-    const data = this.getData()
+    const data = this.getData() as any
     const { viewport } = this.context
     const [west, north] = viewport.unproject([0, 0])
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
