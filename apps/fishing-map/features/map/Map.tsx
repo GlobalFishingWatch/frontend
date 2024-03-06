@@ -118,6 +118,7 @@ const MapWrapper = () => {
     [setViewState]
   )
   useUpdateViewStateUrlParams()
+  const { onMapClick } = useMapMouseClick()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -257,25 +258,6 @@ const MapWrapper = () => {
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
   const { addMapAnnotation, isMapAnnotating } = useMapAnnotation()
   const { addErrorNotification, isErrorNotificationEditing } = useMapErrorNotification()
-  const onClick: DeckProps['onClick'] = useCallback(
-    (info: PickingInfo, event: any) => {
-      if (event.srcEvent.defaultPrevented) {
-        // this is needed to allow interacting with overlay elements
-        return true
-      }
-      // const features = deckRef?.current?.pickMultipleObjects({
-      //   x: info.x,
-      //   y: info.y,
-      // })
-      if (isMapAnnotating) {
-        addMapAnnotation(info?.coordinate as Position)
-      }
-      if (isErrorNotificationEditing) {
-        addErrorNotification(info?.coordinate as Position)
-      }
-    },
-    [isMapAnnotating, isErrorNotificationEditing, addMapAnnotation, addErrorNotification]
-  )
 
   const onHover = useCallback((info: PickingInfo) => {
     // const features = deckRef?.current?.pickMultipleObjects({
@@ -307,7 +289,7 @@ const MapWrapper = () => {
         }}
         viewState={viewState}
         onViewStateChange={onViewStateChange}
-        onClick={onClick}
+        onClick={onMapClick}
         onHover={onHover}
       >
         <MapAnnotations />
