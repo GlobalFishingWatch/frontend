@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
-import { MapAnnotation } from '@globalfishingwatch/layer-composer'
+import { Position } from '@deck.gl/core/typed'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectAreMapAnnotationsVisible,
@@ -9,6 +8,7 @@ import {
 } from 'features/app/selectors/app.selectors'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
+import type { MapAnnotation } from './annotations.types'
 
 /**
  * Hook used only for the temporal annotation stored into the slice before confirming
@@ -24,10 +24,10 @@ export const useMapAnnotation = () => {
   } = useMapControl('annotations')
 
   const addMapAnnotation = useCallback(
-    (event: MapLayerMouseEvent) => {
+    (coords: Position) => {
       setMapControlValue({
-        lon: event.lngLat.lng,
-        lat: event.lngLat.lat,
+        lon: coords[0],
+        lat: coords[1],
         color: DEFAUL_ANNOTATION_COLOR,
       } as MapAnnotation)
     },

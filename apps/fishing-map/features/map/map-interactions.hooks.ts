@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { DeckProps, PickingInfo, Position } from '@deck.gl/core/typed'
 import {
   InteractionEventCallback,
   useFeatureState,
@@ -126,50 +127,51 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
     )
   }, [clickedEvent, clickedTooltipEvent])
 
-  const onMapClick = useCallback(
-    (event: MapLayerMouseEvent) => {
+  const onMapClick: DeckProps['onClick'] = useCallback(
+    (info: PickingInfo, event: any) => {
+      if (event.srcEvent.defaultPrevented) {
+        // this is needed to allow interacting with overlay elements content
+        return true
+      }
+      // const features = deckRef?.current?.pickMultipleObjects({
+      //   x: info.x,
+      //   y: info.y,
+      // })
       trackEvent({
         category: TrackCategory.EnvironmentalData,
         action: `Click in grid cell`,
         label: getEventLabel(clickedCellLayers ?? []),
       })
-      const hasWorkspacesFeatures =
-        event?.features?.find(
-          (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
-        ) !== undefined
-      if (isMapDrawing || (isMarineManagerLocation && !hasWorkspacesFeatures)) {
-        return undefined
-      }
+      // const hasWorkspacesFeatures =
+      //   event?.features?.find(
+      //     (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
+      //   ) !== undefined
+      // if (isMapDrawing || (isMarineManagerLocation && !hasWorkspacesFeatures)) {
+      //   return undefined
+      // }
 
-      const hasRulerFeature =
-        event.features?.find((f) => f.source === RULERS_LAYER_ID) !== undefined
-      if (rulersEditing && !hasRulerFeature) {
-        return onRulerMapClick(event)
-      }
-      const hasAnnotationFeature =
-        event.features?.find((f) => f.source === ANNOTATIONS_GENERATOR_ID) !== undefined
-      if (isMapAnnotating && !hasAnnotationFeature) {
-        return addMapAnnotation(event)
+      // const hasRulerFeature =
+      //   event.features?.find((f) => f.source === RULERS_LAYER_ID) !== undefined
+      // if (rulersEditing && !hasRulerFeature) {
+      //   return onRulerMapClick(event)
+      // }
+
+      if (isMapAnnotating) {
+        return addMapAnnotation(info.coordinate as Position)
       }
       if (isErrorNotificationEditing) {
-        return addErrorNotification(event)
+        return addErrorNotification(info.coordinate as Position)
       }
-      onClick(event)
+      // onClick(event)
     },
     [
       clickedCellLayers,
-      isMapDrawing,
-      isMarineManagerLocation,
-      rulersEditing,
       isMapAnnotating,
       isErrorNotificationEditing,
-      onClick,
-      onRulerMapClick,
       addMapAnnotation,
       addErrorNotification,
     ]
-    // this stops complaining between typings in mapbox-gl and maplibre-gl
-  ) as (e: any) => void
+  )
 
   return { onMapClick, clickedTooltipEvent }
 }

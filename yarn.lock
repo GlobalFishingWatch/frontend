@@ -2447,6 +2447,7 @@ __metadata:
     "@mui/x-date-pickers": "npm:^6.19.3"
     "@nebula.gl/edit-modes": "npm:^1.0.4"
     "@nebula.gl/layers": "npm:^1.0.4"
+    "@nebula.gl/overlays": "npm:^1.0.4"
     "@next/bundle-analyzer": "npm:^14.1.0"
     "@next/eslint-plugin-next": "npm:14.x"
     "@nx/cypress": "npm:18.0.4"
@@ -4006,6 +4007,20 @@ __metadata:
     "@luma.gl/constants": ^8.5.10
     "@luma.gl/core": ^8.5.10
   checksum: 10/c193669cdfc456752cd6fceeb27208489de82088f6f3b9821dd904157c9af49e50faa212b0b2c59a56ffd1ef48bad290fb997ef05dc9058b5836397b5df7cd91
+  languageName: node
+  linkType: hard
+
+"@nebula.gl/overlays@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@nebula.gl/overlays@npm:1.0.4"
+  dependencies:
+    "@turf/helpers": "npm:>=4.0.0"
+    "@types/supercluster": "npm:5.0.2"
+    supercluster: "npm:^6.0.1"
+  peerDependencies:
+    react: 0.14.x - 16.x
+    react-dom: 0.14.x - 16.x
+  checksum: 10/14b6c5f4555e663275156d7a048dd1ea27f1e3e8447366eb64e007d6c23f6e578490246ec81e2cd723897b7251091cf103f75aa0e4d4a419e3ef88bd309d1e67
   languageName: node
   linkType: hard
 
@@ -8142,6 +8157,15 @@ __metadata:
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
   checksum: 10/72576cc1522090fe497337c2b99d9838e320659ac57fa5560fcbdcbafcf5d0216c6b3a0a8a4ee4fdb3b1f5e3420aa4f6223ab57b82fef3578bec3206425c6cf5
+  languageName: node
+  linkType: hard
+
+"@types/supercluster@npm:5.0.2":
+  version: 5.0.2
+  resolution: "@types/supercluster@npm:5.0.2"
+  dependencies:
+    "@types/geojson": "npm:*"
+  checksum: 10/73b82bbaf19fa4143e8ca65e2d15e30aed86addc3d5285af282569c1b5e0146ed9255d146e722e276d350115177ce374440200de77fcffa80edb1c12c09bb17e
   languageName: node
   linkType: hard
 
@@ -17114,6 +17138,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kdbush@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "kdbush@npm:3.0.0"
+  checksum: 10/dd1c4b550de185129297a5a7c68655fc72311d8a70691bacfba820b46e53c3056116c795be12b7530be46e4c9e8cd3357f7c1af3c59077982cf221632cc4bc88
+  languageName: node
+  linkType: hard
+
 "kdbush@npm:^4.0.2":
   version: 4.0.2
   resolution: "kdbush@npm:4.0.2"
@@ -22904,6 +22935,15 @@ __metadata:
   bin:
     stylus: bin/stylus
   checksum: 10/f8414237d7b0edf57ddbb0d782de7876bba15dc71e475e8713377b8dbc4767a1b1f101f966e33beb7f0c8d092e17a42d557f73bc94cbae5a8311d3bc2f64bbbb
+  languageName: node
+  linkType: hard
+
+"supercluster@npm:^6.0.1":
+  version: 6.0.2
+  resolution: "supercluster@npm:6.0.2"
+  dependencies:
+    kdbush: "npm:^3.0.0"
+  checksum: 10/e392cf38b3eff0b8c1fd840c0095eaf4b4dcd8064e540edd0eb6c44e5cfe969d88fb1cb18f9d42ae299505f8ef5a8a4f7fa43b592b583f308b87d38c6b099a15
   languageName: node
   linkType: hard
 

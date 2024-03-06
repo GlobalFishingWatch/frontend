@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux'
-import { Popup } from 'react-map-gl'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { stringify } from 'qs'
-import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
+import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
+import { Viewport } from '@deck.gl/core/typed'
+import { Button, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { MapAnnotation } from '@globalfishingwatch/layer-composer'
@@ -14,15 +15,24 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { PUBLIC_WORKSPACE_ENV } from 'data/config'
 import { selectLocationQuery } from 'routes/routes.selectors'
+import { useDeckMap } from '../map-context.hooks'
+import { useMapViewport } from '../map-viewport.hooks'
 import styles from './ErrorNotification.module.css'
 
 const ERRORS_SPREADSHEET_ID = process.env.NEXT_PUBLIC_MAP_ERRORS_SPREADSHEET_ID || ''
 const ERRORS_SHEET_TITLE = 'errors'
 
-const ErrorNotification = () => {
+const ErrorNotification = (): React.ReactNode | null => {
   const { t } = useTranslation()
-  const { errorNotification, resetErrorNotification, setErrorNotification, setNotifyingErrorEdit } =
-    useMapErrorNotification()
+  const deck = useDeckMap()
+  const viewport: Viewport | undefined = useMapViewport()
+  const {
+    errorNotification,
+    resetErrorNotification,
+    setErrorNotification,
+    setNotifyingErrorEdit,
+    isErrorNotificationEditing,
+  } = useMapErrorNotification()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const locationQuery = useSelector(selectLocationQuery)
@@ -76,6 +86,9 @@ const ErrorNotification = () => {
     }
   }
   const ref = useEventKeyListener(['Enter'], onConfirmClick)
+  if (isErrorNotificationEditing) {
+    deck.setProps({ getCursor: () => 'crosshair' })
+  }
 
   if (!errorNotification) {
     return null
@@ -88,41 +101,49 @@ const ErrorNotification = () => {
   }
 
   return (
-    <Popup
-      latitude={errorNotification.lat as number}
-      longitude={errorNotification.lon as number}
-      closeButton={true}
-      closeOnClick={false}
-      onClose={onClose}
-      className={styles.popup}
-    >
-      <div className={styles.popupContent} ref={ref}>
-        <InputText
-          label={t('map.errorLabel', 'Error description')}
-          value={errorNotification?.label || ''}
-          onChange={(e) => setErrorNotification({ label: e.target.value })}
-          placeholder={t(
-            'map.errorPlaceholder',
-            'Please describe the error as detailed as possible'
-          )}
-          className={styles.input}
-        />
-        <div className={styles.popupButtons}>
-          <Button
-            onClick={onConfirmClick}
-            className={styles.confirmBtn}
-            disabled={!errorNotification.label}
-            loading={loading}
-          >
-            {success ? (
-              <Icon icon="tick" className={styles.successIcon} />
-            ) : (
-              t('common.confirm', 'Confirm')
-            )}
-          </Button>
-        </div>
-      </div>
-    </Popup>
+    <div onPointerUp={(event) => event.preventDefault()}>
+      <HtmlOverlay viewport={viewport} key="1">
+        <HtmlOverlayItem
+          style={{ pointerEvents: 'all', transform: 'translate(-50%,-115%)' }}
+          coordinates={[Number(errorNotification.lon), Number(errorNotification.lat)]}
+        >
+          <div className={styles.popup}>
+            <div className={styles.tooltipArrow} />
+            <IconButton
+              icon="close"
+              onClick={resetErrorNotification}
+              className={styles.closeButton}
+            />
+            <div className={styles.popupContent} ref={ref}>
+              <InputText
+                label={t('map.errorLabel', 'Error description')}
+                value={errorNotification?.label || ''}
+                onChange={(e) => setErrorNotification({ label: e.target.value })}
+                placeholder={t(
+                  'map.errorPlaceholder',
+                  'Please describe the error as detailed as possible'
+                )}
+                className={styles.input}
+              />
+              <div className={styles.popupButtons}>
+                <Button
+                  onClick={onConfirmClick}
+                  className={styles.confirmBtn}
+                  disabled={!errorNotification.label}
+                  loading={loading}
+                >
+                  {success ? (
+                    <Icon icon="tick" className={styles.successIcon} />
+                  ) : (
+                    t('common.confirm', 'Confirm')
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </HtmlOverlayItem>
+      </HtmlOverlay>
+    </div>
   )
 }
 
