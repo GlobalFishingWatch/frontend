@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { debounce } from 'lodash'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { MapView } from '@deck.gl/core/typed'
+import { WebMercatorViewport } from '@deck.gl/core/typed'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
@@ -34,9 +35,11 @@ export function useViewStateAtom() {
 export function useMapViewport() {
   const deckMap = useDeckMap()
   try {
-    return (deckMap as any)?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
+    return (deckMap as any)
+      ?.getViewports?.()
+      .find((v: any) => v.id === MAP_VIEW_ID) as WebMercatorViewport
   } catch (e) {
-    return null
+    return undefined
   }
 }
 

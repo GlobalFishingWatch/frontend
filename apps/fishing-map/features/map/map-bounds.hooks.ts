@@ -103,12 +103,14 @@ export function useMapFitBounds() {
   const fitBounds = useCallback(
     (bounds: Bbox, params: FitBoundsParams = {}) => {
       console.log('fitBounds')
-      const newViewport = viewport.fitBounds(convertToTupleBoundingBox(bounds), params)
-      setViewState({
-        latitude: newViewport.latitude,
-        longitude: newViewport.longitude,
-        zoom: newViewport.zoom,
-      })
+      if (viewport) {
+        const newViewport = viewport.fitBounds(convertToTupleBoundingBox(bounds), params)
+        setViewState({
+          latitude: newViewport.latitude,
+          longitude: newViewport.longitude,
+          zoom: newViewport.zoom,
+        })
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

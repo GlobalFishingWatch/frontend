@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
-import { Viewport } from '@deck.gl/core/typed'
 import {
   Button,
   ColorBar,
@@ -27,7 +26,7 @@ const MapAnnotationsDialog = (): React.ReactNode | null => {
   const { mapAnnotation, resetMapAnnotation, setMapAnnotation, isMapAnnotating } =
     useMapAnnotation()
   const deck = useDeckMap()
-  const viewport: Viewport | undefined = useMapViewport()
+  const viewport = useMapViewport()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
   const isDialogVisible = gfwUser && isMapAnnotating && mapAnnotation
   const onConfirmClick = () => {

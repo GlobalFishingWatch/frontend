@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { stringify } from 'qs'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
-import { Viewport } from '@deck.gl/core/typed'
 import { Button, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
@@ -25,7 +24,7 @@ const ERRORS_SHEET_TITLE = 'errors'
 const ErrorNotification = (): React.ReactNode | null => {
   const { t } = useTranslation()
   const deck = useDeckMap()
-  const viewport: Viewport | undefined = useMapViewport()
+  const viewport = useMapViewport()
   const {
     errorNotification,
     resetErrorNotification,

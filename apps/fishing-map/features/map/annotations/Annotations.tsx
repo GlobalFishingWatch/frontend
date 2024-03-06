@@ -1,6 +1,5 @@
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
 import { DragEvent, useCallback, useRef, useState } from 'react'
-import { Viewport } from '@deck.gl/core/typed'
 import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
 import { useDeckMap } from '../map-context.hooks'
 import { useMapViewport } from '../map-viewport.hooks'
@@ -18,7 +17,7 @@ const MapAnnotations = (): React.ReactNode | null => {
   const deck = useDeckMap()
   const selectedAnnotationRef = useRef<number | null>(null)
   const [newCoords, setNewCoords] = useState<number[] | null>(null)
-  const viewport: Viewport | undefined = useMapViewport()
+  const viewport = useMapViewport()
   const handleHover = useCallback(() => {
     deck?.setProps({ getCursor: () => 'move' })
   }, [deck])
