@@ -89,9 +89,9 @@ const nextConfig = {
     }
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
-      ...(!IS_PRODUCTION && {
-        jotai: path.resolve(__dirname, 'node_modules/jotai'),
-      }),
+      // ...(!IS_PRODUCTION && {
+      //   jotai: path.resolve(__dirname, 'node_modules/jotai'),
+      // }),
     }
     config.externals = [...config.externals, 'mapbox-gl']
     // config.optimization.minimize = false
