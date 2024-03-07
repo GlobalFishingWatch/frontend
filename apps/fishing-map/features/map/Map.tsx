@@ -30,6 +30,7 @@ import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import {
   useSetDeckLayerComposer,
+  useSetDeckLayerInteraction,
   useSetDeckLayerLoadedState,
 } from '@globalfishingwatch/deck-layer-composer'
 import useMapInstance, { useSetMapInstance } from 'features/map/map-context.hooks'
@@ -149,6 +150,7 @@ const MapWrapper = () => {
   // )
 
   const layers = useMapDeckLayers()
+  console.log('🚀 ~ layers:', layers)
   const setDeckLayers = useSetDeckLayerComposer()
   useEffect(() => {
     return () => {
@@ -270,14 +272,20 @@ const MapWrapper = () => {
   const { addMapAnnotation, isMapAnnotating } = useMapAnnotation()
   const { addErrorNotification, isErrorNotificationEditing } = useMapErrorNotification()
 
-  const onHover = useCallback((info: PickingInfo) => {
-    // const features = deckRef?.current?.pickMultipleObjects({
-    //   x: info.x,
-    //   y: info.y,
-    // })
-  }, [])
-
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
+  const setDeckLayerInteraction = useSetDeckLayerInteraction()
+  const onHover = useCallback(
+    (info: PickingInfo) => {
+      const features = deckRef?.current?.pickMultipleObjects({
+        x: info.x,
+        y: info.y,
+      })
+      if (features) {
+        setDeckLayerInteraction(features)
+      }
+    },
+    [setDeckLayerInteraction]
+  )
 
   return (
     <div className={styles.container}>

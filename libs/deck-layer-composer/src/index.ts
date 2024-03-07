@@ -1,6 +1,7 @@
 export * from './config'
 export * from './hooks/deck-layers.hooks'
 export * from './hooks/deck-layers-composer.hooks'
+export * from './hooks/deck-layers-interaction.hooks'
 export * from './hooks/deck-layers-state.hooks'
 export * from './resolvers'
 export * from './utils'
