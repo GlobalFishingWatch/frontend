@@ -35,10 +35,6 @@ export type _VesselTrackLayerProps<DataT = any> = {
   //  */
   // getHighlightColor?: Accessor<DataT, Color | Color[]>
   /**
-   * Ordering index on the layers stack
-   */
-  zIndex?: number
-  /**
    * Timestamp accessor.
    */
   getTimestamps?: AccessorFunction<DataT, NumericArray>
@@ -69,7 +65,6 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
   // getHighlightColor: { type: 'accessor', value: DEFAULT_HIGHLIGHT_COLOR_RGBA },
   trackUrl: { type: 'accessor', value: '' },
-  zIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Point) },
 }
 
 /** All properties supported by VesselTrackLayer. */

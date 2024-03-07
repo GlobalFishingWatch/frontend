@@ -15,18 +15,14 @@ import { groupBy, orderBy } from 'lodash'
 import { Feature } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import {
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
-  Group,
-  GROUP_ORDER,
-} from '@globalfishingwatch/layer-composer'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
+import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from './fourwings.utils'
 import { FourwingsColorRamp } from './FourwingsLayer'
 
 export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   minFrame: number
   maxFrame: number
-  zIndex?: number
   colorDomain?: number[]
   colorRange?: Color[]
   highlightedVesselId?: string
@@ -42,9 +38,7 @@ export type _FourwingsPositionsTileLayerProps<DataT = any> = {
 export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps &
   Partial<TileLayerProps>
 
-const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
-  zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.Point) },
-}
+const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {}
 
 const MAX_LABEL_LENGTH = 20
 const ICON_MAPPING = {
@@ -217,6 +211,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         loaders: [MVTWorkerLoader],
         onViewportLoad: this.onViewportLoad,
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
       }),
       // CIRCLES
       // new ScatterplotLayer(this.props, {

@@ -7,6 +7,5 @@ export function resolveDeckBasemapLayerProps(dataview: DataviewInstance): BaseMa
     id: dataview.id,
     visible: dataview.config?.visible || true,
     basemap: dataview.config?.basemap || 'default',
-    zIndex: GROUP_ORDER.indexOf(Group.Basemap),
   }
 }

@@ -3,7 +3,7 @@ import { CompositeLayer, LayerContext } from '@deck.gl/core/typed'
 import { TileLayer as TileLayerWrongTyping } from '@deck.gl/geo-layers'
 // import { TileLayer } from '@deck.gl/geo-layers/typed'
 import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers/typed'
-import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
+import { LayerGroup, getLayerGroupOffset } from '../../utils'
 
 const TileLayer = TileLayerWrongTyping as any
 
@@ -12,7 +12,7 @@ export enum BasemapType {
   Default = 'basemap_default',
   Labels = 'basemap_labels',
 }
-export type BasemapLayerOwnProps = { basemap: BasemapType; zIndex?: number }
+export type BasemapLayerOwnProps = { basemap: BasemapType }
 export type BaseMapLayerProps = Omit<MVTLayerProps, 'data'> & BasemapLayerOwnProps
 export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   static layerName = 'ContextLayer'
@@ -38,7 +38,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       minZoom: 0,
       maxZoom: 9,
       onDataLoad: this.props.onDataLoad,
-      zIndex: GROUP_ORDER.indexOf(Group.Basemap),
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Basemap, params),
       tileSize: 512,
       renderSubLayers: (props: any) => {
         const {
@@ -60,7 +60,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       maxZoom: 8,
       onDataLoad: this.props.onDataLoad,
       onViewportLoad: this.onViewportLoad,
-      zIndex: GROUP_ORDER.indexOf(Group.BasemapFill),
+      getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.BasemapFill, params),
       getFillColor: [39, 70, 119],
       data: 'https://storage.googleapis.com/public-tiles/basemap/default/{z}/{x}/{y}.pbf',
     })
@@ -74,7 +74,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       maxZoom: 9,
       onDataLoad: this.props.onDataLoad,
       onViewportLoad: this.onViewportLoad,
-      zIndex: GROUP_ORDER.indexOf(Group.Basemap),
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Basemap, params),
       tileSize: 256,
       renderSubLayers: (props: any) => {
         const {

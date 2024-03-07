@@ -1,3 +1,4 @@
+import { PickingInfo } from '@deck.gl/core/typed'
 import { DataviewConfigType, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   AnyDeckLayer,
@@ -21,24 +22,25 @@ export * from './vessels'
 
 export const dataviewToDeckLayer = (
   dataview: DataviewInstance,
-  globalConfig: ResolverGlobalConfig
+  globalConfig: ResolverGlobalConfig,
+  interactions = [] as PickingInfo[]
 ): AnyDeckLayer => {
   if (dataview.config?.type === DataviewConfigType.Basemap) {
     const deckLayerProps = resolveDeckBasemapLayerProps(dataview)
     return new BaseMapLayer(deckLayerProps)
   }
   if (dataview.config?.type === DataviewConfigType.HeatmapAnimated) {
-    const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, globalConfig)
+    const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, globalConfig, interactions)
     const layer = new FourwingsLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewConfigType.Context) {
-    const deckLayerProps = resolveDeckContextLayerProps(dataview, globalConfig)
+    const deckLayerProps = resolveDeckContextLayerProps(dataview, globalConfig, interactions)
     const layer = new ContextLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewConfigType.Track) {
-    const deckLayerProps = resolveDeckVesselLayerProps(dataview, globalConfig)
+    const deckLayerProps = resolveDeckVesselLayerProps(dataview, globalConfig, interactions)
     const layer = new VesselLayer(deckLayerProps)
     return layer
   }

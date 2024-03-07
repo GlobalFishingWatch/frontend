@@ -16,12 +16,11 @@ import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
   rgbaStringToComponents,
-  Group,
-  GROUP_ORDER,
   ColorRampsIds,
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import { LayerGroup, getLayerGroupOffset } from '../../utils'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
@@ -51,7 +50,6 @@ export type _FourwingsHeatmapTileLayerProps = {
   resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
-  zIndex?: number
   sublayers: FourwingsDeckSublayer[]
   colorRampWhiteEnd?: boolean
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
@@ -61,9 +59,7 @@ export type _FourwingsHeatmapTileLayerProps = {
 export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
   Partial<TileLayerProps>
 
-const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
-  zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.Heatmap) },
-}
+const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {}
 
 export type ColorDomain = number[]
 export type ColorRange = Color[]
@@ -276,6 +272,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         updateTriggers: {
           getTileData: [cacheKey, visibleSublayersIds],
         },
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
           return new FourwingsHeatmapLayer({

@@ -1,3 +1,4 @@
+import { PickingInfo } from '@deck.gl/core/typed'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   FourwingsDeckSublayer,
@@ -10,7 +11,8 @@ import { ResolverGlobalConfig } from './types'
 // TODO: decide if include static here or create a new one
 export const resolveDeckFourwingsLayerProps = (
   dataview: UrlDataviewInstance,
-  { start, end }: ResolverGlobalConfig
+  { start, end }: ResolverGlobalConfig,
+  interactions: PickingInfo[]
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
@@ -35,7 +37,6 @@ export const resolveDeckFourwingsLayerProps = (
     // mode: activityMode,
     mode: 'heatmap',
     debug: false,
-    zIndex: GROUP_ORDER.indexOf(Group.Heatmap),
     // category: dataview.category || DataviewCategory.Activity,
     sublayers,
     colorRampWhiteEnd: sublayers.length === 1,

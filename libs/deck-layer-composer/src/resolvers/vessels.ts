@@ -1,3 +1,4 @@
+import { PickingInfo } from '@deck.gl/core/typed'
 import { DatasetTypes, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
 import {
   VesselDeckLayersEvent,
@@ -14,7 +15,8 @@ import { ResolverGlobalConfig } from './types'
 
 export function resolveDeckVesselLayerProps(
   dataview: DataviewInstance,
-  globalConfig: ResolverGlobalConfig
+  globalConfig: ResolverGlobalConfig,
+  interactions: PickingInfo[]
 ): VesselLayerProps {
   return {
     id: dataview.id,
