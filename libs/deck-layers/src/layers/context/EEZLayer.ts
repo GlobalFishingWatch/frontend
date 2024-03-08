@@ -1,68 +1,80 @@
-import {
-  CompositeLayer,
-  Color,
-  PickingInfo,
-  Layer,
-  DefaultProps,
-  LayerProps,
-} from '@deck.gl/core/typed'
+import { PickingInfo, Layer, DefaultProps } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { GeoJsonLayer } from '@deck.gl/layers/typed'
 import type { Feature, GeoJsonProperties, Geometry } from 'geojson'
+import { PathStyleExtension } from '@deck.gl/extensions/typed'
 import {
-  COLOR_HIGHLIGHT_FILL,
-  COLOR_HIGHLIGHT_LINE,
-  COLOR_TRANSPARENT,
   hexToDeckColor,
   LayerGroup,
   getLayerGroupOffset,
-  getPickedFeatureToHighlight,
   GFWContextLoader,
   getMVTSublayerProps,
 } from '../../utils'
+import { ContextLayer } from './ContextLayer'
 import { API_PATH } from './context.config'
 
-export type ContextLayerProps = {
+type ContextFeature = Feature<Geometry, GeoJsonProperties>
+export type EEZLayerProps = {
   id: string
   idProperty: string
   color: string
-  datasetId: string
+  areasDatasetId: string
+  boundariesDatasetId: string
   hoveredFeatures?: PickingInfo[]
   clickedFeatures?: PickingInfo[]
 }
-type ContextFeature = Feature<Geometry, GeoJsonProperties>
 
-const defaultProps: DefaultProps<ContextLayerProps> = {
+const defaultProps: DefaultProps<EEZLayerProps> = {
   idProperty: 'gfw_id',
 }
 
-export class ContextLayer<PropsT = {}> extends CompositeLayer<
-  LayerProps & TileLayerProps & ContextLayerProps & PropsT
-> {
+const settledBoundaries = [
+  '200 NM',
+  'Treaty',
+  'Median line',
+  'Joint regime',
+  'Connection Line',
+  'Unilateral claim (undisputed)',
+]
+
+export class EEZLayer extends ContextLayer<EEZLayerProps> {
   static layerName = 'ContextLayer'
   static defaultProps = defaultProps
   layers: Layer[] = []
 
-  getLineColor(d: ContextFeature): Color {
-    const { hoveredFeatures = [], clickedFeatures = [], idProperty } = this.props
-    return getPickedFeatureToHighlight(d, clickedFeatures, idProperty) ||
-      getPickedFeatureToHighlight(d, hoveredFeatures, idProperty)
-      ? COLOR_HIGHLIGHT_LINE
-      : COLOR_TRANSPARENT
-  }
-
-  getFillColor(d: ContextFeature): Color {
-    const { hoveredFeatures = [], idProperty } = this.props
-    return getPickedFeatureToHighlight(d, hoveredFeatures, idProperty)
-      ? COLOR_HIGHLIGHT_FILL
-      : COLOR_TRANSPARENT
+  getDashArray(d: ContextFeature): [number, number] {
+    return settledBoundaries.includes(d.properties?.LINE_TYPE) ? [0, 0] : [8, 8]
   }
 
   renderLayers() {
     this.layers = [
       new TileLayer<TileLayerProps>({
+        id: `${this.id}-boundaries-layer`,
+        data: `${API_PATH}/${this.props.boundariesDatasetId}/context-layers/{z}/{x}/{y}`,
+        loaders: [GFWContextLoader],
+        renderSubLayers: (props) => {
+          const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
+          return [
+            new GeoJsonLayer(mvtSublayerProps, {
+              id: `${props.id}-boundaries`,
+              lineWidthMinPixels: 1,
+              filled: false,
+              getPolygonOffset: (params: { layerIndex: number }) =>
+                getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
+              getLineColor: hexToDeckColor(this.props.color),
+              lineWidthUnits: 'pixels',
+              extensions: [
+                ...mvtSublayerProps.extensions,
+                new PathStyleExtension({ dash: true, highPrecisionDash: true }),
+              ],
+              getDashArray: (d: ContextFeature) => this.getDashArray(d),
+            } as any),
+          ]
+        },
+      }),
+      new TileLayer<TileLayerProps>({
         id: `${this.id}-base-layer`,
-        data: `${API_PATH}/${this.props.datasetId}/context-layers/{z}/{x}/{y}`,
+        data: `${API_PATH}/${this.props.areasDatasetId}/context-layers/{z}/{x}/{y}`,
         loaders: [GFWContextLoader],
         renderSubLayers: (props) => {
           const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
@@ -77,13 +89,6 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<
               updateTriggers: {
                 getFillColor: [this.props.clickedFeatures, this.props.hoveredFeatures],
               },
-            }),
-            new GeoJsonLayer(mvtSublayerProps, {
-              id: `${props.id}-lines`,
-              lineWidthMinPixels: 1,
-              filled: false,
-              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-              getLineColor: hexToDeckColor(this.props.color),
             }),
             new GeoJsonLayer(mvtSublayerProps, {
               id: `${props.id}-highlight-lines`,

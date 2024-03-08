@@ -4,13 +4,14 @@ import {
   AnyDeckLayer,
   BaseMapLayer,
   ContextLayer,
+  EEZLayer,
   FourwingsLayer,
   VesselLayer,
 } from '@globalfishingwatch/deck-layers'
 import { ResolverGlobalConfig } from './types'
 import { resolveDeckBasemapLayerProps } from './basemap'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
-import { resolveDeckContextLayerProps } from './context'
+import { resolveDeckContextLayerProps, resolveDeckEEZLayerProps } from './context'
 import { resolveDeckVesselLayerProps } from './vessels'
 
 export * from './basemap'
@@ -19,6 +20,8 @@ export * from './fourwings'
 export * from './types'
 export * from './tile-cluster'
 export * from './vessels'
+
+const EEZ_DATAVIEW_ID = 'context-layer-eez'
 
 export const dataviewToDeckLayer = (
   dataview: DataviewInstance,
@@ -35,6 +38,11 @@ export const dataviewToDeckLayer = (
     return layer
   }
   if (dataview.config?.type === DataviewConfigType.Context) {
+    if (dataview.id === EEZ_DATAVIEW_ID) {
+      const deckLayerProps = resolveDeckEEZLayerProps(dataview, globalConfig, interactions)
+      const layer = new EEZLayer(deckLayerProps)
+      return layer
+    }
     const deckLayerProps = resolveDeckContextLayerProps(dataview, globalConfig, interactions)
     const layer = new ContextLayer(deckLayerProps)
     return layer

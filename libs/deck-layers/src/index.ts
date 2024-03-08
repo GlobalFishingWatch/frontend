@@ -1,6 +1,7 @@
 export * from './layers/vessel/VesselLayer'
 export * from './layers/basemap/BasemapLayer'
 export * from './layers/context/ContextLayer'
+export * from './layers/context/EEZLayer'
 export * from './layers/context/context.config'
 export * from './layers/fourwings/FourwingsLayer'
 export * from './layers/fourwings/fourwings.types'
