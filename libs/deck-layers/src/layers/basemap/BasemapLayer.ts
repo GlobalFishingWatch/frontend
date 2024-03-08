@@ -1,24 +1,33 @@
 import { BitmapLayer } from '@deck.gl/layers/typed'
-import { CompositeLayer } from '@deck.gl/core/typed'
+import { CompositeLayer, LayerContext } from '@deck.gl/core/typed'
 import { TileLayer as TileLayerWrongTyping } from '@deck.gl/geo-layers'
 // import { TileLayer } from '@deck.gl/geo-layers/typed'
 import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers/typed'
-import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
+import { LayerGroup, getLayerGroupOffset } from '../../utils'
+import { BasemapType } from '../../types'
 
 const TileLayer = TileLayerWrongTyping as any
 
-export enum BasemapType {
-  Satellite = 'satellite',
-  Default = 'basemap_default',
-  Labels = 'basemap_labels',
-}
-export type BasemapLayerOwnProps = { basemap: BasemapType; zIndex: number }
-export type BaseMapLayerProps = MVTLayerProps & BasemapLayerOwnProps
-export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
+export type BasemapLayerOwnProps = { basemap: BasemapType }
+export type BaseMapLayerProps = Omit<MVTLayerProps, 'data'> & BasemapLayerOwnProps
+export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   static layerName = 'ContextLayer'
-  static defaultProps = {}
+  static defaultProps = {
+    basemap: BasemapType.Default,
+  }
 
   layers: (typeof TileLayer | MVTLayer<BaseMapLayerProps>)[] = []
+
+  initializeState(context: LayerContext): void {
+    super.initializeState(context)
+    this.state = {
+      loaded: false,
+    }
+  }
+
+  onViewportLoad = (tiles: any) => {
+    this.setState({ loaded: true })
+  }
 
   _getBathimetryLayer() {
     return new TileLayer({
@@ -27,7 +36,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       minZoom: 0,
       maxZoom: 9,
       onDataLoad: this.props.onDataLoad,
-      zIndex: GROUP_ORDER.indexOf(Group.Basemap),
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Basemap, params),
       tileSize: 512,
       renderSubLayers: (props: any) => {
         const {
@@ -48,7 +57,8 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       minZoom: 0,
       maxZoom: 8,
       onDataLoad: this.props.onDataLoad,
-      zIndex: GROUP_ORDER.indexOf(Group.BasemapFill),
+      onViewportLoad: this.onViewportLoad,
+      getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.BasemapFill, params),
       getFillColor: [39, 70, 119],
       data: 'https://storage.googleapis.com/public-tiles/basemap/default/{z}/{x}/{y}.pbf',
     })
@@ -61,7 +71,8 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       minZoom: 0,
       maxZoom: 9,
       onDataLoad: this.props.onDataLoad,
-      zIndex: GROUP_ORDER.indexOf(Group.Basemap),
+      onViewportLoad: this.onViewportLoad,
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Basemap, params),
       tileSize: 256,
       renderSubLayers: (props: any) => {
         const {
@@ -77,13 +88,13 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
   }
 
   _getBasemap() {
-    return this.props.basemap === 'basemap_default'
-      ? this._getLandMassLayer()
-      : this._getSatelliteLayer()
+    return !this.props.basemap || this.props.basemap === BasemapType.Default
+      ? [this._getBathimetryLayer(), this._getLandMassLayer()]
+      : [this._getSatelliteLayer()]
   }
 
   renderLayers() {
-    this.layers = [this._getBathimetryLayer(), this._getBasemap()]
+    this.layers = this._getBasemap()
     return this.layers
   }
 }

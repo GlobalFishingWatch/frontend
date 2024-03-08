@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import { useVesselLayers } from '@globalfishingwatch/deck-layer-composer'
 import {
   HighlighterCallbackFnArgs,
   TimebarChartData,
   TrackEventChunkProps,
 } from '@globalfishingwatch/timebar'
-import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
-import { t } from 'features/i18n/i18n'
+import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import { VesselLayer } from '@globalfishingwatch/deck-layers'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
@@ -39,33 +40,37 @@ const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
 // }
 
 export const useTimebarVesselTracks = () => {
-  const vessels = useVesselLayers()
+  const dataviews = useSelector(selectVesselsDataviews)
+  const ids = useMemo(() => {
+    return dataviews.map((d) => d.id)
+  }, [dataviews])
+  const vessels = useGetDeckLayers<VesselLayer>(ids)
   const [tracks, setVesselTracks] = useState<TimebarChartData<any> | null>(null)
   // const tracksMemoHash = getVesselTimebarTrackMemoHash(vessels)
 
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels?.length) {
-        const vesselTracks = vessels.flatMap(({ layerInstance }) => {
-          if (!layerInstance.props.visible) {
+        const vesselTracks = vessels.flatMap(({ instance }) => {
+          if (!instance.props.visible) {
             return []
           }
-          const segments = layerInstance.getVesselTrackSegments()
+          const segments = instance.getVesselTrackSegments()
           const chunks = segments?.map((t) => {
             const start = t[0]?.timestamp
             const end = t[t.length - 1]?.timestamp
             return {
               start,
               end,
-              props: { color: layerInstance.getVesselColor() },
+              props: { color: instance.getVesselColor() },
               values: t,
             }
           })
           return {
             status: ResourceStatus.Finished,
             chunks,
-            color: layerInstance.getVesselColor(),
-            defaultLabel: layerInstance.getVesselName() || '',
+            color: instance.getVesselColor(),
+            defaultLabel: instance.getVesselName() || '',
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
           }
@@ -95,30 +100,27 @@ const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackF
 }
 
 export const useTimebarVesselEvents = () => {
-  const vessels = useVesselLayers()
+  const vessels = useGetDeckLayers<VesselLayer>(['vessel'])
   const [events, setVesselEvents] = useState<TimebarChartData<TrackEventChunkProps> | null>(null)
   // const tracksMemoHash = getVesselTimebarEventsMemoHash(vessels)
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels.length) {
-        const vesselEvents: TimebarChartData<any> = vessels.flatMap(
-          ({ layerInstance, dataStatus }) => {
-            if (!layerInstance.props.visible) {
-              return []
-            }
-            const chunks = layerInstance.getVesselEventsData(
-              layerInstance.props.visibleEvents
-            ) as any
-            return {
-              color: layerInstance.getVesselColor(),
-              chunks,
-              status: dataStatus.find((s) => s.type === 'track')?.status,
-              defaultLabel: layerInstance.getVesselName(),
-              getHighlighterLabel: getTrackEventHighlighterLabel,
-              getHighlighterIcon: 'vessel',
-            }
+        const vesselEvents: TimebarChartData<any> = vessels.flatMap(({ instance }) => {
+          if (!instance.props.visible) {
+            return []
           }
-        )
+          const chunks = instance.getVesselEventsData(instance.props.visibleEvents) as any
+          return {
+            color: instance.getVesselColor(),
+            chunks,
+            // TODO vessel status
+            status: instance.dataStatus.find((s) => s.type === 'track')?.status,
+            defaultLabel: instance.getVesselName(),
+            getHighlighterLabel: getTrackEventHighlighterLabel,
+            getHighlighterIcon: 'vessel',
+          }
+        })
         setVesselEvents(vesselEvents)
       }
     })

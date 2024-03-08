@@ -17,13 +17,6 @@ import {
   isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
 import {
-  DeckLayersGeneratorDictionary,
-  DeckLayersGeneratorType,
-  VesselDeckLayersGenerator,
-  getDataviewsGeneratorsDictionary,
-} from '@globalfishingwatch/deck-layer-composer'
-import { createDeepEqualSelector } from 'utils/selectors'
-import {
   selectWorkspaceError,
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
@@ -189,24 +182,6 @@ const getGeneratorsConfig = ({
     return EMPTY_ARRAY
   }
 }
-
-export const selectMapGeneratorsDictionary = createDeepEqualSelector(
-  [selectDataviewInstancesResolved, selectVisibleResources, selectWorkspaceVisibleEventsArray],
-  (dataviews = [], resources, visibleEvents): DeckLayersGeneratorDictionary => {
-    // Do we inject the visibleEvents at the dataview level ?
-    const generatorsDictionary = getDataviewsGeneratorsDictionary(dataviews, resources)
-    const vesselGenerators = generatorsDictionary[
-      DeckLayersGeneratorType.Vessels
-    ] as VesselDeckLayersGenerator[]
-    return {
-      ...generatorsDictionary,
-      [DeckLayersGeneratorType.Vessels as any]: vesselGenerators.map((generator) => ({
-        ...generator,
-        visibleEvents,
-      })),
-    }
-  }
-)
 
 const selectMapGeneratorsConfig = createSelector(
   [

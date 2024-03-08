@@ -110,7 +110,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'context-layer-graticules',
       config: {
-        visible: true,
+        visible: false,
       },
       dataviewId: GRATICULES_DATAVIEW_SLUG,
     },

@@ -15,13 +15,12 @@ import { Cell, FourwingsLoader, TileCell } from '@globalfishingwatch/deck-loader
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
-  Interval,
   rgbaStringToComponents,
-  Group,
-  GROUP_ORDER,
   ColorRampsIds,
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import { LayerGroup, getLayerGroupOffset } from '../../utils'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
@@ -46,25 +45,21 @@ export type FourwingsHeatmapTileData = {
   startFrames: number[]
 }
 export type _FourwingsHeatmapTileLayerProps = {
-  data: FourwingsHeatmapTileData
+  data?: FourwingsHeatmapTileData
   debug?: boolean
-  interval: Interval
   resolution?: FourwingsLayerResolution
   minFrame: number
   maxFrame: number
-  zIndex?: number
-  category: string
   sublayers: FourwingsDeckSublayer[]
   colorRampWhiteEnd?: boolean
   onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
   onViewportLoad?: (string: string) => void
 }
 
-export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps & TileLayerProps
+export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
+  Partial<TileLayerProps>
 
-const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
-  zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.Heatmap) },
-}
+const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {}
 
 export type ColorDomain = number[]
 export type ColorRange = Color[]
@@ -80,7 +75,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)
-    this.id = `${this.props.category}`
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
       colorDomain: [1, 20, 50, 100, 500, 5000, 10000, 500000],
@@ -154,7 +148,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }, 500)
 
   _onTileLoad = (tile: Tile2DHeader) => {
-    const allTilesLoaded = this.getLayerInstance().state.tileset.tiles.every(
+    const allTilesLoaded = this.getLayerInstance()?.state.tileset.tiles.every(
       (tile: Tile2DHeader) => tile.isLoaded === true
     )
     if (this.props.onTileLoad) {
@@ -213,13 +207,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
           end: maxFrame,
         },
         interval,
+        tile: tile,
         workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
         buffersLength: settledPromises.map((p) =>
           p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
         ),
       },
     })
-
     return data
   }
 
@@ -256,11 +250,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
     // TODO review this to avoid rerendering when sublayers change
-    const visibleSublayersIds = this.props.sublayers.filter((s) => s.visible).join(',')
+    const visibleSublayersIds = this.props.sublayers
+      .filter((s) => s.visible)
+      .map((s) => s.id)
+      .join(',')
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: `${this.props.category}-${HEATMAP_ID}`,
+        id: HEATMAP_ID,
         tileSize: 512,
         colorDomain,
         colorRanges,
@@ -275,6 +272,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         updateTriggers: {
           getTileData: [cacheKey, visibleSublayersIds],
         },
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
           return new FourwingsHeatmapLayer({
@@ -284,6 +282,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
             data: props.data?.cells,
             indexes: props.data?.indexes,
             startFrames: props.data?.startFrames,
+            geometries: props.data?.geometries,
             initialValues: props.data?.initialValues,
           })
         },
@@ -292,9 +291,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   getLayerInstance() {
-    return this.getSubLayers().find(
-      (l) => l.id === `${FourwingsHeatmapTileLayer.layerName}-${this.props.category}-${HEATMAP_ID}`
-    ) as TileLayer
+    const layer = this.getSubLayers()[0] as TileLayer
+    return layer
   }
 
   getData() {
@@ -305,6 +303,18 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       return layer.getSubLayers().flatMap((l: any) => {
         return l.props.tile.zoom === zoom + offset ? (l.getData() as TileCell[]) : []
       })
+    }
+    return []
+  }
+
+  getViewportData() {
+    const data = this.getData() as any
+    const { viewport } = this.context
+    const [west, north] = viewport.unproject([0, 0])
+    const [east, south] = viewport.unproject([viewport.width, viewport.height])
+    if (data?.length) {
+      const dataFiltered = filterFeaturesByBounds(data, { north, south, west, east })
+      return dataFiltered
     }
     return []
   }

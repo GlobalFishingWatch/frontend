@@ -1,9 +1,8 @@
-import { Color, CompositeLayer } from '@deck.gl/core/typed'
+import { Color, CompositeLayer, LayersList } from '@deck.gl/core/typed'
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
-import { Cell, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
-import { CONFIG_BY_INTERVAL } from '../../utils/time'
+import { Cell, getTimeRangeKey, CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import FourwingsTileCellLayer from './FourwingsHeatmapCellLayer'
 import {
   ColorDomain,
@@ -20,6 +19,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   cols: number
   rows: number
   indexes: number[]
+  geometries: number[][]
   startFrames: number[][]
   initialValues: Record<string, number[][]>
   colorDomain?: ColorDomain
@@ -98,6 +98,21 @@ export const chooseColor = (
   return colorRanges[chosenValueIndex][colorIndex]
 }
 
+function getIntervalFrames(minFrame: number, maxFrame: number) {
+  const interval = getInterval(minFrame, maxFrame)
+  const chunks = getChunks(minFrame, maxFrame)
+  const tileMinIntervalFrame = Math.ceil(
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
+  )
+  const minIntervalFrame = Math.ceil(
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileMinIntervalFrame
+  )
+  const maxIntervalFrame = Math.ceil(
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame) - tileMinIntervalFrame
+  )
+  return { interval, tileMinIntervalFrame, minIntervalFrame, maxIntervalFrame }
+}
+
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
 
@@ -107,18 +122,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
-    const interval = getInterval(minFrame, maxFrame)
     const chunks = getChunks(minFrame, maxFrame)
-    const tileMinIntervalFrame = Math.ceil(
-      CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
-    )
-    const minIntervalFrame = Math.ceil(
-      CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileMinIntervalFrame
-    )
-    const maxIntervalFrame = Math.ceil(
-      CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame) - tileMinIntervalFrame
-    )
-
+    const { minIntervalFrame, maxIntervalFrame } = getIntervalFrames(minFrame, maxFrame)
     const getFillColor = (cell: Cell, { index, target }: { index: number; target: Color }) => {
       target = chooseColor(cell, {
         colorDomain,
@@ -135,7 +140,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     const fourwingsLayer = new FourwingsTileCellLayer(
       this.props,
       this.getSubLayerProps({
-        id: `fourwings-tile-${this.props.tile.id}`,
+        id: `${this.id}-fourwings-tile-${this.props.tile.id}`,
         pickable: true,
         stroked: false,
         getFillColor,
@@ -146,12 +151,12 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       })
     )
 
-    if (!this.props.debug) return fourwingsLayer
+    if (!this.props.debug) return fourwingsLayer as FourwingsTileCellLayer
 
     const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
     const debugLayers = [
       new PathLayer({
-        id: `tile-boundary-${this.props.category}-${this.props.tile.id}`,
+        id: `${this.id}-tile-boundary-${this.props.tile.id}`,
         data: [
           {
             path: [
@@ -168,7 +173,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         getColor: [255, 0, 0, 100],
       }),
       new TextLayer({
-        id: `tile-id-${this.props.category}-${this.props.tile.id}`,
+        id: `${this.id}-tile-id-${this.props.tile.id}`,
         data: [
           {
             text: `${this.props.tile.index.z}/${this.props.tile.index.x}/${this.props.tile.index.y}`,
@@ -184,10 +189,22 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       }),
     ]
 
-    return [fourwingsLayer, ...debugLayers]
+    return [fourwingsLayer, ...debugLayers] as LayersList
   }
 
   getData() {
-    return this.props.data
+    const { data, minFrame, maxFrame, startFrames, geometries } = this.props
+    const { minIntervalFrame } = getIntervalFrames(minFrame, maxFrame)
+    const cells = geometries.map((geometry, index) => {
+      return {
+        type: 'Feature',
+        geometry: { coordinates: [geometry], type: 'Polygon' },
+        properties: {
+          values: data[index],
+          dates: startFrames[index].map((startFrame) => startFrame + minIntervalFrame),
+        },
+      }
+    })
+    return cells
   }
 }

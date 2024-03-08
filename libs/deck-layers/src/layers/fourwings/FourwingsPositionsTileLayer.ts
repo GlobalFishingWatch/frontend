@@ -15,35 +15,30 @@ import { groupBy, orderBy } from 'lodash'
 import { Feature } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import {
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
-  Group,
-  GROUP_ORDER,
-} from '@globalfishingwatch/layer-composer'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
+import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from './fourwings.utils'
 import { FourwingsColorRamp } from './FourwingsLayer'
 
 export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   minFrame: number
   maxFrame: number
-  zIndex?: number
-  colorDomain: number[]
-  colorRange: Color[]
+  colorDomain?: number[]
+  colorRange?: Color[]
   highlightedVesselId?: string
-  clickedFeatures: PickingInfo[]
-  hoveredFeatures: PickingInfo[]
+  clickedFeatures?: PickingInfo[]
+  hoveredFeatures?: PickingInfo[]
   onDataLoad?: (data: DataT) => void
-  onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
+  // onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
   onVesselHighlight?: (vesselId: string) => void
   onVesselClick?: (vesselId: string) => void
   onViewportLoad?: (tiles: any) => void
 }
 
-export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps & TileLayerProps
+export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps &
+  Partial<TileLayerProps>
 
-const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
-  zIndex: { type: 'number', value: GROUP_ORDER.indexOf(Group.Point) },
-}
+const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {}
 
 const MAX_LABEL_LENGTH = 20
 const ICON_MAPPING = {
@@ -180,10 +175,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   updateState() {
-    const clickedVesselId = this.props?.clickedFeatures.flatMap(
+    const clickedVesselId = this.props?.clickedFeatures?.flatMap(
       (f) => f.sourceLayer?.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
     )
-    const highlightedVesselId = this.props?.hoveredFeatures.flatMap(
+    const highlightedVesselId = this.props?.hoveredFeatures?.flatMap(
       (f) => f.sourceLayer?.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
     )
     if (highlightedVesselId && highlightedVesselId[0]) {
@@ -195,7 +190,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         highlightedVesselId: undefined,
       })
     }
-    if (clickedVesselId[0] && this.props.onVesselClick) {
+    if (clickedVesselId?.[0] && this.props.onVesselClick) {
       this.props.onVesselClick(clickedVesselId[0])
     }
   }
@@ -216,6 +211,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         loaders: [MVTWorkerLoader],
         onViewportLoad: this.onViewportLoad,
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
       }),
       // CIRCLES
       // new ScatterplotLayer(this.props, {
@@ -306,6 +302,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getData() {
+    return this.getPositionsData()
+  }
+
+  getViewportData() {
+    // TODO: return only data in viewport
     return this.getPositionsData()
   }
 

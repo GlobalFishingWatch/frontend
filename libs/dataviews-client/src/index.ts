@@ -1,4 +1,5 @@
 export * from './dataviews-client'
+export * from './merge-dataviews'
 export * from './resolve-dataviews'
 export * from './resolve-dataviews-generators'
 export * from './resolve-endpoint'

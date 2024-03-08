@@ -1,5 +1,7 @@
 import Pbf from 'pbf'
+import { GeoBoundingBox } from '@deck.gl/geo-layers/typed/tileset-2d/types'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
+import { generateUniqueId, getCellCoordinates } from '../helpers/cells'
 import type { Cell, FourwingsLoaderOptions, FourwingsOptions, FourwingsRawData } from './types'
 
 // TODO make this dynamic to get the data from the header
@@ -20,10 +22,11 @@ export const getCellTimeseries = (
 ): {
   cells: Cell[]
   indexes: number[]
+  geometries: any[]
   startFrames: number[][]
   initialValues: Record<string, number[][]>
 } => {
-  const { minFrame, interval, sublayers, initialTimeRange } =
+  const { minFrame, interval, sublayers, initialTimeRange, tile, cols, rows } =
     options?.fourwings || ({} as FourwingsOptions)
 
   // TODO ensure we use the UTC dates here to avoid the .ceil
@@ -37,6 +40,7 @@ export const getCellTimeseries = (
   const timeRangeKey = getTimeRangeKey(timeRangeStartIntervalFrame, timeRangeEndIntervalFrame)
   const cells = [] as Cell[]
   const indexes = [] as number[]
+  const geometries = [] as any[]
   const startFrames = [] as number[][]
   const initialValues = {
     [timeRangeKey]: [],
@@ -74,6 +78,21 @@ export const getCellTimeseries = (
           initialValues[timeRangeKey].push(new Array(sublayersLength))
           startFrames.push(new Array(sublayersLength))
           indexes.push(cellNum)
+          geometries.push(
+            getCellCoordinates({
+              id: generateUniqueId(tile.index.x, tile.index.y, cellIndex),
+              cellIndex,
+              cols,
+              rows,
+              tileBBox: [
+                (tile.bbox as GeoBoundingBox).west,
+                (tile.bbox as GeoBoundingBox).south,
+                (tile.bbox as GeoBoundingBox).east,
+                (tile.bbox as GeoBoundingBox).north,
+              ],
+              flat: false,
+            })
+          )
           cellIndex = cells.length - 1
         }
         for (let j = 0; j < numCellValues; j++) {
@@ -114,7 +133,7 @@ export const getCellTimeseries = (
       indexInCell++
     }
   }
-  return { cells, indexes, startFrames, initialValues }
+  return { cells, indexes, startFrames, initialValues, geometries }
 }
 
 function readData(_: any, data: any, pbf: any) {

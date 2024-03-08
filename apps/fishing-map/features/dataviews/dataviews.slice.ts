@@ -16,7 +16,6 @@ import {
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
 import {
-  GetDatasetConfigsCallbacks,
   getResources,
   mergeWorkspaceUrlDataviewInstances,
   resolveDataviews,
@@ -398,7 +397,7 @@ export const selectTrackDataviews = createSelector(
   (dataviews) => dataviews
 )
 
-export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
+const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
     (dataview) =>
       !dataview.datasets ||
@@ -407,7 +406,7 @@ export const selectVesselsDataviews = createSelector([selectTrackDataviews], (da
   )
 })
 
-export const selectActiveVesselsDataviews = createDeepEqualSelector(
+const selectActiveVesselsDataviews = createDeepEqualSelector(
   [selectVesselsDataviews],
   (dataviews) => dataviews?.filter((d) => d.config?.visible)
 )

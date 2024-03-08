@@ -86,7 +86,7 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
           (tile.bbox as GeoBoundingBox).east,
           (tile.bbox as GeoBoundingBox).north,
         ],
-      })
+      }) as number[]
       return target
     }
     return {

@@ -7,7 +7,6 @@ import {
 } from '@deck.gl/core/typed'
 import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers/typed'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { hexToDeckColor } from '../../utils/colors'
 
 export const EVENT_TYPES_ORDINALS: { [key in EventTypes]: number } = {
@@ -27,13 +26,12 @@ export const EVENTS_COLORS: Record<string, Color> = {
 
 export type _VesselEventsLayerProps<DataT = any> = {
   type: EventTypes
-  zIndex?: number
-  filterRange: Array<number>
+  filterRange?: Array<number>
   visibleEvents?: EventTypes[]
   highlightEventIds?: string[]
   getShape?: AccessorFunction<DataT, number>
   getPosition?: AccessorFunction<DataT, Position> | Position
-  getFilterValue: AccessorFunction<DataT, number>
+  getFilterValue?: AccessorFunction<DataT, number>
   getPickingInfo?: AccessorFunction<DataT, string>
   onDataChange?: (type: EventTypes, dataChange: string) => void
 }
@@ -59,7 +57,6 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   getFillColor: { type: 'accessor', value: (d) => [255, 255, 255] },
   getPosition: { type: 'accessor', value: (d) => d.coordinates },
   getPickingInfo: { type: 'accessor', value: ({ info }) => info },
-  zIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Point) },
   visibleEvents: { type: 'accessor', value: [] },
 }
 

@@ -8,6 +8,7 @@ import { TRACK_LAYER_TYPE } from './VesselLayer'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
+  id: string
   /**
    * The start time of the track in milliseconds
    * @default 0
@@ -33,10 +34,6 @@ export type _VesselTrackLayerProps<DataT = any> = {
   //  * @default [255, 255, 255, 255]
   //  */
   // getHighlightColor?: Accessor<DataT, Color | Color[]>
-  /**
-   * Ordering index on the layers stack
-   */
-  zIndex?: number
   /**
    * Timestamp accessor.
    */
@@ -68,7 +65,6 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
   // getHighlightColor: { type: 'accessor', value: DEFAULT_HIGHLIGHT_COLOR_RGBA },
   trackUrl: { type: 'accessor', value: '' },
-  zIndex: { type: 'accessor', value: GROUP_ORDER.indexOf(Group.Point) },
 }
 
 /** All properties supported by VesselTrackLayer. */

@@ -1,3 +1,5 @@
+// TODO: REMOVE THIS
+
 import { uniq } from 'lodash'
 import {
   Resource,
@@ -518,8 +520,8 @@ export function getMergedHeatmapAnimatedDataview(
     }
     const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
 
-    const activeDatasets = dataview.datasets.filter(
-      (dataset) => dataview?.config?.datasets?.includes(dataset.id)
+    const activeDatasets = dataview.datasets.filter((dataset) =>
+      dataview?.config?.datasets?.includes(dataset.id)
     )
     const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
     if (units.length > 0 && units.length !== 1) {

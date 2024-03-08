@@ -1,7 +1,8 @@
-import { Fragment, memo, useCallback, useState, useMemo } from 'react'
+import { Fragment, memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
+import { useAtom, useAtomValue } from 'jotai'
 import {
   Timebar,
   TimebarTracks,
@@ -15,6 +16,7 @@ import {
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { deckLayersAtom, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -47,6 +49,7 @@ import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -161,6 +164,13 @@ const TimebarWrapper = () => {
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
   const tracksEvents = useTimebarVesselEvents()
+  // const basemapLayer = useDeckMapLayer('basemap')
+  const deckLayers = useAtomValue(deckLayersAtom)
+  const basemapLayer = useGetDeckLayer('basemap')
+
+  // useEffect(() => {
+  //   console.log('LOADEDE CHANGED', basemapLayer?.state?.loaded)
+  // }, [basemapLayer?.state?.loaded])
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
