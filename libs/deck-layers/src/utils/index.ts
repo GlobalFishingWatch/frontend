@@ -1,5 +1,6 @@
 export * from './colors'
 export * from './dates'
 export * from './layers'
+export * from './loaders'
 export * from './time'
 export * from './sort'

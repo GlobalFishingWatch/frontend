@@ -1,5 +1,9 @@
 import { Color } from '@deck.gl/core/typed'
 
+export const COLOR_TRANSPARENT: Color = [0, 0, 0, 0]
+export const COLOR_HIGHLIGHT_LINE: Color = [255, 255, 255, 255]
+export const COLOR_HIGHLIGHT_FILL: Color = [0, 0, 0, 120]
+
 export const hexToRgb = (hex: string) => {
   const cleanHex = hex.replace('#', '')
   const color = {
