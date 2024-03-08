@@ -4,6 +4,12 @@ import type { ContextLayer } from './layers/context/ContextLayer'
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
 
+export enum BasemapType {
+  Satellite = 'satellite',
+  Default = 'basemap_default',
+  Labels = 'basemap_labels',
+}
+
 export type AnyDeckLayer<D = unknown> =
   | Layer<D>
   | BaseMapLayer

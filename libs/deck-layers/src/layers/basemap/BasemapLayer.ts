@@ -4,19 +4,17 @@ import { TileLayer as TileLayerWrongTyping } from '@deck.gl/geo-layers'
 // import { TileLayer } from '@deck.gl/geo-layers/typed'
 import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers/typed'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
+import { BasemapType } from '../../types'
 
 const TileLayer = TileLayerWrongTyping as any
 
-export enum BasemapType {
-  Satellite = 'satellite',
-  Default = 'basemap_default',
-  Labels = 'basemap_labels',
-}
 export type BasemapLayerOwnProps = { basemap: BasemapType }
 export type BaseMapLayerProps = Omit<MVTLayerProps, 'data'> & BasemapLayerOwnProps
 export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   static layerName = 'ContextLayer'
-  static defaultProps = {}
+  static defaultProps = {
+    basemap: BasemapType.Default,
+  }
 
   layers: (typeof TileLayer | MVTLayer<BaseMapLayerProps>)[] = []
 
@@ -90,13 +88,13 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   }
 
   _getBasemap() {
-    return this.props.basemap === 'basemap_default'
-      ? this._getLandMassLayer()
-      : this._getSatelliteLayer()
+    return !this.props.basemap || this.props.basemap === BasemapType.Default
+      ? [this._getBathimetryLayer(), this._getLandMassLayer()]
+      : [this._getSatelliteLayer()]
   }
 
   renderLayers() {
-    this.layers = [this._getBathimetryLayer(), this._getBasemap()]
+    this.layers = this._getBasemap()
     return this.layers
   }
 }

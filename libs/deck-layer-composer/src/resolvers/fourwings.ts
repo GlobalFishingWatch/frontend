@@ -5,7 +5,6 @@ import {
   FourwingsLayerProps,
   getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
-import { GROUP_ORDER, Group } from '@globalfishingwatch/layer-composer'
 import { ResolverGlobalConfig } from './types'
 
 // TODO: decide if include static here or create a new one
