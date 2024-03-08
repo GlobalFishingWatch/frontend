@@ -13,7 +13,7 @@ export function getPickedFeatureToHighlight(
 ) {
   return (
     pickedFeatures &&
-    pickedFeatures.find(
+    pickedFeatures.some(
       (f: PickingInfo) =>
         f.object.type === 'Feature' &&
         f.object.properties[idProperty] === data.properties[idProperty]

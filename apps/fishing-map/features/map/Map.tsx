@@ -119,7 +119,9 @@ const MapWrapper = () => {
   const { viewState, setViewState } = useViewStateAtom()
   const onViewStateChange = useCallback(
     (params: ViewStateChangeParameters) => {
-      setViewState(params.viewState as ViewState)
+      // add transitionDuration: 0 to avoid unresponsive zoom
+      // https://github.com/visgl/deck.gl/issues/7158#issuecomment-1329722960
+      setViewState({ ...(params.viewState as ViewState), transitionDuration: 0 })
     },
     [setViewState]
   )
@@ -150,7 +152,6 @@ const MapWrapper = () => {
   // )
 
   const layers = useMapDeckLayers()
-  console.log('🚀 ~ layers:', layers)
   const setDeckLayers = useSetDeckLayerComposer()
   useEffect(() => {
     return () => {
