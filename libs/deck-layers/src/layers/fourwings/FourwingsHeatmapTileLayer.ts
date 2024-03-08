@@ -5,6 +5,7 @@ import {
   LayerContext,
   LayersList,
   DefaultProps,
+  PickingInfo,
 } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { ckmeans } from 'simple-statistics'
@@ -48,6 +49,8 @@ export type _FourwingsHeatmapTileLayerProps = {
   data?: FourwingsHeatmapTileData
   debug?: boolean
   resolution?: FourwingsLayerResolution
+  hoveredFeatures?: PickingInfo[]
+  clickedFeatures?: PickingInfo[]
   minFrame: number
   maxFrame: number
   sublayers: FourwingsDeckSublayer[]
@@ -195,7 +198,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       throw new Error('tile aborted')
     }
     const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: true,
+      worker: false,
       fourwings: {
         sublayers: 1,
         cols,
@@ -279,7 +282,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
             ...props,
             cols: props.data?.cols,
             rows: props.data?.rows,
-            data: props.data?.cells,
+            data: props.data?.features,
             indexes: props.data?.indexes,
             startFrames: props.data?.startFrames,
             geometries: props.data?.geometries,

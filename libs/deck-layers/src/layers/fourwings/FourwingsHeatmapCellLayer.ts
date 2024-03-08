@@ -72,7 +72,8 @@ export default class FourwingsHeatmapCellLayer<DataT = any, ExtraProps = {}> ext
   }
 
   indexToBounds(): Partial<_GeoCellLayer['props']> | null {
-    const { data, indexes, tile, cols, rows } = this.props
+    // TODO remove this
+    const { data, indexes, geometries, tile, cols, rows } = this.props
     const getPolygon = (_: Cell, { index, target }: { index: number; target: number[] }) => {
       const cellIndex = indexes[index]
       target = getCellCoordinates({

@@ -80,8 +80,8 @@ export const getCellTimeseries = (
           indexes.push(cellNum)
           geometries.push(
             getCellCoordinates({
-              id: generateUniqueId(tile.index.x, tile.index.y, cellIndex),
-              cellIndex,
+              id: generateUniqueId(tile.index.x, tile.index.y, cellNum),
+              cellIndex: cellNum,
               cols,
               rows,
               tileBBox: [
@@ -133,7 +133,21 @@ export const getCellTimeseries = (
       indexInCell++
     }
   }
-  return { cells, indexes, startFrames, initialValues, geometries }
+  // TODO clenaup this
+  const features = cells.map((cell, index) => {
+    return {
+      type: 'Feature',
+      geometry: { coordinates: [geometries[index]], type: 'Polygon' },
+      properties: {
+        values: cell,
+        // dates: startFrames[index].map((startFrame) => startFrame + minIntervalFrame),
+        cellId: generateUniqueId(tile.index.x, tile.index.y, indexes[index]),
+        startFrames: startFrames[index],
+        initialValues: { [timeRangeKey]: initialValues[timeRangeKey][index] },
+      },
+    }
+  })
+  return { cells, indexes, startFrames, initialValues, geometries, features } as any
 }
 
 function readData(_: any, data: any, pbf: any) {

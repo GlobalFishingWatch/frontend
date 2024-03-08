@@ -29,7 +29,8 @@ export const resolveDeckFourwingsLayerProps = (
   }))
   return {
     id: dataview.id,
-    category: dataview.id,
+    // category: dataview.id,
+    hoveredFeatures: interactions,
     minFrame: startTime,
     maxFrame: endTime,
     visible: true,

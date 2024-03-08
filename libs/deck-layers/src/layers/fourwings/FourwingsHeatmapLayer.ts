@@ -2,6 +2,7 @@ import { Color, CompositeLayer, LayersList } from '@deck.gl/core/typed'
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { PathLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
+import { PolygonLayer } from '@deck.gl/layers'
 import { Cell, getTimeRangeKey, CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import FourwingsTileCellLayer from './FourwingsHeatmapCellLayer'
 import {
@@ -117,8 +118,16 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   static layerName = 'FourwingsHeatmapLayer'
 
   renderLayers() {
-    const { data, maxFrame, minFrame, startFrames, initialValues, colorDomain, colorRanges } =
-      this.props
+    const {
+      data,
+      maxFrame,
+      minFrame,
+      startFrames,
+      initialValues,
+      colorDomain,
+      colorRanges,
+      hoveredFeatures,
+    } = this.props
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
@@ -137,21 +146,60 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       return target
     }
 
-    const fourwingsLayer = new FourwingsTileCellLayer(
+    const getLineColor = (cell: Cell, params: { index: number; target: Color }) => {
+      if (hoveredFeatures?.some((f) => f.object.properties.cellId === cell.properties.cellId)) {
+        return [255, 255, 255, 255]
+      }
+      return [0, 0, 0, 0]
+    }
+
+    // const fourwingsLayer = new FourwingsTileCellLayer(
+    //   this.props,
+    //   this.getSubLayerProps({
+    //     id: `${this.id}-fourwings-tile-${this.props.tile.id}`,
+    //     pickable: true,
+    //     stroked: false,
+    //     getFillColor,
+    //     getLineColor,
+    //     updateTriggers: {
+    //       // This tells deck.gl to recalculate fillColor on changes
+    //       getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
+    //     },
+    //   })
+    // )
+    const fourwingsCellLayer = new PolygonLayer(
       this.props,
       this.getSubLayerProps({
-        id: `${this.id}-fourwings-tile-${this.props.tile.id}`,
+        id: `fourwings-tile`,
         pickable: true,
         stroked: false,
         getFillColor,
+        getPolygon: (d: any) => d.geometry.coordinates[0],
         updateTriggers: {
           // This tells deck.gl to recalculate fillColor on changes
           getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
         },
       })
     )
+    // TODO make this a Path layer to test if performance is better
+    const fourwingsPathLayer = new PolygonLayer(
+      this.props,
+      this.getSubLayerProps({
+        id: `fourwings-tile-border`,
+        pickable: false,
+        filled: false,
+        stroked: true,
+        visible: hoveredFeatures && hoveredFeatures?.length > 0,
+        lineWidthMinPixels: 2,
+        getPolygon: (d: any) => d.geometry.coordinates[0],
+        getLineColor,
+        updateTriggers: {
+          getLineColor: [hoveredFeatures],
+        },
+      })
+    )
 
-    if (!this.props.debug) return fourwingsLayer as FourwingsTileCellLayer
+    if (!this.props.debug) return [fourwingsCellLayer, fourwingsPathLayer] as any
 
     const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
     const debugLayers = [
@@ -189,7 +237,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       }),
     ]
 
-    return [fourwingsLayer, ...debugLayers] as LayersList
+    return [fourwingsCellLayer, fourwingsPathLayer, ...debugLayers] as LayersList
   }
 
   getData() {
