@@ -95,7 +95,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </li>
         <li
           className={cx(styles.tab, {
-            [styles.current]: locationType === SEARCH,
+            [styles.current]: locationType === SEARCH || locationType === WORKSPACE_SEARCH,
           })}
         >
           <Link
@@ -122,6 +122,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             className={cx(styles.tab, {
               [styles.current]:
                 (locationType !== SEARCH &&
+                  locationType !== WORKSPACE_SEARCH &&
                   locationCategory === (category.title as WorkspaceCategory)) ||
                 (index === 0 && locationType === HOME),
             })}
