@@ -1,5 +1,6 @@
 import Pbf from 'pbf'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed/tileset-2d/types'
+import { Feature, Polygon } from 'geojson'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
 import { generateUniqueId, getCellCoordinates } from '../helpers/cells'
 import type { Cell, FourwingsLoaderOptions, FourwingsOptions, FourwingsRawData } from './types'
@@ -19,13 +20,7 @@ export const CELL_VALUES_START_INDEX = 3
 export const getCellTimeseries = (
   intArrays: FourwingsRawData[],
   options?: FourwingsLoaderOptions
-): {
-  cells: Cell[]
-  indexes: number[]
-  geometries: any[]
-  startFrames: number[][]
-  initialValues: Record<string, number[][]>
-} => {
+): Feature<Polygon>[] => {
   const { minFrame, interval, sublayers, initialTimeRange, tile, cols, rows } =
     options?.fourwings || ({} as FourwingsOptions)
 
@@ -38,7 +33,7 @@ export const getCellTimeseries = (
     Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.end)) -
     tileMinIntervalFrame
   const timeRangeKey = getTimeRangeKey(timeRangeStartIntervalFrame, timeRangeEndIntervalFrame)
-  const cells = [] as Cell[]
+  const values = [] as Cell[]
   const indexes = [] as number[]
   const geometries = [] as any[]
   const startFrames = [] as number[][]
@@ -74,14 +69,14 @@ export const getCellTimeseries = (
         let cellIndex = indexes.findIndex((v) => v === cellNum)
         // add the cell if previous sublayers didn't contain data for it
         if (cellIndex === -1) {
-          cells.push(new Array(sublayersLength))
+          values.push(new Array(sublayersLength))
           initialValues[timeRangeKey].push(new Array(sublayersLength))
           startFrames.push(new Array(sublayersLength))
           indexes.push(cellNum)
           geometries.push(
             getCellCoordinates({
-              id: generateUniqueId(tile.index.x, tile.index.y, cellIndex),
-              cellIndex,
+              id: generateUniqueId(tile.index.x, tile.index.y, cellNum),
+              cellIndex: cellNum,
               cols,
               rows,
               tileBBox: [
@@ -93,14 +88,14 @@ export const getCellTimeseries = (
               flat: false,
             })
           )
-          cellIndex = cells.length - 1
+          cellIndex = values.length - 1
         }
         for (let j = 0; j < numCellValues; j++) {
           const cellValue = subLayerIntArray[j + startIndex]
           if (cellValue !== NO_DATA_VALUE) {
-            if (!cells[cellIndex]?.[subLayerIndex]) {
+            if (!values[cellIndex]?.[subLayerIndex]) {
               // create an array of values for this sublayer if the cell dind't have it already
-              cells[cellIndex]![subLayerIndex] = new Array(numCellValues)
+              values[cellIndex]![subLayerIndex] = new Array(numCellValues)
             }
             if (!startFrames[cellIndex]![subLayerIndex]) {
               // set the startFrame for this sublayer if the cell dind't have it already
@@ -111,7 +106,7 @@ export const getCellTimeseries = (
               initialValues[timeRangeKey][cellIndex]![subLayerIndex] = 0
             }
             // add current value to the array of values for this sublayer
-            cells[cellIndex]![subLayerIndex][Math.floor(j / sublayers)] =
+            values[cellIndex]![subLayerIndex][Math.floor(j / sublayers)] =
               cellValue * SCALE_VALUE + OFFSET_VALUE
 
             // sum current value to the initialValue for this sublayer
@@ -133,7 +128,19 @@ export const getCellTimeseries = (
       indexInCell++
     }
   }
-  return { cells, indexes, startFrames, initialValues, geometries }
+  return values.map((values, index) => {
+    return {
+      type: 'Feature',
+      geometry: { coordinates: [geometries[index]], type: 'Polygon' },
+      properties: {
+        values: values,
+        dates: startFrames[index].map((startFrame) => startFrame + tileMinIntervalFrame),
+        cellId: generateUniqueId(tile.index.x, tile.index.y, indexes[index]),
+        startFrames: startFrames[index],
+        initialValues: { [timeRangeKey]: initialValues[timeRangeKey][index] },
+      },
+    } as Feature<Polygon>
+  })
 }
 
 function readData(_: any, data: any, pbf: any) {
@@ -144,27 +151,23 @@ export const parseFourwings = async (
   datasetsBuffer: ArrayBuffer,
   options?: FourwingsLoaderOptions
 ) => {
-  const { buffersLength, cols, rows } = options?.fourwings || {}
+  const { buffersLength } = options?.fourwings || {}
   if (!buffersLength?.length) {
     return []
   }
   let start = 0
-  return {
-    cols,
-    rows,
-    ...getCellTimeseries(
-      buffersLength.map((length, index) => {
-        if (length === 0) {
-          return []
-        }
-        const buffer = datasetsBuffer.slice(
-          start,
-          index !== buffersLength.length ? start + length : undefined
-        )
-        start += length
-        return new Pbf(buffer).readFields(readData, [])[0]
-      }),
-      options
-    ),
-  }
+  return getCellTimeseries(
+    buffersLength.map((length, index) => {
+      if (length === 0) {
+        return []
+      }
+      const buffer = datasetsBuffer.slice(
+        start,
+        index !== buffersLength.length ? start + length : undefined
+      )
+      start += length
+      return new Pbf(buffer).readFields(readData, [])[0]
+    }),
+    options
+  )
 }

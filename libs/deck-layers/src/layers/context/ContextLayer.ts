@@ -59,6 +59,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<
   }
 
   renderLayers() {
+    const { hoveredFeatures, clickedFeatures, color } = this.props
     this.layers = [
       new TileLayer<TileLayerProps>({
         id: `${this.id}-base-layer`,
@@ -71,11 +72,14 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<
               id: `${props.id}-highlight-fills`,
               stroked: false,
               pickable: true,
+              visible:
+                (hoveredFeatures && hoveredFeatures?.length > 0) ||
+                (clickedFeatures && clickedFeatures?.length > 0),
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
               getFillColor: (d) => this.getFillColor(d),
               updateTriggers: {
-                getFillColor: [this.props.clickedFeatures, this.props.hoveredFeatures],
+                getFillColor: [clickedFeatures, hoveredFeatures],
               },
             }),
             new GeoJsonLayer(mvtSublayerProps, {
@@ -83,17 +87,20 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<
               lineWidthMinPixels: 1,
               filled: false,
               getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-              getLineColor: hexToDeckColor(this.props.color),
+              getLineColor: hexToDeckColor(color),
             }),
             new GeoJsonLayer(mvtSublayerProps, {
               id: `${props.id}-highlight-lines`,
               lineWidthMinPixels: 1,
               filled: false,
+              visible:
+                (hoveredFeatures && hoveredFeatures?.length > 0) ||
+                (clickedFeatures && clickedFeatures?.length > 0),
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
               getLineColor: (d) => this.getLineColor(d),
               updateTriggers: {
-                getLineColor: [this.props.clickedFeatures, this.props.hoveredFeatures],
+                getLineColor: [clickedFeatures, hoveredFeatures],
               },
             }),
           ]

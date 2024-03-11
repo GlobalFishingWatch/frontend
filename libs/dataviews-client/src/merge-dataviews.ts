@@ -261,10 +261,10 @@ export function getDataviewsMerged(
       })
     : []
   const dataviewsMerged = [
+    ...otherDataviews,
     ...mergedActivityDataview,
     ...mergedDetectionsDataview,
     ...trackDataviews,
-    ...otherDataviews,
   ]
   return dataviewsMerged
 }

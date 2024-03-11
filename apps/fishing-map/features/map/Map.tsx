@@ -280,6 +280,7 @@ const MapWrapper = () => {
       const features = deckRef?.current?.pickMultipleObjects({
         x: info.x,
         y: info.y,
+        radius: 0,
       })
       if (features) {
         setDeckLayerInteraction(features)
