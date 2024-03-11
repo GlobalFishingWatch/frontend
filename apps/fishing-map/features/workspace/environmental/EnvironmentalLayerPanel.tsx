@@ -97,7 +97,8 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     (d) =>
       d.type === DatasetTypes.Fourwings ||
       d.type === DatasetTypes.Context ||
-      d.type === DatasetTypes.UserContext
+      d.type === DatasetTypes.UserContext ||
+      d.type === DatasetTypes.UserTracks
   )
   const hasLegend = dataset?.type === DatasetTypes.Fourwings
 

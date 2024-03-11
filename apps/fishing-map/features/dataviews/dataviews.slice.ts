@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
-import { uniqBy } from 'lodash'
+import { uniqBy, kebabCase } from 'lodash'
 import { stringify } from 'qs'
 import { Dataview, APIPagination } from '@globalfishingwatch/api-types'
 import {
@@ -55,10 +55,16 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`,
         { signal }
       )
-
-      return USE_MOCKED_DATAVIEWS
-        ? uniqBy([...mockedDataviews, ...dataviewsResponse.entries], 'slug')
+      const dataviews = USE_MOCKED_DATAVIEWS
+        ? [...mockedDataviews, ...dataviewsResponse.entries]
         : dataviewsResponse.entries
+      return uniqBy(
+        dataviews.map((d) => ({
+          ...d,
+          slug: d.slug || kebabCase(d.name),
+        })),
+        'slug'
+      )
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
@@ -132,7 +138,7 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState
       entityAdapter.addOne(state, action.payload)
     },
   },
-  selectId: (dataview) => dataview.slug,
+  selectId: (dataview) => dataview.slug || dataview.id,
 })
 
 export const { addDataviewEntity } = dataviewsSlice.actions
