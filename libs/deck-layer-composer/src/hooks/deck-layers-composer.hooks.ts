@@ -41,7 +41,6 @@ export function useDeckLayerComposer({
         return []
       }
     })
-    // console.log('setting layers', layers)
     setDeckLayers(layers)
   }, [dataviews, setDeckLayers, globalConfig, deckInteractions])
 

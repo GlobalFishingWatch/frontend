@@ -1,4 +1,4 @@
-import { Color, CompositeLayer, Layer, LayersList, PickingInfo } from '@deck.gl/core/typed'
+import { Color, CompositeLayer, Layer, LayersList } from '@deck.gl/core/typed'
 import { TileLayerProps } from '@deck.gl/geo-layers/typed'
 import {
   FourwingsHeatmapTileLayerProps,
@@ -28,11 +28,12 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   renderLayers(): Layer<{}> | LayersList {
     const mode = this.getMode()
-
+    const HeatmapLayerClass = this.getSubLayerClass('heatmap', FourwingsHeatmapTileLayer)
+    const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
     this.layers =
       mode === HEATMAP_ID
-        ? [new FourwingsHeatmapTileLayer(this.props)]
-        : [new FourwingsPositionsTileLayer(this.props)]
+        ? [new HeatmapLayerClass(this.props, this.getSubLayerProps({ id: HEATMAP_ID }))]
+        : [new PositionsLayerClass(this.props, this.getSubLayerProps({ id: POSITIONS_ID }))]
     return this.layers
   }
 

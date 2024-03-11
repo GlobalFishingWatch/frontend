@@ -260,7 +260,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: HEATMAP_ID,
+        id: `${HEATMAP_ID}-tiles`,
         tileSize: 512,
         colorDomain,
         colorRanges,

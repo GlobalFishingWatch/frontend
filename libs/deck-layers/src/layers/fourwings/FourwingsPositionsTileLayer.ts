@@ -17,6 +17,7 @@ import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
+import { POSITIONS_ID } from './fourwings.config'
 import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from './fourwings.utils'
 import { FourwingsColorRamp } from './FourwingsLayer'
 
@@ -202,7 +203,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
     return [
       new MVTLayer(this.props, {
-        id: 'position-tiles',
+        id: `${POSITIONS_ID}-tiles`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&${getDateRangeParam(
           minFrame,
           maxFrame
