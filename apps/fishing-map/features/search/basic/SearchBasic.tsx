@@ -28,6 +28,7 @@ import {
   SearchEmptyState,
 } from 'features/search/SearchPlaceholders'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
+import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import styles from './SearchBasic.module.css'
 
 export type SearchComponentProps = {
@@ -48,6 +49,7 @@ function SearchBasic({
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
+  const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const searchStatusCode = useSelector(selectSearchStatusCode)
@@ -60,7 +62,7 @@ function SearchBasic({
     searchResults!?.length < searchPagination.total
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatchQueryParams({ query: e.target.value }, true)
+    dispatchQueryParams({ query: e.target.value }, isStandaloneSearchLocation)
     if (e.target.value !== searchQuery && searchSuggestionClicked) {
       dispatch(setSuggestionClicked(false))
     }
