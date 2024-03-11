@@ -131,7 +131,7 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
           return
         }
         const tokenIndex = parseInt(matchesToken[1])
-        const token = tokens[tokenIndex]
+        const token = tokens?.[tokenIndex]
         if (!token) {
           result[key] = value
           return
@@ -164,8 +164,8 @@ export const parseLegacyDataviewInstanceConfig = (
     ...(dataviewInstance.datasetsConfig && {
       datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
         ...dc,
-        datasetId: runDatasetMigrations(dc.datasetId),
-        endpoint: removeLegacyEndpointPrefix(dc.endpoint),
+        datasetId: runDatasetMigrations(dc?.datasetId),
+        endpoint: removeLegacyEndpointPrefix(dc?.endpoint),
       })),
     }),
   }

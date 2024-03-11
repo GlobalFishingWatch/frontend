@@ -10,17 +10,17 @@ export const removeLegacyEndpointPrefix = (endpointId: string) => {
   if (endpointId === 'user-context-tiles') {
     return EndpointId.ContextTiles
   }
-  return endpointId.replace('carriers-', '')
+  return endpointId?.replace('carriers-', '')
 }
 
 export const migrateLegacyVMSPublicDataset = (datasetId: string) => {
-  return PUBLIC_VMS_TRACK_DATASETS.some((legacyDataset) => datasetId.includes(legacyDataset))
+  return PUBLIC_VMS_TRACK_DATASETS.some((legacyDataset) => datasetId?.includes(legacyDataset))
     ? datasetId.replace('public-', 'full-')
     : datasetId
 }
 
 export const migrateLegacyVMSFullDataset = (datasetId: string) => {
-  return FULL_VMS_VESSELS_DATASETS.some((legacyDataset) => datasetId.includes(legacyDataset))
+  return FULL_VMS_VESSELS_DATASETS.some((legacyDataset) => datasetId?.includes(legacyDataset))
     ? datasetId.replace('full-', 'public-')
     : datasetId
 }
