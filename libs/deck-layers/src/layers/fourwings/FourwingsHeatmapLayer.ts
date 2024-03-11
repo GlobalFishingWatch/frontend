@@ -13,7 +13,12 @@ import {
   CONFIG_BY_INTERVAL,
   FourWingsFeature,
 } from '@globalfishingwatch/deck-loaders'
-import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '../../utils'
+import {
+  COLOR_HIGHLIGHT_LINE,
+  COLOR_TRANSPARENT,
+  LayerGroup,
+  getLayerGroupOffset,
+} from '../../utils'
 import {
   ColorDomain,
   FourwingsHeatmapTileLayerProps,
@@ -174,6 +179,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         getPickingInfo,
         getFillColor,
         getPolygon: (d: any) => d.geometry.coordinates[0],
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
         updateTriggers: {
           // This tells deck.gl to recalculate fillColor on changes
           getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
@@ -189,6 +195,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         widthMinPixels: 2,
         getPath: (d: any) => d.geometry.coordinates[0],
         getColor: getHighlightColor,
+        getPolygonOffset: (params: any) =>
+          getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
         updateTriggers: {
           getColor: [hoveredFeatures],
         },
@@ -215,6 +223,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         getPath: (d) => d.path,
         widthMinPixels: 1,
         getColor: [255, 0, 0, 100],
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
       }),
       new TextLayer({
         id: `${this.id}-tile-id-${this.props.tile.id}`,
@@ -230,6 +239,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         getAngle: 0,
         getTextAnchor: 'start',
         getAlignmentBaseline: 'top',
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
       }),
     ]
 

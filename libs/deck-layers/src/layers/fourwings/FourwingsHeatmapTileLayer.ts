@@ -273,7 +273,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         updateTriggers: {
           getTileData: [cacheKey, visibleSublayersIds],
         },
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
           return new FourwingsHeatmapLayer(props)
