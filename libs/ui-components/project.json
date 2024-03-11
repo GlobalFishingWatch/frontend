@@ -15,6 +15,8 @@
         "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",
         "external": ["countryflag"],
+        "additionalEntryPoints": ["libs/ui-components/src/button/Button.tsx"],
+        "generateExportsField": true,
         "format": ["esm", "cjs"],
         "rollupConfig": "libs/ui-components/rollup.config.js",
         "assets": [
