@@ -60,7 +60,7 @@ function SearchBasic({
     searchResults!?.length < searchPagination.total
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatchQueryParams({ query: e.target.value })
+    dispatchQueryParams({ query: e.target.value }, true)
     if (e.target.value !== searchQuery && searchSuggestionClicked) {
       dispatch(setSuggestionClicked(false))
     }
