@@ -6,7 +6,6 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Icon, IconButton, IconType, Tooltip } from '@globalfishingwatch/ui-components'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import { Workspace } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
@@ -95,7 +94,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </li>
         <li
           className={cx(styles.tab, {
-            [styles.current]: locationType === SEARCH,
+            [styles.current]: locationType === SEARCH || locationType === WORKSPACE_SEARCH,
           })}
         >
           <Link
@@ -122,6 +121,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             className={cx(styles.tab, {
               [styles.current]:
                 (locationType !== SEARCH &&
+                  locationType !== WORKSPACE_SEARCH &&
                   locationCategory === (category.title as WorkspaceCategory)) ||
                 (index === 0 && locationType === HOME),
             })}
