@@ -67,8 +67,6 @@ import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-s
 import MapLegends from './MapLegends'
 import MapAnnotations from './annotations/Annotations'
 import MapAnnotationsDialog from './annotations/AnnotationsDialog'
-import { useMapAnnotation } from './annotations/annotations.hooks'
-import { useMapErrorNotification } from './error-notification/error-notification.hooks'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 const PopupWrapper = dynamic(
@@ -126,7 +124,7 @@ const MapWrapper = () => {
     [setViewState]
   )
   useUpdateViewStateUrlParams()
-  // const { onMapClick } = useMapMouseClick()
+  const { onMapClick } = useMapMouseClick()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -270,8 +268,6 @@ const MapWrapper = () => {
   //   }
   //   return styleInteractiveLayerIds
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
-  const { addMapAnnotation, isMapAnnotating } = useMapAnnotation()
-  const { addErrorNotification, isErrorNotificationEditing } = useMapErrorNotification()
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
   const setDeckLayerInteraction = useSetDeckLayerInteraction()
@@ -288,22 +284,6 @@ const MapWrapper = () => {
     },
     [setDeckLayerInteraction]
   )
-  const onClick = useCallback((info: PickingInfo) => {
-    // console.log('info:', info)
-    const features = deckRef?.current?.pickMultipleObjects({
-      x: info.x,
-      y: info.y,
-      radius: 0,
-    })
-    const fourWingsValues = features?.map(
-      (f) =>
-        f.sourceLayer?.getPickingInfo({ info, mode: 'click', sourceLayer: f.sourceLayer }).object
-          .values
-    )[0]
-    if (fourWingsValues) {
-      console.log('fourWingsValues', fourWingsValues)
-    }
-  }, [])
 
   return (
     <div className={styles.container}>
@@ -331,7 +311,7 @@ const MapWrapper = () => {
         }}
         viewState={viewState}
         onViewStateChange={onViewStateChange}
-        onClick={onClick}
+        onClick={onMapClick}
         onHover={onHover}
       >
         <MapAnnotations />
