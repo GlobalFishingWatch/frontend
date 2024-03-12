@@ -74,6 +74,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     super.initializeState(context)
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
+      interval: getInterval(this.props.minFrame, this.props.maxFrame),
       colorDomain: [1, 20, 50, 100, 500, 5000, 10000, 500000],
       colorRanges: this.props.sublayers.map(
         ({ config }) =>
@@ -228,12 +229,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileDataCacheKey = (minFrame: number, maxFrame: number, chunks: Chunk[]): string => {
+    const interval = chunks[0].interval
     const isStartOutRange = minFrame <= this.state.cacheStart
     const isEndOutRange = maxFrame >= this.state.cacheEnd
-    if (isStartOutRange || isEndOutRange) {
-      this.setState(this.getCacheRange(minFrame, maxFrame))
+    if (isStartOutRange || isEndOutRange || interval !== this.state.interval) {
+      this.setState({
+        interval,
+        ...this.getCacheRange(minFrame, maxFrame),
+      })
     }
-    return [this.state.cacheStart, this.state.cacheEnd].join('-')
+    return [this.state.cacheStart, this.state.cacheEnd, interval].join('-')
   }
 
   _updateSublayerColorRanges = () => {
