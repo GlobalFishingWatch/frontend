@@ -112,6 +112,33 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   static layerName = 'FourwingsHeatmapLayer'
   layers: LayersList = []
 
+  getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
+    const { minFrame, maxFrame } = this.props
+    if (info.object) {
+      const chunks = getChunks(minFrame, maxFrame)
+      const interval = getInterval(minFrame, maxFrame)
+      const tileMinIntervalFrame = Math.ceil(
+        CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
+      )
+      const minIntervalFrame =
+        Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame)) - tileMinIntervalFrame
+      const maxIntervalFrame =
+        Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
+      const values = aggregateCell(info.object.properties.values, {
+        minIntervalFrame,
+        maxIntervalFrame,
+        startFrames: info.object.properties.startFrames,
+      })
+      if (values) {
+        info.object = {
+          ...info.object,
+          values,
+        }
+      }
+    }
+    return info
+  }
+
   renderLayers() {
     const { data, maxFrame, minFrame, colorDomain, colorRanges, hoveredFeatures } = this.props
     if (!data || !colorDomain || !colorRanges) {
@@ -130,41 +157,13 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       return target
     }
 
-    const getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
-      const { minFrame, maxFrame } = this.props
-      console.log('info.object:', info.object)
-      if (info.object) {
-        const chunks = getChunks(minFrame, maxFrame)
-        const interval = getInterval(minFrame, maxFrame)
-        const tileMinIntervalFrame = Math.ceil(
-          CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
-        )
-        const minIntervalFrame =
-          Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame)) - tileMinIntervalFrame
-        const maxIntervalFrame =
-          Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
-        const value = aggregateCell(info.object, {
-          minIntervalFrame,
-          maxIntervalFrame,
-          startFrames: info.object.properties.startFrames,
-        })
-        if (value) {
-          info.object = {
-            ...info.object,
-            value,
-          }
-        }
-      }
-      return info
-    }
-
     this.layers = [
       new SolidPolygonLayer(
         this.props,
         this.getSubLayerProps({
           id: `fourwings-tile`,
           pickable: true,
-          getPickingInfo,
+          getPickingInfo: this.getPickingInfo,
           getFillColor,
           getPolygon: (d: any) => d.geometry.coordinates[0],
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
