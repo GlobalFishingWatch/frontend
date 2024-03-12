@@ -280,6 +280,5 @@ export function getDataviewsMerged(
     ...mergedDetectionsDataview,
     ...trackDataviews,
   ]
-  console.log('dataviewsMerged:', dataviewsMerged)
   return dataviewsMerged
 }

@@ -299,6 +299,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       const zoom = Math.round(this.context.viewport.zoom)
       const offset = this.props.resolution === 'high' ? 1 : 0
       return layer.getSubLayers().flatMap((l: any) => {
+        if (l.props.tile.zoom === l.props.maxZoom) {
+          return l.getData()
+        }
         return l.props.tile.zoom === zoom + offset ? l.getData() : []
       }) as FourWingsFeature[]
     }
