@@ -9,12 +9,12 @@ import {
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
-import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { useDeckMap } from '../map-context.hooks'
-import { useMapViewport } from '../map-viewport.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
+import { useMapViewport } from 'features/map/map-viewport.hooks'
+import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
 import styles from './Annotations.module.css'
 /* eslint-disable react/prop-types */
 const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]

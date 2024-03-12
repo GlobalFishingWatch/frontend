@@ -1,8 +1,9 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { Ruler } from '@globalfishingwatch/layer-composer'
+import { RulerLayer } from '@globalfishingwatch/deck-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
@@ -21,6 +22,10 @@ const useRulers = () => {
     setMapControlValue,
     resetMapControlValue,
   } = useMapControl('rulers')
+
+  useEffect(() => {
+    console.log(rulers)
+  }, [rulers])
 
   const setRuleStart = useCallback(
     (start: Ruler['start']) => {

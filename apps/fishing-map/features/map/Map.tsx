@@ -27,7 +27,7 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
-import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
+import { AnyDeckLayer, RulerLayer } from '@globalfishingwatch/deck-layers'
 import {
   useSetDeckLayerComposer,
   useSetDeckLayerInteraction,
@@ -55,8 +55,8 @@ import {
   useMapMouseClick,
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
-import { useMapRulersDrag } from 'features/map/rulers/rulers-drag.hooks'
-import ErrorNotification from 'features/map/error-notification/ErrorNotification'
+import { useMapRulersDrag } from 'features/map/overlays/rulers/rulers-drag.hooks'
+import ErrorNotification from 'features/map/overlays/error-notification/ErrorNotification'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import { MapCoordinates } from 'types'
@@ -65,10 +65,10 @@ import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-v
 import styles from './Map.module.css'
 import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
 import MapLegends from './MapLegends'
-import MapAnnotations from './annotations/Annotations'
-import MapAnnotationsDialog from './annotations/AnnotationsDialog'
-import { useMapAnnotation } from './annotations/annotations.hooks'
-import { useMapErrorNotification } from './error-notification/error-notification.hooks'
+import MapAnnotations from './overlays/annotations/Annotations'
+import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
+import { useMapAnnotation } from './overlays/annotations/annotations.hooks'
+import { useMapErrorNotification } from './overlays/error-notification/error-notification.hooks'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 const PopupWrapper = dynamic(
@@ -321,6 +321,14 @@ const MapWrapper = () => {
         <MapAnnotations />
         <MapAnnotationsDialog />
         <ErrorNotification />
+        <RulerLayer
+          id="rulerLayer"
+          data={[]}
+          onEdit={(props) => console.log('editing', props)}
+          onClick={() => console.log('on click')}
+          mode="edit"
+          selectedFeatureIndexes={[]}
+        />
       </DeckGL>
       {/* {style && (
         <Map

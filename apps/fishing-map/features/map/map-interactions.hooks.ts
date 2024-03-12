@@ -12,14 +12,14 @@ import { ExtendedStyle, ExtendedStyleMeta, GeneratorType } from '@globalfishingw
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
+import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import {
   TooltipEventFeature,
   parseMapTooltipEvent,
   useClickedEventConnect,
   useMapHighlightedEvent,
 } from 'features/map/map.hooks'
-import useRulers from 'features/map/rulers/rulers.hooks'
+import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -32,7 +32,7 @@ import {
   RULERS_LAYER_ID,
   WORKSPACES_POINTS_TYPE,
 } from 'features/map/map.config'
-import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
+import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { SliceInteractionEvent } from './map.slice'

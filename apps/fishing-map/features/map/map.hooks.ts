@@ -40,7 +40,7 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
-import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
+import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import { selectDefaultMapGeneratorsConfig } from './map.selectors'
 import {
   WORKSPACES_POINTS_TYPE,
