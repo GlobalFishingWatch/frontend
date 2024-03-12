@@ -75,6 +75,14 @@ function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
   return dataview?.config?.type === GeneratorType.HeatmapStatic
 }
 
+export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
+  if (!dataviews.length) {
+    console.warn('Trying to merge empty dataviews')
+    return 'EMPTY_DATAVIEW'
+  }
+  return dataviews.map((d) => d.id).join(',')
+}
+
 type GetMergedHeatmapAnimatedDataviewParams = {
   heatmapAnimatedMode?: HeatmapAnimatedMode
   timeRange?: TimeRange
@@ -140,7 +148,7 @@ export function getMergedHeatmapAnimatedDataviews(
     .flatMap(({ config }) => config?.maxZoom as number)
 
   const mergedActivityDataview = {
-    id: heatmapAnimatedDataviews?.map((d) => d.id).join(',') || DataviewCategory.Activity,
+    id: getMergedDataviewId(heatmapAnimatedDataviews),
     category: heatmapAnimatedDataviews[0]?.category,
     config: {
       type: GeneratorType.HeatmapAnimated,
