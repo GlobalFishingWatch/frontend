@@ -126,7 +126,7 @@ const MapWrapper = () => {
     [setViewState]
   )
   useUpdateViewStateUrlParams()
-  const { onMapClick } = useMapMouseClick()
+  // const { onMapClick } = useMapMouseClick()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -288,6 +288,22 @@ const MapWrapper = () => {
     },
     [setDeckLayerInteraction]
   )
+  const onClick = useCallback((info: PickingInfo) => {
+    // console.log('info:', info)
+    const features = deckRef?.current?.pickMultipleObjects({
+      x: info.x,
+      y: info.y,
+      radius: 0,
+    })
+    const fourWingsValues = features?.map(
+      (f) =>
+        f.sourceLayer?.getPickingInfo({ info, mode: 'click', sourceLayer: f.sourceLayer }).object
+          .values
+    )[0]
+    if (fourWingsValues) {
+      console.log('fourWingsValues', fourWingsValues)
+    }
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -315,7 +331,7 @@ const MapWrapper = () => {
         }}
         viewState={viewState}
         onViewStateChange={onViewStateChange}
-        onClick={onMapClick}
+        onClick={onClick}
         onHover={onHover}
       >
         <MapAnnotations />
