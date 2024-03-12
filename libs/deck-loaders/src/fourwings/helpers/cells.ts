@@ -21,7 +21,6 @@ export type GetCellCoordinatesParams = {
   cellIndex: number
   cols: number
   rows: number
-  id: number
   flat?: boolean
 }
 

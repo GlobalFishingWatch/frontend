@@ -1,9 +1,13 @@
 import Pbf from 'pbf'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed/tileset-2d/types'
-import { Feature, Polygon } from 'geojson'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
 import { generateUniqueId, getCellCoordinates } from '../helpers/cells'
-import type { FourwingsLoaderOptions, FourwingsOptions, FourwingsRawData } from './types'
+import type {
+  FourWingsFeature,
+  FourwingsLoaderOptions,
+  FourwingsOptions,
+  FourwingsRawData,
+} from './types'
 
 // TODO make this dynamic to get the data from the header
 // const NO_DATA_VALUE = 0
@@ -19,7 +23,7 @@ export const CELL_VALUES_START_INDEX = 3
 export const getCellTimeseries = (
   intArrays: FourwingsRawData[],
   options?: FourwingsLoaderOptions
-): Feature<Polygon>[] => {
+): FourWingsFeature[] => {
   const { minFrame, interval, sublayers, initialTimeRange, tile, cols, rows } =
     options?.fourwings || ({} as FourwingsOptions)
 
@@ -32,7 +36,7 @@ export const getCellTimeseries = (
     Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.end)) -
     tileMinIntervalFrame
   const timeRangeKey = getTimeRangeKey(timeRangeStartIntervalFrame, timeRangeEndIntervalFrame)
-  const features = [] as Feature<Polygon>[]
+  const features = {} as Record<number, FourWingsFeature>
   const sublayersLength = intArrays.length
   for (let subLayerIndex = 0; subLayerIndex < sublayersLength; subLayerIndex++) {
     let cellNum = 0
@@ -57,17 +61,13 @@ export const getCellTimeseries = (
         // calculate how many values are in the tile
         const numCellValues = (endFrame - startFrame + 1) * sublayers
 
-        // find the feature if previous sublayers contained data for it
-        // eslint-disable-next-line no-loop-func
-        let feature = features.find((f) => f.properties?.cellNum === cellNum)
         // add the feature if previous sublayers didn't contain data for it
-        if (!feature) {
-          features.push({
+        if (!features[cellNum]) {
+          features[cellNum] = {
             type: 'Feature',
             geometry: {
               coordinates: [
                 getCellCoordinates({
-                  id: generateUniqueId(tile.index.x, tile.index.y, cellNum),
                   cellIndex: cellNum,
                   cols,
                   rows,
@@ -89,35 +89,35 @@ export const getCellTimeseries = (
               startFrames: [],
               initialValues: { [timeRangeKey]: new Array(sublayersLength) },
             },
-          })
-          feature = features[features.length - 1]
+          }
         }
+        const { values, dates, startFrames, initialValues } = features[cellNum].properties
 
         for (let j = 0; j < numCellValues; j++) {
           const cellValue = subLayerIntArray[j + startIndex]
           if (cellValue !== NO_DATA_VALUE) {
-            if (!feature.properties?.values[subLayerIndex]) {
+            if (!values[subLayerIndex]) {
               // create an array of values for this sublayer if the feature dind't have it already
-              feature.properties!.values[subLayerIndex] = new Array(numCellValues)
+              values[subLayerIndex] = new Array(numCellValues)
             }
-            if (!feature.properties?.dates[subLayerIndex]) {
+            if (!dates[subLayerIndex]) {
               // create an array of dates for this sublayer if the feature dind't have it already
-              feature.properties!.dates[subLayerIndex] = new Array(numCellValues)
+              dates[subLayerIndex] = new Array(numCellValues)
             }
-            if (!feature.properties?.startFrames[subLayerIndex]) {
+            if (!startFrames[subLayerIndex]) {
               // set the startFrame for this sublayer if the feature dind't have it already
-              feature.properties!.startFrames[subLayerIndex] = startFrame
+              startFrames[subLayerIndex] = startFrame
             }
-            if (!feature.properties?.initialValues[timeRangeKey][subLayerIndex]) {
+            if (!initialValues[timeRangeKey][subLayerIndex]) {
               // set the initialValue for this sublayer to 0 if the feature dind't have it already
-              feature.properties!.initialValues[timeRangeKey][subLayerIndex] = 0
+              initialValues[timeRangeKey][subLayerIndex] = 0
             }
             // add current value to the array of values for this sublayer
-            feature.properties!.values[subLayerIndex][Math.floor(j / sublayers)] =
+            values[subLayerIndex][Math.floor(j / sublayers)] =
               cellValue * SCALE_VALUE + OFFSET_VALUE
 
             // add current date to the array of dates for this sublayer
-            feature.properties!.dates[subLayerIndex][Math.floor(j / sublayers)] = Math.ceil(
+            dates[subLayerIndex][Math.floor(j / sublayers)] = Math.ceil(
               CONFIG_BY_INTERVAL[interval].getTime(startFrame + tileMinIntervalFrame + j)
             )
 
@@ -127,8 +127,7 @@ export const getCellTimeseries = (
               j + startFrame >= timeRangeStartIntervalFrame &&
               j + startFrame < timeRangeEndIntervalFrame
             ) {
-              feature.properties!.initialValues[timeRangeKey][subLayerIndex] +=
-                cellValue * SCALE_VALUE + OFFSET_VALUE
+              initialValues[timeRangeKey][subLayerIndex] += cellValue * SCALE_VALUE + OFFSET_VALUE
             }
           }
         }
@@ -141,7 +140,7 @@ export const getCellTimeseries = (
     }
   }
 
-  return features
+  return Object.values(features)
 }
 
 function readData(_: any, data: any, pbf: any) {
