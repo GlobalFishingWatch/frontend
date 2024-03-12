@@ -37,12 +37,13 @@ export type FourwingsLoaderOptions = LoaderOptions & {
   fourwings?: FourwingsOptions
 }
 
-type FourWingsFeatureProperties = {
+export type FourWingsFeatureProperties = {
   initialValues: Record<string, number[]>
   startFrames: number[]
   dates: number[][]
   values: number[][]
   cellId: number
+  cellNum: number
 }
 
 export type FourWingsFeature = Feature<Polygon, FourWingsFeatureProperties>

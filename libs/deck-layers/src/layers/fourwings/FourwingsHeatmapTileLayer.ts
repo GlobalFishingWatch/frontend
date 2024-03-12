@@ -50,8 +50,7 @@ export type _FourwingsHeatmapTileLayerProps = {
   maxFrame: number
   sublayers: FourwingsDeckSublayer[]
   colorRampWhiteEnd?: boolean
-  onTileLoad?: (tile: Tile2DHeader, allTilesLoaded: boolean) => void
-  onViewportLoad?: (string: string) => void
+  onTileDataLoading?: (tile: TileLoadProps) => void
 }
 
 export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
@@ -75,6 +74,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     super.initializeState(context)
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
+      interval: getInterval(this.props.minFrame, this.props.maxFrame),
       colorDomain: [1, 20, 50, 100, 500, 5000, 10000, 500000],
       colorRanges: this.props.sublayers.map(
         ({ config }) =>
@@ -146,19 +146,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     })
   }, 500)
 
-  _onTileLoad = (tile: Tile2DHeader) => {
-    const allTilesLoaded = this.getLayerInstance()?.state.tileset.tiles.every(
-      (tile: Tile2DHeader) => tile.isLoaded === true
-    )
-    if (this.props.onTileLoad) {
-      this.props.onTileLoad(tile, allTilesLoaded)
-    }
-  }
-
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
     this.updateColorDomain(tiles)
     if (this.props.onViewportLoad) {
-      this.props.onViewportLoad(this.id)
+      this.props.onViewportLoad(tiles)
     }
   }
 
@@ -225,6 +216,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (tile.signal?.aborted) {
       return null
     }
+    if (this.props.onTileDataLoading) {
+      this.props.onTileDataLoading(tile)
+    }
     return this._fetchTileData(tile)
   }
 
@@ -235,12 +229,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileDataCacheKey = (minFrame: number, maxFrame: number, chunks: Chunk[]): string => {
+    const interval = chunks[0].interval
     const isStartOutRange = minFrame <= this.state.cacheStart
     const isEndOutRange = maxFrame >= this.state.cacheEnd
-    if (isStartOutRange || isEndOutRange) {
-      this.setState(this.getCacheRange(minFrame, maxFrame))
+    if (isStartOutRange || isEndOutRange || interval !== this.state.interval) {
+      this.setState({
+        interval,
+        ...this.getCacheRange(minFrame, maxFrame),
+      })
     }
-    return [this.state.cacheStart, this.state.cacheEnd].join('-')
+    return [this.state.cacheStart, this.state.cacheEnd, interval].join('-')
   }
 
   _updateSublayerColorRanges = () => {
@@ -278,7 +276,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         opacity: 1,
         debug: this.props.debug,
         maxRequests: -1,
-        onTileLoad: this._onTileLoad,
         getTileData: this._getTileData,
         updateTriggers: {
           getTileData: [cacheKey, sublayersIds],
@@ -302,14 +299,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       const zoom = Math.round(this.context.viewport.zoom)
       const offset = this.props.resolution === 'high' ? 1 : 0
       return layer.getSubLayers().flatMap((l: any) => {
-        return l.props.tile.zoom === zoom + offset ? (l.getData() as TileCell[]) : []
-      })
+        if (l.props.tile.zoom === l.props.maxZoom) {
+          return l.getData()
+        }
+        return l.props.tile.zoom === zoom + offset ? l.getData() : []
+      }) as FourWingsFeature[]
     }
-    return []
+    return [] as FourWingsFeature[]
   }
 
   getViewportData() {
-    const data = this.getData() as any
+    const data = this.getData()
     const { viewport } = this.context
     const [west, north] = viewport.unproject([0, 0])
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
