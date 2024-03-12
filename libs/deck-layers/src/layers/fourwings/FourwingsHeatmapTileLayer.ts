@@ -21,7 +21,6 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { LayerGroup, getLayerGroupOffset } from '../../utils'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
@@ -77,7 +76,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     this.state = {
       ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
       colorDomain: [1, 20, 50, 100, 500, 5000, 10000, 500000],
-      // TODO: update colorRanges only when a sublayer colorRamp prop changes
       colorRanges: this.props.sublayers.map(
         ({ config }) =>
           HEATMAP_COLOR_RAMPS[
@@ -107,7 +105,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
-    const fa = performance.now()
+    // const fa = performance.now()
     const currentZoomTiles = tiles.filter(
       (tile) => tile.zoom === Math.round(this.context.viewport.zoom)
     )
@@ -126,7 +124,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         })
       )
     })
-    console.log('allValues:', allValues.length)
+    // console.log('allValues:', allValues.length)
     // const a = performance.now()
     if (!allValues.length) {
       return this.getColorDomain()
@@ -136,9 +134,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     )
     // const b = performance.now()
     // console.log('ckmeans time:', b - a)
-    const fb = performance.now()
-    console.log('steps:', steps)
-    console.log('calculateColorDomain time:', fb - fa)
+    // const fb = performance.now()
+    // console.log('steps:', steps)
+    // console.log('calculateColorDomain time:', fb - fa)
     return steps
   }
 
@@ -245,16 +243,28 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return [this.state.cacheStart, this.state.cacheEnd].join('-')
   }
 
+  _updateSublayerColorRanges = () => {
+    const { sublayers, colorRampWhiteEnd } = this.props
+    const newSublayerColorRanges = sublayers.map(({ config }) =>
+      HEATMAP_COLOR_RAMPS[
+        (colorRampWhiteEnd ? `${config.colorRamp}_toWhite` : config.colorRamp) as ColorRampsIds
+      ].map((c) => rgbaStringToComponents(c))
+    )
+    const sublayersHaveNewColors = this.state.colorRanges.join() !== newSublayerColorRanges.join()
+    if (sublayersHaveNewColors) {
+      this.setState({ colorRanges: newSublayerColorRanges })
+    }
+  }
+
   renderLayers(): Layer<{}> | LayersList {
-    const { minFrame, maxFrame } = this.props
+    const { minFrame, maxFrame, sublayers } = this.props
+    this._updateSublayerColorRanges()
     const { colorDomain, colorRanges } = this.state
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
     // TODO review this to avoid rerendering when sublayers change
-    const visibleSublayersIds = this.props.sublayers
-      .filter((s) => s.visible)
-      .map((s) => s.id)
-      .join(',')
+    const sublayersIds = sublayers.map((s) => s.id).join(',')
+
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
@@ -271,7 +281,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         onTileLoad: this._onTileLoad,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey, visibleSublayersIds],
+          getTileData: [cacheKey, sublayersIds],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
