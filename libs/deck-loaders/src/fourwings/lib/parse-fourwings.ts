@@ -91,35 +91,33 @@ export const getCellTimeseries = (
             },
           }
         }
-        const { values, dates, startFrames, initialValues } = features[cellNum].properties
 
         for (let j = 0; j < numCellValues; j++) {
           const cellValue = subLayerIntArray[j + startIndex]
           if (cellValue !== NO_DATA_VALUE) {
-            if (!values[subLayerIndex]) {
+            if (!features[cellNum].properties.values[subLayerIndex]) {
               // create an array of values for this sublayer if the feature dind't have it already
-              values[subLayerIndex] = new Array(numCellValues)
+              features[cellNum].properties.values[subLayerIndex] = new Array(numCellValues)
             }
-            if (!dates[subLayerIndex]) {
+            if (!features[cellNum].properties.dates[subLayerIndex]) {
               // create an array of dates for this sublayer if the feature dind't have it already
-              dates[subLayerIndex] = new Array(numCellValues)
+              features[cellNum].properties.dates[subLayerIndex] = new Array(numCellValues)
             }
-            if (!startFrames[subLayerIndex]) {
+            if (!features[cellNum].properties.startFrames[subLayerIndex]) {
               // set the startFrame for this sublayer if the feature dind't have it already
-              startFrames[subLayerIndex] = startFrame
+              features[cellNum].properties.startFrames[subLayerIndex] = startFrame
             }
-            if (!initialValues[timeRangeKey][subLayerIndex]) {
+            if (!features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex]) {
               // set the initialValue for this sublayer to 0 if the feature dind't have it already
-              initialValues[timeRangeKey][subLayerIndex] = 0
+              features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] = 0
             }
             // add current value to the array of values for this sublayer
-            values[subLayerIndex][Math.floor(j / sublayers)] =
+            features[cellNum].properties.values[subLayerIndex][Math.floor(j / sublayers)] =
               cellValue * SCALE_VALUE + OFFSET_VALUE
 
             // add current date to the array of dates for this sublayer
-            dates[subLayerIndex][Math.floor(j / sublayers)] = Math.ceil(
-              CONFIG_BY_INTERVAL[interval].getTime(startFrame + tileMinIntervalFrame + j)
-            )
+            features[cellNum].properties.dates[subLayerIndex][Math.floor(j / sublayers)] =
+              Math.ceil(CONFIG_BY_INTERVAL[interval].getTime(startFrame + tileMinIntervalFrame + j))
 
             // sum current value to the initialValue for this sublayer
             // TODO make this an average for the environmental layers
@@ -127,7 +125,8 @@ export const getCellTimeseries = (
               j + startFrame >= timeRangeStartIntervalFrame &&
               j + startFrame < timeRangeEndIntervalFrame
             ) {
-              initialValues[timeRangeKey][subLayerIndex] += cellValue * SCALE_VALUE + OFFSET_VALUE
+              features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] +=
+                cellValue * SCALE_VALUE + OFFSET_VALUE
             }
           }
         }
