@@ -78,12 +78,14 @@ function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
 type GetMergedHeatmapAnimatedDataviewParams = {
   heatmapAnimatedMode?: HeatmapAnimatedMode
   timeRange?: TimeRange
+  colorRampWhiteEnd?: boolean
 }
 export function getMergedHeatmapAnimatedDataviews(
   heatmapAnimatedDataviews: UrlDataviewInstance[],
   {
     heatmapAnimatedMode = HeatmapAnimatedMode.Compare,
     timeRange,
+    colorRampWhiteEnd = false,
   } = {} as GetMergedHeatmapAnimatedDataviewParams
 ) {
   const dataviewsFiltered = [] as UrlDataviewInstance[]
@@ -145,6 +147,7 @@ export function getMergedHeatmapAnimatedDataviews(
     config: {
       type: GeneratorType.HeatmapAnimated,
       sublayers: activitySublayers,
+      colorRampWhiteEnd,
       updateDebounce: true,
       mode: heatmapAnimatedMode,
       // if any of the activity dataviews has a max zoom level defined
@@ -249,15 +252,18 @@ export function getDataviewsMerged(
       }
     )
 
+  const singleHeatmapDataview = [...activityDataviews, ...detectionDataviews].length === 1
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
   const mergedActivityDataview = activityDataviews?.length
     ? getMergedHeatmapAnimatedDataviews(activityDataviews, {
         ...params,
+        colorRampWhiteEnd: singleHeatmapDataview,
       })
     : []
   const mergedDetectionsDataview = detectionDataviews.length
     ? getMergedHeatmapAnimatedDataviews(detectionDataviews, {
         ...params,
+        colorRampWhiteEnd: singleHeatmapDataview,
       })
     : []
   const dataviewsMerged = [
@@ -266,5 +272,6 @@ export function getDataviewsMerged(
     ...mergedDetectionsDataview,
     ...trackDataviews,
   ]
+  console.log('dataviewsMerged:', dataviewsMerged)
   return dataviewsMerged
 }
