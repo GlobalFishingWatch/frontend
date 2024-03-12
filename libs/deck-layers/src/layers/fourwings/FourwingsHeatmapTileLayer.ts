@@ -184,7 +184,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       throw new Error('tile aborted')
     }
     const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: false,
+      worker: true,
       fourwings: {
         sublayers: 1,
         cols,
