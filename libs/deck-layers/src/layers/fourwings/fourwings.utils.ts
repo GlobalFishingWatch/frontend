@@ -3,7 +3,7 @@ import { stringify } from 'qs'
 import { TileIndex } from '@deck.gl/geo-layers/typed/tileset-2d/types'
 import { DateTime } from 'luxon'
 import type { Feature } from 'geojson'
-import { Cell, TileCell } from '@globalfishingwatch/deck-loaders'
+import { Cell, FourWingsFeature, TileCell } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '../../utils/dates'
 import { Chunk } from './fourwings.config'
 import { FourwingsLayerMode } from './FourwingsLayer'
@@ -151,7 +151,10 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
   })
 }
 
-export const aggregateCellTimeseries = (cells: TileCell[], sublayers: FourwingsDeckSublayer[]) => {
+export const aggregateCellTimeseries = (
+  cells: FourWingsFeature[],
+  sublayers: FourwingsDeckSublayer[]
+) => {
   if (!cells) {
     return []
   }

@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useMemo } from 'react'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import { TileCell } from '@globalfishingwatch/deck-loaders'
 import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { TimebarVisualisations } from 'types'
 import {
@@ -9,7 +8,7 @@ import {
   selectDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectTimebarVisualisation } from 'features/app/selectors/app.timebar.selectors'
-import { getGraphFromGridCellsData } from './timebar.utils'
+import { getGraphDataFromFourwingsFeatures } from './timebar.utils'
 
 export const useHeatmapActivityGraph = () => {
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
@@ -23,14 +22,18 @@ export const useHeatmapActivityGraph = () => {
     return dataviews.map((d) => d.id)
   }, [dataviews])
   const fourwingsActivityLayer = useGetDeckLayers<FourwingsLayer>(ids)
-  const loading = fourwingsActivityLayer?.some((layer) => !layer.loaded)
-  const cellsData: TileCell[] = fourwingsActivityLayer?.[0]?.instance?.getViewportData()
-  // console.log('🚀 ~ useHeatmapActivityGraph ~ cellsData:', cellsData)
+  // TODO select instance based on timebar settings selection
+  const instance = fourwingsActivityLayer?.[0]?.instance
+  const loaded = fourwingsActivityLayer?.every((layer) => layer.loaded)
 
-  const heatmapActivity = useMemo(
-    () => (cellsData?.length ? getGraphFromGridCellsData(cellsData) || [] : []),
-    [cellsData]
-  )
+  const heatmapActivity = useMemo(() => {
+    if (loaded) {
+      const viewportData = instance?.getViewportData()
+      return getGraphDataFromFourwingsFeatures(viewportData) || []
+    }
+    return []
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded])
 
-  return useMemo(() => ({ loading, heatmapActivity }), [heatmapActivity, loading])
+  return useMemo(() => ({ loading: !loaded, heatmapActivity }), [heatmapActivity, loaded])
 }
