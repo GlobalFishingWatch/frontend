@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
+import { MouseEvent } from 'react'
 import {
   Button,
   ColorBar,
@@ -55,6 +56,11 @@ const MapAnnotationsDialog = (): React.ReactNode | null => {
     resetMapAnnotation()
   }
 
+  const onDialogClose = (event: MouseEvent) => {
+    event.stopPropagation()
+    resetMapAnnotation()
+  }
+
   return (
     <div onPointerUp={(event) => event.preventDefault()}>
       <HtmlOverlay viewport={viewport} key="1">
@@ -64,7 +70,7 @@ const MapAnnotationsDialog = (): React.ReactNode | null => {
         >
           <div className={styles.popup}>
             <div className={styles.tooltipArrow} />
-            <IconButton icon="close" onClick={resetMapAnnotation} className={styles.closeButton} />
+            <IconButton icon="close" onClick={onDialogClose} className={styles.closeButton} />
             <div className={styles.popupContent} ref={ref}>
               <div className={styles.flex}>
                 <InputText
