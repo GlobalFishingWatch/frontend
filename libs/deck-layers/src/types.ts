@@ -3,6 +3,7 @@ import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
 import type { ContextLayer } from './layers/context/ContextLayer'
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
+import type { RulerLayer } from './layers/ruler/RulerLayer'
 
 export enum BasemapType {
   Satellite = 'satellite',
@@ -16,3 +17,4 @@ export type AnyDeckLayer<D = unknown> =
   | ContextLayer
   | FourwingsLayer
   | VesselLayer
+  | RulerLayer
