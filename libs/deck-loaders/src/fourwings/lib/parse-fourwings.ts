@@ -34,6 +34,7 @@ export const getCellTimeseries = (
     tileMinIntervalFrame
   const timeRangeKey = getTimeRangeKey(timeRangeStartIntervalFrame, timeRangeEndIntervalFrame)
   const values = [] as Cell[]
+  const dates = [] as number[][][]
   const indexes = [] as number[]
   const geometries = [] as any[]
   const startFrames = [] as number[][]
@@ -70,6 +71,7 @@ export const getCellTimeseries = (
         // add the cell if previous sublayers didn't contain data for it
         if (cellIndex === -1) {
           values.push(new Array(sublayersLength))
+          dates.push(new Array(sublayersLength))
           initialValues[timeRangeKey].push(new Array(sublayersLength))
           startFrames.push(new Array(sublayersLength))
           indexes.push(cellNum)
@@ -97,6 +99,10 @@ export const getCellTimeseries = (
               // create an array of values for this sublayer if the cell dind't have it already
               values[cellIndex]![subLayerIndex] = new Array(numCellValues)
             }
+            if (!dates[cellIndex]?.[subLayerIndex]) {
+              // create an array of dates for this sublayer if the cell dind't have it already
+              dates[cellIndex]![subLayerIndex] = new Array(numCellValues)
+            }
             if (!startFrames[cellIndex]![subLayerIndex]) {
               // set the startFrame for this sublayer if the cell dind't have it already
               startFrames[cellIndex]![subLayerIndex] = startFrame
@@ -108,6 +114,9 @@ export const getCellTimeseries = (
             // add current value to the array of values for this sublayer
             values[cellIndex]![subLayerIndex][Math.floor(j / sublayers)] =
               cellValue * SCALE_VALUE + OFFSET_VALUE
+            dates[cellIndex]![subLayerIndex][Math.floor(j / sublayers)] = Math.ceil(
+              CONFIG_BY_INTERVAL[interval].getTime(startFrame + tileMinIntervalFrame + j)
+            )
 
             // sum current value to the initialValue for this sublayer
             // TODO make this an average for the environmental layers
@@ -134,7 +143,7 @@ export const getCellTimeseries = (
       geometry: { coordinates: [geometries[index]], type: 'Polygon' },
       properties: {
         values: values,
-        dates: startFrames[index].map((startFrame) => startFrame + tileMinIntervalFrame),
+        dates: dates[index],
         cellId: generateUniqueId(tile.index.x, tile.index.y, indexes[index]),
         startFrames: startFrames[index],
         initialValues: { [timeRangeKey]: initialValues[timeRangeKey][index] },
