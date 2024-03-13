@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, Fragment } from 'react'
+import { useMemo, useState, Fragment } from 'react'
 import parse from 'html-react-parser'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -14,12 +14,12 @@ import {
 import {
   DownloadActivityParams,
   downloadActivityThunk,
-  resetDownloadActivityStatus,
-  selectDownloadActivityLoading,
-  selectDownloadActivityFinished,
-  selectDownloadActivityError,
   DateRange,
+  selectIsDownloadActivityLoading,
+  selectIsDownloadActivityFinished,
+  selectIsDownloadActivityError,
   selectDownloadActivityAreaKey,
+  selectIsDownloadAreaTooBig,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -67,15 +67,15 @@ function DownloadActivityGridded() {
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveHeatmapDowloadDataviewsByTab)
   const vesselDatasets = useSelector(selectActiveHeatmapVesselDatasets)
-  const timeoutRef = useRef<NodeJS.Timeout>()
   const { start, end, timerange } = useTimerangeConnect()
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
     userData?.permissions || []
   )
-  const downloadLoading = useSelector(selectDownloadActivityLoading)
-  const downloadError = useSelector(selectDownloadActivityError)
-  const downloadFinished = useSelector(selectDownloadActivityFinished)
+  const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
+  const isDownloadAreaTooBig = useSelector(selectIsDownloadAreaTooBig)
+  const isDownloadError = useSelector(selectIsDownloadActivityError)
+  const isDownloadFinished = useSelector(selectIsDownloadActivityFinished)
   const [format, setFormat] = useState(GRIDDED_FORMAT_OPTIONS[0].id)
 
   const downloadArea = useSelector(selectDownloadActivityArea)
@@ -196,10 +196,6 @@ function DownloadActivityGridded() {
           .flat(),
       ]),
     })
-
-    timeoutRef.current = setTimeout(() => {
-      dispatch(resetDownloadActivityStatus())
-    }, 3000)
   }
 
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
@@ -285,19 +281,24 @@ function DownloadActivityGridded() {
               ))}
             </p>
           ) : null}
-          {downloadError && (
+          {isDownloadError && (
             <p className={cx(styles.footerLabel, styles.error)}>
-              {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
+              {isDownloadAreaTooBig
+                ? `${t(
+                    'analysis.geometryTooLarge',
+                    'The selected area is too large for download or report, please try to simplify and upload again'
+                  )}`
+                : `${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
             </p>
           )}
           <Button
             testId="download-activity-gridded-button"
             onClick={onDownloadClick}
-            loading={downloadLoading || downloadAreaLoading}
+            loading={isDownloadLoading || downloadAreaLoading}
             className={styles.downloadBtn}
-            disabled={!isDownloadReportSupported || downloadAreaLoading}
+            disabled={!isDownloadReportSupported || downloadAreaLoading || isDownloadError}
           >
-            {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
+            {isDownloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
           </Button>
         </div>
       </div>

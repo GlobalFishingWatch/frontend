@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, Fragment } from 'react'
+import { useMemo, useState, Fragment } from 'react'
 import parse from 'html-react-parser'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -12,12 +12,12 @@ import {
 import {
   DownloadActivityParams,
   downloadActivityThunk,
-  resetDownloadActivityStatus,
-  selectDownloadActivityLoading,
-  selectDownloadActivityFinished,
-  selectDownloadActivityError,
+  selectIsDownloadActivityLoading,
+  selectIsDownloadActivityFinished,
+  selectIsDownloadActivityError,
   DateRange,
   selectDownloadActivityAreaKey,
+  selectIsDownloadAreaTooBig,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -40,6 +40,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { AreaKeyId } from 'features/areas/areas.slice'
+import { selectIsDownloadActivityAreaLoading } from 'features/download/download.selectors'
 import styles from './DownloadModal.module.css'
 import {
   HeatmapDownloadFormat,
@@ -60,18 +61,19 @@ function DownloadActivityByVessel() {
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveHeatmapDowloadDataviewsByTab)
   const vesselDatasets = useSelector(selectActiveHeatmapVesselDatasets)
-  const timeoutRef = useRef<NodeJS.Timeout>()
   const { start, end, timerange } = useTimerangeConnect()
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
     userData?.permissions || []
   )
-  const downloadLoading = useSelector(selectDownloadActivityLoading)
-  const downloadError = useSelector(selectDownloadActivityError)
-  const downloadFinished = useSelector(selectDownloadActivityFinished)
+  const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
+  const isDownloadError = useSelector(selectIsDownloadActivityError)
+  const isDownloadFinished = useSelector(selectIsDownloadActivityFinished)
+  const isDownloadAreaTooBig = useSelector(selectIsDownloadAreaTooBig)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
+  const isDownloadAreaLoading = useSelector(selectIsDownloadActivityAreaLoading)
 
   const bufferUnit = useSelector(selectUrlBufferUnitQuery)
   const bufferValue = useSelector(selectUrlBufferValueQuery)
@@ -149,10 +151,6 @@ function DownloadActivityByVessel() {
           .flat(),
       ]),
     })
-
-    timeoutRef.current = setTimeout(() => {
-      dispatch(resetDownloadActivityStatus())
-    }, 3000)
   }
   const parsedLabel =
     typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName
@@ -221,19 +219,24 @@ function DownloadActivityByVessel() {
               ))}
             </p>
           ) : null}
-          {downloadError && (
+          {isDownloadError && (
             <p className={cx(styles.footerLabel, styles.error)}>
-              {`${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
+              {isDownloadAreaTooBig
+                ? `${t(
+                    'analysis.geometryTooLarge',
+                    'The selected area is too large for download or report, please try to simplify and upload again'
+                  )}`
+                : `${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
             </p>
           )}
           <Button
             testId="download-activity-vessel-button"
             onClick={onDownloadClick}
-            loading={downloadLoading}
+            loading={isDownloadLoading}
             className={styles.downloadBtn}
-            disabled={!isDownloadReportSupported}
+            disabled={!isDownloadReportSupported || isDownloadAreaLoading || isDownloadError}
           >
-            {downloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
+            {isDownloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
           </Button>
         </div>
       </div>
