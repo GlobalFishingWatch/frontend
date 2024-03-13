@@ -38,12 +38,6 @@ export enum HeatmapAnimatedMode {
   Bivariate = 'bivariate',
   // Compare between two time periods. Applies to all visible activity layers.
   TimeCompare = 'timeCompare',
-  // Uses a MGL heatmap layer to represent values with smooth translations between grid points. Works only with 1 sublayer
-  Blob = 'blob',
-  // Represents value in 3D stacked bars. Works with 0 - n sublayers
-  Extruded = 'extruded',
-  // Just show raw value ffor 1 sublayer
-  Single = 'single',
 }
 
 export type ColorDomain = number[]

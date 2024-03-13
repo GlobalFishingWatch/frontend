@@ -4,7 +4,7 @@ import { ckmeans } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
-import { FourWingsFeature, FourwingsLoader, Interval } from '@globalfishingwatch/deck-loaders'
+import { FourWingsFeature, FourwingsLoader } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
@@ -27,7 +27,6 @@ import {
   Chunk,
   ColorRange,
   FourwingsDeckSublayer,
-  FourwingsHeatmapTileData,
   FourwingsHeatmapTileLayerProps,
   FourwingsHeatmapTileLayerState,
   HeatmapAnimatedMode,
@@ -83,7 +82,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     }
   }
 
-  calculateColorDomain = (comparisonMode?: HeatmapAnimatedMode) => {
+  _calculateColorDomain = (comparisonMode?: HeatmapAnimatedMode) => {
     // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
@@ -139,7 +138,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   updateColorDomain = debounce(() => {
     requestAnimationFrame(() => {
-      this.setState({ colorDomain: this.calculateColorDomain(this.state.comparisonMode) })
+      this.setState({ colorDomain: this._calculateColorDomain(this.state.comparisonMode) })
     })
   }, 500)
 
@@ -248,7 +247,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         colorRanges: newSublayerColorRanges,
         ...(newMode && {
           comparisonMode: this.props.comparisonMode,
-          colorDomain: this.calculateColorDomain(this.props.comparisonMode),
+          colorDomain: this._calculateColorDomain(this.props.comparisonMode),
         }),
       })
     }
@@ -260,7 +259,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const { colorDomain, colorRanges, comparisonMode } = this.state
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
-    // TODO review this to avoid rerendering when sublayers change
     const sublayersIds = sublayers.map((s) => s.id).join(',')
 
     return new TileLayer(

@@ -73,7 +73,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           pickable: true,
           getPickingInfo: this.getPickingInfo,
           getFillColor,
-          getPolygon: (d: any) => d.geometry.coordinates[0],
+          getPolygon: (d: FourWingsFeature) => d.geometry.coordinates[0],
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
           updateTriggers: {
             // This tells deck.gl to recalculate fillColor on changes
@@ -83,20 +83,19 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       ),
     ] as LayersList
 
-    const layerHoveredFeatures = hoveredFeatures?.flatMap((f) => {
-      if (f.layer?.id !== this.root.id) return []
-      return f.object
-    })
-    if (hoveredFeatures) {
+    const layerHoveredFeature: FourWingsFeature = hoveredFeatures?.find(
+      (f) => f.layer?.id === this.root.id
+    )?.object
+    if (layerHoveredFeature) {
       this.layers.push(
         new PathLayer(
           this.props,
           this.getSubLayerProps({
-            data: layerHoveredFeatures,
+            data: [layerHoveredFeature],
             id: `fourwings-cell-highlight`,
             widthUnits: 'pixels',
             widthMinPixels: 4,
-            getPath: (d: any) => d.geometry.coordinates[0],
+            getPath: (d: FourWingsFeature) => d.geometry.coordinates[0],
             getColor: COLOR_HIGHLIGHT_LINE,
             getOffset: 0.5,
             getPolygonOffset: (params: any) =>
