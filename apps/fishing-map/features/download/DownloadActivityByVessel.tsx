@@ -223,8 +223,8 @@ function DownloadActivityByVessel() {
             <p className={cx(styles.footerLabel, styles.error)}>
               {isDownloadAreaTooBig
                 ? `${t(
-                    'analysis.geometryTooLarge',
-                    'The selected area is too large for download or report, please try to simplify and upload again'
+                    'analysis.errorTooComplex',
+                    'The geometry of the area is too complex to perform a report, try to simplify and upload again.'
                   )}`
                 : `${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
             </p>

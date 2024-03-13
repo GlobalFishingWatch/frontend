@@ -29,7 +29,6 @@
     "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
     "errorTooComplex": "We cannot create a dynamic report for this area as the boundary information is complex. Please simplify your area of interest - by uploading a new layer or drawing your layer on the map - and try the report again to resolve.",
     "evolution": "evolution",
-    "geometryTooLarge": "The selected area is too large for download or report, please try to simplify and upload again",
     "groupByFlag": "by flag",
     "groupByGeartype": "by gear type",
     "groupByVesseltype": "by vessel type",
