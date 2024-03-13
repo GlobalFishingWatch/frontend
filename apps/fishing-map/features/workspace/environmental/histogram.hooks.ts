@@ -14,6 +14,7 @@ import { HeatmapLayerMeta } from '@globalfishingwatch/layer-composer'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { areDataviewsFeatureLoaded, useMapDataviewFeatures } from 'features/map/map-sources.hooks'
+import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 
 export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
   const { bounds } = useMapBounds()
@@ -29,7 +30,7 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
     (layerFeature: LayerFeature, bounds: MiniglobeBounds) => {
       const { features } = layerFeature.chunksFeatures?.[0] || ({} as ChunkFeature)
       if (features && features.length) {
-        const filteredFeatures = filterFeaturesByBounds(features, bounds)
+        const filteredFeatures = filterFeaturesByBounds(features, bounds) as GeoJSONFeature[]
         const rawData = aggregateFeatures(
           filteredFeatures,
           layerFeature.metadata as HeatmapLayerMeta
