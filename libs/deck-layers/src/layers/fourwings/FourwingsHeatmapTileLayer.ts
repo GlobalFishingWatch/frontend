@@ -1,18 +1,10 @@
-import {
-  Color,
-  CompositeLayer,
-  Layer,
-  LayerContext,
-  LayersList,
-  DefaultProps,
-  PickingInfo,
-} from '@deck.gl/core/typed'
+import { CompositeLayer, Layer, LayerContext, LayersList, DefaultProps } from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { ckmeans } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
-import { FourWingsFeature, FourwingsLoader, TileCell } from '@globalfishingwatch/deck-loaders'
+import { FourWingsFeature, FourwingsLoader, Interval } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
@@ -21,46 +13,27 @@ import {
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
+import { ColorRampId, getBivariateRamp } from '../../utils/colorRamps'
 import {
   ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
   asyncAwaitMS,
+  filterElementByPercentOfIndex,
   getDataUrlBySublayer,
 } from './fourwings.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
+import { HEATMAP_ID, PATH_BASENAME, getChunksByInterval, getInterval } from './fourwings.config'
 import {
   Chunk,
-  HEATMAP_ID,
-  PATH_BASENAME,
-  getChunkBuffer,
-  getChunksByInterval,
-  getInterval,
-} from './fourwings.config'
-import { FourwingsDeckSublayer } from './fourwings.types'
-
-export type FourwingsLayerResolution = 'default' | 'high'
-export type FourwingsHeatmapTileData = FourWingsFeature[]
-export type _FourwingsHeatmapTileLayerProps = {
-  data?: FourwingsHeatmapTileData
-  debug?: boolean
-  resolution?: FourwingsLayerResolution
-  hoveredFeatures?: PickingInfo[]
-  clickedFeatures?: PickingInfo[]
-  minFrame: number
-  maxFrame: number
-  sublayers: FourwingsDeckSublayer[]
-  colorRampWhiteEnd?: boolean
-  onTileDataLoading?: (tile: TileLoadProps) => void
-}
-
-export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
-  Partial<TileLayerProps>
+  ColorRange,
+  FourwingsDeckSublayer,
+  FourwingsHeatmapTileData,
+  FourwingsHeatmapTileLayerProps,
+  FourwingsHeatmapTileLayerState,
+  HeatmapAnimatedMode,
+} from './fourwings.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {}
-
-export type ColorDomain = number[]
-export type ColorRange = Color[]
-export type SublayerColorRanges = ColorRange[]
 
 const MAX_VALUES_PER_TILE = 1000
 
@@ -73,21 +46,36 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   initializeState(context: LayerContext): void {
     super.initializeState(context)
     this.state = {
-      ...this.getCacheRange(this.props.minFrame, this.props.maxFrame),
+      ...this._getCacheRange(this.props.minFrame, this.props.maxFrame),
       interval: getInterval(this.props.minFrame, this.props.maxFrame),
-      colorDomain: [1, 20, 50, 100, 500, 5000, 10000, 500000],
-      colorRanges: this.props.sublayers.map(
-        ({ config }) =>
-          HEATMAP_COLOR_RAMPS[
-            (this.props.colorRampWhiteEnd
-              ? `${config.colorRamp}_toWhite`
-              : config.colorRamp) as ColorRampsIds
-          ].map((c) => rgbaStringToComponents(c)) as ColorRange
-      ),
-    }
+      colorDomain:
+        this.props.comparisonMode === HeatmapAnimatedMode.Bivariate
+          ? [
+              [1, 100, 5000, 500000],
+              [1, 100, 5000, 500000],
+            ]
+          : [1, 20, 50, 100, 500, 5000, 10000, 500000],
+      colorRanges: this._getColorRanges(),
+      comparisonMode: this.props.comparisonMode,
+      tiles: [],
+    } as FourwingsHeatmapTileLayerState
   }
 
-  getCacheRange = (minFrame: number, maxFrame: number) => {
+  _getColorRanges = () => {
+    if (this.props.comparisonMode === HeatmapAnimatedMode.Bivariate) {
+      return getBivariateRamp(this.props.sublayers.map((s) => s.config?.colorRamp) as ColorRampId[])
+    }
+    return this.props.sublayers.map(
+      ({ config }) =>
+        HEATMAP_COLOR_RAMPS[
+          (this.props.colorRampWhiteEnd
+            ? `${config.colorRamp}_toWhite`
+            : config.colorRamp) as ColorRampsIds
+        ].map((c) => rgbaStringToComponents(c)) as ColorRange
+    )
+  }
+
+  _getCacheRange = (minFrame: number, maxFrame: number) => {
     const chunks = this._getChunks(minFrame, maxFrame)
     return {
       cacheStart: chunks[0].start,
@@ -95,59 +83,69 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     }
   }
 
-  filterElementByPercentOfIndex = (value: any, index: number) => {
-    // Select only 5% of elements
-    return value && index % 20 === 1
-  }
-
-  calculateColorDomain = (tiles: Tile2DHeader<FourwingsHeatmapTileData>[]) => {
+  calculateColorDomain = (comparisonMode?: HeatmapAnimatedMode) => {
     // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
-    // const fa = performance.now()
-    const currentZoomTiles = tiles.filter(
+    const currentZoomTiles = (this.state.tiles as FourwingsHeatmapTileLayerState['tiles']).filter(
       (tile) => tile.zoom === Math.round(this.context.viewport.zoom)
     )
     if (!currentZoomTiles?.length) {
       return this.getColorDomain()
     }
+    if (comparisonMode === HeatmapAnimatedMode.Bivariate) {
+      let allValues: [number[], number[]] = [[], []]
+      currentZoomTiles.forEach((tile) => {
+        if (!tile.content) return
+        ;(tile.content.length > MAX_VALUES_PER_TILE
+          ? tile.content.filter(filterElementByPercentOfIndex)
+          : tile.content
+        ).forEach((feature) => {
+          feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
+            allValues[sublayerIndex].push(...sublayerValues.filter(filterElementByPercentOfIndex))
+          })
+        })
+      })
+      if (!allValues.length) {
+        return this.getColorDomain()
+      }
+      const steps = allValues.map((sublayerValues) =>
+        ckmeans(sublayerValues, Math.min(sublayerValues.length, 4)).map((step) => step[0])
+      )
+      return steps
+    }
+
     const allValues = currentZoomTiles.flatMap((tile) => {
       if (!tile.content) return []
       return (
         tile.content.length > MAX_VALUES_PER_TILE
-          ? tile.content.filter(this.filterElementByPercentOfIndex)
+          ? tile.content.filter(filterElementByPercentOfIndex)
           : tile.content
       ).flatMap((feature) =>
         feature.properties?.values.flatMap((values) => {
-          return (values || []).filter(this.filterElementByPercentOfIndex)
+          return (values || []).filter(filterElementByPercentOfIndex)
         })
       )
     })
-    // console.log('allValues:', allValues.length)
-    // const a = performance.now()
     if (!allValues.length) {
       return this.getColorDomain()
     }
     const steps = ckmeans(allValues, Math.min(allValues.length, COLOR_RAMP_DEFAULT_NUM_STEPS)).map(
       (step) => step[0]
     )
-    // const b = performance.now()
-    // console.log('ckmeans time:', b - a)
-    // const fb = performance.now()
-    // console.log('steps:', steps)
-    // console.log('calculateColorDomain time:', fb - fa)
     return steps
   }
 
-  updateColorDomain = debounce((tiles) => {
+  updateColorDomain = debounce(() => {
     requestAnimationFrame(() => {
-      this.setState({ colorDomain: this.calculateColorDomain(tiles) })
+      this.setState({ colorDomain: this.calculateColorDomain(this.state.comparisonMode) })
     })
   }, 500)
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
-    this.updateColorDomain(tiles)
+    this.setState({ tiles })
+    this.updateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
     }
@@ -235,29 +233,31 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (isStartOutRange || isEndOutRange || interval !== this.state.interval) {
       this.setState({
         interval,
-        ...this.getCacheRange(minFrame, maxFrame),
+        ...this._getCacheRange(minFrame, maxFrame),
       })
     }
     return [this.state.cacheStart, this.state.cacheEnd, interval].join('-')
   }
 
-  _updateSublayerColorRanges = () => {
-    const { sublayers, colorRampWhiteEnd } = this.props
-    const newSublayerColorRanges = sublayers.map(({ config }) =>
-      HEATMAP_COLOR_RAMPS[
-        (colorRampWhiteEnd ? `${config.colorRamp}_toWhite` : config.colorRamp) as ColorRampsIds
-      ].map((c) => rgbaStringToComponents(c))
-    )
+  _updateStateWithNewProps = () => {
+    const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = this.state.colorRanges.join() !== newSublayerColorRanges.join()
-    if (sublayersHaveNewColors) {
-      this.setState({ colorRanges: newSublayerColorRanges })
+    const newMode = this.props.comparisonMode !== this.state.comparisonMode
+    if (sublayersHaveNewColors || newMode) {
+      this.setState({
+        colorRanges: newSublayerColorRanges,
+        ...(newMode && {
+          comparisonMode: this.props.comparisonMode,
+          colorDomain: this.calculateColorDomain(this.props.comparisonMode),
+        }),
+      })
     }
   }
 
   renderLayers(): Layer<{}> | LayersList {
     const { minFrame, maxFrame, sublayers } = this.props
-    this._updateSublayerColorRanges()
-    const { colorDomain, colorRanges } = this.state
+    this._updateStateWithNewProps()
+    const { colorDomain, colorRanges, comparisonMode } = this.state
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
     // TODO review this to avoid rerendering when sublayers change
@@ -270,6 +270,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         tileSize: 512,
         colorDomain,
         colorRanges,
+        comparisonMode,
         minZoom: 0,
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,

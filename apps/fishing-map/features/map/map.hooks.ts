@@ -33,7 +33,7 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { setHintDismissed } from 'features/help/hints.slice'
-import { useMapClusterTilesLoaded, useMapSourceTiles } from 'features/map/map-sources.hooks'
+import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -41,7 +41,7 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
 import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
-import { selectDefaultMapGeneratorsConfig } from './map.selectors'
+import { selectBivariateDataviews } from 'features/app/selectors/app.selectors'
 import {
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
@@ -84,6 +84,7 @@ export const useGlobalConfigConnect = () => {
   const { i18n } = useTranslation()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const bivariateDataviews = useSelector(selectBivariateDataviews)
 
   return useMemo(() => {
     let globalConfig: GlobalGeneratorConfig = {
@@ -92,6 +93,7 @@ export const useGlobalConfigConnect = () => {
       end,
       token: GFWAPI.getToken(),
       locale: i18n.language as Locale,
+      bivariateDataviews,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -102,7 +104,15 @@ export const useGlobalConfigConnect = () => {
     return {
       globalConfig,
     }
-  }, [viewState.zoom, start, end, i18n.language, showTimeComparison, timeComparisonValues])
+  }, [
+    viewState.zoom,
+    start,
+    end,
+    i18n.language,
+    bivariateDataviews,
+    showTimeComparison,
+    timeComparisonValues,
+  ])
 }
 
 export const useClickedEventConnect = () => {

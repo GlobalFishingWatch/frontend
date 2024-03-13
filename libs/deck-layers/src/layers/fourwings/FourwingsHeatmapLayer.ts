@@ -5,109 +5,14 @@ import {
   LayersList,
   PickingInfo,
 } from '@deck.gl/core/typed'
-import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
 import { PathStyleExtension } from '@deck.gl/extensions/typed'
-import {
-  getTimeRangeKey,
-  CONFIG_BY_INTERVAL,
-  FourWingsFeature,
-} from '@globalfishingwatch/deck-loaders'
+import { CONFIG_BY_INTERVAL, FourWingsFeature } from '@globalfishingwatch/deck-loaders'
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
-import {
-  ColorDomain,
-  FourwingsHeatmapTileLayerProps,
-  SublayerColorRanges,
-} from './FourwingsHeatmapTileLayer'
-import { Chunk, getChunks, getInterval } from './fourwings.config'
-import { aggregateCell } from './fourwings.utils'
-
-export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
-  id: string
-  tile: Tile2DHeader
-  data: FourWingsFeature[]
-  colorDomain?: ColorDomain
-  colorRanges?: SublayerColorRanges
-}
-
-export type AggregateCellParams = {
-  minIntervalFrame: number
-  maxIntervalFrame?: number
-  startFrames: number[]
-}
-
-export type GetFillColorParams = {
-  colorDomain: number[]
-  colorRanges: FourwingsHeatmapLayerProps['colorRanges']
-  chunks: Chunk[]
-  minIntervalFrame: number
-  maxIntervalFrame: number
-}
-
-const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
-
-// let fillColorTime = 0
-// let fillColorCount = 0
-
-export const chooseColor = (
-  feature: FourWingsFeature,
-  { colorDomain, colorRanges, chunks, minIntervalFrame, maxIntervalFrame }: GetFillColorParams
-): Color => {
-  // const a = performance.now()
-  // fillColorCount++
-  if (!colorDomain || !colorRanges || !chunks) {
-    return EMPTY_CELL_COLOR
-  }
-  const { initialValues, startFrames, values } = feature.properties
-
-  const aggregatedCellValues =
-    initialValues[getTimeRangeKey(minIntervalFrame, maxIntervalFrame)] ||
-    aggregateCell(values, {
-      minIntervalFrame,
-      maxIntervalFrame: maxIntervalFrame > 0 ? maxIntervalFrame : undefined,
-      startFrames,
-    })
-  let chosenValueIndex = 0
-  let chosenValue: number | undefined
-  aggregatedCellValues.forEach((value, index) => {
-    // TODO add more comparison modes (bivariate)
-    if (value && (!chosenValue || value > chosenValue)) {
-      chosenValue = value
-      chosenValueIndex = index
-    }
-  })
-  if (!chosenValue) {
-    // const b = performance.now()
-    // fillColorTime += b - a
-    return EMPTY_CELL_COLOR
-  }
-  const colorIndex = colorDomain.findIndex((d, i) =>
-    (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
-  )
-  // const b = performance.now()
-  // fillColorTime += b - a
-
-  // if (fillColorCount === 460816) {
-  //   console.log('cells: ', fillColorCount, ', time to get fill color:', fillColorTime)
-  // }
-  return colorRanges[chosenValueIndex][colorIndex]
-}
-
-function getIntervalFrames(minFrame: number, maxFrame: number) {
-  const interval = getInterval(minFrame, maxFrame)
-  const chunks = getChunks(minFrame, maxFrame)
-  const tileMinIntervalFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
-  )
-  const minIntervalFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileMinIntervalFrame
-  )
-  const maxIntervalFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame) - tileMinIntervalFrame
-  )
-  return { interval, tileMinIntervalFrame, minIntervalFrame, maxIntervalFrame }
-}
+import { getChunks, getInterval } from './fourwings.config'
+import { aggregateCell, chooseColor, getIntervalFrames } from './fourwings.utils'
+import { FourwingsHeatmapLayerProps } from './fourwings.types'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
@@ -141,7 +46,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   }
 
   renderLayers() {
-    const { data, maxFrame, minFrame, colorDomain, colorRanges, hoveredFeatures } = this.props
+    const { data, maxFrame, minFrame, colorDomain, colorRanges, hoveredFeatures, comparisonMode } =
+      this.props
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
@@ -154,6 +60,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         chunks,
         minIntervalFrame,
         maxIntervalFrame,
+        comparisonMode,
       })
       return target
     }
@@ -170,7 +77,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
           updateTriggers: {
             // This tells deck.gl to recalculate fillColor on changes
-            getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
+            getFillColor: [minFrame, maxFrame, colorDomain, colorRanges, comparisonMode],
           },
         })
       ),

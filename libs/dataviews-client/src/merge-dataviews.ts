@@ -91,7 +91,7 @@ type GetMergedHeatmapAnimatedDataviewParams = {
 export function getMergedHeatmapAnimatedDataviews(
   heatmapAnimatedDataviews: UrlDataviewInstance[],
   {
-    heatmapAnimatedMode = HeatmapAnimatedMode.Compare,
+    heatmapAnimatedMode,
     timeRange,
     colorRampWhiteEnd = false,
   } = {} as GetMergedHeatmapAnimatedDataviewParams
@@ -261,16 +261,21 @@ export function getDataviewsMerged(
     )
 
   const singleHeatmapDataview = [...activityDataviews, ...detectionDataviews].length === 1
+  const heatmapAnimatedMode = params.bivariateDataviews
+    ? HeatmapAnimatedMode.Bivariate
+    : HeatmapAnimatedMode.Compare
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
   const mergedActivityDataview = activityDataviews?.length
     ? getMergedHeatmapAnimatedDataviews(activityDataviews, {
         ...params,
+        heatmapAnimatedMode,
         colorRampWhiteEnd: singleHeatmapDataview,
       })
     : []
   const mergedDetectionsDataview = detectionDataviews.length
     ? getMergedHeatmapAnimatedDataviews(detectionDataviews, {
         ...params,
+        heatmapAnimatedMode,
         colorRampWhiteEnd: singleHeatmapDataview,
       })
     : []

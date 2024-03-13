@@ -1,14 +1,25 @@
 import { stringify } from 'qs'
-// import { TileIndex } from '@deck.gl/geo-layers/typed/tile-layer/types'
 import { TileIndex } from '@deck.gl/geo-layers/typed/tileset-2d/types'
 import { DateTime } from 'luxon'
 import type { Feature } from 'geojson'
-import { Cell, FourWingsFeature, TileCell } from '@globalfishingwatch/deck-loaders'
-import { getUTCDateTime } from '../../utils/dates'
-import { Chunk } from './fourwings.config'
+import { Color } from '@deck.gl/core/typed'
+import {
+  CONFIG_BY_INTERVAL,
+  Cell,
+  FourWingsFeature,
+  TileCell,
+  getTimeRangeKey,
+} from '@globalfishingwatch/deck-loaders'
+import { getUTCDateTime, rgbaToDeckColor } from '../../utils'
 import { FourwingsLayerMode } from './FourwingsLayer'
-import { FourwingsDeckSublayer } from './fourwings.types'
-import { AggregateCellParams } from './FourwingsHeatmapLayer'
+import {
+  AggregateCellParams,
+  Chunk,
+  FourwingsDeckSublayer,
+  GetFillColorParams,
+  HeatmapAnimatedMode,
+} from './fourwings.types'
+import { getChunks, getInterval } from './fourwings.config'
 
 export const aggregateCell = (
   cell: Cell,
@@ -214,4 +225,117 @@ export const aggregatePositionsTimeseries = (positions: Feature[]) => {
     return acc
   }, {} as Record<number, number>)
   return timeseries
+}
+
+const getBucketIndex = (breaks: number[], value?: number) => {
+  if (!breaks) return
+  if (!value) return 0
+  let currentBucketIndex
+  for (let bucketIndex = 0; bucketIndex < breaks.length + 1; bucketIndex++) {
+    const stopValue = breaks?.[bucketIndex] ?? Number.POSITIVE_INFINITY
+    if (value <= stopValue) {
+      currentBucketIndex = bucketIndex
+      break
+    }
+  }
+  if (currentBucketIndex === undefined) {
+    currentBucketIndex = breaks.length
+  }
+  return currentBucketIndex
+}
+
+export const getBivariateValue = (realValues: number[], breaks: number[][]) => {
+  //  y: datasetB
+  //   |    0 | 0
+  //   |   --(u)--+---+---+---+
+  //   |    0 | 1 | 2 | 3 | 4 |
+  //   |      +---+---+---+---+
+  //   v      | 5 | 6 | 7 | 8 |
+  //          +---+---+---+---+
+  //          | 9 | 10| 11| 12|
+  //          +---+---+---+---+
+  //          | 13| 14| 15| 16|
+  //          +---+---+---+---+
+  //          --------------> x: datasetA
+  const valueA = getBucketIndex(breaks[0], realValues[0])
+  const valueB = getBucketIndex(breaks[1], realValues[1])
+  // || 1: We never want a bucket of 0 - values below first break are not used in bivariate
+  const colIndex = (valueA || 1) - 1
+  const rowIndex = (valueB || 1) - 1
+
+  const index = rowIndex * 4 + colIndex
+  // offset by one because values start at 1 (0 reserved for values < min value)
+  return index + 1
+}
+
+const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
+export const chooseColor = (
+  feature: FourWingsFeature,
+  {
+    colorDomain,
+    colorRanges,
+    chunks,
+    minIntervalFrame,
+    maxIntervalFrame,
+    comparisonMode,
+  }: GetFillColorParams
+): Color => {
+  if (!colorDomain || !colorRanges || !chunks) {
+    return EMPTY_CELL_COLOR
+  }
+  const { initialValues, startFrames, values } = feature.properties
+
+  const aggregatedCellValues =
+    initialValues[getTimeRangeKey(minIntervalFrame, maxIntervalFrame)] ||
+    aggregateCell(values, {
+      minIntervalFrame,
+      maxIntervalFrame: maxIntervalFrame > 0 ? maxIntervalFrame : undefined,
+      startFrames,
+    })
+  let chosenValueIndex = 0
+  let chosenValue: number | undefined
+  if (comparisonMode === HeatmapAnimatedMode.Compare) {
+    aggregatedCellValues.forEach((value, index) => {
+      // TODO add more comparison modes (bivariate)
+      if (value && (!chosenValue || value > chosenValue)) {
+        chosenValue = value
+        chosenValueIndex = index
+      }
+    })
+    const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
+      (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
+    )
+    if (!chosenValue) {
+      return EMPTY_CELL_COLOR
+    }
+    return colorRanges[chosenValueIndex][colorIndex] as Color
+  } else if (comparisonMode === HeatmapAnimatedMode.Bivariate) {
+    chosenValue = getBivariateValue(aggregatedCellValues, colorDomain as number[][])
+    if (!chosenValue) {
+      return EMPTY_CELL_COLOR
+    }
+    return rgbaToDeckColor(colorRanges[chosenValue] as string)
+  } else {
+    return EMPTY_CELL_COLOR
+  }
+}
+
+export function getIntervalFrames(minFrame: number, maxFrame: number) {
+  const interval = getInterval(minFrame, maxFrame)
+  const chunks = getChunks(minFrame, maxFrame)
+  const tileMinIntervalFrame = Math.ceil(
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
+  )
+  const minIntervalFrame = Math.ceil(
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileMinIntervalFrame
+  )
+  const maxIntervalFrame = Math.ceil(
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame) - tileMinIntervalFrame
+  )
+  return { interval, tileMinIntervalFrame, minIntervalFrame, maxIntervalFrame }
+}
+
+export function filterElementByPercentOfIndex(value: any, index: number) {
+  // Select only 5% of elements
+  return value && index % 20 === 1
 }

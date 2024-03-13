@@ -1,6 +1,7 @@
 import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { getUTCDateTime } from '../../utils/dates'
+import { Chunk } from './fourwings.types'
 
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
@@ -70,15 +71,6 @@ export const getDatesInIntervalResolution = (
     start: getDateInIntervalResolution(start, interval),
     end: getDateInIntervalResolution(end, interval),
   }
-}
-
-export type Chunk = {
-  id: string
-  interval: Interval
-  start: number
-  end: number
-  bufferedStart: number
-  bufferedEnd: number
 }
 
 export const CHUNKS_BUFFER = 1
