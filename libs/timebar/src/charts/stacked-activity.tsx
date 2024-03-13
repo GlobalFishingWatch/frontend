@@ -12,10 +12,10 @@ import { useUpdateChartsData } from './chartsData.atom'
 
 const MARGIN_BOTTOM = 20
 const MARGIN_TOP = 5
+
 const getSubLayers = (timeseries: Timeseries) =>
-  Object.keys(timeseries?.[0]).filter((k) => k !== 'frame' && k !== 'date')
-const getDataviewFromId = (dataviews: UrlDataviewInstance[], id: string) =>
-  dataviews.find((d) => d.id === id)
+  Object.keys(timeseries?.[0]).filter((k) => k !== 'date')
+
 const getPathContainers = (
   timeseries: Timeseries,
   subLayers: string[],
@@ -99,10 +99,7 @@ const StackedActivity = ({
               <g key={sublayerIndex} transform={`translate(0, ${middleY})`}>
                 <path
                   d={pathContainer.path || ''}
-                  fill={
-                    getDataviewFromId(dataviews, subLayers[sublayerIndex])?.config?.color ||
-                    '#ffffff'
-                  }
+                  fill={dataviews[sublayerIndex]?.config?.color || '#ffffff'}
                 />
               </g>
             ) : null

@@ -108,11 +108,7 @@ const ErrorNotification = (): React.ReactNode | null => {
         >
           <div className={styles.popup}>
             <div className={styles.tooltipArrow} />
-            <IconButton
-              icon="close"
-              onClick={resetErrorNotification}
-              className={styles.closeButton}
-            />
+            <IconButton icon="close" onClick={onClose} className={styles.closeButton} />
             <div className={styles.popupContent} ref={ref}>
               <InputText
                 label={t('map.errorLabel', 'Error description')}

@@ -66,38 +66,40 @@ const MapAnnotations = (): React.ReactNode | null => {
   )
 
   return (
-    <HtmlOverlay viewport={viewport} key="1">
-      {deck &&
-        mapAnnotations &&
-        areMapAnnotationsVisible &&
-        mapAnnotations.map((annotation) => (
-          <HtmlOverlayItem
-            key={annotation.id}
-            style={{ pointerEvents: 'all' }}
-            coordinates={
-              (selectedAnnotationRef?.current === annotation.id && (newCoords as number[])) || [
-                Number(annotation.lon),
-                Number(annotation.lat),
-              ]
-            }
-          >
-            <p
-              onClick={(event) => {
-                setMapAnnotation(annotation)
-              }}
-              onMouseEnter={handleHover}
-              onMouseLeave={handleMouseLeave}
-              style={{ color: annotation.color }}
-              draggable={true}
-              onDragStart={(event) => handleDragStart({ event, annotation })}
-              onDrag={handleDrag}
-              onDragEnd={() => handleDragEnd(annotation)}
+    <div onPointerUp={(event) => event.preventDefault()}>
+      <HtmlOverlay viewport={viewport} key="1">
+        {deck &&
+          mapAnnotations &&
+          areMapAnnotationsVisible &&
+          mapAnnotations.map((annotation) => (
+            <HtmlOverlayItem
+              key={annotation.id}
+              style={{ pointerEvents: 'all' }}
+              coordinates={
+                (selectedAnnotationRef?.current === annotation.id && (newCoords as number[])) || [
+                  Number(annotation.lon),
+                  Number(annotation.lat),
+                ]
+              }
             >
-              {annotation.label}
-            </p>
-          </HtmlOverlayItem>
-        ))}
-    </HtmlOverlay>
+              <p
+                onClick={(event) => {
+                  setMapAnnotation(annotation)
+                }}
+                onMouseEnter={handleHover}
+                onMouseLeave={handleMouseLeave}
+                style={{ color: annotation.color }}
+                draggable={true}
+                onDragStart={(event) => handleDragStart({ event, annotation })}
+                onDrag={handleDrag}
+                onDragEnd={() => handleDragEnd(annotation)}
+              >
+                {annotation.label}
+              </p>
+            </HtmlOverlayItem>
+          ))}
+      </HtmlOverlay>
+    </div>
   )
 }
 

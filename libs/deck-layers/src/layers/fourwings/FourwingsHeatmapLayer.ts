@@ -13,12 +13,7 @@ import {
   CONFIG_BY_INTERVAL,
   FourWingsFeature,
 } from '@globalfishingwatch/deck-loaders'
-import {
-  COLOR_HIGHLIGHT_LINE,
-  COLOR_TRANSPARENT,
-  LayerGroup,
-  getLayerGroupOffset,
-} from '../../utils'
+import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
 import {
   ColorDomain,
   FourwingsHeatmapTileLayerProps,
@@ -115,6 +110,34 @@ function getIntervalFrames(minFrame: number, maxFrame: number) {
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
+  layers: LayersList = []
+
+  getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
+    const { minFrame, maxFrame } = this.props
+    if (info.object) {
+      const chunks = getChunks(minFrame, maxFrame)
+      const interval = getInterval(minFrame, maxFrame)
+      const tileMinIntervalFrame = Math.ceil(
+        CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
+      )
+      const minIntervalFrame =
+        Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame)) - tileMinIntervalFrame
+      const maxIntervalFrame =
+        Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
+      const values = aggregateCell(info.object.properties.values, {
+        minIntervalFrame,
+        maxIntervalFrame,
+        startFrames: info.object.properties.startFrames,
+      })
+      if (values) {
+        info.object = {
+          ...info.object,
+          values,
+        }
+      }
+    }
+    return info
+  }
 
   renderLayers() {
     const { data, maxFrame, minFrame, colorDomain, colorRanges, hoveredFeatures } = this.props
@@ -134,116 +157,92 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       return target
     }
 
-    const getHighlightColor = (feature: FourWingsFeature, { target }: { target: Color }) => {
-      if (hoveredFeatures?.some((f) => f.object.properties.cellId === feature.properties?.cellId)) {
-        target = COLOR_HIGHLIGHT_LINE
-      } else {
-        target = COLOR_TRANSPARENT
-      }
-      return target
-    }
-
-    const getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
-      const { minFrame, maxFrame } = this.props
-      console.log('info.object:', info.object)
-      if (info.object) {
-        const chunks = getChunks(minFrame, maxFrame)
-        const interval = getInterval(minFrame, maxFrame)
-        const tileMinIntervalFrame = Math.ceil(
-          CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
-        )
-        const minIntervalFrame =
-          Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame)) - tileMinIntervalFrame
-        const maxIntervalFrame =
-          Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
-        const value = aggregateCell(info.object, {
-          minIntervalFrame,
-          maxIntervalFrame,
-          startFrames: info.object.properties.startFrames,
+    this.layers = [
+      new SolidPolygonLayer(
+        this.props,
+        this.getSubLayerProps({
+          id: `fourwings-tile`,
+          pickable: true,
+          getPickingInfo: this.getPickingInfo,
+          getFillColor,
+          getPolygon: (d: any) => d.geometry.coordinates[0],
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
+          updateTriggers: {
+            // This tells deck.gl to recalculate fillColor on changes
+            getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
+          },
         })
-        if (value) {
-          info.object = {
-            ...info.object,
-            value,
-          }
-        }
-      }
-      return info
+      ),
+    ] as LayersList
+
+    const layerHoveredFeatures = hoveredFeatures?.flatMap((f) => {
+      if (f.layer?.id !== this.root.id) return []
+      return f.object
+    })
+    if (hoveredFeatures) {
+      this.layers.push(
+        new PathLayer(
+          this.props,
+          this.getSubLayerProps({
+            data: layerHoveredFeatures,
+            id: `fourwings-cell-highlight`,
+            widthUnits: 'pixels',
+            widthMinPixels: 2,
+            getPath: (d: any) => d.geometry.coordinates[0],
+            getColor: COLOR_HIGHLIGHT_LINE,
+            getPolygonOffset: (params: any) =>
+              getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+          })
+        )
+      )
     }
 
-    const fourwingsCellLayer = new SolidPolygonLayer(
-      this.props,
-      this.getSubLayerProps({
-        id: `fourwings-tile`,
-        pickable: true,
-        getPickingInfo,
-        getFillColor,
-        getPolygon: (d: any) => d.geometry.coordinates[0],
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
-        updateTriggers: {
-          // This tells deck.gl to recalculate fillColor on changes
-          getFillColor: [minFrame, maxFrame, colorDomain, colorRanges],
-        },
-      })
-    )
-    const fourwingsPathLayer = new PathLayer(
-      this.props,
-      this.getSubLayerProps({
-        id: `fourwings-tile-border`,
-        visible: hoveredFeatures && hoveredFeatures?.length > 0,
-        widthUnits: 'pixels',
-        widthMinPixels: 2,
-        getPath: (d: any) => d.geometry.coordinates[0],
-        getColor: getHighlightColor,
-        getPolygonOffset: (params: any) =>
-          getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-        updateTriggers: {
-          getColor: [hoveredFeatures],
-        },
-      })
-    )
-
-    if (!this.props.debug) return [fourwingsCellLayer, fourwingsPathLayer] as any
-
-    const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
-    const debugLayers = [
-      new PathLayer({
-        id: `${this.id}-tile-boundary-${this.props.tile.id}`,
-        data: [
-          {
-            path: [
-              [west, north],
-              [west, south],
-              [east, south],
-              [east, north],
-              [west, north],
+    if (this.props.debug) {
+      const { west, east, north, south } = this.props.tile.bbox as GeoBoundingBox
+      this.layers.push(
+        new PathLayer(
+          this.props,
+          this.getSubLayerProps({
+            id: `debug-tile-boundary`,
+            data: [
+              {
+                path: [
+                  [west, north],
+                  [west, south],
+                  [east, south],
+                  [east, north],
+                  [west, north],
+                ],
+              },
             ],
-          },
-        ],
-        getPath: (d) => d.path,
-        widthMinPixels: 1,
-        getColor: [255, 0, 0, 100],
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
-      }),
-      new TextLayer({
-        id: `${this.id}-tile-id-${this.props.tile.id}`,
-        data: [
-          {
-            text: `${this.props.tile.index.z}/${this.props.tile.index.x}/${this.props.tile.index.y}`,
-          },
-        ],
-        getText: (d) => d.text,
-        getPosition: [west, north],
-        getColor: [255, 255, 255],
-        getSize: 12,
-        getAngle: 0,
-        getTextAnchor: 'start',
-        getAlignmentBaseline: 'top',
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
-      }),
-    ]
-
-    return [fourwingsCellLayer, fourwingsPathLayer, ...debugLayers] as LayersList
+            getPath: (d: any) => d.path,
+            widthMinPixels: 1,
+            getColor: [255, 0, 0, 100],
+            getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
+          })
+        ),
+        new TextLayer(
+          this.props,
+          this.getSubLayerProps({
+            id: `debug-tile-id`,
+            data: [
+              {
+                text: `${this.props.tile.index.z}/${this.props.tile.index.x}/${this.props.tile.index.y}`,
+              },
+            ],
+            getText: (d: any) => d.text,
+            getPosition: [west, north],
+            getColor: [255, 255, 255],
+            getSize: 12,
+            getAngle: 0,
+            getTextAnchor: 'start',
+            getAlignmentBaseline: 'top',
+            getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
+          })
+        )
+      )
+    }
+    return this.layers
   }
 
   getData() {

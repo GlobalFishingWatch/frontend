@@ -39,6 +39,6 @@ export const resolveDeckFourwingsLayerProps = (
     debug: false,
     // category: dataview.category || DataviewCategory.Activity,
     sublayers,
-    colorRampWhiteEnd: sublayers.length === 1,
+    colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd,
   }
 }

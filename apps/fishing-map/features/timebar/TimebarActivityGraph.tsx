@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { getLegendId, useMapLegend } from '@globalfishingwatch/react-hooks'
 import {
   TimebarStackedActivity,
   HighlighterCallbackFn,
@@ -10,7 +9,6 @@ import {
 import { selectActiveActivityDataviewsByVisualisation } from 'features/dataviews/selectors/dataviews.selectors'
 import { useHeatmapActivityGraph } from 'features/timebar/TimebarActivityGraph.hooks'
 import { formatNumber } from 'utils/info'
-import { useMapStyle } from 'features/map/map-style.hooks'
 import { TimebarVisualisations } from 'types'
 import { t } from 'features/i18n/i18n'
 import styles from './Timebar.module.css'
@@ -19,20 +17,15 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   const activeDataviews = useSelector(selectActiveActivityDataviewsByVisualisation(visualisation))
   const { loading, heatmapActivity } = useHeatmapActivityGraph()
 
-  const style = useMapStyle()
-  const mapLegends = useMapLegend(style, activeDataviews)
-
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
-      // if (loading) return t('map.loading', 'Loading')
       if (!value || !value.value) return ''
-      const dataviewId = item?.props?.dataviewId
-      const unit = mapLegends?.find((l) => l.id === getLegendId(dataviewId))?.unit || ''
       const maxHighlighterFractionDigits =
         visualisation === TimebarVisualisations.Environment ? 2 : undefined
       const labels = [
         formatNumber(value.value, maxHighlighterFractionDigits),
-        unit,
+        // TODO ensure we store unit in the item props
+        item?.props.unit || '',
         t('common.onScreen', 'on screen'),
       ]
       if (visualisation === TimebarVisualisations.Environment) {
@@ -42,7 +35,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
       return labels.join(' ')
     },
     // [loading, mapLegends, visualisation]
-    [mapLegends, visualisation]
+    [visualisation]
   )
 
   // if (error) {

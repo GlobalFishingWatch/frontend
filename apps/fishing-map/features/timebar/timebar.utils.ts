@@ -4,7 +4,7 @@ import {
   TrackEventChunkProps,
   ActivityTimeseriesFrame,
 } from '@globalfishingwatch/timebar'
-import { TileCell } from '@globalfishingwatch/deck-loaders'
+import { FourWingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getEventColors, getEventDescription } from 'utils/events'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -42,48 +42,28 @@ export const parseTrackEventChunkProps = (
   }
 }
 
-const getSublayersAggregateTimeseriesFromGridCellsData = (cells: TileCell[]) => {
-  const result: Record<string, Record<number, number>> = {}
-  const timestamps = new Set<number>()
-  // TODO: restore this in Deck.gl fixes
-  // cells.forEach((cell) => {
-  //   const { timeseries } = cell
-  //   Object.keys(timeseries).forEach((sublayer) => {
-  //     const sublayerData = timeseries[sublayer]
-  //     Object.keys(sublayerData).forEach((timestamp) => {
-  //       // Extract the unique timestamps from the timeseries
-  //       timestamps.add(parseInt(timestamp))
-  //       const value = sublayerData[timestamp]
-  //       if (!result[sublayer]) result[sublayer] = {}
-  //       if (!result[sublayer][timestamp]) result[sublayer][timestamp] = 0
-  //       result[sublayer][timestamp] += value
-  //     })
-  //   })
-  // })
-  return { timeseries: result, timestamps }
-}
-
-function getGraphDataFromSublayersTimeseries(
-  timeseries: Record<string, Record<number, number>>,
-  timestamps: Set<number>
+export function getGraphDataFromFourwingsFeatures(
+  features: FourWingsFeature[]
 ): ActivityTimeseriesFrame[] {
-  const result: ActivityTimeseriesFrame[] = []
-  // Iterate over each timestamp and create timeseries frames
-  for (const timestamp of Array.from(timestamps)) {
-    const frame: ActivityTimeseriesFrame = { date: timestamp }
-
-    for (const key in timeseries) {
-      const data = timeseries[key]
-      frame[key] = data[timestamp] || 0
-    }
-
-    result.push(frame)
+  if (!features?.length) {
+    return []
   }
-
-  return result
-}
-
-export function getGraphFromGridCellsData(cells: TileCell[]): ActivityTimeseriesFrame[] {
-  const { timeseries, timestamps } = getSublayersAggregateTimeseriesFromGridCellsData(cells)
-  return getGraphDataFromSublayersTimeseries(timeseries, timestamps).sort((a, b) => a.date - b.date)
+  const data: Record<number, ActivityTimeseriesFrame> = {}
+  for (const feature of features) {
+    const { dates, values } = feature.properties
+    dates.forEach((sublayerDates, sublayerIndex) => {
+      sublayerDates.forEach((date, dateIndex) => {
+        if (!data[date]) {
+          data[date] = { date }
+        }
+        if (!data[date][sublayerIndex]) {
+          data[date][sublayerIndex] = 0
+        }
+        data[date][sublayerIndex] += values[sublayerIndex][dateIndex]
+      })
+    })
+  }
+  // TODO insert empty frames for missing timestamps
+  // https://github.com/GlobalFishingWatch/frontend/blob/b44b773c760d1472915bf7662631f13dc9cc7c5a/libs/features-aggregate/src/timeseries.ts#L102
+  return Object.values(data).sort((a, b) => a.date - b.date)
 }

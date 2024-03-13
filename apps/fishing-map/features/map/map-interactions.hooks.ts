@@ -20,7 +20,7 @@ import {
   useMapHighlightedEvent,
 } from 'features/map/map.hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
-import useMapInstance from 'features/map/map-context.hooks'
+import useMapInstance, { useDeckMap } from 'features/map/map-context.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getEventLabel } from 'utils/analytics'
@@ -91,7 +91,8 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
 }
 
 export const useMapMouseClick = (style?: ExtendedStyle) => {
-  const map = useMapInstance()
+  // const map = useMapInstance()
+  const map = useDeckMap()
   const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
@@ -101,7 +102,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
   const { onRulerMapClick, rulersEditing } = useRulers()
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
 
-  const onClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
+  // const onClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
 
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
 
@@ -156,6 +157,20 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       //   return onRulerMapClick(event)
       // }
 
+      const features = map?.pickMultipleObjects({
+        x: info.x,
+        y: info.y,
+        radius: 0,
+      })
+      const fourWingsValues = features?.map(
+        (f: PickingInfo) =>
+          f.sourceLayer?.getPickingInfo({ info, mode: 'click', sourceLayer: f.sourceLayer }).object
+            .values
+      )[0]
+      if (fourWingsValues) {
+        console.log('fourWingsValues', fourWingsValues)
+      }
+
       if (isMapAnnotating) {
         return addMapAnnotation(info.coordinate as Position)
       }
@@ -166,6 +181,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
     },
     [
       clickedCellLayers,
+      map,
       isMapAnnotating,
       isErrorNotificationEditing,
       addMapAnnotation,

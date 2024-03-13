@@ -1,5 +1,6 @@
-import { Color, CompositeLayer, Layer, LayersList } from '@deck.gl/core/typed'
+import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core/typed'
 import { TileLayerProps } from '@deck.gl/geo-layers/typed'
+import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
 import {
   FourwingsHeatmapTileLayerProps,
   FourwingsHeatmapTileLayer,
@@ -26,14 +27,48 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   static layerName = 'FourwingsLayer'
   layers: FourwingsHeatmapTileLayer[] | FourwingsPositionsTileLayer[] | undefined
 
+  initializeState(context: LayerContext): void {
+    super.initializeState(context)
+    this.state = {
+      loaded: false,
+    }
+  }
+
+  _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    this.setState({ loaded: true })
+    this.props.onViewportLoad?.(tiles)
+  }
+
+  _onTileDataLoading = (tile: TileLoadProps) => {
+    this.setState({ loaded: false })
+  }
+
   renderLayers(): Layer<{}> | LayersList {
     const mode = this.getMode()
     const HeatmapLayerClass = this.getSubLayerClass('heatmap', FourwingsHeatmapTileLayer)
     const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
     this.layers =
       mode === HEATMAP_ID
-        ? [new HeatmapLayerClass(this.props, this.getSubLayerProps({ id: HEATMAP_ID }))]
-        : [new PositionsLayerClass(this.props, this.getSubLayerProps({ id: POSITIONS_ID }))]
+        ? [
+            new HeatmapLayerClass(
+              this.props,
+              this.getSubLayerProps({
+                id: HEATMAP_ID,
+                onViewportLoad: this._onViewportLoad,
+                onTileDataLoading: this._onTileDataLoading,
+              })
+            ),
+          ]
+        : [
+            new PositionsLayerClass(
+              this.props,
+              this.getSubLayerProps({
+                id: POSITIONS_ID,
+                onViewportLoad: this._onViewportLoad,
+                onTileDataLoading: this._onTileDataLoading,
+              })
+            ),
+          ]
     return this.layers
   }
 

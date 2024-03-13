@@ -67,8 +67,6 @@ import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-s
 import MapLegends from './MapLegends'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
-import { useMapAnnotation } from './overlays/annotations/annotations.hooks'
-import { useMapErrorNotification } from './overlays/error-notification/error-notification.hooks'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 const PopupWrapper = dynamic(
@@ -270,8 +268,6 @@ const MapWrapper = () => {
   //   }
   //   return styleInteractiveLayerIds
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
-  const { addMapAnnotation, isMapAnnotating } = useMapAnnotation()
-  const { addErrorNotification, isErrorNotificationEditing } = useMapErrorNotification()
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
   const setDeckLayerInteraction = useSetDeckLayerInteraction()

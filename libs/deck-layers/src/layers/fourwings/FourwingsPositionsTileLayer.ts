@@ -15,6 +15,7 @@ import { groupBy, orderBy } from 'lodash'
 import { Feature } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import { TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { POSITIONS_ID } from './fourwings.config'
@@ -34,6 +35,7 @@ export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   onVesselHighlight?: (vesselId: string) => void
   onVesselClick?: (vesselId: string) => void
   onViewportLoad?: (tiles: any) => void
+  onTileDataLoading?: (tile: TileLoadProps) => void
 }
 
 export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps &
