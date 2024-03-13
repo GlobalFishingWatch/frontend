@@ -92,6 +92,7 @@ export const getChunksByInterval = (start: number, end: number, interval: Interv
     .startOf(intervalUnit as any)
     .minus({ [intervalUnit]: CHUNKS_BUFFER })
   const bufferedStartDate = startDate.minus({ [intervalUnit]: CHUNKS_BUFFER })
+  const now = DateTime.now().toUTC().startOf('day')
   const endDate = getUTCDateTime(end)
     .endOf(intervalUnit as any)
     .plus({ [intervalUnit]: CHUNKS_BUFFER, millisecond: 1 })
@@ -101,11 +102,9 @@ export const getChunksByInterval = (start: number, end: number, interval: Interv
       id: `${intervalUnit}-chunk`,
       interval,
       start: startDate.toMillis(),
-      end: endDate.toMillis(),
+      end: Math.min(endDate.toMillis(), now.toMillis()),
       bufferedStart: bufferedStartDate.toMillis(),
-      bufferedEnd: bufferedEndDate.toMillis(),
-      startISO: bufferedStartDate.toISO(),
-      endISO: bufferedEndDate.toISO(),
+      bufferedEnd: Math.min(bufferedEndDate.toMillis(), now.toMillis()),
     },
   ]
   return dataNew
