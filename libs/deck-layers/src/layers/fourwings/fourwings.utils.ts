@@ -89,8 +89,8 @@ export const getDataUrlBySublayer = ({ tile, chunk, sublayer }: GetDataUrlByChun
     proxy: true,
     ...(chunk.interval !== 'YEAR' && {
       'date-range': [
-        DateTime.fromMillis(chunk.start).toISODate(),
-        DateTime.fromMillis(chunk.end).toISODate(),
+        DateTime.fromMillis(chunk.bufferedStart).toISODate(),
+        DateTime.fromMillis(chunk.bufferedEnd).toISODate(),
       ].join(','),
     }),
     datasets: [sublayer.datasets.join(',')],

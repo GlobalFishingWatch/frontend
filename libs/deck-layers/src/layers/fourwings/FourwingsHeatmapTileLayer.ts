@@ -88,10 +88,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   getCacheRange = (minFrame: number, maxFrame: number) => {
-    const chunkBuffer = getChunkBuffer(getInterval(minFrame, maxFrame))
+    const chunks = this._getChunks(minFrame, maxFrame)
     return {
-      cacheStart: this.props.minFrame - chunkBuffer,
-      cacheEnd: this.props.maxFrame + chunkBuffer,
+      cacheStart: chunks[0].start,
+      cacheEnd: chunks[0].end,
     }
   }
 

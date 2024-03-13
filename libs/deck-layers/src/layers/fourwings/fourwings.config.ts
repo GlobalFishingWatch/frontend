@@ -77,6 +77,8 @@ export type Chunk = {
   interval: Interval
   start: number
   end: number
+  bufferedStart: number
+  bufferedEnd: number
 }
 
 export const CHUNKS_BUFFER = 1
@@ -84,20 +86,24 @@ export const CHUNKS_BUFFER = 1
 export const getChunksByInterval = (start: number, end: number, interval: Interval): Chunk[] => {
   const intervalUnit = LIMITS_BY_INTERVAL[interval]?.unit
   if (!intervalUnit) {
-    return [{ id: 'full-time-range', interval, start, end }]
+    return [{ id: 'full-time-range', interval, start, end, bufferedStart: start, bufferedEnd: end }]
   }
-  const bufferedStartDate = getUTCDateTime(start)
+  const startDate = getUTCDateTime(start)
     .startOf(intervalUnit as any)
     .minus({ [intervalUnit]: CHUNKS_BUFFER })
-  const bufferedEndDate = getUTCDateTime(end)
+  const bufferedStartDate = startDate.minus({ [intervalUnit]: CHUNKS_BUFFER })
+  const endDate = getUTCDateTime(end)
     .endOf(intervalUnit as any)
     .plus({ [intervalUnit]: CHUNKS_BUFFER, millisecond: 1 })
+  const bufferedEndDate = endDate.plus({ [intervalUnit]: CHUNKS_BUFFER })
   const dataNew = [
     {
       id: `${intervalUnit}-chunk`,
       interval,
-      start: bufferedStartDate.toMillis(),
-      end: bufferedEndDate.toMillis(),
+      start: startDate.toMillis(),
+      end: endDate.toMillis(),
+      bufferedStart: bufferedStartDate.toMillis(),
+      bufferedEnd: bufferedEndDate.toMillis(),
       startISO: bufferedStartDate.toISO(),
       endISO: bufferedEndDate.toISO(),
     },
