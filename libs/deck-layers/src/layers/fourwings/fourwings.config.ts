@@ -35,12 +35,12 @@ export const LIMITS_BY_INTERVAL: Record<
   },
   DAY: {
     unit: 'months',
-    value: 6,
+    value: 3,
     buffer: 1,
   },
   MONTH: {
     unit: 'year',
-    value: 6,
+    value: 3,
     buffer: 1,
   },
   YEAR: undefined,
