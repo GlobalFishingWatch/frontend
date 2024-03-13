@@ -51,6 +51,7 @@ export const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMeta
     } as DatasetConfiguration,
   } as Partial<Dataset>
 }
+
 export const getTracksDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
   const guessedColumns = guessColumnsFromSchema(baseMetadata.schema)
