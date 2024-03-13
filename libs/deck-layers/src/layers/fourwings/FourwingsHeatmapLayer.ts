@@ -8,6 +8,7 @@ import {
 import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers/typed'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
+import { PathStyleExtension } from '@deck.gl/extensions/typed'
 import {
   getTimeRangeKey,
   CONFIG_BY_INTERVAL,
@@ -187,11 +188,13 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
             data: layerHoveredFeatures,
             id: `fourwings-cell-highlight`,
             widthUnits: 'pixels',
-            widthMinPixels: 2,
+            widthMinPixels: 4,
             getPath: (d: any) => d.geometry.coordinates[0],
             getColor: COLOR_HIGHLIGHT_LINE,
+            getOffset: 0.5,
             getPolygonOffset: (params: any) =>
               getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+            extensions: [new PathStyleExtension({ offset: true })],
           })
         )
       )
