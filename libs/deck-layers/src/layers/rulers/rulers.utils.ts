@@ -5,8 +5,8 @@ import { Ruler } from '@globalfishingwatch/layer-composer'
 
 export const getRulerCoordsPairs = (ruler: Ruler): { start: Position; end: Position } => {
   return {
-    start: [ruler.start.longitude, ruler.start.latitude],
-    end: [ruler.end.longitude, ruler.end.latitude],
+    start: [Number(ruler.start.longitude), Number(ruler.start.latitude)],
+    end: [Number(ruler.end.longitude), Number(ruler.end.latitude)],
   }
 }
 export const getGreatCircleMultiLine = (ruler: Ruler) => {
