@@ -10,8 +10,8 @@ import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
 import { PathStyleExtension } from '@deck.gl/extensions/typed'
 import { CONFIG_BY_INTERVAL, FourWingsFeature } from '@globalfishingwatch/deck-loaders'
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
-import { getChunks, getInterval } from './fourwings.config'
-import { aggregateCell, chooseColor, getIntervalFrames } from './fourwings.utils'
+import { getInterval } from './fourwings.config'
+import { aggregateCell, chooseColor, getChunk, getIntervalFrames } from './fourwings.utils'
 import { FourwingsHeatmapLayerProps } from './fourwings.types'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
@@ -21,10 +21,10 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
     const { minFrame, maxFrame } = this.props
     if (info.object) {
-      const chunks = getChunks(minFrame, maxFrame)
+      const chunk = getChunk(minFrame, maxFrame)
       const interval = getInterval(minFrame, maxFrame)
       const tileMinIntervalFrame = Math.ceil(
-        CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
+        CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.start)
       )
       const minIntervalFrame =
         Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame)) - tileMinIntervalFrame
@@ -51,13 +51,13 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
-    const chunks = getChunks(minFrame, maxFrame)
+    const chunk = getChunk(minFrame, maxFrame)
     const { minIntervalFrame, maxIntervalFrame } = getIntervalFrames(minFrame, maxFrame)
     const getFillColor = (feature: FourWingsFeature, { target }: { target: Color }) => {
       target = chooseColor(feature, {
         colorDomain,
         colorRanges,
-        chunks,
+        chunk,
         minIntervalFrame,
         maxIntervalFrame,
         comparisonMode,

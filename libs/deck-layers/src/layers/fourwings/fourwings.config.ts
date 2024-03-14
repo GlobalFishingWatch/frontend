@@ -75,10 +75,10 @@ export const getDatesInIntervalResolution = (
 
 export const CHUNKS_BUFFER = 1
 // TODO: validate if worth to make this dynamic for the playback
-export const getChunksByInterval = (start: number, end: number, interval: Interval): Chunk[] => {
+export const getChunkByInterval = (start: number, end: number, interval: Interval): Chunk => {
   const intervalUnit = LIMITS_BY_INTERVAL[interval]?.unit
   if (!intervalUnit) {
-    return [{ id: 'full-time-range', interval, start, end, bufferedStart: start, bufferedEnd: end }]
+    return { id: 'full-time-range', interval, start, end, bufferedStart: start, bufferedEnd: end }
   }
   const startDate = getUTCDateTime(start)
     .startOf(intervalUnit as any)
@@ -89,17 +89,14 @@ export const getChunksByInterval = (start: number, end: number, interval: Interv
     .endOf(intervalUnit as any)
     .plus({ [intervalUnit]: CHUNKS_BUFFER, millisecond: 1 })
   const bufferedEndDate = endDate.plus({ [intervalUnit]: CHUNKS_BUFFER })
-  const dataNew = [
-    {
-      id: `${intervalUnit}-chunk`,
-      interval,
-      start: startDate.toMillis(),
-      end: Math.min(endDate.toMillis(), now.toMillis()),
-      bufferedStart: bufferedStartDate.toMillis(),
-      bufferedEnd: Math.min(bufferedEndDate.toMillis(), now.toMillis()),
-    },
-  ]
-  return dataNew
+  return {
+    id: `${intervalUnit}-chunk`,
+    interval,
+    start: startDate.toMillis(),
+    end: Math.min(endDate.toMillis(), now.toMillis()),
+    bufferedStart: bufferedStartDate.toMillis(),
+    bufferedEnd: Math.min(bufferedEndDate.toMillis(), now.toMillis()),
+  }
 }
 
 export const getChunkBuffer = (interval: Interval) => {
@@ -108,11 +105,4 @@ export const getChunkBuffer = (interval: Interval) => {
     return 0
   }
   return Duration.fromObject({ [unit]: buffer }).toMillis()
-}
-
-// TODO use the existing class function instead of repeating the logic
-export const getChunks = (minFrame: number, maxFrame: number) => {
-  const interval = getInterval(minFrame, maxFrame)
-  const chunks = getChunksByInterval(minFrame, maxFrame, interval)
-  return chunks
 }

@@ -26,10 +26,11 @@ import {
   aggregateCellTimeseries,
   asyncAwaitMS,
   filterElementByPercentOfIndex,
+  getChunk,
   getDataUrlBySublayer,
 } from './fourwings.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
-import { HEATMAP_ID, PATH_BASENAME, getChunksByInterval, getInterval } from './fourwings.config'
+import { HEATMAP_ID, PATH_BASENAME, getInterval } from './fourwings.config'
 import {
   ColorRange,
   FourwingsDeckSublayer,
@@ -76,14 +77,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
             : config.colorRamp) as ColorRampsIds
         ].map((c) => rgbaStringToComponents(c)) as ColorRange
     )
-  }
-
-  _getCacheRange = (minFrame: number, maxFrame: number) => {
-    const chunks = this._getChunks(minFrame, maxFrame)
-    return {
-      start: chunks[0].start,
-      end: chunks[0].end,
-    }
   }
 
   _calculateColorDomain = () => {
@@ -151,9 +144,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     let rows: number = 0
 
     const interval = getInterval(minFrame, maxFrame)
-    const chunks = this._getChunks(minFrame, maxFrame)
+    const chunk = getChunk(minFrame, maxFrame)
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
-      const url = getDataUrlBySublayer({ tile, chunk: chunks[0], sublayer }) as string
+      const url = getDataUrlBySublayer({ tile, chunk, sublayer }) as string
       const response = await GFWAPI.fetch<Response>(url!, {
         signal: tile.signal,
         responseType: 'default',
@@ -181,8 +174,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         sublayers: 1,
         cols,
         rows,
-        minFrame: chunks[0].start,
-        maxFrame: chunks[0].end,
+        minFrame: chunk.start,
+        maxFrame: chunk.end,
         initialTimeRange: {
           start: minFrame,
           end: maxFrame,
@@ -213,15 +206,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return this._fetchTileData(tile)
   }
 
-  _getChunks(minFrame: number, maxFrame: number) {
-    const interval = getInterval(minFrame, maxFrame)
-    const chunks = getChunksByInterval(minFrame, maxFrame, interval)
-    return chunks
-  }
-
   _getTileDataCache = (minFrame: number, maxFrame: number): FourwingsHeatmapTilesCache => {
     const interval = getInterval(minFrame, maxFrame)
-    const { start, end } = this._getCacheRange(minFrame, maxFrame)
+    const { start, end } = getChunk(minFrame, maxFrame)
     return { start, end, interval }
   }
 

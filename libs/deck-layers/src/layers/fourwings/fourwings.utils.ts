@@ -19,7 +19,7 @@ import {
   GetFillColorParams,
   HeatmapAnimatedMode,
 } from './fourwings.types'
-import { getChunks, getInterval } from './fourwings.config'
+import { getChunkByInterval, getInterval } from './fourwings.config'
 
 export const aggregateCell = (
   cell: Cell,
@@ -274,13 +274,13 @@ export const chooseColor = (
   {
     colorDomain,
     colorRanges,
-    chunks,
+    chunk,
     minIntervalFrame,
     maxIntervalFrame,
     comparisonMode,
   }: GetFillColorParams
 ): Color => {
-  if (!colorDomain || !colorRanges || !chunks) {
+  if (!colorDomain || !colorRanges || !chunk) {
     return EMPTY_CELL_COLOR
   }
   const { initialValues, startFrames, values } = feature.properties
@@ -320,12 +320,15 @@ export const chooseColor = (
   }
 }
 
+export function getChunk(minFrame: number, maxFrame: number) {
+  const interval = getInterval(minFrame, maxFrame)
+  return getChunkByInterval(minFrame, maxFrame, interval)
+}
+
 export function getIntervalFrames(minFrame: number, maxFrame: number) {
   const interval = getInterval(minFrame, maxFrame)
-  const chunks = getChunks(minFrame, maxFrame)
-  const tileMinIntervalFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunks?.[0].start)
-  )
+  const chunk = getChunk(minFrame, maxFrame)
+  const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.start))
   const minIntervalFrame = Math.ceil(
     CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileMinIntervalFrame
   )

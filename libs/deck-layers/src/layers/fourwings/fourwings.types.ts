@@ -61,7 +61,7 @@ export type AggregateCellParams = {
 export type GetFillColorParams = {
   colorDomain: number[] | number[][]
   colorRanges: ColorRange[] | string[]
-  chunks: Chunk[]
+  chunk: Chunk
   minIntervalFrame: number
   maxIntervalFrame: number
   comparisonMode?: HeatmapAnimatedMode
