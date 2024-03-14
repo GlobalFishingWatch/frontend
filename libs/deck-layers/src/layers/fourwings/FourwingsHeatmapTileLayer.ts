@@ -35,7 +35,7 @@ import {
   ColorRange,
   FourwingsDeckSublayer,
   FourwingsHeatmapTileLayerProps,
-  FourwingsHeatmapTileLayerState,
+  FourwingsTileLayerState,
   FourwingsHeatmapTilesCache,
   HeatmapAnimatedMode,
 } from './fourwings.types'
@@ -62,7 +62,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
             ]
           : [1, 20, 50, 100, 500, 5000, 10000, 500000],
       colorRanges: this._getColorRanges(),
-    } as FourwingsHeatmapTileLayerState
+    } as FourwingsTileLayerState
   }
 
   _getColorRanges = () => {
@@ -218,7 +218,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
     const { minFrame, maxFrame } = props
-    const { tilesCache, colorRanges } = this.state as FourwingsHeatmapTileLayerState
+    const { tilesCache, colorRanges } = this.state as FourwingsTileLayerState
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = colorRanges.join() !== newSublayerColorRanges.join()
 
@@ -242,7 +242,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   renderLayers(): Layer<{}> | LayersList {
     const { sublayers, comparisonMode } = this.props
-    const { colorDomain, colorRanges } = this.state as FourwingsHeatmapTileLayerState
+    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
     const cacheKey = this._getTileDataCacheKey()
     const sublayersIds = sublayers.map((s) => s.id).join(',')
 
@@ -314,6 +314,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   getColorDomain = () => {
-    return this.state.colorDomain
+    return (this.state as FourwingsTileLayerState).colorDomain
+  }
+
+  getColorRange = () => {
+    return (this.state as FourwingsTileLayerState).colorRanges
+  }
+
+  getColorScale = () => {
+    return {
+      range: this.getColorRange(),
+      domain: this.getColorDomain(),
+    }
   }
 }

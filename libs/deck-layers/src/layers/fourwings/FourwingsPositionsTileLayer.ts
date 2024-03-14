@@ -20,7 +20,7 @@ import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { POSITIONS_ID } from './fourwings.config'
 import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from './fourwings.utils'
-import { FourwingsColorRamp } from './FourwingsLayer'
+import { FourwingsTileLayerColorDomain, FourwingsTileLayerColorRange } from './fourwings.types'
 
 export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   minFrame: number
@@ -313,16 +313,19 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.getPositionsData()
   }
 
-  getColorScale() {
-    return this.state.colorScale
-  }
-
   getColorDomain() {
-    return this.state.colorScale?.colorDomain
+    return this.state.colorScale?.colorDomain as FourwingsTileLayerColorDomain
   }
 
   getColorRange() {
-    return this.state.colorScale?.colorRange
+    return this.state.colorScale?.colorRange as FourwingsTileLayerColorRange
+  }
+
+  getColorScale() {
+    return {
+      range: this.getColorRange(),
+      domain: this.getColorDomain(),
+    }
   }
 
   getTimeseries() {

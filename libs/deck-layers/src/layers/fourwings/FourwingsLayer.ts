@@ -86,8 +86,8 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return this.props.resolution
   }
 
-  getColorDomain() {
-    return this.layers?.[0]?.getColorDomain()
+  getColorScale() {
+    return this.layers?.[0]?.getColorScale()
   }
 
   getTimeseries() {
