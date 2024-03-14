@@ -39,6 +39,7 @@ const useRulers = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const throttledSetRuleEnd = useCallback(
     throttle((info: PickingInfo) => {
+      if (!info.coordinate) return
       const [longitude, latitude] = info.coordinate as number[]
       const point = {
         longitude,

@@ -81,12 +81,12 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
       // if (isMapDrawing || isMapAnnotating) {
       //   return onSimpleMapHover(event)
       // }
-      // if (rulersEditing) {
-      //   return onMapHover(onRulerMapHover(event))
-      // }
+      if (rulersEditing) {
+        return onRulerMapHover(info)
+      }
       // return onMapHover(event)
     },
-    [map, setDeckLayerInteraction]
+    [map, onRulerMapHover, rulersEditing, setDeckLayerInteraction]
   )
 
   const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
