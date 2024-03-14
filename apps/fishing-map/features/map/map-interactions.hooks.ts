@@ -165,7 +165,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       const fourWingsValues = features?.map(
         (f: PickingInfo) =>
           f.sourceLayer?.getPickingInfo({ info, mode: 'click', sourceLayer: f.sourceLayer }).object
-            .values
+            ?.values
       )[0]
       if (fourWingsValues) {
         console.log('fourWingsValues', fourWingsValues)
@@ -177,6 +177,9 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       if (isErrorNotificationEditing) {
         return addErrorNotification(info.coordinate as Position)
       }
+      if (rulersEditing) {
+        return onRulerMapClick(info)
+      }
       // onClick(event)
     },
     [
@@ -184,8 +187,10 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       map,
       isMapAnnotating,
       isErrorNotificationEditing,
+      rulersEditing,
       addMapAnnotation,
       addErrorNotification,
+      onRulerMapClick,
     ]
   )
 
