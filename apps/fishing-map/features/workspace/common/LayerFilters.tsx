@@ -68,8 +68,8 @@ const cleanDataviewFiltersNotAllowed = (
       const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, {
         vesselGroups,
       })
-      const newFilterSelection = newFilterOptions?.filter(
-        (option) => dataview.config?.filters?.[key]?.includes(option.id)
+      const newFilterSelection = newFilterOptions?.filter((option) =>
+        dataview.config?.filters?.[key]?.includes(option.id)
       )
 
       // We have to remove the key if it is not supported by the datasets selecion
