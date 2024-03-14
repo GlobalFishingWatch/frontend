@@ -2,8 +2,8 @@ import { GeoJsonLayerProps, GeoJsonLayer } from '@deck.gl/layers/typed'
 import { Color, CompositeLayer, Layer, LayersList } from '@deck.gl/core/typed'
 import greatCircle from '@turf/great-circle'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { LayerGroup, getLayerGroupOffset } from '@globalfishingwatch/deck-layers'
 import { Ruler } from '@globalfishingwatch/layer-composer'
+import { LayerGroup, getLayerGroupOffset } from '../../utils'
 
 type RulerLayerProps = {
   rulers: Ruler[]
