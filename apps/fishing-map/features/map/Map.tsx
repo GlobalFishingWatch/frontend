@@ -27,7 +27,7 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
-import { AnyDeckLayer, RulerLayer } from '@globalfishingwatch/deck-layers'
+import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import {
   useSetDeckLayerComposer,
   useSetDeckLayerInteraction,
@@ -320,7 +320,7 @@ const MapWrapper = () => {
         <MapAnnotations />
         <MapAnnotationsDialog />
         <ErrorNotification />
-        {editingRuler && <RulerLayer rulers={[...(rulers || []), editingRuler]} />}
+        {editingRuler && <RulersLayer rulers={[...(rulers || []), editingRuler]} />}
       </DeckGL>
       {/* {style && (
         <Map

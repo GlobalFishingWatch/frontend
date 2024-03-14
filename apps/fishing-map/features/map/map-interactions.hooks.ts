@@ -64,12 +64,12 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
       if (isMapDrawing || isMapAnnotating) {
         return onSimpleMapHover(event)
       }
-      if (rulersEditing) {
-        return onMapHover(onRulerMapHover(event))
-      }
+      // if (rulersEditing) {
+      //   return onMapHover(onRulerMapHover(event))
+      // }
       return onMapHover(event)
     },
-    [isMapAnnotating, isMapDrawing, onMapHover, onRulerMapHover, onSimpleMapHover, rulersEditing]
+    [isMapAnnotating, isMapDrawing, onMapHover, onSimpleMapHover]
   )
 
   const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
