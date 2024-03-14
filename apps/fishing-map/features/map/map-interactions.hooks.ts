@@ -62,7 +62,7 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
 
   const onMouseMove: DeckProps['onHover'] = useCallback(
     (info: PickingInfo, event: any) => {
-      const features = map.pickMultipleObjects({
+      const features = map?.pickMultipleObjects({
         x: info.x,
         y: info.y,
         radius: 0,
@@ -70,13 +70,11 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
       if (features) {
         setDeckLayerInteraction(features)
       }
-      if (features?.some((feature) => feature.layer.id === 'RulerLayer')) {
-        const rulerPoint = features.find((feature) => feature.object.geometry.type === 'Point')
+      if (features?.some((feature: any) => feature.layer.id === 'RulerLayer')) {
+        const rulerPoint = features.find((feature: any) => feature.object.geometry.type === 'Point')
         if (rulerPoint) {
           map.setProps({ getCursor: () => 'crosshair' })
         }
-        console.log('🚀 ~ rulerPoint:', rulerPoint)
-        // onRulerMapHover(info)
       }
       // if (isMapDrawing || isMapAnnotating) {
       //   return onSimpleMapHover(event)
