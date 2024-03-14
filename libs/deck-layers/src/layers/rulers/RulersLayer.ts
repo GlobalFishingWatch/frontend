@@ -7,7 +7,6 @@ import { Ruler } from '@globalfishingwatch/layer-composer'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
 import {
   getGreatCircleMultiLine,
-  getRulerCoordsPairs,
   getRulerLengthLabel,
   getRulerStartAndEndPoints,
 } from './rulers.utils'
@@ -41,14 +40,13 @@ export class RulersLayer extends CompositeLayer<RulerLayerProps> {
       return {
         text: getRulerLengthLabel(ruler),
         position: centerPoint,
-        bearing: rhumbBearing(anchorPoints[0] as Position, anchorPoints[1] as Position),
+        bearing: 90 - rhumbBearing(anchorPoints[0] as Position, anchorPoints[1] as Position),
       }
     })
-    console.log(labels)
     this.setState({ labels })
   }
   renderLayers() {
-    const { rulers } = this.props
+    const { rulers, visible } = this.props
     this.layers = [
       new GeoJsonLayer(
         this.getSubLayerProps({
@@ -61,6 +59,7 @@ export class RulersLayer extends CompositeLayer<RulerLayerProps> {
           pickable: true,
           stroked: true,
           filled: true,
+          visible,
           getFillColor: COLOR,
           getLineColor: COLOR,
           pointRadiusMinPixels: 3,
@@ -83,6 +82,7 @@ export class RulersLayer extends CompositeLayer<RulerLayerProps> {
           getSize: 12,
           getAngle: (d: RulerLabel) => d.bearing,
           getColor: COLOR,
+          getAlignmentBaseline: 'bottom',
         })
       ),
     ] as LayersList
