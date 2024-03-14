@@ -11,6 +11,7 @@ import {
 import { ExtendedStyle, ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
+import { useSetDeckLayerInteraction } from '@globalfishingwatch/deck-layer-composer'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import {
@@ -38,13 +39,13 @@ import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selec
 import { SliceInteractionEvent } from './map.slice'
 
 export const useMapMouseHover = (style?: ExtendedStyle) => {
-  const map = useMapInstance()
+  const map = useDeckMap()
+  const setDeckLayerInteraction = useSetDeckLayerInteraction()
   const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating } = useMapAnnotation()
   const { onRulerMapHover, rulersEditing } = useRulers()
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const { cleanFeatureState } = useFeatureState(map)
 
   const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
   const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
@@ -52,38 +53,54 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
   )
 
   const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
-  const onMapHover = useMapHover(
-    setHoveredEvent as InteractionEventCallback,
-    setHoveredDebouncedEvent as InteractionEventCallback,
-    map,
-    style?.metadata
-  )
+  // const onMapHover = useMapHover(
+  //   setHoveredEvent as InteractionEventCallback,
+  //   setHoveredDebouncedEvent as InteractionEventCallback,
+  //   map,
+  //   style?.metadata
+  // )
 
-  const onMouseMove: any = useCallback(
-    (event: MapLayerMouseEvent) => {
-      if (isMapDrawing || isMapAnnotating) {
-        return onSimpleMapHover(event)
+  const onMouseMove: DeckProps['onHover'] = useCallback(
+    (info: PickingInfo, event: any) => {
+      const features = map.pickMultipleObjects({
+        x: info.x,
+        y: info.y,
+        radius: 0,
+      })
+      if (features) {
+        setDeckLayerInteraction(features)
       }
+      if (features?.some((feature) => feature.layer.id === 'RulerLayer')) {
+        const rulerPoint = features.find((feature) => feature.object.geometry.type === 'Point')
+        if (rulerPoint) {
+          map.setProps({ getCursor: () => 'crosshair' })
+        }
+        console.log('🚀 ~ rulerPoint:', rulerPoint)
+        // onRulerMapHover(info)
+      }
+      // if (isMapDrawing || isMapAnnotating) {
+      //   return onSimpleMapHover(event)
+      // }
       // if (rulersEditing) {
       //   return onMapHover(onRulerMapHover(event))
       // }
-      return onMapHover(event)
+      // return onMapHover(event)
     },
-    [isMapAnnotating, isMapDrawing, onMapHover, onSimpleMapHover]
+    [map, setDeckLayerInteraction]
   )
 
   const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
   useMapHighlightedEvent(hoveredTooltipEvent?.features)
 
-  const resetHoverState = useCallback(() => {
-    setHoveredEvent(null)
-    setHoveredDebouncedEvent(null)
-    cleanFeatureState('hover')
-  }, [cleanFeatureState])
+  // const resetHoverState = useCallback(() => {
+  //   setHoveredEvent(null)
+  //   setHoveredDebouncedEvent(null)
+  //   cleanFeatureState('hover')
+  // }, [cleanFeatureState])
 
   return {
     onMouseMove,
-    resetHoverState,
+    // resetHoverState,
     hoveredEvent,
     hoveredDebouncedEvent,
     hoveredTooltipEvent,
@@ -134,6 +151,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
         // this is needed to allow interacting with overlay elements content
         return true
       }
+      console.log(info)
       // const features = deckRef?.current?.pickMultipleObjects({
       //   x: info.x,
       //   y: info.y,

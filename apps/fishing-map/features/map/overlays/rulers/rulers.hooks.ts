@@ -76,7 +76,6 @@ const useRulers = () => {
         longitude,
         latitude,
       }
-      console.log('new coordinates', longitude, latitude)
       if (!value) {
         setRuleStart(point)
       } else {

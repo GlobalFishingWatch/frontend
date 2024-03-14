@@ -126,13 +126,14 @@ const MapWrapper = () => {
   )
   useUpdateViewStateUrlParams()
   const { onMapClick } = useMapMouseClick()
+  const { onMouseMove } = useMapMouseHover()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
   useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   useMapRulersDrag()
-  const { rulers, editingRuler, onRulerMapHover } = useRulers()
+  const { rulers, editingRuler, rulersVisible } = useRulers()
   // const map = useMapInstance()
   // const { isMapDrawing } = useMapDrawConnect()
   // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -272,21 +273,8 @@ const MapWrapper = () => {
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
-  const setDeckLayerInteraction = useSetDeckLayerInteraction()
-  const onHover = useCallback(
-    (info: PickingInfo) => {
-      const features = deckRef?.current?.pickMultipleObjects({
-        x: info.x,
-        y: info.y,
-        radius: 0,
-      })
-      if (features) {
-        setDeckLayerInteraction(features)
-      }
-      onRulerMapHover(info)
-    },
-    [onRulerMapHover, setDeckLayerInteraction]
-  )
+
+  const currentRuler = editingRuler ? [editingRuler] : []
 
   return (
     <div className={styles.container}>
@@ -315,12 +303,14 @@ const MapWrapper = () => {
         viewState={viewState}
         onViewStateChange={onViewStateChange}
         onClick={onMapClick}
-        onHover={onHover}
+        onHover={onMouseMove}
       >
         <MapAnnotations />
         <MapAnnotationsDialog />
         <ErrorNotification />
-        {editingRuler && <RulersLayer rulers={[...(rulers || []), editingRuler]} />}
+        {(editingRuler || rulers) && (
+          <RulersLayer rulers={[...(rulers || []), ...currentRuler]} visible={rulersVisible} />
+        )}
       </DeckGL>
       {/* {style && (
         <Map
