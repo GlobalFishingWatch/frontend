@@ -25,6 +25,7 @@ export type DateRange = {
 export interface DownloadActivityState {
   areaKey: AreaKeys | undefined
   areaDataview: Dataview | UrlDataviewInstance | undefined
+  error: string
   status: AsyncReducerStatus
   activeTabId: HeatmapDownloadTab
 }
@@ -32,6 +33,7 @@ export interface DownloadActivityState {
 const initialState: DownloadActivityState = {
   areaKey: undefined,
   areaDataview: undefined,
+  error: '',
   status: AsyncReducerStatus.Idle,
   activeTabId: HeatmapDownloadTab.ByVessel,
 }
@@ -143,6 +145,7 @@ const downloadActivitySlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(downloadActivityThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
+      state.error = ''
     })
     builder.addCase(downloadActivityThunk.fulfilled, (state) => {
       state.status = AsyncReducerStatus.Finished
@@ -150,6 +153,9 @@ const downloadActivitySlice = createSlice({
     builder.addCase(downloadActivityThunk.rejected, (state, action) => {
       state.status =
         action.error.message === 'Aborted' ? AsyncReducerStatus.Aborted : AsyncReducerStatus.Error
+      if (action.payload?.message) {
+        state.error = action.payload?.message
+      }
     })
   },
 })
@@ -162,22 +168,28 @@ export const {
 } = downloadActivitySlice.actions
 
 export const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
+export const selectDownloadActivityErrorMsg = (state: RootState) => state.downloadActivity.error
 export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey
 export const selectDownloadActiveTabId = (state: RootState) => state.downloadActivity.activeTabId
 
-export const selectDownloadActivityLoading = createSelector(
+export const selectIsDownloadActivityLoading = createSelector(
   [selectDownloadActivityStatus],
   (status) => status === AsyncReducerStatus.Loading
 )
 
-export const selectDownloadActivityError = createSelector(
+export const selectIsDownloadActivityError = createSelector(
   [selectDownloadActivityStatus],
   (status) => status === AsyncReducerStatus.Error
 )
 
-export const selectDownloadActivityFinished = createSelector(
+export const selectIsDownloadActivityFinished = createSelector(
   [selectDownloadActivityStatus],
   (status) => status === AsyncReducerStatus.Finished
+)
+
+export const selectIsDownloadAreaTooBig = createSelector(
+  [selectDownloadActivityErrorMsg],
+  (message) => message === 'Geometry too large'
 )
 
 export default downloadActivitySlice.reducer
