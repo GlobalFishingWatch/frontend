@@ -70,7 +70,7 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
       if (features) {
         setDeckLayerInteraction(features)
       }
-      if (features?.some((feature: any) => feature.layer.id === 'RulerLayer')) {
+      if (features?.some((feature: any) => feature.layer.id === 'RulersLayer')) {
         const rulerPoint = features.find((feature: any) => feature.object.geometry.type === 'Point')
         if (rulerPoint) {
           map.setProps({ getCursor: () => 'crosshair' })

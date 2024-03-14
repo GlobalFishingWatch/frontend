@@ -12,7 +12,7 @@ import {
 } from './rulers.utils'
 import { COLOR } from './rulers.config'
 
-type RulerLayerProps = GeoJsonLayerProps & {
+type RulersLayerProps = GeoJsonLayerProps & {
   rulers: Ruler[]
 }
 
@@ -28,10 +28,10 @@ const getFeaturesFromRulers = (rulers: Ruler[]) => {
     ...getRulerStartAndEndPoints(ruler),
   ])
 }
-export class RulersLayer extends CompositeLayer<RulerLayerProps> {
-  static layerName = 'RulerLayer'
+export class RulersLayer extends CompositeLayer<RulersLayerProps> {
+  static layerName = 'RulersLayer'
   layers: LayersList = []
-  updateState({ props }: { props: RulerLayerProps }) {
+  updateState({ props }: { props: RulersLayerProps }) {
     const labels = props.rulers.map((ruler: Ruler) => {
       const line = getGreatCircleMultiLine(ruler)
       const centerIndex = Math.round(line.geometry.coordinates.length / 2)
