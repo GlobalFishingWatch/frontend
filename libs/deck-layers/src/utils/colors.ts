@@ -39,6 +39,10 @@ export const deckToHexColor = ([r, g, b]: any) => {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
+export const deckToRgbaColor = ([r, g, b, a]: any) => {
+  return `rgba(${r},${g}, ${b}, ${a ? a / 255 : 1})`
+}
+
 export const rgbaStringToObject = (rgba: string) => {
   const [r, g, b, a] = rgba
     .substring(5, rgba.length - 1)

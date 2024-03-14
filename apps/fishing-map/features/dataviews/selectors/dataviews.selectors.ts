@@ -1,7 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniq } from 'lodash'
 import { DataviewCategory, Dataset, DatasetTypes, Dataview } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
+import {
+  UrlDataviewInstance,
+  getGeneratorConfig,
+  getMergedDataviewId,
+} from '@globalfishingwatch/dataviews-client'
 import { GeneratorType, BasemapGeneratorConfig } from '@globalfishingwatch/layer-composer'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -182,6 +186,13 @@ export const selectActiveActivityDataviews = createSelector(
   }
 )
 
+export const selectActivityMergedDataviewId = createSelector(
+  [selectActiveActivityDataviews],
+  (dataviews): string => {
+    return getMergedDataviewId(dataviews)
+  }
+)
+
 export const selectActiveReportActivityDataviews = createSelector(
   [selectActiveActivityDataviews, selectIsAnyReportLocation, selectReportCategory],
   (dataviews, isReportLocation, reportCategory): UrlDataviewInstance[] => {
@@ -197,6 +208,13 @@ export const selectActiveReportActivityDataviews = createSelector(
 export const selectActiveDetectionsDataviews = createSelector(
   [selectDetectionsDataviews],
   (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectDetectionsMergedDataviewId = createSelector(
+  [selectActiveDetectionsDataviews],
+  (dataviews): string => {
+    return getMergedDataviewId(dataviews)
+  }
 )
 
 export const selectActiveActivityAndDetectionsDataviews = createSelector(
@@ -290,9 +308,8 @@ export const selectActiveTemporalgridDataviews: (
 
 export const selectEventsDataviews = selectDataviewInstancesByCategory(DataviewCategory.Events)
 
-export const selectActiveEventsDataviews = createSelector(
-  [selectEventsDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+export const selectActiveEventsDataviews = createSelector([selectEventsDataviews], (dataviews) =>
+  dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveActivityDataviewsByVisualisation = (

@@ -91,10 +91,14 @@ export type FourwingsHeatmapTilesCache = {
   end: number
   interval: Interval
 }
-export type FourwingsHeatmapTileLayerState = {
+
+export type FourwingsTileLayerColorDomain = number[] | number[][]
+export type FourwingsTileLayerColorRange = string[] | ColorRange[]
+
+export type FourwingsTileLayerState = {
   tilesCache: FourwingsHeatmapTilesCache
-  colorDomain: number[] | number[][]
-  colorRanges: string[] | ColorRange[]
+  colorDomain: FourwingsTileLayerColorDomain
+  colorRanges: FourwingsTileLayerColorRange
   comparisonMode?: HeatmapAnimatedMode
   tiles: Tile2DHeader<FourwingsHeatmapTileData>[]
 }
