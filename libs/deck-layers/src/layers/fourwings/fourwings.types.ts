@@ -86,10 +86,13 @@ export type _FourwingsHeatmapTileLayerProps = {
 export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
   Partial<TileLayerProps>
 
-export type FourwingsHeatmapTileLayerState = {
-  cacheStart: number
-  cacheEnd: number
+export type FourwingsHeatmapTilesCache = {
+  start: number
+  end: number
   interval: Interval
+}
+export type FourwingsHeatmapTileLayerState = {
+  tilesCache: FourwingsHeatmapTilesCache
   colorDomain: number[] | number[][]
   colorRanges: string[] | ColorRange[]
   comparisonMode?: HeatmapAnimatedMode

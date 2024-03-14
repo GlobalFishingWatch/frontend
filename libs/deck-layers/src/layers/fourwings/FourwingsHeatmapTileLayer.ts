@@ -31,11 +31,11 @@ import {
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import { HEATMAP_ID, PATH_BASENAME, getChunksByInterval, getInterval } from './fourwings.config'
 import {
-  Chunk,
   ColorRange,
   FourwingsDeckSublayer,
   FourwingsHeatmapTileLayerProps,
   FourwingsHeatmapTileLayerState,
+  FourwingsHeatmapTilesCache,
   HeatmapAnimatedMode,
 } from './fourwings.types'
 
@@ -52,8 +52,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   initializeState(context: LayerContext): void {
     super.initializeState(context)
     this.state = {
-      ...this._getCacheRange(this.props.minFrame, this.props.maxFrame),
-      interval: getInterval(this.props.minFrame, this.props.maxFrame),
+      tilesCache: this._getTileDataCache(this.props.minFrame, this.props.maxFrame),
       colorDomain:
         this.props.comparisonMode === HeatmapAnimatedMode.Bivariate
           ? [
@@ -82,8 +81,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   _getCacheRange = (minFrame: number, maxFrame: number) => {
     const chunks = this._getChunks(minFrame, maxFrame)
     return {
-      cacheStart: chunks[0].start,
-      cacheEnd: chunks[0].end,
+      start: chunks[0].start,
+      end: chunks[0].end,
     }
   }
 
@@ -220,38 +219,44 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return chunks
   }
 
-  _getTileDataCacheKey = (minFrame: number, maxFrame: number, chunks: Chunk[]): string => {
-    const interval = chunks[0].interval
-    const isStartOutRange = minFrame <= this.state.cacheStart
-    const isEndOutRange = maxFrame >= this.state.cacheEnd
-    if (isStartOutRange || isEndOutRange || interval !== this.state.interval) {
-      this.setState({
-        interval,
-        ...this._getCacheRange(minFrame, maxFrame),
-      })
-    }
-    return [this.state.cacheStart, this.state.cacheEnd, interval].join('-')
+  _getTileDataCache = (minFrame: number, maxFrame: number): FourwingsHeatmapTilesCache => {
+    const interval = getInterval(minFrame, maxFrame)
+    const { start, end } = this._getCacheRange(minFrame, maxFrame)
+    return { start, end, interval }
+  }
+
+  _getTileDataCacheKey = (): string => {
+    return Object.values(this.state.tilesCache).join(',')
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
+    const { minFrame, maxFrame } = props
+    const { tilesCache, colorRanges } = this.state as FourwingsHeatmapTileLayerState
     const newSublayerColorRanges = this._getColorRanges()
-    const sublayersHaveNewColors = this.state.colorRanges.join() !== newSublayerColorRanges.join()
+    const sublayersHaveNewColors = colorRanges.join() !== newSublayerColorRanges.join()
+
+    if (sublayersHaveNewColors) {
+      this.setState({ colorRanges: newSublayerColorRanges })
+    }
+
     const newMode = props.comparisonMode !== oldProps.comparisonMode
-    if (sublayersHaveNewColors || newMode) {
-      this.setState({
-        colorRanges: newSublayerColorRanges,
-        ...(newMode && {
-          colorDomain: this._calculateColorDomain(),
-        }),
-      })
+    if (newMode) {
+      this.setState({ colorDomain: this._calculateColorDomain() })
+    }
+
+    const isStartOutRange = minFrame <= tilesCache.start
+    const isEndOutRange = maxFrame >= tilesCache.end
+    const needsCaheKeyUpdate =
+      isStartOutRange || isEndOutRange || getInterval(minFrame, maxFrame) !== tilesCache.interval
+    if (needsCaheKeyUpdate) {
+      this.setState({ tilesCache: this._getTileDataCache(minFrame, maxFrame) })
     }
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { minFrame, maxFrame, sublayers, comparisonMode } = this.props
-    const { colorDomain, colorRanges } = this.state
-    const chunks = this._getChunks(minFrame, maxFrame)
-    const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
+    const { sublayers, comparisonMode } = this.props
+    const { colorDomain, colorRanges } = this.state as FourwingsHeatmapTileLayerState
+    const cacheKey = this._getTileDataCacheKey()
     const sublayersIds = sublayers.map((s) => s.id).join(',')
 
     return new TileLayer(
