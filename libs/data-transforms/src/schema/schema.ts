@@ -68,6 +68,15 @@ export const getSchemaIdClean = (id: string) => {
   return id?.replace(/-/g, '_')?.toLowerCase()
 }
 
+export const getDatasetSchemaClean = (schema: Dataset['schema']): Dataset['schema'] => {
+  if (!schema) {
+    return {} as Dataset['schema']
+  }
+  return Object.entries(schema).reduce((acc, [key, value]) => {
+    return { ...acc, [getSchemaIdClean(key)]: value }
+  }, {})
+}
+
 export const getDatasetSchemaFromGeojson = (
   geojson: FeatureCollection,
   getFieldSchemaParams = {} as GetFieldSchemaParams
@@ -101,11 +110,10 @@ export const getDatasetSchemaFromList = (
   }
   const schema: Dataset['schema'] = fields.reduce(
     (acc: Dataset['schema'], field: string): Dataset['schema'] => {
-      const cleanField = getSchemaIdClean(field)
       const uniqDataValues = uniq(data.flatMap((d) => d[field] || []))
-      const schema = getFieldSchema(cleanField, uniqDataValues, getFieldSchemaParams)
+      const schema = getFieldSchema(field, uniqDataValues, getFieldSchemaParams)
       if (schema) {
-        return { ...acc, [cleanField]: schema }
+        return { ...acc, [field]: schema }
       }
       return acc
     },

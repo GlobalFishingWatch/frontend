@@ -9,6 +9,7 @@ import {
 import {
   cleanProperties,
   getDatasetSchema,
+  getDatasetSchemaClean,
   guessColumnsFromSchema,
 } from '@globalfishingwatch/data-transforms'
 import {
@@ -124,6 +125,7 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
     ...datasetMetadata,
     unit: 'TBD',
     subcategory: 'info',
+    schema: getDatasetSchemaClean(datasetMetadata.schema),
   }
   const timestampProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
