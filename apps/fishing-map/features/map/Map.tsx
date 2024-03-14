@@ -67,6 +67,7 @@ import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-s
 import MapLegends from './MapLegends'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
+import useRulers from './overlays/rulers/rulers.hooks'
 
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 const PopupWrapper = dynamic(
@@ -131,6 +132,7 @@ const MapWrapper = () => {
   useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   useMapRulersDrag()
+  const { rulers, editingRuler, onRulerMapHover } = useRulers()
   // const map = useMapInstance()
   // const { isMapDrawing } = useMapDrawConnect()
   // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -281,8 +283,9 @@ const MapWrapper = () => {
       if (features) {
         setDeckLayerInteraction(features)
       }
+      onRulerMapHover(info)
     },
-    [setDeckLayerInteraction]
+    [onRulerMapHover, setDeckLayerInteraction]
   )
 
   return (
@@ -317,14 +320,7 @@ const MapWrapper = () => {
         <MapAnnotations />
         <MapAnnotationsDialog />
         <ErrorNotification />
-        <RulerLayer
-          id="rulerLayer"
-          data={[]}
-          onEdit={(props) => console.log('editing', props)}
-          onClick={() => console.log('on click')}
-          mode="edit"
-          selectedFeatureIndexes={[]}
-        />
+        {editingRuler && <RulerLayer rulers={[...(rulers || []), editingRuler]} />}
       </DeckGL>
       {/* {style && (
         <Map
