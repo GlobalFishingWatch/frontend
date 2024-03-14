@@ -12,6 +12,7 @@ import {
 } from 'features/map/map-sources.hooks'
 import { useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
+import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 
 export const useEventsDynamicRamp = (dataview: UrlDataviewInstance) => {
   const { bounds } = useMapBounds()
@@ -22,7 +23,7 @@ export const useEventsDynamicRamp = (dataview: UrlDataviewInstance) => {
 
   const updateBreaksByViewportValues = useCallback(
     ({ features, dataviewsId } = {} as DataviewFeature, bounds: MiniglobeBounds) => {
-      const filteredFeatures = filterFeaturesByBounds(features, bounds)
+      const filteredFeatures = filterFeaturesByBounds(features, bounds) as GeoJSONFeature[]
       if (filteredFeatures?.length > 0) {
         const data = filteredFeatures.map((feature) => feature.properties?.count)
         const steps = Math.min(data.length, 3)

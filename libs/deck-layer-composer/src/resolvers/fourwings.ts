@@ -34,7 +34,7 @@ export const resolveDeckFourwingsLayerProps = (
     minFrame: startTime,
     maxFrame: endTime,
     visible: true,
-    // mode: activityMode,
+    comparisonMode: dataview.config?.mode,
     mode: 'heatmap',
     debug: false,
     // category: dataview.category || DataviewCategory.Activity,
