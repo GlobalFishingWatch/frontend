@@ -261,21 +261,28 @@ export function getDataviewsMerged(
     )
 
   const singleHeatmapDataview = [...activityDataviews, ...detectionDataviews].length === 1
-  const heatmapAnimatedMode = params.bivariateDataviews
+  const activityHeatmapAnimatedMode = activityDataviews.every((dataview) =>
+    params.bivariateDataviews?.includes(dataview.id)
+  )
+    ? HeatmapAnimatedMode.Bivariate
+    : HeatmapAnimatedMode.Compare
+  const detectionsHeatmapAnimatedMode = detectionDataviews.every((dataview) =>
+    params.bivariateDataviews?.includes(dataview.id)
+  )
     ? HeatmapAnimatedMode.Bivariate
     : HeatmapAnimatedMode.Compare
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
   const mergedActivityDataview = activityDataviews?.length
     ? getMergedHeatmapAnimatedDataviews(activityDataviews, {
         ...params,
-        heatmapAnimatedMode,
+        heatmapAnimatedMode: activityHeatmapAnimatedMode,
         colorRampWhiteEnd: singleHeatmapDataview,
       })
     : []
   const mergedDetectionsDataview = detectionDataviews.length
     ? getMergedHeatmapAnimatedDataviews(detectionDataviews, {
         ...params,
-        heatmapAnimatedMode,
+        heatmapAnimatedMode: detectionsHeatmapAnimatedMode,
         colorRampWhiteEnd: singleHeatmapDataview,
       })
     : []
