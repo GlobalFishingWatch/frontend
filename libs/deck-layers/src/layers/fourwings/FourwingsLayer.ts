@@ -1,15 +1,13 @@
 import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core/typed'
 import { TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
-import {
-  FourwingsHeatmapTileLayerProps,
-  FourwingsHeatmapTileLayer,
-} from './FourwingsHeatmapTileLayer'
+import { FourwingsHeatmapTileLayer } from './FourwingsHeatmapTileLayer'
 import {
   FourwingsPositionsTileLayer,
   FourwingsPositionsTileLayerProps,
 } from './FourwingsPositionsTileLayer'
 import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
+import { FourwingsHeatmapTileLayerProps } from './fourwings.types'
 
 export type FourwingsLayerMode = typeof HEATMAP_ID | typeof POSITIONS_ID
 export type FourwingsColorRamp = {

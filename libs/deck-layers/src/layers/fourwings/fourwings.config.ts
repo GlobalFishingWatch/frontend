@@ -1,6 +1,7 @@
 import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
 import { Interval } from '@globalfishingwatch/layer-composer'
 import { getUTCDateTime } from '../../utils/dates'
+import { Chunk } from './fourwings.types'
 
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
@@ -35,12 +36,12 @@ export const LIMITS_BY_INTERVAL: Record<
   },
   DAY: {
     unit: 'months',
-    value: 6,
+    value: 3,
     buffer: 1,
   },
   MONTH: {
     unit: 'year',
-    value: 6,
+    value: 3,
     buffer: 1,
   },
   YEAR: undefined,
@@ -72,37 +73,30 @@ export const getDatesInIntervalResolution = (
   }
 }
 
-export type Chunk = {
-  id: string
-  interval: Interval
-  start: number
-  end: number
-}
-
 export const CHUNKS_BUFFER = 1
 // TODO: validate if worth to make this dynamic for the playback
-export const getChunksByInterval = (start: number, end: number, interval: Interval): Chunk[] => {
+export const getChunkByInterval = (start: number, end: number, interval: Interval): Chunk => {
   const intervalUnit = LIMITS_BY_INTERVAL[interval]?.unit
   if (!intervalUnit) {
-    return [{ id: 'full-time-range', interval, start, end }]
+    return { id: 'full-time-range', interval, start, end, bufferedStart: start, bufferedEnd: end }
   }
-  const bufferedStartDate = getUTCDateTime(start)
+  const startDate = getUTCDateTime(start)
     .startOf(intervalUnit as any)
     .minus({ [intervalUnit]: CHUNKS_BUFFER })
-  const bufferedEndDate = getUTCDateTime(end)
+  const bufferedStartDate = startDate.minus({ [intervalUnit]: CHUNKS_BUFFER })
+  const now = DateTime.now().toUTC().startOf('day')
+  const endDate = getUTCDateTime(end)
     .endOf(intervalUnit as any)
     .plus({ [intervalUnit]: CHUNKS_BUFFER, millisecond: 1 })
-  const dataNew = [
-    {
-      id: `${intervalUnit}-chunk`,
-      interval,
-      start: bufferedStartDate.toMillis(),
-      end: bufferedEndDate.toMillis(),
-      startISO: bufferedStartDate.toISO(),
-      endISO: bufferedEndDate.toISO(),
-    },
-  ]
-  return dataNew
+  const bufferedEndDate = endDate.plus({ [intervalUnit]: CHUNKS_BUFFER })
+  return {
+    id: `${intervalUnit}-chunk`,
+    interval,
+    start: startDate.toMillis(),
+    end: Math.min(endDate.toMillis(), now.toMillis()),
+    bufferedStart: bufferedStartDate.toMillis(),
+    bufferedEnd: Math.min(bufferedEndDate.toMillis(), now.toMillis()),
+  }
 }
 
 export const getChunkBuffer = (interval: Interval) => {
@@ -111,11 +105,4 @@ export const getChunkBuffer = (interval: Interval) => {
     return 0
   }
   return Duration.fromObject({ [unit]: buffer }).toMillis()
-}
-
-// TODO use the existing class function instead of repeating the logic
-export const getChunks = (minFrame: number, maxFrame: number) => {
-  const interval = getInterval(minFrame, maxFrame)
-  const chunks = getChunksByInterval(minFrame, maxFrame, interval)
-  return chunks
 }

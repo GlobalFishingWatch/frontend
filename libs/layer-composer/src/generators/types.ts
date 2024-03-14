@@ -48,6 +48,7 @@ export interface GlobalGeneratorConfig {
   compareEnd?: string
   locale?: Locale
   visibleEvents?: EventTypes[]
+  bivariateDataviews?: [string, string]
 }
 
 export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
