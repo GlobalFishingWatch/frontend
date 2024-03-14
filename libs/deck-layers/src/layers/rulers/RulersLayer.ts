@@ -37,10 +37,11 @@ export class RulersLayer extends CompositeLayer<RulerLayerProps> {
       const centerIndex = Math.round(line.geometry.coordinates.length / 2)
       const centerPoint = line.geometry.coordinates[centerIndex]
       const anchorPoints = line.geometry.coordinates.slice(centerIndex, centerIndex + 2)
+      const bearing = rhumbBearing(anchorPoints[0] as Position, anchorPoints[1] as Position)
       return {
         text: getRulerLengthLabel(ruler),
         position: centerPoint,
-        bearing: 90 - rhumbBearing(anchorPoints[0] as Position, anchorPoints[1] as Position),
+        bearing: bearing <= 0 ? 270 - bearing : 90 - bearing,
       }
     })
     this.setState({ labels })
