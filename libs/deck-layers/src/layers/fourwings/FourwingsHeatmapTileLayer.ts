@@ -1,4 +1,11 @@
-import { CompositeLayer, Layer, LayerContext, LayersList, DefaultProps } from '@deck.gl/core/typed'
+import {
+  CompositeLayer,
+  Layer,
+  LayerContext,
+  LayersList,
+  DefaultProps,
+  UpdateParameters,
+} from '@deck.gl/core/typed'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { ckmeans } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
@@ -55,8 +62,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
             ]
           : [1, 20, 50, 100, 500, 5000, 10000, 500000],
       colorRanges: this._getColorRanges(),
-      comparisonMode: this.props.comparisonMode,
-      tiles: [],
     } as FourwingsHeatmapTileLayerState
   }
 
@@ -82,28 +87,25 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     }
   }
 
-  _calculateColorDomain = (comparisonMode?: HeatmapAnimatedMode) => {
+  _calculateColorDomain = () => {
     // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
-    const currentZoomTiles = (this.state.tiles as FourwingsHeatmapTileLayerState['tiles']).filter(
-      (tile) => tile.zoom === Math.round(this.context.viewport.zoom)
-    )
-    if (!currentZoomTiles?.length) {
+    const currentZoomData = this.getData()
+    if (!currentZoomData.length) {
       return this.getColorDomain()
     }
-    if (comparisonMode === HeatmapAnimatedMode.Bivariate) {
+    const dataSample =
+      currentZoomData.length > MAX_VALUES_PER_TILE
+        ? currentZoomData.filter(filterElementByPercentOfIndex)
+        : currentZoomData
+
+    if (this.props.comparisonMode === HeatmapAnimatedMode.Bivariate) {
       let allValues: [number[], number[]] = [[], []]
-      currentZoomTiles.forEach((tile) => {
-        if (!tile.content) return
-        ;(tile.content.length > MAX_VALUES_PER_TILE
-          ? tile.content.filter(filterElementByPercentOfIndex)
-          : tile.content
-        ).forEach((feature) => {
-          feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
-            allValues[sublayerIndex].push(...sublayerValues.filter(filterElementByPercentOfIndex))
-          })
+      dataSample.forEach((feature) => {
+        feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
+          allValues[sublayerIndex].push(...sublayerValues.filter(filterElementByPercentOfIndex))
         })
       })
       if (!allValues.length) {
@@ -115,18 +117,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       return steps
     }
 
-    const allValues = currentZoomTiles.flatMap((tile) => {
-      if (!tile.content) return []
-      return (
-        tile.content.length > MAX_VALUES_PER_TILE
-          ? tile.content.filter(filterElementByPercentOfIndex)
-          : tile.content
-      ).flatMap((feature) =>
-        feature.properties?.values.flatMap((values) => {
-          return (values || []).filter(filterElementByPercentOfIndex)
-        })
-      )
-    })
+    const allValues = dataSample.flatMap((feature) =>
+      feature.properties?.values.flatMap((values) => {
+        return (values || []).filter(filterElementByPercentOfIndex)
+      })
+    )
+
     if (!allValues.length) {
       return this.getColorDomain()
     }
@@ -138,12 +134,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   updateColorDomain = debounce(() => {
     requestAnimationFrame(() => {
-      this.setState({ colorDomain: this._calculateColorDomain(this.state.comparisonMode) })
+      this.setState({ colorDomain: this._calculateColorDomain() })
     })
   }, 500)
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
-    this.setState({ tiles })
     this.updateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
@@ -238,25 +233,23 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return [this.state.cacheStart, this.state.cacheEnd, interval].join('-')
   }
 
-  _updateStateWithNewProps = () => {
+  updateState({ props, oldProps }: UpdateParameters<this>) {
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = this.state.colorRanges.join() !== newSublayerColorRanges.join()
-    const newMode = this.props.comparisonMode !== this.state.comparisonMode
+    const newMode = props.comparisonMode !== oldProps.comparisonMode
     if (sublayersHaveNewColors || newMode) {
       this.setState({
         colorRanges: newSublayerColorRanges,
         ...(newMode && {
-          comparisonMode: this.props.comparisonMode,
-          colorDomain: this._calculateColorDomain(this.props.comparisonMode),
+          colorDomain: this._calculateColorDomain(),
         }),
       })
     }
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { minFrame, maxFrame, sublayers } = this.props
-    this._updateStateWithNewProps()
-    const { colorDomain, colorRanges, comparisonMode } = this.state
+    const { minFrame, maxFrame, sublayers, comparisonMode } = this.props
+    const { colorDomain, colorRanges } = this.state
     const chunks = this._getChunks(minFrame, maxFrame)
     const cacheKey = this._getTileDataCacheKey(minFrame, maxFrame, chunks)
     const sublayersIds = sublayers.map((s) => s.id).join(',')
