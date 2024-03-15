@@ -8,6 +8,7 @@ export type LayerLibraryMode = DataviewCategory | false
 export type DatasetUploadStyle = 'default' | 'transparent'
 export type DatasetUploadConfig = {
   id?: string
+  dataviewId?: string
   type?: DatasetGeometryType
   style?: DatasetUploadStyle
   fileRejected?: boolean

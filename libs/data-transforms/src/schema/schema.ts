@@ -1,4 +1,4 @@
-import { max, min, uniq } from 'lodash'
+import { kebabCase, max, min, uniq } from 'lodash'
 import { FeatureCollection } from 'geojson'
 import { Dataset, DatasetSchemaItem, DatasetSchemaType } from '@globalfishingwatch/api-types'
 import { parseCoords } from '../coordinates'
@@ -65,7 +65,7 @@ export const getFieldSchema = (
 export const getSchemaIdClean = (id: string) => {
   // TODO review how backend handles characters like -
   // so we can parse the same here or before uploading the dataset
-  return id?.replace(/-/g, '_')?.toLowerCase()
+  return kebabCase(id)
 }
 
 export const getDatasetSchemaClean = (schema: Dataset['schema']): Dataset['schema'] => {

@@ -16,6 +16,8 @@ import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   useDatasetsAPI,
   useDatasetModalOpenConnect,
@@ -54,9 +56,11 @@ function NewDataset() {
   const { t } = useTranslation()
   const [isGuestUserDismissVisible, setIsGuestUserDismissVisible] = useState(false)
   const { datasetModalOpen, dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
-  const { type, style, id, fileRejected, dispatchDatasetModalConfig } =
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { type, style, id, dataviewId, fileRejected, dispatchDatasetModalConfig } =
     useDatasetModalConfigConnect()
   const dataset = useSelector(selectDatasetById(id as string))
+  const dataviewInstances = useSelector(selectDataviewInstancesMerged)
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const [rawFile, setRawFile] = useState<File | undefined>()
   const isGuestUser = useSelector(selectIsGuestUser)
@@ -84,8 +88,9 @@ function NewDataset() {
   const onConfirmClick: NewDatasetProps['onConfirm'] = useCallback(
     async (datasetMetadata, { file, isEditing } = {} as OnConfirmParams) => {
       if (datasetMetadata) {
+        const dataset = getFinalDatasetFromMetadata(datasetMetadata)
         const { payload, error: createDatasetError } = await dispatchUpsertDataset({
-          dataset: getFinalDatasetFromMetadata(datasetMetadata),
+          dataset,
           file,
           createAsPublic: datasetMetadata?.public ?? true,
         })
@@ -99,6 +104,22 @@ function NewDataset() {
             const dataset = { ...payload }
             if (!isEditing) {
               addDataviewFromDatasetToWorkspace(dataset)
+            } else if (dataviewId) {
+              const dataviewInstance = dataviewInstances?.find((d) => d.id === dataviewId)
+              if (dataviewInstance) {
+                const supportedFilters = Object.entries(
+                  dataviewInstance.config?.filters || {}
+                ).reduce((acc, [key, value]) => {
+                  if (dataset.fieldsAllowed.includes(key)) {
+                    acc[key] = value
+                  }
+                  return acc
+                }, {} as Record<string, string>)
+                upsertDataviewInstance({
+                  id: dataviewId,
+                  config: { filters: supportedFilters },
+                })
+              }
             }
           }
           onClose()
@@ -111,7 +132,16 @@ function NewDataset() {
         return payload
       }
     },
-    [addDataviewFromDatasetToWorkspace, dispatchUpsertDataset, locationType, onClose, t]
+    [
+      addDataviewFromDatasetToWorkspace,
+      dataviewId,
+      dataviewInstances,
+      dispatchUpsertDataset,
+      locationType,
+      onClose,
+      t,
+      upsertDataviewInstance,
+    ]
   )
 
   const onDatasetParseError: NewDatasetProps['onDatasetParseError'] = useCallback(
