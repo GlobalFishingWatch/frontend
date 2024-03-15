@@ -1,12 +1,7 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import {
-  LegendType,
-  MapLegend,
-  Tooltip,
-  UILegendColorRamp,
-} from '@globalfishingwatch/ui-components'
+import { LegendType, MapLegend, Tooltip, UILegend } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
@@ -45,7 +40,7 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
     : (deckLegend.ranges?.[legendSublayerIndex] as ColorRange)?.map((color) => {
         return deckToRgbaColor(color)
       })
-  const uiLegend: UILegendColorRamp = {
+  const uiLegend: UILegend = {
     id: deckLegend.id,
     type: isBivariate ? LegendType.Bivariate : LegendType.ColorRampDiscrete,
     values: deckLegend.domain as number[],

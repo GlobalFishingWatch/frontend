@@ -13,6 +13,7 @@ export const resolveDeckFourwingsLayerProps = (
   { start, end }: ResolverGlobalConfig,
   interactions: PickingInfo[]
 ): FourwingsLayerProps => {
+  console.log('dataview:', dataview)
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
 
@@ -25,6 +26,7 @@ export const resolveDeckFourwingsLayerProps = (
       color: (sublayer?.color || dataview.config?.color) as string,
       colorRamp: sublayer?.colorRamp,
       visible: sublayer?.visible,
+      unit: sublayer?.legend.unit,
     },
   }))
   return {

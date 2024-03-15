@@ -15,6 +15,7 @@ export interface FourwingsDeckSublayer {
     color: string
     colorRamp: ColorRampsIds
     visible?: boolean
+    unit?: string
   }
   // filter?: string
   // vesselGroups?: string

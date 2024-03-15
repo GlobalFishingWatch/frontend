@@ -6,6 +6,7 @@ import {
   FourwingsTileLayerColorRange,
   HeatmapAnimatedMode,
 } from '@globalfishingwatch/deck-layers'
+import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
 import { deckLayersInteractionAtom } from './deck-layers-interaction.hooks'
 import { deckLayersAtom } from './deck-layers.hooks'
 
@@ -50,6 +51,19 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
     if (!domain || !range) {
       // TODO: handle when the layer does not have a color scale because the state is not ready after an update
     }
+
+    let label = layer.instance.props.sublayers[0].config.unit || ''
+    if (label === 'hours') {
+      const gridZoom = Math.round(
+        Math.min(layer.instance.context.viewport.zoom, HEATMAP_DEFAULT_MAX_ZOOM)
+      )
+      const gridAreaM = GRID_AREA_BY_ZOOM_LEVEL[gridZoom]
+      const isSquareKm = (gridAreaM as number) > 50000
+      const gridArea = isSquareKm ? (gridAreaM as number) / 1000000 : gridAreaM
+      const gridAreaFormatted = gridArea ? `${gridArea}${isSquareKm ? 'km' : 'm'}` : ''
+      label = `hours / ${gridAreaFormatted}²`
+    }
+
     return {
       id: layer.id,
       // category: layer.instance.props.category,
@@ -61,6 +75,7 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
       domain,
       ranges: range,
       currentValues: interaction?.object.values,
+      label,
     }
   })
 })
