@@ -380,24 +380,25 @@ export function resolveDataviews(
               (d) => getDatasetSchemaItem(d, filterKey) !== undefined
             )
             const datasetSchema = getDatasetSchemaItem(dataset as Dataset, filterKey)
+            const isUserDataset = dataviewInstance.category === DataviewCategory.User
             const queryFilterKey =
               // User context layers requires wrapping the filter key with double quotes
-              filterKey.includes('-') && dataviewInstance.category === DataviewCategory.User
-                ? `"${filterKey}"`
-                : filterKey
+              filterKey.includes('_') && isUserDataset ? `"${filterKey}"` : filterKey
             if (datasetSchema && datasetSchema.type === 'range') {
               const minPossible = Number(datasetSchema?.enum?.[0])
               const minSelected = Number(filterValues[0])
+              const minValue = isUserDataset ? `'${minSelected}'` : minSelected
               const maxPossible = Number(datasetSchema?.enum?.[datasetSchema.enum.length - 1])
               const maxSelected = Number(filterValues[filterValues.length - 1])
+              const maxValue = isUserDataset ? `'${maxSelected}'` : maxSelected
               if (minSelected !== minPossible && maxSelected !== maxPossible) {
-                return `${queryFilterKey} >= ${minSelected} AND ${queryFilterKey} <= ${maxSelected}`
+                return `${queryFilterKey} >= ${minValue} AND ${queryFilterKey} <= ${maxValue}`
               }
               if (minSelected !== minPossible) {
-                return `${queryFilterKey} >= ${minSelected}`
+                return `${queryFilterKey} >= ${minValue}`
               }
               if (maxSelected !== maxPossible) {
-                return `${queryFilterKey} <= ${maxSelected}`
+                return `${queryFilterKey} <= ${maxValue}`
               }
             }
             const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID

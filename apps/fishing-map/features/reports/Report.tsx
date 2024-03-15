@@ -169,7 +169,10 @@ function ActivityReport({ reportName }: { reportName: string }) {
         )
       }
 
-      if (statusError.status === 413) {
+      if (
+        statusError.status === 413 ||
+        (statusError.status === 422 && statusError.message === 'Geometry too large')
+      ) {
         return (
           <ReportVesselsPlaceholder>
             <div className={styles.cover}>

@@ -9,6 +9,8 @@ import {
 import {
   cleanProperties,
   getDatasetSchema,
+  getDatasetSchemaClean,
+  getSchemaIdClean,
   guessColumnsFromSchema,
 } from '@globalfishingwatch/data-transforms'
 import {
@@ -51,6 +53,7 @@ export const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMeta
     } as DatasetConfiguration,
   } as Partial<Dataset>
 }
+
 export const getTracksDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
   const guessedColumns = guessColumnsFromSchema(baseMetadata.schema)
@@ -123,6 +126,8 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
     ...datasetMetadata,
     unit: 'TBD',
     subcategory: 'info',
+    schema: getDatasetSchemaClean(datasetMetadata.schema),
+    fieldsAllowed: datasetMetadata.fieldsAllowed?.map((field) => getSchemaIdClean(field)) || [],
   }
   const timestampProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -165,9 +170,10 @@ export const parseGeoJsonProperties = <T extends Polygon | Point>(
           cleanedProperties[propertyKey] = getUTCDateTime(value).toMillis()
         }
       })
+      const properties = getDatasetSchemaClean(cleanedProperties)
       return {
         ...feature,
-        properties: cleanedProperties,
+        properties,
       }
     }) as Feature<T, GeoJsonProperties>[],
   }

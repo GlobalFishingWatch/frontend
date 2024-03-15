@@ -1,4 +1,4 @@
-import { max, min, uniq } from 'lodash'
+import { kebabCase, max, min, uniq } from 'lodash'
 import { FeatureCollection } from 'geojson'
 import { Dataset, DatasetSchemaItem, DatasetSchemaType } from '@globalfishingwatch/api-types'
 import { parseCoords } from '../coordinates'
@@ -65,7 +65,16 @@ export const getFieldSchema = (
 export const getSchemaIdClean = (id: string) => {
   // TODO review how backend handles characters like -
   // so we can parse the same here or before uploading the dataset
-  return id?.replace(/-/g, '_')?.toLowerCase()
+  return kebabCase(id)
+}
+
+export const getDatasetSchemaClean = (schema: Dataset['schema']): Dataset['schema'] => {
+  if (!schema) {
+    return {} as Dataset['schema']
+  }
+  return Object.entries(schema).reduce((acc, [key, value]) => {
+    return { ...acc, [getSchemaIdClean(key)]: value }
+  }, {})
 }
 
 export const getDatasetSchemaFromGeojson = (
@@ -101,11 +110,10 @@ export const getDatasetSchemaFromList = (
   }
   const schema: Dataset['schema'] = fields.reduce(
     (acc: Dataset['schema'], field: string): Dataset['schema'] => {
-      const cleanField = getSchemaIdClean(field)
-      const uniqDataValues = uniq(data.flatMap((d) => d[cleanField] || []))
-      const schema = getFieldSchema(cleanField, uniqDataValues, getFieldSchemaParams)
+      const uniqDataValues = uniq(data.flatMap((d) => d[field] || []))
+      const schema = getFieldSchema(field, uniqDataValues, getFieldSchemaParams)
       if (schema) {
-        return { ...acc, [cleanField]: schema }
+        return { ...acc, [field]: schema }
       }
       return acc
     },
