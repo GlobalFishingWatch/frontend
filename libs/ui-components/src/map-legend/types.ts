@@ -22,10 +22,10 @@ export type UILegendSolid = BaseLegend & {
 }
 
 export type UILegendColorRamp = BaseLegend & {
-  type: LegendType.ColorRamp | LegendType.ColorRampDiscrete
+  type: LegendType
   values?: number[]
   colors?: string[]
-  currentValue?: number
+  currentValue?: number | number[]
 }
 
 export type UILegendBivariate = BaseLegend & {

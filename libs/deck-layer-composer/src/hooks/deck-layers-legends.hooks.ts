@@ -4,6 +4,7 @@ import {
   FourwingsLayer,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
+  HeatmapAnimatedMode,
 } from '@globalfishingwatch/deck-layers'
 import { deckLayersInteractionAtom } from './deck-layers-interaction.hooks'
 import { deckLayersAtom } from './deck-layers.hooks'
@@ -52,7 +53,10 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
     return {
       id: layer.id,
       // category: layer.instance.props.category,
-      type: LegendType.ColorRampDiscrete, // TODO get this based on the instance configuration
+      type:
+        layer.instance.props.comparisonMode === HeatmapAnimatedMode.Bivariate
+          ? LegendType.Bivariate
+          : LegendType.ColorRampDiscrete,
       sublayers: layer.instance.props.sublayers,
       domain,
       ranges: range,

@@ -29,22 +29,30 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
       ? activityMergedDataviewId
       : detectionsMergedDataviewId
   const deckLegend = useGetDeckLayerLegend(dataviewId)
+  const isBivariate = deckLegend?.type === LegendType.Bivariate
 
   if (!deckLegend) {
     return null
   }
-
   const legendSublayerIndex = deckLegend?.sublayers.findIndex(
     (sublayer) => sublayer.id === dataview.id
   )
+  if (legendSublayerIndex < 0 || (isBivariate && legendSublayerIndex !== 0)) {
+    return null
+  }
+  const colors = isBivariate
+    ? (deckLegend.ranges as string[])
+    : (deckLegend.ranges?.[legendSublayerIndex] as ColorRange)?.map((color) => {
+        return deckToRgbaColor(color)
+      })
   const uiLegend: UILegendColorRamp = {
     id: deckLegend.id,
-    type: LegendType.ColorRampDiscrete,
+    type: isBivariate ? LegendType.Bivariate : LegendType.ColorRampDiscrete,
     values: deckLegend.domain as number[],
-    colors: (deckLegend.ranges?.[legendSublayerIndex] as ColorRange)?.map((color) =>
-      deckToRgbaColor(color)
-    ),
-    currentValue: deckLegend.currentValues?.[legendSublayerIndex],
+    colors,
+    currentValue: isBivariate
+      ? deckLegend.currentValues
+      : deckLegend.currentValues?.[legendSublayerIndex],
     label: deckLegend.label || '',
   }
 
