@@ -109,8 +109,6 @@ export function ColorRampLegend({
   }
 
   if (!domainValues || !colors?.length) {
-    console.log('🚀 ~ colors:', colors)
-    console.log('🚀 ~ domainValues:', domainValues)
     return null
   }
 

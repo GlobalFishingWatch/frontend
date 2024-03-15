@@ -44,7 +44,7 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
     currentValue: deckLegend.currentValues?.[legendSublayerIndex],
     label: deckLegend.label || '',
   }
-  console.log('🚀 ~ MapLegendWrapper ~ uiLegend:', uiLegend)
+
   return (
     <MapLegend
       layer={uiLegend}
