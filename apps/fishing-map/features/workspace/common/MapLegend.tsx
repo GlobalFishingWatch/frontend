@@ -12,14 +12,17 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
 import { ColorRange, deckToRgbaColor } from '@globalfishingwatch/deck-layers'
 import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
-import { selectActivityMergedDataviewId } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  selectActivityMergedDataviewId,
+  selectDetectionsMergedDataviewId,
+} from 'features/dataviews/selectors/dataviews.selectors'
 import styles from './MapLegend.module.css'
 
 const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
   const { t } = useTranslation()
   // TODO: restore useTimeCompareTimeDescription and delete the component in the map folder
   const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
-  const detectionsMergedDataviewId = useSelector(selectActivityMergedDataviewId)
+  const detectionsMergedDataviewId = useSelector(selectDetectionsMergedDataviewId)
   const dataviewId =
     // TODO: include environment
     dataview.category === DataviewCategory.Activity
