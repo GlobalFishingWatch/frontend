@@ -1,4 +1,4 @@
-import { atom, useAtomValue } from 'jotai'
+import { Atom, atom, useAtomValue } from 'jotai'
 import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { DECK_LAYER_LIFECYCLE } from '../types'
 import { deckLayerInstancesAtom } from './deck-layers-composer.hooks'
@@ -13,8 +13,7 @@ function isDeckLayerReady(layer: AnyDeckLayer) {
 
 export type DeckLayerAtom<L = AnyDeckLayer> = { id: string; instance: L; loaded: boolean }
 
-let previousDeckLayers: DeckLayerAtom[] = []
-export const deckLayersAtom = atom<DeckLayerAtom[]>((get) => {
+export const deckLayersAtom: Atom<DeckLayerAtom<AnyDeckLayer>[]> = atom<DeckLayerAtom[]>((get) => {
   const layerInstances = get(deckLayerInstancesAtom)
   const layerStatus = get(deckLayersStateAtom)
   if (layerInstances.every(isDeckLayerReady)) {
@@ -22,10 +21,9 @@ export const deckLayersAtom = atom<DeckLayerAtom[]>((get) => {
       const status = layerStatus[layer.id]
       return { id: layer.id, instance: layer, loaded: status?.loaded }
     })
-    previousDeckLayers = deckLayers
     return deckLayers
   }
-  return previousDeckLayers
+  return get(deckLayersAtom)
 })
 
 export const useDeckLayers = () => {
