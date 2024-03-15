@@ -8,11 +8,7 @@ import {
   TemporalGridFeature,
   useFeatureState,
 } from '@globalfishingwatch/react-hooks'
-import {
-  ContextLayerType,
-  GeneratorType,
-  GlobalGeneratorConfig,
-} from '@globalfishingwatch/layer-composer'
+import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
   UrlDataviewInstance,
   MULTILAYER_SEPARATOR,
@@ -21,7 +17,12 @@ import {
 import { DatasetSubCategory, DataviewCategory, Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import { selectLocationType } from 'routes/routes.selectors'
+import { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
+import {
+  selectActivityVisualizationMode,
+  selectDetectionsVisualizationMode,
+  selectLocationType,
+} from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
@@ -85,15 +86,19 @@ export const useGlobalConfigConnect = () => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
+  const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
 
   return useMemo(() => {
-    let globalConfig: GlobalGeneratorConfig = {
+    let globalConfig: ResolverGlobalConfig = {
       zoom: viewState.zoom,
       start,
       end,
       token: GFWAPI.getToken(),
       locale: i18n.language as Locale,
       bivariateDataviews,
+      activityVisualizationMode,
+      detectionsVisualizationMode,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -110,6 +115,8 @@ export const useGlobalConfigConnect = () => {
     end,
     i18n.language,
     bivariateDataviews,
+    activityVisualizationMode,
+    detectionsVisualizationMode,
     showTimeComparison,
     timeComparisonValues,
   ])

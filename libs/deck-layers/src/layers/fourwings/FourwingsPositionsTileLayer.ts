@@ -16,10 +16,11 @@ import { Feature } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
+import { stringify } from 'qs'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { POSITIONS_ID } from './fourwings.config'
-import { ACTIVITY_SWITCH_ZOOM_LEVEL, getDateRangeParam } from './fourwings.utils'
+import { ACTIVITY_SWITCH_ZOOM_LEVEL, getRoundedDateFromTS } from './fourwings.utils'
 import { FourwingsTileLayerColorDomain, FourwingsTileLayerColorRange } from './fourwings.types'
 
 export type _FourwingsPositionsTileLayerProps<DataT = any> = {
@@ -104,7 +105,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     })
     const color = colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
     if (highlightedVesselId) {
-      if (d.properties?.vesselId === highlightedVesselId) return color
+      if (d.properties?.id === highlightedVesselId) return color
       else return [color[0], color[1], color[2], 0]
     }
     return color
@@ -113,7 +114,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   getHighlightColor(d: Feature): Color {
     const { highlightedVesselId } = this.state
     if (highlightedVesselId) {
-      if (d.properties?.vesselId === highlightedVesselId) return [255, 255, 255, 255]
+      if (d.properties?.id === highlightedVesselId) return [255, 255, 255, 255]
       else return [255, 255, 255, 0]
     }
     return [255, 255, 255, 120]
@@ -129,24 +130,24 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   getLineColor(d: Feature): Color {
     const { highlightedVesselId } = this.state
-    return highlightedVesselId && d.properties?.vesselId === highlightedVesselId
+    return highlightedVesselId && d.properties?.id === highlightedVesselId
       ? [255, 255, 255, 255]
       : [0, 0, 0, 0]
   }
 
   getRadius(d: Feature): number {
     const { highlightedVesselId } = this.state
-    return highlightedVesselId && d.properties?.vesselId === highlightedVesselId ? 5 : 3
+    return highlightedVesselId && d.properties?.id === highlightedVesselId ? 5 : 3
   }
 
   getSize(d: Feature): number {
     const { highlightedVesselId } = this.state
-    return highlightedVesselId && d.properties?.vesselId === highlightedVesselId ? 15 : 8
+    return highlightedVesselId && d.properties?.id === highlightedVesselId ? 15 : 8
   }
 
   getVesselLabel = (d: Feature) => {
-    const label = d.properties?.name || d.properties?.vesselId
-    return label.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
+    const label = d.properties?.name || d.properties?.id
+    return label?.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
   onViewportLoad = (tiles: any) => {
@@ -154,7 +155,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       tiles.flatMap((tile: any) => tile.dataInWGS84),
       'properties.htime'
     ).filter(Boolean)
-    const positionsByVessel = groupBy(positions, 'properties.vesselId')
+    const positionsByVessel = groupBy(positions, 'properties.id')
     const allPositions: any[] = []
     const lastPositions: any[] = []
     Object.keys(positionsByVessel)
@@ -164,6 +165,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         allPositions.push(...vesselPositions.slice(0, -1))
         lastPositions.push(...vesselPositions.slice(-1))
       })
+
     const colorScale = this.getColorRamp(positions)
     requestAnimationFrame(() => {
       this.setState({
@@ -179,10 +181,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   updateState() {
     const clickedVesselId = this.props?.clickedFeatures?.flatMap(
-      (f) => f.sourceLayer?.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
+      (f) => f.sourceLayer?.id === this.id && f.object?.properties?.id
     )
     const highlightedVesselId = this.props?.hoveredFeatures?.flatMap(
-      (f) => f.sourceLayer?.id === 'FourwingsPositionsTileLayer' && f.object?.properties?.vesselId
+      (f) => f.sourceLayer?.id === this.id && f.object?.properties?.id
     )
     if (highlightedVesselId && highlightedVesselId[0]) {
       this.setState({
@@ -203,12 +205,16 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const { allPositions, lastPositions } = this.state
     const highlightedVesselId = this.props.highlightedVesselId || this.state.highlightedVesselId
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
+    const params = {
+      datasets: ['public-global-fishing-effort:v20201001'],
+      format: 'MVT',
+      'date-range': `${getRoundedDateFromTS(minFrame)},${getRoundedDateFromTS(maxFrame)}`,
+    }
     return [
       new MVTLayer(this.props, {
         id: `${POSITIONS_ID}-tiles`,
-        data: `https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/position/{z}/{x}/{y}?datasets[0]=public-global-fishing-effort%3Av20201001&${getDateRangeParam(
-          minFrame,
-          maxFrame
+        data: `https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/position/{z}/{x}/{y}?${stringify(
+          params
         )}`,
         minZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
         maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,

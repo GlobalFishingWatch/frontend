@@ -32,6 +32,22 @@ export enum DataviewConfigType {
   VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
 }
 
+export type DataviewSublayerConfig = {
+  id: string
+  datasets: string[]
+  color?: string
+  colorRamp?: string[]
+  visible?: boolean
+  filter?: Record<string, string>
+  vesselGroups?: string[]
+  legend?: {
+    label: string
+    unit: string
+    color: string
+  }
+  availableIntervals?: string[]
+}
+
 export interface DataviewConfig<Type = any> {
   // TODO use any property from layer-composer here?
   type?: Type
@@ -49,7 +65,7 @@ export interface DataviewConfig<Type = any> {
   events?: string[]
   /*****************/
   /** Fourwings datasets */
-  sublayers?: any[]
+  sublayers?: DataviewSublayerConfig[]
   /*****************/
   [key: string]: any
 }

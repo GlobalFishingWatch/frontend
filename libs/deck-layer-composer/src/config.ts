@@ -1,9 +1,3 @@
-import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
-
-export const DATAVIEW_TO_DECK_LAYER_CLASS = {
-  HEATMAP_ANIMATED: FourwingsLayer,
-}
-
 export const HEATMAP_DEFAULT_MAX_ZOOM = 12
 export const GRID_AREA_BY_ZOOM_LEVEL = [
   128000000000, 32000000000, 8000000000, 2000000000, 500000000, 120000000, 31000000, 8000000,
