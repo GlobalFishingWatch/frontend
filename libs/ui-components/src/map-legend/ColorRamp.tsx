@@ -133,15 +133,15 @@ export function ColorRampLegend({
             {currentValue !== null && currentValue !== undefined && heatmapLegendScale && (
               <span
                 className={cx(styles.currentValue, currentValueClassName, {
-                  [styles.offsetLeft]: heatmapLegendScale(currentValue) < 10,
-                  [styles.offsetRight]: heatmapLegendScale(currentValue) > 90,
+                  [styles.offsetLeft]: heatmapLegendScale(currentValue as number) < 10,
+                  [styles.offsetRight]: heatmapLegendScale(currentValue as number) > 90,
                 })}
                 style={{
-                  left: `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`,
+                  left: `${Math.min(heatmapLegendScale(currentValue as number) as number, 100)}%`,
                 }}
               >
                 {formatLegendValue({
-                  number: currentValue,
+                  number: currentValue as number,
                   roundValues,
                   isFirst: false,
                   isLast: false,
