@@ -66,8 +66,7 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
           pointRadiusMinPixels: 3,
           lineWidthMinPixels: 2,
           getDashArray: [4, 2],
-          dashJustified: true,
-          extensions: [new PathStyleExtension({ dash: true }) as any],
+          extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
           updateTriggers: {
             getLineColor: rulers,
           },
