@@ -109,6 +109,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
       dispatchDatasetModalOpen(true)
       dispatchDatasetModalConfig({
         id: dataset?.id,
+        dataviewId: dataview.id,
         type:
           (dataset?.configuration?.configurationUI?.geometryType as DatasetGeometryType) ||
           dataset?.configuration?.geometryType,
