@@ -65,7 +65,7 @@ export const getFieldSchema = (
 export const getSchemaIdClean = (id: string) => {
   // TODO review how backend handles characters like -
   // so we can parse the same here or before uploading the dataset
-  return id?.replace(/-/g, '_')?.toLowerCase()
+  return id?.replace(/:/g, '_').replace(/-/g, '_')?.toLowerCase()
 }
 
 export const getDatasetSchemaClean = (schema: Dataset['schema']): Dataset['schema'] => {

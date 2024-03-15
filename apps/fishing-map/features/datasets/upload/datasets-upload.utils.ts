@@ -170,9 +170,10 @@ export const parseGeoJsonProperties = <T extends Polygon | Point>(
           cleanedProperties[propertyKey] = getUTCDateTime(value).toMillis()
         }
       })
+      const properties = getDatasetSchemaClean(cleanedProperties)
       return {
         ...feature,
-        properties: cleanedProperties,
+        properties,
       }
     }) as Feature<T, GeoJsonProperties>[],
   }
