@@ -5,8 +5,7 @@ import {
   TrackEventChunkProps,
   ActivityTimeseriesFrame,
 } from '@globalfishingwatch/timebar'
-import { FourWingsFeature } from '@globalfishingwatch/deck-loaders'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { FourWingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getEventColors, getEventDescription } from 'utils/events'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -51,18 +50,19 @@ export function getGraphDataFromFourwingsFeatures(
     end,
     interval,
     sublayers,
-  }: { start: number; end: number; interval: Interval; sublayers: number }
+  }: { start: number; end: number; interval: FourwingsInterval; sublayers: number }
 ): ActivityTimeseriesFrame[] {
   if (!features?.length) {
     return []
   }
   const data: Record<number, ActivityTimeseriesFrame> = {}
   let date = getUTCDateTime(start).toMillis()
+  const now = DateTime.now().toUTC().toMillis()
   const endPlusOne = Math.min(
     getUTCDateTime(end)
       .plus({ [interval]: 1 })
       .toMillis(),
-    DateTime.now().toUTC().toMillis()
+    now
   )
   while (date <= endPlusOne) {
     data[date] = { date }
@@ -73,7 +73,7 @@ export function getGraphDataFromFourwingsFeatures(
       getUTCDateTime(date)
         .plus({ [interval]: 1 })
         .toMillis(),
-      DateTime.now().toUTC().toMillis()
+      now
     )
   }
   for (const feature of features) {
