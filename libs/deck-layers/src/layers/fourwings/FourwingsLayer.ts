@@ -45,26 +45,22 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     const HeatmapLayerClass = this.getSubLayerClass('heatmap', FourwingsHeatmapTileLayer)
     const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
     return visualizationMode === HEATMAP_ID
-      ? [
-          new HeatmapLayerClass(
-            this.props,
-            this.getSubLayerProps({
-              id: HEATMAP_ID,
-              onViewportLoad: this._onViewportLoad,
-              onTileDataLoading: this._onTileDataLoading,
-            })
-          ),
-        ]
-      : [
-          new PositionsLayerClass(
-            this.props,
-            this.getSubLayerProps({
-              id: POSITIONS_ID,
-              onViewportLoad: this._onViewportLoad,
-              onTileDataLoading: this._onTileDataLoading,
-            })
-          ),
-        ]
+      ? new HeatmapLayerClass(
+          this.props,
+          this.getSubLayerProps({
+            id: HEATMAP_ID,
+            onViewportLoad: this._onViewportLoad,
+            onTileDataLoading: this._onTileDataLoading,
+          })
+        )
+      : new PositionsLayerClass(
+          this.props,
+          this.getSubLayerProps({
+            id: POSITIONS_ID,
+            onViewportLoad: this._onViewportLoad,
+            onTileDataLoading: this._onTileDataLoading,
+          })
+        )
   }
 
   getData() {
@@ -83,11 +79,15 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return this.props.resolution
   }
 
+  getLayer() {
+    return this.getSubLayers()?.[0] as FourwingsHeatmapTileLayer | FourwingsPositionsTileLayer
+  }
+
   getColorScale() {
-    return this.layers?.[0]?.getColorScale()
+    return this.getLayer()?.getColorScale()
   }
 
   getTimeseries() {
-    return this.layers?.[0]?.getTimeseries()
+    return this.getLayer()?.getTimeseries()
   }
 }
