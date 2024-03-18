@@ -23,12 +23,7 @@ import {
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
-import {
-  selectActivityVisualizationMode,
-  selectDetectionsVisualizationMode,
-  selectLocationType,
-  selectMapResolution,
-} from 'routes/routes.selectors'
+import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
@@ -48,7 +43,12 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
 import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
-import { selectBivariateDataviews } from 'features/app/selectors/app.selectors'
+import {
+  selectActivityVisualizationMode,
+  selectBivariateDataviews,
+  selectDetectionsVisualizationMode,
+  selectMapResolution,
+} from 'features/app/selectors/app.selectors'
 import {
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,

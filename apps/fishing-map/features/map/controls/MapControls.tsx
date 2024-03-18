@@ -20,7 +20,6 @@ import {
   selectIsAnyVesselLocation,
   selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
-  selectMapResolution,
 } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
@@ -32,6 +31,7 @@ import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectMapResolution } from 'features/app/selectors/app.selectors'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 
@@ -231,6 +231,18 @@ const MapControls = ({
                   onClick={onScreenshotClick}
                 />
               )}
+              {gfwUser && (
+                <IconButton
+                  icon={mapResolution === 'high' ? 'heatmap-low-res' : 'heatmap-high-res'}
+                  tooltip={
+                    mapResolution === 'high'
+                      ? t('map.lowRes', 'See low resolution heatmaps')
+                      : t('map.highRes', 'See high resolution heatmaps')
+                  }
+                  type="map-tool"
+                  onClick={onResolutionToggleClick}
+                />
+              )}
               <Tooltip
                 content={
                   currentBasemap === BasemapType.Default
@@ -251,11 +263,6 @@ const MapControls = ({
               </Tooltip>
             </Fragment>
           )}
-          <IconButton
-            icon={mapResolution === 'high' ? 'heatmap' : 'layers'}
-            type="map-tool"
-            onClick={onResolutionToggleClick}
-          />
           <IconButton
             type="map-tool"
             tooltip={t('map.loading', 'Loading')}

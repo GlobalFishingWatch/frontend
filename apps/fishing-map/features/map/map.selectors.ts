@@ -31,7 +31,9 @@ import {
   TimeRange,
 } from 'features/timebar/timebar.slice'
 import {
+  selectActivityVisualizationMode,
   selectBivariateDataviews,
+  selectDetectionsVisualizationMode,
   selectMapAnnotationsVisible,
   selectMapRulersVisible,
 } from 'features/app/selectors/app.selectors'
@@ -42,8 +44,6 @@ import {
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
   selectMapDrawingEditId,
-  selectActivityVisualizationMode,
-  selectDetectionsVisualizationMode,
 } from 'routes/routes.selectors'
 import {
   selectShowTimeComparison,

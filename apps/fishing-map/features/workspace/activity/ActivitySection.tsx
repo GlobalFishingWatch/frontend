@@ -22,7 +22,7 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { selectActivityVisualizationMode } from 'routes/routes.selectors'
+import { selectActivityVisualizationMode } from 'features/app/selectors/app.selectors'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
