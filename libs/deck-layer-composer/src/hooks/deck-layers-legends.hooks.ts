@@ -1,43 +1,9 @@
 import { atom, useAtomValue } from 'jotai'
-import {
-  FourwingsDeckSublayer,
-  FourwingsLayer,
-  FourwingsTileLayerColorDomain,
-  FourwingsTileLayerColorRange,
-  FourwingsComparisonMode,
-} from '@globalfishingwatch/deck-layers'
+import { FourwingsLayer, FourwingsComparisonMode } from '@globalfishingwatch/deck-layers'
 import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
+import { DeckLegend, LegendType } from '../types'
 import { deckLayersInteractionAtom } from './deck-layers-interaction.hooks'
 import { deckLayersAtom } from './deck-layers.hooks'
-
-export enum LegendType {
-  ColorRamp = 'colorramp',
-  ColorRampDiscrete = 'colorramp-discrete',
-  Solid = 'solid',
-  Bivariate = 'bivariate',
-}
-
-export type DeckLegend = {
-  id: string
-  type: LegendType
-  label?: string
-  unit?: string
-  gridArea?: number | string
-  domain?: FourwingsTileLayerColorDomain
-  ranges?: FourwingsTileLayerColorRange
-  color?: string
-  loading?: boolean
-  currentValues?: number[]
-  divergent?: boolean
-  sublayers: FourwingsDeckSublayer[]
-}
-
-export interface DeckLegendBivariate extends DeckLegend {
-  type: LegendType.Bivariate
-  currentValues: [number, number]
-  sublayersBreaks: [number[], number[]]
-  bivariateRamp: string[]
-}
 
 export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
   const deckLayers = get(deckLayersAtom)
