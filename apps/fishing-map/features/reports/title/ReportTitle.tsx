@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import geojsonArea from '@mapbox/geojson-area'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { DataviewConfigType } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
 import {
@@ -177,7 +177,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
     let areaName = report?.name
     if (!areaName) {
-      if (areaDataview?.config?.type === GeneratorType.UserContext) {
+      if (areaDataview?.config?.type === DataviewConfigType.UserContext) {
         if (reportAreaStatus === AsyncReducerStatus.Finished) {
           areaName =
             reportArea?.properties?.[propertyToInclude] ||
@@ -226,7 +226,9 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     urlBufferUnit,
   ])
 
-  const reportAreaSpace = reportArea?.geometry ? (geojsonArea.geometry(reportArea?.geometry) / 1000000) : null
+  const reportAreaSpace = reportArea?.geometry
+    ? geojsonArea.geometry(reportArea?.geometry) / 1000000
+    : null
 
   return (
     <div className={styles.container}>
@@ -235,10 +237,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
           <h1 className={styles.title} data-test="report-title">
             {reportTitle}
             {reportAreaSpace && (
-              <span className={styles.secondary}>
-                {' '}
-                {formatI18nNumber(reportAreaSpace)} km²
-              </span>
+              <span className={styles.secondary}> {formatI18nNumber(reportAreaSpace)} km²</span>
             )}
           </h1>
           <a className={styles.reportLink} href={window.location.href}>

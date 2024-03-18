@@ -1,8 +1,8 @@
 import { atom, useAtom, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
-import { getDataviewsMerged } from '@globalfishingwatch/dataviews-client'
 import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { getDataviewsMerged } from '../dataviews'
 import { dataviewToDeckLayer, ResolverGlobalConfig } from '../resolvers'
 import { useDeckLayerInteraction } from './deck-layers-interaction.hooks'
 

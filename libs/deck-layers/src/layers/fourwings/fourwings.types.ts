@@ -2,10 +2,13 @@ import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2
 import { Color, PickingInfo } from '@deck.gl/core/typed'
 import { TileLayerProps } from '@deck.gl/geo-layers/typed'
 import { ColorRampsIds } from '@globalfishingwatch/layer-composer'
-import { FourWingsFeature, Interval } from '@globalfishingwatch/deck-loaders'
+import { FourWingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 
 export type FourwingsSublayerId = string
 export type FourwingsDatasetId = string
+
+export type FourwingsVisualizationMode = typeof HEATMAP_ID | typeof POSITIONS_ID
 
 export interface FourwingsDeckSublayer {
   id: FourwingsSublayerId
@@ -25,14 +28,14 @@ export interface FourwingsDeckSublayer {
 
 export type Chunk = {
   id: string
-  interval: Interval
+  interval: FourwingsInterval
   start: number
   end: number
   bufferedStart: number
   bufferedEnd: number
 }
 
-export enum HeatmapAnimatedMode {
+export enum FourwingsComparisonMode {
   // Pick sublayer with highest value and place across this sublayer's color ramp. Works with 0 - n sublayers
   Compare = 'compare',
   // Place values on a 2D bivariate scale where the two axis represent the two sublayers. Works only with 2 sublayers
@@ -65,7 +68,7 @@ export type GetFillColorParams = {
   chunk: Chunk
   minIntervalFrame: number
   maxIntervalFrame: number
-  comparisonMode?: HeatmapAnimatedMode
+  comparisonMode?: FourwingsComparisonMode
 }
 
 export type FourwingsLayerResolution = 'default' | 'high'
@@ -80,7 +83,7 @@ export type _FourwingsHeatmapTileLayerProps = {
   maxFrame: number
   sublayers: FourwingsDeckSublayer[]
   colorRampWhiteEnd?: boolean
-  comparisonMode?: HeatmapAnimatedMode
+  comparisonMode?: FourwingsComparisonMode
   onTileDataLoading?: (tile: TileLoadProps) => void
 }
 
@@ -90,7 +93,7 @@ export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
 export type FourwingsHeatmapTilesCache = {
   start: number
   end: number
-  interval: Interval
+  interval: FourwingsInterval
 }
 
 export type FourwingsTileLayerColorDomain = number[] | number[][]
@@ -100,6 +103,6 @@ export type FourwingsTileLayerState = {
   tilesCache: FourwingsHeatmapTilesCache
   colorDomain: FourwingsTileLayerColorDomain
   colorRanges: FourwingsTileLayerColorRange
-  comparisonMode?: HeatmapAnimatedMode
+  comparisonMode?: FourwingsComparisonMode
   tiles: Tile2DHeader<FourwingsHeatmapTileData>[]
 }

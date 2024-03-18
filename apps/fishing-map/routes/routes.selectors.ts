@@ -163,6 +163,8 @@ export const selectUrlBufferValueQuery = selectQueryParam('reportBufferValue')
 export const selectUrlBufferUnitQuery = selectQueryParam('reportBufferUnit')
 export const selectUrlBufferOperationQuery = selectQueryParam('reportBufferOperation')
 export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')
+export const selectActivityVisualizationMode = selectQueryParam('activityVisualizationMode')
+export const selectDetectionsVisualizationMode = selectQueryParam('detectionsVisualizationMode')
 
 export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstancesOrder')
 
@@ -186,9 +188,7 @@ export const selectUrlTimeRange = createSelector(
 )
 
 export const selectUrlDataviewInstancesById = memoize((id: string) =>
-  createSelector(
-    [selectUrlDataviewInstances],
-    (urlDataviewInstances) =>
-      urlDataviewInstances?.find((dataviewInstance) => dataviewInstance?.id === id)
+  createSelector([selectUrlDataviewInstances], (urlDataviewInstances) =>
+    urlDataviewInstances?.find((dataviewInstance) => dataviewInstance?.id === id)
   )
 )

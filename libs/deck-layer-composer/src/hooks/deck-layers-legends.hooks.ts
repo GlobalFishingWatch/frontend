@@ -4,7 +4,7 @@ import {
   FourwingsLayer,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
-  HeatmapAnimatedMode,
+  FourwingsComparisonMode,
 } from '@globalfishingwatch/deck-layers'
 import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
 import { deckLayersInteractionAtom } from './deck-layers-interaction.hooks'
@@ -66,9 +66,8 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
 
     return {
       id: layer.id,
-      // category: layer.instance.props.category,
       type:
-        layer.instance.props.comparisonMode === HeatmapAnimatedMode.Bivariate
+        layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
           ? LegendType.Bivariate
           : LegendType.ColorRampDiscrete,
       sublayers: layer.instance.props.sublayers,

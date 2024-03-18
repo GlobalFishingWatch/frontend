@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
+import { DataviewConfigType } from '@globalfishingwatch/api-types'
 import { getEventLabel } from 'utils/analytics'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
@@ -79,11 +80,11 @@ export const useContextInteractions = () => {
       const datasetId = feature.datasetId as string
       const dataset = datasets.find((d) => d.id === datasetId)
       if (dataset) {
-        const dataview = dataviews.find(
-          (dataview) => dataview.datasets?.some((dataset) => dataset.id === datasetId)
+        const dataview = dataviews.find((dataview) =>
+          dataview.datasets?.some((dataset) => dataset.id === datasetId)
         )
         const areaName =
-          dataview?.config?.type === GeneratorType.UserContext
+          dataview?.config?.type === DataviewConfigType.UserContext
             ? dataview?.datasets?.[0]?.name
             : feature.value || feature.title
         dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
