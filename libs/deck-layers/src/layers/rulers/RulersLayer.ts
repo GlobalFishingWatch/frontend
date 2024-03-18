@@ -9,6 +9,7 @@ import {
   getGreatCircleMultiLine,
   getRulerLengthLabel,
   getRulerStartAndEndPoints,
+  hasRulerStartAndEnd,
 } from './rulers.utils'
 import { COLOR } from './rulers.config'
 
@@ -32,6 +33,7 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
   static layerName = 'RulersLayer'
   layers: LayersList = []
   updateState({ props }: { props: RulersLayerProps }) {
+    if (!hasRulerStartAndEnd(props.rulers)) return
     const labels = props.rulers.map((ruler: Ruler) => {
       const line = getGreatCircleMultiLine(ruler)
       const centerIndex = Math.round(line.geometry.coordinates.length / 2)
@@ -48,43 +50,45 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
   }
   renderLayers() {
     const { rulers, visible } = this.props
-    return [
-      new GeoJsonLayer(
-        this.getSubLayerProps({
-          id: 'ruler-layer',
-          data: {
-            type: 'FeatureCollection',
-            features: getFeaturesFromRulers(rulers),
-          },
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
-          pickable: true,
-          stroked: true,
-          filled: true,
-          visible,
-          getFillColor: COLOR,
-          getLineColor: COLOR,
-          pointRadiusMinPixels: 3,
-          lineWidthMinPixels: 2,
-          getDashArray: [4, 2],
-          extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
-          updateTriggers: {
-            getLineColor: rulers,
-          },
-        })
-      ),
-      new TextLayer(
-        this.getSubLayerProps({
-          id: 'ruler-labels',
-          data: this.state.labels,
-          getText: (d: RulerLabel) => d.text,
-          getPosition: (d: RulerLabel) => d.position,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
-          getSize: 12,
-          getAngle: (d: RulerLabel) => d.bearing,
-          getColor: COLOR,
-          getAlignmentBaseline: 'bottom',
-        })
-      ),
-    ] as LayersList
+    return hasRulerStartAndEnd(rulers)
+      ? ([
+          new GeoJsonLayer(
+            this.getSubLayerProps({
+              id: 'ruler-layer',
+              data: {
+                type: 'FeatureCollection',
+                features: getFeaturesFromRulers(rulers),
+              },
+              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
+              pickable: true,
+              stroked: true,
+              filled: true,
+              visible,
+              getFillColor: COLOR,
+              getLineColor: COLOR,
+              pointRadiusMinPixels: 3,
+              lineWidthMinPixels: 2,
+              getDashArray: [4, 2],
+              extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
+              updateTriggers: {
+                getLineColor: rulers,
+              },
+            })
+          ),
+          new TextLayer(
+            this.getSubLayerProps({
+              id: 'ruler-labels',
+              data: this.state.labels,
+              getText: (d: RulerLabel) => d.text,
+              getPosition: (d: RulerLabel) => d.position,
+              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
+              getSize: 12,
+              getAngle: (d: RulerLabel) => d.bearing,
+              getColor: COLOR,
+              getAlignmentBaseline: 'bottom',
+            })
+          ),
+        ] as LayersList)
+      : []
   }
 }

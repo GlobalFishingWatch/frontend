@@ -9,6 +9,9 @@ export const getRulerCoordsPairs = (ruler: Ruler): { start: Position; end: Posit
     end: [Number(ruler.end.longitude), Number(ruler.end.latitude)],
   }
 }
+
+export const hasRulerStartAndEnd = (rulers: Ruler[]) =>
+  rulers.every((ruler) => ruler.start && ruler.end)
 export const getGreatCircleMultiLine = (ruler: Ruler) => {
   const { start, end } = getRulerCoordsPairs(ruler)
   return greatCircle(start, end, { properties: { id: ruler.id } })
