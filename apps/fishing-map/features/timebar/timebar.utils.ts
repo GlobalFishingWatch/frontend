@@ -52,7 +52,7 @@ export function getGraphDataFromFourwingsFeatures(
     sublayers,
   }: { start: number; end: number; interval: FourwingsInterval; sublayers: number }
 ): ActivityTimeseriesFrame[] {
-  if (!features?.length) {
+  if (!features?.length || !start || !end) {
     return []
   }
   const data: Record<number, ActivityTimeseriesFrame> = {}
@@ -73,7 +73,7 @@ export function getGraphDataFromFourwingsFeatures(
       getUTCDateTime(date)
         .plus({ [interval]: 1 })
         .toMillis(),
-      now
+      now + 1
     )
   }
   for (const feature of features) {
