@@ -68,7 +68,9 @@ import MapLegends from './MapLegends'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
 import useRulers from './overlays/rulers/rulers.hooks'
-
+// This avoids type checking to complain
+// https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
+const RulersLayerComponent = RulersLayer as any
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 const PopupWrapper = dynamic(
   () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
@@ -309,7 +311,10 @@ const MapWrapper = () => {
         <MapAnnotationsDialog />
         <ErrorNotification />
         {(editingRuler || rulers) && (
-          <RulersLayer rulers={[...(rulers || []), ...currentRuler]} visible={rulersVisible} />
+          <RulersLayerComponent
+            rulers={[...(rulers || []), ...currentRuler]}
+            visible={rulersVisible}
+          />
         )}
       </DeckGL>
       {/* {style && (
