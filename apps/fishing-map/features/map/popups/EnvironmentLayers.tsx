@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { format } from 'd3-format'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/layer-composer'
-import { DataviewConfigType } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 
@@ -29,10 +29,10 @@ function EnvironmentTooltipSection({
     <Fragment>
       {features.map((feature, index) => {
         const isHeatmapFeature =
-          feature.type === DataviewConfigType.HeatmapAnimated ||
-          feature.type === DataviewConfigType.HeatmapStatic
+          feature.type === DataviewType.HeatmapAnimated ||
+          feature.type === DataviewType.HeatmapStatic
         const value =
-          feature.type === DataviewConfigType.HeatmapAnimated
+          feature.type === DataviewType.HeatmapAnimated
             ? feature.value
             : feature.properties[HEATMAP_STATIC_PROPERTY_ID]
         return (

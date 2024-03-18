@@ -1,5 +1,5 @@
 import { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
-import { DataviewConfigType } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import Generators, { EVENTS_COLORS, GeneratorsRecord } from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
 import {
@@ -92,7 +92,7 @@ export class LayerComposer {
       newLayer.metadata = {
         ...newLayer.metadata,
         generatorId: generatorConfig.id,
-        generatorType: generatorConfig.type as DataviewConfigType,
+        generatorType: generatorConfig.type as DataviewType,
       }
       if (generatorConfig.opacity !== undefined && generatorConfig.opacity !== null) {
         // Can't really handle global opacity on symbol layers as we don't know whether it applies to icon or text
@@ -169,18 +169,15 @@ export class LayerComposer {
     const extendedGlobalGeneratorConfig = {
       ...globalGeneratorConfig,
       totalHeatmapAnimatedGenerators: layers.filter(
-        (l) =>
-          l.type === DataviewConfigType.HeatmapAnimated ||
-          l.type === DataviewConfigType.HeatmapStatic
+        (l) => l.type === DataviewType.HeatmapAnimated || l.type === DataviewType.HeatmapStatic
       )?.length,
     }
     let layersPromises: GeneratorPromise[] = []
     const singleTrackLayersVisible =
-      layers.filter(({ type, visible }) => type === DataviewConfigType.Track && visible).length ===
-      1
+      layers.filter(({ type, visible }) => type === DataviewType.Track && visible).length === 1
     const layersGenerated = layers.map((layer) => {
       // Paint fishing events white if only one vessel is shown
-      if (layer.type === DataviewConfigType.VesselEventsShapes && singleTrackLayersVisible) {
+      if (layer.type === DataviewType.VesselEventsShapes && singleTrackLayersVisible) {
         layer.color = EVENTS_COLORS.fishing
       }
       const { promise, promises, ...rest } = this._getGeneratorStyles(

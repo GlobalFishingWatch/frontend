@@ -13,7 +13,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { BasemapType } from '@globalfishingwatch/layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import { DataviewConfigType } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useSetMapCoordinates, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import {
@@ -151,7 +151,7 @@ const MapControls = ({
   }, [downloadImage, handleModalClose])
 
   const basemapDataviewInstance = resolvedDataviewInstances?.find(
-    (d) => d.config?.type === DataviewConfigType.Basemap
+    (d) => d.config?.type === DataviewType.Basemap
   )
   const currentBasemap = basemapDataviewInstance?.config?.basemap ?? BasemapType.Default
   const switchBasemap = () => {

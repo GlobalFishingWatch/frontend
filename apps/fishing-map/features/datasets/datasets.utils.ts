@@ -6,7 +6,7 @@ import {
   DatasetSchemaType,
   DatasetTypes,
   Dataview,
-  DataviewConfigType,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
@@ -292,7 +292,7 @@ export const getRelatedDatasetsByType = (
 }
 
 export const getActiveDatasetsInActivityDataviews = (
-  dataviews: UrlDataviewInstance<DataviewConfigType>[]
+  dataviews: UrlDataviewInstance<DataviewType>[]
 ): string[] => {
   return dataviews.flatMap((dataview) => {
     return dataview?.config?.datasets || []
@@ -336,7 +336,7 @@ export const checkDatasetDownloadTrackPermission = (
 }
 
 export const getActivityDatasetsReportSupported = (
-  dataviews: UrlDataviewInstance<DataviewConfigType>[],
+  dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
 ) => {
   return dataviews.flatMap((dataview) => {
@@ -352,14 +352,14 @@ export const getActivityDatasetsReportSupported = (
           (d.category === DatasetCategory.Activity ||
             d.category === DatasetCategory.Detections ||
             (d.category === DatasetCategory.Environment &&
-              dataview.config?.type === DataviewConfigType.HeatmapAnimated))
+              dataview.config?.type === DataviewType.HeatmapAnimated))
       )
       .map((d) => d.id)
   })
 }
 
 export const getVesselDatasetsDownloadTrackSupported = (
-  dataview: UrlDataviewInstance<DataviewConfigType>,
+  dataview: UrlDataviewInstance<DataviewType>,
   permissions: UserPermission[] = []
 ) => {
   const datasets = (dataview?.datasetsConfig || [])
@@ -375,7 +375,7 @@ export const getVesselDatasetsDownloadTrackSupported = (
 }
 
 export const getDatasetsReportSupported = (
-  dataviews: UrlDataviewInstance<DataviewConfigType>[],
+  dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
 ) => {
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
@@ -384,7 +384,7 @@ export const getDatasetsReportSupported = (
 }
 
 export const getDatasetsReportNotSupported = (
-  dataviews: UrlDataviewInstance<DataviewConfigType>[],
+  dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
 ) => {
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
@@ -787,7 +787,7 @@ export const getFiltersBySchema = (
   const unit = getSchemaFilterUnitInDataview(dataview, schema)
   const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)!?.map((d) => d.id)
   const activeDatasets = getActiveDatasetsInActivityDataviews([
-    dataview as UrlDataviewInstance<DataviewConfigType>,
+    dataview as UrlDataviewInstance<DataviewType>,
   ])
   const hasDatasetsWithSchema =
     compatibilityOperation === 'some'

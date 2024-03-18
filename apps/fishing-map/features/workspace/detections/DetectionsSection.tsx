@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DataviewCategory, DataviewConfigType } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
   selectDetectionsDataviews,
   selectActivityDataviews,
@@ -43,7 +43,7 @@ function DetectionsSection(): React.ReactElement {
         (dataview) =>
           dataview.id !== dataview1.id &&
           dataview.id !== dataview2.id &&
-          dataview.config?.type === DataviewConfigType.HeatmapAnimated
+          dataview.config?.type === DataviewType.HeatmapAnimated
       )
       const dataviewsToDisable = [...detectionsDataviewsToDisable, ...activityDataviews]
       if (dataviewsToDisable.length) {

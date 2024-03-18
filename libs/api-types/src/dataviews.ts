@@ -11,7 +11,7 @@ export interface DataviewContexLayerConfig {
   dataset: string
 }
 
-export enum DataviewConfigType {
+export enum DataviewType {
   Annotation = 'ANNOTATION',
   Background = 'BACKGROUND',
   Basemap = 'BASEMAP',
@@ -48,7 +48,7 @@ export type DataviewSublayerConfig = {
   availableIntervals?: string[]
 }
 
-export interface DataviewConfig<Type = DataviewConfigType> {
+export interface DataviewConfig<Type = DataviewType> {
   // TODO use any property from layer-composer here?
   type?: Type
   color?: string

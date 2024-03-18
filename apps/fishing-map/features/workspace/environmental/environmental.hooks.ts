@@ -10,7 +10,7 @@ import {
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { ChunkFeature, aggregateFeatures } from '@globalfishingwatch/features-aggregate'
-import { DataviewConfig, DataviewConfigType } from '@globalfishingwatch/api-types'
+import { DataviewConfig, DataviewType } from '@globalfishingwatch/api-types'
 import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveHeatmapEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
@@ -26,7 +26,7 @@ import { filterByPolygon } from 'features/reports/reports-geo.utils'
 
 const filterVisibleValues = (
   rawData: number[],
-  config: DataviewConfig<DataviewConfigType> | undefined
+  config: DataviewConfig<DataviewType> | undefined
 ) => {
   if (!config?.minVisibleValue && !config?.maxVisibleValue) return rawData
   return rawData.filter((d) => {

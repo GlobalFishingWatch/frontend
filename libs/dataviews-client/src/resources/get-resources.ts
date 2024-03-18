@@ -1,6 +1,6 @@
 import {
   DatasetTypes,
-  DataviewConfigType,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewDatasetConfigParam,
   EndpointId,
@@ -29,7 +29,7 @@ export const getResources = (
 ): { resources: Resource[]; dataviews: UrlDataviewInstance[] } => {
   const { trackDataviews, otherDataviews } = dataviews.reduce(
     (acc, dataview) => {
-      const isTrack = dataview.config?.type === DataviewConfigType.Track
+      const isTrack = dataview.config?.type === DataviewType.Track
       if (isTrack) {
         acc.trackDataviews.push(dataview)
       } else {

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { ExtendedStyle, LayerMetadataLegend } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DataviewConfigType } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { InteractionEvent } from '../use-map-interaction'
 import type { LegendLayer, LegendLayerBivariate } from './index'
 
@@ -49,7 +49,7 @@ export const getLegendLayers = (
           id: getLegendId(legend?.id),
           category: dataview?.category,
           generatorId,
-          generatorType: DataviewConfigType.HeatmapAnimated,
+          generatorType: DataviewType.HeatmapAnimated,
           currentValue,
           currentValues,
         } as LegendLayer | LegendLayerBivariate
@@ -84,14 +84,14 @@ export const getLegendLayers = (
   const legends = [...heatmapLegends, ...layerLegends].map((legend) => {
     const { generatorType, generatorId } = legend
     let currentValue = legend.currentValue
-    if (generatorType === DataviewConfigType.Heatmap) {
+    if (generatorType === DataviewType.Heatmap) {
       const value = hoveredEvent?.features?.find((f) => f.generatorId === generatorId)?.value
       if (value) {
         currentValue = value
       }
     }
     // TODO use dataset propertyToInclude value
-    const label = generatorType === DataviewConfigType.UserContext ? '' : legend.label
+    const label = generatorType === DataviewType.UserContext ? '' : legend.label
     return { ...legend, currentValue, label }
   })
 

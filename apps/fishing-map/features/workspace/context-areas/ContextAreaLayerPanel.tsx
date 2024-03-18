@@ -4,12 +4,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import { uniqBy } from 'lodash'
-import {
-  DatasetTypes,
-  DatasetStatus,
-  Dataset,
-  DataviewConfigType,
-} from '@globalfishingwatch/api-types'
+import { DatasetTypes, DatasetStatus, Dataset, DataviewType } from '@globalfishingwatch/api-types'
 import {
   Tooltip,
   ColorBarOption,
@@ -209,7 +204,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     />
   )
 
-  const isBasemapLabelsDataview = dataview.config?.type === DataviewConfigType.BasemapLabels
+  const isBasemapLabelsDataview = dataview.config?.type === DataviewType.BasemapLabels
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
   const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const hasSchemaFilterSelection = filtersAllowed.some(

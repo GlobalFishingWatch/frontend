@@ -4,7 +4,7 @@ import {
   Dataset,
   Dataview,
   DataviewCategory,
-  DataviewConfigType,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
@@ -113,7 +113,7 @@ export const getVesselDataviewInstance = (
   return vesselDataviewInstance
 }
 
-export const getFishingDataviewInstance = (): DataviewInstance<DataviewConfigType> => {
+export const getFishingDataviewInstance = (): DataviewInstance<DataviewType> => {
   return {
     id: `${FISHING_LAYER_PREFIX}${Date.now()}`,
     config: {
@@ -125,7 +125,7 @@ export const getFishingDataviewInstance = (): DataviewInstance<DataviewConfigTyp
 
 export const getUserPolygonsDataviewInstance = (
   datasetId: string
-): DataviewInstance<DataviewConfigType> => {
+): DataviewInstance<DataviewType> => {
   return {
     id: `user-polygons-${Date.now()}`,
     config: {
@@ -142,9 +142,7 @@ export const getUserPolygonsDataviewInstance = (
   }
 }
 
-export const getUserPointsDataviewInstance = (
-  dataset: Dataset
-): DataviewInstance<DataviewConfigType> => {
+export const getUserPointsDataviewInstance = (dataset: Dataset): DataviewInstance<DataviewType> => {
   const circleRadiusProperty = getDatasetConfigurationProperty({ dataset, property: 'pointSize' })
   const startTimeFilterProperty = getDatasetConfigurationProperty({
     dataset,
@@ -201,9 +199,7 @@ export const getUserTrackDataviewInstance = (dataset: Dataset) => {
   return dataviewInstance
 }
 
-export const getContextDataviewInstance = (
-  datasetId: string
-): DataviewInstance<DataviewConfigType> => {
+export const getContextDataviewInstance = (datasetId: string): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${CONTEXT_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Context,
@@ -231,7 +227,7 @@ export const getDataviewInstanceFromDataview = (dataview: Dataview) => {
 
 export const getActivityDataviewInstanceFromDataview = (
   dataview?: Dataview
-): DataviewInstance<DataviewConfigType> | undefined => {
+): DataviewInstance<DataviewType> | undefined => {
   if (!dataview) return
   const instance = getDataviewInstanceFromDataview(dataview)
   return {
@@ -245,7 +241,7 @@ export const getActivityDataviewInstanceFromDataview = (
 export const getBigQuery4WingsDataviewInstance = (
   datasetId: string,
   { aggregationOperation = AggregationOperation.Sum } = {}
-): DataviewInstance<DataviewConfigType> => {
+): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${BIG_QUERY_4WINGS_PREFIX}${Date.now()}`,
     config: {
@@ -271,7 +267,7 @@ export const getBigQuery4WingsDataviewInstance = (
 
 export const getBigQueryEventsDataviewInstance = (
   datasetId: string
-): DataviewInstance<DataviewConfigType> => {
+): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${BIG_QUERY_EVENTS_PREFIX}${Date.now()}`,
     dataviewId: TEMPLATE_CLUSTERS_DATAVIEW_SLUG,

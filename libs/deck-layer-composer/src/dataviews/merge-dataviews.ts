@@ -8,7 +8,7 @@ import {
   DataviewInstance,
   EventTypes,
   DataviewSublayerConfig,
-  DataviewConfigType,
+  DataviewType,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_FOURWINGS_INTERVALS,
@@ -52,21 +52,20 @@ type TimeRange = { start: string; end: string }
 function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Activity &&
-    dataview.config?.type === DataviewConfigType.HeatmapAnimated
+    dataview.config?.type === DataviewType.HeatmapAnimated
   )
 }
 
 function isDetectionsDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Detections &&
-    dataview.config?.type === DataviewConfigType.HeatmapAnimated
+    dataview.config?.type === DataviewType.HeatmapAnimated
   )
 }
 
 function isTrackDataview(dataview: UrlDataviewInstance) {
   return (
-    dataview.category === DataviewCategory.Vessels &&
-    dataview.config?.type === DataviewConfigType.Track
+    dataview.category === DataviewCategory.Vessels && dataview.config?.type === DataviewType.Track
   )
 }
 
@@ -133,7 +132,7 @@ export function getMergedHeatmapAnimatedDataviews(
     id: getMergedDataviewId(heatmapAnimatedDataviews),
     category: heatmapAnimatedDataviews[0]?.category,
     config: {
-      type: DataviewConfigType.HeatmapAnimated,
+      type: DataviewType.HeatmapAnimated,
       sublayers: activitySublayers,
       colorRampWhiteEnd,
       updateDebounce: true,
@@ -183,7 +182,7 @@ export function getMergedHeatmapAnimatedDataviews(
       auxiliarDataview.config = {
         color: dataview.config?.color,
         visible: auxiliarLayerActive,
-        type: DataviewConfigType.Polygons,
+        type: DataviewType.Polygons,
         url,
       }
       return auxiliarDataview
@@ -223,7 +222,7 @@ type ResolverGlobalConfig = {
   highlightedTime?: TimeRange
   highlightedEvent?: ApiEvent
   highlightedEvents?: string[]
-  customGeneratorMapping?: Partial<Record<DataviewConfigType, DataviewConfigType>>
+  customGeneratorMapping?: Partial<Record<DataviewType, DataviewType>>
   singleTrack?: boolean
 }
 

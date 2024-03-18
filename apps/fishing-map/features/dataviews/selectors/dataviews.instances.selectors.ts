@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import {
   DatasetTypes,
   DataviewCategory,
-  DataviewConfigType,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
@@ -237,13 +237,13 @@ export const selectCurrentDataviewInstancesResolved = createSelector(
   }
 )
 
-export const selectDataviewInstancesByType = (type: DataviewConfigType) => {
+export const selectDataviewInstancesByType = (type: DataviewType) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
   })
 }
 
-export const selectTrackDataviews = selectDataviewInstancesByType(DataviewConfigType.Track)
+export const selectTrackDataviews = selectDataviewInstancesByType(DataviewType.Track)
 
 export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(

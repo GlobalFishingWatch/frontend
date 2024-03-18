@@ -6,7 +6,7 @@ import {
   DatasetTypes,
   Dataview,
   DataviewCategory,
-  DataviewConfigType,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
@@ -25,10 +25,7 @@ export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
   return dataviews.map((d) => d.id).join(',')
 }
 
-export type UrlDataviewInstance<T = DataviewConfigType> = Omit<
-  DataviewInstance<T>,
-  'dataviewId'
-> & {
+export type UrlDataviewInstance<T = DataviewType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
   dataviewId?: Dataview['id'] | Dataview['slug'] // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
@@ -38,11 +35,11 @@ export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
   [EXCLUDE_FILTER_ID]: 'NOT IN',
 }
 
-export const FILTERABLE_GENERATORS: DataviewConfigType[] = [
-  DataviewConfigType.HeatmapAnimated,
-  DataviewConfigType.TileCluster,
-  DataviewConfigType.UserContext,
-  DataviewConfigType.UserPoints,
+export const FILTERABLE_GENERATORS: DataviewType[] = [
+  DataviewType.HeatmapAnimated,
+  DataviewType.TileCluster,
+  DataviewType.UserContext,
+  DataviewType.UserPoints,
 ]
 
 function getDatasetSchemaItem(dataset: Dataset, schema: string) {
@@ -161,7 +158,7 @@ const getTrackDataviewDatasetConfigs = (
 }
 
 export type DatasetConfigsTransforms = Partial<
-  Record<DataviewConfigType, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
+  Record<DataviewType, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
 >
 
 /**
@@ -180,10 +177,10 @@ export const getDataviewsForResourceQuerying = (
   const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
     let preparedDatasetConfigs
     switch (dataviewInstance.config?.type) {
-      case DataviewConfigType.Track:
+      case DataviewType.Track:
         preparedDatasetConfigs = getTrackDataviewDatasetConfigs(dataviewInstance)
         preparedDatasetConfigs =
-          datasetConfigsTransform?.[DataviewConfigType.Track]?.(preparedDatasetConfigs)
+          datasetConfigsTransform?.[DataviewType.Track]?.(preparedDatasetConfigs)
         break
 
       default:
@@ -206,7 +203,7 @@ export const resolveResourcesFromDatasetConfigs = (
   dataviews: UrlDataviewInstance[]
 ): Resource[] => {
   return dataviews
-    .filter((dataview) => dataview.config?.type === DataviewConfigType.Track)
+    .filter((dataview) => dataview.config?.type === DataviewType.Track)
     .flatMap((dataview) => {
       if (!dataview.datasetsConfig) return []
       return dataview.datasetsConfig.flatMap((datasetConfig) => {

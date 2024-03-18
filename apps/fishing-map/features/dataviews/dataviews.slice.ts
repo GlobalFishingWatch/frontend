@@ -7,7 +7,7 @@ import {
   DataviewDatasetConfig,
   DataviewInstance,
   DatasetTypes,
-  DataviewConfigType,
+  DataviewType,
   DataviewCategory,
 } from '@globalfishingwatch/api-types'
 import {
@@ -392,14 +392,14 @@ export const selectCurrentDataviewInstancesResolved = createSelector(
   }
 )
 
-export const selectDataviewInstancesByType = (type: DataviewConfigType) => {
+export const selectDataviewInstancesByType = (type: DataviewType) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
   })
 }
 
 export const selectTrackDataviews = createSelector(
-  [selectDataviewInstancesByType(DataviewConfigType.Track)],
+  [selectDataviewInstancesByType(DataviewType.Track)],
   (dataviews) => dataviews
 )
 

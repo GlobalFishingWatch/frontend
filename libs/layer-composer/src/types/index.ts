@@ -7,7 +7,7 @@ import {
   AggregationOperation,
   SublayerCombinationMode,
 } from '@globalfishingwatch/fourwings-aggregate'
-import { DataviewConfigType } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import {
   GeneratorLegend,
   HeatmapAnimatedGeneratorSublayer,
@@ -92,7 +92,7 @@ export interface LayerMetadataLegendBivariate extends LayerMetadataLegend {
 export interface ExtendedLayerMeta {
   datasetId?: string
   generatorId?: string
-  generatorType?: DataviewConfigType
+  generatorType?: DataviewType
   promoteId?: string
   valueProperties?: string[]
   interactive?: boolean

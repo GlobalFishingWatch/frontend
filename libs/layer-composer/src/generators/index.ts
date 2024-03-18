@@ -1,4 +1,4 @@
-import { DataviewConfigType } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import AnnotationsGenerator from './annotations/annotations'
 import BackgroundGenerator from './background/background'
 import BaseMapGenerator from './basemap/basemap'
@@ -61,27 +61,27 @@ export type AnyGeneratorClass =
   | VesselEventsGenerator
   | VesselsEventsShapesGenerator
 
-export type GeneratorsRecord = Record<DataviewConfigType, AnyGeneratorClass>
+export type GeneratorsRecord = Record<DataviewType, AnyGeneratorClass>
 
 const GeneratorConfig: GeneratorsRecord = {
-  [DataviewConfigType.Annotation]: new AnnotationsGenerator(),
-  [DataviewConfigType.Background]: new BackgroundGenerator(),
-  [DataviewConfigType.Basemap]: new BaseMapGenerator(),
-  [DataviewConfigType.BasemapLabels]: new BasemapLabelsGenerator(),
-  [DataviewConfigType.CartoPolygons]: new CartoGenerator({ baseUrl: CARTO_FISHING_MAP_API }),
-  [DataviewConfigType.Context]: new ContextGenerator(),
-  [DataviewConfigType.GL]: new GLStyleGenerator(),
-  [DataviewConfigType.Heatmap]: new HeatmapGenerator(),
-  [DataviewConfigType.HeatmapStatic]: new HeatmapStaticGenerator(),
-  [DataviewConfigType.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
-  [DataviewConfigType.Polygons]: new PolygonsGenerator(),
-  [DataviewConfigType.Rulers]: new RulersGenerator(),
-  [DataviewConfigType.TileCluster]: new TileClusterGenerator(),
-  [DataviewConfigType.Track]: new TrackGenerator(),
-  [DataviewConfigType.UserContext]: new UserContextGenerator(),
-  [DataviewConfigType.UserPoints]: new UserPointsGenerator(),
-  [DataviewConfigType.VesselEvents]: new VesselEventsGenerator(),
-  [DataviewConfigType.VesselEventsShapes]: new VesselsEventsShapesGenerator(),
+  [DataviewType.Annotation]: new AnnotationsGenerator(),
+  [DataviewType.Background]: new BackgroundGenerator(),
+  [DataviewType.Basemap]: new BaseMapGenerator(),
+  [DataviewType.BasemapLabels]: new BasemapLabelsGenerator(),
+  [DataviewType.CartoPolygons]: new CartoGenerator({ baseUrl: CARTO_FISHING_MAP_API }),
+  [DataviewType.Context]: new ContextGenerator(),
+  [DataviewType.GL]: new GLStyleGenerator(),
+  [DataviewType.Heatmap]: new HeatmapGenerator(),
+  [DataviewType.HeatmapStatic]: new HeatmapStaticGenerator(),
+  [DataviewType.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
+  [DataviewType.Polygons]: new PolygonsGenerator(),
+  [DataviewType.Rulers]: new RulersGenerator(),
+  [DataviewType.TileCluster]: new TileClusterGenerator(),
+  [DataviewType.Track]: new TrackGenerator(),
+  [DataviewType.UserContext]: new UserContextGenerator(),
+  [DataviewType.UserPoints]: new UserPointsGenerator(),
+  [DataviewType.VesselEvents]: new VesselEventsGenerator(),
+  [DataviewType.VesselEventsShapes]: new VesselsEventsShapesGenerator(),
 }
 
 export default GeneratorConfig

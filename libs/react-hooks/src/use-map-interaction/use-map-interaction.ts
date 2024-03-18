@@ -14,7 +14,7 @@ import {
   VALUE_MULTIPLIER,
 } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
-import { DataviewConfigType } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 export type MaplibreGeoJSONFeature = GeoJSONFeature & {
@@ -112,7 +112,7 @@ const getExtendedFeature = (
     tile: getFeatureTile(feature),
   }
   switch (generatorType) {
-    case DataviewConfigType.HeatmapAnimated:
+    case DataviewType.HeatmapAnimated:
       const timeChunks = generatorMetadata?.timeChunks
       const frame = timeChunks?.activeChunkFrame
       const activeTimeChunk = pickActiveTimeChunk(timeChunks)
@@ -180,7 +180,7 @@ const getExtendedFeature = (
         }
         return [temporalGridExtendedFeature]
       })
-    case DataviewConfigType.HeatmapStatic: {
+    case DataviewType.HeatmapStatic: {
       return [
         {
           ...extendedFeature,
@@ -189,9 +189,9 @@ const getExtendedFeature = (
         },
       ]
     }
-    case DataviewConfigType.Context:
-    case DataviewConfigType.UserPoints:
-    case DataviewConfigType.UserContext: {
+    case DataviewType.Context:
+    case DataviewType.UserPoints:
+    case DataviewType.UserContext: {
       return [
         {
           ...extendedFeature,

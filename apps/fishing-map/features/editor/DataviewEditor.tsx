@@ -6,7 +6,7 @@ import {
   Dataview,
   DataviewCategory,
   DataviewConfig,
-  DataviewConfigType,
+  DataviewType,
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import {
@@ -111,9 +111,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       app: APP_NAME as ApiAppName,
       config: {
         ...dataview.config,
-        type: dataview.config?.static
-          ? DataviewConfigType.Heatmap
-          : DataviewConfigType.HeatmapAnimated,
+        type: dataview.config?.static ? DataviewType.Heatmap : DataviewType.HeatmapAnimated,
         ...(dataview.category !== DataviewCategory.Environment && {
           datasets: dataviewDatasetsIds,
         }),

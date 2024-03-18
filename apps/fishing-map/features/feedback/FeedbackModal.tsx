@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Modal, Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { DataviewConfigType } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
@@ -108,7 +108,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     label: t('feedback.issues', 'Platform Issues'),
   }
   const datasetOptions = activeDataviews.flatMap((dataview) => {
-    if (dataview.config?.type === DataviewConfigType.HeatmapAnimated) {
+    if (dataview.config?.type === DataviewType.HeatmapAnimated) {
       const sourcesInDataview = getSourcesSelectedInDataview(dataview)
       return sourcesInDataview.map((source) => {
         const dataset = { id: source.id, name: source.label }
