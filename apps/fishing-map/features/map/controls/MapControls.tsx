@@ -20,6 +20,7 @@ import {
   selectIsAnyVesselLocation,
   selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
+  selectMapResolution,
 } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import setInlineStyles from 'utils/dom'
@@ -77,6 +78,7 @@ const MapControls = ({
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const reportLocation = useSelector(selectIsAnyReportLocation)
+  const mapResolution = useSelector(selectMapResolution)
   const { isErrorNotificationEditing, toggleErrorNotification } = useMapErrorNotification()
   const showExtendedControls = isWorkspaceLocation || isVesselLocation || reportLocation
   const showScreenshot = !isVesselLocation && !reportLocation
@@ -164,6 +166,12 @@ const MapControls = ({
     })
   }
 
+  const onResolutionToggleClick = () => {
+    dispatchQueryParams({
+      mapResolution: mapResolution === 'high' ? 'default' : 'high',
+    })
+  }
+
   return (
     <Fragment>
       {modalOpen && <MapScreenshot />}
@@ -243,6 +251,11 @@ const MapControls = ({
               </Tooltip>
             </Fragment>
           )}
+          <IconButton
+            icon={mapResolution === 'high' ? 'heatmap' : 'layers'}
+            type="map-tool"
+            onClick={onResolutionToggleClick}
+          />
           <IconButton
             type="map-tool"
             tooltip={t('map.loading', 'Loading')}

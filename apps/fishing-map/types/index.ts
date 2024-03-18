@@ -8,6 +8,7 @@ import {
   VesselType,
 } from '@globalfishingwatch/api-types'
 import { MapAnnotation, Ruler } from '@globalfishingwatch/layer-composer'
+import { FourwingsResolution, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -80,7 +81,6 @@ export type ReportVesselGraph =
 
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
 
-export type FourwingsVisualizationMode = 'heatmap' | 'positions'
 export interface WorkspaceState extends BaseUrlWorkspace {
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
@@ -88,6 +88,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   bivariateDataviews?: BivariateDataviews
   mapAnnotations?: MapAnnotation[]
   mapAnnotationsVisible?: boolean
+  mapResolution?: FourwingsResolution
   mapRulers?: Ruler[]
   mapRulersVisible?: boolean
   daysFromLatest?: number // use latest day as endAt minus the number of days set here

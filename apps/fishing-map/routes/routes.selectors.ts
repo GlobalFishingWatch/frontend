@@ -165,6 +165,7 @@ export const selectUrlBufferOperationQuery = selectQueryParam('reportBufferOpera
 export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')
 export const selectActivityVisualizationMode = selectQueryParam('activityVisualizationMode')
 export const selectDetectionsVisualizationMode = selectQueryParam('detectionsVisualizationMode')
+export const selectMapResolution = selectQueryParam('mapResolution')
 
 export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstancesOrder')
 

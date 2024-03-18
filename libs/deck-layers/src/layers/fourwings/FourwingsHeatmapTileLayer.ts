@@ -39,7 +39,9 @@ import {
   FourwingsComparisonMode,
 } from './fourwings.types'
 
-const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {}
+const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
+  resolution: 'default',
+}
 
 const MAX_VALUES_PER_TILE = 1000
 
@@ -240,7 +242,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { sublayers, comparisonMode } = this.props
+    const { resolution, sublayers, comparisonMode } = this.props
     const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
     const cacheKey = this._getTileDataCacheKey()
     const sublayersIds = sublayers.map((s) => s.id).join(',')
@@ -248,7 +250,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: `${HEATMAP_ID}-tiles`,
+        id: `${HEATMAP_ID}-tiles-${resolution}`,
         tileSize: 512,
         colorDomain,
         colorRanges,
@@ -261,7 +263,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         maxRequests: -1,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey, sublayersIds],
+          getTileData: [cacheKey, resolution, sublayersIds],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {

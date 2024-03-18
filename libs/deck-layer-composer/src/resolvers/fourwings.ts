@@ -10,7 +10,7 @@ import { ResolverGlobalConfig } from './types'
 // TODO: decide if include static here or create a new one
 export const resolveDeckFourwingsLayerProps = (
   dataview: UrlDataviewInstance,
-  { start, end }: ResolverGlobalConfig,
+  { start, end, resolution }: ResolverGlobalConfig,
   interactions: PickingInfo[]
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
@@ -34,6 +34,7 @@ export const resolveDeckFourwingsLayerProps = (
     minFrame: startTime,
     maxFrame: endTime,
     visible: true,
+    resolution,
     comparisonMode: dataview.config?.comparisonMode,
     visualizationMode: dataview.config?.visualizationMode,
     debug: false,

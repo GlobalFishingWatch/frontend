@@ -71,12 +71,12 @@ export type GetFillColorParams = {
   comparisonMode?: FourwingsComparisonMode
 }
 
-export type FourwingsLayerResolution = 'default' | 'high'
+export type FourwingsResolution = 'default' | 'high'
 export type FourwingsHeatmapTileData = FourWingsFeature[]
 export type _FourwingsHeatmapTileLayerProps = {
   data?: FourwingsHeatmapTileData
   debug?: boolean
-  resolution?: FourwingsLayerResolution
+  resolution?: FourwingsResolution
   hoveredFeatures?: PickingInfo[]
   clickedFeatures?: PickingInfo[]
   minFrame: number

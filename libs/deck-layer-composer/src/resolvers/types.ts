@@ -1,5 +1,5 @@
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
+import { FourwingsResolution, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 
 export type ResolverGlobalConfig = {
   start?: string
@@ -7,6 +7,7 @@ export type ResolverGlobalConfig = {
   zoom?: number
   token?: string
   bivariateDataviews?: [string, string]
+  resolution?: FourwingsResolution
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
   // TODO review if we can move this to each own dataview

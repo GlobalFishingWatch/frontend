@@ -27,6 +27,7 @@ import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
   selectLocationType,
+  selectMapResolution,
 } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -93,6 +94,7 @@ export const useGlobalConfigConnect = () => {
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
+  const mapResolution = useSelector(selectMapResolution)
 
   return useMemo(() => {
     let globalConfig: ResolverGlobalConfig = {
@@ -104,6 +106,7 @@ export const useGlobalConfigConnect = () => {
       bivariateDataviews,
       activityVisualizationMode,
       detectionsVisualizationMode,
+      resolution: mapResolution,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -120,6 +123,7 @@ export const useGlobalConfigConnect = () => {
     end,
     i18n.language,
     bivariateDataviews,
+    mapResolution,
     activityVisualizationMode,
     detectionsVisualizationMode,
     showTimeComparison,
