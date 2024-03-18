@@ -3,9 +3,8 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewConfigType } from '@globalfishingwatch/api-types'
 import {
   HEATMAP_ID,
   POSITIONS_ID,
@@ -53,7 +52,7 @@ function ActivitySection(): React.ReactElement {
         (dataview) =>
           dataview.id !== dataview1.id &&
           dataview.id !== dataview2.id &&
-          dataview.config?.type === GeneratorType.HeatmapAnimated
+          dataview.config?.type === DataviewConfigType.HeatmapAnimated
       )
       const dataviewsToDisable = [...activityDataviewsToDisable, ...detectionsDataviews]
       if (dataviewsToDisable.length) {

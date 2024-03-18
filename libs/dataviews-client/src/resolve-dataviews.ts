@@ -15,7 +15,6 @@ import {
   INCLUDE_FILTER_ID,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from './resolve-endpoint'
 
 export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
@@ -26,8 +25,7 @@ export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
   return dataviews.map((d) => d.id).join(',')
 }
 
-// TODO: remove GeneratorType from here
-export type UrlDataviewInstance<T = DataviewConfigType | GeneratorType> = Omit<
+export type UrlDataviewInstance<T = DataviewConfigType> = Omit<
   DataviewInstance<T>,
   'dataviewId'
 > & {

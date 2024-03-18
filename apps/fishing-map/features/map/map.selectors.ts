@@ -2,7 +2,6 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import {
   AnyGeneratorConfig,
-  GeneratorType,
   GlGeneratorConfig,
   Group,
   HeatmapAnimatedMode,
@@ -16,11 +15,8 @@ import {
   DataviewsGeneratorConfigsParams,
   isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
-import {
-  selectWorkspaceError,
-  selectWorkspaceStatus,
-  selectWorkspaceVisibleEventsArray,
-} from 'features/workspace/workspace.selectors'
+import { DataviewConfigType } from '@globalfishingwatch/api-types'
+import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import {
   selectDataviewInstancesResolvedVisible,
   selectDefaultBasemapGenerator,
@@ -59,10 +55,7 @@ import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectMapControlRuler } from 'features/map/controls/map-controls.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import {
-  selectDataviewInstancesResolved,
-  selectMarineManagerDataviewInstanceResolved,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectMarineManagerDataviewInstanceResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   ANNOTATIONS_GENERATOR_ID,
   PREVIEW_BUFFER_GENERATOR_ID,
@@ -102,7 +95,7 @@ const getGeneratorsConfig = ({
   showTimeComparison,
 }: GetGeneratorConfigParams) => {
   const animatedHeatmapDataviews = dataviews.filter((dataview) => {
-    return dataview.config?.type === GeneratorType.HeatmapAnimated
+    return dataview.config?.type === DataviewConfigType.HeatmapAnimated
   })
 
   const visibleDataviewIds = dataviews.map(({ id }) => id)
@@ -122,7 +115,7 @@ const getGeneratorsConfig = ({
     heatmapAnimatedMode = HeatmapAnimatedMode.TimeCompare
   }
 
-  const trackDataviews = dataviews.filter((d) => d.config?.type === GeneratorType.Track)
+  const trackDataviews = dataviews.filter((d) => d.config?.type === DataviewConfigType.Track)
   const singleTrack = trackDataviews.length === 1
 
   const generatorOptions: DataviewsGeneratorConfigsParams = {
@@ -132,7 +125,7 @@ const getGeneratorsConfig = ({
     highlightedTime,
     debug: debugOptions.debug,
     customGeneratorMapping: {
-      [GeneratorType.VesselEvents]: GeneratorType.VesselEventsShapes,
+      [DataviewConfigType.VesselEvents]: DataviewConfigType.VesselEventsShapes,
     },
     singleTrack,
   }
@@ -142,7 +135,7 @@ const getGeneratorsConfig = ({
     // In time comparison mode, exclude any heatmap layer that is not activity
     if (showTimeComparison) {
       generatorsConfig = generatorsConfig.filter((config) => {
-        if (config.type === GeneratorType.HeatmapAnimated) {
+        if (config.type === DataviewConfigType.HeatmapAnimated) {
           return isMergedAnimatedGenerator(config.id) && config.sublayers?.length
         }
         return true
@@ -153,7 +146,7 @@ const getGeneratorsConfig = ({
     // Avoid entering rulers sources and layers when no active rules
     if (rulers?.length) {
       const rulersGeneratorConfig: AnyGeneratorConfig = {
-        type: GeneratorType.Rulers,
+        type: DataviewConfigType.Rulers,
         id: RULERS_GENERATOR_ID,
         data: rulers,
       }
@@ -162,7 +155,7 @@ const getGeneratorsConfig = ({
     // This way we avoid to re-compute the other rulers when editing
     if (editingRuler) {
       const rulersGeneratorConfig: AnyGeneratorConfig = {
-        type: GeneratorType.Rulers,
+        type: DataviewConfigType.Rulers,
         id: `${RULERS_GENERATOR_ID}-editing`,
         data: [editingRuler],
       }
@@ -170,7 +163,7 @@ const getGeneratorsConfig = ({
     }
     if (annotations?.length) {
       const annotationsGeneratorConfig: AnyGeneratorConfig = {
-        type: GeneratorType.Annotation,
+        type: DataviewConfigType.Annotation,
         id: ANNOTATIONS_GENERATOR_ID,
         data: annotations,
       }
@@ -272,7 +265,7 @@ export const selectWorkspacesListGenerator = createSelector(
 
     const generator: GlGeneratorConfig = {
       id: WORKSPACE_GENERATOR_ID,
-      type: GeneratorType.GL,
+      type: DataviewConfigType.GL,
       sources: [
         {
           type: 'geojson',
@@ -375,7 +368,7 @@ export const selectMapReportGenerators = createSelector(
     const reportGenerators: PolygonsGeneratorConfig[] = []
     if (reportBufferFeature?.geometry) {
       reportGenerators.push({
-        type: GeneratorType.Polygons,
+        type: DataviewConfigType.Polygons,
         id: REPORT_BUFFER_GENERATOR_ID,
         data: { type: 'FeatureCollection', features: [reportBufferFeature] },
         color: '#FFF',
@@ -388,7 +381,7 @@ export const selectMapReportGenerators = createSelector(
     }
     if (reportPreviewBufferFeature?.geometry) {
       reportGenerators.push({
-        type: GeneratorType.Polygons,
+        type: DataviewConfigType.Polygons,
         id: PREVIEW_BUFFER_GENERATOR_ID,
         data: { type: 'FeatureCollection', features: [reportPreviewBufferFeature] },
         color: BUFFER_PREVIEW_COLOR,
@@ -444,7 +437,7 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
   }
 )
 
-const selectGeneratorConfigsByType = (type: GeneratorType) => {
+const selectGeneratorConfigsByType = (type: DataviewConfigType) => {
   return createSelector([selectStaticGeneratorsConfig], (generators = []) => {
     return generators?.filter((generator) => generator.type === type)
   })
@@ -457,7 +450,7 @@ export const selectGeneratorConfigsById = (id: string) => {
 }
 
 const selectHeatmapAnimatedGeneratorConfigs = createSelector(
-  [selectGeneratorConfigsByType(GeneratorType.HeatmapAnimated)],
+  [selectGeneratorConfigsByType(DataviewConfigType.HeatmapAnimated)],
   (dataviews) => dataviews
 )
 

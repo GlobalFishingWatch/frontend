@@ -6,6 +6,7 @@ import {
   DatasetSchemaType,
   DatasetTypes,
   Dataview,
+  DataviewConfigType,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
@@ -22,7 +23,6 @@ import {
   DatasetSchemaItemEnum,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   getDatasetGeometryType,
@@ -292,7 +292,7 @@ export const getRelatedDatasetsByType = (
 }
 
 export const getActiveDatasetsInActivityDataviews = (
-  dataviews: UrlDataviewInstance<GeneratorType>[]
+  dataviews: UrlDataviewInstance<DataviewConfigType>[]
 ): string[] => {
   return dataviews.flatMap((dataview) => {
     return dataview?.config?.datasets || []
@@ -336,7 +336,7 @@ export const checkDatasetDownloadTrackPermission = (
 }
 
 export const getActivityDatasetsReportSupported = (
-  dataviews: UrlDataviewInstance<GeneratorType>[],
+  dataviews: UrlDataviewInstance<DataviewConfigType>[],
   permissions: UserPermission[] = []
 ) => {
   return dataviews.flatMap((dataview) => {
@@ -352,14 +352,14 @@ export const getActivityDatasetsReportSupported = (
           (d.category === DatasetCategory.Activity ||
             d.category === DatasetCategory.Detections ||
             (d.category === DatasetCategory.Environment &&
-              dataview.config?.type === GeneratorType.HeatmapAnimated))
+              dataview.config?.type === DataviewConfigType.HeatmapAnimated))
       )
       .map((d) => d.id)
   })
 }
 
 export const getVesselDatasetsDownloadTrackSupported = (
-  dataview: UrlDataviewInstance<GeneratorType>,
+  dataview: UrlDataviewInstance<DataviewConfigType>,
   permissions: UserPermission[] = []
 ) => {
   const datasets = (dataview?.datasetsConfig || [])
@@ -375,7 +375,7 @@ export const getVesselDatasetsDownloadTrackSupported = (
 }
 
 export const getDatasetsReportSupported = (
-  dataviews: UrlDataviewInstance<GeneratorType>[],
+  dataviews: UrlDataviewInstance<DataviewConfigType>[],
   permissions: UserPermission[] = []
 ) => {
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
@@ -384,7 +384,7 @@ export const getDatasetsReportSupported = (
 }
 
 export const getDatasetsReportNotSupported = (
-  dataviews: UrlDataviewInstance<GeneratorType>[],
+  dataviews: UrlDataviewInstance<DataviewConfigType>[],
   permissions: UserPermission[] = []
 ) => {
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
@@ -786,7 +786,9 @@ export const getFiltersBySchema = (
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   const unit = getSchemaFilterUnitInDataview(dataview, schema)
   const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)!?.map((d) => d.id)
-  const activeDatasets = getActiveDatasetsInActivityDataviews([dataview as UrlDataviewInstance])
+  const activeDatasets = getActiveDatasetsInActivityDataviews([
+    dataview as UrlDataviewInstance<DataviewConfigType>,
+  ])
   const hasDatasetsWithSchema =
     compatibilityOperation === 'some'
       ? activeDatasets.some((d) => datasetsWithSchema.includes(d))
