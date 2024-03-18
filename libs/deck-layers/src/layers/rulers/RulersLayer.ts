@@ -48,7 +48,7 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
   }
   renderLayers() {
     const { rulers, visible } = this.props
-    this.layers = [
+    return [
       new GeoJsonLayer(
         this.getSubLayerProps({
           id: 'ruler-layer',
@@ -86,6 +86,5 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
         })
       ),
     ] as LayersList
-    return this.layers
   }
 }
