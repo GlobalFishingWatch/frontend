@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LegendLayer, LegendLayerBivariate } from '@globalfishingwatch/react-hooks'
 import { isMergedAnimatedGenerator } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DataviewConfigType } from '@globalfishingwatch/api-types'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 
 export type AnyLegend = LegendLayer | LegendLayerBivariate
@@ -18,7 +18,7 @@ export const useLegendsTranslated = (legends: AnyLegend[], portalled = true) => 
       .map((legend) => {
         const isSquareKm = (legend.gridArea as number) > 50000
         let label = legend.unit || ''
-        if (legend.generatorType === GeneratorType.HeatmapAnimated) {
+        if (legend.generatorType === DataviewConfigType.HeatmapAnimated) {
           const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
           const gridAreaFormatted = gridArea
             ? formatI18nNumber(gridArea, {

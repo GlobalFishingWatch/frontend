@@ -48,10 +48,11 @@ export type DataviewSublayerConfig = {
   availableIntervals?: string[]
 }
 
-export interface DataviewConfig<Type = any> {
+export interface DataviewConfig<Type = DataviewConfigType> {
   // TODO use any property from layer-composer here?
   type?: Type
   color?: string
+  // colorRamp?: string
   colorCyclingType?: ColorCyclingType
   visible?: boolean
   filters?: Record<string, any>

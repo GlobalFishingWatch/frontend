@@ -14,7 +14,6 @@ import { getUTCDateTime, rgbaToDeckColor } from '../../utils'
 import {
   AggregateCellParams,
   Chunk,
-  FourwingsVisualizationMode,
   FourwingsDeckSublayer,
   GetFillColorParams,
   FourwingsComparisonMode,
@@ -122,16 +121,6 @@ export interface Bounds {
 
 export function getRoundedDateFromTS(ts: number) {
   return getUTCDateTime(ts).toISODate()
-}
-
-export const ACTIVITY_SWITCH_ZOOM_LEVEL = 9
-
-export function getFourwingsMode(
-  zoom: number,
-  timerange: { start: string; end: string }
-): FourwingsVisualizationMode {
-  const duration = getUTCDateTime(timerange?.end).diff(getUTCDateTime(timerange?.start), 'days')
-  return zoom >= ACTIVITY_SWITCH_ZOOM_LEVEL && duration.days < 30 ? 'positions' : 'heatmap'
 }
 
 export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {

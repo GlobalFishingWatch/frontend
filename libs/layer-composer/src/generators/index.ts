@@ -1,4 +1,4 @@
-import { GeneratorType } from './types'
+import { DataviewConfigType } from '@globalfishingwatch/api-types'
 import AnnotationsGenerator from './annotations/annotations'
 import BackgroundGenerator from './background/background'
 import BaseMapGenerator from './basemap/basemap'
@@ -61,27 +61,27 @@ export type AnyGeneratorClass =
   | VesselEventsGenerator
   | VesselsEventsShapesGenerator
 
-export type GeneratorsRecord = Record<GeneratorType, AnyGeneratorClass>
+export type GeneratorsRecord = Record<DataviewConfigType, AnyGeneratorClass>
 
 const GeneratorConfig: GeneratorsRecord = {
-  [GeneratorType.Annotation]: new AnnotationsGenerator(),
-  [GeneratorType.Background]: new BackgroundGenerator(),
-  [GeneratorType.Basemap]: new BaseMapGenerator(),
-  [GeneratorType.BasemapLabels]: new BasemapLabelsGenerator(),
-  [GeneratorType.CartoPolygons]: new CartoGenerator({ baseUrl: CARTO_FISHING_MAP_API }),
-  [GeneratorType.Context]: new ContextGenerator(),
-  [GeneratorType.GL]: new GLStyleGenerator(),
-  [GeneratorType.Heatmap]: new HeatmapGenerator(),
-  [GeneratorType.HeatmapStatic]: new HeatmapStaticGenerator(),
-  [GeneratorType.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
-  [GeneratorType.Polygons]: new PolygonsGenerator(),
-  [GeneratorType.Rulers]: new RulersGenerator(),
-  [GeneratorType.TileCluster]: new TileClusterGenerator(),
-  [GeneratorType.Track]: new TrackGenerator(),
-  [GeneratorType.UserContext]: new UserContextGenerator(),
-  [GeneratorType.UserPoints]: new UserPointsGenerator(),
-  [GeneratorType.VesselEvents]: new VesselEventsGenerator(),
-  [GeneratorType.VesselEventsShapes]: new VesselsEventsShapesGenerator(),
+  [DataviewConfigType.Annotation]: new AnnotationsGenerator(),
+  [DataviewConfigType.Background]: new BackgroundGenerator(),
+  [DataviewConfigType.Basemap]: new BaseMapGenerator(),
+  [DataviewConfigType.BasemapLabels]: new BasemapLabelsGenerator(),
+  [DataviewConfigType.CartoPolygons]: new CartoGenerator({ baseUrl: CARTO_FISHING_MAP_API }),
+  [DataviewConfigType.Context]: new ContextGenerator(),
+  [DataviewConfigType.GL]: new GLStyleGenerator(),
+  [DataviewConfigType.Heatmap]: new HeatmapGenerator(),
+  [DataviewConfigType.HeatmapStatic]: new HeatmapStaticGenerator(),
+  [DataviewConfigType.HeatmapAnimated]: new HeatmapAnimatedGenerator(),
+  [DataviewConfigType.Polygons]: new PolygonsGenerator(),
+  [DataviewConfigType.Rulers]: new RulersGenerator(),
+  [DataviewConfigType.TileCluster]: new TileClusterGenerator(),
+  [DataviewConfigType.Track]: new TrackGenerator(),
+  [DataviewConfigType.UserContext]: new UserContextGenerator(),
+  [DataviewConfigType.UserPoints]: new UserPointsGenerator(),
+  [DataviewConfigType.VesselEvents]: new VesselEventsGenerator(),
+  [DataviewConfigType.VesselEventsShapes]: new VesselsEventsShapesGenerator(),
 }
 
 export default GeneratorConfig

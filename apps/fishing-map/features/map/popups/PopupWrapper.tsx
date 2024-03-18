@@ -4,8 +4,7 @@ import { groupBy } from 'lodash'
 import { Popup } from 'react-map-gl'
 import type { Anchor } from 'react-map-gl'
 import { useSelector } from 'react-redux'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewConfigType } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
@@ -135,13 +134,13 @@ function PopupWrapper({
               case DataviewCategory.Environment: {
                 const contextEnvironmentalFeatures = features.filter(
                   (feature) =>
-                    feature.type === GeneratorType.Context ||
-                    feature.type === GeneratorType.UserContext
+                    feature.type === DataviewConfigType.Context ||
+                    feature.type === DataviewConfigType.UserContext
                 )
                 const environmentalFeatures = features.filter(
                   (feature) =>
-                    feature.type !== GeneratorType.Context &&
-                    feature.type !== GeneratorType.UserContext
+                    feature.type !== DataviewConfigType.Context &&
+                    feature.type !== DataviewConfigType.UserContext
                 )
                 return (
                   <Fragment key={featureCategory}>
@@ -158,7 +157,7 @@ function PopupWrapper({
               }
               case DataviewCategory.Context: {
                 const defaultContextFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.Context
+                  (feature) => feature.type === DataviewConfigType.Context
                 )
                 const workspacePointsFeatures = features.filter(
                   (feature) => feature.source === WORKSPACE_GENERATOR_ID
@@ -167,13 +166,13 @@ function PopupWrapper({
                   (feature) => feature.source === REPORT_BUFFER_GENERATOR_ID
                 )
                 const annotationFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.Annotation
+                  (feature) => feature.type === DataviewConfigType.Annotation
                 )
                 const rulersFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.Rulers
+                  (feature) => feature.type === DataviewConfigType.Rulers
                 )
                 const userPointFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserPoints
+                  (feature) => feature.type === DataviewConfigType.UserPoints
                 )
                 return (
                   <Fragment key={featureCategory}>
@@ -197,10 +196,10 @@ function PopupWrapper({
               }
               case DataviewCategory.User: {
                 const userPointFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserPoints
+                  (feature) => feature.type === DataviewConfigType.UserPoints
                 )
                 const userContextFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserContext
+                  (feature) => feature.type === DataviewConfigType.UserContext
                 )
                 return (
                   <Fragment key={featureCategory}>

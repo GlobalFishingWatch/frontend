@@ -22,7 +22,6 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { ColorRampId, getBivariateRamp } from '../../utils/colorRamps'
 import {
-  ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
   asyncAwaitMS,
   filterElementByPercentOfIndex,
@@ -30,7 +29,7 @@ import {
   getDataUrlBySublayer,
 } from './fourwings.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
-import { HEATMAP_ID, PATH_BASENAME, getInterval } from './fourwings.config'
+import { FOURWINGS_MAX_ZOOM, HEATMAP_ID, PATH_BASENAME, getInterval } from './fourwings.config'
 import {
   ColorRange,
   FourwingsDeckSublayer,
@@ -255,7 +254,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         colorRanges,
         comparisonMode,
         minZoom: 0,
-        maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
+        maxZoom: FOURWINGS_MAX_ZOOM,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
         debug: this.props.debug,

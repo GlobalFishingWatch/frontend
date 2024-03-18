@@ -8,27 +8,29 @@ import {
   DataviewInstance,
   EventTypes,
   DataviewSublayerConfig,
+  DataviewConfigType,
 } from '@globalfishingwatch/api-types'
 import {
-  DEFAULT_HEATMAP_INTERVALS,
-  GeneratorType,
-  Interval,
-} from '@globalfishingwatch/layer-composer'
-// import {
-//   FourwingsComparisonMode,
-//   FourwingsVisualizationMode,
-// } from '@globalfishingwatch/deck-layers'
-import { UrlDataviewInstance, resolveDataviewDatasetResource } from './resolve-dataviews'
+  DEFAULT_FOURWINGS_INTERVALS,
+  FourwingsComparisonMode,
+  FourwingsVisualizationMode,
+} from '@globalfishingwatch/deck-layers'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import {
+  UrlDataviewInstance,
+  getMergedDataviewId,
+  resolveDataviewDatasetResource,
+} from '@globalfishingwatch/dataviews-client'
 
 // TODO Maybe this should rather be in dataset.endpoints[id = 4wings-tiles].query[id = interval].options
 // or something similar ??
 const getDatasetAvailableIntervals = (dataset?: Dataset) =>
-  dataset?.configuration?.intervals as Interval[]
+  dataset?.configuration?.intervals as FourwingsInterval[]
 
 const getDataviewAvailableIntervals = (
   dataview: UrlDataviewInstance,
-  defaultIntervals = DEFAULT_HEATMAP_INTERVALS
-): Interval[] => {
+  defaultIntervals = DEFAULT_FOURWINGS_INTERVALS
+): FourwingsInterval[] => {
   const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
   const dataviewInterval = dataview.config?.interval
   const dataviewIntervals = dataview.config?.intervals
@@ -50,42 +52,27 @@ type TimeRange = { start: string; end: string }
 function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Activity &&
-    dataview.config?.type === GeneratorType.HeatmapAnimated
+    dataview.config?.type === DataviewConfigType.HeatmapAnimated
   )
 }
 
 function isDetectionsDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Detections &&
-    dataview.config?.type === GeneratorType.HeatmapAnimated
+    dataview.config?.type === DataviewConfigType.HeatmapAnimated
   )
 }
 
 function isTrackDataview(dataview: UrlDataviewInstance) {
   return (
-    dataview.category === DataviewCategory.Vessels && dataview.config?.type === GeneratorType.Track
+    dataview.category === DataviewCategory.Vessels &&
+    dataview.config?.type === DataviewConfigType.Track
   )
 }
 
-function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
-  return isActivityDataview(dataview) || isDetectionsDataview(dataview)
-}
-
-function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
-  return dataview?.config?.type === GeneratorType.HeatmapStatic
-}
-
-export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
-  if (!dataviews.length) {
-    console.warn('Trying to merge empty dataviews')
-    return 'EMPTY_DATAVIEW'
-  }
-  return dataviews.map((d) => d.id).join(',')
-}
-
 type GetMergedHeatmapAnimatedDataviewParams = {
-  visualizationMode?: string
-  comparisonMode?: string
+  visualizationMode?: FourwingsVisualizationMode
+  comparisonMode?: FourwingsComparisonMode
   timeRange?: TimeRange
   colorRampWhiteEnd?: boolean
 }
@@ -146,7 +133,7 @@ export function getMergedHeatmapAnimatedDataviews(
     id: getMergedDataviewId(heatmapAnimatedDataviews),
     category: heatmapAnimatedDataviews[0]?.category,
     config: {
-      type: GeneratorType.HeatmapAnimated,
+      type: DataviewConfigType.HeatmapAnimated,
       sublayers: activitySublayers,
       colorRampWhiteEnd,
       updateDebounce: true,
@@ -196,7 +183,7 @@ export function getMergedHeatmapAnimatedDataviews(
       auxiliarDataview.config = {
         color: dataview.config?.color,
         visible: auxiliarLayerActive,
-        type: GeneratorType.Polygons,
+        type: DataviewConfigType.Polygons,
         url,
       }
       return auxiliarDataview
@@ -236,7 +223,7 @@ type ResolverGlobalConfig = {
   highlightedTime?: TimeRange
   highlightedEvent?: ApiEvent
   highlightedEvents?: string[]
-  customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
+  customGeneratorMapping?: Partial<Record<DataviewConfigType, DataviewConfigType>>
   singleTrack?: boolean
 }
 
@@ -270,13 +257,13 @@ export function getDataviewsMerged(
   const activityComparisonMode = activityDataviews.every((dataview) =>
     params.bivariateDataviews?.includes(dataview.id)
   )
-    ? 'bivariate'
-    : 'compare'
+    ? FourwingsComparisonMode.Bivariate
+    : FourwingsComparisonMode.Compare
   const detectionsComparisonMode = detectionDataviews.every((dataview) =>
     params.bivariateDataviews?.includes(dataview.id)
   )
-    ? 'bivariate'
-    : 'compare'
+    ? FourwingsComparisonMode.Bivariate
+    : FourwingsComparisonMode.Compare
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
   const mergedActivityDataview = activityDataviews?.length
     ? getMergedHeatmapAnimatedDataviews(activityDataviews, {

@@ -1,6 +1,9 @@
-import { Interval } from '../lib/types'
+import { FourwingsInterval } from '../lib/types'
 
-export const CONFIG_BY_INTERVAL: Record<Interval, Record<'getTime' | 'getIntervalFrame', any>> = {
+export const CONFIG_BY_INTERVAL: Record<
+  FourwingsInterval,
+  Record<'getTime' | 'getIntervalFrame', any>
+> = {
   HOUR: {
     getTime: (frame: number) => {
       return frame * 1000 * 60 * 60
