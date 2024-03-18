@@ -1,11 +1,11 @@
 import {
   DatasetTypes,
+  DataviewConfigType,
   DataviewDatasetConfig,
   DataviewDatasetConfigParam,
   EndpointId,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
@@ -29,7 +29,7 @@ export const getResources = (
 ): { resources: Resource[]; dataviews: UrlDataviewInstance[] } => {
   const { trackDataviews, otherDataviews } = dataviews.reduce(
     (acc, dataview) => {
-      const isTrack = dataview.config?.type === GeneratorType.Track
+      const isTrack = dataview.config?.type === DataviewConfigType.Track
       if (isTrack) {
         acc.trackDataviews.push(dataview)
       } else {

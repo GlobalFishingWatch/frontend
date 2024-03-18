@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import {
   Interval,
-  GeneratorType,
   ExtendedStyleMeta,
   CONFIG_BY_INTERVAL,
   pickActiveTimeChunk,
@@ -15,6 +14,7 @@ import {
   VALUE_MULTIPLIER,
 } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
+import { DataviewConfigType } from '@globalfishingwatch/api-types'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 export type MaplibreGeoJSONFeature = GeoJSONFeature & {
@@ -112,7 +112,7 @@ const getExtendedFeature = (
     tile: getFeatureTile(feature),
   }
   switch (generatorType) {
-    case GeneratorType.HeatmapAnimated:
+    case DataviewConfigType.HeatmapAnimated:
       const timeChunks = generatorMetadata?.timeChunks
       const frame = timeChunks?.activeChunkFrame
       const activeTimeChunk = pickActiveTimeChunk(timeChunks)
@@ -180,7 +180,7 @@ const getExtendedFeature = (
         }
         return [temporalGridExtendedFeature]
       })
-    case GeneratorType.HeatmapStatic: {
+    case DataviewConfigType.HeatmapStatic: {
       return [
         {
           ...extendedFeature,
@@ -189,9 +189,9 @@ const getExtendedFeature = (
         },
       ]
     }
-    case GeneratorType.Context:
-    case GeneratorType.UserPoints:
-    case GeneratorType.UserContext: {
+    case DataviewConfigType.Context:
+    case DataviewConfigType.UserPoints:
+    case DataviewConfigType.UserContext: {
       return [
         {
           ...extendedFeature,

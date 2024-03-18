@@ -3,9 +3,13 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewConfigType } from '@globalfishingwatch/api-types'
+import {
+  HEATMAP_ID,
+  POSITIONS_ID,
+  POSITIONS_VISUALIZATION_MIN_ZOOM,
+} from '@globalfishingwatch/deck-layers'
 import {
   selectActivityDataviews,
   selectDetectionsDataviews,
@@ -18,6 +22,8 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { selectActivityVisualizationMode } from 'routes/routes.selectors'
+import { useMapViewport } from 'features/map/map-viewport.hooks'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
 import activityStyles from './ActivitySection.module.css'
@@ -29,7 +35,9 @@ function ActivitySection(): React.ReactElement {
   const detectionsDataviews = useSelector(selectDetectionsDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
+  const viewport = useMapViewport()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const dispatch = useAppDispatch()
 
   const onAddLayerClick = useCallback(() => {
@@ -44,7 +52,7 @@ function ActivitySection(): React.ReactElement {
         (dataview) =>
           dataview.id !== dataview1.id &&
           dataview.id !== dataview2.id &&
-          dataview.config?.type === GeneratorType.HeatmapAnimated
+          dataview.config?.type === DataviewConfigType.HeatmapAnimated
       )
       const dataviewsToDisable = [...activityDataviewsToDisable, ...detectionsDataviews]
       if (dataviewsToDisable.length) {
@@ -74,6 +82,13 @@ function ActivitySection(): React.ReactElement {
     [dataviews, detectionsDataviews, dispatchQueryParams, upsertDataviewInstance]
   )
 
+  const onHeatmapModeToggle = useCallback(() => {
+    dispatchQueryParams({
+      activityVisualizationMode:
+        activityVisualizationMode === POSITIONS_ID ? HEATMAP_ID : POSITIONS_ID,
+    })
+  }, [activityVisualizationMode, dispatchQueryParams])
+
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {
       const isVisible = dataview?.config?.visible ?? false
@@ -100,6 +115,15 @@ function ActivitySection(): React.ReactElement {
         </h2>
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
+            <IconButton
+              icon="vessel"
+              type="border"
+              size="medium"
+              disabled={!viewport || viewport.zoom < POSITIONS_VISUALIZATION_MIN_ZOOM}
+              tooltip={t('layer.toggleVisualizationMode', 'Toggle visualization mode')}
+              tooltipPlacement="top"
+              onClick={onHeatmapModeToggle}
+            />
             <IconButton
               icon="plus"
               type="border"

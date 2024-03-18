@@ -80,7 +80,10 @@ export type ReportVesselGraph =
 
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
 
+export type FourwingsVisualizationMode = 'heatmap' | 'positions'
 export interface WorkspaceState extends BaseUrlWorkspace {
+  activityVisualizationMode?: FourwingsVisualizationMode
+  detectionsVisualizationMode?: FourwingsVisualizationMode
   dataviewInstances?: UrlDataviewInstance[]
   bivariateDataviews?: BivariateDataviews
   mapAnnotations?: MapAnnotation[]

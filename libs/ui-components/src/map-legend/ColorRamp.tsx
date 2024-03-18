@@ -8,10 +8,10 @@ import {
   roundLegendNumber,
   SCIENTIFIC_NOTATION_E,
 } from './map-legend.utils'
-import { LegendLayer } from './MapLegend'
+import { UILegendColorRamp } from './types'
 
 type ColorRampLegendProps = {
-  layer: LegendLayer
+  layer: UILegendColorRamp
   className?: string
   roundValues?: boolean
   currentValueClassName?: string
@@ -19,51 +19,42 @@ type ColorRampLegendProps = {
 }
 
 export function ColorRampLegend({
-  layer = {} as LegendLayer,
+  layer = {} as UILegendColorRamp,
   className = '',
   roundValues = true,
   currentValueClassName = '',
   labelComponent = null,
 }: ColorRampLegendProps) {
-  const { gridArea, ramp, colorRamp, loading, label, unit, currentValue, type } = layer
-
+  const { gridArea, values, colors, loading, label, unit, currentValue, type } = layer
   // Omit bucket that goes from -Infinity --> 0 on non-divergent scales.
   const omitFirstBucket = !layer.divergent
-  const cleanRamp = omitFirstBucket ? ramp?.slice(1) : ramp
-  const cleanValues = ramp?.filter(([value]) => value)
+  const domainValues = omitFirstBucket ? values?.slice(1) : values
+  const cleanValues = values?.filter((value) => value)
   const skipOddLabels = cleanValues && cleanValues.length >= 6 && !layer.divergent
 
   // This scale is only used to draw non discrete gradient, and current value positioning
   const heatmapLegendScale = useMemo(() => {
-    if (!ramp || !cleanRamp) return null
-
-    const domainValues = cleanRamp.map(([value]) => {
-      if (value === 'less') return 0
-      if (value === 'more') return 1
-      return value as number
-    })
+    if (!values || !domainValues) return null
 
     // Reuse d3 logic when values go beyond max value
     if (domainValues[0] === -Infinity) {
       domainValues[0] = domainValues[1] + domainValues[2]
     }
 
-    const rangeValues = cleanRamp.map((item, i) => (i * 100) / cleanRamp.length)
+    const rangeValues = domainValues.map((item, i) => (i * 100) / domainValues.length)
 
     return (value: number) => {
       const scaled = scaleLinear().range(rangeValues).domain(domainValues)(value)
       return isNaN(scaled) || scaled < 0 ? 0 : scaled
     }
-  }, [cleanRamp, ramp])
+  }, [domainValues, values])
 
   const backgroundStyle = useMemo(() => {
-    if (!cleanRamp || type === 'colorramp-discrete') return {}
+    if (!colors || type === 'colorramp-discrete') return {}
     return {
-      backgroundImage: `linear-gradient(to right, ${cleanRamp
-        .map(([value, color]) => color)
-        .join()})`,
+      backgroundImage: `linear-gradient(to right, ${colors?.map((color) => color).join()})`,
     }
-  }, [cleanRamp, type])
+  }, [colors, type])
 
   const Label = labelComponent ? (
     labelComponent
@@ -80,13 +71,13 @@ export function ColorRampLegend({
     </p>
   )
 
-  if (loading && colorRamp && type === 'colorramp-discrete') {
+  if (loading && colors && type === 'colorramp-discrete') {
     return (
       <div className={cx(styles.row, className)}>
         {Label}
         <div className={styles.ramp} style={backgroundStyle}>
           <div className={styles.discreteSteps}>
-            {colorRamp.map((color: string, i: number) =>
+            {colors.map((color: string, i: number) =>
               i > 0 ? (
                 <span className={styles.discreteStep} key={i} style={{ backgroundColor: color }} />
               ) : null
@@ -94,14 +85,14 @@ export function ColorRampLegend({
           </div>
         </div>
         <div className={cx(styles.stepsContainer)}>
-          {colorRamp.map((_: string, i: number) => {
-            if (skipOddLabels && i !== 0 && i !== colorRamp.length && i % 2 === 1) return null
+          {colors.map((_: string, i: number) => {
+            if (skipOddLabels && i !== 0 && i !== domainValues?.length && i % 2 === 1) return null
             return (
               <span
                 className={cx(styles.step, {
-                  [styles.lastStep]: !skipOddLabels && i === colorRamp.length - 1,
+                  [styles.lastStep]: !skipOddLabels && i === colors.length - 1,
                 })}
-                style={{ left: `${(i * 100) / (colorRamp.length - 1)}%` }}
+                style={{ left: `${(i * 100) / (colors.length - 1)}%` }}
                 key={i}
               >
                 <span className={styles.loading}>
@@ -117,7 +108,9 @@ export function ColorRampLegend({
     )
   }
 
-  if (!ramp || !cleanRamp) return null
+  if (!domainValues || !colors?.length) {
+    return null
+  }
 
   const getValueLabel = (valueLabel: string) => {
     if (!valueLabel.includes(SCIENTIFIC_NOTATION_E)) return valueLabel
@@ -134,21 +127,21 @@ export function ColorRampLegend({
   return (
     <div className={cx(styles.row, className)}>
       {Label}
-      {cleanRamp?.length > 0 && (
+      {domainValues?.length > 0 && (
         <Fragment>
           <div className={styles.ramp} style={backgroundStyle}>
             {currentValue !== null && currentValue !== undefined && heatmapLegendScale && (
               <span
                 className={cx(styles.currentValue, currentValueClassName, {
-                  [styles.offsetLeft]: heatmapLegendScale(currentValue) < 10,
-                  [styles.offsetRight]: heatmapLegendScale(currentValue) > 90,
+                  [styles.offsetLeft]: heatmapLegendScale(currentValue as number) < 10,
+                  [styles.offsetRight]: heatmapLegendScale(currentValue as number) > 90,
                 })}
                 style={{
-                  left: `${Math.min(heatmapLegendScale(currentValue) as number, 100)}%`,
+                  left: `${Math.min(heatmapLegendScale(currentValue as number) as number, 100)}%`,
                 }}
               >
                 {formatLegendValue({
-                  number: currentValue,
+                  number: currentValue as number,
                   roundValues,
                   isFirst: false,
                   isLast: false,
@@ -158,7 +151,7 @@ export function ColorRampLegend({
             )}
             {type === 'colorramp-discrete' && (
               <div className={styles.discreteSteps}>
-                {cleanRamp.map(([value, color], i) => (
+                {colors.map((color, i) => (
                   <span
                     className={styles.discreteStep}
                     key={i}
@@ -169,7 +162,7 @@ export function ColorRampLegend({
             )}
           </div>
           <div className={styles.stepsContainer}>
-            {cleanRamp.map(([value], i) => {
+            {domainValues.map((value, i) => {
               if (value === null || value === undefined || value === -Infinity) return null
               const roundValue = roundValues
                 ? roundLegendNumber(value as number)
@@ -181,19 +174,19 @@ export function ColorRampLegend({
                       number: roundValue,
                       roundValues,
                       isFirst: (omitFirstBucket && i === 0) || (!omitFirstBucket && i === 1),
-                      isLast: i === cleanRamp.length - 1,
+                      isLast: i === domainValues.length - 1,
                       divergent: layer.divergent,
                     })
 
-              if (skipOddLabels && i !== 0 && i !== ramp.length && i % 2 === 1) return null
+              if (skipOddLabels && i !== 0 && i !== values?.length && i % 2 === 1) return null
               return (
                 <span
                   className={cx(styles.step, {
                     [styles.firstStep]: omitFirstBucket && i === 0,
                     [styles.lastStep]:
-                      !skipOddLabels && !layer.divergent && i === cleanRamp.length - 1,
+                      !skipOddLabels && !layer.divergent && i === domainValues.length - 1,
                   })}
-                  style={{ left: `${(i * 100) / cleanRamp.length}%` }}
+                  style={{ left: `${(i * 100) / domainValues.length}%` }}
                   key={i}
                 >
                   {getValueLabel(valueLabel)}

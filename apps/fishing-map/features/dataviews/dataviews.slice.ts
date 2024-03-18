@@ -7,6 +7,7 @@ import {
   DataviewDatasetConfig,
   DataviewInstance,
   DatasetTypes,
+  DataviewConfigType,
   DataviewCategory,
 } from '@globalfishingwatch/api-types'
 import {
@@ -21,7 +22,6 @@ import {
   resolveDataviews,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import {
   selectWorkspaceStateProperty,
   selectWorkspaceDataviewInstances,
@@ -392,14 +392,14 @@ export const selectCurrentDataviewInstancesResolved = createSelector(
   }
 )
 
-export const selectDataviewInstancesByType = (type: GeneratorType) => {
+export const selectDataviewInstancesByType = (type: DataviewConfigType) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
   })
 }
 
 export const selectTrackDataviews = createSelector(
-  [selectDataviewInstancesByType(GeneratorType.Track)],
+  [selectDataviewInstancesByType(DataviewConfigType.Track)],
   (dataviews) => dataviews
 )
 

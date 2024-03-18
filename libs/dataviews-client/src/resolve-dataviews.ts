@@ -6,6 +6,7 @@ import {
   DatasetTypes,
   Dataview,
   DataviewCategory,
+  DataviewConfigType,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
@@ -14,10 +15,20 @@ import {
   INCLUDE_FILTER_ID,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from './resolve-endpoint'
 
-export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
+export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
+  if (!dataviews.length) {
+    console.warn('Trying to merge empty dataviews')
+    return 'EMPTY_DATAVIEW'
+  }
+  return dataviews.map((d) => d.id).join(',')
+}
+
+export type UrlDataviewInstance<T = DataviewConfigType> = Omit<
+  DataviewInstance<T>,
+  'dataviewId'
+> & {
   dataviewId?: Dataview['id'] | Dataview['slug'] // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
@@ -27,11 +38,11 @@ export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
   [EXCLUDE_FILTER_ID]: 'NOT IN',
 }
 
-export const FILTERABLE_GENERATORS: GeneratorType[] = [
-  GeneratorType.HeatmapAnimated,
-  GeneratorType.TileCluster,
-  GeneratorType.UserContext,
-  GeneratorType.UserPoints,
+export const FILTERABLE_GENERATORS: DataviewConfigType[] = [
+  DataviewConfigType.HeatmapAnimated,
+  DataviewConfigType.TileCluster,
+  DataviewConfigType.UserContext,
+  DataviewConfigType.UserPoints,
 ]
 
 function getDatasetSchemaItem(dataset: Dataset, schema: string) {
@@ -150,7 +161,7 @@ const getTrackDataviewDatasetConfigs = (
 }
 
 export type DatasetConfigsTransforms = Partial<
-  Record<GeneratorType, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
+  Record<DataviewConfigType, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
 >
 
 /**
@@ -169,10 +180,10 @@ export const getDataviewsForResourceQuerying = (
   const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
     let preparedDatasetConfigs
     switch (dataviewInstance.config?.type) {
-      case GeneratorType.Track:
+      case DataviewConfigType.Track:
         preparedDatasetConfigs = getTrackDataviewDatasetConfigs(dataviewInstance)
         preparedDatasetConfigs =
-          datasetConfigsTransform?.[GeneratorType.Track]?.(preparedDatasetConfigs)
+          datasetConfigsTransform?.[DataviewConfigType.Track]?.(preparedDatasetConfigs)
         break
 
       default:
@@ -195,7 +206,7 @@ export const resolveResourcesFromDatasetConfigs = (
   dataviews: UrlDataviewInstance[]
 ): Resource[] => {
   return dataviews
-    .filter((dataview) => dataview.config?.type === GeneratorType.Track)
+    .filter((dataview) => dataview.config?.type === DataviewConfigType.Track)
     .flatMap((dataview) => {
       if (!dataview.datasetsConfig) return []
       return dataview.datasetsConfig.flatMap((datasetConfig) => {

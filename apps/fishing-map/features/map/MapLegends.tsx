@@ -7,11 +7,12 @@ import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomp
 import styles from './MapLegends.module.css'
 import { AnyLegend, LegendTranslated, useLegendsTranslated } from './map-legends.hooks'
 
+// TODO remove this from here
 const MapLegendWrapper: React.FC<{ legend: LegendTranslated }> = ({ legend }) => {
   const { t } = useTranslation()
   return (
     <MapLegend
-      layer={legend}
+      layer={legend as any}
       className={styles.legend}
       roundValues={legend.category !== DataviewCategory.Environment}
       currentValueClassName={styles.currentValue}

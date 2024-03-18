@@ -23,6 +23,7 @@ import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import Color from 'features/workspace/common/Color'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import MapLegend from 'features/workspace/common/MapLegend'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -323,7 +324,9 @@ function ActivityLayerPanel({
                 </div>
               </div>
               <div className={activityStyles.legendContainer}>
-                <div className={activityStyles.legend} id={`legend_${dataview.id}`}></div>
+                <div className={activityStyles.legend}>
+                  <MapLegend dataview={dataview} />
+                </div>
                 {bivariateDataviews?.[0] === dataview.id && (
                   <IconButton
                     size="small"

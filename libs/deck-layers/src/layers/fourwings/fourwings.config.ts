@@ -1,5 +1,5 @@
 import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '../../utils/dates'
 import { Chunk } from './fourwings.types'
 
@@ -9,8 +9,13 @@ export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/m
 export const HEATMAP_ID = 'heatmap'
 export const POSITIONS_ID = 'positions'
 
+export const FOURWINGS_MAX_ZOOM = 12
+export const POSITIONS_VISUALIZATION_MIN_ZOOM = 9
+
+export const DEFAULT_FOURWINGS_INTERVALS: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
+
 export const CHUNKS_BY_INTERVAL: Record<
-  Interval,
+  FourwingsInterval,
   { unit: DateTimeUnit; value: number } | undefined
 > = {
   HOUR: {
@@ -26,7 +31,7 @@ export const CHUNKS_BY_INTERVAL: Record<
 }
 
 export const LIMITS_BY_INTERVAL: Record<
-  Interval,
+  FourwingsInterval,
   { unit: keyof DurationLikeObject; value: number; buffer: number } | undefined
 > = {
   HOUR: {
@@ -47,16 +52,18 @@ export const LIMITS_BY_INTERVAL: Record<
   YEAR: undefined,
 }
 
-export const getInterval = (start: number, end: number): Interval => {
+export const getInterval = (start: number, end: number): FourwingsInterval => {
   const duration = Duration.fromMillis(end - start)
   const validIntervals = Object.entries(LIMITS_BY_INTERVAL).flatMap(([interval, limits]) => {
-    if (!limits) return interval as Interval
-    return Math.round(duration.as(limits.unit)) <= limits.value ? (interval as Interval) : []
+    if (!limits) return interval as FourwingsInterval
+    return Math.round(duration.as(limits.unit)) <= limits.value
+      ? (interval as FourwingsInterval)
+      : []
   })
   return validIntervals[0]
 }
 
-export const getDateInIntervalResolution = (date: number, interval: Interval): number => {
+export const getDateInIntervalResolution = (date: number, interval: FourwingsInterval): number => {
   return DateTime.fromMillis(date)
     .startOf(interval as any)
     .toMillis()
@@ -75,7 +82,11 @@ export const getDatesInIntervalResolution = (
 
 export const CHUNKS_BUFFER = 1
 // TODO: validate if worth to make this dynamic for the playback
-export const getChunkByInterval = (start: number, end: number, interval: Interval): Chunk => {
+export const getChunkByInterval = (
+  start: number,
+  end: number,
+  interval: FourwingsInterval
+): Chunk => {
   const intervalUnit = LIMITS_BY_INTERVAL[interval]?.unit
   if (!intervalUnit) {
     return { id: 'full-time-range', interval, start, end, bufferedStart: start, bufferedEnd: end }
@@ -99,7 +110,7 @@ export const getChunkByInterval = (start: number, end: number, interval: Interva
   }
 }
 
-export const getChunkBuffer = (interval: Interval) => {
+export const getChunkBuffer = (interval: FourwingsInterval) => {
   const { buffer, unit } = LIMITS_BY_INTERVAL[interval] || {}
   if (!unit) {
     return 0
