@@ -6,7 +6,11 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { HEATMAP_ID, POSITIONS_ID } from '@globalfishingwatch/deck-layers'
+import {
+  HEATMAP_ID,
+  POSITIONS_ID,
+  POSITIONS_VISUALIZATION_MIN_ZOOM,
+} from '@globalfishingwatch/deck-layers'
 import {
   selectActivityDataviews,
   selectDetectionsDataviews,
@@ -116,7 +120,7 @@ function ActivitySection(): React.ReactElement {
               icon="vessel"
               type="border"
               size="medium"
-              disabled={!viewport || viewport.zoom < 9}
+              disabled={!viewport || viewport.zoom < POSITIONS_VISUALIZATION_MIN_ZOOM}
               tooltip={t('layer.toggleVisualizationMode', 'Toggle visualization mode')}
               tooltipPlacement="top"
               onClick={onHeatmapModeToggle}

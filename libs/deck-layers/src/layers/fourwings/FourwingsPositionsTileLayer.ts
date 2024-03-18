@@ -19,8 +19,8 @@ import { TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { stringify } from 'qs'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
-import { POSITIONS_ID } from './fourwings.config'
-import { ACTIVITY_SWITCH_ZOOM_LEVEL, getRoundedDateFromTS } from './fourwings.utils'
+import { POSITIONS_ID, POSITIONS_VISUALIZATION_MIN_ZOOM } from './fourwings.config'
+import { getRoundedDateFromTS } from './fourwings.utils'
 import { FourwingsTileLayerColorDomain, FourwingsTileLayerColorRange } from './fourwings.types'
 
 export type _FourwingsPositionsTileLayerProps<DataT = any> = {
@@ -216,8 +216,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         data: `https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/position/{z}/{x}/{y}?${stringify(
           params
         )}`,
-        minZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
-        maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
+        minZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
+        maxZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
         loaders: [MVTWorkerLoader],
         onViewportLoad: this.onViewportLoad,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
