@@ -42,6 +42,8 @@ import {
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
   selectMapDrawingEditId,
+  selectActivityVisualizationMode,
+  selectDetectionsVisualizationMode,
 } from 'routes/routes.selectors'
 import {
   selectShowTimeComparison,
@@ -465,5 +467,12 @@ export const selectDrawEditDataset = createSelector(
   [selectAllDatasets, selectMapDrawingEditId],
   (datasets, datasetId) => {
     return datasets.find((dataset) => dataset.id === datasetId)
+  }
+)
+
+export const selectIsPositionsVisualizationMode = createSelector(
+  [selectActivityVisualizationMode, selectDetectionsVisualizationMode],
+  (activityVisualizationMode, detectionsVisualizationMode) => {
+    return [activityVisualizationMode, detectionsVisualizationMode].some((v) => v === 'positions')
   }
 )

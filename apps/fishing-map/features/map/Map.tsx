@@ -61,7 +61,12 @@ import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selec
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
-import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
+import {
+  MAP_VIEW,
+  useViewStateAtom,
+  useUpdateViewStateUrlParams,
+  useDisablePositionsOnZoomChanges,
+} from './map-viewport.hooks'
 import styles from './Map.module.css'
 import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
 import MapLegends from './MapLegends'
@@ -124,6 +129,7 @@ const MapWrapper = () => {
     [setViewState]
   )
   useUpdateViewStateUrlParams()
+  useDisablePositionsOnZoomChanges()
   const { onMapClick } = useMapMouseClick()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
