@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import { EventTypes, ApiEvent } from '@globalfishingwatch/api-types'
 import {
   TimebarChartChunk,
@@ -5,6 +6,7 @@ import {
   ActivityTimeseriesFrame,
 } from '@globalfishingwatch/timebar'
 import { FourWingsFeature } from '@globalfishingwatch/deck-loaders'
+import { Interval } from '@globalfishingwatch/layer-composer'
 import { getEventColors, getEventDescription } from 'utils/events'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -43,27 +45,46 @@ export const parseTrackEventChunkProps = (
 }
 
 export function getGraphDataFromFourwingsFeatures(
-  features: FourWingsFeature[]
+  features: FourWingsFeature[],
+  {
+    start,
+    end,
+    interval,
+    sublayers,
+  }: { start: number; end: number; interval: Interval; sublayers: number }
 ): ActivityTimeseriesFrame[] {
   if (!features?.length) {
     return []
   }
   const data: Record<number, ActivityTimeseriesFrame> = {}
+  let date = getUTCDateTime(start).toMillis()
+  const endPlusOne = Math.min(
+    getUTCDateTime(end)
+      .plus({ [interval]: 1 })
+      .toMillis(),
+    DateTime.now().toUTC().toMillis()
+  )
+  while (date <= endPlusOne) {
+    data[date] = { date }
+    for (let i = 0; i < sublayers; i++) {
+      data[date][i] = 0
+    }
+    date = Math.min(
+      getUTCDateTime(date)
+        .plus({ [interval]: 1 })
+        .toMillis(),
+      DateTime.now().toUTC().toMillis()
+    )
+  }
   for (const feature of features) {
     const { dates, values } = feature.properties
     dates.forEach((sublayerDates, sublayerIndex) => {
       sublayerDates.forEach((date, dateIndex) => {
-        if (!data[date]) {
-          data[date] = { date }
+        if (data[date]) {
+          data[date][sublayerIndex] += values[sublayerIndex][dateIndex]
         }
-        if (!data[date][sublayerIndex]) {
-          data[date][sublayerIndex] = 0
-        }
-        data[date][sublayerIndex] += values[sublayerIndex][dateIndex]
       })
     })
   }
-  // TODO insert empty frames for missing timestamps
-  // https://github.com/GlobalFishingWatch/frontend/blob/b44b773c760d1472915bf7662631f13dc9cc7c5a/libs/features-aggregate/src/timeseries.ts#L102
-  return Object.values(data).sort((a, b) => a.date - b.date)
+  return Object.values(data)
 }

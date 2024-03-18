@@ -64,11 +64,11 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getData() {
-    return this.layers?.[0].getData()
+    return this.getLayer()?.getData()
   }
 
   getViewportData() {
-    return this.layers?.[0].getViewportData()
+    return this.getLayer()?.getViewportData()
   }
 
   getMode() {
