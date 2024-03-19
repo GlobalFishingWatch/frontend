@@ -1,0 +1,43 @@
+.placeholder {
+  padding-block: var(--space-XL);
+}
+
+.container {
+  padding: var(--space-M);
+}
+
+.insightContainer {
+  padding-bottom: var(--space-M);
+  border-bottom: var(--border);
+}
+
+.coverageBar {
+  margin-top: var(--space-M);
+  position: relative;
+  width: 20rem;
+  height: 0.5rem;
+  border-radius: 0.5rem;
+  background-image: linear-gradient(90deg, rgba(22, 63, 137, 0.2) 0%, rgba(22, 63, 137, 0.8) 100%);
+}
+
+.coverageIndicator {
+  position: absolute;
+  width: 10rem;
+  transform: translate(-50%, -1.9rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.coverageDot {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.6rem;
+  background: var(--color-primary-blue);
+  border: 1px solid var(--color-white);
+}
+
+.coverageLabel {
+  text-align: center;
+  line-height: 1;
+}

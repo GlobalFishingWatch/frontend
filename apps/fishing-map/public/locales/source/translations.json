@@ -794,6 +794,9 @@
     "hideOtherLayers": "Hide other layers",
     "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "imo": "IMO",
+    "insights": {
+      "coverage": "AIS Coverage"
+    },
     "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Info Source",
     "infoSources": {
@@ -835,6 +838,7 @@
     "registrySources": "registry sources",
     "sectionActivity": "Activity",
     "sectionAreas": "Areas",
+    "sectionInsights": "Insights",
     "sectionRelatedVessel": "Related vessels",
     "sectionRelatedVessels": "Related vessels",
     "sectionSummary": "Summary",
