@@ -197,11 +197,13 @@ const vesselSlice = createSlice({
     })
     builder.addCase(fetchVesselInfoThunk.rejected, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
-      if (action.error.message === 'Aborted') {
-        ;(state as any)[vesselId].status = AsyncReducerStatus.Idle
-      } else {
-        ;(state as any)[vesselId].status = AsyncReducerStatus.Error
-        ;(state as any)[vesselId].error = action.payload as ParsedAPIError
+      if ((state as any)[vesselId]) {
+        if (action.error.message === 'Aborted') {
+          ;(state as any)[vesselId].status = AsyncReducerStatus.Idle
+        } else {
+          ;(state as any)[vesselId].status = AsyncReducerStatus.Error
+          ;(state as any)[vesselId].error = action.payload as ParsedAPIError
+        }
       }
     })
     builder.addCase(HYDRATE, (state, action: any) => {
@@ -225,12 +227,10 @@ export const selectVesselInfoData = createSelector(
   (vessel) => vessel?.data as IdentityVesselData
 )
 export const selectVesselInfoDataId = createSelector([selectVessel], (vessel) => vessel?.data?.id)
-export const selectSelfReportedVesselIds = createSelector(
-  [selectVessel],
-  (vessel) =>
-    vessel?.data?.identities
-      ?.filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
-      .map((i) => i.id)
+export const selectSelfReportedVesselIds = createSelector([selectVessel], (vessel) =>
+  vessel?.data?.identities
+    ?.filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
+    .map((i) => i.id)
 )
 export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)
 export const selectVesselInfoError = createSelector([selectVessel], (vessel) => vessel?.error)

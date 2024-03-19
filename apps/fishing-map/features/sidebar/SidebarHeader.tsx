@@ -353,12 +353,14 @@ function CloseVesselButton() {
 }
 
 function CloseSectionButton() {
+  const dispatch = useAppDispatch()
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { dispatchQueryParams } = useLocationConnect()
 
   const onCloseClick = useCallback(() => {
-    dispatchQueryParams({ userTab: undefined })
-  }, [dispatchQueryParams])
+    dispatchQueryParams({ ...EMPTY_FILTERS, userTab: undefined })
+    dispatch(cleanVesselSearchResults())
+  }, [dispatch, dispatchQueryParams])
 
   if (!lastVisitedWorkspace) {
     return null
