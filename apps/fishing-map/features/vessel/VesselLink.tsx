@@ -98,7 +98,7 @@ const VesselLink = ({
         query: {
           ...locationQuery,
           // Clean search url when clicking on vessel link
-          qry: undefined,
+          query: undefined,
           vesselDatasetId,
           ...(identity && {
             vesselIdentitySource: identity.identitySource,
