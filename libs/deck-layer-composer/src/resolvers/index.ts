@@ -1,4 +1,4 @@
-import { PickingInfo } from '@deck.gl/core/typed'
+import { PickingInfo } from '@deck.gl/core'
 import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   AnyDeckLayer,

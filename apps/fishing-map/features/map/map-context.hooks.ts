@@ -1,7 +1,7 @@
 import { useMap as useMapboxMap } from 'react-map-gl'
 import { useSetAtom, atom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
-import { DeckGLRef } from '@deck.gl/react/typed'
+import { DeckGLRef } from '@deck.gl/react'
 import { RefObject, useEffect } from 'react'
 import { Deck } from '@deck.gl/core'
 

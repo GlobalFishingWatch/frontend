@@ -16,10 +16,10 @@ export const useSetDeckLayerLoadedState = () => {
   return useCallback(
     (layers: AnyDeckLayer[]) => {
       if (layers?.length) {
-        setDeckLayerLoadedState((prev) => {
+        setDeckLayerLoadedState(() => {
           const newLoadedState = {} as DeckLayerState
           layers.forEach((layer) => {
-            newLoadedState[layer.id] = { loaded: layer.state?.loaded }
+            newLoadedState[layer.id] = { loaded: layer.state?.loaded as boolean }
           })
           return newLoadedState
         })

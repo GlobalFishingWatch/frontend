@@ -1,6 +1,7 @@
-import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core/typed'
-import { TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
+import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core'
+import { TileLayerProps } from '@deck.gl/geo-layers'
+import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { FourWingsFeature } from '@globalfishingwatch/deck-loaders'
 import { FourwingsHeatmapTileLayer } from './FourwingsHeatmapTileLayer'
 import {
   FourwingsPositionsTileLayer,
@@ -36,7 +37,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     this.props.onViewportLoad?.(tiles)
   }
 
-  _onTileDataLoading = (tile: TileLoadProps) => {
+  _onTileDataLoading = () => {
     this.setState({ loaded: false })
   }
 

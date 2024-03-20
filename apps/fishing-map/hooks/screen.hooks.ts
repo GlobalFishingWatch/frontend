@@ -46,7 +46,7 @@ export const useDownloadDomElementAsImage = (
   const generatePreviewImage = useCallback(async () => {
     try {
       setPreviewImageLoading(true)
-      map?.redraw(true)
+      map?.redraw('previewImage')
       const canvas = await getCanvas()
       setPreviewImage(canvas.toDataURL())
       setPreviewImageLoading(false)

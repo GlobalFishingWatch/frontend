@@ -10,7 +10,7 @@ export enum BasemapType {
   Labels = 'basemap_labels',
 }
 
-export type AnyDeckLayer<D = unknown> =
+export type AnyDeckLayer<D extends {} = {}> =
   | Layer<D>
   | BaseMapLayer
   | ContextLayer

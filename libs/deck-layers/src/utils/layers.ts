@@ -1,7 +1,7 @@
-import { COORDINATE_SYSTEM, PickingInfo } from '@deck.gl/core/typed'
-import { ClipExtension } from '@deck.gl/extensions/typed'
-import { TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { Tile2DHeader } from '@deck.gl/geo-layers/typed/tileset-2d'
+import { COORDINATE_SYSTEM, PickingInfo } from '@deck.gl/core'
+import { ClipExtension } from '@deck.gl/extensions'
+import { TileLayerProps } from '@deck.gl/geo-layers'
+import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { Matrix4 } from '@math.gl/core'
 
 const WORLD_SIZE = 512

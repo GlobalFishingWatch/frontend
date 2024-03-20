@@ -1,8 +1,7 @@
-import { BitmapLayer } from '@deck.gl/layers/typed'
-import { CompositeLayer, LayerContext } from '@deck.gl/core/typed'
+import { BitmapLayer } from '@deck.gl/layers'
+import { CompositeLayer, LayerContext } from '@deck.gl/core'
 import { TileLayer as TileLayerWrongTyping } from '@deck.gl/geo-layers'
-// import { TileLayer } from '@deck.gl/geo-layers/typed'
-import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers/typed'
+import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
 import { BasemapType } from '../../types'
 

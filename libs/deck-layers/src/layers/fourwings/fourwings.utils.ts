@@ -1,8 +1,8 @@
 import { stringify } from 'qs'
-import { TileIndex } from '@deck.gl/geo-layers/typed/tileset-2d/types'
 import { DateTime } from 'luxon'
 import type { Feature } from 'geojson'
-import { Color } from '@deck.gl/core/typed'
+import { Color } from '@deck.gl/core'
+import { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
 import {
   CONFIG_BY_INTERVAL,
   Cell,

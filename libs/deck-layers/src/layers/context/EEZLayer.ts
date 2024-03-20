@@ -1,8 +1,8 @@
-import { PickingInfo, Layer, DefaultProps } from '@deck.gl/core/typed'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { GeoJsonLayer } from '@deck.gl/layers/typed'
+import { PickingInfo, Layer, DefaultProps } from '@deck.gl/core'
+import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import { GeoJsonLayer } from '@deck.gl/layers'
 import type { Feature, GeoJsonProperties, Geometry } from 'geojson'
-import { PathStyleExtension } from '@deck.gl/extensions/typed'
+import { PathStyleExtension } from '@deck.gl/extensions'
 import {
   hexToDeckColor,
   LayerGroup,
@@ -52,7 +52,7 @@ export class EEZLayer extends ContextLayer<EEZLayerProps> {
         id: `${this.id}-boundaries-layer`,
         data: `${API_PATH}/${this.props.boundariesDatasetId}/context-layers/{z}/{x}/{y}`,
         loaders: [GFWContextLoader],
-        renderSubLayers: (props) => {
+        renderSubLayers: (props: any) => {
           const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
           return [
             new GeoJsonLayer(mvtSublayerProps, {
@@ -76,7 +76,7 @@ export class EEZLayer extends ContextLayer<EEZLayerProps> {
         id: `${this.id}-base-layer`,
         data: `${API_PATH}/${this.props.areasDatasetId}/context-layers/{z}/{x}/{y}`,
         loaders: [GFWContextLoader],
-        renderSubLayers: (props) => {
+        renderSubLayers: (props: any) => {
           const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
           return [
             new GeoJsonLayer(mvtSublayerProps, {

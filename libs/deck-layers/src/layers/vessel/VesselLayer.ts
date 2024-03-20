@@ -1,5 +1,5 @@
-import { DataFilterExtension } from '@deck.gl/extensions/typed'
-import { CompositeLayer, Layer, LayersList, LayerProps, Color } from '@deck.gl/core/typed'
+import { DataFilterExtension } from '@deck.gl/extensions'
+import { CompositeLayer, Layer, LayersList, LayerProps, Color } from '@deck.gl/core'
 // Layers
 import {
   ApiEvent,

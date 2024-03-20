@@ -5,12 +5,12 @@ import {
   LayersList,
   DefaultProps,
   UpdateParameters,
-} from '@deck.gl/core/typed'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
+} from '@deck.gl/core'
+import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { ckmeans } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
-import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
+import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { FourWingsFeature, FourwingsLoader } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
@@ -51,7 +51,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   static layerName = 'FourwingsHeatmapTileLayer'
   static defaultProps = defaultProps
 
-  initializeState(context: LayerContext): void {
+  initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
       tilesCache: this._getTileDataCache(this.props.minFrame, this.props.maxFrame),
@@ -63,7 +63,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
             ]
           : [1, 20, 50, 100, 500, 5000, 10000, 500000],
       colorRanges: this._getColorRanges(),
-    } as FourwingsTileLayerState
+    }
   }
 
   _getColorRanges = () => {
@@ -214,7 +214,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileDataCacheKey = (): string => {
-    return Object.values(this.state.tilesCache).join(',')
+    return Object.values(this.state.tilesCache || {}).join(',')
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -300,7 +300,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
     if (data?.length) {
       const dataFiltered = filterFeaturesByBounds(data, { north, south, west, east })
-      return dataFiltered
+      return dataFiltered as FourWingsFeature[]
     }
     return []
   }

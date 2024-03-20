@@ -1,5 +1,5 @@
 import Pbf from 'pbf'
-import { GeoBoundingBox } from '@deck.gl/geo-layers/typed/tileset-2d/types'
+import { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
 import { generateUniqueId, getCellCoordinates } from '../helpers/cells'
 import type {

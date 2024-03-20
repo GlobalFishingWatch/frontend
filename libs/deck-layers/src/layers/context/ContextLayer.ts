@@ -1,13 +1,6 @@
-import {
-  CompositeLayer,
-  Color,
-  PickingInfo,
-  Layer,
-  DefaultProps,
-  LayerProps,
-} from '@deck.gl/core/typed'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { GeoJsonLayer } from '@deck.gl/layers/typed'
+import { CompositeLayer, Color, PickingInfo, Layer, DefaultProps, LayerProps } from '@deck.gl/core'
+import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import { GeoJsonLayer } from '@deck.gl/layers'
 import type { Feature, GeoJsonProperties, Geometry } from 'geojson'
 import {
   COLOR_HIGHLIGHT_FILL,
@@ -65,7 +58,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<
         id: `${this.id}-base-layer`,
         data: `${API_PATH}/${this.props.datasetId}/context-layers/{z}/{x}/{y}`,
         loaders: [GFWContextLoader],
-        renderSubLayers: (props) => {
+        renderSubLayers: (props: any) => {
           const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
           return [
             new GeoJsonLayer(mvtSublayerProps, {
