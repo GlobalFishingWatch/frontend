@@ -121,7 +121,7 @@ const Vessel = () => {
       ...(!guestUser
         ? [
             {
-              id: 'insights',
+              id: 'insights' as VesselSection,
               title: t('vessel.sectionInsights', 'Insights'),
               content: <Insights />,
               // testId: 'vv-related-tab',

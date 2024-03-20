@@ -15,11 +15,9 @@ export const vesselInsightApi = createApi({
     baseUrl: `/insights/vessels`,
     method: 'POST',
   }),
-  tagTypes: ['Insight'],
   endpoints: (builder) => ({
     getVesselInsight: builder.mutation({
       query: (body) => ({ url: '', method: 'POST', body }),
-      invalidatesTags: ['Insight'],
     }),
   }),
 })

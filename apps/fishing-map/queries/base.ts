@@ -3,7 +3,7 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 
 export const gfwBaseQuery =
   (
-    { baseUrl, method, body }: { baseUrl: string; method: 'GET' | 'POST'; body?: any } = {
+    { baseUrl, method }: { baseUrl: string; method?: 'GET' | 'POST' } = {
       baseUrl: '',
       method: 'GET',
     }
