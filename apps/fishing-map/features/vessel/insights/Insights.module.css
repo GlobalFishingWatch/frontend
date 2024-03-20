@@ -2,6 +2,13 @@
   padding-block: var(--space-XL);
 }
 
+.error {
+  padding-block: var(--space-XL);
+  padding-inline: var(--space-M);
+  color: var(--color-danger-red);
+  text-align: center;
+}
+
 .container {
   padding-inline: var(--space-M);
 }
@@ -9,6 +16,11 @@
 .insightContainer {
   padding-block: var(--space-M);
   border-bottom: var(--border);
+}
+
+.insightContainer:last-child {
+  border-bottom: none;
+  padding-bottom: var(--space-L);
 }
 
 .coverageBar {
