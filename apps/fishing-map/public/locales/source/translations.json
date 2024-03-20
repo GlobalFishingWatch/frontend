@@ -809,10 +809,10 @@
       "identityMOUListsEmpty": "Flying under a flag/flags not present on the Tokio or Paris MOU black or grey lists",
       "identityMOUParisListsCount": "Flag present on the Paris MOU black or grey list ({{flags}})",
       "identityMOUTokyoListsCount": "Flag present on the Tokyo MOU black or grey list ({{flags}})",
-      "identityMOUTokyoListsPreviousAppearance": "Previously flew under a flag on the Tokyo MOU black or grey lists",
-      "identityMOUParisListsPreviousAppearance": "Previously flew under a flag on the Paris MOU black or grey lists",
+      "identityMOUTokyoListsPreviousAppearance": "Previously flew under another flag on the Tokyo MOU black or grey lists",
+      "identityMOUParisListsPreviousAppearance": "Previously flew under another flag on the Paris MOU black or grey lists",
       "IUU": "RFMO IUU Blacklist",
-      "IUUBlackListsCount": "The vessel present on an RFMO IUU blacklist ({{value}})",
+      "IUUBlackListsCount": "The vessel is present on an RFMO IUU blacklist",
       "IUUBlackListsEmpty": "The vessel is not present on an RFMO IUU blacklist"
     },
     "infoLogin": "Register and login to see more details (free, 2 minutes)",

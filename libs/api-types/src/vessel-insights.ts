@@ -5,6 +5,12 @@ type InsightBase = {
   }
 }
 
+type ValueInPeriod = {
+  from: string
+  to: string
+  value: string
+}
+
 export type InsightCoverageResponse = InsightBase & {
   coverage: {
     blocks: number
@@ -57,23 +63,23 @@ export type InsightIdentityResponse = InsightBase & {
     flagsChanges: {
       totalTimesListed: number
       totalTimesListedInThePeriod: number
-      valuesInThePeriod: string[]
+      valuesInThePeriod: ValueInPeriod[]
     }
     iuuBlacklist: {
       totalTimesListed: number
       totalTimesListedInThePeriod: number
-      valuesInThePeriod: string[]
+      valuesInThePeriod: ValueInPeriod[]
     }
     mouList: {
       tokyo: {
         totalTimesListed: number
         totalTimesListedInThePeriod: number
-        valuesInThePeriod: string[]
+        valuesInThePeriod: ValueInPeriod[]
       }
       paris: {
         totalTimesListed: number
         totalTimesListedInThePeriod: number
-        valuesInThePeriod: string[]
+        valuesInThePeriod: ValueInPeriod[]
       }
     }
   }
