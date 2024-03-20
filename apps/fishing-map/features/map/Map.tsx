@@ -135,6 +135,7 @@ const MapWrapper = () => {
   useDisablePositionsOnZoomChanges()
   const { onMapClick } = useMapMouseClick()
   const { onMouseMove } = useMapMouseHover()
+  const { getCursor } = useMapCursor()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -295,6 +296,7 @@ const MapWrapper = () => {
           setDeckLayerLoadedState(layers)
         }}
         style={mapStyles}
+        getCursor={getCursor}
         // more info about preserveDrawingBuffer
         // https://github.com/visgl/deck.gl/issues/4436#issuecomment-610472868
         glOptions={{ preserveDrawingBuffer: true }}

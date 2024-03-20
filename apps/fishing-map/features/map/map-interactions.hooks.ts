@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckProps, PickingInfo, Position } from '@deck.gl/core/typed'
+import { Deck } from '@deck.gl/core'
 import {
   InteractionEventCallback,
   useFeatureState,
@@ -11,7 +12,10 @@ import {
 import { ExtendedStyle, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
-import { useSetDeckLayerInteraction } from '@globalfishingwatch/deck-layer-composer'
+import {
+  useDeckLayerInteraction,
+  useSetDeckLayerInteraction,
+} from '@globalfishingwatch/deck-layer-composer'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import {
@@ -37,6 +41,7 @@ import { useMapErrorNotification } from 'features/map/overlays/error-notificatio
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { SliceInteractionEvent } from './map.slice'
+import { isRulerLayerPoint } from './map-interaction.utils'
 
 export const useMapMouseHover = (style?: ExtendedStyle) => {
   const map = useDeckMap()
@@ -67,22 +72,13 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
         y: info.y,
         radius: 0,
       })
+
       if (features) {
         setDeckLayerInteraction(features)
       }
-      if (features?.some((feature: any) => feature.layer.id === 'RulersLayer')) {
-        const rulerPoint = features.find((feature: any) => feature.object.geometry.type === 'Point')
-        if (rulerPoint) {
-          map.setProps({ getCursor: () => 'crosshair' })
-        }
-      }
-      // if (isMapDrawing || isMapAnnotating) {
-      //   return onSimpleMapHover(event)
-      // }
       if (rulersEditing) {
         return onRulerMapHover(info)
       }
-      // return onMapHover(event)
     },
     [map, onRulerMapHover, rulersEditing, setDeckLayerInteraction]
   )
@@ -228,7 +224,9 @@ const hasToolFeature = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipE
   )
 }
 
-export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
+export const _deprecatedUseMapCursor = (
+  hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>
+) => {
   const map = useMapInstance()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
@@ -293,4 +291,37 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
   ])
 
   return getCursor()
+}
+
+export const useMapCursor = () => {
+  const { isMapAnnotating } = useMapAnnotation()
+  const { isErrorNotificationEditing } = useMapErrorNotification()
+  const { rulersEditing } = useRulers()
+  const { isMapDrawing } = useMapDrawConnect()
+  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
+  const deckInteractions = useDeckLayerInteraction()
+  const getCursor = useCallback(
+    ({ isDragging }: { isDragging: boolean }) => {
+      if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
+        if (rulersEditing && deckInteractions.some(isRulerLayerPoint)) {
+          return 'move'
+        }
+        return 'crosshair'
+      } else if (isMapDrawing || isMarineManagerLocation) {
+        return 'context-menu'
+      } else if (isDragging) {
+        return 'grabbing'
+      }
+      return 'grab'
+    },
+    [
+      deckInteractions,
+      isErrorNotificationEditing,
+      isMapAnnotating,
+      isMapDrawing,
+      isMarineManagerLocation,
+      rulersEditing,
+    ]
+  )
+  return { getCursor }
 }
