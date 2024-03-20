@@ -7,7 +7,7 @@ import {
   UpdateParameters,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
-import { ckmeans } from 'simple-statistics'
+import { ckmeans, mean, standardDeviation } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
@@ -112,6 +112,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       if (!allValues.length) {
         return this.getColorDomain()
       }
+
       const steps = allValues.map((sublayerValues) =>
         ckmeans(sublayerValues, Math.min(sublayerValues.length, 4)).map((step) => step[0])
       )
@@ -127,9 +128,18 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (!allValues.length) {
       return this.getColorDomain()
     }
-    const steps = ckmeans(allValues, Math.min(allValues.length, COLOR_RAMP_DEFAULT_NUM_STEPS)).map(
-      (step) => step[0]
-    )
+
+    const meanValue = mean(allValues)
+    const standardDeviationValue = standardDeviation(allValues)
+    const upperCut = meanValue + standardDeviationValue * 2
+    const lowerCut = meanValue - standardDeviationValue * 2
+    const dataFiltered = allValues.filter((a) => a >= lowerCut && a <= upperCut)
+
+    const steps = ckmeans(
+      dataFiltered,
+      Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
+    ).map((step) => step[0])
+
     return steps
   }
 
