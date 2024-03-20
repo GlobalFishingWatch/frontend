@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useGetVesselInsightMutation } from 'queries/vessel-insight-api'
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect } from 'react'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -16,7 +15,6 @@ import {
   InsightFishingResponse,
   InsightGapsResponse,
   InsightIdentityResponse,
-  InsightResponse,
 } from './insights.types'
 
 const InsightWrapper = ({ insight }: { insight: string }) => {
