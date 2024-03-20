@@ -8,19 +8,21 @@ import {
   TemporalGridFeature,
   useFeatureState,
 } from '@globalfishingwatch/react-hooks'
-import {
-  ContextLayerType,
-  GeneratorType,
-  GlobalGeneratorConfig,
-} from '@globalfishingwatch/layer-composer'
+import { ContextLayerType } from '@globalfishingwatch/layer-composer'
 import {
   UrlDataviewInstance,
   MULTILAYER_SEPARATOR,
   isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
-import { DatasetSubCategory, DataviewCategory, Locale } from '@globalfishingwatch/api-types'
+import {
+  DatasetSubCategory,
+  DataviewCategory,
+  DataviewType,
+  Locale,
+} from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
+import { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
 import { selectLocationType } from 'routes/routes.selectors'
 import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -41,7 +43,12 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
-import { selectBivariateDataviews } from 'features/app/selectors/app.selectors'
+import {
+  selectActivityVisualizationMode,
+  selectBivariateDataviews,
+  selectDetectionsVisualizationMode,
+  selectMapResolution,
+} from 'features/app/selectors/app.selectors'
 import {
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
@@ -85,15 +92,21 @@ export const useGlobalConfigConnect = () => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
+  const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
+  const mapResolution = useSelector(selectMapResolution)
 
   return useMemo(() => {
-    let globalConfig: GlobalGeneratorConfig = {
+    let globalConfig: ResolverGlobalConfig = {
       zoom: viewState.zoom,
       start,
       end,
       token: GFWAPI.getToken(),
       locale: i18n.language as Locale,
       bivariateDataviews,
+      activityVisualizationMode,
+      detectionsVisualizationMode,
+      resolution: mapResolution,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -110,6 +123,9 @@ export const useGlobalConfigConnect = () => {
     end,
     i18n.language,
     bivariateDataviews,
+    mapResolution,
+    activityVisualizationMode,
+    detectionsVisualizationMode,
     showTimeComparison,
     timeComparisonValues,
   ])
@@ -177,7 +193,7 @@ export const useClickedEventConnect = () => {
     }
 
     const clusterFeature = event?.features?.find(
-      (f) => f.generatorType === GeneratorType.TileCluster
+      (f) => f.generatorType === DataviewType.TileCluster
     )
     if (clusterFeature?.properties?.expansionZoom) {
       const { count, expansionZoom, lat, lng, lon } = clusterFeature.properties
@@ -196,7 +212,7 @@ export const useClickedEventConnect = () => {
     }
 
     const annotatedFeature = event?.features?.find(
-      (f) => f.generatorType === GeneratorType.Annotation
+      (f) => f.generatorType === DataviewType.Annotation
     )
     if (annotatedFeature?.properties?.id) {
       setMapAnnotation(annotatedFeature.properties)
@@ -215,7 +231,7 @@ export const useClickedEventConnect = () => {
 
     // When hovering in a vessel event we don't want to have clicked events
     const areAllFeaturesVesselEvents = event.features.every(
-      (f) => f.generatorType === GeneratorType.VesselEvents
+      (f) => f.generatorType === DataviewType.VesselEvents
     )
 
     if (areAllFeaturesVesselEvents) {
@@ -247,7 +263,7 @@ export const useClickedEventConnect = () => {
     }
 
     const tileClusterFeature = event.features.find(
-      (f) => f.generatorType === GeneratorType.TileCluster
+      (f) => f.generatorType === DataviewType.TileCluster
     )
     if (tileClusterFeature) {
       const bqPocQuery = tileClusterFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
@@ -283,7 +299,7 @@ export type TooltipEventFeature = {
   subcategory?: DatasetSubCategory
   temporalgrid?: TemporalGridFeature
   title?: string
-  type?: GeneratorType
+  type?: DataviewType
   unit?: string
   value: string // TODO Why not a number?
   visible?: boolean
@@ -325,7 +341,7 @@ export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
   const setHighlightedEventDebounced = useCallback(() => {
     let highlightEvent: string | undefined
     const vesselFeature = features?.find((f) => f.category === DataviewCategory.Vessels)
-    const clusterFeature = features?.find((f) => f.type === GeneratorType.TileCluster)
+    const clusterFeature = features?.find((f) => f.type === DataviewType.TileCluster)
     if (!clusterFeature && vesselFeature) {
       highlightEvent = vesselFeature.properties?.id
     } else if (clusterFeature) {
@@ -352,8 +368,8 @@ export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
 
 export const parseMapTooltipFeatures = (
   features: SliceExtendedFeature[],
-  dataviews: UrlDataviewInstance<GeneratorType>[],
-  temporalgridDataviews?: UrlDataviewInstance<GeneratorType>[]
+  dataviews: UrlDataviewInstance<DataviewType>[],
+  temporalgridDataviews?: UrlDataviewInstance<DataviewType>[]
 ): TooltipEventFeature[] => {
   const tooltipEventFeatures: TooltipEventFeature[] = features.flatMap((feature) => {
     const { temporalgrid, generatorId, generatorType } = feature
@@ -361,7 +377,7 @@ export const parseMapTooltipFeatures = (
       source: feature.source,
       sourceLayer: feature.sourceLayer,
       layerId: feature.layerId as string,
-      type: generatorType as GeneratorType,
+      type: generatorType as DataviewType,
     }
 
     if (temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
@@ -397,7 +413,7 @@ export const parseMapTooltipFeatures = (
       if (generatorId && (generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
         const tooltipWorkspaceFeature: TooltipEventFeature = {
           ...baseFeature,
-          type: GeneratorType.GL,
+          type: DataviewType.GL,
           value: feature.properties.label,
           properties: {},
           category: DataviewCategory.Context,
@@ -416,10 +432,7 @@ export const parseMapTooltipFeatures = (
         return tooltipWorkspaceFeature
       }
       // 3. Tools (Annotations and Rulers)
-      else if (
-        generatorType === GeneratorType.Annotation ||
-        generatorType === GeneratorType.Rulers
-      ) {
+      else if (generatorType === DataviewType.Annotation || generatorType === DataviewType.Rulers) {
         const tooltipToolFeature: TooltipEventFeature = {
           ...baseFeature,
           category: DataviewCategory.Context,
@@ -478,8 +491,8 @@ export const parseMapTooltipFeatures = (
 
 export const parseMapTooltipEvent = (
   event: SliceInteractionEvent | null,
-  dataviews: UrlDataviewInstance<GeneratorType>[],
-  temporalgridDataviews: UrlDataviewInstance<GeneratorType>[]
+  dataviews: UrlDataviewInstance<DataviewType>[],
+  temporalgridDataviews: UrlDataviewInstance<DataviewType>[]
 ) => {
   if (!event || !event.features) return null
 
@@ -490,7 +503,7 @@ export const parseMapTooltipEvent = (
   }
 
   const clusterFeature = event.features.find(
-    (f) => f.generatorType === GeneratorType.TileCluster && parseInt(f.properties.count) > 1
+    (f) => f.generatorType === DataviewType.TileCluster && parseInt(f.properties.count) > 1
   )
 
   // We don't want to show anything else when hovering a cluster point

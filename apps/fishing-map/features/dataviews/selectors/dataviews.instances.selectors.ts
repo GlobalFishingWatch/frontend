@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import {
   DatasetTypes,
   DataviewCategory,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
@@ -12,7 +13,6 @@ import {
   resolveDataviews,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -237,13 +237,13 @@ export const selectCurrentDataviewInstancesResolved = createSelector(
   }
 )
 
-export const selectDataviewInstancesByType = (type: GeneratorType) => {
+export const selectDataviewInstancesByType = (type: DataviewType) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
   })
 }
 
-export const selectTrackDataviews = selectDataviewInstancesByType(GeneratorType.Track)
+export const selectTrackDataviews = selectDataviewInstancesByType(DataviewType.Track)
 
 export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(

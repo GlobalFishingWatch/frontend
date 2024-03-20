@@ -10,12 +10,11 @@ import { ResolverGlobalConfig } from './types'
 // TODO: decide if include static here or create a new one
 export const resolveDeckFourwingsLayerProps = (
   dataview: UrlDataviewInstance,
-  { start, end }: ResolverGlobalConfig,
+  { start, end, resolution }: ResolverGlobalConfig,
   interactions: PickingInfo[]
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
-
   const visibleSublayers = dataview.config?.sublayers?.filter((sublayer) => sublayer?.visible)
   const sublayers: FourwingsDeckSublayer[] = (visibleSublayers || []).map((sublayer) => ({
     id: sublayer.id,
@@ -23,19 +22,21 @@ export const resolveDeckFourwingsLayerProps = (
     datasets: sublayer?.datasets,
     config: {
       color: (sublayer?.color || dataview.config?.color) as string,
-      colorRamp: sublayer?.colorRamp,
+      colorRamp: sublayer?.colorRamp as any, // TODO: fix this
       visible: sublayer?.visible,
+      unit: sublayer?.legend?.unit,
     },
   }))
+
   return {
     id: dataview.id,
-    // category: dataview.id,
     hoveredFeatures: interactions,
     minFrame: startTime,
     maxFrame: endTime,
     visible: true,
-    comparisonMode: dataview.config?.mode,
-    mode: 'heatmap',
+    resolution,
+    comparisonMode: dataview.config?.comparisonMode,
+    visualizationMode: dataview.config?.visualizationMode,
     debug: false,
     // category: dataview.category || DataviewCategory.Activity,
     sublayers,

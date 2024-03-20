@@ -8,8 +8,8 @@ import {
   useMapHover,
   useSimpleMapHover,
 } from '@globalfishingwatch/react-hooks'
-import { ExtendedStyle, ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { ExtendedStyle, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { useSetDeckLayerInteraction } from '@globalfishingwatch/deck-layer-composer'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -215,7 +215,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
 
 const hasTooltipEventFeature = (
   hoveredTooltipEvent: ReturnType<typeof parseMapTooltipEvent>,
-  type: GeneratorType
+  type: DataviewType
 ) => {
   return hoveredTooltipEvent?.features.find((f) => f.type === type) !== undefined
 }
@@ -223,8 +223,8 @@ const hasTooltipEventFeature = (
 const hasToolFeature = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
   if (!hoveredTooltipEvent) return false
   return (
-    hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Annotation) ||
-    hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Rulers)
+    hasTooltipEventFeature(hoveredTooltipEvent, DataviewType.Annotation) ||
+    hasTooltipEventFeature(hoveredTooltipEvent, DataviewType.Rulers)
   )
 }
 
@@ -241,7 +241,7 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
 
   const getCursor = useCallback(() => {
     if (hoveredTooltipEvent && hasToolFeature(hoveredTooltipEvent)) {
-      if (hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Annotation) && !gfwUser) {
+      if (hasTooltipEventFeature(hoveredTooltipEvent, DataviewType.Annotation) && !gfwUser) {
         return 'grab'
       }
       return 'all-scroll'
@@ -253,11 +253,11 @@ export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapToo
     } else if (hoveredTooltipEvent) {
       // Workaround to fix cluster events duplicated, only working for encounters and needs
       // TODO if wanted to scale it to other layers
-      const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
+      const clusterConfig = dataviews.find((d) => d.config?.type === DataviewType.TileCluster)
       const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
 
       const clusterFeature = hoveredTooltipEvent.features.find(
-        (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
+        (f) => f.type === DataviewType.TileCluster && parseInt(f.properties.count) > eventsCount
       )
 
       if (clusterFeature) {

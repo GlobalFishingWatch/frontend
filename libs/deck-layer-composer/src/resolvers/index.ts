@@ -1,5 +1,5 @@
 import { PickingInfo } from '@deck.gl/core/typed'
-import { DataviewConfigType, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   AnyDeckLayer,
   BaseMapLayer,
@@ -28,16 +28,16 @@ export const dataviewToDeckLayer = (
   globalConfig: ResolverGlobalConfig,
   interactions = [] as PickingInfo[]
 ): AnyDeckLayer => {
-  if (dataview.config?.type === DataviewConfigType.Basemap) {
+  if (dataview.config?.type === DataviewType.Basemap) {
     const deckLayerProps = resolveDeckBasemapLayerProps(dataview)
     return new BaseMapLayer(deckLayerProps)
   }
-  if (dataview.config?.type === DataviewConfigType.HeatmapAnimated) {
+  if (dataview.config?.type === DataviewType.HeatmapAnimated) {
     const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, globalConfig, interactions)
     const layer = new FourwingsLayer(deckLayerProps)
     return layer
   }
-  if (dataview.config?.type === DataviewConfigType.Context) {
+  if (dataview.config?.type === DataviewType.Context) {
     if (dataview.id === EEZ_DATAVIEW_ID) {
       const deckLayerProps = resolveDeckEEZLayerProps(dataview, globalConfig, interactions)
       const layer = new EEZLayer(deckLayerProps)
@@ -47,7 +47,7 @@ export const dataviewToDeckLayer = (
     const layer = new ContextLayer(deckLayerProps)
     return layer
   }
-  if (dataview.config?.type === DataviewConfigType.Track) {
+  if (dataview.config?.type === DataviewType.Track) {
     const deckLayerProps = resolveDeckVesselLayerProps(dataview, globalConfig, interactions)
     const layer = new VesselLayer(deckLayerProps)
     return layer

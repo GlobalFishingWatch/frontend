@@ -6,6 +6,7 @@ import {
   DatasetTypes,
   Dataview,
   DataviewCategory,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
@@ -14,10 +15,17 @@ import {
   INCLUDE_FILTER_ID,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { resolveEndpoint } from './resolve-endpoint'
 
-export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
+export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
+  if (!dataviews.length) {
+    console.warn('Trying to merge empty dataviews')
+    return 'EMPTY_DATAVIEW'
+  }
+  return dataviews.map((d) => d.id).join(',')
+}
+
+export type UrlDataviewInstance<T = DataviewType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
   dataviewId?: Dataview['id'] | Dataview['slug'] // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
@@ -27,11 +35,11 @@ export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
   [EXCLUDE_FILTER_ID]: 'NOT IN',
 }
 
-export const FILTERABLE_GENERATORS: GeneratorType[] = [
-  GeneratorType.HeatmapAnimated,
-  GeneratorType.TileCluster,
-  GeneratorType.UserContext,
-  GeneratorType.UserPoints,
+export const FILTERABLE_GENERATORS: DataviewType[] = [
+  DataviewType.HeatmapAnimated,
+  DataviewType.TileCluster,
+  DataviewType.UserContext,
+  DataviewType.UserPoints,
 ]
 
 function getDatasetSchemaItem(dataset: Dataset, schema: string) {
@@ -150,7 +158,7 @@ const getTrackDataviewDatasetConfigs = (
 }
 
 export type DatasetConfigsTransforms = Partial<
-  Record<GeneratorType, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
+  Record<DataviewType, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
 >
 
 /**
@@ -169,10 +177,10 @@ export const getDataviewsForResourceQuerying = (
   const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
     let preparedDatasetConfigs
     switch (dataviewInstance.config?.type) {
-      case GeneratorType.Track:
+      case DataviewType.Track:
         preparedDatasetConfigs = getTrackDataviewDatasetConfigs(dataviewInstance)
         preparedDatasetConfigs =
-          datasetConfigsTransform?.[GeneratorType.Track]?.(preparedDatasetConfigs)
+          datasetConfigsTransform?.[DataviewType.Track]?.(preparedDatasetConfigs)
         break
 
       default:
@@ -195,7 +203,7 @@ export const resolveResourcesFromDatasetConfigs = (
   dataviews: UrlDataviewInstance[]
 ): Resource[] => {
   return dataviews
-    .filter((dataview) => dataview.config?.type === GeneratorType.Track)
+    .filter((dataview) => dataview.config?.type === DataviewType.Track)
     .flatMap((dataview) => {
       if (!dataview.datasetsConfig) return []
       return dataview.datasetsConfig.flatMap((datasetConfig) => {
@@ -380,24 +388,25 @@ export function resolveDataviews(
               (d) => getDatasetSchemaItem(d, filterKey) !== undefined
             )
             const datasetSchema = getDatasetSchemaItem(dataset as Dataset, filterKey)
+            const isUserDataset = dataviewInstance.category === DataviewCategory.User
             const queryFilterKey =
               // User context layers requires wrapping the filter key with double quotes
-              filterKey.includes('-') && dataviewInstance.category === DataviewCategory.User
-                ? `"${filterKey}"`
-                : filterKey
+              filterKey.includes('_') && isUserDataset ? `"${filterKey}"` : filterKey
             if (datasetSchema && datasetSchema.type === 'range') {
               const minPossible = Number(datasetSchema?.enum?.[0])
               const minSelected = Number(filterValues[0])
+              const minValue = isUserDataset ? `'${minSelected}'` : minSelected
               const maxPossible = Number(datasetSchema?.enum?.[datasetSchema.enum.length - 1])
               const maxSelected = Number(filterValues[filterValues.length - 1])
+              const maxValue = isUserDataset ? `'${maxSelected}'` : maxSelected
               if (minSelected !== minPossible && maxSelected !== maxPossible) {
-                return `${queryFilterKey} >= ${minSelected} AND ${queryFilterKey} <= ${maxSelected}`
+                return `${queryFilterKey} >= ${minValue} AND ${queryFilterKey} <= ${maxValue}`
               }
               if (minSelected !== minPossible) {
-                return `${queryFilterKey} >= ${minSelected}`
+                return `${queryFilterKey} >= ${minValue}`
               }
               if (maxSelected !== maxPossible) {
-                return `${queryFilterKey} <= ${maxSelected}`
+                return `${queryFilterKey} <= ${maxValue}`
               }
             }
             const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID

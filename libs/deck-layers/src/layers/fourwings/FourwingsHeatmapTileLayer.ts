@@ -22,7 +22,6 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { ColorRampId, getBivariateRamp } from '../../utils/colorRamps'
 import {
-  ACTIVITY_SWITCH_ZOOM_LEVEL,
   aggregateCellTimeseries,
   asyncAwaitMS,
   filterElementByPercentOfIndex,
@@ -30,17 +29,19 @@ import {
   getDataUrlBySublayer,
 } from './fourwings.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
-import { HEATMAP_ID, PATH_BASENAME, getInterval } from './fourwings.config'
+import { FOURWINGS_MAX_ZOOM, HEATMAP_ID, PATH_BASENAME, getInterval } from './fourwings.config'
 import {
   ColorRange,
   FourwingsDeckSublayer,
   FourwingsHeatmapTileLayerProps,
-  FourwingsHeatmapTileLayerState,
+  FourwingsTileLayerState,
   FourwingsHeatmapTilesCache,
-  HeatmapAnimatedMode,
+  FourwingsComparisonMode,
 } from './fourwings.types'
 
-const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {}
+const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
+  resolution: 'default',
+}
 
 const MAX_VALUES_PER_TILE = 1000
 
@@ -55,18 +56,18 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     this.state = {
       tilesCache: this._getTileDataCache(this.props.minFrame, this.props.maxFrame),
       colorDomain:
-        this.props.comparisonMode === HeatmapAnimatedMode.Bivariate
+        this.props.comparisonMode === FourwingsComparisonMode.Bivariate
           ? [
               [1, 100, 5000, 500000],
               [1, 100, 5000, 500000],
             ]
           : [1, 20, 50, 100, 500, 5000, 10000, 500000],
       colorRanges: this._getColorRanges(),
-    } as FourwingsHeatmapTileLayerState
+    } as FourwingsTileLayerState
   }
 
   _getColorRanges = () => {
-    if (this.props.comparisonMode === HeatmapAnimatedMode.Bivariate) {
+    if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
       return getBivariateRamp(this.props.sublayers.map((s) => s.config?.colorRamp) as ColorRampId[])
     }
     return this.props.sublayers.map(
@@ -93,7 +94,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         ? currentZoomData.filter(filterElementByPercentOfIndex)
         : currentZoomData
 
-    if (this.props.comparisonMode === HeatmapAnimatedMode.Bivariate) {
+    if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
       let allValues: [number[], number[]] = [[], []]
       dataSample.forEach((feature) => {
         feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
@@ -218,7 +219,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
     const { minFrame, maxFrame } = props
-    const { tilesCache, colorRanges } = this.state as FourwingsHeatmapTileLayerState
+    const { tilesCache, colorRanges } = this.state as FourwingsTileLayerState
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = colorRanges.join() !== newSublayerColorRanges.join()
 
@@ -241,28 +242,28 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { sublayers, comparisonMode } = this.props
-    const { colorDomain, colorRanges } = this.state as FourwingsHeatmapTileLayerState
+    const { resolution, sublayers, comparisonMode } = this.props
+    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
     const cacheKey = this._getTileDataCacheKey()
     const sublayersIds = sublayers.map((s) => s.id).join(',')
 
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: `${HEATMAP_ID}-tiles`,
+        id: `${HEATMAP_ID}-tiles-${resolution}`,
         tileSize: 512,
         colorDomain,
         colorRanges,
         comparisonMode,
         minZoom: 0,
-        maxZoom: ACTIVITY_SWITCH_ZOOM_LEVEL,
+        maxZoom: FOURWINGS_MAX_ZOOM,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
         debug: this.props.debug,
         maxRequests: -1,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey, sublayersIds],
+          getTileData: [cacheKey, resolution, sublayersIds],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
@@ -314,6 +315,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   getColorDomain = () => {
-    return this.state.colorDomain
+    return (this.state as FourwingsTileLayerState).colorDomain
+  }
+
+  getColorRange = () => {
+    return (this.state as FourwingsTileLayerState).colorRanges
+  }
+
+  getColorScale = () => {
+    return {
+      range: this.getColorRange(),
+      domain: this.getColorDomain(),
+    }
   }
 }

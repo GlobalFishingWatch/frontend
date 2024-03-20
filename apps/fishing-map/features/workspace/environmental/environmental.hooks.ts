@@ -4,14 +4,13 @@ import { useSelector } from 'react-redux'
 import { Feature, Geometry, GeoJsonProperties } from 'geojson'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
-  GeneratorType,
   HEATMAP_STATIC_PROPERTY_ID,
   HeatmapLayerMeta,
 } from '@globalfishingwatch/layer-composer'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { ChunkFeature, aggregateFeatures } from '@globalfishingwatch/features-aggregate'
-import { DataviewConfig } from '@globalfishingwatch/api-types'
+import { DataviewConfig, DataviewType } from '@globalfishingwatch/api-types'
 import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectActiveHeatmapEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
@@ -27,7 +26,7 @@ import { filterByPolygon } from 'features/reports/reports-geo.utils'
 
 const filterVisibleValues = (
   rawData: number[],
-  config: DataviewConfig<GeneratorType> | undefined
+  config: DataviewConfig<DataviewType> | undefined
 ) => {
   if (!config?.minVisibleValue && !config?.maxVisibleValue) return rawData
   return rawData.filter((d) => {

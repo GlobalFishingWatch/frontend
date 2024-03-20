@@ -4,12 +4,13 @@ import {
   Dataset,
   Dataview,
   DataviewCategory,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { ContextLayerType } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import {
@@ -104,7 +105,7 @@ export const getVesselDataviewInstanceId = (vesselId: string) =>
 export const getVesselDataviewInstance = (
   vessel: { id: string },
   datasets: VesselInstanceDatasets
-): DataviewInstance<GeneratorType> => {
+): DataviewInstance => {
   const vesselDataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
     ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG, datasets),
@@ -112,7 +113,7 @@ export const getVesselDataviewInstance = (
   return vesselDataviewInstance
 }
 
-export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> => {
+export const getFishingDataviewInstance = (): DataviewInstance<DataviewType> => {
   return {
     id: `${FISHING_LAYER_PREFIX}${Date.now()}`,
     config: {
@@ -124,7 +125,7 @@ export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> =>
 
 export const getUserPolygonsDataviewInstance = (
   datasetId: string
-): DataviewInstance<GeneratorType> => {
+): DataviewInstance<DataviewType> => {
   return {
     id: `user-polygons-${Date.now()}`,
     config: {
@@ -141,9 +142,7 @@ export const getUserPolygonsDataviewInstance = (
   }
 }
 
-export const getUserPointsDataviewInstance = (
-  dataset: Dataset
-): DataviewInstance<GeneratorType> => {
+export const getUserPointsDataviewInstance = (dataset: Dataset): DataviewInstance<DataviewType> => {
   const circleRadiusProperty = getDatasetConfigurationProperty({ dataset, property: 'pointSize' })
   const startTimeFilterProperty = getDatasetConfigurationProperty({
     dataset,
@@ -200,7 +199,7 @@ export const getUserTrackDataviewInstance = (dataset: Dataset) => {
   return dataviewInstance
 }
 
-export const getContextDataviewInstance = (datasetId: string): DataviewInstance<GeneratorType> => {
+export const getContextDataviewInstance = (datasetId: string): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${CONTEXT_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Context,
@@ -228,7 +227,7 @@ export const getDataviewInstanceFromDataview = (dataview: Dataview) => {
 
 export const getActivityDataviewInstanceFromDataview = (
   dataview?: Dataview
-): DataviewInstance<GeneratorType> | undefined => {
+): DataviewInstance<DataviewType> | undefined => {
   if (!dataview) return
   const instance = getDataviewInstanceFromDataview(dataview)
   return {
@@ -242,7 +241,7 @@ export const getActivityDataviewInstanceFromDataview = (
 export const getBigQuery4WingsDataviewInstance = (
   datasetId: string,
   { aggregationOperation = AggregationOperation.Sum } = {}
-): DataviewInstance<GeneratorType> => {
+): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${BIG_QUERY_4WINGS_PREFIX}${Date.now()}`,
     config: {
@@ -268,7 +267,7 @@ export const getBigQuery4WingsDataviewInstance = (
 
 export const getBigQueryEventsDataviewInstance = (
   datasetId: string
-): DataviewInstance<GeneratorType> => {
+): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${BIG_QUERY_EVENTS_PREFIX}${Date.now()}`,
     dataviewId: TEMPLATE_CLUSTERS_DATAVIEW_SLUG,

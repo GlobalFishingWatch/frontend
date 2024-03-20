@@ -11,13 +11,12 @@ import {
   getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime, rgbaToDeckColor } from '../../utils'
-import { FourwingsLayerMode } from './FourwingsLayer'
 import {
   AggregateCellParams,
   Chunk,
   FourwingsDeckSublayer,
   GetFillColorParams,
-  HeatmapAnimatedMode,
+  FourwingsComparisonMode,
 } from './fourwings.types'
 import { getChunkByInterval, getInterval } from './fourwings.config'
 
@@ -122,20 +121,6 @@ export interface Bounds {
 
 export function getRoundedDateFromTS(ts: number) {
   return getUTCDateTime(ts).toISODate()
-}
-
-export const getDateRangeParam = (minFrame: number, maxFrame: number) => {
-  return `date-range=${getRoundedDateFromTS(minFrame)},${getRoundedDateFromTS(maxFrame)}`
-}
-
-export const ACTIVITY_SWITCH_ZOOM_LEVEL = 9
-
-export function getFourwingsMode(
-  zoom: number,
-  timerange: { start: string; end: string }
-): FourwingsLayerMode {
-  const duration = getUTCDateTime(timerange?.end).diff(getUTCDateTime(timerange?.start), 'days')
-  return zoom >= ACTIVITY_SWITCH_ZOOM_LEVEL && duration.days < 30 ? 'positions' : 'heatmap'
 }
 
 export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
@@ -294,7 +279,7 @@ export const chooseColor = (
     })
   let chosenValueIndex = 0
   let chosenValue: number | undefined
-  if (comparisonMode === HeatmapAnimatedMode.Compare) {
+  if (comparisonMode === FourwingsComparisonMode.Compare) {
     aggregatedCellValues.forEach((value, index) => {
       // TODO add more comparison modes (bivariate)
       if (value && (!chosenValue || value > chosenValue)) {
@@ -309,7 +294,7 @@ export const chooseColor = (
       return EMPTY_CELL_COLOR
     }
     return colorRanges[chosenValueIndex][colorIndex] as Color
-  } else if (comparisonMode === HeatmapAnimatedMode.Bivariate) {
+  } else if (comparisonMode === FourwingsComparisonMode.Bivariate) {
     chosenValue = getBivariateValue(aggregatedCellValues, colorDomain as number[][])
     if (!chosenValue) {
       return EMPTY_CELL_COLOR

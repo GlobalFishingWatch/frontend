@@ -5,39 +5,20 @@ import {
   GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { Segment, Locale, Anchorage, EventTypes } from '@globalfishingwatch/api-types'
+import { Segment, Locale, Anchorage, EventTypes, DataviewType } from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
 
 export type LayerVisibility = 'visible' | 'none'
 
-export enum GeneratorType {
-  Annotation = 'ANNOTATION',
-  Background = 'BACKGROUND',
-  Basemap = 'BASEMAP',
-  BasemapLabels = 'BASEMAP_LABELS',
-  CartoPolygons = 'CARTO_POLYGONS',
-  Context = 'CONTEXT',
-  GL = 'GL',
-  Heatmap = 'HEATMAP',
-  HeatmapStatic = 'HEATMAP_STATIC',
-  HeatmapAnimated = 'HEATMAP_ANIMATED',
-  Polygons = 'POLYGONS',
-  Rulers = 'RULERS',
-  TileCluster = 'TILE_CLUSTER',
-  Track = 'TRACK',
-  UserContext = 'USER_CONTEXT',
-  UserPoints = 'USER_POINTS',
-  VesselEvents = 'VESSEL_EVENTS',
-  VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
-}
-
 export interface GeneratorFeature {
   id: string
   layerId: string
-  generator: GeneratorType
+  generator: DataviewType
   isCluster?: boolean
 }
+
+export { DataviewType as GeneratorType }
 
 export interface GlobalGeneratorConfig {
   start?: string
@@ -74,7 +55,7 @@ export interface GeneratorMetadata {
 export interface GeneratorConfig {
   id: string
   data?: AnyData
-  type: GeneratorType | string
+  type: DataviewType | string
   visible?: boolean
   color?: string
   opacity?: number
@@ -92,7 +73,7 @@ export type MergedGeneratorConfig<T> = T & GlobalGeneratorConfigExtended
  * A default or satellite basemap
  */
 export interface BasemapGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.Basemap
+  type: DataviewType.Basemap
   basemap: BasemapType
 }
 
@@ -100,14 +81,14 @@ export interface BasemapGeneratorConfig extends GeneratorConfig {
  * Place labels
  */
 export interface BasemapLabelsGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.BasemapLabels
+  type: DataviewType.BasemapLabels
   locale?: Locale
 }
 /**
  * A solid color background layer
  */
 export interface BackgroundGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.Background
+  type: DataviewType.Background
   /**
    * Sets the color of the map background in any format supported by Mapbox GL, see https://docs.mapbox.com/mapbox-gl-js/style-spec/types/#color
    */
@@ -118,7 +99,7 @@ export interface BackgroundGeneratorConfig extends GeneratorConfig {
  * Layers created by user uploading their own shapefile
  */
 export interface UserContextGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.UserContext
+  type: DataviewType.UserContext
   /**
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
@@ -178,7 +159,7 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
  * Layers created by user uploading their own shapefile
  */
 export interface UserPointsGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.UserPoints
+  type: DataviewType.UserPoints
   /**
    * Sets the color of the line https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#paint-fill-fill-color
    */
@@ -247,7 +228,7 @@ export type GlobalUserPointsGeneratorConfig = Required<
  * Contextual layers provided by GFW
  */
 export interface ContextGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.Context
+  type: DataviewType.Context
   /**
    * Id for the layers dictionary, see CONTEXT_LAYERS from /generators/context/context-layers
    */
@@ -335,7 +316,7 @@ export interface TileClusterGeneratorConfig extends GeneratorConfig {
  */
 export interface GlGeneratorConfig extends GeneratorConfig {
   id: string
-  type: GeneratorType.GL
+  type: DataviewType.GL
   sources?: SourceSpecification[]
   layers?: LayerSpecification[]
 }
@@ -344,7 +325,7 @@ export interface GlGeneratorConfig extends GeneratorConfig {
  * Renders outlined polygons for our CARTO tables library, typically context layers. Takes care of instanciating CARTO anonymous maps/layergroupid (hence asynchronous). cartoTableId should be provided but will fallback to base generator id in case it's not.
  */
 export interface CartoPolygonsGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.CartoPolygons
+  type: DataviewType.CartoPolygons
   cartoTableId?: string
   baseUrl?: string
   selectedFeatures?: any
@@ -364,7 +345,7 @@ export type TrackGeneratorConfigData =
  * Renders a vessel track that can be filtered by time. Will use `start` and `end` from the global generator config, if set
  */
 export interface TrackGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.Track
+  type: DataviewType.Track
   /**
    * A GeoJSON made of one or more LineStrings. Features should have `coordinateProperties` set in order to filter by time
    */
@@ -411,7 +392,7 @@ export interface TrackGeneratorConfig extends GeneratorConfig {
 }
 
 export interface PolygonsGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.Polygons
+  type: DataviewType.Polygons
   /**
    * A GeoJSON feature collection
    */
@@ -435,7 +416,7 @@ export interface PolygonsGeneratorConfig extends GeneratorConfig {
 }
 
 export interface VesselEventsGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.VesselEvents
+  type: DataviewType.VesselEvents
   data: RawEvent[]
   color?: string
   event?: {
@@ -454,7 +435,7 @@ export interface VesselEventsGeneratorConfig extends GeneratorConfig {
 }
 
 export interface VesselEventsShapesGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.VesselEventsShapes
+  type: DataviewType.VesselEventsShapes
   data: RawEvent[]
   color?: string
   track?: TrackGeneratorConfigData
@@ -468,7 +449,7 @@ export interface VesselEventsShapesGeneratorConfig extends GeneratorConfig {
  * Renders rulers showing a distance between two points, using great circle if needed
  */
 export interface RulersGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.Rulers
+  type: DataviewType.Rulers
   /**
    * An array defining rulers with start and end coordinates
    */
@@ -479,7 +460,7 @@ export interface RulersGeneratorConfig extends GeneratorConfig {
  * Renders map text annotations
  */
 export interface AnnotationsGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.Annotation
+  type: DataviewType.Annotation
   /**
    * An array defining annotations with label, color and start and end coordinates
    */
@@ -487,7 +468,7 @@ export interface AnnotationsGeneratorConfig extends GeneratorConfig {
 }
 
 export interface HeatmapGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.Heatmap
+  type: DataviewType.Heatmap
   // Types needed but already in GlobalGeneratorConfig
   // start: string
   // end: string
@@ -507,7 +488,7 @@ export interface HeatmapGeneratorConfig extends GeneratorConfig {
 }
 
 export interface HeatmapStaticGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.HeatmapStatic
+  type: DataviewType.HeatmapStatic
   tilesAPI?: string
   maxZoom?: number
   numBreaks?: number
@@ -524,7 +505,7 @@ export interface HeatmapStaticGeneratorConfig extends GeneratorConfig {
 }
 
 export interface HeatmapAnimatedGeneratorConfig extends GeneratorConfig {
-  type: GeneratorType.HeatmapAnimated
+  type: DataviewType.HeatmapAnimated
   sublayers: HeatmapAnimatedGeneratorSublayer[]
   mode?: HeatmapAnimatedMode
   group?: Group

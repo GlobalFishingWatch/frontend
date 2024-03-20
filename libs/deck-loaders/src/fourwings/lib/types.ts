@@ -16,7 +16,7 @@ export type TileCell = Cell & {
   coordinates: [number[]]
 }
 
-export type Interval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
+export type FourwingsInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
 
 export type FourwingsOptions = {
   cols: number
@@ -28,7 +28,7 @@ export type FourwingsOptions = {
     start: number
     end: number
   }
-  interval: Interval
+  interval: FourwingsInterval
   sublayers: number
   buffersLength: number[]
 }

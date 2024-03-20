@@ -7,9 +7,8 @@ import {
   FourwingsPositionsTileLayerProps,
 } from './FourwingsPositionsTileLayer'
 import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
-import { FourwingsHeatmapTileLayerProps } from './fourwings.types'
+import { FourwingsHeatmapTileLayerProps, FourwingsVisualizationMode } from './fourwings.types'
 
-export type FourwingsLayerMode = typeof HEATMAP_ID | typeof POSITIONS_ID
 export type FourwingsColorRamp = {
   colorDomain: number[]
   colorRange: Color[]
@@ -18,7 +17,7 @@ export type FourwingsColorRamp = {
 export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
   FourwingsHeatmapTileLayerProps & {
     id: string
-    mode?: FourwingsLayerMode
+    visualizationMode?: FourwingsVisualizationMode
   }
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
@@ -42,55 +41,53 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const mode = this.getMode()
+    const visualizationMode = this.getMode()
     const HeatmapLayerClass = this.getSubLayerClass('heatmap', FourwingsHeatmapTileLayer)
     const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
-    this.layers =
-      mode === HEATMAP_ID
-        ? [
-            new HeatmapLayerClass(
-              this.props,
-              this.getSubLayerProps({
-                id: HEATMAP_ID,
-                onViewportLoad: this._onViewportLoad,
-                onTileDataLoading: this._onTileDataLoading,
-              })
-            ),
-          ]
-        : [
-            new PositionsLayerClass(
-              this.props,
-              this.getSubLayerProps({
-                id: POSITIONS_ID,
-                onViewportLoad: this._onViewportLoad,
-                onTileDataLoading: this._onTileDataLoading,
-              })
-            ),
-          ]
-    return this.layers
+    return visualizationMode === HEATMAP_ID
+      ? new HeatmapLayerClass(
+          this.props,
+          this.getSubLayerProps({
+            id: HEATMAP_ID,
+            onViewportLoad: this._onViewportLoad,
+            onTileDataLoading: this._onTileDataLoading,
+          })
+        )
+      : new PositionsLayerClass(
+          this.props,
+          this.getSubLayerProps({
+            id: POSITIONS_ID,
+            onViewportLoad: this._onViewportLoad,
+            onTileDataLoading: this._onTileDataLoading,
+          })
+        )
   }
 
   getData() {
-    return this.layers?.[0].getData()
+    return this.getLayer()?.getData()
   }
 
   getViewportData() {
-    return this.layers?.[0].getViewportData()
+    return this.getLayer()?.getViewportData()
   }
 
   getMode() {
-    return this.props.mode || HEATMAP_ID
+    return this.props.visualizationMode || HEATMAP_ID
   }
 
   getResolution() {
     return this.props.resolution
   }
 
-  getColorDomain() {
-    return this.layers?.[0]?.getColorDomain()
+  getLayer() {
+    return this.getSubLayers()?.[0] as FourwingsHeatmapTileLayer | FourwingsPositionsTileLayer
+  }
+
+  getColorScale() {
+    return this.getLayer()?.getColorScale()
   }
 
   getTimeseries() {
-    return this.layers?.[0]?.getTimeseries()
+    return this.getLayer()?.getTimeseries()
   }
 }
