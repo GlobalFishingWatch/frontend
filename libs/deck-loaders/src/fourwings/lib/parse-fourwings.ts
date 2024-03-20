@@ -5,7 +5,7 @@ import { generateUniqueId, getCellCoordinates } from '../helpers/cells'
 import type {
   FourWingsFeature,
   FourwingsLoaderOptions,
-  FourwingsOptions,
+  ParseFourwingsOptions,
   FourwingsRawData,
 } from './types'
 
@@ -24,8 +24,19 @@ export const getCellTimeseries = (
   intArrays: FourwingsRawData[],
   options?: FourwingsLoaderOptions
 ): FourWingsFeature[] => {
-  const { minFrame, interval, sublayers, initialTimeRange, tile, cols, rows } =
-    options?.fourwings || ({} as FourwingsOptions)
+  const {
+    minFrame,
+    interval,
+    sublayers,
+    initialTimeRange,
+    aggregationOperation = 'sum',
+    scale = SCALE_VALUE,
+    offset = OFFSET_VALUE,
+    noDataValue = NO_DATA_VALUE,
+    tile,
+    cols,
+    rows,
+  } = options?.fourwings || ({} as ParseFourwingsOptions)
 
   // TODO ensure we use the UTC dates here to avoid the .ceil
   const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame))
@@ -94,7 +105,7 @@ export const getCellTimeseries = (
 
         for (let j = 0; j < numCellValues; j++) {
           const cellValue = subLayerIntArray[j + startIndex]
-          if (cellValue !== NO_DATA_VALUE) {
+          if (cellValue !== noDataValue) {
             if (!features[cellNum].properties.values[subLayerIndex]) {
               // create an array of values for this sublayer if the feature dind't have it already
               features[cellNum].properties.values[subLayerIndex] = new Array(numCellValues)
@@ -113,7 +124,7 @@ export const getCellTimeseries = (
             }
             // add current value to the array of values for this sublayer
             features[cellNum].properties.values[subLayerIndex][Math.floor(j / sublayers)] =
-              cellValue * SCALE_VALUE + OFFSET_VALUE
+              cellValue * scale + offset
 
             // add current date to the array of dates for this sublayer
             features[cellNum].properties.dates[subLayerIndex][Math.floor(j / sublayers)] =
@@ -126,9 +137,13 @@ export const getCellTimeseries = (
               j + startFrame < timeRangeEndIntervalFrame
             ) {
               features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] +=
-                cellValue * SCALE_VALUE + OFFSET_VALUE
+                cellValue * scale + offset
             }
           }
+        }
+        if (aggregationOperation === 'avg') {
+          features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] =
+            features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] / numCellValues
         }
         // set the i to jump to the next step where we know a cell index will be
         i = startIndex + numCellValues - 1

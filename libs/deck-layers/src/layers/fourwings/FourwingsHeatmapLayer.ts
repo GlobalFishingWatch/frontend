@@ -27,6 +27,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       const values = aggregateCell(info.object.properties.values, {
         minIntervalFrame,
         maxIntervalFrame,
+        aggregationOperation: this.props.aggregationOperation,
         startFrames: info.object.properties.startFrames,
       })
       if (values) {
@@ -40,8 +41,16 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   }
 
   renderLayers() {
-    const { data, maxFrame, minFrame, colorDomain, colorRanges, hoveredFeatures, comparisonMode } =
-      this.props
+    const {
+      data,
+      maxFrame,
+      minFrame,
+      colorDomain,
+      colorRanges,
+      hoveredFeatures,
+      comparisonMode,
+      aggregationOperation,
+    } = this.props
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
@@ -52,6 +61,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         colorDomain,
         colorRanges,
         chunk,
+        aggregationOperation,
         minIntervalFrame,
         maxIntervalFrame,
         comparisonMode,

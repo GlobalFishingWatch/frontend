@@ -37,6 +37,7 @@ export const resolveDeckFourwingsLayerProps = (
     resolution,
     comparisonMode: dataview.config?.comparisonMode,
     visualizationMode: dataview.config?.visualizationMode,
+    aggregationOperation: dataview.config?.aggregationOperation,
     debug: false,
     // category: dataview.category || DataviewCategory.Activity,
     sublayers,

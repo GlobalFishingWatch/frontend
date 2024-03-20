@@ -12,6 +12,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_FOURWINGS_INTERVALS,
+  FourwingsAggregationOperation,
   FourwingsComparisonMode,
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
@@ -63,6 +64,13 @@ function isDetectionsDataview(dataview: UrlDataviewInstance) {
   )
 }
 
+function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Environment &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
 function isTrackDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Vessels && dataview.config?.type === DataviewType.Track
@@ -72,62 +80,70 @@ function isTrackDataview(dataview: UrlDataviewInstance) {
 type GetMergedHeatmapAnimatedDataviewParams = {
   visualizationMode?: FourwingsVisualizationMode
   comparisonMode?: FourwingsComparisonMode
+  aggregationOperation?: FourwingsAggregationOperation
   timeRange?: TimeRange
   colorRampWhiteEnd?: boolean
 }
+
+export function getHeatmapAnimatedDataviewSublayers(dataview: UrlDataviewInstance) {
+  const { config, datasetsConfig } = dataview
+  if (!dataview?.datasets?.length) {
+    console.warn('No datasets found on dataview:', dataview)
+    return null
+  }
+  if (!config || !datasetsConfig || !datasetsConfig.length) {
+    return null
+  }
+  const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
+
+  const activeDatasets = dataview.datasets.filter((dataset) =>
+    dataview?.config?.datasets?.includes(dataset.id)
+  )
+  const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
+  if (units.length > 0 && units.length !== 1) {
+    throw new Error('Shouldnt have distinct units for the same heatmap layer')
+  }
+
+  const availableIntervals = getDataviewAvailableIntervals(dataview)
+
+  const sublayer: DataviewSublayerConfig = {
+    id: dataview.id,
+    datasets,
+    colorRamp: config.colorRamp as string[],
+    visible: config.visible,
+    filter: config.filter,
+    vesselGroups: config['vessel-groups'],
+    legend: {
+      label: dataview.name!,
+      unit: units?.[0]!,
+      color: dataview?.config?.color!,
+    },
+    availableIntervals,
+  }
+
+  return sublayer
+}
+
 export function getMergedHeatmapAnimatedDataviews(
   heatmapAnimatedDataviews: UrlDataviewInstance[],
   {
     visualizationMode,
-    comparisonMode,
+    comparisonMode = FourwingsComparisonMode.Compare,
+    aggregationOperation = FourwingsAggregationOperation.Sum,
     timeRange,
     colorRampWhiteEnd = false,
   } = {} as GetMergedHeatmapAnimatedDataviewParams
 ) {
   const dataviewsFiltered = [] as UrlDataviewInstance[]
   const activitySublayers = heatmapAnimatedDataviews.flatMap((dataview) => {
-    const { config, datasetsConfig } = dataview
-    if (!dataview?.datasets?.length) {
-      console.warn('No datasets found on dataview:', dataview)
-      return []
-    }
-    if (!config || !datasetsConfig || !datasetsConfig.length) {
-      return []
-    }
-    const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
-
-    const activeDatasets = dataview.datasets.filter((dataset) =>
-      dataview?.config?.datasets?.includes(dataset.id)
-    )
-    const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
-    if (units.length > 0 && units.length !== 1) {
-      throw new Error('Shouldnt have distinct units for the same heatmap layer')
-    }
-
-    const availableIntervals = getDataviewAvailableIntervals(dataview)
-
-    const sublayer: DataviewSublayerConfig = {
-      id: dataview.id,
-      datasets,
-      colorRamp: config.colorRamp as string[],
-      visible: config.visible,
-      filter: config.filter,
-      vesselGroups: config['vessel-groups'],
-      legend: {
-        label: dataview.name!,
-        unit: units?.[0]!,
-        color: dataview?.config?.color!,
-      },
-      availableIntervals,
-    }
-
-    return sublayer
+    return getHeatmapAnimatedDataviewSublayers(dataview) || []
   })
 
   const maxZoomLevels = heatmapAnimatedDataviews
     ?.filter(({ config }) => config && config?.maxZoom !== undefined)
     .flatMap(({ config }) => config?.maxZoom as number)
-
+  // TODO this should be done in other place, merging datasets is not the same than prepare the sublayers
+  // that is why we need to run this also for environmental dataviews which is not ideal
   const mergedActivityDataview = {
     id: getMergedDataviewId(heatmapAnimatedDataviews),
     category: heatmapAnimatedDataviews[0]?.category,
@@ -138,6 +154,7 @@ export function getMergedHeatmapAnimatedDataviews(
       updateDebounce: true,
       visualizationMode,
       comparisonMode,
+      aggregationOperation,
       // if any of the activity dataviews has a max zoom level defined
       // apply the minimum max zoom level (the most restrictive approach)
       ...(maxZoomLevels &&
@@ -230,27 +247,35 @@ export function getDataviewsMerged(
   dataviews: (UrlDataviewInstance | DataviewInstance)[],
   params: ResolverGlobalConfig = {}
 ) {
-  const { activityDataviews, detectionDataviews, trackDataviews, otherDataviews } =
-    dataviews.reduce(
-      (acc, dataview) => {
-        if (isActivityDataview(dataview)) {
-          acc.activityDataviews.push(dataview)
-        } else if (isDetectionsDataview(dataview)) {
-          acc.detectionDataviews.push(dataview)
-        } else if (isTrackDataview(dataview)) {
-          acc.trackDataviews.push(dataview)
-        } else {
-          acc.otherDataviews.push(dataview)
-        }
-        return acc
-      },
-      {
-        activityDataviews: [] as UrlDataviewInstance[],
-        detectionDataviews: [] as UrlDataviewInstance[],
-        trackDataviews: [] as UrlDataviewInstance[],
-        otherDataviews: [] as UrlDataviewInstance[],
+  const {
+    activityDataviews,
+    detectionDataviews,
+    environmentalDataviews,
+    trackDataviews,
+    otherDataviews,
+  } = dataviews.reduce(
+    (acc, dataview) => {
+      if (isActivityDataview(dataview)) {
+        acc.activityDataviews.push(dataview)
+      } else if (isDetectionsDataview(dataview)) {
+        acc.detectionDataviews.push(dataview)
+      } else if (isEnvironmentalDataview(dataview)) {
+        acc.environmentalDataviews.push(dataview)
+      } else if (isTrackDataview(dataview)) {
+        acc.trackDataviews.push(dataview)
+      } else {
+        acc.otherDataviews.push(dataview)
       }
-    )
+      return acc
+    },
+    {
+      activityDataviews: [] as UrlDataviewInstance[],
+      detectionDataviews: [] as UrlDataviewInstance[],
+      environmentalDataviews: [] as UrlDataviewInstance[],
+      trackDataviews: [] as UrlDataviewInstance[],
+      otherDataviews: [] as UrlDataviewInstance[],
+    }
+  )
 
   const singleHeatmapDataview = [...activityDataviews, ...detectionDataviews].length === 1
   const activityComparisonMode = activityDataviews.every((dataview) =>
@@ -280,10 +305,17 @@ export function getDataviewsMerged(
         colorRampWhiteEnd: singleHeatmapDataview,
       })
     : []
+  const environmentalDataviewsParsed = environmentalDataviews.flatMap(
+    (d) =>
+      getMergedHeatmapAnimatedDataviews([d], {
+        aggregationOperation: FourwingsAggregationOperation.Avg,
+      }) || []
+  )
   const dataviewsMerged = [
     ...otherDataviews,
     ...mergedActivityDataview,
     ...mergedDetectionsDataview,
+    ...environmentalDataviewsParsed,
     ...trackDataviews,
   ]
   return dataviewsMerged

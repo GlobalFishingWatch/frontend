@@ -11,7 +11,11 @@ import { ckmeans } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { FourWingsFeature, FourwingsLoader } from '@globalfishingwatch/deck-loaders'
+import {
+  FourWingsFeature,
+  FourwingsLoader,
+  ParseFourwingsOptions,
+} from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
@@ -36,11 +40,14 @@ import {
   FourwingsTileLayerState,
   FourwingsHeatmapTilesCache,
   FourwingsComparisonMode,
+  FourwingsAggregationOperation,
 } from './fourwings.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   maxRequests: 100,
   debounceTime: 500,
+  comparisonMode: FourwingsComparisonMode.Compare,
+  aggregationOperation: FourwingsAggregationOperation.Sum,
   resolution: 'default',
 }
 
@@ -140,10 +147,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _fetchTileData: any = async (tile: TileLoadProps) => {
-    const { minFrame, maxFrame, sublayers } = this.props
+    const { minFrame, maxFrame, sublayers, aggregationOperation } = this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     let cols: number = 0
     let rows: number = 0
+    let scale: number = 0
+    let offset: number = 0
+    let noDataValue: number = 0
 
     const interval = getInterval(minFrame, maxFrame)
     const chunk = getChunk(minFrame, maxFrame)
@@ -158,6 +168,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       }
       cols = parseInt(response.headers.get('X-columns') as string)
       rows = parseInt(response.headers.get('X-rows') as string)
+      scale = parseFloat(response.headers.get('X-scale') as string)
+      offset = parseInt(response.headers.get('X-offset') as string)
+      noDataValue = parseInt(response.headers.get('X-empty-value') as string)
       return await response.arrayBuffer()
     }
 
@@ -171,11 +184,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       throw new Error('tile aborted')
     }
     const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: true,
+      worker: false,
       fourwings: {
-        sublayers: 1,
+        sublayers: 1, // TODO make this dynamic
         cols,
         rows,
+        scale,
+        offset,
+        noDataValue,
         minFrame: chunk.start,
         maxFrame: chunk.end,
         initialTimeRange: {
@@ -184,11 +200,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         },
         interval,
         tile,
+        aggregationOperation,
         workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
         buffersLength: settledPromises.map((p) =>
           p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
         ),
-      },
+      } as ParseFourwingsOptions,
     })
     return data
   }
