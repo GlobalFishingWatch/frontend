@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
+import { InsightGapsResponse } from '@globalfishingwatch/api-types'
 import styles from './Insights.module.css'
-import { InsightGapsResponse } from './insights.types'
 
 const InsightGaps = ({
   insightData,

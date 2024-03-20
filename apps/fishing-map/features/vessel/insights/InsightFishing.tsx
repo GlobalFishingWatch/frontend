@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
+import { InsightFishingResponse } from '@globalfishingwatch/api-types'
 import styles from './Insights.module.css'
-import { InsightFishingResponse } from './insights.types'
 
 const InsightFishing = ({
   insightData,

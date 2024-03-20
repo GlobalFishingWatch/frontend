@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
+import { InsightIdentityResponse } from '@globalfishingwatch/api-types'
 import styles from './Insights.module.css'
-import { InsightIdentityResponse } from './insights.types'
 
 const InsightIUU = ({
   insightData,
