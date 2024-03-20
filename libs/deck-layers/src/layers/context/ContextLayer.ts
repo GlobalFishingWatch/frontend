@@ -58,6 +58,8 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<
         id: `${this.id}-base-layer`,
         data: `${API_PATH}/${this.props.datasetId}/context-layers/{z}/{x}/{y}`,
         loaders: [GFWContextLoader],
+        maxRequests: 100,
+        debounceTime: 500,
         renderSubLayers: (props: any) => {
           const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
           return [

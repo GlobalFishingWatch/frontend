@@ -23,7 +23,6 @@ import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { ColorRampId, getBivariateRamp } from '../../utils/colorRamps'
 import {
   aggregateCellTimeseries,
-  asyncAwaitMS,
   filterElementByPercentOfIndex,
   getChunk,
   getDataUrlBySublayer,
@@ -40,6 +39,8 @@ import {
 } from './fourwings.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
+  maxRequests: 100,
+  debounceTime: 500,
   resolution: 'default',
 }
 
@@ -192,12 +193,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return data
   }
 
-  _getTileData: TileLayerProps['getTileData'] = async (tile) => {
-    // waiting when zoom changes to avoid loading tiles for intermidiate zoom levels
-    const zoomLevel = this.getLayerInstance()?.internalState?.viewport?.zoom
-    if (zoomLevel && tile.zoom !== Math.round(zoomLevel)) {
-      await asyncAwaitMS(500)
-    }
+  _getTileData: TileLayerProps['getTileData'] = (tile) => {
     if (tile.signal?.aborted) {
       return null
     }
@@ -260,7 +256,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
         debug: this.props.debug,
-        maxRequests: -1,
+        maxRequests: this.props.maxRequests,
+        debounceTime: this.props.debounceTime,
         getTileData: this._getTileData,
         updateTriggers: {
           getTileData: [cacheKey, resolution, sublayersIds],

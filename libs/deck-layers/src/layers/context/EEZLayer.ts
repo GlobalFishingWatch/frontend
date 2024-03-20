@@ -52,6 +52,8 @@ export class EEZLayer extends ContextLayer<EEZLayerProps> {
         id: `${this.id}-boundaries-layer`,
         data: `${API_PATH}/${this.props.boundariesDatasetId}/context-layers/{z}/{x}/{y}`,
         loaders: [GFWContextLoader],
+        maxRequests: 100,
+        debounceTime: 500,
         renderSubLayers: (props: any) => {
           const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
           return [
@@ -76,6 +78,8 @@ export class EEZLayer extends ContextLayer<EEZLayerProps> {
         id: `${this.id}-base-layer`,
         data: `${API_PATH}/${this.props.areasDatasetId}/context-layers/{z}/{x}/{y}`,
         loaders: [GFWContextLoader],
+        maxRequests: 100,
+        debounceTime: 500,
         renderSubLayers: (props: any) => {
           const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
           return [

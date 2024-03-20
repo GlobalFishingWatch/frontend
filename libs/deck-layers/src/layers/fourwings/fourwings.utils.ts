@@ -38,14 +38,6 @@ export const aggregateCell = (
   )
 }
 
-export function asyncAwaitMS(millisec: any) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve('')
-    }, millisec)
-  })
-}
-
 function stringHash(s: string): number {
   return Math.abs(s.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0))
 }
