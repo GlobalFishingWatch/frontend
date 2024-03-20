@@ -19,10 +19,10 @@ const InsightCoverage = ({
         <div className={styles.coverageBar}>
           <div
             className={styles.coverageIndicator}
-            style={{ left: `${insightData.coverage.percentage * 100}%` }}
+            style={{ left: `${Math.round(insightData.coverage.percentage)}%` }}
           >
             <span className={styles.coverageLabel}>
-              {(insightData.coverage.percentage * 100).toFixed()}%
+              {Math.round(insightData.coverage.percentage)}%
             </span>
             <span className={styles.coverageDot} />
           </div>

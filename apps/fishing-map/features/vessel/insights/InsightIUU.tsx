@@ -12,7 +12,7 @@ const InsightIUU = ({
   const { t } = useTranslation()
   return (
     <div className={styles.insightContainer}>
-      <label>{t('vessel.insights.IUU', 'IUU')}</label>
+      <label>{t('vessel.insights.IUU', 'RFMO IUU Blacklist')}</label>
       {isLoading || !insightData ? (
         <div style={{ width: '50rem' }} className={styles.loadingPlaceholder} />
       ) : (

@@ -13,6 +13,10 @@
   padding-inline: var(--space-M);
 }
 
+.title {
+  padding-top: var(--space-M);
+}
+
 .insightContainer {
   padding-block: var(--space-M);
   border-bottom: var(--border);

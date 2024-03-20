@@ -811,7 +811,7 @@
       "identityMOUTokyoListsCount": "Flag present on the Tokyo MOU black or grey list ({{flags}})",
       "identityMOUTokyoListsPreviousAppearance": "Previously flew under a flag on the Tokyo MOU black or grey lists",
       "identityMOUParisListsPreviousAppearance": "Previously flew under a flag on the Paris MOU black or grey lists",
-      "IUU": "IUU",
+      "IUU": "RFMO IUU Blacklist",
       "IUUBlackListsCount": "The vessel present on an RFMO IUU blacklist ({{value}})",
       "IUUBlackListsEmpty": "The vessel is not present on an RFMO IUU blacklist"
     },

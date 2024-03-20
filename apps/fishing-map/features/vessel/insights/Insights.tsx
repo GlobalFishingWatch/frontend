@@ -2,13 +2,14 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import InsightWrapper from './InsightWrapper'
 import { INSIGHTS } from './insights.config'
 import styles from './Insights.module.css'
 
 const Insights = () => {
   const { t } = useTranslation()
-  const { start } = useSelector(selectTimeRange)
+  const { start, end } = useSelector(selectTimeRange)
   console.log('start:', DateTime.fromISO(start).year < 2017)
 
   if (DateTime.fromISO(start).year < 2017) {
@@ -24,7 +25,14 @@ const Insights = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className="print-only">{t('vessel.sectionInsights', 'Insights')}</h2>
+      <p className={styles.title}>
+        {t('vessel.sectionInsights', 'Insights')}{' '}
+        {t('common.dateRange', {
+          defaultValue: 'between {{start}} and {{end}}',
+          start: formatI18nDate(start),
+          end: formatI18nDate(end),
+        })}
+      </p>
       {INSIGHTS.map((insight) => (
         <InsightWrapper insight={insight} key={insight} />
       ))}
