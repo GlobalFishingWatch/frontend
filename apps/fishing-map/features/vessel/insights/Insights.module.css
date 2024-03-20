@@ -3,11 +3,11 @@
 }
 
 .container {
-  padding: var(--space-M);
+  padding-inline: var(--space-M);
 }
 
 .insightContainer {
-  padding-bottom: var(--space-M);
+  padding-block: var(--space-M);
   border-bottom: var(--border);
 }
 
@@ -40,4 +40,32 @@
 .coverageLabel {
   text-align: center;
   line-height: 1;
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.loadingPlaceholder {
+  height: 1.2rem;
+  border-radius: 0.8rem;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--primary-blue-rgb), 0.1) 0%,
+    rgba(var(--primary-blue-rgb), 0.2) 40%,
+    rgba(var(--primary-blue-rgb), 0.1) 70%
+  );
+  background-size: 1000px 100%;
+  animation: placeHolderShimmer 2s linear forwards infinite;
+  margin-block: var(--space-XS);
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -500px 0;
+  }
+
+  100% {
+    background-position: 500px 0;
+  }
 }

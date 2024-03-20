@@ -1,0 +1,1 @@
+export const INSIGHTS = ['COVERAGE', 'VESSEL-IDENTITY', 'GAP', 'FISHING']

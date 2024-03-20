@@ -1,23 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { Spinner } from '@globalfishingwatch/ui-components'
-import { selectVesselEventsResourcesLoading } from 'features/vessel/vessel.selectors'
-import styles from './Insights.module.css'
 import InsightWrapper from './InsightWrapper'
-
-const INSIGHTS = ['COVERAGE']
+import { INSIGHTS } from './insights.config'
+import styles from './Insights.module.css'
 
 const Insights = () => {
   const { t } = useTranslation()
-  const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
-
-  if (eventsLoading) {
-    return (
-      <div className={styles.placeholder}>
-        <Spinner />
-      </div>
-    )
-  }
 
   return (
     <div className={styles.container}>

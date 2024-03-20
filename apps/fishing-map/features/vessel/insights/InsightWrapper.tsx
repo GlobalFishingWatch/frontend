@@ -1,20 +1,28 @@
 import { useSelector } from 'react-redux'
 import { useGetVesselInsightMutation } from 'queries/vessel-insight-api'
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
-import InsightCoverage, { InsightCoverageResponse } from 'features/vessel/insights/InsightCoverage'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-type InsightProps = { insight: string }
-type InsightResponse = InsightCoverageResponse
+import InsightCoverage from './InsightCoverage'
+import InsightFishing from './InsightFishing'
+import InsightGaps from './InsightGaps'
+import InsightIdentity from './InsightIdentity'
+import InsightIUU from './InsightIUU'
+import {
+  InsightCoverageResponse,
+  InsightFishingResponse,
+  InsightGapsResponse,
+  InsightIdentityResponse,
+  InsightResponse,
+} from './insights.types'
 
-const InsightWrapper = ({ insight }: InsightProps) => {
+const InsightWrapper = ({ insight }: { insight: string }) => {
   const { start, end } = useSelector(selectTimeRange)
   const vessel = useSelector(selectVesselInfoData)
-  const [insightData, setInsightData] = useState<InsightResponse>()
-  const [getInsight, { isLoading }] = useGetVesselInsightMutation()
+  const [getInsight, { isLoading, data }] = useGetVesselInsightMutation()
 
   const callInsight = useCallback(async () => {
     const identities = getVesselIdentities(vessel, {
@@ -30,9 +38,7 @@ const InsightWrapper = ({ insight }: InsightProps) => {
       endDate: end,
     }
     try {
-      const data = await getInsight(params).unwrap()
-      setInsightData(data)
-      console.log('fulfilled', data)
+      await getInsight(params).unwrap()
     } catch (error) {
       console.error('rejected', error)
     }
@@ -42,11 +48,22 @@ const InsightWrapper = ({ insight }: InsightProps) => {
     callInsight()
   }, [callInsight])
 
-  if (isLoading) {
-    return <Spinner size="tiny" />
-  }
   if (insight === 'COVERAGE') {
-    return <InsightCoverage insightData={insightData as InsightCoverageResponse} />
+    return <InsightCoverage isLoading={isLoading} insightData={data as InsightCoverageResponse} />
+  }
+  if (insight === 'VESSEL-IDENTITY') {
+    return (
+      <Fragment>
+        <InsightIUU isLoading={isLoading} insightData={data as InsightIdentityResponse} />
+        <InsightIdentity isLoading={isLoading} insightData={data as InsightIdentityResponse} />
+      </Fragment>
+    )
+  }
+  if (insight === 'GAP') {
+    return <InsightGaps isLoading={isLoading} insightData={data as InsightGapsResponse} />
+  }
+  if (insight === 'FISHING') {
+    return <InsightFishing isLoading={isLoading} insightData={data as InsightFishingResponse} />
   }
 }
 
