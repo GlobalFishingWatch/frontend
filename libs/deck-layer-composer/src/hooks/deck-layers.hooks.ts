@@ -23,7 +23,7 @@ export const deckLayersAtom: Atom<DeckLayerAtom<AnyDeckLayer>[]> = atom<DeckLaye
     })
     return deckLayers
   }
-  return get(deckLayersAtom)
+  return deckLayersAtom ? get(deckLayersAtom) : []
 })
 
 export const useDeckLayers = () => {
