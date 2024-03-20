@@ -50,8 +50,6 @@ const InsightWrapper = ({ insight }: { insight: string }) => {
         endDate: end,
       }
       try {
-        console.log('get insight', insight)
-
         await getInsight(params)
       } catch (error) {
         console.error('rejected', error)

@@ -10,7 +10,6 @@ import styles from './Insights.module.css'
 const Insights = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
-  console.log('start:', DateTime.fromISO(start).year < 2017)
 
   if (DateTime.fromISO(start).year < 2017) {
     return (
