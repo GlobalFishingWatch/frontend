@@ -71,6 +71,7 @@ export const getCellTimeseries = (
 
         // calculate how many values are in the tile
         const numCellValues = (endFrame - startFrame + 1) * sublayers
+        const numValuesBySubLayer = new Array(sublayersLength).fill(0)
 
         // add the feature if previous sublayers didn't contain data for it
         if (!features[cellNum]) {
@@ -125,7 +126,6 @@ export const getCellTimeseries = (
             // add current value to the array of values for this sublayer
             features[cellNum].properties.values[subLayerIndex][Math.floor(j / sublayers)] =
               cellValue * scale + offset
-
             // add current date to the array of dates for this sublayer
             features[cellNum].properties.dates[subLayerIndex][Math.floor(j / sublayers)] =
               Math.ceil(CONFIG_BY_INTERVAL[interval].getTime(startFrame + tileMinIntervalFrame + j))
@@ -138,12 +138,14 @@ export const getCellTimeseries = (
             ) {
               features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] +=
                 cellValue * scale + offset
+              numValuesBySubLayer[subLayerIndex] = numValuesBySubLayer[subLayerIndex] + 1
             }
           }
         }
         if (aggregationOperation === 'avg') {
           features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] =
-            features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] / numCellValues
+            features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] /
+            numValuesBySubLayer[subLayerIndex]
         }
         // set the i to jump to the next step where we know a cell index will be
         i = startIndex + numCellValues - 1
