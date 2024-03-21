@@ -298,8 +298,6 @@ export const useMapCursor = () => {
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing } = useRulers()
-  const { isMapDrawing } = useMapDrawConnect()
-  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
   const deckInteractions = useDeckLayerInteraction()
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
@@ -308,21 +306,12 @@ export const useMapCursor = () => {
           return 'move'
         }
         return 'crosshair'
-      } else if (isMapDrawing || isMarineManagerLocation) {
-        return 'context-menu'
       } else if (isDragging) {
         return 'grabbing'
       }
       return 'grab'
     },
-    [
-      deckInteractions,
-      isErrorNotificationEditing,
-      isMapAnnotating,
-      isMapDrawing,
-      isMarineManagerLocation,
-      rulersEditing,
-    ]
+    [deckInteractions, isErrorNotificationEditing, isMapAnnotating, rulersEditing]
   )
   return { getCursor }
 }
