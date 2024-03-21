@@ -29,9 +29,10 @@ export function useMapRulersDrag() {
 
   const onRulerDrag = useCallback(
     (info: PickingInfo) => {
+      if (!draggedRuler.current) return
       const [longitude, latitude] = info.coordinate as number[]
       const newRulers = rulers.map((r) => {
-        if (r.id === draggedRuler.current?.id) {
+        if (Number(r.id) === draggedRuler.current?.id) {
           return draggedRuler.current.order === 'start'
             ? { ...r, start: { longitude, latitude } }
             : { ...r, end: { longitude, latitude } }
@@ -50,7 +51,7 @@ export function useMapRulersDrag() {
         deck?.setProps({ controller: { dragPan: false } })
         const point = features.find(isRulerLayerPoint).object
         draggedRuler.current = {
-          ruler: rulers.find((r) => r.id === point.properties.id),
+          ruler: rulers.find((r) => Number(r.id) === point.properties.id),
           order: point.properties.order,
           id: point.properties.id,
         }
@@ -58,5 +59,9 @@ export function useMapRulersDrag() {
     },
     [deck, rulers]
   )
-  return { onRulerDrag, onRulerDragStart }
+  const onRulerDragEnd = useCallback(() => {
+    draggedRuler.current = null
+    deck?.setProps({ controller: { dragPan: true } })
+  }, [deck])
+  return { onRulerDrag, onRulerDragStart, onRulerDragEnd }
 }
