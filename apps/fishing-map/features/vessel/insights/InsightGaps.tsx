@@ -10,6 +10,7 @@ const InsightGaps = ({
   isLoading: boolean
 }) => {
   const { t } = useTranslation()
+  const { aisOff } = insightData?.gap || {}
   return (
     <div className={styles.insightContainer}>
       <label>{t('vessel.insights.gaps', 'AIS Off Events')}</label>
@@ -17,10 +18,10 @@ const InsightGaps = ({
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
       ) : (
         <div>
-          {insightData.gap.aisOff.length !== 0 ? (
+          {aisOff.length !== 0 ? (
             <p>
               {t('vessel.insights.gapsEvents', {
-                count: insightData.gap.aisOff.length,
+                count: aisOff.length,
                 defaultValue: '{{count}} AIS Off events detected',
               })}
             </p>

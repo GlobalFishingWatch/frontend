@@ -1,5 +1,8 @@
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { InsightIdentityResponse } from '@globalfishingwatch/api-types'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import styles from './Insights.module.css'
 
 const InsightIUU = ({
@@ -10,27 +13,31 @@ const InsightIUU = ({
   isLoading: boolean
 }) => {
   const { t } = useTranslation()
+  const guestUser = useSelector(selectIsGuestUser)
+  const { iuuVesselList } = insightData?.vesselIdentity || {}
   return (
     <div className={styles.insightContainer}>
-      <label>{t('vessel.insights.IUU', 'RFMO IUU Blacklist')}</label>
-      {isLoading || !insightData ? (
+      <label>{t('vessel.insights.IUU', 'RFMO IUU Vessel List')}</label>
+      {guestUser ? (
+        <VesselIdentityFieldLogin />
+      ) : isLoading || !insightData ? (
         <div style={{ width: '50rem' }} className={styles.loadingPlaceholder} />
       ) : (
         <div>
           <p>
-            {insightData.vesselIdentity.iuuBlacklist.valuesInThePeriod.length !== 0 ? (
+            {iuuVesselList.valuesInThePeriod.length !== 0 ? (
               <span>
                 {t('vessel.insights.IUUBlackListsCount', {
-                  // value: insightData.vesselIdentity.iuuBlacklist.valuesInThePeriod.join(', '),
+                  // value: iuuBlacklist.valuesInThePeriod.join(', '),
                   // defaultValue: 'The vessel is present on an RFMO IUU blacklist ({{value}})',
-                  defaultValue: 'The vessel is present on an RFMO IUU blacklist',
+                  defaultValue: 'The vessel is present on an RFMO IUU vessel list',
                 })}
               </span>
             ) : (
               <span className={styles.secondary}>
                 {t(
                   'vessel.insights.IUUBlackListsEmpty',
-                  'The vessel is not present on an RFMO IUU blacklist'
+                  'The vessel is not present on an RFMO IUU vessel list'
                 )}
               </span>
             )}

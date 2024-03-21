@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { InsightCoverageResponse } from '@globalfishingwatch/api-types'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import styles from './Insights.module.css'
 
 const InsightCoverage = ({
@@ -15,7 +16,7 @@ const InsightCoverage = ({
       <label>{t('vessel.insights.coverage', 'AIS Coverage')}</label>
       {isLoading || !insightData ? (
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
-      ) : (
+      ) : insightData.coverage.percentage ? (
         <div className={styles.coverageBar}>
           <div
             className={styles.coverageIndicator}
@@ -27,6 +28,8 @@ const InsightCoverage = ({
             <span className={styles.coverageDot} />
           </div>
         </div>
+      ) : (
+        EMPTY_FIELD_PLACEHOLDER
       )}
     </div>
   )

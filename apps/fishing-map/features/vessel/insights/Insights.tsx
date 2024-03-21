@@ -25,9 +25,8 @@ const Insights = () => {
   return (
     <div className={styles.container}>
       <p className={styles.title}>
-        {t('vessel.sectionInsights', 'Insights')}{' '}
-        {t('common.dateRange', {
-          defaultValue: 'between {{start}} and {{end}}',
+        {t('vessel.insights.sectionTitle', {
+          defaultValue: 'Vessel insights between {{start}} and {{end}}',
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}

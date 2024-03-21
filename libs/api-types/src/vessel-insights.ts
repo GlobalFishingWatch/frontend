@@ -9,6 +9,7 @@ type ValueInPeriod = {
   from: string
   to: string
   value: string
+  reference: string
 }
 
 export type InsightCoverageResponse = InsightBase & {
@@ -65,7 +66,7 @@ export type InsightIdentityResponse = InsightBase & {
       totalTimesListedInThePeriod: number
       valuesInThePeriod: ValueInPeriod[]
     }
-    iuuBlacklist: {
+    iuuVesselList: {
       totalTimesListed: number
       totalTimesListedInThePeriod: number
       valuesInThePeriod: ValueInPeriod[]

@@ -11,6 +11,8 @@ const InsightFishing = ({
   isLoading: boolean
 }) => {
   const { t } = useTranslation()
+  const { eventsInNoTakeMpas, eventsInRfmoWithoutKnownAuthorization } =
+    insightData?.apparentFishing || {}
   return (
     <div className={styles.insightContainer}>
       <label>{t('vessel.insights.fishing', 'Fishing Events')}</label>
@@ -21,10 +23,10 @@ const InsightFishing = ({
         </Fragment>
       ) : (
         <div>
-          {insightData.apparentFishing.eventsInNoTakeMpas.length !== 0 ? (
+          {eventsInNoTakeMpas.length !== 0 ? (
             <p>
               {t('vessel.insights.fishingEventsInNoTakeMpas', {
-                count: insightData.apparentFishing.eventsInNoTakeMpas.length,
+                count: eventsInNoTakeMpas.length,
                 defaultValue: '{{count}} fishing events detected in no-take MPAs',
               })}
             </p>
@@ -36,10 +38,10 @@ const InsightFishing = ({
               )}
             </p>
           )}
-          {insightData.apparentFishing.eventsInRfmoWithoutKnownAuthorization.length !== 0 ? (
+          {eventsInRfmoWithoutKnownAuthorization.length !== 0 ? (
             <p>
               {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorization', {
-                count: insightData.apparentFishing.eventsInRfmoWithoutKnownAuthorization.length,
+                count: eventsInRfmoWithoutKnownAuthorization.length,
                 defaultValue:
                   '{{count}} fishing events detected outside known RFMO authorized areas',
               })}

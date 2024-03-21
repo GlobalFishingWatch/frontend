@@ -118,18 +118,14 @@ const Vessel = () => {
         disabled: !hasEventsDataset,
         testId: 'vv-related-tab',
       },
-      ...(!guestUser
-        ? [
-            {
-              id: 'insights' as VesselSection,
-              title: t('vessel.sectionInsights', 'Insights'),
-              content: <Insights />,
-              // testId: 'vv-related-tab',
-            },
-          ]
-        : []),
+      {
+        id: 'insights' as VesselSection,
+        title: t('vessel.sectionInsights', 'Insights'),
+        content: <Insights />,
+        // testId: 'vv-insights-tab',
+      },
     ],
-    [t, updateAreaLayersVisibility, hasEventsDataset, guestUser]
+    [t, updateAreaLayersVisibility, hasEventsDataset]
   )
 
   useEffect(() => {
