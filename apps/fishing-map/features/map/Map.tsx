@@ -137,7 +137,7 @@ const MapWrapper = () => {
   const { onMapClick } = useMapMouseClick()
   const { onMouseMove } = useMapMouseHover()
   const { getCursor } = useMapCursor()
-  const { onMapDrag, onMapDragStart } = useMapDrag()
+  const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -316,8 +316,9 @@ const MapWrapper = () => {
         onViewStateChange={onViewStateChange}
         onClick={onMapClick}
         onHover={onMouseMove}
-        onDrag={onMapDrag}
         onDragStart={onMapDragStart}
+        onDrag={onMapDrag}
+        onDragEnd={onMapDragEnd}
       >
         <MapAnnotations />
         <MapAnnotationsDialog />

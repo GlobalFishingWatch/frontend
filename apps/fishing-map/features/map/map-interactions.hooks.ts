@@ -330,19 +330,11 @@ export const useMapCursor = () => {
 export const useMapDrag = () => {
   const map = useDeckMap()
   const { rulersEditing } = useRulers()
-  const { onRulerDrag, onRulerDragStart } = useMapRulersDrag()
-
-  const onMapDrag = useCallback(
-    (info: PickingInfo, event: any) => {
-      if (rulersEditing) {
-        onRulerDrag(info)
-      }
-    },
-    [onRulerDrag, rulersEditing]
-  )
+  const { onRulerDrag, onRulerDragStart, onRulerDragEnd } = useMapRulersDrag()
 
   const onMapDragStart = useCallback(
     (info: PickingInfo, event: any) => {
+      if (!info.coordinate) return
       if (rulersEditing) {
         const features = map?.pickMultipleObjects({
           x: info.x,
@@ -354,5 +346,25 @@ export const useMapDrag = () => {
     },
     [map, onRulerDragStart, rulersEditing]
   )
-  return { onMapDrag, onMapDragStart }
+
+  const onMapDrag = useCallback(
+    (info: PickingInfo, event: any) => {
+      if (!info.coordinate) return
+      if (rulersEditing) {
+        onRulerDrag(info)
+      }
+    },
+    [onRulerDrag, rulersEditing]
+  )
+
+  const onMapDragEnd = useCallback(
+    (info: PickingInfo, event: any) => {
+      if (!info.coordinate) return
+      if (rulersEditing) {
+        onRulerDragEnd()
+      }
+    },
+    [onRulerDragEnd, rulersEditing]
+  )
+  return { onMapDrag, onMapDragStart, onMapDragEnd }
 }
