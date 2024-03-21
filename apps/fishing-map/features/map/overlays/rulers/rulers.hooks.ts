@@ -3,12 +3,10 @@ import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import { PickingInfo } from '@deck.gl/core/typed'
 import { RulerData } from '@globalfishingwatch/deck-layers'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
 const useRulers = () => {
-  const dispatch = useAppDispatch()
   const rulers = useSelector(selectMapRulers)
   const rulersVisible = useSelector(selectAreMapRulersVisible)
   const { dispatchQueryParams } = useLocationConnect()
@@ -30,30 +28,24 @@ const useRulers = () => {
   )
 
   const setRulerEnd = useCallback(
-    (end: RulerData['end']) => {
-      setMapControlValue({ ...(value as RulerData), end })
+    (rulerData: RulerData) => {
+      setMapControlValue(rulerData)
     },
-    [setMapControlValue, value]
+    [setMapControlValue]
   )
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const throttledSetRuleEnd = useCallback(
-    throttle((info: PickingInfo) => {
-      if (!info.coordinate) return
-      const [longitude, latitude] = info.coordinate as number[]
-      const point = {
-        longitude,
-        latitude,
-      }
-      setRulerEnd(point)
-    }, 16),
-    [dispatch]
-  )
+  const throttledSetRuleEnd = useCallback(throttle(setRulerEnd, 16), [setRulerEnd])
 
   const onRulerMapHover = useCallback(
     (info: PickingInfo) => {
       if (isEditing && value) {
-        throttledSetRuleEnd(info)
+        const [longitude, latitude] = info.coordinate as number[]
+        const end = {
+          longitude,
+          latitude,
+        }
+        throttledSetRuleEnd({ ...(value as RulerData), end })
       }
       return info
     },
@@ -81,7 +73,7 @@ const useRulers = () => {
         setRuleStart(point)
       } else {
         dispatchQueryParams({
-          mapRulers: [...(rulers || []), { ...(value as RulerData) }],
+          mapRulers: [...(rulers || []), { ...value, end: point } as RulerData],
           mapRulersVisible: true,
         })
         resetMapControlValue()
