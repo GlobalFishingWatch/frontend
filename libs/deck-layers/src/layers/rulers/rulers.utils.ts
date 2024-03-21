@@ -1,28 +1,34 @@
 import greatCircle from '@turf/great-circle'
 import length from '@turf/length'
 import { Position } from '@deck.gl/core'
-import { Ruler } from '@globalfishingwatch/layer-composer'
+import { Feature, Point } from '@turf/helpers'
+import { RulerData, RulerPointProperties } from '../../types'
 
-export const getRulerCoordsPairs = (ruler: Ruler): { start: Position; end: Position } => {
+export const getRulerCoordsPairs = (
+  ruler: RulerData
+): { start: Position; end: Position; id: number } => {
   return {
     start: [Number(ruler.start.longitude), Number(ruler.start.latitude)],
     end: [Number(ruler.end.longitude), Number(ruler.end.latitude)],
+    id: Number(ruler.id),
   }
 }
 
-export const hasRulerStartAndEnd = (rulers: Ruler[]) =>
+export const hasRulerStartAndEnd = (rulers: RulerData[]) =>
   rulers.every((ruler) => ruler.start && ruler.end)
-export const getGreatCircleMultiLine = (ruler: Ruler) => {
+export const getGreatCircleMultiLine = (ruler: RulerData) => {
   const { start, end } = getRulerCoordsPairs(ruler)
   return greatCircle(start, end, { properties: { id: ruler.id } })
 }
 
-export const getRulerStartAndEndPoints = (ruler: Ruler) => {
-  const { start, end } = getRulerCoordsPairs(ruler)
+export const getRulerStartAndEndPoints = (
+  ruler: RulerData
+): Feature<Point, RulerPointProperties>[] => {
+  const { start, end, id } = getRulerCoordsPairs(ruler)
   return [
     {
       type: 'Feature',
-      properties: {},
+      properties: { id, order: 'start' } as RulerPointProperties,
       geometry: {
         coordinates: start,
         type: 'Point',
@@ -30,7 +36,7 @@ export const getRulerStartAndEndPoints = (ruler: Ruler) => {
     },
     {
       type: 'Feature',
-      properties: {},
+      properties: { id, order: 'end' },
       geometry: {
         coordinates: end,
         type: 'Point',
@@ -39,7 +45,7 @@ export const getRulerStartAndEndPoints = (ruler: Ruler) => {
   ]
 }
 
-const getRulerLength = (ruler: Ruler) => {
+const getRulerLength = (ruler: RulerData) => {
   const lengthKm = length(
     {
       type: 'Feature',
@@ -56,7 +62,7 @@ const getRulerLength = (ruler: Ruler) => {
   )
   return lengthKm
 }
-export const getRulerLengthLabel = (ruler: Ruler) => {
+export const getRulerLengthLabel = (ruler: RulerData) => {
   const lengthKm = getRulerLength(ruler)
   const lengthNmi = lengthKm / 1.852
   const precissionKm = lengthKm > 100 ? 0 : lengthKm > 10 ? 1 : 2

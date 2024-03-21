@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import { PickingInfo } from '@deck.gl/core/typed'
-import { Ruler } from '@globalfishingwatch/layer-composer'
+import { RulerData } from '@globalfishingwatch/deck-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
@@ -23,15 +23,15 @@ const useRulers = () => {
   } = useMapControl('rulers')
 
   const setRuleStart = useCallback(
-    (start: Ruler['start']) => {
+    (start: RulerData['start']) => {
       setMapControlValue({ id: new Date().getTime(), start })
     },
     [setMapControlValue]
   )
 
   const setRulerEnd = useCallback(
-    (end: Ruler['end']) => {
-      setMapControlValue({ ...(value as Ruler), end })
+    (end: RulerData['end']) => {
+      setMapControlValue({ ...(value as RulerData), end })
     },
     [setMapControlValue, value]
   )
@@ -81,7 +81,7 @@ const useRulers = () => {
         setRuleStart(point)
       } else {
         dispatchQueryParams({
-          mapRulers: [...(rulers || []), { ...(value as Ruler) }],
+          mapRulers: [...(rulers || []), { ...(value as RulerData) }],
           mapRulersVisible: true,
         })
         resetMapControlValue()
@@ -103,7 +103,7 @@ const useRulers = () => {
   return {
     rulers,
     resetRulers,
-    editingRuler: value as Ruler,
+    editingRuler: value as RulerData,
     rulersEditing: isEditing,
     rulersVisible,
     deleteMapRuler,

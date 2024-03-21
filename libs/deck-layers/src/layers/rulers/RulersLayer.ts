@@ -3,8 +3,8 @@ import { CompositeLayer, LayersList } from '@deck.gl/core/typed'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { Position } from '@deck.gl/core'
 import { rhumbBearing } from '@turf/turf'
-import { Ruler } from '@globalfishingwatch/layer-composer'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
+import { RulerData } from '../../types'
 import {
   getGreatCircleMultiLine,
   getRulerLengthLabel,
@@ -14,7 +14,7 @@ import {
 import { COLOR } from './rulers.config'
 
 type RulersLayerProps = GeoJsonLayerProps & {
-  rulers: Ruler[]
+  rulers: RulerData[]
 }
 
 type RulerLabel = {
@@ -23,8 +23,8 @@ type RulerLabel = {
   bearing: number
 }
 
-const getFeaturesFromRulers = (rulers: Ruler[]) => {
-  return rulers.flatMap((ruler: Ruler) => [
+const getFeaturesFromRulers = (rulers: RulerData[]) => {
+  return rulers.flatMap((ruler: RulerData) => [
     getGreatCircleMultiLine(ruler),
     ...getRulerStartAndEndPoints(ruler),
   ])
@@ -34,7 +34,7 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
   layers: LayersList = []
   updateState({ props }: { props: RulersLayerProps }) {
     if (!hasRulerStartAndEnd(props.rulers)) return
-    const labels = props.rulers.map((ruler: Ruler) => {
+    const labels = props.rulers.map((ruler: RulerData) => {
       const line = getGreatCircleMultiLine(ruler)
       const centerIndex = Math.round(line.geometry.coordinates.length / 2)
       const centerPoint = line.geometry.coordinates[centerIndex]

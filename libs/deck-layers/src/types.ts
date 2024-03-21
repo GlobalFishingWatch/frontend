@@ -18,3 +18,19 @@ export type AnyDeckLayer<D = unknown> =
   | FourwingsLayer
   | VesselLayer
   | RulersLayer
+
+export type RulerPointProperties = {
+  id: number
+  order: 'start' | 'end'
+}
+export type RulerData = {
+  id: number
+  start: {
+    latitude: number
+    longitude: number
+  }
+  end: {
+    latitude: number
+    longitude: number
+  }
+}
