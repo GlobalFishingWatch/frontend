@@ -52,6 +52,7 @@ import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { hasMapTimeseriesAtom } from 'features/reports/reports-timeseries.hooks'
 import {
   useMapCursor,
+  useMapDrag,
   useMapMouseClick,
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
@@ -136,6 +137,7 @@ const MapWrapper = () => {
   const { onMapClick } = useMapMouseClick()
   const { onMouseMove } = useMapMouseHover()
   const { getCursor } = useMapCursor()
+  const { onMapDrag, onMapDragStart } = useMapDrag()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
@@ -314,6 +316,8 @@ const MapWrapper = () => {
         onViewStateChange={onViewStateChange}
         onClick={onMapClick}
         onHover={onMouseMove}
+        onDrag={onMapDrag}
+        onDragStart={onMapDragStart}
       >
         <MapAnnotations />
         <MapAnnotationsDialog />

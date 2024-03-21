@@ -42,6 +42,7 @@ import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { SliceInteractionEvent } from './map.slice'
 import { isRulerLayerPoint } from './map-interaction.utils'
+import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 
 export const useMapMouseHover = (style?: ExtendedStyle) => {
   const map = useDeckMap()
@@ -75,9 +76,10 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
 
       if (features) {
         setDeckLayerInteraction(features)
+        // onRulerDrag(features)
       }
       if (rulersEditing) {
-        return onRulerMapHover(info)
+        onRulerMapHover(info)
       }
     },
     [map, onRulerMapHover, rulersEditing, setDeckLayerInteraction]
@@ -145,7 +147,6 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
         // this is needed to allow interacting with overlay elements content
         return true
       }
-      console.log(info)
       // const features = deckRef?.current?.pickMultipleObjects({
       //   x: info.x,
       //   y: info.y,
@@ -324,4 +325,34 @@ export const useMapCursor = () => {
     ]
   )
   return { getCursor }
+}
+
+export const useMapDrag = () => {
+  const map = useDeckMap()
+  const { rulersEditing } = useRulers()
+  const { onRulerDrag, onRulerDragStart } = useMapRulersDrag()
+
+  const onMapDrag = useCallback(
+    (info: PickingInfo, event: any) => {
+      if (rulersEditing) {
+        onRulerDrag(info)
+      }
+    },
+    [onRulerDrag, rulersEditing]
+  )
+
+  const onMapDragStart = useCallback(
+    (info: PickingInfo, event: any) => {
+      if (rulersEditing) {
+        const features = map?.pickMultipleObjects({
+          x: info.x,
+          y: info.y,
+          radius: 0,
+        })
+        onRulerDragStart(info, features)
+      }
+    },
+    [map, onRulerDragStart, rulersEditing]
+  )
+  return { onMapDrag, onMapDragStart }
 }

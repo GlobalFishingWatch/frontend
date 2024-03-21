@@ -1,21 +1,23 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
-import { MapGeoJSONFeature, MapMouseEvent } from '@globalfishingwatch/maplibre-gl'
-import { RulerPointProperties } from '@globalfishingwatch/layer-composer'
-import useMapInstance from 'features/map/map-context.hooks'
-import { RULERS_LAYER_ID } from 'features/map/map.config'
+import { PickingInfo } from '@deck.gl/core/typed'
+import { RulerData, RulerPointProperties } from '@globalfishingwatch/deck-layers'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectMapRulersVisible } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { isRulerLayerPoint } from 'features/map/map-interaction.utils'
 
 export function useMapRulersDrag() {
-  const map = useMapInstance()
+  const deck = useDeckMap()
   const rulers = useSelector(selectMapRulersVisible)
   const { dispatchQueryParams } = useLocationConnect()
 
-  const currentRuler = useRef<{ index: number; position: RulerPointProperties['position'] } | null>(
-    null
-  )
+  const draggedRuler = useRef<{
+    ruler: RulerData | undefined
+    order: RulerPointProperties['order']
+    id: RulerPointProperties['id']
+  } | null>(null)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedUpdate = useCallback(
@@ -25,59 +27,36 @@ export function useMapRulersDrag() {
     [dispatchQueryParams]
   )
 
-  const onMove = useCallback(
-    (e: MapMouseEvent) => {
-      if (rulers?.length) {
-        const { lat, lng } = e.lngLat
-        const newRulers = rulers.map((r, index) => {
-          if (index !== currentRuler.current?.index) {
-            return r
-          }
-          return currentRuler.current?.position === 'start'
-            ? { ...r, start: { longitude: lng, latitude: lat } }
-            : { ...r, end: { longitude: lng, latitude: lat } }
-        })
-        debouncedUpdate(newRulers)
-      }
+  const onRulerDrag = useCallback(
+    (info: PickingInfo) => {
+      const [longitude, latitude] = info.coordinate as number[]
+      const newRulers = rulers.map((r) => {
+        if (r.id === draggedRuler.current?.id) {
+          return draggedRuler.current.order === 'start'
+            ? { ...r, start: { longitude, latitude } }
+            : { ...r, end: { longitude, latitude } }
+        } else {
+          return r
+        }
+      })
+      debouncedUpdate(newRulers)
     },
     [debouncedUpdate, rulers]
   )
 
-  const onUp = useCallback(() => {
-    currentRuler.current = null
-    // Unbind mouse/touch events
-    map.off('mousemove', onMove)
-    map.off('touchmove', onMove)
-  }, [map, onMove])
-
-  const onDown = useCallback(
-    (
-      e: MapMouseEvent & {
-        features?: MapGeoJSONFeature[] | undefined
-      }
-    ) => {
-      const { id, position } = e.features?.[0]?.properties as RulerPointProperties
-      const rulerIndex = rulers.findIndex((ruler) => ruler.id === id)
-      if (position) {
-        currentRuler.current = { index: rulerIndex, position }
-        // Prevent the default map drag behavior.
-        e.preventDefault()
-
-        map.on('mousemove', onMove)
-        map.once('mouseup', onUp)
+  const onRulerDragStart = useCallback(
+    (info: PickingInfo, features: any) => {
+      if (features?.some(isRulerLayerPoint)) {
+        deck?.setProps({ controller: { dragPan: false } })
+        const point = features.find(isRulerLayerPoint).object
+        draggedRuler.current = {
+          ruler: rulers.find((r) => r.id === point.properties.id),
+          order: point.properties.order,
+          id: point.properties.id,
+        }
       }
     },
-    [map, onMove, onUp, rulers]
+    [deck, rulers]
   )
-
-  useEffect(() => {
-    if (map) {
-      map.on('mousedown', RULERS_LAYER_ID, onDown)
-    }
-    return () => {
-      if (map) {
-        map.off('mousedown', RULERS_LAYER_ID, onDown)
-      }
-    }
-  }, [map, onDown])
+  return { onRulerDrag, onRulerDragStart }
 }
