@@ -30,7 +30,7 @@ export const getRulerStartAndEndPoints = (
       type: 'Feature',
       properties: { id, order: 'start' } as RulerPointProperties,
       geometry: {
-        coordinates: start,
+        coordinates: start as number[],
         type: 'Point',
       },
     },
@@ -38,7 +38,7 @@ export const getRulerStartAndEndPoints = (
       type: 'Feature',
       properties: { id, order: 'end' },
       geometry: {
-        coordinates: end,
+        coordinates: end as number[],
         type: 'Point',
       },
     },
