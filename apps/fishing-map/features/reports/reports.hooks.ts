@@ -170,9 +170,9 @@ export function useFetchReportVessel() {
       reportBufferValue,
       reportBufferOperation,
     }
-    const query = getReportQuery(params)
+    const query = getReportQuery(params as any)
     updateWorkspaceReportUrls(query)
-    dispatch(fetchReportVesselsThunk(params))
+    dispatch(fetchReportVesselsThunk(params as any))
   }, [
     areaId,
     datasetId,
@@ -199,8 +199,8 @@ export function useFetchReportVessel() {
           datasets: reportDataviews.map(({ datasets }) =>
             datasets.map((d: Dataset) => d.id).join(',')
           ),
-          filters: reportDataviews.map(({ filter }) => filter),
-          vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
+          filters: reportDataviews.map(({ filter }) => filter) as any,
+          vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups) as any,
           region: {
             id: areaId,
             dataset: datasetId,

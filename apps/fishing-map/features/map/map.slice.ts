@@ -125,7 +125,7 @@ const getInteractionEndpointDatasetConfig = (
 
   const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
   if (filters.length) {
-    datasetConfig.query?.push({ id: 'filters', value: filters })
+    datasetConfig.query?.push({ id: 'filters', value: filters as any })
   }
 
   const vesselGroups = featuresDataviews
@@ -133,7 +133,7 @@ const getInteractionEndpointDatasetConfig = (
     .filter((vg) => vg.length)
 
   if (vesselGroups.length) {
-    datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
+    datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups as any })
   }
 
   return { featuresDataviews, fourWingsDataset, datasetConfig }
@@ -228,7 +228,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
       let startingIndex = 0
       const vesselsBySource: ExtendedFeatureVessel[][][] = featuresDataviews.map((dataview) => {
-        const datasets: string[] = dataview.config?.datasets
+        const datasets: string[] = dataview.config?.datasets || []
         const newStartingIndex = startingIndex + datasets.length
         const dataviewVesselsIds = sublayersVesselsIds.slice(startingIndex, newStartingIndex)
         startingIndex = newStartingIndex

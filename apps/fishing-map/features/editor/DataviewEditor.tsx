@@ -166,7 +166,8 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
     dataview.category !== undefined &&
     dataview.category !== UNKNOWN_CATEGORY &&
     dataview.config?.color !== undefined &&
-    (dataview.category !== DataviewCategory.Environment || dataview.config.breaks?.length > 0) &&
+    (dataview.category !== DataviewCategory.Environment ||
+      (dataview.config.breaks && dataview.config.breaks?.length > 0)) &&
     (isEditingDataview || dataviewDatasets.length > 0)
 
   return (

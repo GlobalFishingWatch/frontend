@@ -21,7 +21,7 @@ export function resolveDeckVesselLayerProps(
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
-    name: dataview.config?.name,
+    name: dataview.config?.name!,
     endTime: getUTCDateTime(globalConfig.end!).toMillis(),
     startTime: getUTCDateTime(globalConfig.start!).toMillis(),
     trackUrl: `${API_GATEWAY}${resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url}`,

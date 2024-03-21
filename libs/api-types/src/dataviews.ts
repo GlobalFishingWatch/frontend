@@ -1,3 +1,4 @@
+import { Locale } from './i18n'
 import { ApiAppName } from './workspaces'
 import { Dataset } from './datasets'
 
@@ -74,17 +75,48 @@ export interface DataviewConfig<Type = DataviewType> {
   /** LayerGroup for deck layers z-index, see libs/deck-layers/src/utils/sort.ts */
   group?: string
   /** String decoded for url from filters Record */
-  filter?: string // filters as url decoded ready to use
+  // TODO: review this
+  filter?: string
   filters?: Record<string, any>
   'vessel-groups'?: string[]
   filterOperators?: Record<string, FilterOperator>
+  /** Min value for filters in environmental layers to perform frontend data filtering */
+  minVisibleValue?: number
+  /** Max value for filters in environmental layers to perform frontend data filtering */
+  maxVisibleValue?: number
+  /** Fourwings dataset without temporal data */
+  static?: boolean
+  /** Initial breaks for fourwings datasets */
+  breaks?: number[]
+  locale?: Locale
   dynamicBreaks?: boolean
   maxZoom?: number
+  maxZoomCluster?: number
   layers?: DataviewContexLayerConfig[]
+  /** Legacy for duplicated events in the API */
+  duplicatedEventsWorkaround?: boolean
+  /** Stats calculated for environmental layers reports */
+  stats?: {
+    max: number
+    min: number
+    mean: number
+  }
+
+  /** Used to store the vessel name */
+  name?: string
+  event?: string
+  pointsToSegmentsSwitchLevel?: number
+  showIcons?: boolean
+  showAuthorizationStatus?: boolean
+  aggregationOperation?: string
+  breaksMultiplier?: number
+
   /** Vessel datasets */
   info?: string
   track?: string
   events?: string[]
+  relatedVesselIds?: string[]
+  /** Fourwings layers merged, needed for Activity or Detections */
   sublayers?: DataviewSublayerConfig[]
 }
 
