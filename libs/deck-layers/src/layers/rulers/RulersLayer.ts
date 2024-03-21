@@ -1,8 +1,8 @@
-import { GeoJsonLayerProps, GeoJsonLayer, TextLayer } from '@deck.gl/layers/typed'
-import { CompositeLayer, LayersList } from '@deck.gl/core/typed'
+import { GeoJsonLayerProps, GeoJsonLayer, TextLayer } from '@deck.gl/layers'
+import { CompositeLayer, LayersList } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { Position } from '@deck.gl/core'
-import { rhumbBearing } from '@turf/turf'
+import { Coord, rhumbBearing } from '@turf/turf'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
 import { RulerData } from '../../types'
 import {
@@ -39,7 +39,7 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
       const centerIndex = Math.round(line.geometry.coordinates.length / 2)
       const centerPoint = line.geometry.coordinates[centerIndex]
       const anchorPoints = line.geometry.coordinates.slice(centerIndex, centerIndex + 2)
-      const bearing = rhumbBearing(anchorPoints[0] as Position, anchorPoints[1] as Position)
+      const bearing = rhumbBearing(anchorPoints[0] as Coord, anchorPoints[1] as Coord)
       return {
         text: getRulerLengthLabel(ruler),
         position: centerPoint,
