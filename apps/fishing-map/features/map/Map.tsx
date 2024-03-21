@@ -28,6 +28,7 @@ import { LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import {
+  useIsDeckLayersLoading,
   useSetDeckLayerComposer,
   useSetDeckLayerInteraction,
   useSetDeckLayerLoadedState,
@@ -186,7 +187,7 @@ const MapWrapper = () => {
     // setHoveredDebouncedEvent(null)
     // cleanFeatureState('hover')
   }, [])
-  // // const mapLoaded = useMapLoaded()
+  const mapLoading = useIsDeckLayersLoading()
 
   // const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
 
@@ -372,7 +373,7 @@ const MapWrapper = () => {
         </Map>
       )} */}
       {/* TODO in deck.gl to get the mapLoading state */}
-      <MapControls onMouseEnter={resetHoverState} mapLoading={false} />
+      <MapControls onMouseEnter={resetHoverState} mapLoading={mapLoading} />
       {isWorkspace && !reportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}

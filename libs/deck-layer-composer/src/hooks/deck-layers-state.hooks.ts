@@ -28,3 +28,11 @@ export const useSetDeckLayerLoadedState = () => {
     [setDeckLayerLoadedState]
   )
 }
+
+const isDeckLayersLoadingAtom = atom((get) => {
+  const layersState = get(deckLayersStateAtom)
+  return layersState && Object.values(layersState).some((layer) => !layer.loaded)
+})
+export const useIsDeckLayersLoading = () => {
+  return useAtomValue(isDeckLayersLoadingAtom)
+}

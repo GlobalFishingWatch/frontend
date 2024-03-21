@@ -35,6 +35,11 @@ export type Chunk = {
   bufferedEnd: number
 }
 
+export enum FourwingsAggregationOperation {
+  Sum = 'sum',
+  Avg = 'avg',
+}
+
 export enum FourwingsComparisonMode {
   // Pick sublayer with highest value and place across this sublayer's color ramp. Works with 0 - n sublayers
   Compare = 'compare',
@@ -60,6 +65,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
 export type AggregateCellParams = {
   minIntervalFrame: number
   maxIntervalFrame?: number
+  aggregationOperation?: FourwingsAggregationOperation
   startFrames: number[]
 }
 
@@ -70,6 +76,7 @@ export type GetFillColorParams = {
   minIntervalFrame: number
   maxIntervalFrame: number
   comparisonMode?: FourwingsComparisonMode
+  aggregationOperation?: FourwingsAggregationOperation
 }
 
 export type FourwingsResolution = 'default' | 'high'
@@ -85,6 +92,7 @@ export type _FourwingsHeatmapTileLayerProps = {
   sublayers: FourwingsDeckSublayer[]
   colorRampWhiteEnd?: boolean
   comparisonMode?: FourwingsComparisonMode
+  aggregationOperation?: FourwingsAggregationOperation
   onTileDataLoading?: (tile: TileLoadProps) => void
 }
 

@@ -1,6 +1,6 @@
 import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
 import packageJson from '../../package.json'
-import type { FourwingsLoaderOptions, FourwingsOptions } from './lib/types'
+import type { FourwingsLoaderOptions, ParseFourwingsOptions } from './lib/types'
 import { parseFourwings } from './lib/parse-fourwings'
 
 /**
@@ -16,7 +16,7 @@ export const FourwingsWorkerLoader: Loader = {
   worker: true,
   category: 'geometry',
   options: {
-    fourwings: {} as FourwingsOptions,
+    fourwings: {} as ParseFourwingsOptions,
   } as FourwingsLoaderOptions,
 }
 

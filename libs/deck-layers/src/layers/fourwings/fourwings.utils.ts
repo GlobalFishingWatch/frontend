@@ -17,25 +17,36 @@ import {
   FourwingsDeckSublayer,
   GetFillColorParams,
   FourwingsComparisonMode,
+  FourwingsAggregationOperation,
 } from './fourwings.types'
 import { getChunkByInterval, getInterval } from './fourwings.config'
 
+function sumSublayerValues(sublayer: number[]) {
+  return sublayer.reduce((acc: number, value: number) => (value ? acc + value : acc), 0)
+}
+
 export const aggregateCell = (
   cell: Cell,
-  { minIntervalFrame, maxIntervalFrame, startFrames }: AggregateCellParams
+  {
+    minIntervalFrame,
+    maxIntervalFrame,
+    startFrames,
+    aggregationOperation = FourwingsAggregationOperation.Sum,
+  }: AggregateCellParams
 ): number[] => {
   // TODO decide if we want the last day to be included or not in maxIntervalFrame
-  return cell.map(
-    (sublayer, sublayerIndex) =>
-      sublayer &&
-      startFrames &&
-      sublayer
-        .slice(
-          Math.max(minIntervalFrame - startFrames[sublayerIndex], 0),
-          maxIntervalFrame ? maxIntervalFrame - startFrames[sublayerIndex] : undefined
-        )
-        .reduce((acc: number, value) => (value ? acc + value : acc), 0)
-  )
+  return cell.map((sublayer, sublayerIndex) => {
+    if (!sublayer || !startFrames || !sublayer) {
+      return 0
+    }
+    const data = sublayer.slice(
+      Math.max(minIntervalFrame - startFrames[sublayerIndex], 0),
+      maxIntervalFrame ? maxIntervalFrame - startFrames[sublayerIndex] : undefined
+    )
+    return aggregationOperation === FourwingsAggregationOperation.Sum
+      ? sumSublayerValues(data)
+      : sumSublayerValues(data) / data.length
+  })
 }
 
 function stringHash(s: string): number {
@@ -254,6 +265,7 @@ export const chooseColor = (
     chunk,
     minIntervalFrame,
     maxIntervalFrame,
+    aggregationOperation,
     comparisonMode,
   }: GetFillColorParams
 ): Color => {
@@ -263,10 +275,12 @@ export const chooseColor = (
   const { initialValues, startFrames, values } = feature.properties
 
   const aggregatedCellValues =
+    // TODO calculate initialValues based on aggregationOperation
     initialValues[getTimeRangeKey(minIntervalFrame, maxIntervalFrame)] ||
     aggregateCell(values, {
       minIntervalFrame,
       maxIntervalFrame: maxIntervalFrame > 0 ? maxIntervalFrame : undefined,
+      aggregationOperation,
       startFrames,
     })
   let chosenValueIndex = 0

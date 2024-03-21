@@ -19,10 +19,11 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
   const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
   const detectionsMergedDataviewId = useSelector(selectDetectionsMergedDataviewId)
   const dataviewId =
-    // TODO: include environment
-    dataview.category === DataviewCategory.Activity
-      ? activityMergedDataviewId
-      : detectionsMergedDataviewId
+    dataview.category === DataviewCategory.Environment
+      ? dataview.id
+      : dataview.category === DataviewCategory.Detections
+      ? detectionsMergedDataviewId
+      : activityMergedDataviewId
   const deckLegend = useGetDeckLayerLegend(dataviewId)
   const isBivariate = deckLegend?.type === LegendType.Bivariate
 
