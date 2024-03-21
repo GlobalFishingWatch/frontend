@@ -67,6 +67,7 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
 
   const onMouseMove: DeckProps['onHover'] = useCallback(
     (info: PickingInfo, event: any) => {
+      if (!info.coordinate) return
       const features = map?.pickMultipleObjects({
         x: info.x,
         y: info.y,
@@ -142,6 +143,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
 
   const onMapClick: DeckProps['onClick'] = useCallback(
     (info: PickingInfo, event: any) => {
+      if (!info.coordinate) return
       if (event.srcEvent.defaultPrevented) {
         // this is needed to allow interacting with overlay elements content
         return true

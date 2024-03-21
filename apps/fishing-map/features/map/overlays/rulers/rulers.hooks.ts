@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
-import { PickingInfo } from '@deck.gl/core/typed'
+import { PickingInfo } from '@deck.gl/core'
 import { RulerData } from '@globalfishingwatch/deck-layers'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
