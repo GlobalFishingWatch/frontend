@@ -6,8 +6,10 @@ import {
   EndpointParamType,
 } from '@globalfishingwatch/api-types'
 
+// TODO: move this to datasets-client library
 const arrayQueryParams: EndpointParamType[] = ['4wings-datasets', 'sql']
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
+
 export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
   const endpoint = dataset.endpoints?.find((endpoint) => {
     return endpoint.id === datasetConfig.endpoint

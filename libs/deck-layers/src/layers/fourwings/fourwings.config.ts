@@ -1,10 +1,13 @@
 import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import { getUTCDateTime } from '../../utils/dates'
 import { Chunk } from './fourwings.types'
 
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
+
+export const API_TILES_URL = `${API_GATEWAY}/${API_VERSION}/4wings/tile/heatmap/{z}/{x}/{y}`
 
 export const HEATMAP_ID = 'heatmap'
 export const POSITIONS_ID = 'positions'

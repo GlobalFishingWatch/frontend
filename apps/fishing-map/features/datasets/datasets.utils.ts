@@ -185,7 +185,7 @@ export const getDatasetTitleByDataview = (
     ...dataview,
     dataviewId: (dataview as UrlDataviewInstance).dataviewId || dataview.slug,
   }
-  const hasDatasetsConfig = dataview.config?.datasets?.length > 0
+  const hasDatasetsConfig = dataview.config?.datasets && dataview.config?.datasets?.length > 0
   const activeDatasets = hasDatasetsConfig
     ? dataview.datasets?.filter((d) => dataview.config?.datasets?.includes(d.id))
     : dataview.datasets

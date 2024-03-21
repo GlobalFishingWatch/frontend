@@ -1,12 +1,4 @@
-import {
-  Color,
-  CompositeLayer,
-  Layer,
-  LayerContext,
-  LayersList,
-  PickingInfo,
-  DefaultProps,
-} from '@deck.gl/core'
+import { Color, CompositeLayer, Layer, LayerContext, LayersList, DefaultProps } from '@deck.gl/core'
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { IconLayer, TextLayer } from '@deck.gl/layers'
 import { MVTWorkerLoader } from '@loaders.gl/mvt'
@@ -16,32 +8,17 @@ import { Feature, Point } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { stringify } from 'qs'
-import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
-import { POSITIONS_ID, POSITIONS_VISUALIZATION_MIN_ZOOM } from './fourwings.config'
+import { API_TILES_URL, POSITIONS_ID, POSITIONS_VISUALIZATION_MIN_ZOOM } from './fourwings.config'
 import { getRoundedDateFromTS } from './fourwings.utils'
 import {
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
+  _FourwingsPositionsTileLayerProps,
 } from './fourwings.types'
-
-export type _FourwingsPositionsTileLayerProps<DataT = any> = {
-  minFrame: number
-  maxFrame: number
-  colorDomain?: number[]
-  colorRange?: Color[]
-  highlightedVesselId?: string
-  clickedFeatures?: PickingInfo[]
-  hoveredFeatures?: PickingInfo[]
-  onDataLoad?: (data: DataT) => void
-  // onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
-  onVesselHighlight?: (vesselId: string) => void
-  onVesselClick?: (vesselId: string) => void
-  onViewportLoad?: (tiles: any) => void
-  onTileDataLoading?: (tile: TileLoadProps) => void
-}
 
 export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps &
   Partial<TileLayerProps>
@@ -53,7 +30,9 @@ type FourwingsPositionsTileLayerState = {
   highlightedVesselId?: string
 }
 
-const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {}
+const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
+  tilesUrl: API_TILES_URL,
+}
 
 const MAX_LABEL_LENGTH = 20
 const ICON_MAPPING = {

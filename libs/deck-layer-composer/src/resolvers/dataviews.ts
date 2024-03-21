@@ -12,23 +12,18 @@ import {
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_FOURWINGS_INTERVALS,
-  FourwingsAggregationOperation,
   FourwingsComparisonMode,
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import {
-  UrlDataviewInstance,
-  getMergedDataviewId,
-  resolveDataviewDatasetResource,
-} from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
 // TODO Maybe this should rather be in dataset.endpoints[id = 4wings-tiles].query[id = interval].options
 // or something similar ??
 const getDatasetAvailableIntervals = (dataset?: Dataset) =>
   dataset?.configuration?.intervals as FourwingsInterval[]
 
-const getDataviewAvailableIntervals = (
+export const getDataviewAvailableIntervals = (
   dataview: UrlDataviewInstance,
   defaultIntervals = DEFAULT_FOURWINGS_INTERVALS
 ): FourwingsInterval[] => {
@@ -39,14 +34,17 @@ const getDataviewAvailableIntervals = (
   let availableIntervals = defaultIntervals
 
   if (dataviewInterval) {
-    availableIntervals = [dataviewInterval]
+    availableIntervals = [dataviewInterval as FourwingsInterval]
   } else if (dataviewIntervals && dataviewIntervals.length > 0) {
-    availableIntervals = dataviewIntervals
+    availableIntervals = dataviewIntervals as FourwingsInterval[]
   } else if (datasetIntervals && datasetIntervals.length > 0) {
     availableIntervals = datasetIntervals
   }
   return availableIntervals
 }
+
+const getDatasetAttribution = (dataset?: Dataset) =>
+  dataset?.source && dataset?.source !== 'user' ? dataset?.source : undefined
 
 type TimeRange = { start: string; end: string }
 
@@ -80,93 +78,72 @@ function isTrackDataview(dataview: UrlDataviewInstance) {
 type GetMergedHeatmapAnimatedDataviewParams = {
   visualizationMode?: FourwingsVisualizationMode
   comparisonMode?: FourwingsComparisonMode
-  aggregationOperation?: FourwingsAggregationOperation
   timeRange?: TimeRange
   colorRampWhiteEnd?: boolean
 }
 
-export function getHeatmapAnimatedDataviewSublayers(dataview: UrlDataviewInstance) {
+export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
   const { config, datasetsConfig } = dataview
+
   if (!dataview?.datasets?.length) {
     console.warn('No datasets found on dataview:', dataview)
-    return null
+    return []
   }
+
   if (!config || !datasetsConfig || !datasetsConfig.length) {
-    return null
-  }
-  const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
-
-  const activeDatasets = dataview.datasets.filter((dataset) =>
-    dataview?.config?.datasets?.includes(dataset.id)
-  )
-  const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
-  if (units.length > 0 && units.length !== 1) {
-    throw new Error('Shouldnt have distinct units for the same heatmap layer')
+    return []
   }
 
-  const availableIntervals = getDataviewAvailableIntervals(dataview)
+  const activeDatasets =
+    dataview.category === DataviewCategory.Environment
+      ? dataview.datasets
+      : dataview.datasets.filter((dataset) => dataview?.config?.datasets?.includes(dataset.id))
 
   const sublayer: DataviewSublayerConfig = {
     id: dataview.id,
-    datasets,
-    colorRamp: config.colorRamp as string[],
+    datasets: activeDatasets,
+    colorRamp: config.colorRamp as string,
     visible: config.visible,
     filter: config.filter,
     vesselGroups: config['vessel-groups'],
-    legend: {
-      label: dataview.name!,
-      unit: units?.[0]!,
-      color: dataview?.config?.color!,
-    },
-    availableIntervals,
+    maxZoom: config.maxZoom,
   }
 
   return sublayer
 }
 
-export function getMergedHeatmapAnimatedDataviews(
-  heatmapAnimatedDataviews: UrlDataviewInstance[],
+export function getFourwingsDataviewsResolved(
+  fourwingsDataview: UrlDataviewInstance | UrlDataviewInstance[],
   {
-    visualizationMode,
-    comparisonMode = FourwingsComparisonMode.Compare,
-    aggregationOperation = FourwingsAggregationOperation.Sum,
     timeRange,
+    visualizationMode = 'heatmap',
+    comparisonMode = FourwingsComparisonMode.Compare,
     colorRampWhiteEnd = false,
   } = {} as GetMergedHeatmapAnimatedDataviewParams
 ) {
   const dataviewsFiltered = [] as UrlDataviewInstance[]
-  const activitySublayers = heatmapAnimatedDataviews.flatMap((dataview) => {
-    return getHeatmapAnimatedDataviewSublayers(dataview) || []
-  })
 
-  const maxZoomLevels = heatmapAnimatedDataviews
-    ?.filter(({ config }) => config && config?.maxZoom !== undefined)
-    .flatMap(({ config }) => config?.maxZoom as number)
-  // TODO this should be done in other place, merging datasets is not the same than prepare the sublayers
-  // that is why we need to run this also for environmental dataviews which is not ideal
+  const fourwingsDataviews = Array.isArray(fourwingsDataview)
+    ? fourwingsDataview
+    : [fourwingsDataview]
+
+  // TODO: resolve tiles api url
   const mergedActivityDataview = {
-    id: getMergedDataviewId(heatmapAnimatedDataviews),
-    category: heatmapAnimatedDataviews[0]?.category,
+    id: getMergedDataviewId(fourwingsDataviews),
+    category: fourwingsDataviews[0]?.category,
     config: {
-      type: DataviewType.HeatmapAnimated,
-      sublayers: activitySublayers,
+      type: fourwingsDataviews[0]?.config?.type,
+      sublayers: fourwingsDataviews.flatMap(getFourwingsDataviewSublayers),
       colorRampWhiteEnd,
-      updateDebounce: true,
       visualizationMode,
       comparisonMode,
-      aggregationOperation,
-      // if any of the activity dataviews has a max zoom level defined
-      // apply the minimum max zoom level (the most restrictive approach)
-      ...(maxZoomLevels &&
-        maxZoomLevels.length > 0 && {
-          maxZoom: Math.min(...maxZoomLevels),
-        }),
     },
   }
+
   dataviewsFiltered.push(mergedActivityDataview)
 
   // New sublayers as auxiliar activity layers
-  const activityWithContextDataviews = heatmapAnimatedDataviews.flatMap((dataview) => {
+  const activityWithContextDataviews = fourwingsDataviews.flatMap((dataview) => {
     const auxiliarLayerActive = dataview.config?.auxiliarLayerActive ?? true
     if (
       dataview.datasetsConfig?.some(
@@ -191,16 +168,11 @@ export function getMergedHeatmapAnimatedDataviews(
         ...dataview,
         datasets: dataview.datasets?.filter((d) => d.type === DatasetTypes.TemporalContext),
         datasetsConfig,
-      }
-      const { url } = resolveDataviewDatasetResource(auxiliarDataview, DatasetTypes.TemporalContext)
-      if (!url) {
-        return []
-      }
-      auxiliarDataview.config = {
-        color: dataview.config?.color,
-        visible: auxiliarLayerActive,
-        type: DataviewType.Polygons,
-        url,
+        config: {
+          color: dataview.config?.color,
+          visible: auxiliarLayerActive,
+          type: DataviewType.Polygons,
+        },
       }
       return auxiliarDataview
     }
@@ -243,7 +215,7 @@ type ResolverGlobalConfig = {
   singleTrack?: boolean
 }
 
-export function getDataviewsMerged(
+export function getDataviewsResolved(
   dataviews: (UrlDataviewInstance | DataviewInstance)[],
   params: ResolverGlobalConfig = {}
 ) {
@@ -277,7 +249,8 @@ export function getDataviewsMerged(
     }
   )
 
-  const singleHeatmapDataview = [...activityDataviews, ...detectionDataviews].length === 1
+  const singleHeatmapDataview =
+    [...activityDataviews, ...detectionDataviews, ...environmentalDataviews].length === 1
   const activityComparisonMode = activityDataviews.every((dataview) =>
     params.bivariateDataviews?.includes(dataview.id)
   )
@@ -290,7 +263,7 @@ export function getDataviewsMerged(
     : FourwingsComparisonMode.Compare
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
   const mergedActivityDataview = activityDataviews?.length
-    ? getMergedHeatmapAnimatedDataviews(activityDataviews, {
+    ? getFourwingsDataviewsResolved(activityDataviews, {
         ...params,
         visualizationMode: params.activityVisualizationMode,
         comparisonMode: activityComparisonMode,
@@ -298,7 +271,7 @@ export function getDataviewsMerged(
       })
     : []
   const mergedDetectionsDataview = detectionDataviews.length
-    ? getMergedHeatmapAnimatedDataviews(detectionDataviews, {
+    ? getFourwingsDataviewsResolved(detectionDataviews, {
         ...params,
         visualizationMode: params.detectionsVisualizationMode,
         comparisonMode: detectionsComparisonMode,
@@ -307,8 +280,8 @@ export function getDataviewsMerged(
     : []
   const environmentalDataviewsParsed = environmentalDataviews.flatMap(
     (d) =>
-      getMergedHeatmapAnimatedDataviews([d], {
-        aggregationOperation: FourwingsAggregationOperation.Avg,
+      getFourwingsDataviewsResolved(d, {
+        colorRampWhiteEnd: singleHeatmapDataview,
       }) || []
   )
   const dataviewsMerged = [

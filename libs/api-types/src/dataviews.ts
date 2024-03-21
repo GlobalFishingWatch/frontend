@@ -34,28 +34,49 @@ export enum DataviewType {
 
 export type DataviewSublayerConfig = {
   id: string
-  datasets: string[]
+  datasets: Dataset[]
   color?: string
-  colorRamp?: string[]
+  colorRamp?: string
   visible?: boolean
-  filter?: Record<string, string>
-  vesselGroups?: string[]
+  filter?: DataviewConfig['filter']
+  filters?: DataviewConfig['filters']
+  vesselGroups?: DataviewConfig['vessel-groups']
+  maxZoom?: number
   legend?: {
     label: string
     unit: string
     color: string
   }
-  availableIntervals?: string[]
 }
 
 export interface DataviewConfig<Type = DataviewType> {
-  // TODO use any property from layer-composer here?
+  /** Type to define what kind of layer to render, ex: fourwings, context, draw... */
   type?: Type
+  /** Used in activity or detections layers to define which layers are active in all the options available */
+  datasets?: string[]
   color?: string
-  // colorRamp?: string
+  colorRamp?: string
   colorCyclingType?: ColorCyclingType
+  /** Fourwings modes: 'compare' | 'bivariate' */
+  comparisonMode?: string
+  /** Fourwings visualizations: 'heatmap' | 'positions' */
+  visualizationMode?: string
+  /** Property used when a layer can use white as last step in its color ramp */
+  colorRampWhiteEnd?: boolean
+  auxiliarLayerActive?: boolean
+  debug?: boolean
   visible?: boolean
+  /** Used to limit the available FourwingsIntervals */
+  interval?: string
+  intervals?: string[]
+  /** Basemap for deck layers, see libs/deck-layers/src/layers/basemap/BasemapLayer.ts */
+  basemap?: string
+  /** LayerGroup for deck layers z-index, see libs/deck-layers/src/utils/sort.ts */
+  group?: string
+  /** String decoded for url from filters Record */
+  filter?: string // filters as url decoded ready to use
   filters?: Record<string, any>
+  'vessel-groups'?: string[]
   filterOperators?: Record<string, FilterOperator>
   dynamicBreaks?: boolean
   maxZoom?: number
@@ -64,11 +85,7 @@ export interface DataviewConfig<Type = DataviewType> {
   info?: string
   track?: string
   events?: string[]
-  /*****************/
-  /** Fourwings datasets */
   sublayers?: DataviewSublayerConfig[]
-  /*****************/
-  [key: string]: any
 }
 
 export interface DataviewDatasetConfigParam {

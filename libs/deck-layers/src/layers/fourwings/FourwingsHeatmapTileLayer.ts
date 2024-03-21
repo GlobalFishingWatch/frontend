@@ -17,14 +17,13 @@ import {
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
 import {
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
   HEATMAP_COLOR_RAMPS,
   rgbaStringToComponents,
   ColorRampsIds,
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { ColorRampId, getBivariateRamp } from '../../utils/colorRamps'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS, ColorRampId, getBivariateRamp } from '../../utils/colorRamps'
 import {
   aggregateCellTimeseries,
   filterElementByPercentOfIndex,
@@ -32,7 +31,13 @@ import {
   getDataUrlBySublayer,
 } from './fourwings.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
-import { FOURWINGS_MAX_ZOOM, HEATMAP_ID, PATH_BASENAME, getInterval } from './fourwings.config'
+import {
+  API_TILES_URL,
+  FOURWINGS_MAX_ZOOM,
+  HEATMAP_ID,
+  PATH_BASENAME,
+  getInterval,
+} from './fourwings.config'
 import {
   ColorRange,
   FourwingsDeckSublayer,
@@ -48,6 +53,7 @@ const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   debounceTime: 500,
   comparisonMode: FourwingsComparisonMode.Compare,
   aggregationOperation: FourwingsAggregationOperation.Sum,
+  tilesUrl: API_TILES_URL,
   resolution: 'default',
 }
 
@@ -75,6 +81,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getColorRanges = () => {
+    // TODO: research if we can use the context to get other layers so we can enable whiteEnd
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
       return getBivariateRamp(this.props.sublayers.map((s) => s.config?.colorRamp) as ColorRampId[])
     }
@@ -181,6 +188,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       scale = parseFloat(response.headers.get('X-scale') as string)
       offset = parseInt(response.headers.get('X-offset') as string)
       noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      const bins = JSON.parse(response.headers.get('X-bins') as string)?.map((n: string) =>
+        parseInt(n)
+      )
+      // TODO test if setting the x-bins until the full viewport loads improves the experience
+      // this.setState({ colorDomain: bins })
       return await response.arrayBuffer()
     }
 

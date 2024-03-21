@@ -19,10 +19,22 @@ import {
   FourwingsComparisonMode,
   FourwingsAggregationOperation,
 } from './fourwings.types'
-import { getChunkByInterval, getInterval } from './fourwings.config'
+import { API_TILES_URL, getChunkByInterval, getInterval } from './fourwings.config'
 
-function sumSublayerValues(sublayer: number[]) {
-  return sublayer.reduce((acc: number, value: number) => (value ? acc + value : acc), 0)
+function aggregateSublayerValues(
+  sublayer: number[],
+  aggregationOperation = FourwingsAggregationOperation.Sum
+) {
+  const lastArrayIndex = sublayer.length - 1
+  return sublayer.reduce((acc: number, value: number, index) => {
+    if (!value) {
+      return acc
+    }
+    if (aggregationOperation === FourwingsAggregationOperation.Avg) {
+      return index === lastArrayIndex ? (acc + value) / lastArrayIndex + 1 : acc + value
+    }
+    return acc + value
+  }, 0)
 }
 
 export const aggregateCell = (
@@ -39,13 +51,13 @@ export const aggregateCell = (
     if (!sublayer || !startFrames || !sublayer) {
       return 0
     }
-    const data = sublayer.slice(
-      Math.max(minIntervalFrame - startFrames[sublayerIndex], 0),
-      maxIntervalFrame ? maxIntervalFrame - startFrames[sublayerIndex] : undefined
+    return aggregateSublayerValues(
+      sublayer.slice(
+        Math.max(minIntervalFrame - startFrames[sublayerIndex], 0),
+        maxIntervalFrame ? maxIntervalFrame - startFrames[sublayerIndex] : undefined
+      ),
+      aggregationOperation
     )
-    return aggregationOperation === FourwingsAggregationOperation.Sum
-      ? sumSublayerValues(data)
-      : sumSublayerValues(data) / data.length
   })
 }
 
@@ -90,11 +102,15 @@ type GetDataUrlByChunk = {
   }
   chunk: Chunk
   sublayer: FourwingsDeckSublayer
+  tilesUrl?: string
 }
 
-const API_BASE_URL =
-  'https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/heatmap/{z}/{x}/{y}'
-export const getDataUrlBySublayer = ({ tile, chunk, sublayer }: GetDataUrlByChunk) => {
+export const getDataUrlBySublayer = ({
+  tile,
+  chunk,
+  sublayer,
+  tilesUrl = API_TILES_URL,
+}: GetDataUrlByChunk) => {
   const params = {
     interval: chunk.interval,
     format: '4WINGS',
@@ -108,7 +124,7 @@ export const getDataUrlBySublayer = ({ tile, chunk, sublayer }: GetDataUrlByChun
     }),
     datasets: [sublayer.datasets.join(',')],
   }
-  const url = `${API_BASE_URL}?${stringify(params, {
+  const url = `${tilesUrl}?${stringify(params, {
     arrayFormat: 'indices',
   })}`
 
@@ -275,7 +291,6 @@ export const chooseColor = (
   const { initialValues, startFrames, values } = feature.properties
 
   const aggregatedCellValues =
-    // TODO calculate initialValues based on aggregationOperation
     initialValues[getTimeRangeKey(minIntervalFrame, maxIntervalFrame)] ||
     aggregateCell(values, {
       minIntervalFrame,
