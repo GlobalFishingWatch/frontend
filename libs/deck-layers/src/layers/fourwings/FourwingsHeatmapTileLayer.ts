@@ -5,12 +5,12 @@ import {
   LayersList,
   DefaultProps,
   UpdateParameters,
-} from '@deck.gl/core/typed'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
+} from '@deck.gl/core'
+import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { ckmeans } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
-import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
+import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { FourWingsFeature, FourwingsLoader } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
@@ -23,7 +23,6 @@ import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { ColorRampId, getBivariateRamp } from '../../utils/colorRamps'
 import {
   aggregateCellTimeseries,
-  asyncAwaitMS,
   filterElementByPercentOfIndex,
   getChunk,
   getDataUrlBySublayer,
@@ -40,6 +39,8 @@ import {
 } from './fourwings.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
+  maxRequests: 100,
+  debounceTime: 500,
   resolution: 'default',
 }
 
@@ -51,7 +52,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   static layerName = 'FourwingsHeatmapTileLayer'
   static defaultProps = defaultProps
 
-  initializeState(context: LayerContext): void {
+  initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
       tilesCache: this._getTileDataCache(this.props.minFrame, this.props.maxFrame),
@@ -63,7 +64,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
             ]
           : [1, 20, 50, 100, 500, 5000, 10000, 500000],
       colorRanges: this._getColorRanges(),
-    } as FourwingsTileLayerState
+    }
   }
 
   _getColorRanges = () => {
@@ -192,12 +193,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return data
   }
 
-  _getTileData: TileLayerProps['getTileData'] = async (tile) => {
-    // waiting when zoom changes to avoid loading tiles for intermidiate zoom levels
-    const zoomLevel = this.getLayerInstance()?.internalState?.viewport?.zoom
-    if (zoomLevel && tile.zoom !== Math.round(zoomLevel)) {
-      await asyncAwaitMS(500)
-    }
+  _getTileData: TileLayerProps['getTileData'] = (tile) => {
     if (tile.signal?.aborted) {
       return null
     }
@@ -214,7 +210,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileDataCacheKey = (): string => {
-    return Object.values(this.state.tilesCache).join(',')
+    return Object.values(this.state.tilesCache || {}).join(',')
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -260,7 +256,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,
         opacity: 1,
         debug: this.props.debug,
-        maxRequests: -1,
+        maxRequests: this.props.maxRequests,
+        debounceTime: this.props.debounceTime,
         getTileData: this._getTileData,
         updateTriggers: {
           getTileData: [cacheKey, resolution, sublayersIds],
@@ -300,7 +297,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
     if (data?.length) {
       const dataFiltered = filterFeaturesByBounds(data, { north, south, west, east })
-      return dataFiltered
+      return dataFiltered as FourWingsFeature[]
     }
     return []
   }

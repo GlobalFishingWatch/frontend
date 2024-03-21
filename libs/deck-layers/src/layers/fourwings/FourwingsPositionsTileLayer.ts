@@ -6,22 +6,26 @@ import {
   LayersList,
   PickingInfo,
   DefaultProps,
-} from '@deck.gl/core/typed'
-import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers/typed'
-import { IconLayer, TextLayer } from '@deck.gl/layers/typed'
+} from '@deck.gl/core'
+import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import { IconLayer, TextLayer } from '@deck.gl/layers'
 import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { groupBy, orderBy } from 'lodash'
-import { Feature } from 'geojson'
+import { Feature, Point } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import { TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
 import { stringify } from 'qs'
+import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { POSITIONS_ID, POSITIONS_VISUALIZATION_MIN_ZOOM } from './fourwings.config'
 import { getRoundedDateFromTS } from './fourwings.utils'
-import { FourwingsTileLayerColorDomain, FourwingsTileLayerColorRange } from './fourwings.types'
+import {
+  FourwingsTileLayerColorDomain,
+  FourwingsTileLayerColorRange,
+  FourwingsTileLayerColorScale,
+} from './fourwings.types'
 
 export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   minFrame: number
@@ -42,6 +46,13 @@ export type _FourwingsPositionsTileLayerProps<DataT = any> = {
 export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps &
   Partial<TileLayerProps>
 
+type FourwingsPositionsTileLayerState = {
+  colorScale?: FourwingsTileLayerColorScale
+  allPositions: Feature<Point>[]
+  lastPositions: Feature<Point>[]
+  highlightedVesselId?: string
+}
+
 const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {}
 
 const MAX_LABEL_LENGTH = 20
@@ -60,14 +71,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
-      colorScale: {
-        colorRange: [],
-        colorDomain: [],
-      },
       allPositions: [],
       lastPositions: [],
       highlightedVesselId: undefined,
-    }
+    } as FourwingsPositionsTileLayerState
   }
 
   getColorRamp(positions: Feature[]) {
@@ -91,12 +98,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       })
       return { colorDomain: steps, colorRange }
     }
-    return { colorDomain: [], colorRange: [] }
+    return { colorDomain: [], colorRange: [] } as FourwingsTileLayerColorScale
   }
 
   getFillColor(d: Feature): Color {
-    const { highlightedVesselId } = this.state
-    const { colorDomain, colorRange } = this.state.colorScale
+    const { highlightedVesselId, colorScale } = this.state
+    const { colorDomain, colorRange } = colorScale as FourwingsTileLayerColorScale
     const colorIndex = colorDomain.findIndex((domain: any, i: number) => {
       if (colorDomain[i + 1]) {
         return d.properties?.value > domain && d.properties?.value <= colorDomain[i + 1]
@@ -105,10 +112,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     })
     const color = colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
     if (highlightedVesselId) {
-      if (d.properties?.id === highlightedVesselId) return color
-      else return [color[0], color[1], color[2], 0]
+      if (d.properties?.id === highlightedVesselId) return color as Color
+      else return [color[0], color[1], color[2], 0] as Color
     }
-    return color
+    return color as Color
   }
 
   getHighlightColor(d: Feature): Color {
@@ -150,7 +157,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return label?.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
-  onViewportLoad = (tiles: any) => {
+  onViewportLoad = (tiles: Tile2DHeader[]) => {
     const positions = orderBy(
       tiles.flatMap((tile: any) => tile.dataInWGS84),
       'properties.htime'
@@ -202,7 +209,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   renderLayers(): Layer<{}> | LayersList {
     const { minFrame, maxFrame } = this.props
-    const { allPositions, lastPositions } = this.state
+    const { allPositions, lastPositions } = this.state as FourwingsPositionsTileLayerState
     const highlightedVesselId = this.props.highlightedVesselId || this.state.highlightedVesselId
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
     const params = {
@@ -211,7 +218,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       'date-range': `${getRoundedDateFromTS(minFrame)},${getRoundedDateFromTS(maxFrame)}`,
     }
     return [
-      new MVTLayer(this.props, {
+      new MVTLayer(this.props as any, {
         id: `${POSITIONS_ID}-tiles`,
         data: `https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/position/{z}/{x}/{y}?${stringify(
           params
@@ -307,7 +314,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getPositionsData() {
-    return this.state.allPositions
+    return this.state.allPositions as Feature<Point>[]
   }
 
   getData() {
@@ -320,11 +327,13 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getColorDomain() {
-    return this.state.colorScale?.colorDomain as FourwingsTileLayerColorDomain
+    return (this.state.colorScale as FourwingsTileLayerColorScale)
+      ?.colorDomain as FourwingsTileLayerColorDomain
   }
 
   getColorRange() {
-    return this.state.colorScale?.colorRange as FourwingsTileLayerColorRange
+    return (this.state.colorScale as FourwingsTileLayerColorScale)
+      ?.colorRange as FourwingsTileLayerColorRange
   }
 
   getColorScale() {
@@ -338,7 +347,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const positions = this.getPositionsData()
     const viewportBounds = this.context.viewport.getBounds()
     const viewportPolygon = bboxPolygon(viewportBounds)
-    const positionsInViewport = positions.filter((position: any) =>
+    const positionsInViewport = positions.filter((position) =>
       booleanPointInPolygon(position, viewportPolygon)
     )
     return positionsInViewport

@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckProps, PickingInfo, Position } from '@deck.gl/core/typed'
-import { Deck } from '@deck.gl/core'
+import { DeckProps, PickingInfo, Position, Deck } from '@deck.gl/core'
 import {
   InteractionEventCallback,
   useFeatureState,

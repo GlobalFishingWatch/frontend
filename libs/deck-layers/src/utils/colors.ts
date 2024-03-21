@@ -1,4 +1,4 @@
-import { Color } from '@deck.gl/core/typed'
+import { Color } from '@deck.gl/core'
 import { RGBA } from 'color-blend/dist/types'
 
 export const COLOR_TRANSPARENT: Color = [0, 0, 0, 0]

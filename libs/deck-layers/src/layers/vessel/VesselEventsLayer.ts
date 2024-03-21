@@ -1,11 +1,5 @@
-import {
-  AccessorFunction,
-  Color,
-  DefaultProps,
-  Position,
-  UpdateParameters,
-} from '@deck.gl/core/typed'
-import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers/typed'
+import { AccessorFunction, Color, DefaultProps, Position, UpdateParameters } from '@deck.gl/core'
+import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { hexToDeckColor } from '../../utils/colors'
 

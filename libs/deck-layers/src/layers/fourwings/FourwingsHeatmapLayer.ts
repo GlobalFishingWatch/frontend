@@ -1,13 +1,7 @@
-import {
-  Color,
-  CompositeLayer,
-  GetPickingInfoParams,
-  LayersList,
-  PickingInfo,
-} from '@deck.gl/core/typed'
-import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers/typed'
-import { GeoBoundingBox } from '@deck.gl/geo-layers/typed'
-import { PathStyleExtension } from '@deck.gl/extensions/typed'
+import { Color, CompositeLayer, GetPickingInfoParams, LayersList, PickingInfo } from '@deck.gl/core'
+import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers'
+import { GeoBoundingBox } from '@deck.gl/geo-layers'
+import { PathStyleExtension } from '@deck.gl/extensions'
 import { CONFIG_BY_INTERVAL, FourWingsFeature } from '@globalfishingwatch/deck-loaders'
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
 import { getInterval } from './fourwings.config'

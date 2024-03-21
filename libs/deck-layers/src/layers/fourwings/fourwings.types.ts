@@ -1,6 +1,6 @@
-import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/typed/tileset-2d'
-import { Color, PickingInfo } from '@deck.gl/core/typed'
-import { TileLayerProps } from '@deck.gl/geo-layers/typed'
+import { Color, PickingInfo } from '@deck.gl/core'
+import { TileLayerProps } from '@deck.gl/geo-layers'
+import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { ColorRampsIds } from '@globalfishingwatch/layer-composer'
 import { FourWingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
@@ -54,6 +54,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   data: FourWingsFeature[]
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
+  hoveredFeatures?: FourWingsFeature[]
 }
 
 export type AggregateCellParams = {
@@ -94,6 +95,11 @@ export type FourwingsHeatmapTilesCache = {
   start: number
   end: number
   interval: FourwingsInterval
+}
+
+export type FourwingsTileLayerColorScale = {
+  colorDomain: FourwingsTileLayerColorDomain
+  colorRange: FourwingsTileLayerColorRange
 }
 
 export type FourwingsTileLayerColorDomain = number[] | number[][]

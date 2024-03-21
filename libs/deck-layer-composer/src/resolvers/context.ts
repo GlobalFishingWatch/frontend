@@ -1,4 +1,4 @@
-import { PickingInfo } from '@deck.gl/core/typed'
+import { PickingInfo } from '@deck.gl/core'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { ContextLayerProps, EEZLayerProps } from '@globalfishingwatch/deck-layers'
 import { ResolverGlobalConfig } from '../resolvers/types'

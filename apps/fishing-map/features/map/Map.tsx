@@ -10,11 +10,10 @@ import {
   useState,
 } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckGL, DeckGLRef } from '@deck.gl/react/typed'
-import { DeckProps, LayersList, PickingInfo, Position } from '@deck.gl/core/typed'
+import { DeckGL, DeckGLRef } from '@deck.gl/react'
+import { DeckProps, LayersList, PickingInfo, Position } from '@deck.gl/core'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
-import { ViewStateChangeParameters } from '@deck.gl/core/typed/controllers/controller'
 import { ViewState } from 'react-map-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
@@ -125,7 +124,7 @@ const MapWrapper = () => {
   useSetMapInstance(deckRef)
   const { viewState, setViewState } = useViewStateAtom()
   const onViewStateChange = useCallback(
-    (params: ViewStateChangeParameters) => {
+    (params: any) => {
       // add transitionDuration: 0 to avoid unresponsive zoom
       // https://github.com/visgl/deck.gl/issues/7158#issuecomment-1329722960
       setViewState({ ...(params.viewState as ViewState), transitionDuration: 0 })

@@ -14,6 +14,7 @@ import {
 import { selectTimebarVisualisation } from 'features/app/selectors/app.timebar.selectors'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { FourWingsFeature } from '../../../../libs/deck-loaders/src/fourwings'
 import { getGraphDataFromFourwingsFeatures } from './timebar.utils'
 
 const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
@@ -41,7 +42,7 @@ export const useHeatmapActivityGraph = () => {
   const { loaded, instance } = fourwingsActivityLayer || {}
   const heatmapActivity = useMemo(() => {
     if (loaded) {
-      const viewportData = instance?.getViewportData()
+      const viewportData = instance?.getViewportData() as FourWingsFeature[]
       return (
         getGraphDataFromFourwingsFeatures(viewportData, {
           start: chunk.bufferedStart,
