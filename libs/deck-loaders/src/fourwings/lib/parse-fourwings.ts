@@ -1,7 +1,7 @@
 import Pbf from 'pbf'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
-import { generateUniqueId, getCellCoordinates } from '../helpers/cells'
+import { BBox, generateUniqueId, getCellCoordinates } from '../helpers/cells'
 import type {
   FourWingsFeature,
   FourwingsLoaderOptions,
@@ -47,6 +47,12 @@ export const getCellTimeseries = (
     Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.end)) -
     tileMinIntervalFrame
   const timeRangeKey = getTimeRangeKey(timeRangeStartIntervalFrame, timeRangeEndIntervalFrame)
+  const tileBBox: BBox = [
+    (tile.bbox as GeoBoundingBox).west,
+    (tile.bbox as GeoBoundingBox).south,
+    (tile.bbox as GeoBoundingBox).east,
+    (tile.bbox as GeoBoundingBox).north,
+  ]
   const features = {} as Record<number, FourWingsFeature>
   const sublayersLength = intArrays.length
   for (let subLayerIndex = 0; subLayerIndex < sublayersLength; subLayerIndex++) {
@@ -83,12 +89,7 @@ export const getCellTimeseries = (
                   cellIndex: cellNum,
                   cols,
                   rows,
-                  tileBBox: [
-                    (tile.bbox as GeoBoundingBox).west,
-                    (tile.bbox as GeoBoundingBox).south,
-                    (tile.bbox as GeoBoundingBox).east,
-                    (tile.bbox as GeoBoundingBox).north,
-                  ],
+                  tileBBox,
                 }),
               ],
               type: 'Polygon',
@@ -108,19 +109,10 @@ export const getCellTimeseries = (
           const cellValue = subLayerIntArray[j + startIndex]
           if (cellValue !== noDataValue) {
             if (!features[cellNum].properties.values[subLayerIndex]) {
-              // create an array of values for this sublayer if the feature dind't have it already
+              // create properties for this sublayer if the feature dind't have it already
               features[cellNum].properties.values[subLayerIndex] = new Array(numCellValues)
-            }
-            if (!features[cellNum].properties.dates[subLayerIndex]) {
-              // create an array of dates for this sublayer if the feature dind't have it already
               features[cellNum].properties.dates[subLayerIndex] = new Array(numCellValues)
-            }
-            if (!features[cellNum].properties.startFrames[subLayerIndex]) {
-              // set the startFrame for this sublayer if the feature dind't have it already
               features[cellNum].properties.startFrames[subLayerIndex] = startFrame
-            }
-            if (!features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex]) {
-              // set the initialValue for this sublayer to 0 if the feature dind't have it already
               features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] = 0
             }
             // add current value to the array of values for this sublayer
