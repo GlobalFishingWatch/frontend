@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { FourwingsInterval } from '../lib/types'
 
 export const CONFIG_BY_INTERVAL: Record<
@@ -25,7 +24,7 @@ export const CONFIG_BY_INTERVAL: Record<
     getTime: (frame: number) => {
       const year = Math.floor(frame / 12)
       const month = frame % 12
-      return DateTime.fromObject({ year, month: month + 1 }, { zone: 'utc' }).toMillis()
+      return Date.UTC(year, month)
     },
     getIntervalFrame: (timestamp: number) => {
       const date = new Date(timestamp)
@@ -34,7 +33,7 @@ export const CONFIG_BY_INTERVAL: Record<
   },
   YEAR: {
     getTime: (frame: number) => {
-      return DateTime.fromObject({ year: frame }, { zone: 'utc' }).toMillis()
+      return Date.UTC(frame)
     },
     getIntervalFrame: (timestamp: number) => {
       const date = new Date(timestamp)
