@@ -42,7 +42,7 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
-import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
+import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import {
   selectActivityVisualizationMode,
   selectBivariateDataviews,

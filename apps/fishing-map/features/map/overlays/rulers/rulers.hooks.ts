@@ -1,18 +1,16 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
-import type { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
-import { Ruler } from '@globalfishingwatch/layer-composer'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { PickingInfo } from '@deck.gl/core'
+import { RulerData } from '@globalfishingwatch/deck-layers'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
-
 const useRulers = () => {
-  const dispatch = useAppDispatch()
   const rulers = useSelector(selectMapRulers)
   const rulersVisible = useSelector(selectAreMapRulersVisible)
   const { dispatchQueryParams } = useLocationConnect()
+
   const {
     value,
     isEditing,
@@ -23,36 +21,33 @@ const useRulers = () => {
   } = useMapControl('rulers')
 
   const setRuleStart = useCallback(
-    (start: Ruler['start']) => {
+    (start: RulerData['start']) => {
       setMapControlValue({ id: new Date().getTime(), start })
     },
     [setMapControlValue]
   )
 
   const setRulerEnd = useCallback(
-    (end: Ruler['end']) => {
-      setMapControlValue({ ...(value as Ruler), end })
+    (rulerData: RulerData) => {
+      setMapControlValue(rulerData)
     },
-    [setMapControlValue, value]
+    [setMapControlValue]
   )
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const throttledSetRuleEnd = useCallback(
-    throttle((event: MapLayerMouseEvent) => {
-      setRulerEnd({
-        longitude: event.lngLat.lng,
-        latitude: event.lngLat.lat,
-      })
-    }, 16),
-    [dispatch]
-  )
+  const throttledSetRuleEnd = useCallback(throttle(setRulerEnd, 16), [setRulerEnd])
 
   const onRulerMapHover = useCallback(
-    (event: MapLayerMouseEvent) => {
+    (info: PickingInfo) => {
       if (isEditing && value) {
-        throttledSetRuleEnd(event)
+        const [longitude, latitude] = info.coordinate as number[]
+        const end = {
+          longitude,
+          latitude,
+        }
+        throttledSetRuleEnd({ ...(value as RulerData), end })
       }
-      return event
+      return info
     },
     [isEditing, throttledSetRuleEnd, value]
   )
@@ -68,16 +63,17 @@ const useRulers = () => {
   )
 
   const onRulerMapClick = useCallback(
-    (event: MapLayerMouseEvent) => {
+    (info: PickingInfo) => {
+      const [longitude, latitude] = info.coordinate as number[]
       const point = {
-        longitude: event.lngLat.lng,
-        latitude: event.lngLat.lat,
+        longitude,
+        latitude,
       }
       if (!value) {
         setRuleStart(point)
       } else {
         dispatchQueryParams({
-          mapRulers: [...(rulers || []), { ...(value as Ruler) }],
+          mapRulers: [...(rulers || []), { ...value, end: point } as RulerData],
           mapRulersVisible: true,
         })
         resetMapControlValue()
@@ -99,7 +95,7 @@ const useRulers = () => {
   return {
     rulers,
     resetRulers,
-    editingRuler: value as Ruler,
+    editingRuler: value as RulerData,
     rulersEditing: isEditing,
     rulersVisible,
     deleteMapRuler,

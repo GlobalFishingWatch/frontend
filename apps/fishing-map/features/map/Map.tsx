@@ -26,7 +26,7 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
-import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
+import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
@@ -52,11 +52,12 @@ import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { hasMapTimeseriesAtom } from 'features/reports/reports-timeseries.hooks'
 import {
   useMapCursor,
+  useMapDrag,
   useMapMouseClick,
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
-import { useMapRulersDrag } from 'features/map/rulers/rulers-drag.hooks'
-import ErrorNotification from 'features/map/error-notification/ErrorNotification'
+import { useMapRulersDrag } from 'features/map/overlays/rulers/rulers-drag.hooks'
+import ErrorNotification from 'features/map/overlays/error-notification/ErrorNotification'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import { MapCoordinates } from 'types'
@@ -70,9 +71,12 @@ import {
 import styles from './Map.module.css'
 import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
 import MapLegends from './MapLegends'
-import MapAnnotations from './annotations/Annotations'
-import MapAnnotationsDialog from './annotations/AnnotationsDialog'
-
+import MapAnnotations from './overlays/annotations/Annotations'
+import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
+import useRulers from './overlays/rulers/rulers.hooks'
+// This avoids type checking to complain
+// https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
+const RulersLayerComponent = RulersLayer as any
 const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
 const PopupWrapper = dynamic(
   () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
@@ -131,12 +135,16 @@ const MapWrapper = () => {
   useUpdateViewStateUrlParams()
   useDisablePositionsOnZoomChanges()
   const { onMapClick } = useMapMouseClick()
+  const { onMouseMove } = useMapMouseHover()
+  const { getCursor } = useMapCursor()
+  const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
   useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   useMapRulersDrag()
+  const { rulers, editingRuler, rulersVisible } = useRulers()
   // const map = useMapInstance()
   // const { isMapDrawing } = useMapDrawConnect()
   // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
@@ -276,20 +284,8 @@ const MapWrapper = () => {
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
-  const setDeckLayerInteraction = useSetDeckLayerInteraction()
-  const onHover = useCallback(
-    (info: PickingInfo) => {
-      const features = deckRef?.current?.pickMultipleObjects({
-        x: info.x,
-        y: info.y,
-        radius: 0,
-      })
-      if (features) {
-        setDeckLayerInteraction(features)
-      }
-    },
-    [setDeckLayerInteraction]
-  )
+
+  const currentRuler = editingRuler ? [editingRuler] : []
 
   return (
     <div className={styles.container}>
@@ -302,6 +298,7 @@ const MapWrapper = () => {
           setDeckLayerLoadedState(layers)
         }}
         style={mapStyles}
+        getCursor={getCursor}
         // more info about preserveDrawingBuffer
         // https://github.com/visgl/deck.gl/issues/4436#issuecomment-610472868
         glOptions={{ preserveDrawingBuffer: true }}
@@ -318,11 +315,20 @@ const MapWrapper = () => {
         viewState={viewState}
         onViewStateChange={onViewStateChange}
         onClick={onMapClick}
-        onHover={onHover}
+        onHover={onMouseMove}
+        onDragStart={onMapDragStart}
+        onDrag={onMapDrag}
+        onDragEnd={onMapDragEnd}
       >
         <MapAnnotations />
         <MapAnnotationsDialog />
         <ErrorNotification />
+        {(editingRuler || rulers) && (
+          <RulersLayerComponent
+            rulers={[...(rulers || []), ...currentRuler]}
+            visible={rulersVisible}
+          />
+        )}
       </DeckGL>
       {/* {style && (
         <Map

@@ -1,8 +1,8 @@
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
 import { DragEvent, useCallback, useRef, useState } from 'react'
-import { useMapAnnotation, useMapAnnotations } from 'features/map/annotations/annotations.hooks'
-import { useDeckMap } from '../map-context.hooks'
-import { useMapViewport } from '../map-viewport.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
+import { useMapViewport } from 'features/map/map-viewport.hooks'
+import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
 import { MapAnnotation } from './annotations.types'
 // This blank image is needed to hide the default drag preview icon
 // https://stackoverflow.com/questions/27989602/hide-drag-preview-html-drag-and-drop#comment136906877_27990218
