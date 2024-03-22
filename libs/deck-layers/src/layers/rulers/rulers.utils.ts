@@ -20,7 +20,7 @@ export const hasRulerStartAndEnd = (rulers: RulerData[]) =>
 
 export const getGreatCircleMultiLine = (ruler: RulerData) => {
   const { start, end } = getRulerCoordsPairs(ruler)
-  return greatCircle(start as Coord, end as Coord, { properties: { id: ruler.id } })
+  return greatCircle(start as Coord, end as Coord, { properties: { id: ruler.id }, npoints: 200 })
 }
 
 export const getRulerStartAndEndPoints = (
