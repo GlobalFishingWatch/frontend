@@ -69,9 +69,9 @@ export interface DataviewConfig<Type = DataviewType> {
   basemap?: string
   /** LayerGroup for deck layers z-index, see libs/deck-layers/src/utils/sort.ts */
   group?: string
-  /** String decoded for url from filters Record */
-  // TODO: review this
+  /** String encoded for url from filters Record */
   filter?: string
+  /** Record with id filter as key and filters as values */
   filters?: Record<string, any>
   'vessel-groups'?: string[]
   filterOperators?: Record<string, FilterOperator>

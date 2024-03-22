@@ -43,7 +43,7 @@ export const resolveDeckFourwingsLayerProps = (
       unit: units[0]!,
       filter: sublayer?.filter,
       vesselGroups: sublayer?.vesselGroups,
-    } as FourwingsDeckSublayer
+    }
   })
 
   const maxZoomLevels = dataview.config?.sublayers?.flatMap(({ maxZoom }) =>
@@ -53,8 +53,8 @@ export const resolveDeckFourwingsLayerProps = (
   const allAvailableIntervals = getDataviewAvailableIntervals(dataview)
   const availableIntervals =
     dataview.config?.comparisonMode === FourwingsComparisonMode.TimeCompare
-      ? allAvailableIntervals.filter((interval) =>
-          TIME_COMPARISON_NOT_SUPPORTED_INTERVALS.includes(interval)
+      ? allAvailableIntervals.filter(
+          (interval) => !TIME_COMPARISON_NOT_SUPPORTED_INTERVALS.includes(interval)
         )
       : allAvailableIntervals
 

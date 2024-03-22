@@ -130,7 +130,6 @@ export function getFourwingsDataviewsResolved(
     ? fourwingsDataview
     : [fourwingsDataview]
 
-  // TODO: resolve tiles api url
   const mergedActivityDataview = {
     id: getMergedDataviewId(fourwingsDataviews),
     category: fourwingsDataviews[0]?.category,

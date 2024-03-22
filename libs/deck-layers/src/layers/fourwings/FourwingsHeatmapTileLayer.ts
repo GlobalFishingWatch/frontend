@@ -257,7 +257,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileDataCacheKey = (): string => {
-    return Object.values(this.state.tilesCache || {}).join(',')
+    const dataCache = Object.values(this.state.tilesCache || {}).join(',')
+    const sublayersIds = this.props.sublayers?.map((s) => s.id).join(',')
+    const sublayersFilter = this.props.sublayers?.flatMap((s) => s.filter || []).join(',')
+    const sublayersVesselGroups = this.props.sublayers?.map((s) => s.vesselGroups || []).join(',')
+    return [dataCache, sublayersIds, sublayersFilter, sublayersVesselGroups].join('-')
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -287,10 +291,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { resolution, sublayers, comparisonMode } = this.props
+    const { resolution, comparisonMode } = this.props
     const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
     const cacheKey = this._getTileDataCacheKey()
-    const sublayersIds = sublayers.map((s) => s.id).join(',')
 
     return new TileLayer(
       this.props,
@@ -309,7 +312,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         debounceTime: this.props.debounceTime,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey, resolution, sublayersIds],
+          getTileData: [cacheKey, resolution],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
