@@ -103,6 +103,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
+    const { comparisonMode, aggregationOperation } = this.props
     const currentZoomData = this.getData()
     if (!currentZoomData.length) {
       return this.getColorDomain()
@@ -112,7 +113,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         ? currentZoomData.filter(filterElementByPercentOfIndex)
         : currentZoomData
 
-    if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
+    if (comparisonMode === FourwingsComparisonMode.Bivariate) {
       let allValues: [number[], number[]] = [[], []]
       dataSample.forEach((feature) => {
         feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
@@ -140,16 +141,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     }
 
     const meanValue = mean(allValues)
+    const deviationScale = aggregationOperation === FourwingsAggregationOperation.Avg ? 2 : 5
     const standardDeviationValue = standardDeviation(allValues)
-    const upperCut = meanValue + standardDeviationValue * 2
-    const lowerCut = meanValue - standardDeviationValue * 2
+    const upperCut = meanValue + standardDeviationValue * deviationScale
+    const lowerCut = meanValue - standardDeviationValue * deviationScale
     const dataFiltered = allValues.filter((a) => a >= lowerCut && a <= upperCut)
 
     const steps = ckmeans(
       dataFiltered,
       Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
     ).map((step) => step[0])
-
     return steps
   }
 
