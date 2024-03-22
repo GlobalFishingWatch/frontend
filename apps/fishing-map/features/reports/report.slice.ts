@@ -43,7 +43,7 @@ type ReportRegion = {
 type FetchReportVesselsThunkParams = {
   region: ReportRegion
   datasets: string[]
-  filters: Record<string, any>[]
+  filters: string[]
   vesselGroups: string[]
   dateRange: DateRange
   temporalResolution?: TemporalResolution

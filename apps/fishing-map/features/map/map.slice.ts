@@ -123,17 +123,15 @@ const getInteractionEndpointDatasetConfig = (
     ],
   }
 
-  const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
+  const filters = featuresDataviews.map((dv) => dv.config?.filter || '')
   if (filters.length) {
-    datasetConfig.query?.push({ id: 'filters', value: filters as any })
+    datasetConfig.query?.push({ id: 'filters', value: filters })
   }
 
-  const vesselGroups = featuresDataviews
-    .map((dv) => dv.config?.['vessel-groups'] || [])
-    .filter((vg) => vg.length)
+  const vesselGroups = featuresDataviews.flatMap((dv) => dv.config?.['vessel-groups'] || [])
 
   if (vesselGroups.length) {
-    datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups as any })
+    datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
   }
 
   return { featuresDataviews, fourWingsDataset, datasetConfig }
