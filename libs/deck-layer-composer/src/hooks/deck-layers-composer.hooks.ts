@@ -2,7 +2,7 @@ import { atom, useAtom, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
-import { getDataviewsMerged } from '../dataviews'
+import { getDataviewsResolved } from '../resolvers'
 import { dataviewToDeckLayer, ResolverGlobalConfig } from '../resolvers'
 import { useDeckLayerInteraction } from './deck-layers-interaction.hooks'
 
@@ -20,7 +20,7 @@ export function useDeckLayerComposer({
   const deckInteractions = useDeckLayerInteraction()
 
   const layerInstances = useMemo(() => {
-    const dataviewsMerged = getDataviewsMerged(dataviews, globalConfig) as DataviewInstance[]
+    const dataviewsMerged = getDataviewsResolved(dataviews, globalConfig) as DataviewInstance[]
     const deckLayers = dataviewsMerged?.flatMap((dataview) => {
       // TODO research if we can use atoms here
       try {

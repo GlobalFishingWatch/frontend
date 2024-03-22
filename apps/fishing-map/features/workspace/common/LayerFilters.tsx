@@ -233,7 +233,7 @@ function LayerFilters({
 
   const onRemoveSourceClick: MultiSelectOnChange = (source) => {
     const datasets =
-      dataview.config?.datasets?.filter((datasetId: string) => datasetId !== source.id) || null
+      dataview.config?.datasets?.filter((datasetId: string) => datasetId !== source.id) || undefined
     onDataviewFilterChange({
       id: dataview.id,
       config: { datasets },

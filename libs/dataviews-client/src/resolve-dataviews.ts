@@ -15,7 +15,7 @@ import {
   INCLUDE_FILTER_ID,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { resolveEndpoint } from './resolve-endpoint'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
   if (!dataviews.length) {

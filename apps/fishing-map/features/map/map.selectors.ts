@@ -136,7 +136,7 @@ const getGeneratorsConfig = ({
     let generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
     // In time comparison mode, exclude any heatmap layer that is not activity
     if (showTimeComparison) {
-      generatorsConfig = generatorsConfig.filter((config) => {
+      generatorsConfig = generatorsConfig.filter((config: any) => {
         if (config.type === DataviewType.HeatmapAnimated) {
           return isMergedAnimatedGenerator(config.id) && config.sublayers?.length
         }
@@ -350,7 +350,7 @@ export const selectMapWorkspacesListGenerators = createSelector(
   (basemapGenerator, workspaceGenerator, marineManagerGenerators): AnyGeneratorConfig[] => {
     const generators: AnyGeneratorConfig[] = [basemapGenerator]
     if (marineManagerGenerators?.length) {
-      generators.push(...marineManagerGenerators)
+      generators.push(...(marineManagerGenerators as any))
     }
     if (workspaceGenerator) generators.push(workspaceGenerator)
     return generators
@@ -417,12 +417,12 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     isReportLocation,
     isVesselLocation,
     basemapGenerator,
-    workspaceGenerators = EMPTY_ARRAY as AnyGeneratorConfig[],
+    workspaceGenerators = EMPTY_ARRAY as any[],
     workspaceListGenerators,
     mapReportGenerators
   ): AnyGeneratorConfig[] => {
     if (isVesselLocation) {
-      return workspaceGenerators
+      return workspaceGenerators as any
     }
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
@@ -431,9 +431,9 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
       const generators =
         workspaceStatus !== AsyncReducerStatus.Finished ? [basemapGenerator] : workspaceGenerators
       if (isReportLocation) {
-        return [...generators, ...mapReportGenerators]
+        return [...generators, ...mapReportGenerators] as any
       }
-      return generators
+      return generators as any
     }
     return workspaceListGenerators
   }
@@ -447,7 +447,7 @@ const selectGeneratorConfigsByType = (type: DataviewType) => {
 
 export const selectGeneratorConfigsById = (id: string) => {
   return createSelector([selectStaticGeneratorsConfig], (generators = []) => {
-    return generators?.filter((generator) => generator.id === id)
+    return generators?.filter((generator: any) => generator.id === id)
   })
 }
 
@@ -459,7 +459,7 @@ const selectHeatmapAnimatedGeneratorConfigs = createSelector(
 export const selectActiveHeatmapAnimatedGeneratorConfigs = createSelector(
   [selectHeatmapAnimatedGeneratorConfigs],
   (generators) => {
-    return generators?.filter((generator) => generator.visible)
+    return generators?.filter((generator: any) => generator.visible)
   }
 )
 

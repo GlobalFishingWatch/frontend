@@ -1,12 +1,4 @@
-import {
-  Color,
-  CompositeLayer,
-  Layer,
-  LayerContext,
-  LayersList,
-  PickingInfo,
-  DefaultProps,
-} from '@deck.gl/core'
+import { Color, CompositeLayer, Layer, LayerContext, LayersList, DefaultProps } from '@deck.gl/core'
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { IconLayer, TextLayer } from '@deck.gl/layers'
 import { MVTWorkerLoader } from '@loaders.gl/mvt'
@@ -16,32 +8,22 @@ import { Feature, Point } from 'geojson'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { stringify } from 'qs'
-import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
-import { POSITIONS_ID, POSITIONS_VISUALIZATION_MIN_ZOOM } from './fourwings.config'
+import {
+  POSITIONS_API_TILES_URL,
+  POSITIONS_ID,
+  POSITIONS_VISUALIZATION_MIN_ZOOM,
+} from './fourwings.config'
 import { getRoundedDateFromTS } from './fourwings.utils'
 import {
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
+  _FourwingsPositionsTileLayerProps,
 } from './fourwings.types'
-
-export type _FourwingsPositionsTileLayerProps<DataT = any> = {
-  minFrame: number
-  maxFrame: number
-  colorDomain?: number[]
-  colorRange?: Color[]
-  highlightedVesselId?: string
-  clickedFeatures?: PickingInfo[]
-  hoveredFeatures?: PickingInfo[]
-  onDataLoad?: (data: DataT) => void
-  // onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
-  onVesselHighlight?: (vesselId: string) => void
-  onVesselClick?: (vesselId: string) => void
-  onViewportLoad?: (tiles: any) => void
-  onTileDataLoading?: (tile: TileLoadProps) => void
-}
 
 export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps &
   Partial<TileLayerProps>
@@ -53,7 +35,9 @@ type FourwingsPositionsTileLayerState = {
   highlightedVesselId?: string
 }
 
-const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {}
+const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
+  tilesUrl: POSITIONS_API_TILES_URL,
+}
 
 const MAX_LABEL_LENGTH = 20
 const ICON_MAPPING = {
@@ -208,21 +192,21 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { minFrame, maxFrame } = this.props
+    const { minFrame, maxFrame, sublayers } = this.props
     const { allPositions, lastPositions } = this.state as FourwingsPositionsTileLayerState
     const highlightedVesselId = this.props.highlightedVesselId || this.state.highlightedVesselId
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
     const params = {
-      datasets: ['public-global-fishing-effort:v20201001'],
+      datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',
       'date-range': `${getRoundedDateFromTS(minFrame)},${getRoundedDateFromTS(maxFrame)}`,
     }
+
+    const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
     return [
       new MVTLayer(this.props as any, {
         id: `${POSITIONS_ID}-tiles`,
-        data: `https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/position/{z}/{x}/{y}?${stringify(
-          params
-        )}`,
+        data: `${baseUrl}?${stringify(params)}`,
         minZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
         maxZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
         loaders: [MVTWorkerLoader],

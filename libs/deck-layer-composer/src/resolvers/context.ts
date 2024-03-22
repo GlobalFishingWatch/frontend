@@ -1,6 +1,7 @@
 import { PickingInfo } from '@deck.gl/core'
-import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { ContextLayerProps, EEZLayerProps } from '@globalfishingwatch/deck-layers'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { ResolverGlobalConfig } from '../resolvers/types'
 
 export function resolveDeckContextLayerProps(
@@ -8,6 +9,13 @@ export function resolveDeckContextLayerProps(
   globalConfig: ResolverGlobalConfig,
   interactions: PickingInfo[]
 ): ContextLayerProps {
+  // TODO make this work for auxiliar layers
+  // https://github.com/GlobalFishingWatch/frontend/blob/master/libs/dataviews-client/src/resolve-dataviews-generators.ts#L606
+  const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.TemporalContext)
+  if (!url) {
+    console.warn('No url found for temporal context')
+  }
+
   return {
     id: dataview.id,
     color: dataview.config?.color!,

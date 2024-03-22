@@ -5,6 +5,6 @@ export function resolveDeckBasemapLayerProps(dataview: DataviewInstance): BaseMa
   return {
     id: dataview.id,
     visible: dataview.config?.visible || true,
-    basemap: dataview.config?.basemap || BasemapType.Default,
+    basemap: (dataview.config?.basemap as BasemapType) || BasemapType.Default,
   }
 }

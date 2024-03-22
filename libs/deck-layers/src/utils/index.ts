@@ -1,3 +1,4 @@
+export * from './colorRamps'
 export * from './colors'
 export * from './dates'
 export * from './layers'

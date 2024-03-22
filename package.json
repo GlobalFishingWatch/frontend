@@ -9,7 +9,7 @@
     "release:fishing-map": "nx release --projects='fishing-map' --skip-publish",
     "affected": "nx show projects --affected --base=origin/develop~1 --exclude='deck-playground,fourwings-explorer,port-labeler,real-time-prototype,tile-inspector,*-e2e,libs/*' --plain > affected-apps.txt",
     "affected:libs": "nx show projects --affected --base=origin/develop~1 --exclude='apps/*' --plain > affected-libs.txt",
-    "prepare": "husky"
+    "postinstall": "husky"
   },
   "dependencies": {
     "@deck.gl/core": "^9.0.0-beta",

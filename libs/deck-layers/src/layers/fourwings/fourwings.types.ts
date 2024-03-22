@@ -14,16 +14,11 @@ export interface FourwingsDeckSublayer {
   id: FourwingsSublayerId
   datasets: FourwingsDatasetId[]
   visible: boolean
-  config: {
-    color: string
-    colorRamp: ColorRampsIds
-    visible?: boolean
-    unit?: string
-  }
-  // filter?: string
-  // vesselGroups?: string
-  // legend?: GeneratorLegend
-  // availableIntervals?: Interval[]
+  color: string
+  colorRamp: ColorRampsIds
+  unit?: string
+  filter?: string
+  vesselGroups?: string | string[]
 }
 
 export type Chunk = {
@@ -79,20 +74,36 @@ export type GetFillColorParams = {
   aggregationOperation?: FourwingsAggregationOperation
 }
 
-export type FourwingsResolution = 'default' | 'high'
-export type FourwingsHeatmapTileData = FourWingsFeature[]
-export type _FourwingsHeatmapTileLayerProps = {
-  data?: FourwingsHeatmapTileData
-  debug?: boolean
-  resolution?: FourwingsResolution
-  hoveredFeatures?: PickingInfo[]
-  clickedFeatures?: PickingInfo[]
+type BaseFourwinsLayerProps = {
   minFrame: number
   maxFrame: number
   sublayers: FourwingsDeckSublayer[]
+  tilesUrl?: string
+  clickedFeatures?: PickingInfo[]
+  hoveredFeatures?: PickingInfo[]
+}
+
+export type FourwingsResolution = 'default' | 'high'
+export type FourwingsHeatmapTileData = FourWingsFeature[]
+
+export type _FourwingsHeatmapTileLayerProps<DataT = FourWingsFeature> = BaseFourwinsLayerProps & {
+  data?: DataT
+  debug?: boolean
+  availableIntervals?: FourwingsInterval[]
+  resolution?: FourwingsResolution
   colorRampWhiteEnd?: boolean
   comparisonMode?: FourwingsComparisonMode
   aggregationOperation?: FourwingsAggregationOperation
+  onTileDataLoading?: (tile: TileLoadProps) => void
+}
+
+export type _FourwingsPositionsTileLayerProps<DataT = any> = BaseFourwinsLayerProps & {
+  highlightedVesselId?: string
+  onDataLoad?: (data: DataT) => void
+  // onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
+  onVesselHighlight?: (vesselId: string) => void
+  onVesselClick?: (vesselId: string) => void
+  onViewportLoad?: (tiles: any) => void
   onTileDataLoading?: (tile: TileLoadProps) => void
 }
 

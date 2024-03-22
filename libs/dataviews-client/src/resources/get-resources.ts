@@ -6,12 +6,12 @@ import {
   EndpointId,
   Resource,
 } from '@globalfishingwatch/api-types'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import {
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
   UrlDataviewInstance,
 } from '../resolve-dataviews'
-import { resolveEndpoint } from '../resolve-endpoint'
 
 export type GetDatasetConfigCallback = (
   datasetConfig: DataviewDatasetConfig[],

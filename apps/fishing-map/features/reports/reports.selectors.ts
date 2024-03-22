@@ -80,7 +80,7 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
         return {
           ...dataview,
           datasets: dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)) as Dataset[],
-          filter: dataview.config?.filter || [],
+          filter: dataview.config?.filter || '',
           ...(dataview.config?.['vessel-groups']?.length && {
             vesselGroups: dataview.config?.['vessel-groups'],
           }),

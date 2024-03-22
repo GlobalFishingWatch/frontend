@@ -161,8 +161,7 @@ export class GFW_API_CLASS {
       `/${API_VERSION}/${AUTH_PATH}/${REGISTER_PATH}?client=${client}&callback=${encodeURIComponent(
         callbackUrl
       )}&locale=${fallbackLocale}`,
-      '',
-      true
+      { absolute: true }
     )
   }
 
@@ -172,8 +171,7 @@ export class GFW_API_CLASS {
     const callbackUrlEncoded = encodeURIComponent(callbackUrl)
     return this.generateUrl(
       `/${API_VERSION}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`,
-      '',
-      true
+      { absolute: true }
     )
   }
 
@@ -236,7 +234,7 @@ export class GFW_API_CLASS {
 
   async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
     return fetch(
-      this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, this.apiVersion, true)
+      this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true })
     )
       .then(processStatus)
       .then(parseJSON)
@@ -245,7 +243,7 @@ export class GFW_API_CLASS {
   async getTokenWithRefreshToken(
     refreshToken: string
   ): Promise<{ token: string; refreshToken: string }> {
-    return fetch(this.generateUrl(`/${AUTH_PATH}/tokens/reload`, this.apiVersion, true), {
+    return fetch(this.generateUrl(`/${AUTH_PATH}/tokens/reload`, { absolute: true }), {
       headers: {
         'refresh-token': refreshToken,
       },
@@ -277,7 +275,13 @@ export class GFW_API_CLASS {
     return
   }
 
-  generateUrl(url: string, version?: ApiVersion, absolute: boolean = false): string {
+  generateUrl(
+    url: string,
+    { version = this.apiVersion, absolute = false } = {} as {
+      version?: ApiVersion
+      absolute?: boolean
+    }
+  ): string {
     if (isUrlAbsolute(url)) {
       return url
     }
@@ -291,7 +295,10 @@ export class GFW_API_CLASS {
   }
 
   fetch<Response, Body = unknown>(url: string, options: FetchOptions<Body> = {}) {
-    return this._internalFetch<Response, Body>(this.generateUrl(url, options.version), options)
+    return this._internalFetch<Response, Body>(
+      this.generateUrl(url, { version: options.version }),
+      options
+    )
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
@@ -460,7 +467,7 @@ export class GFW_API_CLASS {
   async fetchUser() {
     try {
       const user = await this._internalFetch<UserData>(
-        this.generateUrl(`/${AUTH_PATH}/me`, this.apiVersion),
+        this.generateUrl(`/${AUTH_PATH}/me`),
         {},
         0,
         false
@@ -476,7 +483,7 @@ export class GFW_API_CLASS {
     try {
       const permissions: UserPermission[] = await this._internalFetch<
         APIPagination<UserPermission>
-      >(this.generateUrl(`/auth/acl/permissions/anonymous`, this.apiVersion)).then(
+      >(this.generateUrl(`/auth/acl/permissions/anonymous`)).then(
         (response: APIPagination<UserPermission>) => {
           return response.entries
         }

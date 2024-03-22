@@ -158,8 +158,8 @@ export function useFetchReportVessel() {
       datasets: reportDataviews.map(({ datasets }) =>
         datasets?.map((d: Dataset) => d.id).join(',')
       ),
-      filters: reportDataviews.map(({ filter }) => filter),
-      vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
+      filters: reportDataviews.map(({ filter }) => filter).filter(Boolean),
+      vesselGroups: reportDataviews.flatMap(({ vesselGroups }) => vesselGroups || []),
       region: {
         id: areaId,
         dataset: datasetId,
@@ -199,8 +199,8 @@ export function useFetchReportVessel() {
           datasets: reportDataviews.map(({ datasets }) =>
             datasets.map((d: Dataset) => d.id).join(',')
           ),
-          filters: reportDataviews.map(({ filter }) => filter),
-          vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
+          filters: reportDataviews.map(({ filter }) => filter) as any,
+          vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups) as any,
           region: {
             id: areaId,
             dataset: datasetId,
