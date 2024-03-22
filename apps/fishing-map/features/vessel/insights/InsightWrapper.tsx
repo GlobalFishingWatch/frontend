@@ -11,7 +11,6 @@ import {
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { IdentityVesselData, selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import InsightCoverage from './InsightCoverage'
 import InsightFishing from './InsightFishing'
 import InsightGaps from './InsightGaps'
@@ -21,7 +20,6 @@ import InsightIUU from './InsightIUU'
 const InsightWrapper = ({ insight }: { insight: string }) => {
   const { start, end } = useSelector(selectTimeRange)
   const vessel = useSelector(selectVesselInfoData)
-  const currentVisibleEvents = useSelector(selectVisibleEvents)
 
   const [getInsight, { isLoading, data }] = useGetVesselInsightMutation({
     fixedCacheKey: [insight, start, end, vessel.id].join(),
@@ -70,18 +68,16 @@ const InsightWrapper = ({ insight }: { insight: string }) => {
   if (insight === 'GAP') {
     return <InsightGaps isLoading={isLoading} insightData={data as InsightGapsResponse} />
   }
-  if (currentVisibleEvents === 'all' || currentVisibleEvents.includes('fishing')) {
-    if (insight === 'VESSEL-IDENTITY') {
-      return (
-        <Fragment>
-          <InsightIUU isLoading={isLoading} insightData={data as InsightIdentityResponse} />
-          <InsightIdentity isLoading={isLoading} insightData={data as InsightIdentityResponse} />
-        </Fragment>
-      )
-    }
-    if (insight === 'FISHING') {
-      return <InsightFishing isLoading={isLoading} insightData={data as InsightFishingResponse} />
-    }
+  if (insight === 'VESSEL-IDENTITY') {
+    return (
+      <Fragment>
+        <InsightIUU isLoading={isLoading} insightData={data as InsightIdentityResponse} />
+        <InsightIdentity isLoading={isLoading} insightData={data as InsightIdentityResponse} />
+      </Fragment>
+    )
+  }
+  if (insight === 'FISHING') {
+    return <InsightFishing isLoading={isLoading} insightData={data as InsightFishingResponse} />
   }
 }
 

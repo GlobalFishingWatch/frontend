@@ -1,15 +1,23 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
+import { useMemo } from 'react'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import InsightWrapper from './InsightWrapper'
-import { INSIGHTS } from './insights.config'
+import { INSIGHTS_ALL, INSIGHTS_FISHING } from './insights.config'
 import styles from './Insights.module.css'
 
 const Insights = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
+  const currentVisibleEvents = useSelector(selectVisibleEvents)
+  const isFishingVessel = currentVisibleEvents === 'all' || currentVisibleEvents.includes('fishing')
+  const insightsByVesselType = useMemo(
+    () => (isFishingVessel ? [...INSIGHTS_ALL, ...INSIGHTS_FISHING] : INSIGHTS_ALL),
+    [isFishingVessel]
+  )
 
   if (DateTime.fromISO(start).year < 2017) {
     return (
@@ -31,7 +39,7 @@ const Insights = () => {
           end: formatI18nDate(end),
         })}
       </p>
-      {INSIGHTS.map((insight) => (
+      {insightsByVesselType.map((insight) => (
         <InsightWrapper insight={insight} key={insight} />
       ))}
     </div>

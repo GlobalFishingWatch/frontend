@@ -1,2 +1,3 @@
 export const MIN_YEAR = 2017
-export const INSIGHTS = ['COVERAGE', 'GAP', 'VESSEL-IDENTITY', 'FISHING']
+export const INSIGHTS_ALL = ['COVERAGE', 'GAP']
+export const INSIGHTS_FISHING = ['VESSEL-IDENTITY', 'FISHING']
