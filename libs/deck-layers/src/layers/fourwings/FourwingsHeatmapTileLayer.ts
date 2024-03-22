@@ -88,14 +88,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   _getColorRanges = () => {
     // TODO: research if we can use the context to get other layers so we can enable whiteEnd
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
-      return getBivariateRamp(this.props.sublayers.map((s) => s.config?.colorRamp) as ColorRampId[])
+      return getBivariateRamp(this.props.sublayers.map((s) => s?.colorRamp) as ColorRampId[])
     }
     return this.props.sublayers.map(
-      ({ config }) =>
+      ({ colorRamp }) =>
         HEATMAP_COLOR_RAMPS[
-          (this.props.colorRampWhiteEnd
-            ? `${config.colorRamp}_toWhite`
-            : config.colorRamp) as ColorRampsIds
+          (this.props.colorRampWhiteEnd ? `${colorRamp}_toWhite` : colorRamp) as ColorRampsIds
         ].map((c) => rgbaStringToComponents(c)) as ColorRange
     )
   }

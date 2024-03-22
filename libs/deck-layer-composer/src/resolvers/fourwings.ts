@@ -39,18 +39,13 @@ export const resolveDeckFourwingsLayerProps = (
       id: sublayer.id,
       visible: sublayer?.visible ?? true,
       datasets: sublayer?.datasets.map((dataset) => dataset.id),
-      config: {
-        color: (sublayer?.color || dataview.config?.color) as string,
-        colorRamp: sublayer?.colorRamp as ColorRampId,
-        visible: sublayer?.visible,
-        unit: sublayer?.legend?.unit,
-      },
-      legend: {
-        label: sublayer?.datasets?.[0]?.name!,
-        unit: units[0]!,
-        color: dataview?.config?.color!,
-      },
-    }
+      color: (sublayer?.color || dataview.config?.color) as string,
+      colorRamp: sublayer?.colorRamp as ColorRampId,
+      label: sublayer?.datasets?.[0]?.name!,
+      unit: units[0]!,
+      filter: sublayer?.filter,
+      vesselGroups: sublayer?.vesselGroups,
+    } as FourwingsDeckSublayer
   })
 
   const maxZoomLevels = dataview.config?.sublayers?.flatMap(({ maxZoom }) =>
@@ -64,7 +59,6 @@ export const resolveDeckFourwingsLayerProps = (
           TIME_COMPARISON_NOT_SUPPORTED_INTERVALS.includes(interval)
         )
       : allAvailableIntervals
-  console.log('🚀 ~ availableIntervals:', availableIntervals)
 
   // TODO: get this from the dataset config
   const aggregationOperation =

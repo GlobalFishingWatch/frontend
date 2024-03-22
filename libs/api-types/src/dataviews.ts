@@ -43,11 +43,6 @@ export type DataviewSublayerConfig = {
   filters?: DataviewConfig['filters']
   vesselGroups?: DataviewConfig['vessel-groups']
   maxZoom?: number
-  legend?: {
-    label: string
-    unit: string
-    color: string
-  }
 }
 
 export interface DataviewConfig<Type = DataviewType> {

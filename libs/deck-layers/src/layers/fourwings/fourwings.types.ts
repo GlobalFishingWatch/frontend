@@ -14,14 +14,11 @@ export interface FourwingsDeckSublayer {
   id: FourwingsSublayerId
   datasets: FourwingsDatasetId[]
   visible: boolean
-  config: {
-    color: string
-    colorRamp: ColorRampsIds
-    visible?: boolean
-    unit?: string
-  }
+  color: string
+  colorRamp: ColorRampsIds
+  unit?: string
   filter?: string
-  vesselGroups?: string[]
+  vesselGroups?: string | string[]
 }
 
 export type Chunk = {

@@ -103,6 +103,8 @@ type GetDataUrlByChunk = {
   }
   chunk: Chunk
   sublayer: FourwingsDeckSublayer
+  filter?: string
+  vesselGroups?: string[]
   tilesUrl?: string
 }
 
@@ -112,18 +114,23 @@ export const getDataUrlBySublayer = ({
   sublayer,
   tilesUrl = API_TILES_URL,
 }: GetDataUrlByChunk) => {
+  const vesselGroup = Array.isArray(sublayer.vesselGroups)
+    ? sublayer.vesselGroups[0]
+    : sublayer.vesselGroups
   const params = {
-    interval: chunk.interval,
-    format: '4WINGS',
-    'temporal-aggregation': false,
     proxy: true,
+    format: '4WINGS',
+    interval: chunk.interval,
+    'temporal-aggregation': false,
+    datasets: [sublayer.datasets.join(',')],
+    ...(sublayer.filter && { filters: [sublayer.filter] }),
+    ...(vesselGroup && { 'vessel-groups': [vesselGroup] }),
     ...(chunk.interval !== 'YEAR' && {
       'date-range': [
         DateTime.fromMillis(chunk.bufferedStart).toISODate(),
         DateTime.fromMillis(chunk.bufferedEnd).toISODate(),
       ].join(','),
     }),
-    datasets: [sublayer.datasets.join(',')],
   }
   const url = `${tilesUrl}?${stringify(params, {
     arrayFormat: 'indices',
