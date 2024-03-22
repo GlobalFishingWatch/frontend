@@ -33,7 +33,7 @@ import {
 } from './fourwings.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import {
-  API_TILES_URL,
+  HEATMAP_API_TILES_URL,
   FOURWINGS_MAX_ZOOM,
   HEATMAP_ID,
   PATH_BASENAME,
@@ -54,7 +54,7 @@ const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   debounceTime: 500,
   comparisonMode: FourwingsComparisonMode.Compare,
   aggregationOperation: FourwingsAggregationOperation.Sum,
-  tilesUrl: API_TILES_URL,
+  tilesUrl: HEATMAP_API_TILES_URL,
   resolution: 'default',
 }
 
@@ -167,7 +167,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _fetchTileData: any = async (tile: TileLoadProps) => {
-    const { minFrame, maxFrame, sublayers, aggregationOperation, availableIntervals } = this.props
+    const { minFrame, maxFrame, sublayers, aggregationOperation, availableIntervals, tilesUrl } =
+      this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     let cols: number = 0
     let rows: number = 0
@@ -178,7 +179,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const interval = getInterval(minFrame, maxFrame, availableIntervals)
     const chunk = getChunk(minFrame, maxFrame, availableIntervals)
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
-      const url = getDataUrlBySublayer({ tile, chunk, sublayer }) as string
+      const url = getDataUrlBySublayer({ tile, chunk, sublayer, tilesUrl }) as string
       const response = await GFWAPI.fetch<Response>(url!, {
         signal: tile.signal,
         responseType: 'default',

@@ -78,13 +78,15 @@ export function getGraphDataFromFourwingsFeatures(
   }
   for (const feature of features) {
     const { dates, values } = feature.properties
-    dates.forEach((sublayerDates, sublayerIndex) => {
-      sublayerDates.forEach((date, dateIndex) => {
-        if (data[date]) {
-          data[date][sublayerIndex] += values[sublayerIndex][dateIndex]
-        }
+    if (dates) {
+      dates.forEach((sublayerDates, sublayerIndex) => {
+        sublayerDates.forEach((date, dateIndex) => {
+          if (data[date]) {
+            data[date][sublayerIndex] += values[sublayerIndex][dateIndex]
+          }
+        })
       })
-    })
+    }
   }
   return Object.values(data)
 }

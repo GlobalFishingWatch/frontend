@@ -36,10 +36,11 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
   if (legendSublayerIndex < 0 || (isBivariate && legendSublayerIndex !== 0)) {
     return null
   }
+
   const colors = isBivariate
     ? (deckLegend.ranges as string[])
     : (deckLegend.ranges?.[legendSublayerIndex] as ColorRange)?.map((color) => {
-        return deckToRgbaColor(color)
+        return Array.isArray(color) ? deckToRgbaColor(color) : color.toString()
       })
   const uiLegend: UILegend = {
     id: deckLegend.id,

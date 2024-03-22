@@ -7,7 +7,15 @@ import { Chunk } from './fourwings.types'
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
 
-export const API_TILES_URL = `${API_GATEWAY}/${API_VERSION}/4wings/tile/heatmap/{z}/{x}/{y}`
+const BASE_API_TILES_URL = `${API_GATEWAY}/${API_VERSION}/4wings/tile/{FOURWINGS_VISUALIZATION_MODE}/{z}/{x}/{y}`
+export const HEATMAP_API_TILES_URL = BASE_API_TILES_URL.replace(
+  '{FOURWINGS_VISUALIZATION_MODE}',
+  'heatmap'
+)
+export const POSITIONS_API_TILES_URL = BASE_API_TILES_URL.replace(
+  '{FOURWINGS_VISUALIZATION_MODE}',
+  'position'
+)
 
 export const HEATMAP_ID = 'heatmap'
 export const POSITIONS_ID = 'positions'

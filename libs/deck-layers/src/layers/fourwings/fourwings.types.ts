@@ -77,7 +77,8 @@ export type GetFillColorParams = {
 type BaseFourwinsLayerProps = {
   minFrame: number
   maxFrame: number
-  tilesUrl: string
+  sublayers: FourwingsDeckSublayer[]
+  tilesUrl?: string
   clickedFeatures?: PickingInfo[]
   hoveredFeatures?: PickingInfo[]
 }
@@ -90,7 +91,6 @@ export type _FourwingsHeatmapTileLayerProps<DataT = FourWingsFeature> = BaseFour
   debug?: boolean
   availableIntervals?: FourwingsInterval[]
   resolution?: FourwingsResolution
-  sublayers: FourwingsDeckSublayer[]
   colorRampWhiteEnd?: boolean
   comparisonMode?: FourwingsComparisonMode
   aggregationOperation?: FourwingsAggregationOperation

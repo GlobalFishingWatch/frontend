@@ -9,9 +9,14 @@ import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { stringify } from 'qs'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
-import { API_TILES_URL, POSITIONS_ID, POSITIONS_VISUALIZATION_MIN_ZOOM } from './fourwings.config'
+import {
+  POSITIONS_API_TILES_URL,
+  POSITIONS_ID,
+  POSITIONS_VISUALIZATION_MIN_ZOOM,
+} from './fourwings.config'
 import { getRoundedDateFromTS } from './fourwings.utils'
 import {
   FourwingsTileLayerColorDomain,
@@ -31,7 +36,7 @@ type FourwingsPositionsTileLayerState = {
 }
 
 const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
-  tilesUrl: API_TILES_URL,
+  tilesUrl: POSITIONS_API_TILES_URL,
 }
 
 const MAX_LABEL_LENGTH = 20
@@ -187,21 +192,21 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { minFrame, maxFrame } = this.props
+    const { minFrame, maxFrame, sublayers } = this.props
     const { allPositions, lastPositions } = this.state as FourwingsPositionsTileLayerState
     const highlightedVesselId = this.props.highlightedVesselId || this.state.highlightedVesselId
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
     const params = {
-      datasets: ['public-global-fishing-effort:v20201001'],
+      datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',
       'date-range': `${getRoundedDateFromTS(minFrame)},${getRoundedDateFromTS(maxFrame)}`,
     }
+
+    const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
     return [
       new MVTLayer(this.props as any, {
         id: `${POSITIONS_ID}-tiles`,
-        data: `https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/position/{z}/{x}/{y}?${stringify(
-          params
-        )}`,
+        data: `${baseUrl}?${stringify(params)}`,
         minZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
         maxZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
         loaders: [MVTWorkerLoader],

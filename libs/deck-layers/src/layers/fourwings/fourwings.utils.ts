@@ -20,7 +20,7 @@ import {
   FourwingsComparisonMode,
   FourwingsAggregationOperation,
 } from './fourwings.types'
-import { API_TILES_URL, getChunkByInterval, getInterval } from './fourwings.config'
+import { HEATMAP_API_TILES_URL, getChunkByInterval, getInterval } from './fourwings.config'
 
 function aggregateSublayerValues(
   sublayer: number[],
@@ -112,7 +112,7 @@ export const getDataUrlBySublayer = ({
   tile,
   chunk,
   sublayer,
-  tilesUrl = API_TILES_URL,
+  tilesUrl = HEATMAP_API_TILES_URL,
 }: GetDataUrlByChunk) => {
   const vesselGroup = Array.isArray(sublayer.vesselGroups)
     ? sublayer.vesselGroups[0]

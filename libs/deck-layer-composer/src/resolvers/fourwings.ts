@@ -1,9 +1,6 @@
 import { PickingInfo } from '@deck.gl/core'
 import { uniq } from 'lodash'
-import {
-  UrlDataviewInstance,
-  resolveDataviewDatasetResource,
-} from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   FourwingsAggregationOperation,
   FourwingsComparisonMode,
@@ -13,8 +10,9 @@ import {
   TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
   getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
-import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { ColorRampId } from '@globalfishingwatch/deck-layers'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { getDataviewAvailableIntervals } from './dataviews'
 import { ResolverGlobalConfig } from './types'
 
@@ -66,26 +64,43 @@ export const resolveDeckFourwingsLayerProps = (
       ? FourwingsAggregationOperation.Avg
       : FourwingsAggregationOperation.Sum
 
-  const { url } = resolveDataviewDatasetResource(
-    visibleSublayers?.[0] as UrlDataviewInstance,
-    DatasetTypes.Fourwings
-  )
+  const visualizationMode =
+    (dataview.config?.visualizationMode as FourwingsVisualizationMode) || 'heatmap'
+  const comparisonMode = (dataview.config?.comparisonMode as FourwingsComparisonMode) || 'compare'
+
+  const dataset = dataview.config?.sublayers
+    ?.flatMap((sublayer) => sublayer.datasets)
+    ?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
+  const tilesUrl = dataset
+    ? resolveEndpoint(dataset, {
+        datasetId: dataset.id,
+        endpoint: EndpointId.FourwingsTiles,
+        params: [
+          {
+            id: 'type',
+            // api enpdoint needs 'position' instead of 'positions'
+            // TODO: discuss this with Raul before the release
+            value: visualizationMode === 'positions' ? 'position' : 'heatmap',
+          },
+        ],
+      })
+    : undefined
 
   return {
     id: dataview.id,
-    hoveredFeatures: interactions,
     minFrame: startTime,
     maxFrame: endTime,
     resolution,
     sublayers,
-    tilesUrl: url,
+    comparisonMode,
+    visualizationMode,
     aggregationOperation,
+    availableIntervals,
+    hoveredFeatures: interactions,
     debug: dataview.config?.debug ?? false,
     visible: dataview.config?.visible ?? true,
-    comparisonMode: dataview.config?.comparisonMode as FourwingsComparisonMode,
-    visualizationMode: dataview.config?.visualizationMode as FourwingsVisualizationMode,
-    colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd,
-    availableIntervals,
+    colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd ?? false,
+    ...(tilesUrl && { tilesUrl }),
     // if any of the activity dataviews has a max zoom level defined
     // apply the minimum max zoom level (the most restrictive approach)
     ...(maxZoomLevels &&
