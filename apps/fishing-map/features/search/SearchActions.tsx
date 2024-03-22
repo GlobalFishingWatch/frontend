@@ -33,7 +33,7 @@ function SearchActions() {
   const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const vesselsSelected = useSelector(selectSelectedVessels)
 
-  const onConfirmSelection = () => {
+  const onSeeVesselsInMapClick = () => {
     const instances = vesselsSelected.map((vessel) => {
       const eventsRelatedDatasets = getRelatedDatasetsByType(vessel.dataset, DatasetTypes.Events)
       const eventsDatasetsId =
@@ -89,7 +89,7 @@ function SearchActions() {
       />
       <Button
         className={styles.footerAction}
-        onClick={onConfirmSelection}
+        onClick={onSeeVesselsInMapClick}
         disabled={!hasVesselsSelected}
         testId="search-vessels-add-vessel"
         tooltip={

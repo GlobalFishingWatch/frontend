@@ -196,11 +196,13 @@ const vesselSlice = createSlice({
     })
     builder.addCase(fetchVesselInfoThunk.rejected, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
-      if (action.error.message === 'Aborted') {
-        ;(state as any)[vesselId].status = AsyncReducerStatus.Idle
-      } else {
-        ;(state as any)[vesselId].status = AsyncReducerStatus.Error
-        ;(state as any)[vesselId].error = action.payload as ParsedAPIError
+      if ((state as any)[vesselId]) {
+        if (action.error.message === 'Aborted') {
+          ;(state as any)[vesselId].status = AsyncReducerStatus.Idle
+        } else {
+          ;(state as any)[vesselId].status = AsyncReducerStatus.Error
+          ;(state as any)[vesselId].error = action.payload as ParsedAPIError
+        }
       }
     })
     builder.addCase(HYDRATE, (state, action: any) => {
