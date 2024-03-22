@@ -20,8 +20,10 @@ export type AnyDeckLayer<D extends {} = {}> =
   | RulersLayer
 
 export type RulerPointProperties = {
-  id: number
-  order: 'start' | 'end'
+  id?: number
+  order: 'start' | 'center' | 'end'
+  bearing?: number
+  text?: string
 }
 export type RulerData = {
   id: number

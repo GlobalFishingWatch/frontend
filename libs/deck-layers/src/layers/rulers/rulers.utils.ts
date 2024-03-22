@@ -1,7 +1,8 @@
 import greatCircle from '@turf/great-circle'
 import length from '@turf/length'
-import { Position } from '@deck.gl/core'
-import { Feature, Point } from '@turf/helpers'
+import { Coord, Feature, LineString, Point, Position, point } from '@turf/helpers'
+import { rhumbBearing } from '@turf/turf'
+import { MultiLineString } from 'geojson'
 import { RulerData, RulerPointProperties } from '../../types'
 
 export const getRulerCoordsPairs = (
@@ -16,54 +17,37 @@ export const getRulerCoordsPairs = (
 
 export const hasRulerStartAndEnd = (rulers: RulerData[]) =>
   rulers.every((ruler) => ruler.start && ruler.end)
+
 export const getGreatCircleMultiLine = (ruler: RulerData) => {
   const { start, end } = getRulerCoordsPairs(ruler)
-  return greatCircle(start, end, { properties: { id: ruler.id } })
+  return greatCircle(start as Coord, end as Coord, { properties: { id: ruler.id } })
 }
 
 export const getRulerStartAndEndPoints = (
   ruler: RulerData
 ): Feature<Point, RulerPointProperties>[] => {
   const { start, end, id } = getRulerCoordsPairs(ruler)
-  return [
-    {
-      type: 'Feature',
-      properties: { id, order: 'start' } as RulerPointProperties,
-      geometry: {
-        coordinates: start as number[],
-        type: 'Point',
-      },
-    },
-    {
-      type: 'Feature',
-      properties: { id, order: 'end' },
-      geometry: {
-        coordinates: end as number[],
-        type: 'Point',
-      },
-    },
-  ]
+  return [point(start, { id, order: 'start' }), point(end, { id, order: 'end' })]
 }
 
-const getRulerLength = (ruler: RulerData) => {
-  const lengthKm = length(
-    {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: [
-          [ruler.start.longitude, ruler.start.latitude],
-          [ruler.end.longitude, ruler.end.latitude],
-        ],
-      },
-    },
-    { units: 'kilometers' }
-  )
-  return lengthKm
+export const getRulerCenterPointWithLabel = (
+  line: Feature<LineString | MultiLineString>
+): Feature<Point, RulerPointProperties> => {
+  const lineGeomCoords =
+    line.geometry.type === 'LineString' ? line.geometry.coordinates : line.geometry.coordinates[0]
+  const centerIndex = Math.round(lineGeomCoords.length / 2)
+  const centerPoint = lineGeomCoords[centerIndex] as Position
+  const anchorPoints = lineGeomCoords.slice(centerIndex, centerIndex + 2)
+  const bearing = rhumbBearing(anchorPoints[0] as Coord, anchorPoints[1] as Coord)
+  return point(centerPoint, {
+    order: 'center',
+    text: getRulerLengthLabel(line),
+    bearing: bearing <= 0 ? 270 - bearing : 90 - bearing,
+  })
 }
-export const getRulerLengthLabel = (ruler: RulerData) => {
-  const lengthKm = getRulerLength(ruler)
+
+export const getRulerLengthLabel = (line: Feature<LineString | MultiLineString>) => {
+  const lengthKm = length(line, { units: 'kilometers' })
   const lengthNmi = lengthKm / 1.852
   const precissionKm = lengthKm > 100 ? 0 : lengthKm > 10 ? 1 : 2
   const precissionNmi = lengthNmi > 100 ? 0 : lengthNmi > 10 ? 1 : 2
