@@ -7,6 +7,7 @@ import {
   CONFIG_BY_INTERVAL,
   Cell,
   FourWingsFeature,
+  FourwingsInterval,
   TileCell,
   getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
@@ -326,14 +327,22 @@ export const chooseColor = (
   }
 }
 
-export function getChunk(minFrame: number, maxFrame: number) {
-  const interval = getInterval(minFrame, maxFrame)
+export function getChunk(
+  minFrame: number,
+  maxFrame: number,
+  availableIntervals?: FourwingsInterval[]
+) {
+  const interval = getInterval(minFrame, maxFrame, availableIntervals)
   return getChunkByInterval(minFrame, maxFrame, interval)
 }
 
-export function getIntervalFrames(minFrame: number, maxFrame: number) {
-  const interval = getInterval(minFrame, maxFrame)
-  const chunk = getChunk(minFrame, maxFrame)
+export function getIntervalFrames(
+  minFrame: number,
+  maxFrame: number,
+  availableIntervals?: FourwingsInterval[]
+) {
+  const interval = getInterval(minFrame, maxFrame, availableIntervals)
+  const chunk = getChunk(minFrame, maxFrame, availableIntervals)
   const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.start))
   const minIntervalFrame = Math.ceil(
     CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileMinIntervalFrame

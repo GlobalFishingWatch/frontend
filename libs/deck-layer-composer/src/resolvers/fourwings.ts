@@ -10,6 +10,7 @@ import {
   FourwingsDeckSublayer,
   FourwingsLayerProps,
   FourwingsVisualizationMode,
+  TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
   getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
@@ -27,7 +28,6 @@ export const resolveDeckFourwingsLayerProps = (
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
 
   const visibleSublayers = dataview.config?.sublayers?.filter((sublayer) => sublayer?.visible)
-  console.log('🚀 ~ dataview:', dataview)
   const sublayers: FourwingsDeckSublayer[] = (visibleSublayers || []).map((sublayer) => {
     const units = uniq(sublayer.datasets?.map((dataset) => dataset.unit))
 
@@ -57,7 +57,14 @@ export const resolveDeckFourwingsLayerProps = (
     maxZoom !== undefined ? (maxZoom as number) : []
   )
 
-  const availableIntervals = getDataviewAvailableIntervals(dataview)
+  const allAvailableIntervals = getDataviewAvailableIntervals(dataview)
+  const availableIntervals =
+    dataview.config?.comparisonMode === FourwingsComparisonMode.TimeCompare
+      ? allAvailableIntervals.filter((interval) =>
+          TIME_COMPARISON_NOT_SUPPORTED_INTERVALS.includes(interval)
+        )
+      : allAvailableIntervals
+  console.log('🚀 ~ availableIntervals:', availableIntervals)
 
   // TODO: get this from the dataset config
   const aggregationOperation =

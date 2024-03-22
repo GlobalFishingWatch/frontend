@@ -18,19 +18,22 @@ import {
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
-// TODO Maybe this should rather be in dataset.endpoints[id = 4wings-tiles].query[id = interval].options
-// or something similar ??
-const getDatasetAvailableIntervals = (dataset?: Dataset) =>
-  dataset?.configuration?.intervals as FourwingsInterval[]
+const getDatasetsAvailableIntervals = (datasets: Dataset[]) =>
+  uniq((datasets || [])?.flatMap((d) => (d?.configuration?.intervals as FourwingsInterval[]) || []))
 
 export const getDataviewAvailableIntervals = (
   dataview: UrlDataviewInstance,
   defaultIntervals = DEFAULT_FOURWINGS_INTERVALS
 ): FourwingsInterval[] => {
-  const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
+  const allDatasets = dataview.datasets?.length
+    ? dataview.datasets
+    : (dataview?.config?.sublayers || [])?.flatMap((sublayer) => sublayer.datasets || [])
+  const fourwingsDatasets = allDatasets?.filter(
+    (dataset) => dataset.type === DatasetTypes.Fourwings
+  )
   const dataviewInterval = dataview.config?.interval
   const dataviewIntervals = dataview.config?.intervals
-  const datasetIntervals = getDatasetAvailableIntervals(dataset)
+  const datasetIntervals = getDatasetsAvailableIntervals(fourwingsDatasets)
   let availableIntervals = defaultIntervals
 
   if (dataviewInterval) {

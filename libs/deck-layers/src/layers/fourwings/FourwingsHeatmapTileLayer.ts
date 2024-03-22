@@ -13,6 +13,7 @@ import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import {
   FourWingsFeature,
+  FourwingsInterval,
   FourwingsLoader,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
@@ -68,7 +69,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
-      tilesCache: this._getTileDataCache(this.props.minFrame, this.props.maxFrame),
+      tilesCache: this._getTileDataCache(
+        this.props.minFrame,
+        this.props.maxFrame,
+        this.props.availableIntervals
+      ),
       colorDomain:
         this.props.comparisonMode === FourwingsComparisonMode.Bivariate
           ? [
@@ -164,7 +169,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _fetchTileData: any = async (tile: TileLoadProps) => {
-    const { minFrame, maxFrame, sublayers, aggregationOperation } = this.props
+    const { minFrame, maxFrame, sublayers, aggregationOperation, availableIntervals } = this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     let cols: number = 0
     let rows: number = 0
@@ -172,8 +177,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     let offset: number = 0
     let noDataValue: number = 0
 
-    const interval = getInterval(minFrame, maxFrame)
-    const chunk = getChunk(minFrame, maxFrame)
+    const interval = getInterval(minFrame, maxFrame, availableIntervals)
+    const chunk = getChunk(minFrame, maxFrame, availableIntervals)
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
       const url = getDataUrlBySublayer({ tile, chunk, sublayer }) as string
       const response = await GFWAPI.fetch<Response>(url!, {
@@ -242,9 +247,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return this._fetchTileData(tile)
   }
 
-  _getTileDataCache = (minFrame: number, maxFrame: number): FourwingsHeatmapTilesCache => {
-    const interval = getInterval(minFrame, maxFrame)
-    const { start, end } = getChunk(minFrame, maxFrame)
+  _getTileDataCache = (
+    minFrame: number,
+    maxFrame: number,
+    availableIntervals?: FourwingsInterval[]
+  ): FourwingsHeatmapTilesCache => {
+    const interval = getInterval(minFrame, maxFrame, availableIntervals)
+    const { start, end } = getChunk(minFrame, maxFrame, availableIntervals)
     return { start, end, interval }
   }
 
@@ -253,7 +262,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    const { minFrame, maxFrame } = props
+    const { minFrame, maxFrame, availableIntervals } = props
     const { tilesCache, colorRanges } = this.state as FourwingsTileLayerState
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = colorRanges.join() !== newSublayerColorRanges.join()
@@ -270,9 +279,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const isStartOutRange = minFrame <= tilesCache.start
     const isEndOutRange = maxFrame >= tilesCache.end
     const needsCaheKeyUpdate =
-      isStartOutRange || isEndOutRange || getInterval(minFrame, maxFrame) !== tilesCache.interval
+      isStartOutRange ||
+      isEndOutRange ||
+      getInterval(minFrame, maxFrame, availableIntervals) !== tilesCache.interval
     if (needsCaheKeyUpdate) {
-      this.setState({ tilesCache: this._getTileDataCache(minFrame, maxFrame) })
+      this.setState({ tilesCache: this._getTileDataCache(minFrame, maxFrame, availableIntervals) })
     }
   }
 

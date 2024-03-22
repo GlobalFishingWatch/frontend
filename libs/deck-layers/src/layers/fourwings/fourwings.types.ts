@@ -20,10 +20,8 @@ export interface FourwingsDeckSublayer {
     visible?: boolean
     unit?: string
   }
-  // filter?: string
-  // vesselGroups?: string
-  // legend?: GeneratorLegend
-  // availableIntervals?: Interval[]
+  filter?: string
+  vesselGroups?: string[]
 }
 
 export type Chunk = {
