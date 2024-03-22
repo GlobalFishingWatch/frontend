@@ -65,6 +65,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 > {
   static layerName = 'FourwingsHeatmapTileLayer'
   static defaultProps = defaultProps
+  initialBinsLoad = false
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -80,7 +81,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
               [1, 100, 5000, 500000],
               [1, 100, 5000, 500000],
             ]
-          : [1, 20, 50, 100, 500, 5000, 10000, 500000],
+          : [],
       colorRanges: this._getColorRanges(),
     }
   }
@@ -168,8 +169,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _fetchTileData: any = async (tile: TileLoadProps) => {
-    const { minFrame, maxFrame, sublayers, aggregationOperation, availableIntervals, tilesUrl } =
-      this.props
+    const {
+      minFrame,
+      maxFrame,
+      sublayers,
+      aggregationOperation,
+      comparisonMode,
+      availableIntervals,
+      tilesUrl,
+    } = this.props
+    const { colorDomain } = this.state as FourwingsTileLayerState
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     let cols: number = 0
     let rows: number = 0
@@ -193,9 +202,19 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       scale = parseFloat(response.headers.get('X-scale') as string)
       offset = parseInt(response.headers.get('X-offset') as string)
       noDataValue = parseInt(response.headers.get('X-empty-value') as string)
-      const bins = JSON.parse(response.headers.get('X-bins') as string)?.map((n: string) =>
-        parseInt(n)
-      )
+      const bins = JSON.parse(response.headers.get('X-bins-0') as string)?.map((n: string) => {
+        return parseInt(n)
+      })
+      if (
+        comparisonMode === FourwingsComparisonMode.Compare &&
+        !colorDomain?.length &&
+        !this.initialBinsLoad &&
+        bins?.length >= COLOR_RAMP_DEFAULT_NUM_STEPS
+      ) {
+        // TODO fix avg for bins in API
+        this.setState({ colorDomain: bins })
+        this.initialBinsLoad = true
+      }
       // TODO test if setting the x-bins until the full viewport loads improves the experience
       // this.setState({ colorDomain: bins })
       return await response.arrayBuffer()
