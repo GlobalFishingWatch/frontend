@@ -13,10 +13,10 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   layers: LayersList = []
 
   getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
-    const { minFrame, maxFrame } = this.props
+    const { minFrame, maxFrame, availableIntervals } = this.props
     if (info.object) {
-      const chunk = getChunk(minFrame, maxFrame)
-      const interval = getInterval(minFrame, maxFrame)
+      const chunk = getChunk(minFrame, maxFrame, availableIntervals)
+      const interval = getInterval(minFrame, maxFrame, availableIntervals)
       const tileMinIntervalFrame = Math.ceil(
         CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.start)
       )
@@ -27,6 +27,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       const values = aggregateCell(info.object.properties.values, {
         minIntervalFrame,
         maxIntervalFrame,
+        aggregationOperation: this.props.aggregationOperation,
         startFrames: info.object.properties.startFrames,
       })
       if (values) {
@@ -40,18 +41,32 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   }
 
   renderLayers() {
-    const { data, maxFrame, minFrame, colorDomain, colorRanges, hoveredFeatures, comparisonMode } =
-      this.props
+    const {
+      data,
+      maxFrame,
+      minFrame,
+      colorDomain,
+      colorRanges,
+      hoveredFeatures,
+      comparisonMode,
+      availableIntervals,
+      aggregationOperation,
+    } = this.props
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
-    const chunk = getChunk(minFrame, maxFrame)
-    const { minIntervalFrame, maxIntervalFrame } = getIntervalFrames(minFrame, maxFrame)
+    const chunk = getChunk(minFrame, maxFrame, availableIntervals)
+    const { minIntervalFrame, maxIntervalFrame } = getIntervalFrames(
+      minFrame,
+      maxFrame,
+      availableIntervals
+    )
     const getFillColor = (feature: FourWingsFeature, { target }: { target: Color }) => {
       target = chooseColor(feature, {
         colorDomain,
         colorRanges,
         chunk,
+        aggregationOperation,
         minIntervalFrame,
         maxIntervalFrame,
         comparisonMode,

@@ -14,16 +14,11 @@ export interface FourwingsDeckSublayer {
   id: FourwingsSublayerId
   datasets: FourwingsDatasetId[]
   visible: boolean
-  config: {
-    color: string
-    colorRamp: ColorRampsIds
-    visible?: boolean
-    unit?: string
-  }
-  // filter?: string
-  // vesselGroups?: string
-  // legend?: GeneratorLegend
-  // availableIntervals?: Interval[]
+  color: string
+  colorRamp: ColorRampsIds
+  unit?: string
+  filter?: string
+  vesselGroups?: string | string[]
 }
 
 export type Chunk = {
@@ -33,6 +28,11 @@ export type Chunk = {
   end: number
   bufferedStart: number
   bufferedEnd: number
+}
+
+export enum FourwingsAggregationOperation {
+  Sum = 'sum',
+  Avg = 'avg',
 }
 
 export enum FourwingsComparisonMode {
@@ -60,6 +60,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
 export type AggregateCellParams = {
   minIntervalFrame: number
   maxIntervalFrame?: number
+  aggregationOperation?: FourwingsAggregationOperation
   startFrames: number[]
 }
 
@@ -70,21 +71,39 @@ export type GetFillColorParams = {
   minIntervalFrame: number
   maxIntervalFrame: number
   comparisonMode?: FourwingsComparisonMode
+  aggregationOperation?: FourwingsAggregationOperation
+}
+
+type BaseFourwinsLayerProps = {
+  minFrame: number
+  maxFrame: number
+  sublayers: FourwingsDeckSublayer[]
+  tilesUrl?: string
+  clickedFeatures?: PickingInfo[]
+  hoveredFeatures?: PickingInfo[]
 }
 
 export type FourwingsResolution = 'default' | 'high'
 export type FourwingsHeatmapTileData = FourWingsFeature[]
-export type _FourwingsHeatmapTileLayerProps = {
-  data?: FourwingsHeatmapTileData
+
+export type _FourwingsHeatmapTileLayerProps<DataT = FourWingsFeature> = BaseFourwinsLayerProps & {
+  data?: DataT
   debug?: boolean
+  availableIntervals?: FourwingsInterval[]
   resolution?: FourwingsResolution
-  hoveredFeatures?: PickingInfo[]
-  clickedFeatures?: PickingInfo[]
-  minFrame: number
-  maxFrame: number
-  sublayers: FourwingsDeckSublayer[]
   colorRampWhiteEnd?: boolean
   comparisonMode?: FourwingsComparisonMode
+  aggregationOperation?: FourwingsAggregationOperation
+  onTileDataLoading?: (tile: TileLoadProps) => void
+}
+
+export type _FourwingsPositionsTileLayerProps<DataT = any> = BaseFourwinsLayerProps & {
+  highlightedVesselId?: string
+  onDataLoad?: (data: DataT) => void
+  // onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
+  onVesselHighlight?: (vesselId: string) => void
+  onVesselClick?: (vesselId: string) => void
+  onViewportLoad?: (tiles: any) => void
   onTileDataLoading?: (tile: TileLoadProps) => void
 }
 

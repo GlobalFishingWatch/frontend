@@ -19,10 +19,11 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
   const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
   const detectionsMergedDataviewId = useSelector(selectDetectionsMergedDataviewId)
   const dataviewId =
-    // TODO: include environment
-    dataview.category === DataviewCategory.Activity
-      ? activityMergedDataviewId
-      : detectionsMergedDataviewId
+    dataview.category === DataviewCategory.Environment
+      ? dataview.id
+      : dataview.category === DataviewCategory.Detections
+      ? detectionsMergedDataviewId
+      : activityMergedDataviewId
   const deckLegend = useGetDeckLayerLegend(dataviewId)
   const isBivariate = deckLegend?.type === LegendType.Bivariate
 
@@ -35,10 +36,11 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
   if (legendSublayerIndex < 0 || (isBivariate && legendSublayerIndex !== 0)) {
     return null
   }
+
   const colors = isBivariate
     ? (deckLegend.ranges as string[])
     : (deckLegend.ranges?.[legendSublayerIndex] as ColorRange)?.map((color) => {
-        return deckToRgbaColor(color)
+        return Array.isArray(color) ? deckToRgbaColor(color) : color.toString()
       })
   const uiLegend: UILegend = {
     id: deckLegend.id,

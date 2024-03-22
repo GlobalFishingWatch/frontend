@@ -6,14 +6,10 @@ import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { TimebarVisualisations } from 'types'
-import {
-  selectActiveActivityDataviews,
-  selectActiveDetectionsDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
 import { selectTimebarVisualisation } from 'features/app/selectors/app.timebar.selectors'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectTimebarSelectedDataviews } from 'features/timebar/timebar.selectors'
 import { FourWingsFeature } from '../../../../libs/deck-loaders/src/fourwings'
 import { getGraphDataFromFourwingsFeatures } from './timebar.utils'
 
@@ -21,18 +17,13 @@ const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
 
 export const useHeatmapActivityGraph = () => {
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
-  const detectionsDataviews = useSelector(selectActiveDetectionsDataviews)
-  const activityDataviews = useSelector(selectActiveActivityDataviews)
   const viewport = useMapViewport()
   const viewportChangeHash = useMemo(() => {
     if (!viewport) return ''
     return [viewport.zoom, viewport.latitude, viewport.longitude].map((v) => v.toFixed(5)).join(',')
   }, [viewport])
   const debouncedViewportChangeHash = useDebounce(viewportChangeHash, 400)
-  const dataviews =
-    timebarVisualisation === TimebarVisualisations.HeatmapDetections
-      ? detectionsDataviews
-      : activityDataviews
+  const dataviews = useSelector(selectTimebarSelectedDataviews)
   const timerange = useTimerangeConnect()
   const start = getUTCDate(timerange.start).getTime()
   const end = getUTCDate(timerange.end).getTime()

@@ -17,8 +17,9 @@ export type TileCell = Cell & {
 }
 
 export type FourwingsInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
+type FourwingsAggregationOperation = 'sum' | 'avg'
 
-export type FourwingsOptions = {
+export type ParseFourwingsOptions = {
   cols: number
   rows: number
   tile: TileLoadProps
@@ -29,12 +30,16 @@ export type FourwingsOptions = {
     end: number
   }
   interval: FourwingsInterval
+  aggregationOperation: FourwingsAggregationOperation
+  scale?: number
+  offset?: number
+  noDataValue?: number
   sublayers: number
   buffersLength: number[]
 }
 
 export type FourwingsLoaderOptions = LoaderOptions & {
-  fourwings?: FourwingsOptions
+  fourwings?: ParseFourwingsOptions
 }
 
 export type FourWingsFeatureProperties = {

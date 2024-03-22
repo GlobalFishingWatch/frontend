@@ -7,20 +7,24 @@ import {
   UpdateParameters,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
-import { ckmeans } from 'simple-statistics'
+import { ckmeans, mean, standardDeviation } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { FourWingsFeature, FourwingsLoader } from '@globalfishingwatch/deck-loaders'
 import {
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
+  FourWingsFeature,
+  FourwingsInterval,
+  FourwingsLoader,
+  ParseFourwingsOptions,
+} from '@globalfishingwatch/deck-loaders'
+import {
   HEATMAP_COLOR_RAMPS,
   rgbaStringToComponents,
   ColorRampsIds,
 } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { ColorRampId, getBivariateRamp } from '../../utils/colorRamps'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS, ColorRampId, getBivariateRamp } from '../../utils/colorRamps'
 import {
   aggregateCellTimeseries,
   filterElementByPercentOfIndex,
@@ -28,7 +32,13 @@ import {
   getDataUrlBySublayer,
 } from './fourwings.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
-import { FOURWINGS_MAX_ZOOM, HEATMAP_ID, PATH_BASENAME, getInterval } from './fourwings.config'
+import {
+  HEATMAP_API_TILES_URL,
+  FOURWINGS_MAX_ZOOM,
+  HEATMAP_ID,
+  PATH_BASENAME,
+  getInterval,
+} from './fourwings.config'
 import {
   ColorRange,
   FourwingsDeckSublayer,
@@ -36,11 +46,15 @@ import {
   FourwingsTileLayerState,
   FourwingsHeatmapTilesCache,
   FourwingsComparisonMode,
+  FourwingsAggregationOperation,
 } from './fourwings.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   maxRequests: 100,
   debounceTime: 500,
+  comparisonMode: FourwingsComparisonMode.Compare,
+  aggregationOperation: FourwingsAggregationOperation.Sum,
+  tilesUrl: HEATMAP_API_TILES_URL,
   resolution: 'default',
 }
 
@@ -55,7 +69,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
-      tilesCache: this._getTileDataCache(this.props.minFrame, this.props.maxFrame),
+      tilesCache: this._getTileDataCache(
+        this.props.minFrame,
+        this.props.maxFrame,
+        this.props.availableIntervals
+      ),
       colorDomain:
         this.props.comparisonMode === FourwingsComparisonMode.Bivariate
           ? [
@@ -68,15 +86,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getColorRanges = () => {
+    // TODO: research if we can use the context to get other layers so we can enable whiteEnd
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
-      return getBivariateRamp(this.props.sublayers.map((s) => s.config?.colorRamp) as ColorRampId[])
+      return getBivariateRamp(this.props.sublayers.map((s) => s?.colorRamp) as ColorRampId[])
     }
     return this.props.sublayers.map(
-      ({ config }) =>
+      ({ colorRamp }) =>
         HEATMAP_COLOR_RAMPS[
-          (this.props.colorRampWhiteEnd
-            ? `${config.colorRamp}_toWhite`
-            : config.colorRamp) as ColorRampsIds
+          (this.props.colorRampWhiteEnd ? `${colorRamp}_toWhite` : colorRamp) as ColorRampsIds
         ].map((c) => rgbaStringToComponents(c)) as ColorRange
     )
   }
@@ -105,6 +122,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       if (!allValues.length) {
         return this.getColorDomain()
       }
+
       const steps = allValues.map((sublayerValues) =>
         ckmeans(sublayerValues, Math.min(sublayerValues.length, 4)).map((step) => step[0])
       )
@@ -120,9 +138,18 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (!allValues.length) {
       return this.getColorDomain()
     }
-    const steps = ckmeans(allValues, Math.min(allValues.length, COLOR_RAMP_DEFAULT_NUM_STEPS)).map(
-      (step) => step[0]
-    )
+
+    const meanValue = mean(allValues)
+    const standardDeviationValue = standardDeviation(allValues)
+    const upperCut = meanValue + standardDeviationValue * 2
+    const lowerCut = meanValue - standardDeviationValue * 2
+    const dataFiltered = allValues.filter((a) => a >= lowerCut && a <= upperCut)
+
+    const steps = ckmeans(
+      dataFiltered,
+      Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
+    ).map((step) => step[0])
+
     return steps
   }
 
@@ -140,15 +167,19 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _fetchTileData: any = async (tile: TileLoadProps) => {
-    const { minFrame, maxFrame, sublayers } = this.props
+    const { minFrame, maxFrame, sublayers, aggregationOperation, availableIntervals, tilesUrl } =
+      this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     let cols: number = 0
     let rows: number = 0
+    let scale: number = 0
+    let offset: number = 0
+    let noDataValue: number = 0
 
-    const interval = getInterval(minFrame, maxFrame)
-    const chunk = getChunk(minFrame, maxFrame)
+    const interval = getInterval(minFrame, maxFrame, availableIntervals)
+    const chunk = getChunk(minFrame, maxFrame, availableIntervals)
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
-      const url = getDataUrlBySublayer({ tile, chunk, sublayer }) as string
+      const url = getDataUrlBySublayer({ tile, chunk, sublayer, tilesUrl }) as string
       const response = await GFWAPI.fetch<Response>(url!, {
         signal: tile.signal,
         responseType: 'default',
@@ -158,6 +189,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       }
       cols = parseInt(response.headers.get('X-columns') as string)
       rows = parseInt(response.headers.get('X-rows') as string)
+      scale = parseFloat(response.headers.get('X-scale') as string)
+      offset = parseInt(response.headers.get('X-offset') as string)
+      noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      const bins = JSON.parse(response.headers.get('X-bins') as string)?.map((n: string) =>
+        parseInt(n)
+      )
+      // TODO test if setting the x-bins until the full viewport loads improves the experience
+      // this.setState({ colorDomain: bins })
       return await response.arrayBuffer()
     }
 
@@ -173,9 +212,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
       fourwings: {
-        sublayers: 1,
+        sublayers: 1, // TODO make this dynamic
         cols,
         rows,
+        scale,
+        offset,
+        noDataValue,
         minFrame: chunk.start,
         maxFrame: chunk.end,
         initialTimeRange: {
@@ -184,11 +226,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         },
         interval,
         tile,
+        aggregationOperation,
         workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
         buffersLength: settledPromises.map((p) =>
           p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
         ),
-      },
+      } as ParseFourwingsOptions,
     })
     return data
   }
@@ -203,18 +246,26 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return this._fetchTileData(tile)
   }
 
-  _getTileDataCache = (minFrame: number, maxFrame: number): FourwingsHeatmapTilesCache => {
-    const interval = getInterval(minFrame, maxFrame)
-    const { start, end } = getChunk(minFrame, maxFrame)
+  _getTileDataCache = (
+    minFrame: number,
+    maxFrame: number,
+    availableIntervals?: FourwingsInterval[]
+  ): FourwingsHeatmapTilesCache => {
+    const interval = getInterval(minFrame, maxFrame, availableIntervals)
+    const { start, end } = getChunk(minFrame, maxFrame, availableIntervals)
     return { start, end, interval }
   }
 
   _getTileDataCacheKey = (): string => {
-    return Object.values(this.state.tilesCache || {}).join(',')
+    const dataCache = Object.values(this.state.tilesCache || {}).join(',')
+    const sublayersIds = this.props.sublayers?.map((s) => s.id).join(',')
+    const sublayersFilter = this.props.sublayers?.flatMap((s) => s.filter || []).join(',')
+    const sublayersVesselGroups = this.props.sublayers?.map((s) => s.vesselGroups || []).join(',')
+    return [dataCache, sublayersIds, sublayersFilter, sublayersVesselGroups].join('-')
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    const { minFrame, maxFrame } = props
+    const { minFrame, maxFrame, availableIntervals } = props
     const { tilesCache, colorRanges } = this.state as FourwingsTileLayerState
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = colorRanges.join() !== newSublayerColorRanges.join()
@@ -231,17 +282,18 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const isStartOutRange = minFrame <= tilesCache.start
     const isEndOutRange = maxFrame >= tilesCache.end
     const needsCaheKeyUpdate =
-      isStartOutRange || isEndOutRange || getInterval(minFrame, maxFrame) !== tilesCache.interval
+      isStartOutRange ||
+      isEndOutRange ||
+      getInterval(minFrame, maxFrame, availableIntervals) !== tilesCache.interval
     if (needsCaheKeyUpdate) {
-      this.setState({ tilesCache: this._getTileDataCache(minFrame, maxFrame) })
+      this.setState({ tilesCache: this._getTileDataCache(minFrame, maxFrame, availableIntervals) })
     }
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { resolution, sublayers, comparisonMode } = this.props
+    const { resolution, comparisonMode } = this.props
     const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
     const cacheKey = this._getTileDataCacheKey()
-    const sublayersIds = sublayers.map((s) => s.id).join(',')
 
     return new TileLayer(
       this.props,
@@ -260,7 +312,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         debounceTime: this.props.debounceTime,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey, resolution, sublayersIds],
+          getTileData: [cacheKey, resolution],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {

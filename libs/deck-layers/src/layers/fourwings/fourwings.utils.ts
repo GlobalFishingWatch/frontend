@@ -7,6 +7,7 @@ import {
   CONFIG_BY_INTERVAL,
   Cell,
   FourWingsFeature,
+  FourwingsInterval,
   TileCell,
   getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
@@ -17,25 +18,48 @@ import {
   FourwingsDeckSublayer,
   GetFillColorParams,
   FourwingsComparisonMode,
+  FourwingsAggregationOperation,
 } from './fourwings.types'
-import { getChunkByInterval, getInterval } from './fourwings.config'
+import { HEATMAP_API_TILES_URL, getChunkByInterval, getInterval } from './fourwings.config'
+
+function aggregateSublayerValues(
+  sublayer: number[],
+  aggregationOperation = FourwingsAggregationOperation.Sum
+) {
+  const lastArrayIndex = sublayer.length - 1
+  return sublayer.reduce((acc: number, value: number, index) => {
+    if (!value) {
+      return acc
+    }
+    if (aggregationOperation === FourwingsAggregationOperation.Avg) {
+      return index === lastArrayIndex ? (acc + value) / lastArrayIndex + 1 : acc + value
+    }
+    return acc + value
+  }, 0)
+}
 
 export const aggregateCell = (
   cell: Cell,
-  { minIntervalFrame, maxIntervalFrame, startFrames }: AggregateCellParams
+  {
+    minIntervalFrame,
+    maxIntervalFrame,
+    startFrames,
+    aggregationOperation = FourwingsAggregationOperation.Sum,
+  }: AggregateCellParams
 ): number[] => {
   // TODO decide if we want the last day to be included or not in maxIntervalFrame
-  return cell.map(
-    (sublayer, sublayerIndex) =>
-      sublayer &&
-      startFrames &&
-      sublayer
-        .slice(
-          Math.max(minIntervalFrame - startFrames[sublayerIndex], 0),
-          maxIntervalFrame ? maxIntervalFrame - startFrames[sublayerIndex] : undefined
-        )
-        .reduce((acc: number, value) => (value ? acc + value : acc), 0)
-  )
+  return cell.map((sublayer, sublayerIndex) => {
+    if (!sublayer || !startFrames || !sublayer) {
+      return 0
+    }
+    return aggregateSublayerValues(
+      sublayer.slice(
+        Math.max(minIntervalFrame - startFrames[sublayerIndex], 0),
+        maxIntervalFrame ? maxIntervalFrame - startFrames[sublayerIndex] : undefined
+      ),
+      aggregationOperation
+    )
+  })
 }
 
 function stringHash(s: string): number {
@@ -79,25 +103,36 @@ type GetDataUrlByChunk = {
   }
   chunk: Chunk
   sublayer: FourwingsDeckSublayer
+  filter?: string
+  vesselGroups?: string[]
+  tilesUrl?: string
 }
 
-const API_BASE_URL =
-  'https://gateway.api.dev.globalfishingwatch.org/v3/4wings/tile/heatmap/{z}/{x}/{y}'
-export const getDataUrlBySublayer = ({ tile, chunk, sublayer }: GetDataUrlByChunk) => {
+export const getDataUrlBySublayer = ({
+  tile,
+  chunk,
+  sublayer,
+  tilesUrl = HEATMAP_API_TILES_URL,
+}: GetDataUrlByChunk) => {
+  const vesselGroup = Array.isArray(sublayer.vesselGroups)
+    ? sublayer.vesselGroups[0]
+    : sublayer.vesselGroups
   const params = {
-    interval: chunk.interval,
-    format: '4WINGS',
-    'temporal-aggregation': false,
     proxy: true,
+    format: '4WINGS',
+    interval: chunk.interval,
+    'temporal-aggregation': false,
+    datasets: [sublayer.datasets.join(',')],
+    ...(sublayer.filter && { filters: [sublayer.filter] }),
+    ...(vesselGroup && { 'vessel-groups': [vesselGroup] }),
     ...(chunk.interval !== 'YEAR' && {
       'date-range': [
         DateTime.fromMillis(chunk.bufferedStart).toISODate(),
         DateTime.fromMillis(chunk.bufferedEnd).toISODate(),
       ].join(','),
     }),
-    datasets: [sublayer.datasets.join(',')],
   }
-  const url = `${API_BASE_URL}?${stringify(params, {
+  const url = `${tilesUrl}?${stringify(params, {
     arrayFormat: 'indices',
   })}`
 
@@ -254,6 +289,7 @@ export const chooseColor = (
     chunk,
     minIntervalFrame,
     maxIntervalFrame,
+    aggregationOperation,
     comparisonMode,
   }: GetFillColorParams
 ): Color => {
@@ -267,6 +303,7 @@ export const chooseColor = (
     aggregateCell(values, {
       minIntervalFrame,
       maxIntervalFrame: maxIntervalFrame > 0 ? maxIntervalFrame : undefined,
+      aggregationOperation,
       startFrames,
     })
   let chosenValueIndex = 0
@@ -297,14 +334,22 @@ export const chooseColor = (
   }
 }
 
-export function getChunk(minFrame: number, maxFrame: number) {
-  const interval = getInterval(minFrame, maxFrame)
+export function getChunk(
+  minFrame: number,
+  maxFrame: number,
+  availableIntervals?: FourwingsInterval[]
+) {
+  const interval = getInterval(minFrame, maxFrame, availableIntervals)
   return getChunkByInterval(minFrame, maxFrame, interval)
 }
 
-export function getIntervalFrames(minFrame: number, maxFrame: number) {
-  const interval = getInterval(minFrame, maxFrame)
-  const chunk = getChunk(minFrame, maxFrame)
+export function getIntervalFrames(
+  minFrame: number,
+  maxFrame: number,
+  availableIntervals?: FourwingsInterval[]
+) {
+  const interval = getInterval(minFrame, maxFrame, availableIntervals)
+  const chunk = getChunk(minFrame, maxFrame, availableIntervals)
   const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.start))
   const minIntervalFrame = Math.ceil(
     CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileMinIntervalFrame

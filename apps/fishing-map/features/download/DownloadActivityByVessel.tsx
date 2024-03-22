@@ -102,10 +102,10 @@ function DownloadActivityByVessel() {
           return id ? checkDatasetReportPermission(id, userData!.permissions) : false
         })
         return {
-          filter: dataview.config?.filter || [],
+          filter: dataview.config?.filter || '',
           filters: dataview.config?.filters || {},
           ...(dataview.config?.['vessel-groups']?.length && {
-            'vessel-groups': dataview.config?.['vessel-groups'],
+            'vessel-groups': dataview.config?.['vessel-groups'] as string[],
           }),
           datasets: activityDatasets,
         }

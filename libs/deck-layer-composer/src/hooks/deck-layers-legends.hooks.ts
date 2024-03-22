@@ -18,7 +18,7 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
       // TODO: handle when the layer does not have a color scale because the state is not ready after an update
     }
 
-    let label = layer.instance.props.sublayers[0].config.unit || ''
+    let label = layer.instance.props.sublayers?.[0]?.unit || ''
     if (label === 'hours') {
       const gridZoom = Math.round(
         Math.min(layer.instance.context.viewport.zoom, HEATMAP_DEFAULT_MAX_ZOOM)

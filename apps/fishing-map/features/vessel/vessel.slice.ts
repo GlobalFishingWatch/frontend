@@ -11,7 +11,8 @@ import {
   VesselCombinedSourcesInfo,
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
-import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
+import { setResource } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectResources } from 'features/resources/resources.slice'

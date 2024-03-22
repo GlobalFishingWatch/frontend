@@ -16,6 +16,7 @@ import { resolveDeckVesselLayerProps } from './vessels'
 
 export * from './basemap'
 export * from './context'
+export * from './dataviews'
 export * from './fourwings'
 export * from './types'
 export * from './tile-cluster'

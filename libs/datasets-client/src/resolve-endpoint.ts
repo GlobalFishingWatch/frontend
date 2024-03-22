@@ -8,6 +8,7 @@ import {
 
 const arrayQueryParams: EndpointParamType[] = ['4wings-datasets', 'sql']
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
+
 export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
   const endpoint = dataset.endpoints?.find((endpoint) => {
     return endpoint.id === datasetConfig.endpoint
@@ -16,6 +17,9 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
   if (!endpoint) return null
 
   const template = endpoint.pathTemplate
+    .replace('{{x}}', '{x}')
+    .replace('{{y}}', '{y}')
+    .replace('{{z}}', '{z}')
 
   let url = template
   datasetConfig.params?.forEach((param) => {
