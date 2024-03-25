@@ -2,8 +2,8 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { FourwingsResolution, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 
 export type ResolverGlobalConfig = {
-  start?: string
-  end?: string
+  start: string
+  end: string
   zoom?: number
   token?: string
   bivariateDataviews?: [string, string]
