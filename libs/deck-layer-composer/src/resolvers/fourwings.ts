@@ -95,6 +95,7 @@ export const resolveDeckFourwingsLayerProps = (
     id: dataview.id,
     minFrame: startTime,
     maxFrame: endTime,
+    category: dataview.category!,
     static: dataview.config?.type === DataviewType.HeatmapStatic,
     resolution,
     sublayers,

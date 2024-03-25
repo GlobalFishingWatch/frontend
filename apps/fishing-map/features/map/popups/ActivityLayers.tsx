@@ -14,7 +14,8 @@ type ActivityTooltipRowProps = {
 function ActivityTooltipRow({ feature, showFeaturesDetails }: ActivityTooltipRowProps) {
   const { t } = useTranslation()
   const title = getVesselTableTitle(feature)
-
+  // TODO get the value based on the sublayer
+  const value = feature.object?.values[0]
   return (
     <Fragment>
       <div className={popupStyles.popupSection}>
@@ -23,9 +24,9 @@ function ActivityTooltipRow({ feature, showFeaturesDetails }: ActivityTooltipRow
           {showFeaturesDetails && <h3 className={popupStyles.popupSectionTitle}>{title}</h3>}
           <div className={popupStyles.row}>
             <span className={popupStyles.rowText}>
-              <I18nNumber number={feature.value} />{' '}
+              <I18nNumber number={value} />{' '}
               {t([`common.${feature.temporalgrid?.unit}` as any, 'common.hour'], 'hours', {
-                count: parseInt(feature.value), // neded to select the plural automatically
+                count: parseInt(value), // neded to select the plural automatically
               })}
             </span>
           </div>

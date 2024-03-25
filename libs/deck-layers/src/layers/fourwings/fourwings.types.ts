@@ -79,6 +79,7 @@ export type GetFillColorParams = {
 type BaseFourwinsLayerProps = {
   minFrame: number
   maxFrame: number
+  category: string
   sublayers: FourwingsDeckSublayer[]
   tilesUrl?: string
   clickedFeatures?: PickingInfo[]

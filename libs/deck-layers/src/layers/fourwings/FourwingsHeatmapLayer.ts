@@ -13,7 +13,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   layers: LayersList = []
 
   getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
-    const { minFrame, maxFrame, availableIntervals } = this.props
+    const { minFrame, maxFrame, availableIntervals, category, sublayers } = this.props
     if (info.object) {
       const chunk = getChunk(minFrame, maxFrame, availableIntervals)
       const interval = getInterval(minFrame, maxFrame, availableIntervals)
@@ -30,11 +30,11 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         aggregationOperation: this.props.aggregationOperation,
         startFrames: info.object.properties.startFrames,
       })
+      info.object.category = category
+      info.object.sublayers = sublayers
       if (values) {
-        info.object = {
-          ...info.object,
-          values,
-        }
+        // TODO: make a decision if send the values within the sublayers or as a separate object
+        info.object.values = values
       }
     }
     return info

@@ -18,6 +18,7 @@ export function resolveDeckContextLayerProps(
 
   return {
     id: dataview.id,
+    category: dataview.category!,
     color: dataview.config?.color!,
     datasetId: dataview.config?.layers?.[0].dataset!,
     idProperty: dataview.datasets?.[0]?.configuration?.idProperty as string,

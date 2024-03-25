@@ -12,8 +12,10 @@ import { ExtendedStyle, ExtendedStyleMeta } from '@globalfishingwatch/layer-comp
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import {
-  useDeckLayerInteraction,
-  useSetDeckLayerInteraction,
+  useMapHoverInteraction,
+  useSetMapHoverInteraction,
+  useMapClickInteraction,
+  useSetMapClickInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
@@ -45,7 +47,7 @@ import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 
 export const useMapMouseHover = (style?: ExtendedStyle) => {
   const map = useDeckMap()
-  const setDeckLayerInteraction = useSetDeckLayerInteraction()
+  const setMapHoverFeatures = useSetMapHoverInteraction()
   const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating } = useMapAnnotation()
   const { onRulerMapHover, rulersEditing } = useRulers()
@@ -67,7 +69,7 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
 
   const onMouseMove: DeckProps['onHover'] = useCallback(
     (info: PickingInfo, event: any) => {
-      if (!info.coordinate) return
+      if (!map || !info.coordinate) return
       const features = map?.pickMultipleObjects({
         x: info.x,
         y: info.y,
@@ -75,14 +77,18 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
       })
 
       if (features) {
-        setDeckLayerInteraction(features)
+        setMapHoverFeatures({
+          longitude: info.coordinate[0],
+          latitude: info.coordinate[1],
+          features,
+        })
         // onRulerDrag(features)
       }
       if (rulersEditing) {
         onRulerMapHover(info)
       }
     },
-    [map, onRulerMapHover, rulersEditing, setDeckLayerInteraction]
+    [map, onRulerMapHover, rulersEditing, setMapHoverFeatures]
   )
 
   const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
@@ -107,6 +113,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
   // const map = useMapInstance()
   const map = useDeckMap()
   const { isMapDrawing } = useMapDrawConnect()
+  const setMapClickFeatures = useSetMapClickInteraction()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
@@ -143,7 +150,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
 
   const onMapClick: DeckProps['onClick'] = useCallback(
     (info: PickingInfo, event: any) => {
-      if (!info.coordinate) return
+      if (!map || !info.coordinate) return
       if (event.srcEvent.defaultPrevented) {
         // this is needed to allow interacting with overlay elements content
         return true
@@ -176,6 +183,8 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
         y: info.y,
         radius: 0,
       })
+
+      setMapClickFeatures({ longitude: info.coordinate[0], latitude: info.coordinate[1], features })
       const fourWingsValues = features?.map(
         (f: PickingInfo) =>
           f.sourceLayer?.getPickingInfo({ info, mode: 'click', sourceLayer: f.sourceLayer }).object
@@ -204,6 +213,7 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       rulersEditing,
       addMapAnnotation,
       addErrorNotification,
+      setMapClickFeatures,
       onRulerMapClick,
     ]
   )
@@ -299,11 +309,11 @@ export const useMapCursor = () => {
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing } = useRulers()
-  const deckInteractions = useDeckLayerInteraction()
+  const hoverFeatures = useMapHoverInteraction()?.features
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
       if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
-        if (rulersEditing && deckInteractions.some(isRulerLayerPoint)) {
+        if (rulersEditing && hoverFeatures.some(isRulerLayerPoint)) {
           return 'move'
         }
         return 'crosshair'
@@ -312,7 +322,7 @@ export const useMapCursor = () => {
       }
       return 'grab'
     },
-    [deckInteractions, isErrorNotificationEditing, isMapAnnotating, rulersEditing]
+    [hoverFeatures, isErrorNotificationEditing, isMapAnnotating, rulersEditing]
   )
   return { getCursor }
 }
@@ -324,7 +334,7 @@ export const useMapDrag = () => {
 
   const onMapDragStart = useCallback(
     (info: PickingInfo, event: any) => {
-      if (!info.coordinate) return
+      if (!map || !info.coordinate) return
       if (rulersEditing) {
         const features = map?.pickMultipleObjects({
           x: info.x,

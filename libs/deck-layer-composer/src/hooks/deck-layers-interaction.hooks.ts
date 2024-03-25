@@ -3,19 +3,24 @@ import { useCallback } from 'react'
 import { PickingInfo } from '@deck.gl/core'
 
 // Atom used to have all the layer instances loading state available
-type DeckLayerState = PickingInfo[]
-export const deckLayersInteractionAtom = atom<DeckLayerState>([])
+export type DeckLayerInteraction = { latitude: number; longitude: number; features: PickingInfo[] }
 
-export const useDeckLayerInteraction = () => {
-  return useAtomValue(deckLayersInteractionAtom)
+export const deckHoverInteractionAtom = atom<DeckLayerInteraction>({} as DeckLayerInteraction)
+export const deckClickInteractionAtom = atom<DeckLayerInteraction>({} as DeckLayerInteraction)
+
+export const useMapHoverInteraction = () => {
+  return useAtomValue(deckHoverInteractionAtom)
+}
+export const useMapClickInteraction = () => {
+  return useAtomValue(deckClickInteractionAtom)
 }
 
-export const useSetDeckLayerInteraction = () => {
-  const setDeckLayerLoadedState = useSetAtom(deckLayersInteractionAtom)
-  return useCallback(
-    (interactions: PickingInfo[]) => {
-      setDeckLayerLoadedState(interactions)
-    },
-    [setDeckLayerLoadedState]
-  )
+export const useSetMapHoverInteraction = () => {
+  const setDeckInteraction = useSetAtom(deckHoverInteractionAtom)
+  return useCallback(setDeckInteraction, [setDeckInteraction])
+}
+
+export const useSetMapClickInteraction = () => {
+  const setDeckInteraction = useSetAtom(deckClickInteractionAtom)
+  return useCallback(setDeckInteraction, [setDeckInteraction])
 }

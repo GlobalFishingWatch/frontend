@@ -6,6 +6,8 @@ import {
   DefaultProps,
   Color,
   UpdateParameters,
+  GetPickingInfoParams,
+  PickingInfo,
 } from '@deck.gl/core'
 import { scaleLinear } from 'd3-scale'
 import { MVTLayer, TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
@@ -130,6 +132,14 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
     }
+  }
+
+  getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
+    if (info.object?.properties?.count) {
+      info.object.values = [info.object.properties.count]
+      info.object.category = this.props.category
+    }
+    return info
   }
 
   getFillColor = (feature: Feature<Geometry, FourWingsStaticFeatureProperties>) => {

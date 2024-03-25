@@ -27,14 +27,15 @@ function EnvironmentTooltipSection({
 }: ContextTooltipRowProps) {
   return (
     <Fragment>
-      {features.map((feature, index) => {
+      {features.map((pickedFeature, index) => {
+        const feature = pickedFeature.object
         const isHeatmapFeature =
           feature.type === DataviewType.HeatmapAnimated ||
           feature.type === DataviewType.HeatmapStatic
         const value =
           feature.type === DataviewType.HeatmapAnimated
             ? feature.value
-            : feature.properties[HEATMAP_STATIC_PROPERTY_ID]
+            : feature.properties?.[HEATMAP_STATIC_PROPERTY_ID]
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <Icon
