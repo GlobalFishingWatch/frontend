@@ -1,5 +1,5 @@
 import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
-import type { FourWingsFeature } from '@globalfishingwatch/deck-loaders'
+import type { FourWingsFeature, FourWingsStaticFeature } from '@globalfishingwatch/deck-loaders'
 
 export interface Bounds {
   north: number
@@ -9,7 +9,7 @@ export interface Bounds {
 }
 
 export const filterFeaturesByBounds = (
-  features: GeoJSONFeature[] | FourWingsFeature[],
+  features: GeoJSONFeature[] | FourWingsFeature[] | FourWingsStaticFeature[],
   bounds: Bounds
 ) => {
   if (!bounds) {

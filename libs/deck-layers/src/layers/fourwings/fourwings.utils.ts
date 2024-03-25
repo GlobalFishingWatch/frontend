@@ -280,7 +280,7 @@ export const getBivariateValue = (realValues: number[], breaks: number[][]) => {
   return index + 1
 }
 
-const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
+export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 export const chooseColor = (
   feature: FourWingsFeature,
   {
@@ -291,6 +291,7 @@ export const chooseColor = (
     maxIntervalFrame,
     aggregationOperation,
     comparisonMode,
+    scale,
   }: GetFillColorParams
 ): Color => {
   if (!colorDomain || !colorRanges || !chunk) {
@@ -316,6 +317,9 @@ export const chooseColor = (
         chosenValueIndex = index
       }
     })
+    // if (scale) {
+    //   return rgbaStringToComponents(scale(chosenValue)) as Color
+    // }
     const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
       (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
     )

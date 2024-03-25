@@ -1,6 +1,7 @@
 import { Color, PickingInfo } from '@deck.gl/core'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { scaleLinear } from 'd3-scale'
 import { ColorRampsIds } from '@globalfishingwatch/layer-composer'
 import { FourWingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
@@ -72,6 +73,7 @@ export type GetFillColorParams = {
   maxIntervalFrame: number
   comparisonMode?: FourwingsComparisonMode
   aggregationOperation?: FourwingsAggregationOperation
+  scale?: typeof scaleLinear<number, string>
 }
 
 type BaseFourwinsLayerProps = {
@@ -92,12 +94,26 @@ export type _FourwingsHeatmapTileLayerProps<DataT = FourWingsFeature> = BaseFour
   availableIntervals?: FourwingsInterval[]
   resolution?: FourwingsResolution
   colorRampWhiteEnd?: boolean
+  minVisibleValue?: number
+  maxVisibleValue?: number
   comparisonMode?: FourwingsComparisonMode
   aggregationOperation?: FourwingsAggregationOperation
   onTileDataLoading?: (tile: TileLoadProps) => void
 }
 
+export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
+  Partial<TileLayerProps>
+
+export type _FourwingsHeatmapStaticLayerProps = Omit<
+  _FourwingsHeatmapTileLayerProps,
+  'data' | 'availableIntervals' | 'comparisonMode'
+>
+
+export type FourwingsHeatmapStaticLayerProps = _FourwingsHeatmapStaticLayerProps &
+  Partial<TileLayerProps>
+
 export type _FourwingsPositionsTileLayerProps<DataT = any> = BaseFourwinsLayerProps & {
+  static?: boolean
   highlightedVesselId?: string
   onDataLoad?: (data: DataT) => void
   // onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
@@ -107,7 +123,7 @@ export type _FourwingsPositionsTileLayerProps<DataT = any> = BaseFourwinsLayerPr
   onTileDataLoading?: (tile: TileLoadProps) => void
 }
 
-export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
+export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps &
   Partial<TileLayerProps>
 
 export type FourwingsHeatmapTilesCache = {
@@ -124,10 +140,11 @@ export type FourwingsTileLayerColorScale = {
 export type FourwingsTileLayerColorDomain = number[] | number[][]
 export type FourwingsTileLayerColorRange = string[] | ColorRange[]
 
+export type FourwinsTileLayerScale = ReturnType<typeof scaleLinear<number, string>>
 export type FourwingsTileLayerState = {
   tilesCache: FourwingsHeatmapTilesCache
   colorDomain: FourwingsTileLayerColorDomain
   colorRanges: FourwingsTileLayerColorRange
   comparisonMode?: FourwingsComparisonMode
-  tiles: Tile2DHeader<FourwingsHeatmapTileData>[]
+  scale?: FourwinsTileLayerScale
 }

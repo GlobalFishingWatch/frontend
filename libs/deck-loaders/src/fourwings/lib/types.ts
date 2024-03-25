@@ -50,5 +50,9 @@ export type FourWingsFeatureProperties = {
   cellId: number
   cellNum: number
 }
+export type FourWingsStaticFeatureProperties = {
+  count: number
+}
 
-export type FourWingsFeature = Feature<Polygon, FourWingsFeatureProperties>
+export type FourWingsFeature<Properties = FourWingsFeatureProperties> = Feature<Polygon, Properties>
+export type FourWingsStaticFeature = FourWingsFeature<FourWingsStaticFeatureProperties>

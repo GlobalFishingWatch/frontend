@@ -28,7 +28,7 @@ export const useHeatmapActivityGraph = () => {
   const start = getUTCDate(timerange.start).getTime()
   const end = getUTCDate(timerange.end).getTime()
   const chunk = getChunk(start, end)
-  const id = getMergedDataviewId(dataviews)
+  const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
   const heatmapActivity = useMemo(() => {

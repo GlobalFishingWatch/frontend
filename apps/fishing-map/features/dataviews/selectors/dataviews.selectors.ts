@@ -195,7 +195,7 @@ export const selectActiveActivityDataviews = createSelector(
 export const selectActivityMergedDataviewId = createSelector(
   [selectActiveActivityDataviews],
   (dataviews): string => {
-    return getMergedDataviewId(dataviews)
+    return dataviews?.length ? getMergedDataviewId(dataviews) : ''
   }
 )
 
@@ -219,7 +219,7 @@ export const selectActiveDetectionsDataviews = createSelector(
 export const selectDetectionsMergedDataviewId = createSelector(
   [selectActiveDetectionsDataviews],
   (dataviews): string => {
-    return getMergedDataviewId(dataviews)
+    return dataviews?.length ? getMergedDataviewId(dataviews) : ''
   }
 )
 

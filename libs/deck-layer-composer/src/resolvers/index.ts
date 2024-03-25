@@ -36,7 +36,10 @@ export const dataviewToDeckLayer = (
     const deckLayerProps = resolveDeckBasemapLayerProps(dataview)
     return new BaseMapLayer(deckLayerProps)
   }
-  if (dataview.config?.type === DataviewType.HeatmapAnimated) {
+  if (
+    dataview.config?.type === DataviewType.HeatmapAnimated ||
+    dataview.config?.type === DataviewType.HeatmapStatic
+  ) {
     const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, globalConfig, interactions)
     const layer = new FourwingsLayer(deckLayerProps)
     return layer

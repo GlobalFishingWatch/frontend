@@ -1,14 +1,16 @@
 import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { FourWingsFeature } from '@globalfishingwatch/deck-loaders'
 import { FourwingsHeatmapTileLayer } from './FourwingsHeatmapTileLayer'
+import { FourwingsHeatmapStaticLayer } from './FourwingsHeatmapStaticLayer'
+import { FourwingsPositionsTileLayer } from './FourwingsPositionsTileLayer'
+import { HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
 import {
-  FourwingsPositionsTileLayer,
+  FourwingsHeatmapStaticLayerProps,
+  FourwingsHeatmapTileLayerProps,
   FourwingsPositionsTileLayerProps,
-} from './FourwingsPositionsTileLayer'
-import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
-import { FourwingsHeatmapTileLayerProps, FourwingsVisualizationMode } from './fourwings.types'
+  FourwingsVisualizationMode,
+} from './fourwings.types'
 
 export type FourwingsColorRamp = {
   colorDomain: number[]
@@ -16,6 +18,7 @@ export type FourwingsColorRamp = {
 }
 
 export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
+  FourwingsHeatmapStaticLayerProps &
   FourwingsHeatmapTileLayerProps & {
     id: string
     visualizationMode?: FourwingsVisualizationMode
@@ -44,20 +47,31 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   renderLayers(): Layer<{}> | LayersList {
     const visualizationMode = this.getMode()
     const HeatmapLayerClass = this.getSubLayerClass('heatmap', FourwingsHeatmapTileLayer)
+    const HeatmapStaticLayerClass = this.getSubLayerClass('heatmap', FourwingsHeatmapStaticLayer)
     const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
-    return visualizationMode === HEATMAP_ID
-      ? new HeatmapLayerClass(
+    if (visualizationMode === POSITIONS_ID) {
+      return new PositionsLayerClass(
+        this.props,
+        this.getSubLayerProps({
+          id: POSITIONS_ID,
+          onViewportLoad: this._onViewportLoad,
+          onTileDataLoading: this._onTileDataLoading,
+        })
+      )
+    }
+    return this.props.static
+      ? new HeatmapStaticLayerClass(
           this.props,
           this.getSubLayerProps({
-            id: HEATMAP_ID,
+            id: HEATMAP_STATIC_ID,
             onViewportLoad: this._onViewportLoad,
             onTileDataLoading: this._onTileDataLoading,
           })
         )
-      : new PositionsLayerClass(
+      : new HeatmapLayerClass(
           this.props,
           this.getSubLayerProps({
-            id: POSITIONS_ID,
+            id: HEATMAP_ID,
             onViewportLoad: this._onViewportLoad,
             onTileDataLoading: this._onTileDataLoading,
           })

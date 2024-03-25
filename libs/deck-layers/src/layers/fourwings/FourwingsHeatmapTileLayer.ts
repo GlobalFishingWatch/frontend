@@ -35,9 +35,9 @@ import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import {
   HEATMAP_API_TILES_URL,
   FOURWINGS_MAX_ZOOM,
-  HEATMAP_ID,
   PATH_BASENAME,
   getInterval,
+  MAX_RAMP_VALUES_PER_TILE,
 } from './fourwings.config'
 import {
   ColorRange,
@@ -57,8 +57,6 @@ const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   tilesUrl: HEATMAP_API_TILES_URL,
   resolution: 'default',
 }
-
-const MAX_VALUES_PER_TILE = 1000
 
 export class FourwingsHeatmapTileLayer extends CompositeLayer<
   FourwingsHeatmapTileLayerProps & TileLayerProps
@@ -110,7 +108,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       return this.getColorDomain()
     }
     const dataSample =
-      currentZoomData.length > MAX_VALUES_PER_TILE
+      currentZoomData.length > MAX_RAMP_VALUES_PER_TILE
         ? currentZoomData.filter(filterElementByPercentOfIndex)
         : currentZoomData
 
@@ -318,7 +316,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: `${HEATMAP_ID}-tiles-${resolution}`,
+        id: `tiles-${resolution}`,
         tileSize: 512,
         colorDomain,
         colorRanges,
