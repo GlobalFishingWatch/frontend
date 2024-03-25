@@ -6,6 +6,7 @@ import { FourwingsHeatmapStaticLayer } from './FourwingsHeatmapStaticLayer'
 import { FourwingsPositionsTileLayer } from './FourwingsPositionsTileLayer'
 import { HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
 import {
+  FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapTileLayerProps,
   FourwingsPositionsTileLayerProps,
   FourwingsVisualizationMode,
@@ -17,6 +18,7 @@ export type FourwingsColorRamp = {
 }
 
 export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
+  FourwingsHeatmapStaticLayerProps &
   FourwingsHeatmapTileLayerProps & {
     id: string
     visualizationMode?: FourwingsVisualizationMode

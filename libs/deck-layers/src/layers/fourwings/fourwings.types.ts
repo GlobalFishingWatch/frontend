@@ -94,12 +94,22 @@ export type _FourwingsHeatmapTileLayerProps<DataT = FourWingsFeature> = BaseFour
   availableIntervals?: FourwingsInterval[]
   resolution?: FourwingsResolution
   colorRampWhiteEnd?: boolean
+  minVisibleValue?: number
+  maxVisibleValue?: number
   comparisonMode?: FourwingsComparisonMode
   aggregationOperation?: FourwingsAggregationOperation
   onTileDataLoading?: (tile: TileLoadProps) => void
 }
 
 export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
+  Partial<TileLayerProps>
+
+export type _FourwingsHeatmapStaticLayerProps = Omit<
+  _FourwingsHeatmapTileLayerProps,
+  'data' | 'availableIntervals' | 'comparisonMode'
+>
+
+export type FourwingsHeatmapStaticLayerProps = _FourwingsHeatmapStaticLayerProps &
   Partial<TileLayerProps>
 
 export type _FourwingsPositionsTileLayerProps<DataT = any> = BaseFourwinsLayerProps & {

@@ -140,6 +140,8 @@ export function getFourwingsDataviewsResolved(
     config: {
       type: fourwingsDataviews[0]?.config?.type,
       sublayers: fourwingsDataviews.flatMap(getFourwingsDataviewSublayers),
+      minVisibleValue: fourwingsDataviews[0].config?.minVisibleValue,
+      maxVisibleValue: fourwingsDataviews[0].config?.maxVisibleValue,
       colorRampWhiteEnd,
       visualizationMode,
       comparisonMode,

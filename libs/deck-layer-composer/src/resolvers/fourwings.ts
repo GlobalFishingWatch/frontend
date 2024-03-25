@@ -103,6 +103,8 @@ export const resolveDeckFourwingsLayerProps = (
     aggregationOperation,
     availableIntervals,
     hoveredFeatures: interactions,
+    minVisibleValue: dataview.config?.minVisibleValue,
+    maxVisibleValue: dataview.config?.maxVisibleValue,
     debug: dataview.config?.debug ?? false,
     visible: dataview.config?.visible ?? true,
     colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd ?? false,
