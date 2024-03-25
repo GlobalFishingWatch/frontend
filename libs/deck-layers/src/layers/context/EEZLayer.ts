@@ -7,7 +7,7 @@ import {
   hexToDeckColor,
   LayerGroup,
   getLayerGroupOffset,
-  GFWContextLoader,
+  GFWMVTLoader,
   getMVTSublayerProps,
 } from '../../utils'
 import { ContextLayer } from './ContextLayer'
@@ -51,7 +51,7 @@ export class EEZLayer extends ContextLayer<EEZLayerProps> {
       new TileLayer<TileLayerProps>({
         id: `${this.id}-boundaries-layer`,
         data: `${API_PATH}/${this.props.boundariesDatasetId}/context-layers/{z}/{x}/{y}`,
-        loaders: [GFWContextLoader],
+        loaders: [GFWMVTLoader],
         maxRequests: 100,
         debounceTime: 500,
         renderSubLayers: (props: any) => {
@@ -77,7 +77,7 @@ export class EEZLayer extends ContextLayer<EEZLayerProps> {
       new TileLayer<TileLayerProps>({
         id: `${this.id}-base-layer`,
         data: `${API_PATH}/${this.props.areasDatasetId}/context-layers/{z}/{x}/{y}`,
-        loaders: [GFWContextLoader],
+        loaders: [GFWMVTLoader],
         maxRequests: 100,
         debounceTime: 500,
         renderSubLayers: (props: any) => {

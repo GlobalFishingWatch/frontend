@@ -10,7 +10,7 @@ import {
   LayerGroup,
   getLayerGroupOffset,
   getPickedFeatureToHighlight,
-  GFWContextLoader,
+  GFWMVTLoader,
   getMVTSublayerProps,
 } from '../../utils'
 import { API_PATH } from './context.config'
@@ -57,7 +57,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<
       new TileLayer<TileLayerProps>({
         id: `${this.id}-base-layer`,
         data: `${API_PATH}/${this.props.datasetId}/context-layers/{z}/{x}/{y}`,
-        loaders: [GFWContextLoader],
+        loaders: [GFWMVTLoader],
         maxRequests: 100,
         debounceTime: 500,
         renderSubLayers: (props: any) => {
