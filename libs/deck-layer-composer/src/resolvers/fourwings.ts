@@ -10,7 +10,12 @@ import {
   TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
   getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
-import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  DataviewType,
+  EndpointId,
+} from '@globalfishingwatch/api-types'
 import { ColorRampId } from '@globalfishingwatch/deck-layers'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { getDataviewAvailableIntervals } from './dataviews'
@@ -90,6 +95,7 @@ export const resolveDeckFourwingsLayerProps = (
     id: dataview.id,
     minFrame: startTime,
     maxFrame: endTime,
+    static: dataview.config?.type === DataviewType.HeatmapStatic,
     resolution,
     sublayers,
     comparisonMode,

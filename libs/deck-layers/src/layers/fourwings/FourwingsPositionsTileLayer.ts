@@ -12,21 +12,14 @@ import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
-import {
-  POSITIONS_API_TILES_URL,
-  POSITIONS_ID,
-  POSITIONS_VISUALIZATION_MIN_ZOOM,
-} from './fourwings.config'
+import { POSITIONS_API_TILES_URL, POSITIONS_VISUALIZATION_MIN_ZOOM } from './fourwings.config'
 import { getRoundedDateFromTS } from './fourwings.utils'
 import {
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
-  _FourwingsPositionsTileLayerProps,
+  FourwingsPositionsTileLayerProps,
 } from './fourwings.types'
-
-export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps &
-  Partial<TileLayerProps>
 
 type FourwingsPositionsTileLayerState = {
   colorScale?: FourwingsTileLayerColorScale
@@ -205,7 +198,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
     return [
       new MVTLayer(this.props as any, {
-        id: `${POSITIONS_ID}-tiles`,
+        id: `tiles`,
         data: `${baseUrl}?${stringify(params)}`,
         minZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
         maxZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,

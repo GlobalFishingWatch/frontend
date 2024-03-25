@@ -72,6 +72,10 @@ function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
   )
 }
 
+function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
+  return dataview.config?.type === DataviewType.HeatmapStatic
+}
+
 function isTrackDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Vessels && dataview.config?.type === DataviewType.Track
@@ -224,7 +228,7 @@ export function getDataviewsResolved(
   const {
     activityDataviews,
     detectionDataviews,
-    environmentalDataviews,
+    fourwingsDataviews,
     trackDataviews,
     otherDataviews,
   } = dataviews.reduce(
@@ -233,8 +237,8 @@ export function getDataviewsResolved(
         acc.activityDataviews.push(dataview)
       } else if (isDetectionsDataview(dataview)) {
         acc.detectionDataviews.push(dataview)
-      } else if (isEnvironmentalDataview(dataview)) {
-        acc.environmentalDataviews.push(dataview)
+      } else if (isEnvironmentalDataview(dataview) || isHeatmapStaticDataview(dataview)) {
+        acc.fourwingsDataviews.push(dataview)
       } else if (isTrackDataview(dataview)) {
         acc.trackDataviews.push(dataview)
       } else {
@@ -245,14 +249,14 @@ export function getDataviewsResolved(
     {
       activityDataviews: [] as UrlDataviewInstance[],
       detectionDataviews: [] as UrlDataviewInstance[],
-      environmentalDataviews: [] as UrlDataviewInstance[],
+      fourwingsDataviews: [] as UrlDataviewInstance[],
       trackDataviews: [] as UrlDataviewInstance[],
       otherDataviews: [] as UrlDataviewInstance[],
     }
   )
 
   const singleHeatmapDataview =
-    [...activityDataviews, ...detectionDataviews, ...environmentalDataviews].length === 1
+    [...activityDataviews, ...detectionDataviews, ...fourwingsDataviews].length === 1
   const activityComparisonMode = activityDataviews.every((dataview) =>
     params.bivariateDataviews?.includes(dataview.id)
   )
@@ -280,17 +284,18 @@ export function getDataviewsResolved(
         colorRampWhiteEnd: singleHeatmapDataview,
       })
     : []
-  const environmentalDataviewsParsed = environmentalDataviews.flatMap(
+  const fourwingsDataviewsParsed = fourwingsDataviews.flatMap(
     (d) =>
       getFourwingsDataviewsResolved(d, {
-        colorRampWhiteEnd: singleHeatmapDataview,
+        colorRampWhiteEnd:
+          d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
   const dataviewsMerged = [
     ...otherDataviews,
     ...mergedActivityDataview,
     ...mergedDetectionsDataview,
-    ...environmentalDataviewsParsed,
+    ...fourwingsDataviewsParsed,
     ...trackDataviews,
   ]
   return dataviewsMerged
