@@ -28,11 +28,7 @@ import {
   deckToRgbaColor,
   getLayerGroupOffset,
 } from '../../utils'
-import {
-  EMPTY_CELL_COLOR,
-  filterElementByPercentOfIndex,
-  getRoundedDateFromTS,
-} from './fourwings.utils'
+import { EMPTY_CELL_COLOR, filterElementByPercentOfIndex } from './fourwings.utils'
 import {
   HEATMAP_API_TILES_URL,
   HEATMAP_STATIC_ID,
@@ -61,7 +57,6 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
 > {
   static layerName = 'FourwingsHeatmapStaticLayer'
   static defaultProps = defaultProps
-  initialBinsLoad = false
   scale: typeof scaleLinear | undefined = undefined
 
   initializeState(context: LayerContext) {
@@ -137,13 +132,12 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { minFrame, maxFrame, sublayers } = this.props
+    const { sublayers } = this.props
     const { colorDomain, colorRanges, scale } = this.state as FourwingsTileLayerState
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',
       'temporal-aggregation': true,
-      'date-range': `${getRoundedDateFromTS(minFrame)},${getRoundedDateFromTS(maxFrame)}`,
     }
 
     const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
@@ -157,7 +151,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
         pickable: true,
         loaders: [GFWMVTLoader],
         onViewportLoad: this._onViewportLoad,
-        getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Point, params),
+        getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
         getFillColor: this.getFillColor,
         updateTriggers: {
           getFillColor: [colorDomain, colorRanges, scale],
