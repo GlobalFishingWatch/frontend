@@ -3,6 +3,7 @@ import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   AnyDeckLayer,
   BaseMapLayer,
+  ClusterLayer,
   ContextLayer,
   EEZLayer,
   FourwingsLayer,
@@ -12,10 +13,12 @@ import { ResolverGlobalConfig } from './types'
 import { resolveDeckBasemapLayerProps } from './basemap'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckContextLayerProps, resolveDeckEEZLayerProps } from './context'
+import { resolveDeckClusterLayerProps } from './clusters'
 import { resolveDeckVesselLayerProps } from './vessels'
 
 export * from './basemap'
 export * from './context'
+export * from './clusters'
 export * from './dataviews'
 export * from './fourwings'
 export * from './types'
@@ -46,6 +49,11 @@ export const dataviewToDeckLayer = (
     }
     const deckLayerProps = resolveDeckContextLayerProps(dataview, globalConfig, interactions)
     const layer = new ContextLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.TileCluster) {
+    const deckLayerProps = resolveDeckClusterLayerProps(dataview, globalConfig)
+    const layer = new ClusterLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Track) {
