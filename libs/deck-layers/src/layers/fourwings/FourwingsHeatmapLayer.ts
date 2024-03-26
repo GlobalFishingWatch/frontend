@@ -1,4 +1,4 @@
-import { Color, CompositeLayer, GetPickingInfoParams, LayersList, PickingInfo } from '@deck.gl/core'
+import { Color, CompositeLayer, LayersList, PickingInfo } from '@deck.gl/core'
 import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers'
 import { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
@@ -6,13 +6,21 @@ import { CONFIG_BY_INTERVAL, FourWingsFeature } from '@globalfishingwatch/deck-l
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
 import { getInterval } from './fourwings.config'
 import { aggregateCell, chooseColor, getChunk, getIntervalFrames } from './fourwings.utils'
-import { FourwingsHeatmapLayerProps } from './fourwings.types'
+import {
+  FourwingsHeatmapLayerProps,
+  FourwingsPickingInfo,
+  FourwingsPickingObject,
+} from './fourwings.types'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
   layers: LayersList = []
 
-  getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
+  getPickingInfo = ({
+    info,
+  }: {
+    info: PickingInfo<FourwingsPickingObject>
+  }): FourwingsPickingInfo => {
     const { minFrame, maxFrame, availableIntervals, category, sublayers } = this.props
     if (info.object) {
       const chunk = getChunk(minFrame, maxFrame, availableIntervals)
@@ -30,11 +38,11 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         aggregationOperation: this.props.aggregationOperation,
         startFrames: info.object.properties.startFrames,
       })
-      info.object.category = category
-      info.object.sublayers = sublayers
+      info.object.properties.category = category
+      info.object.properties.sublayers = sublayers
       if (values) {
         // TODO: make a decision if send the values within the sublayers or as a separate object
-        info.object.values = values
+        info.object.properties.values = values
       }
     }
     return info

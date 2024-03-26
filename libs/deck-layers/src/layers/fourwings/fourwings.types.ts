@@ -3,7 +3,13 @@ import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
 import { ColorRampsIds } from '@globalfishingwatch/layer-composer'
-import { FourWingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import {
+  FourWingsFeature,
+  FourWingsFeatureProperties,
+  FourWingsStaticFeatureProperties,
+  FourwingsInterval,
+} from '@globalfishingwatch/deck-loaders'
 import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 
 export type FourwingsSublayerId = string
@@ -49,13 +55,22 @@ export type ColorDomain = number[]
 export type ColorRange = Color[]
 export type SublayerColorRanges = ColorRange[]
 
+export type FourwingsPickingObject = FourWingsFeature<
+  FourWingsFeatureProperties &
+    FourWingsStaticFeatureProperties & {
+      category: string
+      sublayers: FourwingsDeckSublayer[]
+    }
+>
+export type FourwingsPickingInfo = PickingInfo<FourwingsPickingObject>
+
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   id: string
   tile: Tile2DHeader
   data: FourWingsFeature[]
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
-  hoveredFeatures?: FourWingsFeature[]
+  hoveredFeatures?: FourwingsPickingInfo[]
 }
 
 export type AggregateCellParams = {
@@ -79,7 +94,7 @@ export type GetFillColorParams = {
 type BaseFourwinsLayerProps = {
   minFrame: number
   maxFrame: number
-  category: string
+  category: DataviewCategory
   sublayers: FourwingsDeckSublayer[]
   tilesUrl?: string
   clickedFeatures?: PickingInfo[]

@@ -1,9 +1,13 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
-import { PickingInfo } from '@deck.gl/core'
+import { ContextPickingInfo, FourwingsPickingInfo } from '@globalfishingwatch/deck-layers'
 
 // Atom used to have all the layer instances loading state available
-export type DeckLayerInteraction = { latitude: number; longitude: number; features: PickingInfo[] }
+export type DeckLayerInteraction = {
+  latitude: number
+  longitude: number
+  features: (FourwingsPickingInfo | ContextPickingInfo)[]
+}
 
 export const deckHoverInteractionAtom = atom<DeckLayerInteraction>({} as DeckLayerInteraction)
 export const deckClickInteractionAtom = atom<DeckLayerInteraction>({} as DeckLayerInteraction)

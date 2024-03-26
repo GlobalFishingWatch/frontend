@@ -39,7 +39,7 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
       sublayers: layer.instance.props.sublayers,
       domain,
       ranges: range,
-      currentValues: interaction?.object.values,
+      currentValues: interaction?.object?.properties?.values!,
       label,
     }
   })

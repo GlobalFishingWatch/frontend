@@ -329,8 +329,8 @@ const MapWrapper = () => {
             visible={rulersVisible}
           />
         )}
-        <MapPopups />
       </DeckGL>
+      <MapPopups />
       {/* {style && (
         <Map
           id="map"

@@ -39,7 +39,11 @@ import {
   getLayerGroupOffset,
 } from '../../utils'
 import { EMPTY_CELL_COLOR, filterElementByPercentOfIndex } from './fourwings.utils'
-import { HEATMAP_API_TILES_URL, MAX_RAMP_VALUES_PER_TILE } from './fourwings.config'
+import {
+  FOURWINGS_MAX_ZOOM,
+  HEATMAP_API_TILES_URL,
+  MAX_RAMP_VALUES_PER_TILE,
+} from './fourwings.config'
 import {
   ColorRange,
   FourwingsHeatmapTileLayerProps,
@@ -47,11 +51,14 @@ import {
   FourwingsAggregationOperation,
   FourwinsTileLayerScale,
   FourwingsHeatmapStaticLayerProps,
+  FourwingsPickingInfo,
+  FourwingsPickingObject,
 } from './fourwings.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
   maxRequests: 100,
   debounceTime: 500,
+  maxZoom: FOURWINGS_MAX_ZOOM,
   aggregationOperation: FourwingsAggregationOperation.Sum,
   tilesUrl: HEATMAP_API_TILES_URL,
   resolution: 'default',
@@ -134,11 +141,18 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     }
   }
 
-  getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
-    if (info.object?.properties?.count) {
-      info.object.values = [info.object.properties.count]
-      info.object.category = this.props.category
+  getPickingInfo = ({
+    info,
+  }: {
+    info: PickingInfo<FourwingsPickingObject>
+  }): FourwingsPickingInfo => {
+    if (!info.object) {
+      info.object = {} as FourwingsPickingObject
     }
+    if (info.object?.properties?.count) {
+      info.object.properties.values = [[info.object.properties.count]]
+    }
+    info.object.properties.category = this.props.category
     return info
   }
 

@@ -66,12 +66,14 @@ function PopupWrapper({
   // )
 
   const featureByCategory = groupBy(
-    interaction.features.sort(
-      (a, b) =>
-        POPUP_CATEGORY_ORDER.indexOf(a.object.category) -
-        POPUP_CATEGORY_ORDER.indexOf(b.object.category)
-    ),
-    'object.category'
+    interaction.features
+      .map((feature) => feature.object)
+      .sort(
+        (a, b) =>
+          POPUP_CATEGORY_ORDER.indexOf(a?.properties?.category as DataviewCategory) -
+          POPUP_CATEGORY_ORDER.indexOf(b?.properties?.category as DataviewCategory)
+      ),
+    'category'
   )
 
   const [left, top] = mapViewport.project([interaction.longitude, interaction.latitude])
@@ -85,7 +87,7 @@ function PopupWrapper({
           <Spinner size="small" />
         </div>
       ) : (
-        <div className={styles.popup}>
+        <div>
           {/* <div>
             <IconButton icon="close" onClick={onClose} />
           </div> */}
@@ -192,7 +194,7 @@ function PopupWrapper({
                         showFeaturesDetails={type === 'click'}
                       />
                       <ContextTooltipSection
-                        features={defaultContextFeatures}
+                        features={features}
                         showFeaturesDetails={type === 'click'}
                       />
                     </Fragment>
