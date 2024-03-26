@@ -1,4 +1,4 @@
-import { API_VERSION } from '@globalfishingwatch/api-client'
+import { GFWAPI, API_VERSION } from '@globalfishingwatch/api-client'
 import {
   Dataset,
   DatasetTypes,
@@ -9,7 +9,11 @@ import {
 const arrayQueryParams: EndpointParamType[] = ['4wings-datasets', 'sql']
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
 
-export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDatasetConfig) => {
+export const resolveEndpoint = (
+  dataset: Dataset,
+  datasetConfig = {} as DataviewDatasetConfig,
+  { absolute = false } = {} as { absolute: boolean }
+) => {
   const endpoint = dataset.endpoints?.find((endpoint) => {
     return endpoint.id === datasetConfig.endpoint
   })
@@ -91,5 +95,5 @@ export const resolveEndpoint = (dataset: Dataset, datasetConfig: DataviewDataset
     }
   }
 
-  return decodeURI(url)
+  return GFWAPI.generateUrl(decodeURI(url) as string, { absolute })
 }

@@ -173,7 +173,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { sublayers, resolution, minVisibleValue, maxVisibleValue } = this.props
+    const { tilesUrl, sublayers, resolution, minVisibleValue, maxVisibleValue, maxZoom } =
+      this.props
     const { colorDomain, colorRanges, scale } = this.state as FourwingsTileLayerState
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
@@ -181,13 +182,11 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
       'temporal-aggregation': true,
     }
 
-    const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
-
     const layers: any[] = [
       new MVTLayer<FourWingsStaticFeatureProperties>(this.props as any, {
         id: `static-${resolution}`,
-        data: `${baseUrl}?${stringify(params)}`,
-        // maxZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
+        data: `${tilesUrl}?${stringify(params)}`,
+        maxZoom,
         binary: false,
         pickable: true,
         loaders: [GFWMVTLoader],

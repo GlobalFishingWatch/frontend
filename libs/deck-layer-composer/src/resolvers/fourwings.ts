@@ -77,18 +77,22 @@ export const resolveDeckFourwingsLayerProps = (
     ?.flatMap((sublayer) => sublayer.datasets)
     ?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
   const tilesUrl = dataset
-    ? resolveEndpoint(dataset, {
-        datasetId: dataset.id,
-        endpoint: EndpointId.FourwingsTiles,
-        params: [
-          {
-            id: 'type',
-            // api enpdoint needs 'position' instead of 'positions'
-            // TODO: discuss this with Raul before the release
-            value: visualizationMode === 'positions' ? 'position' : 'heatmap',
-          },
-        ],
-      })
+    ? resolveEndpoint(
+        dataset,
+        {
+          datasetId: dataset.id,
+          endpoint: EndpointId.FourwingsTiles,
+          params: [
+            {
+              id: 'type',
+              // api enpdoint needs 'position' instead of 'positions'
+              // TODO: discuss this with Raul before the release
+              value: visualizationMode === 'positions' ? 'position' : 'heatmap',
+            },
+          ],
+        },
+        { absolute: true }
+      )
     : undefined
 
   return {

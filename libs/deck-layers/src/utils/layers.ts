@@ -21,20 +21,19 @@ export function getPickedFeatureToHighlight(
   )
 }
 
-export const getMVTSublayerProps = (
-  props: TileLayerProps & {
-    id: string
-    data: any
-    _offset: number
-    tile: Tile2DHeader
-  }
-): {
+export function getMVTSublayerProps({
+  tile,
+  extensions,
+}: {
+  tile: Tile2DHeader
+  extensions: TileLayerProps['extensions']
+}): {
   modelMatrix: Matrix4
   coordinateOrigin: [number, number, number]
   coordinateSystem: 0 | 3 | 1 | -1 | 2 | undefined
   extensions: any[]
-} => {
-  const { x, y, z } = props.tile.index
+} {
+  const { x, y, z } = tile.index
   const worldScale = Math.pow(2, z)
   const xScale = WORLD_SIZE / worldScale
   const yScale = -xScale
@@ -45,6 +44,6 @@ export const getMVTSublayerProps = (
     modelMatrix: modelMatrix,
     coordinateOrigin: [xOffset, yOffset, 0],
     coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
-    extensions: [...(props.extensions || []), new ClipExtension()],
+    extensions: [...(extensions || []), new ClipExtension()],
   }
 }
