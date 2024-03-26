@@ -2,11 +2,16 @@
   padding-block: var(--space-XL);
 }
 
-.error {
-  padding-block: var(--space-XL);
-  padding-inline: var(--space-M);
-  color: var(--color-danger-red);
-  text-align: center;
+.disclaimer {
+  display: flex;
+  align-items: top;
+  margin-top: var(--space-XS);
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
+.disclaimer svg {
+  margin-top: 0.2rem;
 }
 
 .container {

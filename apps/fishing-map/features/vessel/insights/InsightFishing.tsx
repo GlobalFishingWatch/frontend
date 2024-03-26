@@ -1,14 +1,17 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
-import { InsightFishingResponse } from '@globalfishingwatch/api-types'
+import { InsightErrorResponse, InsightFishingResponse } from '@globalfishingwatch/api-types'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import styles from './Insights.module.css'
 
 const InsightFishing = ({
   insightData,
   isLoading,
+  error,
 }: {
   insightData: InsightFishingResponse
   isLoading: boolean
+  error: InsightErrorResponse
 }) => {
   const { t } = useTranslation()
   const { eventsInNoTakeMpas, eventsInRfmoWithoutKnownAuthorization } =
@@ -16,17 +19,19 @@ const InsightFishing = ({
   return (
     <div className={styles.insightContainer}>
       <label>{t('vessel.insights.fishing', 'Fishing Events')}</label>
-      {isLoading || !insightData ? (
+      {isLoading ? (
         <Fragment>
           <div style={{ width: '30rem' }} className={styles.loadingPlaceholder} />
           <div style={{ width: '50rem' }} className={styles.loadingPlaceholder} />
         </Fragment>
+      ) : error ? (
+        <InsightError error={error} />
       ) : (
         <div>
-          {eventsInNoTakeMpas.length !== 0 ? (
+          {eventsInNoTakeMpas?.length !== 0 ? (
             <p>
               {t('vessel.insights.fishingEventsInNoTakeMpas', {
-                count: eventsInNoTakeMpas.length,
+                count: eventsInNoTakeMpas?.length,
                 defaultValue: '{{count}} fishing events detected in no-take MPAs',
               })}
             </p>
@@ -38,10 +43,10 @@ const InsightFishing = ({
               )}
             </p>
           )}
-          {eventsInRfmoWithoutKnownAuthorization.length !== 0 ? (
+          {eventsInRfmoWithoutKnownAuthorization?.length !== 0 ? (
             <p>
               {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorization', {
-                count: eventsInRfmoWithoutKnownAuthorization.length,
+                count: eventsInRfmoWithoutKnownAuthorization?.length,
                 defaultValue:
                   '{{count}} fishing events detected outside known RFMO authorized areas',
               })}

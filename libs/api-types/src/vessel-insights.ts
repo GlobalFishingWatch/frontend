@@ -58,7 +58,7 @@ export type InsightGapsResponse = InsightBase & {
   }
 }
 
-export type InsightIdentityResponse = InsightBase & {
+export type InsightFlagChangesResponse = InsightBase & {
   vesselIdentity: {
     datasets: string[]
     flagsChanges: {
@@ -66,11 +66,12 @@ export type InsightIdentityResponse = InsightBase & {
       totalTimesListedInThePeriod: number
       valuesInThePeriod: ValueInPeriod[]
     }
-    iuuVesselList: {
-      totalTimesListed: number
-      totalTimesListedInThePeriod: number
-      valuesInThePeriod: ValueInPeriod[]
-    }
+  }
+}
+
+export type InsightMOUListResponse = InsightBase & {
+  vesselIdentity: {
+    datasets: string[]
     mouList: {
       tokyo: {
         totalTimesListed: number
@@ -86,8 +87,27 @@ export type InsightIdentityResponse = InsightBase & {
   }
 }
 
+export type InsightIUUResponse = InsightBase & {
+  vesselIdentity: {
+    datasets: string[]
+    iuuVesselList: {
+      totalTimesListed: number
+      totalTimesListedInThePeriod: number
+      valuesInThePeriod: ValueInPeriod[]
+    }
+  }
+}
+
 export type InsightResponse =
   | InsightCoverageResponse
   | InsightFishingResponse
   | InsightGapsResponse
-  | InsightIdentityResponse
+  | InsightFlagChangesResponse
+  | InsightMOUListResponse
+  | InsightIUUResponse
+
+export type InsightErrorResponse = {
+  message: string
+  metadata: any
+  status: number
+}

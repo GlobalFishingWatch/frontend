@@ -1,22 +1,27 @@
 import { useTranslation } from 'react-i18next'
-import { InsightCoverageResponse } from '@globalfishingwatch/api-types'
+import { InsightCoverageResponse, InsightErrorResponse } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import styles from './Insights.module.css'
 
 const InsightCoverage = ({
   insightData,
   isLoading,
+  error,
 }: {
   insightData: InsightCoverageResponse
   isLoading: boolean
+  error: InsightErrorResponse
 }) => {
   const { t } = useTranslation()
   return (
     <div className={styles.insightContainer}>
       <label>{t('vessel.insights.coverage', 'AIS Coverage')}</label>
-      {isLoading || !insightData ? (
+      {isLoading ? (
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
-      ) : insightData.coverage.percentage ? (
+      ) : error ? (
+        <InsightError error={error} />
+      ) : insightData?.coverage.percentage ? (
         <div className={styles.coverageBar}>
           <div
             className={styles.coverageIndicator}

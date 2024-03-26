@@ -1,31 +1,30 @@
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { InsightIdentityResponse } from '@globalfishingwatch/api-types'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import { InsightErrorResponse, InsightIUUResponse } from '@globalfishingwatch/api-types'
+import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import styles from './Insights.module.css'
 
 const InsightIUU = ({
   insightData,
   isLoading,
+  error,
 }: {
-  insightData: InsightIdentityResponse
+  insightData: InsightIUUResponse
   isLoading: boolean
+  error: InsightErrorResponse
 }) => {
   const { t } = useTranslation()
-  const guestUser = useSelector(selectIsGuestUser)
   const { iuuVesselList } = insightData?.vesselIdentity || {}
   return (
     <div className={styles.insightContainer}>
       <label>{t('vessel.insights.IUU', 'RFMO IUU Vessel List')}</label>
-      {guestUser ? (
-        <VesselIdentityFieldLogin />
-      ) : isLoading || !insightData ? (
+      {isLoading ? (
         <div style={{ width: '50rem' }} className={styles.loadingPlaceholder} />
+      ) : error ? (
+        <InsightError error={error} />
       ) : (
         <div>
           <p>
-            {iuuVesselList.valuesInThePeriod.length !== 0 ? (
+            {iuuVesselList?.valuesInThePeriod.length !== 0 ? (
               <span>
                 {t('vessel.insights.IUUBlackListsCount', {
                   // value: iuuBlacklist.valuesInThePeriod.join(', '),

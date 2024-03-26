@@ -1,27 +1,33 @@
 import { useSelector } from 'react-redux'
 import { useGetVesselInsightMutation } from 'queries/vessel-insight-api'
-import { Fragment, useCallback, useEffect } from 'react'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { useCallback, useEffect } from 'react'
+import {
+  InsightErrorResponse,
+  InsightFlagChangesResponse,
+  InsightIUUResponse,
+  InsightMOUListResponse,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
 import {
   InsightCoverageResponse,
   InsightFishingResponse,
   InsightGapsResponse,
-  InsightIdentityResponse,
 } from '@globalfishingwatch/api-types'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { IdentityVesselData, selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import InsightMOUList from 'features/vessel/insights/InsightMOUList'
 import InsightCoverage from './InsightCoverage'
 import InsightFishing from './InsightFishing'
 import InsightGaps from './InsightGaps'
-import InsightIdentity from './InsightIdentity'
 import InsightIUU from './InsightIUU'
+import InsightFlagChanges from './InsightFlagChanges'
 
 const InsightWrapper = ({ insight }: { insight: string }) => {
   const { start, end } = useSelector(selectTimeRange)
   const vessel = useSelector(selectVesselInfoData)
 
-  const [getInsight, { isLoading, data }] = useGetVesselInsightMutation({
+  const [getInsight, { isLoading, data, error }] = useGetVesselInsightMutation({
     fixedCacheKey: [insight, start, end, vessel.id].join(),
   })
 
@@ -63,21 +69,58 @@ const InsightWrapper = ({ insight }: { insight: string }) => {
   }, [callInsight, end, insight, start, vessel])
 
   if (insight === 'COVERAGE') {
-    return <InsightCoverage isLoading={isLoading} insightData={data as InsightCoverageResponse} />
+    return (
+      <InsightCoverage
+        isLoading={isLoading}
+        insightData={data as InsightCoverageResponse}
+        error={error as InsightErrorResponse}
+      />
+    )
   }
   if (insight === 'GAP') {
-    return <InsightGaps isLoading={isLoading} insightData={data as InsightGapsResponse} />
-  }
-  if (insight === 'VESSEL-IDENTITY') {
     return (
-      <Fragment>
-        <InsightIUU isLoading={isLoading} insightData={data as InsightIdentityResponse} />
-        <InsightIdentity isLoading={isLoading} insightData={data as InsightIdentityResponse} />
-      </Fragment>
+      <InsightGaps
+        isLoading={isLoading}
+        insightData={data as InsightGapsResponse}
+        error={error as InsightErrorResponse}
+      />
     )
   }
   if (insight === 'FISHING') {
-    return <InsightFishing isLoading={isLoading} insightData={data as InsightFishingResponse} />
+    return (
+      <InsightFishing
+        isLoading={isLoading}
+        insightData={data as InsightFishingResponse}
+        error={error as InsightErrorResponse}
+      />
+    )
+  }
+  if (insight === 'VESSEL-IDENTITY-IUU-VESSEL-LIST') {
+    return (
+      <InsightIUU
+        isLoading={isLoading}
+        insightData={data as InsightIUUResponse}
+        error={error as InsightErrorResponse}
+      />
+    )
+  }
+  if (insight === 'VESSEL-IDENTITY-FLAG-CHANGES') {
+    return (
+      <InsightFlagChanges
+        isLoading={isLoading}
+        insightData={data as InsightFlagChangesResponse}
+        error={error as InsightErrorResponse}
+      />
+    )
+  }
+  if (insight === 'VESSEL-IDENTITY-MOU-LIST') {
+    return (
+      <InsightMOUList
+        isLoading={isLoading}
+        insightData={data as InsightMOUListResponse}
+        error={error as InsightErrorResponse}
+      />
+    )
   }
 }
 
