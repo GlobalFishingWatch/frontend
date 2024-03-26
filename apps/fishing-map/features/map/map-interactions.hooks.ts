@@ -45,6 +45,7 @@ import { SliceInteractionEvent } from './map.slice'
 import { isRulerLayerPoint } from './map-interaction.utils'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 
+const defaultEmptyFeatures = [] as PickingInfo[]
 export const useMapMouseHover = (style?: ExtendedStyle) => {
   const map = useDeckMap()
   const setMapHoverFeatures = useSetMapHoverInteraction()
@@ -70,20 +71,25 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
   const onMouseMove: DeckProps['onHover'] = useCallback(
     (info: PickingInfo, event: any) => {
       if (!map || !info.coordinate) return
-      const features = map?.pickMultipleObjects({
-        x: info.x,
-        y: info.y,
-        radius: 0,
-      })
 
-      if (features) {
-        setMapHoverFeatures({
-          longitude: info.coordinate[0],
-          latitude: info.coordinate[1],
-          features,
+      let features = defaultEmptyFeatures
+      try {
+        features = map?.pickMultipleObjects({
+          x: info.x,
+          y: info.y,
+          radius: 0,
         })
-        // onRulerDrag(features)
+      } catch (e) {
+        console.warn(e)
       }
+
+      setMapHoverFeatures({
+        longitude: info.coordinate[0],
+        latitude: info.coordinate[1],
+        features,
+      })
+      // onRulerDrag(features)
+
       if (rulersEditing) {
         onRulerMapHover(info)
       }
@@ -177,13 +183,16 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       // if (rulersEditing && !hasRulerFeature) {
       //   return onRulerMapClick(event)
       // }
-
-      const features = map?.pickMultipleObjects({
-        x: info.x,
-        y: info.y,
-        radius: 0,
-      })
-
+      let features = defaultEmptyFeatures
+      try {
+        features = map?.pickMultipleObjects({
+          x: info.x,
+          y: info.y,
+          radius: 0,
+        })
+      } catch (e) {
+        console.warn(e)
+      }
       setMapClickFeatures({ longitude: info.coordinate[0], latitude: info.coordinate[1], features })
       const fourWingsValues = features?.map(
         (f: PickingInfo) =>
@@ -336,12 +345,16 @@ export const useMapDrag = () => {
     (info: PickingInfo, event: any) => {
       if (!map || !info.coordinate) return
       if (rulersEditing) {
-        const features = map?.pickMultipleObjects({
-          x: info.x,
-          y: info.y,
-          radius: 0,
-        })
-        onRulerDragStart(info, features)
+        try {
+          const features = map?.pickMultipleObjects({
+            x: info.x,
+            y: info.y,
+            radius: 0,
+          })
+          onRulerDragStart(info, features)
+        } catch (e) {
+          console.warn(e)
+        }
       }
     },
     [map, onRulerDragStart, rulersEditing]
