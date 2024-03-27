@@ -6,6 +6,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { formatInfoField } from 'utils/info'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './Insights.module.css'
 
 const InsightFlagChanges = ({
@@ -23,7 +24,15 @@ const InsightFlagChanges = ({
 
   return (
     <div className={styles.insightContainer}>
-      <label>{t('vessel.insights.flagChanges', 'Flag Changes')}</label>
+      <div className={styles.insightTitle}>
+        <label>{t('vessel.insights.flagChanges', 'Flag Changes')}</label>
+        <DataTerminology
+          size="tiny"
+          type="default"
+          title={t('vessel.insights.flagChanges', 'Flag Changes')}
+          terminologyKey="insightsFlagsChanges"
+        />
+      </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />
       ) : isLoading ? (

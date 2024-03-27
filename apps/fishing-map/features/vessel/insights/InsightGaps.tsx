@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useCallback, useState } from 'react'
 import { InsightErrorResponse, InsightGapsResponse } from '@globalfishingwatch/api-types'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import InsightError from './InsightErrorMessage'
 import styles from './Insights.module.css'
 import InsightGapsDetails from './InsightGapsDetails'
@@ -24,7 +25,15 @@ const InsightGaps = ({
 
   return (
     <div className={styles.insightContainer}>
-      <label>{t('vessel.insights.gaps', 'AIS Off Events')}</label>
+      <div className={styles.insightTitle}>
+        <label>{t('vessel.insights.gaps', 'AIS Off Events')}</label>
+        <DataTerminology
+          size="tiny"
+          type="default"
+          title={t('vessel.insights.gaps', 'AIS Off Events')}
+          terminologyKey="insightsGaps"
+        />
+      </div>
       {isLoading ? (
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
       ) : error ? (

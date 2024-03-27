@@ -32,6 +32,11 @@
   padding-bottom: var(--space-L);
 }
 
+.insightTitle {
+  display: flex;
+  align-items: center;
+}
+
 .coverageBar {
   margin-top: var(--space-M);
   position: relative;

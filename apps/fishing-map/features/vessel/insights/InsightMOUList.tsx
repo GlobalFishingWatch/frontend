@@ -6,6 +6,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { formatInfoField } from 'utils/info'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import styles from './Insights.module.css'
 
 const InsightMOUList = ({
@@ -82,7 +83,15 @@ const InsightMOUList = ({
 
   return (
     <div className={styles.insightContainer}>
-      <label>{t('vessel.insights.MOULists', 'MOU Lists')}</label>
+      <div className={styles.insightTitle}>
+        <label>{t('vessel.insights.MOULists', 'MOU Lists')}</label>
+        <DataTerminology
+          size="tiny"
+          type="default"
+          title={t('vessel.insights.MOULists', 'MOU Lists')}
+          terminologyKey="insightsMOUList"
+        />
+      </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />
       ) : isLoading ? (
