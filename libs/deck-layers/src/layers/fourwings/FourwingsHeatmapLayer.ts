@@ -29,7 +29,6 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       sublayers,
     }
     if (info.object) {
-      debugger
       const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
       const interval = getInterval(minFrame, maxFrame, availableIntervals)
       const tileMinIntervalFrame = Math.ceil(
