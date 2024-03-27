@@ -11,6 +11,7 @@ export enum RegionType {
   mpa = 'mpa',
   fao = 'fao',
   majorFao = 'majorFao',
+  highSeas = 'highSeas',
 }
 
 export interface Regions {
@@ -19,6 +20,7 @@ export interface Regions {
   [RegionType.mpa]: string[]
   [RegionType.fao]?: string[]
   [RegionType.majorFao]?: string[]
+  [RegionType.highSeas]?: string[]
 }
 
 export interface GapPosition extends PointCoordinate {
