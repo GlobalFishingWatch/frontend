@@ -143,7 +143,11 @@ export const featuresToTimeseries = (
     // })
 
     // TODO:deck review if we can skip this step
-    const valuesContained = frameTimeseriesToDateTimeseries(valuesContainedRaw, compareDeltaMillis)
+    // TODO:deck review typings
+    const valuesContained = frameTimeseriesToDateTimeseries(
+      valuesContainedRaw as any,
+      compareDeltaMillis
+    )
 
     const featuresContainedAndOverlapping =
       overlapping.length > 0 ? [...(contained || []), ...(overlapping || [])] : []
@@ -156,7 +160,7 @@ export const featuresToTimeseries = (
         // aggregationOperation: sourceMetadata.aggregationOperation,
         // minVisibleValue: sourceMetadata.minVisibleValue,
         // maxVisibleValue: sourceMetadata.maxVisibleValue,
-      )
+      ) as any
     }
 
     const valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(

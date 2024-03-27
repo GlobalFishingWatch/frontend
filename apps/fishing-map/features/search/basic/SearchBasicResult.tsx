@@ -38,7 +38,7 @@ import {
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
-import useMapInstance from 'features/map/map-context.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
@@ -64,7 +64,7 @@ function SearchBasicResult({
   vesselsSelected,
 }: SearchBasicResultProps) {
   const { t, i18n } = useTranslation()
-  const map = useMapInstance()
+  const map = useDeckMap()
   const dispatch = useAppDispatch()
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()

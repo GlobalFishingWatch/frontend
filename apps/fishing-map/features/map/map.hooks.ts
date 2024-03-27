@@ -281,37 +281,51 @@ export const useClickedEventConnect = () => {
   }
 }
 
-// TODO this could extend ExtendedFeature
-export type TooltipEventFeature = {
-  category: DataviewCategory
-  color?: string
-  datasetId?: string
-  datasetSource?: string
-  event?: ExtendedFeatureEvent
-  generatorContextLayer?: ContextLayerType | null
-  geometry?: Point | Polygon | MultiPolygon
-  id?: string
-  layerId: string
-  promoteId?: string
-  properties: Record<string, string>
-  source: string
-  sourceLayer: string
-  subcategory?: DatasetSubCategory
-  temporalgrid?: TemporalGridFeature
-  title?: string
-  type?: DataviewType
-  unit?: string
-  value: string // TODO Why not a number?
-  visible?: boolean
-  vesselsInfo?: {
-    overflow: boolean
-    overflowNumber: number
-    overflowLoad: boolean
-    overflowLoadNumber: number
-    numVessels: number
-    vessels: ExtendedFeatureVessel[]
-  }
+// TODO:deck fuerte
+// hack to allow building the app wihtout migrating the rest of the interactions
+// needs to be updated with the new deck-layers
+export type TooltipEventFeatureVesselsInfo = {
+  overflow: boolean
+  overflowNumber: number
+  overflowLoad: boolean
+  overflowLoadNumber: number
+  numVessels: number
+  vessels: ExtendedFeatureVessel[]
 }
+export type TooltipEventFeature = {
+  vesselsInfo?: TooltipEventFeatureVesselsInfo
+  [key: string]: any
+}
+// export type TooltipEventFeature = {
+//   category: DataviewCategory
+//   color?: string
+//   datasetId?: string
+//   datasetSource?: string
+//   event?: ExtendedFeatureEvent
+//   generatorContextLayer?: ContextLayerType | null
+//   geometry?: Point | Polygon | MultiPolygon
+//   id?: string
+//   layerId: string
+//   promoteId?: string
+//   properties: Record<string, string>
+//   source: string
+//   sourceLayer: string
+//   subcategory?: DatasetSubCategory
+//   temporalgrid?: TemporalGridFeature
+//   title?: string
+//   type?: DataviewType
+//   unit?: string
+//   value: string // TODO Why not a number?
+//   visible?: boolean
+//   vesselsInfo?: {
+//     overflow: boolean
+//     overflowNumber: number
+//     overflowLoad: boolean
+//     overflowLoadNumber: number
+//     numVessels: number
+//     vessels: ExtendedFeatureVessel[]
+//   }
+// }
 
 export type TooltipEvent = {
   latitude: number

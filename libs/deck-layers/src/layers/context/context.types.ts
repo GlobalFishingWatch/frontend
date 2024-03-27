@@ -1,5 +1,5 @@
 import { PickingInfo } from '@deck.gl/core'
-import { Feature, Polygon, MultiPolygon } from 'geojson'
+import { Feature, Polygon, MultiPolygon, Geometry } from 'geojson'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 
@@ -37,6 +37,7 @@ export type ContextLayerProps = {
 export type ContextFeatureProperties = {
   id: string
   title: string
+  color: string
   value: string | number
   layerId: ContextLayerId
   datasetId: string
@@ -45,5 +46,8 @@ export type ContextFeatureProperties = {
 }
 export type ContextFeature = Feature<Polygon | MultiPolygon, Record<string, any>> &
   ContextFeatureProperties
+
+// TODO:deck create this type in the proper deck class layer
+export type UserContextFeature = Feature<Geometry, Record<string, any>> & ContextFeatureProperties
 
 export type ContextPickingInfo = PickingInfo<ContextFeature, { tile?: Tile2DHeader }>

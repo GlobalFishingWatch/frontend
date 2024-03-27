@@ -23,6 +23,7 @@ export interface FourwingsDeckSublayer {
   visible: boolean
   color: string
   colorRamp: ColorRampsIds
+  value?: number
   unit?: string
   filter?: string
   vesselGroups?: string | string[]
@@ -56,12 +57,12 @@ export type ColorRange = Color[]
 export type SublayerColorRanges = ColorRange[]
 
 export type FourwingsPickingObject = FourwingsFeature<
-  FourwingsFeatureProperties &
-    FourwingsStaticFeatureProperties & {
-      category: string
-      sublayers: FourwingsDeckSublayer[]
-    }
->
+  FourwingsFeatureProperties & Partial<FourwingsStaticFeatureProperties>
+> & {
+  title: string
+  category: string
+  sublayers: FourwingsDeckSublayer[]
+}
 export type FourwingsPickingInfo = PickingInfo<FourwingsPickingObject>
 
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {

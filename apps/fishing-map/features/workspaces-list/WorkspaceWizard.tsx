@@ -17,7 +17,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
-import useMapInstance from 'features/map/map-context.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
@@ -46,7 +46,7 @@ function WorkspaceWizard() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
-  const map = useMapInstance()
+  const map = useDeckMap()
   const { viewState } = useViewStateAtom()
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])

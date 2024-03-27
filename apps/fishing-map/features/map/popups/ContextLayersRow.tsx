@@ -3,7 +3,7 @@ import parse from 'html-react-parser'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { ContextFeature } from '@globalfishingwatch/deck-layers'
+import { ContextFeature, UserContextFeature } from '@globalfishingwatch/deck-layers'
 import {
   selectActiveHeatmapDowloadDataviews,
   selectHasReportLayersVisible,
@@ -74,7 +74,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
 }
 
 interface ReportPopupButtonProps {
-  feature: ContextFeature
+  feature: ContextFeature | UserContextFeature
   onClick?: (e: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => void
 }
 
@@ -134,7 +134,8 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
         },
         query: {
           ...query,
-          reportAreaSource: feature.source,
+          // TODO:deck validate this is not needed anymore
+          // reportAreaSource: feature.source,
           reportBufferUnit: isPointFeature ? DEFAULT_POINT_BUFFER_UNIT : undefined,
           reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
           reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
@@ -157,7 +158,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
 interface ContextLayersRowProps {
   id: string
   label: string
-  feature: ContextFeature
+  feature: ContextFeature | UserContextFeature
   showFeaturesDetails: boolean
   showActions?: boolean
   linkHref?: string
@@ -167,7 +168,7 @@ interface ContextLayersRowProps {
     feature: TooltipEventFeature
   ) => void
 }
-const ContextLayersRow: React.FC<ContextLayersRowProps> = ({
+const ContextLayersRow = ({
   id,
   label,
   showFeaturesDetails,

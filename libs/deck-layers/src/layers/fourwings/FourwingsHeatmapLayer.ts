@@ -2,7 +2,11 @@ import { Color, CompositeLayer, LayersList, PickingInfo } from '@deck.gl/core'
 import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers'
 import { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { CONFIG_BY_INTERVAL, FourwingsFeature } from '@globalfishingwatch/deck-loaders'
+import {
+  CONFIG_BY_INTERVAL,
+  FourwingsFeature,
+  FourwingsFeatureProperties,
+} from '@globalfishingwatch/deck-loaders'
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
 import { getInterval } from './fourwings.config'
 import { aggregateCell, chooseColor, getFourwingsChunk, getIntervalFrames } from './fourwings.utils'
@@ -16,13 +20,16 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   static layerName = 'FourwingsHeatmapLayer'
   layers: LayersList = []
 
-  getPickingInfo = ({
-    info,
-  }: {
-    info: PickingInfo<FourwingsPickingObject>
-  }): FourwingsPickingInfo => {
-    const { minFrame, maxFrame, availableIntervals, category, sublayers } = this.props
+  getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }): FourwingsPickingInfo => {
+    const { id, minFrame, maxFrame, availableIntervals, category, sublayers } = this.props
+    const object: FourwingsPickingObject = {
+      ...(info.object || ({} as FourwingsFeature)),
+      title: id,
+      category,
+      sublayers,
+    }
     if (info.object) {
+      debugger
       const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
       const interval = getInterval(minFrame, maxFrame, availableIntervals)
       const tileMinIntervalFrame = Math.ceil(
@@ -38,14 +45,9 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         aggregationOperation: this.props.aggregationOperation,
         startFrames: info.object.properties.startFrames,
       })
-      info.object.properties.category = category
-      info.object.properties.sublayers = sublayers
-      if (values) {
-        // TODO: make a decision if send the values within the sublayers or as a separate object
-        info.object.properties.values = values
-      }
+      object.sublayers = object.sublayers.map((sublayer, i) => ({ ...sublayer, value: values[i] }))
     }
-    return info
+    return { ...info, object }
   }
 
   renderLayers() {

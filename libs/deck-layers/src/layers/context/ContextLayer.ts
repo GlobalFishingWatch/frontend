@@ -64,6 +64,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
       this.context.viewport
     ) as ContextFeature
     info.object.title = this.props.id
+    info.object.color = this.props.color
     info.object.layerId = this.props.layers[0].id
     info.object.datasetId = this.props.layers[0].datasetId
     info.object.category = this.props.category

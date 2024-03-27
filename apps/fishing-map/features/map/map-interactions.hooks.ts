@@ -145,12 +145,12 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
           ...prev,
           [current.category]: [...(prev[current.category] ?? []), current],
         }),
-        {}
+        {} as Record<string, TooltipEventFeature[]>
       )
 
     return Object.entries(layersByCategory).map(
       ([featureCategory, features]) =>
-        `${featureCategory}: ${features.map((f) => f.layerId).join(',')}`
+        `${featureCategory}: ${(features as any[]).map((f) => f.layerId).join(',')}`
     )
   }, [clickedEvent, clickedTooltipEvent])
 

@@ -123,7 +123,12 @@ export const useEnvironmentalBreaksUpdate = () => {
           const resolvedFeatures = chunksFeatures?.[0]?.features || features || ({} as ChunkFeature)
           if (resolvedFeatures && resolvedFeatures.length && geometry) {
             const config = dataviews.find(({ id }) => dataviewsId.includes(id))?.config
-            const featuresInReportArea = filterByPolygon([resolvedFeatures], geometry, 'point')[0]
+            // TODO:deck review why this any typing is needed
+            const featuresInReportArea = filterByPolygon(
+              [resolvedFeatures] as any,
+              geometry,
+              'point'
+            )[0]
             const allFeaturesInReportArea = [
               ...(featuresInReportArea?.contained || []),
               ...(featuresInReportArea?.overlapping || []),
