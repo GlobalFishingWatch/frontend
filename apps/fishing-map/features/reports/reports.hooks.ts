@@ -22,7 +22,7 @@ import {
   selectReportBufferHash,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
-import useMapInstance from 'features/map/map-context.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Bbox } from 'types'
 import { useSetViewState, useViewStateAtom } from 'features/map/map-viewport.hooks'
@@ -50,7 +50,7 @@ export type DateTimeSeries = {
 }[]
 
 export function useReportAreaCenter(bounds?: Bbox) {
-  const map = useMapInstance()
+  const map = useDeckMap()
   return useMemo(() => {
     if (!bounds || !map) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {

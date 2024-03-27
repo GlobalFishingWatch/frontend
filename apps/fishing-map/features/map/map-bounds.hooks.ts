@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from 'react'
 import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useAtom } from 'jotai'
+import { Deck } from '@deck.gl/core'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { LngLatBounds, Map } from '@globalfishingwatch/maplibre-gl'
+import { LngLatBounds } from '@globalfishingwatch/maplibre-gl'
 import { Bbox } from 'types'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
@@ -61,17 +62,14 @@ type FitBoundsParams = {
 }
 
 export const getMapCoordinatesFromBounds = (
-  map: Map,
+  map: Deck,
   bounds: Bbox,
   params: FitBoundsParams = {}
 ) => {
   const { mapWidth, mapHeight, padding = 60 } = params
-  const width = mapWidth || (map ? parseInt(map.getCanvas().style.width) : window.innerWidth / 2)
+  const width = mapWidth || (map ? map.width : window.innerWidth / 2)
   const height =
-    mapHeight ||
-    (map
-      ? parseInt(map.getCanvas().style.height)
-      : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
+    mapHeight || (map ? map.height : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
   const { latitude, longitude, zoom } = fitBounds({
     bounds: [
       [bounds[0], bounds[1]],
@@ -102,7 +100,6 @@ export function useMapFitBounds() {
   const setViewState = useSetViewState()
   const fitBounds = useCallback(
     (bounds: Bbox, params: FitBoundsParams = {}) => {
-      console.log('fitBounds')
       if (viewport) {
         const newViewport = viewport.fitBounds(convertToTupleBoundingBox(bounds), params)
         setViewState({

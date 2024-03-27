@@ -3,6 +3,7 @@ import parse from 'html-react-parser'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import {
   selectActiveHeatmapDowloadDataviews,
   selectHasReportLayersVisible,
@@ -73,7 +74,7 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
 }
 
 interface ReportPopupButtonProps {
-  feature: TooltipEventFeature
+  feature: ContextFeature
   onClick?: (e: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => void
 }
 
@@ -85,7 +86,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const isPointFeature = feature?.geometry?.type === 'Point'
   const query = useSelector(selectLocationQuery)
-  const bounds = getFeatureBounds(feature)
+  // const bounds = getFeatureBounds(feature)
   const reportAreaId = useSelector(selectLocationAreaId)
   const areaId = getAreaIdFromFeature(feature)
   const isSameArea = reportAreaId?.toString() === areaId?.toString()
@@ -137,7 +138,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
           reportBufferUnit: isPointFeature ? DEFAULT_POINT_BUFFER_UNIT : undefined,
           reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
           reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
-          ...(bounds && { reportAreaBounds: bounds }),
+          // ...(bounds && { reportAreaBounds: bounds }),
           ...(!isSidebarOpen && { sidebarOpen: true }),
         },
       }}
@@ -156,7 +157,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
 interface ContextLayersRowProps {
   id: string
   label: string
-  feature: TooltipEventFeature
+  feature: ContextFeature
   showFeaturesDetails: boolean
   showActions?: boolean
   linkHref?: string

@@ -103,15 +103,15 @@ export const useContextInteractions = () => {
       const areaId = getAreaIdFromFeature(feature) as string
       // Report already does it on page reload but to avoid waiting
       // this moves the map to the same position
-      const bounds = getFeatureBounds(feature)
-      if (bounds) {
-        const boundsParams = {
-          padding: FIT_BOUNDS_REPORT_PADDING,
-          mapWidth: window.innerWidth / 2,
-          mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
-        }
-        fitMapBounds(bounds, boundsParams)
-      }
+      // const bounds = getFeatureBounds(feature)
+      // if (bounds) {
+      //   const boundsParams = {
+      //     padding: FIT_BOUNDS_REPORT_PADDING,
+      //     mapWidth: window.innerWidth / 2,
+      //     mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
+      //   }
+      //   fitMapBounds(bounds, boundsParams)
+      // }
 
       highlightArea({ sourceId, areaId })
       dispatch(setClickedEvent(null))
@@ -122,7 +122,7 @@ export const useContextInteractions = () => {
         label: getEventLabel([title ?? '', value ?? '']),
       })
     },
-    [highlightArea, dispatch, fitMapBounds]
+    [highlightArea, dispatch]
   )
 
   const onReportClick = useCallback(
