@@ -3,7 +3,13 @@ import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
 import { ColorRampsIds } from '@globalfishingwatch/layer-composer'
-import { FourWingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import {
+  FourwingsFeature,
+  FourwingsFeatureProperties,
+  FourwingsStaticFeatureProperties,
+  FourwingsInterval,
+} from '@globalfishingwatch/deck-loaders'
 import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 
 export type FourwingsSublayerId = string
@@ -17,12 +23,13 @@ export interface FourwingsDeckSublayer {
   visible: boolean
   color: string
   colorRamp: ColorRampsIds
+  value?: number
   unit?: string
   filter?: string
   vesselGroups?: string | string[]
 }
 
-export type Chunk = {
+export type FourwingsChunk = {
   id: string
   interval: FourwingsInterval
   start: number
@@ -49,13 +56,22 @@ export type ColorDomain = number[]
 export type ColorRange = Color[]
 export type SublayerColorRanges = ColorRange[]
 
+export type FourwingsPickingObject = FourwingsFeature<
+  FourwingsFeatureProperties & Partial<FourwingsStaticFeatureProperties>
+> & {
+  title: string
+  category: string
+  sublayers: FourwingsDeckSublayer[]
+}
+export type FourwingsPickingInfo = PickingInfo<FourwingsPickingObject>
+
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   id: string
   tile: Tile2DHeader
-  data: FourWingsFeature[]
+  data: FourwingsFeature[]
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
-  hoveredFeatures?: FourWingsFeature[]
+  hoveredFeatures?: FourwingsPickingInfo[]
 }
 
 export type AggregateCellParams = {
@@ -68,7 +84,7 @@ export type AggregateCellParams = {
 export type GetFillColorParams = {
   colorDomain: number[] | number[][]
   colorRanges: ColorRange[] | string[]
-  chunk: Chunk
+  chunk: FourwingsChunk
   minIntervalFrame: number
   maxIntervalFrame: number
   comparisonMode?: FourwingsComparisonMode
@@ -76,9 +92,10 @@ export type GetFillColorParams = {
   scale?: typeof scaleLinear<number, string>
 }
 
-type BaseFourwinsLayerProps = {
+type BaseFourwingsLayerProps = {
   minFrame: number
   maxFrame: number
+  category: DataviewCategory
   sublayers: FourwingsDeckSublayer[]
   tilesUrl?: string
   clickedFeatures?: PickingInfo[]
@@ -86,9 +103,9 @@ type BaseFourwinsLayerProps = {
 }
 
 export type FourwingsResolution = 'default' | 'high'
-export type FourwingsHeatmapTileData = FourWingsFeature[]
+export type FourwingsHeatmapTileData = FourwingsFeature[]
 
-export type _FourwingsHeatmapTileLayerProps<DataT = FourWingsFeature> = BaseFourwinsLayerProps & {
+export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFourwingsLayerProps & {
   data?: DataT
   debug?: boolean
   availableIntervals?: FourwingsInterval[]
@@ -112,7 +129,7 @@ export type _FourwingsHeatmapStaticLayerProps = Omit<
 export type FourwingsHeatmapStaticLayerProps = _FourwingsHeatmapStaticLayerProps &
   Partial<TileLayerProps>
 
-export type _FourwingsPositionsTileLayerProps<DataT = any> = BaseFourwinsLayerProps & {
+export type _FourwingsPositionsTileLayerProps<DataT = any> = BaseFourwingsLayerProps & {
   static?: boolean
   highlightedVesselId?: string
   onDataLoad?: (data: DataT) => void

@@ -6,7 +6,7 @@ import { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
 import {
   CONFIG_BY_INTERVAL,
   Cell,
-  FourWingsFeature,
+  FourwingsFeature,
   FourwingsInterval,
   TileCell,
   getTimeRangeKey,
@@ -14,7 +14,7 @@ import {
 import { getUTCDateTime, rgbaToDeckColor } from '../../utils'
 import {
   AggregateCellParams,
-  Chunk,
+  FourwingsChunk,
   FourwingsDeckSublayer,
   GetFillColorParams,
   FourwingsComparisonMode,
@@ -101,7 +101,7 @@ type GetDataUrlByChunk = {
     index: TileIndex
     id: string
   }
-  chunk: Chunk
+  chunk: FourwingsChunk
   sublayer: FourwingsDeckSublayer
   filter?: string
   vesselGroups?: string[]
@@ -175,7 +175,7 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
 }
 
 export const aggregateCellTimeseries = (
-  cells: FourWingsFeature[],
+  cells: FourwingsFeature[],
   sublayers: FourwingsDeckSublayer[]
 ) => {
   if (!cells) {
@@ -282,7 +282,7 @@ export const getBivariateValue = (realValues: number[], breaks: number[][]) => {
 
 export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 export const chooseColor = (
-  feature: FourWingsFeature,
+  feature: FourwingsFeature,
   {
     colorDomain,
     colorRanges,
@@ -338,7 +338,7 @@ export const chooseColor = (
   }
 }
 
-export function getChunk(
+export function getFourwingsChunk(
   minFrame: number,
   maxFrame: number,
   availableIntervals?: FourwingsInterval[]
@@ -353,7 +353,7 @@ export function getIntervalFrames(
   availableIntervals?: FourwingsInterval[]
 ) {
   const interval = getInterval(minFrame, maxFrame, availableIntervals)
-  const chunk = getChunk(minFrame, maxFrame, availableIntervals)
+  const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
   const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.start))
   const minIntervalFrame = Math.ceil(
     CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileMinIntervalFrame

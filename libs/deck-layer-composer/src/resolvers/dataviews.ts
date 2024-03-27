@@ -109,6 +109,7 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
   const sublayer: DataviewSublayerConfig = {
     id: dataview.id,
     datasets: activeDatasets,
+    color: config.color as string,
     colorRamp: config.colorRamp as string,
     visible: config.visible,
     filter: config.filter,

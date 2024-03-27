@@ -30,7 +30,6 @@ import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
-  useSetDeckLayerInteraction,
   useSetDeckLayerLoadedState,
 } from '@globalfishingwatch/deck-layer-composer'
 import useMapInstance, { useSetMapInstance } from 'features/map/map-context.hooks'
@@ -62,6 +61,7 @@ import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selec
 import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
+import MapPopups from 'features/map/popups/MapPopups'
 import {
   MAP_VIEW,
   useViewStateAtom,
@@ -330,6 +330,7 @@ const MapWrapper = () => {
           />
         )}
       </DeckGL>
+      <MapPopups />
       {/* {style && (
         <Map
           id="map"

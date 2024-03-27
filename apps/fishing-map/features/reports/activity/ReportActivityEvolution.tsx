@@ -152,10 +152,10 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
               name="line"
               type="monotone"
               dataKey={(data) => data.avg?.[index]}
-              unit={legend.unit}
+              unit={legend?.unit}
               dot={false}
               isAnimationActive={false}
-              stroke={legend.color}
+              stroke={legend?.color}
               strokeWidth={2}
             />
           ))}
@@ -166,7 +166,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
               type="monotone"
               dataKey={(data) => data.range?.[index]}
               activeDot={false}
-              fill={legend.color}
+              fill={legend?.color}
               stroke="none"
               fillOpacity={0.2}
               isAnimationActive={false}

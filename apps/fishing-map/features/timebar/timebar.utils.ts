@@ -5,7 +5,7 @@ import {
   TrackEventChunkProps,
   ActivityTimeseriesFrame,
 } from '@globalfishingwatch/timebar'
-import { FourWingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getEventColors, getEventDescription } from 'utils/events'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -43,14 +43,20 @@ export const parseTrackEventChunkProps = (
   }
 }
 
+type GetGraphDataFromFourwingsFeaturesParams = {
+  start: number
+  end: number
+  interval: FourwingsInterval
+  sublayers: number
+}
+
+// TODO:deck choose a better naming for this as also used in reports
+// TODO:deck support
+// - [] aggregationOperation
+// - [] min and maxVisibleValues
 export function getGraphDataFromFourwingsFeatures(
-  features: FourWingsFeature[],
-  {
-    start,
-    end,
-    interval,
-    sublayers,
-  }: { start: number; end: number; interval: FourwingsInterval; sublayers: number }
+  features: FourwingsFeature[],
+  { start, end, interval, sublayers }: GetGraphDataFromFourwingsFeaturesParams
 ): ActivityTimeseriesFrame[] {
   if (!features?.length || !start || !end) {
     return []

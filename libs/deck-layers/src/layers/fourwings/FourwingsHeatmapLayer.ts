@@ -1,21 +1,36 @@
-import { Color, CompositeLayer, GetPickingInfoParams, LayersList, PickingInfo } from '@deck.gl/core'
+import { Color, CompositeLayer, LayersList, PickingInfo } from '@deck.gl/core'
 import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers'
 import { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { CONFIG_BY_INTERVAL, FourWingsFeature } from '@globalfishingwatch/deck-loaders'
+import {
+  CONFIG_BY_INTERVAL,
+  FourwingsFeature,
+  FourwingsFeatureProperties,
+} from '@globalfishingwatch/deck-loaders'
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
 import { getInterval } from './fourwings.config'
-import { aggregateCell, chooseColor, getChunk, getIntervalFrames } from './fourwings.utils'
-import { FourwingsHeatmapLayerProps } from './fourwings.types'
+import { aggregateCell, chooseColor, getFourwingsChunk, getIntervalFrames } from './fourwings.utils'
+import {
+  FourwingsHeatmapLayerProps,
+  FourwingsPickingInfo,
+  FourwingsPickingObject,
+} from './fourwings.types'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
   layers: LayersList = []
 
-  getPickingInfo = ({ info }: GetPickingInfoParams): PickingInfo => {
-    const { minFrame, maxFrame, availableIntervals } = this.props
+  getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }): FourwingsPickingInfo => {
+    const { id, minFrame, maxFrame, availableIntervals, category, sublayers } = this.props
+    const object: FourwingsPickingObject = {
+      ...(info.object || ({} as FourwingsFeature)),
+      title: id,
+      category,
+      sublayers,
+    }
     if (info.object) {
-      const chunk = getChunk(minFrame, maxFrame, availableIntervals)
+      debugger
+      const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
       const interval = getInterval(minFrame, maxFrame, availableIntervals)
       const tileMinIntervalFrame = Math.ceil(
         CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.start)
@@ -30,14 +45,9 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         aggregationOperation: this.props.aggregationOperation,
         startFrames: info.object.properties.startFrames,
       })
-      if (values) {
-        info.object = {
-          ...info.object,
-          values,
-        }
-      }
+      object.sublayers = object.sublayers.map((sublayer, i) => ({ ...sublayer, value: values[i] }))
     }
-    return info
+    return { ...info, object }
   }
 
   renderLayers() {
@@ -55,13 +65,13 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     if (!data || !colorDomain || !colorRanges) {
       return []
     }
-    const chunk = getChunk(minFrame, maxFrame, availableIntervals)
+    const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
     const { minIntervalFrame, maxIntervalFrame } = getIntervalFrames(
       minFrame,
       maxFrame,
       availableIntervals
     )
-    const getFillColor = (feature: FourWingsFeature, { target }: { target: Color }) => {
+    const getFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
       target = chooseColor(feature, {
         colorDomain,
         colorRanges,
@@ -82,7 +92,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           pickable: true,
           getPickingInfo: this.getPickingInfo,
           getFillColor,
-          getPolygon: (d: FourWingsFeature) => d.geometry.coordinates[0],
+          getPolygon: (d: FourwingsFeature) => d.geometry.coordinates[0],
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
           updateTriggers: {
             // This tells deck.gl to recalculate fillColor on changes
@@ -92,7 +102,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       ),
     ] as LayersList
 
-    const layerHoveredFeature: FourWingsFeature = hoveredFeatures?.find(
+    const layerHoveredFeature: FourwingsFeature = hoveredFeatures?.find(
       (f) => f.layer?.id === this.root.id
     )?.object
     if (layerHoveredFeature) {
@@ -104,7 +114,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
             id: `fourwings-cell-highlight`,
             widthUnits: 'pixels',
             widthMinPixels: 4,
-            getPath: (d: FourWingsFeature) => d.geometry.coordinates[0],
+            getPath: (d: FourwingsFeature) => d.geometry.coordinates[0],
             getColor: COLOR_HIGHLIGHT_LINE,
             getOffset: 0.5,
             getPolygonOffset: (params: any) =>
