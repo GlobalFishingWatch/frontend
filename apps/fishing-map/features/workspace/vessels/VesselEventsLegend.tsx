@@ -25,7 +25,7 @@ type VesselEventsLegendProps = {
 function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.ReactElement | null {
   const { t } = useTranslation()
   const currentVisibleEvents = useSelector(selectVisibleEvents)
-  const { setVesselEventVisibility } = useVesselEvents(dataviews)
+  const { setVesselEventVisibility } = useVesselEvents()
   const tracks = useSelector(selectActiveVesselsDataviews)
   const eventDatasets = uniqBy(
     dataviews.flatMap((dataview) => getEventsDatasetsInDataview(dataview)),
@@ -51,8 +51,8 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
         currentVisibleEvents === 'all'
           ? true
           : currentVisibleEvents === 'none'
-            ? false
-            : currentVisibleEvents.includes(eventType)
+          ? false
+          : currentVisibleEvents.includes(eventType)
       return {
         datasetId: dataset.id,
         active,

@@ -22,7 +22,6 @@ import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './VesselActivitySummary.module.css'
 
 const MAX_PORTS = 3
@@ -33,8 +32,7 @@ export const VesselActivitySummary = () => {
   const voyages = useSelector(selectVoyagesNumber)
   const timerange = useSelector(selectTimeRange)
   const visibleEvents = useSelector(selectVisibleEvents)
-  const dataviews = useSelector(selectActiveVesselsDataviews)
-  const { setVesselEventVisibility } = useVesselEvents(dataviews)
+  const { setVesselEventVisibility } = useVesselEvents()
   const eventsByType = useSelector(selectEventsGroupedByType)
   const { getRegionNamesByType } = useRegionNamesByType()
   const { activityRegions, mostVisitedPortCountries, fishingHours } =
@@ -156,8 +154,8 @@ export const VesselActivitySummary = () => {
               visibleEvents === 'all'
                 ? true
                 : visibleEvents === 'none'
-                  ? false
-                  : visibleEvents.includes(eventType)
+                ? false
+                : visibleEvents.includes(eventType)
             return (
               <li key={eventType} className={styles.eventTypeRowContainer}>
                 <Switch

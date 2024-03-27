@@ -32,7 +32,7 @@ export function useActivityEventTranslations() {
         Object.entries(event.regions).forEach((entry) => {
           const regionType = entry[0] as keyof Regions
           const regions = entry[1] as string[]
-          if (!regions.length) return
+          if (!regions.length || regionType === 'majorFao' || regionType === 'highSeas') return
           allRegionsDescriptionBlocks.push(
             `${t(`layer.areas.${regionType}`)}: ${getRegionNamesByType(regionType, regions).join(
               ', '

@@ -47,6 +47,7 @@ import {
   selectVesselInfoError,
   selectVesselInfoData,
 } from 'features/vessel/selectors/vessel.selectors'
+import Insights from 'features/vessel/insights/Insights'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 import styles from './Vessel.module.css'
@@ -116,6 +117,12 @@ const Vessel = () => {
         content: <RelatedVessels />,
         disabled: !hasEventsDataset,
         testId: 'vv-related-tab',
+      },
+      {
+        id: 'insights' as VesselSection,
+        title: t('vessel.sectionInsights', 'Insights'),
+        content: <Insights />,
+        // testId: 'vv-insights-tab',
       },
     ],
     [t, updateAreaLayersVisibility, hasEventsDataset]
