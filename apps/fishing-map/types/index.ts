@@ -130,7 +130,7 @@ export type VesselSearchState = {
 }
 
 export type VesselSearchStateProperty = keyof VesselSearchState
-export type VesselSection = 'activity' | 'related_vessels' | 'areas'
+export type VesselSection = 'activity' | 'related_vessels' | 'areas' | 'insights'
 export type VesselAreaSubsection = 'fao' | 'eez' | 'mpa' | 'rfmo'
 export type VesselRelatedSubsection = 'encounters' | 'owners'
 export type VesselProfileActivityMode = 'voyage' | 'type'

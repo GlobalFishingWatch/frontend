@@ -29,7 +29,7 @@ const initialState: RegionsState = {
 export type FetchRegionsThunkParams = Record<RegionType, string>
 export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
-  async (regionIds: FetchRegionsThunkParams, { rejectWithValue }) => {
+  async (regionIds: Partial<FetchRegionsThunkParams>, { rejectWithValue }) => {
     try {
       const apiUrl = `/datasets`
       const options = {}

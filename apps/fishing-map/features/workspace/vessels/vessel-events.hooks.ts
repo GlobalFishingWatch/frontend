@@ -1,13 +1,12 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { EventType } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 
 const ALL_EVENT_TYPES: EventType[] = ['fishing', 'loitering', 'encounter', 'port_visit']
 
-export const useVesselEvents = (dataviews = [] as UrlDataviewInstance[]) => {
+export const useVesselEvents = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const currentVisibleEvents = useSelector(selectVisibleEvents)
 
@@ -26,8 +25,8 @@ export const useVesselEvents = (dataviews = [] as UrlDataviewInstance[]) => {
           currentVisibleEvents === 'all'
             ? ALL_EVENT_TYPES
             : currentVisibleEvents === 'none'
-              ? []
-              : currentVisibleEvents
+            ? []
+            : currentVisibleEvents
         const visibleEvents = currentVisibleEventsTypes.filter(
           (eventType) => event !== eventType
         ) as EventType[]
