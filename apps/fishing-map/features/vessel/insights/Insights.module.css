@@ -67,6 +67,20 @@
   color: var(--color-secondary-blue);
 }
 
+.eventDetailsList li {
+  padding-left: 0;
+  margin-left: var(--space-M);
+}
+
+.eventDetailsList li:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.seeMoreBtn {
+  top: 0.4rem;
+  margin-left: var(--space-XS);
+}
+
 .loadingPlaceholder {
   height: 1.2rem;
   border-radius: 0.8rem;

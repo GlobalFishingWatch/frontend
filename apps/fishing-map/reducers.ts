@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit'
 import { dataviewStatsApi } from 'queries/stats-api'
 import { vesselSearchApi } from 'queries/search-api'
 import { vesselInsightApi } from 'queries/vessel-insight-api'
+import { vesselEventsApi } from 'queries/vessel-events-api'
 import descriptionReducer from 'routes/description.reducer'
 import mapControlsReducer from 'features/map/controls/map-controls.slice'
 import areasReducer from 'features/areas/areas.slice'
@@ -32,6 +33,7 @@ import workspacesReducer from 'features/workspaces-list/workspaces-list.slice'
 export const rootReducer = combineReducers({
   [dataviewStatsApi.reducerPath]: dataviewStatsApi.reducer,
   [vesselSearchApi.reducerPath]: vesselSearchApi.reducer,
+  [vesselEventsApi.reducerPath]: vesselEventsApi.reducer,
   [vesselInsightApi.reducerPath]: vesselInsightApi.reducer,
   areas: areasReducer,
   bigQuery: bigQueryReducer,

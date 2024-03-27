@@ -9,6 +9,7 @@ import {
 import { createWrapper } from 'next-redux-wrapper'
 import { dataviewStatsApi } from 'queries/stats-api'
 import { vesselSearchApi } from 'queries/search-api'
+import { vesselEventsApi } from 'queries/vessel-events-api'
 import { vesselInsightApi } from 'queries/vessel-insight-api'
 import connectedRoutes from 'routes/routes'
 import { routerQueryMiddleware, routerWorkspaceMiddleware } from 'routes/routes.middlewares'
@@ -55,6 +56,7 @@ export const makeStore = () => {
       getDefaultMiddleware(defaultMiddlewareOptions).concat(
         dataviewStatsApi.middleware,
         vesselSearchApi.middleware,
+        vesselEventsApi.middleware,
         vesselInsightApi.middleware,
         routerQueryMiddleware,
         routerWorkspaceMiddleware,

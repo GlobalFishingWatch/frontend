@@ -40,7 +40,8 @@ export function useRegionNamesByType() {
   const getRegionNamesByType = useCallback(
     (regionType: keyof Regions, values: string[]) => {
       if (!values?.length) return EMPTY_ARRAY
-      const regions = { eez: eezs, rfmo: rfmos, mpa: mpas, fao: faos }[regionType] || []
+      const regions =
+        { eez: eezs, rfmo: rfmos, mpa: mpas, fao: faos, majorFao: [] }[regionType] || []
       let labels = values
       if (regions?.length) {
         labels = values.flatMap(

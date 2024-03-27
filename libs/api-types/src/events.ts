@@ -10,6 +10,7 @@ export enum RegionType {
   rfmo = 'rfmo',
   mpa = 'mpa',
   fao = 'fao',
+  majorFao = 'majorFao',
 }
 
 export interface Regions {
@@ -17,6 +18,7 @@ export interface Regions {
   [RegionType.rfmo]: string[]
   [RegionType.mpa]: string[]
   [RegionType.fao]?: string[]
+  [RegionType.majorFao]?: string[]
 }
 
 export interface GapPosition extends PointCoordinate {

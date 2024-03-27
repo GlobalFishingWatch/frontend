@@ -801,6 +801,8 @@
       "gaps": "AIS Off Events",
       "gapsEvents": "{{count}} AIS Off events detected",
       "gapsEventsEmpty": "No AIS Off events detected",
+      "gapsSeeMore": "See more",
+      "gapsSeeLess": "See less",
       "fishing": "Fishing Events",
       "fishingEventsInNoTakeMpas": "{{count}} fishing events detected in no-take MPAs",
       "fishingEventsInNoTakeMpasEmpty": "No fishing events detected in no-take MPAs",
