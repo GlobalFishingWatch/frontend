@@ -35,7 +35,7 @@
   --timebar-size: 7.2rem;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (width <= 800px) {
   :root {
     --timebar-size: 6rem;
   }

@@ -1,7 +1,8 @@
 import { Fragment } from 'react'
 import { format } from 'd3-format'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { GeneratorType, HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/layer-composer'
+import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/layer-composer'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 
@@ -26,14 +27,15 @@ function EnvironmentTooltipSection({
 }: ContextTooltipRowProps) {
   return (
     <Fragment>
-      {features.map((feature, index) => {
+      {features.map((pickedFeature, index) => {
+        const feature = pickedFeature.object
         const isHeatmapFeature =
-          feature.type === GeneratorType.HeatmapAnimated ||
-          feature.type === GeneratorType.HeatmapStatic
+          feature.type === DataviewType.HeatmapAnimated ||
+          feature.type === DataviewType.HeatmapStatic
         const value =
-          feature.type === GeneratorType.HeatmapAnimated
+          feature.type === DataviewType.HeatmapAnimated
             ? feature.value
-            : feature.properties[HEATMAP_STATIC_PROPERTY_ID]
+            : feature.properties?.[HEATMAP_STATIC_PROPERTY_ID]
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <Icon

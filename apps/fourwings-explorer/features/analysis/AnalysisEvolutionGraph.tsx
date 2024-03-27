@@ -191,10 +191,10 @@ const AnalysisEvolutionGraph: React.FC<{
             name="line"
             type="monotone"
             dataKey={(data) => data.avg[0]}
-            unit={layer.legend.unit}
+            unit={layer.legend?.unit}
             dot={false}
             isAnimationActive={false}
-            stroke={layer.legend.color}
+            stroke={layer.legend?.color}
             strokeWidth={2}
           />
           <Area
@@ -203,7 +203,7 @@ const AnalysisEvolutionGraph: React.FC<{
             type="monotone"
             dataKey={(data) => data.range[0]}
             activeDot={false}
-            fill={layer.legend.color}
+            fill={layer.legend?.color}
             stroke="none"
             fillOpacity={0.2}
             isAnimationActive={false}

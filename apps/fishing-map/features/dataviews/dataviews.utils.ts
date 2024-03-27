@@ -4,12 +4,12 @@ import {
   Dataset,
   Dataview,
   DataviewCategory,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ContextLayerType, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import {
@@ -23,7 +23,6 @@ import {
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { VesselInstanceDatasets, isPrivateDataset } from 'features/datasets/datasets.utils'
-import { Area } from 'features/areas/areas.slice'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -104,7 +103,7 @@ export const getVesselDataviewInstanceId = (vesselId: string) =>
 export const getVesselDataviewInstance = (
   vessel: { id: string },
   datasets: VesselInstanceDatasets
-): DataviewInstance<GeneratorType> => {
+): DataviewInstance => {
   const vesselDataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
     ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG, datasets),
@@ -112,7 +111,7 @@ export const getVesselDataviewInstance = (
   return vesselDataviewInstance
 }
 
-export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> => {
+export const getFishingDataviewInstance = (): DataviewInstance<DataviewType> => {
   return {
     id: `${FISHING_LAYER_PREFIX}${Date.now()}`,
     config: {
@@ -124,7 +123,7 @@ export const getFishingDataviewInstance = (): DataviewInstance<GeneratorType> =>
 
 export const getUserPolygonsDataviewInstance = (
   datasetId: string
-): DataviewInstance<GeneratorType> => {
+): DataviewInstance<DataviewType> => {
   return {
     id: `user-polygons-${Date.now()}`,
     config: {
@@ -141,9 +140,7 @@ export const getUserPolygonsDataviewInstance = (
   }
 }
 
-export const getUserPointsDataviewInstance = (
-  dataset: Dataset
-): DataviewInstance<GeneratorType> => {
+export const getUserPointsDataviewInstance = (dataset: Dataset): DataviewInstance<DataviewType> => {
   const circleRadiusProperty = getDatasetConfigurationProperty({ dataset, property: 'pointSize' })
   const startTimeFilterProperty = getDatasetConfigurationProperty({
     dataset,
@@ -200,7 +197,7 @@ export const getUserTrackDataviewInstance = (dataset: Dataset) => {
   return dataviewInstance
 }
 
-export const getContextDataviewInstance = (datasetId: string): DataviewInstance<GeneratorType> => {
+export const getContextDataviewInstance = (datasetId: string): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${CONTEXT_LAYER_PREFIX}${Date.now()}`,
     category: DataviewCategory.Context,
@@ -228,7 +225,7 @@ export const getDataviewInstanceFromDataview = (dataview: Dataview) => {
 
 export const getActivityDataviewInstanceFromDataview = (
   dataview?: Dataview
-): DataviewInstance<GeneratorType> | undefined => {
+): DataviewInstance<DataviewType> | undefined => {
   if (!dataview) return
   const instance = getDataviewInstanceFromDataview(dataview)
   return {
@@ -242,7 +239,7 @@ export const getActivityDataviewInstanceFromDataview = (
 export const getBigQuery4WingsDataviewInstance = (
   datasetId: string,
   { aggregationOperation = AggregationOperation.Sum } = {}
-): DataviewInstance<GeneratorType> => {
+): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${BIG_QUERY_4WINGS_PREFIX}${Date.now()}`,
     config: {
@@ -268,7 +265,7 @@ export const getBigQuery4WingsDataviewInstance = (
 
 export const getBigQueryEventsDataviewInstance = (
   datasetId: string
-): DataviewInstance<GeneratorType> => {
+): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${BIG_QUERY_EVENTS_PREFIX}${Date.now()}`,
     dataviewId: TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
@@ -300,59 +297,6 @@ export const getVesselInWorkspace = (vessels: UrlDataviewInstance[], vesselId: s
     return isVesselInEndpointParams ? v : undefined
   })
   return vesselInWorkspace
-}
-
-const RFMO_LINKS: Record<string, string> = {
-  'CCSBT Primary Area': 'https://www.ccsbt.org/',
-  AIDCP: 'https://www.iattc.org/en-US/AIDCP/About-AIDCP',
-  CCAMLR: 'https://www.ccamlr.org/',
-  CCBSP: 'https://www.fao.org/fishery/en/organization/rfb/ccbsp',
-  CCSBT: 'https://www.ccsbt.org/',
-  CPPS: 'http://www.cpps-int.org/',
-  FFA: 'https://www.ffa.int/',
-  GFCM: 'https://www.fao.org/gfcm/en/',
-  IATTC: 'https://www.iattc.org/',
-  ICCAT: 'https://www.iccat.int/en/',
-  ICES: 'https://www.ices.dk/',
-  IOTC: 'https://www.iotc.org/',
-  NAFO: 'https://www.nafo.int/',
-  NAMMCO: 'https://nammco.no/',
-  NASCO: 'https://www.nasco.int/',
-  NEAFC: 'https://www.neafc.org/',
-  NPAFC: 'https://npafc.org/',
-  NPFC: 'https://www.npfc.int/',
-  PICES: 'https://meetings.pices.int/',
-  SEAFDEC: 'https://www.seafdec.org/',
-  SEAFO: 'https://www.seafo.org/',
-  SIOFA: 'https://www.apsoi.org/',
-  SPC: 'https://www.spc.int/',
-  SPRFMO: 'https://www.sprfmo.int/',
-  WCPFC: 'https://www.wcpfc.int/',
-}
-
-export const getContextAreaLink = (
-  generatorContextLayer: ContextLayerType,
-  area: Area | string | number
-) => {
-  const areaIsObject = typeof area === 'object'
-  switch (generatorContextLayer) {
-    case ContextLayerType.MPA:
-    case ContextLayerType.MPANoTake:
-    case ContextLayerType.MPARestricted:
-      return `https://www.protectedplanet.net/${areaIsObject ? area?.id : area}`
-    case ContextLayerType.TunaRfmo:
-      return RFMO_LINKS[areaIsObject ? area?.id : area]
-    case ContextLayerType.EEZ:
-      return `https://www.marineregions.org/eezdetails.php?mrgid=${areaIsObject ? area?.id : area}`
-    case ContextLayerType.ProtectedSeas:
-      return `https://map.navigatormap.org/site-detail?site_id=${areaIsObject ? area?.id : area}`
-    case ContextLayerType.FAO:
-      return `https://www.fao.org/fishery/en/area/${
-        areaIsObject ? area?.properties?.F_CODE : area
-      }/en`
-    default:
-      return undefined
-  }
 }
 
 export const isBathymetryDataview = (dataview: UrlDataviewInstance) => {

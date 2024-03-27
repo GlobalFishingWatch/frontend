@@ -1,0 +1,29 @@
+{
+  "name": "deck-layers",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/deck-layers/src",
+  "projectType": "library",
+  "targets": {
+    "dist": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "assets": [],
+        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "main": "libs/deck-layers/src/index.ts",
+        "outputPath": "dist/libs/deck-layers",
+        "project": "libs/deck-layers/package.json",
+        "tsConfig": "libs/deck-layers/tsconfig.lib.json"
+      }
+    },
+    "publish": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
+      "options": {
+        "packageRoot": "dist/libs/deck-layers"
+      }
+    }
+  },
+  "tags": []
+}

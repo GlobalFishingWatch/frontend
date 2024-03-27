@@ -22,15 +22,16 @@ import {
   selectReportBufferHash,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
-import useMapInstance from 'features/map/map-context.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Bbox } from 'types'
-import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewport.hooks'
+import { useSetViewState, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
 import {
   fetchReportVesselsThunk,
@@ -49,7 +50,7 @@ export type DateTimeSeries = {
 }[]
 
 export function useReportAreaCenter(bounds?: Bbox) {
-  const map = useMapInstance()
+  const map = useDeckMap()
   return useMemo(() => {
     if (!bounds || !map) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
@@ -60,28 +61,28 @@ export function useReportAreaCenter(bounds?: Bbox) {
 }
 
 export function useReportAreaInViewport() {
-  const { viewport } = useViewport()
+  const { viewState } = useViewStateAtom()
   const area = useSelector(selectReportArea)
   const bbox = area?.geometry?.bbox || area!?.bounds
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   return (
-    viewport?.latitude === areaCenter?.latitude &&
-    viewport?.longitude === areaCenter?.longitude &&
-    viewport?.zoom === areaCenter?.zoom
+    viewState?.latitude === areaCenter?.latitude &&
+    viewState?.longitude === areaCenter?.longitude &&
+    viewState?.zoom === areaCenter?.zoom
   )
 }
 
 export function useFitAreaInViewport() {
-  const { setMapCoordinates } = useViewport()
+  const setViewState = useSetViewState()
   const area = useSelector(selectReportArea)
   const bbox = area?.geometry?.bbox || area!?.bounds
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
-      setMapCoordinates(areaCenter)
+      setViewState(areaCenter)
     }
-  }, [areaCenter, areaInViewport, setMapCoordinates])
+  }, [areaCenter, areaInViewport, setViewState])
 }
 
 // 0 - 20MB No simplifyTrack
@@ -137,7 +138,7 @@ export function useFetchReportVessel() {
 
   const updateWorkspaceReportUrls = useCallback(
     (reportUrl: any) => {
-      setLastReportUrl((lastReportUrls) => {
+      setLastReportUrl((lastReportUrls: LastReportStorage[]) => {
         const newReportUrl = {
           reportUrl,
           workspaceUrl: window.location.href,
@@ -154,11 +155,11 @@ export function useFetchReportVessel() {
 
   const dispatchFetchReport = useCallback(() => {
     const params = {
-      datasets: reportDataviews.map(
-        ({ datasets }) => datasets?.map((d: Dataset) => d.id).join(',')
+      datasets: reportDataviews.map(({ datasets }) =>
+        datasets?.map((d: Dataset) => d.id).join(',')
       ),
-      filters: reportDataviews.map(({ filter }) => filter),
-      vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
+      filters: reportDataviews.map(({ filter }) => filter).filter(Boolean),
+      vesselGroups: reportDataviews.flatMap(({ vesselGroups }) => vesselGroups || []),
       region: {
         id: areaId,
         dataset: datasetId,
@@ -198,8 +199,8 @@ export function useFetchReportVessel() {
           datasets: reportDataviews.map(({ datasets }) =>
             datasets.map((d: Dataset) => d.id).join(',')
           ),
-          filters: reportDataviews.map(({ filter }) => filter),
-          vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
+          filters: reportDataviews.map(({ filter }) => filter) as any,
+          vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups) as any,
           region: {
             id: areaId,
             dataset: datasetId,

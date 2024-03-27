@@ -1,5 +1,5 @@
-import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
-import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { BasemapType } from '@globalfishingwatch/layer-composer'
+import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
 import { PUBLIC_SUFIX } from './config'
 
 export type WorkspaceEnv = 'development' | 'production'
@@ -65,7 +65,7 @@ export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-ev
 
 export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_USER_TRACK_SLUG,
-  TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  // TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
   TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
@@ -129,7 +129,7 @@ export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE: DataviewInstance = {
   dataviewId: BASEMAP_DATAVIEW_SLUG,
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   config: {
-    type: GeneratorType.Basemap,
+    type: DataviewType.Basemap,
     basemap: BasemapType.Default,
   },
 }

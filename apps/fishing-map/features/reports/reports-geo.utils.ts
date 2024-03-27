@@ -1,11 +1,11 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { Feature, Polygon, MultiPolygon } from 'geojson'
-import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
+import { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { Bbox } from 'types'
 
 export type FilteredPolygons = {
-  contained: Feature[]
-  overlapping: Feature[]
+  contained: Feature[] | FourwingsFeature[]
+  overlapping: Feature[] | FourwingsFeature[]
 }
 
 function isBboxContained(container: Bbox, cell: Bbox) {
@@ -31,7 +31,7 @@ function isCellInPolygon(cellGeometry: Polygon, polygon: Polygon) {
 }
 
 export function filterByPolygon(
-  layersCells: GeoJSONFeature[][],
+  layersCells: FourwingsFeature[][],
   polygon: Polygon | MultiPolygon,
   mode: 'cell' | 'point' = 'cell'
 ): FilteredPolygons[] {

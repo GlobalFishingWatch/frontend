@@ -12,7 +12,7 @@ import {
   getVesselId,
 } from 'features/vessel/vessel.utils'
 import { formatInfoField } from 'utils/info'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -68,7 +68,7 @@ const RelatedOwnerVessels = () => {
   const dataset = useSelector(selectVesselDatasetId)
   const { timerange } = useTimerangeConnect()
   const filteredOwners = filterRegistryInfoByDateAndSSVID(
-    vesselData.registryOwners || [],
+    vesselData?.registryOwners || [],
     timerange
   ) as VesselRegistryOwner[]
   const uniqOwners = uniqBy(filteredOwners, 'name')

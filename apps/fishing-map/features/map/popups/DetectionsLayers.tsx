@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { TooltipEventFeature } from 'features/map/map.hooks'
+import { TooltipEventFeature, TooltipEventFeatureVesselsInfo } from 'features/map/map.hooks'
 import VesselsTable, { VesselDetectionTimestamps } from 'features/map/popups/VesselsTable'
 import styles from './Popup.module.css'
 
@@ -13,19 +13,21 @@ type ViirsMatchTooltipRowProps = {
 function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchTooltipRowProps) {
   const { t } = useTranslation()
   // Avoid showing not matched detections
-  const matchedVessels = (feature.vesselsInfo?.vessels || []).filter((v) => v.id !== null)
+  const matchedVessels: TooltipEventFeatureVesselsInfo['vessels'] = (
+    feature.vesselsInfo?.vessels || []
+  ).filter((v: any) => v.id !== null)
   const matchedDetections = matchedVessels
-    ? matchedVessels.reduce((acc, vessel) => acc + vessel.detections, 0)
+    ? matchedVessels.reduce((acc, vessel: any) => acc + vessel.detections, 0)
     : 0
   const featureVesselsFilter: any = {
     ...feature,
     vesselsInfo: {
       ...feature.vesselsInfo,
       vessels: matchedVessels,
-    },
+    } as TooltipEventFeatureVesselsInfo,
   }
   const notMatchedDetectionsCount = parseInt(feature.value) - matchedDetections
-  const notMatchedDetection = feature.vesselsInfo?.vessels?.find((v) => v.id === null)
+  const notMatchedDetection = feature.vesselsInfo?.vessels?.find((v: any) => v.id === null)
 
   return (
     <div className={styles.popupSection}>

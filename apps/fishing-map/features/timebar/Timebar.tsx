@@ -1,7 +1,8 @@
-import { Fragment, memo, useCallback, useState, useMemo } from 'react'
+import { Fragment, memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
+import { useAtom, useAtomValue } from 'jotai'
 import {
   Timebar,
   TimebarTracks,
@@ -14,8 +15,8 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { deckLayersAtom, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -24,8 +25,8 @@ import {
   useActivityMetadata,
   useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
+import { useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
-import useViewport from 'features/map/map-viewport.hooks'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
@@ -40,9 +41,15 @@ import { getUTCDateTime } from 'utils/dates'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
+  useTimebarVesselEvents,
+  useTimebarVesselTracks,
+} from 'features/timebar/timebar-vessel.hooks'
+import { getTimebarChunkEventColor } from 'features/timebar/timebar.utils'
+import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -143,19 +150,27 @@ const TimebarWrapper = () => {
   const { highlightedEvents, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
-  const { setMapCoordinates, viewport } = useViewport()
+  const { setViewState, viewState } = useViewStateAtom()
   const availableStart = useSelector(selectAvailableStart)
   const availableEnd = useSelector(selectAvailableEnd)
   const timebarGraph = useSelector(selectTimebarGraph)
-  const tracks = useSelector(selectTracksData)
   const tracksGraphsData = useSelector(selectTracksGraphData)
-  const tracksEvents = useSelector(selectTracksEvents)
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
+  // const [isPending, startTransition] = useTransition()
+  const tracks = useTimebarVesselTracks()
+  const tracksEvents = useTimebarVesselEvents()
+  // const basemapLayer = useDeckMapLayer('basemap')
+  const deckLayers = useAtomValue(deckLayersAtom)
+  const basemapLayer = useGetDeckLayer('basemap')
+
+  // useEffect(() => {
+  //   console.log('LOADEDE CHANGED', basemapLayer?.state?.loaded)
+  // }, [basemapLayer?.state?.loaded])
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
@@ -253,16 +268,19 @@ const TimebarWrapper = () => {
     [start, end]
   )
 
-  const { zoom } = viewport
+  const { zoom } = viewState
   const onEventClick = useCallback(
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
-      setMapCoordinates({
-        latitude: event.props!?.latitude,
-        longitude: event.props!?.longitude,
-        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
-      })
+      if (event?.coordinates) {
+        setViewState({
+          ...viewState,
+          latitude: event?.coordinates?.[1],
+          longitude: event.coordinates?.[0],
+          zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
+        })
+      }
     },
-    [setMapCoordinates, zoom]
+    [viewState, setViewState, zoom]
   )
 
   const showGraph = useMemo(() => {
@@ -285,18 +303,18 @@ const TimebarWrapper = () => {
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
-  const loading =
-    tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
-    tracksGraphsData?.some(
-      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
-    ) ||
-    tracksEvents?.some(
-      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
-    )
+  const loading = false
+  // tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
+  // tracksGraphsData?.some(
+  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+  // ) ||
+  // tracksEvents?.some(
+  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+  // )
 
-  const hasTrackError =
-    tracks?.some(({ status }) => status === ResourceStatus.Error) ||
-    tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
+  const hasTrackError = false
+  // tracks?.some(({ status }) => status === ResourceStatus.Error) ||
+  // tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
 
   const getTracksComponents = () => {
     if (hasTrackError) {
@@ -330,6 +348,7 @@ const TimebarWrapper = () => {
             <TimebarTracksEvents
               data={tracksEvents}
               highlightedEventsIds={highlightedEvents}
+              getEventColor={getTimebarChunkEventColor}
               onEventClick={onEventClick}
             />
           </Fragment>

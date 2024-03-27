@@ -11,11 +11,11 @@ import {
   DEFAULT_CONTEXT_SOURCE_LAYER,
   DEFAULT_POINTS_SOURCE_LAYER,
   ExtendedStyle,
-  GeneratorType,
   getHeatmapStaticSourceId,
   HeatmapLayerMeta,
   TRACK_HIGHLIGHT_SUFFIX,
 } from '@globalfishingwatch/layer-composer'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import {
   MAPBOX_GL_DRAW_PREFIX,
   PREVIEW_BUFFER_GENERATOR_ID,
@@ -67,7 +67,7 @@ export const getSourceMetadata = (style: ExtendedStyle, dataview: UrlDataviewIns
   return {
     metadata: {
       sourceLayer:
-        dataview.config?.type === GeneratorType.TileCluster
+        dataview.config?.type === DataviewType.TileCluster
           ? DEFAULT_POINTS_SOURCE_LAYER
           : DEFAULT_CONTEXT_SOURCE_LAYER,
     } as HeatmapLayerMeta,

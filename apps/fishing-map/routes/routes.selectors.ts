@@ -186,9 +186,7 @@ export const selectUrlTimeRange = createSelector(
 )
 
 export const selectUrlDataviewInstancesById = memoize((id: string) =>
-  createSelector(
-    [selectUrlDataviewInstances],
-    (urlDataviewInstances) =>
-      urlDataviewInstances?.find((dataviewInstance) => dataviewInstance?.id === id)
+  createSelector([selectUrlDataviewInstances], (urlDataviewInstances) =>
+    urlDataviewInstances?.find((dataviewInstance) => dataviewInstance?.id === id)
   )
 )

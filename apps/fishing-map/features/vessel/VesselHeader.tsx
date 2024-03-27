@@ -6,11 +6,7 @@ import { useCallback, useEffect } from 'react'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import {
-  selectVesselInfoData,
-  selectVesselPrintMode,
-  setVesselPrintMode,
-} from 'features/vessel/vessel.slice'
+import { setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
@@ -31,6 +27,10 @@ import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectVesselInfoData,
+  selectVesselPrintMode,
+} from 'features/vessel/selectors/vessel.selectors'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {

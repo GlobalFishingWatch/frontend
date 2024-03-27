@@ -23,7 +23,8 @@ function WorkspacePointsTooltipSection({ features }: WorkspacePointsLayersProps)
                 id={id}
                 key={`${id}-${index}`}
                 label={label}
-                feature={feature}
+                // TODO:deck
+                feature={feature as any}
                 showFeaturesDetails={false}
               />
             </div>

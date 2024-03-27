@@ -1,3 +1,5 @@
+// TODO: REMOVE THIS
+
 import { uniq } from 'lodash'
 import {
   Resource,
@@ -11,12 +13,12 @@ import {
   ApiEvent,
   TrackResourceData,
   DRAW_DATASET_SOURCE,
+  DataviewType,
+  DataviewConfig,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
   DEFAULT_ENVIRONMENT_INTERVALS,
-  GeneratorDataviewConfig,
-  GeneratorType,
   Group,
   HeatmapAnimatedMode,
   HeatmapAnimatedGeneratorConfig,
@@ -75,9 +77,9 @@ export const getDataviewAvailableIntervals = (
   let availableIntervals = defaultIntervals
 
   if (dataviewInterval) {
-    availableIntervals = [dataviewInterval]
+    availableIntervals = [dataviewInterval as Interval]
   } else if (dataviewIntervals && dataviewIntervals.length > 0) {
-    availableIntervals = dataviewIntervals
+    availableIntervals = dataviewIntervals as Interval[]
   } else if (datasetIntervals && datasetIntervals.length > 0) {
     availableIntervals = datasetIntervals
   }
@@ -92,7 +94,7 @@ export type DataviewsGeneratorConfigsParams = {
   highlightedEvent?: ApiEvent
   highlightedEvents?: string[]
   heatmapAnimatedMode?: HeatmapAnimatedMode
-  customGeneratorMapping?: Partial<Record<GeneratorType, GeneratorType>>
+  customGeneratorMapping?: Partial<Record<DataviewType, DataviewType>>
   singleTrack?: boolean
 }
 
@@ -140,19 +142,19 @@ export function getGeneratorConfig(
 ) {
   const { debug = false, highlightedTime, highlightedEvent, highlightedEvents } = params || {}
 
-  let generator: GeneratorDataviewConfig = {
+  let generator: any = {
     id: dataview.id,
     ...dataview.config,
   }
 
   switch (dataview.config?.type) {
-    case GeneratorType.Basemap: {
+    case DataviewType.Basemap: {
       return {
         ...generator,
         basemap: dataview.config.basemap || dataview.config.layers?.[0]?.id,
       }
     }
-    case GeneratorType.TileCluster: {
+    case DataviewType.TileCluster: {
       const { dataset: tileClusterDataset, url: tileClusterUrl } = resolveDataviewDatasetResource(
         dataview,
         DatasetTypes.Events
@@ -169,7 +171,7 @@ export function getGeneratorConfig(
         ...(highlightedEvents && { currentEventId: highlightedEvents[0] }),
       }
     }
-    case GeneratorType.Track: {
+    case DataviewType.Track: {
       // Inject highligtedTime
       if (highlightedTime) {
         generator.highlightedTime = highlightedTime
@@ -225,7 +227,7 @@ export function getGeneratorConfig(
         const type =
           params?.customGeneratorMapping && params?.customGeneratorMapping.VESSEL_EVENTS
             ? params?.customGeneratorMapping.VESSEL_EVENTS
-            : GeneratorType.VesselEvents
+            : DataviewType.VesselEvents
 
         const eventsGenerator = {
           id: `${dataview.id}${MULTILAYER_SEPARATOR}vessel_events`,
@@ -245,7 +247,7 @@ export function getGeneratorConfig(
       }
       return generator
     }
-    case GeneratorType.Heatmap: {
+    case DataviewType.Heatmap: {
       const heatmapDataset = dataview.datasets?.find(
         (dataset) => dataset.type === DatasetTypes.Fourwings
       )
@@ -276,7 +278,7 @@ export function getGeneratorConfig(
       }
       return generator
     }
-    case GeneratorType.HeatmapStatic: {
+    case DataviewType.HeatmapStatic: {
       const heatmapDataset = dataview.datasets?.find(
         (dataset) => dataset.type === DatasetTypes.Fourwings
       )
@@ -298,13 +300,13 @@ export function getGeneratorConfig(
       }
       return generator
     }
-    case GeneratorType.HeatmapAnimated: {
+    case DataviewType.HeatmapAnimated: {
       const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
       let environmentalConfig: Partial<HeatmapAnimatedGeneratorConfig> = {}
       const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
       if (isEnvironmentLayer) {
         const datasetsIds =
-          dataview.config.datasets?.length > 0
+          dataview.config.datasets && dataview.config.datasets?.length > 0
             ? dataview.config.datasets
             : dataview.datasetsConfig?.map((dc) => dc.datasetId)
         const sublayers: HeatmapAnimatedGeneratorSublayer[] = [
@@ -312,10 +314,10 @@ export function getGeneratorConfig(
             id: generator.id,
             colorRamp: dataview.config?.colorRamp as ColorRampsIds,
             filter: dataview.config?.filter,
-            vesselGroups: dataview.config?.['vessel-groups'],
+            vesselGroups: dataview.config?.['vessel-groups'] as any,
             visible: dataview.config?.visible ?? true,
             breaks: dataview.config?.breaks,
-            datasets: datasetsIds,
+            datasets: datasetsIds!,
             attribution: getDatasetAttribution(dataset),
             legend: {
               label: dataset?.name,
@@ -338,7 +340,8 @@ export function getGeneratorConfig(
           tilesAPI,
           dynamicBreaks: dataview.config?.dynamicBreaks || true,
           interactive: true,
-          aggregationOperation: dataview.config?.aggregationOperation || AggregationOperation.Avg,
+          aggregationOperation: (dataview.config?.aggregationOperation ||
+            AggregationOperation.Avg) as any,
           breaksMultiplier: dataview.config?.breaksMultiplier || VALUE_MULTIPLIER,
           availableIntervals,
         }
@@ -346,9 +349,9 @@ export function getGeneratorConfig(
 
       generator = {
         ...generator,
-        ...(!generator.type && { type: GeneratorType.HeatmapAnimated }),
+        ...(!generator.type && { type: DataviewType.HeatmapAnimated }),
         ...environmentalConfig,
-      }
+      } as any
 
       // TODO use this instead of hardcoded version of the api endpoint in layer composer
       // const { url: tilesAPI, dataset: heatmapDataset } = resolveDataviewDatasetResource(
@@ -359,7 +362,7 @@ export function getGeneratorConfig(
       //   (endpoint) => endpoint.id === EndpointId.FourwingsBreaks
       // )?.pathTemplate
 
-      const visible = generator.sublayers?.some(({ visible }) => visible === true)
+      const visible = generator.sublayers?.some(({ visible }: any) => visible === true)
       const { extentStart, extentEnd } = getDatasetsExtent(dataview.datasets)
 
       generator = {
@@ -374,9 +377,9 @@ export function getGeneratorConfig(
       }
       return generator
     }
-    case GeneratorType.Context:
-    case GeneratorType.UserPoints:
-    case GeneratorType.UserContext: {
+    case DataviewType.Context:
+    case DataviewType.UserPoints:
+    case DataviewType.UserContext: {
       if (Array.isArray(dataview.config.layers)) {
         const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
           const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(
@@ -446,8 +449,8 @@ export function getGeneratorConfig(
           generator.steps = getDatasetRangeSteps({ min, max })
         } else if (
           dataset.category === DatasetCategory.Context &&
-          (dataview.config?.type === GeneratorType.UserContext ||
-            dataview.config?.type === GeneratorType.UserPoints)
+          (dataview.config?.type === DataviewType.UserContext ||
+            dataview.config?.type === DataviewType.UserPoints)
         ) {
           setGeneratorConfigCircleRadius({ dataset, generator })
           setGeneratorConfigTimeFilter({ dataset, generator })
@@ -472,20 +475,20 @@ export function getGeneratorConfig(
 export function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Activity &&
-    dataview.config?.type === GeneratorType.HeatmapAnimated
+    dataview.config?.type === DataviewType.HeatmapAnimated
   )
 }
 
 export function isDetectionsDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Detections &&
-    dataview.config?.type === GeneratorType.HeatmapAnimated
+    dataview.config?.type === DataviewType.HeatmapAnimated
   )
 }
 
 export function isTrackDataview(dataview: UrlDataviewInstance) {
   return (
-    dataview.category === DataviewCategory.Vessels && dataview.config?.type === GeneratorType.Track
+    dataview.category === DataviewCategory.Vessels && dataview.config?.type === DataviewType.Track
   )
 }
 
@@ -494,7 +497,7 @@ export function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
 }
 
 export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
-  return dataview?.config?.type === GeneratorType.HeatmapStatic
+  return dataview?.config?.type === DataviewType.HeatmapStatic
 }
 
 export function getMergedHeatmapAnimatedDataview(
@@ -518,8 +521,8 @@ export function getMergedHeatmapAnimatedDataview(
     }
     const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
 
-    const activeDatasets = dataview.datasets.filter(
-      (dataset) => dataview?.config?.datasets?.includes(dataset.id)
+    const activeDatasets = dataview.datasets.filter((dataset) =>
+      dataview?.config?.datasets?.includes(dataset.id)
     )
     const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
     if (units.length > 0 && units.length !== 1) {
@@ -539,9 +542,9 @@ export function getMergedHeatmapAnimatedDataview(
     const sublayer: HeatmapAnimatedGeneratorSublayer = {
       id: dataview.id,
       datasets,
-      colorRamp: config.colorRamp as ColorRampsIds,
+      colorRamp: config.colorRamp as any,
       filter: config.filter,
-      vesselGroups: config['vessel-groups'],
+      vesselGroups: config['vessel-groups'] as any,
       visible: config.visible,
       legend: {
         label: dataview.name,
@@ -562,7 +565,7 @@ export function getMergedHeatmapAnimatedDataview(
   const mergedActivityDataview = {
     id: mergedHeatmapGeneratorId,
     config: {
-      type: GeneratorType.HeatmapAnimated,
+      type: DataviewType.HeatmapAnimated,
       sublayers: activitySublayers,
       updateDebounce: true,
       mode: heatmapAnimatedMode,
@@ -574,7 +577,7 @@ export function getMergedHeatmapAnimatedDataview(
         }),
     },
   }
-  dataviewsFiltered.push(mergedActivityDataview)
+  dataviewsFiltered.push(mergedActivityDataview as any)
 
   // New sublayers as auxiliar activity layers
   const activityWithContextDataviews = heatmapAnimatedDataviews.flatMap((dataview) => {
@@ -610,9 +613,9 @@ export function getMergedHeatmapAnimatedDataview(
       auxiliarDataview.config = {
         color: dataview.config?.color,
         visible: auxiliarLayerActive,
-        type: GeneratorType.Polygons,
+        type: DataviewType.Polygons,
         url,
-      }
+      } as any
       return auxiliarDataview
     }
     return []

@@ -1,0 +1,13 @@
+diff --git a/src/executors/server/server.impl.js b/src/executors/server/server.impl.js
+index aa40f9d3ff067863e0b6f504ef85cbc6fd1de9c2..bd6045a903059b2066fce608a89a98ca0693dc1b 100644
+--- a/src/executors/server/server.impl.js
++++ b/src/executors/server/server.impl.js
+@@ -11,7 +11,7 @@ async function* serveExecutor(options, context) {
+     const buildOptions = (0, devkit_1.readTargetOptions)((0, devkit_1.parseTargetString)(options.buildTarget, context), context);
+     const projectRoot = context.workspace.projects[context.projectName].root;
+     // This is required for the default custom server to work. See the @nx/next:app generator.
+-    const nextDir = (0, path_1.resolve)(context.root, buildOptions.outputPath);
++    const nextDir = options.dev ? null : (0, path_1.resolve)(context.root, buildOptions.outputPath);
+     process.env.NX_NEXT_DIR ??= options.dev ? projectRoot : nextDir;
+     if (options.customServerTarget) {
+         return yield* (0, custom_server_impl_1.default)(options, context);

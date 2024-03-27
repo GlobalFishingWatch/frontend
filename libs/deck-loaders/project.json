@@ -1,0 +1,47 @@
+{
+  "name": "deck-loaders",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/deck-loaders/src",
+  "projectType": "library",
+  "targets": {
+    "dist": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "assets": [],
+        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "main": "libs/deck-loaders/src/index.ts",
+        "outputPath": "dist/libs/deck-loaders",
+        "project": "libs/deck-loaders/package.json",
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json"
+      }
+    },
+    "dist:workers": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputFileName": "fourwings-worker.js",
+        "main": "libs/deck-loaders/src/fourwings/workers/fourwings-worker.ts",
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "watch": false,
+        "target": "esnext",
+        "platform": "browser",
+        "deleteOutputPath": true,
+        "bundle": true,
+        "thirdParty": true,
+        "generatePackageJson": false,
+        "minify": false
+      }
+    },
+    "publish": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
+      "options": {
+        "packageRoot": "dist/libs/deck-loaders"
+      }
+    }
+  },
+  "tags": []
+}

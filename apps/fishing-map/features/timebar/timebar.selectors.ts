@@ -35,16 +35,25 @@ import { t } from 'features/i18n/i18n'
 import { selectResources } from 'features/resources/resources.slice'
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
-import { TimebarGraphs } from 'types'
+import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
+import {
+  selectTimebarGraph,
+  selectTimebarSelectedEnvId,
+  selectTimebarVisualisation,
+} from 'features/app/selectors/app.timebar.selectors'
 import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import {
+  selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
+  selectActiveEnvironmentalDataviews,
+} from 'features/dataviews/selectors/dataviews.selectors'
 
 export const selectDatasetsExtent = createSelector(
   [selectDataviewInstancesResolved, selectAllDatasets],
@@ -78,6 +87,31 @@ const EMPTY_ARRAY: [] = []
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
 }
+
+export const selectTimebarSelectedDataviews = createSelector(
+  [
+    selectTimebarVisualisation,
+    selectTimebarSelectedEnvId,
+    selectActiveDetectionsDataviews,
+    selectActiveActivityDataviews,
+    selectActiveEnvironmentalDataviews,
+  ],
+  (
+    timebarVisualisation,
+    timebarSelectedEnvId,
+    detectionsDataviews,
+    activityDataviews,
+    environmentalDataviews
+  ) => {
+    if (!timebarVisualisation) return []
+    if (timebarVisualisation === TimebarVisualisations.Environment) {
+      return environmentalDataviews.filter((d) => d.id === timebarSelectedEnvId)
+    }
+    return timebarVisualisation === TimebarVisualisations.HeatmapDetections
+      ? detectionsDataviews
+      : activityDataviews
+  }
+)
 
 export const selectTracksData = createSelector(
   [selectActiveTrackDataviews, selectResources],
@@ -207,14 +241,13 @@ export const selectTracksGraphData = createSelector(
       }
 
       const resourcesQueries = resolveDataviewDatasetResources(dataview, DatasetTypes.Tracks)
-      const resourceQuery = resourcesQueries.find(
-        (r) =>
-          r.datasetConfig.query?.find(
-            (q) =>
-              q.id === 'fields' &&
-              (q.value.toString().includes(timebarGraphType) ||
-                q.value.toString().toLowerCase().includes(timebarGraphType))
-          )
+      const resourceQuery = resourcesQueries.find((r) =>
+        r.datasetConfig.query?.find(
+          (q) =>
+            q.id === 'fields' &&
+            (q.value.toString().includes(timebarGraphType) ||
+              q.value.toString().toLowerCase().includes(timebarGraphType))
+        )
       )
       const graphUrl = resourceQuery?.url
       if (!graphUrl) return trackGraphData

@@ -11,10 +11,11 @@ import {
   Spinner,
   Button,
 } from '@globalfishingwatch/ui-components'
-import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { BasemapType } from '@globalfishingwatch/layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import {
   selectIsAnyVesselLocation,
   selectIsAnyReportLocation,
@@ -26,9 +27,11 @@ import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
+import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectMapResolution } from 'features/app/selectors/app.selectors'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 
@@ -75,6 +78,7 @@ const MapControls = ({
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const reportLocation = useSelector(selectIsAnyReportLocation)
+  const mapResolution = useSelector(selectMapResolution)
   const { isErrorNotificationEditing, toggleErrorNotification } = useMapErrorNotification()
   const showExtendedControls = isWorkspaceLocation || isVesselLocation || reportLocation
   const showScreenshot = !isVesselLocation && !reportLocation
@@ -85,9 +89,12 @@ const MapControls = ({
     }
   }, [])
 
-  const { viewport, setMapCoordinates } = useViewport()
-  const { latitude, longitude, zoom } = viewport
+  const setMapCoordinates = useSetMapCoordinates()
+  const { viewState, setViewState } = useViewStateAtom()
+  const { latitude, longitude, zoom } = viewState
+
   const { bounds } = useMapBounds()
+
   const center = useMemo(
     () => ({
       latitude,
@@ -99,12 +106,13 @@ const MapControls = ({
   const debouncedOptions = useDebounce(options, 16)
 
   const onZoomInClick = useCallback(() => {
-    setMapCoordinates({ latitude, longitude, zoom: zoom + 1 })
-  }, [latitude, longitude, setMapCoordinates, zoom])
+    setMapCoordinates({ zoom: zoom + 1 })
+    // setViewState({ zoom: zoom + 1 })
+  }, [setMapCoordinates, zoom])
 
   const onZoomOutClick = useCallback(() => {
-    setMapCoordinates({ latitude, longitude, zoom: Math.max(1, zoom - 1) })
-  }, [latitude, longitude, setMapCoordinates, zoom])
+    setMapCoordinates({ zoom: zoom - 1 })
+  }, [setMapCoordinates, zoom])
 
   const onScreenshotClick = useCallback(() => {
     dispatchQueryParams({ sidebarOpen: true })
@@ -145,7 +153,7 @@ const MapControls = ({
   }, [downloadImage, handleModalClose])
 
   const basemapDataviewInstance = resolvedDataviewInstances?.find(
-    (d) => d.config?.type === GeneratorType.Basemap
+    (d) => d.config?.type === DataviewType.Basemap
   )
   const currentBasemap = basemapDataviewInstance?.config?.basemap ?? BasemapType.Default
   const switchBasemap = () => {
@@ -155,6 +163,12 @@ const MapControls = ({
         basemap:
           currentBasemap === BasemapType.Default ? BasemapType.Satellite : BasemapType.Default,
       },
+    })
+  }
+
+  const onResolutionToggleClick = () => {
+    dispatchQueryParams({
+      mapResolution: mapResolution === 'high' ? 'default' : 'high',
     })
   }
 
@@ -173,7 +187,7 @@ const MapControls = ({
             bounds={debouncedOptions.bounds}
             center={debouncedOptions.center}
           />
-          {miniGlobeHovered && <MiniGlobeInfo viewport={viewport} />}
+          {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
           {showExtendedControls && <MapSearch />}
@@ -215,6 +229,18 @@ const MapControls = ({
                       : t('map.captureMap', 'Capture map')
                   }
                   onClick={onScreenshotClick}
+                />
+              )}
+              {gfwUser && (
+                <IconButton
+                  icon={mapResolution === 'high' ? 'heatmap-low-res' : 'heatmap-high-res'}
+                  tooltip={
+                    mapResolution === 'high'
+                      ? t('map.lowRes', 'See low resolution heatmaps')
+                      : t('map.highRes', 'See high resolution heatmaps')
+                  }
+                  type="map-tool"
+                  onClick={onResolutionToggleClick}
                 />
               )}
               <Tooltip

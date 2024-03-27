@@ -1,9 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
+import type { RootState } from 'reducers'
+import { EventTypes } from '@globalfishingwatch/api-types'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
-import { RootState } from 'store'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
 export const selectWorkspaceError = (state: RootState) => state.workspace?.error
@@ -56,5 +57,16 @@ export function selectWorkspaceStateProperty<P extends WorkspaceStateProperty>(p
     }
   )
 }
+
+export const selectWorkspaceVisibleEventsArray = createSelector(
+  [selectWorkspaceStateProperty('visibleEvents')],
+  (visibleEvents) => {
+    return typeof visibleEvents === 'string'
+      ? visibleEvents === 'all'
+        ? Object.values(EventTypes)
+        : []
+      : visibleEvents
+  }
+)
 
 export const selectDaysFromLatest = selectWorkspaceStateProperty('daysFromLatest')

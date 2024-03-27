@@ -10,7 +10,8 @@ import {
   Resource,
   ResourceStatus,
 } from '@globalfishingwatch/api-types'
-import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
+import { setResource } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {

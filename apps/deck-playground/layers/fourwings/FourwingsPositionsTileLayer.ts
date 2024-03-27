@@ -27,13 +27,12 @@ export type _FourwingsPositionsTileLayerProps<DataT = any> = {
   minFrame: number
   maxFrame: number
   zIndex?: number
-  colorDomain: number[]
-  colorRange: Color[]
+  colorDomain?: number[]
+  colorRange?: Color[]
   highlightedVesselId?: string
   clickedFeatures: PickingInfo[]
   hoveredFeatures: PickingInfo[]
   onDataLoad?: (data: DataT) => void
-  onColorRampUpdate: (colorRamp: FourwingsColorRamp) => void
   onVesselHighlight?: (vesselId: string) => void
   onVesselClick?: (vesselId: string) => void
   onViewportLoad?: (tiles) => void

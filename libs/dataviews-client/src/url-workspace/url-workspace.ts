@@ -173,7 +173,7 @@ export const parseLegacyDataviewInstanceConfig = (
 
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   const dataviewId = dataview.dataviewId?.toString()
-  const breaks = dataview.config?.breaks?.map((b: string) => parseFloat(b))
+  const breaks = dataview.config?.breaks?.map((b: any) => parseFloat(b))
   const vesselGroups = dataview.config?.filters?.['vessel-groups'] as string | string[] | undefined
   // Legacy workspaces supported multiple vessel groups but this is not supported anymore so we pick the first one
   const vesselGroup = Array.isArray(vesselGroups) ? vesselGroups[0] : vesselGroups
@@ -182,10 +182,10 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
     config.breaks = breaks
   }
   if (dataview.config?.maxVisibleValue !== undefined) {
-    config.maxVisibleValue = parseFloat(dataview.config?.maxVisibleValue)
+    config.maxVisibleValue = parseFloat(dataview.config?.maxVisibleValue as any)
   }
   if (dataview.config?.minVisibleValue !== undefined) {
-    config.minVisibleValue = parseFloat(dataview.config?.minVisibleValue)
+    config.minVisibleValue = parseFloat(dataview.config?.minVisibleValue as any)
   }
   if (vesselGroup) {
     if (!config.filters) {

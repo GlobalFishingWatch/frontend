@@ -66,7 +66,7 @@ export const getColorRampByOpacitySteps = (
   numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS
 ) => {
   const color = finalColor?.includes('#') ? hexToRgbString(finalColor) : finalColor
-  const opacitySteps = [...Array(numSteps)].map((_, i) => i / (numSteps - 1))
+  const opacitySteps = [...Array(numSteps)].map((_, i) => (i + 1) / numSteps)
   return opacitySteps.map((opacity) => `rgba(${color}, ${opacity})`)
 }
 

@@ -10,18 +10,20 @@ import {
   areDataviewsFeatureLoaded,
   useMapDataviewFeatures,
 } from 'features/map/map-sources.hooks'
-import useViewport, { useMapBounds } from 'features/map/map-viewport.hooks'
+import { useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useMapBounds } from 'features/map/map-bounds.hooks'
+import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 
 export const useEventsDynamicRamp = (dataview: UrlDataviewInstance) => {
   const { bounds } = useMapBounds()
-  const { viewport } = useViewport()
+  const { viewState } = useViewStateAtom()
   const dataviewFeatures = useMapDataviewFeatures(dataview)
   const sourcesLoaded = areDataviewsFeatureLoaded(dataviewFeatures)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const updateBreaksByViewportValues = useCallback(
     ({ features, dataviewsId } = {} as DataviewFeature, bounds: MiniglobeBounds) => {
-      const filteredFeatures = filterFeaturesByBounds(features, bounds)
+      const filteredFeatures = filterFeaturesByBounds(features, bounds) as GeoJSONFeature[]
       if (filteredFeatures?.length > 0) {
         const data = filteredFeatures.map((feature) => feature.properties?.count)
         const steps = Math.min(data.length, 3)
@@ -39,7 +41,7 @@ export const useEventsDynamicRamp = (dataview: UrlDataviewInstance) => {
     [upsertDataviewInstance]
   )
 
-  const roundZoom = Math.floor(viewport.zoom)
+  const roundZoom = Math.floor(viewState.zoom)
   useEffect(() => {
     const maxZoomCluster = dataview.config?.maxZoomCluster || MAX_ZOOM_TO_CLUSTER_POINTS
     if (sourcesLoaded && roundZoom < maxZoomCluster) {

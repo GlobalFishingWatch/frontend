@@ -29,7 +29,6 @@ import {
 import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import {
@@ -51,6 +50,8 @@ import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/help/hints.slice'
 import AppModals from 'features/modals/Modals'
 import useMapInstance from 'features/map/map-context.hooks'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useSetViewState } from 'features/map/map-viewport.hooks'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import { selectReportAreaBounds } from 'features/app/selectors/app.reports.selector'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
@@ -158,7 +159,7 @@ function App() {
   }, [])
 
   const fitMapBounds = useMapFitBounds()
-  const { setMapCoordinates } = useViewport()
+  const setViewState = useSetViewState()
   const { setTimerange } = useTimerangeConnect()
 
   const locationType = useSelector(selectLocationType)
@@ -189,9 +190,7 @@ function App() {
         const workspace = resolvedAction.payload as Workspace
         const viewport = urlViewport || workspace?.viewport
         if (viewport && !isReportLocation) {
-          setTimeout(() => {
-            setMapCoordinates(viewport)
-          }, 100)
+          setViewState(viewport)
         }
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
@@ -224,7 +223,7 @@ function App() {
       if (reportAreaBounds) {
         fitMapBounds(reportAreaBounds, { padding: FIT_BOUNDS_REPORT_PADDING })
       } else {
-        setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
+        setViewState({ latitude: 0, longitude: 0, zoom: 0 })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

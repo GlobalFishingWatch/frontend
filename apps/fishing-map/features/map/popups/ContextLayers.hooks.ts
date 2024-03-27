@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { getEventLabel } from 'utils/analytics'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
@@ -19,7 +20,7 @@ import { selectContextAreasDataviews } from 'features/dataviews/selectors/datavi
 import { getBufferedAreaBbox } from 'features/reports/reports.utils'
 import { setClickedEvent } from '../map.slice'
 import { TooltipEventFeature } from '../map.hooks'
-import { useMapFitBounds } from '../map-viewport.hooks'
+import { useMapFitBounds } from '../map-bounds.hooks'
 
 export const getFeatureBounds = (feature: TooltipEventFeature) => {
   if (feature.geometry) {
@@ -79,11 +80,11 @@ export const useContextInteractions = () => {
       const datasetId = feature.datasetId as string
       const dataset = datasets.find((d) => d.id === datasetId)
       if (dataset) {
-        const dataview = dataviews.find(
-          (dataview) => dataview.datasets?.some((dataset) => dataset.id === datasetId)
+        const dataview = dataviews.find((dataview) =>
+          dataview.datasets?.some((dataset) => dataset.id === datasetId)
         )
         const areaName =
-          dataview?.config?.type === GeneratorType.UserContext
+          dataview?.config?.type === DataviewType.UserContext
             ? dataview?.datasets?.[0]?.name
             : feature.value || feature.title
         dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
@@ -102,15 +103,15 @@ export const useContextInteractions = () => {
       const areaId = getAreaIdFromFeature(feature) as string
       // Report already does it on page reload but to avoid waiting
       // this moves the map to the same position
-      const bounds = getFeatureBounds(feature)
-      if (bounds) {
-        const boundsParams = {
-          padding: FIT_BOUNDS_REPORT_PADDING,
-          mapWidth: window.innerWidth / 2,
-          mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
-        }
-        fitMapBounds(bounds, boundsParams)
-      }
+      // const bounds = getFeatureBounds(feature)
+      // if (bounds) {
+      //   const boundsParams = {
+      //     padding: FIT_BOUNDS_REPORT_PADDING,
+      //     mapWidth: window.innerWidth / 2,
+      //     mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
+      //   }
+      //   fitMapBounds(bounds, boundsParams)
+      // }
 
       highlightArea({ sourceId, areaId })
       dispatch(setClickedEvent(null))
@@ -121,7 +122,7 @@ export const useContextInteractions = () => {
         label: getEventLabel([title ?? '', value ?? '']),
       })
     },
-    [highlightArea, dispatch, fitMapBounds]
+    [highlightArea, dispatch]
   )
 
   const onReportClick = useCallback(

@@ -1,16 +1,15 @@
 import { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { ContextLayerType } from '@globalfishingwatch/layer-composer'
+import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { TooltipEventFeature } from 'features/map/map.hooks'
-import { getContextAreaLink } from 'features/dataviews/dataviews.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
-import { getAreaIdFromFeature, useContextInteractions } from './ContextLayers.hooks'
+import { useContextInteractions } from './ContextLayers.hooks'
 
 type ContextTooltipRowProps = {
-  features: TooltipEventFeature[]
+  features: ContextFeature[]
   showFeaturesDetails: boolean
 }
 
@@ -43,55 +42,17 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
             data-test={`context-tooltip-section-${featureByType[0].datasetId}`}
           >
             {showFeaturesDetails && (
+              // TODO translate this
               <h3 className={styles.popupSectionTitle}>{featureByType[0].title}</h3>
             )}
             {featureByType.map((feature, index) => {
               if (!feature.value) return null
-              const { generatorContextLayer } = feature
-              const gfw_id = getAreaIdFromFeature(feature)
-
-              let id = gfw_id
-              let label = feature.value ?? feature.title
-              let linkHref: string | undefined
-              // ContextLayerType.MPA but enums doesn't work in CRA for now
-              switch (generatorContextLayer) {
-                case ContextLayerType.MPA:
-                case ContextLayerType.MPANoTake:
-                case ContextLayerType.MPARestricted:
-                  const { NAME, WDPA_PID } = feature.properties
-                  label = NAME || feature.value || ''
-                  id = `${label}-${gfw_id}`
-                  linkHref = getContextAreaLink(generatorContextLayer, WDPA_PID)
-                  break
-                case ContextLayerType.TunaRfmo:
-                  id = `${feature.value}-${gfw_id}`
-                  linkHref = getContextAreaLink(generatorContextLayer, feature.value)
-                  break
-                case ContextLayerType.EEZ:
-                  const { MRGID_EEZ } = feature.properties
-                  id = `${MRGID_EEZ}-${gfw_id}`
-                  linkHref = getContextAreaLink(generatorContextLayer, MRGID_EEZ)
-                  break
-                case ContextLayerType.ProtectedSeas:
-                  const { id: site_id } = feature.properties
-                  id = `${site_id}-${gfw_id}`
-                  linkHref = getContextAreaLink(generatorContextLayer, site_id)
-                  break
-                case ContextLayerType.FAO:
-                  const { F_CODE } = feature.properties
-                  id = `${F_CODE}-${gfw_id}`
-                  linkHref = getContextAreaLink(generatorContextLayer, F_CODE)
-                  break
-                case ContextLayerType.WPPNRI:
-                case ContextLayerType.HighSeas:
-                  id = `${feature.value}-${gfw_id}`
-                  break
-              }
-
+              let label = (feature.value as string) ?? feature.title
+              let linkHref = feature.link
               return (
                 <ContextLayersRow
-                  id={id as string}
-                  key={`${id}-${index}`}
+                  id={feature.id as string}
+                  key={`${feature.id}-${index}`}
                   label={label}
                   linkHref={linkHref}
                   feature={feature}

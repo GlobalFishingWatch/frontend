@@ -154,7 +154,7 @@ export const useHighlightedEventsConnect = () => {
   const dispatch = useAppDispatch()
 
   const dispatchHighlightedEvents = useCallback(
-    (eventIds: string[]) => {
+    (eventIds: string[] | undefined) => {
       dispatch(setHighlightedEvents(eventIds))
     },
     [dispatch]

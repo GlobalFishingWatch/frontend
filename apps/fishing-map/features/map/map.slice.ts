@@ -2,7 +2,8 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import {
   DataviewDatasetConfig,
   Dataset,
@@ -123,14 +124,12 @@ const getInteractionEndpointDatasetConfig = (
     ],
   }
 
-  const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
+  const filters = featuresDataviews.map((dv) => dv.config?.filter || '')
   if (filters.length) {
     datasetConfig.query?.push({ id: 'filters', value: filters })
   }
 
-  const vesselGroups = featuresDataviews
-    .map((dv) => dv.config?.['vessel-groups'] || [])
-    .filter((vg) => vg.length)
+  const vesselGroups = featuresDataviews.flatMap((dv) => dv.config?.['vessel-groups'] || [])
 
   if (vesselGroups.length) {
     datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
@@ -228,7 +227,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
       let startingIndex = 0
       const vesselsBySource: ExtendedFeatureVessel[][][] = featuresDataviews.map((dataview) => {
-        const datasets: string[] = dataview.config?.datasets
+        const datasets: string[] = dataview.config?.datasets || []
         const newStartingIndex = startingIndex + datasets.length
         const dataviewVesselsIds = sublayersVesselsIds.slice(startingIndex, newStartingIndex)
         startingIndex = newStartingIndex

@@ -10,8 +10,8 @@ import VesselPin from 'features/vessel/VesselPin'
 import { SupportedDateType, getUTCDateTime } from './dates'
 
 type EventProps = {
-  start: string
-  end: string
+  start: number
+  end: number
   type: EventTypes
   mainVesselName?: string
   encounterVesselName?: string
@@ -21,11 +21,25 @@ type EventProps = {
   portFlag?: string
 }
 
+export const getEventColors = ({ type }: { type: EventProps['type'] }) => {
+  const colorKey = type
+  // TODO not supporting authorization status yet
+  // if (event.type === 'encounter' && showAuthorizationStatus) {
+  //   colorKey = `${colorKey}${event.encounter?.authorizationStatus}`
+  // }
+  const color = EVENTS_COLORS[colorKey]
+  const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
+  return {
+    color,
+    colorLabels,
+  }
+}
+
 type TimeLabels = {
   start: string
   duration: string
 }
-const getTimeLabels = ({
+export const getTimeLabels = ({
   start,
   end,
 }: {
@@ -135,17 +149,7 @@ export const getEventDescription = ({
       descriptionGeneric = t('event.unknown', 'Unknown event')
   }
 
-  const colorKey = type
-  // TODO not supporting authorization status yet
-  // if (event.type === 'encounter' && showAuthorizationStatus) {
-  //   colorKey = `${colorKey}${event.encounter?.authorizationStatus}`
-  // }
-  const color = EVENTS_COLORS[colorKey]
-  const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
-
   return {
-    color,
-    colorLabels,
     description,
     descriptionGeneric,
   }
@@ -163,7 +167,8 @@ export const getEventDescriptionComponent = ({
   portFlag,
 }: EventProps) => {
   let DescriptionComponent
-  const { color, colorLabels, descriptionGeneric, description } = getEventDescription({
+  const { color, colorLabels } = getEventColors({ type })
+  const { descriptionGeneric, description } = getEventDescription({
     start,
     end,
     type,

@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { Resource } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
-import { parseTrackEventChunkProps } from 'features/timebar/timebar.utils'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
 export const useFetchResources = (resources: Resource[]) => {
@@ -15,7 +14,7 @@ export const useFetchResources = (resources: Resource[]) => {
           fetchResourceThunk({
             resource,
             resourceKey: resource.key,
-            parseEventCb: parseTrackEventChunkProps,
+            // parseEventCb: parseTrackEventChunkProps,
           })
         )
       })

@@ -3,24 +3,20 @@ import memoizeOne from 'memoize-one'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { atom, useAtom } from 'jotai'
-// import { useAtomDevtools } from 'jotai-devtools'
-import { Interval } from '@globalfishingwatch/layer-composer'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
+import { DeckLayerAtom, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { FourwingsLayer, FourwingsLayerProps } from '@globalfishingwatch/deck-layers'
+import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
   selectReportCategory,
   selectReportTimeComparison,
 } from 'features/app/selectors/app.reports.selector'
-import {
-  DataviewFeature,
-  areDataviewsFeatureLoaded,
-  useMapDataviewFeatures,
-  hasDataviewsFeatureError,
-} from 'features/map/map-sources.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { filterByPolygon } from 'features/reports/reports-geo.utils'
 import {
+  FeaturesToTimeseriesParams,
   featuresToTimeseries,
   filterTimeseriesByTimerange,
   removeTimeseriesPadding,
@@ -59,7 +55,7 @@ export function getReportGraphMode(reportActivityGraph: ReportActivityGraph): Re
 export interface ReportGraphProps {
   timeseries: (EvolutionGraphData & { mode?: ReportGraphMode })[]
   sublayers: ReportSublayerGraph[]
-  interval: Interval
+  interval: FourwingsInterval
   mode?: ReportGraphMode
 }
 
@@ -68,7 +64,7 @@ if (process.env.NODE_ENV !== 'production') {
   mapTimeseriesAtom.debugLabel = 'mapTimeseries'
 }
 
-export const mapReportFeaturesAtom = atom([] as DataviewFeature[])
+export const mapReportFeaturesAtom = atom<FourwingsFeature[] | undefined>(undefined)
 if (process.env.NODE_ENV !== 'production') {
   mapTimeseriesAtom.debugLabel = 'mapReportFeatures'
 }
@@ -91,33 +87,25 @@ export function useSetTimeseries() {
 const emptyArray: UrlDataviewInstance[] = []
 
 export const useReportFeaturesLoading = () => {
+  const reportLayerInstanceLoaded = useReportInstance()?.loaded
   const areaInViewport = useReportAreaInViewport()
-  const reportFeatures = useAtom(mapReportFeaturesAtom)[0]
-  const reportFeaturesLoaded = areDataviewsFeatureLoaded(reportFeatures)
-  return areaInViewport && !reportFeaturesLoaded
+  return areaInViewport && !reportLayerInstanceLoaded
 }
 
 export const useReportFeaturesError = () => {
-  const reportFeatures = useAtom(mapReportFeaturesAtom)[0]
-  return hasDataviewsFeatureError(reportFeatures)
+  // TODO handle errors in layer instances
+  const reportLayerInstanceLoaded = useReportInstance()?.loaded
+  return false
 }
 
-const useReportFeatures = () => {
-  const setReportFeatures = useAtom(mapReportFeaturesAtom)[1]
+const useReportInstance = () => {
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
-  const areaInViewport = useReportAreaInViewport()
-  const activityFeatures = useMapDataviewFeatures(
-    areaInViewport ? currentCategoryDataviews : emptyArray
-  )
-
-  useEffect(() => {
-    setReportFeatures(activityFeatures)
-  }, [activityFeatures, setReportFeatures])
-
-  return activityFeatures
+  const id = currentCategoryDataviews?.length ? getMergedDataviewId(currentCategoryDataviews) : ''
+  const reportLayerInstance = useGetDeckLayer<FourwingsLayer>(id)
+  return reportLayerInstance
 }
 
-const useReportTimeseries = (reportFeatures: DataviewFeature[]) => {
+const useReportTimeseries = (reportLayer: DeckLayerAtom<FourwingsLayer>) => {
   const [timeseries, setTimeseries] = useAtom(mapTimeseriesAtom)
   const area = useSelector(selectReportArea)
   const areaInViewport = useReportAreaInViewport()
@@ -126,7 +114,7 @@ const useReportTimeseries = (reportFeatures: DataviewFeature[]) => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const reportBufferHash = useSelector(selectReportBufferHash)
-  const reportFeaturesLoaded = areDataviewsFeatureLoaded(reportFeatures)
+  // const reportFeaturesLoaded = areDataviewsFeatureLoaded(reportFeatures)
 
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {
@@ -135,28 +123,33 @@ const useReportTimeseries = (reportFeatures: DataviewFeature[]) => {
     compareDeltaMillis = compareStartMillis - startMillis
   }
 
+  const { loaded, instance } = reportLayer || { loaded: false, instance: undefined }
+
   const computeTimeseries = useCallback(
-    (
-      layersWithFeatures: DataviewFeature[],
-      geometry: Polygon | MultiPolygon,
-      graphMode: ReportGraphMode
-    ) => {
-      const features = layersWithFeatures.map(({ chunksFeatures }) =>
-        chunksFeatures
-          ? chunksFeatures.flatMap(({ active, features }) => (active && features ? features : []))
-          : []
-      )
+    (instance: FourwingsLayer, geometry: Polygon | MultiPolygon, graphMode: ReportGraphMode) => {
+      const features = instance.getData() as FourwingsFeature[]
       const filteredFeatures = filterByPolygon(
-        features,
+        [features],
         geometry,
         reportCategory === 'environment' ? 'point' : 'cell'
       )
-      const timeseries = featuresToTimeseries(filteredFeatures, {
-        layersWithFeatures,
+      const props = instance.props as FourwingsLayerProps
+      const chunk = instance.getChunk()
+
+      const params: FeaturesToTimeseriesParams = {
+        staticHeatmap: props.static,
+        interval: instance.getInterval(),
+        start: chunk.bufferedStart,
+        end: chunk.bufferedEnd,
+        aggregationOperation: props.aggregationOperation,
+        minVisibleValue: props.minVisibleValue,
+        maxVisibleValue: props.maxVisibleValue,
+        sublayers: props.sublayers,
         showTimeComparison,
         compareDeltaMillis: compareDeltaMillis as number,
         graphMode,
-      })
+      }
+      const timeseries = featuresToTimeseries(filteredFeatures, params)
       setTimeseries(timeseries)
     },
     [reportCategory, showTimeComparison, compareDeltaMillis, setTimeseries]
@@ -177,26 +170,19 @@ const useReportTimeseries = (reportFeatures: DataviewFeature[]) => {
   }, [reportGraphMode])
 
   useEffect(() => {
-    if (reportFeaturesLoaded && area?.geometry && areaInViewport) {
-      computeTimeseries(reportFeatures, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
+    if (loaded && area?.geometry && areaInViewport) {
+      computeTimeseries(instance, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    reportFeaturesLoaded,
-    area?.geometry,
-    areaInViewport,
-    reportCategory,
-    reportBufferHash,
-    reportGraphMode,
-  ])
+  }, [loaded, area?.geometry, areaInViewport, reportCategory, reportBufferHash, reportGraphMode])
 
   return timeseries
 }
 
 // Run only once in Report.tsx parent component
 export const useComputeReportTimeSeries = () => {
-  const reportFeatures = useReportFeatures()
-  useReportTimeseries(reportFeatures)
+  const reportLayer = useReportInstance()
+  useReportTimeseries(reportLayer)
 }
 
 const memoizedFilterTimeseriesByTimerange = memoizeOne(filterTimeseriesByTimerange)

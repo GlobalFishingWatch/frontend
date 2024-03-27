@@ -1,3 +1,4 @@
+import { Locale } from './i18n'
 import { ApiAppName } from './workspaces'
 import { Dataset } from './datasets'
 
@@ -11,23 +12,107 @@ export interface DataviewContexLayerConfig {
   dataset: string
 }
 
-export interface DataviewConfig<Type = any> {
-  // TODO use any property from layer-composer here?
-  type?: Type
+export enum DataviewType {
+  Annotation = 'ANNOTATION',
+  Background = 'BACKGROUND',
+  Basemap = 'BASEMAP',
+  BasemapLabels = 'BASEMAP_LABELS',
+  CartoPolygons = 'CARTO_POLYGONS',
+  Context = 'CONTEXT',
+  GL = 'GL',
+  Heatmap = 'HEATMAP',
+  HeatmapStatic = 'HEATMAP_STATIC',
+  HeatmapAnimated = 'HEATMAP_ANIMATED',
+  Polygons = 'POLYGONS',
+  Rulers = 'RULERS',
+  TileCluster = 'TILE_CLUSTER',
+  Track = 'TRACK',
+  UserContext = 'USER_CONTEXT',
+  UserPoints = 'USER_POINTS',
+  VesselEvents = 'VESSEL_EVENTS',
+  VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
+}
+
+export type DataviewSublayerConfig = {
+  id: string
+  datasets: Dataset[]
   color?: string
-  colorCyclingType?: ColorCyclingType
+  colorRamp?: string
   visible?: boolean
+  filter?: DataviewConfig['filter']
+  filters?: DataviewConfig['filters']
+  vesselGroups?: DataviewConfig['vessel-groups']
+  maxZoom?: number
+}
+
+export interface DataviewConfig<Type = DataviewType> {
+  /** Type to define what kind of layer to render, ex: fourwings, context, draw... */
+  type?: Type
+  /** Used in activity or detections layers to define which layers are active in all the options available */
+  datasets?: string[]
+  color?: string
+  colorRamp?: string
+  colorCyclingType?: ColorCyclingType
+  /** Fourwings modes: 'compare' | 'bivariate' */
+  comparisonMode?: string
+  /** Fourwings visualizations: 'heatmap' | 'positions' */
+  visualizationMode?: string
+  /** Property used when a layer can use white as last step in its color ramp */
+  colorRampWhiteEnd?: boolean
+  auxiliarLayerActive?: boolean
+  debug?: boolean
+  visible?: boolean
+  /** Used to limit the available FourwingsIntervals */
+  interval?: string
+  intervals?: string[]
+  /** Basemap for deck layers, see libs/deck-layers/src/layers/basemap/BasemapLayer.ts */
+  basemap?: string
+  /** LayerGroup for deck layers z-index, see libs/deck-layers/src/utils/sort.ts */
+  group?: string
+  /** String encoded for url from filters Record */
+  filter?: string
+  /** Record with id filter as key and filters as values */
   filters?: Record<string, any>
+  'vessel-groups'?: string[]
   filterOperators?: Record<string, FilterOperator>
+  /** Min value for filters in environmental layers to perform frontend data filtering */
+  minVisibleValue?: number
+  /** Max value for filters in environmental layers to perform frontend data filtering */
+  maxVisibleValue?: number
+  /** Fourwings dataset without temporal data */
+  static?: boolean
+  /** Initial breaks for fourwings datasets */
+  breaks?: number[]
+  locale?: Locale
   dynamicBreaks?: boolean
   maxZoom?: number
+  maxZoomCluster?: number
   layers?: DataviewContexLayerConfig[]
+  /** Legacy for duplicated events in the API */
+  duplicatedEventsWorkaround?: boolean
+  /** Stats calculated for environmental layers reports */
+  stats?: {
+    max: number
+    min: number
+    mean: number
+  }
+
+  /** Used to store the vessel name */
+  name?: string
+  event?: string
+  pointsToSegmentsSwitchLevel?: number
+  showIcons?: boolean
+  showAuthorizationStatus?: boolean
+  aggregationOperation?: string
+  breaksMultiplier?: number
+
   /** Vessel datasets */
   info?: string
   track?: string
   events?: string[]
-  /*****************/
-  [key: string]: any
+  relatedVesselIds?: string[]
+  /** Fourwings layers merged, needed for Activity or Detections */
+  sublayers?: DataviewSublayerConfig[]
 }
 
 export interface DataviewDatasetConfigParam {

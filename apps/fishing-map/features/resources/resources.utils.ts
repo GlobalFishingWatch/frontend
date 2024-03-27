@@ -1,20 +1,14 @@
-import { maxBy, minBy } from 'lodash'
 import {
-  Dataset,
   DataviewDatasetConfig,
   DataviewDatasetConfigParam,
   EndpointId,
   ThinningConfig,
 } from '@globalfishingwatch/api-types'
-import {
-  GetDatasetConfigCallback,
-  getTracksChunkSetId,
-  UrlDataviewInstance,
-} from '@globalfishingwatch/dataviews-client'
+import { GetDatasetConfigCallback, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.slice'
+import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
 
 type ThinningConfigParam = { zoom: number; config: ThinningConfig }
 
@@ -58,13 +52,9 @@ export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) =
 
 export const trackDatasetConfigsCallback = (
   thinningConfig: ThinningConfigParam | null,
-  chunks: { start: string; end: string }[] | null,
-  timebarGraph: TimebarGraphs
-): GetDatasetConfigCallback => {
-  return (
-    [track]: DataviewDatasetConfig[],
-    dataview?: UrlDataviewInstance
-  ): DataviewDatasetConfig[] => {
+  timebarGraph: any
+) => {
+  return ([info, track, ...events]: DataviewDatasetConfig[], dataview: UrlDataviewInstance) => {
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
         id,
@@ -87,78 +77,82 @@ export const trackDatasetConfigsCallback = (
         } else {
           trackGraph.query = [...graphQuery, fieldsQuery]
         }
-        const chunksMinRange = chunks ? minBy(chunks, 'start')?.start : null
-        const chunksMaxRange = chunks ? maxBy(chunks, 'end')?.end : null
-        if (chunksMinRange && chunksMaxRange) {
-          trackGraph.query = [
-            ...trackGraph.query,
-            {
-              id: 'start-date',
-              value: chunksMinRange,
-            },
-            {
-              id: 'end-date',
-              value: chunksMaxRange,
-            },
-          ]
-        }
       }
 
       const trackWithThinning = {
         ...track,
         query: [...(track.query || []), ...thinningQuery],
-        metadata: {
-          zoom: thinningConfig?.zoom || 12,
-        },
       }
 
-      // Generate one infoconfig per chunk (if specified)
-      // TODO move this in dataviews-client/get-resources, since merging back tracks together is done by the generic slice anyways
-      let allTracks = [trackWithThinning]
+      const allEvents = events.map((event) => ({
+        ...event,
+        query: [
+          ...(Object.entries(DEFAULT_PAGINATION_PARAMS).map(([id, value]) => ({
+            id,
+            value,
+          })) as DataviewDatasetConfigParam[]),
+          ...(event?.query || []),
+        ],
+      }))
+      // Clean resources when mandatory vesselId is missing
+      // needed for vessels with no info datasets (zebraX)
+      const vesselData = hasDatasetConfigVesselData(info)
 
-      if (chunks) {
-        const chunkSetId = getTracksChunkSetId(trackWithThinning)
-        const dataset = dataview?.datasets?.find(
-          (d) => d.id === trackWithThinning.datasetId
-        ) as Dataset
-        // Workaround to avoid showing tracks outside the dataset bounds as the AIS data is changing at the end of 2022
-        const chunksWithDatasetBounds = chunks.flatMap((chunk) => {
-          if (dataset?.endDate && chunk.start >= dataset?.endDate) {
-            return []
-          }
-          return {
-            start:
-              dataset?.startDate && chunk.start <= dataset?.startDate
-                ? dataset?.startDate
-                : chunk.start,
-            end: dataset?.endDate && chunk.end >= dataset?.endDate ? dataset?.endDate : chunk.end,
-          }
-        })
-        allTracks = chunksWithDatasetBounds.map((chunk) => {
-          const trackChunk = {
-            ...trackWithThinning,
-            query: [
-              ...(trackWithThinning.query || []),
-              {
-                id: 'start-date',
-                value: chunk.start,
-              },
-              {
-                id: 'end-date',
-                value: chunk.end,
-              },
-            ],
-            metadata: {
-              ...(trackWithThinning.metadata || {}),
-              chunkSetId,
-              chunkSetNum: chunks.length,
-            },
-          }
+      return [
+        trackWithThinning,
+        ...allEvents,
+        ...(vesselData ? [info] : []),
+        ...(trackGraph ? [trackGraph] : []),
+      ]
+      // =======
+      //       // Generate one infoconfig per chunk (if specified)
+      //       // TODO move this in dataviews-client/get-resources, since merging back tracks together is done by the generic slice anyways
+      //       let allTracks = [trackWithThinning]
 
-          return trackChunk
-        })
-      }
-      return [...allTracks, ...(trackGraph ? [trackGraph] : [])]
+      //       if (chunks) {
+      //         const chunkSetId = getTracksChunkSetId(trackWithThinning)
+      //         const dataset = dataview?.datasets?.find(
+      //           (d) => d.id === trackWithThinning.datasetId
+      //         ) as Dataset
+      //         // Workaround to avoid showing tracks outside the dataset bounds as the AIS data is changing at the end of 2022
+      //         const chunksWithDatasetBounds = chunks.flatMap((chunk) => {
+      //           if (dataset?.endDate && chunk.start >= dataset?.endDate) {
+      //             return []
+      //           }
+      //           return {
+      //             start:
+      //               dataset?.startDate && chunk.start <= dataset?.startDate
+      //                 ? dataset?.startDate
+      //                 : chunk.start,
+      //             end: dataset?.endDate && chunk.end >= dataset?.endDate ? dataset?.endDate : chunk.end,
+      //           }
+      //         })
+      //         allTracks = chunksWithDatasetBounds.map((chunk) => {
+      //           const trackChunk = {
+      //             ...trackWithThinning,
+      //             query: [
+      //               ...(trackWithThinning.query || []),
+      //               {
+      //                 id: 'start-date',
+      //                 value: chunk.start,
+      //               },
+      //               {
+      //                 id: 'end-date',
+      //                 value: chunk.end,
+      //               },
+      //             ],
+      //             metadata: {
+      //               ...(trackWithThinning.metadata || {}),
+      //               chunkSetId,
+      //               chunkSetNum: chunks.length,
+      //             },
+      //           }
+
+      //           return trackChunk
+      //         })
+      //       }
+      //       return [...allTracks, ...(trackGraph ? [trackGraph] : [])]
+      // >>>>>>> develop
     }
     return [track].filter(Boolean)
   }

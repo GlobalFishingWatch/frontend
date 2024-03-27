@@ -1,13 +1,13 @@
 import { Fragment } from 'react'
 import { groupBy } from 'lodash'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { TooltipEventFeature } from 'features/map/map.hooks'
+import { UserContextFeature } from '@globalfishingwatch/deck-layers'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
 
 type UserPointsLayersProps = {
-  features: TooltipEventFeature[]
+  features: UserContextFeature[]
   showFeaturesDetails: boolean
 }
 
@@ -38,7 +38,7 @@ function UserPointsTooltipSection({
                 <ContextLayersRow
                   id={id}
                   key={`${id}-${index}`}
-                  label={label}
+                  label={label as string}
                   feature={feature}
                   showFeaturesDetails={showFeaturesDetails}
                   handleReportClick={(e) => onReportClick(e, feature)}

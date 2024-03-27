@@ -2,7 +2,6 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import {
   AnyGeneratorConfig,
-  GeneratorType,
   GlGeneratorConfig,
   Group,
   HeatmapAnimatedMode,
@@ -16,6 +15,7 @@ import {
   DataviewsGeneratorConfigsParams,
   isMergedAnimatedGenerator,
 } from '@globalfishingwatch/dataviews-client'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { selectWorkspaceError, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import {
   selectDataviewInstancesResolvedVisible,
@@ -31,7 +31,9 @@ import {
   TimeRange,
 } from 'features/timebar/timebar.slice'
 import {
+  selectActivityVisualizationMode,
   selectBivariateDataviews,
+  selectDetectionsVisualizationMode,
   selectMapAnnotationsVisible,
   selectMapRulersVisible,
 } from 'features/app/selectors/app.selectors'
@@ -80,6 +82,7 @@ type GetGeneratorConfigParams = {
   bivariateDataviews?: BivariateDataviews
   showTimeComparison?: boolean
 }
+
 const getGeneratorsConfig = ({
   dataviews = [],
   resources,
@@ -94,7 +97,7 @@ const getGeneratorsConfig = ({
   showTimeComparison,
 }: GetGeneratorConfigParams) => {
   const animatedHeatmapDataviews = dataviews.filter((dataview) => {
-    return dataview.config?.type === GeneratorType.HeatmapAnimated
+    return dataview.config?.type === DataviewType.HeatmapAnimated
   })
 
   const visibleDataviewIds = dataviews.map(({ id }) => id)
@@ -114,7 +117,7 @@ const getGeneratorsConfig = ({
     heatmapAnimatedMode = HeatmapAnimatedMode.TimeCompare
   }
 
-  const trackDataviews = dataviews.filter((d) => d.config?.type === GeneratorType.Track)
+  const trackDataviews = dataviews.filter((d) => d.config?.type === DataviewType.Track)
   const singleTrack = trackDataviews.length === 1
 
   const generatorOptions: DataviewsGeneratorConfigsParams = {
@@ -124,7 +127,7 @@ const getGeneratorsConfig = ({
     highlightedTime,
     debug: debugOptions.debug,
     customGeneratorMapping: {
-      [GeneratorType.VesselEvents]: GeneratorType.VesselEventsShapes,
+      [DataviewType.VesselEvents]: DataviewType.VesselEventsShapes,
     },
     singleTrack,
   }
@@ -133,8 +136,8 @@ const getGeneratorsConfig = ({
     let generatorsConfig = getDataviewsGeneratorConfigs(dataviews, generatorOptions, resources)
     // In time comparison mode, exclude any heatmap layer that is not activity
     if (showTimeComparison) {
-      generatorsConfig = generatorsConfig.filter((config) => {
-        if (config.type === GeneratorType.HeatmapAnimated) {
+      generatorsConfig = generatorsConfig.filter((config: any) => {
+        if (config.type === DataviewType.HeatmapAnimated) {
           return isMergedAnimatedGenerator(config.id) && config.sublayers?.length
         }
         return true
@@ -145,7 +148,7 @@ const getGeneratorsConfig = ({
     // Avoid entering rulers sources and layers when no active rules
     if (rulers?.length) {
       const rulersGeneratorConfig: AnyGeneratorConfig = {
-        type: GeneratorType.Rulers,
+        type: DataviewType.Rulers,
         id: RULERS_GENERATOR_ID,
         data: rulers,
       }
@@ -154,7 +157,7 @@ const getGeneratorsConfig = ({
     // This way we avoid to re-compute the other rulers when editing
     if (editingRuler) {
       const rulersGeneratorConfig: AnyGeneratorConfig = {
-        type: GeneratorType.Rulers,
+        type: DataviewType.Rulers,
         id: `${RULERS_GENERATOR_ID}-editing`,
         data: [editingRuler],
       }
@@ -162,7 +165,7 @@ const getGeneratorsConfig = ({
     }
     if (annotations?.length) {
       const annotationsGeneratorConfig: AnyGeneratorConfig = {
-        type: GeneratorType.Annotation,
+        type: DataviewType.Annotation,
         id: ANNOTATIONS_GENERATOR_ID,
         data: annotations,
       }
@@ -264,7 +267,7 @@ export const selectWorkspacesListGenerator = createSelector(
 
     const generator: GlGeneratorConfig = {
       id: WORKSPACE_GENERATOR_ID,
-      type: GeneratorType.GL,
+      type: DataviewType.GL,
       sources: [
         {
           type: 'geojson',
@@ -347,7 +350,7 @@ export const selectMapWorkspacesListGenerators = createSelector(
   (basemapGenerator, workspaceGenerator, marineManagerGenerators): AnyGeneratorConfig[] => {
     const generators: AnyGeneratorConfig[] = [basemapGenerator]
     if (marineManagerGenerators?.length) {
-      generators.push(...marineManagerGenerators)
+      generators.push(...(marineManagerGenerators as any))
     }
     if (workspaceGenerator) generators.push(workspaceGenerator)
     return generators
@@ -367,7 +370,7 @@ export const selectMapReportGenerators = createSelector(
     const reportGenerators: PolygonsGeneratorConfig[] = []
     if (reportBufferFeature?.geometry) {
       reportGenerators.push({
-        type: GeneratorType.Polygons,
+        type: DataviewType.Polygons,
         id: REPORT_BUFFER_GENERATOR_ID,
         data: { type: 'FeatureCollection', features: [reportBufferFeature] },
         color: '#FFF',
@@ -380,7 +383,7 @@ export const selectMapReportGenerators = createSelector(
     }
     if (reportPreviewBufferFeature?.geometry) {
       reportGenerators.push({
-        type: GeneratorType.Polygons,
+        type: DataviewType.Polygons,
         id: PREVIEW_BUFFER_GENERATOR_ID,
         data: { type: 'FeatureCollection', features: [reportPreviewBufferFeature] },
         color: BUFFER_PREVIEW_COLOR,
@@ -414,12 +417,12 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
     isReportLocation,
     isVesselLocation,
     basemapGenerator,
-    workspaceGenerators = EMPTY_ARRAY as AnyGeneratorConfig[],
+    workspaceGenerators = EMPTY_ARRAY as any[],
     workspaceListGenerators,
     mapReportGenerators
   ): AnyGeneratorConfig[] => {
     if (isVesselLocation) {
-      return workspaceGenerators
+      return workspaceGenerators as any
     }
     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
       return [basemapGenerator]
@@ -428,15 +431,15 @@ export const selectDefaultMapGeneratorsConfig = createSelector(
       const generators =
         workspaceStatus !== AsyncReducerStatus.Finished ? [basemapGenerator] : workspaceGenerators
       if (isReportLocation) {
-        return [...generators, ...mapReportGenerators]
+        return [...generators, ...mapReportGenerators] as any
       }
-      return generators
+      return generators as any
     }
     return workspaceListGenerators
   }
 )
 
-const selectGeneratorConfigsByType = (type: GeneratorType) => {
+const selectGeneratorConfigsByType = (type: DataviewType) => {
   return createSelector([selectStaticGeneratorsConfig], (generators = []) => {
     return generators?.filter((generator) => generator.type === type)
   })
@@ -444,19 +447,19 @@ const selectGeneratorConfigsByType = (type: GeneratorType) => {
 
 export const selectGeneratorConfigsById = (id: string) => {
   return createSelector([selectStaticGeneratorsConfig], (generators = []) => {
-    return generators?.filter((generator) => generator.id === id)
+    return generators?.filter((generator: any) => generator.id === id)
   })
 }
 
 const selectHeatmapAnimatedGeneratorConfigs = createSelector(
-  [selectGeneratorConfigsByType(GeneratorType.HeatmapAnimated)],
+  [selectGeneratorConfigsByType(DataviewType.HeatmapAnimated)],
   (dataviews) => dataviews
 )
 
 export const selectActiveHeatmapAnimatedGeneratorConfigs = createSelector(
   [selectHeatmapAnimatedGeneratorConfigs],
   (generators) => {
-    return generators?.filter((generator) => generator.visible)
+    return generators?.filter((generator: any) => generator.visible)
   }
 )
 
@@ -464,5 +467,12 @@ export const selectDrawEditDataset = createSelector(
   [selectAllDatasets, selectMapDrawingEditId],
   (datasets, datasetId) => {
     return datasets.find((dataset) => dataset.id === datasetId)
+  }
+)
+
+export const selectIsPositionsVisualizationMode = createSelector(
+  [selectActivityVisualizationMode, selectDetectionsVisualizationMode],
+  (activityVisualizationMode, detectionsVisualizationMode) => {
+    return [activityVisualizationMode, detectionsVisualizationMode].some((v) => v === 'positions')
   }
 )

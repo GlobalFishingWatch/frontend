@@ -167,7 +167,7 @@ export type DataviewFeature = LayerFeature & {
 
 export const areDataviewsFeatureLoaded = (dataviews: DataviewFeature | DataviewFeature[]) => {
   const dataviewsArray = toArray(dataviews as DataviewFeature)
-  return dataviewsArray.length ? dataviewsArray.every(({ state }) => state?.loaded) : false
+  return dataviewsArray.length ? dataviewsArray.every(({ state } = {}) => state?.loaded) : false
 }
 
 export const hasDataviewsFeatureError = (dataviews: DataviewFeature | DataviewFeature[]) => {

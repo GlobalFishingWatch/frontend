@@ -57,6 +57,8 @@ import { ReactComponent as GFWLogo } from '../assets/icons/gfw-logo.svg'
 import { ReactComponent as GCALogo } from '../assets/icons/gca-logo.svg'
 import { ReactComponent as Graph } from '../assets/icons/graph.svg'
 import { ReactComponent as Heatmap } from '../assets/icons/heatmap.svg'
+import { ReactComponent as HeatmapHighRes } from '../assets/icons/heatmap-high-res.svg'
+import { ReactComponent as HeatmapLowRes } from '../assets/icons/heatmap-low-res.svg'
 import { ReactComponent as Help } from '../assets/icons/help.svg'
 import { ReactComponent as History } from '../assets/icons/history.svg'
 import { ReactComponent as Home } from '../assets/icons/home.svg'
@@ -172,6 +174,8 @@ export const IconComponents = {
   'gca-logo': GCALogo,
   graph: Graph,
   heatmap: Heatmap,
+  'heatmap-low-res': HeatmapLowRes,
+  'heatmap-high-res': HeatmapHighRes,
   help: Help,
   history: History,
   home: Home,

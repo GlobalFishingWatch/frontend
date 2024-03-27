@@ -20,6 +20,7 @@ import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
+import MapLegend from 'features/workspace/common/MapLegend'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -230,7 +231,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          <div id={`legend_${dataview.id}`}></div>
+          <MapLegend dataview={dataview} />
         </div>
       )}
     </div>

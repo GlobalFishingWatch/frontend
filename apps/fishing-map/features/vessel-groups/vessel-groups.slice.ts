@@ -13,7 +13,7 @@ import {
   VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError, ParsedAPIError } from '@globalfishingwatch/api-client'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import {
   AsyncError,

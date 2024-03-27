@@ -1,17 +1,17 @@
 import {
   DatasetTypes,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewDatasetConfigParam,
   EndpointId,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import {
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
   UrlDataviewInstance,
 } from '../resolve-dataviews'
-import { resolveEndpoint } from '../resolve-endpoint'
 
 export type GetDatasetConfigCallback = (
   datasetConfig: DataviewDatasetConfig[],
@@ -29,7 +29,7 @@ export const getResources = (
 ): { resources: Resource[]; dataviews: UrlDataviewInstance[] } => {
   const { trackDataviews, otherDataviews } = dataviews.reduce(
     (acc, dataview) => {
-      const isTrack = dataview.config?.type === GeneratorType.Track
+      const isTrack = dataview.config?.type === DataviewType.Track
       if (isTrack) {
         acc.trackDataviews.push(dataview)
       } else {

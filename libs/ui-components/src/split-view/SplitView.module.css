@@ -44,7 +44,7 @@
   transition: var(--transition);
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (width <= 800px) {
   .container {
     padding-bottom: 4.2rem;
   }
