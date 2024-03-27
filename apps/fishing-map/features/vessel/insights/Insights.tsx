@@ -10,7 +10,7 @@ import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { selectVesselSelfReportedId } from 'features/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import InsightWrapper from './InsightWrapper'
-import { INSIGHTS_NON_FISHING, INSIGHTS_FISHING } from './insights.config'
+import { INSIGHTS_NON_FISHING, INSIGHTS_FISHING, MIN_INSIGHTS_YEAR } from './insights.config'
 import styles from './Insights.module.css'
 
 const Insights = () => {
@@ -40,7 +40,7 @@ const Insights = () => {
           end: formatI18nDate(end),
         })}
       </p>
-      {DateTime.fromISO(start).year < 2017 && (
+      {DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR && (
         <div className={styles.disclaimer}>
           <Icon icon="warning" type="warning" />
           {t(

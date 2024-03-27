@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { InsightCoverageResponse, InsightErrorResponse } from '@globalfishingwatch/api-types'
+import { InsightCoverageResponse } from '@globalfishingwatch/api-types'
+import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -12,7 +13,7 @@ const InsightCoverage = ({
 }: {
   insightData: InsightCoverageResponse
   isLoading: boolean
-  error: InsightErrorResponse
+  error: ParsedAPIError
 }) => {
   const { t } = useTranslation()
   return (

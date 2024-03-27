@@ -1,3 +1,11 @@
+export type InsightType =
+  | 'COVERAGE'
+  | 'GAP'
+  | 'FISHING'
+  | 'VESSEL-IDENTITY-IUU-VESSEL-LIST'
+  | 'VESSEL-IDENTITY-FLAG-CHANGES'
+  | 'VESSEL-IDENTITY-MOU-LIST'
+
 type InsightBase = {
   period: {
     startDate: string
@@ -105,9 +113,3 @@ export type InsightResponse =
   | InsightFlagChangesResponse
   | InsightMOUListResponse
   | InsightIUUResponse
-
-export type InsightErrorResponse = {
-  message: string
-  metadata: any
-  status: number
-}

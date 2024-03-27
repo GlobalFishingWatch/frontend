@@ -1,8 +1,8 @@
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react'
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
 
 export const gfwBaseQuery =
-  (
+  <Response = any>(
     { baseUrl, method }: { baseUrl: string; method?: 'GET' | 'POST' } = {
       baseUrl: '',
       method: 'GET',
@@ -13,12 +13,12 @@ export const gfwBaseQuery =
       signal?: AbortSignal
       body?: any
     },
-    unknown,
-    unknown
+    Response,
+    ParsedAPIError
   > =>
   async ({ url, signal, body }) => {
     try {
-      const data = await GFWAPI.fetch(baseUrl + url, { signal, method, body })
+      const data = await GFWAPI.fetch<Response>(baseUrl + url, { signal, method, body })
       return { data }
     } catch (gfwApiError: any) {
       return {

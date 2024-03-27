@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux'
 import { useGetVesselInsightMutation } from 'queries/vessel-insight-api'
 import { useCallback, useEffect } from 'react'
 import {
-  InsightErrorResponse,
   InsightFlagChangesResponse,
   InsightIUUResponse,
   InsightMOUListResponse,
+  InsightType,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import {
@@ -13,6 +13,7 @@ import {
   InsightFishingResponse,
   InsightGapsResponse,
 } from '@globalfishingwatch/api-types'
+import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { IdentityVesselData, selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -23,7 +24,7 @@ import InsightGaps from './InsightGaps'
 import InsightIUU from './InsightIUU'
 import InsightFlagChanges from './InsightFlagChanges'
 
-const InsightWrapper = ({ insight }: { insight: string }) => {
+const InsightWrapper = ({ insight }: { insight: InsightType }) => {
   const { start, end } = useSelector(selectTimeRange)
   const vessel = useSelector(selectVesselInfoData)
 
@@ -73,7 +74,7 @@ const InsightWrapper = ({ insight }: { insight: string }) => {
       <InsightCoverage
         isLoading={isLoading}
         insightData={data as InsightCoverageResponse}
-        error={error as InsightErrorResponse}
+        error={error as ParsedAPIError}
       />
     )
   }
@@ -82,7 +83,7 @@ const InsightWrapper = ({ insight }: { insight: string }) => {
       <InsightGaps
         isLoading={isLoading}
         insightData={data as InsightGapsResponse}
-        error={error as InsightErrorResponse}
+        error={error as ParsedAPIError}
       />
     )
   }
@@ -91,7 +92,7 @@ const InsightWrapper = ({ insight }: { insight: string }) => {
       <InsightFishing
         isLoading={isLoading}
         insightData={data as InsightFishingResponse}
-        error={error as InsightErrorResponse}
+        error={error as ParsedAPIError}
       />
     )
   }
@@ -100,7 +101,7 @@ const InsightWrapper = ({ insight }: { insight: string }) => {
       <InsightIUU
         isLoading={isLoading}
         insightData={data as InsightIUUResponse}
-        error={error as InsightErrorResponse}
+        error={error as ParsedAPIError}
       />
     )
   }
@@ -109,7 +110,7 @@ const InsightWrapper = ({ insight }: { insight: string }) => {
       <InsightFlagChanges
         isLoading={isLoading}
         insightData={data as InsightFlagChangesResponse}
-        error={error as InsightErrorResponse}
+        error={error as ParsedAPIError}
       />
     )
   }
@@ -118,7 +119,7 @@ const InsightWrapper = ({ insight }: { insight: string }) => {
       <InsightMOUList
         isLoading={isLoading}
         insightData={data as InsightMOUListResponse}
-        error={error as InsightErrorResponse}
+        error={error as ParsedAPIError}
       />
     )
   }

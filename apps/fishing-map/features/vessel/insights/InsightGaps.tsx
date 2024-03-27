@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment, useCallback, useState } from 'react'
-import { InsightErrorResponse, InsightGapsResponse } from '@globalfishingwatch/api-types'
+import { InsightGapsResponse } from '@globalfishingwatch/api-types'
+import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import InsightError from './InsightErrorMessage'
 import styles from './Insights.module.css'
@@ -13,7 +14,7 @@ const InsightGaps = ({
 }: {
   insightData: InsightGapsResponse
   isLoading: boolean
-  error: InsightErrorResponse
+  error: ParsedAPIError
 }) => {
   const { t } = useTranslation()
   const { aisOff } = insightData?.gap || {}
