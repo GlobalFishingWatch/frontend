@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
-import { InsightErrorResponse, InsightFishingResponse } from '@globalfishingwatch/api-types'
+import { InsightFishingResponse } from '@globalfishingwatch/api-types'
+import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import styles from './Insights.module.css'
 
@@ -11,7 +12,7 @@ const InsightFishing = ({
 }: {
   insightData: InsightFishingResponse
   isLoading: boolean
-  error: InsightErrorResponse
+  error: ParsedAPIError
 }) => {
   const { t } = useTranslation()
   const { eventsInNoTakeMpas, eventsInRfmoWithoutKnownAuthorization } =

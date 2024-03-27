@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { InsightErrorResponse, InsightIUUResponse } from '@globalfishingwatch/api-types'
+import { InsightIUUResponse } from '@globalfishingwatch/api-types'
+import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import styles from './Insights.module.css'
 
@@ -10,7 +11,7 @@ const InsightIUU = ({
 }: {
   insightData: InsightIUUResponse
   isLoading: boolean
-  error: InsightErrorResponse
+  error: ParsedAPIError
 }) => {
   const { t } = useTranslation()
   const { iuuVesselList } = insightData?.vesselIdentity || {}

@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import { InsightErrorResponse } from '@globalfishingwatch/api-types'
+import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Icon } from '@globalfishingwatch/ui-components'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
-const InsightError = ({ error }: { error: InsightErrorResponse }) => {
+const InsightError = ({ error }: { error: ParsedAPIError }) => {
   const { t } = useTranslation()
   if (error.status === 401) {
     return (
@@ -15,6 +16,7 @@ const InsightError = ({ error }: { error: InsightErrorResponse }) => {
       />
     )
   }
+  return EMPTY_FIELD_PLACEHOLDER
 }
 
 export default InsightError

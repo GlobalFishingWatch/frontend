@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
 import { gfwBaseQuery } from 'queries/base'
 
-type SearchOwnerParams = {
+type VesselEventsApiParams = {
   vessels: string[]
   datasets: string[]
   'start-date': string
@@ -17,7 +17,7 @@ export const vesselEventsApi = createApi({
   }),
   endpoints: (builder) => ({
     getVesselEvents: builder.query({
-      serializeQueryArgs: ({ queryArgs }: { queryArgs: SearchOwnerParams }) => {
+      serializeQueryArgs: ({ queryArgs }: { queryArgs: VesselEventsApiParams }) => {
         return [
           queryArgs.vessels?.join('-'),
           queryArgs.datasets?.join('-'),

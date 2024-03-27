@@ -1,5 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { gfwBaseQuery } from 'queries/base'
+import { InsightResponse } from '@globalfishingwatch/api-types'
 
 export type VesselInsightParams = {
   vessels: { vesselId: string; datasetId: string }[]
@@ -11,12 +12,12 @@ export type VesselInsightParams = {
 // Define a service using a base URL and expected endpoints
 export const vesselInsightApi = createApi({
   reducerPath: 'vesselInsightApi',
-  baseQuery: gfwBaseQuery({
+  baseQuery: gfwBaseQuery<InsightResponse>({
     baseUrl: `/insights/vessels`,
     method: 'POST',
   }),
   endpoints: (builder) => ({
-    getVesselInsight: builder.mutation({
+    getVesselInsight: builder.mutation<InsightResponse, VesselInsightParams>({
       query: (body) => ({ url: '', method: 'POST', body }),
     }),
   }),

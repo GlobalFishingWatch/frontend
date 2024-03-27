@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { InsightErrorResponse, InsightFlagChangesResponse } from '@globalfishingwatch/api-types'
+import { InsightFlagChangesResponse } from '@globalfishingwatch/api-types'
+import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { formatInfoField } from 'utils/info'
@@ -15,7 +16,7 @@ const InsightFlagChanges = ({
 }: {
   insightData: InsightFlagChangesResponse
   isLoading: boolean
-  error: InsightErrorResponse
+  error: ParsedAPIError
 }) => {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
