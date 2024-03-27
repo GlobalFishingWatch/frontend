@@ -3,7 +3,7 @@ import { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
 import { BBox, generateUniqueId, getCellCoordinates } from '../helpers/cells'
 import type {
-  FourWingsFeature,
+  FourwingsFeature,
   FourwingsLoaderOptions,
   ParseFourwingsOptions,
   FourwingsRawData,
@@ -23,7 +23,7 @@ export const CELL_VALUES_START_INDEX = 3
 export const getCellTimeseries = (
   intArrays: FourwingsRawData[],
   options?: FourwingsLoaderOptions
-): FourWingsFeature[] => {
+): FourwingsFeature[] => {
   const {
     minFrame,
     interval,
@@ -53,7 +53,7 @@ export const getCellTimeseries = (
     (tile.bbox as GeoBoundingBox).east,
     (tile.bbox as GeoBoundingBox).north,
   ]
-  const features = {} as Record<number, FourWingsFeature>
+  const features = {} as Record<number, FourwingsFeature>
   const sublayersLength = intArrays.length
   for (let subLayerIndex = 0; subLayerIndex < sublayersLength; subLayerIndex++) {
     let cellNum = 0

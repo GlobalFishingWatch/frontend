@@ -2,7 +2,7 @@ import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import { getUTCDateTime } from '../../utils/dates'
-import { Chunk } from './fourwings.types'
+import { FourwingsChunk } from './fourwings.types'
 
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
@@ -98,7 +98,7 @@ export const getChunkByInterval = (
   start: number,
   end: number,
   interval: FourwingsInterval
-): Chunk => {
+): FourwingsChunk => {
   const intervalUnit = LIMITS_BY_INTERVAL[interval]?.unit
   if (!intervalUnit) {
     return { id: 'full-time-range', interval, start, end, bufferedStart: start, bufferedEnd: end }

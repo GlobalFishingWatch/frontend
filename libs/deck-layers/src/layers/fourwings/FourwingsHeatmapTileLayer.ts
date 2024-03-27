@@ -12,7 +12,7 @@ import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import {
-  FourWingsFeature,
+  FourwingsFeature,
   FourwingsInterval,
   FourwingsLoader,
   ParseFourwingsOptions,
@@ -28,7 +28,7 @@ import { COLOR_RAMP_DEFAULT_NUM_STEPS, ColorRampId, getBivariateRamp } from '../
 import {
   aggregateCellTimeseries,
   filterElementByPercentOfIndex,
-  getChunk,
+  getFourwingsChunk,
   getDataUrlBySublayer,
 } from './fourwings.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
@@ -188,7 +188,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     let noDataValue: number = 0
 
     const interval = getInterval(minFrame, maxFrame, availableIntervals)
-    const chunk = getChunk(minFrame, maxFrame, availableIntervals)
+    const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
       const url = getDataUrlBySublayer({ tile, chunk, sublayer, tilesUrl }) as string
       const response = await GFWAPI.fetch<Response>(url!, {
@@ -273,7 +273,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     availableIntervals?: FourwingsInterval[]
   ): FourwingsHeatmapTilesCache => {
     const interval = getInterval(minFrame, maxFrame, availableIntervals)
-    const { start, end } = getChunk(minFrame, maxFrame, availableIntervals)
+    const { start, end } = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
     return { start, end, interval }
   }
 
@@ -358,9 +358,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
           return l.getData()
         }
         return l.props.tile.zoom === zoom + offset ? l.getData() : []
-      }) as FourWingsFeature[]
+      }) as FourwingsFeature[]
     }
-    return [] as FourWingsFeature[]
+    return [] as FourwingsFeature[]
   }
 
   getViewportData() {
@@ -370,7 +370,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
     if (data?.length) {
       const dataFiltered = filterFeaturesByBounds(data, { north, south, west, east })
-      return dataFiltered as FourWingsFeature[]
+      return dataFiltered as FourwingsFeature[]
     }
     return []
   }
@@ -382,6 +382,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       return cells
     }
     return []
+  }
+
+  getInterval = () => {
+    const { minFrame, maxFrame, availableIntervals } = this.props
+    return getInterval(minFrame, maxFrame, availableIntervals)
+  }
+
+  getChunk = () => {
+    const { minFrame, maxFrame, availableIntervals } = this.props
+    return getFourwingsChunk(minFrame, maxFrame, availableIntervals)
   }
 
   getColorDomain = () => {

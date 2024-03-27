@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useMemo } from 'react'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { FourwingsLayer, getChunk } from '@globalfishingwatch/deck-layers'
+import { FourwingsLayer, getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
@@ -10,7 +10,7 @@ import { selectTimebarVisualisation } from 'features/app/selectors/app.timebar.s
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectTimebarSelectedDataviews } from 'features/timebar/timebar.selectors'
-import { FourWingsFeature } from '../../../../libs/deck-loaders/src/fourwings'
+import { FourwingsFeature } from '../../../../libs/deck-loaders/src/fourwings'
 import { getGraphDataFromFourwingsFeatures } from './timebar.utils'
 
 const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
@@ -27,13 +27,13 @@ export const useHeatmapActivityGraph = () => {
   const timerange = useTimerangeConnect()
   const start = getUTCDate(timerange.start).getTime()
   const end = getUTCDate(timerange.end).getTime()
-  const chunk = getChunk(start, end)
+  const chunk = getFourwingsChunk(start, end)
   const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
   const heatmapActivity = useMemo(() => {
     if (loaded) {
-      const viewportData = instance?.getViewportData() as FourWingsFeature[]
+      const viewportData = instance?.getViewportData() as FourwingsFeature[]
       return (
         getGraphDataFromFourwingsFeatures(viewportData, {
           start: chunk.bufferedStart,

@@ -1,11 +1,13 @@
 import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsHeatmapTileLayer } from './FourwingsHeatmapTileLayer'
 import { FourwingsHeatmapStaticLayer } from './FourwingsHeatmapStaticLayer'
 import { FourwingsPositionsTileLayer } from './FourwingsPositionsTileLayer'
 import { HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
 import {
+  FourwingsChunk,
   FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapTileLayerProps,
   FourwingsPositionsTileLayerProps,
@@ -26,7 +28,6 @@ export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
-  layers: FourwingsHeatmapTileLayer[] | FourwingsPositionsTileLayer[] | undefined
 
   initializeState(context: LayerContext): void {
     super.initializeState(context)
@@ -80,6 +81,20 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   getData() {
     return this.getLayer()?.getData()
+  }
+
+  getInterval() {
+    if (this.props.visualizationMode === HEATMAP_ID) {
+      return (this.getLayer() as FourwingsHeatmapTileLayer)?.getInterval()
+    }
+    return '' as FourwingsInterval
+  }
+
+  getChunk() {
+    if (this.props.visualizationMode === HEATMAP_ID) {
+      return (this.getLayer() as FourwingsHeatmapTileLayer)?.getChunk()
+    }
+    return {} as FourwingsChunk
   }
 
   getViewportData() {

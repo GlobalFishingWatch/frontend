@@ -6,7 +6,6 @@ import {
   DefaultProps,
   Color,
   UpdateParameters,
-  GetPickingInfoParams,
   PickingInfo,
 } from '@deck.gl/core'
 import { scaleLinear } from 'd3-scale'
@@ -19,16 +18,15 @@ import { stringify } from 'qs'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { Feature, Geometry } from 'geojson'
 import {
-  FourWingsFeature,
-  FourWingsStaticFeature,
-  FourWingsStaticFeatureProperties,
+  FourwingsFeature,
+  FourwingsStaticFeature,
+  FourwingsStaticFeatureProperties,
 } from '@globalfishingwatch/deck-loaders'
 import {
   HEATMAP_COLOR_RAMPS,
   rgbaStringToComponents,
   ColorRampsIds,
 } from '@globalfishingwatch/layer-composer'
-import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '../../utils/colorRamps'
 import {
@@ -156,7 +154,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     return info
   }
 
-  getFillColor = (feature: Feature<Geometry, FourWingsStaticFeatureProperties>) => {
+  getFillColor = (feature: Feature<Geometry, FourwingsStaticFeatureProperties>) => {
     if (!this.state.scale) {
       return EMPTY_CELL_COLOR
     }
@@ -197,7 +195,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     }
 
     const layers: any[] = [
-      new MVTLayer<FourWingsStaticFeatureProperties>(this.props as any, {
+      new MVTLayer<FourwingsStaticFeatureProperties>(this.props as any, {
         id: `static-${resolution}`,
         data: `${tilesUrl}?${stringify(params)}`,
         maxZoom,
@@ -214,7 +212,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
       }),
     ]
 
-    const layerHoveredFeature: FourWingsStaticFeature = this.props.hoveredFeatures?.find(
+    const layerHoveredFeature: FourwingsStaticFeature = this.props.hoveredFeatures?.find(
       (f) => f.layer?.id === this.root.id
     )?.object
 
@@ -227,7 +225,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
             id: `fourwings-cell-highlight`,
             widthUnits: 'pixels',
             widthMinPixels: 4,
-            getPath: (d: FourWingsFeature) => d.geometry.coordinates[0],
+            getPath: (d: FourwingsFeature) => d.geometry.coordinates[0],
             getColor: COLOR_HIGHLIGHT_LINE,
             getOffset: 0.5,
             getPolygonOffset: (params: any) =>
@@ -256,9 +254,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
           return l.props.data()
         }
         return l.props.tile.zoom === zoom + offset ? l.props.data : []
-      }) as FourWingsStaticFeature[]
+      }) as FourwingsStaticFeature[]
     }
-    return [] as FourWingsStaticFeature[]
+    return [] as FourwingsStaticFeature[]
   }
 
   getViewportData() {
@@ -268,7 +266,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
     if (data?.length) {
       const dataFiltered = filterFeaturesByBounds(data, { north, south, west, east })
-      return dataFiltered as FourWingsFeature[]
+      return dataFiltered as FourwingsFeature[]
     }
     return []
   }
