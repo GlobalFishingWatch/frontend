@@ -1,5 +1,5 @@
 import { CompositeLayer, Color, DefaultProps } from '@deck.gl/core'
-import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import { GeoBoundingBox, TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import { GeoJsonProperties } from 'geojson'
 import { PathStyleExtension } from '@deck.gl/extensions'
@@ -14,6 +14,7 @@ import {
   GFWMVTLoader,
   getMVTSublayerProps,
 } from '../../utils'
+import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import { EEZ_SETTLED_BOUNDARIES } from './context.config'
 import {
   ContextLayerProps,
@@ -56,12 +57,15 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
   }
 
   getPickingInfo = ({ info }: { info: ContextPickingInfo }): ContextPickingInfo => {
-    if (!info.object) {
-      info.object = {} as ContextFeature
-    }
     const { idProperty, valueProperties } = this.props
+    info.object = transformTileCoordsToWGS84(
+      info.object as ContextFeature,
+      info.tile!.bbox as GeoBoundingBox,
+      this.context.viewport
+    ) as ContextFeature
     info.object.title = this.props.id
     info.object.layerId = this.props.layers[0].id
+    info.object.datasetId = this.props.layers[0].datasetId
     info.object.category = this.props.category
     info.object.id = getContextId(info.object, idProperty)
     info.object.value = getContextValue(info.object, valueProperties)

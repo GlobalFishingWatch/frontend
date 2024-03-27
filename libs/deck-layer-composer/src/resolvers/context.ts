@@ -39,6 +39,7 @@ export function resolveDeckContextLayerProps(
     const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
     return {
       id: layer.id as ContextLayerId,
+      datasetId: dataset.id,
       tilesUrl,
     }
   })

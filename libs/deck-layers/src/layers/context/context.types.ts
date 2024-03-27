@@ -1,5 +1,6 @@
 import { PickingInfo } from '@deck.gl/core'
 import { Feature, Polygon, MultiPolygon } from 'geojson'
+import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 
 export enum ContextLayerId {
@@ -18,6 +19,7 @@ export enum ContextLayerId {
 
 export type ContextLayerConfig = {
   id: ContextLayerId
+  datasetId: string
   tilesUrl: string
 }
 
@@ -37,10 +39,11 @@ export type ContextFeatureProperties = {
   title: string
   value: string | number
   layerId: ContextLayerId
+  datasetId: string
   category: string
   link?: string
 }
 export type ContextFeature = Feature<Polygon | MultiPolygon, Record<string, any>> &
   ContextFeatureProperties
 
-export type ContextPickingInfo = PickingInfo<ContextFeature>
+export type ContextPickingInfo = PickingInfo<ContextFeature, { tile?: Tile2DHeader }>

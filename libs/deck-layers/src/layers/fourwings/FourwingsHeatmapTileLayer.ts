@@ -131,7 +131,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
     const allValues = dataSample.flatMap((feature) =>
       feature.properties?.values.flatMap((values) => {
-        return (values || []).filter(filterElementByPercentOfIndex)
+        if (!values || !values.length || !Array.isArray(values)) {
+          return []
+        }
+        return values.filter(filterElementByPercentOfIndex)
       })
     )
 
