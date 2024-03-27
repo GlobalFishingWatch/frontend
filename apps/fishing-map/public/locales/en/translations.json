@@ -811,7 +811,7 @@
       "flagChanges": "Flag changes",
       "flagChangesCount": "{{count}} flag changes",
       "flagChangesEmpty": "No flag changes",
-      "MOULists": "MOU Lists",
+      "MOULists": "Tokyo and Paris MOU List",
       "MOUListsEmpty": "Flying under a flag/flags not present on the Tokio or Paris MOU black or grey lists",
       "MOUParisListsCount": "Flag present on the Paris MOU black or grey list ({{flags}})",
       "MOUTokyoListsCount": "Flag present on the Tokyo MOU black or grey list ({{flags}})",
