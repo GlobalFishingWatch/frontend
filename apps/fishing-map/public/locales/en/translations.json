@@ -795,9 +795,9 @@
     "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "imo": "IMO",
     "insights": {
-      "coverage": "AIS Coverage",
-      "disclaimerTimeRangeBeforeMinYear": "Due to varying quality of data sources, insights are more reliable for activities after Jan 1, 2017. Adjust the start/end date of your timebar, where relevant.",
-      "errorPermisions": "You don't have permissions to see this insight",
+      "coverage": "Couverture AIS",
+      "disclaimerTimeRangeBeforeMinYear": "En raison de la qualité variable des sources de données, les informations sont plus fiables pour les activités postérieures au 1er janvier 2017. Ajustez la date de début/fin de votre barre temporelle, le cas échéant.",
+      "errorPermisions": "Vous ne disposez pas des permissions requises pour visualiser cette information",
       "gaps": "AIS Off Events",
       "gapsEvents": "{{count}} AIS Off events detected",
       "gapsEventsEmpty": "No AIS Off events detected",
