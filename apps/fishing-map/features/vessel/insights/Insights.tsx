@@ -9,6 +9,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { selectVesselSelfReportedId } from 'features/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
 import InsightWrapper from './InsightWrapper'
 import { INSIGHTS_NON_FISHING, INSIGHTS_FISHING, MIN_INSIGHTS_YEAR } from './insights.config'
 import styles from './Insights.module.css'
@@ -39,6 +40,12 @@ const Insights = () => {
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}
+        <DataTerminology
+          size="tiny"
+          type="default"
+          title={t('vessel.sectionInsights', 'Insights')}
+          terminologyKey="insights"
+        />
       </p>
       {DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR && (
         <div className={styles.disclaimer}>
