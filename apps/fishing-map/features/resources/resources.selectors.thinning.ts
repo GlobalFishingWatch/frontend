@@ -17,6 +17,7 @@ import {
 } from 'routes/routes.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { ThinningConfigParam } from './resources.utils'
 
 export {
   setResource,
@@ -39,7 +40,7 @@ export const selectTrackThinningConfig = createSelector(
     // }
     // return { config, zoom: selectedZoom }
 
-    return { config }
+    return { config } as ThinningConfigParam
   }
 )
 

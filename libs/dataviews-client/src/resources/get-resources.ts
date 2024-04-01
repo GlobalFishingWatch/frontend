@@ -69,7 +69,7 @@ export const getResources = (
     let preparedEventsDatasetConfigs = events
 
     if (callbacks.info && preparedInfoDatasetConfigs?.length > 0) {
-      preparedInfoDatasetConfigs = callbacks.info([info], dataview)
+      preparedInfoDatasetConfigs = callbacks.info(preparedInfoDatasetConfigs, dataview)
     }
     if (callbacks.track && preparedTrackDatasetConfigs?.length > 0) {
       preparedTrackDatasetConfigs = callbacks.track(preparedTrackDatasetConfigs, dataview)
