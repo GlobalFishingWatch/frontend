@@ -19,6 +19,8 @@ export type AnyDeckLayer<D extends {} = {}> =
   | VesselLayer
   | RulersLayer
 
+export type LayerWithIndependentSublayersLoadState = VesselLayer
+
 export type RulerPointProperties = {
   id?: number
   order: 'start' | 'center' | 'end'
