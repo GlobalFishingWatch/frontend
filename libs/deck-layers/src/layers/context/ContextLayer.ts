@@ -3,6 +3,7 @@ import { GeoBoundingBox, TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import { GeoJsonProperties } from 'geojson'
 import { PathStyleExtension } from '@deck.gl/extensions'
+import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
@@ -36,6 +37,15 @@ const defaultProps: DefaultProps<_ContextLayerProps> = {
 export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps & PropsT> {
   static layerName = 'ContextLayer'
   static defaultProps = defaultProps
+
+  _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    this.setState({ loaded: true })
+    this.props.onViewportLoad?.(tiles)
+  }
+
+  _onTileDataLoading = () => {
+    this.setState({ loaded: false })
+  }
 
   getHighlightLineWidth(d: ContextFeature): number {
     const { hoveredFeatures = [], clickedFeatures = [], idProperty } = this.props
@@ -87,6 +97,8 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
             return [
               new GeoJsonLayer(mvtSublayerProps, {
                 id: `${props.id}-boundaries`,
+                onViewportLoad: this._onViewportLoad,
+                onTileDataLoading: this._onTileDataLoading,
                 lineWidthMinPixels: 1,
                 filled: false,
                 getPolygonOffset: (params: { layerIndex: number }) =>
@@ -107,6 +119,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
         id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,
         loaders: [GFWMVTLoader],
+        onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
