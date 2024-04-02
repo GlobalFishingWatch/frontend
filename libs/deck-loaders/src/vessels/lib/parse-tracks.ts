@@ -1,44 +1,16 @@
-import { LoaderWithParser } from '@loaders.gl/loader-utils'
 import { tableFromIPC, Table, Schema } from 'apache-arrow'
 import { readParquet } from 'parquet-wasm'
-// import { START_TIMESTAMP } from '../constants'
-
-export const TIMESTAMP_MULTIPLIER = 1000
-
-export const parquetLoader: LoaderWithParser = {
-  name: 'parquet-track',
-  module: 'parquet-track',
-  options: {},
-  id: 'parquet-track-pbf',
-  version: 'latest',
-  extensions: ['parquet'],
-  mimeTypes: ['application/x-parquet'],
-  // worker: false,
-  parse: async (arrayBuffer) => parseTrack(arrayBuffer),
-  parseSync: async (arrayBuffer) => parseTrack(arrayBuffer),
-}
+import { VesselTrackData } from './types'
 
 const getSchemaFieldIndex = (schema: Schema, fieldName: string) => {
   return schema.fields.findIndex((f) => f.name === fieldName)
 }
+
 const getTableColumn = (arrowTable: Table, fieldName: string) => {
   return arrowTable.getChildAt(getSchemaFieldIndex(arrowTable.schema, fieldName))
 }
 
-export type VesselTrackData = {
-  // Number of geometries
-  length: number
-  // Indices into positions where each path starts
-  startIndices: number[]
-  // Flat coordinates array
-  attributes: {
-    // Populated automatically by deck.gl
-    positions?: { value: Float32Array; size: number }
-    getPath: { value: Float32Array; size: number }
-    getTimestamps: { value: Float32Array; size: number }
-  }
-}
-const parseTrack = (parquetBuffer: ArrayBuffer): VesselTrackData => {
+export const parseTrack = async (parquetBuffer: ArrayBuffer): Promise<VesselTrackData> => {
   const data: VesselTrackData = {
     // Number of geometries
     length: 0,

@@ -8,8 +8,11 @@ import {
   ResourceStatus,
   Segment,
 } from '@globalfishingwatch/api-types'
-import { VesselDeckLayersEventData, vesselEventsLoader } from '@globalfishingwatch/deck-loaders'
-import { parquetLoader } from '@globalfishingwatch/deck-loaders'
+import {
+  VesselDeckLayersEventData,
+  VesselEventsLoader,
+  VesselTrackLoader,
+} from '@globalfishingwatch/deck-loaders'
 import { deckToHexColor } from '../../utils/colors'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { EVENTS_COLORS, VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
@@ -97,7 +100,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           visible: this.props.visible,
           data: trackUrl.toString(),
           type: TRACK_LAYER_TYPE,
-          loaders: [parquetLoader],
+          loaders: [VesselTrackLoader],
           _pathType: 'open',
           widthUnits: 'pixels',
           getWidth: 1,
@@ -136,7 +139,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           onDataChange: this.oSublayerDataChange,
           onDataLoad: this.onSublayerLoad,
           onError: (error: any) => this.onSublayerError(type, error),
-          loaders: [vesselEventsLoader],
+          loaders: [VesselEventsLoader],
           pickable: true,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
           getFillColor: (d: any): Color => {

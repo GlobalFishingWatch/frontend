@@ -1,10 +1,11 @@
 import type { NumericArray } from '@math.gl/core'
 import { AccessorFunction, DefaultProps, UpdateParameters } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
-import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 import { Segment } from '@globalfishingwatch/api-types'
-import { TIMESTAMP_MULTIPLIER, VesselTrackData } from '@globalfishingwatch/deck-loaders'
+import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 import { TRACK_LAYER_TYPE } from './VesselLayer'
+
+const TIMESTAMP_MULTIPLIER = 1000
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {

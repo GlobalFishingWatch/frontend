@@ -1,42 +1,27 @@
-import { DateTime } from 'luxon'
-import { LoaderWithParser } from '@loaders.gl/loader-utils'
-import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
-// import { START_TIMESTAMP } from '../constants'
+import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
+import packageJson from '../../package.json'
+import { parseEvents } from './lib/parse-events'
 
-export const vesselEventsLoader: LoaderWithParser = {
-  name: 'Events',
+/**
+ * Worker loader for the the vessel events responses
+ */
+export const VesselEventsWorkerLoader: Loader = {
+  id: 'vessel-events',
+  name: 'gfw-vessel-events',
   module: 'events',
-  options: {},
-  id: 'events-parser',
-  version: 'latest',
+  version: packageJson.version,
   extensions: ['json'],
   mimeTypes: ['application/json'],
   worker: false,
-  parse: parse,
-  parseSync: parse,
+  options: {},
 }
 
-async function parse(arrayBuffer: ArrayBuffer) {
-  const data = JSON.parse(new TextDecoder().decode(arrayBuffer))
-  return parseEvents(data.entries)
-}
-
-export type VesselDeckLayersEventData = Partial<ApiEvent> & {
-  type: EventTypes
-  coordinates: [number, number]
-  start: number
-  end: number
-}
-
-export function parseEvents(events: ApiEvent[]): VesselDeckLayersEventData[] {
-  return events?.map((event) => {
-    const { position, start, end, type, ...attributes } = event
-    return {
-      ...attributes,
-      type,
-      coordinates: [event.position.lon, event.position.lat],
-      start: DateTime.fromISO(start as string, { zone: 'utc' }).toMillis(),
-      end: DateTime.fromISO(end as string, { zone: 'utc' }).toMillis(),
-    }
-  })
+/**
+ * Loader for the vessel events responses
+ */
+export const VesselEventsLoader: LoaderWithParser = {
+  ...VesselEventsWorkerLoader,
+  parse: async (arrayBuffer) => parseEvents(arrayBuffer),
+  parseSync: parseEvents,
+  binary: true,
 }
