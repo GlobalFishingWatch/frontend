@@ -1,22 +1,20 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { selectEventsByIds } from 'features/vessel/activity/vessels-activity.selectors'
+import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import Event from '../activity/event/Event'
 import styles from './Insights.module.css'
 
 const InsightEventDetails = ({
-  eventIds,
+  events,
   toggleVisibility,
   visible,
 }: {
-  eventIds: string[]
+  events: ActivityEvent[]
   toggleVisibility: () => void
   visible: boolean
 }) => {
   const { t } = useTranslation()
-  const events = useSelector(selectEventsByIds(eventIds))
 
   return (
     <Fragment>

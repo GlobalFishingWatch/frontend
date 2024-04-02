@@ -6,10 +6,8 @@ import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.select
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getUTCDateTime } from 'utils/dates'
-import { createDeepEqualSelector } from 'utils/selectors'
 import {
   selectVesselEventsByType,
-  selectVesselEventsDataWithVoyages,
   selectVesselEventsFilteredByTimerange,
 } from '../vessel.selectors'
 
@@ -28,11 +26,6 @@ export const selectEventsGroupedByType = createSelector(
     return groupBy(eventsList, 'type')
   }
 )
-
-export const selectEventsByIds = (eventIds: string[]) =>
-  createDeepEqualSelector([selectVesselEventsDataWithVoyages], (eventsList) => {
-    return eventsList.filter((event) => eventIds.includes(event.id))
-  })
 
 export const selectActivitySummary = createSelector(
   [selectVesselEventsFilteredByTimerange],
