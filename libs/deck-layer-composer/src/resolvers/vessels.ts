@@ -1,12 +1,7 @@
 import { PickingInfo } from '@deck.gl/core'
 import { DatasetTypes, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
-import {
-  VesselDeckLayersEvent,
-  VesselLayerProps,
-  getUTCDateTime,
-  hexToDeckColor,
-} from '@globalfishingwatch/deck-layers'
-import { API_GATEWAY } from '@globalfishingwatch/api-client'
+import { VesselLayerProps, getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
@@ -18,13 +13,16 @@ export function resolveDeckVesselLayerProps(
   globalConfig: ResolverGlobalConfig,
   interactions: PickingInfo[]
 ): VesselLayerProps {
+  const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
     name: dataview.config?.name!,
     endTime: getUTCDateTime(globalConfig.end!).toMillis(),
     startTime: getUTCDateTime(globalConfig.start!).toMillis(),
-    trackUrl: `${API_GATEWAY}${resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url}`,
+    ...(trackUrl && {
+      trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
+    }),
     color: hexToDeckColor(dataview.config?.color!),
     events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
       const eventType = resource.dataset?.subcategory as EventTypes
@@ -33,7 +31,7 @@ export function resolveDeckVesselLayerProps(
         url: `${API_GATEWAY}${resource.url}`,
       }
     }),
-    // hoveredFeatures,
+    // hoveredFeatures: interactions,
     // clickedFeatures,
     // highlightEndTime,
     // highlightStartTime,
