@@ -1,5 +1,11 @@
-import { AccessorFunction, DefaultProps, Position, UpdateParameters } from '@deck.gl/core'
-import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers'
+import {
+  AccessorFunction,
+  ChangeFlags,
+  DefaultProps,
+  Position,
+  UpdateParameters,
+} from '@deck.gl/core'
+import { PathLayer, ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { EVENT_SHAPES, SHAPES_ORDINALS } from './vessel.config'
 
@@ -12,8 +18,11 @@ export type _VesselEventsLayerProps<DataT = any> = {
   getPosition?: AccessorFunction<DataT, Position> | Position
   getFilterValue?: AccessorFunction<DataT, number>
   getPickingInfo?: AccessorFunction<DataT, string>
-  onDataChange?: (type: EventTypes, dataChange: string) => void
+  onDataChange?: (dataChange: ChangeFlags['dataChanged']) => void
 }
+
+export type VesselEventsLayersState = ScatterplotLayer['state'] & { loaded: boolean }
+export type VesselTracksLayersState = PathLayer['state'] & { loaded: boolean }
 
 export type VesselEventsLayerProps<DataT = any> = _VesselEventsLayerProps<DataT> &
   ScatterplotLayerProps<DataT>
@@ -102,7 +111,7 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
     super.updateState(params)
     const { dataChanged } = params.changeFlags
     if (dataChanged !== false && this.props.onDataChange) {
-      this.props.onDataChange(params.props.type, dataChanged as string)
+      this.props.onDataChange(dataChanged)
     }
   }
 

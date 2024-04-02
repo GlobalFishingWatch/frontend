@@ -44,43 +44,27 @@ export type VesselLayerProps = _VesselTrackLayerProps & VesselEventsLayerProps &
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   dataStatus: VesselDataStatus[] = []
 
-  updateDataStatus = (dataType: VesselDataStatus['type'], status: ResourceStatus) => {
-    const isDataStatusInitialized = this.dataStatus.findIndex((l) => l.type === dataType) > -1
-    if (isDataStatusInitialized) {
-      this.dataStatus = this.dataStatus.map((l) => ({
-        ...l,
-        status: l.type === dataType ? status : l.status,
-      }))
-    } else {
-      this.dataStatus.push({ type: dataType, status })
-    }
-    if (this?.props.onVesselDataLoad) {
-      this?.props?.onVesselDataLoad(this.dataStatus)
-    }
-  }
-
-  oSublayerDataChange = (type: VesselDataStatus['type'], dataChange: string) => {
+  onSublayerDataChange = (dataChange: ChangeFlags['dataChanged']) => {
     if (dataChange === 'init') {
-      this.updateDataStatus(type, ResourceStatus.Loading)
+      this.setState({ loaded: false })
     }
   }
 
-  onSublayerLoad: LayerProps['onDataLoad'] = (data, context) => {
+  onSublayerLoad: LayerProps['onDataLoad'] = (_data, context) => {
     const type = (context.layer as Layer<{ type: VesselDataType }>)?.props?.type
     if (type === TRACK_LAYER_TYPE) {
       // Needs to check if every track chunk layer is loaded
       const loaded = this.getTrackLayers()?.every((l) => l.isLoaded)
       if (loaded) {
-        this.updateDataStatus(type, ResourceStatus.Finished)
+        context.layer.setState({ loaded: true })
       }
     } else {
-      this.updateDataStatus(type, ResourceStatus.Finished)
+      context.layer.setState({ loaded: true })
     }
   }
 
   onSublayerError = (dataType: VesselDataStatus['type'], error: any) => {
     console.warn(`Error loading ${dataType} in ${this.props.id} layer`, error)
-    this.updateDataStatus(dataType, ResourceStatus.Error)
   }
 
   _getVesselTrackLayers() {
@@ -114,7 +98,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           highlightStartTime: this.props.highlightStartTime,
           highlightEndTime: this.props.highlightEndTime,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
-          onDataChange: this.oSublayerDataChange,
+          onDataChange: this.onSublayerDataChange,
           onDataLoad: this.onSublayerLoad,
           onError: (error: any) => this.onSublayerError(TRACK_LAYER_TYPE, error),
         })
@@ -136,7 +120,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           data: url,
           visible,
           type,
-          onDataChange: this.oSublayerDataChange,
+          onDataChange: this.onSublayerDataChange,
           onDataLoad: this.onSublayerLoad,
           onError: (error: any) => this.onSublayerError(type, error),
           loaders: [VesselEventsLoader],
