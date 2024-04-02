@@ -6,7 +6,7 @@ import {
   EventTypes,
   EventVessel,
   ResourceStatus,
-  Segment,
+  TrackSegment,
 } from '@globalfishingwatch/api-types'
 import {
   VesselDeckLayersEventData,
@@ -174,7 +174,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   getTrackLayers() {
     return this.getSubLayers().filter((l) => l.id.includes(TRACK_LAYER_TYPE)) as VesselTrackLayer<
-      Segment[]
+      TrackSegment[]
     >[]
   }
 

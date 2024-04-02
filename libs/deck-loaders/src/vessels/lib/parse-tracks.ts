@@ -1,24 +1,25 @@
 import Pbf from 'pbf'
+import { TrackField } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from './types'
 
 export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)
 
-const transformerByField: Record<string, (number: number) => number> = {
+const transformerByField: Partial<Record<TrackField, (number: number) => number>> = {
   latitude: (value: number) => value / Math.pow(10, 6),
   longitude: (value: number) => value / Math.pow(10, 6),
   timestamp: (value: number) => value * Math.pow(10, 3),
 }
 
 type Point = Record<string, number | null>
-export const trackValueArrayToSegments = (valueArray: number[], fields_: string[]) => {
+export const trackValueArrayToSegments = (valueArray: number[], fields_: TrackField[]) => {
   if (!fields_.length) {
     throw new Error()
   }
 
   const fields = [...fields_]
-  if (fields.includes('lonlat')) {
-    const llIndex = fields.indexOf('lonlat')
-    fields.splice(llIndex, 1, 'longitude', 'latitude')
+  if (fields.includes(TrackField.lonlat)) {
+    const llIndex = fields.indexOf('lonlat' as TrackField)
+    fields.splice(llIndex, 1, TrackField.longitude, TrackField.latitude)
   }
   const numFields = fields.length
 
@@ -117,7 +118,7 @@ export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
   const segmentIndexes = [0] as number[]
   const data = new Pbf(arrayBuffer).readFields(readValueArrayData, [])[0]
   // TODO make the fields dynamic to support speed or depth
-  const segments = trackValueArrayToSegments(data, ['lonlat', 'timestamp'])
+  const segments = trackValueArrayToSegments(data, [TrackField.lonlat, TrackField.timestamp])
   const dataLength = segments.reduce((acc, data) => data.length + acc, 0)
   const positions = new Float32Array(dataLength * track.attributes.getPath.size)
   const timestamps = new Float32Array(dataLength)

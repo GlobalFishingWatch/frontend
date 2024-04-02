@@ -1,6 +1,6 @@
 import { groupBy, toNumber } from 'lodash'
 import { DateTime, DateTimeOptions } from 'luxon'
-import { Segment } from '@globalfishingwatch/api-types'
+import { TrackSegment } from '@globalfishingwatch/api-types'
 import { SegmentColumns } from '../types'
 import { parseCoords } from '../coordinates'
 
@@ -57,7 +57,7 @@ export const listToTrackSegments = ({
   segmentId,
   lineId,
   lineColorBarOptions,
-}: Args): Segment[][] => {
+}: Args): TrackSegment[][] => {
   const hasIdGroup = lineId !== undefined && lineId !== ''
   const hasSegmentId = segmentId !== undefined && segmentId !== ''
   const recordsArray = Array.isArray(records) ? records : [records]

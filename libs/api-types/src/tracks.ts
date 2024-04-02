@@ -1,4 +1,4 @@
-export enum Field {
+export enum TrackField {
   lonlat = 'lonlat',
   longitude = 'longitude',
   latitude = 'latitude',
@@ -13,12 +13,12 @@ export enum Field {
   color = 'color',
 }
 
-export type PointProperties = Record<string, any>
-export type Point = Partial<Record<Field, number | null>> & {
-  properties?: PointProperties
-  coordinateProperties?: PointProperties
+export type TrackPointProperties = Record<string, any>
+export type TrackPoint = Partial<Record<TrackField, number | null>> & {
+  properties?: TrackPointProperties
+  coordinateProperties?: TrackPointProperties
 }
 
-export type Segment = Point[]
+export type TrackSegment = TrackPoint[]
 
-export type TrackResourceData = Segment[]
+export type TrackResourceData = TrackSegment[]

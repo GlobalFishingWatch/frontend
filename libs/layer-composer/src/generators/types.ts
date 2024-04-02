@@ -5,7 +5,13 @@ import {
   GeoJSONSourceSpecification,
 } from '@globalfishingwatch/maplibre-gl'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
-import { Segment, Locale, Anchorage, EventTypes, DataviewType } from '@globalfishingwatch/api-types'
+import {
+  TrackSegment,
+  Locale,
+  Anchorage,
+  EventTypes,
+  DataviewType,
+} from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
 
@@ -37,7 +43,13 @@ export interface GlobalGeneratorConfigExtended extends GlobalGeneratorConfig {
   totalHeatmapAnimatedGenerators?: number
 }
 
-export type AnyData = FeatureCollection | Segment[] | RawEvent[] | Ruler[] | MapAnnotation[] | null
+export type AnyData =
+  | FeatureCollection
+  | TrackSegment[]
+  | RawEvent[]
+  | Ruler[]
+  | MapAnnotation[]
+  | null
 
 export interface GeneratorLegend {
   type?: string
@@ -338,7 +350,7 @@ export interface CartoPolygonsGeneratorConfig extends GeneratorConfig {
 
 export type TrackGeneratorConfigData =
   | FeatureCollection<LineString, { coordinateProperties: { times: number[] } }>
-  | Segment[]
+  | TrackSegment[]
   | null
 
 /**

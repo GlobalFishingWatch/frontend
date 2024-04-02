@@ -7,7 +7,7 @@ import {
   filterSegmentsByTimerange,
   geoJSONToSegments,
 } from '@globalfishingwatch/data-transforms'
-import { IdentityVessel, Resource, Segment } from '@globalfishingwatch/api-types'
+import { IdentityVessel, Resource, TrackSegment } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
@@ -15,7 +15,7 @@ import { Bbox } from 'types'
 
 type FitBoundsProps = {
   hasError: boolean
-  trackResource: Resource<Segment[] | FeatureCollection>
+  trackResource: Resource<TrackSegment[] | FeatureCollection>
   infoResource?: Resource<IdentityVessel>
   className?: string
 }
@@ -33,7 +33,7 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
       })
       const segments = (trackResource.data as FeatureCollection).features
         ? geoJSONToSegments(trackResource.data as FeatureCollection)
-        : (trackResource?.data as Segment[])
+        : (trackResource?.data as TrackSegment[])
       const filteredSegments = filterSegmentsByTimerange(segments, {
         start,
         end,
