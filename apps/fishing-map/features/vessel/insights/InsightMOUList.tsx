@@ -68,7 +68,7 @@ const InsightMOUList = ({
     }
     if (
       mouList?.tokyo.valuesInThePeriod.length === 0 &&
-      mouList?.paris.valuesInThePeriod.length > 0
+      mouList?.paris.valuesInThePeriod.length === 0
     ) {
       messages.push(
         <p className={styles.secondary} key="allEmpty">
