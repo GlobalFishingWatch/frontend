@@ -1,5 +1,5 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { CompositeLayer, Layer, LayersList, LayerProps, Color } from '@deck.gl/core'
+import { CompositeLayer, Layer, LayersList, LayerProps, Color, ChangeFlags } from '@deck.gl/core'
 // Layers
 import {
   ApiEvent,
@@ -15,7 +15,12 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 import { deckToHexColor } from '../../utils/colors'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
-import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
+import {
+  VesselEventsLayer,
+  VesselEventsLayersState,
+  VesselTracksLayersState,
+  _VesselEventsLayerProps,
+} from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 import { getVesselTrackThunks } from './vessel.utils'
 import { EVENTS_COLORS } from './vessel.config'
@@ -194,5 +199,17 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   getVesselTrackSegments() {
     return this.getTrackLayers()?.flatMap((l) => l.getSegments())
+  }
+
+  getVesselEventsLayersLoaded() {
+    return this.getEventLayers().every((layer) => (layer.state as VesselEventsLayersState).loaded)
+  }
+
+  getVesselTracksLayersLoaded() {
+    return this.getTrackLayers().every((layer) => (layer.state as VesselTracksLayersState).loaded)
+  }
+
+  getAllSublayersLoaded() {
+    return this.getVesselEventsLayersLoaded() && this.getVesselTracksLayersLoaded()
   }
 }
