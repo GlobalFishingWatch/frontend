@@ -239,13 +239,21 @@ function SearchAdvancedFilters() {
         )}
       {schemaFilters.map((schemaFilter) => {
         if (
-          !showSchemaFilter(schemaFilter) ||
+          (schemaFilter?.type !== 'string' && !showSchemaFilter(schemaFilter)) ||
           isIncompatibleFilterBySelection(schemaFilter, searchFilters)
         ) {
           return null
         }
-        const { id, disabled, options, optionsSelected } = schemaFilter
+        const { id, type, disabled, options, optionsSelected } = schemaFilter
         const translationKey = id === 'shiptypes' ? `gfw_${id}` : id
+        if (type === 'string' && !options?.length) {
+          return (
+            <AdvancedFilterInputField
+              field={id as keyof VesselSearchState}
+              onChange={onInputChange}
+            />
+          )
+        }
         return (
           <MultiSelect
             key={id}
