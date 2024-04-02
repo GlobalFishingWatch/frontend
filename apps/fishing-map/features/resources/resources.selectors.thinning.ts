@@ -2,22 +2,12 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Duration } from 'luxon'
 import { range } from 'lodash'
 import {} from '@globalfishingwatch/dataviews-client'
-import { ThinningConfig } from '@globalfishingwatch/api-types'
-import {
-  AVAILABLE_START,
-  AVAILABLE_END,
-  // THINNING_LEVEL_BY_ZOOM,
-  // THINNING_LEVEL_ZOOMS,
-} from 'data/config'
+import { THINNING_LEVELS, ThinningLevels } from '@globalfishingwatch/api-client'
+import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import {
-  selectUrlEndQuery,
-  selectUrlMapZoomQuery,
-  selectUrlStartQuery,
-} from 'routes/routes.selectors'
+import { selectUrlEndQuery, selectUrlStartQuery } from 'routes/routes.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { ThinningConfigParam } from './resources.utils'
 
 export {
   setResource,
@@ -27,20 +17,14 @@ export {
 } from '@globalfishingwatch/dataviews-client'
 
 export const selectTrackThinningConfig = createSelector(
-  [selectIsGuestUser, selectDebugOptions, selectUrlMapZoomQuery],
-  (guestUser, { thinning }, currentZoom) => {
+  [selectIsGuestUser, selectDebugOptions],
+  (guestUser, { thinning }) => {
     if (!thinning) return null
-    let config = {} as ThinningConfig
-    // let selectedZoom = 0 as number
-    // for (let i = 0; i < THINNING_LEVEL_ZOOMS.length; i++) {
-    //   const zoom = THINNING_LEVEL_ZOOMS[i]
-    //   if (currentZoom < zoom) break
-    //   config = THINNING_LEVEL_BY_ZOOM[zoom][guestUser ? 'guest' : 'user']
-    //   selectedZoom = zoom
-    // }
-    // return { config, zoom: selectedZoom }
-
-    return { config } as ThinningConfigParam
+    return {
+      config: guestUser
+        ? THINNING_LEVELS[ThinningLevels.Aggressive]
+        : THINNING_LEVELS[ThinningLevels.Default],
+    }
   }
 )
 

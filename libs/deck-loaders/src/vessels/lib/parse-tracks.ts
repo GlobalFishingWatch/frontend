@@ -1,17 +1,107 @@
-import { tableFromIPC, Table, Schema } from 'apache-arrow'
-import { readParquet } from 'parquet-wasm'
+import Pbf from 'pbf'
 import { VesselTrackData } from './types'
 
-const getSchemaFieldIndex = (schema: Schema, fieldName: string) => {
-  return schema.fields.findIndex((f) => f.name === fieldName)
+export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)
+
+const transformerByField = {
+  latitude: (value: number) => value / Math.pow(10, 6),
+  longitude: (value: number) => value / Math.pow(10, 6),
+  timestamp: (value: number) => value * Math.pow(10, 3),
 }
 
-const getTableColumn = (arrowTable: Table, fieldName: string) => {
-  return arrowTable.getChildAt(getSchemaFieldIndex(arrowTable.schema, fieldName))
+type Point = Record<string, number | null>
+export const trackValueArrayToSegments = (valueArray: number[], fields_: string[]) => {
+  if (!fields_.length) {
+    throw new Error()
+  }
+
+  const fields = [...fields_]
+  if (fields.includes('lonlat')) {
+    const llIndex = fields.indexOf('lonlat')
+    fields.splice(llIndex, 1, 'longitude', 'latitude')
+  }
+  const numFields = fields.length
+
+  let numSegments: number
+  const segmentIndices = [] as number[]
+  const segments = [] as Point[][]
+
+  let nullValue = DEFAULT_NULL_VALUE
+  let currentSegment = [] as Point[]
+  let currentPoint = {} as Point
+  let pointsFieldIndex = 0
+  let currentPointFieldIndex = 0
+  let currentSegmentIndex = 0
+  let currentSegPointIndex = 0
+  if (valueArray && valueArray?.length) {
+    valueArray.forEach((value, index) => {
+      if (index === 0) {
+        nullValue = value
+      } else if (index === 1) {
+        numSegments = value
+      } else if (index < 2 + numSegments) {
+        segmentIndices.push(value)
+      } else {
+        // a segment starts
+        if (segmentIndices.includes(pointsFieldIndex)) {
+          // close previous segment, only if needed (it's not the first segment)
+          if (currentSegmentIndex !== 0) {
+            currentSegment.push(currentPoint)
+            segments.push(currentSegment)
+          }
+          currentSegPointIndex = 0
+          currentSegmentIndex++
+          // create new segment
+          currentSegment = []
+          currentPoint = {}
+        }
+
+        // get what is the current field for current point
+        currentPointFieldIndex = pointsFieldIndex % numFields
+
+        // a point starts
+        if (currentPointFieldIndex === 0) {
+          // close previous point, only if needed (it's not the first point of this seg)
+          if (currentSegPointIndex !== 0) {
+            currentSegment.push(currentPoint)
+          }
+          currentSegPointIndex++
+          // create new point
+          currentPoint = {}
+        }
+
+        const field = fields[currentPointFieldIndex]
+        const transformer = transformerByField[field]
+
+        if (value === nullValue || transformer === undefined) {
+          currentPoint[field] = null
+        } else {
+          currentPoint[field] = transformer(value)
+        }
+
+        pointsFieldIndex++
+      }
+    })
+  }
+
+  // close last open point and open segment
+  if (Object.keys(currentPoint).length) {
+    currentSegment.push(currentPoint)
+  }
+
+  if (currentSegment.length) {
+    segments.push(currentSegment)
+  }
+
+  return segments
 }
 
-export const parseTrack = async (parquetBuffer: ArrayBuffer): Promise<VesselTrackData> => {
-  const data: VesselTrackData = {
+function readValueArrayData(_: any, data: any, pbf: any) {
+  data.push(pbf.readPackedSVarint())
+}
+
+export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
+  const track: VesselTrackData = {
     // Number of geometries
     length: 0,
     // Indices into positions where each path starts
@@ -22,46 +112,31 @@ export const parseTrack = async (parquetBuffer: ArrayBuffer): Promise<VesselTrac
       getTimestamps: { value: new Float32Array(), size: 1 },
     },
   }
-  try {
-    const parquetBytes = new Uint8Array(parquetBuffer)
-    const decodedArrowBytes = readParquet(parquetBytes)
-    const arrowTable = tableFromIPC(decodedArrowBytes)
-    const latColumn = getTableColumn(arrowTable, 'lat')
-    const lonColumn = getTableColumn(arrowTable, 'lon')
-    const segColumn = getTableColumn(arrowTable, 'seg_id')
-    const timestampColumn = getTableColumn(arrowTable, 'timestamp')
 
-    if (!latColumn || !lonColumn || !segColumn || !timestampColumn) {
-      return data
+  let index = 0
+  const segmentIndexes = [0] as number[]
+  const data = new Pbf(arrayBuffer).readFields(readValueArrayData, [])[0]
+  // TODO make the fields dynamic to support speed or depth
+  const segments = trackValueArrayToSegments(data, ['lonlat', 'timestamp'])
+  const dataLength = segments.reduce((acc, data) => data.length + acc, 0)
+  const positions = new Float32Array(dataLength * track.attributes.getPath.size)
+  const timestamps = new Float32Array(dataLength)
+
+  segments.forEach((segment, i) => {
+    if (i > 0) {
+      segmentIndexes.push(index * track.attributes.getPath.size)
     }
-
-    let index = 0
-    let currentSegId = ''
-    const segmentIndexes = [] as number[]
-    const dataLength = lonColumn.data.reduce((acc, data) => data.length + acc, 0)
-    const positions = new Float32Array(dataLength * data.attributes.getPath.size)
-    const timestamps = new Float32Array(dataLength)
-
-    lonColumn.data.forEach((eachData) => {
-      eachData.values.forEach((lon: number) => {
-        if (currentSegId !== segColumn.get(index)) {
-          segmentIndexes.push(index * data.attributes.getPath.size)
-          currentSegId = segColumn.get(index)
-        }
-        positions[data.attributes.getPath.size * index] = lon
-        positions[data.attributes.getPath.size * index + 1] = latColumn.get(index)
-        timestamps[index] = Number(timestampColumn?.get(index))
-        index++
-      })
+    segment.forEach((point, j) => {
+      positions[track.attributes.getPath.size * index] = point.longitude as number
+      positions[track.attributes.getPath.size * index + 1] = point.latitude as number
+      timestamps[index] = Number(point.timestamp)
+      index++
     })
-    data.length = segmentIndexes.length
-    data.startIndices = segmentIndexes
-    data.attributes.getPath.value = positions
-    data.attributes.getTimestamps.value = timestamps
+  })
+  track.length = segmentIndexes.length
+  track.startIndices = segmentIndexes
+  track.attributes.getPath.value = positions
+  track.attributes.getTimestamps.value = timestamps
 
-    return data
-  } catch (e) {
-    console.log('Error parsing track:', e)
-    return data
-  }
+  return track
 }

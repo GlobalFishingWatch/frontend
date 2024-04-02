@@ -25,7 +25,7 @@ export const FourwingsWorkerLoader: Loader = {
  */
 export const FourwingsLoader: LoaderWithParser = {
   ...FourwingsWorkerLoader,
-  parse: parseFourwings,
+  parse: async (data, options?: FourwingsLoaderOptions) => parseFourwings(data, options),
   parseSync: parseFourwings,
   binary: true,
 }

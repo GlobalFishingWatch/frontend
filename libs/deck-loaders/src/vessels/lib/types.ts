@@ -1,4 +1,3 @@
-import { LoaderOptions } from '@loaders.gl/loader-utils'
 import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
 
 export type VesselTrackData = {
@@ -13,15 +12,6 @@ export type VesselTrackData = {
     getPath: { value: Float32Array; size: number }
     getTimestamps: { value: Float32Array; size: number }
   }
-}
-
-export type ParseVesselTrackFormat = 'PARQUET' | 'VALUE_ARRAY'
-export type ParseVesselTrackOptions = {
-  format: ParseVesselTrackFormat
-}
-
-export type VesselTrackLoaderOptions = LoaderOptions & {
-  track?: ParseVesselTrackOptions
 }
 
 export type VesselDeckLayersEventData = Partial<ApiEvent> & {
