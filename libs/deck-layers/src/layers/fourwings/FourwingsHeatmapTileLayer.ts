@@ -248,7 +248,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         interval,
         tile,
         aggregationOperation,
-        workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
         buffersLength: settledPromises.map((p) =>
           p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
         ),

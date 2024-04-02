@@ -3,7 +3,7 @@ import { VesselTrackData } from './types'
 
 export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)
 
-const transformerByField = {
+const transformerByField: Record<string, (number: number) => number> = {
   latitude: (value: number) => value / Math.pow(10, 6),
   longitude: (value: number) => value / Math.pow(10, 6),
   timestamp: (value: number) => value * Math.pow(10, 3),

@@ -47,7 +47,7 @@
         "commands": [
           "nx dist:workers deck-loaders",
           "mkdir -p apps/fishing-map/public/workers",
-          "cp dist/libs/deck-loaders/workers/fourwings-worker.js apps/fishing-map/public/workers/"
+          "cp dist/libs/deck-loaders/workers/* apps/fishing-map/public/workers/"
         ],
         "parallel": false
       }
