@@ -1,5 +1,9 @@
 import { atom, useAtomValue } from 'jotai'
-import { FourwingsLayer, FourwingsComparisonMode } from '@globalfishingwatch/deck-layers'
+import {
+  FourwingsLayer,
+  FourwingsComparisonMode,
+  FourwingsPickingObject,
+} from '@globalfishingwatch/deck-layers'
 import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
 import { DeckLegend, LegendType } from '../types'
 import { deckHoverInteractionAtom } from './deck-layers-interaction.hooks'
@@ -13,6 +17,7 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
       return []
     }
     const interaction = deckLayerHoverFeatures?.features?.find((i) => i.layer?.id === layer.id)
+
     const { domain, range } = layer.instance.getColorScale() || {}
     if (!domain || !range) {
       // TODO: handle when the layer does not have a color scale because the state is not ready after an update
@@ -39,7 +44,9 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
       sublayers: layer.instance.props.sublayers,
       domain,
       ranges: range,
-      currentValues: interaction?.object?.properties?.values!,
+      currentValues: (interaction?.object as FourwingsPickingObject)?.sublayers?.map(
+        (s: any) => s.value
+      )!,
       label,
     }
   })
