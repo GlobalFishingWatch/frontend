@@ -18,7 +18,6 @@ export const parseTrackEventChunkProps = (
 
   return {
     ...event,
-    id: eventKey,
     start: getUTCDateTime(event.start as string).toMillis(),
     end: getUTCDateTime(event.end as string).toMillis(),
     props: {

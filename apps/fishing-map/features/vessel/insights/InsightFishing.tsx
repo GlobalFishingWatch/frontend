@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { InsightFishingResponse } from '@globalfishingwatch/api-types'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import InsightEventDetails from 'features/vessel/insights/InsightEventsDetails'
 import styles from './Insights.module.css'
 
 const InsightFishing = ({
@@ -18,6 +19,18 @@ const InsightFishing = ({
   const { t } = useTranslation()
   const { eventsInNoTakeMpas, eventsInRfmoWithoutKnownAuthorization } =
     insightData?.apparentFishing || {}
+
+  const [eventsInNoTakeMpasDetailsVisibility, setEventsInNoTakeMpasDetailsVisibility] =
+    useState(false)
+  const toggleEventsInNoTakeMpasDetailsVisibility = useCallback(() => {
+    setEventsInNoTakeMpasDetailsVisibility(!eventsInNoTakeMpasDetailsVisibility)
+  }, [eventsInNoTakeMpasDetailsVisibility])
+
+  const [eventsInRfmoDetailsVisibility, setEventsInRfmoDetailsVisibility] = useState(false)
+  const toggleEventsInRfmoDetailsVisibility = useCallback(() => {
+    setEventsInRfmoDetailsVisibility(!eventsInRfmoDetailsVisibility)
+  }, [eventsInRfmoDetailsVisibility])
+
   return (
     <div className={styles.insightContainer}>
       <div className={styles.insightTitle}>
@@ -44,6 +57,11 @@ const InsightFishing = ({
                 count: eventsInNoTakeMpas?.length,
                 defaultValue: '{{count}} fishing events detected in no-take MPAs',
               })}
+              <InsightEventDetails
+                eventIds={eventsInNoTakeMpas || []}
+                visible={eventsInNoTakeMpasDetailsVisibility}
+                toggleVisibility={toggleEventsInNoTakeMpasDetailsVisibility}
+              />
             </p>
           ) : (
             <p className={styles.secondary}>
@@ -60,6 +78,11 @@ const InsightFishing = ({
                 defaultValue:
                   '{{count}} fishing events detected outside known RFMO authorized areas',
               })}
+              <InsightEventDetails
+                eventIds={eventsInRfmoWithoutKnownAuthorization || []}
+                visible={eventsInRfmoDetailsVisibility}
+                toggleVisibility={toggleEventsInRfmoDetailsVisibility}
+              />
             </p>
           ) : (
             <p className={styles.secondary}>

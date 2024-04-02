@@ -5,7 +5,7 @@
 .disclaimer {
   display: flex;
   align-items: top;
-  margin-top: var(--space-XS);
+  margin: var(--space-L) var(--space-M);
   font: var(--font-S);
   color: var(--color-secondary-blue);
 }
