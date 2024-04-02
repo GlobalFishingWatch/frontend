@@ -79,16 +79,16 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
       ...super.getShaders(),
       inject: {
         'vs:#decl': `
-          attribute float instanceShapes;
-          attribute float instanceId;
-          varying float vShape;
+          in float instanceShapes;
+          in float instanceId;
+          out float vShape;
         `,
         'vs:#main-end': `
           vShape = instanceShapes;
         `,
         'fs:#decl': `
           uniform mat3 hueTransform;
-          varying float vShape;
+          in float vShape;
           const int SHAPE_SQUARE = 0;
           const int SHAPE_DIAMOND = 1;
         `,

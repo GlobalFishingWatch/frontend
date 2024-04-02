@@ -84,10 +84,10 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     const shaders = super.getShaders()
     shaders.inject = {
       'vs:#decl': `
-        attribute float instanceTimestamps;
-        // attribute vec4 instanceHighlightColor;
-        varying float vTime;
-        // varying vec4 vHighlightColor;
+        in float instanceTimestamps;
+        // in vec4 instanceHighlightColor;
+        out float vTime;
+        // out vec4 vHighlightColor;
       `,
       // Timestamp of the vertex
       'vs:#main-end': `
@@ -99,8 +99,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         uniform float endTime;
         uniform float highlightStartTime;
         uniform float highlightEndTime;
-        // varying vec4 vHighlightColor;
-        varying float vTime;
+        // in vec4 vHighlightColor;
+        in float vTime;
       `,
       // Drop the segments outside of the time window
       'fs:#main-start': `
