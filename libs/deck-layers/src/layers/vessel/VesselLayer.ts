@@ -149,7 +149,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             return d.type === EventTypes.Fishing ? this.props.color : EVENTS_COLORS[d.type]
           },
           updateTriggers: {
-            getFillColor: [this.props.highlightEventIds],
+            getFillColor: [this.props.highlightEventIds, this.props.color],
           },
           radiusUnits: 'pixels',
           getRadius: (d: any) => (d.type === EventTypes.Fishing ? 2 : 6),
