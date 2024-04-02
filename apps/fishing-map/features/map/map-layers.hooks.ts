@@ -13,7 +13,7 @@ import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selec
 export const useMapDeckLayers = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
   const dataviews = useSelector(selectDataviewInstancesResolvedVisible)
-  const { globalConfig } = useGlobalConfigConnect()
+  const globalConfig = useGlobalConfigConnect()
   const { highlightedEvents } = useHighlightedEventsConnect()
   const params = useMemo(() => {
     return {

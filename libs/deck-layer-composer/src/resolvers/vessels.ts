@@ -14,6 +14,7 @@ export function resolveDeckVesselLayerProps(
   interactions: PickingInfo[]
 ): VesselLayerProps {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
+
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
@@ -36,7 +37,7 @@ export function resolveDeckVesselLayerProps(
     // highlightEndTime,
     // highlightStartTime,
     // highlightEventIds,
-    // visibleEvents,
+    visibleEvents: globalConfig.visibleEvents,
     // eventsResource: eventsData?.length ? parseEvents(eventsData) : [],
   }
 }
