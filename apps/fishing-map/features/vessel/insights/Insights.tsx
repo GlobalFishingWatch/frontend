@@ -31,6 +31,18 @@ const Insights = () => {
     [isFishingVessel]
   )
 
+  if (DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR) {
+    return (
+      <div className={styles.disclaimer}>
+        <Icon icon="warning" type="warning" />
+        {t(
+          'vessel.insights.disclaimerTimeRangeBeforeMinYear',
+          'Due to varying quality of data sources, insights are more reliable for activities after Jan 1, 2017. Adjust the start/end date of your timebar, where relevant.'
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className={styles.container}>
       <h2 className="print-only">{t('vessel.sectionInsights', 'Insights')}</h2>
@@ -47,15 +59,6 @@ const Insights = () => {
           terminologyKey="insights"
         />
       </p>
-      {DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR && (
-        <div className={styles.disclaimer}>
-          <Icon icon="warning" type="warning" />
-          {t(
-            'vessel.insights.disclaimerTimeRangeBeforeMinYear',
-            'Due to varying quality of data sources, insights are more reliable for activities after Jan 1, 2017. Adjust the start/end date of your timebar, where relevant.'
-          )}
-        </div>
-      )}
       {insightsByVesselType.map((insight) => (
         <InsightWrapper insight={insight} key={insight} />
       ))}
