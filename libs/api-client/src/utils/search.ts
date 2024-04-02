@@ -16,6 +16,7 @@ export type AdvancedSearchQueryFieldKey =
   | 'mmsi'
   | 'callsign'
   | 'codMarinha'
+  | 'nationalId'
   | 'flag'
   | 'geartypes'
   | 'shiptypes'
@@ -95,6 +96,9 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
   },
   // VMS specific
   codMarinha: {
+    operator: '=',
+  },
+  nationalId: {
     operator: '=',
   },
   targetSpecies: {
