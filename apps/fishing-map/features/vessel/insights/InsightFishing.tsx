@@ -34,14 +34,17 @@ const InsightFishing = ({
     setEventsInRfmoDetailsVisibility(!eventsInRfmoDetailsVisibility)
   }, [eventsInRfmoDetailsVisibility])
 
-  const eventsInNoTakeMpasDetails = useMemo(
-    () => (vesselEvents || []).filter((event) => eventsInNoTakeMpas.includes(event.id)),
-    [eventsInNoTakeMpas, vesselEvents]
-  )
-  const eventsInRfmoWithoutKnownAuthorizationDetails = useMemo(
-    () => (vesselEvents || []).filter((event) => eventsInNoTakeMpas.includes(event.id)),
-    [eventsInNoTakeMpas, vesselEvents]
-  )
+  const eventsInNoTakeMpasDetails = useMemo(() => {
+    return eventsInNoTakeMpas
+      ? (vesselEvents || []).filter((event) => eventsInNoTakeMpas?.includes(event.id))
+      : []
+  }, [eventsInNoTakeMpas, vesselEvents])
+
+  const eventsInRfmoWithoutKnownAuthorizationDetails = useMemo(() => {
+    return eventsInNoTakeMpas
+      ? (vesselEvents || []).filter((event) => eventsInNoTakeMpas?.includes(event.id))
+      : []
+  }, [eventsInNoTakeMpas, vesselEvents])
 
   return (
     <div className={styles.insightContainer}>
