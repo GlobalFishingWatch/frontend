@@ -33,6 +33,7 @@ import {
 import styles from './SearchAdvancedFilters.module.css'
 
 const FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY = ['geartypes', 'shiptypes', 'flag']
+const VMS_FILTERS_WITH_STRING_SEARCH = ['codMarinha', 'nationalId']
 
 type ImcompatibleFilter = { id: keyof VesselSearchState; values: string[] }
 type IncompatibleFilterSelection = {
@@ -238,22 +239,28 @@ function SearchAdvancedFilters() {
           />
         )}
       {schemaFilters.map((schemaFilter) => {
-        if (
-          (schemaFilter?.type !== 'string' && !showSchemaFilter(schemaFilter)) ||
-          isIncompatibleFilterBySelection(schemaFilter, searchFilters)
-        ) {
-          return null
-        }
-        const { id, type, disabled, options, optionsSelected } = schemaFilter
-        const translationKey = id === 'shiptypes' ? `gfw_${id}` : id
-        if (type === 'string' && !options?.length) {
+        if (VMS_FILTERS_WITH_STRING_SEARCH.includes(schemaFilter.id)) {
+          if (
+            schemaFilter.disabled ||
+            isIncompatibleFilterBySelection(schemaFilter, searchFilters)
+          ) {
+            return null
+          }
           return (
             <AdvancedFilterInputField
-              field={id as keyof VesselSearchState}
+              field={schemaFilter.id as keyof VesselSearchState}
               onChange={onInputChange}
             />
           )
         }
+        if (
+          !showSchemaFilter(schemaFilter) ||
+          isIncompatibleFilterBySelection(schemaFilter, searchFilters)
+        ) {
+          return null
+        }
+        const { id, disabled, options, optionsSelected } = schemaFilter
+        const translationKey = id === 'shiptypes' ? `gfw_${id}` : id
         return (
           <MultiSelect
             key={id}

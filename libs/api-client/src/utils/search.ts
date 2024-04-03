@@ -99,7 +99,8 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     operator: '=',
   },
   nationalId: {
-    operator: '=',
+    operator: 'LIKE',
+    transformation: toUpperCaseWithWildcardsAndQuotationMarks,
   },
   targetSpecies: {
     operator: '=',
