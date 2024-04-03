@@ -68,8 +68,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     }
   }
 
-  onSublayerError = (dataType: VesselDataStatus['type'], error: any) => {
-    console.warn(`Error loading ${dataType} in ${this.props.id} layer`, error)
+  onSublayerError = (error: any) => {
+    console.warn(`Error loading ${this.props.id} layer`, error)
   }
 
   _getVesselTrackLayers() {
@@ -105,7 +105,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
           onDataChange: this.onSublayerDataChange,
           onDataLoad: this.onSublayerLoad,
-          onError: (error: any) => this.onSublayerError(TRACK_LAYER_TYPE, error),
+          onError: this.onSublayerError,
         })
       )
     })
@@ -127,7 +127,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           type,
           onDataChange: this.onSublayerDataChange,
           onDataLoad: this.onSublayerLoad,
-          onError: (error: any) => this.onSublayerError(type, error),
+          onError: this.onSublayerError,
           loaders: [VesselEventsLoader],
           pickable: true,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
