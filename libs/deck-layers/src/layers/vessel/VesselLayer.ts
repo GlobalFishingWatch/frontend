@@ -6,15 +6,19 @@ import {
   EventTypes,
   EventVessel,
   ResourceStatus,
-  Segment,
+  TrackSegment,
 } from '@globalfishingwatch/api-types'
-import { VesselDeckLayersEventData, vesselEventsLoader } from '@globalfishingwatch/deck-loaders'
-import { parquetLoader } from '@globalfishingwatch/deck-loaders'
+import {
+  VesselDeckLayersEventData,
+  VesselEventsLoader,
+  VesselTrackLoader,
+} from '@globalfishingwatch/deck-loaders'
 import { deckToHexColor } from '../../utils/colors'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
-import { EVENTS_COLORS, VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
+import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 import { getVesselTrackThunks } from './vessel.utils'
+import { EVENTS_COLORS } from './vessel.config'
 
 export const TRACK_LAYER_TYPE = 'track'
 export interface VesselDeckLayersEvent {
@@ -38,7 +42,6 @@ export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
 export type VesselLayerProps = _VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
 
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
-  layers: Layer<{ type: VesselDataType }>[] = []
   dataStatus: VesselDataStatus[] = []
 
   updateDataStatus = (dataType: VesselDataStatus['type'], status: ResourceStatus) => {
@@ -97,7 +100,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           visible: this.props.visible,
           data: trackUrl.toString(),
           type: TRACK_LAYER_TYPE,
-          loaders: [parquetLoader],
+          loaders: [VesselTrackLoader],
           _pathType: 'open',
           widthUnits: 'pixels',
           getWidth: 1,
@@ -127,6 +130,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     // return one layer with all events if we are consuming the data object from app resources
     return this.props.events?.flatMap(({ url, type }) => {
       const visible = visibleEvents?.includes(type)
+      if (!visible) {
+        return []
+      }
       return new VesselEventsLayer<VesselDeckLayersEventData[]>(
         this.getSubLayerProps({
           id: type,
@@ -136,7 +142,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           onDataChange: this.oSublayerDataChange,
           onDataLoad: this.onSublayerLoad,
           onError: (error: any) => this.onSublayerError(type, error),
-          loaders: [vesselEventsLoader],
+          loaders: [VesselEventsLoader],
           pickable: true,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
           getFillColor: (d: any): Color => {
@@ -148,7 +154,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           updateTriggers: {
             getFillColor: [this.props.highlightEventIds],
           },
-          radiusMinPixels: 15,
+          radiusUnits: 'pixels',
+          getRadius: (d: any) => {
+            const highlightOffset = highlightEventIds?.includes(d.id) ? 3 : 0
+            return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
+          },
           getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end] as any,
           filterRange: [[startTime, endTime] as any, [startTime, endTime] as any],
           extensions: [new DataFilterExtension({ filterSize: 2 }) as any],
@@ -158,13 +168,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    this.layers = [...this._getVesselTrackLayers(), ...this._getVesselEventsLayer()]
-    return this.layers
+    return [...this._getVesselTrackLayers(), ...this._getVesselEventsLayer()]
+    // return this._getVesselEventsLayer()
   }
 
   getTrackLayers() {
     return this.getSubLayers().filter((l) => l.id.includes(TRACK_LAYER_TYPE)) as VesselTrackLayer<
-      Segment[]
+      TrackSegment[]
     >[]
   }
 

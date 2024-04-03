@@ -117,7 +117,7 @@ export const getCellTimeseries = (
             }
             // add current value to the array of values for this sublayer
             features[cellNum].properties.values[subLayerIndex][Math.floor(j / sublayers)] =
-              cellValue * scale + offset
+              cellValue * scale - offset
             // add current date to the array of dates for this sublayer
             features[cellNum].properties.dates[subLayerIndex][Math.floor(j / sublayers)] =
               Math.ceil(CONFIG_BY_INTERVAL[interval].getTime(startFrame + tileMinIntervalFrame + j))
@@ -129,7 +129,7 @@ export const getCellTimeseries = (
               j + startFrame < timeRangeEndIntervalFrame
             ) {
               features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] +=
-                cellValue * scale + offset
+                cellValue * scale - offset
               numValuesBySubLayer[subLayerIndex] = numValuesBySubLayer[subLayerIndex] + 1
             }
           }
@@ -155,10 +155,7 @@ function readData(_: any, data: any, pbf: any) {
   data.push(pbf.readPackedVarint())
 }
 
-export const parseFourwings = async (
-  datasetsBuffer: ArrayBuffer,
-  options?: FourwingsLoaderOptions
-) => {
+export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
   const { buffersLength } = options?.fourwings || {}
   if (!buffersLength?.length) {
     return []

@@ -6,7 +6,7 @@ import {
   DatasetTypes,
   EventTypes,
   ResourceStatus,
-  Segment,
+  TrackSegment,
 } from '@globalfishingwatch/api-types'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { selectResources } from 'features/resources/resources.slice'
@@ -109,7 +109,7 @@ export const selectVesselTracksData = createSelector(
   [selectVesselTrackResources],
   (trackResources) => {
     return trackResources.flatMap((r) =>
-      r.status === ResourceStatus.Finished ? (r.data as Segment[]) || [] : []
+      r.status === ResourceStatus.Finished ? (r.data as TrackSegment[]) || [] : []
     )
   }
 )

@@ -2,13 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { MultiPolygon, Point, Polygon } from 'geojson'
-import {
-  InteractionEvent,
-  TemporalGridFeature,
-  useFeatureState,
-} from '@globalfishingwatch/react-hooks'
-import { ContextLayerType } from '@globalfishingwatch/layer-composer'
+import { InteractionEvent, useFeatureState } from '@globalfishingwatch/react-hooks'
 import {
   UrlDataviewInstance,
   MULTILAYER_SEPARATOR,
@@ -49,6 +43,7 @@ import {
   selectDetectionsVisualizationMode,
   selectMapResolution,
 } from 'features/app/selectors/app.selectors'
+import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import {
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
@@ -63,7 +58,6 @@ import {
   selectFishingInteractionStatus,
   selectApiEventStatus,
   ExtendedFeatureVessel,
-  ExtendedFeatureEvent,
   fetchFishingActivityInteractionThunk,
   fetchBQEventThunk,
   SliceExtendedFeature,
@@ -83,8 +77,6 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
   }
 }
 
-// This is a convenience hook that returns at the same time the portions of the store we interested in
-// as well as the functions we need to update the same portions
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
   const { viewState } = useViewStateAtom()
@@ -94,6 +86,7 @@ export const useGlobalConfigConnect = () => {
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
+  const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const mapResolution = useSelector(selectMapResolution)
 
   return useMemo(() => {
@@ -107,6 +100,7 @@ export const useGlobalConfigConnect = () => {
       activityVisualizationMode,
       detectionsVisualizationMode,
       resolution: mapResolution,
+      visibleEvents,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -114,9 +108,7 @@ export const useGlobalConfigConnect = () => {
         ...timeComparisonValues,
       }
     }
-    return {
-      globalConfig,
-    }
+    return globalConfig
   }, [
     viewState.zoom,
     start,
@@ -128,6 +120,7 @@ export const useGlobalConfigConnect = () => {
     detectionsVisualizationMode,
     showTimeComparison,
     timeComparisonValues,
+    visibleEvents,
   ])
 }
 

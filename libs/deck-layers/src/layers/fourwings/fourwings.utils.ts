@@ -27,10 +27,7 @@ function aggregateSublayerValues(
   aggregationOperation = FourwingsAggregationOperation.Sum
 ) {
   const lastArrayIndex = sublayer.length - 1
-  return sublayer.reduce((acc: number, value: number, index) => {
-    if (!value) {
-      return acc
-    }
+  return sublayer.reduce((acc: number, value = 0, index) => {
     if (aggregationOperation === FourwingsAggregationOperation.Avg) {
       return index === lastArrayIndex ? (acc + value) / lastArrayIndex + 1 : acc + value
     }

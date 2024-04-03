@@ -1,4 +1,4 @@
-import { Segment } from '@globalfishingwatch/api-types'
+import { TrackSegment } from '@globalfishingwatch/api-types'
 
 /**
  * Filter segments by timerange
@@ -8,13 +8,13 @@ import { Segment } from '@globalfishingwatch/api-types'
  */
 type TimeRange = { start: string | number; end: string | number }
 export function filterSegmentsByTimerange(
-  segments: Segment[],
+  segments: TrackSegment[],
   {
     start,
     end,
     includeNonTemporalSegments = false,
   }: TimeRange & { includeNonTemporalSegments?: boolean }
-): Segment[] {
+): TrackSegment[] {
   const startTimestamp = typeof start === 'number' ? start : new Date(start).getTime()
   const endTimestamp = typeof end === 'number' ? end : new Date(end).getTime()
   const filteredSegments = segments
