@@ -35,7 +35,6 @@ import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import {
   HEATMAP_API_TILES_URL,
   FOURWINGS_MAX_ZOOM,
-  PATH_BASENAME,
   getInterval,
   MAX_RAMP_VALUES_PER_TILE,
 } from './fourwings.config'
@@ -204,20 +203,18 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       offset = parseInt(response.headers.get('X-offset') as string)
       noDataValue = parseInt(response.headers.get('X-empty-value') as string)
       const bins = JSON.parse(response.headers.get('X-bins-0') as string)?.map((n: string) => {
-        return parseInt(n)
+        return (parseInt(n) - offset) * scale
       })
       if (
         comparisonMode === FourwingsComparisonMode.Compare &&
         !colorDomain?.length &&
         !this.initialBinsLoad &&
-        bins?.length >= COLOR_RAMP_DEFAULT_NUM_STEPS
+        bins?.length === COLOR_RAMP_DEFAULT_NUM_STEPS
       ) {
         // TODO fix avg for bins in API
         this.setState({ colorDomain: bins })
         this.initialBinsLoad = true
       }
-      // TODO test if setting the x-bins until the full viewport loads improves the experience
-      // this.setState({ colorDomain: bins })
       return await response.arrayBuffer()
     }
 
@@ -248,7 +245,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         interval,
         tile,
         aggregationOperation,
-        workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
         buffersLength: settledPromises.map((p) =>
           p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
         ),

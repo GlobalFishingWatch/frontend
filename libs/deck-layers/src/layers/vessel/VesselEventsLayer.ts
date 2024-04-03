@@ -91,9 +91,7 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
         'fs:DECKGL_FILTER_COLOR': `
           vec2 uv = abs(geometry.uv);
           int shape = int(vShape);
-          if (shape == SHAPE_CIRCLE) {
-            // if (uv.x > 0.3 ) discard;
-          } else if (shape == SHAPE_SQUARE) {
+          if (shape == SHAPE_SQUARE) {
             if (uv.x > 0.7 || uv.y > 0.7) discard;
           } else if (shape == SHAPE_DIAMOND) {
               if (uv.x + uv.y > 1.0) discard;

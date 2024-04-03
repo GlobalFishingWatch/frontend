@@ -10,7 +10,7 @@ import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
 
-export type ThinningConfigParam = { zoom: number; config: ThinningConfig }
+export type ThinningConfigParam = { config: ThinningConfig }
 
 export const infoDatasetConfigsCallback = (guestUser: boolean): GetDatasetConfigCallback => {
   return ([info]: DataviewDatasetConfig[]): DataviewDatasetConfig[] => {

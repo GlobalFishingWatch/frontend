@@ -1,10 +1,8 @@
 import type { NumericArray } from '@math.gl/core'
 import { AccessorFunction, ChangeFlags, DefaultProps, UpdateParameters } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
-import { Segment } from '@globalfishingwatch/api-types'
+import { TrackSegment } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
-
-const TIMESTAMP_MULTIPLIER = 1000
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -132,15 +130,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
           },
         },
       })
-      // attributeManager.addInstanced({
-      //   instanceHighlightColor: {
-      //     size: this.props.colorFormat.length,
-      //     type: GL.UNSIGNED_BYTE,
-      //     normalized: true,
-      //     accessor: 'getHighlightColor',
-      //     defaultValue: DEFAULT_HIGHLIGHT_COLOR_RGBA as number[],
-      //   },
-      // })
     }
   }
 
@@ -153,13 +142,15 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
   }
 
   draw(params: any) {
-    const { startTime, endTime, highlightStartTime, highlightEndTime } = this.props
+    const { startTime, endTime, highlightStartTime, highlightEndTime, highlightColor } = this.props
+
     params.uniforms = {
       ...params.uniforms,
-      startTime: startTime / TIMESTAMP_MULTIPLIER,
-      endTime: endTime / TIMESTAMP_MULTIPLIER,
-      highlightStartTime: highlightStartTime ? highlightStartTime / TIMESTAMP_MULTIPLIER : 0,
-      highlightEndTime: highlightEndTime ? highlightEndTime / TIMESTAMP_MULTIPLIER : 0,
+      startTime,
+      endTime,
+      highlightStartTime: highlightStartTime ? highlightStartTime : 0,
+      highlightEndTime: highlightEndTime ? highlightEndTime : 0,
+      highlightColor,
     }
     super.draw(params)
   }
@@ -168,7 +159,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     return this.props.data as VesselTrackData
   }
 
-  getSegments(): Segment[] {
+  getSegments(): TrackSegment[] {
     const data = this.props.data as VesselTrackData
     const segmentsIndex = data.startIndices
     const positions = data.attributes?.positions!?.value
@@ -181,7 +172,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       const initialPoint = {
         longitude: positions[segment],
         latitude: positions[segment + 1],
-        timestamp: timestamps[segment / size] * TIMESTAMP_MULTIPLIER,
+        timestamp: timestamps[segment / size],
       }
       const nextSegmentIndex = segments[i + 1]
       const lastPoint =
@@ -189,12 +180,12 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
           ? {
               longitude: positions[positions.length - size],
               latitude: positions[positions.length - size + 1],
-              timestamp: timestamps[timestamps.length - 1] * TIMESTAMP_MULTIPLIER,
+              timestamp: timestamps[timestamps.length - 1],
             }
           : {
               longitude: positions[nextSegmentIndex],
               latitude: positions[nextSegmentIndex + 1],
-              timestamp: timestamps[nextSegmentIndex / size - 1] * TIMESTAMP_MULTIPLIER,
+              timestamp: timestamps[nextSegmentIndex / size - 1],
             }
       return [initialPoint, lastPoint]
     })

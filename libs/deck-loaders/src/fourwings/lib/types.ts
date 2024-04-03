@@ -36,6 +36,7 @@ export type ParseFourwingsOptions = {
   noDataValue?: number
   sublayers: number
   buffersLength: number[]
+  workerUrl?: string
 }
 
 export type FourwingsLoaderOptions = LoaderOptions & {

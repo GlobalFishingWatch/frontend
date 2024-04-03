@@ -6,7 +6,7 @@ import {
   EventTypes,
   EventVessel,
   ResourceStatus,
-  Segment,
+  TrackSegment,
 } from '@globalfishingwatch/api-types'
 import {
   VesselDeckLayersEventData,
@@ -120,6 +120,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     // return one layer with all events if we are consuming the data object from app resources
     return this.props.events?.flatMap(({ url, type }) => {
       const visible = visibleEvents?.includes(type)
+      if (!visible) {
+        return []
+      }
       return new VesselEventsLayer<VesselDeckLayersEventData[]>(
         this.getSubLayerProps({
           id: type,
@@ -142,7 +145,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             getFillColor: [this.props.highlightEventIds, this.props.color],
           },
           radiusUnits: 'pixels',
-          getRadius: (d: any) => (d.type === EventTypes.Fishing ? 2 : 6),
+          getRadius: (d: any) => {
+            const highlightOffset = highlightEventIds?.includes(d.id) ? 3 : 0
+            return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
+          },
           getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end] as any,
           filterRange: [[startTime, endTime] as any, [startTime, endTime] as any],
           extensions: [new DataFilterExtension({ filterSize: 2 }) as any],
@@ -158,7 +164,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   getTrackLayers() {
     return this.getSubLayers().filter((l) => l.id.includes(TRACK_LAYER_TYPE)) as VesselTrackLayer<
-      Segment[]
+      TrackSegment[]
     >[]
   }
 

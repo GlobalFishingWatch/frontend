@@ -44,7 +44,12 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         aggregationOperation: this.props.aggregationOperation,
         startFrames: info.object.properties.startFrames,
       })
-      object.sublayers = object.sublayers.map((sublayer, i) => ({ ...sublayer, value: values[i] }))
+      object.sublayers = object.sublayers.flatMap((sublayer, i) =>
+        values[i] ? { ...sublayer, value: values[i] } : []
+      )
+      if (!object.sublayers.length) {
+        return { ...info, object: undefined }
+      }
     }
     return { ...info, object }
   }

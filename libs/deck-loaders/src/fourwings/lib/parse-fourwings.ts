@@ -155,10 +155,7 @@ function readData(_: any, data: any, pbf: any) {
   data.push(pbf.readPackedVarint())
 }
 
-export const parseFourwings = async (
-  datasetsBuffer: ArrayBuffer,
-  options?: FourwingsLoaderOptions
-) => {
+export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
   const { buffersLength } = options?.fourwings || {}
   if (!buffersLength?.length) {
     return []
