@@ -51,7 +51,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   onSublayerDataChange = (dataChange: ChangeFlags['dataChanged']) => {
     if (dataChange === 'init') {
-      this.setState({ loaded: false })
+      this.setState({ loaded: false, error: false })
     }
   }
 
@@ -69,7 +69,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   onSublayerError = (error: any) => {
-    console.warn(`Error loading ${this.props.id} layer`, error)
+    console.warn(error)
+    this.setState({ error })
   }
 
   _getVesselTrackLayers() {
@@ -211,5 +212,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   getAllSublayersLoaded() {
     return this.getVesselEventsLayersLoaded() && this.getVesselTracksLayersLoaded()
+  }
+
+  getErrorMessage() {
+    return this.state.error
   }
 }
