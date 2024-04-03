@@ -3,10 +3,8 @@ import { ClipExtension } from '@deck.gl/extensions'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { Matrix4 } from '@math.gl/core'
-import { AnyDeckLayer } from '../types'
 
 const WORLD_SIZE = 512
-const LAYERS_WITH_INDEPENDENT_SUBLAYERS_LOAD = ['vessel']
 
 export function getPickedFeatureToHighlight(
   data: any,
@@ -48,8 +46,4 @@ export function getMVTSublayerProps({
     coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
     extensions: [...(extensions || []), new ClipExtension()],
   }
-}
-
-export const hasIndependentSublayerLoadState = (layer: AnyDeckLayer) => {
-  return LAYERS_WITH_INDEPENDENT_SUBLAYERS_LOAD.some((id) => layer.id.includes(id))
 }

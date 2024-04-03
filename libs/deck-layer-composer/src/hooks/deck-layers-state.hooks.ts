@@ -4,7 +4,6 @@ import type {
   AnyDeckLayer,
   LayerWithIndependentSublayersLoadState,
 } from '@globalfishingwatch/deck-layers'
-import { hasIndependentSublayerLoadState } from '@globalfishingwatch/deck-layers'
 
 // Atom used to have all the layer instances loading state available
 type DeckLayerLoaded = { loaded: boolean }
@@ -23,7 +22,7 @@ export const useSetDeckLayerLoadedState = () => {
         setDeckLayerLoadedState(() => {
           const newLoadedState = {} as DeckLayerState
           layers.forEach((layer) => {
-            if (hasIndependentSublayerLoadState(layer)) {
+            if ((layer as LayerWithIndependentSublayersLoadState).getAllSublayersLoaded) {
               newLoadedState[layer.id] = {
                 loaded: (layer as LayerWithIndependentSublayersLoadState).getAllSublayersLoaded(),
               }
