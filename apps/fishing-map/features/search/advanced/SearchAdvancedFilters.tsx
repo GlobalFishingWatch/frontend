@@ -33,6 +33,7 @@ import {
 import styles from './SearchAdvancedFilters.module.css'
 
 const FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY = ['geartypes', 'shiptypes', 'flag']
+const VMS_FILTERS_WITH_STRING_SEARCH = ['codMarinha', 'nationalId']
 
 type ImcompatibleFilter = { id: keyof VesselSearchState; values: string[] }
 type IncompatibleFilterSelection = {
@@ -238,6 +239,20 @@ function SearchAdvancedFilters() {
           />
         )}
       {schemaFilters.map((schemaFilter) => {
+        if (VMS_FILTERS_WITH_STRING_SEARCH.includes(schemaFilter.id)) {
+          if (
+            schemaFilter.disabled ||
+            isIncompatibleFilterBySelection(schemaFilter, searchFilters)
+          ) {
+            return null
+          }
+          return (
+            <AdvancedFilterInputField
+              field={schemaFilter.id as keyof VesselSearchState}
+              onChange={onInputChange}
+            />
+          )
+        }
         if (
           !showSchemaFilter(schemaFilter) ||
           isIncompatibleFilterBySelection(schemaFilter, searchFilters)

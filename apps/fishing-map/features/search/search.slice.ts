@@ -91,6 +91,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           'imo',
           'callsign',
           'codMarinha',
+          'nationalId',
           'owner',
         ]
 

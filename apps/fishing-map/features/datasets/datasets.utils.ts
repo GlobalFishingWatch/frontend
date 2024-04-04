@@ -536,8 +536,14 @@ export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatase
     return dataset.fieldsAllowed.some((f) => f.includes(schema))
   }
   const schemaConfig = getDatasetSchemaItem(dataset, schema)
-  const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
-  return schemaEnum !== undefined && schemaEnum.length > 0
+  if (!schemaConfig) {
+    return false
+  }
+  if (schemaConfig.type === 'array') {
+    const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
+    return schemaEnum !== undefined && schemaEnum.length > 0
+  }
+  return schemaConfig.type === 'string'
 }
 
 export const getSupportedSchemaFieldsDatasets = (
