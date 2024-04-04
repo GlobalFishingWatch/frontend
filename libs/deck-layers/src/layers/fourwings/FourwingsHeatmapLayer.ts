@@ -44,7 +44,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       const startFrame =
         CONFIG_BY_INTERVAL[interval].getIntervalFrame(startTime) - tileMinIntervalFrame
       const endFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(endTime) - tileMinIntervalFrame
-      const values = aggregateCell(info.object.properties.values, {
+      const values = aggregateCell({
+        cellValues: info.object.properties.values,
         startFrame,
         endFrame,
         aggregationOperation: this.props.aggregationOperation,
@@ -85,7 +86,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       }
       const aggregatedCellValues =
         feature.properties.initialValues[timeRangeKey] ||
-        aggregateCell(feature.properties.values, {
+        aggregateCell({
+          cellValues: feature.properties.values,
           startFrame,
           endFrame,
           aggregationOperation,

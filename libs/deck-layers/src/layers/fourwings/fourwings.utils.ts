@@ -5,7 +5,6 @@ import { Color } from '@deck.gl/core'
 import { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
 import {
   CONFIG_BY_INTERVAL,
-  Cell,
   FourwingsFeature,
   FourwingsInterval,
   TileCell,
@@ -20,11 +19,11 @@ import {
 import { HEATMAP_API_TILES_URL, getChunkByInterval, getInterval } from './fourwings.config'
 
 function aggregateSublayerValues(
-  sublayer: number[],
+  values: number[],
   aggregationOperation = FourwingsAggregationOperation.Sum
 ) {
-  const lastArrayIndex = sublayer.length - 1
-  return sublayer.reduce((acc: number, value = 0, index) => {
+  const lastArrayIndex = values.length - 1
+  return values.reduce((acc: number, value = 0, index) => {
     if (aggregationOperation === FourwingsAggregationOperation.Avg) {
       return index === lastArrayIndex ? (acc + value) / lastArrayIndex + 1 : acc + value
     }
@@ -32,29 +31,26 @@ function aggregateSublayerValues(
   }, 0)
 }
 
-export const aggregateCell = (
-  cell: Cell,
-  {
-    startFrame,
-    endFrame,
-    cellStartOffsets,
-    aggregationOperation = FourwingsAggregationOperation.Sum,
-  }: AggregateCellParams
-): number[] => {
-  return cell.map((sublayer, sublayerIndex) => {
+export const aggregateCell = ({
+  cellValues,
+  startFrame,
+  endFrame,
+  cellStartOffsets,
+  aggregationOperation = FourwingsAggregationOperation.Sum,
+}: AggregateCellParams): number[] => {
+  return cellValues.map((sublayerValues, sublayerIndex) => {
     if (
-      !sublayer ||
+      !sublayerValues ||
       !cellStartOffsets ||
-      !sublayer ||
       // all values are before time range
       endFrame - cellStartOffsets[sublayerIndex] < 0 ||
       // all values are after time range
-      startFrame - cellStartOffsets[sublayerIndex] >= sublayer.length
+      startFrame - cellStartOffsets[sublayerIndex] >= sublayerValues.length
     ) {
       return 0
     }
     return aggregateSublayerValues(
-      sublayer.slice(
+      sublayerValues.slice(
         Math.max(startFrame - cellStartOffsets[sublayerIndex], 0),
         endFrame - cellStartOffsets[sublayerIndex]
       ),

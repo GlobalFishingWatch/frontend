@@ -9,6 +9,7 @@ import {
   FourwingsFeatureProperties,
   FourwingsStaticFeatureProperties,
   FourwingsInterval,
+  Cell,
 } from '@globalfishingwatch/deck-loaders'
 import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 
@@ -75,6 +76,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
 }
 
 export type AggregateCellParams = {
+  cellValues: Cell
   startFrame: number
   endFrame: number
   aggregationOperation?: FourwingsAggregationOperation
