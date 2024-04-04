@@ -3,7 +3,7 @@ import { uniqBy } from 'lodash'
 import {
   GFWAPI,
   getAdvancedSearchQuery,
-  AdvancedSearchQueryFieldKey,
+  ADVANCED_SEARCH_QUERY_FIELDS,
   parseAPIError,
 } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
@@ -13,10 +13,11 @@ import {
   APIVesselSearchPagination,
   IdentityVessel,
   EndpointId,
+  VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
 import { VesselSearchState } from 'types'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
@@ -79,32 +80,19 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
         )
 
-        const andCombinedFields: AdvancedSearchQueryFieldKey[] = [
-          'geartypes',
-          'shiptypes',
-          'targetSpecies',
-          'flag',
-          'fleet',
-          'origin',
-          'transmissionDateFrom',
-          'transmissionDateTo',
-          'ssvid',
-          'imo',
-          'callsign',
-          'codMarinha',
-          'nationalId',
-          'owner',
-        ]
+        const andCombinedFields = ADVANCED_SEARCH_QUERY_FIELDS.filter((f) => f !== 'shipname')
 
         const fields = andCombinedFields.flatMap((field) => {
-          const isInFieldsAllowed =
-            fieldsAllowed.includes(field) ||
-            fieldsAllowed.includes(`${filters.infoSource}.${field}`) ||
-            (field === 'owner' && fieldsAllowed.includes('registryOwners.name')) ||
-            (field === 'shiptypes' &&
-              fieldsAllowed.includes('combinedSourcesInfo.shiptypes.name')) ||
-            (field === 'geartypes' && fieldsAllowed.includes('combinedSourcesInfo.geartypes.name'))
-          const filter = (filters as any)[field]
+          const isInFieldsAllowed = isFieldInFieldsAllowed({
+            field,
+            fieldsAllowed,
+            infoSource: filters.infoSource,
+          })
+
+          const cleanField = field
+            .replace(`${VesselIdentitySourceEnum.Registry}.`, '')
+            .replace(`${VesselIdentitySourceEnum.SelfReported}.`, '')
+          const filter = (filters as any)[cleanField]
           if (filter && isInFieldsAllowed) {
             let value = filter
             // Supports searching by multiple values separated by comma in owners
