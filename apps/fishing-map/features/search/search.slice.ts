@@ -17,7 +17,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
+import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
 import { VesselSearchState } from 'types'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
@@ -83,13 +83,11 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         const andCombinedFields = ADVANCED_SEARCH_QUERY_FIELDS.filter((f) => f !== 'shipname')
 
         const fields = andCombinedFields.flatMap((field) => {
-          const isInFieldsAllowed =
-            fieldsAllowed.includes(field) ||
-            fieldsAllowed.includes(`${filters.infoSource}.${field}`) ||
-            (field === 'owner' && fieldsAllowed.includes('registryOwners.name')) ||
-            (field === 'shiptypes' &&
-              fieldsAllowed.includes('combinedSourcesInfo.shiptypes.name')) ||
-            (field === 'geartypes' && fieldsAllowed.includes('combinedSourcesInfo.geartypes.name'))
+          const isInFieldsAllowed = isFieldInFieldsAllowed({
+            field,
+            fieldsAllowed,
+            infoSource: filters.infoSource,
+          })
 
           const cleanField = field
             .replace(`${VesselIdentitySourceEnum.Registry}.`, '')

@@ -1,5 +1,5 @@
 import { Dataset } from '@globalfishingwatch/api-types'
-import { SchemaFieldDataview } from 'features/datasets/datasets.utils'
+import { SchemaFieldDataview, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
 import { VesselSearchState } from 'types'
 
 export const ADVANCED_SEARCH_FIELDS = ['ssvid', 'imo', 'callsign', 'owner'] as const
@@ -43,7 +43,7 @@ export const isDatasetSearchFieldNeededSupported = (
   fields = DEFAULT_SEARCH_FIELDS_NEEDED
 ) => {
   const isSupported = fields.some((field) =>
-    dataset.fieldsAllowed.some((f) => f === field || f.includes(field))
+    isFieldInFieldsAllowed({ field, fieldsAllowed: dataset.fieldsAllowed })
   )
   return isSupported
 }

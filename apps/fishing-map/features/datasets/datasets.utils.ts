@@ -20,6 +20,7 @@ import {
   DatasetSchemaItem,
   IdentityVessel,
   DatasetSchemaItemEnum,
+  VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
@@ -546,8 +547,29 @@ export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatase
   return schemaConfig.type === 'string'
 }
 
+export const isFieldInFieldsAllowed = ({
+  field,
+  fieldsAllowed,
+  infoSource,
+}: {
+  field: string
+  fieldsAllowed: string[]
+  infoSource?: VesselIdentitySourceEnum
+}): boolean => {
+  return fieldsAllowed.some((f) => {
+    return (
+      f === field ||
+      f.includes(field) ||
+      f === `${infoSource}.${field}` ||
+      (field === 'owner' && f === 'registryOwners.name') ||
+      (field === 'shiptypes' && f === 'combinedSourcesInfo.shiptypes.name') ||
+      (field === 'geartypes' && f === 'combinedSourcesInfo.geartypes.name')
+    )
+  })
+}
+
 export const datasetHasFieldsAllowed = (dataset: Dataset, schema: SupportedDatasetSchema) => {
-  return dataset.fieldsAllowed?.some((f) => f.includes(schema))
+  return isFieldInFieldsAllowed({ field: schema, fieldsAllowed: dataset.fieldsAllowed })
 }
 
 export const getSupportedSchemaFieldsDatasets = (
