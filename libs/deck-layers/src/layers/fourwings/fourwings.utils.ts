@@ -22,10 +22,11 @@ function aggregateSublayerValues(
   values: number[],
   aggregationOperation = FourwingsAggregationOperation.Sum
 ) {
-  const lastArrayIndex = values.length - 1
+  let nonEmptyValuesLength = 0
   return values.reduce((acc: number, value = 0, index) => {
-    if (index === lastArrayIndex && aggregationOperation === FourwingsAggregationOperation.Avg) {
-      return (acc + value) / lastArrayIndex + 1
+    if (value) nonEmptyValuesLength++
+    if (index === values.length - 1 && aggregationOperation === FourwingsAggregationOperation.Avg) {
+      return (acc + value) / nonEmptyValuesLength
     }
     return acc + value
   }, 0)
