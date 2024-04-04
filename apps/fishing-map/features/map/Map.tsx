@@ -141,7 +141,7 @@ const MapWrapper = () => {
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
-  useMapSourceTilesLoadedAtom()
+  // useMapSourceTilesLoadedAtom()
   useEnvironmentalBreaksUpdate()
   useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()

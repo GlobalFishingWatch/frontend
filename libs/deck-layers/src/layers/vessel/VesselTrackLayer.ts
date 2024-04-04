@@ -1,9 +1,8 @@
 import type { NumericArray } from '@math.gl/core'
-import { AccessorFunction, DefaultProps, UpdateParameters } from '@deck.gl/core'
+import { AccessorFunction, ChangeFlags, DefaultProps, UpdateParameters } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { TrackSegment } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
-import { TRACK_LAYER_TYPE } from './VesselLayer'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -40,7 +39,7 @@ export type _VesselTrackLayerProps<DataT = any> = {
   /**
    * Callback on data changed to update
    */
-  onDataChange?: (type: typeof TRACK_LAYER_TYPE, dataChange: string) => void
+  onDataChange?: (dataChange: ChangeFlags['dataChanged']) => void
   /**
    * Track API url accessor.
    */
@@ -138,7 +137,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     super.updateState(params)
     const { dataChanged } = params.changeFlags
     if (dataChanged !== false && this.props.onDataChange) {
-      this.props.onDataChange(params.props.type, dataChanged as string)
+      this.props.onDataChange(dataChanged)
     }
   }
 

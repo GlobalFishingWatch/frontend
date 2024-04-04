@@ -87,6 +87,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
             return [
               new GeoJsonLayer(mvtSublayerProps, {
                 id: `${props.id}-boundaries`,
+                onViewportLoad: this.props.onViewportLoad,
                 lineWidthMinPixels: 1,
                 filled: false,
                 getPolygonOffset: (params: { layerIndex: number }) =>
@@ -107,6 +108,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
         id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,
         loaders: [GFWMVTLoader],
+        onViewportLoad: this.props.onViewportLoad,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
