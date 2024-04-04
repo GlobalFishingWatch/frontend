@@ -44,13 +44,16 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       const startFrame =
         CONFIG_BY_INTERVAL[interval].getIntervalFrame(startTime) - tileMinIntervalFrame
       const endFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(endTime) - tileMinIntervalFrame
-      const values = aggregateCell({
-        cellValues: info.object.properties.values,
-        startFrame,
-        endFrame,
-        aggregationOperation: this.props.aggregationOperation,
-        cellStartOffsets: info.object.properties.startOffsets,
-      })
+      const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
+      const values =
+        info.object.properties.initialValues[timeRangeKey] ||
+        aggregateCell({
+          cellValues: info.object.properties.values,
+          startFrame,
+          endFrame,
+          aggregationOperation: this.props.aggregationOperation,
+          cellStartOffsets: info.object.properties.startOffsets,
+        })
       object.sublayers = object.sublayers.flatMap((sublayer, i) =>
         values[i] ? { ...sublayer, value: values[i] } : []
       )
@@ -97,7 +100,6 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       let chosenValue: number | undefined
       if (comparisonMode === FourwingsComparisonMode.Compare) {
         aggregatedCellValues.forEach((value, index) => {
-          // TODO add more comparison modes (bivariate)
           if (value && (!chosenValue || value > chosenValue)) {
             chosenValue = value
             chosenValueIndex = index
