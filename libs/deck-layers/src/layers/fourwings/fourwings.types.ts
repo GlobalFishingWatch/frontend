@@ -9,6 +9,7 @@ import {
   FourwingsFeatureProperties,
   FourwingsStaticFeatureProperties,
   FourwingsInterval,
+  Cell,
 } from '@globalfishingwatch/deck-loaders'
 import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 
@@ -52,7 +53,7 @@ export enum FourwingsComparisonMode {
   TimeCompare = 'timeCompare',
 }
 
-export type ColorDomain = number[]
+export type ColorDomain = number[] | number[][]
 export type ColorRange = Color[]
 export type SublayerColorRanges = ColorRange[]
 
@@ -72,29 +73,33 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
   hoveredFeatures?: FourwingsPickingInfo[]
+  tilesCache: FourwingsHeatmapTilesCache
 }
 
 export type AggregateCellParams = {
-  minIntervalFrame: number
-  maxIntervalFrame?: number
+  cellValues: Cell
+  startFrame: number
+  endFrame: number
   aggregationOperation?: FourwingsAggregationOperation
-  startFrames: number[]
+  cellStartOffsets: number[]
 }
 
 export type GetFillColorParams = {
+  cellValues: number[][]
+  cellInitialValues?: number[]
+  cellStartOffsets: number[]
   colorDomain: number[] | number[][]
   colorRanges: ColorRange[] | string[]
-  chunk: FourwingsChunk
-  minIntervalFrame: number
-  maxIntervalFrame: number
+  startFrame: number
+  endFrame: number
   comparisonMode?: FourwingsComparisonMode
   aggregationOperation?: FourwingsAggregationOperation
   scale?: typeof scaleLinear<number, string>
 }
 
 type BaseFourwingsLayerProps = {
-  minFrame: number
-  maxFrame: number
+  startTime: number
+  endTime: number
   category: DataviewCategory
   sublayers: FourwingsDeckSublayer[]
   tilesUrl?: string
@@ -145,6 +150,7 @@ export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps
 
 export type FourwingsHeatmapTilesCache = {
   start: number
+  bufferedStart: number
   end: number
   interval: FourwingsInterval
 }

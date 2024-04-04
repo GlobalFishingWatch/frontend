@@ -2,15 +2,16 @@ import { Color, CompositeLayer, LayersList, PickingInfo } from '@deck.gl/core'
 import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers'
 import { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
+import { FourwingsFeature, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
+import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset, rgbaToDeckColor } from '../../utils'
 import {
-  CONFIG_BY_INTERVAL,
-  FourwingsFeature,
-  FourwingsFeatureProperties,
-} from '@globalfishingwatch/deck-loaders'
-import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
-import { getInterval } from './fourwings.config'
-import { aggregateCell, chooseColor, getFourwingsChunk, getIntervalFrames } from './fourwings.utils'
+  EMPTY_CELL_COLOR,
+  aggregateCell,
+  getBivariateValue,
+  getIntervalFrames,
+} from './fourwings.utils'
 import {
+  FourwingsComparisonMode,
   FourwingsHeatmapLayerProps,
   FourwingsPickingInfo,
   FourwingsPickingObject,
@@ -21,7 +22,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   layers: LayersList = []
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }): FourwingsPickingInfo => {
-    const { id, minFrame, maxFrame, availableIntervals, category, sublayers } = this.props
+    const { id, startTime, endTime, availableIntervals, category, sublayers, tilesCache } =
+      this.props
     const object: FourwingsPickingObject = {
       ...(info.object || ({} as FourwingsFeature)),
       title: id,
@@ -29,21 +31,22 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       sublayers,
     }
     if (info.object) {
-      const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
-      const interval = getInterval(minFrame, maxFrame, availableIntervals)
-      const tileMinIntervalFrame = Math.ceil(
-        CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.start)
-      )
-      const minIntervalFrame =
-        Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame)) - tileMinIntervalFrame
-      const maxIntervalFrame =
-        Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame)) - tileMinIntervalFrame
-      const values = aggregateCell(info.object.properties.values, {
-        minIntervalFrame,
-        maxIntervalFrame,
-        aggregationOperation: this.props.aggregationOperation,
-        startFrames: info.object.properties.startFrames,
+      const { startFrame, endFrame } = getIntervalFrames({
+        startTime,
+        endTime,
+        availableIntervals,
+        bufferedStart: tilesCache.bufferedStart,
       })
+      const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
+      const values =
+        info.object.properties.initialValues[timeRangeKey] ||
+        aggregateCell({
+          cellValues: info.object.properties.values,
+          startFrame,
+          endFrame,
+          aggregationOperation: this.props.aggregationOperation,
+          cellStartOffsets: info.object.properties.startOffsets,
+        })
       object.sublayers = object.sublayers.flatMap((sublayer, i) =>
         values[i] ? { ...sublayer, value: values[i] } : []
       )
@@ -57,35 +60,73 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   renderLayers() {
     const {
       data,
-      maxFrame,
-      minFrame,
+      endTime,
+      startTime,
       colorDomain,
       colorRanges,
       hoveredFeatures,
       comparisonMode,
       availableIntervals,
       aggregationOperation,
+      tilesCache,
     } = this.props
-    if (!data || !colorDomain || !colorRanges) {
+    if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
     }
-    const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
-    const { minIntervalFrame, maxIntervalFrame } = getIntervalFrames(
-      minFrame,
-      maxFrame,
-      availableIntervals
-    )
+    const { startFrame, endFrame } = getIntervalFrames({
+      startTime,
+      endTime,
+      availableIntervals,
+      bufferedStart: tilesCache.bufferedStart,
+    })
+
+    const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
+
     const getFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
-      target = chooseColor(feature, {
-        colorDomain,
-        colorRanges,
-        chunk,
-        aggregationOperation,
-        minIntervalFrame,
-        maxIntervalFrame,
-        comparisonMode,
-      })
-      return target
+      if (!colorDomain || !colorRanges) {
+        target = EMPTY_CELL_COLOR
+        return target
+      }
+      const aggregatedCellValues =
+        feature.properties.initialValues[timeRangeKey] ||
+        aggregateCell({
+          cellValues: feature.properties.values,
+          startFrame,
+          endFrame,
+          aggregationOperation,
+          cellStartOffsets: feature.properties.startOffsets,
+        })
+      let chosenValueIndex = 0
+      let chosenValue: number | undefined
+      if (comparisonMode === FourwingsComparisonMode.Compare) {
+        aggregatedCellValues.forEach((value, index) => {
+          if (value && (!chosenValue || value > chosenValue)) {
+            chosenValue = value
+            chosenValueIndex = index
+          }
+        })
+        // if (scale) {
+        //   return rgbaStringToComponents(scale(chosenValue)) as Color
+        // }
+        const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
+          (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
+        )
+        if (!chosenValue) {
+          target = EMPTY_CELL_COLOR
+          return target
+        }
+        return colorRanges[chosenValueIndex][colorIndex] as Color
+      } else if (comparisonMode === FourwingsComparisonMode.Bivariate) {
+        chosenValue = getBivariateValue(aggregatedCellValues, colorDomain as number[][])
+        if (!chosenValue) {
+          target = EMPTY_CELL_COLOR
+          return target
+        }
+        return rgbaToDeckColor(colorRanges[chosenValue] as unknown as string)
+      } else {
+        target = EMPTY_CELL_COLOR
+        return target
+      }
     }
 
     this.layers = [
@@ -100,7 +141,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
           updateTriggers: {
             // This tells deck.gl to recalculate fillColor on changes
-            getFillColor: [minFrame, maxFrame, colorDomain, colorRanges, comparisonMode],
+            getFillColor: [startTime, endTime, colorDomain, colorRanges, comparisonMode],
           },
         })
       ),

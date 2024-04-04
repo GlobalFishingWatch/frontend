@@ -185,14 +185,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    const { minFrame, maxFrame, sublayers } = this.props
+    const { startTime, endTime, sublayers } = this.props
     const { allPositions, lastPositions } = this.state as FourwingsPositionsTileLayerState
     const highlightedVesselId = this.props.highlightedVesselId || this.state.highlightedVesselId
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',
-      'date-range': `${getRoundedDateFromTS(minFrame)},${getRoundedDateFromTS(maxFrame)}`,
+      'date-range': `${getRoundedDateFromTS(startTime)},${getRoundedDateFromTS(endTime)}`,
     }
 
     const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
