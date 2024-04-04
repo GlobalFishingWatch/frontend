@@ -248,6 +248,7 @@ function SearchAdvancedFilters() {
           }
           return (
             <AdvancedFilterInputField
+              key={schemaFilter.id}
               field={schemaFilter.id as keyof VesselSearchState}
               onChange={onInputChange}
             />

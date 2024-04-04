@@ -3,7 +3,7 @@ import { uniqBy } from 'lodash'
 import {
   GFWAPI,
   getAdvancedSearchQuery,
-  AdvancedSearchQueryFieldKey,
+  ADVANCED_SEARCH_QUERY_FIELDS,
   parseAPIError,
 } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
@@ -13,6 +13,7 @@ import {
   APIVesselSearchPagination,
   IdentityVessel,
   EndpointId,
+  VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
@@ -79,22 +80,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
         )
 
-        const andCombinedFields: AdvancedSearchQueryFieldKey[] = [
-          'geartypes',
-          'shiptypes',
-          'targetSpecies',
-          'flag',
-          'fleet',
-          'origin',
-          'transmissionDateFrom',
-          'transmissionDateTo',
-          'ssvid',
-          'imo',
-          'callsign',
-          'codMarinha',
-          'nationalId',
-          'owner',
-        ]
+        const andCombinedFields = ADVANCED_SEARCH_QUERY_FIELDS.filter((f) => f !== 'shipname')
 
         const fields = andCombinedFields.flatMap((field) => {
           const isInFieldsAllowed =
@@ -104,7 +90,11 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             (field === 'shiptypes' &&
               fieldsAllowed.includes('combinedSourcesInfo.shiptypes.name')) ||
             (field === 'geartypes' && fieldsAllowed.includes('combinedSourcesInfo.geartypes.name'))
-          const filter = (filters as any)[field]
+
+          const cleanField = field
+            .replace(`${VesselIdentitySourceEnum.Registry}.`, '')
+            .replace(`${VesselIdentitySourceEnum.SelfReported}.`, '')
+          const filter = (filters as any)[cleanField]
           if (filter && isInFieldsAllowed) {
             let value = filter
             // Supports searching by multiple values separated by comma in owners
