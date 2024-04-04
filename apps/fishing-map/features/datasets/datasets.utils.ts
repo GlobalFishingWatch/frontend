@@ -546,13 +546,18 @@ export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatase
   return schemaConfig.type === 'string'
 }
 
+export const datasetHasFieldsAllowed = (dataset: Dataset, schema: SupportedDatasetSchema) => {
+  return dataset.fieldsAllowed?.some((f) => f.includes(schema))
+}
+
 export const getSupportedSchemaFieldsDatasets = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
   const datasetsWithSchemaFieldsSupport = dataview?.datasets?.flatMap((dataset) => {
     const hasSchemaFields = datasetHasSchemaFields(dataset, schema)
-    return hasSchemaFields ? dataset : []
+    const hasFieldsAllowed = datasetHasFieldsAllowed(dataset, schema)
+    return hasSchemaFields && hasFieldsAllowed ? dataset : []
   })
   return datasetsWithSchemaFieldsSupport
 }
