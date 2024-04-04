@@ -811,7 +811,7 @@
       "flagChanges": "Alterações de bandeira",
       "flagChangesCount": "{{count}} alterações de bandeira",
       "flagChangesEmpty": "Nenhuma alteração de bandeira",
-      "MOULists": "Tokyo and Paris MOU Lists",
+      "MOULists": "Listas de MOU de Tóquio e Paris",
       "MOUListsEmpty": "Embarcação com uma bandeira/bandeiras não presente nas listas negra ou cinza do MOU de Tóquio ou Paris",
       "MOUParisListsCount": "Bandeira presente na lista negra ou cinza do MOU de Paris ({{flags}})",
       "MOUTokyoListsCount": "Bandeira presente na lista negra ou cinza do MOU de Tóquio ({{flags}})",
