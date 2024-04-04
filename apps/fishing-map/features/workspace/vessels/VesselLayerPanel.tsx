@@ -137,8 +137,9 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   }
 
   const trackLoaded = vesselLayer?.instance.getVesselTracksLayersLoaded()
+  const trackLayerVisible = vesselLayer?.instance.props.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
-  const loading = infoLoading || !trackLoaded
+  const loading = trackLayerVisible && (infoLoading || !trackLoaded)
 
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError: any = vesselLayer?.instance.getErrorMessage()
