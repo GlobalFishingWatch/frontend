@@ -73,6 +73,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
   hoveredFeatures?: FourwingsPickingInfo[]
+  tilesCache: FourwingsHeatmapTilesCache
 }
 
 export type AggregateCellParams = {
@@ -149,6 +150,7 @@ export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps
 
 export type FourwingsHeatmapTilesCache = {
   start: number
+  bufferedStart: number
   end: number
   interval: FourwingsInterval
 }

@@ -290,21 +290,24 @@ export function getFourwingsChunk(
   return getChunkByInterval(minFrame, maxFrame, interval)
 }
 
-export function getIntervalFrames(
-  minFrame: number,
-  maxFrame: number,
+export function getIntervalFrames({
+  startTime,
+  endTime,
+  availableIntervals,
+  bufferedStart,
+}: {
+  startTime: number
+  endTime: number
   availableIntervals?: FourwingsInterval[]
-) {
-  const interval = getInterval(minFrame, maxFrame, availableIntervals)
-  const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
-  const tileStartFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.bufferedStart)
-  )
+  bufferedStart: number
+}) {
+  const interval = getInterval(startTime, endTime, availableIntervals)
+  const tileStartFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStart))
   const startFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileStartFrame
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(startTime) - tileStartFrame
   )
   const endFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame) - tileStartFrame
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(endTime) - tileStartFrame
   )
   return { interval, tileStartFrame, startFrame, endFrame }
 }

@@ -267,8 +267,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     availableIntervals?: FourwingsInterval[]
   ): FourwingsHeatmapTilesCache => {
     const interval = getInterval(startTime, endTime, availableIntervals)
-    const { start, end } = getFourwingsChunk(startTime, endTime, availableIntervals)
-    return { start, end, interval }
+    const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
+    return { start, end, bufferedStart, interval }
   }
 
   _getTileDataCacheKey = (): string => {
@@ -307,7 +307,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   renderLayers(): Layer<{}> | LayersList {
     const { resolution, comparisonMode } = this.props
-    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
+    const { colorDomain, colorRanges, tilesCache } = this.state as FourwingsTileLayerState
     const cacheKey = this._getTileDataCacheKey()
 
     return new TileLayer(
@@ -318,6 +318,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         colorDomain,
         colorRanges,
         comparisonMode,
+        tilesCache,
         minZoom: 0,
         maxZoom: FOURWINGS_MAX_ZOOM,
         zoomOffset: this.props.resolution === 'high' ? 1 : 0,

@@ -2,18 +2,12 @@ import { Color, CompositeLayer, LayersList, PickingInfo } from '@deck.gl/core'
 import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers'
 import { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import {
-  CONFIG_BY_INTERVAL,
-  FourwingsFeature,
-  getTimeRangeKey,
-} from '@globalfishingwatch/deck-loaders'
+import { FourwingsFeature, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset, rgbaToDeckColor } from '../../utils'
-import { getInterval } from './fourwings.config'
 import {
   EMPTY_CELL_COLOR,
   aggregateCell,
   getBivariateValue,
-  getFourwingsChunk,
   getIntervalFrames,
 } from './fourwings.utils'
 import {
@@ -28,7 +22,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   layers: LayersList = []
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }): FourwingsPickingInfo => {
-    const { id, startTime, endTime, availableIntervals, category, sublayers } = this.props
+    const { id, startTime, endTime, availableIntervals, category, sublayers, tilesCache } =
+      this.props
     const object: FourwingsPickingObject = {
       ...(info.object || ({} as FourwingsFeature)),
       title: id,
@@ -36,14 +31,12 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       sublayers,
     }
     if (info.object) {
-      const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
-      const interval = getInterval(startTime, endTime, availableIntervals)
-      const tileMinIntervalFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(
-        chunk.bufferedStart
-      )
-      const startFrame =
-        CONFIG_BY_INTERVAL[interval].getIntervalFrame(startTime) - tileMinIntervalFrame
-      const endFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(endTime) - tileMinIntervalFrame
+      const { startFrame, endFrame } = getIntervalFrames({
+        startTime,
+        endTime,
+        availableIntervals,
+        bufferedStart: tilesCache.bufferedStart,
+      })
       const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
       const values =
         info.object.properties.initialValues[timeRangeKey] ||
@@ -75,11 +68,18 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       comparisonMode,
       availableIntervals,
       aggregationOperation,
+      tilesCache,
     } = this.props
-    if (!data || !colorDomain || !colorRanges) {
+    if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
     }
-    const { startFrame, endFrame } = getIntervalFrames(startTime, endTime, availableIntervals)
+    const { startFrame, endFrame } = getIntervalFrames({
+      startTime,
+      endTime,
+      availableIntervals,
+      bufferedStart: tilesCache.bufferedStart,
+    })
+
     const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
 
     const getFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
