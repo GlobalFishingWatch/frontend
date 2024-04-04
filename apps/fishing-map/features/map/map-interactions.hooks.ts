@@ -16,6 +16,7 @@ import {
   useSetMapHoverInteraction,
   useMapClickInteraction,
   useSetMapClickInteraction,
+  DeckLayerInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
@@ -115,18 +116,59 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
   }
 }
 
+export const useHandleMapClickFeatures = () => {
+  const { isMapDrawing } = useMapDrawConnect()
+  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
+  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
+  const { onRulerMapClick, rulersEditing } = useRulers()
+  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
+  const handleMapClickInteraction = useCallback((interaction: DeckLayerInteraction) => {
+    const { latitude, longitude, features } = interaction
+    const position = [longitude, latitude] as Position
+    if (isMapAnnotating) {
+      return addMapAnnotation(position)
+    }
+    if (isErrorNotificationEditing) {
+      return addErrorNotification(position)
+    }
+    if (rulersEditing) {
+      return onRulerMapClick(position)
+    }
+    if (!features || !features.length) {
+      return
+    }
+    //   // get temporal grid clicked features and order them by sublayerindex
+    //   const fishingActivityFeatures = features
+    //     .filter((feature) => {
+    //       if (!feature.temporalgrid?.visible) {
+    //         return false
+    //       }
+    //       return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+    //         feature.temporalgrid.sublayerInteractionType
+    //       )
+    //     })
+    //     .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
+
+    //   if (fishingActivityFeatures?.length) {
+    //     dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
+    //     const activityProperties = fishingActivityFeatures.map((feature) =>
+    //       feature.temporalgrid?.sublayerInteractionType === 'detections' ? 'detections' : 'hours'
+    //     )
+    //     fishingPromiseRef.current = dispatch(
+    //       fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
+    //     )
+    //   }
+  }, [])
+  return handleMapClickInteraction
+}
 export const useMapMouseClick = (style?: ExtendedStyle) => {
   // const map = useMapInstance()
   const map = useDeckMap()
-  const { isMapDrawing } = useMapDrawConnect()
+  const handleMapClickFeatures = useHandleMapClickFeatures()
   const setMapClickFeatures = useSetMapClickInteraction()
-  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
-  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
-  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const { onRulerMapClick, rulersEditing } = useRulers()
-  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+  const { clickedEvent } = useClickedEventConnect()
 
   // const onClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
 
@@ -193,38 +235,15 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       } catch (e) {
         console.warn(e)
       }
-      setMapClickFeatures({ longitude: info.coordinate[0], latitude: info.coordinate[1], features })
-      const fourWingsValues = features?.map(
-        (f: PickingInfo) =>
-          f.sourceLayer?.getPickingInfo({ info, mode: 'click', sourceLayer: f.sourceLayer }).object
-            ?.values
-      )[0]
-      if (fourWingsValues) {
-        console.log('fourWingsValues', fourWingsValues)
+      const mapClickInteraction: DeckLayerInteraction = {
+        longitude: info.coordinate[0],
+        latitude: info.coordinate[1],
+        features,
       }
-
-      if (isMapAnnotating) {
-        return addMapAnnotation(info.coordinate as Position)
-      }
-      if (isErrorNotificationEditing) {
-        return addErrorNotification(info.coordinate as Position)
-      }
-      if (rulersEditing) {
-        return onRulerMapClick(info)
-      }
-      // onClick(event)
+      setMapClickFeatures(mapClickInteraction)
+      handleMapClickFeatures(mapClickInteraction)
     },
-    [
-      clickedCellLayers,
-      map,
-      isMapAnnotating,
-      isErrorNotificationEditing,
-      rulersEditing,
-      addMapAnnotation,
-      addErrorNotification,
-      setMapClickFeatures,
-      onRulerMapClick,
-    ]
+    [map, clickedCellLayers, setMapClickFeatures, handleMapClickFeatures]
   )
 
   return { onMapClick, clickedTooltipEvent }

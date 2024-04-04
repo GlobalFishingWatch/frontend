@@ -8,6 +8,7 @@ import PopupWrapper from 'features/map/popups/PopupWrapper'
 function MapPopups() {
   const hoverInteraction = useMapHoverInteraction()
   const clickInteraction = useMapClickInteraction()
+  console.log('🚀 ~ MapPopups ~ clickInteraction:', clickInteraction)
 
   return (
     <Fragment>
