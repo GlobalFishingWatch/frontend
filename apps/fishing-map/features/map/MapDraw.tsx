@@ -13,7 +13,7 @@ import {
   useAddDataviewFromDatasetToWorkspace,
   useDatasetsAPI,
 } from 'features/datasets/datasets.hook'
-import useDrawControl from 'features/map/MapDrawControl'
+// import useDrawControl from 'features/map/MapDrawControl'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -102,30 +102,30 @@ function MapDraw() {
     }
   }
 
-  const drawControl = useDrawControl({
-    displayControlsDefault: false,
-    defaultMode: mapDrawEditDataset ? 'simple_select' : 'draw_polygon',
-    onSelectionChange: onSelectionChange,
-  })
+  // const drawControl = useDrawControl({
+  //   displayControlsDefault: false,
+  //   defaultMode: mapDrawEditDataset ? 'simple_select' : 'draw_polygon',
+  //   onSelectionChange: onSelectionChange,
+  // })
 
-  useEffect(() => {
-    if (mapDrawEditGeometry?.status === AsyncReducerStatus.Finished && mapDrawEditGeometry?.data) {
-      drawControl.add(mapDrawEditGeometry.data as any)
-    }
-  }, [drawControl, mapDrawEditGeometry])
+  // useEffect(() => {
+  //   if (mapDrawEditGeometry?.status === AsyncReducerStatus.Finished && mapDrawEditGeometry?.data) {
+  //     drawControl.add(mapDrawEditGeometry.data as any)
+  //   }
+  // }, [drawControl, mapDrawEditGeometry])
 
-  const features = getAllFeatures(drawControl)
-  const selectedFeature = getSelectedFeature(drawControl)
-  const selectedFeatureId = selectedFeature?.id as string
+  // const features = getAllFeatures(drawControl)
+  // const selectedFeature = getSelectedFeature(drawControl)
+  // const selectedFeatureId = selectedFeature?.id as string
 
-  const hasFeatureSelected = selectedFeature !== undefined
-  const currentPointCoordinates =
-    selectedFeature && selectedPointIndex !== null
-      ? getCoordinatePrecisionRounded(
-          selectedFeature.geometry.coordinates?.[0]?.[selectedPointIndex]
-        )
-      : null
-  const allowDeletePoint = selectedFeature!?.geometry!?.coordinates!?.[0]!?.length > 4
+  // const hasFeatureSelected = selectedFeature !== undefined
+  // const currentPointCoordinates =
+  //   selectedFeature && selectedPointIndex !== null
+  //     ? getCoordinatePrecisionRounded(
+  //         selectedFeature.geometry.coordinates?.[0]?.[selectedPointIndex]
+  //       )
+  //     : null
+  // const allowDeletePoint = selectedFeature!?.geometry!?.coordinates!?.[0]!?.length > 4
 
   const onHandleLatitudeChange = useCallback((e: any) => {
     if (e.target.value) {
@@ -149,42 +149,42 @@ function MapDraw() {
     }
   }, [])
 
-  const editingPointLatitude =
-    newPointLatitude !== null ? newPointLatitude : currentPointCoordinates?.[1]
-  const editingPointLongitude =
-    newPointLongitude !== null ? newPointLongitude : currentPointCoordinates?.[0]
+  // const editingPointLatitude =
+  //   newPointLatitude !== null ? newPointLatitude : currentPointCoordinates?.[1]
+  // const editingPointLongitude =
+  //   newPointLongitude !== null ? newPointLongitude : currentPointCoordinates?.[0]
 
-  const onConfirmNewPointPosition = useCallback(() => {
-    if (selectedFeature !== null && selectedFeature !== undefined && selectedPointIndex !== null) {
-      const newPointPosition = [editingPointLongitude, editingPointLatitude] as DrawPointPosition
-      const newFeature = updateFeaturePointByIndex(
-        selectedFeature,
-        selectedPointIndex,
-        newPointPosition
-      )
-      // From DOCS: If you add() a feature with an id that is already in use,
-      // the existing feature will be updated and no new feature will be added.
-      drawControl.add(newFeature)
-      setNewPointLatitude(null)
-      setNewPointLongitude(null)
-      setSelectedPointIndex(null)
-    }
-  }, [
-    selectedFeature,
-    selectedPointIndex,
-    editingPointLongitude,
-    editingPointLatitude,
-    drawControl,
-    setSelectedPointIndex,
-  ])
+  // const onConfirmNewPointPosition = useCallback(() => {
+  //   if (selectedFeature !== null && selectedFeature !== undefined && selectedPointIndex !== null) {
+  //     const newPointPosition = [editingPointLongitude, editingPointLatitude] as DrawPointPosition
+  //     const newFeature = updateFeaturePointByIndex(
+  //       selectedFeature,
+  //       selectedPointIndex,
+  //       newPointPosition
+  //     )
+  //     // From DOCS: If you add() a feature with an id that is already in use,
+  //     // the existing feature will be updated and no new feature will be added.
+  //     drawControl.add(newFeature)
+  //     setNewPointLatitude(null)
+  //     setNewPointLongitude(null)
+  //     setSelectedPointIndex(null)
+  //   }
+  // }, [
+  //   selectedFeature,
+  //   selectedPointIndex,
+  //   editingPointLongitude,
+  //   editingPointLatitude,
+  //   drawControl,
+  //   setSelectedPointIndex,
+  // ])
 
-  const onDeletePoint = useCallback(() => {
-    if (selectedFeature !== null && selectedFeature !== undefined && selectedPointIndex !== null) {
-      const newFeature = removeFeaturePointByIndex(selectedFeature, selectedPointIndex)
-      drawControl.add(newFeature)
-      setSelectedPointIndex(null)
-    }
-  }, [drawControl, selectedFeature, selectedPointIndex, setSelectedPointIndex])
+  // const onDeletePoint = useCallback(() => {
+  //   if (selectedFeature !== null && selectedFeature !== undefined && selectedPointIndex !== null) {
+  //     const newFeature = removeFeaturePointByIndex(selectedFeature, selectedPointIndex)
+  //     drawControl.add(newFeature)
+  //     setSelectedPointIndex(null)
+  //   }
+  // }, [drawControl, selectedFeature, selectedPointIndex, setSelectedPointIndex])
 
   const onInputChange = useCallback(
     (e: any) => {
@@ -193,33 +193,33 @@ function MapDraw() {
     [setLayerName]
   )
 
-  const setDrawingMode = useCallback(
-    (mode: DrawMode, featureId?: string) => {
-      const modeOptions = featureId ? { featureId } : ({} as any)
-      drawControl.changeMode(mode as any, modeOptions)
-    },
-    [drawControl]
-  )
+  // const setDrawingMode = useCallback(
+  //   (mode: DrawMode, featureId?: string) => {
+  //     const modeOptions = featureId ? { featureId } : ({} as any)
+  //     drawControl.changeMode(mode as any, modeOptions)
+  //   },
+  //   [drawControl]
+  // )
 
-  const onHintClick = useCallback(() => {
-    if (features.length) {
-      const selectedFeature = features[0]
-      setDrawingMode('direct_select', selectedFeature.id as string)
-      setSelectedPointIndex(1)
-    }
-  }, [features, setDrawingMode, setSelectedPointIndex])
+  // const onHintClick = useCallback(() => {
+  //   if (features.length) {
+  //     const selectedFeature = features[0]
+  //     setDrawingMode('direct_select', selectedFeature.id as string)
+  //     setSelectedPointIndex(1)
+  //   }
+  // }, [features, setDrawingMode, setSelectedPointIndex])
 
-  const onAddPolygonClick = useCallback(() => {
-    setDrawingMode('draw_polygon')
-    trackEvent({
-      category: TrackCategory.ReferenceLayer,
-      action: `Draw a custom reference layer - Click + icon`,
-    })
-  }, [setDrawingMode])
+  // const onAddPolygonClick = useCallback(() => {
+  //   setDrawingMode('draw_polygon')
+  //   trackEvent({
+  //     category: TrackCategory.ReferenceLayer,
+  //     action: `Draw a custom reference layer - Click + icon`,
+  //   })
+  // }, [setDrawingMode])
 
-  const onRemoveClick = useCallback(() => {
-    drawControl.delete(selectedFeatureId as string)
-  }, [drawControl, selectedFeatureId])
+  // const onRemoveClick = useCallback(() => {
+  //   drawControl.delete(selectedFeatureId as string)
+  // }, [drawControl, selectedFeatureId])
 
   const resetEditHandler = useCallback(() => {
     setSelectedPointIndex(null)
@@ -290,33 +290,33 @@ function MapDraw() {
     [createDataset, layerName]
   )
 
-  const overLapInFeatures = useMemo(() => {
-    if (features?.length) {
-      return features.map((feature) => kinks(feature.geometry).features.length > 0)
-    }
-    return []
-  }, [features])
+  // const overLapInFeatures = useMemo(() => {
+  //   if (features?.length) {
+  //     return features.map((feature) => kinks(feature.geometry).features.length > 0)
+  //   }
+  //   return []
+  // }, [features])
 
-  const hasOverLapInFeatures = overLapInFeatures.some(Boolean)
-  const hasFeaturesDrawn = features !== null && features.length > 0
+  // const hasOverLapInFeatures = overLapInFeatures.some(Boolean)
+  // const hasFeaturesDrawn = features !== null && features.length > 0
   const layerNameMinLength = layerName.length >= MIN_DATASET_NAME_LENGTH
   let saveTooltip = ''
 
-  if (!layerName) {
-    saveTooltip = t('layer.nameRequired', 'Layer name is required')
-  } else if (!layerNameMinLength) {
-    saveTooltip = t('layer.nameLengthError', 'Layer name requires at least {{count}} characters', {
-      count: MIN_DATASET_NAME_LENGTH,
-    })
-  } else if (!hasFeaturesDrawn) {
-    saveTooltip = t('layer.geometryRequired', 'Draw a polygon is required')
-  } else if (hasOverLapInFeatures) {
-    saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
-  }
+  // if (!layerName) {
+  //   saveTooltip = t('layer.nameRequired', 'Layer name is required')
+  // } else if (!layerNameMinLength) {
+  //   saveTooltip = t('layer.nameLengthError', 'Layer name requires at least {{count}} characters', {
+  //     count: MIN_DATASET_NAME_LENGTH,
+  //   })
+  // } else if (!hasFeaturesDrawn) {
+  //   saveTooltip = t('layer.geometryRequired', 'Draw a polygon is required')
+  // } else if (hasOverLapInFeatures) {
+  //   saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
+  // }
 
   return (
     <Fragment>
-      {isMapDrawing && currentPointCoordinates && (
+      {/* {isMapDrawing && currentPointCoordinates && (
         <Popup
           latitude={currentPointCoordinates[1]}
           longitude={currentPointCoordinates[0]}
@@ -372,26 +372,24 @@ function MapDraw() {
             </div>
           </div>
         </Popup>
-      )}
+      )} */}
       <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
-        {(features?.length > 0 || hasOverLapInFeatures) && (
-          <div className={cx(styles.hint, { [styles.warning]: error || hasOverLapInFeatures })}>
+        {
+          <div className={cx(styles.hint, { [styles.warning]: error })}>
             <IconButton
               size="small"
               className={styles.hintIcon}
-              type={error || hasOverLapInFeatures ? 'warning' : 'border'}
-              icon={error || hasOverLapInFeatures ? 'warning' : 'help'}
-              onClick={error || hasOverLapInFeatures ? undefined : onHintClick}
+              type={error ? 'warning' : 'border'}
+              icon={error ? 'warning' : 'help'}
+              onClick={error ? undefined : () => {}}
             />
             {error ? (
               <span>{error}</span>
-            ) : hasOverLapInFeatures ? (
-              t('layer.geometryError', 'Some polygons have self-intersections')
             ) : (
               t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')
             )}
           </div>
-        )}
+        }
         <InputText
           label={t('layer.name', 'Layer name')}
           labelClassName={styles.layerLabel}
@@ -400,17 +398,17 @@ function MapDraw() {
           onChange={onInputChange}
           className={styles.input}
         />
-        <IconButton icon="add-polygon" onClick={onAddPolygonClick} />
+        <IconButton icon="add-polygon" onClick={() => {}} />
         <IconButton
           type="warning"
           icon="delete"
-          disabled={!hasFeatureSelected}
-          tooltip={
-            !hasFeatureSelected
-              ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
-              : ''
-          }
-          onClick={onRemoveClick}
+          // disabled={!hasFeatureSelected}
+          // tooltip={
+          //   !hasFeatureSelected
+          //     ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
+          //     : ''
+          // }
+          // onClick={onRemoveClick}
         />
         <div className={styles.buttonsContainer}>
           <SwitchRow
@@ -433,13 +431,11 @@ function MapDraw() {
               disabled={
                 !layerName ||
                 !layerNameMinLength ||
-                !hasFeaturesDrawn ||
-                hasOverLapInFeatures ||
                 mapDrawEditGeometry?.status === AsyncReducerStatus.Loading
               }
               tooltip={saveTooltip}
               tooltipPlacement="top"
-              onClick={() => onSaveClick(features)}
+              // onClick={() => onSaveClick(features)}
             >
               {t('common.save', 'Save')}
             </Button>

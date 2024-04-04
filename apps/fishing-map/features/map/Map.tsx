@@ -146,7 +146,7 @@ const MapWrapper = () => {
   useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()
   // const map = useMapInstance()
-  // const { isMapDrawing } = useMapDrawConnect()
+  const { isMapDrawing } = useMapDrawConnect()
   // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
 
   // const setMapReady = useSetRecoilState(mapReadyAtom)
@@ -329,6 +329,7 @@ const MapWrapper = () => {
             visible={rulersVisible}
           />
         )}
+        {isMapDrawing && <MapDraw />}
       </DeckGL>
       <MapPopups />
       {/* {style && (
