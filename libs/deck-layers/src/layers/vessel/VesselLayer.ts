@@ -1,5 +1,5 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { CompositeLayer, Layer, LayersList, LayerProps, Color, ChangeFlags } from '@deck.gl/core'
+import { CompositeLayer, Layer, LayersList, LayerProps, Color } from '@deck.gl/core'
 // Layers
 import {
   ApiEvent,
@@ -15,12 +15,7 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 import { deckToHexColor } from '../../utils/colors'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
-import {
-  VesselEventsLayer,
-  VesselEventsLayersState,
-  VesselTracksLayersState,
-  _VesselEventsLayerProps,
-} from './VesselEventsLayer'
+import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 import { getVesselTrackThunks } from './vessel.utils'
 import { EVENTS_COLORS } from './vessel.config'

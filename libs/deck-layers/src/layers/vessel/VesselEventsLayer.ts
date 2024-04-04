@@ -5,7 +5,7 @@ import {
   Position,
   UpdateParameters,
 } from '@deck.gl/core'
-import { PathLayer, ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers'
+import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { EVENT_SHAPES, SHAPES_ORDINALS } from './vessel.config'
 
@@ -20,9 +20,6 @@ export type _VesselEventsLayerProps<DataT = any> = {
   getPickingInfo?: AccessorFunction<DataT, string>
   onDataChange?: (dataChange: ChangeFlags['dataChanged']) => void
 }
-
-export type VesselEventsLayersState = ScatterplotLayer['state'] & { loaded: boolean }
-export type VesselTracksLayersState = PathLayer['state'] & { loaded: boolean }
 
 export type VesselEventsLayerProps<DataT = any> = _VesselEventsLayerProps<DataT> &
   ScatterplotLayerProps<DataT>
