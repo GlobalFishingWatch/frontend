@@ -49,25 +49,6 @@ export type VesselLayerProps = _VesselTrackLayerProps & VesselEventsLayerProps &
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   dataStatus: VesselDataStatus[] = []
 
-  onSublayerDataChange = (dataChange: ChangeFlags['dataChanged']) => {
-    if (dataChange === 'init') {
-      this.setState({ loaded: false, error: false })
-    }
-  }
-
-  onSublayerLoad: LayerProps['onDataLoad'] = (_data, context) => {
-    const type = (context.layer as Layer<{ type: VesselDataType }>)?.props?.type
-    if (type === TRACK_LAYER_TYPE) {
-      // Needs to check if every track chunk layer is loaded
-      const loaded = this.getTrackLayers()?.every((l) => l.isLoaded)
-      if (loaded) {
-        context.layer.setState({ loaded: true })
-      }
-    } else {
-      context.layer.setState({ loaded: true })
-    }
-  }
-
   onSublayerError = (error: any) => {
     console.warn(error)
     this.setState({ error })
@@ -104,8 +85,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           highlightStartTime: this.props.highlightStartTime,
           highlightEndTime: this.props.highlightEndTime,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
-          onDataChange: this.onSublayerDataChange,
-          onDataLoad: this.onSublayerLoad,
           onError: this.onSublayerError,
         })
       )
@@ -129,8 +108,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           data: url,
           visible,
           type,
-          onDataChange: this.onSublayerDataChange,
-          onDataLoad: this.onSublayerLoad,
           onError: this.onSublayerError,
           loaders: [VesselEventsLoader],
           pickable: true,
@@ -209,11 +186,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselEventsLayersLoaded() {
-    return this.getEventLayers().every((layer) => (layer.state as VesselEventsLayersState).loaded)
+    return this.getEventLayers().every((l) => l.isLoaded)
   }
 
   getVesselTracksLayersLoaded() {
-    return this.getTrackLayers().every((layer) => (layer.state as VesselTracksLayersState).loaded)
+    return this.getTrackLayers().every((l) => l.isLoaded)
   }
 
   getAllSublayersLoaded() {

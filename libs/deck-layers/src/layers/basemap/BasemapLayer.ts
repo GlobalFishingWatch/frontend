@@ -24,10 +24,6 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
     }
   }
 
-  onViewportLoad = (tiles: any) => {
-    this.setState({ loaded: true })
-  }
-
   _getBathimetryLayer() {
     return new TileLayer({
       id: 'basemap-bathimetry',
@@ -60,7 +56,6 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       maxRequests: 100,
       debounceTime: 200,
       onDataLoad: this.props.onDataLoad,
-      onViewportLoad: this.onViewportLoad,
       getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.BasemapFill, params),
       getFillColor: [39, 70, 119],
       data: 'https://storage.googleapis.com/public-tiles/basemap/default/{z}/{x}/{y}.pbf',
@@ -76,7 +71,6 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       maxRequests: 100,
       debounceTime: 200,
       onDataLoad: this.props.onDataLoad,
-      onViewportLoad: this.onViewportLoad,
       getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Basemap, params),
       tileSize: 256,
       renderSubLayers: (props: any) => {

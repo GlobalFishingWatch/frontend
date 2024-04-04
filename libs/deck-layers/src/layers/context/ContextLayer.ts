@@ -39,12 +39,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
   static defaultProps = defaultProps
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
-    this.setState({ loaded: true })
     this.props.onViewportLoad?.(tiles)
-  }
-
-  _onTileDataLoading = () => {
-    this.setState({ loaded: false })
   }
 
   getHighlightLineWidth(d: ContextFeature): number {
@@ -98,7 +93,6 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
               new GeoJsonLayer(mvtSublayerProps, {
                 id: `${props.id}-boundaries`,
                 onViewportLoad: this._onViewportLoad,
-                onTileDataLoading: this._onTileDataLoading,
                 lineWidthMinPixels: 1,
                 filled: false,
                 getPolygonOffset: (params: { layerIndex: number }) =>

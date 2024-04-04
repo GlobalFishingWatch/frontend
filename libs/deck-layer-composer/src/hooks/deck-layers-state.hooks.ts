@@ -27,7 +27,7 @@ export const useSetDeckLayerLoadedState = () => {
                 loaded: (layer as LayerWithIndependentSublayersLoadState).getAllSublayersLoaded(),
               }
             } else {
-              newLoadedState[layer.id] = { loaded: layer.state?.loaded as boolean }
+              newLoadedState[layer.id] = { loaded: layer.isLoaded }
             }
           })
           return newLoadedState

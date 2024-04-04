@@ -37,12 +37,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
-    this.setState({ loaded: true })
     this.props.onViewportLoad?.(tiles)
-  }
-
-  _onTileDataLoading = () => {
-    this.setState({ loaded: false })
   }
 
   renderLayers(): Layer<{}> | LayersList {
@@ -56,7 +51,6 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
         this.getSubLayerProps({
           id: POSITIONS_ID,
           onViewportLoad: this._onViewportLoad,
-          onTileDataLoading: this._onTileDataLoading,
         })
       )
     }
@@ -66,7 +60,6 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
           this.getSubLayerProps({
             id: HEATMAP_STATIC_ID,
             onViewportLoad: this._onViewportLoad,
-            onTileDataLoading: this._onTileDataLoading,
           })
         )
       : new HeatmapLayerClass(
@@ -74,7 +67,6 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
           this.getSubLayerProps({
             id: HEATMAP_ID,
             onViewportLoad: this._onViewportLoad,
-            onTileDataLoading: this._onTileDataLoading,
           })
         )
   }
