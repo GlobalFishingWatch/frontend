@@ -232,6 +232,7 @@ export function getDataviewsResolved(
     activityDataviews,
     detectionDataviews,
     fourwingsDataviews,
+    staticDataviews,
     trackDataviews,
     otherDataviews,
   } = dataviews.reduce(
@@ -240,8 +241,10 @@ export function getDataviewsResolved(
         acc.activityDataviews.push(dataview)
       } else if (isDetectionsDataview(dataview)) {
         acc.detectionDataviews.push(dataview)
-      } else if (isEnvironmentalDataview(dataview) || isHeatmapStaticDataview(dataview)) {
+      } else if (isEnvironmentalDataview(dataview)) {
         acc.fourwingsDataviews.push(dataview)
+      } else if (isHeatmapStaticDataview(dataview)) {
+        acc.staticDataviews.push(dataview)
       } else if (isTrackDataview(dataview)) {
         acc.trackDataviews.push(dataview)
       } else {
@@ -253,6 +256,7 @@ export function getDataviewsResolved(
       activityDataviews: [] as UrlDataviewInstance[],
       detectionDataviews: [] as UrlDataviewInstance[],
       fourwingsDataviews: [] as UrlDataviewInstance[],
+      staticDataviews: [] as UrlDataviewInstance[],
       trackDataviews: [] as UrlDataviewInstance[],
       otherDataviews: [] as UrlDataviewInstance[],
     }
@@ -294,11 +298,19 @@ export function getDataviewsResolved(
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
+  const staticDataviewsParsed = staticDataviews.flatMap(
+    (d) =>
+      getFourwingsDataviewsResolved(d, {
+        colorRampWhiteEnd:
+          d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
+      }) || []
+  )
   const dataviewsMerged = [
     ...otherDataviews,
-    ...mergedActivityDataview,
-    ...mergedDetectionsDataview,
+    ...staticDataviewsParsed,
     ...fourwingsDataviewsParsed,
+    ...mergedDetectionsDataview,
+    ...mergedActivityDataview,
     ...trackDataviews,
   ]
   return dataviewsMerged

@@ -24,8 +24,8 @@ function aggregateSublayerValues(
 ) {
   const lastArrayIndex = values.length - 1
   return values.reduce((acc: number, value = 0, index) => {
-    if (aggregationOperation === FourwingsAggregationOperation.Avg) {
-      return index === lastArrayIndex ? (acc + value) / lastArrayIndex + 1 : acc + value
+    if (index === lastArrayIndex && aggregationOperation === FourwingsAggregationOperation.Avg) {
+      return (acc + value) / lastArrayIndex + 1
     }
     return acc + value
   }, 0)
@@ -52,7 +52,9 @@ export const aggregateCell = ({
     return aggregateSublayerValues(
       sublayerValues.slice(
         Math.max(startFrame - cellStartOffsets[sublayerIndex], 0),
-        endFrame - cellStartOffsets[sublayerIndex]
+        endFrame - cellStartOffsets[sublayerIndex] < sublayerValues.length
+          ? endFrame - cellStartOffsets[sublayerIndex]
+          : undefined
       ),
       aggregationOperation
     )
