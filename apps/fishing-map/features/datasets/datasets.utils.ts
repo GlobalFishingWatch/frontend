@@ -536,8 +536,18 @@ export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatase
     return dataset.fieldsAllowed.some((f) => f.includes(schema))
   }
   const schemaConfig = getDatasetSchemaItem(dataset, schema)
-  const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
-  return schemaEnum !== undefined && schemaEnum.length > 0
+  if (!schemaConfig) {
+    return false
+  }
+  if (schemaConfig.type === 'array') {
+    const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
+    return schemaEnum !== undefined && schemaEnum.length > 0
+  }
+  return schemaConfig.type === 'string'
+}
+
+export const datasetHasFieldsAllowed = (dataset: Dataset, schema: SupportedDatasetSchema) => {
+  return dataset.fieldsAllowed?.some((f) => f.includes(schema))
 }
 
 export const getSupportedSchemaFieldsDatasets = (
@@ -546,7 +556,8 @@ export const getSupportedSchemaFieldsDatasets = (
 ) => {
   const datasetsWithSchemaFieldsSupport = dataview?.datasets?.flatMap((dataset) => {
     const hasSchemaFields = datasetHasSchemaFields(dataset, schema)
-    return hasSchemaFields ? dataset : []
+    const hasFieldsAllowed = datasetHasFieldsAllowed(dataset, schema)
+    return hasSchemaFields && hasFieldsAllowed ? dataset : []
   })
   return datasetsWithSchemaFieldsSupport
 }

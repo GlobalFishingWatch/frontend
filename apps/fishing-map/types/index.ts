@@ -118,6 +118,7 @@ export type VesselSearchState = {
   imo?: string
   callsign?: string
   codMarinha?: string
+  nationalId?: string
   flag?: string[]
   geartypes?: GearType[]
   shiptypes?: VesselType[]

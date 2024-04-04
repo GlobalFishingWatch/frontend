@@ -72,6 +72,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
     let advancedQuery
+
     try {
       if (checkAdvanceSearchFiltersEnabled(filters)) {
         const fieldsAllowed = Array.from(
@@ -91,6 +92,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
           'imo',
           'callsign',
           'codMarinha',
+          'nationalId',
           'owner',
         ]
 
