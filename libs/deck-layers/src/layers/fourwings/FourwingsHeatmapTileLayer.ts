@@ -68,8 +68,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     super.initializeState(context)
     this.state = {
       tilesCache: this._getTileDataCache(
-        this.props.minFrame,
-        this.props.maxFrame,
+        this.props.startTime,
+        this.props.endTime,
         this.props.availableIntervals
       ),
       colorDomain:
@@ -170,8 +170,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   _fetchTileData: any = async (tile: TileLoadProps) => {
     const {
-      minFrame,
-      maxFrame,
+      startTime,
+      endTime,
       sublayers,
       aggregationOperation,
       comparisonMode,
@@ -186,8 +186,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     let offset: number = 0
     let noDataValue: number = 0
 
-    const interval = getInterval(minFrame, maxFrame, availableIntervals)
-    const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
+    const interval = getInterval(startTime, endTime, availableIntervals)
+    const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
       const url = getDataUrlBySublayer({ tile, chunk, sublayer, tilesUrl }) as string
       const response = await GFWAPI.fetch<Response>(url!, {
@@ -211,7 +211,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         !this.initialBinsLoad &&
         bins?.length === COLOR_RAMP_DEFAULT_NUM_STEPS
       ) {
-        // TODO fix avg for bins in API
         this.setState({ colorDomain: bins })
         this.initialBinsLoad = true
       }
@@ -230,17 +229,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
       fourwings: {
-        sublayers: 1, // TODO make this dynamic
+        sublayers: 1,
         cols,
         rows,
         scale,
         offset,
         noDataValue,
-        minFrame: chunk.start,
-        maxFrame: chunk.end,
+        bufferedStartDate: chunk.bufferedStart,
         initialTimeRange: {
-          start: minFrame,
-          end: maxFrame,
+          start: startTime,
+          end: endTime,
         },
         interval,
         tile,
@@ -264,12 +262,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   _getTileDataCache = (
-    minFrame: number,
-    maxFrame: number,
+    startTime: number,
+    endTime: number,
     availableIntervals?: FourwingsInterval[]
   ): FourwingsHeatmapTilesCache => {
-    const interval = getInterval(minFrame, maxFrame, availableIntervals)
-    const { start, end } = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
+    const interval = getInterval(startTime, endTime, availableIntervals)
+    const { start, end } = getFourwingsChunk(startTime, endTime, availableIntervals)
     return { start, end, interval }
   }
 
@@ -282,7 +280,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    const { minFrame, maxFrame, availableIntervals } = props
+    const { startTime, endTime, availableIntervals } = props
     const { tilesCache, colorRanges } = this.state as FourwingsTileLayerState
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = colorRanges.join() !== newSublayerColorRanges.join()
@@ -296,14 +294,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       this.setState({ colorDomain: this._calculateColorDomain() })
     }
 
-    const isStartOutRange = minFrame <= tilesCache.start
-    const isEndOutRange = maxFrame >= tilesCache.end
+    const isStartOutRange = startTime <= tilesCache.start
+    const isEndOutRange = endTime >= tilesCache.end
     const needsCaheKeyUpdate =
       isStartOutRange ||
       isEndOutRange ||
-      getInterval(minFrame, maxFrame, availableIntervals) !== tilesCache.interval
+      getInterval(startTime, endTime, availableIntervals) !== tilesCache.interval
     if (needsCaheKeyUpdate) {
-      this.setState({ tilesCache: this._getTileDataCache(minFrame, maxFrame, availableIntervals) })
+      this.setState({ tilesCache: this._getTileDataCache(startTime, endTime, availableIntervals) })
     }
   }
 
@@ -381,13 +379,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   getInterval = () => {
-    const { minFrame, maxFrame, availableIntervals } = this.props
-    return getInterval(minFrame, maxFrame, availableIntervals)
+    const { startTime, endTime, availableIntervals } = this.props
+    return getInterval(startTime, endTime, availableIntervals)
   }
 
   getChunk = () => {
-    const { minFrame, maxFrame, availableIntervals } = this.props
-    return getFourwingsChunk(minFrame, maxFrame, availableIntervals)
+    const { startTime, endTime, availableIntervals } = this.props
+    return getFourwingsChunk(startTime, endTime, availableIntervals)
   }
 
   getColorDomain = () => {

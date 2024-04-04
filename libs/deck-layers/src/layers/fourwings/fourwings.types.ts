@@ -52,7 +52,7 @@ export enum FourwingsComparisonMode {
   TimeCompare = 'timeCompare',
 }
 
-export type ColorDomain = number[]
+export type ColorDomain = number[] | number[][]
 export type ColorRange = Color[]
 export type SublayerColorRanges = ColorRange[]
 
@@ -75,26 +75,28 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
 }
 
 export type AggregateCellParams = {
-  minIntervalFrame: number
-  maxIntervalFrame?: number
+  startFrame: number
+  endFrame: number
   aggregationOperation?: FourwingsAggregationOperation
-  startFrames: number[]
+  cellStartOffsets: number[]
 }
 
 export type GetFillColorParams = {
+  cellValues: number[][]
+  cellInitialValues?: number[]
+  cellStartOffsets: number[]
   colorDomain: number[] | number[][]
   colorRanges: ColorRange[] | string[]
-  chunk: FourwingsChunk
-  minIntervalFrame: number
-  maxIntervalFrame: number
+  startFrame: number
+  endFrame: number
   comparisonMode?: FourwingsComparisonMode
   aggregationOperation?: FourwingsAggregationOperation
   scale?: typeof scaleLinear<number, string>
 }
 
 type BaseFourwingsLayerProps = {
-  minFrame: number
-  maxFrame: number
+  startTime: number
+  endTime: number
   category: DataviewCategory
   sublayers: FourwingsDeckSublayer[]
   tilesUrl?: string

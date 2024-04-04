@@ -9,15 +9,12 @@ import {
   FourwingsFeature,
   FourwingsInterval,
   TileCell,
-  getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
-import { getUTCDateTime, rgbaToDeckColor } from '../../utils'
+import { getUTCDateTime } from '../../utils'
 import {
   AggregateCellParams,
   FourwingsChunk,
   FourwingsDeckSublayer,
-  GetFillColorParams,
-  FourwingsComparisonMode,
   FourwingsAggregationOperation,
 } from './fourwings.types'
 import { HEATMAP_API_TILES_URL, getChunkByInterval, getInterval } from './fourwings.config'
@@ -38,21 +35,28 @@ function aggregateSublayerValues(
 export const aggregateCell = (
   cell: Cell,
   {
-    minIntervalFrame,
-    maxIntervalFrame,
-    startFrames,
+    startFrame,
+    endFrame,
+    cellStartOffsets,
     aggregationOperation = FourwingsAggregationOperation.Sum,
   }: AggregateCellParams
 ): number[] => {
-  // TODO decide if we want the last day to be included or not in maxIntervalFrame
   return cell.map((sublayer, sublayerIndex) => {
-    if (!sublayer || !startFrames || !sublayer) {
+    if (
+      !sublayer ||
+      !cellStartOffsets ||
+      !sublayer ||
+      // all values are before time range
+      endFrame - cellStartOffsets[sublayerIndex] < 0 ||
+      // all values are after time range
+      startFrame - cellStartOffsets[sublayerIndex] >= sublayer.length
+    ) {
       return 0
     }
     return aggregateSublayerValues(
       sublayer.slice(
-        Math.max(minIntervalFrame - startFrames[sublayerIndex], 0),
-        maxIntervalFrame ? maxIntervalFrame - startFrames[sublayerIndex] : undefined
+        Math.max(startFrame - cellStartOffsets[sublayerIndex], 0),
+        endFrame - cellStartOffsets[sublayerIndex]
       ),
       aggregationOperation
     )
@@ -278,62 +282,6 @@ export const getBivariateValue = (realValues: number[], breaks: number[][]) => {
 }
 
 export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
-export const chooseColor = (
-  feature: FourwingsFeature,
-  {
-    colorDomain,
-    colorRanges,
-    chunk,
-    minIntervalFrame,
-    maxIntervalFrame,
-    aggregationOperation,
-    comparisonMode,
-    scale,
-  }: GetFillColorParams
-): Color => {
-  if (!colorDomain || !colorRanges || !chunk) {
-    return EMPTY_CELL_COLOR
-  }
-  const { initialValues, startFrames, values } = feature.properties
-
-  const aggregatedCellValues =
-    initialValues[getTimeRangeKey(minIntervalFrame, maxIntervalFrame)] ||
-    aggregateCell(values, {
-      minIntervalFrame,
-      maxIntervalFrame: maxIntervalFrame > 0 ? maxIntervalFrame : undefined,
-      aggregationOperation,
-      startFrames,
-    })
-  let chosenValueIndex = 0
-  let chosenValue: number | undefined
-  if (comparisonMode === FourwingsComparisonMode.Compare) {
-    aggregatedCellValues.forEach((value, index) => {
-      // TODO add more comparison modes (bivariate)
-      if (value && (!chosenValue || value > chosenValue)) {
-        chosenValue = value
-        chosenValueIndex = index
-      }
-    })
-    // if (scale) {
-    //   return rgbaStringToComponents(scale(chosenValue)) as Color
-    // }
-    const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
-      (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
-    )
-    if (!chosenValue) {
-      return EMPTY_CELL_COLOR
-    }
-    return colorRanges[chosenValueIndex][colorIndex] as Color
-  } else if (comparisonMode === FourwingsComparisonMode.Bivariate) {
-    chosenValue = getBivariateValue(aggregatedCellValues, colorDomain as number[][])
-    if (!chosenValue) {
-      return EMPTY_CELL_COLOR
-    }
-    return rgbaToDeckColor(colorRanges[chosenValue] as string)
-  } else {
-    return EMPTY_CELL_COLOR
-  }
-}
 
 export function getFourwingsChunk(
   minFrame: number,
@@ -351,14 +299,16 @@ export function getIntervalFrames(
 ) {
   const interval = getInterval(minFrame, maxFrame, availableIntervals)
   const chunk = getFourwingsChunk(minFrame, maxFrame, availableIntervals)
-  const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.start))
-  const minIntervalFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileMinIntervalFrame
+  const tileStartFrame = Math.ceil(
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunk.bufferedStart)
   )
-  const maxIntervalFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame) - tileMinIntervalFrame
+  const startFrame = Math.ceil(
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame) - tileStartFrame
   )
-  return { interval, tileMinIntervalFrame, minIntervalFrame, maxIntervalFrame }
+  const endFrame = Math.ceil(
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(maxFrame) - tileStartFrame
+  )
+  return { interval, tileStartFrame, startFrame, endFrame }
 }
 
 export function filterElementByPercentOfIndex(value: any, index: number) {

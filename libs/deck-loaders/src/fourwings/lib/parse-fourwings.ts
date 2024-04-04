@@ -9,10 +9,7 @@ import type {
   FourwingsRawData,
 } from './types'
 
-// TODO make this dynamic to get the data from the header
-// const NO_DATA_VALUE = 0
 export const NO_DATA_VALUE = 4294967295
-// export const SCALE_VALUE = 0.01
 export const SCALE_VALUE = 1
 export const OFFSET_VALUE = 0
 export const CELL_NUM_INDEX = 0
@@ -25,7 +22,7 @@ export const getCellTimeseries = (
   options?: FourwingsLoaderOptions
 ): FourwingsFeature[] => {
   const {
-    minFrame,
+    bufferedStartDate,
     interval,
     sublayers,
     initialTimeRange,
@@ -39,14 +36,14 @@ export const getCellTimeseries = (
   } = options?.fourwings || ({} as ParseFourwingsOptions)
 
   // TODO ensure we use the UTC dates here to avoid the .ceil
-  const tileMinIntervalFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(minFrame))
-  const timeRangeStartIntervalFrame =
-    Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.start)) -
-    tileMinIntervalFrame
-  const timeRangeEndIntervalFrame =
-    Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.end)) -
-    tileMinIntervalFrame
-  const timeRangeKey = getTimeRangeKey(timeRangeStartIntervalFrame, timeRangeEndIntervalFrame)
+  const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
+  const timeRangeStartFrame =
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.start) - tileStartFrame
+  const timeRangeEndFrame =
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.end) - tileStartFrame
+
+  const timeRangeKey = getTimeRangeKey(timeRangeStartFrame, timeRangeEndFrame)
+
   const tileBBox: BBox = [
     (tile.bbox as GeoBoundingBox).west,
     (tile.bbox as GeoBoundingBox).south,
@@ -70,10 +67,10 @@ export const getCellTimeseries = (
         cellNum = value
       } else if (indexInCell === CELL_START_INDEX) {
         // this number defines the cell start frame
-        startFrame = value - tileMinIntervalFrame
+        startFrame = value - tileStartFrame
       } else if (indexInCell === CELL_END_INDEX) {
         // this number defines the cell end frame
-        endFrame = value - tileMinIntervalFrame
+        endFrame = value - tileStartFrame
 
         // calculate how many values are in the tile
         const numCellValues = (endFrame - startFrame + 1) * sublayers
@@ -84,6 +81,7 @@ export const getCellTimeseries = (
           features[cellNum] = {
             type: 'Feature',
             geometry: {
+              type: 'Polygon',
               coordinates: [
                 getCellCoordinates({
                   cellIndex: cellNum,
@@ -92,14 +90,13 @@ export const getCellTimeseries = (
                   tileBBox,
                 }),
               ],
-              type: 'Polygon',
             },
             properties: {
               values: new Array(sublayersLength),
               dates: new Array(sublayersLength),
               cellId: generateUniqueId(tile.index.x, tile.index.y, cellNum),
               cellNum,
-              startFrames: [],
+              startOffsets: new Array(sublayersLength),
               initialValues: { [timeRangeKey]: new Array(sublayersLength) },
             },
           }
@@ -112,7 +109,7 @@ export const getCellTimeseries = (
               // create properties for this sublayer if the feature dind't have it already
               features[cellNum].properties.values[subLayerIndex] = new Array(numCellValues)
               features[cellNum].properties.dates[subLayerIndex] = new Array(numCellValues)
-              features[cellNum].properties.startFrames[subLayerIndex] = startFrame
+              features[cellNum].properties.startOffsets[subLayerIndex] = startFrame
               features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] = 0
             }
             // add current value to the array of values for this sublayer
@@ -120,14 +117,10 @@ export const getCellTimeseries = (
               cellValue * scale - offset
             // add current date to the array of dates for this sublayer
             features[cellNum].properties.dates[subLayerIndex][Math.floor(j / sublayers)] =
-              Math.ceil(CONFIG_BY_INTERVAL[interval].getTime(startFrame + tileMinIntervalFrame + j))
+              Math.ceil(CONFIG_BY_INTERVAL[interval].getTime(startFrame + tileStartFrame + j))
 
             // sum current value to the initialValue for this sublayer
-            // TODO make this an average for the environmental layers
-            if (
-              j + startFrame >= timeRangeStartIntervalFrame &&
-              j + startFrame < timeRangeEndIntervalFrame
-            ) {
+            if (j + startFrame >= timeRangeStartFrame && j + startFrame < timeRangeEndFrame) {
               features[cellNum].properties.initialValues[timeRangeKey][subLayerIndex] +=
                 cellValue * scale - offset
               numValuesBySubLayer[subLayerIndex] = numValuesBySubLayer[subLayerIndex] + 1
