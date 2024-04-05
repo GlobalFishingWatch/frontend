@@ -796,8 +796,8 @@
     "imo": "OMI",
     "insights": {
       "coverage": "Couverture AIS",
-      "disclaimerTimeRangeBeforeMinYear": "En raison de la qualité variable des sources de données, les informations sont plus fiables pour les activités postérieures au 1er janvier 2017. Ajustez la date de début/fin de votre barre temporelle, le cas échéant.",
-      "errorPermisions": "Vous ne disposez pas des permissions requises pour visualiser cette information",
+      "disclaimerTimeRangeBeforeMinYear": "En raison de la qualité variable des sources de données, les indicateurs sont plus fiables pour les activités postérieures au 1er janvier 2017. Ajustez la date de début/fin de votre barre temporelle, le cas échéant.",
+      "errorPermisions": "Vous ne disposez pas des permissions requises pour visualiser cet indicateur",
       "gaps": "Événements de désactivation de l'AIS",
       "gapsEvents": "{{count}} événements de désactivation de l'AIS détectés",
       "gapsEventsEmpty": "Aucun événement de désactivation de l'AIS détecté",
@@ -820,7 +820,7 @@
       "IUU": "Liste des navires INN d'une ORGP",
       "IUUBlackListsCount": "Le navire figure sur la liste des navires INN d'une ORGP",
       "IUUBlackListsEmpty": "Le navire ne figure pas sur la liste des navires INN d'une ORGP",
-      "sectionTitle": "Informations sur le navire entre {{start}} et {{end}}"
+      "sectionTitle": "Indicateurs du navire entre {{start}} et {{end}}"
     },
     "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Source d'info",
