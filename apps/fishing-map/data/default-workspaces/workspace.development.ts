@@ -32,14 +32,7 @@ const workspace: Workspace<WorkspaceState> = {
   endAt: DEFAULT_TIME_RANGE.end,
   viewport: DEFAULT_VIEWPORT,
   public: true,
-  state: {
-    // query: 'pepe',
-    // bivariate: true,
-    // sidebarOpen: false,
-    // timebarVisualisation: '',
-    // visibleEvents: 'all',
-    // timebarGraph: '',
-  },
+  state: {},
   ownerId: 0,
   dataviewInstances: [
     {
@@ -47,7 +40,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
     {
-      id: 'fishing-ais',
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
         datasets: ['public-global-fishing-effort:v20231026'],
       },
@@ -115,7 +108,7 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       ...BATHYMETRY_DATAVIEW_INSTANCE,
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'bathymetry',
       config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,

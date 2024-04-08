@@ -45,6 +45,18 @@ const BASE_HIGHLIGHT_CONFIG = {
 const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
   {
     ...BASE_HIGHLIGHT_CONFIG,
+    dataviewInstanceId: 'fishing-ais',
+    releaseDateTimestamp: Date.parse('2024-04-08T00:00:00Z'),
+    imageUrl: ``,
+    learnMoreUrl: 'https://globalfishingwatch.org/faqs/2024-april-data-error/',
+    en: {
+      title: 'Global Fishing Watch has resolved an underlying AIS data error in the platform.',
+      description:
+        'If you accessed Global Fishing Watch AIS or VMS data between 26 January - 9 April 2024, there may be errors in the fishing effort and fishing event data. The AIS error has been resolved, and we are working on the VMS issue now. Our advice is to repeat any analysis completed with the correct data. We’re sorry for any inconvenience caused.',
+    },
+  },
+  {
+    ...BASE_HIGHLIGHT_CONFIG,
     dataviewInstanceId: 'bathymetry-workspace',
     releaseDateTimestamp: Date.parse('2024-01-08T00:00:00Z'),
     imageUrl: `${PATH_BASENAME}/images/chlorophyl@2x.jpg`,

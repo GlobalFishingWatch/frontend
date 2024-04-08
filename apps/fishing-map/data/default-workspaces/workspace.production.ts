@@ -19,17 +19,13 @@ import {
   DEFAULT_WORKSPACE_CATEGORY,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
-// This id is used for highlighting the dataview with a popup on the right
-// update it here if you want to show it again or go to
-// apps/fishing-map/src/features/workspace/highlight-panel/highlight-panel.content.ts
-// and update the `dataviewInstanceId`
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
-  name: 'Default public Fishing Map workspace in production v1',
+  name: 'Default public Fishing Map workspace',
   description: '',
   category: DEFAULT_WORKSPACE_CATEGORY,
   startAt: DEFAULT_TIME_RANGE.start,
@@ -44,7 +40,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
     {
-      id: 'fishing-ais',
+      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
         datasets: ['public-global-fishing-effort:v20231026'],
       },
@@ -112,7 +108,7 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       ...BATHYMETRY_DATAVIEW_INSTANCE,
-      id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+      id: 'bathymetry',
       config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
