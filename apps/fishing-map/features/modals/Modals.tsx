@@ -161,7 +161,7 @@ const AppModals = () => {
       {downloadTrackModalOpen && <DownloadTrackModal />}
       {!readOnly && (
         <Fragment>
-          {/* Please don't judge this piece of code, it is needed to avoid race-conditions in the useLocalStorae internal hook */}
+          {/* Please don't judge this piece of code, it is needed to avoid race-conditions in the useLocalStorage internal hook */}
           {welcomePopupContentKey === 'vessel-profile' && <Welcome contentKey="vessel-profile" />}
           {welcomePopupContentKey === WorkspaceCategory.FishingActivity && (
             <Welcome contentKey={WorkspaceCategory.FishingActivity} />

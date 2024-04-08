@@ -8,6 +8,7 @@ type WelcomeContentLang = {
   }
 }
 type WelcomeContent = {
+  version?: number
   partnerLogo?: string
   partnerLink?: string
 } & WelcomeContentLang

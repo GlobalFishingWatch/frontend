@@ -18,7 +18,7 @@ type WelcomeProps = {
   contentKey: WelcomeContentKey
 }
 
-type WelcomeLocalStorageKey = { visible: boolean; showAgain: boolean }
+type WelcomeLocalStorageKey = { visible: boolean; showAgain: boolean; version?: number }
 const Welcome = ({ contentKey }: WelcomeProps) => {
   const [welcomePopup, setWelcomePopup] = useLocalStorage<WelcomeLocalStorageKey>(
     DISABLE_WELCOME_POPUP_DICT[contentKey],
@@ -26,9 +26,24 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
   )
   const { t, i18n } = useTranslation()
 
+  const welcomeModalContent = WELCOME_POPUP_CONTENT[contentKey]
+  const welcomeModalContentTranslated =
+    welcomeModalContent?.[i18n.language as Locale] || welcomeModalContent?.[Locale.en]
+
   useEffect(() => {
     if (!welcomePopup?.visible && welcomePopup?.showAgain) {
-      setWelcomePopup((popup) => ({ visible: true, showAgain: popup.showAgain }))
+      setWelcomePopup((popup) => ({ ...popup, visible: true }))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (welcomeModalContent?.version && welcomeModalContent?.version !== welcomePopup?.version) {
+      setWelcomePopup((popup) => ({
+        visible: true,
+        showAgain: popup.showAgain,
+        version: welcomeModalContent.version,
+      }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -40,9 +55,6 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
     }))
   }, [setWelcomePopup])
 
-  const welcomeModalContent = WELCOME_POPUP_CONTENT[contentKey]
-  const welcomeModalContentTranslated =
-    welcomeModalContent?.[i18n.language as Locale] || welcomeModalContent?.[Locale.en]
   if (!welcomePopup?.visible || !welcomeModalContentTranslated) {
     if (!welcomeModalContentTranslated) {
       console.warn('Missing every welcome modal content by languages')
@@ -61,8 +73,8 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
       isOpen={welcomePopup?.visible}
       onClose={() => {
         setWelcomePopup((popup) => ({
+          ...popup,
           visible: false,
-          showAgain: popup.showAgain,
         }))
       }}
     >
