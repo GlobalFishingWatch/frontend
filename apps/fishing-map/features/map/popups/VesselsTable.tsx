@@ -99,15 +99,16 @@ function VesselsTable({
 }) {
   const { t } = useTranslation()
 
-  const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
-    feature.temporalgrid?.sublayerInteractionType || ''
-  )
-
-  const vessels = feature.vesselsInfo?.vessels?.slice(0, MAX_TOOLTIP_LIST)
+  // const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
+  //   feature?.sublayerInteractionType || ''
+  // )
+  // TODO:deck fix this
+  const interactionAllowed = true
+  const vessels = feature?.vessels?.slice(0, MAX_TOOLTIP_LIST)
 
   const hasPinColumn =
     interactionAllowed &&
-    feature?.vesselsInfo?.vessels?.some((vessel) => {
+    feature?.vessels?.some((vessel) => {
       const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
       return hasDatasets
     })

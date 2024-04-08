@@ -34,10 +34,10 @@ function ActivityTooltipRow({ feature, showFeaturesDetails }: ActivityTooltipRow
               })}
             </span>
           </div>
-          {/* // TODO:deck add subcategory info
+          {/* // TODO:deck add subcategory info */}
           {showFeaturesDetails && (
             <VesselsTable feature={feature} activityType={feature.subcategory} />
-          )} */}
+          )}
         </div>
       </div>
     </Fragment>

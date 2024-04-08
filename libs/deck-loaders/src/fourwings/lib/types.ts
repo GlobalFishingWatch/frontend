@@ -49,6 +49,8 @@ export type FourwingsFeatureProperties = {
   values: number[][]
   cellId: number
   cellNum: number
+  col: number
+  row: number
 }
 export type FourwingsStaticFeatureProperties = {
   count: number

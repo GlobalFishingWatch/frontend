@@ -68,7 +68,7 @@ function PopupWrapper({
 
   const featureByCategory = groupBy(
     interaction.features
-      .map((feature) => feature.object)
+      // .map((feature) => feature.object)
       .sort(
         (a, b) =>
           POPUP_CATEGORY_ORDER.indexOf(a?.category as DataviewCategory) -

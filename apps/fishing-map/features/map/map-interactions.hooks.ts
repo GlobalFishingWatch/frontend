@@ -116,62 +116,51 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
   }
 }
 
-export const useHandleMapClickFeatures = () => {
+// Hook to wrap the custom tools click interactions with the map that has more priority
+// returning undefined when not handled so we can continue with the propagation
+export const useHandleMapToolsClick = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { onRulerMapClick, rulersEditing } = useRulers()
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
-  const handleMapClickInteraction = useCallback((interaction: DeckLayerInteraction) => {
-    const { latitude, longitude, features } = interaction
-    const position = [longitude, latitude] as Position
-    if (isMapAnnotating) {
-      return addMapAnnotation(position)
-    }
-    if (isErrorNotificationEditing) {
-      return addErrorNotification(position)
-    }
-    if (rulersEditing) {
-      return onRulerMapClick(position)
-    }
-    if (!features || !features.length) {
-      return
-    }
-    //   // get temporal grid clicked features and order them by sublayerindex
-    //   const fishingActivityFeatures = features
-    //     .filter((feature) => {
-    //       if (!feature.temporalgrid?.visible) {
-    //         return false
-    //       }
-    //       return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-    //         feature.temporalgrid.sublayerInteractionType
-    //       )
-    //     })
-    //     .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
-
-    //   if (fishingActivityFeatures?.length) {
-    //     dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
-    //     const activityProperties = fishingActivityFeatures.map((feature) =>
-    //       feature.temporalgrid?.sublayerInteractionType === 'detections' ? 'detections' : 'hours'
-    //     )
-    //     fishingPromiseRef.current = dispatch(
-    //       fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
-    //     )
-    //   }
-  }, [])
+  const handleMapClickInteraction = useCallback(
+    (interaction: DeckLayerInteraction) => {
+      const { latitude, longitude, features } = interaction
+      const position = [longitude, latitude] as Position
+      if (isMapAnnotating) {
+        return addMapAnnotation(position)
+      }
+      if (isErrorNotificationEditing) {
+        return addErrorNotification(position)
+      }
+      if (rulersEditing) {
+        return onRulerMapClick(position)
+      }
+      return undefined
+    },
+    [
+      addErrorNotification,
+      addMapAnnotation,
+      isErrorNotificationEditing,
+      isMapAnnotating,
+      onRulerMapClick,
+      rulersEditing,
+    ]
+  )
   return handleMapClickInteraction
 }
-export const useMapMouseClick = (style?: ExtendedStyle) => {
+
+export const useMapMouseClick = () => {
   // const map = useMapInstance()
   const map = useDeckMap()
-  const handleMapClickFeatures = useHandleMapClickFeatures()
-  const setMapClickFeatures = useSetMapClickInteraction()
+  const handleMapToolsClick = useHandleMapToolsClick()
+  // const setMapClickFeatures = useSetMapClickInteraction()
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const { clickedEvent } = useClickedEventConnect()
+  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
 
-  // const onClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
-
+  const onClick = useMapClick(dispatchClickedEvent)
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
 
   const clickedCellLayers = useMemo(() => {
@@ -203,28 +192,11 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
         // this is needed to allow interacting with overlay elements content
         return true
       }
-      // const features = deckRef?.current?.pickMultipleObjects({
-      //   x: info.x,
-      //   y: info.y,
-      // })
       trackEvent({
         category: TrackCategory.EnvironmentalData,
         action: `Click in grid cell`,
         label: getEventLabel(clickedCellLayers ?? []),
       })
-      // const hasWorkspacesFeatures =
-      //   event?.features?.find(
-      //     (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
-      //   ) !== undefined
-      // if (isMapDrawing || (isMarineManagerLocation && !hasWorkspacesFeatures)) {
-      //   return undefined
-      // }
-
-      // const hasRulerFeature =
-      //   event.features?.find((f) => f.source === RULERS_LAYER_ID) !== undefined
-      // if (rulersEditing && !hasRulerFeature) {
-      //   return onRulerMapClick(event)
-      // }
       let features = defaultEmptyFeatures
       try {
         features = map?.pickMultipleObjects({
@@ -235,15 +207,20 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       } catch (e) {
         console.warn(e)
       }
+
       const mapClickInteraction: DeckLayerInteraction = {
         longitude: info.coordinate[0],
         latitude: info.coordinate[1],
+        point: { x: info.x, y: info.y },
         features,
       }
-      setMapClickFeatures(mapClickInteraction)
-      handleMapClickFeatures(mapClickInteraction)
+
+      const toolsClickedHandled = handleMapToolsClick(mapClickInteraction) !== undefined
+      if (!toolsClickedHandled) {
+        onClick(mapClickInteraction)
+      }
     },
-    [map, clickedCellLayers, setMapClickFeatures, handleMapClickFeatures]
+    [map, clickedCellLayers, handleMapToolsClick, onClick]
   )
 
   return { onMapClick, clickedTooltipEvent }

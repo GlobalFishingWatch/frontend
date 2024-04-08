@@ -25,11 +25,13 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   layers: LayersList = []
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }): FourwingsPickingInfo => {
-    const { id, startTime, endTime, availableIntervals, category, sublayers, tilesCache } =
+    const { id, tile, startTime, endTime, availableIntervals, category, sublayers, tilesCache } =
       this.props
+
     const object: FourwingsPickingObject = {
       ...(info.object || ({} as FourwingsFeature)),
       title: id,
+      tile: tile.index,
       category,
       sublayers,
     }

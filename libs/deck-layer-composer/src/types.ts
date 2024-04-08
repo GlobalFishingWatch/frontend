@@ -1,5 +1,10 @@
 import {
+  ContextLayer,
+  ContextPickingInfo,
   FourwingsDeckSublayer,
+  FourwingsLayer,
+  FourwingsPickingInfo,
+  FourwingsPickingObject,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
 } from '@globalfishingwatch/deck-layers'
@@ -43,3 +48,7 @@ export interface DeckLegendBivariate extends DeckLegend {
   sublayersBreaks: [number[], number[]]
   bivariateRamp: string[]
 }
+
+export type DeckLayerInteractionFeature =
+  | (FourwingsPickingInfo & { layer: FourwingsLayer })
+  | (ContextPickingInfo & { layer: ContextLayer })

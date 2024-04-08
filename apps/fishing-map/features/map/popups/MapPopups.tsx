@@ -1,14 +1,12 @@
-import { Fragment, useEffect } from 'react'
-import {
-  useMapClickInteraction,
-  useMapHoverInteraction,
-} from '@globalfishingwatch/deck-layer-composer'
+import { Fragment } from 'react'
+import { useSelector } from 'react-redux'
+import { useMapHoverInteraction } from '@globalfishingwatch/deck-layer-composer'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
+import { selectClickedEvent } from '../map.slice'
 
 function MapPopups() {
   const hoverInteraction = useMapHoverInteraction()
-  const clickInteraction = useMapClickInteraction()
-  console.log('🚀 ~ MapPopups ~ clickInteraction:', clickInteraction)
+  const clickInteraction = useSelector(selectClickedEvent)
 
   return (
     <Fragment>

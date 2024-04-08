@@ -50,4 +50,6 @@ export type ContextFeature = Feature<Polygon | MultiPolygon, Record<string, any>
 // TODO:deck create this type in the proper deck class layer
 export type UserContextFeature = Feature<Geometry, Record<string, any>> & ContextFeatureProperties
 
-export type ContextPickingInfo = PickingInfo<ContextFeature, { tile?: Tile2DHeader }>
+export type ContextPickingObject = ContextFeature | UserContextFeature
+
+export type ContextPickingInfo = PickingInfo<ContextPickingObject, { tile?: Tile2DHeader }>

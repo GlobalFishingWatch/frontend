@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { current } from 'immer'
 import { uniqBy } from 'lodash'
 import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -16,6 +17,8 @@ import {
   APIPagination,
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { DeckLayerInteractionFeature } from '@globalfishingwatch/deck-layer-composer'
+import { FourwingsPickingInfo, FourwingsPickingObject } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch } from 'store'
 import {
@@ -46,7 +49,7 @@ export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
 export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
 
-export type SliceExtendedFeature = ExtendedFeature & {
+export type SliceExtendedFeature = DeckLayerInteractionFeature & {
   event?: ExtendedFeatureEvent
   vessels?: ExtendedFeatureVessel[]
 }
@@ -476,15 +479,16 @@ const slice = createSlice({
       state.fishingStatus = AsyncReducerStatus.Finished
       state.currentFishingRequestId = ''
       if (!state.clicked || !state.clicked.features || !action.payload) return
-
-      action.payload.vessels.forEach((sublayerVessels) => {
-        const sublayer = state.clicked?.features?.find(
-          (feature) =>
-            feature.temporalgrid && feature.temporalgrid.sublayerId === sublayerVessels.sublayerId
-        )
-        if (!sublayer) return
-        sublayer.vessels = sublayerVessels.vessels
-      })
+      if (state?.clicked?.features?.length && action.payload?.vessels?.length) {
+        state.clicked.features = state.clicked.features.map((feature: any) => {
+          const sublayers = (feature as FourwingsPickingObject).sublayers.map((sublayer) => {
+            const vessels =
+              action.payload?.vessels.find((v) => v.sublayerId === sublayer.id)?.vessels || []
+            return { ...sublayer, vessels }
+          })
+          return { ...feature, sublayers }
+        })
+      }
     })
     builder.addCase(fetchFishingActivityInteractionThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
