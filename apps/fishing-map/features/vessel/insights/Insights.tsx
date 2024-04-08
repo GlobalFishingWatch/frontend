@@ -35,10 +35,11 @@ const Insights = () => {
     return (
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
-        {t(
-          'vessel.insights.disclaimerTimeRangeBeforeMinYear',
-          'Due to varying quality of data sources, insights are more reliable for activities after Jan 1, 2017. Adjust the start/end date of your timebar, where relevant.'
-        )}
+        {t('vessel.insights.disclaimerTimeRangeBeforeMinYear', {
+          defaultValue:
+            'Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.',
+          year: MIN_INSIGHTS_YEAR,
+        })}
       </div>
     )
   }
