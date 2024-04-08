@@ -20,15 +20,12 @@ export const resolveEndpoint = (
 
   if (!endpoint) return null
 
-  const template = endpoint.pathTemplate
-    .replace('{{x}}', '{x}')
-    .replace('{{y}}', '{y}')
-    .replace('{{z}}', '{z}')
-
-  let url = template
+  let url = endpoint.pathTemplate
   datasetConfig.params?.forEach((param) => {
     url = url.replace(`{{${param.id}}}`, param.value as string)
   })
+
+  url = url.replace('{{x}}', '{x}').replace('{{y}}', '{y}').replace('{{z}}', '{z}')
 
   if (datasetConfig.query) {
     const resolvedQuery = new URLSearchParams()
