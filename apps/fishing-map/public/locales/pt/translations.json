@@ -796,7 +796,7 @@
     "imo": "IMO",
     "insights": {
       "coverage": "Cobertura AIS",
-      "disclaimerTimeRangeBeforeMinYear": "Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.",
+      "disclaimerTimeRangeBeforeMinYear": "Indicadores disponíveis a partir de 1º de janeiro de {{year}}. Ajuste seu intervalo de tempo para visualizar os indicadores.",
       "errorPermisions": "Você não tem permissão visualizar essas informações",
       "gaps": "Eventos de desativação do AIS",
       "gapsEvents": "{{count}} eventos de desativação do AIS detectados",
