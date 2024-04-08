@@ -1,5 +1,5 @@
 export * from './layers/basemap/BasemapLayer'
-export * from './layers/cluster/ClusterLayer'
+export * from './layers/cluster'
 export * from './layers/context'
 export * from './layers/fourwings'
 export * from './layers/rulers/RulersLayer'
