@@ -4,7 +4,6 @@ import { DeckProps, PickingInfo, Position, Deck } from '@deck.gl/core'
 import {
   InteractionEventCallback,
   useFeatureState,
-  useMapClick,
   useMapHover,
   useSimpleMapHover,
 } from '@globalfishingwatch/react-hooks'
@@ -14,9 +13,8 @@ import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   useMapHoverInteraction,
   useSetMapHoverInteraction,
-  useMapClickInteraction,
-  useSetMapClickInteraction,
   DeckLayerInteraction,
+  useMapClick,
 } from '@globalfishingwatch/deck-layer-composer'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'

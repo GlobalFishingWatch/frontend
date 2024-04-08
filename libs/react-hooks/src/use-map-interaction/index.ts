@@ -1,6 +1,9 @@
-import { Interval, HeatmapAnimatedInteractionType } from '@globalfishingwatch/layer-composer'
+import {
+  Interval,
+  ContextLayerType,
+  HeatmapAnimatedInteractionType,
+} from '@globalfishingwatch/layer-composer'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import { ContextLayerId } from '@globalfishingwatch/deck-layers'
 
 export * from './use-map-interaction'
 
@@ -25,7 +28,7 @@ export type ExtendedFeature = {
   sourceLayer: string
   generatorId: string | number | null
   generatorType: string | null
-  generatorContextLayer?: ContextLayerId | null
+  generatorContextLayer?: ContextLayerType | null
   datasetId?: string
   promoteId?: string
   id: string

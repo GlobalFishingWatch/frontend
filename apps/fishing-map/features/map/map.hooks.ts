@@ -240,12 +240,10 @@ export const useClickedEventConnect = () => {
     // get temporal grid clicked features and order them by sublayerindex
     const fishingActivityFeatures = event.features
       .filter((feature) => {
-        if (!feature.temporalgrid?.visible) {
+        if (feature?.sublayers.every((sublayer) => !sublayer.visible)) {
           return false
         }
-        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-          feature.temporalgrid.sublayerInteractionType
-        )
+        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(feature.category)
       })
       .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
 

@@ -9,24 +9,12 @@ import {
   Group,
 } from '@globalfishingwatch/layer-composer'
 import {
-  ContextLayer,
-  FourwingsLayer,
-  FourwingsPickingObject,
-  ContextPickingInfo,
-  ContextPickingObject,
-} from '@globalfishingwatch/deck-layers'
-import {
-  DeckLayerInteraction,
-  DeckLayerInteractionFeature,
-} from '@globalfishingwatch/deck-layer-composer'
-import {
   aggregateCell,
   SublayerCombinationMode,
   VALUE_MULTIPLIER,
 } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'
 
 export type MaplibreGeoJSONFeature = GeoJSONFeature & {
@@ -60,99 +48,176 @@ export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
   return filtered
 }
 
-const getExtendedFeature = (feature: DeckLayerInteractionFeature): ExtendedFeature[] => {
-  // const generatorType = feature.layer.metadata?.generatorType ?? null
-  // const generatorId = feature.layer.metadata?.generatorId ?? null
+const getId = (feature: MaplibreGeoJSONFeature) => {
+  const promoteIdValue =
+    feature.layer.metadata?.promoteId && feature.properties[feature.layer.metadata?.promoteId]
+  if (feature.id !== undefined) {
+    return feature.id
+  } else if (feature.properties?.gfw_id !== undefined) {
+    return feature.properties?.gfw_id
+  } else if (promoteIdValue !== undefined) {
+    return promoteIdValue
+  }
+}
+
+const getFeatureTile = (feature: MaplibreGeoJSONFeature) => {
+  return {
+    x: (feature as any)._vectorTileFeature._x,
+    y: (feature as any)._vectorTileFeature._y,
+    z: (feature as any)._vectorTileFeature._z,
+  }
+}
+
+const getExtendedFeature = (
+  feature: MaplibreGeoJSONFeature,
+  metadata?: ExtendedStyleMeta,
+  debug = false
+): ExtendedFeature[] => {
+  const generatorType = feature.layer.metadata?.generatorType ?? null
+  const generatorId = feature.layer.metadata?.generatorId ?? null
 
   // TODO: if no generatorMetadata is found, fallback to feature.layer.metadata, but the former should be prefered
-  // let generatorMetadata: any
-  // if (generatorId && metadata?.generatorsMetadata && metadata?.generatorsMetadata[generatorId]) {
-  //   generatorMetadata = metadata?.generatorsMetadata[generatorId]
-  // } else {
-  //   generatorMetadata = feature.layer.metadata
-  // }
-
-  // TODO:deck implement the uniqueFeatureInteraction feature inside the getPickingInfo
-  // const uniqueFeatureInteraction = feature?.metadata?.uniqueFeatureInteraction ?? false
-  // TODO:deck implement the stopPropagation feature
-  // const stopPropagation = feature.layer?.metadata?.stopPropagation ?? false
-
-  const extendedFeature: ExtendedFeature = {
-    ...feature.object,
-    layerId: feature.layer.id,
-    // uniqueFeatureInteraction,
-    // stopPropagation,
+  let generatorMetadata: any
+  if (generatorId && metadata?.generatorsMetadata && metadata?.generatorsMetadata[generatorId]) {
+    generatorMetadata = metadata?.generatorsMetadata[generatorId]
+  } else {
+    generatorMetadata = feature.layer.metadata
   }
 
-  if (feature.layer instanceof FourwingsLayer) {
-    const object = feature.object as FourwingsPickingObject
-    if (feature.layer?.props.static) {
-      return [
-        {
-          ...extendedFeature,
-          value: extendedFeature.value / VALUE_MULTIPLIER,
-          unit: object.sublayers[0].unit,
-        },
-      ]
-    } else {
-      // const values = object.sublayers.map((sublayer) => sublayer.value!)
+  const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
+  const stopPropagation = feature.layer?.metadata?.stopPropagation ?? false
+  const properties = feature.properties || {}
+  let value = properties.value || properties.name || properties.id || properties?.count
+  const { valueProperties } = feature.layer.metadata || {}
+  if (valueProperties?.length) {
+    value =
+      valueProperties.length === 1
+        ? properties[valueProperties[0]]
+        : valueProperties
+            .flatMap((prop) => (properties[prop] ? `${prop}: ${properties[prop]}` : []))
+            .join('<br/>')
+  }
+
+  const extendedFeature: ExtendedFeature | null = {
+    properties,
+    generatorType,
+    generatorId,
+    layerId: feature.layer.id,
+    source: feature.source,
+    sourceLayer: feature.sourceLayer,
+    uniqueFeatureInteraction,
+    stopPropagation,
+    value,
+    id: getId(feature),
+    tile: getFeatureTile(feature),
+  }
+  switch (generatorType) {
+    case DataviewType.HeatmapAnimated:
+      const timeChunks = generatorMetadata?.timeChunks
+      const frame = timeChunks?.activeChunkFrame
+      const activeTimeChunk = pickActiveTimeChunk(timeChunks)
 
       // This is used when querying the interaction endpoint, so that start begins at the start of the frame (ie start of a 10days interval)
       // This avoids querying a cell visible on the map, when its actual timerange is not included in the app-overall time range
-      // const getDate = CONFIG_BY_INTERVAL[timeChunks.interval as Interval].getDate
-      const layer = feature.layer as FourwingsLayer
-      const visibleStartDate = getUTCDate(layer?.props?.startTime).toISOString()
-      const visibleEndDate = getUTCDate(layer?.props?.endTime).toISOString()
-      return object.sublayers.flatMap((sublayer, i) => {
-        if (sublayer.value === 0) return []
+      const getDate = CONFIG_BY_INTERVAL[timeChunks.interval as Interval].getDate
+      const visibleStartDate = getDate(timeChunks.visibleStartFrame).toISOString()
+      const visibleEndDate = getDate(timeChunks.visibleEndFrame).toISOString()
+      const numSublayers = generatorMetadata?.numSublayers
+      const values = aggregateCell({
+        rawValues: properties.rawValues,
+        frame,
+        delta: Math.max(1, timeChunks.deltaInIntervalUnits),
+        quantizeOffset: activeTimeChunk.quantizeOffset,
+        sublayerCount:
+          generatorMetadata?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare
+            ? 2
+            : numSublayers,
+        aggregationOperation: generatorMetadata?.aggregationOperation,
+        sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
+        multiplier: generatorMetadata?.multiplier,
+      })
+
+      if (debug) {
+        console.log(properties.rawValues)
+      }
+      // Clean values with 0 for sum aggregation and with NaN for avg aggregation layers
+      if (
+        !values ||
+        !values.filter((v: number) => {
+          const matchesMin =
+            generatorMetadata?.minVisibleValue !== undefined
+              ? v >= generatorMetadata?.minVisibleValue
+              : true
+          const matchesMax =
+            generatorMetadata?.maxVisibleValue !== undefined
+              ? v <= generatorMetadata?.maxVisibleValue
+              : true
+          return v !== 0 && !isNaN(v) && matchesMin && matchesMax
+        }).length
+      ) {
+        return []
+      }
+      const visibleSublayers = generatorMetadata?.visibleSublayers as boolean[]
+      const sublayers = generatorMetadata?.sublayers
+      return values.flatMap((value: any, i: number) => {
+        if (value === 0) return []
         const temporalGridExtendedFeature: ExtendedFeature = {
           ...extendedFeature,
           temporalgrid: {
             sublayerIndex: i,
-            sublayerId: sublayer.id,
-            sublayerInteractionType: object.category,
-            sublayerCombinationMode: layer.props.comparisonMode,
-            visible: true,
-            col: object.properties.col as number,
-            row: object.properties.row as number,
-            interval: layer.getInterval(),
+            sublayerId: sublayers[i].id,
+            sublayerInteractionType: sublayers[i].interactionType,
+            sublayerCombinationMode: generatorMetadata?.sublayerCombinationMode,
+            visible: visibleSublayers[i] === true,
+            col: properties._col as number,
+            row: properties._row as number,
+            interval: timeChunks.interval,
             visibleStartDate,
             visibleEndDate,
-            unit: sublayer.unit,
+            unit: sublayers[i].legend.unit,
           },
-          value: sublayer.value,
+          value,
         }
         return [temporalGridExtendedFeature]
       })
+    case DataviewType.HeatmapStatic: {
+      return [
+        {
+          ...extendedFeature,
+          value: extendedFeature.value / VALUE_MULTIPLIER,
+          unit: generatorMetadata.legends[0]?.unit,
+        },
+      ]
     }
-  } else if (feature.layer instanceof ContextLayer) {
-    // TODO: deck add support for these layers
-    // case DataviewType.Context:
-    // case DataviewType.UserPoints:
-    // case DataviewType.UserContext:
-    const object = feature.object as ContextPickingObject
-    return [
-      {
-        ...extendedFeature,
-        datasetId: object.datasetId,
-        promoteId: object.promoteId,
-        generatorContextLayer: object?.layerId,
-        geometry: object.geometry,
-      },
-    ]
+    case DataviewType.Context:
+    case DataviewType.UserPoints:
+    case DataviewType.UserContext: {
+      return [
+        {
+          ...extendedFeature,
+          datasetId: feature.layer.metadata?.datasetId,
+          promoteId: feature.layer.metadata?.promoteId,
+          generatorContextLayer: feature.layer.metadata?.layer,
+          geometry: feature.geometry,
+        },
+      ]
+    }
+    default:
+      return [extendedFeature]
   }
-
-  return [extendedFeature]
 }
 
-const getExtendedFeatures = (features: DeckLayerInteractionFeature[]): ExtendedFeature[] => {
-  // TODO: deck implement the stopPropagation feature
-  // const stopPropagationFeature = features.find((f) => f.layer.metadata?.stopPropagation)
-  // if (stopPropagationFeature) {
-  //   return getExtendedFeature(stopPropagationFeature, metadata, debug)
-  // }
+const getExtendedFeatures = (
+  features: MaplibreGeoJSONFeature[],
+  metadata?: ExtendedStyleMeta,
+  debug = false
+): ExtendedFeature[] => {
+  const stopPropagationFeature = features.find((f) => f.layer.metadata?.stopPropagation)
+  if (stopPropagationFeature) {
+    return getExtendedFeature(stopPropagationFeature, metadata, debug)
+  }
   const extendedFeatures: ExtendedFeature[] = features.flatMap((feature) => {
-    return getExtendedFeature(feature) || []
+    return getExtendedFeature(feature, metadata, debug) || []
   })
   return extendedFeatures
 }
@@ -219,31 +284,38 @@ export const useFeatureState = (map?: Map) => {
   return featureState
 }
 
-export const useMapClick = (clickCallback: InteractionEventCallback) => {
-  // const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
+export const useMapClick = (
+  clickCallback: InteractionEventCallback,
+  metadata: ExtendedStyleMeta,
+  map?: Map
+) => {
+  const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
-    (event: DeckLayerInteraction) => {
-      // cleanFeatureState('click')
+    (event: MapLayerMouseEvent) => {
+      cleanFeatureState('click')
       if (!clickCallback) return
-
       const interactionEvent: InteractionEvent = {
         type: 'click',
-        longitude: event.longitude,
-        latitude: event.latitude,
+        longitude: event.lngLat.lng,
+        latitude: event.lngLat.lat,
         point: event.point,
       }
       if (event.features?.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
+        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(
+          event.features as MaplibreGeoJSONFeature[],
+          metadata,
+          false
+        )
         const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
 
         if (extendedFeaturesLimit.length) {
           interactionEvent.features = extendedFeaturesLimit
-          // updateFeatureState(extendedFeaturesLimit, 'click')
+          updateFeatureState(extendedFeaturesLimit, 'click')
         }
       }
       clickCallback(interactionEvent)
     },
-    [clickCallback]
+    [cleanFeatureState, clickCallback, metadata, updateFeatureState]
   )
 
   return onMapClick
