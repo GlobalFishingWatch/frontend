@@ -796,7 +796,7 @@
     "imo": "OMI",
     "insights": {
       "coverage": "Couverture AIS",
-      "disclaimerTimeRangeBeforeMinYear": "En raison de la qualité variable des sources de données, les indicateurs sont plus fiables pour les activités postérieures au 1er janvier 2017. Ajustez la date de début/fin de votre barre temporelle, le cas échéant.",
+      "disclaimerTimeRangeBeforeMinYear": "Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.",
       "errorPermisions": "Vous ne disposez pas des permissions requises pour visualiser cet indicateur",
       "gaps": "Événements de désactivation de l'AIS",
       "gapsEvents": "{{count}} événements de désactivation de l'AIS détectés",
