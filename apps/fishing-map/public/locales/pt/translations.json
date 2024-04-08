@@ -796,7 +796,7 @@
     "imo": "IMO",
     "insights": {
       "coverage": "Cobertura AIS",
-      "disclaimerTimeRangeBeforeMinYear": "Devido à qualidade variável das fontes de dados, as informações são mais confiáveis para atividades após 1º de janeiro de 2017. Ajuste a data de início/término da sua barra de tempo, quando relevante.",
+      "disclaimerTimeRangeBeforeMinYear": "Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.",
       "errorPermisions": "Você não tem permissão visualizar essas informações",
       "gaps": "Eventos de desativação do AIS",
       "gapsEvents": "{{count}} eventos de desativação do AIS detectados",
