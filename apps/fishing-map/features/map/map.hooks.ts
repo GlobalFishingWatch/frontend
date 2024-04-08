@@ -44,6 +44,7 @@ import {
   selectMapResolution,
 } from 'features/app/selectors/app.selectors'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   WORKSPACES_POINTS_TYPE,
   WORKSPACE_GENERATOR_ID,
@@ -88,12 +89,14 @@ export const useGlobalConfigConnect = () => {
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const mapResolution = useSelector(selectMapResolution)
+  const debug = useSelector(selectDebugOptions)?.debug
 
   return useMemo(() => {
     let globalConfig: ResolverGlobalConfig = {
       zoom: viewState.zoom,
       start,
       end,
+      debug,
       token: GFWAPI.getToken(),
       locale: i18n.language as Locale,
       bivariateDataviews,
@@ -113,14 +116,15 @@ export const useGlobalConfigConnect = () => {
     viewState.zoom,
     start,
     end,
+    debug,
     i18n.language,
     bivariateDataviews,
-    mapResolution,
     activityVisualizationMode,
     detectionsVisualizationMode,
+    mapResolution,
+    visibleEvents,
     showTimeComparison,
     timeComparisonValues,
-    visibleEvents,
   ])
 }
 

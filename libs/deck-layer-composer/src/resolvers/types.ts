@@ -6,6 +6,7 @@ export type ResolverGlobalConfig = {
   end: string
   zoom?: number
   token?: string
+  debug?: boolean
   bivariateDataviews?: [string, string]
   resolution?: FourwingsResolution
   activityVisualizationMode?: FourwingsVisualizationMode
