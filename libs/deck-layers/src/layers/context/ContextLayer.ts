@@ -1,8 +1,9 @@
-import { CompositeLayer, Color, DefaultProps } from '@deck.gl/core'
+import { CompositeLayer, Color, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { GeoBoundingBox, TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import { GeoJsonProperties } from 'geojson'
 import { PathStyleExtension } from '@deck.gl/extensions'
+import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
@@ -21,6 +22,7 @@ import {
   ContextPickingInfo,
   ContextFeature,
   ContextLayerId,
+  ContextPickingObject,
 } from './context.types'
 import { getContextId, getContextLink, getContextValue } from './context.utils'
 
@@ -56,7 +58,11 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
     return EEZ_SETTLED_BOUNDARIES.includes(d.properties?.LINE_TYPE) ? [0, 0] : [8, 8]
   }
 
-  getPickingInfo = ({ info }: { info: ContextPickingInfo }): ContextPickingInfo => {
+  getPickingInfo = ({
+    info,
+  }: {
+    info: PickingInfo<ContextPickingObject, { tile?: Tile2DHeader }>
+  }): ContextPickingInfo => {
     const { idProperty, valueProperties } = this.props
     info.object = transformTileCoordsToWGS84(
       info.object as ContextFeature,

@@ -6,7 +6,7 @@ import type { Anchor } from 'react-map-gl'
 import { useSelector } from 'react-redux'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
-import { DeckLayerInteraction } from '@globalfishingwatch/deck-layer-composer'
+import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import { ContextFeature, FourwingsPickingObject } from '@globalfishingwatch/deck-layers'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
@@ -32,7 +32,7 @@ import ComparisonRow from './ComparisonRow'
 import ReportBufferTooltip from './ReportBufferLayers'
 
 type PopupWrapperProps = {
-  interaction: DeckLayerInteraction | null
+  interaction: InteractionEvent | null
   closeButton?: boolean
   closeOnClick?: boolean
   className?: string

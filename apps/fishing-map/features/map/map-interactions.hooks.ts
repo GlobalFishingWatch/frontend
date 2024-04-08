@@ -1,27 +1,22 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckProps, PickingInfo, Position, Deck } from '@deck.gl/core'
-import {
-  InteractionEventCallback,
-  useFeatureState,
-  useMapHover,
-  useSimpleMapHover,
-} from '@globalfishingwatch/react-hooks'
-import { ExtendedStyle, ExtendedStyleMeta } from '@globalfishingwatch/layer-composer'
+import { DeckProps, PickingInfo, Position } from '@deck.gl/core'
+import { InteractionEventCallback, useSimpleMapHover } from '@globalfishingwatch/react-hooks'
+import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import {
   useMapHoverInteraction,
   useSetMapHoverInteraction,
-  DeckLayerInteraction,
   useMapClick,
+  InteractionEvent,
 } from '@globalfishingwatch/deck-layer-composer'
+import { ClusterLayer, ClusterPickingObject } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import {
+  SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   TooltipEventFeature,
   parseMapTooltipEvent,
-  useClickedEventConnect,
   useMapHighlightedEvent,
 } from 'features/map/map.hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
@@ -30,19 +25,180 @@ import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getEventLabel } from 'utils/analytics'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
+import { selectIsMarineManagerLocation, selectLocationType } from 'routes/routes.selectors'
 import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
-import {
-  ANNOTATIONS_GENERATOR_ID,
-  RULERS_LAYER_ID,
-  WORKSPACES_POINTS_TYPE,
-} from 'features/map/map.config'
+import { WORKSPACES_POINTS_TYPE } from 'features/map/map.config'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { SliceInteractionEvent } from './map.slice'
-import { isRulerLayerPoint } from './map-interaction.utils'
+import { DEFAULT_WORKSPACE_ID, DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { setHintDismissed } from 'features/help/hints.slice'
+import { USER, WORKSPACES_LIST, HOME, WORKSPACE } from 'routes/routes'
+import { useLocationConnect } from 'routes/routes.hook'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
+import { isRulerLayerPoint } from './map-interaction.utils'
+import {
+  SliceInteractionEvent,
+  fetchBQEventThunk,
+  fetchEncounterEventThunk,
+  fetchFishingActivityInteractionThunk,
+  selectApiEventStatus,
+  selectClickedEvent,
+  selectFishingInteractionStatus,
+  setClickedEvent,
+} from './map.slice'
+import { useSetViewState } from './map-viewport.hooks'
+
+function cleanFeatureState(state: any) {
+  console.warn('TODO: handle this in deck')
+}
+
+export const useClickedEventConnect = () => {
+  const map = useMapInstance()
+  const dispatch = useAppDispatch()
+  const clickedEvent = useSelector(selectClickedEvent)
+  const locationType = useSelector(selectLocationType)
+  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const apiEventStatus = useSelector(selectApiEventStatus)
+  const { dispatchLocation } = useLocationConnect()
+  // const { cleanFeatureState } = useFeatureState(map)
+  const setViewState = useSetViewState()
+  const { setMapAnnotation } = useMapAnnotation()
+  const tilesClusterLoaded = useMapClusterTilesLoaded()
+  const fishingPromiseRef = useRef<any>()
+  const presencePromiseRef = useRef<any>()
+  const eventsPromiseRef = useRef<any>()
+
+  const cancelPendingInteractionRequests = useCallback(() => {
+    const promisesRef = [fishingPromiseRef, presencePromiseRef, eventsPromiseRef]
+    promisesRef.forEach((ref) => {
+      if (ref.current) {
+        ref.current.abort()
+      }
+    })
+  }, [])
+
+  const dispatchClickedEvent = (event: InteractionEvent | null) => {
+    if (event === null) {
+      dispatch(setClickedEvent(null))
+      return
+    }
+
+    // Used on workspaces-list or user panel to go to the workspace detail page
+    if (locationType === USER || locationType === WORKSPACES_LIST) {
+      const workspace = event?.features?.find(
+        (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
+      )
+      if (workspace) {
+        const isDefaultWorkspace = workspace.properties.id === DEFAULT_WORKSPACE_ID
+        dispatchLocation(
+          isDefaultWorkspace ? HOME : WORKSPACE,
+          isDefaultWorkspace
+            ? {}
+            : {
+                payload: {
+                  category:
+                    workspace.properties?.category && workspace.properties.category !== 'null'
+                      ? workspace.properties.category
+                      : DEFAULT_WORKSPACE_CATEGORY,
+                  workspaceId: workspace.properties.id,
+                },
+              },
+          { replaceQuery: true }
+        )
+        const { latitude, longitude, zoom } = workspace.properties
+        if (latitude && longitude && zoom) {
+          setViewState({ latitude, longitude, zoom })
+        }
+        return
+      }
+    }
+
+    const clusterFeature = event?.features?.find(
+      (f) => f.layer instanceof ClusterLayer
+    ) as ClusterPickingObject
+    if (clusterFeature?.properties?.expansionZoom) {
+      const { count, expansionZoom, lat, lon } = clusterFeature.properties
+      if (count > 1) {
+        if (tilesClusterLoaded && lat && lon) {
+          setViewState({
+            latitude: lat,
+            longitude: lon,
+            zoom: expansionZoom,
+          })
+          cleanFeatureState('click')
+        }
+        return
+      }
+    }
+
+    const annotatedFeature = event?.features?.find(
+      (f) => f.generatorType === DataviewType.Annotation
+    )
+    if (annotatedFeature?.properties?.id) {
+      setMapAnnotation(annotatedFeature.properties)
+      return
+    }
+
+    // Cancel all pending promises
+    cancelPendingInteractionRequests()
+
+    if (!event || !event.features) {
+      if (clickedEvent) {
+        dispatch(setClickedEvent(null))
+      }
+      return
+    }
+
+    // When hovering in a vessel event we don't want to have clicked events
+    const areAllFeaturesVesselEvents = event.features.every(
+      (f) => f.generatorType === DataviewType.VesselEvents
+    )
+
+    if (areAllFeaturesVesselEvents) {
+      return
+    }
+
+    dispatch(setClickedEvent(event as SliceInteractionEvent))
+
+    // get temporal grid clicked features and order them by sublayerindex
+    const fishingActivityFeatures = event.features.filter((feature) => {
+      if (feature?.sublayers.every((sublayer) => !sublayer.visible)) {
+        return false
+      }
+      return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(feature.category)
+    })
+
+    if (fishingActivityFeatures?.length) {
+      dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
+      const activityProperties = fishingActivityFeatures.map((feature) =>
+        feature.temporalgrid?.sublayerInteractionType === 'detections' ? 'detections' : 'hours'
+      )
+      fishingPromiseRef.current = dispatch(
+        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
+      )
+    }
+
+    const tileClusterFeature = event.features.find(
+      (f) => f.generatorType === DataviewType.TileCluster
+    )
+    if (tileClusterFeature) {
+      const bqPocQuery = tileClusterFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
+      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
+      eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
+    }
+  }
+
+  return {
+    clickedEvent,
+    fishingInteractionStatus,
+    apiEventStatus,
+    dispatchClickedEvent,
+    cancelPendingInteractionRequests,
+  }
+}
 
 const defaultEmptyFeatures = [] as PickingInfo[]
 export const useMapMouseHover = (style?: ExtendedStyle) => {
@@ -123,7 +279,7 @@ export const useHandleMapToolsClick = () => {
   const { onRulerMapClick, rulersEditing } = useRulers()
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
   const handleMapClickInteraction = useCallback(
-    (interaction: DeckLayerInteraction) => {
+    (interaction: InteractionEvent) => {
       const { latitude, longitude, features } = interaction
       const position = [longitude, latitude] as Position
       if (isMapAnnotating) {
@@ -206,7 +362,7 @@ export const useMapMouseClick = () => {
         console.warn(e)
       }
 
-      const mapClickInteraction: DeckLayerInteraction = {
+      const mapClickInteraction: InteractionEvent = {
         longitude: info.coordinate[0],
         latitude: info.coordinate[1],
         point: { x: info.x, y: info.y },

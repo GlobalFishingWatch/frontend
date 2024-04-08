@@ -12,12 +12,12 @@
     "postinstall": "husky"
   },
   "dependencies": {
-    "@deck.gl/core": "^9.0.3",
-    "@deck.gl/extensions": "^9.0.3",
-    "@deck.gl/geo-layers": "^9.0.3",
-    "@deck.gl/layers": "^9.0.3",
-    "@deck.gl/mesh-layers": "^9.0.3",
-    "@deck.gl/react": "^9.0.3",
+    "@deck.gl/core": "^9.0.6",
+    "@deck.gl/extensions": "^9.0.6",
+    "@deck.gl/geo-layers": "^9.0.6",
+    "@deck.gl/layers": "^9.0.6",
+    "@deck.gl/mesh-layers": "^9.0.6",
+    "@deck.gl/react": "^9.0.6",
     "@dnd-kit/core": "6.1.0",
     "@dnd-kit/modifiers": "7.0.0",
     "@dnd-kit/sortable": "8.0.0",

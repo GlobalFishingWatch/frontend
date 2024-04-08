@@ -44,7 +44,6 @@ import {
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
 import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
-import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
 import { mapReadyAtom } from 'features/map/map-state.atom'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
@@ -142,7 +141,6 @@ const MapWrapper = () => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
   // useMapSourceTilesLoadedAtom()
-  useEnvironmentalBreaksUpdate()
   useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()
   // const map = useMapInstance()

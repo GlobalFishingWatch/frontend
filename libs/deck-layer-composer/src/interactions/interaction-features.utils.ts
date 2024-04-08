@@ -6,7 +6,6 @@ import {
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
-import { DeckLayerInteractionFeature } from '../types'
 import { ExtendedFeature } from './types'
 
 export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
@@ -24,7 +23,7 @@ export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
   return filtered
 }
 
-const getExtendedFeature = (feature: DeckLayerInteractionFeature): ExtendedFeature[] => {
+const getExtendedFeature = (feature: ExtendedFeature): ExtendedFeature[] => {
   // const generatorType = feature.layer.metadata?.generatorType ?? null
   // const generatorId = feature.layer.metadata?.generatorId ?? null
 
@@ -99,8 +98,6 @@ const getExtendedFeature = (feature: DeckLayerInteractionFeature): ExtendedFeatu
       {
         ...extendedFeature,
         datasetId: object.datasetId,
-        promoteId: object.promoteId,
-        generatorContextLayer: object?.layerId,
         geometry: object.geometry,
       },
     ]
@@ -109,7 +106,7 @@ const getExtendedFeature = (feature: DeckLayerInteractionFeature): ExtendedFeatu
   return [extendedFeature]
 }
 
-export const getExtendedFeatures = (features: DeckLayerInteractionFeature[]): ExtendedFeature[] => {
+export const getExtendedFeatures = (features: ExtendedFeature[]): ExtendedFeature[] => {
   // TODO: deck implement the stopPropagation feature
   // const stopPropagationFeature = features.find((f) => f.layer.metadata?.stopPropagation)
   // if (stopPropagationFeature) {
