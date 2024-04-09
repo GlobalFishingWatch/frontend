@@ -41,10 +41,12 @@ const InsightFishing = ({
   }, [eventsInNoTakeMpas, vesselEvents])
 
   const eventsInRfmoWithoutKnownAuthorizationDetails = useMemo(() => {
-    return eventsInNoTakeMpas
-      ? (vesselEvents || []).filter((event) => eventsInNoTakeMpas?.includes(event.id))
+    return eventsInRfmoWithoutKnownAuthorization
+      ? (vesselEvents || []).filter((event) =>
+          eventsInRfmoWithoutKnownAuthorization?.includes(event.id)
+        )
       : []
-  }, [eventsInNoTakeMpas, vesselEvents])
+  }, [eventsInRfmoWithoutKnownAuthorization, vesselEvents])
 
   return (
     <div className={styles.insightContainer}>
