@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { isEqual, uniq } from 'lodash'
 import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
-import { isAuthError } from '@globalfishingwatch/api-client'
+import { crossBrowserTypeErrorMessages, isAuthError } from '@globalfishingwatch/api-client'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -111,20 +111,28 @@ function ActivityReport({ reportName }: { reportName: string }) {
         return isEqual(currentReportParams, reportParams)
       })
     : undefined
+  const concurrentReportError = statusError?.status === 429
   const isSameWorkspaceReport =
-    statusError?.status === 429 && window?.location.href === lastReport?.workspaceUrl
+    concurrentReportError && window?.location.href === lastReport?.workspaceUrl
+
+  const isTimeoutError =
+    statusError?.message &&
+    crossBrowserTypeErrorMessages.some((error) => error.includes(statusError.message as string))
   useEffect(() => {
+    if (isTimeoutError) {
+      // handle timeout error
+    }
     if (isSameWorkspaceReport) {
       dispatchTimeoutRef.current = setTimeout(() => {
         dispatchFetchReport()
-      }, 1000 * 10) // retrying each minute
+      }, 1000 * 60) // retrying each minute
     }
     return () => {
       if (dispatchTimeoutRef.current) {
         clearTimeout(dispatchTimeoutRef.current)
       }
     }
-  }, [dispatchFetchReport, isSameWorkspaceReport])
+  }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {
@@ -147,7 +155,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
       )
     }
     if (statusError) {
-      if (statusError.status === 429) {
+      if (concurrentReportError) {
         if (isSameWorkspaceReport) {
           return <ReportVesselsPlaceholder />
         }
@@ -214,6 +222,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
     )
   }, [
     areaId,
+    concurrentReportError,
     datasetId,
     guestUser,
     hasAuthError,

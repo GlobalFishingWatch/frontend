@@ -1,5 +1,8 @@
 import { ResponseError, V2MetadataError } from '../api-client'
-
+export const crossBrowserTypeErrorMessages = [
+  'Load failed', // Safari
+  'Failed to fetch', // Chromium
+]
 export const parseAPIErrorStatus = (error: ResponseError) => {
   return error.status || (error as any).code || null
 }
