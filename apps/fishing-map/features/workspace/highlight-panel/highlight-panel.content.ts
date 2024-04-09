@@ -50,9 +50,10 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
     imageUrl: ``,
     learnMoreUrl: 'https://globalfishingwatch.org/faqs/2024-april-data-error/',
     en: {
-      title: 'Global Fishing Watch has resolved an underlying AIS data error in the platform.',
+      title:
+        'IMPORTANT - Global Fishing Watch is working on an underlying AIS data error in the platform.',
       description:
-        'If you accessed Global Fishing Watch AIS or VMS data between 26 January - 9 April 2024, there may be errors in the fishing effort and fishing event data. The AIS error has been resolved, and we are working on the VMS issue now. Our advice is to repeat any analysis completed with the correct data. We’re sorry for any inconvenience caused.',
+        "This is why you haven't been able to access the data since January 26th. If you accessed Global Fishing Watch AIS or VMS data since 26 January, there may be errors in the fishing effort and fishing event data. We are working on fixing the issue as soon as possible. Our advice is to wait for the fix and repeat any analysis with the correct data. This will be fixed by this Friday, April 12, at the latest. We're sorry for any inconvenience caused.",
     },
   },
   {
