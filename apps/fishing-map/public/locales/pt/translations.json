@@ -797,7 +797,7 @@
     "insights": {
       "coverage": "Cobertura AIS",
       "disclaimerTimeRangeBeforeMinYear": "Indicadores disponíveis a partir de 1º de janeiro de {{year}}. Ajuste seu intervalo de tempo para visualizar os indicadores.",
-      "errorPermisions": "Você não tem permissão visualizar essas informações",
+      "errorPermisions": "Você não tem permissão visualizar esses indicadores",
       "gaps": "Eventos de desativação do AIS",
       "gapsEvents": "{{count}} eventos de desativação do AIS detectados",
       "gapsEventsEmpty": "Nenhum evento de desativação do AIS detectado",
@@ -820,7 +820,7 @@
       "IUU": "Lista de embarcações de pesca INN das ORGP",
       "IUUBlackListsCount": "A embarcação está presente em uma lista de embarcações de pesca INN das ORGP",
       "IUUBlackListsEmpty": "A embarcação não está presente em uma lista de embarcações de pesca de INN das ORGP",
-      "sectionTitle": "Informações da embarcação entre {{start}} e {{end}}"
+      "sectionTitle": "Indicadores da embarcação entre {{start}} e {{end}}"
     },
     "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Fonte de informações",
