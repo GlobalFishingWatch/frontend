@@ -123,7 +123,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         return this.getColorDomain()
       }
 
-      const steps = allValues.map((sublayerValues) =>
+      const steps = allValues.filter((sublayer) => sublayer.length).map((sublayerValues) =>
         ckmeans(
           sublayerValues,
           Math.min(sublayerValues.length, COLOR_RAMP_BIVARIATE_NUM_STEPS)
