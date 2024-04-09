@@ -9,8 +9,10 @@ import {
   useSetMapHoverInteraction,
   useMapClick,
   InteractionEvent,
+  DeckLayerInteractionPickingInfo,
+  parseDeckPickingInfoToFeatures,
 } from '@globalfishingwatch/deck-layer-composer'
-import { ClusterPickingObject } from '@globalfishingwatch/deck-layers'
+import { ClusterPickingObject, FourwingsPickingObject } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import {
@@ -165,17 +167,19 @@ export const useClickedEventConnect = () => {
     dispatch(setClickedEvent(event as SliceInteractionEvent))
 
     // get temporal grid clicked features and order them by sublayerindex
-    const fishingActivityFeatures = event.features.filter((feature) => {
-      if (feature?.sublayers?.every((sublayer) => !sublayer.visible)) {
-        return false
+    const fishingActivityFeatures = (event.features as FourwingsPickingObject[]).filter(
+      (feature) => {
+        if (feature?.sublayers?.every((sublayer) => !sublayer.visible)) {
+          return false
+        }
+        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(feature.category)
       }
-      return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(feature.category)
-    })
+    )
 
     if (fishingActivityFeatures?.length) {
       dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
       const activityProperties = fishingActivityFeatures.map((feature) =>
-        feature.temporalgrid?.sublayerInteractionType === 'detections' ? 'detections' : 'hours'
+        feature.category === 'detections' ? 'detections' : 'hours'
       )
       fishingPromiseRef.current = dispatch(
         fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
@@ -201,7 +205,7 @@ export const useClickedEventConnect = () => {
   }
 }
 
-const defaultEmptyFeatures = [] as PickingInfo[]
+const defaultEmptyFeatures = [] as DeckLayerInteractionPickingInfo[]
 export const useMapMouseHover = (style?: ExtendedStyle) => {
   const map = useDeckMap()
   const setMapHoverFeatures = useSetMapHoverInteraction()
@@ -234,7 +238,7 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
           x: info.x,
           y: info.y,
           radius: 0,
-        })
+        }) as DeckLayerInteractionPickingInfo[]
       } catch (e) {
         console.warn(e)
       }
@@ -358,16 +362,17 @@ export const useMapMouseClick = () => {
           x: info.x,
           y: info.y,
           radius: 0,
-        })
+        }) as DeckLayerInteractionPickingInfo[]
       } catch (e) {
         console.warn(e)
       }
 
       const mapClickInteraction: InteractionEvent = {
+        type: 'click',
         longitude: info.coordinate[0],
         latitude: info.coordinate[1],
         point: { x: info.x, y: info.y },
-        features,
+        features: parseDeckPickingInfoToFeatures(features),
       }
 
       const toolsClickedHandled = handleMapToolsClick(mapClickInteraction) !== undefined

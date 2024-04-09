@@ -4,11 +4,10 @@ import {
   FourwingsLayer,
   FourwingsPickingObject,
 } from '@globalfishingwatch/deck-layers'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { VALUE_MULTIPLIER } from '@globalfishingwatch/fourwings-aggregate'
-import { ExtendedFeature } from './types'
+import { DeckLayerInteractionFeature, DeckLayerInteractionPickingInfo } from '../types'
 
-export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
+export const filterUniqueFeatureInteraction = (features: DeckLayerInteractionFeature[]) => {
   const uniqueLayerIdFeatures: Record<string, string> = {}
   const filtered = features?.filter(({ layerId, id, uniqueFeatureInteraction }) => {
     if (!uniqueFeatureInteraction) {
@@ -23,7 +22,9 @@ export const filterUniqueFeatureInteraction = (features: ExtendedFeature[]) => {
   return filtered
 }
 
-const getExtendedFeature = (feature: ExtendedFeature): ExtendedFeature[] => {
+const parseDeckPickingInfoToFeature = (
+  pickingInfo: DeckLayerInteractionPickingInfo
+): DeckLayerInteractionFeature[] => {
   // const generatorType = feature.layer.metadata?.generatorType ?? null
   // const generatorId = feature.layer.metadata?.generatorId ?? null
 
@@ -40,16 +41,16 @@ const getExtendedFeature = (feature: ExtendedFeature): ExtendedFeature[] => {
   // TODO:deck implement the stopPropagation feature
   // const stopPropagation = feature.layer?.metadata?.stopPropagation ?? false
 
-  const extendedFeature: ExtendedFeature = {
-    ...feature.object,
-    layerId: feature.layer.id,
+  const extendedFeature: DeckLayerInteractionFeature = {
+    ...pickingInfo.object,
+    layerId: pickingInfo.layer.id,
     // uniqueFeatureInteraction,
     // stopPropagation,
   }
 
-  if (feature.layer instanceof FourwingsLayer) {
-    const object = feature.object as FourwingsPickingObject
-    if (feature.layer?.props.static) {
+  if (pickingInfo.layer instanceof FourwingsLayer) {
+    const object = pickingInfo.object as FourwingsPickingObject
+    if (pickingInfo.layer?.props.static) {
       return [
         {
           ...extendedFeature,
@@ -58,42 +59,21 @@ const getExtendedFeature = (feature: ExtendedFeature): ExtendedFeature[] => {
         },
       ]
     } else {
-      // const values = object.sublayers.map((sublayer) => sublayer.value!)
-
-      // This is used when querying the interaction endpoint, so that start begins at the start of the frame (ie start of a 10days interval)
-      // This avoids querying a cell visible on the map, when its actual timerange is not included in the app-overall time range
-      // const getDate = CONFIG_BY_INTERVAL[timeChunks.interval as Interval].getDate
-      const layer = feature.layer as FourwingsLayer
-      const visibleStartDate = getUTCDate(layer?.props?.startTime).toISOString()
-      const visibleEndDate = getUTCDate(layer?.props?.endTime).toISOString()
-      return object.sublayers.flatMap((sublayer, i) => {
+      return object?.sublayers?.flatMap((sublayer, i) => {
         if (sublayer.value === 0) return []
-        const temporalGridExtendedFeature: ExtendedFeature = {
+        const temporalGridExtendedFeature: DeckLayerInteractionFeature = {
           ...extendedFeature,
-          temporalgrid: {
-            sublayerIndex: i,
-            sublayerId: sublayer.id,
-            sublayerInteractionType: object.category,
-            sublayerCombinationMode: layer.props.comparisonMode,
-            visible: true,
-            col: object.properties.col as number,
-            row: object.properties.row as number,
-            interval: layer.getInterval(),
-            visibleStartDate,
-            visibleEndDate,
-            unit: sublayer.unit,
-          },
-          value: sublayer.value,
+          value: sublayer.value!,
         }
         return [temporalGridExtendedFeature]
       })
     }
-  } else if (feature.layer instanceof ContextLayer) {
+  } else if (pickingInfo.layer instanceof ContextLayer) {
     // TODO: deck add support for these layers
     // case DataviewType.Context:
     // case DataviewType.UserPoints:
     // case DataviewType.UserContext:
-    const object = feature.object as ContextPickingObject
+    const object = pickingInfo.object as ContextPickingObject
     return [
       {
         ...extendedFeature,
@@ -106,14 +86,16 @@ const getExtendedFeature = (feature: ExtendedFeature): ExtendedFeature[] => {
   return [extendedFeature]
 }
 
-export const getExtendedFeatures = (features: ExtendedFeature[]): ExtendedFeature[] => {
+export const parseDeckPickingInfoToFeatures = (
+  features: DeckLayerInteractionPickingInfo[]
+): DeckLayerInteractionFeature[] => {
   // TODO: deck implement the stopPropagation feature
   // const stopPropagationFeature = features.find((f) => f.layer.metadata?.stopPropagation)
   // if (stopPropagationFeature) {
   //   return getExtendedFeature(stopPropagationFeature, metadata, debug)
   // }
-  const extendedFeatures: ExtendedFeature[] = features.flatMap((feature) => {
-    return getExtendedFeature(feature) || []
+  const extendedFeatures: DeckLayerInteractionFeature[] = features.flatMap((feature) => {
+    return parseDeckPickingInfoToFeature(feature) || []
   })
   return extendedFeatures
 }

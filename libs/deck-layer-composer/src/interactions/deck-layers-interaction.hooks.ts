@@ -1,8 +1,7 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
-import { DeckLayerInteractionFeature } from '../types'
-import { ExtendedFeature, InteractionEvent, InteractionEventCallback } from './types'
-import { filterUniqueFeatureInteraction, getExtendedFeatures } from './interaction-features.utils'
+import { InteractionEvent, InteractionEventCallback } from './types'
+import { filterUniqueFeatureInteraction } from './interaction-features.utils'
 
 export const deckHoverInteractionAtom = atom<InteractionEvent>({} as InteractionEvent)
 
@@ -14,21 +13,20 @@ export const useSetMapHoverInteraction = () => {
   return useCallback(setDeckInteraction, [setDeckInteraction])
 }
 
+// TODO:deck move the stopPropagation and the filterUniqueFeatureInteraction to utils and consume in the app to remove this hook
 export const useMapClick = (clickCallback: InteractionEventCallback) => {
   // const { updateFeatureState, cleanFeatureState } = useFeatureState(map)
   const onMapClick = useCallback(
     (event: InteractionEvent) => {
       if (!clickCallback) return
 
-      const interactionEvent: InteractionEvent = {
-        type: 'click',
-        longitude: event.longitude,
-        latitude: event.latitude,
-        point: event.point,
-      }
+      const interactionEvent: InteractionEvent = { ...event }
       if (event.features?.length) {
-        const extendedFeatures: ExtendedFeature[] = getExtendedFeatures(event.features)
-        const extendedFeaturesLimit = filterUniqueFeatureInteraction(extendedFeatures)
+        // const stopPropagationFeature = event.features.find((f) => f.layer.metadata?.stopPropagation)
+        // if (stopPropagationFeature) {
+        //   return getExtendedFeature(stopPropagationFeature, metadata, debug)
+        // }
+        const extendedFeaturesLimit = filterUniqueFeatureInteraction(event.features)
 
         if (extendedFeaturesLimit.length) {
           interactionEvent.features = extendedFeaturesLimit

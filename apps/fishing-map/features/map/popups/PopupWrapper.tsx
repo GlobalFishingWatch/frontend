@@ -20,7 +20,11 @@ import AnnotationTooltip from 'features/map/popups/AnnotationTooltip'
 import RulerTooltip from 'features/map/popups/RulerTooltip'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
-import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.slice'
+import {
+  SliceExtendedFourwingsFeature,
+  selectApiEventStatus,
+  selectFishingInteractionStatus,
+} from '../map.slice'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
 import EncounterTooltipRow from './EncounterTooltipRow'
@@ -109,11 +113,11 @@ function PopupWrapper({
                 //     />
                 //   )
                 case DataviewCategory.Activity:
-                  return (features as FourwingsPickingObject[])?.map((feature) => {
+                  return (features as SliceExtendedFourwingsFeature[])?.map((feature) => {
                     return feature.sublayers.map((sublayer, i) => (
                       <ActivityTooltipRow
                         key={i + feature.title}
-                        feature={sublayer}
+                        feature={{ ...sublayer, category: feature.category as DataviewCategory }}
                         showFeaturesDetails={type === 'click'}
                       />
                     ))

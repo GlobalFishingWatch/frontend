@@ -62,6 +62,9 @@ export type FourwingsPickingObject = FourwingsFeature<
 > & {
   title: string
   tile: { x: number; y: number; z: number }
+  startTime: number
+  endTime: number
+  interval: FourwingsInterval
   category: string
   sublayers: FourwingsDeckSublayer[]
 }

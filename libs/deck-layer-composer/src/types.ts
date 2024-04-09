@@ -1,10 +1,13 @@
 import {
   ClusterLayer,
+  ClusterPickingInfo,
   ClusterPickingObject,
   ContextLayer,
+  ContextPickingInfo,
   ContextPickingObject,
   FourwingsDeckSublayer,
   FourwingsLayer,
+  FourwingsPickingInfo,
   FourwingsPickingObject,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
@@ -52,7 +55,12 @@ export interface DeckLegendBivariate extends DeckLegend {
 }
 
 export type DeckLayerInteractionFeature =
-  | (FourwingsPickingObject & { layer: FourwingsLayer })
-  | (ContextPickingObject & { layer: ContextLayer })
-  | (UserContextPickingObject & { layer: ContextLayer })
-  | (ClusterPickingObject & { layer: ClusterLayer })
+  | FourwingsPickingObject
+  | ContextPickingObject
+  | UserContextPickingObject
+  | ClusterPickingObject
+
+export type DeckLayerInteractionPickingInfo =
+  | (FourwingsPickingInfo & { layer: FourwingsLayer })
+  | (ContextPickingInfo & { layer: ContextLayer })
+  | (ClusterPickingInfo & { layer: ClusterLayer })

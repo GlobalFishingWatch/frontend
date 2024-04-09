@@ -48,12 +48,11 @@ export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', '
 
 export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
   return {
-    vessels,
     numVessels: vessels.length,
     overflow: vessels.length > MAX_TOOLTIP_LIST,
-    overflowNumber: vessels.length - MAX_TOOLTIP_LIST,
+    overflowNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
     overflowLoad: vessels.length > MAX_TOOLTIP_LIST,
-    overflowLoadNumber: vessels.length - MAX_TOOLTIP_LIST,
+    overflowLoadNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
   }
 }
 
@@ -206,6 +205,7 @@ export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
   }, [features])
 }
 
+// TODO:deck ideally remove this intermediate step
 export const parseMapTooltipFeatures = (
   features: SliceExtendedFeature[],
   dataviews: UrlDataviewInstance<DataviewType>[],
@@ -215,6 +215,7 @@ export const parseMapTooltipFeatures = (
     const { temporalgrid, generatorId, generatorType } = feature
     const baseFeature = {
       source: feature.source,
+      category: feature.category,
       sourceLayer: feature.sourceLayer,
       layerId: feature.layerId as string,
       type: generatorType as DataviewType,

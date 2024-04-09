@@ -2,13 +2,15 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { FourwingsDeckSublayer } from '@globalfishingwatch/deck-layers'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature } from 'features/map/map.hooks'
+import { SliceExtendedFourwingsDeckSublayer } from '../map.slice'
 import popupStyles from './Popup.module.css'
 import VesselsTable, { getVesselTableTitle } from './VesselsTable'
 
 type ActivityTooltipRowProps = {
-  feature: FourwingsDeckSublayer
+  feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory }
   showFeaturesDetails: boolean
 }
 
