@@ -113,23 +113,25 @@ function PopupWrapper({
                 //     />
                 //   )
                 case DataviewCategory.Activity:
-                  return (features as SliceExtendedFourwingsFeature[])?.map((feature) => {
-                    return feature.sublayers.map((sublayer, i) => (
+                  return (features as SliceExtendedFourwingsFeature[])?.map((feature, i) => {
+                    return feature.sublayers.map((sublayer, j) => (
                       <ActivityTooltipRow
-                        key={i + feature.title}
+                        key={`${i}-${j}`}
                         feature={{ ...sublayer, category: feature.category as DataviewCategory }}
                         showFeaturesDetails={type === 'click'}
                       />
                     ))
                   })
                 case DataviewCategory.Detections:
-                  return (features as FourwingsPickingObject[])?.map((feature, i) => (
-                    <DetectionsTooltipRow
-                      key={i + feature.title}
-                      feature={feature}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                  ))
+                  return (features as FourwingsPickingObject[])?.map((feature, i) => {
+                    return feature.sublayers.map((sublayer, j) => (
+                      <DetectionsTooltipRow
+                        key={`${i}-${j}`}
+                        feature={{ ...sublayer, category: feature.category as DataviewCategory }}
+                        showFeaturesDetails={type === 'click'}
+                      />
+                    ))
+                  })
                 case DataviewCategory.Events:
                   return (
                     <EncounterTooltipRow
