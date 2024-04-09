@@ -25,9 +25,13 @@ export const getUTCDate = (timestamp: string | number) => {
   let result
   for (let index = 0; index < tryParseMethods.length; index++) {
     const parse = tryParseMethods[index]
-    result = parse(timestamp, { zone: 'UTC' })
-    if (result.isValid) {
-      return result.toJSDate()
+    try {
+      result = parse(timestamp, { zone: 'UTC' })
+      if (result.isValid) {
+        return result.toJSDate()
+      }
+    } catch (e) {
+      return new Date('Invalid Date')
     }
   }
   return new Date('Invalid Date')
