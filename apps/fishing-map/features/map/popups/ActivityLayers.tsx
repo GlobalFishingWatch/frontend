@@ -1,20 +1,19 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Icon } from '@globalfishingwatch/ui-components'
-import { FourwingsDeckSublayer } from '@globalfishingwatch/deck-layers'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { TooltipEventFeature } from 'features/map/map.hooks'
 import { SliceExtendedFourwingsDeckSublayer } from '../map.slice'
 import popupStyles from './Popup.module.css'
 import VesselsTable, { getVesselTableTitle } from './VesselsTable'
 
 type ActivityTooltipRowProps = {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory }
+  loading?: boolean
   showFeaturesDetails: boolean
 }
 
-function ActivityTooltipRow({ feature, showFeaturesDetails }: ActivityTooltipRowProps) {
+function ActivityTooltipRow({ feature, showFeaturesDetails, loading }: ActivityTooltipRowProps) {
   const { t } = useTranslation()
   const title = getVesselTableTitle(feature)
   // TODO get the value based on the sublayer
@@ -36,8 +35,13 @@ function ActivityTooltipRow({ feature, showFeaturesDetails }: ActivityTooltipRow
               })}
             </span>
           </div>
+          {loading && (
+            <div className={popupStyles.loading}>
+              <Spinner size="small" />
+            </div>
+          )}
           {/* // TODO:deck add subcategory info */}
-          {showFeaturesDetails && (
+          {!loading && showFeaturesDetails && (
             <VesselsTable feature={feature} activityType={feature.subcategory} />
           )}
         </div>

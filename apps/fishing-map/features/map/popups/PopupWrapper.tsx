@@ -57,12 +57,12 @@ function PopupWrapper({
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const mapViewport = useMapViewport()
 
-  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
 
-  const popupNeedsLoading = [fishingInteractionStatus, apiEventStatus].some(
-    (s) => s === AsyncReducerStatus.Loading
-  )
+  // const popupNeedsLoading = [fishingInteractionStatus, apiEventStatus].some(
+  //   (s) => s === AsyncReducerStatus.Loading
+  // )
 
   if (!mapViewport || !interaction || !interaction.features) return null
 
@@ -88,105 +88,112 @@ function PopupWrapper({
       style={{ position: 'absolute', top, left, maxWidth: '600px' }}
       className={cx(styles.popup, styles[type], className)}
     >
-      {popupNeedsLoading ? (
-        <div className={styles.loading}>
-          <Spinner size="small" />
-        </div>
-      ) : (
-        <div>
-          {/* <div>
+      <div>
+        {/* <div>
             <IconButton icon="close" onClick={onClose} />
           </div> */}
-          <div className={styles.content}>
-            {timeCompareTimeDescription && (
-              <div className={styles.popupSection}>{timeCompareTimeDescription}</div>
-            )}
-            {Object.entries(featureByCategory)?.map(([featureCategory, features]) => {
-              switch (featureCategory) {
-                // TODO: deck restore this popup
-                // case DataviewCategory.Comparison:
-                //   return (
-                //     <ComparisonRow
-                //       key={featureCategory}
-                //       feature={features[0]}
-                //       showFeaturesDetails={type === 'click'}
-                //     />
-                //   )
-                case DataviewCategory.Activity:
-                  return (features as SliceExtendedFourwingsFeature[])?.map((feature, i) => {
-                    return feature.sublayers.map((sublayer, j) => (
-                      <ActivityTooltipRow
-                        key={`${i}-${j}`}
-                        feature={{ ...sublayer, category: feature.category as DataviewCategory }}
-                        showFeaturesDetails={type === 'click'}
-                      />
-                    ))
-                  })
-                case DataviewCategory.Detections:
-                  return (features as FourwingsPickingObject[])?.map((feature, i) => {
-                    return feature.sublayers.map((sublayer, j) => (
-                      <DetectionsTooltipRow
-                        key={`${i}-${j}`}
-                        feature={{ ...sublayer, category: feature.category as DataviewCategory }}
-                        showFeaturesDetails={type === 'click'}
-                      />
-                    ))
-                  })
-                case DataviewCategory.Events:
-                  return (
-                    <EncounterTooltipRow
-                      key={featureCategory}
-                      features={features}
+        <div className={styles.content}>
+          {timeCompareTimeDescription && (
+            <div className={styles.popupSection}>{timeCompareTimeDescription}</div>
+          )}
+          {Object.entries(featureByCategory)?.map(([featureCategory, features]) => {
+            switch (featureCategory) {
+              // TODO: deck restore this popup
+              // case DataviewCategory.Comparison:
+              //   return (
+              //     <ComparisonRow
+              //       key={featureCategory}
+              //       feature={features[0]}
+              //       showFeaturesDetails={type === 'click'}
+              //     />
+              //   )
+              case DataviewCategory.Activity: {
+                return (features as SliceExtendedFourwingsFeature[])?.map((feature, i) => {
+                  return feature.sublayers.map((sublayer, j) => (
+                    <ActivityTooltipRow
+                      key={`${i}-${j}`}
+                      loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                      feature={{ ...sublayer, category: feature.category as DataviewCategory }}
                       showFeaturesDetails={type === 'click'}
                     />
-                  )
-                // TODO: deck restore this popup
-                // case DataviewCategory.Environment: {
-                //   const contextEnvironmentalFeatures = features.filter(
-                //     (feature) =>
-                //       feature.type === DataviewType.Context ||
-                //       feature.type === DataviewType.UserContext
-                //   )
-                //   const environmentalFeatures = features.filter(
-                //     (feature) =>
-                //       feature.type !== DataviewType.Context &&
-                //       feature.type !== DataviewType.UserContext
-                //   )
-                //   return (
-                //     <Fragment key={featureCategory}>
-                //       <ContextTooltipSection
-                //         features={contextEnvironmentalFeatures}
-                //         showFeaturesDetails={type === 'click'}
-                //       />
-                //       <EnvironmentTooltipSection
-                //         features={environmentalFeatures}
-                //         showFeaturesDetails={type === 'click'}
-                //       />
-                //     </Fragment>
-                //   )
-                // }
-                case DataviewCategory.Context: {
-                  // const defaultContextFeatures = features.filter(
-                  //   (feature) => feature.type === DataviewType.Context
-                  // )
-                  // const workspacePointsFeatures = features.filter(
-                  //   (feature) => feature.source === WORKSPACE_GENERATOR_ID
-                  // )
-                  // const areaBufferFeatures = features.filter(
-                  //   (feature) => feature.source === REPORT_BUFFER_GENERATOR_ID
-                  // )
-                  // const annotationFeatures = features.filter(
-                  //   (feature) => feature.type === DataviewType.Annotation
-                  // )
-                  // const rulersFeatures = features.filter(
-                  //   (feature) => feature.type === DataviewType.Rulers
-                  // )
-                  // const userPointFeatures = features.filter(
-                  //   (feature) => feature.type === DataviewType.UserPoints
-                  // )
+                  ))
+                })
+              }
+              case DataviewCategory.Detections: {
+                return (features as FourwingsPickingObject[])?.map((feature, i) => {
+                  return feature.sublayers.map((sublayer, j) => (
+                    <DetectionsTooltipRow
+                      key={`${i}-${j}`}
+                      loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                      feature={{ ...sublayer, category: feature.category as DataviewCategory }}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  ))
+                })
+              }
+              case DataviewCategory.Events: {
+                if (apiEventStatus === AsyncReducerStatus.Loading) {
                   return (
-                    <Fragment key={featureCategory}>
-                      {/*
+                    <div className={styles.loading}>
+                      <Spinner size="small" />
+                    </div>
+                  )
+                }
+                return (
+                  <EncounterTooltipRow
+                    key={featureCategory}
+                    features={features}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                )
+              }
+              // TODO: deck restore this popup
+              // case DataviewCategory.Environment: {
+              //   const contextEnvironmentalFeatures = features.filter(
+              //     (feature) =>
+              //       feature.type === DataviewType.Context ||
+              //       feature.type === DataviewType.UserContext
+              //   )
+              //   const environmentalFeatures = features.filter(
+              //     (feature) =>
+              //       feature.type !== DataviewType.Context &&
+              //       feature.type !== DataviewType.UserContext
+              //   )
+              //   return (
+              //     <Fragment key={featureCategory}>
+              //       <ContextTooltipSection
+              //         features={contextEnvironmentalFeatures}
+              //         showFeaturesDetails={type === 'click'}
+              //       />
+              //       <EnvironmentTooltipSection
+              //         features={environmentalFeatures}
+              //         showFeaturesDetails={type === 'click'}
+              //       />
+              //     </Fragment>
+              //   )
+              // }
+              case DataviewCategory.Context: {
+                // const defaultContextFeatures = features.filter(
+                //   (feature) => feature.type === DataviewType.Context
+                // )
+                // const workspacePointsFeatures = features.filter(
+                //   (feature) => feature.source === WORKSPACE_GENERATOR_ID
+                // )
+                // const areaBufferFeatures = features.filter(
+                //   (feature) => feature.source === REPORT_BUFFER_GENERATOR_ID
+                // )
+                // const annotationFeatures = features.filter(
+                //   (feature) => feature.type === DataviewType.Annotation
+                // )
+                // const rulersFeatures = features.filter(
+                //   (feature) => feature.type === DataviewType.Rulers
+                // )
+                // const userPointFeatures = features.filter(
+                //   (feature) => feature.type === DataviewType.UserPoints
+                // )
+                return (
+                  <Fragment key={featureCategory}>
+                    {/*
                       // TODO: deck restore this popup
                       <AnnotationTooltip features={annotationFeatures} />
                       <RulerTooltip
@@ -199,51 +206,50 @@ function PopupWrapper({
                         features={userPointFeatures}
                         showFeaturesDetails={type === 'click'}
                       /> */}
-                      <ContextTooltipSection
-                        features={features as ContextFeature[]}
-                        showFeaturesDetails={type === 'click'}
-                      />
-                    </Fragment>
-                  )
-                }
-                // TODO: deck restore this popup
-                // case DataviewCategory.User: {
-                //   const userPointFeatures = features.filter(
-                //     (feature) => feature.type === DataviewType.UserPoints
-                //   )
-                //   const userContextFeatures = features.filter(
-                //     (feature) => feature.type === DataviewType.UserContext
-                //   )
-                //   return (
-                //     <Fragment key={featureCategory}>
-                //       <UserPointsTooltipSection
-                //         features={userPointFeatures}
-                //         showFeaturesDetails={type === 'click'}
-                //       />
-                //       <UserContextTooltipSection
-                //         features={userContextFeatures}
-                //         showFeaturesDetails={type === 'click'}
-                //       />
-                //     </Fragment>
-                //   )
-                // }
-
-                // case DataviewCategory.Vessels:
-                //   return (
-                //     <VesselEventsLayers
-                //       key={featureCategory}
-                //       features={features}
-                //       showFeaturesDetails={type === 'click'}
-                //     />
-                //   )
-
-                default:
-                  return null
+                    <ContextTooltipSection
+                      features={features as ContextFeature[]}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  </Fragment>
+                )
               }
-            })}
-          </div>
+              // TODO: deck restore this popup
+              // case DataviewCategory.User: {
+              //   const userPointFeatures = features.filter(
+              //     (feature) => feature.type === DataviewType.UserPoints
+              //   )
+              //   const userContextFeatures = features.filter(
+              //     (feature) => feature.type === DataviewType.UserContext
+              //   )
+              //   return (
+              //     <Fragment key={featureCategory}>
+              //       <UserPointsTooltipSection
+              //         features={userPointFeatures}
+              //         showFeaturesDetails={type === 'click'}
+              //       />
+              //       <UserContextTooltipSection
+              //         features={userContextFeatures}
+              //         showFeaturesDetails={type === 'click'}
+              //       />
+              //     </Fragment>
+              //   )
+              // }
+
+              // case DataviewCategory.Vessels:
+              //   return (
+              //     <VesselEventsLayers
+              //       key={featureCategory}
+              //       features={features}
+              //       showFeaturesDetails={type === 'click'}
+              //     />
+              //   )
+
+              default:
+                return null
+            }
+          })}
         </div>
-      )}
+      </div>
     </div>
   )
 }

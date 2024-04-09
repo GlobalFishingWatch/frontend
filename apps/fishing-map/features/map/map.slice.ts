@@ -493,7 +493,7 @@ const slice = createSlice({
       state.currentFishingRequestId = ''
       if (state?.clicked?.features?.length && action.payload?.vessels?.length) {
         state.clicked.features = state.clicked.features.map((feature: any) => {
-          const sublayers = (feature as FourwingsPickingObject).sublayers.map((sublayer) => {
+          const sublayers = (feature as FourwingsPickingObject).sublayers?.map((sublayer) => {
             const vessels =
               action.payload?.vessels.find((v) => v.sublayerId === sublayer.id)?.vessels || []
             return { ...sublayer, vessels }
