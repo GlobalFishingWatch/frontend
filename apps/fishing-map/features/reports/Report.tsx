@@ -119,13 +119,10 @@ function ActivityReport({ reportName }: { reportName: string }) {
     statusError?.message &&
     crossBrowserTypeErrorMessages.some((error) => error.includes(statusError.message as string))
   useEffect(() => {
-    if (isTimeoutError) {
-      // handle timeout error
-    }
-    if (isSameWorkspaceReport) {
+    if (isSameWorkspaceReport || isTimeoutError) {
       dispatchTimeoutRef.current = setTimeout(() => {
         dispatchFetchReport()
-      }, 1000 * 60) // retrying each minute
+      }, 1000 * 30) // retrying each 30 secs
     }
     return () => {
       if (dispatchTimeoutRef.current) {
