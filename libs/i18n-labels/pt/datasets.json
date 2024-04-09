@@ -1168,8 +1168,8 @@
     "description": "Vessel Identity (all shiptypes)"
   },
   "public-global-vessel-insights": {
-    "name": "AIS (Insights)",
-    "description": "Vessel Insights from AIS"
+    "name": "AIS (Indicadores)",
+    "description": "Vessel Indicadores from AIS"
   },
   "public-global-viirs-presence": {
     "name": "VIIRS",
