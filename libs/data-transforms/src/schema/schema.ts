@@ -43,6 +43,7 @@ export const getFieldSchema = (
           ]
         } else if (isNumeric) {
           const numericalValues = values.filter((v) => !isNaN(Number(v)))
+          if (!numericalValues.length) return schema
           const valuesOrdered = numericalValues.sort((a, b) => a - b)
           schema.type = 'range'
           schema.enum = [valuesOrdered[0], valuesOrdered[valuesOrdered.length - 1]]

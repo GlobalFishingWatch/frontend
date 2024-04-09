@@ -21,6 +21,7 @@ import {
   DatasetSchemaItem,
   IdentityVessel,
   DatasetSchemaItemEnum,
+  VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -536,8 +537,39 @@ export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatase
     return dataset.fieldsAllowed.some((f) => f.includes(schema))
   }
   const schemaConfig = getDatasetSchemaItem(dataset, schema)
-  const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
-  return schemaEnum !== undefined && schemaEnum.length > 0
+  if (!schemaConfig) {
+    return false
+  }
+  if (schemaConfig.type === 'array') {
+    const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
+    return schemaEnum !== undefined && schemaEnum.length > 0
+  }
+  return schemaConfig.type === 'string'
+}
+
+export const isFieldInFieldsAllowed = ({
+  field,
+  fieldsAllowed,
+  infoSource,
+}: {
+  field: string
+  fieldsAllowed: string[]
+  infoSource?: VesselIdentitySourceEnum
+}): boolean => {
+  return fieldsAllowed.some((f) => {
+    return (
+      f === field ||
+      f.includes(field) ||
+      f === `${infoSource}.${field}` ||
+      (field === 'owner' && f === 'registryOwners.name') ||
+      (field === 'shiptypes' && f === 'combinedSourcesInfo.shiptypes.name') ||
+      (field === 'geartypes' && f === 'combinedSourcesInfo.geartypes.name')
+    )
+  })
+}
+
+export const datasetHasFieldsAllowed = (dataset: Dataset, schema: SupportedDatasetSchema) => {
+  return isFieldInFieldsAllowed({ field: schema, fieldsAllowed: dataset.fieldsAllowed })
 }
 
 export const getSupportedSchemaFieldsDatasets = (
@@ -546,7 +578,8 @@ export const getSupportedSchemaFieldsDatasets = (
 ) => {
   const datasetsWithSchemaFieldsSupport = dataview?.datasets?.flatMap((dataset) => {
     const hasSchemaFields = datasetHasSchemaFields(dataset, schema)
-    return hasSchemaFields ? dataset : []
+    const hasFieldsAllowed = datasetHasFieldsAllowed(dataset, schema)
+    return hasSchemaFields && hasFieldsAllowed ? dataset : []
   })
   return datasetsWithSchemaFieldsSupport
 }

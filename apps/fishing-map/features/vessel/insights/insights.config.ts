@@ -1,6 +1,6 @@
 import { InsightType } from '@globalfishingwatch/api-types'
 
-export const MIN_INSIGHTS_YEAR = 2017
+export const MIN_INSIGHTS_YEAR = 2020
 
 export const INSIGHTS_NON_FISHING: InsightType[] = [
   'COVERAGE',

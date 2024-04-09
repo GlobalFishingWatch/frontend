@@ -33,6 +33,7 @@ export const EMPTY_FILTERS = {
   imo: undefined,
   callsign: undefined,
   owner: undefined,
+  nationalId: undefined,
   codMarinha: undefined,
   shiptypes: undefined,
   geartypes: undefined,

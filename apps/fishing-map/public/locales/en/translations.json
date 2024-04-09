@@ -796,8 +796,8 @@
     "imo": "IMO",
     "insights": {
       "coverage": "AIS Coverage",
-      "disclaimerTimeRangeBeforeMinYear": "Due to varying quality of data sources, insights are more reliable for activities after Jan 1, 2017. Adjust the start/end date of your timebar, where relevant.",
-      "errorPermisions": "You don't have permissions to see this insight",
+      "disclaimerTimeRangeBeforeMinYear": "Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.",
+      "errorPermisions": "You don't have permissions to see this",
       "gaps": "AIS Off Events",
       "gapsEvents": "{{count}} AIS Off events detected",
       "gapsEventsEmpty": "No AIS Off events detected",
