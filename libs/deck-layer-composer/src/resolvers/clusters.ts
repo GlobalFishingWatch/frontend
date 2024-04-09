@@ -13,6 +13,7 @@ export const resolveDeckClusterLayerProps = (
 
   return {
     id: dataview.id,
+    category: dataview.category!,
     datasetId: dataset?.id || '',
     color: dataview.config?.color || '',
     start: start,

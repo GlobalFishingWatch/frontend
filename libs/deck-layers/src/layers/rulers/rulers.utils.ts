@@ -3,7 +3,7 @@ import length from '@turf/length'
 import { Coord, Feature, LineString, Point, Position, point } from '@turf/helpers'
 import { rhumbBearing } from '@turf/turf'
 import { MultiLineString } from 'geojson'
-import { RulerData, RulerPointProperties } from '../../types'
+import { RulerData, RulerPointProperties } from './rulers.types'
 
 export const getRulerCoordsPairs = (
   ruler: RulerData

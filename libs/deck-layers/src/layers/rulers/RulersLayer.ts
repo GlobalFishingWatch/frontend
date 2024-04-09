@@ -1,19 +1,21 @@
 import { GeoJsonLayerProps, GeoJsonLayer } from '@deck.gl/layers'
-import { CompositeLayer } from '@deck.gl/core'
+import { Color, CompositeLayer, DefaultProps } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { Feature, Point } from '@turf/turf'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
-import { RulerData, RulerPointProperties } from '../../types'
+import { RulersLayerProps, RulerData, RulerPointProperties } from './rulers.types'
 import {
   getGreatCircleMultiLine,
   getRulerCenterPointWithLabel,
   getRulerStartAndEndPoints,
   hasRulerStartAndEnd,
 } from './rulers.utils'
-import { COLOR } from './rulers.config'
 
-type RulersLayerProps = GeoJsonLayerProps & {
-  rulers: RulerData[]
+const RULERS_COLOR = [255, 170, 0, 255] as Color
+
+const defaultProps: DefaultProps<RulersLayerProps> = {
+  rulers: [],
+  color: RULERS_COLOR,
 }
 
 const getFeaturesFromRulers = (rulers: RulerData[]) => {
@@ -25,8 +27,9 @@ const getFeaturesFromRulers = (rulers: RulerData[]) => {
 
 export class RulersLayer extends CompositeLayer<RulersLayerProps> {
   static layerName = 'RulersLayer'
+  static defaultProps = defaultProps
   renderLayers() {
-    const { rulers, visible } = this.props
+    const { rulers, color, visible } = this.props
 
     if (!hasRulerStartAndEnd(rulers)) return null
 
@@ -44,8 +47,8 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
         stroked: true,
         filled: true,
         visible,
-        getFillColor: COLOR,
-        getLineColor: COLOR,
+        getFillColor: color,
+        getLineColor: color,
         pointType: 'circle+text',
         pointRadiusUnits: 'pixels',
         getPointRadius: (d: Feature<Point, RulerPointProperties>) =>
@@ -53,7 +56,7 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
         getText: (d: Feature<Point, RulerPointProperties>) => d.properties?.text,
         getTextAngle: (d: Feature<Point, RulerPointProperties>) => d.properties?.bearing,
         getTextSize: 12,
-        getTextColor: COLOR,
+        getTextColor: color,
         getTextAlignmentBaseline: 'bottom',
         lineWidthMinPixels: 2,
         getDashArray: [4, 2],

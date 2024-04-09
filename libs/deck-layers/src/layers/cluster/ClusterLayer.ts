@@ -1,9 +1,14 @@
-import { CompositeLayer, DefaultProps, GetPickingInfoParams, LayerProps } from '@deck.gl/core'
+import { CompositeLayer, DefaultProps, LayerProps } from '@deck.gl/core'
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { LayerGroup, getLayerGroupOffset, hexToDeckColor } from '../../utils'
-import { ClusterEventType, ClusterLayerProps, ClusterPickingObject } from './cluster.types'
+import {
+  ClusterEventType,
+  ClusterFeature,
+  ClusterLayerProps,
+  ClusterPickingInfo,
+} from './cluster.types'
 
 const defaultProps: DefaultProps<ClusterLayerProps> = {
   eventType: 'encounter',
@@ -20,17 +25,11 @@ export class ClusterLayer extends CompositeLayer<LayerProps & TileLayerProps & C
   static layerName = 'ClusterLayer'
   static defaultProps = defaultProps
 
-  getPickingInfo = ({ info }: GetPickingInfoParams<ClusterPickingObject>) => {
-    // const { object } = info
-    // if (object) {
-    //   return {
-    //     ...info,
-    //     object: {
-    //       ...object,
-    //       id: object.properties.event_id,
-    //     },
-    //   }
-    // }
+  getPickingInfo = ({ info }: { info: ClusterPickingInfo }) => {
+    let { object } = info
+    if (object) {
+      object.category = this.props.category
+    }
     return info
   }
 

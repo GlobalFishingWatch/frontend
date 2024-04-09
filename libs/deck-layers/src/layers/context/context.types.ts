@@ -41,7 +41,7 @@ export type ContextFeatureProperties = {
   value: string | number
   layerId: ContextLayerId
   datasetId: string
-  category: string
+  category: DataviewCategory
   link?: string
 }
 export type ContextFeature = Feature<Polygon | MultiPolygon, Record<string, any>> &
