@@ -1,7 +1,7 @@
-import { Color, PickingInfo } from '@deck.gl/core'
+import { PickingInfo } from '@deck.gl/core'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { scaleLinear } from 'd3-scale'
+import { ScaleLinear, scaleLinear } from 'd3-scale'
 import { ColorRampsIds } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -54,7 +54,7 @@ export enum FourwingsComparisonMode {
 }
 
 export type ColorDomain = number[] | number[][]
-export type ColorRange = Color[]
+export type ColorRange = string[]
 export type SublayerColorRanges = ColorRange[]
 
 export type FourwingsPickingObject = FourwingsFeature<
@@ -74,6 +74,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   colorRanges?: SublayerColorRanges
   hoveredFeatures?: FourwingsPickingInfo[]
   tilesCache: FourwingsHeatmapTilesCache
+  scales: FourwinsTileLayerScale[]
 }
 
 export type AggregateCellParams = {
@@ -161,13 +162,13 @@ export type FourwingsTileLayerColorScale = {
 }
 
 export type FourwingsTileLayerColorDomain = number[] | number[][]
-export type FourwingsTileLayerColorRange = string[] | ColorRange[]
+export type FourwingsTileLayerColorRange = string[][] | string[]
 
-export type FourwinsTileLayerScale = ReturnType<typeof scaleLinear<number, string>>
+export type FourwinsTileLayerScale = ScaleLinear<string, string, never>
 export type FourwingsTileLayerState = {
   tilesCache: FourwingsHeatmapTilesCache
   colorDomain: FourwingsTileLayerColorDomain
   colorRanges: FourwingsTileLayerColorRange
   comparisonMode?: FourwingsComparisonMode
-  scale?: FourwinsTileLayerScale
+  scales?: FourwinsTileLayerScale[]
 }

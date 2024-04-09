@@ -280,6 +280,28 @@ export const getBivariateValue = (realValues: number[], breaks: number[][]) => {
   return index + 1
 }
 
+export const getBivariateValuesNew = (realValues: number[], breaks: number[][]) => {
+  //  y: datasetB
+  //   |    0 | 0
+  //   |   --(u)--+---+---+---+
+  //   |    0 | 1 | 2 | 3 | 4 |
+  //   |      +---+---+---+---+
+  //   v      | 5 | 6 | 7 | 8 |
+  //          +---+---+---+---+
+  //          | 9 | 10| 11| 12|
+  //          +---+---+---+---+
+  //          | 13| 14| 15| 16|
+  //          +---+---+---+---+
+  //          --------------> x: datasetA
+  const valueA = getBucketIndex(breaks[0], realValues[0])
+  const valueB = getBucketIndex(breaks[1], realValues[1])
+  // || 1: We never want a bucket of 0 - values below first break are not used in bivariate
+  const colIndex = (valueA || 1) - 1
+  const rowIndex = (valueB || 1) - 1
+  // offset by one because values start at 1 (0 reserved for values < min value)
+  return [colIndex, rowIndex]
+}
+
 export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 
 export function getFourwingsChunk(

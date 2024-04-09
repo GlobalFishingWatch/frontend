@@ -9,6 +9,7 @@ import {
 } from './colors'
 
 export const COLOR_RAMP_DEFAULT_NUM_STEPS = 10
+export const COLOR_RAMP_BIVARIATE_NUM_STEPS = 4
 export const COLOR_RAMP_DEFAULT_NUM_STEPS_TO_WHITE = [7, 3]
 
 // ---- Heatmap Generator color ramps types
@@ -80,12 +81,9 @@ export const getMixedOpacityToWhiteColorRamp = (
 
 const white = { r: 255, g: 255, b: 255, a: 1 }
 
-export const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
-  const ramp1 = getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[colorRampsIds[0]], 4).map((rgba) =>
-    rgbaStringToObject(rgba)
-  )
-  const ramp2 = getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[colorRampsIds[1]], 4).map((rgba) =>
-    rgbaStringToObject(rgba)
+export const getBivariateRampLegend = (colorRampsIds: ColorRampId[]) => {
+  const [ramp1, ramp2] = getBivariateRamp(colorRampsIds).map((ramp) =>
+    ramp.map((rgba) => rgbaStringToObject(rgba))
   )
   return [
     'transparent',
@@ -106,6 +104,12 @@ export const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
     rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[2], ramp2[3]))),
     rgbaToString(getBlend(white, getBlend(ramp1[3], ramp2[3]))),
   ]
+}
+
+export const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
+  return colorRampsIds.map((id) =>
+    getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[id], COLOR_RAMP_BIVARIATE_NUM_STEPS)
+  )
 }
 
 export const BLEND_BACKGROUND = '#0f2e5f'

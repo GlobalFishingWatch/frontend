@@ -5,8 +5,6 @@ import { LegendType, MapLegend, Tooltip, UILegend } from '@globalfishingwatch/ui
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
-import { ColorRange, deckToRgbaColor } from '@globalfishingwatch/deck-layers'
-import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
 import {
   selectActivityMergedDataviewId,
   selectDetectionsMergedDataviewId,
@@ -33,15 +31,13 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
   const legendSublayerIndex = deckLegend?.sublayers.findIndex(
     (sublayer) => sublayer.id === dataview.id
   )
-  if (legendSublayerIndex < 0 || (isBivariate && legendSublayerIndex !== 0)) {
+  if (legendSublayerIndex < 0 || (isBivariate && legendSublayerIndex !== 0) || !deckLegend.ranges) {
     return null
   }
 
   const colors = isBivariate
     ? (deckLegend.ranges as string[])
-    : (deckLegend.ranges?.[legendSublayerIndex] as ColorRange)?.map((color) => {
-        return Array.isArray(color) ? deckToRgbaColor(color) : color.toString()
-      })
+    : (deckLegend.ranges[legendSublayerIndex] as string[])
   const uiLegend: UILegend = {
     id: deckLegend.id,
     type: isBivariate ? LegendType.Bivariate : LegendType.ColorRampDiscrete,
