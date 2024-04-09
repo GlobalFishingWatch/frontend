@@ -47,6 +47,7 @@ import { useViewStateAtom } from './map-viewport.hooks'
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
 export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
+  if (!vessels?.length) return {}
   return {
     numVessels: vessels.length,
     overflow: vessels.length > MAX_TOOLTIP_LIST,

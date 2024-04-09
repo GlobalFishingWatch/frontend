@@ -7,10 +7,8 @@ import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
   useMapHoverInteraction,
   useSetMapHoverInteraction,
-  useMapClick,
   InteractionEvent,
   DeckLayerInteractionPickingInfo,
-  parseDeckPickingInfoToFeatures,
 } from '@globalfishingwatch/deck-layer-composer'
 import { ClusterPickingObject, FourwingsPickingObject } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -54,11 +52,10 @@ import {
 import { useSetViewState } from './map-viewport.hooks'
 
 function cleanFeatureState(state: any) {
-  console.warn('TODO: handle this in deck')
+  console.warn('TODO:deck handle this in deck')
 }
 
 export const useClickedEventConnect = () => {
-  const map = useMapInstance()
   const dispatch = useAppDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
   const locationType = useSelector(selectLocationType)
@@ -67,7 +64,6 @@ export const useClickedEventConnect = () => {
   const { dispatchLocation } = useLocationConnect()
   // const { cleanFeatureState } = useFeatureState(map)
   const setViewState = useSetViewState()
-  const { setMapAnnotation } = useMapAnnotation()
   const tilesClusterLoaded = useMapClusterTilesLoaded()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
@@ -135,14 +131,6 @@ export const useClickedEventConnect = () => {
         }
         return
       }
-    }
-
-    const annotatedFeature = event?.features?.find(
-      (f) => f.generatorType === DataviewType.Annotation
-    )
-    if (annotatedFeature?.properties?.id) {
-      setMapAnnotation(annotatedFeature.properties)
-      return
     }
 
     // Cancel all pending promises
@@ -244,9 +232,11 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
       }
 
       setMapHoverFeatures({
+        type: 'hover',
         longitude: info.coordinate[0],
         latitude: info.coordinate[1],
-        features,
+        point: { x: info.x, y: info.y },
+        features: features.flatMap((f) => f.object || []),
       })
       // onRulerDrag(features)
 
@@ -319,7 +309,6 @@ export const useMapMouseClick = () => {
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
 
-  const onClick = useMapClick(dispatchClickedEvent)
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
 
   const clickedCellLayers = useMemo(() => {
@@ -366,21 +355,20 @@ export const useMapMouseClick = () => {
       } catch (e) {
         console.warn(e)
       }
-
       const mapClickInteraction: InteractionEvent = {
         type: 'click',
         longitude: info.coordinate[0],
         latitude: info.coordinate[1],
         point: { x: info.x, y: info.y },
-        features: parseDeckPickingInfoToFeatures(features),
+        features: features.flatMap((f) => f.object || []),
       }
 
-      const toolsClickedHandled = handleMapToolsClick(mapClickInteraction) !== undefined
-      if (!toolsClickedHandled) {
-        onClick(mapClickInteraction)
+      const clickStopPropagation = handleMapToolsClick(mapClickInteraction) !== undefined
+      if (!clickStopPropagation) {
+        dispatchClickedEvent(mapClickInteraction)
       }
     },
-    [map, clickedCellLayers, handleMapToolsClick, onClick]
+    [map, clickedCellLayers, handleMapToolsClick, dispatchClickedEvent]
   )
 
   return { onMapClick, clickedTooltipEvent }
@@ -478,7 +466,7 @@ export const useMapCursor = () => {
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
       if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
-        if (rulersEditing && hoverFeatures.some(isRulerLayerPoint)) {
+        if (rulersEditing && hoverFeatures?.some(isRulerLayerPoint)) {
           return 'move'
         }
         return 'crosshair'
