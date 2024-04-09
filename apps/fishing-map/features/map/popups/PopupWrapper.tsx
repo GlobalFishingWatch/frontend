@@ -68,7 +68,8 @@ function PopupWrapper({
 
   const featureByCategory = groupBy(
     interaction.features
-      // .map((feature) => feature.object)
+      // Needed to create a new array and not muting with sort
+      .map((feature) => feature)
       .sort(
         (a, b) =>
           POPUP_CATEGORY_ORDER.indexOf(a?.category as DataviewCategory) -
@@ -125,15 +126,14 @@ function PopupWrapper({
                       showFeaturesDetails={type === 'click'}
                     />
                   ))
-                // TODO: deck restore this popup
-                // case DataviewCategory.Events:
-                //   return (
-                //     <EncounterTooltipRow
-                //       key={featureCategory}
-                //       features={features}
-                //       showFeaturesDetails={type === 'click'}
-                //     />
-                //   )
+                case DataviewCategory.Events:
+                  return (
+                    <EncounterTooltipRow
+                      key={featureCategory}
+                      features={features}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  )
                 // TODO: deck restore this popup
                 // case DataviewCategory.Environment: {
                 //   const contextEnvironmentalFeatures = features.filter(

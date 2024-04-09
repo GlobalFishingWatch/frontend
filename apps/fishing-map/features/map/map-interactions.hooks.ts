@@ -10,7 +10,7 @@ import {
   useMapClick,
   InteractionEvent,
 } from '@globalfishingwatch/deck-layer-composer'
-import { ClusterLayer, ClusterPickingObject } from '@globalfishingwatch/deck-layers'
+import { ClusterPickingObject } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import {
@@ -117,8 +117,9 @@ export const useClickedEventConnect = () => {
     }
 
     const clusterFeature = event?.features?.find(
-      (f) => f.layer instanceof ClusterLayer
+      (f) => f.category === DataviewCategory.Events
     ) as ClusterPickingObject
+
     if (clusterFeature?.properties?.expansionZoom) {
       const { count, expansionZoom, lat, lon } = clusterFeature.properties
       if (count > 1) {
@@ -165,7 +166,7 @@ export const useClickedEventConnect = () => {
 
     // get temporal grid clicked features and order them by sublayerindex
     const fishingActivityFeatures = event.features.filter((feature) => {
-      if (feature?.sublayers.every((sublayer) => !sublayer.visible)) {
+      if (feature?.sublayers?.every((sublayer) => !sublayer.visible)) {
         return false
       }
       return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(feature.category)

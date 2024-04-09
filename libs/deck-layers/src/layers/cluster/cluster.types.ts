@@ -30,8 +30,6 @@ type ClusterFeatureProps = {
 }
 
 export type ClusterFeature = Feature<Point, ClusterFeatureProps>
+export type ClusterPickingObject = ClusterFeature & BasePickingInfo
 
-export type ClusterPickingInfo = PickingInfo<
-  ClusterFeature & BasePickingInfo,
-  { tile?: Tile2DHeader }
->
+export type ClusterPickingInfo = PickingInfo<ClusterPickingObject, { tile?: Tile2DHeader }>
