@@ -74,7 +74,9 @@ const HighlightPanel = ({
       placement={placement || 'auto'}
       component={
         <div className={styles.container}>
-          <img className={styles.img} src={config.imageUrl} alt="highlight dataview" />
+          {config.imageUrl && (
+            <img className={styles.img} src={config.imageUrl} alt="highlight dataview" />
+          )}
           <div className={styles.content}>
             <h3 className={styles.title}>{highlightContent.title}</h3>
             <p className={styles.text}>
