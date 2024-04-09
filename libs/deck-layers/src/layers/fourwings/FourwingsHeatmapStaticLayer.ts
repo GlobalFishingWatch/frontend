@@ -43,7 +43,6 @@ import {
   MAX_RAMP_VALUES_PER_TILE,
 } from './fourwings.config'
 import {
-  ColorRange,
   FourwingsHeatmapTileLayerProps,
   FourwingsTileLayerState,
   FourwingsAggregationOperation,
@@ -83,11 +82,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
   }
 
   _getColorRanges = () => {
-    return this.props.sublayers.map(
-      ({ colorRamp }) =>
-        HEATMAP_COLOR_RAMPS[colorRamp as ColorRampsIds].map((c) =>
-          rgbaStringToComponents(c)
-        ) as ColorRange
+    return this.props.sublayers.map(({ colorRamp }) =>
+      HEATMAP_COLOR_RAMPS[colorRamp as ColorRampsIds].map((c) => rgbaStringToComponents(c))
     )
   }
 
@@ -187,7 +183,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
   renderLayers(): Layer<{}> | LayersList {
     const { tilesUrl, sublayers, resolution, minVisibleValue, maxVisibleValue, maxZoom } =
       this.props
-    const { colorDomain, colorRanges, scale } = this.state as FourwingsTileLayerState
+    const { colorDomain, colorRanges, scales } = this.state as FourwingsTileLayerState
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',
@@ -207,7 +203,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
         getFillColor: this.getFillColor,
         updateTriggers: {
-          getFillColor: [colorDomain, colorRanges, scale, minVisibleValue, maxVisibleValue],
+          getFillColor: [colorDomain, colorRanges, scales, minVisibleValue, maxVisibleValue],
         },
       }),
     ]

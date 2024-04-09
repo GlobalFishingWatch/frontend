@@ -3,6 +3,8 @@ import {
   FourwingsLayer,
   FourwingsComparisonMode,
   FourwingsPickingObject,
+  getBivariateRampLegend,
+  ColorRampId,
 } from '@globalfishingwatch/deck-layers'
 import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
 import { DeckLegend, LegendType } from '../types'
@@ -19,10 +21,6 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
     const interaction = deckLayerHoverFeatures?.features?.find((i) => i.layer?.id === layer.id)
 
     const { domain, range } = layer.instance.getColorScale() || {}
-    if (!domain || !range) {
-      // TODO: handle when the layer does not have a color scale because the state is not ready after an update
-    }
-
     let label = layer.instance.props.sublayers?.[0]?.unit || ''
     if (label === 'hours') {
       const gridZoom = Math.round(
@@ -34,7 +32,6 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
       const gridAreaFormatted = gridArea ? `${gridArea}${isSquareKm ? 'km' : 'm'}` : ''
       label = `hours / ${gridAreaFormatted}²`
     }
-
     return {
       id: layer.id,
       type:
@@ -43,7 +40,12 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
           : LegendType.ColorRampDiscrete,
       sublayers: layer.instance.props.sublayers,
       domain,
-      ranges: range,
+      ranges:
+        layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
+          ? getBivariateRampLegend(
+              layer.instance.props.sublayers.map((sublayer) => sublayer.colorRamp as ColorRampId)
+            )
+          : range,
       currentValues: (interaction?.object as FourwingsPickingObject)?.sublayers?.map(
         (s: any) => s.value
       )!,

@@ -2,14 +2,17 @@ import { Color, CompositeLayer, LayersList, PickingInfo } from '@deck.gl/core'
 import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers'
 import { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
+import { screen } from 'color-blend'
 import { FourwingsFeature, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
-import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset, rgbaToDeckColor } from '../../utils'
 import {
-  EMPTY_CELL_COLOR,
-  aggregateCell,
-  getBivariateValue,
-  getIntervalFrames,
-} from './fourwings.utils'
+  COLOR_HIGHLIGHT_LINE,
+  LayerGroup,
+  getLayerGroupOffset,
+  rgbaStringToComponents,
+  rgbaStringToObject,
+  rgbaToDeckColor,
+} from '../../utils'
+import { EMPTY_CELL_COLOR, aggregateCell, getIntervalFrames } from './fourwings.utils'
 import {
   FourwingsComparisonMode,
   FourwingsHeatmapLayerProps,
@@ -69,6 +72,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       availableIntervals,
       aggregationOperation,
       tilesCache,
+      scales,
     } = this.props
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
@@ -82,7 +86,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
 
     const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
 
-    const getFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
+    const getCompareFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
       if (!colorDomain || !colorRanges) {
         target = EMPTY_CELL_COLOR
         return target
@@ -98,35 +102,58 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         })
       let chosenValueIndex = 0
       let chosenValue: number | undefined
-      if (comparisonMode === FourwingsComparisonMode.Compare) {
-        aggregatedCellValues.forEach((value, index) => {
-          if (value && (!chosenValue || value > chosenValue)) {
-            chosenValue = value
-            chosenValueIndex = index
-          }
-        })
-        // if (scale) {
-        //   return rgbaStringToComponents(scale(chosenValue)) as Color
-        // }
-        const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
-          (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
-        )
-        if (!chosenValue) {
-          target = EMPTY_CELL_COLOR
-          return target
+      aggregatedCellValues.forEach((value, index) => {
+        if (value && (!chosenValue || value > chosenValue)) {
+          chosenValue = value
+          chosenValueIndex = index
         }
-        return colorRanges[chosenValueIndex][colorIndex] as Color
-      } else if (comparisonMode === FourwingsComparisonMode.Bivariate) {
-        chosenValue = getBivariateValue(aggregatedCellValues, colorDomain as number[][])
-        if (!chosenValue) {
-          target = EMPTY_CELL_COLOR
-          return target
-        }
-        return rgbaToDeckColor(colorRanges[chosenValue] as unknown as string)
-      } else {
+      })
+      if (!chosenValue) {
         target = EMPTY_CELL_COLOR
         return target
       }
+      if (scales[chosenValueIndex]) {
+        const color = scales[chosenValueIndex](chosenValue)
+        target = color ? (rgbaStringToComponents(color) as Color) : EMPTY_CELL_COLOR
+        return target
+      }
+      const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
+        (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
+      )
+      target = rgbaStringToComponents(colorRanges[chosenValueIndex][colorIndex]) as Color
+      return target
+    }
+
+    const getBivariateFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
+      if (!colorDomain || !colorRanges) {
+        target = EMPTY_CELL_COLOR
+        return target
+      }
+      const aggregatedCellValues =
+        feature.properties.initialValues[timeRangeKey] ||
+        aggregateCell({
+          cellValues: feature.properties.values,
+          startFrame,
+          endFrame,
+          aggregationOperation,
+          cellStartOffsets: feature.properties.startOffsets,
+        })
+      let chosenValue: number | undefined
+      if (scales.length) {
+        const colors = scales.map((s, i) =>
+          aggregatedCellValues[i] ? s(aggregatedCellValues[i]) : undefined
+        )
+        const color = screen(rgbaStringToObject(colors[0]), rgbaStringToObject(colors[1]))
+        target = color ? [color.r, color.g, color.b, color.a * 255] : EMPTY_CELL_COLOR
+        return target
+      }
+      // chosenValue = getBivariateValue(aggregatedCellValues, colorDomain as number[][])
+      if (!chosenValue) {
+        target = EMPTY_CELL_COLOR
+        return target
+      }
+      target = rgbaToDeckColor(colorRanges[chosenValue] as unknown as string)
+      return target
     }
 
     this.layers = [
@@ -136,7 +163,10 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           id: `fourwings-tile`,
           pickable: true,
           getPickingInfo: this.getPickingInfo,
-          getFillColor,
+          getFillColor:
+            comparisonMode === FourwingsComparisonMode.Compare
+              ? getCompareFillColor
+              : getBivariateFillColor,
           getPolygon: (d: FourwingsFeature) => d.geometry.coordinates[0],
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
           updateTriggers: {
