@@ -31,8 +31,10 @@ export type _VesselLayerProps = {
 // export type VesselTrackPickingInfo = PickingInfo<VesselTrackPickingObject, { tile?: Tile2DHeader }>
 
 export type VesselEventProperties = ApiEvent & {
+  color: string
+  title: string
   vesselId: string
 }
-export type VesselEventFeature = Feature<Point, VesselEventProperties>
-export type VesselEventPickingObject = VesselEventFeature & BasePickingInfo
+
+export type VesselEventPickingObject = VesselEventProperties & BasePickingInfo
 export type VesselEventPickingInfo = PickingInfo<VesselEventPickingObject, { tile?: Tile2DHeader }>

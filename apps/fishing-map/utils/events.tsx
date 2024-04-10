@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { DateTime, Duration } from 'luxon'
 import { Trans } from 'react-i18next'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { EVENTS_COLORS } from 'data/config'
@@ -9,19 +9,7 @@ import { formatInfoField } from 'utils/info'
 import VesselPin from 'features/vessel/VesselPin'
 import { SupportedDateType, getUTCDateTime } from './dates'
 
-type EventProps = {
-  start: number
-  end: number
-  type: EventTypes
-  mainVesselName?: string
-  encounterVesselName?: string
-  encounterVesselId?: string
-  className?: string
-  portName?: string
-  portFlag?: string
-}
-
-export const getEventColors = ({ type }: { type: EventProps['type'] }) => {
+export const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
   const colorKey = type
   // TODO not supporting authorization status yet
   // if (event.type === 'encounter' && showAuthorizationStatus) {
@@ -80,16 +68,17 @@ export const getEventDescription = ({
   start,
   end,
   type,
-  mainVesselName,
-  encounterVesselName,
-  portName,
-  portFlag,
-}: EventProps) => {
+  vessel,
+  encounter,
+  port_visit,
+}: ApiEvent) => {
   const time = getTimeLabels({ start, end })
   let description: string
-  let descriptionGeneric
+  let descriptionGeneric: string
   switch (type) {
     case EventTypes.Encounter: {
+      const mainVesselName = vessel?.name
+      const encounterVesselName = encounter?.vessel?.name
       if (mainVesselName && encounterVesselName) {
         description = t(
           'event.encounterActionWithVessels',
@@ -116,7 +105,9 @@ export const getEventDescription = ({
       descriptionGeneric = t('event.encounter')
       break
     }
-    case EventTypes.Port:
+    case EventTypes.Port: {
+      const portName = port_visit?.intermediateAnchorage.name
+      const portFlag = port_visit?.intermediateAnchorage.flag
       if (portName && portFlag) {
         const portLabel = [
           formatInfoField(portName, 'port'),
@@ -132,6 +123,7 @@ export const getEventDescription = ({
       }
       descriptionGeneric = t('event.port')
       break
+    }
     case EventTypes.Loitering:
       description = t(
         'event.loiteringAction',
@@ -155,28 +147,13 @@ export const getEventDescription = ({
   }
 }
 
-export const getEventDescriptionComponent = ({
-  start,
-  end,
-  type,
-  mainVesselName,
-  encounterVesselName,
-  encounterVesselId,
-  className,
-  portName,
-  portFlag,
-}: EventProps) => {
-  let DescriptionComponent
+export const getEventDescriptionComponent = (event: ApiEvent, className = '') => {
+  const { start, end, type, encounter } = event
   const { color, colorLabels } = getEventColors({ type })
-  const { descriptionGeneric, description } = getEventDescription({
-    start,
-    end,
-    type,
-    mainVesselName,
-    encounterVesselName,
-    portName,
-    portFlag,
-  })
+  let DescriptionComponent
+  const encounterVesselName = encounter?.vessel?.name
+  const encounterVesselId = encounter?.vessel?.id
+  const { descriptionGeneric, description } = getEventDescription(event)
   if (type === EventTypes.Encounter && encounterVesselName && encounterVesselId) {
     const time = getTimeLabels({ start, end })
     DescriptionComponent = (

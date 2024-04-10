@@ -7,7 +7,11 @@ import { useSelector } from 'react-redux'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
-import { ContextFeature, FourwingsPickingObject } from '@globalfishingwatch/deck-layers'
+import {
+  ContextFeature,
+  FourwingsPickingObject,
+  VesselEventPickingObject,
+} from '@globalfishingwatch/deck-layers'
 import { TooltipEvent } from 'features/map/map.hooks'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
@@ -239,7 +243,7 @@ function PopupWrapper({
                 return (
                   <VesselEventsLayers
                     key={featureCategory}
-                    features={features}
+                    features={features as VesselEventPickingObject[]}
                     showFeaturesDetails={type === 'click'}
                   />
                 )

@@ -45,13 +45,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   getPickingInfo = ({ info }: { info: VesselEventPickingInfo }): VesselEventPickingInfo => {
     if (!info.object) {
       info.object = {} as VesselEventPickingObject
-      info.object.properties = {} as VesselEventProperties
     }
+    info.object.title = this.props.name
+    info.object.vesselId = this.props.id
     info.object.category = DataviewCategory.Vessels
-    info.object.properties = {
-      ...info.object.properties,
-      vesselId: this.props.id,
-    }
+    info.object.color = deckToHexColor(this.props.color)
     // info.object.getDetail = async () => {
     //   return GFWAPI.fetch(`/events/${info.object?.properties.id}`)
     // }

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { EventTypes, IdentityVessel, SelfReportedInfo } from '@globalfishingwatch/api-types'
+import { IdentityVessel, SelfReportedInfo } from '@globalfishingwatch/api-types'
 import { VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
 import { getEventDescriptionComponent } from 'utils/events'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
@@ -26,12 +26,12 @@ function VesselEventsTooltipSection({
     const maxFeatures = overflows ? features.slice(0, MAX_TOOLTIP_LIST) : features
     return groupBy(maxFeatures, 'properties.vesselId')
   }, [overflows, features])
-  console.log('🚀 ~ featuresByType ~ featuresByType:', featuresByType)
+
   const resources = useSelector(selectVisibleResources)
 
   const vesselNamesByType = useMemo(() => {
     return Object.values(featuresByType).map((features) => {
-      const vesselId = features[0].properties?.vesselId
+      const vesselId = features[0]?.vesselId
       const vesselResource = Object.values(resources).find((resource) => {
         return (resource.data as IdentityVessel)?.selfReportedInfo?.some(
           (identity: SelfReportedInfo) => vesselId?.includes(identity.id)
@@ -57,33 +57,14 @@ function VesselEventsTooltipSection({
             {vesselNamesByType[index] && showFeaturesDetails && (
               <h3 className={styles.popupSectionTitle}>{vesselNamesByType[index]}</h3>
             )}
-            {/* {featureByType.map((feature, index) => {
-              const {
-                start,
-                end,
-                type,
-                vesselName,
-                encounterVesselName,
-                encounterVesselId,
-                portName,
-                portFlag,
-              } = feature.properties
-              const { description, DescriptionComponent } = getEventDescriptionComponent({
-                start: start as any,
-                end: end as any,
-                type: type as EventTypes,
-                mainVesselName: vesselName,
-                encounterVesselName,
-                encounterVesselId,
-                portName,
-                portFlag,
-              })
+            {featureByType.map((feature, index) => {
+              const { description, DescriptionComponent } = getEventDescriptionComponent(feature)
               return (
                 <div key={index} className={styles.row}>
                   {showFeaturesDetails ? DescriptionComponent : description}
                 </div>
               )
-            })} */}
+            })}
             {overflows && (
               <div className={styles.vesselsMore}>
                 + {features.length - MAX_TOOLTIP_LIST} {t('common.more', 'more')}
