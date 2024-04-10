@@ -1,5 +1,11 @@
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { FourwingsResolution, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  AnyDeckLayer,
+  DeckLayerInteractionFeature,
+  FourwingsResolution,
+  FourwingsVisualizationMode,
+} from '@globalfishingwatch/deck-layers'
 
 export type ResolverGlobalConfig = {
   start: string
@@ -18,3 +24,12 @@ export type ResolverGlobalConfig = {
   locale?: string
   visibleEvents: EventTypes[]
 }
+
+export type DeckResolverFunction<
+  LayerProps = AnyDeckLayer['props'],
+  InteractionFeature = DeckLayerInteractionFeature
+> = (
+  dataview: UrlDataviewInstance,
+  { start, end, resolution, debug }: ResolverGlobalConfig,
+  interactions?: InteractionFeature[]
+) => LayerProps

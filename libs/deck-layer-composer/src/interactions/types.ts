@@ -1,4 +1,4 @@
-import { DeckLayerInteractionFeature } from '../types'
+import { DeckLayerInteractionFeature } from '@globalfishingwatch/deck-layers'
 
 export type InteractionEvent = {
   type: 'click' | 'hover'

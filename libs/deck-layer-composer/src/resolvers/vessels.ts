@@ -1,18 +1,17 @@
-import { PickingInfo } from '@deck.gl/core'
-import { DatasetTypes, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
 import { VesselLayerProps, getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
-import { ResolverGlobalConfig } from './types'
+import { DeckResolverFunction } from './types'
 
-export function resolveDeckVesselLayerProps(
-  dataview: DataviewInstance,
-  globalConfig: ResolverGlobalConfig,
-  interactions: PickingInfo[]
-): VesselLayerProps {
+export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (
+  dataview,
+  globalConfig,
+  interactions
+) => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
 
   return {
