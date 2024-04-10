@@ -28,6 +28,7 @@ export class ClusterLayer extends CompositeLayer<LayerProps & TileLayerProps & C
   getPickingInfo = ({ info }: { info: ClusterPickingInfo }) => {
     let { object } = info
     if (object) {
+      object.layerId = this.props.id
       object.category = this.props.category
     }
     return info

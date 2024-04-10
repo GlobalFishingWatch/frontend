@@ -59,18 +59,3 @@ export interface DeckLegendBivariate extends DeckLegend {
   sublayersBreaks: [number[], number[]]
   bivariateRamp: string[]
 }
-
-export type DeckLayerInteractionFeature =
-  | FourwingsPickingObject
-  | ContextPickingObject
-  | UserContextPickingObject
-  | ClusterPickingObject
-  | RulerPickingObject
-  | VesselEventPickingObject
-
-export type DeckLayerInteractionPickingInfo =
-  | (FourwingsPickingInfo & { layer: FourwingsLayer })
-  | (ContextPickingInfo & { layer: ContextLayer })
-  | (ClusterPickingInfo & { layer: ClusterLayer })
-  | (RulerPickingInfo & { layer: RulersLayer })
-  | (VesselEventPickingInfo & { layer: VesselLayer })

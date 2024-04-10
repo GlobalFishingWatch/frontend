@@ -165,10 +165,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   updateState() {
     const clickedVesselId = this.props?.clickedFeatures?.flatMap(
-      (f) => f.sourceLayer?.id === this.id && f.object?.properties?.id
+      // TODO:deck review if this still works after the clickedFeatures refactor
+      (f: any) => f.sourceLayer?.id === this.id && f.object?.properties?.id
     )
     const highlightedVesselId = this.props?.hoveredFeatures?.flatMap(
-      (f) => f.sourceLayer?.id === this.id && f.object?.properties?.id
+      // TODO:deck review if this still works after the clickedFeatures refactor
+      (f: any) => f.sourceLayer?.id === this.id && f.object?.properties?.id
     )
     if (highlightedVesselId && highlightedVesselId[0]) {
       this.setState({

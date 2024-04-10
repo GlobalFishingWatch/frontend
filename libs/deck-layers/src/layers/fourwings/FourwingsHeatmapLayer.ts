@@ -25,8 +25,17 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   layers: LayersList = []
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }): FourwingsPickingInfo => {
-    const { id, tile, startTime, endTime, availableIntervals, category, sublayers, tilesCache } =
-      this.props
+    const {
+      id,
+      tile,
+      startTime,
+      endTime,
+      availableIntervals,
+      category,
+      sublayers,
+      tilesCache,
+      comparisonMode,
+    } = this.props
 
     const { startFrame, endFrame, interval } = getIntervalFrames({
       startTime,
@@ -36,6 +45,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     })
     const object: FourwingsPickingObject = {
       ...(info.object || ({} as FourwingsFeature)),
+      layerId: this.props.id,
       title: id,
       tile: tile.index,
       category,
@@ -43,6 +53,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       startTime,
       endTime,
       interval,
+      comparisonMode,
     }
     if (info.object) {
       const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
@@ -182,9 +193,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       ),
     ] as LayersList
 
-    const layerHoveredFeature: FourwingsFeature = hoveredFeatures?.find(
-      (f) => f.layer?.id === this.root.id
-    )?.object
+    const layerHoveredFeature = hoveredFeatures?.find((f) => f.layerId === this.root.id)
     if (layerHoveredFeature) {
       this.layers.push(
         new PathLayer(

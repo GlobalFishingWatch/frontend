@@ -146,6 +146,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     if (info.object?.properties?.count) {
       info.object.properties.values = [[info.object.properties.count]]
     }
+    info.object.layerId = this.props.id
     info.object.category = this.props.category
     return info
   }
@@ -208,9 +209,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
       }),
     ]
 
-    const layerHoveredFeature: FourwingsStaticFeature = this.props.hoveredFeatures?.find(
-      (f) => f.layer?.id === this.root.id
-    )?.object
+    const layerHoveredFeature = this.props.hoveredFeatures?.find((f) => f.layerId === this.root.id)
 
     if (layerHoveredFeature) {
       layers.push(
