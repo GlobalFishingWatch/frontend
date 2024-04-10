@@ -1,7 +1,7 @@
-import { Color, PickingInfo } from '@deck.gl/core'
+import { PickingInfo } from '@deck.gl/core'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { scaleLinear } from 'd3-scale'
+import { ScaleLinear, scaleLinear } from 'd3-scale'
 import { ColorRampsIds } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -9,6 +9,7 @@ import {
   FourwingsFeatureProperties,
   FourwingsStaticFeatureProperties,
   FourwingsInterval,
+  Cell,
 } from '@globalfishingwatch/deck-loaders'
 import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 
@@ -52,8 +53,8 @@ export enum FourwingsComparisonMode {
   TimeCompare = 'timeCompare',
 }
 
-export type ColorDomain = number[]
-export type ColorRange = Color[]
+export type ColorDomain = number[] | number[][]
+export type ColorRange = string[]
 export type SublayerColorRanges = ColorRange[]
 
 export type FourwingsPickingObject = FourwingsFeature<
@@ -72,29 +73,34 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
   hoveredFeatures?: FourwingsPickingInfo[]
+  tilesCache: FourwingsHeatmapTilesCache
+  scales: FourwinsTileLayerScale[]
 }
 
 export type AggregateCellParams = {
-  minIntervalFrame: number
-  maxIntervalFrame?: number
+  cellValues: Cell
+  startFrame: number
+  endFrame: number
   aggregationOperation?: FourwingsAggregationOperation
-  startFrames: number[]
+  cellStartOffsets: number[]
 }
 
 export type GetFillColorParams = {
+  cellValues: number[][]
+  cellInitialValues?: number[]
+  cellStartOffsets: number[]
   colorDomain: number[] | number[][]
   colorRanges: ColorRange[] | string[]
-  chunk: FourwingsChunk
-  minIntervalFrame: number
-  maxIntervalFrame: number
+  startFrame: number
+  endFrame: number
   comparisonMode?: FourwingsComparisonMode
   aggregationOperation?: FourwingsAggregationOperation
   scale?: typeof scaleLinear<number, string>
 }
 
 type BaseFourwingsLayerProps = {
-  minFrame: number
-  maxFrame: number
+  startTime: number
+  endTime: number
   category: DataviewCategory
   sublayers: FourwingsDeckSublayer[]
   tilesUrl?: string
@@ -145,6 +151,7 @@ export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps
 
 export type FourwingsHeatmapTilesCache = {
   start: number
+  bufferedStart: number
   end: number
   interval: FourwingsInterval
 }
@@ -155,13 +162,13 @@ export type FourwingsTileLayerColorScale = {
 }
 
 export type FourwingsTileLayerColorDomain = number[] | number[][]
-export type FourwingsTileLayerColorRange = string[] | ColorRange[]
+export type FourwingsTileLayerColorRange = string[][] | string[]
 
-export type FourwinsTileLayerScale = ReturnType<typeof scaleLinear<number, string>>
+export type FourwinsTileLayerScale = ScaleLinear<string, string, never>
 export type FourwingsTileLayerState = {
   tilesCache: FourwingsHeatmapTilesCache
   colorDomain: FourwingsTileLayerColorDomain
   colorRanges: FourwingsTileLayerColorRange
   comparisonMode?: FourwingsComparisonMode
-  scale?: FourwinsTileLayerScale
+  scales?: FourwinsTileLayerScale[]
 }

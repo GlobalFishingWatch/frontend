@@ -1,6 +1,6 @@
 import { groupBy, toNumber } from 'lodash'
 import { DateTime, DateTimeOptions } from 'luxon'
-import { Segment } from '@globalfishingwatch/api-types'
+import { TrackSegment } from '@globalfishingwatch/api-types'
 import { SegmentColumns } from '../types'
 import { parseCoords } from '../coordinates'
 
@@ -25,9 +25,13 @@ export const getUTCDate = (timestamp: string | number) => {
   let result
   for (let index = 0; index < tryParseMethods.length; index++) {
     const parse = tryParseMethods[index]
-    result = parse(timestamp, { zone: 'UTC' })
-    if (result.isValid) {
-      return result.toJSDate()
+    try {
+      result = parse(timestamp, { zone: 'UTC' })
+      if (result.isValid) {
+        return result.toJSDate()
+      }
+    } catch (e) {
+      return new Date('Invalid Date')
     }
   }
   return new Date('Invalid Date')
@@ -57,7 +61,7 @@ export const listToTrackSegments = ({
   segmentId,
   lineId,
   lineColorBarOptions,
-}: Args): Segment[][] => {
+}: Args): TrackSegment[][] => {
   const hasIdGroup = lineId !== undefined && lineId !== ''
   const hasSegmentId = segmentId !== undefined && segmentId !== ''
   const recordsArray = Array.isArray(records) ? records : [records]

@@ -24,6 +24,7 @@ export const selectSearchSsvid = selectVesselSearchStateProperty('ssvid')
 export const selectSearchImo = selectVesselSearchStateProperty('imo')
 export const selectSearchCallsign = selectVesselSearchStateProperty('callsign')
 export const selectSearchOwner = selectVesselSearchStateProperty('owner')
+export const selectSearchNationalId = selectVesselSearchStateProperty('nationalId')
 export const selectSearchCodMarinha = selectVesselSearchStateProperty('codMarinha')
 export const selectSearchGeartypes = selectVesselSearchStateProperty('geartypes')
 export const selectSearchShiptypes = selectVesselSearchStateProperty('shiptypes')
@@ -41,6 +42,7 @@ export const selectSearchFilters = createSelector(
     selectSearchImo,
     selectSearchCallsign,
     selectSearchOwner,
+    selectSearchNationalId,
     selectSearchCodMarinha,
     selectSearchGeartypes,
     selectSearchShiptypes,
@@ -58,6 +60,7 @@ export const selectSearchFilters = createSelector(
     imo,
     callsign,
     owner,
+    nationalId,
     codMarinha,
     geartypes,
     shiptypes,
@@ -75,6 +78,7 @@ export const selectSearchFilters = createSelector(
       imo,
       callsign,
       owner,
+      nationalId,
       codMarinha,
       geartypes,
       shiptypes,

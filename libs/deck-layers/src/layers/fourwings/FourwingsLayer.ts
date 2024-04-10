@@ -1,6 +1,5 @@
-import { Color, CompositeLayer, Layer, LayerContext, LayersList } from '@deck.gl/core'
+import { Color, CompositeLayer, Layer, LayersList } from '@deck.gl/core'
 import { TileLayerProps } from '@deck.gl/geo-layers'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsHeatmapTileLayer } from './FourwingsHeatmapTileLayer'
 import { FourwingsHeatmapStaticLayer } from './FourwingsHeatmapStaticLayer'
@@ -29,22 +28,6 @@ export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
 
-  initializeState(context: LayerContext): void {
-    super.initializeState(context)
-    this.state = {
-      loaded: false,
-    }
-  }
-
-  _onViewportLoad = (tiles: Tile2DHeader[]) => {
-    this.setState({ loaded: true })
-    this.props.onViewportLoad?.(tiles)
-  }
-
-  _onTileDataLoading = () => {
-    this.setState({ loaded: false })
-  }
-
   renderLayers(): Layer<{}> | LayersList {
     const visualizationMode = this.getMode()
     const HeatmapLayerClass = this.getSubLayerClass('heatmap', FourwingsHeatmapTileLayer)
@@ -55,8 +38,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
         this.props,
         this.getSubLayerProps({
           id: POSITIONS_ID,
-          onViewportLoad: this._onViewportLoad,
-          onTileDataLoading: this._onTileDataLoading,
+          onViewportLoad: this.props.onViewportLoad,
         })
       )
     }
@@ -65,16 +47,14 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
           this.props,
           this.getSubLayerProps({
             id: HEATMAP_STATIC_ID,
-            onViewportLoad: this._onViewportLoad,
-            onTileDataLoading: this._onTileDataLoading,
+            onViewportLoad: this.props.onViewportLoad,
           })
         )
       : new HeatmapLayerClass(
           this.props,
           this.getSubLayerProps({
             id: HEATMAP_ID,
-            onViewportLoad: this._onViewportLoad,
-            onTileDataLoading: this._onTileDataLoading,
+            onViewportLoad: this.props.onViewportLoad,
           })
         )
   }

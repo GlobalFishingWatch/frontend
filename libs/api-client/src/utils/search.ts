@@ -9,22 +9,25 @@ export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
   tooltip?: string
 }
 
-export type AdvancedSearchQueryFieldKey =
-  | 'shipname'
-  | 'ssvid'
-  | 'imo'
-  | 'mmsi'
-  | 'callsign'
-  | 'codMarinha'
-  | 'flag'
-  | 'geartypes'
-  | 'shiptypes'
-  | 'targetSpecies'
-  | 'fleet'
-  | 'origin'
-  | 'transmissionDateFrom'
-  | 'transmissionDateTo'
-  | 'owner'
+export type AdvancedSearchQueryFieldKey = (typeof ADVANCED_SEARCH_QUERY_FIELDS)[number]
+export const ADVANCED_SEARCH_QUERY_FIELDS = [
+  'callsign' as const,
+  'flag' as const,
+  'fleet' as const,
+  'geartypes' as const,
+  'imo' as const,
+  'mmsi' as const,
+  'origin' as const,
+  'owner' as const,
+  'selfReportedInfo.codMarinha' as const,
+  'selfReportedInfo.nationalId' as const,
+  'shipname' as const,
+  'shiptypes' as const,
+  'ssvid' as const,
+  'targetSpecies' as const,
+  'transmissionDateFrom' as const,
+  'transmissionDateTo' as const,
+]
 
 export type AdvancedSearchQueryField = {
   key: AdvancedSearchQueryFieldKey
@@ -47,7 +50,7 @@ const toUpperCaseWithQuotationMarks = (field: AdvancedSearchQueryField) => {
 
 const toUpperCaseWithWildcardsAndQuotationMarks = (field: AdvancedSearchQueryField) => {
   if (!field.value) return ''
-  const transform = (value: string) => `'%${value}%'`.toUpperCase()
+  const transform = (value: string) => `'*${value}*'`.toUpperCase()
   return Array.isArray(field.value) ? field.value.map(transform) : transform(field.value)
 }
 
@@ -94,8 +97,12 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     transformation: toUpperCaseWithQuotationMarks,
   },
   // VMS specific
-  codMarinha: {
+  'selfReportedInfo.codMarinha': {
     operator: '=',
+  },
+  'selfReportedInfo.nationalId': {
+    operator: 'LIKE',
+    transformation: toUpperCaseWithWildcardsAndQuotationMarks,
   },
   targetSpecies: {
     operator: '=',
@@ -121,7 +128,7 @@ export const getAdvancedSearchQuery = (
     }
 
     const getFieldValue = (value: string) => {
-      const operator = field.operator || params.operator || '='
+      const operator = field?.operator || params?.operator || '='
       if (field.key === 'owner') {
         return `registryOwners.name ${operator} ${value}`
       }

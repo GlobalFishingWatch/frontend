@@ -6,9 +6,10 @@ import { Icon } from '@globalfishingwatch/ui-components'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { selectVesselSelfReportedId } from 'features/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import DataTerminology from 'features/vessel/identity/DataTerminology'
+import { selectVesselInfoData } from '../selectors/vessel.selectors'
 import InsightWrapper from './InsightWrapper'
 import { INSIGHTS_NON_FISHING, INSIGHTS_FISHING, MIN_INSIGHTS_YEAR } from './insights.config'
 import styles from './Insights.module.css'
@@ -30,6 +31,19 @@ const Insights = () => {
     [isFishingVessel]
   )
 
+  if (DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR) {
+    return (
+      <div className={styles.disclaimer}>
+        <Icon icon="warning" type="warning" />
+        {t('vessel.insights.disclaimerTimeRangeBeforeMinYear', {
+          defaultValue:
+            'Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.',
+          year: MIN_INSIGHTS_YEAR,
+        })}
+      </div>
+    )
+  }
+
   return (
     <div className={styles.container}>
       <h2 className="print-only">{t('vessel.sectionInsights', 'Insights')}</h2>
@@ -39,16 +53,13 @@ const Insights = () => {
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}
+        <DataTerminology
+          size="tiny"
+          type="default"
+          title={t('vessel.sectionInsights', 'Insights')}
+          terminologyKey="insights"
+        />
       </p>
-      {DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR && (
-        <div className={styles.disclaimer}>
-          <Icon icon="warning" type="warning" />
-          {t(
-            'vessel.insights.disclaimerTimeRangeBeforeMinYear',
-            'Due to varying quality of data sources, insights are more reliable for activities after Jan 1, 2017. Adjust the start/end date of your timebar, where relevant.'
-          )}
-        </div>
-      )}
       {insightsByVesselType.map((insight) => (
         <InsightWrapper insight={insight} key={insight} />
       ))}

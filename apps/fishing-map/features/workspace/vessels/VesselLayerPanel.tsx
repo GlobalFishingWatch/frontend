@@ -136,13 +136,13 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     setInfoOpen(false)
   }
 
-  const vesselTrackData = vesselLayer?.instance.dataStatus.find((l) => l.type === 'track')
-  const trackLoading = vesselTrackData?.status === ResourceStatus.Loading
+  const trackLoaded = vesselLayer?.instance.getVesselTracksLayersLoaded()
+  const trackLayerVisible = vesselLayer?.instance.props.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
-  const loading = infoLoading || trackLoading
+  const loading = trackLayerVisible && (infoLoading || !trackLoaded)
 
   const infoError = infoResource?.status === ResourceStatus.Error
-  const trackError = false //vesselTrackData?.status === ResourceStatus.Error
+  const trackError: any = vesselLayer?.instance.getErrorMessage()
 
   const vesselData = infoResource?.data
   const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
@@ -213,7 +213,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     </Fragment>
   )
 
-  const TrackIconComponent = trackLoading ? (
+  const TrackIconComponent = !trackLoaded ? (
     <IconButton
       loading
       className={styles.loadingIcon}

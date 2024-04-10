@@ -15,5 +15,5 @@ export type ResolverGlobalConfig = {
   compareEnd?: string
   highlightedTime?: { start: string; end: string }
   locale?: string
-  visibleEvents?: EventTypes[]
+  visibleEvents: EventTypes[]
 }

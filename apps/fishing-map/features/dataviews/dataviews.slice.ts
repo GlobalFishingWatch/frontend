@@ -7,8 +7,6 @@ import {
   DataviewDatasetConfig,
   DataviewInstance,
   DatasetTypes,
-  DataviewType,
-  DataviewCategory,
 } from '@globalfishingwatch/api-types'
 import {
   GFWAPI,
@@ -17,13 +15,11 @@ import {
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
 import {
-  getResources,
   mergeWorkspaceUrlDataviewInstances,
   resolveDataviews,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import {
-  selectWorkspaceStateProperty,
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
@@ -38,8 +34,6 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { createDeepEqualSelector } from 'utils/selectors'
-import { selectTrackThinningConfig } from 'features/resources/resources.slice'
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
@@ -47,18 +41,11 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import { selectIsGuestUser, selectIsUserLogged } from 'features/user/selectors/user.selectors'
+import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { selectTrackChunksConfig } from 'features/resources/resources.selectors.thinning'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
-import {
-  // eventsDatasetConfigsCallback,
-  infoDatasetConfigsCallback,
-  trackDatasetConfigsCallback,
-} from '../resources/resources.utils'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
@@ -304,6 +291,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
             config.track = trackDatasetId
           }
         }
+
         const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
           vesselId,
           config
@@ -334,108 +322,6 @@ export const selectMarineManagerDataviewInstanceResolved = createSelector(
       datasets
     )
     return dataviewInstancesResolved
-  }
-)
-
-/**
- * Calls getResources to prepare track dataviews' datasetConfigs.
- * Injects app-specific logic by using getResources's callback
- */
-export const selectDataviewsResources = createSelector(
-  [
-    selectAllDataviewInstancesResolved,
-    selectTrackThinningConfig,
-    selectTrackChunksConfig,
-    selectWorkspaceStateProperty('timebarGraph'),
-    selectIsGuestUser,
-  ],
-  (dataviewInstances, thinningConfig, chunks, timebarGraph, guestUser) => {
-    // const callbacks: GetDatasetConfigsCallbacks = {
-    //   track: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
-    //   events: eventsDatasetConfigsCallback,
-    //   info: infoDatasetConfigsCallback,
-    // }
-    const callbacks: any = {
-      // const callbacks: GetDatasetConfigsCallbacks = {
-      tracks: trackDatasetConfigsCallback(thinningConfig, timebarGraph),
-      //       track: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
-      //       events: eventsDatasetConfigsCallback,
-      info: infoDatasetConfigsCallback(guestUser),
-    }
-    return getResources(dataviewInstances || [], callbacks)
-  }
-)
-
-const defaultDataviewResolved: UrlDataviewInstance[] = []
-export const selectDataviewInstancesResolved = createSelector(
-  [selectDataviewsResources],
-  (dataviewsResources) => {
-    return dataviewsResources.dataviews || defaultDataviewResolved
-  }
-)
-
-export const selectActiveDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesResolved],
-  (dataviewInstances) => {
-    return dataviewInstances.filter((d) => d.config?.visible)
-  }
-)
-
-export const selectCurrentDataviewInstancesResolved = createSelector(
-  [
-    selectDataviewInstancesResolved,
-    selectIsMarineManagerLocation,
-    selectMarineManagerDataviewInstanceResolved,
-  ],
-  (dataviewsInstances = [], isMarineManagerLocation, marineManagerDataviewInstances = []) => {
-    return isMarineManagerLocation ? marineManagerDataviewInstances : dataviewsInstances
-  }
-)
-
-export const selectDataviewInstancesByType = (type: DataviewType) => {
-  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
-    return dataviews?.filter((dataview) => dataview.config?.type === type)
-  })
-}
-
-export const selectTrackDataviews = createSelector(
-  [selectDataviewInstancesByType(DataviewType.Track)],
-  (dataviews) => dataviews
-)
-
-const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
-  return dataviews?.filter(
-    (dataview) =>
-      !dataview.datasets ||
-      (dataview.datasets?.[0]?.type !== DatasetTypes.UserTracks &&
-        dataview.category === DataviewCategory.Vessels)
-  )
-})
-
-const selectActiveVesselsDataviews = createDeepEqualSelector(
-  [selectVesselsDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
-)
-
-export const selectVesselProfileDataview = createDeepEqualSelector(
-  [selectActiveVesselsDataviews, selectVesselId],
-  (dataviews, vesselId) => dataviews.find(({ id }) => vesselId && id.includes(vesselId))
-)
-
-export const selectVesselProfileColor = createSelector(
-  [selectVesselProfileDataview],
-  (dataview) => dataview?.config?.color
-)
-
-export const selectActiveTrackDataviews = createDeepEqualSelector(
-  [selectTrackDataviews, selectIsAnyVesselLocation, selectViewOnlyVessel, selectVesselId],
-  (dataviews, isVesselLocation, viewOnlyVessel, vesselId) => {
-    return dataviews?.filter(({ config, id }) => {
-      if (isVesselLocation && viewOnlyVessel) {
-        return id === `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}` && config?.visible
-      }
-      return config?.visible
-    })
   }
 )
 

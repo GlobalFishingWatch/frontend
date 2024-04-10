@@ -21,7 +21,7 @@
   },
   "encounters": {
     "name": "Eventos de encuentro (AIS)",
-    "description": "Identificados de los datos AIS como lugares donde dos buques, un transportador y uno pesquero, estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media menor a 2 nudos mientras se encontraban a menos de 10 km de un anclaje costero.",
+    "description": "Identificados de los datos AIS como lugares donde dos buques, un transportador y uno pesquero, estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media menor a 2 nudos mientras se encontraban a mas de 10 km de un anclaje costero.",
     "moreInfoLink": ""
   },
   "fao-major": {

@@ -65,7 +65,7 @@ export const selectWorkspaceVisibleEventsArray = createSelector(
       ? visibleEvents === 'all'
         ? Object.values(EventTypes)
         : []
-      : visibleEvents
+      : (visibleEvents as EventTypes[])
   }
 )
 

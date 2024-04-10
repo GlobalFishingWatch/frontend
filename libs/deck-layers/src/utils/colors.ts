@@ -43,9 +43,11 @@ export const deckToRgbaColor = ([r, g, b, a]: any) => {
   return `rgba(${r},${g}, ${b}, ${a ? a / 255 : 1})`
 }
 
-export const rgbaStringToObject = (rgba: string) => {
+export const rgbaStringToObject = (rgba?: string) => {
+  if (!rgba) return { r: 0, g: 0, b: 0, a: 0 }
+  const colorHasAlpha = rgba.includes('rgba')
   const [r, g, b, a] = rgba
-    .substring(5, rgba.length - 1)
+    .substring(colorHasAlpha ? 5 : 4, rgba.length - 1)
     .replace(/ /g, '')
     .split(',')
 
@@ -53,8 +55,20 @@ export const rgbaStringToObject = (rgba: string) => {
     r: parseInt(r),
     g: parseInt(g),
     b: parseInt(b),
-    a: parseFloat(a),
+    a: colorHasAlpha ? parseFloat(a) : 1,
   }
+}
+
+export const rgbaStringToComponents = (color: string) => {
+  const rgba = color.match(/[.?\d]+/g)
+  if (rgba)
+    return [
+      parseInt(rgba[0]),
+      parseInt(rgba[1]),
+      parseInt(rgba[2]),
+      Math.round(parseFloat(rgba[3] || '1') * 255),
+    ]
+  return []
 }
 
 export const rgbaToString = ({ r, g, b, a = 1 }: RGBA) => {

@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { uniqBy } from 'lodash'
 import {
   FilterSpecification,
   GeoJSONFeature,
@@ -307,7 +308,10 @@ export const useMapDataviewFeatures = (
               }
               return {
                 active,
-                features: features as unknown as GeoJSONFeature<TimeseriesFeatureProps>[],
+                features: uniqBy(
+                  features,
+                  'id'
+                ) as unknown as GeoJSONFeature<TimeseriesFeatureProps>[],
                 quantizeOffset,
                 state: chunkState,
               }

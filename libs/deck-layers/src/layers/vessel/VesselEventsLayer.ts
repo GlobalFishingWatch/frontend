@@ -1,22 +1,13 @@
-import { AccessorFunction, Color, DefaultProps, Position, UpdateParameters } from '@deck.gl/core'
+import {
+  AccessorFunction,
+  ChangeFlags,
+  DefaultProps,
+  Position,
+  UpdateParameters,
+} from '@deck.gl/core'
 import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { hexToDeckColor } from '../../utils/colors'
-
-export const EVENT_TYPES_ORDINALS: { [key in EventTypes]: number } = {
-  port_visit: 0,
-  encounter: 1,
-  fishing: 2,
-  gap: 3,
-  loitering: 4,
-}
-
-export const EVENTS_COLORS: Record<string, Color> = {
-  encounter: hexToDeckColor('#FAE9A0'),
-  loitering: hexToDeckColor('#cfa9f9'),
-  port_visit: hexToDeckColor('#99EEFF'),
-  highlight: hexToDeckColor('#ffffff'),
-}
+import { EVENT_SHAPES, SHAPES_ORDINALS } from './vessel.config'
 
 export type _VesselEventsLayerProps<DataT = any> = {
   type: EventTypes
@@ -27,7 +18,7 @@ export type _VesselEventsLayerProps<DataT = any> = {
   getPosition?: AccessorFunction<DataT, Position> | Position
   getFilterValue?: AccessorFunction<DataT, number>
   getPickingInfo?: AccessorFunction<DataT, string>
-  onDataChange?: (type: EventTypes, dataChange: string) => void
+  onDataChange?: (dataChange: ChangeFlags['dataChanged']) => void
 }
 
 export type VesselEventsLayerProps<DataT = any> = _VesselEventsLayerProps<DataT> &
@@ -38,7 +29,7 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   opacity: { type: 'accessor', value: 0.8 },
   stroked: { type: 'accessor', value: false },
   filterRange: { type: 'accessor', value: [] },
-  radiusScale: { type: 'accessor', value: 30 },
+  radiusScale: { type: 'accessor', value: 1 },
   radiusMinPixels: { type: 'accessor', value: 2 },
   radiusMaxPixels: { type: 'accessor', value: 10 },
   lineWidthMinPixels: { type: 'accessor', value: 1 },
@@ -46,7 +37,7 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   onDataChange: { type: 'function', value: () => {} },
   getShape: {
     type: 'accessor',
-    value: (d) => EVENT_TYPES_ORDINALS[d.type as EventTypes] ?? EVENT_TYPES_ORDINALS.fishing,
+    value: (d) => EVENT_SHAPES[d.type as EventTypes] ?? EVENT_SHAPES.fishing,
   },
   getFillColor: { type: 'accessor', value: (d) => [255, 255, 255] },
   getPosition: { type: 'accessor', value: (d) => d.coordinates },
@@ -79,18 +70,20 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
       ...super.getShaders(),
       inject: {
         'vs:#decl': `
-          attribute float instanceShapes;
-          attribute float instanceId;
-          varying float vShape;
+          in float instanceShapes;
+          in float instanceId;
+          out float vShape;
         `,
         'vs:#main-end': `
           vShape = instanceShapes;
         `,
         'fs:#decl': `
           uniform mat3 hueTransform;
-          varying float vShape;
-          const int SHAPE_SQUARE = 0;
-          const int SHAPE_DIAMOND = 1;
+          in float vShape;
+          const int SHAPE_CIRCLE = ${SHAPES_ORDINALS.circle};
+          const int SHAPE_SQUARE = ${SHAPES_ORDINALS.square};
+          const int SHAPE_DIAMOND = ${SHAPES_ORDINALS.diamond};
+          const int SHAPE_DIAMOND_STROKE = ${SHAPES_ORDINALS.diamondStroke};
         `,
         'fs:DECKGL_FILTER_COLOR': `
           vec2 uv = abs(geometry.uv);
@@ -99,6 +92,10 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
             if (uv.x > 0.7 || uv.y > 0.7) discard;
           } else if (shape == SHAPE_DIAMOND) {
               if (uv.x + uv.y > 1.0) discard;
+          } else if (shape == SHAPE_DIAMOND_STROKE) {
+              if (uv.x + uv.y > 1.0 || uv.x + uv.y < 0.7) {
+                discard;
+              }
           }
         `,
       },
@@ -109,7 +106,7 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
     super.updateState(params)
     const { dataChanged } = params.changeFlags
     if (dataChanged !== false && this.props.onDataChange) {
-      this.props.onDataChange(params.props.type, dataChanged as string)
+      this.props.onDataChange(dataChanged)
     }
   }
 

@@ -51,7 +51,7 @@ export const rgbaStringToComponents = (color: string) => {
       parseInt(rgba[0]),
       parseInt(rgba[1]),
       parseInt(rgba[2]),
-      Math.round(parseFloat(rgba[3]) * 255),
+      Math.round((parseFloat(rgba[3]) || 0) * 255),
     ]
   return []
 }
@@ -82,10 +82,10 @@ export const getColorRampToWhite = (
       g: Math.floor(rgbColor.g + (255 - rgbColor.g) * ratio),
       b: Math.floor(rgbColor.b + (255 - rgbColor.b) * ratio),
     }
-    return `rgb(${rgbToRgbString(rgb)})`
+    return `rgba(${rgbToRgbString(rgb)}, 1)`
   })
 
-  const ramp = [...steps, 'rgb(255, 255, 255)']
+  const ramp = [...steps, 'rgba(255, 255, 255, 1)']
 
   return ramp
 }

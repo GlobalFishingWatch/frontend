@@ -1,5 +1,10 @@
 import { ResponseError, V2MetadataError } from '../api-client'
-
+// The 524 timeout from cloudfare is not handled properly
+// and rejects with a typeError
+export const crossBrowserTypeErrorMessages = [
+  'Load failed', // Safari
+  'Failed to fetch', // Chromium
+]
 export const parseAPIErrorStatus = (error: ResponseError) => {
   return error.status || (error as any).code || null
 }

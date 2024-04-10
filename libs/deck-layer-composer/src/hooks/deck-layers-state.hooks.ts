@@ -1,6 +1,9 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
-import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
+import type {
+  AnyDeckLayer,
+  LayerWithIndependentSublayersLoadState,
+} from '@globalfishingwatch/deck-layers'
 
 // Atom used to have all the layer instances loading state available
 type DeckLayerLoaded = { loaded: boolean }
@@ -19,7 +22,13 @@ export const useSetDeckLayerLoadedState = () => {
         setDeckLayerLoadedState(() => {
           const newLoadedState = {} as DeckLayerState
           layers.forEach((layer) => {
-            newLoadedState[layer.id] = { loaded: layer.state?.loaded as boolean }
+            if ((layer as LayerWithIndependentSublayersLoadState).getAllSublayersLoaded) {
+              newLoadedState[layer.id] = {
+                loaded: (layer as LayerWithIndependentSublayersLoadState).getAllSublayersLoaded(),
+              }
+            } else {
+              newLoadedState[layer.id] = { loaded: layer.isLoaded }
+            }
           })
           return newLoadedState
         })

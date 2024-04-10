@@ -23,8 +23,7 @@ export type ParseFourwingsOptions = {
   cols: number
   rows: number
   tile: TileLoadProps
-  minFrame: number
-  maxFrame: number
+  bufferedStartDate: number
   initialTimeRange: {
     start: number
     end: number
@@ -36,6 +35,7 @@ export type ParseFourwingsOptions = {
   noDataValue?: number
   sublayers: number
   buffersLength: number[]
+  workerUrl?: string
 }
 
 export type FourwingsLoaderOptions = LoaderOptions & {
@@ -44,7 +44,7 @@ export type FourwingsLoaderOptions = LoaderOptions & {
 
 export type FourwingsFeatureProperties = {
   initialValues: Record<string, number[]>
-  startFrames: number[]
+  startOffsets: number[]
   dates: number[][]
   values: number[][]
   cellId: number
