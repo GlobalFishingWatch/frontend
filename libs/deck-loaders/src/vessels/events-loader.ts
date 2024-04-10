@@ -1,5 +1,6 @@
 import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
 import packageJson from '../../package.json'
+import { PATH_BASENAME } from '../loaders.config'
 import { parseEvents } from './lib/parse-events'
 
 /**
@@ -12,8 +13,12 @@ export const VesselEventsWorkerLoader: Loader = {
   version: packageJson.version,
   extensions: ['json'],
   mimeTypes: ['application/json'],
-  worker: false,
-  options: {},
+  worker: true,
+  options: {
+    'vessel-events': {
+      workerUrl: `${PATH_BASENAME}/workers/vessel-events-worker.js`,
+    },
+  },
 }
 
 /**

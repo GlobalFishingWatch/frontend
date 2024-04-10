@@ -235,14 +235,14 @@ function PopupWrapper({
               //   )
               // }
 
-              // case DataviewCategory.Vessels:
-              //   return (
-              //     <VesselEventsLayers
-              //       key={featureCategory}
-              //       features={features}
-              //       showFeaturesDetails={type === 'click'}
-              //     />
-              //   )
+              case DataviewCategory.Vessels:
+                return (
+                  <VesselEventsLayers
+                    key={featureCategory}
+                    features={features}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                )
 
               default:
                 return null

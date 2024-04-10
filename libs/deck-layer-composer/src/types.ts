@@ -11,6 +11,9 @@ import {
   FourwingsPickingObject,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
+  RulerPickingInfo,
+  RulerPickingObject,
+  RulersLayer,
   UserContextPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
@@ -59,8 +62,10 @@ export type DeckLayerInteractionFeature =
   | ContextPickingObject
   | UserContextPickingObject
   | ClusterPickingObject
+  | RulerPickingObject
 
 export type DeckLayerInteractionPickingInfo =
   | (FourwingsPickingInfo & { layer: FourwingsLayer })
   | (ContextPickingInfo & { layer: ContextLayer })
   | (ClusterPickingInfo & { layer: ClusterLayer })
+  | (RulerPickingInfo & { layer: RulersLayer })

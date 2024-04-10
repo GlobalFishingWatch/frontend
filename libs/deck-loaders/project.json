@@ -23,6 +23,7 @@
         "commands": [
           "nx fourwings:worker deck-loaders",
           "nx tracks:worker deck-loaders",
+          "nx events:worker deck-loaders",
           "rm -rf dist/libs/deck-loaders/workers/package.json"
         ],
         "parallel": false
@@ -54,6 +55,25 @@
         "outputPath": "dist/libs/deck-loaders/workers",
         "outputFileName": "vessel-tracks-worker.js",
         "main": "libs/deck-loaders/src/vessels/workers/tracks-worker.ts",
+        "generateExportsField": true,
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "watch": false,
+        "target": "esnext",
+        "platform": "browser",
+        "deleteOutputPath": false,
+        "bundle": true,
+        "thirdParty": true,
+        "generatePackageJson": false,
+        "minify": false
+      }
+    },
+    "events:worker": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputFileName": "vessel-events-worker.js",
+        "main": "libs/deck-loaders/src/vessels/workers/events-worker.ts",
         "generateExportsField": true,
         "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
         "watch": false,
