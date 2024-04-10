@@ -131,11 +131,11 @@ export const THINNING_CONFIG: { user: ThinningConfig; guest: ThinningConfig } = 
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
 
 export const POPUP_CATEGORY_ORDER = [
-  DataviewCategory.Activity,
-  DataviewCategory.Detections,
-  DataviewCategory.Events,
-  DataviewCategory.Environment,
-  DataviewCategory.Context,
+  `${DataviewCategory.Activity}`,
+  `${DataviewCategory.Detections}`,
+  `${DataviewCategory.Events}`,
+  `${DataviewCategory.Environment}`,
+  `${DataviewCategory.Context}`,
 ]
 
 export const FIT_BOUNDS_REPORT_PADDING = 30

@@ -42,7 +42,12 @@ function ActivityTooltipRow({ feature, showFeaturesDetails, loading }: ActivityT
           )}
           {/* // TODO:deck add subcategory info */}
           {!loading && showFeaturesDetails && (
-            <VesselsTable feature={feature} activityType={feature.subcategory} />
+            <VesselsTable
+              feature={feature}
+              activityType={
+                feature.category === DataviewCategory.Detections ? 'fishing' : 'presence'
+              }
+            />
           )}
         </div>
       </div>

@@ -19,11 +19,11 @@
 .click .loading {
   background: var(--color-white);
   color: var(--color-primary-blue);
-  box-shadow: var(--box-shadow);
 }
 
 .click .content {
   min-width: var(--sidebar-width);
+  box-shadow: var(--box-shadow);
 }
 
 .click .loading {

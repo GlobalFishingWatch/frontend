@@ -22,7 +22,9 @@ import {
   ContextPickingObject,
   FourwingsDeckSublayer,
   FourwingsPickingObject,
+  RulerPickingObject,
   UserContextPickingObject,
+  VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -66,6 +68,8 @@ export type SliceExtendedFeature =
   | ContextPickingObject
   | UserContextPickingObject
   | ClusterPickingObject
+  | RulerPickingObject
+  | VesselEventPickingObject
 
 // Extends the default extendedEvent including event and vessels information from API
 export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
@@ -349,7 +353,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
   {
     dispatch: AppDispatch
   }
->('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
+>('map/fetchEncounterEvent', async (eventFeature: any, { signal, getState }) => {
   const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
@@ -518,7 +522,9 @@ const slice = createSlice({
     builder.addCase(fetchEncounterEventThunk.fulfilled, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
-      const feature = state.clicked?.features?.find((feature) => feature.id && action.meta.arg.id)
+      const feature = state.clicked?.features?.find(
+        (feature) => feature.id && action.meta.arg.id
+      ) as any
       if (feature) {
         feature.event = action.payload
       }
@@ -536,7 +542,9 @@ const slice = createSlice({
     builder.addCase(fetchBQEventThunk.fulfilled, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
-      const feature = state.clicked?.features?.find((feature) => feature.id && action.meta.arg.id)
+      const feature = state.clicked?.features?.find(
+        (feature) => feature.id && action.meta.arg.id
+      ) as any
       if (feature && action.payload) {
         feature.properties = { ...feature.properties, ...action.payload }
       }

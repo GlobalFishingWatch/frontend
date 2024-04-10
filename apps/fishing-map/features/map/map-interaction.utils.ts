@@ -1,4 +1,4 @@
-import { DeckLayerInteractionFeature } from '@globalfishingwatch/deck-layer-composer'
+import { DeckLayerInteractionFeature } from '@globalfishingwatch/deck-layers'
 import { RulerPickingObject } from '@globalfishingwatch/deck-layers'
 
 export const isRulerLayerPoint = (feature: DeckLayerInteractionFeature) =>
