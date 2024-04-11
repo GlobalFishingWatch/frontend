@@ -118,7 +118,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           type,
           onError: this.onSublayerError,
           loaders: [VesselEventsLoader],
-          // loaderOptions: { worker: false },
           pickable: true,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
           getFillColor: (d: any): Color => {

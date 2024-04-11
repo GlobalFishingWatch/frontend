@@ -1,7 +1,7 @@
 import { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { ContextFeature } from '@globalfishingwatch/deck-layers'
+import { ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Popup.module.css'
@@ -9,7 +9,7 @@ import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
 
 type ContextTooltipRowProps = {
-  features: ContextFeature[]
+  features: ContextPickingObject[]
   showFeaturesDetails: boolean
 }
 

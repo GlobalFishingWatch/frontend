@@ -5,7 +5,9 @@ import {
   ClusterLayer,
   ContextFeature,
   ContextLayer,
-  DeckLayerInteractionFeature,
+  ContextPickingInfo,
+  ContextPickingObject,
+  DeckLayerPickingObject,
   FourwingsLayer,
   FourwingsPickingObject,
   VesselLayer,
@@ -29,7 +31,7 @@ export * from './vessels'
 export const dataviewToDeckLayer = (
   dataview: DataviewInstance,
   globalConfig: ResolverGlobalConfig,
-  interactions = [] as DeckLayerInteractionFeature[]
+  interactions = [] as DeckLayerPickingObject[]
 ): AnyDeckLayer => {
   if (dataview.config?.type === DataviewType.Basemap) {
     const deckLayerProps = resolveDeckBasemapLayerProps(dataview, globalConfig)
@@ -51,7 +53,7 @@ export const dataviewToDeckLayer = (
     const deckLayerProps = resolveDeckContextLayerProps(
       dataview,
       globalConfig,
-      interactions as ContextFeature[]
+      interactions as ContextPickingObject[]
     )
     const layer = new ContextLayer(deckLayerProps)
     return layer

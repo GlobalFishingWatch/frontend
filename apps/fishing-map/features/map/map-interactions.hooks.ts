@@ -314,7 +314,7 @@ export const useMapMouseClick = () => {
     if (!clickedEvent || !clickedTooltipEvent) return
 
     const layersByCategory = (clickedTooltipEvent?.features ?? [])
-      .sort(
+      .toSorted(
         (a, b) =>
           POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
       )

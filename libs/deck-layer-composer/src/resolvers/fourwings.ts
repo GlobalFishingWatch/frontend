@@ -74,7 +74,27 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
   const dataset = dataview.config?.sublayers
     ?.flatMap((sublayer) => sublayer.datasets)
     ?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
+
   const tilesUrl = dataset
+    ? resolveEndpoint(
+        dataset,
+        {
+          datasetId: dataset.id,
+          endpoint: EndpointId.FourwingsTiles,
+          params: [
+            {
+              id: 'type',
+              // api enpdoint needs 'position' instead of 'positions'
+              // TODO: discuss this with Raul before the release
+              value: visualizationMode === 'positions' ? 'position' : 'heatmap',
+            },
+          ],
+        },
+        { absolute: true }
+      )
+    : undefined
+
+  const interactionUrl = dataset
     ? resolveEndpoint(
         dataset,
         {

@@ -2,7 +2,7 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   AnyDeckLayer,
-  DeckLayerInteractionFeature,
+  DeckLayerPickingObject,
   FourwingsResolution,
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
@@ -27,9 +27,9 @@ export type ResolverGlobalConfig = {
 
 export type DeckResolverFunction<
   LayerProps = AnyDeckLayer['props'],
-  InteractionFeature = DeckLayerInteractionFeature
+  InteractionFeature = DeckLayerPickingObject
 > = (
   dataview: UrlDataviewInstance,
-  { start, end, resolution, debug }: ResolverGlobalConfig,
+  globalConfig: ResolverGlobalConfig,
   interactions?: InteractionFeature[]
 ) => LayerProps

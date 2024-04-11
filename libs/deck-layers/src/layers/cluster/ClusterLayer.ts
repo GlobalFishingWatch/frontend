@@ -1,4 +1,4 @@
-import { CompositeLayer, DefaultProps, LayerProps } from '@deck.gl/core'
+import { CompositeLayer, DefaultProps, LayerProps, PickingInfo } from '@deck.gl/core'
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -25,13 +25,13 @@ export class ClusterLayer extends CompositeLayer<LayerProps & TileLayerProps & C
   static layerName = 'ClusterLayer'
   static defaultProps = defaultProps
 
-  getPickingInfo = ({ info }: { info: ClusterPickingInfo }) => {
-    let { object } = info
-    if (object) {
-      object.layerId = this.props.id
-      object.category = this.props.category
+  getPickingInfo = ({ info }: { info: PickingInfo<ClusterFeature> }): ClusterPickingInfo => {
+    const object = {
+      ...(info.object || ({} as ClusterFeature)),
+      layerId: this.props.id,
+      category: this.props.category,
     }
-    return info
+    return { ...info, object }
   }
 
   renderLayers() {

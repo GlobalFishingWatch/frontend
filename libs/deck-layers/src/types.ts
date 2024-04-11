@@ -17,10 +17,12 @@ import { VesselEventPickingObject, VesselEventPickingInfo } from './layers/vesse
 
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers'
 
+// TODO:deck move this type to a generic like DeckLayerProps<SpecificLayerProps>
 export type BaseLayerProps = {
   category: DeckLayerCategory
 }
 
+// TODO:deck move this type to a generic like DeckPickingInfo<SpecificLayerInfo>
 export type BasePickingInfo = {
   layerId: string
   category: DeckLayerCategory
@@ -36,7 +38,7 @@ export type AnyDeckLayer<D extends {} = {}> =
 
 export type LayerWithIndependentSublayersLoadState = VesselLayer
 
-export type DeckLayerInteractionFeature =
+export type DeckLayerPickingObject =
   | FourwingsPickingObject
   | ContextPickingObject
   | UserContextPickingObject

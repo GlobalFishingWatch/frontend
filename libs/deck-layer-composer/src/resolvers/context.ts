@@ -1,10 +1,9 @@
-import { PickingInfo } from '@deck.gl/core'
-import { Dataset, DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
-  ContextFeature,
   ContextLayerConfig,
   ContextLayerId,
   ContextLayerProps,
+  ContextPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import {
@@ -12,11 +11,11 @@ import {
   getDatasetConfiguration,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
-import { DeckResolverFunction, ResolverGlobalConfig } from './types'
+import { DeckResolverFunction } from './types'
 
 export const resolveDeckContextLayerProps: DeckResolverFunction<
   ContextLayerProps,
-  ContextFeature
+  ContextPickingObject
 > = (dataview, globalConfig, interactions) => {
   // TODO make this work for auxiliar layers
   // https://github.com/GlobalFishingWatch/frontend/blob/master/libs/dataviews-client/src/resolve-dataviews-generators.ts#L606
