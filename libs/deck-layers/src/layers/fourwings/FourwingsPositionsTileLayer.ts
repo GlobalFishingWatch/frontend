@@ -12,7 +12,11 @@ import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
-import { POSITIONS_API_TILES_URL, POSITIONS_VISUALIZATION_MIN_ZOOM } from './fourwings.config'
+import {
+  PATH_BASENAME,
+  POSITIONS_API_TILES_URL,
+  POSITIONS_VISUALIZATION_MIN_ZOOM,
+} from './fourwings.config'
 import { getRoundedDateFromTS } from './fourwings.utils'
 import {
   FourwingsTileLayerColorDomain,
@@ -231,7 +235,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       new IconLayerClass(this.props, {
         id: 'allPositions',
         data: allPositions,
-        iconAtlas: '/vessel-sprite.png',
+        iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
         iconMapping: ICON_MAPPING,
         getIcon: () => 'rect',
         getPosition: (d: any) => d.geometry.coordinates,
@@ -248,7 +252,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       new IconLayer(this.props as any, {
         id: 'lastPositions',
         data: lastPositions,
-        iconAtlas: '/vessel-sprite.png',
+        iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
         iconMapping: ICON_MAPPING,
         getIcon: () => 'vesselHighlight',
         getPosition: (d) => d.geometry.coordinates,
@@ -262,7 +266,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       new IconLayerClass(this.props, {
         id: 'lastPositionsOver',
         data: lastPositions,
-        iconAtlas: '/vessel-sprite.png',
+        iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
         iconMapping: ICON_MAPPING,
         getIcon: () => 'vessel',
         getSize: 19,
