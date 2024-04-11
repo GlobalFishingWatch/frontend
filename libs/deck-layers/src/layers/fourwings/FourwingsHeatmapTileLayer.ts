@@ -21,12 +21,7 @@ import {
 import { HEATMAP_COLOR_RAMPS, ColorRampsIds } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import {
-  COLOR_RAMP_BIVARIATE_NUM_STEPS,
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
-  ColorRampId,
-  getBivariateRamp,
-} from '../../utils/colorRamps'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS, ColorRampId, getBivariateRamp } from '../../utils/colorRamps'
 import {
   aggregateCellTimeseries,
   filterElementByPercentOfIndex,
@@ -123,12 +118,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         return this.getColorDomain()
       }
 
-      const steps = allValues.filter((sublayer) => sublayer.length).map((sublayerValues) =>
-        ckmeans(
-          sublayerValues,
-          Math.min(sublayerValues.length, COLOR_RAMP_BIVARIATE_NUM_STEPS)
-        ).map((step) => step[0])
-      )
+      const steps = allValues
+        .filter((sublayer) => sublayer.length)
+        .map((sublayerValues) =>
+          ckmeans(
+            sublayerValues,
+            Math.min(sublayerValues.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
+          ).map((step) => step[0])
+        )
       return steps
     }
 
@@ -173,12 +170,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     colorRanges: FourwingsTileLayerColorRange
   ): FourwinsTileLayerScale[] => {
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
-      console.log('colorRanges:', colorRanges)
-      console.log('colorDomain:', colorDomain)
-      // return colorRanges.map((cr) =>
-      //   scaleLinear(colorDomain as number[], cr as string[]).clamp(true)
-      // )
-
       return (colorDomain as number[][]).map((cd, i) => {
         return scaleLinear(cd, colorRanges[i] as string[]).clamp(true)
       })

@@ -9,7 +9,6 @@ import {
 } from './colors'
 
 export const COLOR_RAMP_DEFAULT_NUM_STEPS = 10
-export const COLOR_RAMP_BIVARIATE_NUM_STEPS = 4
 export const COLOR_RAMP_DEFAULT_NUM_STEPS_TO_WHITE = [7, 3]
 
 // ---- Heatmap Generator color ramps types
@@ -88,27 +87,27 @@ export const getBivariateRampLegend = (colorRampsIds: ColorRampId[]) => {
   return [
     'transparent',
     rgbaToString({ ...getBlend(ramp1[0], ramp2[0]), a: 0.5 }),
-    rgbaToString({ ...getBlend(ramp1[1], ramp2[0]), a: 0.75 }),
-    rgbaToString(getBlend(ramp1[2], ramp2[0])),
-    rgbaToString(getBlend(ramp1[3], ramp2[0])),
-    rgbaToString({ ...getBlend(ramp1[0], ramp2[1]), a: 0.75 }),
-    rgbaToString(getBlend(ramp1[1], ramp2[1])),
-    rgbaToString(getBlend(ramp1[2], ramp2[1])),
-    rgbaToString(getBlend(ramp1[3], ramp2[1])),
-    rgbaToString(getBlend(ramp1[0], ramp2[2])),
-    rgbaToString(getBlend(ramp1[1], ramp2[2])),
-    rgbaToString(getBlend({ ...white, a: 0.25 }, getBlend(ramp1[2], ramp2[2]))),
-    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[3], ramp2[2]))),
-    rgbaToString(getBlend(ramp1[0], ramp2[3])),
-    rgbaToString(getBlend(ramp1[1], ramp2[3])),
-    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[2], ramp2[3]))),
-    rgbaToString(getBlend(white, getBlend(ramp1[3], ramp2[3]))),
+    rgbaToString({ ...getBlend(ramp1[3], ramp2[0]), a: 0.75 }),
+    rgbaToString(getBlend(ramp1[6], ramp2[0])),
+    rgbaToString(getBlend(ramp1[9], ramp2[0])),
+    rgbaToString({ ...getBlend(ramp1[0], ramp2[3]), a: 0.75 }),
+    rgbaToString(getBlend(ramp1[3], ramp2[3])),
+    rgbaToString(getBlend(ramp1[6], ramp2[3])),
+    rgbaToString(getBlend(ramp1[9], ramp2[3])),
+    rgbaToString(getBlend(ramp1[0], ramp2[6])),
+    rgbaToString(getBlend(ramp1[3], ramp2[6])),
+    rgbaToString(getBlend({ ...white, a: 0.25 }, getBlend(ramp1[6], ramp2[6]))),
+    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[9], ramp2[6]))),
+    rgbaToString(getBlend(ramp1[0], ramp2[9])),
+    rgbaToString(getBlend(ramp1[3], ramp2[9])),
+    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[6], ramp2[9]))),
+    rgbaToString(getBlend(white, getBlend(ramp1[9], ramp2[9]))),
   ]
 }
 
 export const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
   return colorRampsIds.map((id) =>
-    getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[id], COLOR_RAMP_BIVARIATE_NUM_STEPS)
+    getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[id], COLOR_RAMP_DEFAULT_NUM_STEPS)
   )
 }
 

@@ -39,7 +39,10 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
           ? LegendType.Bivariate
           : LegendType.ColorRampDiscrete,
       sublayers: layer.instance.props.sublayers,
-      domain,
+      domain:
+        layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
+          ? domain?.map((v) => (v.length === 10 ? [v[0], v[3], v[6], v[9]] : v))
+          : domain,
       ranges:
         layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
           ? getBivariateRampLegend(
