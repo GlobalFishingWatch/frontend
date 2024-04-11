@@ -46,6 +46,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     if (!info.object) {
       info.object = {} as VesselEventPickingObject
     }
+    info.object.layerId = this.props.id
     info.object.title = this.props.name
     info.object.vesselId = this.props.id
     info.object.category = DataviewCategory.Vessels

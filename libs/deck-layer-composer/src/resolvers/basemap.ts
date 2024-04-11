@@ -1,7 +1,7 @@
-import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { BaseMapLayerProps, BasemapType } from '@globalfishingwatch/deck-layers'
+import { DeckResolverFunction } from './types'
 
-export function resolveDeckBasemapLayerProps(dataview: DataviewInstance): BaseMapLayerProps {
+export const resolveDeckBasemapLayerProps: DeckResolverFunction<BaseMapLayerProps> = (dataview) => {
   return {
     id: dataview.id,
     category: dataview.category!,

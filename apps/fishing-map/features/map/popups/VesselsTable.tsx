@@ -105,7 +105,7 @@ function VesselsTable({
 }: {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory }
   vesselProperty?: ActivityProperty
-  activityType?: DatasetSubCategory
+  activityType?: `${DatasetSubCategory}`
   testId?: string
 }) {
   const { t } = useTranslation()

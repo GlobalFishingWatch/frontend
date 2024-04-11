@@ -18,7 +18,7 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
     if (!layer.instance || !(layer.instance instanceof FourwingsLayer)) {
       return []
     }
-    const interaction = deckLayerHoverFeatures?.features?.find((i) => i.layer?.id === layer.id)
+    const interaction = deckLayerHoverFeatures?.features?.find((i: any) => i.layer?.id === layer.id)
 
     const { domain, range } = layer.instance.getColorScale() || {}
     let label = layer.instance.props.sublayers?.[0]?.unit || ''
@@ -46,9 +46,7 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
               layer.instance.props.sublayers.map((sublayer) => sublayer.colorRamp as ColorRampId)
             )
           : range,
-      currentValues: (interaction?.object as FourwingsPickingObject)?.sublayers?.map(
-        (s: any) => s.value
-      )!,
+      currentValues: (interaction as FourwingsPickingObject)?.sublayers?.map((s: any) => s.value)!,
       label,
     }
   })

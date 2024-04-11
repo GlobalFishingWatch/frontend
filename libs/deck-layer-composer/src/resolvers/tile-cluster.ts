@@ -1,11 +1,12 @@
 import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import { DeckResolverFunction } from './types'
 
 type TileClusterDeckLayerProps = any
 
-export function resolveDeckTileClusterLayerProps(
-  dataview: DataviewInstance
-): TileClusterDeckLayerProps {
+export const resolveDeckTileClusterLayerProps: DeckResolverFunction<TileClusterDeckLayerProps> = (
+  dataview
+) => {
   const { dataset: tileClusterDataset, url: tileClusterUrl } = resolveDataviewDatasetResource(
     dataview,
     DatasetTypes.Events

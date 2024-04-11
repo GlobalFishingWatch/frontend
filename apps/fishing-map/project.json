@@ -25,7 +25,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx prepare-loaders fishing-map", "nx build:app fishing-map"],
+        "commands": ["nx build:app fishing-map", "nx prepare-loaders fishing-map"],
         "parallel": false
       }
     },

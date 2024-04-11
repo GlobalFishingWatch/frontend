@@ -17,14 +17,7 @@ export const parseTrackEventChunkProps = (
   event: ApiEvent,
   eventKey?: string
 ): ApiEvent & { props: TrackEventChunkProps } => {
-  const { description, descriptionGeneric } = getEventDescription({
-    start: event.start as number,
-    end: event.end as number,
-    type: event.type as EventTypes,
-    encounterVesselName: event.encounter?.vessel?.name,
-    portName: event.port_visit?.intermediateAnchorage?.name,
-    portFlag: event.port_visit?.intermediateAnchorage?.flag,
-  })
+  const { description, descriptionGeneric } = getEventDescription(event)
   const { color, colorLabels } = getEventColors({ type: event.type as EventTypes })
 
   return {
