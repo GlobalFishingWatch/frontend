@@ -24,7 +24,7 @@ import { ResolverGlobalConfig } from './types'
 // TODO: decide if include static here or create a new one
 export const resolveDeckFourwingsLayerProps = (
   dataview: UrlDataviewInstance,
-  { start, end, resolution }: ResolverGlobalConfig,
+  { start, end, resolution, debug }: ResolverGlobalConfig,
   interactions: PickingInfo[]
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
@@ -110,7 +110,7 @@ export const resolveDeckFourwingsLayerProps = (
     hoveredFeatures: interactions,
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
-    debug: dataview.config?.debug ?? false,
+    debug: debug ?? false,
     visible: dataview.config?.visible ?? true,
     colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd ?? false,
     ...(tilesUrl && { tilesUrl }),

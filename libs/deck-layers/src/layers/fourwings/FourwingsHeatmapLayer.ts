@@ -25,21 +25,26 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   layers: LayersList = []
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }): FourwingsPickingInfo => {
-    const { id, startTime, endTime, availableIntervals, category, sublayers, tilesCache } =
+    const { id, tile, startTime, endTime, availableIntervals, category, sublayers, tilesCache } =
       this.props
+
+    const { startFrame, endFrame, interval } = getIntervalFrames({
+      startTime,
+      endTime,
+      availableIntervals,
+      bufferedStart: tilesCache.bufferedStart,
+    })
     const object: FourwingsPickingObject = {
       ...(info.object || ({} as FourwingsFeature)),
       title: id,
+      tile: tile.index,
       category,
       sublayers,
+      startTime,
+      endTime,
+      interval,
     }
     if (info.object) {
-      const { startFrame, endFrame } = getIntervalFrames({
-        startTime,
-        endTime,
-        availableIntervals,
-        bufferedStart: tilesCache.bufferedStart,
-      })
       const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
       const values =
         info.object.properties.initialValues[timeRangeKey] ||

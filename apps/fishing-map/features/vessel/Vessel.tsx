@@ -26,7 +26,7 @@ import {
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useUpdateVesselEventsVisibility } from 'features/vessel/vessel.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
-import { useClickedEventConnect } from 'features/map/map.hooks'
+import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
 import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
 import { useLocationConnect } from 'routes/routes.hook'

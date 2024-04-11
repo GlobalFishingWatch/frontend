@@ -61,6 +61,10 @@ export type FourwingsPickingObject = FourwingsFeature<
   FourwingsFeatureProperties & Partial<FourwingsStaticFeatureProperties>
 > & {
   title: string
+  tile: { x: number; y: number; z: number }
+  startTime: number
+  endTime: number
+  interval: FourwingsInterval
   category: string
   sublayers: FourwingsDeckSublayer[]
 }

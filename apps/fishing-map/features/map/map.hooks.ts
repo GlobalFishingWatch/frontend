@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { InteractionEvent, useFeatureState } from '@globalfishingwatch/react-hooks'
 import {
   UrlDataviewInstance,
   MULTILAYER_SEPARATOR,
@@ -17,26 +16,17 @@ import {
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
-import { selectLocationType } from 'routes/routes.selectors'
-import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import useMapInstance from 'features/map/map-context.hooks'
 import {
   getActiveDatasetsInActivityDataviews,
   getDatasetTitleByDataview,
 } from 'features/datasets/datasets.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
-import { setHintDismissed } from 'features/help/hints.slice'
-import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
-import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import {
   selectActivityVisualizationMode,
   selectBivariateDataviews,
@@ -44,36 +34,26 @@ import {
   selectMapResolution,
 } from 'features/app/selectors/app.selectors'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
+import { WORKSPACE_GENERATOR_ID, REPORT_BUFFER_GENERATOR_ID } from './map.config'
 import {
-  WORKSPACES_POINTS_TYPE,
-  WORKSPACE_GENERATOR_ID,
-  REPORT_BUFFER_GENERATOR_ID,
-} from './map.config'
-import {
-  setClickedEvent,
-  selectClickedEvent,
   MAX_TOOLTIP_LIST,
-  fetchEncounterEventThunk,
   SliceInteractionEvent,
-  selectFishingInteractionStatus,
-  selectApiEventStatus,
   ExtendedFeatureVessel,
-  fetchFishingActivityInteractionThunk,
-  fetchBQEventThunk,
   SliceExtendedFeature,
 } from './map.slice'
-import { useSetViewState, useViewStateAtom } from './map-viewport.hooks'
+import { useViewStateAtom } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
 export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
+  if (!vessels?.length) return {}
   return {
-    vessels,
     numVessels: vessels.length,
     overflow: vessels.length > MAX_TOOLTIP_LIST,
-    overflowNumber: vessels.length - MAX_TOOLTIP_LIST,
+    overflowNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
     overflowLoad: vessels.length > MAX_TOOLTIP_LIST,
-    overflowLoadNumber: vessels.length - MAX_TOOLTIP_LIST,
+    overflowLoadNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
   }
 }
 
@@ -88,12 +68,14 @@ export const useGlobalConfigConnect = () => {
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const mapResolution = useSelector(selectMapResolution)
+  const debug = useSelector(selectDebugOptions)?.debug
 
   return useMemo(() => {
     let globalConfig: ResolverGlobalConfig = {
       zoom: viewState.zoom,
       start,
       end,
+      debug,
       token: GFWAPI.getToken(),
       locale: i18n.language as Locale,
       bivariateDataviews,
@@ -113,165 +95,16 @@ export const useGlobalConfigConnect = () => {
     viewState.zoom,
     start,
     end,
+    debug,
     i18n.language,
     bivariateDataviews,
-    mapResolution,
     activityVisualizationMode,
     detectionsVisualizationMode,
+    mapResolution,
+    visibleEvents,
     showTimeComparison,
     timeComparisonValues,
-    visibleEvents,
   ])
-}
-
-export const useClickedEventConnect = () => {
-  const map = useMapInstance()
-  const dispatch = useAppDispatch()
-  const clickedEvent = useSelector(selectClickedEvent)
-  const locationType = useSelector(selectLocationType)
-  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
-  const apiEventStatus = useSelector(selectApiEventStatus)
-  const { dispatchLocation } = useLocationConnect()
-  const { cleanFeatureState } = useFeatureState(map)
-  const setViewState = useSetViewState()
-  const { setMapAnnotation } = useMapAnnotation()
-  const tilesClusterLoaded = useMapClusterTilesLoaded()
-  const fishingPromiseRef = useRef<any>()
-  const presencePromiseRef = useRef<any>()
-  const eventsPromiseRef = useRef<any>()
-
-  const cancelPendingInteractionRequests = useCallback(() => {
-    const promisesRef = [fishingPromiseRef, presencePromiseRef, eventsPromiseRef]
-    promisesRef.forEach((ref) => {
-      if (ref.current) {
-        ref.current.abort()
-      }
-    })
-  }, [])
-
-  const dispatchClickedEvent = (event: InteractionEvent | null) => {
-    if (event === null) {
-      dispatch(setClickedEvent(null))
-      return
-    }
-
-    // Used on workspaces-list or user panel to go to the workspace detail page
-    if (locationType === USER || locationType === WORKSPACES_LIST) {
-      const workspace = event?.features?.find(
-        (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
-      )
-      if (workspace) {
-        const isDefaultWorkspace = workspace.properties.id === DEFAULT_WORKSPACE_ID
-        dispatchLocation(
-          isDefaultWorkspace ? HOME : WORKSPACE,
-          isDefaultWorkspace
-            ? {}
-            : {
-                payload: {
-                  category:
-                    workspace.properties?.category && workspace.properties.category !== 'null'
-                      ? workspace.properties.category
-                      : DEFAULT_WORKSPACE_CATEGORY,
-                  workspaceId: workspace.properties.id,
-                },
-              },
-          { replaceQuery: true }
-        )
-        const { latitude, longitude, zoom } = workspace.properties
-        if (latitude && longitude && zoom) {
-          setViewState({ latitude, longitude, zoom })
-        }
-        return
-      }
-    }
-
-    const clusterFeature = event?.features?.find(
-      (f) => f.generatorType === DataviewType.TileCluster
-    )
-    if (clusterFeature?.properties?.expansionZoom) {
-      const { count, expansionZoom, lat, lng, lon } = clusterFeature.properties
-      const longitude = lng || lon
-      if (count > 1) {
-        if (tilesClusterLoaded && lat && longitude) {
-          setViewState({
-            latitude: lat,
-            longitude,
-            zoom: expansionZoom,
-          })
-          cleanFeatureState('click')
-        }
-        return
-      }
-    }
-
-    const annotatedFeature = event?.features?.find(
-      (f) => f.generatorType === DataviewType.Annotation
-    )
-    if (annotatedFeature?.properties?.id) {
-      setMapAnnotation(annotatedFeature.properties)
-      return
-    }
-
-    // Cancel all pending promises
-    cancelPendingInteractionRequests()
-
-    if (!event || !event.features) {
-      if (clickedEvent) {
-        dispatch(setClickedEvent(null))
-      }
-      return
-    }
-
-    // When hovering in a vessel event we don't want to have clicked events
-    const areAllFeaturesVesselEvents = event.features.every(
-      (f) => f.generatorType === DataviewType.VesselEvents
-    )
-
-    if (areAllFeaturesVesselEvents) {
-      return
-    }
-
-    dispatch(setClickedEvent(event as SliceInteractionEvent))
-
-    // get temporal grid clicked features and order them by sublayerindex
-    const fishingActivityFeatures = event.features
-      .filter((feature) => {
-        if (!feature.temporalgrid?.visible) {
-          return false
-        }
-        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-          feature.temporalgrid.sublayerInteractionType
-        )
-      })
-      .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
-
-    if (fishingActivityFeatures?.length) {
-      dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
-      const activityProperties = fishingActivityFeatures.map((feature) =>
-        feature.temporalgrid?.sublayerInteractionType === 'detections' ? 'detections' : 'hours'
-      )
-      fishingPromiseRef.current = dispatch(
-        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
-      )
-    }
-
-    const tileClusterFeature = event.features.find(
-      (f) => f.generatorType === DataviewType.TileCluster
-    )
-    if (tileClusterFeature) {
-      const bqPocQuery = tileClusterFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
-      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
-      eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
-    }
-  }
-
-  return {
-    clickedEvent,
-    fishingInteractionStatus,
-    apiEventStatus,
-    dispatchClickedEvent,
-    cancelPendingInteractionRequests,
-  }
 }
 
 // TODO:deck fuerte
@@ -373,6 +206,7 @@ export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
   }, [features])
 }
 
+// TODO:deck ideally remove this intermediate step
 export const parseMapTooltipFeatures = (
   features: SliceExtendedFeature[],
   dataviews: UrlDataviewInstance<DataviewType>[],
@@ -382,6 +216,7 @@ export const parseMapTooltipFeatures = (
     const { temporalgrid, generatorId, generatorType } = feature
     const baseFeature = {
       source: feature.source,
+      category: feature.category,
       sourceLayer: feature.sourceLayer,
       layerId: feature.layerId as string,
       type: generatorType as DataviewType,

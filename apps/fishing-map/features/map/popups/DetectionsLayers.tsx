@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { TooltipEventFeature, TooltipEventFeatureVesselsInfo } from 'features/map/map.hooks'
 import VesselsTable, { VesselDetectionTimestamps } from 'features/map/popups/VesselsTable'
@@ -8,9 +8,14 @@ import styles from './Popup.module.css'
 
 type ViirsMatchTooltipRowProps = {
   feature: TooltipEventFeature
+  loading?: boolean
   showFeaturesDetails: boolean
 }
-function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchTooltipRowProps) {
+function ViirsMatchTooltipRow({
+  feature,
+  showFeaturesDetails,
+  loading,
+}: ViirsMatchTooltipRowProps) {
   const { t } = useTranslation()
   // Avoid showing not matched detections
   const matchedVessels: TooltipEventFeatureVesselsInfo['vessels'] = (
@@ -50,7 +55,12 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
             )}
           </span>
         </div>
-        {showFeaturesDetails && (
+        {loading && (
+          <div className={styles.loading}>
+            <Spinner size="small" />
+          </div>
+        )}
+        {!loading && showFeaturesDetails && (
           <VesselsTable feature={featureVesselsFilter} vesselProperty="detections" />
         )}
       </div>

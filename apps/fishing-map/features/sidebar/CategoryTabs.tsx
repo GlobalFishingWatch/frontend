@@ -18,7 +18,7 @@ import {
   selectLocationType,
 } from 'routes/routes.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import { useClickedEventConnect } from 'features/map/map.hooks'
+import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import { useSetViewState } from 'features/map/map-viewport.hooks'

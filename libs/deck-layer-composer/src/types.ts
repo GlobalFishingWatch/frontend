@@ -1,7 +1,17 @@
 import {
+  ClusterLayer,
+  ClusterPickingInfo,
+  ClusterPickingObject,
+  ContextLayer,
+  ContextPickingInfo,
+  ContextPickingObject,
   FourwingsDeckSublayer,
+  FourwingsLayer,
+  FourwingsPickingInfo,
+  FourwingsPickingObject,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
+  UserContextPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
 export const DECK_LAYER_LIFECYCLE = {
@@ -43,3 +53,14 @@ export interface DeckLegendBivariate extends DeckLegend {
   sublayersBreaks: [number[], number[]]
   bivariateRamp: string[]
 }
+
+export type DeckLayerInteractionFeature =
+  | FourwingsPickingObject
+  | ContextPickingObject
+  | UserContextPickingObject
+  | ClusterPickingObject
+
+export type DeckLayerInteractionPickingInfo =
+  | (FourwingsPickingInfo & { layer: FourwingsLayer })
+  | (ContextPickingInfo & { layer: ContextLayer })
+  | (ClusterPickingInfo & { layer: ClusterLayer })

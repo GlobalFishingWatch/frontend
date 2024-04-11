@@ -8,7 +8,7 @@ import {
 } from '@globalfishingwatch/deck-layers'
 import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
 import { DeckLegend, LegendType } from '../types'
-import { deckHoverInteractionAtom } from './deck-layers-interaction.hooks'
+import { deckHoverInteractionAtom } from '../interactions'
 import { deckLayersAtom } from './deck-layers.hooks'
 
 export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {

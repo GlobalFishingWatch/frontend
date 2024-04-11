@@ -1,7 +1,7 @@
 import Pbf from 'pbf'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
-import { BBox, generateUniqueId, getCellCoordinates } from '../helpers/cells'
+import { BBox, generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
 import type {
   FourwingsFeature,
   FourwingsLoaderOptions,
@@ -78,6 +78,7 @@ export const getCellTimeseries = (
 
         // add the feature if previous sublayers didn't contain data for it
         if (!features[cellNum]) {
+          const { col, row } = getCellProperties(tileBBox, cellNum, cols)
           features[cellNum] = {
             type: 'Feature',
             geometry: {
@@ -92,6 +93,8 @@ export const getCellTimeseries = (
               ],
             },
             properties: {
+              col,
+              row,
               values: new Array(sublayersLength),
               dates: new Array(sublayersLength),
               cellId: generateUniqueId(tile.index.x, tile.index.y, cellNum),
