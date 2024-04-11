@@ -5,7 +5,7 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 const InsightError = ({ error }: { error: ParsedAPIError }) => {
   const { t } = useTranslation()
-  if (error.status === 401) {
+  if (error.status === 403) {
     return (
       <Icon
         icon="private"
