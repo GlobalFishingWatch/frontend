@@ -61,23 +61,30 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
   getPickingInfo = ({
     info,
   }: {
-    info: PickingInfo<ContextPickingObject, { tile?: Tile2DHeader }>
+    info: PickingInfo<ContextFeature, { tile?: Tile2DHeader }>
   }): ContextPickingInfo => {
     const { idProperty, valueProperties } = this.props
+    const object = {
+      ...transformTileCoordsToWGS84(
+        info.object as ContextFeature,
+        info.tile!.bbox as GeoBoundingBox,
+        this.context.viewport
+      ),
+      title: this.props.id,
+      color: this.props.color,
+      layerId: this.props.layers[0].id,
+      datasetId: this.props.layers[0].datasetId,
+      category: this.props.category,
+      id: getContextId(info.object as ContextFeature, idProperty),
+      value: getContextValue(info.object as ContextFeature, valueProperties),
+      link: getContextLink(info.object as ContextPickingObject),
+    } as ContextPickingObject
     info.object = transformTileCoordsToWGS84(
       info.object as ContextFeature,
       info.tile!.bbox as GeoBoundingBox,
       this.context.viewport
-    ) as ContextFeature
-    info.object.title = this.props.id
-    info.object.color = this.props.color
-    info.object.layerId = this.props.layers[0].id
-    info.object.datasetId = this.props.layers[0].datasetId
-    info.object.category = this.props.category
-    info.object.id = getContextId(info.object, idProperty)
-    info.object.value = getContextValue(info.object, valueProperties)
-    info.object.link = getContextLink(info.object)
-    return info
+    ) as ContextPickingObject
+    return { ...info, object }
   }
 
   renderLayers() {

@@ -1,4 +1,9 @@
-import { ContextFeature, ContextLayerId } from './context.types'
+import {
+  ContextFeature,
+  ContextLayerId,
+  ContextPickingInfo,
+  ContextPickingObject,
+} from './context.types'
 
 export const getContextId = (feature: ContextFeature, idProperty = 'gfw_id'): string => {
   return feature.properties?.[idProperty] || feature.properties?.gfw_id || feature.properties.id
@@ -48,7 +53,7 @@ const RFMO_LINKS: Record<string, string> = {
   WCPFC: 'https://www.wcpfc.int/',
 }
 
-export const getContextLink = (feature: ContextFeature) => {
+export const getContextLink = (feature: ContextPickingObject) => {
   if (!feature?.layerId) {
     return ''
   }

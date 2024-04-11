@@ -129,7 +129,8 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
         payload: {
           category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
           workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-          datasetId: feature.datasetId,
+          // TODO: deck fix this typing
+          datasetId: (feature as any).datasetId,
           areaId,
         },
         query: {

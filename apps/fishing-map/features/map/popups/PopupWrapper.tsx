@@ -9,6 +9,7 @@ import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   ContextFeature,
+  ContextPickingObject,
   FourwingsPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
@@ -211,7 +212,7 @@ function PopupWrapper({
                         showFeaturesDetails={type === 'click'}
                       /> */}
                     <ContextTooltipSection
-                      features={features as ContextFeature[]}
+                      features={features as ContextPickingObject[]}
                       showFeaturesDetails={type === 'click'}
                     />
                   </Fragment>
