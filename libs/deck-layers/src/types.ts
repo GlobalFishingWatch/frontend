@@ -6,12 +6,14 @@ import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
 
+export type DeckLayerCategory = `${DataviewCategory}` | 'rulers'
+
 export type BaseLayerProps = {
-  category: DataviewCategory
+  category: DeckLayerCategory
 }
 
 export type BasePickingInfo = {
-  category: DataviewCategory
+  category: DeckLayerCategory
 }
 
 export type AnyDeckLayer<D extends {} = {}> =

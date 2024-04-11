@@ -1,4 +1,6 @@
-import { PickingInfo } from '@deck.gl/core'
+import { DeckLayerInteractionFeature } from '@globalfishingwatch/deck-layer-composer'
+import { RulerPickingObject } from '@globalfishingwatch/deck-layers'
 
-export const isRulerLayerPoint = (info: PickingInfo) =>
-  info.sourceLayer?.id === 'RulersLayer-ruler-layer' && info.object.geometry.type === 'Point'
+export const isRulerLayerPoint = (feature: DeckLayerInteractionFeature) =>
+  feature.category === 'rulers' &&
+  (feature as unknown as RulerPickingObject).geometry?.type === 'Point'

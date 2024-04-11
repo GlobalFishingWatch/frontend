@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { EventTypes, IdentityVessel, SelfReportedInfo } from '@globalfishingwatch/api-types'
-import { TooltipEventFeature } from 'features/map/map.hooks'
+import { IdentityVessel, SelfReportedInfo } from '@globalfishingwatch/api-types'
+import { VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
 import { getEventDescriptionComponent } from 'utils/events'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
@@ -12,7 +12,7 @@ import { MAX_TOOLTIP_LIST } from '../map.slice'
 import styles from './Popup.module.css'
 
 type VesselEventsTooltipRowProps = {
-  features: TooltipEventFeature[]
+  features: VesselEventPickingObject[]
   showFeaturesDetails?: boolean
 }
 
@@ -26,14 +26,15 @@ function VesselEventsTooltipSection({
     const maxFeatures = overflows ? features.slice(0, MAX_TOOLTIP_LIST) : features
     return groupBy(maxFeatures, 'properties.vesselId')
   }, [overflows, features])
+
   const resources = useSelector(selectVisibleResources)
 
   const vesselNamesByType = useMemo(() => {
     return Object.values(featuresByType).map((features) => {
-      const vesselId = features[0].properties.vesselId
+      const vesselId = features[0]?.vesselId
       const vesselResource = Object.values(resources).find((resource) => {
         return (resource.data as IdentityVessel)?.selfReportedInfo?.some(
-          (identity: SelfReportedInfo) => vesselId.includes(identity.id)
+          (identity: SelfReportedInfo) => vesselId?.includes(identity.id)
         )
       })
 
@@ -57,26 +58,7 @@ function VesselEventsTooltipSection({
               <h3 className={styles.popupSectionTitle}>{vesselNamesByType[index]}</h3>
             )}
             {featureByType.map((feature, index) => {
-              const {
-                start,
-                end,
-                type,
-                vesselName,
-                encounterVesselName,
-                encounterVesselId,
-                portName,
-                portFlag,
-              } = feature.properties
-              const { description, DescriptionComponent } = getEventDescriptionComponent({
-                start: start as any,
-                end: end as any,
-                type: type as EventTypes,
-                mainVesselName: vesselName,
-                encounterVesselName,
-                encounterVesselId,
-                portName,
-                portFlag,
-              })
+              const { description, DescriptionComponent } = getEventDescriptionComponent(feature)
               return (
                 <div key={index} className={styles.row}>
                   {showFeaturesDetails ? DescriptionComponent : description}

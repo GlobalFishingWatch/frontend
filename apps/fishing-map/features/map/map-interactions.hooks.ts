@@ -389,9 +389,7 @@ const hasToolFeature = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipE
   )
 }
 
-export const _deprecatedUseMapCursor = (
-  hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>
-) => {
+export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
   const map = useMapInstance()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
@@ -420,7 +418,8 @@ export const _deprecatedUseMapCursor = (
       const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
 
       const clusterFeature = hoveredTooltipEvent.features.find(
-        (f) => f.type === DataviewType.TileCluster && parseInt(f.properties.count) > eventsCount
+        (f: any) =>
+          f.type === DataviewType.TileCluster && parseInt(f.properties.count) > eventsCount
       )
 
       if (clusterFeature) {
@@ -432,7 +431,7 @@ export const _deprecatedUseMapCursor = (
         return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
       }
       const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
-        (f) => f.category === DataviewCategory.Vessels
+        (f: any) => f.category === DataviewCategory.Vessels
       )
       if (vesselFeatureEvents.length > 1) {
         return 'grab'

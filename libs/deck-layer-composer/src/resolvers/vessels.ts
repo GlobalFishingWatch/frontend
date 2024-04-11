@@ -18,6 +18,7 @@ export function resolveDeckVesselLayerProps(
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
+    category: dataview.category!,
     name: dataview.config?.name!,
     endTime: getUTCDateTime(globalConfig.end!).toMillis(),
     startTime: getUTCDateTime(globalConfig.start!).toMillis(),
