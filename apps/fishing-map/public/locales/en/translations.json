@@ -797,7 +797,7 @@
     "insights": {
       "coverage": "AIS Coverage",
       "disclaimerTimeRangeBeforeMinYear": "Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.",
-      "errorPermisions": "This insight is restricted to limited access, contact us for further details",
+      "errorPermisions": "This insight is restricted to limited account users, contact us at support@globalfishingwatch.org for more details",
       "gaps": "AIS Off Events",
       "gapsEvents": "{{count}} AIS Off events detected",
       "gapsEventsEmpty": "No AIS Off events detected",
