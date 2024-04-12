@@ -7,7 +7,11 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
 import { DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
+import {
+  selectHighlightedEvents,
+  selectHighlightedTime,
+  setHighlightedEvents,
+} from 'features/timebar/timebar.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectShowTimeComparison,
@@ -39,6 +43,7 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
 
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
+  const highlightedTime = useSelector(selectHighlightedTime)
   const { viewState } = useViewStateAtom()
   const { i18n } = useTranslation()
   const showTimeComparison = useSelector(selectShowTimeComparison)
@@ -62,6 +67,7 @@ export const useGlobalConfigConnect = () => {
       activityVisualizationMode,
       detectionsVisualizationMode,
       resolution: mapResolution,
+      highlightedTime: highlightedTime || {},
       visibleEvents,
     }
     if (showTimeComparison && timeComparisonValues) {
@@ -83,6 +89,7 @@ export const useGlobalConfigConnect = () => {
     mapResolution,
     visibleEvents,
     showTimeComparison,
+    highlightedTime,
     timeComparisonValues,
   ])
 }

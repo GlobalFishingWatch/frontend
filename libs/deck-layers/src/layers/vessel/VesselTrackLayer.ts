@@ -110,6 +110,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
           color = color;
         } else {
           // color = vHighlightColor;
+          // TODO:deck position this on top of the other vessel layers to ensure highlgihts is always visible
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
       `,

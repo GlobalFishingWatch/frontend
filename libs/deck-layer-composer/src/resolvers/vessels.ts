@@ -38,6 +38,12 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     // highlightStartTime,
     // highlightEventIds,
     visibleEvents: globalConfig.visibleEvents,
+    ...(globalConfig.highlightedTime?.start && {
+      highlightStartTime: getUTCDateTime(globalConfig.highlightedTime?.start).toMillis(),
+    }),
+    ...(globalConfig.highlightedTime?.end && {
+      highlightEndTime: getUTCDateTime(globalConfig.highlightedTime?.end).toMillis(),
+    }),
     // eventsResource: eventsData?.length ? parseEvents(eventsData) : [],
   }
 }

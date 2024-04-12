@@ -20,7 +20,7 @@ export type ResolverGlobalConfig = {
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
-  highlightedTime?: { start: string; end: string }
+  highlightedTime: { start?: string; end?: string }
   locale?: string
   visibleEvents: EventTypes[]
 }
