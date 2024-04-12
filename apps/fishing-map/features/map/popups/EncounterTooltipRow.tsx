@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { EventVessel } from '@globalfishingwatch/api-types'
-import { TooltipEventFeature } from 'features/map/map.hooks'
+import { ClusterPickingObject, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
@@ -36,7 +36,8 @@ const parseEvent = (event: ExtendedFeatureEvent | undefined): ExtendedFeatureEve
 }
 
 type EncountersLayerProps = {
-  feature: TooltipEventFeature
+  // TODO:deck type this with its own type
+  feature: any
   showFeaturesDetails: boolean
 }
 
@@ -186,7 +187,7 @@ function GenericClusterTooltipRow({ feature, showFeaturesDetails }: EncountersLa
 }
 
 type UserContextLayersProps = {
-  features: TooltipEventFeature[]
+  features: UserContextPickingObject[]
   showFeaturesDetails: boolean
 }
 
@@ -195,7 +196,8 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
     <Fragment>
       {features.map((feature, index) => {
         const key = `${feature.title}-${index}`
-        if (feature.source === ENCOUNTER_EVENTS_SOURCE_ID) {
+        // TODO:deck decide how to manage this
+        if ((feature as any).source === ENCOUNTER_EVENTS_SOURCE_ID) {
           return (
             <EncounterTooltipRow
               key={key}

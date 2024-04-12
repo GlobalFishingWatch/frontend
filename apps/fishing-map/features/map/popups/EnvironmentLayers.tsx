@@ -3,11 +3,12 @@ import { format } from 'd3-format'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/layer-composer'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { TooltipEventFeature } from 'features/map/map.hooks'
+import { ContextPickingObject, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
 import styles from './Popup.module.css'
 
 type ContextTooltipRowProps = {
-  features: TooltipEventFeature[]
+  // TODO:deck review typing here
+  features: any[]
   showFeaturesDetails: boolean
 }
 
@@ -27,8 +28,7 @@ function EnvironmentTooltipSection({
 }: ContextTooltipRowProps) {
   return (
     <Fragment>
-      {features.map((pickedFeature, index) => {
-        const feature = pickedFeature.object
+      {features.map((feature, index) => {
         const isHeatmapFeature =
           feature.type === DataviewType.HeatmapAnimated ||
           feature.type === DataviewType.HeatmapStatic
@@ -49,7 +49,7 @@ function EnvironmentTooltipSection({
                 <span className={styles.rowText}>
                   {parseEnvironmentalValue(value)}{' '}
                   {/* TODO will need to not pick from temporalgrid once user polygons support units  */}
-                  {feature.temporalgrid?.unit && <span>{feature.temporalgrid?.unit}</span>}
+                  {feature?.unit && <span>{feature.temporalgrid?.unit}</span>}
                   {feature.unit && <span>{feature.unit}</span>}
                 </span>
               </div>

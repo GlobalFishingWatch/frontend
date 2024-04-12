@@ -1,10 +1,10 @@
 import { Icon } from '@globalfishingwatch/ui-components'
-import { TooltipEventFeature } from 'features/map/map.hooks'
+import { UserContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import styles from './Popup.module.css'
 
 type ReportBufferLayersProps = {
-  features: TooltipEventFeature[]
+  features: UserContextPickingObject[]
 }
 
 function ReportBufferTooltip({ features }: ReportBufferLayersProps) {

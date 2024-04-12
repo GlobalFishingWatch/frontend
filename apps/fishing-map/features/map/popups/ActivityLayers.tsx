@@ -5,17 +5,16 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { SliceExtendedFourwingsDeckSublayer } from '../map.slice'
 import popupStyles from './Popup.module.css'
-import VesselsTable, { getVesselTableTitle } from './VesselsTable'
+import VesselsTable from './VesselsTable'
 
 type ActivityTooltipRowProps = {
-  feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory }
+  feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory; title?: string }
   loading?: boolean
   showFeaturesDetails: boolean
 }
 
 function ActivityTooltipRow({ feature, showFeaturesDetails, loading }: ActivityTooltipRowProps) {
   const { t } = useTranslation()
-  const title = getVesselTableTitle(feature)
   // TODO get the value based on the sublayer
   const value = feature?.value as number
   if (!value) {
@@ -26,7 +25,9 @@ function ActivityTooltipRow({ feature, showFeaturesDetails, loading }: ActivityT
       <div className={popupStyles.popupSection}>
         <Icon icon="heatmap" className={popupStyles.layerIcon} style={{ color: feature.color }} />
         <div className={popupStyles.popupSectionContent}>
-          {showFeaturesDetails && <h3 className={popupStyles.popupSectionTitle}>{title}</h3>}
+          {showFeaturesDetails && feature.title && (
+            <h3 className={popupStyles.popupSectionTitle}>{feature.title}</h3>
+          )}
           <div className={popupStyles.row}>
             <span className={popupStyles.rowText}>
               <I18nNumber number={value} />{' '}
@@ -40,7 +41,6 @@ function ActivityTooltipRow({ feature, showFeaturesDetails, loading }: ActivityT
               <Spinner size="small" />
             </div>
           )}
-          {/* // TODO:deck add subcategory info */}
           {!loading && showFeaturesDetails && (
             <VesselsTable
               feature={feature}

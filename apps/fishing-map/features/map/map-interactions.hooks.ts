@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckProps, PickingInfo, Position } from '@deck.gl/core'
 import { InteractionEventCallback, useSimpleMapHover } from '@globalfishingwatch/react-hooks'
 import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   useMapHoverInteraction,
   useSetMapHoverInteraction,
@@ -12,14 +12,12 @@ import {
 import {
   ClusterPickingObject,
   DeckLayerInteractionPickingInfo,
+  DeckLayerPickingObject,
   FourwingsPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
-import {
-  SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-  TooltipEventFeature,
-} from 'features/map/map.hooks'
+import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map.hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import useMapInstance, { useDeckMap } from 'features/map/map-context.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
@@ -308,29 +306,33 @@ export const useMapMouseClick = () => {
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
 
-  const clickedTooltipEvent = { ...clickedEvent }
+  const trackMapClickEvent = useCallback((interactionEvent: InteractionEvent) => {
+    if (!interactionEvent || !interactionEvent?.features) return
 
-  const clickedCellLayers = useMemo(() => {
-    if (!clickedEvent || !clickedTooltipEvent) return
-
-    const layersByCategory = (clickedTooltipEvent?.features ?? [])
+    const layersByCategory = (interactionEvent?.features ?? [])
       .toSorted(
         (a, b) =>
           POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
       )
       .reduce(
-        (prev: Record<string, TooltipEventFeature[]>, current) => ({
+        (prev: Record<string, DeckLayerPickingObject[]>, current) => ({
           ...prev,
           [current.category]: [...(prev[current.category] ?? []), current],
         }),
-        {} as Record<string, TooltipEventFeature[]>
+        {} as Record<string, DeckLayerPickingObject[]>
       )
 
-    return Object.entries(layersByCategory).map(
+    const clickedCellLayers = Object.entries(layersByCategory).map(
       ([featureCategory, features]) =>
         `${featureCategory}: ${(features as any[]).map((f) => f.layerId).join(',')}`
     )
-  }, [clickedEvent, clickedTooltipEvent])
+
+    trackEvent({
+      category: TrackCategory.EnvironmentalData,
+      action: `Click in grid cell`,
+      label: getEventLabel(clickedCellLayers ?? []),
+    })
+  }, [])
 
   const onMapClick: DeckProps['onClick'] = useCallback(
     (info: PickingInfo, event: any) => {
@@ -339,11 +341,6 @@ export const useMapMouseClick = () => {
         // this is needed to allow interacting with overlay elements content
         return true
       }
-      trackEvent({
-        category: TrackCategory.EnvironmentalData,
-        action: `Click in grid cell`,
-        label: getEventLabel(clickedCellLayers ?? []),
-      })
       let features = defaultEmptyFeatures
       try {
         features = map?.pickMultipleObjects({
@@ -366,11 +363,12 @@ export const useMapMouseClick = () => {
       if (!clickStopPropagation) {
         dispatchClickedEvent(mapClickInteraction)
       }
+      trackMapClickEvent(mapClickInteraction)
     },
-    [map, clickedCellLayers, handleMapToolsClick, dispatchClickedEvent]
+    [map, handleMapToolsClick, trackMapClickEvent, dispatchClickedEvent]
   )
 
-  return { onMapClick, clickedTooltipEvent }
+  return onMapClick
 }
 
 export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
@@ -425,18 +423,7 @@ export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
     //   return 'grabbing'
     // }
     return 'grab'
-  }, [
-    hoveredTooltipEvent,
-    isMapAnnotating,
-    rulersEditing,
-    isErrorNotificationEditing,
-    isMapDrawing,
-    isMarineManagerLocation,
-    map,
-    gfwUser,
-    dataviews,
-    tilesClusterLoaded,
-  ])
+  }, [])
 
   return getCursor()
 }
