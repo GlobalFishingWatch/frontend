@@ -49,7 +49,7 @@ const InsightFishing = ({
   }, [eventsInRfmoWithoutKnownAuthorization, vesselEvents])
 
   return (
-    <div className={styles.insightContainer}>
+    <div id="fishing" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t('vessel.insights.fishing', 'Fishing Events')}</label>
         <DataTerminology
