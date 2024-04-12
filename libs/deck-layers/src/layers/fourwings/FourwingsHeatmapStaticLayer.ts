@@ -66,7 +66,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     this.state = {
       colorDomain: [],
       colorRanges: this._getColorRanges(),
-      scale: undefined,
+      scales: [],
     }
   }
 
@@ -105,7 +105,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
   _updateColorDomain = () => {
     const colorDomain = this._calculateColorDomain() as number[]
     const colorRanges = this._getColorRanges()[0]
-    this.setState({ colorDomain, scale: scaleLinear(colorDomain, colorRanges) })
+    this.setState({ colorDomain, scales: [scaleLinear(colorDomain, colorRanges)] })
   }
 
   debouncedUpdateColorDomain = debounce(() => {
@@ -136,24 +136,22 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
   }
 
   getFillColor = (feature: Feature<Geometry, FourwingsStaticFeatureProperties>) => {
-    if (!this.state.scale) {
-      return EMPTY_CELL_COLOR
-    }
-    if (!feature.properties.count) {
-      // TODO make the filter for the visible data here
-      return EMPTY_CELL_COLOR
-    }
+    const { scales } = this.state as FourwingsTileLayerState
+    const scale = scales?.[0]
     if (
+      !scale ||
+      !feature.properties.count ||
       (this.props.minVisibleValue && feature.properties.count < this.props.minVisibleValue) ||
       (this.props.maxVisibleValue && feature.properties.count > this.props.maxVisibleValue)
     ) {
       return EMPTY_CELL_COLOR
     }
 
-    const value = (this.state as FourwingsTileLayerState).scale?.(feature.properties.count)
+    const value = scale(feature.properties.count)
     if (!value) {
       return EMPTY_CELL_COLOR
     }
+
     return rgbaStringToComponents(value) as Color
   }
 
@@ -169,7 +167,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
   renderLayers(): Layer<{}> | LayersList {
     const { tilesUrl, sublayers, resolution, minVisibleValue, maxVisibleValue, maxZoom } =
       this.props
-    const { colorDomain, colorRanges, scale } = this.state as FourwingsTileLayerState
+    const { colorDomain, colorRanges, scales } = this.state as FourwingsTileLayerState
+    const scale = scales?.[0]
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',

@@ -150,7 +150,7 @@ export const getColorRamp = ({
 }) => {
   const ramp = whiteEnd
     ? getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID[rampId])
-    : getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[rampId], COLOR_RAMP_DEFAULT_NUM_STEPS)
+    : getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[rampId])
   if (rampId === 'bathymetry') ramp.reverse()
   return ramp
 }
