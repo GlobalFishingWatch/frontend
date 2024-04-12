@@ -28,6 +28,9 @@ export class ClusterLayer extends CompositeLayer<LayerProps & TileLayerProps & C
   getPickingInfo = ({ info }: { info: PickingInfo<ClusterFeature> }): ClusterPickingInfo => {
     const object = {
       ...(info.object || ({} as ClusterFeature)),
+      id:
+        info.object?.properties.event_id ||
+        `${(info.object?.geometry?.coordinates || []).join('-')}`,
       layerId: this.props.id,
       category: this.props.category,
     }

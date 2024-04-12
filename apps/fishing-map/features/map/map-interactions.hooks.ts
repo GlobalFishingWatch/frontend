@@ -2,12 +2,12 @@ import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckProps, PickingInfo, Position } from '@deck.gl/core'
 import { InteractionEventCallback, useSimpleMapHover } from '@globalfishingwatch/react-hooks'
-import { ExtendedStyle } from '@globalfishingwatch/layer-composer'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   useMapHoverInteraction,
   useSetMapHoverInteraction,
   InteractionEvent,
+  InteractionEventType,
 } from '@globalfishingwatch/deck-layer-composer'
 import {
   ClusterPickingObject,
@@ -186,9 +186,55 @@ export const useClickedEventConnect = () => {
   }
 }
 
-const defaultEmptyFeatures = [] as DeckLayerInteractionPickingInfo[]
-export const useMapMouseHover = (style?: ExtendedStyle) => {
+export const useGetPickingInteraction = () => {
   const map = useDeckMap()
+
+  const getPickingInteraction = useCallback(
+    (info: PickingInfo, type: InteractionEventType): InteractionEvent | undefined => {
+      if (!map || !info?.coordinate) {
+        return
+      }
+
+      let pickingInfo = [] as DeckLayerInteractionPickingInfo[]
+      // TODO:deck handle when hovering a cluster point as we don't want to show anything else
+      // const clusterFeature = event.features.find(
+      //   (f) => f.generatorType === DataviewType.TileCluster && parseInt(f.properties.count) > 1
+      // )
+      try {
+        pickingInfo = map?.pickMultipleObjects({
+          x: info.x,
+          y: info.y,
+          radius: 0,
+        }) as DeckLayerInteractionPickingInfo[]
+      } catch (e) {
+        console.warn(e)
+      }
+      const uniqFeatureIds = [] as string[]
+      const features = pickingInfo.flatMap((f) => {
+        if (f.object?.id) {
+          if (!uniqFeatureIds.includes(f.object.id as string)) {
+            uniqFeatureIds.push(f.object.id as string)
+            return f.object
+          }
+          return []
+        }
+        return f.object || []
+      })
+      return {
+        type,
+        longitude: info.coordinate[0],
+        latitude: info.coordinate[1],
+        point: { x: info.x, y: info.y },
+        features,
+      }
+    },
+    [map]
+  )
+  return getPickingInteraction
+}
+
+export const useMapMouseHover = () => {
+  const getPickingInteraction = useGetPickingInteraction()
   const setMapHoverFeatures = useSetMapHoverInteraction()
   const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating } = useMapAnnotation()
@@ -211,37 +257,23 @@ export const useMapMouseHover = (style?: ExtendedStyle) => {
 
   const onMouseMove: DeckProps['onHover'] = useCallback(
     (info: PickingInfo, event: any) => {
-      if (!map || !info.coordinate) return
+      if (!info.coordinate) return
 
-      let features = defaultEmptyFeatures
       // TODO:deck handle when hovering a cluster point as we don't want to show anything else
       // const clusterFeature = event.features.find(
       //   (f) => f.generatorType === DataviewType.TileCluster && parseInt(f.properties.count) > 1
       // )
-      try {
-        features = map?.pickMultipleObjects({
-          x: info.x,
-          y: info.y,
-          radius: 0,
-        }) as DeckLayerInteractionPickingInfo[]
-      } catch (e) {
-        console.warn(e)
+      const hoverInteraction = getPickingInteraction(info, 'hover')
+      if (hoverInteraction) {
+        setMapHoverFeatures(hoverInteraction)
       }
-
-      setMapHoverFeatures({
-        type: 'hover',
-        longitude: info.coordinate[0],
-        latitude: info.coordinate[1],
-        point: { x: info.x, y: info.y },
-        features: features.flatMap((f) => f.object || []),
-      })
       // onRulerDrag(features)
 
       if (rulersEditing) {
         onRulerMapHover(info)
       }
     },
-    [map, onRulerMapHover, rulersEditing, setMapHoverFeatures]
+    [getPickingInteraction, onRulerMapHover, rulersEditing, setMapHoverFeatures]
   )
 
   // const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
@@ -298,8 +330,7 @@ export const useHandleMapToolsClick = () => {
 }
 
 export const useMapMouseClick = () => {
-  // const map = useMapInstance()
-  const map = useDeckMap()
+  const getPickingInteraction = useGetPickingInteraction()
   const handleMapToolsClick = useHandleMapToolsClick()
   // const setMapClickFeatures = useSetMapClickInteraction()
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
@@ -336,36 +367,21 @@ export const useMapMouseClick = () => {
 
   const onMapClick: DeckProps['onClick'] = useCallback(
     (info: PickingInfo, event: any) => {
-      if (!map || !info.coordinate) return
+      if (!info.coordinate) return
       if (event.srcEvent.defaultPrevented) {
         // this is needed to allow interacting with overlay elements content
         return true
       }
-      let features = defaultEmptyFeatures
-      try {
-        features = map?.pickMultipleObjects({
-          x: info.x,
-          y: info.y,
-          radius: 0,
-        }) as DeckLayerInteractionPickingInfo[]
-      } catch (e) {
-        console.warn(e)
+      const clickInteraction = getPickingInteraction(info, 'click')
+      if (clickInteraction) {
+        const clickStopPropagation = handleMapToolsClick(clickInteraction) !== undefined
+        if (!clickStopPropagation) {
+          dispatchClickedEvent(clickInteraction)
+        }
+        trackMapClickEvent(clickInteraction)
       }
-      const mapClickInteraction: InteractionEvent = {
-        type: 'click',
-        longitude: info.coordinate[0],
-        latitude: info.coordinate[1],
-        point: { x: info.x, y: info.y },
-        features: features.flatMap((f) => f.object || []),
-      }
-
-      const clickStopPropagation = handleMapToolsClick(mapClickInteraction) !== undefined
-      if (!clickStopPropagation) {
-        dispatchClickedEvent(mapClickInteraction)
-      }
-      trackMapClickEvent(mapClickInteraction)
     },
-    [map, handleMapToolsClick, trackMapClickEvent, dispatchClickedEvent]
+    [getPickingInteraction, handleMapToolsClick, trackMapClickEvent, dispatchClickedEvent]
   )
 
   return onMapClick

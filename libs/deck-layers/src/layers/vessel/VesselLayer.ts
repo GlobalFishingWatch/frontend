@@ -1,5 +1,5 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { CompositeLayer, Layer, LayersList, LayerProps, Color } from '@deck.gl/core'
+import { CompositeLayer, Layer, LayersList, LayerProps, Color, PickingInfo } from '@deck.gl/core'
 import {
   ApiEvent,
   DataviewCategory,
@@ -12,7 +12,6 @@ import {
   VesselEventsLoader,
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
-import { GFWAPI } from '@globalfishingwatch/api-client'
 import { deckToHexColor } from '../../utils/colors'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { BaseLayerProps } from '../../types'
@@ -42,19 +41,26 @@ export type VesselLayerProps = BaseLayerProps &
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   dataStatus: VesselDataStatus[] = []
 
-  getPickingInfo = ({ info }: { info: VesselEventPickingInfo }): VesselEventPickingInfo => {
+  getPickingInfo = ({
+    info,
+  }: {
+    info: PickingInfo<VesselEventProperties>
+  }): VesselEventPickingInfo => {
+    const object = {
+      ...(info.object || ({} as VesselEventProperties)),
+      layerId: this.props.id,
+      title: this.props.name,
+      vesselId: this.props.id,
+      category: DataviewCategory.Vessels,
+      color: deckToHexColor(this.props.color),
+    }
     if (!info.object) {
       info.object = {} as VesselEventPickingObject
     }
-    info.object.layerId = this.props.id
-    info.object.title = this.props.name
-    info.object.vesselId = this.props.id
-    info.object.category = DataviewCategory.Vessels
-    info.object.color = deckToHexColor(this.props.color)
     // info.object.getDetail = async () => {
     //   return GFWAPI.fetch(`/events/${info.object?.properties.id}`)
     // }
-    return info
+    return { ...info, object }
   }
 
   onSublayerError = (error: any) => {
