@@ -797,7 +797,7 @@
     "insights": {
       "coverage": "Cobertura de AIS",
       "disclaimerTimeRangeBeforeMinYear": "Los indicadores están disponibles a partir del 1º de enero de {{year}}. Ajuste el rango del tiempo para ver los indicadores.",
-      "errorPermisions": "No tiene permiso para ver este indicador",
+      "errorPermisions": "Esta información está restringida a usuarios concretos; contáctenos en support@globalfishingwatch.org para obtener más detalles",
       "gaps": "Eventos de desactivación de AIS",
       "gapsEvents": "{{count}} eventos de desactivación de AIS",
       "gapsEventsEmpty": "No se detectaron eventos de desactivación de AIS",
