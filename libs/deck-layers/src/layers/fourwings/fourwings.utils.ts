@@ -335,7 +335,9 @@ export function getIntervalFrames({
   return { interval, tileStartFrame, startFrame, endFrame }
 }
 
-export function filterElementByPercentOfIndex(value: any, index: number) {
+export function filterCells(value: any, index: number, minValue?: number, maxValue?: number) {
   // Select only 5% of elements
-  return value && index % 20 === 1
+  return (
+    value && index % 20 === 1 && (!minValue || value > minValue) && (!maxValue || value < maxValue)
+  )
 }

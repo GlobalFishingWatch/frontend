@@ -89,6 +89,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       aggregationOperation,
       tilesCache,
       scales,
+      minVisibleValue,
+      maxVisibleValue,
     } = this.props
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
@@ -124,7 +126,11 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           chosenValueIndex = index
         }
       })
-      if (!chosenValue) {
+      if (
+        !chosenValue ||
+        (minVisibleValue && chosenValue < minVisibleValue) ||
+        (maxVisibleValue && chosenValue > maxVisibleValue)
+      ) {
         target = EMPTY_CELL_COLOR
         return target
       }
@@ -187,7 +193,15 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
           updateTriggers: {
             // This tells deck.gl to recalculate fillColor on changes
-            getFillColor: [startTime, endTime, colorDomain, colorRanges, comparisonMode],
+            getFillColor: [
+              startTime,
+              endTime,
+              colorDomain,
+              colorRanges,
+              comparisonMode,
+              minVisibleValue,
+              maxVisibleValue,
+            ],
           },
         })
       ),

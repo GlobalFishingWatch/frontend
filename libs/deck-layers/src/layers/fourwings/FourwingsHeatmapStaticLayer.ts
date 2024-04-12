@@ -36,7 +36,7 @@ import {
   deckToRgbaColor,
   getLayerGroupOffset,
 } from '../../utils'
-import { EMPTY_CELL_COLOR, filterElementByPercentOfIndex } from './fourwings.utils'
+import { EMPTY_CELL_COLOR, filterCells } from './fourwings.utils'
 import {
   FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
@@ -92,24 +92,16 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
+    const { minVisibleValue, maxVisibleValue } = this.props
     const currentZoomData = this.getData()
     if (!currentZoomData.length) {
       return this.getColorDomain()
     }
-    const dataSample =
-      currentZoomData.length > MAX_RAMP_VALUES_PER_TILE
-        ? currentZoomData.filter(filterElementByPercentOfIndex)
-        : currentZoomData
-
-    const allValues = dataSample.flatMap((feature) => {
-      if (
-        (this.props.minVisibleValue && feature.properties.count < this.props.minVisibleValue) ||
-        (this.props.maxVisibleValue && feature.properties.count > this.props.maxVisibleValue)
-      ) {
-        return []
-      }
-      return feature.properties?.count
-    })
+    const values = currentZoomData.flatMap((d) => d.properties?.count || [])
+    const allValues =
+      values.length > MAX_RAMP_VALUES_PER_TILE
+        ? values.filter((d, i) => filterCells(d, i, minVisibleValue, maxVisibleValue))
+        : values
 
     const steps = ckmeans(allValues, Math.min(allValues.length, COLOR_RAMP_DEFAULT_NUM_STEPS)).map(
       (step) => step[0]
