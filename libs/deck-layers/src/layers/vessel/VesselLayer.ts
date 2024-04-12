@@ -48,7 +48,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }): VesselEventPickingInfo => {
     const object = {
       ...(info.object || ({} as VesselEventProperties)),
-      layerId: this.props.id,
+      layerId: this.root.id,
       title: this.props.name,
       vesselId: this.props.id,
       category: DataviewCategory.Vessels,

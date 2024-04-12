@@ -45,7 +45,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     })
     const object: FourwingsPickingObject = {
       ...(info.object || ({} as FourwingsFeature)),
-      layerId: this.props.id,
+      layerId: this.root.id,
       id: id,
       title: id, // TODO:deck get the proper title
       tile: tile.index,
