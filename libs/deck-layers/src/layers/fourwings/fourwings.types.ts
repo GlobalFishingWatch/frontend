@@ -176,5 +176,6 @@ export type FourwingsTileLayerState = {
   colorDomain: FourwingsTileLayerColorDomain
   colorRanges: FourwingsTileLayerColorRange
   comparisonMode?: FourwingsComparisonMode
+  scale?: FourwinsTileLayerScale
   scales?: FourwinsTileLayerScale[]
 }

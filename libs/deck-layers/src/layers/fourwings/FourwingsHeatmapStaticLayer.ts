@@ -22,19 +22,14 @@ import {
   FourwingsStaticFeature,
   FourwingsStaticFeatureProperties,
 } from '@globalfishingwatch/deck-loaders'
-import {
-  HEATMAP_COLOR_RAMPS,
-  rgbaStringToComponents,
-  ColorRampsIds,
-} from '@globalfishingwatch/layer-composer'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '../../utils/colorRamps'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS, ColorRampId, getColorRamp } from '../../utils/colorRamps'
 import {
   COLOR_HIGHLIGHT_LINE,
   GFWMVTLoader,
   LayerGroup,
-  deckToRgbaColor,
   getLayerGroupOffset,
+  rgbaStringToComponents,
 } from '../../utils'
 import { EMPTY_CELL_COLOR, filterCells } from './fourwings.utils'
 import {
@@ -46,7 +41,6 @@ import {
   FourwingsHeatmapTileLayerProps,
   FourwingsTileLayerState,
   FourwingsAggregationOperation,
-  FourwinsTileLayerScale,
   FourwingsHeatmapStaticLayerProps,
   FourwingsPickingInfo,
   FourwingsPickingObject,
@@ -66,14 +60,13 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
 > {
   static layerName = 'FourwingsHeatmapStaticLayer'
   static defaultProps = defaultProps
-  scale: typeof scaleLinear | undefined = undefined
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
       colorDomain: [],
       colorRanges: this._getColorRanges(),
-      scale: scaleLinear([], []),
+      scale: undefined,
     }
   }
 
@@ -83,7 +76,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
 
   _getColorRanges = () => {
     return this.props.sublayers.map(({ colorRamp }) =>
-      HEATMAP_COLOR_RAMPS[colorRamp as ColorRampsIds].map((c) => rgbaStringToComponents(c))
+      getColorRamp({ rampId: colorRamp as ColorRampId })
     )
   }
 
@@ -106,13 +99,12 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     const steps = ckmeans(allValues, Math.min(allValues.length, COLOR_RAMP_DEFAULT_NUM_STEPS)).map(
       (step) => step[0]
     )
-
     return steps
   }
 
   _updateColorDomain = () => {
     const colorDomain = this._calculateColorDomain() as number[]
-    const colorRanges = this._getColorRanges()?.[0]?.map((c) => deckToRgbaColor(c))
+    const colorRanges = this._getColorRanges()[0]
     this.setState({ colorDomain, scale: scaleLinear(colorDomain, colorRanges) })
   }
 
@@ -157,7 +149,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     ) {
       return EMPTY_CELL_COLOR
     }
-    const value = (this.state.scale as FourwinsTileLayerScale)(feature.properties.count)
+
+    const value = (this.state as FourwingsTileLayerState).scale?.(feature.properties.count)
     if (!value) {
       return EMPTY_CELL_COLOR
     }
@@ -176,7 +169,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
   renderLayers(): Layer<{}> | LayersList {
     const { tilesUrl, sublayers, resolution, minVisibleValue, maxVisibleValue, maxZoom } =
       this.props
-    const { colorDomain, colorRanges, scales } = this.state as FourwingsTileLayerState
+    const { colorDomain, colorRanges, scale } = this.state as FourwingsTileLayerState
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',
@@ -196,7 +189,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
         getFillColor: this.getFillColor,
         updateTriggers: {
-          getFillColor: [colorDomain, colorRanges, scales, minVisibleValue, maxVisibleValue],
+          getFillColor: [colorDomain, colorRanges, scale, minVisibleValue, maxVisibleValue],
         },
       }),
     ]
