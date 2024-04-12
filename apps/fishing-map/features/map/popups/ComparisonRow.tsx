@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 
 type ComparisonRowProps = {
-  feature: TooltipEventFeature
+  // TODO:deck type this with its own type
+  feature: any
   showFeaturesDetails: boolean
 }
 function ComparisonRow({ feature, showFeaturesDetails = false }: ComparisonRowProps) {

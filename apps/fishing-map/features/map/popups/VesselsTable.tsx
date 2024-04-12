@@ -8,7 +8,6 @@ import {
   DataviewCategory,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import { FourwingsDeckSublayer } from '@globalfishingwatch/deck-layers'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -38,15 +37,9 @@ import VesselPin from 'features/vessel/VesselPin'
 import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-  TooltipEventFeature,
   getVesselsInfoConfig,
 } from '../map.hooks'
 import styles from './VesselsTable.module.css'
-
-export const getVesselTableTitle = (feature: TooltipEventFeature) => {
-  let title = feature.title
-  return title
-}
 
 export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {
   const { setTimerange } = useTimerangeConnect()

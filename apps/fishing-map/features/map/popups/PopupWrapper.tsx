@@ -1,44 +1,27 @@
 import { Fragment } from 'react'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
-import { Popup } from 'react-map-gl'
 import type { Anchor } from 'react-map-gl'
 import { useSelector } from 'react-redux'
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
-import {
-  ContextFeature,
-  ContextPickingObject,
-  FourwingsPickingObject,
-  VesselEventPickingObject,
-} from '@globalfishingwatch/deck-layers'
-import { TooltipEvent } from 'features/map/map.hooks'
+import { ContextPickingObject, VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
 import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
-import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { WORKSPACE_GENERATOR_ID, REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
-import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
-import AnnotationTooltip from 'features/map/popups/AnnotationTooltip'
-import RulerTooltip from 'features/map/popups/RulerTooltip'
-import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import {
-  SliceExtendedFourwingsFeature,
+  SliceExtendedFourwingsPickingObject,
   selectApiEventStatus,
   selectFishingInteractionStatus,
 } from '../map.slice'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
 import EncounterTooltipRow from './EncounterTooltipRow'
-import EnvironmentTooltipSection from './EnvironmentLayers'
 import ContextTooltipSection from './ContextLayers'
-import UserContextTooltipSection from './UserContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
-import ComparisonRow from './ComparisonRow'
-import ReportBufferTooltip from './ReportBufferLayers'
 
 type PopupWrapperProps = {
   interaction: InteractionEvent | null
@@ -113,24 +96,32 @@ function PopupWrapper({
               //     />
               //   )
               case DataviewCategory.Activity: {
-                return (features as SliceExtendedFourwingsFeature[])?.map((feature, i) => {
+                return (features as SliceExtendedFourwingsPickingObject[])?.map((feature, i) => {
                   return feature.sublayers.map((sublayer, j) => (
                     <ActivityTooltipRow
                       key={`${i}-${j}`}
                       loading={activityInteractionStatus === AsyncReducerStatus.Loading}
-                      feature={{ ...sublayer, category: feature.category as DataviewCategory }}
+                      feature={{
+                        ...sublayer,
+                        category: feature.category as DataviewCategory,
+                        title: feature.title,
+                      }}
                       showFeaturesDetails={type === 'click'}
                     />
                   ))
                 })
               }
               case DataviewCategory.Detections: {
-                return (features as FourwingsPickingObject[])?.map((feature, i) => {
+                return (features as SliceExtendedFourwingsPickingObject[])?.map((feature, i) => {
                   return feature.sublayers.map((sublayer, j) => (
                     <DetectionsTooltipRow
                       key={`${i}-${j}`}
                       loading={activityInteractionStatus === AsyncReducerStatus.Loading}
-                      feature={{ ...sublayer, category: feature.category as DataviewCategory }}
+                      feature={{
+                        ...sublayer,
+                        category: feature.category as DataviewCategory,
+                        title: feature.title,
+                      }}
                       showFeaturesDetails={type === 'click'}
                     />
                   ))
@@ -147,7 +138,8 @@ function PopupWrapper({
                 return (
                   <EncounterTooltipRow
                     key={featureCategory}
-                    features={features}
+                    // TODO:deck review typings here
+                    features={features as any}
                     showFeaturesDetails={type === 'click'}
                   />
                 )

@@ -60,11 +60,11 @@ export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
 export type SliceExtendedFourwingsDeckSublayer = FourwingsDeckSublayer & {
   vessels: ExtendedFeatureVessel[]
 }
-export type SliceExtendedFourwingsFeature = Omit<FourwingsPickingObject, 'sublayers'> & {
+export type SliceExtendedFourwingsPickingObject = Omit<FourwingsPickingObject, 'sublayers'> & {
   sublayers: SliceExtendedFourwingsDeckSublayer[]
 }
 export type SliceExtendedFeature =
-  | SliceExtendedFourwingsFeature
+  | SliceExtendedFourwingsPickingObject
   | ContextPickingObject
   | UserContextPickingObject
   | ClusterPickingObject

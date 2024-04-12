@@ -1,23 +1,7 @@
 import {
-  ClusterLayer,
-  ClusterPickingInfo,
-  ClusterPickingObject,
-  ContextLayer,
-  ContextPickingInfo,
-  ContextPickingObject,
   FourwingsDeckSublayer,
-  FourwingsLayer,
-  FourwingsPickingInfo,
-  FourwingsPickingObject,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
-  RulerPickingInfo,
-  RulerPickingObject,
-  RulersLayer,
-  UserContextPickingObject,
-  VesselEventPickingInfo,
-  VesselEventPickingObject,
-  VesselLayer,
 } from '@globalfishingwatch/deck-layers'
 
 export const DECK_LAYER_LIFECYCLE = {

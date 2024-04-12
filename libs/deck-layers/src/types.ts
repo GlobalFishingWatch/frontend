@@ -24,6 +24,7 @@ export type BaseLayerProps = {
 
 // TODO:deck move this type to a generic like DeckPickingInfo<SpecificLayerInfo>
 export type BasePickingInfo = {
+  title?: string
   layerId: string
   category: DeckLayerCategory
 }

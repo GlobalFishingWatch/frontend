@@ -2,11 +2,10 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory, DataviewType, Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
-import { FourwingsComparisonMode } from '@globalfishingwatch/deck-layers'
+import { DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -22,13 +21,7 @@ import {
 } from 'features/app/selectors/app.selectors'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import {
-  MAX_TOOLTIP_LIST,
-  SliceInteractionEvent,
-  ExtendedFeatureVessel,
-  SliceExtendedFeature,
-  SliceExtendedFourwingsFeature,
-} from './map.slice'
+import { MAX_TOOLTIP_LIST, ExtendedFeatureVessel } from './map.slice'
 import { useViewStateAtom } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
@@ -94,58 +87,6 @@ export const useGlobalConfigConnect = () => {
   ])
 }
 
-// TODO:deck fuerte
-// hack to allow building the app wihtout migrating the rest of the interactions
-// needs to be updated with the new deck-layers
-export type TooltipEventFeatureVesselsInfo = {
-  overflow: boolean
-  overflowNumber: number
-  overflowLoad: boolean
-  overflowLoadNumber: number
-  numVessels: number
-  vessels: ExtendedFeatureVessel[]
-}
-export type TooltipEventFeature = {
-  vesselsInfo?: TooltipEventFeatureVesselsInfo
-  [key: string]: any
-}
-// export type TooltipEventFeature = {
-//   category: DataviewCategory
-//   color?: string
-//   datasetId?: string
-//   datasetSource?: string
-//   event?: ExtendedFeatureEvent
-//   generatorContextLayer?: ContextLayerType | null
-//   geometry?: Point | Polygon | MultiPolygon
-//   id?: string
-//   layerId: string
-//   promoteId?: string
-//   properties: Record<string, string>
-//   source: string
-//   sourceLayer: string
-//   subcategory?: DatasetSubCategory
-//   temporalgrid?: TemporalGridFeature
-//   title?: string
-//   type?: DataviewType
-//   unit?: string
-//   value: string // TODO Why not a number?
-//   visible?: boolean
-//   vesselsInfo?: {
-//     overflow: boolean
-//     overflowNumber: number
-//     overflowLoad: boolean
-//     overflowLoadNumber: number
-//     numVessels: number
-//     vessels: ExtendedFeatureVessel[]
-//   }
-// }
-
-export type TooltipEvent = {
-  latitude: number
-  longitude: number
-  features: TooltipEventFeature[]
-}
-
 export const useDebouncedDispatchHighlightedEvent = () => {
   const dispatch = useAppDispatch()
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -161,30 +102,31 @@ export const useDebouncedDispatchHighlightedEvent = () => {
   )
 }
 
-export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
+// TODO:deck do this within the deck layer
+export const useMapHighlightedEvent = (features?: DeckLayerPickingObject[]) => {
   const highlightedEvents = useSelector(selectHighlightedEvents)
   const debounceDispatch = useDebouncedDispatchHighlightedEvent()
 
   const setHighlightedEventDebounced = useCallback(() => {
-    let highlightEvent: string | undefined
-    const vesselFeature = features?.find((f) => f.category === DataviewCategory.Vessels)
-    const clusterFeature = features?.find((f) => f.type === DataviewType.TileCluster)
-    if (!clusterFeature && vesselFeature) {
-      highlightEvent = vesselFeature.properties?.id
-    } else if (clusterFeature) {
-      highlightEvent = clusterFeature.properties?.event_id
-    }
-    if (highlightEvent) {
-      if (
-        !highlightedEvents ||
-        highlightedEvents.length !== 1 ||
-        highlightedEvents[0] !== highlightEvent
-      ) {
-        debounceDispatch(highlightEvent)
-      }
-    } else if (highlightedEvents && highlightedEvents.length) {
-      debounceDispatch(undefined)
-    }
+    // let highlightEvent: string | undefined
+    // const vesselFeature = features?.find((f) => f.category === DataviewCategory.Vessels)
+    // const clusterFeature = features?.find((f) => f.type === DataviewType.TileCluster)
+    // if (!clusterFeature && vesselFeature) {
+    //   highlightEvent = vesselFeature.properties?.id
+    // } else if (clusterFeature) {
+    //   highlightEvent = clusterFeature.properties?.event_id
+    // }
+    // if (highlightEvent) {
+    //   if (
+    //     !highlightedEvents ||
+    //     highlightedEvents.length !== 1 ||
+    //     highlightedEvents[0] !== highlightEvent
+    //   ) {
+    //     debounceDispatch(highlightEvent)
+    //   }
+    // } else if (highlightedEvents && highlightedEvents.length) {
+    //   debounceDispatch(undefined)
+    // }
   }, [features, highlightedEvents, debounceDispatch])
 
   useEffect(() => {
@@ -194,125 +136,126 @@ export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
 }
 
 // TODO:deck ideally remove this intermediate step
-export const parseMapTooltipFeatures = (
-  features: SliceExtendedFeature[]
-  // dataviews: UrlDataviewInstance<DataviewType>[],
-  // temporalgridDataviews?: UrlDataviewInstance<DataviewType>[]
-): TooltipEventFeature[] => {
-  const tooltipEventFeatures: TooltipEventFeature[] = features.flatMap((feature) => {
-    const { category, id, comparisonMode, sublayers } = feature as SliceExtendedFourwingsFeature
-    const baseFeature = {
-      category: feature.category,
-      layerId: id as string,
-      type: category,
-    }
+// export const parseMapTooltipFeatures = (
+//   features: SliceExtendedFeature[]
+//   // dataviews: UrlDataviewInstance<DataviewType>[],
+//   // temporalgridDataviews?: UrlDataviewInstance<DataviewType>[]
+// ) => {
+//   const tooltipEventFeatures: TooltipEventFeature[] = features.flatMap((feature) => {
+//     const { category, id, comparisonMode, sublayers } =
+//       feature as SliceExtendedFourwingsPickingObject
+//     const baseFeature = {
+//       category: feature.category,
+//       layerId: id as string,
+//       type: category,
+//     }
 
-    if (comparisonMode === FourwingsComparisonMode.TimeCompare) {
-      return {
-        ...baseFeature,
-        category: DataviewCategory.Comparison,
-        value: sublayers[0]?.value,
-        visible: true,
-        unit: sublayers[0]?.unit,
-      } as TooltipEventFeature
-    }
+//     if (comparisonMode === FourwingsComparisonMode.TimeCompare) {
+//       return {
+//         ...baseFeature,
+//         category: DataviewCategory.Comparison,
+//         value: sublayers[0]?.value,
+//         visible: true,
+//         unit: sublayers[0]?.unit,
+//       } as TooltipEventFeature
+//     }
 
-    let dataview
+//     let dataview
 
-    // if (isMergedAnimatedGenerator(generatorId as string)) {
-    //   if (!temporalgrid || temporalgrid.sublayerId === undefined || !temporalgrid.visible) {
-    //     return []
-    //   }
+//     if (isMergedAnimatedGenerator(generatorId as string)) {
+//       if (!temporalgrid || temporalgrid.sublayerId === undefined || !temporalgrid.visible) {
+//         return []
+//       }
 
-    //   dataview = temporalgridDataviews?.find((dataview) => dataview.id === temporalgrid.sublayerId)
-    // } else {
-    //   dataview = dataviews?.find((dataview) => {
-    //     // Needed to get only the initial part to support multiple generator
-    //     // from the same dataview, see map.selectors L137
-    //     const cleanGeneratorId = (generatorId as string)?.split(MULTILAYER_SEPARATOR)[0]
-    //     return dataview.id === cleanGeneratorId
-    //   })
-    // }
+//       dataview = temporalgridDataviews?.find((dataview) => dataview.id === temporalgrid.sublayerId)
+//     } else {
+//       dataview = dataviews?.find((dataview) => {
+//         // Needed to get only the initial part to support multiple generator
+//         // from the same dataview, see map.selectors L137
+//         const cleanGeneratorId = (generatorId as string)?.split(MULTILAYER_SEPARATOR)[0]
+//         return dataview.id === cleanGeneratorId
+//       })
+//     }
 
-    // TODO: deck check if this is still neded
-    // if (!dataview) {
-    //   // There are three use cases when there is no dataview and we want interaction
-    //   // 1. Wworkspaces list
-    //   if (generatorId && (generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
-    //     const tooltipWorkspaceFeature: TooltipEventFeature = {
-    //       ...baseFeature,
-    //       type: DataviewType.GL,
-    //       value: feature.properties.label,
-    //       properties: {},
-    //       category: DataviewCategory.Context,
-    //     }
-    //     return tooltipWorkspaceFeature
-    //   }
-    //   // 2. Report buffer
-    //   else if (generatorId === REPORT_BUFFER_GENERATOR_ID) {
-    //     const tooltipWorkspaceFeature: TooltipEventFeature = {
-    //       ...baseFeature,
-    //       category: DataviewCategory.Context,
-    //       properties: {},
-    //       value: feature.properties.label,
-    //       visible: true,
-    //     }
-    //     return tooltipWorkspaceFeature
-    //   }
-    //   // 3. Tools (Annotations and Rulers)
-    //   else if (generatorType === DataviewType.Annotation || generatorType === DataviewType.Rulers) {
-    //     const tooltipToolFeature: TooltipEventFeature = {
-    //       ...baseFeature,
-    //       category: DataviewCategory.Context,
-    //       properties: feature.properties,
-    //       value: feature.properties.label,
-    //       visible: true,
-    //     }
-    //     return tooltipToolFeature
-    //   }
-    //   return []
-    // }
+//     TODO:deck check if this is still neded
+//     if (!dataview) {
+//       // There are three use cases when there is no dataview and we want interaction
+//       // 1. Wworkspaces list
+//       if (generatorId && (generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
+//         const tooltipWorkspaceFeature: TooltipEventFeature = {
+//           ...baseFeature,
+//           type: DataviewType.GL,
+//           value: feature.properties.label,
+//           properties: {},
+//           category: DataviewCategory.Context,
+//         }
+//         return tooltipWorkspaceFeature
+//       }
+//       // 2. Report buffer
+//       else if (generatorId === REPORT_BUFFER_GENERATOR_ID) {
+//         const tooltipWorkspaceFeature: TooltipEventFeature = {
+//           ...baseFeature,
+//           category: DataviewCategory.Context,
+//           properties: {},
+//           value: feature.properties.label,
+//           visible: true,
+//         }
+//         return tooltipWorkspaceFeature
+//       }
+//       // 3. Tools (Annotations and Rulers)
+//       else if (generatorType === DataviewType.Annotation || generatorType === DataviewType.Rulers) {
+//         const tooltipToolFeature: TooltipEventFeature = {
+//           ...baseFeature,
+//           category: DataviewCategory.Context,
+//           properties: feature.properties,
+//           value: feature.properties.label,
+//           visible: true,
+//         }
+//         return tooltipToolFeature
+//       }
+//       return []
+//     }
 
-    // const title = getDatasetTitleByDataview(dataview)
+//     const title = getDatasetTitleByDataview(dataview)
 
-    // const datasets =
-    //   dataview.category === DataviewCategory.Activity ||
-    //   dataview.category === DataviewCategory.Detections
-    //     ? getActiveDatasetsInActivityDataviews([dataview])
-    //     : (dataview.datasets || [])?.map((d) => d.id)
+//     const datasets =
+//       dataview.category === DataviewCategory.Activity ||
+//       dataview.category === DataviewCategory.Detections
+//         ? getActiveDatasetsInActivityDataviews([dataview])
+//         : (dataview.datasets || [])?.map((d) => d.id)
 
-    // const dataset = dataview?.datasets?.find(({ id }) => datasets.includes(id))
-    // const subcategory = dataset?.subcategory as DatasetSubCategory
-    // const tooltipEventFeature: TooltipEventFeature = {
-    //   title,
-    //   type: dataview.config?.type,
-    //   color: dataview.config?.color,
-    //   visible: dataview.config?.visible,
-    //   category: dataview.category || DataviewCategory.Context,
-    //   subcategory,
-    //   datasetSource: dataset?.source,
-    //   ...feature,
-    //   properties: { ...feature.properties },
-    // }
-    // // Insert custom properties by each dataview configuration
-    // const properties = dataview.datasetsConfig
-    //   ? dataview.datasetsConfig.flatMap((datasetConfig) => {
-    //       if (!datasetConfig.query?.length) return []
-    //       return datasetConfig.query.flatMap((query) =>
-    //         query.id === 'properties' ? (query.value as string) : []
-    //       )
-    //     })
-    //   : []
-    // properties.forEach((property) => {
-    //   if (feature.properties[property]) {
-    //     tooltipEventFeature.properties[property] = feature.properties[property]
-    //   }
-    // })
+//     const dataset = dataview?.datasets?.find(({ id }) => datasets.includes(id))
+//     const subcategory = dataset?.subcategory as DatasetSubCategory
+//     const tooltipEventFeature: TooltipEventFeature = {
+//       title,
+//       type: dataview.config?.type,
+//       color: dataview.config?.color,
+//       visible: dataview.config?.visible,
+//       category: dataview.category || DataviewCategory.Context,
+//       subcategory,
+//       datasetSource: dataset?.source,
+//       ...feature,
+//       properties: { ...feature.properties },
+//     }
+//     // Insert custom properties by each dataview configuration
+//     const properties = dataview.datasetsConfig
+//       ? dataview.datasetsConfig.flatMap((datasetConfig) => {
+//           if (!datasetConfig.query?.length) return []
+//           return datasetConfig.query.flatMap((query) =>
+//             query.id === 'properties' ? (query.value as string) : []
+//           )
+//         })
+//       : []
+//     properties.forEach((property) => {
+//       if (feature.properties[property]) {
+//         tooltipEventFeature.properties[property] = feature.properties[property]
+//       }
+//     })
 
-    // if (feature.vessels) {
-    //   tooltipEventFeature.vesselsInfo = getVesselsInfoConfig(feature.vessels)
-    // }
-    // return tooltipEventFeature
-  })
-  return tooltipEventFeatures
-}
+//     if (feature.vessels) {
+//       tooltipEventFeature.vesselsInfo = getVesselsInfoConfig(feature.vessels)
+//     }
+//     return tooltipEventFeature
+//   })
+//   return tooltipEventFeatures
+// }
