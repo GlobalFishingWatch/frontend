@@ -117,7 +117,7 @@ export const getBlend = (color1: RGBA, color2: RGBA) => {
   return normal({ ...hexToRgb(BLEND_BACKGROUND), a: 1 }, screen(color1 as RGBA, color2 as RGBA))
 }
 
-export const HEATMAP_COLORS_BY_ID = {
+export const HEATMAP_COLORS_BY_ID: Record<ColorRampId, string> = {
   teal: '#00FFBC',
   magenta: '#FF64CE',
   lilac: '#9CA4FF',
@@ -141,25 +141,16 @@ export const TIME_COMPARE_COLOR_RAMP = [
   '#FF677D',
 ]
 
-export const HEATMAP_COLOR_RAMPS: Record<ColorRampsIds, string[]> = {
-  teal: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.teal),
-  teal_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.teal),
-  magenta: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.magenta),
-  magenta_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.magenta),
-  lilac: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.lilac),
-  lilac_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.lilac),
-  salmon: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.salmon),
-  salmon_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.salmon),
-  sky: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.sky),
-  sky_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.sky),
-  red: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.red),
-  red_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.red),
-  yellow: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.yellow),
-  yellow_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.yellow),
-  green: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.green),
-  green_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.green),
-  orange: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.orange),
-  orange_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.orange),
-  bathymetry: getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID.bathymetry).reverse(),
-  bathymetry_toWhite: getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID.bathymetry).reverse(),
+export const getColorRamp = ({
+  rampId,
+  whiteEnd = false,
+}: {
+  rampId: ColorRampId
+  whiteEnd?: boolean
+}) => {
+  const ramp = whiteEnd
+    ? getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID[rampId])
+    : getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[rampId])
+  if (rampId === 'bathymetry') ramp.reverse()
+  return ramp
 }

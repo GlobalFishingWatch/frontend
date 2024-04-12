@@ -18,7 +18,6 @@ import {
   FourwingsLoader,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
-import { HEATMAP_COLOR_RAMPS, ColorRampsIds } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import {
@@ -26,12 +25,13 @@ import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   ColorRampId,
   getBivariateRamp,
+  getColorRamp,
 } from '../../utils/colorRamps'
 import {
   aggregateCellTimeseries,
-  filterElementByPercentOfIndex,
   getFourwingsChunk,
   getDataUrlBySublayer,
+  filterCells,
 } from './fourwings.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import {
@@ -88,11 +88,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
       return getBivariateRamp(this.props.sublayers.map((s) => s?.colorRamp) as ColorRampId[])
     }
-    return this.props.sublayers.map(
-      ({ colorRamp }) =>
-        HEATMAP_COLOR_RAMPS[
-          (this.props.colorRampWhiteEnd ? `${colorRamp}_toWhite` : colorRamp) as ColorRampsIds
-        ]
+    return this.props.sublayers.map(({ colorRamp }) =>
+      getColorRamp({ rampId: colorRamp as ColorRampId, whiteEnd: this.props.colorRampWhiteEnd })
     )
   }
 
@@ -101,14 +98,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
-    const { comparisonMode, aggregationOperation } = this.props
+    const { comparisonMode, aggregationOperation, minVisibleValue, maxVisibleValue } = this.props
     const currentZoomData = this.getData()
     if (!currentZoomData.length) {
       return this.getColorDomain()
     }
     const dataSample =
       currentZoomData.length > MAX_RAMP_VALUES_PER_TILE
-        ? currentZoomData.filter(filterElementByPercentOfIndex)
+        ? currentZoomData.filter((d, i) => filterCells(d, i))
         : currentZoomData
 
     // TODO:deck remove this and calculate values equal to Compare
@@ -116,19 +113,21 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
       let allValues: [number[], number[]] = [[], []]
       dataSample.forEach((feature) => {
         feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
-          allValues[sublayerIndex].push(...sublayerValues.filter(filterElementByPercentOfIndex))
+          allValues[sublayerIndex].push(...sublayerValues.filter((d, i) => filterCells(d, i)))
         })
       })
       if (!allValues.length) {
         return this.getColorDomain()
       }
 
-      const steps = allValues.filter((sublayer) => sublayer.length).map((sublayerValues) =>
-        ckmeans(
-          sublayerValues,
-          Math.min(sublayerValues.length, COLOR_RAMP_BIVARIATE_NUM_STEPS)
-        ).map((step) => step[0])
-      )
+      const steps = allValues
+        .filter((sublayer) => sublayer.length)
+        .map((sublayerValues) =>
+          ckmeans(
+            sublayerValues,
+            Math.min(sublayerValues.length, COLOR_RAMP_BIVARIATE_NUM_STEPS)
+          ).map((step) => step[0])
+        )
       return steps
     }
 
@@ -137,7 +136,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
         if (!values || !values.length || !Array.isArray(values)) {
           return []
         }
-        return values.filter(filterElementByPercentOfIndex)
+        return values.filter((d, i) => filterCells(d, i, minVisibleValue, maxVisibleValue))
       })
     )
 
@@ -173,12 +172,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     colorRanges: FourwingsTileLayerColorRange
   ): FourwinsTileLayerScale[] => {
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
-      console.log('colorRanges:', colorRanges)
-      console.log('colorDomain:', colorDomain)
-      // return colorRanges.map((cr) =>
-      //   scaleLinear(colorDomain as number[], cr as string[]).clamp(true)
-      // )
-
       return (colorDomain as number[][]).map((cd, i) => {
         return scaleLinear(cd, colorRanges[i] as string[]).clamp(true)
       })
@@ -306,14 +299,25 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    const { startTime, endTime, availableIntervals } = props
+    const {
+      startTime,
+      endTime,
+      availableIntervals,
+      comparisonMode,
+      minVisibleValue,
+      maxVisibleValue,
+    } = props
     const { tilesCache, colorRanges, colorDomain } = this.state as FourwingsTileLayerState
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = colorRanges.join() !== newSublayerColorRanges.join()
-    const newMode = oldProps.comparisonMode && props.comparisonMode !== oldProps.comparisonMode
+    const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
+    const newVisibleValueLimits =
+      (oldProps.minVisibleValue && minVisibleValue !== oldProps.minVisibleValue) ||
+      (oldProps.maxVisibleValue && maxVisibleValue !== oldProps.maxVisibleValue)
 
-    if (sublayersHaveNewColors || newMode) {
-      const newColorDomain = newMode ? this._calculateColorDomain() : colorDomain
+    if (sublayersHaveNewColors || newMode || newVisibleValueLimits) {
+      const newColorDomain =
+        newMode || newVisibleValueLimits ? this._calculateColorDomain() : colorDomain
       const scales = this._getColorScales(newColorDomain, newSublayerColorRanges)
       this.setState({ colorRanges: newSublayerColorRanges, colorDomain: newColorDomain, scales })
     }
