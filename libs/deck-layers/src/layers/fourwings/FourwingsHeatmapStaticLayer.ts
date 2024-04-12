@@ -130,7 +130,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     if (info.object?.properties?.count) {
       info.object.properties.values = [[info.object.properties.count]]
     }
-    info.object.layerId = this.props.id
+    info.object.layerId = this.root.id
     info.object.category = this.props.category
     return info
   }
