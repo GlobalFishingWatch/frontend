@@ -14,18 +14,12 @@ export const API_GATEWAY =
   process.env.REACT_APP_API_GATEWAY ||
   process.env.NEXT_PUBLIC_API_GATEWAY ||
   'https://gateway.api.dev.globalfishingwatch.org'
-console.log(API_GATEWAY)
-if (typeof process !== 'undefined') {
-  console.log(process?.env?.API_GATEWAY)
-  console.log(process?.env?.REACT_APP_API_GATEWAY)
-  console.log(process?.env?.NEXT_PUBLIC_API_GATEWAY)
-}
 
 export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
 export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
 export const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v3'
-const DEBUG_API_REQUESTS: boolean = process.env.NEXT_PUBLIC_DEBUG_API_REQUESTS === 'true'
 
+const DEBUG_API_REQUESTS: boolean = process.env.NEXT_PUBLIC_DEBUG_API_REQUESTS === 'true'
 const AUTH_PATH = 'auth'
 const REGISTER_PATH = 'registration'
 export const GUEST_USER_TYPE = 'guest'
