@@ -83,7 +83,7 @@ const InsightFishing = ({
           ) : (
             <p className={styles.secondary}>
               {t(
-                'vessel.insights.noFishingEventsInNoTakeMpasEmpty',
+                'vessel.insights.fishingEventsInNoTakeMpasEmpty',
                 'No fishing events detected in no-take MPAs'
               )}
             </p>
