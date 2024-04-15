@@ -26,7 +26,7 @@ import {
 } from '@globalfishingwatch/react-hooks'
 import { LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
-import { RulersLayer } from '@globalfishingwatch/deck-layers'
+import { RulersLayer, DrawLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
@@ -74,10 +74,14 @@ import MapLegends from './MapLegends'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
 import useRulers from './overlays/rulers/rulers.hooks'
+import { useDrawLayer } from './overlays/draw/draw.hooks'
 // This avoids type checking to complain
 // https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
 const RulersLayerComponent = RulersLayer as any
-const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
+const DrawLayerComponent = DrawLayer as any
+const DrawDialog = dynamic(
+  () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
+)
 const PopupWrapper = dynamic(
   () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
 )
@@ -106,11 +110,6 @@ const handleError = async ({ error }: any) => {
     }
   }
 }
-
-const layerComposer = new LayerComposer({
-  sprite:
-    'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-map',
-})
 
 const mapStyles = {
   width: '100%',
@@ -284,6 +283,8 @@ const MapWrapper = () => {
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
+  const { onDrawEdit, onDrawClick, drawLayerMode, drawFeaturesIndexes, drawFeatures } =
+    useDrawLayer()
 
   const currentRuler = editingRuler ? [editingRuler] : []
 
@@ -329,8 +330,17 @@ const MapWrapper = () => {
             visible={rulersVisible}
           />
         )}
-        {isMapDrawing && <MapDraw />}
+        {isMapDrawing && (
+          <DrawLayerComponent
+            data={drawFeatures}
+            onEdit={onDrawEdit}
+            onClick={onDrawClick}
+            selectedFeatureIndexes={drawFeaturesIndexes}
+            mode={drawLayerMode}
+          />
+        )}
       </DeckGL>
+      {isMapDrawing && <DrawDialog />}
       <MapPopups />
       {/* {style && (
         <Map
