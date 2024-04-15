@@ -62,6 +62,8 @@ import {
   SliceExtendedFeature,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { getEventLabel } from 'utils/analytics'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
@@ -186,6 +188,12 @@ export const useClickedEventConnect = () => {
         if (latitude && longitude && zoom) {
           setMapCoordinates({ latitude, longitude, zoom })
         }
+
+        trackEvent({
+          category: TrackCategory.WorkspaceManagement,
+          action: `click_map_workspace_link`,
+          label: workspace.properties.id,
+        })
         return
       }
     }
@@ -228,12 +236,25 @@ export const useClickedEventConnect = () => {
     }
 
     // When hovering in a vessel event we don't want to have clicked events
-    const areAllFeaturesVesselEvents = event.features.every(
-      (f) => f.generatorType === GeneratorType.VesselEvents
+    const vesselEventFeatures = event.features.filter(
+      (f) =>
+        f.generatorType === GeneratorType.VesselEvents ||
+        f.generatorType === GeneratorType.VesselEventsShapes
     )
-
-    if (areAllFeaturesVesselEvents) {
-      return
+    if (vesselEventFeatures?.length) {
+      vesselEventFeatures.forEach((feature) => {
+        if (feature.properties) {
+          trackEvent({
+            category: TrackCategory.Tracks,
+            action: `click_${feature.properties.type}_event_from_track`,
+            label: feature.properties.vesselId,
+          })
+        }
+      })
+      const areAllFeaturesVesselEvents = vesselEventFeatures.length === event.features.length
+      if (areAllFeaturesVesselEvents) {
+        return
+      }
     }
 
     dispatch(setClickedEvent(event as SliceInteractionEvent))
@@ -258,6 +279,13 @@ export const useClickedEventConnect = () => {
       fishingPromiseRef.current = dispatch(
         fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
       )
+      trackEvent({
+        category: TrackCategory.ActivityData,
+        action: `click_grid_activity_cell`,
+        label: getEventLabel(
+          fishingActivityFeatures.flatMap((f) => f.temporalgrid?.sublayerId || []) ?? []
+        ),
+      })
     }
 
     const tileClusterFeature = event.features.find(
