@@ -17,7 +17,7 @@ import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { BaseLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
-import { getVesselResourceThunks } from './vessel.utils'
+import { getVesselResourceChunks } from './vessel.utils'
 import { EVENTS_COLORS, EVENT_LAYER_TYPE, TRACK_LAYER_TYPE } from './vessel.config'
 import {
   VesselDataStatus,
@@ -75,7 +75,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       if (!trackUrl) console.warn('trackUrl needed for vessel layer')
       return []
     }
-    const chunks = getVesselResourceThunks(startTime, endTime)
+    const chunks = getVesselResourceChunks(startTime, endTime)
     return chunks.map(({ start, end }) => {
       const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}`
       const trackUrlObject = new URL(trackUrl as string)
@@ -122,7 +122,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     if (!visible) {
       return []
     }
-    const chunks = getVesselResourceThunks(startTime, endTime)
+    const chunks = getVesselResourceChunks(startTime, endTime)
     // return one layer with all events if we are consuming the data object from app resources
     return events?.flatMap(({ url, type }) => {
       const visible = visibleEvents?.includes(type)

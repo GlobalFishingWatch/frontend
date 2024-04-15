@@ -1,7 +1,7 @@
 import { DateTime, Duration } from 'luxon'
 import { getUTCDateTime } from '../../utils/dates'
 
-export const getVesselResourceThunks = (start: number, end: number) => {
+export const getVesselResourceChunks = (start: number, end: number) => {
   const startDT = getUTCDateTime(start)
   const endDT = getUTCDateTime(end)
   const yearsDelta = Math.ceil(Duration.fromMillis(+endDT - +startDT).as('years'))
