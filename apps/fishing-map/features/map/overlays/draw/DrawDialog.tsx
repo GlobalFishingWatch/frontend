@@ -13,7 +13,6 @@ import {
   useAddDataviewFromDatasetToWorkspace,
   useDatasetsAPI,
 } from 'features/datasets/datasets.hook'
-// import useDrawControl from 'features/map/MapDrawControl'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -24,15 +23,15 @@ import {
 } from 'features/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectMapDrawingEditId } from 'routes/routes.selectors'
-import { useMapDrawConnect } from './map-draw.hooks'
-import styles from './MapDraw.module.css'
+import { useMapDrawConnect } from '../../map-draw.hooks'
 import {
   getCoordinatePrecisionRounded,
   getDrawDatasetDefinition,
   getFileWithFeatures,
   removeFeaturePointByIndex,
   updateFeaturePointByIndex,
-} from './map.draw.utils'
+} from '../../map.draw.utils'
+import styles from './DrawDialog.module.css'
 
 export type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
 export type DrawPointPosition = [number, number]
