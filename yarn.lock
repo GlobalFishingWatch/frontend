@@ -1751,6 +1751,59 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@deck.gl-community/editable-layers@npm:^9.0.0-alpha.1":
+  version: 9.0.0-alpha.1
+  resolution: "@deck.gl-community/editable-layers@npm:9.0.0-alpha.1"
+  dependencies:
+    "@turf/along": "npm:^6.5.0"
+    "@turf/area": "npm:^6.5.0"
+    "@turf/bbox": "npm:^6.5.0"
+    "@turf/bbox-polygon": "npm:^6.5.0"
+    "@turf/bearing": "npm:^6.5.0"
+    "@turf/boolean-point-in-polygon": "npm:^6.5.0"
+    "@turf/buffer": "npm:^6.5.0"
+    "@turf/center": "npm:^6.5.0"
+    "@turf/centroid": "npm:^6.5.0"
+    "@turf/circle": "npm:^6.5.0"
+    "@turf/clone": "npm:^6.5.0"
+    "@turf/destination": "npm:^6.5.0"
+    "@turf/difference": "npm:^6.5.0"
+    "@turf/distance": "npm:^6.5.0"
+    "@turf/ellipse": "npm:^6.5.0"
+    "@turf/helpers": "npm:^6.5.0"
+    "@turf/intersect": "npm:^6.5.0"
+    "@turf/invariant": "npm:^6.5.0"
+    "@turf/line-intersect": "npm:^6.5.0"
+    "@turf/meta": "npm:^6.5.0"
+    "@turf/midpoint": "npm:^6.5.0"
+    "@turf/nearest-point-on-line": "npm:^6.5.0"
+    "@turf/point-to-line-distance": "npm:^6.5.0"
+    "@turf/polygon-to-line": "npm:^6.5.0"
+    "@turf/rewind": "npm:^6.5.0"
+    "@turf/transform-rotate": "npm:^6.5.0"
+    "@turf/transform-scale": "npm:^6.5.0"
+    "@turf/transform-translate": "npm:^6.5.0"
+    "@turf/union": "npm:^6.5.0"
+    cubic-hermite-spline: "npm:^1.0.1"
+    eventemitter3: "npm:^5.0.0"
+    geojson-types: "npm:^2.0.1"
+    lodash.throttle: "npm:^4.1.1"
+    uuid: "npm:9.0.0"
+    viewport-mercator-project: "npm:>=6.2.3"
+  peerDependencies:
+    "@deck.gl/core": ">=9.0.5"
+    "@deck.gl/extensions": ">=9.0.5"
+    "@deck.gl/geo-layers": ">=9.0.5"
+    "@deck.gl/layers": ">=9.0.5"
+    "@deck.gl/mesh-layers": ">=9.0.6"
+    "@luma.gl/constants": ">=9.0.9"
+    "@luma.gl/core": ">=9.0.9"
+    "@luma.gl/engine": ">=9.0.9"
+    "@math.gl/core": ">=4.0.1"
+  checksum: 10/9a1e33ddc1c6f2b48e141183aaa6a299a818ae3b5dfb85c4a0f203976743786bc9d512ca863f99349d48af37bb54e4c0cffd0993d49455316cfe796eca25aa4c
+  languageName: node
+  linkType: hard
+
 "@deck.gl/core@npm:^9.0.3":
   version: 9.0.3
   resolution: "@deck.gl/core@npm:9.0.3"
@@ -2410,6 +2463,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@globalfishingwatch/root@workspace:."
   dependencies:
+    "@deck.gl-community/editable-layers": "npm:^9.0.0-alpha.1"
     "@deck.gl/core": "npm:^9.0.3"
     "@deck.gl/extensions": "npm:^9.0.3"
     "@deck.gl/geo-layers": "npm:^9.0.3"
@@ -13425,7 +13479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter3@npm:^5.0.1":
+"eventemitter3@npm:^5.0.0, eventemitter3@npm:^5.0.1":
   version: 5.0.1
   resolution: "eventemitter3@npm:5.0.1"
   checksum: 10/ac6423ec31124629c84c7077eed1e6987f6d66c31cf43c6fcbf6c87791d56317ce808d9ead483652436df171b526fc7220eccdc9f3225df334e81582c3cf7dd5
@@ -24103,6 +24157,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uuid@npm:9.0.0":
+  version: 9.0.0
+  resolution: "uuid@npm:9.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 10/23857699a616d1b48224bc2b8440eae6e57d25463c3a0200e514ba8279dfa3bde7e92ea056122237839cfa32045e57d8f8f4a30e581d720fd72935572853ae2e
+  languageName: node
+  linkType: hard
+
 "uuid@npm:^8.3.2":
   version: 8.3.2
   resolution: "uuid@npm:8.3.2"
@@ -24203,7 +24266,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viewport-mercator-project@npm:>=6.0.0":
+"viewport-mercator-project@npm:>=6.0.0, viewport-mercator-project@npm:>=6.2.3":
   version: 7.0.4
   resolution: "viewport-mercator-project@npm:7.0.4"
   dependencies:

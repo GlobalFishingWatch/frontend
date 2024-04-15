@@ -2,7 +2,7 @@ import {
   EditableGeoJsonLayer,
   DrawPolygonMode,
   ModifyMode,
-} from '../../vendor/editable-layers/dist'
+} from '@deck.gl-community/editable-layers'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
 
 export class DrawLayer extends EditableGeoJsonLayer {
