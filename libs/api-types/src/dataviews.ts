@@ -99,7 +99,16 @@ export interface DataviewConfig<Type = DataviewType> {
 
   /** Used to store the vessel name */
   name?: string
-  event?: string
+  event?:
+    | string
+    // Used in VV
+    | {
+        activeIconsSize?: number
+        activeStrokeColor?: string
+        strokeColor?: string
+        iconsPrefix?: string
+        inactiveIconsSize?: number
+      }
   pointsToSegmentsSwitchLevel?: number
   showIcons?: boolean
   showAuthorizationStatus?: boolean

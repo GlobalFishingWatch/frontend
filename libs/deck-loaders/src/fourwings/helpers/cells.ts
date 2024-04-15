@@ -3,6 +3,7 @@ import { Position } from 'geojson'
 export type BBox = [number, number, number, number]
 
 export const getCellProperties = (tileBBox: BBox, cellIndex: number, numCols: number) => {
+  // TODO:deck review calculation here because interaction is returning a wrong col
   const col = cellIndex % numCols
   const row = Math.floor(cellIndex / numCols)
   const [minX, minY, maxX, maxY] = tileBBox
@@ -30,11 +31,8 @@ export const getCellCoordinates = ({
   cols,
   rows,
 }: GetCellCoordinatesParams): Position[] => {
-  const col = cellIndex % cols
-  const row = Math.floor(cellIndex / cols)
-  const [minX, minY, maxX, maxY] = tileBBox
-  const width = maxX - minX
-  const height = maxY - minY
+  const { col, row, width, height } = getCellProperties(tileBBox, cellIndex, cols)
+  const [minX, minY] = tileBBox
   const squareMinX = minX + (col / cols) * width
   const squareMinY = minY + (row / rows) * height
   const squareMaxX = minX + ((col + 1) / cols) * width

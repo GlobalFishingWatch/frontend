@@ -30,8 +30,8 @@ export type ContextLayerProps = {
   color: string
   idProperty?: string
   valueProperties?: string[]
-  hoveredFeatures?: PickingInfo[]
-  clickedFeatures?: PickingInfo[]
+  hoveredFeatures?: ContextPickingObject[]
+  clickedFeatures?: ContextPickingObject[]
 }
 
 export type ContextFeatureProperties = {
@@ -41,13 +41,19 @@ export type ContextFeatureProperties = {
   value: string | number
   layerId: ContextLayerId
   datasetId: string
-  category: string
+  category: DataviewCategory
   link?: string
 }
-export type ContextFeature = Feature<Polygon | MultiPolygon, Record<string, any>> &
-  ContextFeatureProperties
+
+export type ContextFeature = Feature<Polygon | MultiPolygon, Record<string, any>>
 
 // TODO:deck create this type in the proper deck class layer
 export type UserContextFeature = Feature<Geometry, Record<string, any>> & ContextFeatureProperties
 
-export type ContextPickingInfo = PickingInfo<ContextFeature, { tile?: Tile2DHeader }>
+export type ContextPickingObject = ContextFeature & ContextFeatureProperties
+export type UserContextPickingObject = UserContextFeature
+
+export type ContextPickingInfo = PickingInfo<
+  ContextPickingObject | UserContextPickingObject,
+  { tile?: Tile2DHeader }
+>

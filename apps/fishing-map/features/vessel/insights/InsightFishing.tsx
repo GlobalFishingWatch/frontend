@@ -6,7 +6,7 @@ import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import InsightEventDetails from 'features/vessel/insights/InsightEventsDetails'
-import { selectVesselEventsDataWithVoyages } from '../vessel.selectors'
+import { selectVesselEventsDataWithVoyages } from '../selectors/vessel.resources.selectors'
 import styles from './Insights.module.css'
 
 const InsightFishing = ({
@@ -83,7 +83,7 @@ const InsightFishing = ({
           ) : (
             <p className={styles.secondary}>
               {t(
-                'vessel.insights.noFishingEventsInNoTakeMpasEmpty',
+                'vessel.insights.fishingEventsInNoTakeMpasEmpty',
                 'No fishing events detected in no-take MPAs'
               )}
             </p>

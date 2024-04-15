@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
-import { PickingInfo } from '@deck.gl/core'
+import { PickingInfo, Position } from '@deck.gl/core'
 import { RulerData } from '@globalfishingwatch/deck-layers'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
+
 const useRulers = () => {
   const rulers = useSelector(selectMapRulers)
   const rulersVisible = useSelector(selectAreMapRulersVisible)
@@ -63,11 +64,10 @@ const useRulers = () => {
   )
 
   const onRulerMapClick = useCallback(
-    (info: PickingInfo) => {
-      const [longitude, latitude] = info.coordinate as number[]
+    (position: Position) => {
       const point = {
-        longitude,
-        latitude,
+        longitude: position[0],
+        latitude: position[1],
       }
       if (!value) {
         setRuleStart(point)

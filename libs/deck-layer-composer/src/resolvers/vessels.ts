@@ -1,23 +1,23 @@
-import { PickingInfo } from '@deck.gl/core'
-import { DatasetTypes, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
 import { VesselLayerProps, getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
-import { ResolverGlobalConfig } from './types'
+import { DeckResolverFunction } from './types'
 
-export function resolveDeckVesselLayerProps(
-  dataview: DataviewInstance,
-  globalConfig: ResolverGlobalConfig,
-  interactions: PickingInfo[]
-): VesselLayerProps {
+export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (
+  dataview,
+  globalConfig,
+  interactions
+) => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
 
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
+    category: dataview.category!,
     name: dataview.config?.name!,
     endTime: getUTCDateTime(globalConfig.end!).toMillis(),
     startTime: getUTCDateTime(globalConfig.start!).toMillis(),
@@ -38,6 +38,12 @@ export function resolveDeckVesselLayerProps(
     // highlightStartTime,
     // highlightEventIds,
     visibleEvents: globalConfig.visibleEvents,
+    ...(globalConfig.highlightedTime?.start && {
+      highlightStartTime: getUTCDateTime(globalConfig.highlightedTime?.start).toMillis(),
+    }),
+    ...(globalConfig.highlightedTime?.end && {
+      highlightEndTime: getUTCDateTime(globalConfig.highlightedTime?.end).toMillis(),
+    }),
     // eventsResource: eventsData?.length ? parseEvents(eventsData) : [],
   }
 }

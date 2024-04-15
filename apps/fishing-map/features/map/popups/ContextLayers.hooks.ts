@@ -4,6 +4,7 @@ import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer
 import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import { DataviewType } from '@globalfishingwatch/api-types'
+import { ContextPickingObject, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { getEventLabel } from 'utils/analytics'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
@@ -19,10 +20,9 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getBufferedAreaBbox } from 'features/reports/reports.utils'
 import { setClickedEvent } from '../map.slice'
-import { TooltipEventFeature } from '../map.hooks'
 import { useMapFitBounds } from '../map-bounds.hooks'
 
-export const getFeatureBounds = (feature: TooltipEventFeature) => {
+export const getFeatureBounds = (feature: ContextPickingObject) => {
   if (feature.geometry) {
     const geometry = getGeometryDissolved(feature.geometry)
     const bounds = getBufferedAreaBbox({ area: { geometry } } as any)
@@ -51,10 +51,13 @@ export const useHighlightArea = () => {
   )
 }
 
-export const getAreaIdFromFeature = (feature: TooltipEventFeature): AreaKeyId => {
+export const getAreaIdFromFeature = (
+  feature: ContextPickingObject | UserContextPickingObject
+): AreaKeyId => {
   return (
     feature.properties?.gfw_id ||
-    feature.properties?.[feature.promoteId as string] ||
+    // TODO:deck check if promoteId is covered for every case in the getPickingInfo function
+    feature.properties?.[(feature as any).promoteId as string] ||
     (feature.id as string)
   )
 }
@@ -70,7 +73,7 @@ export const useContextInteractions = () => {
   const fitMapBounds = useMapFitBounds()
 
   const onDownloadClick = useCallback(
-    (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
+    (ev: React.MouseEvent<Element, MouseEvent>, feature: ContextPickingObject) => {
       const areaId = getAreaIdFromFeature(feature)
       if (!areaId) {
         console.warn('No gfw_id available in the feature to analyze', feature)
@@ -86,7 +89,7 @@ export const useContextInteractions = () => {
         const areaName =
           dataview?.config?.type === DataviewType.UserContext
             ? dataview?.datasets?.[0]?.name
-            : feature.value || feature.title
+            : feature.value.toString() || feature.title
         dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
         dispatch(setClickedEvent(null))
         dispatch(fetchAreaDetailThunk({ dataset, areaId, areaName }))
@@ -98,8 +101,8 @@ export const useContextInteractions = () => {
   )
 
   const setReportArea = useCallback(
-    (feature: TooltipEventFeature) => {
-      const { source: sourceId, title, value } = feature
+    (feature: ContextPickingObject | UserContextPickingObject) => {
+      const { title, value } = feature
       const areaId = getAreaIdFromFeature(feature) as string
       // Report already does it on page reload but to avoid waiting
       // this moves the map to the same position
@@ -119,21 +122,24 @@ export const useContextInteractions = () => {
       trackEvent({
         category: TrackCategory.Analysis,
         action: `Open report`,
-        label: getEventLabel([title ?? '', value ?? '']),
+        label: getEventLabel([title ?? '', value.toString()]),
       })
     },
     [highlightArea, dispatch]
   )
 
   const onReportClick = useCallback(
-    (ev: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => {
+    (
+      ev: React.MouseEvent<Element, MouseEvent>,
+      feature: ContextPickingObject | UserContextPickingObject
+    ) => {
       const featureAreaId = getAreaIdFromFeature(feature)
       if (!featureAreaId) {
         console.warn('No areaId available in the feature to report', feature)
         return
       }
-
-      if (areaId?.toString() !== featureAreaId || sourceId !== feature.source) {
+      // TODO:deck check if we can remove source from the url
+      if (areaId?.toString() !== featureAreaId /*|| sourceId !== feature.source */) {
         setReportArea(feature)
       }
     },

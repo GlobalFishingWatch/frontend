@@ -797,7 +797,7 @@
     "insights": {
       "coverage": "AIS Coverage",
       "disclaimerTimeRangeBeforeMinYear": "Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.",
-      "errorPermisions": "You don't have permissions to see this",
+      "errorPermisions": "This insight is restricted to limited account users, contact us at support@globalfishingwatch.org for more details",
       "gaps": "AIS Off Events",
       "gapsEvents": "{{count}} AIS Off events detected",
       "gapsEventsEmpty": "No AIS Off events detected",
@@ -812,7 +812,7 @@
       "flagChangesCount": "{{count}} flag changes",
       "flagChangesEmpty": "No flag changes",
       "MOULists": "Tokyo and Paris MOU Lists",
-      "MOUListsEmpty": "Flying under a flag/flags not present on the Tokio or Paris MOU black or grey lists",
+      "MOUListsEmpty": "Flying under a flag/flags not present on the Tokyo or Paris MOU black or grey lists",
       "MOUParisListsCount": "Flag present on the Paris MOU black or grey list ({{flags}})",
       "MOUTokyoListsCount": "Flag present on the Tokyo MOU black or grey list ({{flags}})",
       "MOUTokyoListsPreviousAppearance": "Previously flew under another flag on the Tokyo MOU black or grey lists",

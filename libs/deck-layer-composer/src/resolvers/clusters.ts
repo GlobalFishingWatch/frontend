@@ -1,10 +1,10 @@
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { ClusterLayerProps } from '@globalfishingwatch/deck-layers'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import { ResolverGlobalConfig } from './types'
+import { DeckResolverFunction, ResolverGlobalConfig } from './types'
 
 // TODO: decide if include static here or create a new one
-export const resolveDeckClusterLayerProps = (
+export const resolveDeckClusterLayerProps: DeckResolverFunction<ClusterLayerProps> = (
   dataview: UrlDataviewInstance,
   { start, end }: ResolverGlobalConfig
 ): ClusterLayerProps => {
@@ -13,6 +13,7 @@ export const resolveDeckClusterLayerProps = (
 
   return {
     id: dataview.id,
+    category: dataview.category!,
     datasetId: dataset?.id || '',
     color: dataview.config?.color || '',
     start: start,

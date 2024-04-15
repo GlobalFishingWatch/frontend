@@ -326,7 +326,9 @@ const TimebarWrapper = () => {
           )}
         </div>
       )
-    } else if (!tracks || tracks?.length > MAX_TIMEBAR_VESSELS) {
+    } else if (!tracks) {
+      return null
+    } else if (tracks?.length > MAX_TIMEBAR_VESSELS) {
       return (
         <div className={styles.disclaimer}>
           <label className={styles.disclaimerLabel}>

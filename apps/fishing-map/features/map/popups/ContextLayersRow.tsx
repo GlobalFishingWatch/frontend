@@ -3,7 +3,7 @@ import parse from 'html-react-parser'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { ContextFeature, UserContextFeature } from '@globalfishingwatch/deck-layers'
+import { ContextPickingObject, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   selectActiveHeatmapDowloadDataviews,
   selectHasReportLayersVisible,
@@ -16,8 +16,7 @@ import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspace
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationAreaId, selectLocationQuery } from 'routes/routes.selectors'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
-import { TooltipEventFeature } from 'features/map/map.hooks'
-import { getAreaIdFromFeature, getFeatureBounds } from 'features/map/popups/ContextLayers.hooks'
+import { getAreaIdFromFeature } from 'features/map/popups/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { resetReportData } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -74,8 +73,11 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
 }
 
 interface ReportPopupButtonProps {
-  feature: ContextFeature | UserContextFeature
-  onClick?: (e: React.MouseEvent<Element, MouseEvent>, feature: TooltipEventFeature) => void
+  feature: ContextPickingObject | UserContextPickingObject
+  onClick?: (
+    e: React.MouseEvent<Element, MouseEvent>,
+    feature: ContextPickingObject | UserContextPickingObject
+  ) => void
 }
 
 export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) => {
@@ -117,7 +119,8 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceStateBufferParams())
     if (onClick) {
-      onClick(e, feature)
+      // TODO:deck review typing here
+      onClick(e, feature as any)
     }
   }
 
@@ -129,7 +132,8 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
         payload: {
           category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
           workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-          datasetId: feature.datasetId,
+          // TODO: deck fix this typing
+          datasetId: (feature as any).datasetId,
           areaId,
         },
         query: {
@@ -158,14 +162,14 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
 interface ContextLayersRowProps {
   id: string
   label: string
-  feature: ContextFeature | UserContextFeature
+  feature: ContextPickingObject | UserContextPickingObject
   showFeaturesDetails: boolean
   showActions?: boolean
   linkHref?: string
   handleDownloadClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
   handleReportClick?: (
     e: React.MouseEvent<Element, MouseEvent>,
-    feature: TooltipEventFeature
+    feature: ContextPickingObject | UserContextPickingObject
   ) => void
 }
 const ContextLayersRow = ({

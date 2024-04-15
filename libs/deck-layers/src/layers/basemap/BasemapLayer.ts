@@ -1,27 +1,20 @@
 import { BitmapLayer } from '@deck.gl/layers'
 import { CompositeLayer, LayerContext } from '@deck.gl/core'
-import { TileLayer as TileLayerWrongTyping } from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
-import { BasemapType } from '../../types'
+import { _BasemapLayerProps, BasemapType } from './basemap.types'
 
-const TileLayer = TileLayerWrongTyping as any
+export type BaseMapLayerProps = Omit<MVTLayerProps, 'data'> & _BasemapLayerProps
 
-export type BasemapLayerOwnProps = { basemap: BasemapType }
-export type BaseMapLayerProps = Omit<MVTLayerProps, 'data'> & BasemapLayerOwnProps
 export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   static layerName = 'ContextLayer'
   static defaultProps = {
     basemap: BasemapType.Default,
   }
 
-  layers: (typeof TileLayer | MVTLayer<BaseMapLayerProps>)[] = []
-
   initializeState(context: LayerContext): void {
     super.initializeState(context)
-    this.state = {
-      loaded: false,
-    }
   }
 
   _getBathimetryLayer() {
@@ -93,7 +86,6 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   }
 
   renderLayers() {
-    this.layers = this._getBasemap()
-    return this.layers
+    return this._getBasemap()
   }
 }

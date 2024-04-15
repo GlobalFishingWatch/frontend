@@ -1,15 +1,14 @@
 import { Fragment, useCallback } from 'react'
 import { groupBy } from 'lodash'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { ContextFeature } from '@globalfishingwatch/deck-layers'
-import { TooltipEventFeature } from 'features/map/map.hooks'
+import { ContextPickingObject, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
 
 type ContextTooltipRowProps = {
-  features: ContextFeature[]
+  features: (ContextPickingObject | UserContextPickingObject)[]
   showFeaturesDetails: boolean
 }
 
@@ -18,12 +17,13 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
   const featuresByType = groupBy(features, 'layerId')
 
   const trackOnDownloadClick = useCallback(
-    (event: any, feature: TooltipEventFeature) => {
+    (event: any, feature: ContextPickingObject | UserContextPickingObject) => {
       trackEvent({
         category: TrackCategory.DataDownloads,
         action: `Click on polygon, click on download icon`,
       })
-      onDownloadClick(event, feature)
+      // TODO:deck review typings here
+      onDownloadClick(event, feature as any)
     },
     [onDownloadClick]
   )

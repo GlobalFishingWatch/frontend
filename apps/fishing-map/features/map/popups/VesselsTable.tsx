@@ -3,7 +3,11 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { Tooltip } from '@globalfishingwatch/ui-components'
-import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  DatasetSubCategory,
+  DataviewCategory,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -14,7 +18,12 @@ import {
 } from 'utils/info'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { ActivityProperty, ExtendedFeatureVessel, MAX_TOOLTIP_LIST } from 'features/map/map.slice'
+import {
+  ActivityProperty,
+  ExtendedFeatureVessel,
+  MAX_TOOLTIP_LIST,
+  SliceExtendedFourwingsDeckSublayer,
+} from 'features/map/map.slice'
 import { t } from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -28,14 +37,9 @@ import VesselPin from 'features/vessel/VesselPin'
 import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-  TooltipEventFeature,
+  getVesselsInfoConfig,
 } from '../map.hooks'
 import styles from './VesselsTable.module.css'
-
-export const getVesselTableTitle = (feature: TooltipEventFeature) => {
-  let title = feature.title
-  return title
-}
 
 export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {
   const { setTimerange } = useTimerangeConnect()
@@ -92,22 +96,23 @@ function VesselsTable({
   activityType = DatasetSubCategory.Fishing,
   testId = 'vessels-table',
 }: {
-  feature: TooltipEventFeature
+  feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory }
   vesselProperty?: ActivityProperty
-  activityType?: DatasetSubCategory
+  activityType?: `${DatasetSubCategory}`
   testId?: string
 }) {
   const { t } = useTranslation()
 
   const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
-    feature.temporalgrid?.sublayerInteractionType || ''
+    feature?.category || ''
   )
 
-  const vessels = feature.vesselsInfo?.vessels?.slice(0, MAX_TOOLTIP_LIST)
+  const vessels = feature?.vessels?.slice(0, MAX_TOOLTIP_LIST)
+  const vesselsInfo = getVesselsInfoConfig(feature.vessels)
 
   const hasPinColumn =
     interactionAllowed &&
-    feature?.vesselsInfo?.vessels?.some((vessel) => {
+    feature?.vessels?.some((vessel) => {
       const hasDatasets = vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
       return hasDatasets
     })
@@ -128,10 +133,9 @@ function VesselsTable({
               {/* Disabled for detections to allocate some space for timestamps interaction */}
               {vesselProperty !== 'detections' && <th>{t('vessel.source_short', 'source')}</th>}
               <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
-                {feature.temporalgrid?.unit === 'hours' && t('common.hour_other', 'hours')}
-                {feature.temporalgrid?.unit === 'days' && t('common.days_other', 'days')}
-                {feature.temporalgrid?.unit === 'detections' &&
-                  t('common.detection_other', 'detections')}
+                {feature?.unit === 'hours' && t('common.hour_other', 'hours')}
+                {feature?.unit === 'days' && t('common.days_other', 'days')}
+                {feature?.unit === 'detections' && t('common.detection_other', 'detections')}
               </th>
             </tr>
           </thead>
@@ -229,9 +233,9 @@ function VesselsTable({
           </tbody>
         </table>
       )}
-      {feature.vesselsInfo && feature.vesselsInfo.overflow && (
+      {vesselsInfo && vesselsInfo.overflow && (
         <p className={styles.vesselsMore}>
-          + {feature.vesselsInfo.overflowNumber} {t('common.more', 'more')}
+          + {vesselsInfo.overflowNumber} {t('common.more', 'more')}
         </p>
       )}
     </Fragment>

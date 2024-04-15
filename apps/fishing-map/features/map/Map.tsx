@@ -1,29 +1,11 @@
-import {
-  Fragment,
-  ReactEventHandler,
-  ReactNode,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react'
-import { DeckProps, LayersList, PickingInfo, Position } from '@deck.gl/core'
+import { LayersList } from '@deck.gl/core'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
 import { ViewState } from 'react-map-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import {
-  useMapLegend,
-  useFeatureState,
-  useLayerComposer,
-  defaultStyleTransformations,
-  useDebounce,
-  useMemoCompare,
-} from '@globalfishingwatch/react-hooks'
 import { LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { RulersLayer, DrawLayer } from '@globalfishingwatch/deck-layers'
@@ -32,23 +14,11 @@ import {
   useSetDeckLayerComposer,
   useSetDeckLayerLoadedState,
 } from '@globalfishingwatch/deck-layer-composer'
-import useMapInstance, { useSetMapInstance } from 'features/map/map-context.hooks'
+import { useSetMapInstance } from 'features/map/map-context.hooks'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
-import MapInfo from 'features/map/controls/MapInfo'
 import MapControls from 'features/map/controls/MapControls'
-import { selectDebugOptions } from 'features/debug/debug.slice'
-import { selectShowTimeComparison } from 'features/reports/reports.selectors'
-import {
-  selectIsAnyReportLocation,
-  selectIsMapDrawing,
-  selectIsWorkspaceLocation,
-} from 'routes/routes.selectors'
-import { useMapLoaded, useSetMapIdleAtom } from 'features/map/map-state.hooks'
-import { useEnvironmentalBreaksUpdate } from 'features/workspace/environmental/environmental.hooks'
-import { mapReadyAtom } from 'features/map/map-state.atom'
-import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { selectHighlightedTime } from 'features/timebar/timebar.slice'
-import { hasMapTimeseriesAtom } from 'features/reports/reports-timeseries.hooks'
+import { selectIsAnyReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
+import { useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import {
   useMapCursor,
   useMapDrag,
@@ -57,10 +27,7 @@ import {
 } from 'features/map/map-interactions.hooks'
 import { useMapRulersDrag } from 'features/map/overlays/rulers/rulers-drag.hooks'
 import ErrorNotification from 'features/map/overlays/error-notification/ErrorNotification'
-import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { useMapDeckLayers, useMapLayersLoaded } from 'features/map/map-layers.hooks'
-import { MapCoordinates } from 'types'
-import { DEFAULT_VIEWPORT } from 'data/config'
+import { useMapDeckLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
 import {
   MAP_VIEW,
@@ -69,8 +36,6 @@ import {
   useDisablePositionsOnZoomChanges,
 } from './map-viewport.hooks'
 import styles from './Map.module.css'
-import { useAllMapSourceTilesLoaded, useMapSourceTilesLoadedAtom } from './map-sources.hooks'
-import MapLegends from './MapLegends'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
 import useRulers from './overlays/rulers/rulers.hooks'
@@ -133,7 +98,7 @@ const MapWrapper = () => {
   )
   useUpdateViewStateUrlParams()
   useDisablePositionsOnZoomChanges()
-  const { onMapClick } = useMapMouseClick()
+  const onMapClick = useMapMouseClick()
   const { onMouseMove } = useMapMouseHover()
   const { getCursor } = useMapCursor()
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
@@ -141,7 +106,6 @@ const MapWrapper = () => {
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
   // useMapSourceTilesLoadedAtom()
-  useEnvironmentalBreaksUpdate()
   useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()
   // const map = useMapInstance()

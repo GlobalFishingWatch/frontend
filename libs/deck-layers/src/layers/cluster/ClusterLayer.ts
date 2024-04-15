@@ -1,38 +1,21 @@
-import { CompositeLayer, DefaultProps, LayerProps } from '@deck.gl/core'
+import { CompositeLayer, DefaultProps, LayerProps, PickingInfo } from '@deck.gl/core'
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers'
-import { Feature, Point } from 'geojson'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { LayerGroup, getLayerGroupOffset, hexToDeckColor } from '../../utils'
-
-type EventType = 'encounter' | 'gap' | 'port_visit'
-
-export type ClusterLayerProps = {
-  color: string
-  datasetId: string
-  end: string
-  eventType?: EventType
-  id: string
-  maxClusterZoom?: number
-  start: string
-  tilesUrl: string
-  visible: boolean
-}
-
-type ClusterFeatureProps = {
-  count: number
-  event_id: string
-  expansionZoom: number
-}
-
-type ClusterFeature = Feature<Point, ClusterFeatureProps>
+import {
+  ClusterEventType,
+  ClusterFeature,
+  ClusterLayerProps,
+  ClusterPickingInfo,
+} from './cluster.types'
 
 const defaultProps: DefaultProps<ClusterLayerProps> = {
   eventType: 'encounter',
   maxClusterZoom: 4,
 }
 
-const ICON_MAPPING: Record<EventType, any> = {
+const ICON_MAPPING: Record<ClusterEventType, any> = {
   encounter: { x: 0, y: 0, width: 36, height: 36, mask: true },
   gap: { x: 40, y: 0, width: 36, height: 36, mask: true },
   port_visit: { x: 80, y: 0, width: 36, height: 36, mask: true },
@@ -41,6 +24,18 @@ const ICON_MAPPING: Record<EventType, any> = {
 export class ClusterLayer extends CompositeLayer<LayerProps & TileLayerProps & ClusterLayerProps> {
   static layerName = 'ClusterLayer'
   static defaultProps = defaultProps
+
+  getPickingInfo = ({ info }: { info: PickingInfo<ClusterFeature> }): ClusterPickingInfo => {
+    const object = {
+      ...(info.object || ({} as ClusterFeature)),
+      id:
+        info.object?.properties.event_id ||
+        `${(info.object?.geometry?.coordinates || []).join('-')}`,
+      layerId: this.root.id,
+      category: this.props.category,
+    }
+    return { ...info, object }
+  }
 
   renderLayers() {
     const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
@@ -55,6 +50,7 @@ export class ClusterLayer extends CompositeLayer<LayerProps & TileLayerProps & C
       data: url,
       maxRequests: 100,
       debounceTime: 500,
+      pickable: true,
       getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
       getFillColor: color,
       getIconColor: color,

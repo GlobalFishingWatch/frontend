@@ -2,6 +2,8 @@ import { Color } from '@deck.gl/core'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { hexToDeckColor } from '../../utils'
 
+export const TRACK_LAYER_TYPE = 'track'
+
 type EventShape = 'circle' | 'square' | 'diamond' | 'diamondStroke'
 export const SHAPES_ORDINALS: Record<EventShape, number> = {
   circle: 0,

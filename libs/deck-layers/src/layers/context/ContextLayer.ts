@@ -1,8 +1,9 @@
-import { CompositeLayer, Color, DefaultProps } from '@deck.gl/core'
+import { CompositeLayer, Color, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { GeoBoundingBox, TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import { GeoJsonProperties } from 'geojson'
 import { PathStyleExtension } from '@deck.gl/extensions'
+import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
@@ -21,6 +22,7 @@ import {
   ContextPickingInfo,
   ContextFeature,
   ContextLayerId,
+  ContextPickingObject,
 } from './context.types'
 import { getContextId, getContextLink, getContextValue } from './context.utils'
 
@@ -56,22 +58,33 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
     return EEZ_SETTLED_BOUNDARIES.includes(d.properties?.LINE_TYPE) ? [0, 0] : [8, 8]
   }
 
-  getPickingInfo = ({ info }: { info: ContextPickingInfo }): ContextPickingInfo => {
+  getPickingInfo = ({
+    info,
+  }: {
+    info: PickingInfo<ContextFeature, { tile?: Tile2DHeader }>
+  }): ContextPickingInfo => {
     const { idProperty, valueProperties } = this.props
+    const object = {
+      ...transformTileCoordsToWGS84(
+        info.object as ContextFeature,
+        info.tile!.bbox as GeoBoundingBox,
+        this.context.viewport
+      ),
+      title: this.props.id,
+      color: this.props.color,
+      layerId: this.props.layers[0].id,
+      datasetId: this.props.layers[0].datasetId,
+      category: this.props.category,
+      id: getContextId(info.object as ContextFeature, idProperty),
+      value: getContextValue(info.object as ContextFeature, valueProperties),
+      link: getContextLink(info.object as ContextPickingObject),
+    } as ContextPickingObject
     info.object = transformTileCoordsToWGS84(
       info.object as ContextFeature,
       info.tile!.bbox as GeoBoundingBox,
       this.context.viewport
-    ) as ContextFeature
-    info.object.title = this.props.id
-    info.object.color = this.props.color
-    info.object.layerId = this.props.layers[0].id
-    info.object.datasetId = this.props.layers[0].datasetId
-    info.object.category = this.props.category
-    info.object.id = getContextId(info.object, idProperty)
-    info.object.value = getContextValue(info.object, valueProperties)
-    info.object.link = getContextLink(info.object)
-    return info
+    ) as ContextPickingObject
+    return { ...info, object }
   }
 
   renderLayers() {

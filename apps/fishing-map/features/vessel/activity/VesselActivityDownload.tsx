@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import saveAs from 'file-saver'
+import { saveAs } from 'file-saver'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { parseEventsToCSV } from 'features/vessel/vessel.download'

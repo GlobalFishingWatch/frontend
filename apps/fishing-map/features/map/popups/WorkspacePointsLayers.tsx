@@ -1,11 +1,11 @@
 import { Fragment } from 'react'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { TooltipEventFeature } from 'features/map/map.hooks'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 
 type WorkspacePointsLayersProps = {
-  features: TooltipEventFeature[]
+  // TODO:deck type this with its own type
+  features: any[]
 }
 
 function WorkspacePointsTooltipSection({ features }: WorkspacePointsLayersProps) {

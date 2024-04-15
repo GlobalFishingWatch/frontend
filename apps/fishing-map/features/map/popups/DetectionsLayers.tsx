@@ -1,46 +1,61 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { TooltipEventFeature, TooltipEventFeatureVesselsInfo } from 'features/map/map.hooks'
 import VesselsTable, { VesselDetectionTimestamps } from 'features/map/popups/VesselsTable'
+import { SliceExtendedFourwingsDeckSublayer } from '../map.slice'
+import { getVesselsInfoConfig } from '../map.hooks'
 import styles from './Popup.module.css'
 
 type ViirsMatchTooltipRowProps = {
-  feature: TooltipEventFeature
+  feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory; title?: string }
+  loading?: boolean
   showFeaturesDetails: boolean
 }
-function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchTooltipRowProps) {
+function ViirsMatchTooltipRow({
+  feature,
+  showFeaturesDetails,
+  loading,
+}: ViirsMatchTooltipRowProps) {
   const { t } = useTranslation()
   // Avoid showing not matched detections
-  const matchedVessels: TooltipEventFeatureVesselsInfo['vessels'] = (
-    feature.vesselsInfo?.vessels || []
+  const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])
+  const hasVesselsResolved = feature?.vessels?.length > 0
+  const matchedVessels: SliceExtendedFourwingsDeckSublayer['vessels'] = (
+    feature?.vessels || []
   ).filter((v: any) => v.id !== null)
-  const matchedDetections = matchedVessels
+  const matchedDetections = hasVesselsResolved
     ? matchedVessels.reduce((acc, vessel: any) => acc + vessel.detections, 0)
     : 0
-  const featureVesselsFilter: any = {
+  const featureVesselsFilter = {
     ...feature,
     vesselsInfo: {
-      ...feature.vesselsInfo,
+      vesselsInfo,
       vessels: matchedVessels,
-    } as TooltipEventFeatureVesselsInfo,
+    },
   }
-  const notMatchedDetectionsCount = parseInt(feature.value) - matchedDetections
-  const notMatchedDetection = feature.vesselsInfo?.vessels?.find((v: any) => v.id === null)
+  const notMatchedDetectionsCount = feature.value! - matchedDetections
+  const notMatchedDetection = feature?.vessels?.find((v: any) => v.id === null)
 
   return (
     <div className={styles.popupSection}>
       <Icon icon="heatmap" className={styles.layerIcon} style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
-        {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
+        {showFeaturesDetails && feature.title && (
+          <h3 className={styles.popupSectionTitle}>{feature.title}</h3>
+        )}
         <div className={styles.row}>
           <span className={styles.rowText}>
-            <I18nNumber number={feature.value} />{' '}
-            {t([`common.${feature.temporalgrid?.unit}` as any, 'common.detection'], 'detections', {
-              count: parseInt(feature.value), // neded to select the plural automatically
+            {feature.value && (
+              <Fragment>
+                <I18nNumber number={feature.value} />{' '}
+              </Fragment>
+            )}
+            {t([`common.${feature?.unit}` as any, 'common.detection'], 'detections', {
+              count: feature.value, // neded to select the plural automatically
             })}{' '}
-            {showFeaturesDetails && notMatchedDetectionsCount >= 0 && (
+            {hasVesselsResolved && showFeaturesDetails && notMatchedDetectionsCount >= 0 && (
               <Fragment>
                 {' - '}
                 <I18nNumber number={notMatchedDetectionsCount} />{' '}
@@ -50,8 +65,16 @@ function ViirsMatchTooltipRow({ feature, showFeaturesDetails }: ViirsMatchToolti
             )}
           </span>
         </div>
-        {showFeaturesDetails && (
-          <VesselsTable feature={featureVesselsFilter} vesselProperty="detections" />
+        {loading && (
+          <div className={styles.loading}>
+            <Spinner size="small" />
+          </div>
+        )}
+        {!loading && showFeaturesDetails && (
+          <VesselsTable
+            feature={{ ...featureVesselsFilter, category: feature.category }}
+            vesselProperty="detections"
+          />
         )}
       </div>
     </div>

@@ -1,11 +1,10 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { CompositeLayer, Layer, LayersList, LayerProps, Color } from '@deck.gl/core'
-// Layers
+import { CompositeLayer, Layer, LayersList, LayerProps, Color, PickingInfo } from '@deck.gl/core'
 import {
   ApiEvent,
+  DataviewCategory,
   EventTypes,
   EventVessel,
-  ResourceStatus,
   TrackSegment,
 } from '@globalfishingwatch/api-types'
 import {
@@ -15,34 +14,54 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 import { deckToHexColor } from '../../utils/colors'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
+import { BaseLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 import { getVesselTrackThunks } from './vessel.utils'
-import { EVENTS_COLORS } from './vessel.config'
+import { EVENTS_COLORS, TRACK_LAYER_TYPE } from './vessel.config'
+import {
+  VesselDataStatus,
+  VesselDataType,
+  VesselDeckLayersEvent,
+  VesselEventPickingInfo,
+  VesselEventPickingObject,
+  VesselEventProperties,
+  _VesselLayerProps,
+} from './vessel.types'
 
-export const TRACK_LAYER_TYPE = 'track'
-export interface VesselDeckLayersEvent {
-  type: EventTypes
-  url: string
-}
-export type VesselDataType = typeof TRACK_LAYER_TYPE | EventTypes
-export type VesselDataStatus = {
-  type: VesselDataType
-  status: ResourceStatus
-}
-export type _VesselLayerProps = {
-  name: string
-  color: Color
-  visible: boolean
-  onVesselDataLoad?: (layers: VesselDataStatus[]) => void
-}
 export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
   events: VesselDeckLayersEvent[]
 }
-export type VesselLayerProps = _VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
+
+export type VesselLayerProps = BaseLayerProps &
+  _VesselTrackLayerProps &
+  VesselEventsLayerProps &
+  _VesselLayerProps
 
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   dataStatus: VesselDataStatus[] = []
+
+  getPickingInfo = ({
+    info,
+  }: {
+    info: PickingInfo<VesselEventProperties>
+  }): VesselEventPickingInfo => {
+    const object = {
+      ...(info.object || ({} as VesselEventProperties)),
+      layerId: this.root.id,
+      title: this.props.name,
+      vesselId: this.props.id,
+      category: DataviewCategory.Vessels,
+      color: deckToHexColor(this.props.color),
+    }
+    if (!info.object) {
+      info.object = {} as VesselEventPickingObject
+    }
+    // info.object.getDetail = async () => {
+    //   return GFWAPI.fetch(`/events/${info.object?.properties.id}`)
+    // }
+    return { ...info, object }
+  }
 
   onSublayerError = (error: any) => {
     console.warn(error)

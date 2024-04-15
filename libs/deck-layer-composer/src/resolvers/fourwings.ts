@@ -1,11 +1,10 @@
-import { PickingInfo } from '@deck.gl/core'
 import { uniq } from 'lodash'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   FourwingsAggregationOperation,
   FourwingsComparisonMode,
   FourwingsDeckSublayer,
   FourwingsLayerProps,
+  FourwingsPickingObject,
   FourwingsVisualizationMode,
   TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
   getUTCDateTime,
@@ -19,14 +18,13 @@ import {
 import { ColorRampId } from '@globalfishingwatch/deck-layers'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { getDataviewAvailableIntervals } from './dataviews'
-import { ResolverGlobalConfig } from './types'
+import { DeckResolverFunction } from './types'
 
 // TODO: decide if include static here or create a new one
-export const resolveDeckFourwingsLayerProps = (
-  dataview: UrlDataviewInstance,
-  { start, end, resolution }: ResolverGlobalConfig,
-  interactions: PickingInfo[]
-): FourwingsLayerProps => {
+export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
+  FourwingsLayerProps,
+  FourwingsPickingObject
+> = (dataview, { start, end, resolution, debug }, interactions): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
 
@@ -76,7 +74,27 @@ export const resolveDeckFourwingsLayerProps = (
   const dataset = dataview.config?.sublayers
     ?.flatMap((sublayer) => sublayer.datasets)
     ?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
+
   const tilesUrl = dataset
+    ? resolveEndpoint(
+        dataset,
+        {
+          datasetId: dataset.id,
+          endpoint: EndpointId.FourwingsTiles,
+          params: [
+            {
+              id: 'type',
+              // api enpdoint needs 'position' instead of 'positions'
+              // TODO: discuss this with Raul before the release
+              value: visualizationMode === 'positions' ? 'position' : 'heatmap',
+            },
+          ],
+        },
+        { absolute: true }
+      )
+    : undefined
+
+  const interactionUrl = dataset
     ? resolveEndpoint(
         dataset,
         {
@@ -110,7 +128,7 @@ export const resolveDeckFourwingsLayerProps = (
     hoveredFeatures: interactions,
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
-    debug: dataview.config?.debug ?? false,
+    debug: debug ?? false,
     visible: dataview.config?.visible ?? true,
     colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd ?? false,
     ...(tilesUrl && { tilesUrl }),

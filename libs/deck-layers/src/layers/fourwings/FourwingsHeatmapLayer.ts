@@ -25,21 +25,38 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   layers: LayersList = []
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }): FourwingsPickingInfo => {
-    const { id, startTime, endTime, availableIntervals, category, sublayers, tilesCache } =
-      this.props
-    const object: FourwingsPickingObject = {
-      ...(info.object || ({} as FourwingsFeature)),
-      title: id,
+    const {
+      id,
+      tile,
+      startTime,
+      endTime,
+      availableIntervals,
       category,
       sublayers,
+      tilesCache,
+      comparisonMode,
+    } = this.props
+
+    const { startFrame, endFrame, interval } = getIntervalFrames({
+      startTime,
+      endTime,
+      availableIntervals,
+      bufferedStart: tilesCache.bufferedStart,
+    })
+    const object: FourwingsPickingObject = {
+      ...(info.object || ({} as FourwingsFeature)),
+      layerId: this.root.id,
+      id: id,
+      title: id, // TODO:deck get the proper title
+      tile: tile.index,
+      category,
+      sublayers,
+      startTime,
+      endTime,
+      interval,
+      comparisonMode,
     }
     if (info.object) {
-      const { startFrame, endFrame } = getIntervalFrames({
-        startTime,
-        endTime,
-        availableIntervals,
-        bufferedStart: tilesCache.bufferedStart,
-      })
       const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
       const values =
         info.object.properties.initialValues[timeRangeKey] ||
@@ -73,6 +90,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       aggregationOperation,
       tilesCache,
       scales,
+      minVisibleValue,
+      maxVisibleValue,
     } = this.props
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
@@ -108,7 +127,11 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           chosenValueIndex = index
         }
       })
-      if (!chosenValue) {
+      if (
+        !chosenValue ||
+        (minVisibleValue && chosenValue < minVisibleValue) ||
+        (maxVisibleValue && chosenValue > maxVisibleValue)
+      ) {
         target = EMPTY_CELL_COLOR
         return target
       }
@@ -171,15 +194,21 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
           updateTriggers: {
             // This tells deck.gl to recalculate fillColor on changes
-            getFillColor: [startTime, endTime, colorDomain, colorRanges, comparisonMode],
+            getFillColor: [
+              startTime,
+              endTime,
+              colorDomain,
+              colorRanges,
+              comparisonMode,
+              minVisibleValue,
+              maxVisibleValue,
+            ],
           },
         })
       ),
     ] as LayersList
 
-    const layerHoveredFeature: FourwingsFeature = hoveredFeatures?.find(
-      (f) => f.layer?.id === this.root.id
-    )?.object
+    const layerHoveredFeature = hoveredFeatures?.find((f) => f.layerId === this.root.id)
     if (layerHoveredFeature) {
       this.layers.push(
         new PathLayer(

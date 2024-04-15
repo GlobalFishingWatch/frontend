@@ -110,6 +110,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
           color = color;
         } else {
           // color = vHighlightColor;
+          // TODO:deck position this on top of the other vessel layers to ensure highlgihts is always visible
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
       `,
@@ -162,29 +163,29 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
   getSegments(): TrackSegment[] {
     const data = this.props.data as VesselTrackData
     const segmentsIndex = data.startIndices
-    const positions = data.attributes?.positions!?.value
+    const positions = data.attributes?.getPath?.value
     const timestamps = data.attributes?.getTimestamps?.value
     if (!positions?.length || !timestamps.length) {
       return []
     }
-    const size = data.attributes.positions!?.size
+    const size = data.attributes.getPath!?.size
     const segments = segmentsIndex.map((segment, i, segments) => {
       const initialPoint = {
-        longitude: positions[segment],
-        latitude: positions[segment + 1],
+        // longitude: positions[segment],
+        // latitude: positions[segment + 1],
         timestamp: timestamps[segment / size],
       }
       const nextSegmentIndex = segments[i + 1]
       const lastPoint =
         i === segmentsIndex.length - 1
           ? {
-              longitude: positions[positions.length - size],
-              latitude: positions[positions.length - size + 1],
+              // longitude: positions[positions.length - size],
+              // latitude: positions[positions.length - size + 1],
               timestamp: timestamps[timestamps.length - 1],
             }
           : {
-              longitude: positions[nextSegmentIndex],
-              latitude: positions[nextSegmentIndex + 1],
+              // longitude: positions[nextSegmentIndex],
+              // latitude: positions[nextSegmentIndex + 1],
               timestamp: timestamps[nextSegmentIndex / size - 1],
             }
       return [initialPoint, lastPoint]

@@ -46,13 +46,14 @@ export const useTimebarVesselTracks = () => {
   }, [dataviews])
   const vessels = useGetDeckLayers<VesselLayer>(ids)
   const [tracks, setVesselTracks] = useState<TimebarChartData<any> | null>(null)
+  const vesselsLoaded = vessels.flatMap((v) => (v.loaded ? v.id : [])).join(',')
   // const tracksMemoHash = getVesselTimebarTrackMemoHash(vessels)
 
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels?.length) {
-        const vesselTracks = vessels.flatMap(({ instance }) => {
-          if (!instance.props.visible) {
+        const vesselTracks = vessels.flatMap(({ instance, loaded }) => {
+          if (!loaded || !instance.props.visible) {
             return []
           }
           const segments = instance.getVesselTrackSegments()
@@ -79,7 +80,7 @@ export const useTimebarVesselTracks = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [vesselsLoaded])
   return tracks
 }
 

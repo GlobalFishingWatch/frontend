@@ -4,7 +4,7 @@ import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { getDataviewsResolved } from '../resolvers'
 import { dataviewToDeckLayer, ResolverGlobalConfig } from '../resolvers'
-import { useMapHoverInteraction } from './deck-layers-interaction.hooks'
+import { useMapHoverInteraction } from '../interactions'
 
 // Atom used to have all deck instances available
 export const deckLayerInstancesAtom = atom<AnyDeckLayer[]>([])

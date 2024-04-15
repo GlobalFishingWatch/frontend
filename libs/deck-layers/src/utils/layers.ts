@@ -1,22 +1,23 @@
-import { COORDINATE_SYSTEM, PickingInfo } from '@deck.gl/core'
+import { COORDINATE_SYSTEM } from '@deck.gl/core'
 import { ClipExtension } from '@deck.gl/extensions'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { Matrix4 } from '@math.gl/core'
+import { DeckLayerPickingObject } from '../types'
 
 const WORLD_SIZE = 512
 
 export function getPickedFeatureToHighlight(
   data: any,
-  pickedFeatures: PickingInfo[],
+  pickedFeatures: DeckLayerPickingObject[],
   idProperty: string
 ) {
   return (
     pickedFeatures &&
     pickedFeatures.some(
-      (f: PickingInfo) =>
-        f.object.type === 'Feature' &&
-        f.object.properties[idProperty] === data.properties[idProperty]
+      (f) =>
+        // TODO:deck remove this any and fix typings
+        f.type === 'Feature' && (f.properties as any)?.[idProperty] === data.properties[idProperty]
     )
   )
 }
