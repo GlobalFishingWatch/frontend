@@ -1,17 +1,22 @@
-import { EditableGeoJsonLayer } from '@nebula.gl/layers'
-import { DrawPolygonMode, ModifyMode } from '@nebula.gl/edit-modes'
+import {
+  EditableGeoJsonLayer,
+  DrawPolygonMode,
+  ModifyMode,
+} from '../../vendor/editable-layers/dist'
+import { LayerGroup, getLayerGroupOffset } from '../../utils'
 
-export class CustomReferenceLayer extends EditableGeoJsonLayer {
-  static layerName = 'custom-reference-layer'
+export class DrawLayer extends EditableGeoJsonLayer {
+  static layerName = 'draw-layer'
   renderLayers() {
     const { mode, data, selectedFeatureIndexes, onEdit, onClick } = this.props
     return [
       new EditableGeoJsonLayer({
-        id: 'custom-reference',
+        id: 'draw',
         data,
         onEdit,
         onClick,
         selectedFeatureIndexes,
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
         mode: mode === 'edit' ? ModifyMode : DrawPolygonMode,
       }),
     ]
