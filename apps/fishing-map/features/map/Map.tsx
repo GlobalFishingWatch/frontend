@@ -40,6 +40,7 @@ import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
 import useRulers from './overlays/rulers/rulers.hooks'
 import { useDrawLayer } from './overlays/draw/draw.hooks'
+import { useMapDrawConnect } from './map-draw.hooks'
 // This avoids type checking to complain
 // https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
 const RulersLayerComponent = RulersLayer as any

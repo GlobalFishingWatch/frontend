@@ -14,15 +14,16 @@ const drawLayerModeAtom = atom<DrawLayerMode>('draw')
 export const useDrawLayer = () => {
   const [drawFeatures, setDrawFeatures] = useAtom(drawFeaturesAtom)
   const [drawFeaturesIndexes, setDrawFeaturesIndexes] = useAtom(drawFeaturesIndexesAtom)
-  const drawLayerMode = useAtomValue(drawLayerModeAtom)
+  const [drawLayerMode, setDrawLayerMode] = useAtom(drawLayerModeAtom)
   const onDrawEdit = useCallback(
     ({ updatedData, editType }) => {
       console.log('🚀 ~ useDrawLayer ~ updatedData, editType:', updatedData, editType)
       if (editType === 'addFeature' || editType === 'movePosition' || editType === 'addPosition') {
         setDrawFeatures(updatedData)
+        setDrawLayerMode('edit')
       }
     },
-    [setDrawFeatures]
+    [setDrawFeatures, setDrawLayerMode]
   )
   const onDrawClick = useCallback(
     (info) => {
