@@ -93,7 +93,7 @@ export const useReportFeaturesLoading = () => {
 }
 
 export const useReportFeaturesError = () => {
-  // TODO handle errors in layer instances
+  // TODO:deck handle errors in layer instances
   const reportLayerInstanceLoaded = useReportInstance()?.loaded
   return false
 }
@@ -114,7 +114,6 @@ const useReportTimeseries = (reportLayer: DeckLayerAtom<FourwingsLayer>) => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const reportBufferHash = useSelector(selectReportBufferHash)
-  // const reportFeaturesLoaded = areDataviewsFeatureLoaded(reportFeatures)
 
   let compareDeltaMillis: number | undefined = undefined
   if (showTimeComparison && timeComparison) {

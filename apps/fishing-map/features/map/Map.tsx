@@ -106,7 +106,6 @@ const MapWrapper = () => {
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
   useSetMapIdleAtom()
-  // useMapSourceTilesLoadedAtom()
   useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()
   // const map = useMapInstance()
@@ -134,7 +133,6 @@ const MapWrapper = () => {
       setDeckLayers([])
     }
   }, [setDeckLayers])
-  // const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   // const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
   //   useClickedEventConnect()
