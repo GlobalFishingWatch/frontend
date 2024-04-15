@@ -305,12 +305,12 @@ export const getBivariateValuesNew = (realValues: number[], breaks: number[][]) 
 export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 
 export function getFourwingsChunk(
-  minFrame: number,
-  maxFrame: number,
+  minDate: number,
+  maxDate: number,
   availableIntervals?: FourwingsInterval[]
 ) {
-  const interval = getInterval(minFrame, maxFrame, availableIntervals)
-  return getChunkByInterval(minFrame, maxFrame, interval)
+  const interval = getInterval(minDate, maxDate, availableIntervals)
+  return getChunkByInterval(minDate, maxDate, interval)
 }
 
 export function getIntervalFrames({
