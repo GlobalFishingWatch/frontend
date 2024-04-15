@@ -130,7 +130,7 @@ export default function useDrawControl(props: DrawControlProps) {
     ...rest
   } = props
 
-  const drawControl = useControl<MapboxDraw>(
+  const drawControl = useControl<any>(
     ({ map }: { map: MapRef }) => {
       map.on('draw.create', onCreate)
       map.on('draw.update', onUpdate)
