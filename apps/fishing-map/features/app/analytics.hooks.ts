@@ -22,8 +22,8 @@ export enum TrackCategory {
   Timebar = 'timebar',
   Tracks = 'tracks',
   User = 'user',
-  VesselProfile = 'vessel_profile',
   VesselGroups = 'vessel_groups',
+  VesselProfile = 'vessel_profile',
   WorkspaceManagement = 'workspace_management',
 }
 

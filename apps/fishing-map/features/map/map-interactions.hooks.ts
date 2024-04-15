@@ -21,8 +21,6 @@ import {
 import useRulers from 'features/map/rulers/rulers.hooks'
 import useMapInstance from 'features/map/map-context.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { getEventLabel } from 'utils/analytics'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
 import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
@@ -104,35 +102,8 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
 
   const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
 
-  const clickedCellLayers = useMemo(() => {
-    if (!clickedEvent || !clickedTooltipEvent) return
-
-    const layersByCategory = (clickedTooltipEvent?.features ?? [])
-      .sort(
-        (a, b) =>
-          POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
-      )
-      .reduce(
-        (prev: Record<string, TooltipEventFeature[]>, current) => ({
-          ...prev,
-          [current.category]: [...(prev[current.category] ?? []), current],
-        }),
-        {}
-      )
-
-    return Object.entries(layersByCategory).map(
-      ([featureCategory, features]) =>
-        `${featureCategory}: ${features.map((f) => f.layerId).join(',')}`
-    )
-  }, [clickedEvent, clickedTooltipEvent])
-
   const onMapClick = useCallback(
     (event: MapLayerMouseEvent) => {
-      trackEvent({
-        category: TrackCategory.EnvironmentalData,
-        action: `Click in grid cell`,
-        label: getEventLabel(clickedCellLayers ?? []),
-      })
       const hasWorkspacesFeatures =
         event?.features?.find(
           (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
@@ -157,7 +128,6 @@ export const useMapMouseClick = (style?: ExtendedStyle) => {
       onClick(event)
     },
     [
-      clickedCellLayers,
       isMapDrawing,
       isMarineManagerLocation,
       rulersEditing,
