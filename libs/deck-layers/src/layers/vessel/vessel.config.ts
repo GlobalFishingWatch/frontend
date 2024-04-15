@@ -3,6 +3,7 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { hexToDeckColor } from '../../utils'
 
 export const TRACK_LAYER_TYPE = 'track'
+export const EVENT_LAYER_TYPE = 'event'
 
 type EventShape = 'circle' | 'square' | 'diamond' | 'diamondStroke'
 export const SHAPES_ORDINALS: Record<EventShape, number> = {
