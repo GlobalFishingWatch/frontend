@@ -51,6 +51,7 @@ import {
   FourwingsTileLayerColorRange,
   FourwinsTileLayerScale,
 } from './fourwings.types'
+import { FourwingsGetDataParams } from './FourwingsLayer'
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   maxRequests: 100,
@@ -372,23 +373,23 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return layer
   }
 
-  getData() {
+  getData({ aggregated } = {} as { aggregated?: boolean }) {
     const layer = this.getLayerInstance()
     if (layer) {
       const zoom = Math.round(this.context.viewport.zoom)
       const offset = this.props.resolution === 'high' ? 1 : 0
       return layer.getSubLayers().flatMap((l: any) => {
         if (l.props.tile.zoom === l.props.maxZoom) {
-          return l.getData()
+          return l.getData({ aggregated })
         }
-        return l.props.tile.zoom === zoom + offset ? l.getData() : []
+        return l.props.tile.zoom === zoom + offset ? l.getData({ aggregated }) : []
       }) as FourwingsFeature[]
     }
     return [] as FourwingsFeature[]
   }
 
-  getViewportData() {
-    const data = this.getData()
+  getViewportData({ aggregated } = {} as FourwingsGetDataParams) {
+    const data = this.getData({ aggregated })
     const { viewport } = this.context
     const [west, north] = viewport.unproject([0, 0])
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
