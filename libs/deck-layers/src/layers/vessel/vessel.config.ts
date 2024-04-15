@@ -26,3 +26,5 @@ export const EVENTS_COLORS: Record<string, Color> = {
   port_visit: hexToDeckColor('#99EEFF'),
   highlight: hexToDeckColor('#ffffff'),
 }
+
+export const DEFAULT_HIGHLIGHT_COLOR_VEC = [1.0, 1.0, 1.0, 1.0]

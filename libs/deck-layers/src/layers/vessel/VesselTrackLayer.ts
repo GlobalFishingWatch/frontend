@@ -3,6 +3,7 @@ import { AccessorFunction, ChangeFlags, DefaultProps, UpdateParameters } from '@
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { TrackSegment } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
+import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -50,7 +51,6 @@ export type _VesselTrackLayerProps<DataT = any> = {
 // not needed anymore as the highlighted color is fixed
 // const DEFAULT_HIGHLIGHT_COLOR_RGBA = [255, 255, 255, 255] as Color
 
-const DEFAULT_HIGHLIGHT_COLOR_VEC = [1.0, 1.0, 1.0, 1.0]
 const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   _pathType: 'open',
   endTime: { type: 'number', value: 0, min: 0 },
@@ -81,14 +81,19 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     const shaders = super.getShaders()
     shaders.inject = {
       'vs:#decl': `
+        uniform float highlightStartTime;
+        uniform float highlightEndTime;
+
         in float instanceTimestamps;
-        // in vec4 instanceHighlightColor;
         out float vTime;
         // out vec4 vHighlightColor;
       `,
       // Timestamp of the vertex
       'vs:#main-end': `
         vTime = instanceTimestamps;
+        if(vTime > highlightStartTime && vTime < highlightEndTime) {
+          gl_Position.z = 1.0;
+        }
         // vHighlightColor = vec4(instanceHighlightColor.rgb, instanceHighlightColor.a);
       `,
       'fs:#decl': `
@@ -106,11 +111,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         }
       `,
       'fs:DECKGL_FILTER_COLOR': `
-        if (vTime < highlightStartTime || vTime > highlightEndTime) {
-          color = color;
-        } else {
+        if (vTime > highlightStartTime && vTime < highlightEndTime) {
           // color = vHighlightColor;
-          // TODO:deck position this on top of the other vessel layers to ensure highlgihts is always visible
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
       `,

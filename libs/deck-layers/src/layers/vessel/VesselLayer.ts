@@ -125,15 +125,18 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           onError: this.onSublayerError,
           loaders: [VesselEventsLoader],
           pickable: true,
+          highlightStartTime: this.props.highlightStartTime,
+          highlightEndTime: this.props.highlightEndTime,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
           getFillColor: (d: any): Color => {
-            if (highlightEventIds?.includes(d.id)) {
-              return EVENTS_COLORS.highlight
-            }
+            // if (highlightEventIds?.includes(d.id)) {
+            //   return EVENTS_COLORS.highlight
+            // }
             return d.type === EventTypes.Fishing ? this.props.color : EVENTS_COLORS[d.type]
           },
           updateTriggers: {
-            getFillColor: [this.props.highlightEventIds, this.props.color],
+            // getFillColor: [this.props.highlightEventIds, this.props.color],
+            getFillColor: [this.props.color],
           },
           radiusUnits: 'pixels',
           getRadius: (d: any) => {
