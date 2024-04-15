@@ -9,44 +9,28 @@ import {
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { getEventDescription } from 'utils/events'
+import { t } from 'features/i18n/i18n'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
 }
 
-// const getVesselTimebarTrackMemoHash = (vessels: VesselLayerState[]) => {
-//   return vessels
-//     .flatMap((v) => {
-//       const visible = v.instance?.props.visible
-//       const dataStatus = v.dataStatus
-//         .flatMap((s) => (s.type === 'track' && s.status === ResourceStatus.Finished ? s.type : []))
-//         .join('|')
-//       return [visible, dataStatus].join('-')
-//     })
-//     .join(',')
-// }
-
-// const getVesselTimebarEventsMemoHash = (vessels: VesselLayerState[]) => {
-//   return vessels
-//     .flatMap((v) => {
-//       const visible = v.instance.props.visible
-//       const visibleEvents = v.instance.props.visibleEvents?.join('|')
-//       const dataStatus = v.dataStatus
-//         .flatMap((s) => (s.type !== 'track' && s.status === ResourceStatus.Finished ? s.type : []))
-//         .join('|')
-//       return [visible, visibleEvents, dataStatus].join('-')
-//     })
-//     .join(',')
-// }
-
-export const useTimebarVesselTracks = () => {
+export const useTimebarVesselsLayers = () => {
   const dataviews = useSelector(selectVesselsDataviews)
   const ids = useMemo(() => {
     return dataviews.map((d) => d.id)
   }, [dataviews])
   const vessels = useGetDeckLayers<VesselLayer>(ids)
+  return vessels
+}
+
+export const useTimebarVesselTracks = () => {
   const [tracks, setVesselTracks] = useState<TimebarChartData<any> | null>(null)
-  const vesselsLoaded = vessels.flatMap((v) => (v.loaded ? v.id : [])).join(',')
+  const vessels = useTimebarVesselsLayers()
+  const vesselsLoaded = vessels
+    .flatMap((v) => (v.instance.getVesselTracksLayersLoaded() ? v.id : []))
+    .join(',')
   // const tracksMemoHash = getVesselTimebarTrackMemoHash(vessels)
 
   useEffect(() => {
@@ -85,25 +69,22 @@ export const useTimebarVesselTracks = () => {
 }
 
 const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs): string => {
-  return ''
-  // TODO fix this for Deck.gl
-  // const chunkWithProps = parseTrackEventChunkProps(chunk)
-  // if (chunkWithProps.cluster) {
-  //   return `${chunkWithProps.props?.descriptionGeneric} (${chunkWithProps.cluster.numChunks} ${t(
-  //     'event.events',
-  //     'events'
-  //   )})`
-  // }
-  // if (expanded) {
-  //   return chunkWithProps.props?.description as string
-  // }
-  // return chunkWithProps.props?.descriptionGeneric as string
+  const { description, descriptionGeneric } = getEventDescription(chunk as any)
+  if (chunk.cluster) {
+    return `${descriptionGeneric} (${chunk.cluster.numChunks} ${t('event.events', 'events')})`
+  }
+  if (expanded) {
+    return description as string
+  }
+  return descriptionGeneric as string
 }
 
 export const useTimebarVesselEvents = () => {
-  const vessels = useGetDeckLayers<VesselLayer>(['vessel'])
+  const vessels = useTimebarVesselsLayers()
+  const vesselsLoaded = vessels
+    .flatMap((v) => (v.instance.getVesselEventsLayersLoaded() ? v.id : []))
+    .join(',')
   const [events, setVesselEvents] = useState<TimebarChartData<TrackEventChunkProps> | null>(null)
-  // const tracksMemoHash = getVesselTimebarEventsMemoHash(vessels)
   useEffect(() => {
     requestAnimationFrame(() => {
       if (vessels.length) {
@@ -127,6 +108,6 @@ export const useTimebarVesselEvents = () => {
     })
     // TODO tracksMemoHash below in Deck.gl fixes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [vesselsLoaded])
   return events
 }
