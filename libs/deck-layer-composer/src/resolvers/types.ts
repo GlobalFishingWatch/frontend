@@ -6,6 +6,7 @@ import {
   FourwingsResolution,
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
+import { TimeRange } from './dataviews'
 
 export type ResolverGlobalConfig = {
   start: string
@@ -20,7 +21,7 @@ export type ResolverGlobalConfig = {
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
-  highlightedTime: { start?: string; end?: string }
+  highlightedTime: Partial<TimeRange>
   locale?: string
   visibleEvents: EventTypes[]
 }
