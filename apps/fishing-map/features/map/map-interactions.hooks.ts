@@ -21,8 +21,6 @@ import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import useMapInstance, { useDeckMap } from 'features/map/map-context.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { getEventLabel } from 'utils/analytics'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { selectIsMarineManagerLocation, selectLocationType } from 'routes/routes.selectors'
 import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
@@ -103,6 +101,11 @@ export const useClickedEventConnect = () => {
     //     if (latitude && longitude && zoom) {
     //       setViewState({ latitude, longitude, zoom })
     //     }
+    // trackEvent({
+    //   category: TrackCategory.WorkspaceManagement,
+    //   action: `click_map_workspace_link`,
+    //   label: workspace.properties.id,
+    // })
     //     return
     //   }
     // }
@@ -137,12 +140,26 @@ export const useClickedEventConnect = () => {
     }
 
     // When hovering in a vessel event we don't want to have clicked events
-    // const areAllFeaturesVesselEvents = event.features.every(
-    //   (f) => f.generatorType === DataviewType.VesselEvents
+    // TODO:deck fix this
+    // const vesselEventFeatures = event.features.filter(
+    //   (f) =>
+    //     f.generatorType === GeneratorType.VesselEvents ||
+    //     f.generatorType === GeneratorType.VesselEventsShapes
     // )
-
-    // if (areAllFeaturesVesselEvents) {
-    //   return
+    // if (vesselEventFeatures?.length) {
+    //   vesselEventFeatures.forEach((feature) => {
+    //     if (feature.properties) {
+    //       trackEvent({
+    //         category: TrackCategory.Tracks,
+    //         action: `click_${feature.properties.type}_event_from_track`,
+    //         label: feature.properties.vesselId,
+    //       })
+    //     }
+    //   })
+    //   const areAllFeaturesVesselEvents = vesselEventFeatures.length === event.features.length
+    //   if (areAllFeaturesVesselEvents) {
+    //     return
+    //   }
     // }
 
     dispatch(setClickedEvent(event as SliceInteractionEvent))
@@ -337,34 +354,6 @@ export const useMapMouseClick = () => {
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
   const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
 
-  const trackMapClickEvent = useCallback((interactionEvent: InteractionEvent) => {
-    if (!interactionEvent || !interactionEvent?.features) return
-
-    const layersByCategory = (interactionEvent?.features ?? [])
-      .toSorted(
-        (a, b) =>
-          POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
-      )
-      .reduce(
-        (prev: Record<string, DeckLayerPickingObject[]>, current) => ({
-          ...prev,
-          [current.category]: [...(prev[current.category] ?? []), current],
-        }),
-        {} as Record<string, DeckLayerPickingObject[]>
-      )
-
-    const clickedCellLayers = Object.entries(layersByCategory).map(
-      ([featureCategory, features]) =>
-        `${featureCategory}: ${(features as any[]).map((f) => f.layerId).join(',')}`
-    )
-
-    trackEvent({
-      category: TrackCategory.EnvironmentalData,
-      action: `Click in grid cell`,
-      label: getEventLabel(clickedCellLayers ?? []),
-    })
-  }, [])
-
   const onMapClick: DeckProps['onClick'] = useCallback(
     (info: PickingInfo, event: any) => {
       if (!info.coordinate) return
@@ -378,10 +367,9 @@ export const useMapMouseClick = () => {
         if (!clickStopPropagation) {
           dispatchClickedEvent(clickInteraction)
         }
-        trackMapClickEvent(clickInteraction)
       }
     },
-    [getPickingInteraction, handleMapToolsClick, trackMapClickEvent, dispatchClickedEvent]
+    [getPickingInteraction, handleMapToolsClick, dispatchClickedEvent]
   )
 
   return onMapClick
