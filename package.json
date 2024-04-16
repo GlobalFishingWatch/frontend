@@ -197,7 +197,7 @@
     "@typescript-eslint/scope-manager": "7.0.1",
     "babel-jest": "^29.4.1",
     "circular-dependency-plugin": "^5.2.2",
-    "cypress": "^13.6.6",
+    "cypress": "^13.7.3",
     "decompress": "^4.2.1",
     "esbuild": "^0.20.2",
     "eslint": "8.57.0",
