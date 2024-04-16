@@ -21,17 +21,13 @@ steps:
   - id: 'install-yarn'
     waitFor: ['restore_cache']
     name: node:21
-    entrypoint: sh
-    args:
-      - '-c'
-      # if dependencies cache is not found then install all deps
-      - |
-        # if [ ! -d "node_modules" ]; then
-          CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
-        # fi
+    script: |
+      yarn set version 4.1.1
+      yarn -v
+      CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
 
   - id: 'generate-cypress-lock'
-    waitFor: ['yarn-install']
+    waitFor: ['install-yarn']
     name: node:21
     script: |
       yarn info cypress version > cypress.lock
