@@ -2,54 +2,68 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: ['fetch', '--unshallow', '--no-tags']
 
+steps:
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
+    script: |
+      #!/usr/bin/env bash
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-cache-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-install-state-$( checksum yarn.lock )
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:18
+    name: node:21
     entrypoint: sh
     args:
       - '-c'
       # if dependencies cache is not found then install all deps
       - |
-        if [ ! -d "node_modules" ]; then
-          yarn install
-        fi
+        # if [ ! -d "node_modules" ]; then
+          CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
+        # fi
 
-  - id: 'save_node_modules_cache'
-    waitFor: ['install-yarn']
-    name: 'gcr.io/$PROJECT_ID/save_cache'
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-$( checksum yarn.lock )'
-      - '--path=./node_modules'
-      - '--no-clobber'
+  - id: 'generate-cypress-lock'
+    waitFor: ['yarn-install']
+    name: node:21
+    script: |
+      yarn info cypress version > cypress.lock
 
-  - id: 'save_yarn_cache'
+  - id: 'save_cache'
     waitFor: ['install-yarn']
-    name: 'gcr.io/$PROJECT_ID/save_cache'
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-cache-$( checksum yarn.lock )'
-      - '--path=.yarn/cache'
-      - '--no-clobber'
-
-  - id: 'save_yarn_install_state_cache'
-    waitFor: ['install-yarn']
-    name: 'gcr.io/$PROJECT_ID/save_cache'
-    args:
-      - '--bucket=gs://frontend-cache-dependencies'
-      - '--key=yarn-install-state-$( checksum yarn.lock )'
-      - '--path=.yarn/install-state.gz'
-      - '--no-clobber'
+    name: 'gcr.io/$PROJECT_ID/restore_cache'
+    script: |
+      #!/usr/bin/env bash
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock ) \
+        --path=./node_modules \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-cache-$( checksum yarn.lock ) \
+        --path=.yarn/cache \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-install-state-$( checksum yarn.lock ) \
+        --path=.cypress-cache \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=cypress-$( checksum cypress.lock ) \
+        --path=.yarn/install-state.gz \
+        --no-clobber
 
   - id: get-affected
-    name: 'node:18'
+    name: 'node:21'
     entrypoint: yarn
     args: ['affected']
 
