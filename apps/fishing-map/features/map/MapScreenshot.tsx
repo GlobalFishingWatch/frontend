@@ -26,9 +26,8 @@ export const getMapImage = (map: Deck): Promise<string> => {
     if (!map) {
       reject('No map instance found')
     }
-    const canvas = map.getCanvas()
-    if (canvas) {
-      resolve(canvas.toDataURL())
+    if (map.canvas) {
+      resolve(map.canvas.toDataURL())
     } else {
       reject('No map canvas found')
     }
@@ -62,7 +61,9 @@ function MapScreenshot() {
   useEffect(() => {
     if (map) {
       getMapImage(map).then((image) => {
-        setScreenshotImage(image)
+        if (image) {
+          setScreenshotImage(image)
+        }
       })
     }
   }, [map])
