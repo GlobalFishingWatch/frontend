@@ -1,14 +1,4 @@
-import {
-  getRealValues,
-  getTimeSeries,
-  TimeSeries,
-  TimeSeriesFrame,
-} from '@globalfishingwatch/fourwings-aggregate'
-import {
-  Interval,
-  pickActiveTimeChunk,
-  quantizeOffsetToDate,
-} from '@globalfishingwatch/layer-composer'
+import { TimeSeries, TimeSeriesFrame } from '@globalfishingwatch/fourwings-aggregate'
 import {
   FourwingsAggregationOperation,
   FourwingsDeckSublayer,
@@ -18,7 +8,6 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { ReportGraphMode, ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import { DateTimeSeries } from 'features/reports/reports.hooks'
-import { DataviewFeature } from 'features/map/map-sources.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { ComparisonGraphData } from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromFourwingsFeatures } from 'features/timebar/timebar.utils'

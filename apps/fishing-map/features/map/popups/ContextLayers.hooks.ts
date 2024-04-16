@@ -95,7 +95,7 @@ export const useContextInteractions = () => {
       // TODO:deck:featureState review if this still needed
       // cleanFeatureState('highlight')
     },
-    [datasets, cleanFeatureState, dataviews, dispatch]
+    [datasets, dataviews, dispatch]
   )
 
   const setReportArea = useCallback(

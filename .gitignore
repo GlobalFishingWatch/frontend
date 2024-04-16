@@ -44,7 +44,6 @@ bower_components
 build/Release
 
 # Dependency directories
-vendor/
 node_modules/
 .pnp.*
 .yarn/*

@@ -16,7 +16,8 @@ export const useDrawLayer = () => {
   const [drawFeaturesIndexes, setDrawFeaturesIndexes] = useAtom(drawFeaturesIndexesAtom)
   const [drawLayerMode, setDrawLayerMode] = useAtom(drawLayerModeAtom)
   const onDrawEdit = useCallback(
-    ({ updatedData, editType }) => {
+    // TODO:deck fix types here
+    ({ updatedData, editType }: any) => {
       console.log('🚀 ~ useDrawLayer ~ updatedData, editType:', updatedData, editType)
       if (editType === 'addFeature' || editType === 'movePosition' || editType === 'addPosition') {
         setDrawFeatures(updatedData)
@@ -26,7 +27,8 @@ export const useDrawLayer = () => {
     [setDrawFeatures, setDrawLayerMode]
   )
   const onDrawClick = useCallback(
-    (info) => {
+    // TODO:deck fix types here
+    (info: any) => {
       console.log('🚀 ~ onDrawClick ~ info:', info)
       if (info.featureType === 'polygons') {
         setDrawFeaturesIndexes([info.index])
