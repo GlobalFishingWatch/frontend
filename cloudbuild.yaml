@@ -50,12 +50,12 @@ steps:
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
         --key=yarn-install-state-$( checksum yarn.lock ) \
-        --path=.cypress-cache \
+        --path=.yarn/install-state.gz \
         --no-clobber
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
         --key=cypress-$( checksum cypress.lock ) \
-        --path=.yarn/install-state.gz \
+        --path=.cypress-cache \
         --no-clobber
 
   - id: get-affected
