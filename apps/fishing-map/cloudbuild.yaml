@@ -27,7 +27,7 @@ steps:
       CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
 
   - id: 'generate-cypress-lock'
-    waitFor: ['yarn-install']
+    waitFor: ['install-yarn']
     name: node:21
     script: |
       yarn info cypress version > cypress.lock
