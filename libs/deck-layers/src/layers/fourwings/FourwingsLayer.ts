@@ -18,8 +18,6 @@ export type FourwingsColorRamp = {
   colorRange: Color[]
 }
 
-export type FourwingsGetDataParams = { aggregated?: boolean }
-
 export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
   FourwingsHeatmapStaticLayerProps &
   FourwingsHeatmapTileLayerProps & {
@@ -61,8 +59,8 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
         )
   }
 
-  getData({ aggregated } = {} as FourwingsGetDataParams) {
-    return this.getLayer()?.getData({ aggregated })
+  getData() {
+    return this.getLayer()?.getData()
   }
 
   getInterval() {
@@ -79,8 +77,8 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return {} as FourwingsChunk
   }
 
-  getViewportData({ aggregated } = {} as FourwingsGetDataParams) {
-    return this.getLayer()?.getViewportData({ aggregated })
+  getViewportData() {
+    return this.getLayer()?.getViewportData()
   }
 
   getMode() {
