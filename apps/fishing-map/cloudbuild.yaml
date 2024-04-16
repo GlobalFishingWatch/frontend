@@ -1,36 +1,36 @@
 steps:
-  # - name: 'gcr.io/$PROJECT_ID/restore_cache'
-  #   id: restore_cache
-  #   waitFor: ['-']
-  #   script: |
-  #     #!/usr/bin/env bash
-  #     restore_cache \
-  #       --bucket=gs://frontend-cache-dependencies \
-  #       --key=yarn-$( checksum yarn.lock ) \
-  #       --key_fallback=yarn3-cache
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cache
+    waitFor: ['-']
+    script: |
+      #!/usr/bin/env bash
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock ) \
+        --key_fallback=yarn3-cache
 
-  # - id: 'generate-cypress-lock'
-  #   waitFor: ['restore_cache']
-  #   name: node:21
-  #   script: |
-  #     if [ -d "node_modules" ]; then
-  #       yarn info cypress version > cypress.lock
-  #     fi
+  - id: 'generate-cypress-lock'
+    waitFor: ['restore_cache']
+    name: node:21
+    script: |
+      if [ -d "node_modules" ]; then
+        yarn info cypress version > cypress.lock
+      fi
 
-  # - name: 'gcr.io/$PROJECT_ID/restore_cache'
-  #   id: restore_cypress_cache
-  #   waitFor: ['generate-cypress-lock']
-  #   script: |
-  #     #!/usr/bin/env bash
-  #     if [ -d "node_modules" ]; then
-  #       restore_cache \
-  #         --bucket=gs://frontend-cache-dependencies \
-  #         --key=cypress-$( checksum cypress.lock ) \
-  #         --key_fallback=cypress-cache
-  #     fi
+  - name: 'gcr.io/$PROJECT_ID/restore_cache'
+    id: restore_cypress_cache
+    waitFor: ['generate-cypress-lock']
+    script: |
+      #!/usr/bin/env bash
+      if [ -d "node_modules" ]; then
+        restore_cache \
+          --bucket=gs://frontend-cache-dependencies \
+          --key=cypress-$( checksum cypress.lock ) \
+          --key_fallback=cypress-cache
+      fi
 
   - id: 'install-yarn'
-    # waitFor: ['restore_cache']
+    waitFor: ['restore_cache']
     name: node:21
     script: |
       if [ ! -d "node_modules" ]; then
