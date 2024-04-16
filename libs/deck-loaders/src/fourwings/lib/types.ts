@@ -47,6 +47,7 @@ export type FourwingsFeatureProperties = {
   startOffsets: number[]
   dates: number[][]
   values: number[][]
+  aggregatedValues?: number[]
   cellId: number
   cellNum: number
   col: number

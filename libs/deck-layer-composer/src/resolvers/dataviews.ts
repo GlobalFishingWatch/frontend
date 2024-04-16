@@ -49,7 +49,7 @@ export const getDataviewAvailableIntervals = (
 const getDatasetAttribution = (dataset?: Dataset) =>
   dataset?.source && dataset?.source !== 'user' ? dataset?.source : undefined
 
-type TimeRange = { start: string; end: string }
+export type TimeRange = { start: string; end: string }
 
 function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
@@ -217,7 +217,7 @@ type ResolverGlobalConfig = {
   visibleEvents?: EventTypes[]
   debug?: boolean
   timeRange?: TimeRange
-  highlightedTime?: TimeRange
+  highlightedTime?: Partial<TimeRange>
   highlightedEvent?: ApiEvent
   highlightedEvents?: string[]
   customGeneratorMapping?: Partial<Record<DataviewType, DataviewType>>

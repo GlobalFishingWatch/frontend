@@ -609,6 +609,7 @@
     "loading": "Loading",
     "lowRes": "See low resolution heatmaps",
     "mapLoadingWait": "Please wait until map loads",
+    "nauticalMilesAbbr": "nm",
     "rulers_add": "Add rulers",
     "rulersStop": "Stop measures",
     "rulersDelete": "Delete all measures",

@@ -1,7 +1,6 @@
 import { Fragment } from 'react'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
-import type { Anchor } from 'react-map-gl'
 import { useSelector } from 'react-redux'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
@@ -29,7 +28,6 @@ type PopupWrapperProps = {
   closeOnClick?: boolean
   className?: string
   onClose?: () => void
-  anchor?: Anchor
   type?: 'hover' | 'click'
 }
 function PopupWrapper({
@@ -39,7 +37,6 @@ function PopupWrapper({
   type = 'hover',
   className = '',
   onClose,
-  anchor,
 }: PopupWrapperProps) {
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()

@@ -4,10 +4,6 @@ import { DeckGL, DeckGLRef } from '@deck.gl/react'
 import { LayersList } from '@deck.gl/core'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
-import { ViewState } from 'react-map-gl'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { LayerComposer } from '@globalfishingwatch/layer-composer'
-import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { RulersLayer, DrawLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
@@ -18,7 +14,6 @@ import { useSetMapInstance } from 'features/map/map-context.hooks'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapControls from 'features/map/controls/MapControls'
 import { selectIsAnyReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
-import { useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import {
   useMapCursor,
   useMapDrag,
@@ -29,6 +24,7 @@ import { useMapRulersDrag } from 'features/map/overlays/rulers/rulers-drag.hooks
 import ErrorNotification from 'features/map/overlays/error-notification/ErrorNotification'
 import { useMapDeckLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
+import { MapCoordinates } from 'types'
 import {
   MAP_VIEW,
   useViewStateAtom,
@@ -41,6 +37,8 @@ import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
 import useRulers from './overlays/rulers/rulers.hooks'
 import { useDrawLayer } from './overlays/draw/draw.hooks'
 import { useMapDrawConnect } from './map-draw.hooks'
+import MapInfo from './controls/MapInfo'
+
 // This avoids type checking to complain
 // https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
 const RulersLayerComponent = RulersLayer as any
@@ -52,30 +50,6 @@ const PopupWrapper = dynamic(
   () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
 )
 const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/Hint'))
-
-// TODO: Abstract this away
-const transformRequest: (...args: any[]) => RequestParameters = (url: string) => {
-  const response: RequestParameters = { url }
-  if (url.includes('globalfishingwatch')) {
-    response.headers = {
-      Authorization: 'Bearer ' + GFWAPI.getToken(),
-    }
-  }
-  return response
-}
-
-const handleError = async ({ error }: any) => {
-  if (
-    (error?.status === 401 || error?.status === 403) &&
-    error?.url.includes('globalfishingwatch')
-  ) {
-    try {
-      await GFWAPI.refreshAPIToken()
-    } catch (e) {
-      console.warn(e)
-    }
-  }
-}
 
 const mapStyles = {
   width: '100%',
@@ -93,7 +67,7 @@ const MapWrapper = () => {
     (params: any) => {
       // add transitionDuration: 0 to avoid unresponsive zoom
       // https://github.com/visgl/deck.gl/issues/7158#issuecomment-1329722960
-      setViewState({ ...(params.viewState as ViewState), transitionDuration: 0 })
+      setViewState({ ...(params.viewState as MapCoordinates), transitionDuration: 0 })
     },
     [setViewState]
   )
@@ -105,11 +79,8 @@ const MapWrapper = () => {
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
-  useSetMapIdleAtom()
-  // useMapSourceTilesLoadedAtom()
   useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()
-  // const map = useMapInstance()
   const { isMapDrawing } = useMapDrawConnect()
   // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
 
@@ -134,11 +105,9 @@ const MapWrapper = () => {
       setDeckLayers([])
     }
   }, [setDeckLayers])
-  // const allSourcesLoaded = useAllMapSourceTilesLoaded()
 
   // const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
   //   useClickedEventConnect()
-  // const { cleanFeatureState } = useFeatureState(map)
 
   // const onLoadCallback = useCallback(() => {
   //   setMapReady(true)
@@ -186,7 +155,6 @@ const MapWrapper = () => {
   // const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
   // const portalledLegend = !showTimeComparison
 
-  // // const mapLoaded = useMapLoaded()
   // const mapLoaded = useMapLayersLoaded()
   // const tilesClusterLoaded = useMapClusterTilesLoaded()
 
@@ -363,6 +331,8 @@ const MapWrapper = () => {
       {isWorkspace && !reportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
+      {/* TODO:deck pass hovered cursor coordinates */}
+      <MapInfo center={null} />
     </div>
   )
 }

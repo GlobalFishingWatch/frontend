@@ -87,6 +87,38 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
     return { ...info, object }
   }
 
+  _pickObjects(maxObjects: number | null): PickingInfo[] {
+    const { deck, viewport } = this.context
+    const width = viewport.width
+    const height = viewport.height
+    const x = viewport.x
+    const y = viewport.y
+    const layerIds = this.props.layers.map((l) => l.id)
+    const features = deck!.pickObjects({ x, y, width, height, layerIds, maxObjects })
+    return features
+  }
+
+  getRenderedFeatures(maxFeatures: number | null = null): ContextFeature[] {
+    const features = this._pickObjects(maxFeatures)
+    const featureCache = new Set()
+    const renderedFeatures: ContextFeature[] = []
+
+    for (const f of features) {
+      const featureId = getContextId(f.object as ContextFeature, this.props.idProperty)
+
+      if (featureId === undefined) {
+        // we have no id for the feature, we just add to the list
+        renderedFeatures.push(f.object as ContextFeature)
+      } else if (!featureCache.has(featureId)) {
+        // Add removing duplicates
+        featureCache.add(featureId)
+        renderedFeatures.push(f.object as ContextFeature)
+      }
+    }
+
+    return renderedFeatures
+  }
+
   renderLayers() {
     const { hoveredFeatures, clickedFeatures, color, layers } = this.props
     return layers.map((layer) => {
@@ -117,6 +149,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
           },
         })
       }
+
       return new TileLayer<TileLayerProps<ContextFeature>>({
         id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,

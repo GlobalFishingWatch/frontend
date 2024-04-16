@@ -17,8 +17,8 @@ import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { BaseLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
-import { getVesselTrackThunks } from './vessel.utils'
-import { EVENTS_COLORS, TRACK_LAYER_TYPE } from './vessel.config'
+import { getVesselResourceChunks } from './vessel.utils'
+import { EVENTS_COLORS, EVENT_LAYER_TYPE, TRACK_LAYER_TYPE } from './vessel.config'
 import {
   VesselDataStatus,
   VesselDataType,
@@ -69,21 +69,23 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselTrackLayers() {
-    if (!this.props.trackUrl) {
-      console.warn('trackUrl needed for vessel layer')
+    const { trackUrl, visible, startTime, endTime, color, highlightStartTime, highlightEndTime } =
+      this.props
+    if (!trackUrl || !visible) {
+      if (!trackUrl) console.warn('trackUrl needed for vessel layer')
       return []
     }
-    const chunks = getVesselTrackThunks(this.props.startTime, this.props.endTime)
+    const chunks = getVesselResourceChunks(startTime, endTime)
     return chunks.map(({ start, end }) => {
       const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}`
-      const trackUrl = new URL(this.props.trackUrl as string)
-      trackUrl.searchParams.append('start-date', start as string)
-      trackUrl.searchParams.append('end-date', end as string)
+      const trackUrlObject = new URL(trackUrl as string)
+      trackUrlObject.searchParams.append('start-date', start as string)
+      trackUrlObject.searchParams.append('end-date', end as string)
       return new VesselTrackLayer<any, { type: VesselDataType }>(
         this.getSubLayerProps({
           id: chunkId,
-          visible: this.props.visible,
-          data: trackUrl.toString(),
+          visible,
+          data: trackUrlObject.toString(),
           type: TRACK_LAYER_TYPE,
           loaders: [VesselTrackLoader],
           _pathType: 'open',
@@ -93,11 +95,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           wrapLongitude: true,
           jointRounded: true,
           capRounded: true,
-          getColor: this.props.color,
-          startTime: this.props.startTime,
-          endTime: this.props.endTime,
-          highlightStartTime: this.props.highlightStartTime,
-          highlightEndTime: this.props.highlightEndTime,
+          getColor: color,
+          startTime,
+          endTime,
+          highlightStartTime,
+          highlightEndTime,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
           onError: this.onSublayerError,
         })
@@ -105,52 +107,67 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     })
   }
 
-  _getVesselEventsLayer(): VesselEventsLayer[] {
-    const { visible, visibleEvents, startTime, endTime, highlightEventIds } = this.props
+  _getVesselEventLayers(): VesselEventsLayer[] {
+    const {
+      visible,
+      visibleEvents,
+      startTime,
+      endTime,
+      highlightEventIds,
+      events,
+      highlightStartTime,
+      highlightEndTime,
+      color,
+    } = this.props
     if (!visible) {
       return []
     }
+    const chunks = getVesselResourceChunks(startTime, endTime)
     // return one layer with all events if we are consuming the data object from app resources
-    return this.props.events?.flatMap(({ url, type }) => {
+    return events?.flatMap(({ url, type }) => {
       const visible = visibleEvents?.includes(type)
       if (!visible) {
         return []
       }
-      return new VesselEventsLayer<VesselDeckLayersEventData[]>(
-        this.getSubLayerProps({
-          id: type,
-          data: url,
-          visible,
-          type,
-          onError: this.onSublayerError,
-          loaders: [VesselEventsLoader],
-          pickable: true,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
-          getFillColor: (d: any): Color => {
-            if (highlightEventIds?.includes(d.id)) {
-              return EVENTS_COLORS.highlight
-            }
-            return d.type === EventTypes.Fishing ? this.props.color : EVENTS_COLORS[d.type]
-          },
-          updateTriggers: {
-            getFillColor: [this.props.highlightEventIds, this.props.color],
-          },
-          radiusUnits: 'pixels',
-          getRadius: (d: any) => {
-            const highlightOffset = highlightEventIds?.includes(d.id) ? 3 : 0
-            return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
-          },
-          getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end] as any,
-          filterRange: [[startTime, endTime] as any, [startTime, endTime] as any],
-          extensions: [new DataFilterExtension({ filterSize: 2 }) as any],
-        })
-      )
+      return chunks.map(({ start, end }) => {
+        const chunkId = `${EVENT_LAYER_TYPE}-${type}-${start}-${end}`
+        const eventUrl = new URL(url as string)
+        eventUrl.searchParams.append('start-date', start as string)
+        eventUrl.searchParams.append('end-date', end as string)
+        return new VesselEventsLayer<VesselDeckLayersEventData[]>(
+          this.getSubLayerProps({
+            id: chunkId,
+            data: eventUrl.toString(),
+            visible,
+            type,
+            onError: this.onSublayerError,
+            loaders: [VesselEventsLoader],
+            pickable: true,
+            highlightStartTime,
+            highlightEndTime,
+            getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
+            getFillColor: (d: any): Color => {
+              return d.type === EventTypes.Fishing ? color : EVENTS_COLORS[d.type]
+            },
+            updateTriggers: {
+              getFillColor: [color],
+            },
+            radiusUnits: 'pixels',
+            getRadius: (d: any) => {
+              const highlightOffset = highlightEventIds?.includes(d.id) ? 3 : 0
+              return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
+            },
+            getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end] as any,
+            filterRange: [[startTime, endTime] as any, [startTime, endTime] as any],
+            extensions: [new DataFilterExtension({ filterSize: 2 }) as any],
+          })
+        )
+      })
     })
   }
 
   renderLayers(): Layer<{}> | LayersList {
-    return [...this._getVesselTrackLayers(), ...this._getVesselEventsLayer()]
-    // return this._getVesselEventsLayer()
+    return [...this._getVesselTrackLayers(), ...this._getVesselEventLayers()]
   }
 
   getTrackLayers() {

@@ -11,7 +11,7 @@ import {
   Logo,
   SubBrands,
 } from '@globalfishingwatch/ui-components'
-import { useFeatureState, useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectCurrentWorkspaceId,
   selectLastVisitedWorkspace,
@@ -38,7 +38,6 @@ import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.work
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { resetReportData } from 'features/reports/report.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -285,11 +284,10 @@ function CloseReportButton() {
   const locationPayload = useSelector(selectLocationPayload)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
 
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
-
   const onCloseClick = () => {
     resetSidebarScroll()
-    cleanFeatureState('highlight')
+    // TODO:deck:featureState review if this still needed
+    // cleanFeatureState('highlight')
     dispatch(resetReportData())
     dispatch(resetAreaDetail(reportAreaIds))
     dispatch(cleanCurrentWorkspaceStateBufferParams())

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { InputText, Switch } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectLocationQuery } from 'routes/routes.selectors'
-import { useMapStyle } from 'features/map/map-style.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
@@ -16,8 +15,8 @@ const DebugMenu: React.FC = () => {
   const debugOptions = useSelector(selectDebugOptions)
   const locationQuery = useSelector(selectLocationQuery)
   const [datasetId, setDatasetId] = useState<string>('')
-  // Not sure why, but it seems this hook returns an outdated style
-  const style = useMapStyle()
+  // TODO:deck think if there is a way of debugging from here
+  // const style = useMapStyle()
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const datasets = useSelector(selectAllDatasets)
 
@@ -103,12 +102,12 @@ const DebugMenu: React.FC = () => {
         />
       </section>
       <hr className={styles.separation} />
-      <section>
+      {/* <section>
         <div className={styles.header}>
           <label>Current map GL style</label>
         </div>
         <textarea className={styles.editor} defaultValue={JSON.stringify(style, undefined, 2)} />
-      </section>
+      </section> */}
     </div>
   )
 }
