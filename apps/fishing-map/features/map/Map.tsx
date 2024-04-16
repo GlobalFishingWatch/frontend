@@ -76,7 +76,6 @@ const MapWrapper = () => {
   // Used it only once here to attach the listener only once
   useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()
-  // const map = useMapInstance()
   // const { isMapDrawing } = useMapDrawConnect()
   // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
 
@@ -104,7 +103,6 @@ const MapWrapper = () => {
 
   // const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
   //   useClickedEventConnect()
-  // const { cleanFeatureState } = useFeatureState(map)
 
   // const onLoadCallback = useCallback(() => {
   //   setMapReady(true)

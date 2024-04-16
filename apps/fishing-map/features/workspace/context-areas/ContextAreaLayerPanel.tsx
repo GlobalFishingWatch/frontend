@@ -13,7 +13,6 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { ContextLayer } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -41,7 +40,6 @@ import {
   parseContextFeatures,
 } from 'features/workspace/context-areas/context.utils'
 import { ReportPopupLink } from 'features/map/popups/ContextLayersRow'
-import useMapInstance from 'features/map/map-context.hooks'
 import { useContextInteractions } from 'features/map/popups/ContextLayers.hooks'
 import {
   getDatasetLabel,
@@ -101,8 +99,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
   )
-
-  const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
 
   // const layerFeatures = useMapDataviewFeatures(
   //   layerActive ? dataview : [],
@@ -213,7 +209,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
         id,
       }
-      updateFeatureState([featureState], 'highlight')
+      // TODO:deck:featureState review if this still needed
+      // updateFeatureState([featureState], 'highlight')
     }
   }
 
@@ -373,7 +370,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                         key={`${id}-${title}`}
                         className={styles.area}
                         onMouseEnter={() => handleHoverArea(feature)}
-                        onMouseLeave={() => cleanFeatureState('highlight')}
+                        // TODO:deck:featureState review if this still needed
+                        // onMouseLeave={() => cleanFeatureState('highlight')}
                       >
                         <span
                           title={title.length > 40 ? title : undefined}

@@ -40,10 +40,6 @@ import {
 } from './map.slice'
 import { useSetViewState } from './map-viewport.hooks'
 
-function cleanFeatureState(state: any) {
-  console.warn('TODO:deck handle this in deck')
-}
-
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
@@ -51,7 +47,6 @@ export const useClickedEventConnect = () => {
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
-  // const { cleanFeatureState } = useFeatureState(map)
   const setViewState = useSetViewState()
   // TODO:deck tilesClusterLoaded from Layer instance
   const tilesClusterLoaded = true
@@ -122,7 +117,8 @@ export const useClickedEventConnect = () => {
             longitude: lon,
             zoom: expansionZoom,
           })
-          cleanFeatureState('click')
+          // TODO:deck:featureState review if this still needed
+          // cleanFeatureState('click')
         }
         return
       }
@@ -375,7 +371,6 @@ export const useMapMouseClick = () => {
 }
 
 export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
-  // const map = useMapInstance()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { isMapDrawing } = useMapDrawConnect()
