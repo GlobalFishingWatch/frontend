@@ -70,6 +70,7 @@ function MapScreenshot() {
   if (!screenshotImage) return null
 
   // insert the image just below the canvas
+  // TODO:deck migrate this
   const canvasDomElement = document.querySelector('.maplibregl-canvas-container')
   if (!canvasDomElement) return null
   const size = isPrintSupported

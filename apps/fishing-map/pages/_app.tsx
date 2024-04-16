@@ -32,7 +32,7 @@ function CustomApp({ Component, ...rest }: AppProps) {
         <Provider store={store}>
           {/* <ClickToComponent /> */}
           <Component {...props.pageProps} />
-          {showFps && <FpsView bottom="10rem" left="39rem" top="auto" />}
+          {showFps && <FpsView bottom="14rem" left="39rem" top="auto" />}
           {showFps && <MemoryStatsComponent corner="bottomRight" />}
         </Provider>
       </RecoilRoot>
