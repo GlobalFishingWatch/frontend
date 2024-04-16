@@ -6,70 +6,57 @@ steps:
       #!/usr/bin/env bash
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock ) \
-        --key_fallback=yarn3-cache
+        --key=node_modules-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-install-state-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=cypress-$( checksum cypress.lock ) \
+        --key_fallback=cypress-cache
 
-  - id: 'generate-cypress-lock'
+  - id: 'install-yarn'
     waitFor: ['restore_cache']
     name: node:21
     script: |
-      if [ -d "node_modules" ]; then
-        yarn info cypress version > cypress.lock
-      fi
+      yarn set version 4.1.1
+      yarn -v
+      CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
 
-  - name: 'gcr.io/$PROJECT_ID/restore_cache'
-    id: restore_cypress_cache
-    waitFor: ['generate-cypress-lock']
-    script: |
-      #!/usr/bin/env bash
-      if [ -d "node_modules" ]; then
-        restore_cache \
-          --bucket=gs://frontend-cache-dependencies \
-          --key=cypress-$( checksum cypress.lock ) \
-          --key_fallback=cypress-cache
-      fi
-
-  - id: 'install-yarn'
-    waitFor: ['restore_cache', 'restore_cypress_cache']
+  - id: 'generate-cypress-lock'
+    waitFor: ['yarn-install']
     name: node:21
     script: |
-      # if [ ! -d "node_modules" ]; then
-        apk add git
-        yarn set version 4.1.1
-        yarn -v
-        CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
-        yarn info cypress version > cypress.lock
-      # fi
+      yarn info cypress version > cypress.lock
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
     name: 'gcr.io/$PROJECT_ID/restore_cache'
-    env:
-      - 'BRANCH_NAME=$BRANCH_NAME'
     script: |
       #!/usr/bin/env bash
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock ) \
+        --key=node_modules-$( checksum yarn.lock ) \
         --path=./node_modules \
         --no-clobber
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-$( checksum cypress.lock ) \
+        --key=yarn-$( checksum yarn.lock ) \
+        --path=.yarn/cache \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-install-state-$( checksum yarn.lock ) \
         --path=.cypress-cache \
         --no-clobber
-      if [ -d ".yarn/cache" ]; then
-        if [ $BRANCH_NAME == "develop" ]; then
-          save_cache \
-            --bucket=gs://frontend-cache-dependencies \
-            --key=yarn3-cache \
-            --path=./.yarn/cache
-          save_cache \
-            --bucket=gs://frontend-cache-dependencies \
-            --key=cypress-cache \
-            --path=.cypress-cache
-        fi
-      fi
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=cypress-$( checksum cypress.lock ) \
+        --path=.yarn/install-state.gz \
+        --no-clobber
 
   - id: 'build-app'
     waitFor: ['install-yarn']
