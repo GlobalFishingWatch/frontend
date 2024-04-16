@@ -3,7 +3,7 @@ steps:
     args: [fetch, --depth=1000]
   - id: 'switch_tag'
     waitFor: ['-']
-    name: node:18
+    name: node:21
     env:
       - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
     script: |
@@ -23,7 +23,7 @@ steps:
 
   - id: 'generate-cypress-lock'
     waitFor: ['restore_cache']
-    name: node:18
+    name: node:21
     script: |
       if [ -d "node_modules" ]; then
         yarn info cypress version > cypress.lock
