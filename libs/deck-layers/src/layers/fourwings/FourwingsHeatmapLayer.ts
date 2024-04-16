@@ -37,7 +37,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       comparisonMode,
     } = this.props
 
-    const { startFrame, endFrame, interval } = getIntervalFrames({
+    const { interval } = getIntervalFrames({
       startTime,
       endTime,
       availableIntervals,
@@ -57,18 +57,10 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       comparisonMode,
     }
     if (info.object) {
-      const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
-      const values =
-        info.object.properties.initialValues[timeRangeKey] ||
-        aggregateCell({
-          cellValues: info.object.properties.values,
-          startFrame,
-          endFrame,
-          aggregationOperation: this.props.aggregationOperation,
-          cellStartOffsets: info.object.properties.startOffsets,
-        })
       object.sublayers = object.sublayers.flatMap((sublayer, i) =>
-        values[i] ? { ...sublayer, value: values[i] } : []
+        info.object?.properties?.aggregatedValues?.[i]
+          ? { ...sublayer, value: info.object?.properties?.aggregatedValues?.[i] }
+          : []
       )
       if (!object.sublayers.length) {
         return { ...info, object: undefined }
