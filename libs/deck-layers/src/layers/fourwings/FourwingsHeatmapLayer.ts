@@ -154,6 +154,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           aggregationOperation,
           cellStartOffsets: feature.properties.startOffsets,
         })
+      feature.properties.aggregatedValues = aggregatedCellValues
       let chosenValue: number | undefined
       if (scales.length) {
         const colors = scales.map((s, i) =>
