@@ -7,14 +7,18 @@ import {
 } from '@deck.gl/core'
 import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { EVENT_SHAPES, SHAPES_ORDINALS } from './vessel.config'
+import { DEFAULT_HIGHLIGHT_COLOR_VEC, EVENT_SHAPES, SHAPES_ORDINALS } from './vessel.config'
 
 export type _VesselEventsLayerProps<DataT = any> = {
   type: EventTypes
   filterRange?: Array<number>
   visibleEvents?: EventTypes[]
   highlightEventIds?: string[]
+  highlightStartTime?: number
+  highlightEndTime?: number
   getShape?: AccessorFunction<DataT, number>
+  getStart?: AccessorFunction<DataT, number>
+  getEnd?: AccessorFunction<DataT, number>
   getPosition?: AccessorFunction<DataT, Position> | Position
   getFilterValue?: AccessorFunction<DataT, number>
   getPickingInfo?: AccessorFunction<DataT, string>
@@ -39,6 +43,8 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
     type: 'accessor',
     value: (d) => EVENT_SHAPES[d.type as EventTypes] ?? EVENT_SHAPES.fishing,
   },
+  getStart: { type: 'accessor', value: (d) => d.start },
+  getEnd: { type: 'accessor', value: (d) => d.end },
   getFillColor: { type: 'accessor', value: (d) => [255, 255, 255] },
   getPosition: { type: 'accessor', value: (d) => d.coordinates },
   getPickingInfo: { type: 'accessor', value: ({ info }) => info },
@@ -61,6 +67,20 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
           size: 1,
           accessor: 'getShape',
         },
+        start: {
+          size: 1,
+          accessor: 'getStart',
+          shaderAttributes: {
+            instanceStart: {},
+          },
+        },
+        end: {
+          size: 1,
+          accessor: 'getEnd',
+          shaderAttributes: {
+            instanceEnd: {},
+          },
+        },
       })
     }
   }
@@ -70,16 +90,33 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
       ...super.getShaders(),
       inject: {
         'vs:#decl': `
+          uniform float highlightStartTime;
+          uniform float highlightEndTime;
+
           in float instanceShapes;
           in float instanceId;
+          in float instanceStart;
+          in float instanceEnd;
+
+          out float vStart;
+          out float vEnd;
           out float vShape;
         `,
         'vs:#main-end': `
           vShape = instanceShapes;
+          vStart = instanceStart;
+          vEnd = instanceEnd;
+          if(vStart > highlightStartTime && vEnd < highlightEndTime) {
+            gl_Position.z = 1.0;
+          }
         `,
         'fs:#decl': `
           uniform mat3 hueTransform;
+          uniform float highlightStartTime;
+          uniform float highlightEndTime;
           in float vShape;
+          in float vStart;
+          in float vEnd;
           const int SHAPE_CIRCLE = ${SHAPES_ORDINALS.circle};
           const int SHAPE_SQUARE = ${SHAPES_ORDINALS.square};
           const int SHAPE_DIAMOND = ${SHAPES_ORDINALS.diamond};
@@ -91,11 +128,14 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
           if (shape == SHAPE_SQUARE) {
             if (uv.x > 0.7 || uv.y > 0.7) discard;
           } else if (shape == SHAPE_DIAMOND) {
-              if (uv.x + uv.y > 1.0) discard;
+            if (uv.x + uv.y > 1.0) discard;
           } else if (shape == SHAPE_DIAMOND_STROKE) {
-              if (uv.x + uv.y > 1.0 || uv.x + uv.y < 0.7) {
-                discard;
-              }
+            if (uv.x + uv.y > 1.0 || uv.x + uv.y < 0.7) {
+              discard;
+            }
+          }
+          if (vStart > highlightStartTime && vEnd < highlightEndTime) {
+            color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
           }
         `,
       },
@@ -111,6 +151,13 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
   }
 
   draw(params: any) {
+    const { highlightStartTime, highlightEndTime } = this.props
+
+    params.uniforms = {
+      ...params.uniforms,
+      highlightStartTime: highlightStartTime ? highlightStartTime : 0,
+      highlightEndTime: highlightEndTime ? highlightEndTime : 0,
+    }
     super.draw(params)
   }
 }

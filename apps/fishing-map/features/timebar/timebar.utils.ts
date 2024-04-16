@@ -13,29 +13,6 @@ export const getTimebarChunkEventColor = (ev: TimebarChartChunk<TrackEventChunkP
   return ev.type ? getEventColors({ type: ev.type })?.color : 'white'
 }
 
-export const parseTrackEventChunkProps = (
-  event: ApiEvent,
-  eventKey?: string
-): ApiEvent & { props: TrackEventChunkProps } => {
-  const { description, descriptionGeneric } = getEventDescription(event)
-  const { color, colorLabels } = getEventColors({ type: event.type as EventTypes })
-
-  return {
-    ...event,
-    id: eventKey || event.id,
-    start: getUTCDateTime(event.start as string).toMillis(),
-    end: getUTCDateTime(event.end as string).toMillis(),
-    props: {
-      color,
-      colorLabels,
-      description,
-      descriptionGeneric,
-      latitude: event.position.lat,
-      longitude: event.position.lon,
-    },
-  }
-}
-
 type GetGraphDataFromFourwingsFeaturesParams = {
   start: number
   end: number
