@@ -4,7 +4,6 @@ import { DeckGL, DeckGLRef } from '@deck.gl/react'
 import { LayersList } from '@deck.gl/core'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
-import { ViewState } from 'react-map-gl'
 import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
@@ -25,6 +24,7 @@ import { useMapRulersDrag } from 'features/map/overlays/rulers/rulers-drag.hooks
 import ErrorNotification from 'features/map/overlays/error-notification/ErrorNotification'
 import { useMapDeckLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
+import { MapCoordinates } from 'types'
 import {
   MAP_VIEW,
   useViewStateAtom,
@@ -35,6 +35,7 @@ import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
 import useRulers from './overlays/rulers/rulers.hooks'
+import MapInfo from './controls/MapInfo'
 
 // This avoids type checking to complain
 // https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
@@ -61,7 +62,7 @@ const MapWrapper = () => {
     (params: any) => {
       // add transitionDuration: 0 to avoid unresponsive zoom
       // https://github.com/visgl/deck.gl/issues/7158#issuecomment-1329722960
-      setViewState({ ...(params.viewState as ViewState), transitionDuration: 0 })
+      setViewState({ ...(params.viewState as MapCoordinates), transitionDuration: 0 })
     },
     [setViewState]
   )
@@ -315,6 +316,8 @@ const MapWrapper = () => {
       {isWorkspace && !reportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
+      {/* TODO:deck pass hovered cursor coordinates */}
+      <MapInfo center={null} />
     </div>
   )
 }
