@@ -5,9 +5,6 @@ import { LayersList } from '@deck.gl/core'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
 import { ViewState } from 'react-map-gl'
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { LayerComposer } from '@globalfishingwatch/layer-composer'
-import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
@@ -39,6 +36,7 @@ import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
 import useRulers from './overlays/rulers/rulers.hooks'
+
 // This avoids type checking to complain
 // https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
 const RulersLayerComponent = RulersLayer as any
@@ -47,35 +45,6 @@ const PopupWrapper = dynamic(
   () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
 )
 const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/Hint'))
-
-// TODO: Abstract this away
-const transformRequest: (...args: any[]) => RequestParameters = (url: string) => {
-  const response: RequestParameters = { url }
-  if (url.includes('globalfishingwatch')) {
-    response.headers = {
-      Authorization: 'Bearer ' + GFWAPI.getToken(),
-    }
-  }
-  return response
-}
-
-const handleError = async ({ error }: any) => {
-  if (
-    (error?.status === 401 || error?.status === 403) &&
-    error?.url.includes('globalfishingwatch')
-  ) {
-    try {
-      await GFWAPI.refreshAPIToken()
-    } catch (e) {
-      console.warn(e)
-    }
-  }
-}
-
-const layerComposer = new LayerComposer({
-  sprite:
-    'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-map',
-})
 
 const mapStyles = {
   width: '100%',

@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { CircleLayerSpecification } from '@globalfishingwatch/maplibre-gl'
 import {
   AnyGeneratorConfig,
   GlGeneratorConfig,
@@ -260,6 +259,7 @@ const selectStaticGeneratorsConfig = createSelector(
   }
 )
 
+// TODO:deck migrate this from mapbox to deck layer
 export const selectWorkspacesListGenerator = createSelector(
   [selectCurrentWorkspacesList],
   (workspaces) => {
@@ -311,7 +311,7 @@ export const selectWorkspacesListGenerator = createSelector(
           metadata: {
             interactive: true,
           },
-        } as CircleLayerSpecification,
+        } as any,
         {
           type: 'circle',
           layout: {},
@@ -325,7 +325,7 @@ export const selectWorkspacesListGenerator = createSelector(
           metadata: {
             interactive: false,
           },
-        } as CircleLayerSpecification,
+        } as any,
       ],
     }
 

@@ -3,7 +3,6 @@ import { fitBounds } from '@math.gl/web-mercator'
 import { atom, useAtom } from 'jotai'
 import { Deck } from '@deck.gl/core'
 import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { LngLatBounds } from '@globalfishingwatch/maplibre-gl'
 import { Bbox } from 'types'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
@@ -44,15 +43,6 @@ export function checkEqualBounds(bounds1?: MiniglobeBounds, bounds2?: MiniglobeB
     bounds1.west === bounds2.west &&
     bounds1.east === bounds2.east
   )
-}
-
-export function mglToMiniGlobeBounds(mglBounds: LngLatBounds) {
-  return {
-    north: mglBounds.getNorth() as number,
-    south: mglBounds.getSouth() as number,
-    west: mglBounds.getWest() as number,
-    east: mglBounds.getEast() as number,
-  }
 }
 
 type FitBoundsParams = {

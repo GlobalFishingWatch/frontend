@@ -1,4 +1,3 @@
-import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { getAreasByDistance } from '@globalfishingwatch/ocean-areas'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { ContextFeature } from '@globalfishingwatch/deck-layers'
@@ -11,7 +10,7 @@ type FilterFeaturesByCenterDistanceParams = {
   limit?: number
 }
 export const filterFeaturesByDistance = async (
-  features: GeoJSONFeature[] | ContextFeature[],
+  features: ContextFeature[],
   {
     viewport,
     limit = CONTEXT_FEATURES_LIMIT,

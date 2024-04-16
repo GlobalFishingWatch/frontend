@@ -15,7 +15,6 @@ import 'features/i18n/i18n'
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
-import '@globalfishingwatch/maplibre-gl/dist/maplibre-gl.css'
 
 function CustomApp({ Component, ...rest }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(rest)
