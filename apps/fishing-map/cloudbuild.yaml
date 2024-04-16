@@ -59,7 +59,7 @@ steps:
         --path=.cypress-cache \
         --no-clobber
       if [ -d ".yarn/cache" ]; then
-        if [ $BRANCH_NAME == "dev" ]; then
+        if [ $BRANCH_NAME == "develop" ]; then
           save_cache \
             --bucket=gs://frontend-cache-dependencies \
             --key=yarn3-cache \

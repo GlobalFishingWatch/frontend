@@ -26,7 +26,7 @@ steps:
       #!/usr/bin/env bash
       save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --path=./node_modules --no-clobber
       if [ -d ".yarn/cache" ]; then
-        if [ $BRANCH_NAME == "dev" ]; then
+        if [ $BRANCH_NAME == "develop" ]; then
           save_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache --path=./.yarn/cache
         fi
       fi
