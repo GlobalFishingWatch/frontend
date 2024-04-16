@@ -19,7 +19,6 @@ import {
   FourwingsPickingInfo,
   FourwingsPickingObject,
 } from './fourwings.types'
-import { FourwingsGetDataParams } from './FourwingsLayer'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
@@ -122,6 +121,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         })
       let chosenValueIndex = 0
       let chosenValue: number | undefined
+      feature.properties.aggregatedValues = aggregatedCellValues
       aggregatedCellValues.forEach((value, index) => {
         if (value && (!chosenValue || value > chosenValue)) {
           chosenValue = value
@@ -278,35 +278,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     return this.layers
   }
 
-  getData({ aggregated = false } = {} as FourwingsGetDataParams) {
-    if (aggregated) {
-      const { startTime, endTime, availableIntervals, tilesCache, aggregationOperation } =
-        this.props
-      const { startFrame, endFrame } = getIntervalFrames({
-        startTime,
-        endTime,
-        availableIntervals,
-        bufferedStart: tilesCache.bufferedStart,
-      })
-      return this.props.data.map((d) => {
-        const values = aggregateCell({
-          cellValues: d.properties.values,
-          startFrame,
-          endFrame,
-          aggregationOperation: aggregationOperation,
-          cellStartOffsets: d.properties.startOffsets,
-        })
-        return {
-          ...d,
-          properties: {
-            ...d.properties,
-            aggregatedValues: this.props.sublayers.flatMap((sublayer, i) =>
-              values[i] ? values[i] : []
-            ),
-          },
-        }
-      })
-    }
+  getData() {
     return this.props.data
   }
 }
