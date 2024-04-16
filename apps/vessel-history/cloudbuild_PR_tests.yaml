@@ -8,7 +8,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:18-alpine
+    name: node:21-alpine
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
@@ -19,7 +19,7 @@ steps:
 
   - id: 'test'
     waitFor: ['install-yarn']
-    name: node:18
+    name: node:21
     entrypoint: yarn
     args: ['nx', 'test', 'vessel-history']
 

@@ -8,7 +8,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:18
+    name: node:21
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
@@ -33,7 +33,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:18
+    name: node:21
     entrypoint: yarn
     args: ['nx', 'build', 'real-time-prototype', '--parallel']
     env:
