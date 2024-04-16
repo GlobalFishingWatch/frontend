@@ -6,7 +6,7 @@ import {
   DatasetConfiguration,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
-import type { DrawFeature, DrawPointPosition } from './MapDraw'
+import type { DrawFeature, DrawPointPosition } from './overlays/draw/DrawDialog'
 
 export const getCoordinatePrecisionRounded = (coordinate: Position): Position => {
   return coordinate.map((points) => Math.round(points * 100000) / 100000)

@@ -8,7 +8,7 @@ import { ViewState } from 'react-map-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { LayerComposer } from '@globalfishingwatch/layer-composer'
 import type { RequestParameters } from '@globalfishingwatch/maplibre-gl'
-import { RulersLayer } from '@globalfishingwatch/deck-layers'
+import { RulersLayer, DrawLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
@@ -39,10 +39,15 @@ import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
 import useRulers from './overlays/rulers/rulers.hooks'
+import { useDrawLayer } from './overlays/draw/draw.hooks'
+import { useMapDrawConnect } from './map-draw.hooks'
 // This avoids type checking to complain
 // https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
 const RulersLayerComponent = RulersLayer as any
-const MapDraw = dynamic(() => import(/* webpackChunkName: "MapDraw" */ './MapDraw'))
+const DrawLayerComponent = DrawLayer as any
+const DrawDialog = dynamic(
+  () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
+)
 const PopupWrapper = dynamic(
   () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
 )
@@ -71,11 +76,6 @@ const handleError = async ({ error }: any) => {
     }
   }
 }
-
-const layerComposer = new LayerComposer({
-  sprite:
-    'https://raw.githubusercontent.com/GlobalFishingWatch/map-gl-sprites/master/out/sprites-map',
-})
 
 const mapStyles = {
   width: '100%',
@@ -110,7 +110,7 @@ const MapWrapper = () => {
   useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()
   // const map = useMapInstance()
-  // const { isMapDrawing } = useMapDrawConnect()
+  const { isMapDrawing } = useMapDrawConnect()
   // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
 
   // const setMapReady = useSetRecoilState(mapReadyAtom)
@@ -248,6 +248,8 @@ const MapWrapper = () => {
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
+  const { onDrawEdit, onDrawClick, drawLayerMode, drawFeaturesIndexes, drawFeatures } =
+    useDrawLayer()
 
   const currentRuler = editingRuler ? [editingRuler] : []
 
@@ -293,7 +295,17 @@ const MapWrapper = () => {
             visible={rulersVisible}
           />
         )}
+        {isMapDrawing && (
+          <DrawLayerComponent
+            data={drawFeatures}
+            onEdit={onDrawEdit}
+            onClick={onDrawClick}
+            selectedFeatureIndexes={drawFeaturesIndexes}
+            mode={drawLayerMode}
+          />
+        )}
       </DeckGL>
+      {isMapDrawing && <DrawDialog />}
       <MapPopups />
       {/* {style && (
         <Map
