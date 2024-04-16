@@ -21,13 +21,31 @@ steps:
           yarn install
         fi
 
-  - id: 'save_cache'
+  - id: 'save_node_modules_cache'
     waitFor: ['install-yarn']
     name: 'gcr.io/$PROJECT_ID/save_cache'
     args:
       - '--bucket=gs://frontend-cache-dependencies'
       - '--key=yarn-$( checksum yarn.lock )'
       - '--path=./node_modules'
+      - '--no-clobber'
+
+  - id: 'save_yarn_cache'
+    waitFor: ['install-yarn']
+    name: 'gcr.io/$PROJECT_ID/save_cache'
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-cache-$( checksum yarn.lock )'
+      - '--path=.yarn/cache'
+      - '--no-clobber'
+
+  - id: 'save_yarn_install_state_cache'
+    waitFor: ['install-yarn']
+    name: 'gcr.io/$PROJECT_ID/save_cache'
+    args:
+      - '--bucket=gs://frontend-cache-dependencies'
+      - '--key=yarn-install-state-$( checksum yarn.lock )'
+      - '--path=.yarn/install-state.gz'
       - '--no-clobber'
 
   - id: get-affected
