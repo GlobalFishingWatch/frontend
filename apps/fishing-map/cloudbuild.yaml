@@ -64,6 +64,10 @@ steps:
             --bucket=gs://frontend-cache-dependencies \
             --key=yarn3-cache \
             --path=./.yarn/cache
+          save_cache \
+            --bucket=gs://frontend-cache-dependencies \
+            --key=cypress-cache \
+            --path=.cypress-cache \
         fi
       fi
 
