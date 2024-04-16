@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { ContextPickingObject, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
@@ -12,7 +11,6 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
-import useMapInstance from 'features/map/map-context.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectReportAreaSource } from 'features/app/selectors/app.reports.selector'
 import { selectLocationAreaId } from 'routes/routes.selectors'
@@ -36,18 +34,19 @@ export type HighlightedAreaParams = {
   sourceLayer?: string
 }
 export const useHighlightArea = () => {
-  const { updateFeatureState, cleanFeatureState } = useFeatureState(useMapInstance())
   return useCallback(
     ({ sourceId, areaId, sourceLayer = DEFAULT_CONTEXT_SOURCE_LAYER }: HighlightedAreaParams) => {
-      cleanFeatureState('click')
-      const featureState = {
-        source: sourceId,
-        sourceLayer: sourceLayer !== '' ? sourceLayer : undefined,
-        id: areaId,
-      }
-      updateFeatureState([featureState], 'highlight')
+      // TODO:deck:featureState review if this still needed
+      // cleanFeatureState('click')
+      // const featureState = {
+      //   source: sourceId,
+      //   sourceLayer: sourceLayer !== '' ? sourceLayer : undefined,
+      //   id: areaId,
+      // }
+      // TODO:deck:featureState review if this still needed
+      // updateFeatureState([featureState], 'highlight')
     },
-    [cleanFeatureState, updateFeatureState]
+    []
   )
 }
 
@@ -69,7 +68,6 @@ export const useContextInteractions = () => {
   const sourceId = useSelector(selectReportAreaSource)
   const datasets = useSelector(selectAllDatasets)
   const dataviews = useSelector(selectContextAreasDataviews)
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
   const fitMapBounds = useMapFitBounds()
 
   const onDownloadClick = useCallback(
@@ -94,8 +92,8 @@ export const useContextInteractions = () => {
         dispatch(setClickedEvent(null))
         dispatch(fetchAreaDetailThunk({ dataset, areaId, areaName }))
       }
-
-      cleanFeatureState('highlight')
+      // TODO:deck:featureState review if this still needed
+      // cleanFeatureState('highlight')
     },
     [datasets, cleanFeatureState, dataviews, dispatch]
   )

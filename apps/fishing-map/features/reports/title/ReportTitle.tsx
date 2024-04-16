@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import geojsonArea from '@mapbox/geojson-area'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -34,7 +33,6 @@ import {
 } from 'features/app/selectors/app.reports.selector'
 import { useLocationConnect } from 'routes/routes.hook'
 import { BufferOperation, BufferUnit } from 'types'
-import useMapInstance from 'features/map/map-context.hooks'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -59,7 +57,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const urlBufferValue = useSelector(selectReportBufferValue)
   const urlBufferUnit = useSelector(selectReportBufferUnit)
   const urlBufferOperation = useSelector(selectReportBufferOperation)
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
 
   const [tooltipInstance, setTooltipInstance] = useState<any>(null)
 
@@ -143,14 +140,15 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       reportBufferUnit: previewBuffer.unit!,
       reportBufferOperation: previewBuffer.operation!,
     })
-    cleanFeatureState('highlight')
+    // TODO:deck:featureState review if this still needed
+    // cleanFeatureState('highlight')
     dispatch(resetReportData())
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Confirm area buffer`,
       label: `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}`,
     })
-  }, [tooltipInstance, previewBuffer, dispatchQueryParams, cleanFeatureState, dispatch])
+  }, [tooltipInstance, previewBuffer, dispatchQueryParams, dispatch])
 
   const handleRemoveBuffer = useCallback(() => {
     tooltipInstance!.hide()

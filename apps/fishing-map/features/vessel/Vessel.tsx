@@ -3,7 +3,6 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { Dataview, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   selectIsWorkspaceVesselLocation,
@@ -25,7 +24,6 @@ import {
 } from 'features/vessel/vessel.config.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useUpdateVesselEventsVisibility } from 'features/vessel/vessel.hooks'
-import useMapInstance from 'features/map/map-context.hooks'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
 import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
@@ -73,8 +71,6 @@ const Vessel = () => {
     getVesselIdentities(vesselData, {
       identitySource: VesselIdentitySourceEnum.SelfReported,
     })?.length > 0
-  const map = useMapInstance()
-  const { cleanFeatureState } = useFeatureState(map)
   const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
   useVesselFitBounds()
   useUpdateVesselEventsVisibility()
@@ -166,7 +162,8 @@ const Vessel = () => {
   }, [datasetId, dispatch, vesselId, urlWorkspaceId])
 
   useEffect(() => {
-    cleanFeatureState('click')
+    // TODO:deck:featureState review if this still needed
+    // cleanFeatureState('click')
     dispatchClickedEvent(null)
     cancelPendingInteractionRequests()
     // eslint-disable-next-line react-hooks/exhaustive-deps

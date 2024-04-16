@@ -12,18 +12,16 @@ import {
 import {
   ClusterPickingObject,
   DeckLayerInteractionPickingInfo,
-  DeckLayerPickingObject,
   FourwingsPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map.hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
-import useMapInstance, { useDeckMap } from 'features/map/map-context.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { selectIsMarineManagerLocation, selectLocationType } from 'routes/routes.selectors'
-import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
+// import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -42,10 +40,6 @@ import {
 } from './map.slice'
 import { useSetViewState } from './map-viewport.hooks'
 
-function cleanFeatureState(state: any) {
-  console.warn('TODO:deck handle this in deck')
-}
-
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
@@ -53,9 +47,9 @@ export const useClickedEventConnect = () => {
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const { dispatchLocation } = useLocationConnect()
-  // const { cleanFeatureState } = useFeatureState(map)
   const setViewState = useSetViewState()
-  const tilesClusterLoaded = useMapClusterTilesLoaded()
+  // TODO:deck tilesClusterLoaded from Layer instance
+  const tilesClusterLoaded = true
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
@@ -123,7 +117,8 @@ export const useClickedEventConnect = () => {
             longitude: lon,
             zoom: expansionZoom,
           })
-          cleanFeatureState('click')
+          // TODO:deck:featureState review if this still needed
+          // cleanFeatureState('click')
         }
         return
       }
@@ -376,7 +371,6 @@ export const useMapMouseClick = () => {
 }
 
 export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
-  const map = useMapInstance()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { isMapDrawing } = useMapDrawConnect()
@@ -384,7 +378,9 @@ export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
   const gfwUser = useSelector(selectIsGFWUser)
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
-  const tilesClusterLoaded = useMapClusterTilesLoaded()
+  const setViewState = useSetViewState()
+  // TODO:deck tilesClusterLoaded from Layer instance
+  const tilesClusterLoaded = true
 
   const getCursor = useCallback(() => {
     // if (hoveredTooltipEvent && hasToolFeature(hoveredTooltipEvent)) {
