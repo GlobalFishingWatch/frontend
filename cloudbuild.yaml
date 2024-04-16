@@ -10,10 +10,10 @@ steps:
       #!/usr/bin/env bash
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock )
+        --key=node_modules-$( checksum yarn.lock )
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-cache-$( checksum yarn.lock )
+        --key=yarn-$( checksum yarn.lock )
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
         --key=yarn-install-state-$( checksum yarn.lock )
@@ -39,12 +39,12 @@ steps:
       #!/usr/bin/env bash
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock ) \
+        --key=node_modules-$( checksum yarn.lock ) \
         --path=./node_modules \
         --no-clobber
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-cache-$( checksum yarn.lock ) \
+        --key=yarn-$( checksum yarn.lock ) \
         --path=.yarn/cache \
         --no-clobber
       save_cache \
