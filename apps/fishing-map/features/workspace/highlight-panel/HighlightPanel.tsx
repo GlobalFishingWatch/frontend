@@ -5,7 +5,6 @@ import type { Placement } from 'tippy.js'
 import { Button } from '@globalfishingwatch/ui-components'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
-import { useMapReady } from 'features/map/map-state.hooks'
 import TooltipContainer from '../shared/TooltipContainer'
 import HIGHLIGHT_CONFIG, { HighlightPanelConfig } from './highlight-panel.content'
 import styles from './HighlightPanel.module.css'
@@ -22,7 +21,9 @@ const HighlightPanel = ({
   config = HIGHLIGHT_CONFIG,
 }: HighlightPanelProps) => {
   const { t, i18n } = useTranslation()
-  const mapReady = useMapReady()
+  // const mapReady = useMapReady()
+  // TODO:deck create hook to check if map is ready, probaly using useIsDeckLayersLoading
+  const mapReady = true
   const ref = useRef<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(false)
   const [dataviewIdDismissed, setDataviewIdDismissed] = useLocalStorage(config.localStorageKey, '')

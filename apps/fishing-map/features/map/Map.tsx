@@ -15,7 +15,6 @@ import { useSetMapInstance } from 'features/map/map-context.hooks'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapControls from 'features/map/controls/MapControls'
 import { selectIsAnyReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
-import { useSetMapIdleAtom } from 'features/map/map-state.hooks'
 import {
   useMapCursor,
   useMapDrag,
@@ -74,7 +73,6 @@ const MapWrapper = () => {
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
   ////////////////////////////////////////
   // Used it only once here to attach the listener only once
-  useSetMapIdleAtom()
   useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()
   // const map = useMapInstance()
@@ -153,7 +151,6 @@ const MapWrapper = () => {
   // const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
   // const portalledLegend = !showTimeComparison
 
-  // // const mapLoaded = useMapLoaded()
   // const mapLoaded = useMapLayersLoaded()
   // const tilesClusterLoaded = useMapClusterTilesLoaded()
 

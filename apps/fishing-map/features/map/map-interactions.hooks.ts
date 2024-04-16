@@ -18,7 +18,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map.hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
-import useMapInstance, { useDeckMap } from 'features/map/map-context.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsMarineManagerLocation, selectLocationType } from 'routes/routes.selectors'
 // import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
@@ -375,7 +375,7 @@ export const useMapMouseClick = () => {
 }
 
 export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
-  const map = useMapInstance()
+  // const map = useMapInstance()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { isMapDrawing } = useMapDrawConnect()

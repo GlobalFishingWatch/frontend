@@ -8,7 +8,6 @@ import {
   MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
 } from '@globalfishingwatch/dataviews-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
-import { useMapStyle } from 'features/map/map-style.hooks'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
@@ -23,7 +22,6 @@ import {
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import useMapInstance from 'features/map/map-context.hooks'
 import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
@@ -291,36 +289,4 @@ export const useTimebarVisualisation = () => {
     hasChangedSettingsOnce,
   ])
   return { timebarVisualisation, dispatchTimebarVisualisation }
-}
-
-export const useActivityMetadata = () => {
-  const map = useMapInstance()
-  const style = useMapStyle()
-  const { timebarVisualisation } = useTimebarVisualisationConnect()
-
-  if (!map) return null
-
-  const animatedMergedId =
-    timebarVisualisation === TimebarVisualisations.HeatmapDetections
-      ? MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID
-      : MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
-
-  const generatorsMetadata = style?.metadata?.generatorsMetadata
-  if (!generatorsMetadata) return null
-
-  const mergedHeatmapMetadata = generatorsMetadata[animatedMergedId]
-  if (mergedHeatmapMetadata?.timeChunks) {
-    return mergedHeatmapMetadata
-  }
-  const environmentalMetadata = Object.entries(generatorsMetadata).filter(
-    ([id, metadata]) => (metadata as any).temporalgrid === true
-  )
-  const bqEnvironmentalMetadata = environmentalMetadata.filter(([id]) =>
-    id.includes(BIG_QUERY_PREFIX)
-  )
-  if (environmentalMetadata?.length === 1 && bqEnvironmentalMetadata?.length === 1) {
-    return bqEnvironmentalMetadata[0][1]
-  }
-
-  return null
 }

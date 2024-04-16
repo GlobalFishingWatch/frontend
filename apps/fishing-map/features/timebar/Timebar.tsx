@@ -1,8 +1,7 @@
-import { Fragment, memo, useCallback, useState, useMemo, useEffect } from 'react'
+import { Fragment, memo, useCallback, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { useAtom, useAtomValue } from 'jotai'
 import {
   Timebar,
   TimebarTracks,
@@ -16,13 +15,14 @@ import {
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
-import { deckLayersAtom, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
   useDisableHighlightTimeConnect,
-  useActivityMetadata,
   useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
 import { useViewStateAtom } from 'features/map/map-viewport.hooks'
@@ -49,25 +49,35 @@ import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import { useDeckMap } from 'features/map/map-context.hooks'
 import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
-  selectTracksData,
   selectTracksGraphData,
-  selectTracksEvents,
   selectAvailableStart,
   selectAvailableEnd,
+  selectTimebarSelectedDataviews,
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
 export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: any) => {
+const TimebarHighlighterWrapper = ({
+  dispatchHighlightedEvents,
+  showTooltip,
+}: {
+  dispatchHighlightedEvents: any
+  showTooltip: boolean
+}) => {
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
+
+  const dataviews = useSelector(selectTimebarSelectedDataviews)
+  const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
+  const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
+  const interval = fourwingsActivityLayer?.instance?.getInterval()
+
   const onHighlightChunks = useCallback(
     (chunks?: HighlightedChunks) => {
       if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
@@ -79,7 +89,6 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: a
     },
     [dispatchHighlightedEvents]
   )
-  const metadata = useActivityMetadata()
 
   // Return precise chunk frame extent
   const activityDateCallback = useCallback(
@@ -88,8 +97,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: a
         format: DateTime.DATETIME_MED,
         showUTCLabel: true,
       })
-      if (metadata) {
-        const interval = metadata.timeChunks.interval
+      if (interval) {
         if (interval === 'HOUR') {
           const HOUR_FORMAT = {
             year: 'numeric',
@@ -122,7 +130,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: a
       }
       return dateLabel
     },
-    [metadata]
+    [interval]
   )
   const formatDate =
     timebarVisualisation !== TimebarVisualisations.HeatmapActivity &&
@@ -164,13 +172,6 @@ const TimebarWrapper = () => {
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
   const tracksEvents = useTimebarVesselEvents()
-  // const basemapLayer = useDeckMapLayer('basemap')
-  const deckLayers = useAtomValue(deckLayersAtom)
-  const basemapLayer = useGetDeckLayer('basemap')
-
-  // useEffect(() => {
-  //   console.log('LOADEDE CHANGED', basemapLayer?.state?.loaded)
-  // }, [basemapLayer?.state?.loaded])
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(

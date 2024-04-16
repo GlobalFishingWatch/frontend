@@ -49,7 +49,6 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { initializeHints } from 'features/help/hints.slice'
 import AppModals from 'features/modals/Modals'
-import useMapInstance from 'features/map/map-context.hooks'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useSetViewState } from 'features/map/map-viewport.hooks'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
@@ -116,7 +115,6 @@ function App() {
   useAnalytics()
   useDatasetDrag()
   useReplaceLoginUrl()
-  const map = useMapInstance()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
@@ -128,10 +126,7 @@ function App() {
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
-  const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -140,17 +135,6 @@ function App() {
   useEffect(() => {
     dispatch(initializeHints())
   }, [dispatch])
-
-  useEffect(() => {
-    try {
-      if (map && map?.resize) {
-        map.resize()
-      }
-    } catch (e) {
-      console.warn(e)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReportLocation, isAnySearchLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
 
   useEffect(() => {
     setMobileSafeVH()
