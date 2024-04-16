@@ -30,7 +30,7 @@ steps:
       fi
 
   - id: 'install-yarn'
-    waitFor: ['restore_cache']
+    waitFor: ['restore_cache', 'restore_cypress_cache']
     name: node:21
     script: |
       # if [ ! -d "node_modules" ]; then
