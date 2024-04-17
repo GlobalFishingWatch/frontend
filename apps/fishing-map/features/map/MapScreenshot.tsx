@@ -26,8 +26,9 @@ export const getMapImage = (map: Deck): Promise<string> => {
     if (!map) {
       reject('No map instance found')
     }
-    if (map.canvas) {
-      resolve(map.canvas.toDataURL())
+    const canvas = map.getCanvas()
+    if (canvas) {
+      resolve(canvas.toDataURL())
     } else {
       reject('No map canvas found')
     }
