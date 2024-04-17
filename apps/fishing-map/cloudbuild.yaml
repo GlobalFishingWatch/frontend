@@ -21,7 +21,6 @@ steps:
       yarn set version 4.1.1
       yarn -v
       yarn install --immutable
-      yarn postinstall # https://github.com/yarnpkg/berry/discussions/5924#discussioncomment-8172691
 
   - id: 'save_cache'
     waitFor: ['install-yarn']

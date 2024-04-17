@@ -25,7 +25,6 @@ steps:
       yarn set version 4.1.1
       yarn -v
       yarn install --immutable
-      yarn postinstall
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
