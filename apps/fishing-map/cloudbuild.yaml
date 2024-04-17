@@ -13,10 +13,6 @@ steps:
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
         --key=yarn-install-state-$( checksum yarn.lock )
-      restore_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-$( checksum yarn.lock )-$( checksum cypress.lock ) \
-        --key_fallback=cypress-cache
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
@@ -28,12 +24,6 @@ steps:
       yarn -v
       yarn install --immutable
       yarn postinstall # https://github.com/yarnpkg/berry/discussions/5924#discussioncomment-8172691
-
-  - id: 'generate-cypress-lock'
-    waitFor: ['install-yarn']
-    name: node:21
-    script: |
-      yarn info cypress version > cypress.lock
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
@@ -54,11 +44,6 @@ steps:
         --bucket=gs://frontend-cache-dependencies \
         --key=yarn-install-state-$( checksum yarn.lock ) \
         --path=.yarn/install-state.gz \
-        --no-clobber
-      save_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-$( checksum yarn.lock )-$( checksum cypress.lock ) \
-        --path=.cypress-cache \
         --no-clobber
 
   - id: 'build-app'
@@ -172,7 +157,6 @@ steps:
   #   name: cypress/included:12.17.1
   #   entrypoint: 'bash'
   #   env:
-  #     - 'CYPRESS_CACHE_FOLDER=.cypress-cache'
   #     - 'CYPRESS_publicApiGateway=$_NEXT_PUBLIC_API_GATEWAY'
   #     - 'CYPRESS_basicAuth=$_BASIC_AUTH'
   #     - 'CYPRESS_basicAuthUser=$_BASIC_AUTH_USER'
