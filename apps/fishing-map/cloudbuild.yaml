@@ -15,7 +15,7 @@ steps:
         --key=yarn-install-state-$( checksum yarn.lock )
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-$( checksum cypress.lock ) \
+        --key=cypress-$( checksum yarn.lock )-$( checksum cypress.lock ) \
         --key_fallback=cypress-cache
 
   - id: 'install-yarn'
@@ -54,7 +54,7 @@ steps:
         --no-clobber
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-$( checksum cypress.lock ) \
+        --key=cypress-$( checksum yarn.lock )-$( checksum cypress.lock ) \
         --path=.cypress-cache \
         --no-clobber
 
