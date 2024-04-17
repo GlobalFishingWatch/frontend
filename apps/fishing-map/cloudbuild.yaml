@@ -151,7 +151,7 @@ steps:
   # - id: 'smoke-test-e2e'
   #   waitFor: ['deploy-cloud-run']
   #   allowFailure: true
-  #   name: cypress/included:12.17.1
+  #   name: cypress/included:13.7.3
   #   entrypoint: 'bash'
   #   env:
   #     - 'CYPRESS_publicApiGateway=$_NEXT_PUBLIC_API_GATEWAY'
@@ -169,9 +169,8 @@ steps:
   #     - 'pipefail'
   #     - '-c'
   #     - |-
-  #       yarn install --immutable
   #       CYPRESS_BASE_URL=`cat app_url` \
-  #         yarn nx run fishing-map-e2e:test-pr --parallel
+  #       yarn nx run fishing-map-e2e:test-pr --parallel
 
   # - id: 'save-test-videos'
   #   name: gcr.io/cloud-builders/gcloud
