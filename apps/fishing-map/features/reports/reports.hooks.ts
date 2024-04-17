@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
@@ -120,6 +120,7 @@ export function useFetchReportArea() {
 
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
+  const [fetchedReportQuery, setFetchedReportQuery] = useState<string | null>(null)
   const [_, setLastReportUrl] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
   const timerange = useSelector(selectTimeRange)
   const timerangeSupported = getDownloadReportSupported(timerange.start, timerange.end)
@@ -134,7 +135,6 @@ export function useFetchReportVessel() {
   const reportBufferValue = useSelector(selectReportBufferValue)
   const reportBufferOperation = useSelector(selectReportBufferOperation)
   const reportBufferHash = useSelector(selectReportBufferHash)
-
   const updateWorkspaceReportUrls = useCallback(
     (reportUrl: any) => {
       setLastReportUrl((lastReportUrls) => {
@@ -151,11 +151,10 @@ export function useFetchReportVessel() {
     },
     [setLastReportUrl]
   )
-
   const dispatchFetchReport = useCallback(() => {
     const params = {
-      datasets: reportDataviews.map(
-        ({ datasets }) => datasets?.map((d: Dataset) => d.id).join(',')
+      datasets: reportDataviews.map(({ datasets }) =>
+        datasets?.map((d: Dataset) => d.id).join(',')
       ),
       filters: reportDataviews.map(({ filter }) => filter),
       vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
@@ -170,18 +169,19 @@ export function useFetchReportVessel() {
       reportBufferOperation,
     }
     const query = getReportQuery(params)
+    setFetchedReportQuery(query)
     updateWorkspaceReportUrls(query)
     dispatch(fetchReportVesselsThunk(params))
   }, [
+    reportDataviews,
     areaId,
     datasetId,
-    dispatch,
-    reportBufferOperation,
+    timerange,
     reportBufferUnit,
     reportBufferValue,
-    reportDataviews,
-    timerange,
+    reportBufferOperation,
     updateWorkspaceReportUrls,
+    dispatch,
   ])
 
   useEffect(() => {
@@ -227,7 +227,14 @@ export function useFetchReportVessel() {
   ])
 
   return useMemo(
-    () => ({ status, data, error, dispatchFetchReport }),
-    [status, data, error, dispatchFetchReport]
+    () => ({ status, data, error, dispatchFetchReport, fetchedReportQuery }),
+    [status, data, error, dispatchFetchReport, fetchedReportQuery]
   )
+}
+
+export function useFetchLastReport() {
+  const dispatchFetchLastReport = () => {
+    console.log('fetching last report')
+  }
+  return { dispatchFetchLastReport }
 }

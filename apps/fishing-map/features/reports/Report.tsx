@@ -58,7 +58,12 @@ import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
-import { useFetchReportArea, useFetchReportVessel, useFitAreaInViewport } from './reports.hooks'
+import {
+  useFetchLastReport,
+  useFetchReportArea,
+  useFetchReportVessel,
+  useFitAreaInViewport,
+} from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
 import ReportActivity from './activity/ReportActivity'
@@ -74,6 +79,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [lastReports] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
+  console.log('🚀 ~ ActivityReport ~ lastReports:', lastReports)
   const reportCategory = useSelector(selectReportCategory)
   const timerange = useSelector(selectTimeRange)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
@@ -89,7 +95,14 @@ function ActivityReport({ reportName }: { reportName: string }) {
     userData?.permissions || []
   )
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
-  const { status: reportStatus, error: statusError, dispatchFetchReport } = useFetchReportVessel()
+  const {
+    status: reportStatus,
+    error: statusError,
+    dispatchFetchReport,
+    fetchedReportQuery,
+  } = useFetchReportVessel()
+
+  const { dispatchFetchLastReport } = useFetchLastReport()
   const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
   const hasVessels = useSelector(selectHasReportVessels)
 
@@ -103,25 +116,29 @@ function ActivityReport({ reportName }: { reportName: string }) {
     reportDateRangeHash !== '' && reportDateRangeHash !== getDateRangeHash(timerange)
   const hasAuthError = reportError && isAuthError(statusError)
 
-  const { currentReportUrl } = statusError?.metadata || ({} as { currentReportUrl: string })
-  const lastReport = currentReportUrl
-    ? lastReports.find((report) => {
-        const currentReportParams = parseReportUrl(currentReportUrl)
-        const reportParams = parseReportUrl(report.reportUrl)
-        return isEqual(currentReportParams, reportParams)
-      })
-    : undefined
+  // The 429 concurrent report error returns the report query being processed on the backend as metadata
   const concurrentReportError = statusError?.status === 429
-  const isSameWorkspaceReport =
-    concurrentReportError && window?.location.href === lastReport?.workspaceUrl
+  const { currentReportUrl } = statusError?.metadata || ({} as { currentReportUrl: string })
+
+  const fetchedReportParams = fetchedReportQuery && parseReportUrl(fetchedReportQuery)
+  const concurrentReportParams = currentReportUrl && parseReportUrl(currentReportUrl)
+  const isSameReport =
+    fetchedReportParams &&
+    concurrentReportParams &&
+    isEqual(fetchedReportParams, concurrentReportParams)
+
+  const lastReport = lastReports.find((report) =>
+    isEqual(parseReportUrl(report.reportUrl), fetchedReportParams)
+  )
 
   const isTimeoutError =
     statusError?.message &&
     crossBrowserTypeErrorMessages.some((error) => error.includes(statusError.message as string))
   useEffect(() => {
-    if (isSameWorkspaceReport || isTimeoutError) {
+    if (isTimeoutError) {
       dispatchTimeoutRef.current = setTimeout(() => {
-        dispatchFetchReport()
+        // dispatchFetchReport()
+        dispatchFetchLastReport()
       }, 1000 * 30) // retrying each 30 secs
     }
     return () => {
@@ -129,7 +146,10 @@ function ActivityReport({ reportName }: { reportName: string }) {
         clearTimeout(dispatchTimeoutRef.current)
       }
     }
-  }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
+  }, [dispatchFetchLastReport, dispatchFetchReport, isTimeoutError])
+  useEffect(() => {
+    dispatchFetchReport && dispatchFetchReport()
+  }, [dispatchFetchReport])
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {
@@ -153,18 +173,18 @@ function ActivityReport({ reportName }: { reportName: string }) {
     }
     if (statusError) {
       if (concurrentReportError) {
-        if (isSameWorkspaceReport) {
+        if (isSameReport) {
           return <ReportVesselsPlaceholder />
         }
         return (
           <ReportVesselsPlaceholder>
             <div className={styles.cover}>
               <p className={styles.error}>
-                {t('analysis.errorConcurrentReport', 'There is already a report running')}
+                {t('analysis.errorConcurrentReport', 'Your latest report is still being processed')}
                 <p className={styles.link}>
-                  {lastReport && (
-                    <a href={lastReport.workspaceUrl}>
-                      {t('analysis.errorConcurrentReportLink', 'See it')}
+                  {!isSameReport && (
+                    <a href={lastReport?.workspaceUrl}>
+                      {t('analysis.errorConcurrentReportLink', 'See it here')}
                     </a>
                   )}
                 </p>
@@ -223,7 +243,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
     datasetId,
     guestUser,
     hasAuthError,
-    isSameWorkspaceReport,
+    isSameReport,
     lastReport,
     reportDataviews?.length,
     statusError,
