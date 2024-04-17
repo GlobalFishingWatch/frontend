@@ -38,6 +38,7 @@ import useRulers from './overlays/rulers/rulers.hooks'
 import { useDrawLayer } from './overlays/draw/draw.hooks'
 import { useMapDrawConnect } from './map-draw.hooks'
 import MapInfo from './controls/MapInfo'
+import { MAP_CANVAS_ID } from './map.config'
 
 // This avoids type checking to complain
 // https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
@@ -224,7 +225,7 @@ const MapWrapper = () => {
   return (
     <div className={styles.container}>
       <DeckGL
-        id="map"
+        id={MAP_CANVAS_ID}
         ref={deckRef}
         views={MAP_VIEW}
         layers={deckRef ? (layers as LayersList) : []}
@@ -233,9 +234,6 @@ const MapWrapper = () => {
         }}
         style={mapStyles}
         getCursor={getCursor}
-        // more info about preserveDrawingBuffer
-        // https://github.com/visgl/deck.gl/issues/4436#issuecomment-610472868
-        glOptions={{ preserveDrawingBuffer: true }}
         layerFilter={({ renderPass, layer }) => {
           // This avoids performing the default picking
           // since we are handling it through pickMultipleObjects

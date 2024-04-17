@@ -5,6 +5,7 @@ import { Deck } from '@deck.gl/core'
 import { getCSSVarValue } from 'utils/dom'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import styles from './Map.module.css'
+import { MAP_WRAPPER_ID } from './map.config'
 
 type PrintSize = {
   px: number
@@ -28,6 +29,7 @@ export const getMapImage = (map: Deck): Promise<string> => {
     }
     const canvas = map.getCanvas()
     if (canvas) {
+      map.redraw('screenshot')
       resolve(canvas.toDataURL())
     } else {
       reject('No map canvas found')
@@ -73,7 +75,7 @@ function MapScreenshot() {
 
   // insert the image just below the canvas
   // TODO:deck migrate this
-  const canvasDomElement = document.querySelector('.maplibregl-canvas-container')
+  const canvasDomElement = document.getElementById(MAP_WRAPPER_ID)
   if (!canvasDomElement) return null
   const size = isPrintSupported
     ? `${printSize.current?.width.in} ${printSize.current?.height.in}`
@@ -81,7 +83,12 @@ function MapScreenshot() {
   return createPortal(
     <Fragment>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className={styles.screenshot} src={screenshotImage} alt="map screenshot" />
+      <img
+        id="screenshot-img"
+        className={styles.screenshot}
+        src={screenshotImage}
+        alt="map screenshot"
+      />
       <style>
         {`@page {
           size: ${size};
