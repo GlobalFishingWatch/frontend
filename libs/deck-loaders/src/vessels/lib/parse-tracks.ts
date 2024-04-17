@@ -15,7 +15,6 @@ export const trackValueArrayToSegments = (valueArray: number[], fields_: TrackFi
   if (!fields_.length) {
     throw new Error()
   }
-
   const fields = [...fields_]
   if (fields.includes(TrackField.lonlat)) {
     const llIndex = fields.indexOf('lonlat' as TrackField)
@@ -97,16 +96,27 @@ export const trackValueArrayToSegments = (valueArray: number[], fields_: TrackFi
   return segments
 }
 
-function readValueArrayData(_: any, data: any, pbf: any) {
-  data.push(pbf.readPackedSVarint())
-}
+export const trackValueArrayToDeckBinary = (valueArray: number[], fields_: TrackField[]) => {
+  if (!fields_.length || !valueArray?.length) {
+    throw new Error()
+  }
 
-export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
+  const fields = [...fields_]
+  if (fields.includes(TrackField.lonlat)) {
+    const llIndex = fields.indexOf('lonlat' as TrackField)
+    fields.splice(llIndex, 1, TrackField.longitude, TrackField.latitude)
+  }
+  const numFields = fields.length
+
+  const nullValue = valueArray[0]
+  const numSegments = valueArray[1]
+  const segmentStartOffset = 2 + numSegments
+
   const track: VesselTrackData = {
     // Number of geometries
     length: 0,
     // Indices into positions where each path starts
-    startIndices: [] as number[],
+    startIndices: valueArray.slice(2, segmentStartOffset) as number[],
     // Flat coordinates array
     attributes: {
       getPath: { value: new Float32Array(), size: 2 },
@@ -114,30 +124,58 @@ export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
     },
   }
 
-  let index = 0
-  const segmentIndexes = [0] as number[]
-  const data = new Pbf(arrayBuffer).readFields(readValueArrayData, [])[0]
-  // TODO make the fields dynamic to support speed or depth
-  const segments = trackValueArrayToSegments(data, [TrackField.lonlat, TrackField.timestamp])
-  const dataLength = segments.reduce((acc, data) => data.length + acc, 0)
-  const positions = new Float32Array(dataLength * track.attributes.getPath.size)
-  const timestamps = new Float32Array(dataLength)
+  const trackPositionsAttributeSize = track.attributes.getPath.size
+  track.startIndices.forEach((startIndex, i) => {
+    const endIndex = track.startIndices[i + 1] || valueArray.length
+    const segment = valueArray.slice(startIndex + segmentStartOffset, endIndex + segmentStartOffset)
+    const positions = new Float32Array((segment.length / numFields) * trackPositionsAttributeSize)
 
-  segments.forEach((segment, i) => {
-    if (i > 0) {
-      segmentIndexes.push(index * track.attributes.getPath.size)
-    }
-    segment.forEach((point, j) => {
-      positions[track.attributes.getPath.size * index] = point.longitude as number
-      positions[track.attributes.getPath.size * index + 1] = point.latitude as number
-      timestamps[index] = Number(point.timestamp)
-      index++
+    const timestamps = new Float32Array(segment.length / numFields)
+    // TODO add speed and depth
+    // const speed = new Float32Array(segment.length)
+    let pointIndex = 0
+    segment.forEach((value, j) => {
+      const fieldIndex = j % numFields
+      const field = fields[fieldIndex]
+      const transformer = transformerByField[field]
+      // TODO: add speed and depth
+      if (value !== nullValue && transformer !== undefined) {
+        if (field === TrackField.longitude) {
+          positions[trackPositionsAttributeSize * pointIndex] = transformer(value)
+        } else if (field === TrackField.latitude) {
+          positions[trackPositionsAttributeSize * pointIndex + 1] = transformer(value)
+        } else if (field === TrackField.timestamp) {
+          timestamps[pointIndex] = transformer(value)
+        }
+        // TODO add speed and depth
+        // } else if (field === TrackField.speed) {
+        //   speed[pointIndex] = transformer(value)
+        // }
+      }
+      if (j > 0 && (j + 1) % numFields === 0) {
+        pointIndex++
+      }
     })
+    track.length += segment.length
+    track.attributes.getPath.value = new Float32Array([
+      ...track.attributes.getPath.value,
+      ...positions,
+    ])
+    track.attributes.getTimestamps.value = new Float32Array([
+      ...track.attributes.getTimestamps.value,
+      ...timestamps,
+    ])
   })
-  track.length = segmentIndexes.length
-  track.startIndices = segmentIndexes
-  track.attributes.getPath.value = positions
-  track.attributes.getTimestamps.value = timestamps
 
   return track
+}
+
+function readValueArrayData(_: any, data: any, pbf: any) {
+  data.push(pbf.readPackedSVarint())
+}
+
+export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
+  const data = new Pbf(arrayBuffer).readFields(readValueArrayData, [])[0]
+  // TODO:deck make this fields dynamic from request
+  return trackValueArrayToDeckBinary(data, [TrackField.lonlat, TrackField.timestamp])
 }
