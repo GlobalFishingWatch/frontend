@@ -13,10 +13,6 @@ steps:
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
         --key=yarn-install-state-$( checksum yarn.lock )
-      restore_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-$( checksum yarn.lock )-$( checksum cypress.lock ) \
-        --key_fallback=cypress-cache
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
@@ -24,13 +20,8 @@ steps:
     script: |
       yarn set version 4.1.1
       yarn -v
-      CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
-
-  - id: 'generate-cypress-lock'
-    waitFor: ['install-yarn']
-    name: node:21
-    script: |
-      yarn info cypress version > cypress.lock
+      yarn install --immutable
+      yarn postinstall # https://github.com/yarnpkg/berry/discussions/5924#discussioncomment-8172691
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
@@ -51,11 +42,6 @@ steps:
         --bucket=gs://frontend-cache-dependencies \
         --key=yarn-install-state-$( checksum yarn.lock ) \
         --path=.yarn/install-state.gz \
-        --no-clobber
-      save_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-$( checksum yarn.lock )-$( checksum cypress.lock ) \
-        --path=.cypress-cache \
         --no-clobber
 
   - id: 'build-app'
@@ -184,9 +170,8 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
+        yarn install --immutable
         CYPRESS_BASE_URL=`cat app_url` \
-          CYPRESS_CACHE_FOLDER=.cypress-cache \
           yarn nx run fishing-map-e2e:test-pr --parallel
 
   - id: 'save-test-videos'
