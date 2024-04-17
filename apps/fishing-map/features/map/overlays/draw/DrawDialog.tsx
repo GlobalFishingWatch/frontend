@@ -31,6 +31,7 @@ import {
   updateFeaturePointByIndex,
 } from '../../map.draw.utils'
 import styles from './DrawDialog.module.css'
+import { useDrawLayer } from './draw.hooks'
 
 export type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
 export type DrawPointPosition = [number, number]
@@ -76,6 +77,7 @@ function MapDraw() {
   const mapDrawEditDatasetId = useSelector(selectMapDrawingEditId)
   const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
+  const { drawFeatures } = useDrawLayer()
 
   useEffect(() => {
     if (mapDrawEditDataset) {
@@ -276,9 +278,9 @@ function MapDraw() {
   )
 
   const onSaveClick = useCallback(
-    (features: any) => {
-      if (features && features.length > 0 && layerName) {
-        createDataset(features, layerName)
+    (featureCollection: any) => {
+      if (featureCollection.features && featureCollection.features.length > 0 && layerName) {
+        createDataset(featureCollection.features, layerName)
         trackEvent({
           category: TrackCategory.ReferenceLayer,
           action: `Draw a custom reference layer - Click save`,
@@ -433,7 +435,7 @@ function MapDraw() {
               }
               tooltip={saveTooltip}
               tooltipPlacement="top"
-              // onClick={() => onSaveClick(features)}
+              onClick={() => onSaveClick(drawFeatures)}
             >
               {t('common.save', 'Save')}
             </Button>
