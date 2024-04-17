@@ -17,13 +17,10 @@ steps:
   - id: 'install-yarn'
     waitFor: ['restore_cache']
     name: node:21
-    env:
-      - CYPRESS_CACHE_FOLDER=.cypress-cache
     script: |
       yarn set version 4.1.1
       yarn -v
       yarn install --immutable
-      yarn postinstall # https://github.com/yarnpkg/berry/discussions/5924#discussioncomment-8172691
 
   - id: 'save_cache'
     waitFor: ['install-yarn']
