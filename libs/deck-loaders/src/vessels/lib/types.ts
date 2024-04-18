@@ -10,7 +10,7 @@ export type VesselTrackData = {
     // Populated automatically by deck.gl
     positions?: { value: Float32Array; size: number }
     getPath: { value: Float32Array; size: number }
-    getTimestamps: { value: Float32Array; size: number }
+    getTimestamp: { value: Float32Array; size: number }
   }
 }
 

@@ -15,7 +15,7 @@ export const VesselTrackWorkerLoader: Loader = {
   version: packageJson?.version,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: true,
+  worker: false,
   options: {
     'vessel-tracks': {
       workerUrl: `${PATH_BASENAME}/workers/vessel-tracks-worker.js`,

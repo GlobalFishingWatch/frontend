@@ -1,6 +1,6 @@
-import Pbf from 'pbf'
 import { TrackField } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from './types'
+import { deckTrackDecoder } from './vessel-track-proto'
 
 export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)
 
@@ -97,47 +97,6 @@ export const trackValueArrayToSegments = (valueArray: number[], fields_: TrackFi
   return segments
 }
 
-function readValueArrayData(_: any, data: any, pbf: any) {
-  data.push(pbf.readPackedSVarint())
-}
-
 export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
-  const track: VesselTrackData = {
-    // Number of geometries
-    length: 0,
-    // Indices into positions where each path starts
-    startIndices: [] as number[],
-    // Flat coordinates array
-    attributes: {
-      getPath: { value: new Float32Array(), size: 2 },
-      getTimestamps: { value: new Float32Array(), size: 1 },
-    },
-  }
-
-  let index = 0
-  const segmentIndexes = [0] as number[]
-  const data = new Pbf(arrayBuffer).readFields(readValueArrayData, [])[0]
-  // TODO make the fields dynamic to support speed or depth
-  const segments = trackValueArrayToSegments(data, [TrackField.lonlat, TrackField.timestamp])
-  const dataLength = segments.reduce((acc, data) => data.length + acc, 0)
-  const positions = new Float32Array(dataLength * track.attributes.getPath.size)
-  const timestamps = new Float32Array(dataLength)
-
-  segments.forEach((segment, i) => {
-    if (i > 0) {
-      segmentIndexes.push(index * track.attributes.getPath.size)
-    }
-    segment.forEach((point, j) => {
-      positions[track.attributes.getPath.size * index] = point.longitude as number
-      positions[track.attributes.getPath.size * index + 1] = point.latitude as number
-      timestamps[index] = Number(point.timestamp)
-      index++
-    })
-  })
-  track.length = segmentIndexes.length
-  track.startIndices = segmentIndexes
-  track.attributes.getPath.value = positions
-  track.attributes.getTimestamps.value = timestamps
-
-  return track
+  return deckTrackDecoder(arrayBuffer)
 }

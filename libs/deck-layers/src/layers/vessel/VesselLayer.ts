@@ -81,6 +81,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       const trackUrlObject = new URL(trackUrl as string)
       trackUrlObject.searchParams.append('start-date', start as string)
       trackUrlObject.searchParams.append('end-date', end as string)
+      trackUrlObject.searchParams.set('format', 'DECKGL')
       return new VesselTrackLayer<any, { type: VesselDataType }>(
         this.getSubLayerProps({
           id: chunkId,

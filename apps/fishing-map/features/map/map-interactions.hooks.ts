@@ -269,7 +269,6 @@ export const useMapMouseHover = () => {
   const onMouseMove: DeckProps['onHover'] = useCallback(
     (info: PickingInfo, event: any) => {
       if (!info.coordinate) return
-
       // TODO:deck handle when hovering a cluster point as we don't want to show anything else
       // const clusterFeature = event.features.find(
       //   (f) => f.generatorType === DataviewType.TileCluster && parseInt(f.properties.count) > 1

@@ -36,7 +36,7 @@ export type _VesselTrackLayerProps<DataT = any> = {
   /**
    * Timestamp accessor.
    */
-  getTimestamps?: AccessorFunction<DataT, NumericArray>
+  getTimestamp?: AccessorFunction<DataT, NumericArray>
   /**
    * Callback on data changed to update
    */
@@ -58,7 +58,7 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   highlightStartTime: { type: 'number', value: 0, min: 0 },
   highlightEndTime: { type: 'number', value: 0, min: 0 },
   getPath: { type: 'accessor', value: () => [0, 0] },
-  getTimestamps: { type: 'accessor', value: (d) => d },
+  getTimestamp: { type: 'accessor', value: (d) => d },
   onDataChange: { type: 'function', value: () => {} },
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
   // getHighlightColor: { type: 'accessor', value: DEFAULT_HIGHLIGHT_COLOR_RGBA },
@@ -127,7 +127,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       attributeManager.addInstanced({
         timestamps: {
           size: 1,
-          accessor: 'getTimestamps',
+          accessor: 'getTimestamp',
           shaderAttributes: {
             instanceTimestamps: {},
           },
@@ -166,7 +166,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     const data = this.props.data as VesselTrackData
     const segmentsIndex = data.startIndices
     const positions = data.attributes?.getPath?.value
-    const timestamps = data.attributes?.getTimestamps?.value
+    const timestamps = data.attributes?.getTimestamp?.value
     if (!positions?.length || !timestamps.length) {
       return []
     }
