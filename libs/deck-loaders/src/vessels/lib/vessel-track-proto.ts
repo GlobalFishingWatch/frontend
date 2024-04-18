@@ -1,7 +1,6 @@
-import protobuf from 'protobufjs'
-import { VesselTrackData } from './types'
+import { parse } from 'protobufjs'
 
-export const proto = `
+const proto = `
 syntax = "proto3";
 package vessels;
 
@@ -25,26 +24,4 @@ message DeckTrack {
 }
 `
 
-const root = protobuf.parse(proto).root
-const DeckTrack = root.lookupType('DeckTrack')
-
-function deckTrackDecoder(arrayBuffer: ArrayBuffer) {
-  const track = DeckTrack.decode(new Uint8Array(arrayBuffer)) as any
-  return {
-    ...track,
-    attributes: {
-      getPath: {
-        value: new Float32Array(track.attributes.getPath.value),
-        size: track.attributes.getPath.size,
-      },
-      getTimestamp: {
-        value: new Float32Array(track.attributes.getTimestamp.value),
-        size: track.attributes.getTimestamp.size,
-      },
-    },
-  } as VesselTrackData
-}
-
-export { deckTrackDecoder }
-
-export { DeckTrack }
+export const DeckTrack = parse(proto).root.lookupType('DeckTrack')

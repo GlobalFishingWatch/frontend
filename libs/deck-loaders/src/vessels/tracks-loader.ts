@@ -4,7 +4,7 @@ import { PATH_BASENAME } from '../loaders.config'
 import { parseTrack } from './lib/parse-tracks'
 
 /**
- * Worker loader for the Vessel Track int array format
+ * Worker loader for the Vessel Track DECKGL format
  */
 
 export const VesselTrackWorkerLoader: Loader = {
@@ -15,7 +15,7 @@ export const VesselTrackWorkerLoader: Loader = {
   version: packageJson?.version,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: false,
+  worker: true,
   options: {
     'vessel-tracks': {
       workerUrl: `${PATH_BASENAME}/workers/vessel-tracks-worker.js`,
@@ -24,7 +24,7 @@ export const VesselTrackWorkerLoader: Loader = {
 }
 
 /**
- * Loader for the Vessel Track int array format
+ * Loader for the Vessel Track DECKGL format
  */
 export const VesselTrackLoader: LoaderWithParser = {
   ...VesselTrackWorkerLoader,
