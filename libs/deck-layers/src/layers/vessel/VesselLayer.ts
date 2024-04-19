@@ -93,6 +93,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       highlightEndTime,
       minSpeedFilter,
       maxSpeedFilter,
+      minElevationFilter,
+      maxElevationFilter,
     } = this.props
     if (!trackUrl || !visible) {
       if (!trackUrl) console.warn('trackUrl needed for vessel layer')
@@ -125,6 +127,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           highlightEndTime,
           minSpeedFilter,
           maxSpeedFilter,
+          minElevationFilter,
+          maxElevationFilter,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
           onError: this.onSublayerError,
         })

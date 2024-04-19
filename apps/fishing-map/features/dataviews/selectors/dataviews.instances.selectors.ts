@@ -24,10 +24,7 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import {
-  selectTrackThinningConfig,
-  selectTrackChunksConfig,
-} from 'features/resources/resources.selectors.thinning'
+import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import {
   infoDatasetConfigsCallback,
   trackDatasetConfigsCallback,
@@ -141,7 +138,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectAllDatasets,
     selectUserLogged,
     selectTrackThinningConfig,
-    selectTimebarGraphSelector,
     selectIsGuestUser,
   ],
   (
@@ -150,7 +146,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
     datasets,
     loggedUser,
     thinningConfig,
-    timebarGraph,
     guestUser
   ): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
@@ -191,7 +186,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
       datasets
     )
     const callbacks: GetDatasetConfigsCallbacks = {
-      track: trackDatasetConfigsCallback(thinningConfig, timebarGraph),
+      track: trackDatasetConfigsCallback(thinningConfig),
       // events: eventsDatasetConfigsCallback,
       info: infoDatasetConfigsCallback(guestUser),
     }

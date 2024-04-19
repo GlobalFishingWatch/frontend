@@ -39,6 +39,10 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
       minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
       maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),
     }),
+    ...(dataview.config?.filters?.['elevation']?.length && {
+      minElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][0]),
+      maxElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][1]),
+    }),
     ...(globalConfig.highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(globalConfig.highlightedTime?.start).toMillis(),
     }),

@@ -108,7 +108,7 @@ export const geoJSONToSegments = (
         coordinateProperties: Object.keys(coordinateProperties || {}).reduce(
           (acc, prop) => ({
             ...acc,
-            [prop]: coordinateProperties[prop][i],
+            [prop]: coordinateProperties?.[prop]?.[i],
           }),
           {}
         ),

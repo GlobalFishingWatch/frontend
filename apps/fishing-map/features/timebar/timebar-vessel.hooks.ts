@@ -11,6 +11,7 @@ import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getEventDescription } from 'utils/events'
 import { t } from 'features/i18n/i18n'
+import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
@@ -26,6 +27,7 @@ export const useTimebarVesselsLayers = () => {
 }
 
 export const useTimebarVesselTracks = () => {
+  const timebarGraph = useSelector(selectTimebarGraph)
   const [tracks, setVesselTracks] = useState<TimebarChartData<any> | null>(null)
   const vessels = useTimebarVesselsLayers()
   const vesselsLoaded = vessels
@@ -64,7 +66,7 @@ export const useTimebarVesselTracks = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vesselsLoaded])
+  }, [vesselsLoaded, timebarGraph])
   return tracks
 }
 

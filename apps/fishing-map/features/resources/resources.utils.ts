@@ -51,10 +51,7 @@ export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) =
   return allEvents.filter(Boolean)
 }
 
-export const trackDatasetConfigsCallback = (
-  thinningConfig: ThinningConfigParam | null,
-  timebarGraph: any
-) => {
+export const trackDatasetConfigsCallback = (thinningConfig: ThinningConfigParam | null) => {
   return ([track]: DataviewDatasetConfig[], dataview?: UrlDataviewInstance) => {
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
@@ -63,30 +60,6 @@ export const trackDatasetConfigsCallback = (
       }))
 
       let trackQuery = [...(track.query?.map((query) => ({ ...query })) || []), ...thinningQuery]
-      const fieldsToAdd = timebarGraph !== TimebarGraphs.None ? [timebarGraph] : []
-      const fieldsToCheckInDataview = [TrackField.speed, TrackField.elevation]
-      fieldsToCheckInDataview.forEach((filter) => {
-        if (dataview?.config?.filters?.[filter]?.length && !fieldsToAdd.includes(filter)) {
-          fieldsToAdd.push(filter)
-        }
-      })
-      if (fieldsToAdd.length) {
-        const fieldsQueryIndex = trackQuery.findIndex((q) => q.id === 'fields')
-        if (fieldsQueryIndex > -1) {
-          trackQuery[fieldsQueryIndex].value = [
-            ...(trackQuery[fieldsQueryIndex].value as string[]),
-            ...fieldsToAdd.map((f) => f.toUpperCase()),
-          ]
-        } else {
-          const fieldsQuery = {
-            id: 'fields',
-            // The api now requieres all params in upperCase
-            value: ['LONLAT', 'TIMESTAMP', ...fieldsToAdd.map((f) => f.toUpperCase())],
-          }
-          trackQuery = [...trackQuery, fieldsQuery]
-        }
-      }
-
       const trackWithThinning = { ...track, query: trackQuery }
 
       return [trackWithThinning]
