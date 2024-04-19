@@ -7,6 +7,7 @@ import {
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
 import {
+  extendDataviewDatasetConfig,
   GetDatasetConfigsCallbacks,
   getResources,
   mergeWorkspaceUrlDataviewInstances,
@@ -131,9 +132,27 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
   }
 )
 
+export const selectTimebarGraphSelector = selectWorkspaceStateProperty('timebarGraph')
+
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets, selectUserLogged],
-  (dataviewInstances, dataviews, datasets, loggedUser): UrlDataviewInstance[] | undefined => {
+  [
+    selectDataviewInstancesMergedOrdered,
+    selectAllDataviews,
+    selectAllDatasets,
+    selectUserLogged,
+    selectTrackThinningConfig,
+    selectTimebarGraphSelector,
+    selectIsGuestUser,
+  ],
+  (
+    dataviewInstances,
+    dataviews,
+    datasets,
+    loggedUser,
+    thinningConfig,
+    timebarGraph,
+    guestUser
+  ): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
       return EMPTY_ARRAY
     }
@@ -171,7 +190,16 @@ export const selectAllDataviewInstancesResolved = createSelector(
       dataviews,
       datasets
     )
-    return dataviewInstancesResolved
+    const callbacks: GetDatasetConfigsCallbacks = {
+      track: trackDatasetConfigsCallback(thinningConfig, timebarGraph),
+      // events: eventsDatasetConfigsCallback,
+      info: infoDatasetConfigsCallback(guestUser),
+    }
+    const dataviewInstancesResolvedExtended = extendDataviewDatasetConfig(
+      dataviewInstancesResolved,
+      callbacks
+    )
+    return dataviewInstancesResolvedExtended
   }
 )
 
@@ -188,26 +216,14 @@ export const selectMarineManagerDataviewInstanceResolved = createSelector(
   }
 )
 
-export const selectTimebarGraphSelector = selectWorkspaceStateProperty('timebarGraph')
 /**
  * Calls getResources to prepare track dataviews' datasetConfigs.
  * Injects app-specific logic by using getResources's callback
  */
 export const selectDataviewsResources = createSelector(
-  [
-    selectAllDataviewInstancesResolved,
-    selectTrackThinningConfig,
-    selectTrackChunksConfig,
-    selectTimebarGraphSelector,
-    selectIsGuestUser,
-  ],
-  (dataviewInstances, thinningConfig, chunks, timebarGraph, guestUser) => {
-    const callbacks: GetDatasetConfigsCallbacks = {
-      track: trackDatasetConfigsCallback(thinningConfig, timebarGraph),
-      // events: eventsDatasetConfigsCallback,
-      info: infoDatasetConfigsCallback(guestUser),
-    }
-    return getResources(dataviewInstances || [], callbacks)
+  [selectAllDataviewInstancesResolved],
+  (dataviewInstances) => {
+    return getResources(dataviewInstances || [])
   }
 )
 

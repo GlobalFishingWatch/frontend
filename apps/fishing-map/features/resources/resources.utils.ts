@@ -61,49 +61,27 @@ export const trackDatasetConfigsCallback = (
         value,
       }))
 
-      let trackGraph
+      let trackQuery = [...(track.query?.map((query) => ({ ...query })) || []), ...thinningQuery]
       if (timebarGraph !== TimebarGraphs.None) {
-        trackGraph = { ...track }
-        const fieldsQuery = {
-          id: 'fields',
-          // The api now requieres all params in upperCase
-          value: ['TIMESTAMP', timebarGraph.toUpperCase()],
-        }
-        const graphQuery = [...(track.query || []), ...thinningQuery]
-        const fieldsQueryIndex = graphQuery.findIndex((q) => q.id === 'fields')
+        const fieldsQueryIndex = trackQuery.findIndex((q) => q.id === 'fields')
         if (fieldsQueryIndex > -1) {
-          graphQuery[fieldsQueryIndex] = fieldsQuery
-          trackGraph.query = graphQuery
+          trackQuery[fieldsQueryIndex].value = [
+            ...(trackQuery[fieldsQueryIndex].value as string[]),
+            timebarGraph.toUpperCase(),
+          ]
         } else {
-          trackGraph.query = [...graphQuery, fieldsQuery]
+          const fieldsQuery = {
+            id: 'fields',
+            // The api now requieres all params in upperCase
+            value: ['LONLAT', 'TIMESTAMP', timebarGraph.toUpperCase()],
+          }
+          trackQuery = [...trackQuery, fieldsQuery]
         }
       }
 
-      const trackWithThinning = {
-        ...track,
-        query: [...(track.query || []), ...thinningQuery],
-      }
+      const trackWithThinning = { ...track, query: trackQuery }
 
-      // const allEvents = events.map((event) => ({
-      //   ...event,
-      //   query: [
-      //     ...(Object.entries(DEFAULT_PAGINATION_PARAMS).map(([id, value]) => ({
-      //       id,
-      //       value,
-      //     })) as DataviewDatasetConfigParam[]),
-      //     ...(event?.query || []),
-      //   ],
-      // }))
-      // Clean resources when mandatory vesselId is missing
-      // needed for vessels with no info datasets (zebraX)
-      // const vesselData = hasDatasetConfigVesselData(info)
-
-      return [
-        trackWithThinning,
-        // ...allEvents,
-        // ...(vesselData ? [info] : []),
-        // ...(trackGraph ? [trackGraph] : []),
-      ]
+      return [trackWithThinning]
     }
     return [track].filter(Boolean)
   }
