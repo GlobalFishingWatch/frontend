@@ -235,37 +235,11 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     />
   )
 
-  const InfoIconComponent = infoLoading ? (
-    <IconButton
-      loading
-      className={styles.loadingIcon}
-      size="small"
-      tooltip={t('vessel.loadingInfo', 'Loading vessel info')}
-    />
-  ) : (
-    <VesselLink vesselId={vesselId} datasetId={dataset?.id}>
-      <IconButton
-        size="small"
-        icon={infoError ? 'warning' : 'info'}
-        type={infoError ? 'warning' : 'default'}
-        disabled={infoError}
-        tooltip={
-          infoError
-            ? `${t(
-                'errors.vesselLoading',
-                'There was an error loading the vessel details'
-              )} (${vesselId})`
-            : ''
-        }
-        // onClick={onToggleInfoOpen}
-        tooltipPlacement="top"
-      />
-    </VesselLink>
-  )
-
   return (
     <div
-      className={cx(styles.LayerPanel, { [styles.expandedContainerOpen]: colorOpen || infoOpen })}
+      className={cx(styles.LayerPanel, {
+        [styles.expandedContainerOpen]: colorOpen || infoOpen || filterOpen,
+      })}
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -323,7 +297,27 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
             )}
             <Remove dataview={dataview} />
           </Fragment>
-          {infoResource && InfoIconComponent}
+          {infoLoading && (
+            <IconButton
+              loading
+              className={styles.loadingIcon}
+              size="small"
+              tooltip={t('vessel.loadingInfo', 'Loading vessel info')}
+            />
+          )}
+          {infoError && (
+            <IconButton
+              size="small"
+              icon="warning"
+              type="warning"
+              disabled
+              tooltip={`${t(
+                'errors.vesselLoading',
+                'There was an error loading the vessel details'
+              )} (${vesselId})`}
+              tooltipPlacement="top"
+            />
+          )}
         </div>
         <IconButton
           icon={'more'}
