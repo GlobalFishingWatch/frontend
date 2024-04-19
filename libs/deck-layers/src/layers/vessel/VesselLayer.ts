@@ -146,6 +146,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       events,
       highlightStartTime,
       highlightEndTime,
+      singleTrack,
       color,
     } = this.props
     if (!visible) {
@@ -176,7 +177,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             highlightEndTime,
             getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
             getFillColor: (d: any): Color => {
-              return d.type === EventTypes.Fishing ? color : EVENTS_COLORS[d.type]
+              if (d.type === EventTypes.Fishing) {
+                return singleTrack ? [255, 255, 255] : color
+              }
+              return EVENTS_COLORS[d.type]
             },
             updateTriggers: {
               getFillColor: [color],

@@ -259,8 +259,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         // longitude: positions[segment],
         // latitude: positions[segment + 1],
         timestamp: timestamps[segment / size],
-        speed: speeds[segment / size],
-        elevation: elevations[segment / size],
+        speed: speeds?.[segment / size],
+        elevation: elevations?.[segment / size],
       }
       const nextSegmentIndex = segments[i + 1]
       const lastPoint =
@@ -269,15 +269,15 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
               // longitude: positions[positions.length - size],
               // latitude: positions[positions.length - size + 1],
               timestamp: timestamps[timestamps.length - 1],
-              speed: speeds[speeds.length - 1],
-              elevation: elevations[elevations.length - 1],
+              speed: speeds?.[speeds.length - 1],
+              elevation: elevations?.[elevations.length - 1],
             }
           : {
               // longitude: positions[nextSegmentIndex],
               // latitude: positions[nextSegmentIndex + 1],
               timestamp: timestamps[nextSegmentIndex / size - 1],
-              speed: speeds[nextSegmentIndex / size - 1],
-              elevation: elevations[nextSegmentIndex / size - 1],
+              speed: speeds?.[nextSegmentIndex / size - 1],
+              elevation: elevations?.[nextSegmentIndex / size - 1],
             }
       return [initialPoint, lastPoint]
     })

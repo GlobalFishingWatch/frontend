@@ -9,8 +9,7 @@ import { DeckResolverFunction } from './types'
 
 export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (
   dataview,
-  globalConfig,
-  interactions
+  globalConfig
 ) => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
 
@@ -24,6 +23,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     ...(trackUrl && {
       trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
     }),
+    singleTrack: dataview.config?.singleTrack,
     color: hexToDeckColor(dataview.config?.color!),
     events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
       const eventType = resource.dataset?.subcategory as EventTypes
@@ -33,7 +33,6 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
       }
     }),
     visibleEvents: globalConfig.visibleEvents,
-    // hoveredFeatures: interactions,
     // clickedFeatures,
     ...(dataview.config?.filters?.['speed']?.length && {
       minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
@@ -49,6 +48,5 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     ...(globalConfig.highlightedTime?.end && {
       highlightEndTime: getUTCDateTime(globalConfig.highlightedTime?.end).toMillis(),
     }),
-    // eventsResource: eventsData?.length ? parseEvents(eventsData) : [],
   }
 }

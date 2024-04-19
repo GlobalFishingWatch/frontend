@@ -1,5 +1,4 @@
 import { Color, PickingInfo } from '@deck.gl/core'
-import { Feature, LineString, MultiLineString, Point } from 'geojson'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { ApiEvent, EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { BasePickingInfo } from '../../types'
@@ -19,6 +18,7 @@ export type VesselDataStatus = {
 export type _VesselLayerProps = {
   name: string
   color: Color
+  singleTrack: boolean
   visible: boolean
   onVesselDataLoad?: (layers: VesselDataStatus[]) => void
 }
