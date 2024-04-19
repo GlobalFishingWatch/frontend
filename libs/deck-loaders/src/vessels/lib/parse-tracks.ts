@@ -16,6 +16,13 @@ export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
         value: new Float32Array(track.attributes.getTimestamp.value),
         size: track.attributes.getTimestamp.size,
       },
+      getSpeed: {
+        value: new Float32Array(track.attributes.getSpeed.value),
+        size: track.attributes.getSpeed.size,
+      },
+      // TODO
+      // getElevation
+      // getCourse
     },
   } as VesselTrackData
 }

@@ -28,6 +28,16 @@ export type _VesselTrackLayerProps<DataT = any> = {
    * @default 0
    */
   highlightEndTime?: number
+  /**
+   * The low speed filter
+   * @default 0
+   */
+  speedStartFilter?: number
+  /**
+   * The high speed filter
+   * @default 999999999999999
+   */
+  speedEndFilter?: number
   // /**
   //  * Color to be used as a highlight path
   //  * @default [255, 255, 255, 255]
@@ -37,6 +47,7 @@ export type _VesselTrackLayerProps<DataT = any> = {
    * Timestamp accessor.
    */
   getTimestamp?: AccessorFunction<DataT, NumericArray>
+  getSpeed?: AccessorFunction<DataT, NumericArray>
   /**
    * Callback on data changed to update
    */
@@ -57,8 +68,11 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   startTime: { type: 'number', value: 0, min: 0 },
   highlightStartTime: { type: 'number', value: 0, min: 0 },
   highlightEndTime: { type: 'number', value: 0, min: 0 },
+  speedStartFilter: { type: 'number', value: 0, min: 0 },
+  speedEndFilter: { type: 'number', value: 999999999999999, min: 0 },
   getPath: { type: 'accessor', value: () => [0, 0] },
   getTimestamp: { type: 'accessor', value: (d) => d },
+  getSpeed: { type: 'accessor', value: (d) => d },
   onDataChange: { type: 'function', value: () => {} },
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
   // getHighlightColor: { type: 'accessor', value: DEFAULT_HIGHLIGHT_COLOR_RGBA },
@@ -83,14 +97,19 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       'vs:#decl': `
         uniform float highlightStartTime;
         uniform float highlightEndTime;
+        uniform float speedStartFilter;
+        uniform float speedEndFilter;
 
         in float instanceTimestamps;
+        in float instanceSpeeds;
         out float vTime;
+        out float vSpeed;
         // out vec4 vHighlightColor;
       `,
       // Timestamp of the vertex
       'vs:#main-end': `
         vTime = instanceTimestamps;
+        vSpeed = instanceSpeeds;
         if(vTime > highlightStartTime && vTime < highlightEndTime) {
           gl_Position.z = 1.0;
         }
@@ -101,12 +120,18 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         uniform float endTime;
         uniform float highlightStartTime;
         uniform float highlightEndTime;
+        uniform float speedStartFilter;
+        uniform float speedEndFilter;
         // in vec4 vHighlightColor;
         in float vTime;
+        in float vSpeed;
       `,
       // Drop the segments outside of the time window
       'fs:#main-start': `
         if(vTime < startTime || vTime > endTime) {
+          discard;
+        }
+        if(vSpeed < speedStartFilter || vSpeed > speedEndFilter) {
           discard;
         }
       `,
@@ -133,6 +158,15 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
           },
         },
       })
+      attributeManager.addInstanced({
+        speeds: {
+          size: 1,
+          accessor: 'getSpeed',
+          shaderAttributes: {
+            instanceSpeeds: {},
+          },
+        },
+      })
     }
   }
 
@@ -145,7 +179,15 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
   }
 
   draw(params: any) {
-    const { startTime, endTime, highlightStartTime, highlightEndTime, highlightColor } = this.props
+    const {
+      startTime,
+      endTime,
+      highlightStartTime,
+      highlightEndTime,
+      highlightColor,
+      speedStartFilter,
+      speedEndFilter,
+    } = this.props
 
     params.uniforms = {
       ...params.uniforms,
@@ -153,6 +195,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       endTime,
       highlightStartTime: highlightStartTime ? highlightStartTime : 0,
       highlightEndTime: highlightEndTime ? highlightEndTime : 0,
+      speedStartFilter: speedStartFilter ? speedStartFilter : 0,
+      speedEndFilter: speedEndFilter ? speedEndFilter : 999999999999999,
       highlightColor,
     }
     super.draw(params)
@@ -167,6 +211,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     const segmentsIndex = data.startIndices
     const positions = data.attributes?.getPath?.value
     const timestamps = data.attributes?.getTimestamp?.value
+    const speeds = data.attributes?.getSpeed?.value
     if (!positions?.length || !timestamps.length) {
       return []
     }
@@ -176,6 +221,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         // longitude: positions[segment],
         // latitude: positions[segment + 1],
         timestamp: timestamps[segment / size],
+        speed: speeds[segment / size],
       }
       const nextSegmentIndex = segments[i + 1]
       const lastPoint =
@@ -184,11 +230,13 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
               // longitude: positions[positions.length - size],
               // latitude: positions[positions.length - size + 1],
               timestamp: timestamps[timestamps.length - 1],
+              speed: speeds[speeds.length - 1],
             }
           : {
               // longitude: positions[nextSegmentIndex],
               // latitude: positions[nextSegmentIndex + 1],
               timestamp: timestamps[nextSegmentIndex / size - 1],
+              speed: speeds[nextSegmentIndex / size - 1],
             }
       return [initialPoint, lastPoint]
     })

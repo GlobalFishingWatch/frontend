@@ -114,6 +114,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           endTime,
           highlightStartTime,
           highlightEndTime,
+          // speedStartFilter: 1,
+          // speedEndFilter: 8,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
           onError: this.onSublayerError,
         })
