@@ -3,6 +3,7 @@ import {
   DataviewDatasetConfigParam,
   EndpointId,
   ThinningConfig,
+  TrackField,
 } from '@globalfishingwatch/api-types'
 import { GetDatasetConfigCallback, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
@@ -62,18 +63,25 @@ export const trackDatasetConfigsCallback = (
       }))
 
       let trackQuery = [...(track.query?.map((query) => ({ ...query })) || []), ...thinningQuery]
-      if (timebarGraph !== TimebarGraphs.None) {
+      const fieldsToAdd = timebarGraph !== TimebarGraphs.None ? [timebarGraph] : []
+      const fieldsToCheckInDataview = [TrackField.speed, TrackField.elevation]
+      fieldsToCheckInDataview.forEach((filter) => {
+        if (dataview?.config?.filters?.[filter]?.length && !fieldsToAdd.includes(filter)) {
+          fieldsToAdd.push(filter)
+        }
+      })
+      if (fieldsToAdd.length) {
         const fieldsQueryIndex = trackQuery.findIndex((q) => q.id === 'fields')
         if (fieldsQueryIndex > -1) {
           trackQuery[fieldsQueryIndex].value = [
             ...(trackQuery[fieldsQueryIndex].value as string[]),
-            timebarGraph.toUpperCase(),
+            ...fieldsToAdd.map((f) => f.toUpperCase()),
           ]
         } else {
           const fieldsQuery = {
             id: 'fields',
             // The api now requieres all params in upperCase
-            value: ['LONLAT', 'TIMESTAMP', timebarGraph.toUpperCase()],
+            value: ['LONLAT', 'TIMESTAMP', ...fieldsToAdd.map((f) => f.toUpperCase())],
           }
           trackQuery = [...trackQuery, fieldsQuery]
         }
