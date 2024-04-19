@@ -32,12 +32,13 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
         url: `${API_GATEWAY}${resource.url}`,
       }
     }),
+    visibleEvents: globalConfig.visibleEvents,
     // hoveredFeatures: interactions,
     // clickedFeatures,
-    // highlightEndTime,
-    // highlightStartTime,
-    // highlightEventIds,
-    visibleEvents: globalConfig.visibleEvents,
+    ...(dataview.config?.filters?.['speed']?.length && {
+      minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
+      maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),
+    }),
     ...(globalConfig.highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(globalConfig.highlightedTime?.start).toMillis(),
     }),

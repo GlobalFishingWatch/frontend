@@ -32,12 +32,12 @@ export type _VesselTrackLayerProps<DataT = any> = {
    * The low speed filter
    * @default 0
    */
-  speedStartFilter?: number
+  minSpeedFilter?: number
   /**
    * The high speed filter
    * @default 999999999999999
    */
-  speedEndFilter?: number
+  maxSpeedFilter?: number
   // /**
   //  * Color to be used as a highlight path
   //  * @default [255, 255, 255, 255]
@@ -68,8 +68,8 @@ const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   startTime: { type: 'number', value: 0, min: 0 },
   highlightStartTime: { type: 'number', value: 0, min: 0 },
   highlightEndTime: { type: 'number', value: 0, min: 0 },
-  speedStartFilter: { type: 'number', value: 0, min: 0 },
-  speedEndFilter: { type: 'number', value: 999999999999999, min: 0 },
+  minSpeedFilter: { type: 'number', value: 0, min: 0 },
+  maxSpeedFilter: { type: 'number', value: 999999999999999, min: 0 },
   getPath: { type: 'accessor', value: () => [0, 0] },
   getTimestamp: { type: 'accessor', value: (d) => d },
   getSpeed: { type: 'accessor', value: (d) => d },
@@ -97,8 +97,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       'vs:#decl': `
         uniform float highlightStartTime;
         uniform float highlightEndTime;
-        uniform float speedStartFilter;
-        uniform float speedEndFilter;
+        uniform float minSpeedFilter;
+        uniform float maxSpeedFilter;
 
         in float instanceTimestamps;
         in float instanceSpeeds;
@@ -120,8 +120,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         uniform float endTime;
         uniform float highlightStartTime;
         uniform float highlightEndTime;
-        uniform float speedStartFilter;
-        uniform float speedEndFilter;
+        uniform float minSpeedFilter;
+        uniform float maxSpeedFilter;
         // in vec4 vHighlightColor;
         in float vTime;
         in float vSpeed;
@@ -131,7 +131,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         if(vTime < startTime || vTime > endTime) {
           discard;
         }
-        if(vSpeed < speedStartFilter || vSpeed > speedEndFilter) {
+        if(vSpeed < minSpeedFilter || vSpeed > maxSpeedFilter) {
           discard;
         }
       `,
@@ -185,8 +185,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       highlightStartTime,
       highlightEndTime,
       highlightColor,
-      speedStartFilter,
-      speedEndFilter,
+      minSpeedFilter,
+      maxSpeedFilter,
     } = this.props
 
     params.uniforms = {
@@ -195,8 +195,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       endTime,
       highlightStartTime: highlightStartTime ? highlightStartTime : 0,
       highlightEndTime: highlightEndTime ? highlightEndTime : 0,
-      speedStartFilter: speedStartFilter ? speedStartFilter : 0,
-      speedEndFilter: speedEndFilter ? speedEndFilter : 999999999999999,
+      minSpeedFilter: minSpeedFilter ? minSpeedFilter : 0,
+      maxSpeedFilter: maxSpeedFilter ? maxSpeedFilter : 999999999999999,
       highlightColor,
     }
     super.draw(params)
