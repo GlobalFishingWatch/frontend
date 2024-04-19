@@ -99,8 +99,8 @@ const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
       max: 10000,
     }
   }
-  const min = getValueByUnit(schemaFilter.options?.[0]?.id, { unit: schemaFilter.unit }) || 0
-  const max = getValueByUnit(schemaFilter.options?.[1]?.id, { unit: schemaFilter.unit }) || 1
+  const min = getValueByUnit(schemaFilter.options?.[0]?.id, { unit: schemaFilter.unit }) ?? 0
+  const max = getValueByUnit(schemaFilter.options?.[1]?.id, { unit: schemaFilter.unit }) ?? 1
   return {
     steps: [min, max],
     min,
