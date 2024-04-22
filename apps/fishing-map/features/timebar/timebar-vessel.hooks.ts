@@ -29,19 +29,38 @@ export const useTimebarVesselsLayers = () => {
 
 export const useTimebarVesselTracks = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
-  const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const [tracks, setVesselTracks] = useState<TimebarChartData<any> | null>(null)
-  const [events, setVesselEvents] = useState<TimebarChartData<TrackEventChunkProps> | null>(null)
   const vessels = useTimebarVesselsLayers()
+
   const tracksLoaded = useMemo(
     () => vessels.flatMap((v) => (v.instance.getVesselTracksLayersLoaded() ? v.id : [])).join(','),
     [vessels]
   )
-  const eventsLoaded = useMemo(
-    () => vessels.flatMap((v) => (v.instance.getVesselEventsLayersLoaded() ? v.id : [])).join(','),
+  const tracksColor = useMemo(
+    () => vessels.flatMap((v) => v.instance.props.color.join('-')).join(','),
     [vessels]
   )
-  // const tracksMemoHash = getVesselTimebarTrackMemoHash(vessels)
+
+  useEffect(() => {
+    if (!vessels?.length) {
+      return
+    }
+    setVesselTracks((tracks) => {
+      if (!tracks?.length) {
+        return tracks
+      }
+      return tracks.map((track, index) => {
+        if (!vessels[index]) {
+          return track
+        }
+        return {
+          ...track,
+          color: vessels[index]?.instance?.getVesselColor(),
+        }
+      })
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tracksColor])
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -71,7 +90,20 @@ export const useTimebarVesselTracks = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksLoaded, timebarGraph])
+  }, [tracksLoaded, timebarGraph, tracksColor])
+
+  return tracks
+}
+
+export const useTimebarVesselEvents = () => {
+  const timebarGraph = useSelector(selectTimebarGraph)
+  const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
+  const [events, setVesselEvents] = useState<TimebarChartData<TrackEventChunkProps> | null>(null)
+  const vessels = useTimebarVesselsLayers()
+  const eventsLoaded = useMemo(
+    () => vessels.flatMap((v) => (v.instance.getVesselEventsLayersLoaded() ? v.id : [])).join(','),
+    [vessels]
+  )
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -94,7 +126,7 @@ export const useTimebarVesselTracks = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventsLoaded, timebarGraph, visibleEvents])
 
-  return { events, tracks }
+  return events
 }
 
 const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs): string => {

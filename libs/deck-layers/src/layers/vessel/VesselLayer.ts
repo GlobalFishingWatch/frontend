@@ -18,7 +18,12 @@ import { BaseLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 import { getVesselResourceChunks } from './vessel.utils'
-import { EVENTS_COLORS, EVENT_LAYER_TYPE, TRACK_LAYER_TYPE } from './vessel.config'
+import {
+  EVENTS_COLORS,
+  EVENT_LAYER_TYPE,
+  DEFAULT_FISHING_EVENT_COLOR,
+  TRACK_LAYER_TYPE,
+} from './vessel.config'
 import {
   VesselDataStatus,
   VesselDataType,
@@ -178,7 +183,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
             getFillColor: (d: any): Color => {
               if (d.type === EventTypes.Fishing) {
-                return singleTrack ? [255, 255, 255] : color
+                return singleTrack ? DEFAULT_FISHING_EVENT_COLOR : color
               }
               return EVENTS_COLORS[d.type]
             },

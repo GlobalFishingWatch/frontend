@@ -40,7 +40,10 @@ import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-gr
 import { getUTCDateTime } from 'utils/dates'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useTimebarVesselTracks } from 'features/timebar/timebar-vessel.hooks'
+import {
+  useTimebarVesselEvents,
+  useTimebarVesselTracks,
+} from 'features/timebar/timebar-vessel.hooks'
 import { getTimebarChunkEventColor } from 'features/timebar/timebar.utils'
 import {
   selectTimebarGraph,
@@ -167,7 +170,8 @@ const TimebarWrapper = () => {
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
   // const [isPending, startTransition] = useTransition()
-  const { tracks, events } = useTimebarVesselTracks()
+  const tracks = useTimebarVesselTracks()
+  const events = useTimebarVesselEvents()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
