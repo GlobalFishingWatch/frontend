@@ -8,7 +8,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:18
+    name: node:21
     script: |
       if [ ! -d "node_modules" ]; then
         apk add git
@@ -26,14 +26,14 @@ steps:
       #!/usr/bin/env bash
       save_cache --bucket=gs://frontend-cache-dependencies --key=yarn-$( checksum yarn.lock ) --path=./node_modules --no-clobber
       if [ -d ".yarn/cache" ]; then
-        if [ $BRANCH_NAME == "dev" ]; then
+        if [ $BRANCH_NAME == "develop" ]; then
           save_cache --bucket=gs://frontend-cache-dependencies --key=yarn3-cache --path=./.yarn/cache
         fi
       fi
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:18
+    name: node:21
     entrypoint: yarn
     args: ['nx', 'build', 'real-time-prototype', '--parallel']
     env:

@@ -1,5 +1,8 @@
 import { RULER_INTERACTIVE_LAYER } from '@globalfishingwatch/layer-composer'
 
+export const MAP_CANVAS_ID = 'map'
+export const MAP_WRAPPER_ID = `${MAP_CANVAS_ID}-wrapper`
+
 export const WORKSPACES_POINTS_TYPE = 'workspace'
 export const WORKSPACE_GENERATOR_ID = 'workspace_points'
 export const REPORT_BUFFER_GENERATOR_ID = 'report-area-buffer'

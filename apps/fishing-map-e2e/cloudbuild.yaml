@@ -3,7 +3,7 @@ steps:
     args: [fetch, --depth=1000]
   - id: 'switch_tag'
     waitFor: ['-']
-    name: node:18
+    name: node:21
     env:
       - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
     script: |
@@ -11,6 +11,7 @@ steps:
           tag=$(git describe --match "@globalfishingwatchapp/fishing-map*" --abbrev=0 --tags $(git rev-list --tags --max-count=1))
           git checkout $tag
       fi
+
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['switch_tag']
@@ -18,58 +19,25 @@ steps:
       #!/usr/bin/env bash
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock ) \
-        --key_fallback=yarn3-cache
+        --key=node_modules-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock )
+      restore_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-install-state-$( checksum yarn.lock )
 
-  - id: 'generate-cypress-lock'
+  - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:18
+    name: node:21
     script: |
-      if [ -d "node_modules" ]; then
-        yarn info cypress version > cypress.lock
-      fi
-
-  - name: 'gcr.io/$PROJECT_ID/restore_cache'
-    id: restore_cypress_cache
-    waitFor: ['generate-cypress-lock']
-    script: |
-      #!/usr/bin/env bash
-      if [ -d "node_modules" ]; then
-        restore_cache \
-          --bucket=gs://frontend-cache-dependencies \
-          --key=cypress-$( checksum cypress.lock ) \
-          --key_fallback=cypress-cache
-      fi
-
-  - id: 'save_cache'
-    waitFor: ['restore_cypress_cache']
-    name: 'gcr.io/$PROJECT_ID/restore_cache'
-    env:
-      - 'BRANCH_NAME=$BRANCH_NAME'
-    script: |
-      #!/usr/bin/env bash
-      save_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock ) \
-        --path=./node_modules \
-        --no-clobber
-      save_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-$( checksum cypress.lock ) \
-        --path=.cypress-cache \
-        --no-clobber
-      if [ -d ".yarn/cache" ]; then
-        if [ $BRANCH_NAME == "develop" ]; then
-          save_cache \
-            --bucket=gs://frontend-cache-dependencies \
-            --key=yarn3-cache \
-            --path=./.yarn/cache
-        fi
-      fi
+      yarn set version 4.1.1
+      yarn -v
+      yarn install --immutable
 
   - id: 'smoke-test-e2e-live'
-    name: cypress/included:12.17.1
-    waitFor: ['restore_cypress_cache']
+    name: cypress/included:13.7.3
+    waitFor: ['install-yarn']
     allowFailure: true
     entrypoint: 'bash'
     env:
@@ -89,9 +57,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        CYPRESS_CACHE_FOLDER=.cypress-cache yarn install --immutable
-          CYPRESS_CACHE_FOLDER=.cypress-cache \
-          yarn nx run fishing-map-e2e:test-env --parallel
+        yarn nx run fishing-map-e2e:test-env --parallel
 
   - id: 'save-test-videos'
     name: gcr.io/cloud-builders/gcloud
