@@ -3,6 +3,7 @@ import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers'
 import { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { screen } from 'color-blend'
+import { isEqual } from 'lodash'
 import { FourwingsFeature, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_HIGHLIGHT_LINE,
@@ -113,7 +114,11 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         })
       let chosenValueIndex = 0
       let chosenValue: number | undefined
-      feature.properties.aggregatedValues = aggregatedCellValues
+      try {
+        feature.properties.aggregatedValues = aggregatedCellValues
+      } catch (e: any) {
+        console.warn(e.message)
+      }
       aggregatedCellValues.forEach((value, index) => {
         if (value && (!chosenValue || value > chosenValue)) {
           chosenValue = value
