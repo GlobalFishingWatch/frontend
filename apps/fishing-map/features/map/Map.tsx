@@ -218,6 +218,7 @@ const MapWrapper = () => {
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
   const { onDrawEdit, onDrawClick, drawLayerMode, drawFeaturesIndexes, drawFeatures } =
     useDrawLayer()
+  console.log('🚀 ~ drawFeatures:', drawFeatures)
 
   const currentRuler = editingRuler ? [editingRuler] : []
 
@@ -272,8 +273,8 @@ const MapWrapper = () => {
             mode={drawLayerMode}
           />
         )}
+        {isMapDrawing && <DrawDialog />}
       </DeckGL>
-      {isMapDrawing && <DrawDialog />}
       <MapPopups />
       {/* {style && (
         <Map
