@@ -24,7 +24,7 @@ const InsightFlagChanges = ({
   const { flagsChanges } = insightData?.vesselIdentity || {}
 
   return (
-    <div className={styles.insightContainer}>
+    <div id="flagChanges" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t('vessel.insights.flagChanges', 'Flag Changes')}</label>
         <DataTerminology

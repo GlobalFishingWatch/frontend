@@ -25,7 +25,7 @@ const InsightGaps = ({
   }, [eventDetailsVisibility])
 
   return (
-    <div className={styles.insightContainer}>
+    <div id="gaps" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t('vessel.insights.gaps', 'AIS Off Events')}</label>
         <DataTerminology

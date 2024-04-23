@@ -17,7 +17,7 @@ const InsightIUU = ({
   const { t } = useTranslation()
   const { iuuVesselList } = insightData?.vesselIdentity || {}
   return (
-    <div className={styles.insightContainer}>
+    <div id="IUU" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t('vessel.insights.IUU', 'RFMO IUU Vessel List')}</label>
         <DataTerminology

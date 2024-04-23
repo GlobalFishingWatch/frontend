@@ -17,7 +17,7 @@ const InsightCoverage = ({
 }) => {
   const { t } = useTranslation()
   return (
-    <div className={styles.insightContainer}>
+    <div id="coverage" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t('vessel.insights.coverage', 'AIS Coverage')}</label>
         <DataTerminology
