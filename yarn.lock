@@ -2440,7 +2440,6 @@ __metadata:
     "@next/bundle-analyzer": "npm:^14.1.0"
     "@next/eslint-plugin-next": "npm:14.x"
     "@nx/cypress": "npm:18.3.3"
-    "@nx/devkit": "npm:^18.3.3"
     "@nx/esbuild": "npm:18.3.3"
     "@nx/eslint": "npm:18.3.3"
     "@nx/eslint-plugin": "npm:18.3.3"
@@ -4211,7 +4210,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nx/devkit@npm:18.3.3, @nx/devkit@npm:^18.3.3":
+"@nx/devkit@npm:18.3.3":
   version: 18.3.3
   resolution: "@nx/devkit@npm:18.3.3"
   dependencies:
