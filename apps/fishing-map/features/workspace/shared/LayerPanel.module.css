@@ -40,6 +40,7 @@
   box-shadow: none;
 }
 
+.expandedContainerOpen .dragger,
 .LayerPanel:hover .dragger {
   width: var(--size-S);
 }

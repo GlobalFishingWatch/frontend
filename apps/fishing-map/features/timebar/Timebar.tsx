@@ -171,7 +171,7 @@ const TimebarWrapper = () => {
   const dispatch = useAppDispatch()
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
-  const tracksEvents = useTimebarVesselEvents()
+  const events = useTimebarVesselEvents()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
@@ -346,10 +346,10 @@ const TimebarWrapper = () => {
         {showGraph && tracksGraphsData && (
           <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} />
         )}
-        {tracksEvents && (
+        {events && (
           <Fragment>
             <TimebarTracksEvents
-              data={tracksEvents}
+              data={events}
               highlightedEventsIds={highlightedEvents}
               getEventColor={getTimebarChunkEventColor}
               onEventClick={onEventClick}

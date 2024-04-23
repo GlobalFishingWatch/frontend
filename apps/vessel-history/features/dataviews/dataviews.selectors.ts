@@ -6,9 +6,9 @@ import {
   getGeneratorConfig,
   mergeWorkspaceUrlDataviewInstances,
   GetDatasetConfigsCallbacks,
-  getResources,
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
+  _getLegacyResources,
 } from '@globalfishingwatch/dataviews-client'
 import {
   BasemapGeneratorConfig,
@@ -166,7 +166,7 @@ export const selectDataviewsResources = createSelector(
       track: trackDatasetConfigsCallback,
     }
 
-    return getResources(dataviewInstances || [], callbacks)
+    return _getLegacyResources(dataviewInstances || [], callbacks)
   }
 )
 
@@ -199,9 +199,8 @@ export const selectVesselsDataviews = createSelector([selectTrackDataviews], (da
   )
 })
 
-export const selectActiveVesselsDataviews = createSelector(
-  [selectVesselsDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
+  dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {

@@ -18,7 +18,12 @@ import { BaseLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 import { getVesselResourceChunks } from './vessel.utils'
-import { EVENTS_COLORS, EVENT_LAYER_TYPE, TRACK_LAYER_TYPE } from './vessel.config'
+import {
+  EVENTS_COLORS,
+  EVENT_LAYER_TYPE,
+  DEFAULT_FISHING_EVENT_COLOR,
+  TRACK_LAYER_TYPE,
+} from './vessel.config'
 import {
   VesselDataStatus,
   VesselDataType,
@@ -83,8 +88,19 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselTrackLayers() {
-    const { trackUrl, visible, startTime, endTime, color, highlightStartTime, highlightEndTime } =
-      this.props
+    const {
+      trackUrl,
+      visible,
+      startTime,
+      endTime,
+      color,
+      highlightStartTime,
+      highlightEndTime,
+      minSpeedFilter,
+      maxSpeedFilter,
+      minElevationFilter,
+      maxElevationFilter,
+    } = this.props
     if (!trackUrl || !visible) {
       if (!trackUrl) console.warn('trackUrl needed for vessel layer')
       return []
@@ -114,6 +130,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           endTime,
           highlightStartTime,
           highlightEndTime,
+          minSpeedFilter,
+          maxSpeedFilter,
+          minElevationFilter,
+          maxElevationFilter,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
           onError: this.onSublayerError,
         })
@@ -131,6 +151,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       events,
       highlightStartTime,
       highlightEndTime,
+      singleTrack,
       color,
     } = this.props
     if (!visible) {
@@ -161,7 +182,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             highlightEndTime,
             getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
             getFillColor: (d: any): Color => {
-              return d.type === EventTypes.Fishing ? color : EVENTS_COLORS[d.type]
+              if (d.type === EventTypes.Fishing) {
+                return singleTrack ? DEFAULT_FISHING_EVENT_COLOR : color
+              }
+              return EVENTS_COLORS[d.type]
             },
             updateTriggers: {
               getFillColor: [color],

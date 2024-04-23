@@ -3,6 +3,7 @@ import {
   DataviewDatasetConfigParam,
   EndpointId,
   ThinningConfig,
+  TrackField,
 } from '@globalfishingwatch/api-types'
 import { GetDatasetConfigCallback, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
@@ -50,10 +51,7 @@ export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) =
   return allEvents.filter(Boolean)
 }
 
-export const trackDatasetConfigsCallback = (
-  thinningConfig: ThinningConfigParam | null,
-  timebarGraph: any
-) => {
+export const trackDatasetConfigsCallback = (thinningConfig: ThinningConfigParam | null) => {
   return ([track]: DataviewDatasetConfig[], dataview?: UrlDataviewInstance) => {
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
@@ -61,49 +59,10 @@ export const trackDatasetConfigsCallback = (
         value,
       }))
 
-      let trackGraph
-      if (timebarGraph !== TimebarGraphs.None) {
-        trackGraph = { ...track }
-        const fieldsQuery = {
-          id: 'fields',
-          // The api now requieres all params in upperCase
-          value: ['TIMESTAMP', timebarGraph.toUpperCase()],
-        }
-        const graphQuery = [...(track.query || []), ...thinningQuery]
-        const fieldsQueryIndex = graphQuery.findIndex((q) => q.id === 'fields')
-        if (fieldsQueryIndex > -1) {
-          graphQuery[fieldsQueryIndex] = fieldsQuery
-          trackGraph.query = graphQuery
-        } else {
-          trackGraph.query = [...graphQuery, fieldsQuery]
-        }
-      }
+      let trackQuery = [...(track.query?.map((query) => ({ ...query })) || []), ...thinningQuery]
+      const trackWithThinning = { ...track, query: trackQuery }
 
-      const trackWithThinning = {
-        ...track,
-        query: [...(track.query || []), ...thinningQuery],
-      }
-
-      // const allEvents = events.map((event) => ({
-      //   ...event,
-      //   query: [
-      //     ...(Object.entries(DEFAULT_PAGINATION_PARAMS).map(([id, value]) => ({
-      //       id,
-      //       value,
-      //     })) as DataviewDatasetConfigParam[]),
-      //     ...(event?.query || []),
-      //   ],
-      // }))
-      // Clean resources when mandatory vesselId is missing
-      // needed for vessels with no info datasets (zebraX)
-      // const vesselData = hasDatasetConfigVesselData(info)
-
-      return [
-        trackWithThinning,
-        // ...allEvents,
-        // ...(vesselData ? [info] : []),
-        // ...(trackGraph ? [trackGraph] : []),
-      ]
+      return [trackWithThinning]
     }
     return [track].filter(Boolean)
   }
