@@ -1,5 +1,7 @@
-import { DataFilterExtension } from '@deck.gl/extensions'
+import { ClipExtension, DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps, Color, PickingInfo } from '@deck.gl/core'
+import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import { load } from '@loaders.gl/core'
 import {
   ApiEvent,
   DataviewCategory,
@@ -12,6 +14,7 @@ import {
   VesselEventsLoader,
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { deckToHexColor } from '../../utils/colors'
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
 import { BaseLayerProps } from '../../types'
@@ -84,7 +87,24 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       warnLogged = true
     }
     trackUrlObject.searchParams.set('format', 'DECKGL')
-    return trackUrlObject.toString()
+    return trackUrlObject
+  }
+
+  _getTrackTileData: TileLayerProps['getTileData'] = async (tile) => {
+    const tracksURL = new URL(tile.url as string)
+    tracksURL.searchParams.set('z', tile.index.z.toString())
+    tracksURL.searchParams.set('x', tile.index.x.toString())
+    tracksURL.searchParams.set('y', tile.index.y.toString())
+    tracksURL.searchParams.set('cache', 'false')
+    const arrayBuffer = await GFWAPI.fetch<Response>(tracksURL.toString(), {
+      signal: tile.signal,
+      responseType: 'arrayBuffer',
+    })
+
+    const data = await load(arrayBuffer, VesselTrackLoader, {
+      worker: false,
+    })
+    return data
   }
 
   _getVesselTrackLayers() {
@@ -111,33 +131,47 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         return []
       }
       const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}`
-      return new VesselTrackLayer<any, { type: VesselDataType }>(
-        this.getSubLayerProps({
-          id: chunkId,
-          visible,
-          data: this._getTracksUrl({ start, end, trackUrl }),
-          type: TRACK_LAYER_TYPE,
-          loaders: [VesselTrackLoader],
-          _pathType: 'open',
-          widthUnits: 'pixels',
-          getWidth: 1,
-          widthScale: 1,
-          wrapLongitude: true,
-          jointRounded: true,
-          capRounded: true,
-          getColor: color,
-          startTime,
-          endTime,
-          highlightStartTime,
-          highlightEndTime,
-          minSpeedFilter,
-          maxSpeedFilter,
-          minElevationFilter,
-          maxElevationFilter,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
-          onError: this.onSublayerError,
-        })
-      )
+      const tracksURL = this._getTracksUrl({ start, end, trackUrl })
+      return new TileLayer({
+        id: chunkId,
+        visible,
+        tileSize: 512,
+        data: tracksURL.toString(),
+        getTileData: this._getTrackTileData,
+        minZoom: 0,
+        maxZoom: 12,
+        opacity: 1,
+        renderSubLayers: (props: any) => {
+          const tileBbox = props.tile.bbox as any
+          const { west, south, east, north } = tileBbox
+          return new VesselTrackLayer<any, { type: VesselDataType }>(
+            props,
+            this.getSubLayerProps({
+              id: `${props.id}`,
+              _pathType: 'open',
+              widthUnits: 'pixels',
+              getWidth: 1,
+              widthScale: 1,
+              wrapLongitude: true,
+              jointRounded: true,
+              capRounded: true,
+              getColor: color,
+              startTime,
+              endTime,
+              highlightStartTime,
+              highlightEndTime,
+              minSpeedFilter,
+              maxSpeedFilter,
+              minElevationFilter,
+              maxElevationFilter,
+              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
+              onError: this.onSublayerError,
+              extensions: [...(props.extensions || []), new ClipExtension()],
+              clipBounds: [west, south, east, north],
+            })
+          )
+        },
+      })
     })
   }
 
@@ -251,7 +285,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselTrackSegments() {
-    return this.getTrackLayers()?.flatMap((l) => l.getSegments())
+    return this.getTrackLayers()?.flatMap((l) => l?.getSegments?.() || [])
   }
 
   getVesselEventsLayersLoaded() {
