@@ -1,18 +1,22 @@
-import { Dataset } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetCategory,
+  DatasetStatus,
+  DatasetTypes,
+} from '@globalfishingwatch/api-types'
 
 export const datasets: Dataset[] = [
   {
     alias: ['public-global-all-tracks:latest'],
     id: 'public-global-all-tracks:v20231026',
     name: 'Tracks',
-    type: 'tracks:v1',
+    type: DatasetTypes.Tracks,
     description: 'The dataset contains the tracks from all vessels (AIS) - Version 20231026',
     startDate: '2012-01-01T00:00:00.000Z',
     endDate: '2024-01-14T00:00:00.000Z',
     unit: 'NA',
-    status: 'done',
-    importLogs: null,
-    category: 'vessel',
+    status: DatasetStatus.Done,
+    category: DatasetCategory.Vessel,
     subcategory: 'track',
     source: 'Global Fishing Watch - AIS',
     ownerId: 0,
@@ -54,7 +58,7 @@ export const datasets: Dataset[] = [
       disableInteraction: false,
       apiSupportedVersions: ['v2', 'v3'],
       propertyToIncludeRange: null,
-    },
+    } as any,
     relatedDatasets: [],
     schema: {
       lat: {
@@ -204,7 +208,7 @@ export const datasets: Dataset[] = [
           },
         ],
       },
-    ],
+    ] as any,
   },
 ]
 
