@@ -2,6 +2,13 @@ import { Fragment } from 'react'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
+import {
+  autoPlacement,
+  autoUpdate,
+  useFloating,
+  detectOverflow,
+  Middleware,
+} from '@floating-ui/react'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -16,11 +23,32 @@ import {
   selectApiEventStatus,
   selectFishingInteractionStatus,
 } from '../map.slice'
+import { MAP_WRAPPER_ID } from '../map.config'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
 import EncounterTooltipRow from './EncounterTooltipRow'
 import ContextTooltipSection from './ContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
+
+const overflowMiddlware: Middleware = {
+  name: 'overflow',
+  async fn(state) {
+    if (!state) {
+      return {}
+    }
+    const overflow = await detectOverflow(state, {
+      boundary: document.getElementById(MAP_WRAPPER_ID),
+    })
+    Object.entries(overflow).forEach(([key, value]) => {
+      if (value > 0) {
+        const property = key === 'top' || key === 'bottom' ? 'y' : 'x'
+        state[property] =
+          key === 'bottom' || key === 'right' ? state[property] - value : state[property] + value
+      }
+    })
+    return state
+  },
+}
 
 type PopupWrapperProps = {
   interaction: InteractionEvent | null
@@ -30,6 +58,7 @@ type PopupWrapperProps = {
   onClose?: () => void
   type?: 'hover' | 'click'
 }
+
 function PopupWrapper({
   interaction,
   closeButton = false,
@@ -45,15 +74,18 @@ function PopupWrapper({
   const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
 
-  // const popupNeedsLoading = [fishingInteractionStatus, apiEventStatus].some(
-  //   (s) => s === AsyncReducerStatus.Loading
-  // )
+  const { refs, floatingStyles /*, update, elements */ } = useFloating({
+    whileElementsMounted: autoUpdate,
+    middleware: [autoPlacement({ padding: 10 }), overflowMiddlware],
+  })
 
   if (!mapViewport || !interaction || !interaction.features) return null
 
   // const visibleFeatures = interaction.features.filter(
   //   (feature) => feature.visible || feature.source === WORKSPACE_GENERATOR_ID
   // )
+
+  const [left, top] = mapViewport.project([interaction.longitude, interaction.latitude])
 
   const featureByCategory = groupBy(
     interaction.features
@@ -67,13 +99,20 @@ function PopupWrapper({
     'category'
   )
 
-  const [left, top] = mapViewport.project([interaction.longitude, interaction.latitude])
+  // useEffect(() => {
+  //   if (elements.reference && elements.floating) {
+  //     const cleanup = autoUpdate(elements.reference, elements.floating, update)
+  //     return cleanup
+  //   }
+  // }, [left, top, elements, update])
+
   return (
     <div
-      style={{ position: 'absolute', top, left, maxWidth: '600px' }}
+      ref={refs.setReference}
+      style={{ position: 'absolute', top, left }}
       className={cx(styles.popup, styles[type], className)}
     >
-      <div>
+      <div ref={refs.setFloating} style={floatingStyles}>
         {/* <div>
             <IconButton icon="close" onClick={onClose} />
           </div> */}

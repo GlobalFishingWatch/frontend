@@ -25,6 +25,7 @@
     "@dnd-kit/utilities": "3.2.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@floating-ui/react": "^0.26.12",
     "@globalfishingwatch/maplibre-gl": "^3.5.1-gfw.2",
     "@loaders.gl/core": "^4.1.4",
     "@loaders.gl/json": "^4.1.4",

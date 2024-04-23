@@ -10,7 +10,7 @@ function MapPopups() {
 
   return (
     <Fragment>
-      {hoverInteraction && <PopupWrapper interaction={hoverInteraction} type="hover" />}
+      {/* {hoverInteraction && <PopupWrapper interaction={hoverInteraction} type="hover" />} */}
       {clickInteraction && <PopupWrapper interaction={clickInteraction} type="click" />}
     </Fragment>
   )
