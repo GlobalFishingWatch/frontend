@@ -305,13 +305,20 @@ export function getDataviewsResolved(
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
+  const trackDataviewsParsed = trackDataviews.flatMap((d) => ({
+    ...d,
+    config: {
+      ...d.config,
+      singleTrack: trackDataviews.length === 1,
+    },
+  }))
   const dataviewsMerged = [
     ...otherDataviews,
     ...staticDataviewsParsed,
     ...fourwingsDataviewsParsed,
     ...mergedDetectionsDataview,
     ...mergedActivityDataview,
-    ...trackDataviews,
+    ...trackDataviewsParsed,
   ]
   return dataviewsMerged
 }

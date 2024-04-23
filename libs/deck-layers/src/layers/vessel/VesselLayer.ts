@@ -18,7 +18,12 @@ import { BaseLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 import { getVesselResourceChunks } from './vessel.utils'
-import { EVENTS_COLORS, EVENT_LAYER_TYPE, TRACK_LAYER_TYPE } from './vessel.config'
+import {
+  EVENTS_COLORS,
+  EVENT_LAYER_TYPE,
+  DEFAULT_FISHING_EVENT_COLOR,
+  TRACK_LAYER_TYPE,
+} from './vessel.config'
 import {
   VesselDataStatus,
   VesselDataType,
@@ -38,6 +43,7 @@ export type VesselLayerProps = BaseLayerProps &
   VesselEventsLayerProps &
   _VesselLayerProps
 
+let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   dataStatus: VesselDataStatus[] = []
 
@@ -68,24 +74,48 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     this.setState({ error })
   }
 
+  _getTracksUrl({ start, end, trackUrl }: { start: string; end: string; trackUrl: string }) {
+    const trackUrlObject = new URL(trackUrl)
+    trackUrlObject.searchParams.append('start-date', start)
+    trackUrlObject.searchParams.append('end-date', end)
+    const format = trackUrlObject.searchParams.get('format') || 'DECKGL'
+    if (format !== 'DECKGL' && !warnLogged) {
+      console.warn(`only DECKGL format is supported, the current format (${format}) was replaced`)
+      warnLogged = true
+    }
+    trackUrlObject.searchParams.set('format', 'DECKGL')
+    return trackUrlObject.toString()
+  }
+
   _getVesselTrackLayers() {
-    const { trackUrl, visible, startTime, endTime, color, highlightStartTime, highlightEndTime } =
-      this.props
+    const {
+      trackUrl,
+      visible,
+      startTime,
+      endTime,
+      color,
+      highlightStartTime,
+      highlightEndTime,
+      minSpeedFilter,
+      maxSpeedFilter,
+      minElevationFilter,
+      maxElevationFilter,
+    } = this.props
     if (!trackUrl || !visible) {
       if (!trackUrl) console.warn('trackUrl needed for vessel layer')
       return []
     }
     const chunks = getVesselResourceChunks(startTime, endTime)
-    return chunks.map(({ start, end }) => {
+    return chunks.flatMap(({ start, end }) => {
+      if (!start || !end) {
+        return []
+      }
       const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}`
-      const trackUrlObject = new URL(trackUrl as string)
-      trackUrlObject.searchParams.append('start-date', start as string)
-      trackUrlObject.searchParams.append('end-date', end as string)
       return new VesselTrackLayer<any, { type: VesselDataType }>(
         this.getSubLayerProps({
           id: chunkId,
           visible,
-          data: trackUrlObject.toString(),
+          data: this._getTracksUrl({ start, end, trackUrl }),
           type: TRACK_LAYER_TYPE,
           loaders: [VesselTrackLoader],
           _pathType: 'open',
@@ -100,6 +130,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           endTime,
           highlightStartTime,
           highlightEndTime,
+          minSpeedFilter,
+          maxSpeedFilter,
+          minElevationFilter,
+          maxElevationFilter,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
           onError: this.onSublayerError,
         })
@@ -117,6 +151,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       events,
       highlightStartTime,
       highlightEndTime,
+      singleTrack,
       color,
     } = this.props
     if (!visible) {
@@ -147,7 +182,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             highlightEndTime,
             getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
             getFillColor: (d: any): Color => {
-              return d.type === EventTypes.Fishing ? color : EVENTS_COLORS[d.type]
+              if (d.type === EventTypes.Fishing) {
+                return singleTrack ? DEFAULT_FISHING_EVENT_COLOR : color
+              }
+              return EVENTS_COLORS[d.type]
             },
             updateTriggers: {
               getFillColor: [color],

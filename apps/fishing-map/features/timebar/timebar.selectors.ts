@@ -209,10 +209,6 @@ export const selectTracksData = createSelector(
   }
 )
 
-export const selectHasTracksData = createSelector([selectTracksData], (tracks = []) => {
-  return tracks.some(({ chunks }) => chunks.length > 0)
-})
-
 export const selectHasTracksWithNoData = createSelector([selectTracksData], (tracks = []) => {
   return tracks.some(
     ({ chunks, status }) => status !== ResourceStatus.Loading && chunks.length === 0

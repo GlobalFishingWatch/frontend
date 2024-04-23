@@ -9,8 +9,7 @@ import { DeckResolverFunction } from './types'
 
 export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (
   dataview,
-  globalConfig,
-  interactions
+  globalConfig
 ) => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
 
@@ -24,6 +23,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     ...(trackUrl && {
       trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
     }),
+    singleTrack: dataview.config?.singleTrack,
     color: hexToDeckColor(dataview.config?.color!),
     events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
       const eventType = resource.dataset?.subcategory as EventTypes
@@ -32,18 +32,21 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
         url: `${API_GATEWAY}${resource.url}`,
       }
     }),
-    // hoveredFeatures: interactions,
-    // clickedFeatures,
-    // highlightEndTime,
-    // highlightStartTime,
-    // highlightEventIds,
     visibleEvents: globalConfig.visibleEvents,
+    // clickedFeatures,
+    ...(dataview.config?.filters?.['speed']?.length && {
+      minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
+      maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),
+    }),
+    ...(dataview.config?.filters?.['elevation']?.length && {
+      minElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][0]),
+      maxElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][1]),
+    }),
     ...(globalConfig.highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(globalConfig.highlightedTime?.start).toMillis(),
     }),
     ...(globalConfig.highlightedTime?.end && {
       highlightEndTime: getUTCDateTime(globalConfig.highlightedTime?.end).toMillis(),
     }),
-    // eventsResource: eventsData?.length ? parseEvents(eventsData) : [],
   }
 }

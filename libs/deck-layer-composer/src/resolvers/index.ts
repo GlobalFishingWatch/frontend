@@ -64,7 +64,7 @@ export const dataviewToDeckLayer = (
     return layer
   }
   if (dataview.config?.type === DataviewType.Track) {
-    const deckLayerProps = resolveDeckVesselLayerProps(dataview, globalConfig, interactions)
+    const deckLayerProps = resolveDeckVesselLayerProps(dataview, globalConfig)
     const layer = new VesselLayer(deckLayerProps)
     return layer
   }
