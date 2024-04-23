@@ -83,7 +83,7 @@ const InsightMOUList = ({
   }
 
   return (
-    <div className={styles.insightContainer}>
+    <div id="MOULists" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t('vessel.insights.MOULists', 'MOU Lists')}</label>
         <DataTerminology
