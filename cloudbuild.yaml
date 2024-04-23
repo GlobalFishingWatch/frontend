@@ -1,12 +1,6 @@
 steps:
-  - name: 'gcr.io/cloud-builders/git'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        #!/bin/bash
-        git fetch --unshallow --no-tags
-        git checkout develop
+  - name: gcr.io/cloud-builders/git
+    args: ['fetch', '--unshallow', '--no-tags']
 
 steps:
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
