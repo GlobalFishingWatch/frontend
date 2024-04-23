@@ -11,9 +11,7 @@ export const loadSpreadsheetDoc = async (id: string) => {
     )
   }
   if (!JWT) {
-    JWT = await import('google-auth-library').then(
-      (module) => module.JWT
-    )
+    JWT = await import('google-auth-library').then((module) => module.JWT)
   }
   if (!id) {
     throw new Error('Spreadsheet id is missing')
@@ -25,9 +23,7 @@ export const loadSpreadsheetDoc = async (id: string) => {
   const serviceAccountAuth = new JWT({
     email: FEEDBACK_CLIENT_EMAIL,
     key: FEEDBACK_PRIVATE_KEY,
-    scopes: [
-      'https://www.googleapis.com/auth/spreadsheets',
-    ],
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   })
   const spreadsheetDoc = new GoogleSpreadsheet(id, serviceAccountAuth)
   await spreadsheetDoc.loadInfo()
