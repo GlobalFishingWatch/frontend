@@ -190,6 +190,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             },
             radiusUnits: 'pixels',
             getRadius: (d: any) => {
+              // TODO:deck highlighlight events using a new layer as we do in FourwingsLayer
               const highlightOffset = highlightEventIds?.includes(d.id) ? 6 : 0
               return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
             },

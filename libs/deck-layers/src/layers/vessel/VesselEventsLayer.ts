@@ -126,12 +126,16 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
           vec2 uv = abs(geometry.uv);
           int shape = int(vShape);
           if (shape == SHAPE_SQUARE) {
-            if (uv.x > 0.7 || uv.y > 0.7) discard;
+            if (uv.x > 0.7 || uv.y > 0.7) {
+              color = vec4(0,0,0,0);
+            };
           } else if (shape == SHAPE_DIAMOND) {
-            if (uv.x + uv.y > 1.0) discard;
+            if (uv.x + uv.y > 1.0) {
+              color = vec4(0,0,0,0);
+            };
           } else if (shape == SHAPE_DIAMOND_STROKE) {
             if (uv.x + uv.y > 1.0 || uv.x + uv.y < 0.7) {
-              discard;
+              color = vec4(0,0,0,0);
             }
           }
           if (vStart > highlightStartTime && vEnd < highlightEndTime) {
