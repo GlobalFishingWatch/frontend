@@ -25,7 +25,6 @@ import {
   TRACK_LAYER_TYPE,
 } from './vessel.config'
 import {
-  VesselDataStatus,
   VesselDataType,
   VesselDeckLayersEvent,
   VesselEventPickingInfo,
@@ -45,8 +44,6 @@ export type VesselLayerProps = BaseLayerProps &
 
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
-  dataStatus: VesselDataStatus[] = []
-
   getPickingInfo = ({
     info,
   }: {
@@ -189,10 +186,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             },
             updateTriggers: {
               getFillColor: [color],
+              getRadius: [highlightEventIds],
             },
             radiusUnits: 'pixels',
             getRadius: (d: any) => {
-              const highlightOffset = highlightEventIds?.includes(d.id) ? 3 : 0
+              const highlightOffset = highlightEventIds?.includes(d.id) ? 6 : 0
               return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
             },
             getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end] as any,

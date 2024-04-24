@@ -77,7 +77,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       startTime,
       colorDomain,
       colorRanges,
-      hoveredFeatures,
+      highlightedFeatures,
       comparisonMode,
       availableIntervals,
       aggregationOperation,
@@ -207,25 +207,27 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       ),
     ] as LayersList
 
-    const layerHoveredFeature = hoveredFeatures?.find((f) => f.layerId === this.root.id)
-    if (layerHoveredFeature) {
-      this.layers.push(
-        new PathLayer(
-          this.props,
-          this.getSubLayerProps({
-            data: [layerHoveredFeature],
-            id: `fourwings-cell-highlight`,
-            widthUnits: 'pixels',
-            widthMinPixels: 4,
-            getPath: (d: FourwingsFeature) => d.geometry.coordinates[0],
-            getColor: COLOR_HIGHLIGHT_LINE,
-            getOffset: 0.5,
-            getPolygonOffset: (params: any) =>
-              getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-            extensions: [new PathStyleExtension({ offset: true })],
-          })
+    const layerHighlightedFeatures = highlightedFeatures?.filter((f) => f.layerId === this.root.id)
+    if (layerHighlightedFeatures) {
+      layerHighlightedFeatures.forEach((highlightedFeature, index) => {
+        this.layers.push(
+          new PathLayer(
+            this.props,
+            this.getSubLayerProps({
+              data: [highlightedFeature],
+              id: `fourwings-cell-highlight-${index}`,
+              widthUnits: 'pixels',
+              widthMinPixels: 4,
+              getPath: (d: FourwingsFeature) => d.geometry.coordinates[0],
+              getColor: COLOR_HIGHLIGHT_LINE,
+              getOffset: 0.5,
+              getPolygonOffset: (params: any) =>
+                getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+              extensions: [new PathStyleExtension({ offset: true })],
+            })
+          )
         )
-      )
+      })
     }
 
     if (this.props.debug) {

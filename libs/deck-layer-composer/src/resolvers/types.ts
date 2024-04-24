@@ -24,13 +24,10 @@ export type ResolverGlobalConfig = {
   highlightedTime: Partial<TimeRange>
   locale?: string
   visibleEvents: EventTypes[]
+  highlightedFeatures?: DeckLayerPickingObject[]
 }
 
-export type DeckResolverFunction<
-  LayerProps = AnyDeckLayer['props'],
-  InteractionFeature = DeckLayerPickingObject
-> = (
+export type DeckResolverFunction<LayerProps = AnyDeckLayer['props']> = (
   dataview: UrlDataviewInstance,
-  globalConfig: ResolverGlobalConfig,
-  interactions?: InteractionFeature[]
+  globalConfig: ResolverGlobalConfig
 ) => LayerProps

@@ -21,10 +21,10 @@ import { getDataviewAvailableIntervals } from './dataviews'
 import { DeckResolverFunction } from './types'
 
 // TODO: decide if include static here or create a new one
-export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
-  FourwingsLayerProps,
-  FourwingsPickingObject
-> = (dataview, { start, end, resolution, debug }, interactions): FourwingsLayerProps => {
+export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayerProps> = (
+  dataview,
+  { start, end, resolution, debug, highlightedFeatures }
+): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
 
@@ -125,7 +125,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     visualizationMode,
     aggregationOperation,
     availableIntervals,
-    hoveredFeatures: interactions,
+    highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
     debug: debug ?? false,
