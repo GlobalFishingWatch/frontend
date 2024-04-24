@@ -28,7 +28,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import { isRulerLayerPoint } from './map-interaction.utils'
+import { isRulerLayerPoint, isDrawFeature } from './map-interaction.utils'
 import {
   SliceInteractionEvent,
   fetchFishingActivityInteractionThunk,
@@ -254,6 +254,7 @@ export const useMapMouseHover = () => {
   const { onRulerMapHover, rulersEditing } = useRulers()
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
+  const { onDrawingMapHover } = useDrawLayer()
 
   const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
   const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
@@ -285,8 +286,18 @@ export const useMapMouseHover = () => {
       if (rulersEditing) {
         onRulerMapHover(info)
       }
+      if (isMapDrawing) {
+        onDrawingMapHover(hoverInteraction?.features)
+      }
     },
-    [getPickingInteraction, onRulerMapHover, rulersEditing, setMapHoverFeatures]
+    [
+      getPickingInteraction,
+      isMapDrawing,
+      onDrawingMapHover,
+      onRulerMapHover,
+      rulersEditing,
+      setMapHoverFeatures,
+    ]
   )
 
   // const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
@@ -438,6 +449,7 @@ export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
 
 export const useMapCursor = () => {
   const { isMapDrawing } = useMapDrawConnect()
+  const { isDrawSelectMode } = useDrawLayer()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing } = useRulers()
@@ -445,7 +457,10 @@ export const useMapCursor = () => {
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
       if (isMapAnnotating || isErrorNotificationEditing || rulersEditing || isMapDrawing) {
-        if (rulersEditing && hoverFeatures?.some(isRulerLayerPoint)) {
+        if (
+          (rulersEditing && hoverFeatures?.some(isRulerLayerPoint)) ||
+          (isDrawSelectMode() && hoverFeatures?.some(isDrawFeature))
+        ) {
           return 'move'
         }
         return 'crosshair'
@@ -454,7 +469,14 @@ export const useMapCursor = () => {
       }
       return 'grab'
     },
-    [hoverFeatures, isErrorNotificationEditing, isMapAnnotating, isMapDrawing, rulersEditing]
+    [
+      isDrawSelectMode,
+      hoverFeatures,
+      isErrorNotificationEditing,
+      isMapAnnotating,
+      isMapDrawing,
+      rulersEditing,
+    ]
   )
   return { getCursor }
 }
