@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
 import {
+  offset,
   autoPlacement,
   autoUpdate,
   useFloating,
@@ -105,9 +106,10 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
   const apiEventStatus = useSelector(selectApiEventStatus)
 
   const arrowRef = useRef<HTMLDivElement>(null)
-  const { refs, floatingStyles, placement, middlewareData /*, update, elements */ } = useFloating({
+  const { refs, floatingStyles, placement, middlewareData } = useFloating({
     whileElementsMounted: autoUpdate,
     middleware: [
+      offset(15),
       autoPlacement({ padding: 10 }),
       overflowMiddlware,
       arrow({
@@ -136,20 +138,13 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
       ),
     'category'
   )
-
-  // useEffect(() => {
-  //   if (elements.reference && elements.floating) {
-  //     const cleanup = autoUpdate(elements.reference, elements.floating, update)
-  //     return cleanup
-  //   }
-
   return (
     <div
       ref={refs.setReference}
       style={{ position: 'absolute', top, left }}
       className={cx(styles.popup, styles[type], className)}
     >
-      <div ref={refs.setFloating} style={floatingStyles}>
+      <div className={styles.contentWrapper} ref={refs.setFloating} style={floatingStyles}>
         {type === 'click' && (
           <PopupArrow ref={arrowRef} placement={placement} arrow={middlewareData.arrow} />
         )}

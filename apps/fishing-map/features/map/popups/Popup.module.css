@@ -4,6 +4,10 @@
   z-index: 2;
 }
 
+.contentWrapper {
+  filter: var(--filter-drop-shadow);
+}
+
 .arrow {
   position: absolute;
   width: 14px;
@@ -40,7 +44,7 @@
 }
 
 .hover .content {
-  transform: translate(var(--space-XS), var(--space-S));
+  min-width: max-content;
   background: var(--color-primary-blue);
   color: var(--color-white);
   max-width: var(--sidebar-width);
