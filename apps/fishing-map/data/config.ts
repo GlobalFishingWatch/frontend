@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 import { DataviewCategory, ThinningConfig } from '@globalfishingwatch/api-types'
 import { ThinningLevels, THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { AppState, TimebarGraphs, TimebarVisualisations, UserTab, WorkspaceState } from 'types'
-import { getUTCDateTime } from 'utils/dates'
+import { AppState, TimebarGraphs, TimebarVisualisations, UserTab, WorkspaceState } from '../types'
+import { getUTCDateTime } from '../utils/dates'
 
 export const ROOT_DOM_ELEMENT = '__next'
 

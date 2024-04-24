@@ -29,7 +29,7 @@ steps:
 
   - id: 'build-app'
     waitFor: ['install-yarn']
-    name: node:18
+    name: node:21
     entrypoint: yarn
     args: ['nx', 'build', 'tile-inspector', '--parallel']
     env:
@@ -39,7 +39,7 @@ steps:
 
   - id: 'docker-prepare'
     waitFor: ['build-app']
-    name: node:18
+    name: node:21
     entrypoint: yarn
     args: ['nx', 'docker-prepare', 'tile-inspector']
 
