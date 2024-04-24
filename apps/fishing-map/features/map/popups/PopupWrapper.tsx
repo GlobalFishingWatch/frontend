@@ -1,4 +1,4 @@
-import { Fragment, forwardRef, useRef } from 'react'
+import { Fragment, useRef } from 'react'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
@@ -10,6 +10,7 @@ import {
   detectOverflow,
   Middleware,
   arrow,
+  FloatingArrow,
 } from '@floating-ui/react'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
@@ -61,42 +62,6 @@ type PopupWrapperProps = {
   type?: 'hover' | 'click'
 }
 
-const PopupArrow = forwardRef(function (
-  {
-    arrow = {},
-    placement,
-  }: {
-    arrow?: { x?: number; y?: number }
-    placement: string
-  },
-  ref: any
-) {
-  const { x, y } = arrow
-  const side = placement.split('-')[0]
-  const staticSide = {
-    top: 'bottom',
-    right: 'left',
-    bottom: 'top',
-    left: 'right',
-  }[side] as string
-  const arrowLen = ref?.current?.clientWidth || 0
-  return (
-    <div
-      className={styles.arrow}
-      ref={ref}
-      style={{
-        left: x != null ? `${x}px` : '',
-        top: y != null ? `${y}px` : '',
-        // Ensure the static side gets unset when
-        // flipping to other placements' axes.
-        right: '',
-        bottom: '',
-        [staticSide]: `${-arrowLen / 2}px`,
-      }}
-    />
-  )
-})
-
 function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: PopupWrapperProps) {
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
@@ -105,8 +70,8 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
   const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
 
-  const arrowRef = useRef<HTMLDivElement>(null)
-  const { refs, floatingStyles, placement, middlewareData } = useFloating({
+  const arrowRef = useRef<SVGSVGElement>(null)
+  const { refs, floatingStyles, context } = useFloating({
     whileElementsMounted: autoUpdate,
     middleware: [
       offset(15),
@@ -145,9 +110,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
       className={cx(styles.popup, styles[type], className)}
     >
       <div className={styles.contentWrapper} ref={refs.setFloating} style={floatingStyles}>
-        {type === 'click' && (
-          <PopupArrow ref={arrowRef} placement={placement} arrow={middlewareData.arrow} />
-        )}
+        {type === 'click' && <FloatingArrow fill="white" ref={arrowRef} context={context} />}
         {type === 'click' && onClose !== undefined && (
           <div className={styles.close}>
             <IconButton type="invert" size="small" icon="close" onClick={onClose} />

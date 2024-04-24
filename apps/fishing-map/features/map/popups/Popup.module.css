@@ -83,9 +83,12 @@
 
 .click .popupSection {
   padding: var(--space-S);
-  border: var(--border);
   cursor: default;
   padding-left: 3rem;
+}
+
+.click .popupSection:not(:last-child) {
+  border-bottom: var(--border);
 }
 
 .withoutIcon,
