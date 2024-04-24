@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, forwardRef, useRef } from 'react'
 import cx from 'classnames'
 import { groupBy } from 'lodash'
 import { useSelector } from 'react-redux'
@@ -8,9 +8,10 @@ import {
   useFloating,
   detectOverflow,
   Middleware,
+  arrow,
 } from '@floating-ui/react'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import { ContextPickingObject, VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
@@ -59,14 +60,43 @@ type PopupWrapperProps = {
   type?: 'hover' | 'click'
 }
 
-function PopupWrapper({
-  interaction,
-  closeButton = false,
-  closeOnClick = false,
-  type = 'hover',
-  className = '',
-  onClose,
-}: PopupWrapperProps) {
+const PopupArrow = forwardRef(function (
+  {
+    arrow = {},
+    placement,
+  }: {
+    arrow?: { x?: number; y?: number }
+    placement: string
+  },
+  ref: any
+) {
+  const { x, y } = arrow
+  const side = placement.split('-')[0]
+  const staticSide = {
+    top: 'bottom',
+    right: 'left',
+    bottom: 'top',
+    left: 'right',
+  }[side] as string
+  const arrowLen = ref?.current?.clientWidth || 0
+  return (
+    <div
+      className={styles.arrow}
+      ref={ref}
+      style={{
+        left: x != null ? `${x}px` : '',
+        top: y != null ? `${y}px` : '',
+        // Ensure the static side gets unset when
+        // flipping to other placements' axes.
+        right: '',
+        bottom: '',
+        [staticSide]: `${-arrowLen / 2}px`,
+      }}
+    />
+  )
+})
+
+function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: PopupWrapperProps) {
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const mapViewport = useMapViewport()
@@ -74,12 +104,20 @@ function PopupWrapper({
   const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
 
-  const { refs, floatingStyles /*, update, elements */ } = useFloating({
+  const arrowRef = useRef<HTMLDivElement>(null)
+  const { refs, floatingStyles, placement, middlewareData /*, update, elements */ } = useFloating({
     whileElementsMounted: autoUpdate,
-    middleware: [autoPlacement({ padding: 10 }), overflowMiddlware],
+    middleware: [
+      autoPlacement({ padding: 10 }),
+      overflowMiddlware,
+      arrow({
+        element: arrowRef,
+        padding: -5,
+      }),
+    ],
   })
 
-  if (!mapViewport || !interaction || !interaction.features) return null
+  if (!mapViewport || !interaction || !interaction.features?.length) return null
 
   // const visibleFeatures = interaction.features.filter(
   //   (feature) => feature.visible || feature.source === WORKSPACE_GENERATOR_ID
@@ -104,7 +142,6 @@ function PopupWrapper({
   //     const cleanup = autoUpdate(elements.reference, elements.floating, update)
   //     return cleanup
   //   }
-  // }, [left, top, elements, update])
 
   return (
     <div
@@ -113,9 +150,14 @@ function PopupWrapper({
       className={cx(styles.popup, styles[type], className)}
     >
       <div ref={refs.setFloating} style={floatingStyles}>
-        {/* <div>
-            <IconButton icon="close" onClick={onClose} />
-          </div> */}
+        {type === 'click' && (
+          <PopupArrow ref={arrowRef} placement={placement} arrow={middlewareData.arrow} />
+        )}
+        {type === 'click' && onClose !== undefined && (
+          <div className={styles.close}>
+            <IconButton type="invert" size="small" icon="close" onClick={onClose} />
+          </div>
+        )}
         <div className={styles.content}>
           {timeCompareTimeDescription && (
             <div className={styles.popupSection}>{timeCompareTimeDescription}</div>

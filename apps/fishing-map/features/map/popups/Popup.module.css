@@ -4,6 +4,37 @@
   z-index: 2;
 }
 
+.arrow {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--color-white);
+  transform: rotate(45deg);
+}
+
+.close {
+  position: absolute;
+  width: var(--size-S);
+  height: var(--size-S);
+  border-radius: 50%;
+  font: var(--font-L);
+  line-height: 1;
+  margin: var(--space-XS);
+  transition: opacity 0.15s linear, color 0.15s linear;
+  z-index: 1;
+  top: -2rem;
+  right: -2rem;
+  background-color: var(--color-primary-blue);
+  color: rgba(var(--white-rgb), 0.8);
+  opacity: 1;
+  border: var(--border-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .popup.click {
   pointer-events: all;
 }
