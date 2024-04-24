@@ -38,6 +38,7 @@ import {
   setClickedEvent,
 } from './map.slice'
 import { useSetViewState } from './map-viewport.hooks'
+import { useDrawLayer } from './overlays/draw/draw.hooks'
 
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
@@ -232,6 +233,7 @@ export const useGetPickingInteraction = () => {
         return f.object || []
       })
       return {
+        ...info,
         type,
         longitude: info.coordinate[0],
         latitude: info.coordinate[1],
@@ -308,10 +310,12 @@ export const useMapMouseHover = () => {
 // Hook to wrap the custom tools click interactions with the map that has more priority
 // returning undefined when not handled so we can continue with the propagation
 export const useHandleMapToolsClick = () => {
+  // TODO
   const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { onRulerMapClick, rulersEditing } = useRulers()
+  const { onDrawClick } = useDrawLayer()
   const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
   const handleMapClickInteraction = useCallback(
     (interaction: InteractionEvent) => {
@@ -326,6 +330,9 @@ export const useHandleMapToolsClick = () => {
       if (rulersEditing) {
         return onRulerMapClick(position)
       }
+      if (isMapDrawing) {
+        return onDrawClick(features)
+      }
       return undefined
     },
     [
@@ -333,6 +340,8 @@ export const useHandleMapToolsClick = () => {
       addMapAnnotation,
       isErrorNotificationEditing,
       isMapAnnotating,
+      isMapDrawing,
+      onDrawClick,
       onRulerMapClick,
       rulersEditing,
     ]
@@ -428,13 +437,14 @@ export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
 }
 
 export const useMapCursor = () => {
+  const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing } = useRulers()
   const hoverFeatures = useMapHoverInteraction()?.features
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
-      if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
+      if (isMapAnnotating || isErrorNotificationEditing || rulersEditing || isMapDrawing) {
         if (rulersEditing && hoverFeatures?.some(isRulerLayerPoint)) {
           return 'move'
         }
@@ -444,7 +454,7 @@ export const useMapCursor = () => {
       }
       return 'grab'
     },
-    [hoverFeatures, isErrorNotificationEditing, isMapAnnotating, rulersEditing]
+    [hoverFeatures, isErrorNotificationEditing, isMapAnnotating, isMapDrawing, rulersEditing]
   )
   return { getCursor }
 }

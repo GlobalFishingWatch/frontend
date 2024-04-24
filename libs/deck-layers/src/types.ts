@@ -14,8 +14,9 @@ import {
 import { FourwingsPickingObject, FourwingsPickingInfo } from './layers/fourwings'
 import { RulerPickingObject, RulerPickingInfo } from './layers/rulers'
 import { VesselEventPickingObject, VesselEventPickingInfo } from './layers/vessel'
+import { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
 
-export type DeckLayerCategory = `${DataviewCategory}` | 'rulers'
+export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
 
 // TODO:deck move this type to a generic like DeckLayerProps<SpecificLayerProps>
 export type BaseLayerProps = {
@@ -47,6 +48,7 @@ export type DeckLayerPickingObject =
   | ClusterPickingObject
   | RulerPickingObject
   | VesselEventPickingObject
+  | DrawPickingObject
 
 export type DeckLayerInteractionPickingInfo =
   | (FourwingsPickingInfo & { layer: FourwingsLayer })
@@ -54,3 +56,4 @@ export type DeckLayerInteractionPickingInfo =
   | (ClusterPickingInfo & { layer: ClusterLayer })
   | (RulerPickingInfo & { layer: RulersLayer })
   | (VesselEventPickingInfo & { layer: VesselLayer })
+  | (DrawPickingInfo & { layer: DrawLayer })

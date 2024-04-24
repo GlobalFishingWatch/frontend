@@ -219,7 +219,6 @@ const MapWrapper = () => {
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
   const { onDrawEdit, onDrawClick, drawLayerMode, drawFeaturesIndexes, drawFeatures } =
     useDrawLayer()
-  console.log('🚀 ~ drawFeatures:', drawFeatures)
 
   const currentRuler = editingRuler ? [editingRuler] : []
 
@@ -266,7 +265,7 @@ const MapWrapper = () => {
           <DrawLayerComponent
             data={drawFeatures}
             onEdit={onDrawEdit}
-            onClick={onDrawClick}
+            // onClick={onDrawClick}
             selectedFeatureIndexes={drawFeaturesIndexes}
             mode={drawLayerMode}
           />
