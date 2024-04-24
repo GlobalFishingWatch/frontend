@@ -541,9 +541,9 @@ export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatase
     return false
   }
   if (
+    schemaConfig.type === 'range' ||
     schemaConfig.type === 'array' ||
-    schemaConfig.type === 'boolean' ||
-    schemaConfig.type === 'range'
+    schemaConfig.type === 'boolean'
   ) {
     const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
     return schemaEnum !== undefined && schemaEnum.length > 0
