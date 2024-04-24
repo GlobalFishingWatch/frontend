@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FeatureCollection, GeoJSON, GeoJsonProperties, Geometry } from 'geojson'
 import { atom, useSetAtom, useAtomValue, useAtom } from 'jotai'
 import {
@@ -6,22 +6,19 @@ import {
   DrawPolygonMode,
   GeoJsonEditMode,
   ModifyMode,
+  TranslateMode,
   ViewMode,
 } from '@deck.gl-community/editable-layers'
-import {
-  DeckLayerPickingObject,
-  DrawPickingInfo,
-  DrawPickingObject,
-} from '@globalfishingwatch/deck-layers'
+import { DeckLayerPickingObject, DrawPickingObject } from '@globalfishingwatch/deck-layers'
 import { useDeckMap } from 'features/map/map-context.hooks'
 
-type DrawLayerMode = DrawPolygonMode | GeoJsonEditMode | ViewMode | 'draw'
+type DrawLayerMode = DrawPolygonMode | ViewMode
 const drawFeaturesAtom = atom<FeatureCollection<Geometry, GeoJsonProperties>>({
   type: 'FeatureCollection',
   features: [],
 })
-const drawMode = new DrawPolygonMode()
-const selectMode = new ViewMode()
+export const drawMode = new DrawPolygonMode()
+const selectMode = () => ViewMode
 const editModeInstance = new CompositeMode([new GeoJsonEditMode(), new ModifyMode()])
 // const editModeInstance = new GeoJsonEditMode()
 const updatedPointAtom = atom<{ coordinates: [number, number]; index: number } | null>(null)
@@ -35,35 +32,46 @@ export const useDrawLayer = () => {
   const [drawFeaturesIndexes, setDrawFeaturesIndexes] = useAtom(drawFeaturesIndexesAtom)
   const [drawLayerMode, setDrawLayerMode] = useAtom(drawLayerModeAtom)
   const [updatedPoint, setUpdatedPoint] = useAtom(updatedPointAtom)
+  // const [drawLayerMode, setDrawLayerMode] = useState<DrawLayerMode>('draw')
   const resetDrawFeatures = useCallback(() => {
     setDrawFeatures({
       type: 'FeatureCollection',
       features: [],
     })
     setDrawFeaturesIndexes([0])
-    setDrawLayerMode(selectMode)
+    setDrawLayerMode(new ViewMode())
   }, [setDrawFeatures, setDrawFeaturesIndexes, setDrawLayerMode])
+
   const onDrawEdit = useCallback(
     // TODO:deck fix types here
     ({ updatedData, editType }: any) => {
-      if (editType === 'addFeature' || editType === 'movePosition' || editType === 'addPosition') {
-        setDrawLayerMode(selectMode)
+      if (editType === 'addFeature' || editType === 'addPosition') {
+        setDrawLayerMode(new ViewMode())
+        setDrawFeatures(updatedData)
+        setDrawFeaturesIndexes([])
+      }
+      if (editType === 'movePosition') {
         setDrawFeatures(updatedData)
       }
     },
-    [setDrawFeatures, setDrawLayerMode]
+    [setDrawFeatures, setDrawFeaturesIndexes, setDrawLayerMode]
   )
   const isDrawFeature = (feature: DeckLayerPickingObject) => {
     return (
       feature.category === 'draw' && (feature as DrawPickingObject).geometry?.type === 'Polygon'
     )
   }
+
+  const isDrawSelectMode = useCallback(() => {
+    return drawLayerMode instanceof ViewMode
+  }, [drawLayerMode])
+
   const onDrawClick = useCallback(
     (features: DeckLayerPickingObject[] | undefined) => {
       if (drawLayerMode instanceof ViewMode) {
         const drawFeature = features?.find(isDrawFeature)
         if (drawFeature) {
-          setDrawFeaturesIndexes([(drawFeature as DrawPickingObject).index])
+          setDrawLayerMode(new ModifyMode())
         } else {
           setDrawFeaturesIndexes([])
         }
@@ -84,7 +92,19 @@ export const useDrawLayer = () => {
       //   })
       // }
     },
-    [drawLayerMode, setDrawFeaturesIndexes]
+    [drawLayerMode, setDrawFeaturesIndexes, setDrawLayerMode]
+  )
+
+  const onDrawingMapHover = useCallback(
+    (features: DeckLayerPickingObject[] | undefined) => {
+      const drawFeature = features?.find(isDrawFeature)
+      if (drawFeature) {
+        setDrawFeaturesIndexes([(drawFeature as DrawPickingObject).index])
+      } else {
+        // setDrawLayerMode(new ViewMode())
+      }
+    },
+    [setDrawFeaturesIndexes]
   )
   return {
     onDrawEdit,
@@ -94,6 +114,9 @@ export const useDrawLayer = () => {
     drawFeatures,
     setDrawFeatures,
     updatedPoint,
+    setDrawLayerMode,
     resetDrawFeatures,
+    isDrawSelectMode,
+    onDrawingMapHover,
   }
 }

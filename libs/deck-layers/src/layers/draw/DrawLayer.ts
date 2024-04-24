@@ -40,21 +40,22 @@ export class DrawLayer extends EditableGeoJsonLayer {
         onEdit,
         // onClick,
         selectedFeatureIndexes,
-        getFillColor: [120, 0, 120, 120],
+        // getFillColor: [120, 0, 120, 120],
         modeConfig: {
           preventOverlappingLines: true,
         },
         editHandlePointOutline: false,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
-        _subLayerProps: {
-          geojson: {
-            ...DEFAULT_STYLES,
-          },
-          guides: {
-            getPointRadius: 10,
-            ...DEFAULT_STYLES,
-          },
-        },
+        // _subLayerProps: {
+        //   geojson: {
+        //     ...DEFAULT_STYLES,
+        //   },
+        //   guides: {
+        //     getPointRadius: 10,
+        //     ...DEFAULT_STYLES,
+        //     getLineColor: [255, 0, 0],
+        //   },
+        // },
       }),
     ]
   }

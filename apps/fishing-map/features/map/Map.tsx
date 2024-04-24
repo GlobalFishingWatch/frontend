@@ -217,8 +217,7 @@ const MapWrapper = () => {
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
-  const { onDrawEdit, onDrawClick, drawLayerMode, drawFeaturesIndexes, drawFeatures } =
-    useDrawLayer()
+  const { onDrawEdit, drawLayerMode, drawFeaturesIndexes, drawFeatures } = useDrawLayer()
 
   const currentRuler = editingRuler ? [editingRuler] : []
 
@@ -265,7 +264,6 @@ const MapWrapper = () => {
           <DrawLayerComponent
             data={drawFeatures}
             onEdit={onDrawEdit}
-            // onClick={onDrawClick}
             selectedFeatureIndexes={drawFeaturesIndexes}
             mode={drawLayerMode}
           />
