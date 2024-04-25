@@ -1,7 +1,7 @@
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
 import { useTranslation } from 'react-i18next'
 import { useCallback, useState } from 'react'
-import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { Button, InputText } from '@globalfishingwatch/ui-components'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useDrawLayer } from './draw.hooks'
 import styles from './DrawDialog.module.css'
@@ -13,8 +13,7 @@ export const CoordinateEditOverlay = (): React.ReactNode | null => {
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
   console.log('🚀 ~ CoordinateEditOverlay ~ newPointLatitude:', newPointLatitude)
   console.log('🚀 ~ CoordinateEditOverlay ~ newPointLongitude:', newPointLongitude)
-  const { onDrawEdit, updatedPoint, drawFeaturesIndexes, drawFeatures, setDrawFeatures } =
-    useDrawLayer()
+  const { updatedPoint, drawFeaturesIndexes, drawFeatures, setDrawFeatures } = useDrawLayer()
 
   const currentPointCoordinates = updatedPoint?.coordinates
   const editingPointLatitude =

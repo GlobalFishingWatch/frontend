@@ -4,7 +4,7 @@ import { DeckGL, DeckGLRef } from '@deck.gl/react'
 import { LayersList } from '@deck.gl/core'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
-import { RulersLayer, DrawLayer } from '@globalfishingwatch/deck-layers'
+import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
@@ -35,7 +35,6 @@ import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
 import useRulers from './overlays/rulers/rulers.hooks'
-import { useDrawLayer } from './overlays/draw/draw.hooks'
 import { useMapDrawConnect } from './map-draw.hooks'
 import MapInfo from './controls/MapInfo'
 import { MAP_CANVAS_ID } from './map.config'
@@ -43,7 +42,6 @@ import { MAP_CANVAS_ID } from './map.config'
 // This avoids type checking to complain
 // https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
 const RulersLayerComponent = RulersLayer as any
-const DrawLayerComponent = DrawLayer as any
 const DrawDialog = dynamic(
   () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
 )
@@ -217,7 +215,6 @@ const MapWrapper = () => {
   // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
-  const { onDrawEdit, drawLayerMode, drawFeaturesIndexes, drawFeatures } = useDrawLayer()
 
   const currentRuler = editingRuler ? [editingRuler] : []
 
@@ -258,14 +255,6 @@ const MapWrapper = () => {
           <RulersLayerComponent
             rulers={[...(rulers || []), ...currentRuler]}
             visible={rulersVisible}
-          />
-        )}
-        {isMapDrawing && (
-          <DrawLayerComponent
-            data={drawFeatures}
-            onEdit={onDrawEdit}
-            selectedFeatureIndexes={drawFeaturesIndexes}
-            mode={drawLayerMode}
           />
         )}
         {isMapDrawing && <DrawDialog />}

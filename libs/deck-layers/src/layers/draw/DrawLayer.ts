@@ -3,13 +3,13 @@ import { PathStyleExtension } from '@deck.gl/extensions'
 import { PickingInfo } from '@deck.gl/core'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
 import { DeckLayerCategory } from '../../types'
-import { LINES_COLOR } from './draw.config'
+// import { LINES_COLOR } from './draw.config'
 import { DrawPickingInfo, DrawPickingObject } from './draw.types'
 
 const DEFAULT_STYLES = {
   lineJointRounded: true,
   getLineWidth: 1,
-  getLineColor: LINES_COLOR,
+  // getLineColor: LINES_COLOR,
   getFillColor: [120, 0, 120, 120],
   getDashArray: [4, 2],
   extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
@@ -40,7 +40,7 @@ export class DrawLayer extends EditableGeoJsonLayer {
         onEdit,
         // onClick,
         selectedFeatureIndexes,
-        // getFillColor: [120, 0, 120, 120],
+        getFillColor: [0, 0, 0, 0],
         modeConfig: {
           preventOverlappingLines: true,
         },

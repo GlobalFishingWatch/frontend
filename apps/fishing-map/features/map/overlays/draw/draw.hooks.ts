@@ -9,8 +9,13 @@ import {
   TranslateMode,
   ViewMode,
 } from '@deck.gl-community/editable-layers'
-import { DeckLayerPickingObject, DrawPickingObject } from '@globalfishingwatch/deck-layers'
+import {
+  DeckLayerPickingObject,
+  DrawLayer,
+  DrawPickingObject,
+} from '@globalfishingwatch/deck-layers'
 import { useDeckMap } from 'features/map/map-context.hooks'
+import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 
 type DrawLayerMode = DrawPolygonMode | ViewMode
 const drawFeaturesAtom = atom<FeatureCollection<Geometry, GeoJsonProperties>>({
@@ -27,6 +32,7 @@ const drawLayerModeAtom = atom<DrawLayerMode>('draw')
 
 export const useDrawLayer = () => {
   const map = useDeckMap()
+  const { isMapDrawing } = useMapDrawConnect()
   map && map.setProps({ controller: { doubleClickZoom: false } })
   const [drawFeatures, setDrawFeatures] = useAtom(drawFeaturesAtom)
   const [drawFeaturesIndexes, setDrawFeaturesIndexes] = useAtom(drawFeaturesIndexesAtom)
@@ -106,15 +112,23 @@ export const useDrawLayer = () => {
     },
     [setDrawFeaturesIndexes]
   )
+  const instance = isMapDrawing
+    ? new DrawLayer({
+        data: drawFeatures,
+        onEdit: onDrawEdit,
+        // onClick: onDrawClick,
+        selectedFeatureIndexes: drawFeaturesIndexes,
+        mode: drawLayerMode,
+      })
+    : null
+
   return {
-    onDrawEdit,
+    instance,
     onDrawClick,
-    drawLayerMode,
     drawFeaturesIndexes,
     drawFeatures,
     setDrawFeatures,
     updatedPoint,
-    setDrawLayerMode,
     resetDrawFeatures,
     isDrawSelectMode,
     onDrawingMapHover,
