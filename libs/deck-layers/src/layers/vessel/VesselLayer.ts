@@ -179,6 +179,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             highlightEndTime,
             getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
             getFillColor: (d: any): Color => {
+              if (highlightEventIds?.includes(d.id)) return DEFAULT_FISHING_EVENT_COLOR
               if (d.type === EventTypes.Fishing) {
                 return singleTrack ? DEFAULT_FISHING_EVENT_COLOR : color
               }
