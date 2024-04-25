@@ -4,7 +4,7 @@ import { PATH_BASENAME } from '../loaders.config'
 import { parseTrack } from './lib/parse-tracks'
 
 /**
- * Worker loader for the Vessel Track int array format
+ * Worker loader for the Vessel Track DECKGL format
  */
 
 export const VesselTrackWorkerLoader: Loader = {
@@ -24,7 +24,7 @@ export const VesselTrackWorkerLoader: Loader = {
 }
 
 /**
- * Loader for the Vessel Track int array format
+ * Loader for the Vessel Track DECKGL format
  */
 export const VesselTrackLoader: LoaderWithParser = {
   ...VesselTrackWorkerLoader,

@@ -2,7 +2,6 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: ['fetch', '--unshallow', '--no-tags']
 
-steps:
   - name: 'gcr.io/$PROJECT_ID/restore_cache'
     id: restore_cache
     waitFor: ['-']

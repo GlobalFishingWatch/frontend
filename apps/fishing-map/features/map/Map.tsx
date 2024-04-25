@@ -81,22 +81,6 @@ const MapWrapper = () => {
   useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()
   const { isMapDrawing } = useMapDrawConnect()
-  // const { generatorsConfig, globalConfig } = useGeneratorsConnect()
-
-  // const setMapReady = useSetRecoilState(mapReadyAtom)
-  // const [hasTimeseries] = useAtom(hasMapTimeseriesAtom)
-  // const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
-  // const isMapInteractionDisabled = useSelector(selectIsMapDrawing)
-
-  // useLayerComposer is a convenience hook to easily generate a Mapbox GL style (see https://docs.mapbox.com/mapbox-gl-js/style-spec/) from
-  // the generatorsConfig (ie the map "layers") and the global configuration
-  // const { style, loading: layerComposerLoading } = useLayerComposer(
-  //   generatorsConfig,
-  //   globalConfig,
-  //   defaultStyleTransformations,
-  //   layerComposer
-  // )
-
   const layers = useMapDeckLayers()
   const overlays = useMapOverlayLayers()
 
@@ -106,19 +90,6 @@ const MapWrapper = () => {
       setDeckLayers([])
     }
   }, [setDeckLayers])
-
-  // const { clickedEvent, dispatchClickedEvent, cancelPendingInteractionRequests } =
-  //   useClickedEventConnect()
-
-  // const onLoadCallback = useCallback(() => {
-  //   setMapReady(true)
-  // }, [setMapReady])
-
-  // const closePopup = useCallback(() => {
-  //   cleanFeatureState('click')
-  //   dispatchClickedEvent(null)
-  //   cancelPendingInteractionRequests()
-  // }, [cancelPendingInteractionRequests, cleanFeatureState, dispatchClickedEvent])
 
   const reportLocation = useSelector(selectIsAnyReportLocation)
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
@@ -130,91 +101,6 @@ const MapWrapper = () => {
     // cleanFeatureState('hover')
   }, [])
   const mapLoading = useIsDeckLayersLoading()
-
-  // const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
-
-  // const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
-  //   null
-  // )
-  // const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
-  // const onMapHover = useMapHover(
-  //   setHoveredEvent as InteractionEventCallback,
-  //   setHoveredDebouncedEvent as InteractionEventCallback,
-  //   map,
-  //   style?.metadata
-  // )
-  // const currentMapHoverCallback = useMemo(() => {
-  //   return rulersEditing ? onMapHoverWithRuler : onMapHover
-  // }, [rulersEditing, onMapHoverWithRuler, onMapHover])
-
-  // const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
-  // useMapHighlightedEvent(hoveredTooltipEvent?.features)
-
-  // const showTimeComparison = useSelector(selectShowTimeComparison)
-  // const debugOptions = useSelector(selectDebugOptions)
-
-  // const mapLegends = useMapLegend(style, dataviews, hoveredEvent)
-  // const portalledLegend = !showTimeComparison
-
-  // const mapLoaded = useMapLayersLoaded()
-  // const tilesClusterLoaded = useMapClusterTilesLoaded()
-
-  // const getCursor = useCallback(() => {
-  //   if (isMapDrawing || isMarineManagerLocation) {
-  //     // updating cursor using css at style.css as the library sets classes depending on the state
-  //     return undefined
-  //   } else if (hoveredTooltipEvent) {
-  //     // Workaround to fix cluster events duplicated, only working for encounters and needs
-  //     // TODO if wanted to scale it to other layers
-  //     const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
-  //     const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
-
-  //     const clusterFeature = hoveredTooltipEvent.features.find(
-  //       (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
-  //     )
-
-  //     if (clusterFeature) {
-  //       if (!tilesClusterLoaded) {
-  //         return 'progress'
-  //       }
-  //       const { expansionZoom, lat, lng, lon } = clusterFeature.properties
-  //       const longitude = lng || lon
-  //       return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
-  //     }
-  //     const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
-  //       (f) => f.category === DataviewCategory.Vessels
-  //     )
-  //     if (vesselFeatureEvents.length > 1) {
-  //       return 'grab'
-  //     }
-  //     return 'pointer'
-  //   } else if (map?.isMoving()) {
-  //     return 'grabbing'
-  //   }
-  //   return 'grab'
-  // }, [
-  //   isMapDrawing,
-  //   isMarineManagerLocation,
-  //   hoveredTooltipEvent,
-  //   map,
-  //   dataviews,
-  //   tilesClusterLoaded,
-  // ])
-
-  // useEffect(() => {
-  //   if (map) {
-  //     map.showTileBoundaries = debugOptions.debug
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [map, debugOptions])
-
-  // const styleInteractiveLayerIds = useMemoCompare(style?.metadata?.interactiveLayerIds)
-  // const interactiveLayerIds = useMemo(() => {
-  //   if (isMapInteractionDisabled) {
-  //     return undefined
-  //   }
-  //   return styleInteractiveLayerIds
-  // }, [isMapInteractionDisabled, styleInteractiveLayerIds])
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
 
@@ -262,54 +148,6 @@ const MapWrapper = () => {
         {isMapDrawing && <DrawDialog />}
       </DeckGL>
       <MapPopups />
-      {/* {style && (
-        <Map
-          id="map"
-          style={{ ...mapStyles, display: 'none', pointerEvents: 'none' }}
-          keyboard={!isMapDrawing}
-          zoom={viewport.zoom}
-          mapLib={maplibregl}
-          latitude={viewport.latitude}
-          longitude={viewport.longitude}
-          pitch={debugOptions.extruded ? 40 : 0}
-          bearing={0}
-          fadeDuration={0}
-          // onMove={isAnalyzing && !hasTimeseries ? undefined : onViewportChange}
-          mapStyle={style as MapboxStyle}
-          transformRequest={transformRequest}
-          onResize={setMapBounds}
-          // cursor={rulersEditing ? rulesCursor : getCursor()}
-          interactiveLayerIds={interactiveLayerIds}
-          // onClick={isMapDrawing || isMarineManagerLocation ? undefined : currentClickCallback}
-          // onMouseEnter={onMouseMove}
-          // onMouseMove={onMouseMove}
-          // onMouseLeave={resetHoverState}
-          // onLoad={onLoadCallback}
-          // onError={handleError}
-          // onMouseOut={resetHoverState}
-        >
-          {clickedEvent && (
-            <PopupWrapper
-              type="click"
-              event={clickedTooltipEvent}
-              onClose={closePopup}
-              closeOnClick={false}
-              closeButton
-            />
-          )}
-          {hoveredTooltipEvent &&
-            !clickedEvent &&
-            hoveredEvent?.latitude === hoveredDebouncedEvent?.latitude &&
-            hoveredEvent?.longitude === hoveredDebouncedEvent?.longitude && (
-              <PopupWrapper type="hover" event={hoveredTooltipEvent} anchor="top-left" />
-            )}
-          <MapInfo center={hoveredEvent} />
-          <MapAnnotations />
-          <ErrorNotification />
-          {isMapDrawing && <MapDraw />}
-          {mapLegends && <MapLegends legends={mapLegends} portalled={portalledLegend} />}
-        </Map>
-      )} */}
       {/* TODO in deck.gl to get the mapLoading state */}
       <MapControls onMouseEnter={resetHoverState} mapLoading={mapLoading} />
       {isWorkspace && !reportLocation && (

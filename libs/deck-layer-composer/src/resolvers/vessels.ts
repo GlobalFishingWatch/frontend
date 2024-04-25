@@ -9,21 +9,21 @@ import { DeckResolverFunction } from './types'
 
 export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (
   dataview,
-  globalConfig,
-  interactions
-) => {
+  globalConfig
+): VesselLayerProps => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
-
+  const { start, end, highlightedFeatures, visibleEvents, highlightedTime } = globalConfig
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
     category: dataview.category!,
     name: dataview.config?.name!,
-    endTime: getUTCDateTime(globalConfig.end!).toMillis(),
-    startTime: getUTCDateTime(globalConfig.start!).toMillis(),
+    endTime: getUTCDateTime(end!).toMillis(),
+    startTime: getUTCDateTime(start!).toMillis(),
     ...(trackUrl && {
       trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
     }),
+    singleTrack: dataview.config?.singleTrack,
     color: hexToDeckColor(dataview.config?.color!),
     events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
       const eventType = resource.dataset?.subcategory as EventTypes
@@ -32,18 +32,21 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
         url: `${API_GATEWAY}${resource.url}`,
       }
     }),
-    // hoveredFeatures: interactions,
-    // clickedFeatures,
-    // highlightEndTime,
-    // highlightStartTime,
-    // highlightEventIds,
-    visibleEvents: globalConfig.visibleEvents,
-    ...(globalConfig.highlightedTime?.start && {
-      highlightStartTime: getUTCDateTime(globalConfig.highlightedTime?.start).toMillis(),
+    visibleEvents: visibleEvents,
+    highlightEventIds: highlightedFeatures?.map((feature) => feature.id),
+    ...(dataview.config?.filters?.['speed']?.length && {
+      minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
+      maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),
     }),
-    ...(globalConfig.highlightedTime?.end && {
-      highlightEndTime: getUTCDateTime(globalConfig.highlightedTime?.end).toMillis(),
+    ...(dataview.config?.filters?.['elevation']?.length && {
+      minElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][0]),
+      maxElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][1]),
     }),
-    // eventsResource: eventsData?.length ? parseEvents(eventsData) : [],
+    ...(highlightedTime?.start && {
+      highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
+    }),
+    ...(highlightedTime?.end && {
+      highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
+    }),
   }
 }

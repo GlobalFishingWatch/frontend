@@ -28,4 +28,5 @@ export const EVENTS_COLORS: Record<string, Color> = {
   highlight: hexToDeckColor('#ffffff'),
 }
 
+export const DEFAULT_FISHING_EVENT_COLOR = [255, 255, 255] as Color
 export const DEFAULT_HIGHLIGHT_COLOR_VEC = [1.0, 1.0, 1.0, 1.0]

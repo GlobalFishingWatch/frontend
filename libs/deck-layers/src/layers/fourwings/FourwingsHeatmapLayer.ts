@@ -3,6 +3,7 @@ import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers'
 import { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { screen } from 'color-blend'
+import { isEqual } from 'lodash'
 import { FourwingsFeature, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_HIGHLIGHT_LINE,
@@ -76,7 +77,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       startTime,
       colorDomain,
       colorRanges,
-      hoveredFeatures,
+      highlightedFeatures,
       comparisonMode,
       availableIntervals,
       aggregationOperation,
@@ -113,7 +114,11 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         })
       let chosenValueIndex = 0
       let chosenValue: number | undefined
-      feature.properties.aggregatedValues = aggregatedCellValues
+      try {
+        feature.properties.aggregatedValues = aggregatedCellValues
+      } catch (e: any) {
+        console.warn(e.message)
+      }
       aggregatedCellValues.forEach((value, index) => {
         if (value && (!chosenValue || value > chosenValue)) {
           chosenValue = value
@@ -202,25 +207,27 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       ),
     ] as LayersList
 
-    const layerHoveredFeature = hoveredFeatures?.find((f) => f.layerId === this.root.id)
-    if (layerHoveredFeature) {
-      this.layers.push(
-        new PathLayer(
-          this.props,
-          this.getSubLayerProps({
-            data: [layerHoveredFeature],
-            id: `fourwings-cell-highlight`,
-            widthUnits: 'pixels',
-            widthMinPixels: 4,
-            getPath: (d: FourwingsFeature) => d.geometry.coordinates[0],
-            getColor: COLOR_HIGHLIGHT_LINE,
-            getOffset: 0.5,
-            getPolygonOffset: (params: any) =>
-              getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-            extensions: [new PathStyleExtension({ offset: true })],
-          })
+    const layerHighlightedFeatures = highlightedFeatures?.filter((f) => f.layerId === this.root.id)
+    if (layerHighlightedFeatures) {
+      layerHighlightedFeatures.forEach((highlightedFeature, index) => {
+        this.layers.push(
+          new PathLayer(
+            this.props,
+            this.getSubLayerProps({
+              data: [highlightedFeature],
+              id: `fourwings-cell-highlight-${index}`,
+              widthUnits: 'pixels',
+              widthMinPixels: 4,
+              getPath: (d: FourwingsFeature) => d.geometry.coordinates[0],
+              getColor: COLOR_HIGHLIGHT_LINE,
+              getOffset: 0.5,
+              getPolygonOffset: (params: any) =>
+                getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+              extensions: [new PathStyleExtension({ offset: true })],
+            })
+          )
         )
-      )
+      })
     }
 
     if (this.props.debug) {

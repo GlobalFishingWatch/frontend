@@ -57,7 +57,7 @@ export const getMapCoordinatesFromBounds = (
   params: FitBoundsParams = {}
 ) => {
   const { mapWidth, mapHeight, padding = 60 } = params
-  const width = mapWidth || (map ? map.width : window.innerWidth / 2)
+  const width = mapWidth || (map?.width ? map.width : window.innerWidth / 2)
   const height =
     mapHeight || (map ? map.height : window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT)
   const { latitude, longitude, zoom } = fitBounds({

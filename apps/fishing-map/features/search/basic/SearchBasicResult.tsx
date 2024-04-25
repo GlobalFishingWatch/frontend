@@ -161,7 +161,15 @@ function SearchBasicResult({
         setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
       }
     },
-    [dispatch, isSearchLocation, setTimerange, trackBbox, transmissionDateFrom, transmissionDateTo]
+    [
+      dispatch,
+      fitBounds,
+      isSearchLocation,
+      setTimerange,
+      trackBbox,
+      transmissionDateFrom,
+      transmissionDateTo,
+    ]
   )
 
   const onYearHover = useCallback(

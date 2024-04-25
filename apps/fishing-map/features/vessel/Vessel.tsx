@@ -118,7 +118,7 @@ const Vessel = () => {
         id: 'insights' as VesselSection,
         title: t('vessel.sectionInsights', 'Insights'),
         content: <Insights />,
-        // testId: 'vv-insights-tab',
+        testId: 'vv-insights-tab',
       },
     ],
     [t, updateAreaLayersVisibility, hasEventsDataset]

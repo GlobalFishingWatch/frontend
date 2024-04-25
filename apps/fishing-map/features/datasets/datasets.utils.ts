@@ -90,6 +90,7 @@ export type SupportedActivityDatasetSchema =
 export type SupportedEnvDatasetSchema =
   | 'type'
   | 'speed'
+  | 'elevation'
   | 'flag'
   | 'vessel_type'
   | 'Height'
@@ -540,7 +541,11 @@ export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatase
   if (!schemaConfig) {
     return false
   }
-  if (schemaConfig.type === 'array') {
+  if (
+    schemaConfig.type === 'range' ||
+    schemaConfig.type === 'array' ||
+    schemaConfig.type === 'boolean'
+  ) {
     const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
     return schemaEnum !== undefined && schemaEnum.length > 0
   }
@@ -640,6 +645,9 @@ export type SchemaFieldSelection = {
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
 
 export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
+  if (!dataview) {
+    return [] as Dataset[]
+  }
   if (dataview.category === DataviewCategory.User) {
     return dataview.datasets
   }
@@ -819,13 +827,11 @@ export const getFiltersBySchema = (
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   const unit = getSchemaFilterUnitInDataview(dataview, schema)
   const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)!?.map((d) => d.id)
-  const activeDatasets = getActiveDatasetsInActivityDataviews([
-    dataview as UrlDataviewInstance<DataviewType>,
-  ])
+  const activeDatasets = getActiveDatasetsInDataview(dataview)?.map((d) => d.id)
   const hasDatasetsWithSchema =
     compatibilityOperation === 'some'
-      ? activeDatasets.some((d) => datasetsWithSchema.includes(d))
-      : activeDatasets.every((d) => datasetsWithSchema.includes(d))
+      ? activeDatasets?.some((d) => datasetsWithSchema.includes(d))
+      : activeDatasets?.every((d) => datasetsWithSchema.includes(d))
   const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)!?.length > 0
   const disabled = !hasDatasetsWithSchema || incompatibleFilterSelection
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)!?.[0]?.id)
@@ -872,10 +878,16 @@ export const getSchemaFiltersInDataview = (
         })
       : fieldsAllowed
   const filtersAllowed = fielsAllowedOrdered.map((id) => {
-    return getFiltersBySchema(dataview, id, { vesselGroups })
+    return getFiltersBySchema(dataview, id, {
+      vesselGroups,
+      compatibilityOperation: id === 'speed' || id === 'elevation' ? 'some' : 'every',
+    })
   })
   const filtersDisabled = fieldsDisabled.map((id) => {
-    return getFiltersBySchema(dataview, id, { vesselGroups })
+    return getFiltersBySchema(dataview, id, {
+      vesselGroups,
+      compatibilityOperation: id === 'speed' || id === 'elevation' ? 'some' : 'every',
+    })
   })
   return {
     filtersAllowed,

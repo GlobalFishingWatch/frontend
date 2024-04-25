@@ -2,9 +2,12 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { DataviewCategory, DataviewType, Locale } from '@globalfishingwatch/api-types'
+import { Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
+import {
+  ResolverGlobalConfig,
+  useMapHoverInteraction,
+} from '@globalfishingwatch/deck-layer-composer'
 import { DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
@@ -25,7 +28,7 @@ import {
 } from 'features/app/selectors/app.selectors'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { MAX_TOOLTIP_LIST, ExtendedFeatureVessel } from './map.slice'
+import { MAX_TOOLTIP_LIST, ExtendedFeatureVessel, selectClickedEvent } from './map.slice'
 import { useViewStateAtom } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
@@ -53,7 +56,13 @@ export const useGlobalConfigConnect = () => {
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const mapResolution = useSelector(selectMapResolution)
+  const clickedFeatures = useSelector(selectClickedEvent)
+  const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
+
+  const highlightedFeatures = useMemo(() => {
+    return [...(clickedFeatures?.features || []), ...(hoverFeatures || [])]
+  }, [clickedFeatures?.features, hoverFeatures])
 
   return useMemo(() => {
     let globalConfig: ResolverGlobalConfig = {
@@ -69,6 +78,7 @@ export const useGlobalConfigConnect = () => {
       resolution: mapResolution,
       highlightedTime: highlightedTime || {},
       visibleEvents,
+      highlightedFeatures,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -87,9 +97,10 @@ export const useGlobalConfigConnect = () => {
     activityVisualizationMode,
     detectionsVisualizationMode,
     mapResolution,
-    visibleEvents,
-    showTimeComparison,
     highlightedTime,
+    visibleEvents,
+    highlightedFeatures,
+    showTimeComparison,
     timeComparisonValues,
   ])
 }
@@ -111,8 +122,8 @@ export const useDebouncedDispatchHighlightedEvent = () => {
 
 // TODO:deck do this within the deck layer
 export const useMapHighlightedEvent = (features?: DeckLayerPickingObject[]) => {
-  const highlightedEvents = useSelector(selectHighlightedEvents)
-  const debounceDispatch = useDebouncedDispatchHighlightedEvent()
+  // const highlightedEvents = useSelector(selectHighlightedEvents)
+  // const debounceDispatch = useDebouncedDispatchHighlightedEvent()
 
   const setHighlightedEventDebounced = useCallback(() => {
     // let highlightEvent: string | undefined
@@ -134,7 +145,7 @@ export const useMapHighlightedEvent = (features?: DeckLayerPickingObject[]) => {
     // } else if (highlightedEvents && highlightedEvents.length) {
     //   debounceDispatch(undefined)
     // }
-  }, [features, highlightedEvents, debounceDispatch])
+  }, [])
 
   useEffect(() => {
     setHighlightedEventDebounced()

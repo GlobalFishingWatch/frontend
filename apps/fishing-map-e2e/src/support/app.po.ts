@@ -1,3 +1,4 @@
+import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from '../../../fishing-map/features/workspace/highlight-panel/highlight-panel.content'
 import { API_URL_4WINGS_TILES } from '../constants/urls'
 
 export const getGreeting = () => cy.get('h1')
@@ -37,7 +38,7 @@ export const verifyTracksInTimebar = (segments?: number) => {
 export const disablePopups = () => {
   localStorage.setItem('DisableWelcomePopup', 'true')
   localStorage.setItem('DisableSourceSwitchPopup', 'true')
-  localStorage.setItem('HighlightPopup', '"bathymetry-workspace"')
+  localStorage.setItem('HighlightPopup', `"${HIGHLIGHT_DATAVIEW_INSTANCE_ID}"`)
   localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
   localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
   localStorage.setItem(

@@ -12,7 +12,8 @@
         "cors": true,
         "port": 8000,
         "staticFilePath": "libs/i18n-labels",
-        "watch": false
+        "watch": false,
+        "host": "0.0.0.0"
       }
     },
     "dist": {

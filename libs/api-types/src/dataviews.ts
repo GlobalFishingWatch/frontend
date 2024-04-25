@@ -59,6 +59,8 @@ export interface DataviewConfig<Type = DataviewType> {
   visualizationMode?: string
   /** Property used when a layer can use white as last step in its color ramp */
   colorRampWhiteEnd?: boolean
+  /** Property used when a track layer can use white as the color for its vessel events */
+  singleTrack?: boolean
   auxiliarLayerActive?: boolean
   debug?: boolean
   visible?: boolean
