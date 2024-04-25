@@ -114,7 +114,7 @@ export const useTimebarVesselEvents = () => {
             color: instance.getVesselColor(),
             chunks,
             // TODO vessel status
-            status: instance.dataStatus.find((s) => s.type === 'track')?.status,
+            // status: instance.dataStatus.find((s) => s.type === 'track')?.status,
             defaultLabel: instance.getVesselName(),
             getHighlighterLabel: getTrackEventHighlighterLabel,
             getHighlighterIcon: 'vessel',

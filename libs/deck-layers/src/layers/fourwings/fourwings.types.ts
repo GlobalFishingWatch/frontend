@@ -78,7 +78,7 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   data: FourwingsFeature[]
   colorDomain?: ColorDomain
   colorRanges?: SublayerColorRanges
-  hoveredFeatures?: FourwingsPickingInfo[]
+  highlightedFeatures?: FourwingsPickingInfo[]
   tilesCache: FourwingsHeatmapTilesCache
   scales: FourwinsTileLayerScale[]
 }
@@ -110,8 +110,7 @@ type BaseFourwingsLayerProps = {
   category: DataviewCategory
   sublayers: FourwingsDeckSublayer[]
   tilesUrl?: string
-  clickedFeatures?: FourwingsPickingObject[]
-  hoveredFeatures?: FourwingsPickingObject[]
+  highlightedFeatures?: FourwingsPickingObject[]
 }
 
 export type FourwingsResolution = 'default' | 'high'

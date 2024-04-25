@@ -13,10 +13,10 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import { DeckResolverFunction } from './types'
 
-export const resolveDeckContextLayerProps: DeckResolverFunction<
-  ContextLayerProps,
-  ContextPickingObject
-> = (dataview, globalConfig, interactions) => {
+export const resolveDeckContextLayerProps: DeckResolverFunction<ContextLayerProps> = (
+  dataview,
+  { highlightedFeatures }
+) => {
   // TODO make this work for auxiliar layers
   // https://github.com/GlobalFishingWatch/frontend/blob/master/libs/dataviews-client/src/resolve-dataviews-generators.ts#L606
   const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Context)
@@ -50,7 +50,6 @@ export const resolveDeckContextLayerProps: DeckResolverFunction<
     color: dataview.config?.color!,
     idProperty,
     valueProperties,
-    hoveredFeatures: interactions,
-    // clickedFeatures,
+    highlightedFeatures: highlightedFeatures as ContextPickingObject[],
   }
 }

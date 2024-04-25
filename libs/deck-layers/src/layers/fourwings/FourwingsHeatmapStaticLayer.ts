@@ -193,14 +193,16 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
       }),
     ]
 
-    const layerHoveredFeature = this.props.hoveredFeatures?.find((f) => f.layerId === this.root.id)
+    const layerHighlightedFeature = this.props.highlightedFeatures?.find(
+      (f) => f.layerId === this.root.id
+    )
 
-    if (layerHoveredFeature) {
+    if (layerHighlightedFeature) {
       layers.push(
         new PathLayer(
           this.props,
           this.getSubLayerProps({
-            data: [layerHoveredFeature],
+            data: [layerHighlightedFeature],
             id: `fourwings-cell-highlight`,
             widthUnits: 'pixels',
             widthMinPixels: 4,

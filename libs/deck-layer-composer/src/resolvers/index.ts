@@ -3,13 +3,8 @@ import {
   AnyDeckLayer,
   BaseMapLayer,
   ClusterLayer,
-  ContextFeature,
   ContextLayer,
-  ContextPickingInfo,
-  ContextPickingObject,
-  DeckLayerPickingObject,
   FourwingsLayer,
-  FourwingsPickingObject,
   VesselLayer,
 } from '@globalfishingwatch/deck-layers'
 import { ResolverGlobalConfig } from './types'
@@ -30,8 +25,7 @@ export * from './vessels'
 
 export const dataviewToDeckLayer = (
   dataview: DataviewInstance,
-  globalConfig: ResolverGlobalConfig,
-  interactions = [] as DeckLayerPickingObject[]
+  globalConfig: ResolverGlobalConfig
 ): AnyDeckLayer => {
   if (dataview.config?.type === DataviewType.Basemap) {
     const deckLayerProps = resolveDeckBasemapLayerProps(dataview, globalConfig)
@@ -41,20 +35,12 @@ export const dataviewToDeckLayer = (
     dataview.config?.type === DataviewType.HeatmapAnimated ||
     dataview.config?.type === DataviewType.HeatmapStatic
   ) {
-    const deckLayerProps = resolveDeckFourwingsLayerProps(
-      dataview,
-      globalConfig,
-      interactions as FourwingsPickingObject[]
-    )
+    const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, globalConfig)
     const layer = new FourwingsLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Context) {
-    const deckLayerProps = resolveDeckContextLayerProps(
-      dataview,
-      globalConfig,
-      interactions as ContextPickingObject[]
-    )
+    const deckLayerProps = resolveDeckContextLayerProps(dataview, globalConfig)
     const layer = new ContextLayer(deckLayerProps)
     return layer
   }

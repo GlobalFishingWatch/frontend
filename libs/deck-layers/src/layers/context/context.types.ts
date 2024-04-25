@@ -30,8 +30,7 @@ export type ContextLayerProps = {
   color: string
   idProperty?: string
   valueProperties?: string[]
-  hoveredFeatures?: ContextPickingObject[]
-  clickedFeatures?: ContextPickingObject[]
+  highlightedFeatures?: ContextPickingObject[]
 }
 
 export type ContextFeatureProperties = {

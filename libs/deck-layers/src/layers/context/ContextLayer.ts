@@ -40,16 +40,16 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
   static defaultProps = defaultProps
 
   getHighlightLineWidth(d: ContextFeature): number {
-    const { hoveredFeatures = [], clickedFeatures = [], idProperty } = this.props
-    return getPickedFeatureToHighlight(d, clickedFeatures, idProperty!) ||
-      getPickedFeatureToHighlight(d, hoveredFeatures, idProperty!)
+    const { highlightedFeatures = [], idProperty } = this.props
+    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!) ||
+      getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)
       ? 1
       : 0
   }
 
   getFillColor(d: ContextFeature): Color {
-    const { hoveredFeatures = [], idProperty } = this.props
-    return getPickedFeatureToHighlight(d, hoveredFeatures, idProperty!)
+    const { highlightedFeatures = [], idProperty } = this.props
+    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)
       ? COLOR_HIGHLIGHT_FILL
       : COLOR_TRANSPARENT
   }
@@ -120,7 +120,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
   }
 
   renderLayers() {
-    const { hoveredFeatures, clickedFeatures, color, layers } = this.props
+    const { highlightedFeatures, color, layers } = this.props
     return layers.map((layer) => {
       if (layer.id === ContextLayerId.EEZBoundaries) {
         return new TileLayer<TileLayerProps>({
@@ -169,7 +169,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
               getFillColor: (d) => this.getFillColor(d as ContextFeature),
               updateTriggers: {
-                getFillColor: [clickedFeatures, hoveredFeatures],
+                getFillColor: [highlightedFeatures],
               },
             }),
             ...(layer.id !== ContextLayerId.EEZ && layer.id !== ContextLayerId.EEZBoundaries
@@ -189,15 +189,13 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
               lineWidthMinPixels: 0,
               lineWidthUnits: 'pixels',
               filled: false,
-              visible:
-                (hoveredFeatures && hoveredFeatures?.length > 0) ||
-                (clickedFeatures && clickedFeatures?.length > 0),
+              visible: highlightedFeatures && highlightedFeatures?.length > 0,
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
               getLineWidth: (d) => this.getHighlightLineWidth(d as ContextFeature),
               getLineColor: COLOR_HIGHLIGHT_LINE,
               updateTriggers: {
-                getLineWidth: [clickedFeatures, hoveredFeatures],
+                getLineWidth: [highlightedFeatures],
               },
             }),
           ]

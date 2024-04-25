@@ -10,16 +10,16 @@ import { DeckResolverFunction } from './types'
 export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (
   dataview,
   globalConfig
-) => {
+): VesselLayerProps => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
-
+  const { start, end, highlightedFeatures, visibleEvents, highlightedTime } = globalConfig
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
     category: dataview.category!,
     name: dataview.config?.name!,
-    endTime: getUTCDateTime(globalConfig.end!).toMillis(),
-    startTime: getUTCDateTime(globalConfig.start!).toMillis(),
+    endTime: getUTCDateTime(end!).toMillis(),
+    startTime: getUTCDateTime(start!).toMillis(),
     ...(trackUrl && {
       trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
     }),
@@ -32,8 +32,8 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
         url: `${API_GATEWAY}${resource.url}`,
       }
     }),
-    visibleEvents: globalConfig.visibleEvents,
-    // clickedFeatures,
+    visibleEvents: visibleEvents,
+    highlightEventIds: highlightedFeatures?.map((feature) => feature.id),
     ...(dataview.config?.filters?.['speed']?.length && {
       minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
       maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),
@@ -42,11 +42,11 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
       minElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][0]),
       maxElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][1]),
     }),
-    ...(globalConfig.highlightedTime?.start && {
-      highlightStartTime: getUTCDateTime(globalConfig.highlightedTime?.start).toMillis(),
+    ...(highlightedTime?.start && {
+      highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
     }),
-    ...(globalConfig.highlightedTime?.end && {
-      highlightEndTime: getUTCDateTime(globalConfig.highlightedTime?.end).toMillis(),
+    ...(highlightedTime?.end && {
+      highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
     }),
   }
 }

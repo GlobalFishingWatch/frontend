@@ -25,7 +25,6 @@ import {
   TRACK_LAYER_TYPE,
 } from './vessel.config'
 import {
-  VesselDataStatus,
   VesselDataType,
   VesselDeckLayersEvent,
   VesselEventPickingInfo,
@@ -45,8 +44,6 @@ export type VesselLayerProps = BaseLayerProps &
 
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
-  dataStatus: VesselDataStatus[] = []
-
   getPickingInfo = ({
     info,
   }: {
@@ -182,17 +179,20 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             highlightEndTime,
             getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
             getFillColor: (d: any): Color => {
+              if (highlightEventIds?.includes(d.id)) return DEFAULT_FISHING_EVENT_COLOR
               if (d.type === EventTypes.Fishing) {
                 return singleTrack ? DEFAULT_FISHING_EVENT_COLOR : color
               }
               return EVENTS_COLORS[d.type]
             },
             updateTriggers: {
-              getFillColor: [color],
+              getFillColor: [color, highlightEventIds],
+              getRadius: [highlightEventIds],
             },
             radiusUnits: 'pixels',
             getRadius: (d: any) => {
-              const highlightOffset = highlightEventIds?.includes(d.id) ? 3 : 0
+              // TODO:deck highlighlight events using a new layer as we do in FourwingsLayer
+              const highlightOffset = highlightEventIds?.includes(d.id) ? 6 : 0
               return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
             },
             getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end] as any,
