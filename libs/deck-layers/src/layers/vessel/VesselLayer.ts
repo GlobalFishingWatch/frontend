@@ -186,7 +186,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
               return EVENTS_COLORS[d.type]
             },
             updateTriggers: {
-              getFillColor: [color],
+              getFillColor: [color, highlightEventIds],
               getRadius: [highlightEventIds],
             },
             radiusUnits: 'pixels',

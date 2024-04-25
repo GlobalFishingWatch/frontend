@@ -117,7 +117,6 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
           in float vShape;
           in float vStart;
           in float vEnd;
-          const int SHAPE_CIRCLE = ${SHAPES_ORDINALS.circle};
           const int SHAPE_SQUARE = ${SHAPES_ORDINALS.square};
           const int SHAPE_DIAMOND = ${SHAPES_ORDINALS.diamond};
           const int SHAPE_DIAMOND_STROKE = ${SHAPES_ORDINALS.diamondStroke};
