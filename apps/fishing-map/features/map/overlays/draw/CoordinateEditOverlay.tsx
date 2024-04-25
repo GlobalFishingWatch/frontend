@@ -18,10 +18,10 @@ export const CoordinateEditOverlay = (): React.ReactNode | null => {
   const currentPointCoordinates = updatedPoint?.coordinates
   const editingPointLatitude =
     newPointLatitude !== null ? Number(newPointLatitude) : Number(currentPointCoordinates?.[1])
-  console.log('🚀 ~ CoordinateEditOverlay ~ editingPointLatitude:', editingPointLatitude)
+  // console.log('🚀 ~ CoordinateEditOverlay ~ editingPointLatitude:', editingPointLatitude)
   const editingPointLongitude =
     newPointLongitude !== null ? Number(newPointLongitude) : Number(currentPointCoordinates?.[0])
-  console.log('🚀 ~ CoordinateEditOverlay ~ editingPointLongitude:', editingPointLongitude)
+  // console.log('🚀 ~ CoordinateEditOverlay ~ editingPointLongitude:', editingPointLongitude)
   const onHandleLatitudeChange = useCallback(
     (e: any) => {
       if (e.target.value) {

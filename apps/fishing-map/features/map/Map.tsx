@@ -22,7 +22,7 @@ import {
 } from 'features/map/map-interactions.hooks'
 import { useMapRulersDrag } from 'features/map/overlays/rulers/rulers-drag.hooks'
 import ErrorNotification from 'features/map/overlays/error-notification/ErrorNotification'
-import { useMapDeckLayers } from 'features/map/map-layers.hooks'
+import { useMapDeckLayers, useMapOverlayLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
 import {
@@ -98,6 +98,8 @@ const MapWrapper = () => {
   // )
 
   const layers = useMapDeckLayers()
+  const overlays = useMapOverlayLayers()
+
   const setDeckLayers = useSetDeckLayerComposer()
   useEffect(() => {
     return () => {
@@ -224,7 +226,7 @@ const MapWrapper = () => {
         id={MAP_CANVAS_ID}
         ref={deckRef}
         views={MAP_VIEW}
-        layers={deckRef ? (layers as LayersList) : []}
+        layers={deckRef ? ([...layers, ...overlays] as LayersList) : []}
         onAfterRender={() => {
           setDeckLayerLoadedState(layers)
         }}

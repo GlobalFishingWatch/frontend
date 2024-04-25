@@ -46,16 +46,16 @@ export class DrawLayer extends EditableGeoJsonLayer {
         },
         editHandlePointOutline: false,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
-        // _subLayerProps: {
-        //   geojson: {
-        //     ...DEFAULT_STYLES,
-        //   },
-        //   guides: {
-        //     getPointRadius: 10,
-        //     ...DEFAULT_STYLES,
-        //     getLineColor: [255, 0, 0],
-        //   },
-        // },
+        _subLayerProps: {
+          // geojson: {
+          //   ...DEFAULT_STYLES,
+          // },
+          guides: {
+            getPointRadius: 10,
+            ...DEFAULT_STYLES,
+            getLineColor: [255, 0, 0],
+          },
+        },
       }),
     ]
   }

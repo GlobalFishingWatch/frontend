@@ -31,7 +31,8 @@ import {
   updateFeaturePointByIndex,
 } from '../../map.draw.utils'
 import styles from './DrawDialog.module.css'
-import { useDrawLayer } from './draw.hooks'
+import { useDrawLayer, drawMode } from './draw.hooks'
+import { DRAW_MODE } from './draw.config'
 import { CoordinateEditOverlay } from './CoordinateEditOverlay'
 
 export type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
@@ -78,7 +79,7 @@ function MapDraw() {
   const mapDrawEditDatasetId = useSelector(selectMapDrawingEditId)
   const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
-  const { drawFeatures } = useDrawLayer()
+  const { drawFeatures, resetDrawFeatures, setDrawLayerMode } = useDrawLayer()
 
   useEffect(() => {
     if (mapDrawEditDataset) {
@@ -234,6 +235,7 @@ function MapDraw() {
   }, [resetEditHandler])
 
   const closeDraw = useCallback(() => {
+    resetDrawFeatures()
     resetState()
     dispatch(resetAreaList({ datasetId: mapDrawEditDatasetId }))
     dispatchResetMapDraw()
@@ -242,7 +244,14 @@ function MapDraw() {
       category: TrackCategory.ReferenceLayer,
       action: `Draw a custom reference layer - Click dismiss`,
     })
-  }, [dispatch, dispatchQueryParams, dispatchResetMapDraw, mapDrawEditDatasetId, resetState])
+  }, [
+    dispatch,
+    dispatchQueryParams,
+    dispatchResetMapDraw,
+    mapDrawEditDatasetId,
+    resetDrawFeatures,
+    resetState,
+  ])
 
   const toggleCreateAsPublic = useCallback(() => {
     setCreateAsPublic((createAsPublic) => !createAsPublic)
@@ -343,7 +352,12 @@ function MapDraw() {
           onChange={onInputChange}
           className={styles.input}
         />
-        <IconButton icon="add-polygon" onClick={() => {}} />
+        <IconButton
+          icon="add-polygon"
+          onClick={() => {
+            setDrawLayerMode('draw')
+          }}
+        />
         <IconButton
           type="warning"
           icon="delete"

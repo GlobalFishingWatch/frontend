@@ -15,11 +15,13 @@ export const useMapDeckLayers = () => {
     dataviews: dataviews as DataviewInstance[],
     globalConfig,
   })
-  const { instance } = useDrawLayer()
-  if (instance) {
-    return [...layers, instance]
-  }
+
   return layers
+}
+
+export const useMapOverlayLayers = () => {
+  const { instance: drawLayerInstance } = useDrawLayer()
+  return [drawLayerInstance]
 }
 
 export const useMapLayersLoaded = () => {

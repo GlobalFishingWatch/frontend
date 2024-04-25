@@ -17,7 +17,7 @@ import {
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 
-type DrawLayerMode = DrawPolygonMode | ViewMode
+type DrawLayerMode = DrawPolygonMode | ViewMode | 'draw'
 const drawFeaturesAtom = atom<FeatureCollection<Geometry, GeoJsonProperties>>({
   type: 'FeatureCollection',
   features: [],
