@@ -6,7 +6,7 @@ export const dataviews: Dataview[] = [
   {
     id: 341,
     name: 'Fishing map vessel with identity dataset',
-    slug: 'fishing-map-vessel-track',
+    slug: 'fishing-map-vessel-track-v3',
     app: 'fishing-map',
     category: DataviewCategory.Vessels,
     config: {
@@ -248,6 +248,134 @@ export const dataviews: Dataview[] = [
     description: 'Fishing map vessel with track, info and events',
     createdAt: '2023-01-16T15:35:34.588Z',
     updatedAt: '2024-04-23T15:04:50.720Z',
+  },
+  {
+    id: 361,
+    name: 'Apparent fishing effort',
+    slug: 'apparent-fishing-effort-v3',
+    app: 'fishing-map',
+    category: DataviewCategory.Activity,
+    config: {
+      type: 'HEATMAP_ANIMATED',
+      color: '#00FFBC',
+      datasets: ['public-global-fishing-effort:v3.0'],
+      colorRamp: 'teal',
+    },
+    datasetsConfig: [
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-global-fishing-effort:v3.0',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-belize-fishing-effort:v20220304',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-chile-fishing-effort:v20211126',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-indonesia-fishing-effort:v20200320',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-peru-fishing-effort:v20211126',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-panama-fishing-effort:v20211126',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-ecuador-fishing-effort:v20211126',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-bra-onyxsat-fishing-effort:v20211126',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-costa-rica-fishing-effort:v20211126',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-norway-fishing-effort:v20220112',
+      },
+      {
+        params: [
+          {
+            id: 'type',
+            value: 'heatmap',
+          },
+        ],
+        endpoint: '4wings-tiles',
+        datasetId: 'public-png-fishing-effort:v20230210',
+      },
+    ],
+    description: 'Apparent fishing effort',
+    createdAt: '2023-01-16T15:35:59.997Z',
+    updatedAt: '2023-10-18T16:12:10.570Z',
   },
 ]
 
