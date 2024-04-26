@@ -1,7 +1,8 @@
 import { PickingInfo } from '@deck.gl/core'
-import { Feature, Polygon, MultiPolygon, Geometry } from 'geojson'
+import { Feature, Polygon, MultiPolygon } from 'geojson'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { BaseLayerProps } from '../../types'
 
 export enum ContextLayerId {
   EEZ = 'eez-areas',
@@ -17,16 +18,15 @@ export enum ContextLayerId {
   ProtectedSeas = 'protected-seas',
 }
 
-export type ContextLayerConfig = {
-  id: ContextLayerId
+export type ContextLayerConfig<Id = ContextLayerId> = {
+  id: Id
   datasetId: string
   tilesUrl: string
 }
 
-export type ContextLayerProps = {
+export type ContextLayerProps = BaseLayerProps & {
   id: string
   layers: ContextLayerConfig[]
-  category: DataviewCategory
   color: string
   idProperty?: string
   valueProperties?: string[]
@@ -46,13 +46,6 @@ export type ContextFeatureProperties = {
 
 export type ContextFeature = Feature<Polygon | MultiPolygon, Record<string, any>>
 
-// TODO:deck create this type in the proper deck class layer
-export type UserContextFeature = Feature<Geometry, Record<string, any>> & ContextFeatureProperties
-
 export type ContextPickingObject = ContextFeature & ContextFeatureProperties
-export type UserContextPickingObject = UserContextFeature
 
-export type ContextPickingInfo = PickingInfo<
-  ContextPickingObject | UserContextPickingObject,
-  { tile?: Tile2DHeader }
->
+export type ContextPickingInfo = PickingInfo<ContextPickingObject, { tile?: Tile2DHeader }>

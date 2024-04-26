@@ -86,7 +86,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const workspace = useSelector(selectWorkspace)
   const isSidebarOpen = useSelector(selectSidebarOpen)
-  const isPointFeature = feature?.geometry?.type === 'Point'
+  const isPointFeature = (feature?.geometry as any)?.type === 'Point'
   const query = useSelector(selectLocationQuery)
   // const bounds = getFeatureBounds(feature)
   const reportAreaId = useSelector(selectLocationAreaId)

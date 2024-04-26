@@ -6,6 +6,7 @@ import {
   ClusterLayer,
   ContextLayer,
   FourwingsLayer,
+  UserContextLayer,
   VesselLayer,
 } from '@globalfishingwatch/deck-layers'
 import { ResolverGlobalConfig } from './types'
@@ -14,6 +15,7 @@ import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckContextLayerProps } from './context'
 import { resolveDeckClusterLayerProps } from './clusters'
 import { resolveDeckVesselLayerProps } from './vessels'
+import { resolveDeckUserContextLayerProps } from './user'
 
 export * from './basemap'
 export * from './context'
@@ -23,6 +25,7 @@ export * from './fourwings'
 export * from './types'
 export * from './tile-cluster'
 export * from './vessels'
+export * from './user'
 
 export const dataviewToDeckLayer = (
   dataview: DataviewInstance,
@@ -47,6 +50,11 @@ export const dataviewToDeckLayer = (
   if (dataview.config?.type === DataviewType.Context) {
     const deckLayerProps = resolveDeckContextLayerProps(dataview, globalConfig)
     const layer = new ContextLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.UserContext) {
+    const deckLayerProps = resolveDeckUserContextLayerProps(dataview, globalConfig)
+    const layer = new UserContextLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.TileCluster) {
