@@ -32,6 +32,8 @@ import {
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
   HIDDEN_DATAVIEW_FILTERS,
+  BASEMAP_DATAVIEW_SLUG,
+  BASEMAP_LABELS_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
 import {
@@ -62,6 +64,10 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
+export const DATAVIEWS_WITHOUT_SCREEN_FEATURES = [
+  BASEMAP_DATAVIEW_SLUG,
+  BASEMAP_LABELS_DATAVIEW_SLUG,
+]
 export const DATAVIEWS_WARNING = [
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
@@ -100,10 +106,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
   )
 
-  // const layerFeatures = useMapDataviewFeatures(
-  //   layerActive ? dataview : [],
-  //   dataviewFeaturesParams
-  // )?.[0]
   const layerLoaded = contextLayer?.loaded
   useEffect(() => {
     const updateFeaturesOnScreen = async () => {
@@ -119,7 +121,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         })
       }
     }
-    if (layerActive && layerLoaded) {
+    if (layerActive && layerLoaded && !DATAVIEWS_WITHOUT_SCREEN_FEATURES.includes(dataview.id)) {
       updateFeaturesOnScreen()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
