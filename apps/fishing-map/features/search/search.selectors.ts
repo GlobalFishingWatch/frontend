@@ -18,6 +18,8 @@ const EMPTY_ARRAY: [] = []
 export const selectSearchDatasetsInWorkspace = createSelector(
   [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],
   (dataviews, vesselsDatasets, allDatasets) => {
+    // TODO: remove this fixed dataset search
+    return allDatasets.filter((d) => d.id === 'public-global-vessel-identity:v3.0')
     const datasetsIds = getDatasetsInDataviews(dataviews)
     const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
       if (!datasetsIds.includes(id)) return EMPTY_ARRAY
