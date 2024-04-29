@@ -161,34 +161,42 @@ export class UserContextTileLayer<PropsT = {}> extends CompositeLayer<
   }
 
   _getTimeFilterProps() {
-    const { startTime, endTime, startTimeProperty, endTimeProperty } = this.props
-    if (!startTime && !endTime && !startTimeProperty && !endTimeProperty) return {}
-
-    if (startTimeProperty && endTimeProperty) {
-      return {
-        getFilterValue: (d: UserContextFeature) => [
-          d.properties[startTimeProperty as string],
-          d.properties[endTimeProperty as string],
-        ],
-        filterRange: [
-          [startTime, endTime],
-          [startTime, endTime],
-        ],
-        extensions: [new DataFilterExtension({ filterSize: 2 })],
+    const { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType } = this.props
+    if (!timeFilterType || (!startTime && !endTime && !startTimeProperty && !endTimeProperty))
+      return {}
+    if (timeFilterType === 'date') {
+      if (startTimeProperty) {
+        return {
+          getFilterValue: (d: UserContextFeature) => d.properties[startTimeProperty as string],
+          filterRange: [startTime, endTime],
+          extensions: [new DataFilterExtension({ filterSize: 1 })],
+        }
       }
-    }
-    if (endTimeProperty) {
-      return {
-        getFilterValue: (d: UserContextFeature) => d.properties[endTimeProperty as string],
-        filterRange: [0, endTime],
-        extensions: [new DataFilterExtension({ filterSize: 1 })],
-      }
-    }
-    if (startTimeProperty) {
-      return {
-        getFilterValue: (d: UserContextFeature) => d.properties[startTimeProperty as string],
-        filterRange: [startTime, Infinity],
-        extensions: [new DataFilterExtension({ filterSize: 1 })],
+    } else if (timeFilterType === 'dateRange') {
+      if (startTimeProperty && endTimeProperty) {
+        return {
+          getFilterValue: (d: UserContextFeature) => [
+            d.properties[startTimeProperty as string],
+            d.properties[endTimeProperty as string],
+          ],
+          filterRange: [
+            [0, endTime],
+            [startTime, 9999999999999], // update this in Sat Nov 20 2286 as deck gl does not support Infinity
+          ],
+          extensions: [new DataFilterExtension({ filterSize: 2 })],
+        }
+      } else if (endTimeProperty) {
+        return {
+          getFilterValue: (d: UserContextFeature) => d.properties[endTimeProperty as string],
+          filterRange: [startTime, 9999999999999],
+          extensions: [new DataFilterExtension({ filterSize: 1 })],
+        }
+      } else if (startTimeProperty) {
+        return {
+          getFilterValue: (d: UserContextFeature) => d.properties[startTimeProperty as string],
+          filterRange: [0, endTime],
+          extensions: [new DataFilterExtension({ filterSize: 1 })],
+        }
       }
     }
     return {}

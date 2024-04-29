@@ -1,7 +1,7 @@
 import { PickingInfo } from '@deck.gl/core'
 import { Feature, Geometry } from 'geojson'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType, TimeFilterType } from '@globalfishingwatch/api-types'
 import { ContextLayerConfig } from '../context'
 import { BaseLayerProps } from '../../types'
 
@@ -38,6 +38,7 @@ export type UserContextLayerProps = BaseLayerProps & {
    */
   startTimeProperty?: string
   endTimeProperty?: string
+  timeFilterType?: TimeFilterType
 }
 
 export type UserContextFeatureProperties = {

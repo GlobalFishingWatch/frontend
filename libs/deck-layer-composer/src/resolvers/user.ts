@@ -25,6 +25,15 @@ const getUserContexTimeFilterProps = ({
   if (!start && !end) {
     return {}
   }
+  const timeFilterType = getDatasetConfigurationProperty({
+    dataset,
+    property: 'timeFilterType',
+  })
+
+  if (!timeFilterType) {
+    return {}
+  }
+
   const startTimeProperty = getDatasetConfigurationProperty({
     dataset,
     property: 'startTime',
@@ -33,9 +42,11 @@ const getUserContexTimeFilterProps = ({
     dataset,
     property: 'endTime',
   }) as string
+
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
-  return { startTime, endTime, startTimeProperty, endTimeProperty }
+
+  return { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType }
 }
 
 export const getUserPolygonColorProps = ({
