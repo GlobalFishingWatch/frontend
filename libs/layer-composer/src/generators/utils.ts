@@ -61,7 +61,7 @@ export const getTimeFilterForUserContextLayer = (
   if (config?.startTimeFilterProperty) {
     return ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs]
   }
-  if (config?.startTimeFilterProperty) {
+  if (config?.endTimeFilterProperty) {
     // Show for every time range before the end
     return ['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs]
   }
