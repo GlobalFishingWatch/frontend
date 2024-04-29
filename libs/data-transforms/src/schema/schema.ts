@@ -1,6 +1,11 @@
 import { max, min, snakeCase, uniq } from 'lodash'
 import { FeatureCollection } from 'geojson'
-import { Dataset, DatasetSchemaItem, DatasetSchemaType } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetConfigurationUI,
+  DatasetSchemaItem,
+  DatasetSchemaType,
+} from '@globalfishingwatch/api-types'
 import { parseCoords } from '../coordinates'
 import { GUESS_COLUMN_DICT } from './guess-columns'
 
@@ -63,7 +68,10 @@ export const getFieldSchema = (
   return null
 }
 
-export const getSchemaIdClean = (id: string) => {
+export const getSchemaIdClean = (id: string | string[]) => {
+  if (Array.isArray(id)) {
+    return id.map((d) => snakeCase(d))
+  }
   // TODO review how backend handles characters like -
   // so we can parse the same here or before uploading the dataset
   return snakeCase(id)
@@ -74,8 +82,39 @@ export const getDatasetSchemaClean = (schema: Dataset['schema']): Dataset['schem
     return {} as Dataset['schema']
   }
   return Object.entries(schema).reduce((acc, [key, value]) => {
-    return { ...acc, [getSchemaIdClean(key)]: value }
+    return { ...acc, [getSchemaIdClean(key) as string]: value }
   }, {})
+}
+
+const CONFIGURATION_KEYS_TO_CLEAN: (keyof DatasetConfigurationUI)[] = [
+  'startTime',
+  'endTime',
+  'timestamp',
+  'pointName',
+  'pointSize',
+  'polygonColor',
+  'lineId',
+  'segmentId',
+]
+export const getDatasetConfigurationClean = (
+  configuration?: Dataset['configuration']
+): Dataset['configuration'] => {
+  if (!configuration) {
+    return {} as Dataset['configuration']
+  }
+  const configurationUI = Object.entries(configuration.configurationUI || {}).reduce(
+    (acc, [key, value]) => {
+      const cleanValue = CONFIGURATION_KEYS_TO_CLEAN.includes(key as keyof DatasetConfigurationUI)
+        ? getSchemaIdClean(value)
+        : value
+      return { ...acc, [key]: cleanValue }
+    },
+    {} as DatasetConfigurationUI
+  )
+  return {
+    ...(configuration || {}),
+    configurationUI,
+  }
 }
 
 export const getDatasetSchemaFromGeojson = (
