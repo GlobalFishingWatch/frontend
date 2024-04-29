@@ -4,6 +4,7 @@ import { GeoJsonLayer } from '@deck.gl/layers'
 import { GeoJsonProperties } from 'geojson'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { scaleLinear } from 'd3-scale'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import {
   COLOR_HIGHLIGHT_FILL,
@@ -15,6 +16,8 @@ import {
   getPickedFeatureToHighlight,
   GFWMVTLoader,
   getMVTSublayerProps,
+  rgbaStringToComponents,
+  getColorRampByOpacitySteps,
 } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import { ContextFeature } from '../context'
@@ -35,16 +38,15 @@ const defaultProps: DefaultProps<_UserContextLayerProps> = {
   debounceTime: 500,
 }
 
-export class UserContextLayer<PropsT = {}> extends CompositeLayer<_UserContextLayerProps & PropsT> {
-  static layerName = 'UserContextLayer'
+export class UserContextTileLayer<PropsT = {}> extends CompositeLayer<
+  _UserContextLayerProps & PropsT
+> {
+  static layerName = 'UserContextTileLayer'
   static defaultProps = defaultProps
 
   getHighlightLineWidth(d: UserContextFeature): number {
     const { highlightedFeatures = [], idProperty } = this.props
-    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!) ||
-      getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)
-      ? 1
-      : 0
+    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!) ? 1 : 0
   }
 
   getFillColor(d: UserContextFeature): Color {
@@ -54,31 +56,52 @@ export class UserContextLayer<PropsT = {}> extends CompositeLayer<_UserContextLa
       : COLOR_TRANSPARENT
   }
 
+  getFillStepsColor(d: UserContextFeature): Color {
+    const { highlightedFeatures = [], idProperty, color } = this.props
+    if (getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)) {
+      return COLOR_HIGHLIGHT_FILL
+    }
+    if (!this.props.steps || !this.props.stepsPickValue) {
+      return COLOR_TRANSPARENT
+    }
+
+    const value = d.properties?.[this.props.stepsPickValue!]
+    const colorRange = getColorRampByOpacitySteps(color)
+    const scale = scaleLinear(this.props.steps as number[], colorRange).clamp(true)
+    const fillColor = scale(value)
+    return fillColor ? (rgbaStringToComponents(fillColor) as Color) : COLOR_TRANSPARENT
+  }
+
   getPickingInfo = ({
     info,
   }: {
     info: PickingInfo<UserContextFeature, { tile?: Tile2DHeader }>
   }): UserContextPickingInfo => {
     const { idProperty, valueProperties } = this.props
+    let title = this.props.id
+    if (valueProperties) {
+      const properties = { ...(info.object as UserContextFeature)?.properties }
+      title =
+        valueProperties?.length === 1
+          ? properties[valueProperties[0]]
+          : valueProperties
+              .flatMap((prop) => (properties?.[prop] ? `${prop}: ${properties?.[prop]}` : []))
+              .join('<br/>')
+    }
     const object = {
       ...transformTileCoordsToWGS84(
         info.object as UserContextFeature,
         info.tile!.bbox as GeoBoundingBox,
         this.context.viewport
       ),
-      title: this.props.id,
+      title,
       color: this.props.color,
       layerId: this.props.layers[0].id,
       datasetId: this.props.layers[0].datasetId,
       category: this.props.category,
       // TODO:deck remove this hardcoded type here and make a decision how to handle it
-      type: DataviewType.UserContext,
+      subcategory: DataviewType.UserContext,
     } as UserContextPickingObject
-    info.object = transformTileCoordsToWGS84(
-      info.object as UserContextFeature,
-      info.tile!.bbox as GeoBoundingBox,
-      this.context.viewport
-    ) as UserContextPickingObject
     return { ...info, object }
   }
 
@@ -114,12 +137,41 @@ export class UserContextLayer<PropsT = {}> extends CompositeLayer<_UserContextLa
     return renderedFeatures
   }
 
+  _getTilesUrl(tilesUrl: string) {
+    const {
+      filter,
+      valueProperties,
+      stepsPickValue,
+      startTimeFilterProperty,
+      endTimeFilterProperty,
+    } = this.props
+    const tilesUrlObject = new URL(tilesUrl)
+    if (filter) {
+      tilesUrlObject.searchParams.set('filter', filter)
+    }
+    // Needed for invalidate caches on user changes
+    const properties = [
+      ...(valueProperties || []),
+      stepsPickValue || '',
+      startTimeFilterProperty || '',
+      endTimeFilterProperty || '',
+    ].filter((p) => !!p)
+    if (properties.length) {
+      properties.forEach((property, index) => {
+        tilesUrlObject.searchParams.set(`properties[${index}]`, property)
+      })
+    }
+    // Decode the url is needed to keep the {x|y|z} format in the coordinates tiles
+    return decodeURI(tilesUrlObject.toString())
+  }
+
   renderLayers() {
-    const { highlightedFeatures, color, layers } = this.props
+    const { highlightedFeatures, color, layers, steps, stepsPickValue } = this.props
+    const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     return layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserContextFeature>>({
         id: `${layer.id}-base-layer`,
-        data: layer.tilesUrl,
+        data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
         onViewportLoad: this.props.onViewportLoad,
         renderSubLayers: (props) => {
@@ -132,9 +184,10 @@ export class UserContextLayer<PropsT = {}> extends CompositeLayer<_UserContextLa
               id: `${props.id}-highlight-fills`,
               stroked: false,
               pickable: true,
-              getPolygonOffset: (params) =>
-                getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
-              getFillColor: (d) => this.getFillColor(d as UserContextFeature),
+              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
+              getFillColor: hasColorSteps
+                ? (d) => this.getFillStepsColor(d as UserContextFeature)
+                : (d) => this.getFillColor(d as UserContextFeature),
               updateTriggers: {
                 getFillColor: [highlightedFeatures],
               },
@@ -143,7 +196,7 @@ export class UserContextLayer<PropsT = {}> extends CompositeLayer<_UserContextLa
               id: `${props.id}-lines`,
               lineWidthMinPixels: 1,
               filled: false,
-              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
+              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
               getLineColor: hexToDeckColor(color),
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
@@ -152,8 +205,7 @@ export class UserContextLayer<PropsT = {}> extends CompositeLayer<_UserContextLa
               lineWidthUnits: 'pixels',
               filled: false,
               visible: highlightedFeatures && highlightedFeatures?.length > 0,
-              getPolygonOffset: (params) =>
-                getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
               getLineWidth: (d) => this.getHighlightLineWidth(d as UserContextFeature),
               getLineColor: COLOR_HIGHLIGHT_LINE,
               updateTriggers: {

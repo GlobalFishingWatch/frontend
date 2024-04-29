@@ -27,6 +27,11 @@ export type UserContextLayerProps = BaseLayerProps & {
    */
   steps?: number[]
   /**
+   * Property to get value to display the ramp
+   * legacy known as pickValueAt
+   */
+  stepsPickValue?: string
+  /**
    * Feature property to drive timestamps filtering
    */
   startTimeFilterProperty?: string
@@ -47,9 +52,8 @@ export type UserContextFeatureProperties = {
   link?: string
 }
 
-export type UserContextFeature = Feature<Geometry, Record<string, any>> &
-  UserContextFeatureProperties
+export type UserContextFeature = Feature<Geometry, Record<string, any>>
 
-export type UserContextPickingObject = UserContextFeature
+export type UserContextPickingObject = UserContextFeature & UserContextFeatureProperties
 
 export type UserContextPickingInfo = PickingInfo<UserContextPickingObject, { tile?: Tile2DHeader }>

@@ -41,10 +41,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
 
   getHighlightLineWidth(d: ContextFeature): number {
     const { highlightedFeatures = [], idProperty } = this.props
-    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!) ||
-      getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)
-      ? 1
-      : 0
+    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!) ? 1 : 0
   }
 
   getFillColor(d: ContextFeature): Color {
@@ -79,11 +76,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
       value: getContextValue(info.object as ContextFeature, valueProperties),
       link: getContextLink(info.object as ContextPickingObject),
     } as ContextPickingObject
-    info.object = transformTileCoordsToWGS84(
-      info.object as ContextFeature,
-      info.tile!.bbox as GeoBoundingBox,
-      this.context.viewport
-    ) as ContextPickingObject
+
     return { ...info, object }
   }
 

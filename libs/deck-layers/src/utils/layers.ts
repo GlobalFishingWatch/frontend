@@ -10,7 +10,7 @@ const WORLD_SIZE = 512
 export function getPickedFeatureToHighlight(
   data: any,
   pickedFeatures: DeckLayerPickingObject[],
-  idProperty: string
+  idProperty = 'gfw_id'
 ) {
   return (
     pickedFeatures &&
