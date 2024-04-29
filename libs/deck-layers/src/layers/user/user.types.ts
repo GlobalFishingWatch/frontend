@@ -31,14 +31,13 @@ export type UserContextLayerProps = BaseLayerProps & {
    * legacy known as pickValueAt
    */
   stepsPickValue?: string
+  startTime?: number
+  endTime?: number
   /**
    * Feature property to drive timestamps filtering
    */
-  startTimeFilterProperty?: string
-  /**
-   * Feature property to drive timestamps filtering
-   */
-  endTimeFilterProperty?: string
+  startTimeProperty?: string
+  endTimeProperty?: string
 }
 
 export type UserContextFeatureProperties = {

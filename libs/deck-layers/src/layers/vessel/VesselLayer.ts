@@ -195,9 +195,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
               const highlightOffset = highlightEventIds?.includes(d.id) ? 6 : 0
               return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
             },
-            getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end] as any,
-            filterRange: [[startTime, endTime] as any, [startTime, endTime] as any],
-            extensions: [new DataFilterExtension({ filterSize: 2 }) as any],
+            getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end],
+            filterRange: [[startTime, endTime] as any, [startTime, endTime]],
+            extensions: [new DataFilterExtension({ filterSize: 2 })],
           })
         )
       })

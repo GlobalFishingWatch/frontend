@@ -1,5 +1,9 @@
 import { DRAW_DATASET_SOURCE, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import { UserContextLayerProps, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
+import {
+  UserContextLayerProps,
+  UserContextPickingObject,
+  getUTCDateTime,
+} from '@globalfishingwatch/deck-layers'
 import {
   findDatasetByType,
   getDatasetConfiguration,
@@ -11,18 +15,27 @@ import { DeckResolverFunction } from './types'
 
 const getUserContexTimeFilterProps = ({
   dataset,
+  start,
+  end,
 }: {
   dataset: Dataset
+  start: string
+  end: string
 }): Partial<UserContextLayerProps> => {
-  const startTimeFilterProperty = getDatasetConfigurationProperty({
+  if (!start && !end) {
+    return {}
+  }
+  const startTimeProperty = getDatasetConfigurationProperty({
     dataset,
     property: 'startTime',
   }) as string
-  const endTimeFilterProperty = getDatasetConfigurationProperty({
+  const endTimeProperty = getDatasetConfigurationProperty({
     dataset,
     property: 'endTime',
   }) as string
-  return { startTimeFilterProperty, endTimeFilterProperty }
+  const startTime = start ? getUTCDateTime(start).toMillis() : 0
+  const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
+  return { startTime, endTime, startTimeProperty, endTimeProperty }
 }
 
 export const getUserPolygonColorProps = ({
@@ -47,7 +60,7 @@ export const getUserPolygonColorProps = ({
 
 export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserContextLayerProps> = (
   dataview,
-  { highlightedFeatures }
+  { highlightedFeatures, start, end }
 ) => {
   const dataset = findDatasetByType(dataview.datasets, DatasetTypes.UserContext) as Dataset
 
@@ -70,7 +83,7 @@ export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserContextL
     tilesUrl,
   }
   const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
-  const timeFilters = getUserContexTimeFilterProps({ dataset })
+  const timeFilters = getUserContexTimeFilterProps({ dataset, start, end })
   const polygonColor = getUserPolygonColorProps({ dataset })
   const { filter } = dataview.config || {}
   return {

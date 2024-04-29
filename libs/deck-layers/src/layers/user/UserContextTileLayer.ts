@@ -2,7 +2,7 @@ import { CompositeLayer, Color, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { GeoBoundingBox, TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import { GeoJsonProperties } from 'geojson'
-import { PathStyleExtension } from '@deck.gl/extensions'
+import { DataFilterExtension } from '@deck.gl/extensions'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
 import { DataviewType } from '@globalfishingwatch/api-types'
@@ -138,13 +138,8 @@ export class UserContextTileLayer<PropsT = {}> extends CompositeLayer<
   }
 
   _getTilesUrl(tilesUrl: string) {
-    const {
-      filter,
-      valueProperties,
-      stepsPickValue,
-      startTimeFilterProperty,
-      endTimeFilterProperty,
-    } = this.props
+    const { filter, valueProperties, stepsPickValue, startTimeProperty, endTimeProperty } =
+      this.props
     const tilesUrlObject = new URL(tilesUrl)
     if (filter) {
       tilesUrlObject.searchParams.set('filter', filter)
@@ -153,8 +148,8 @@ export class UserContextTileLayer<PropsT = {}> extends CompositeLayer<
     const properties = [
       ...(valueProperties || []),
       stepsPickValue || '',
-      startTimeFilterProperty || '',
-      endTimeFilterProperty || '',
+      startTimeProperty || '',
+      endTimeProperty || '',
     ].filter((p) => !!p)
     if (properties.length) {
       properties.forEach((property, index) => {
@@ -165,15 +160,51 @@ export class UserContextTileLayer<PropsT = {}> extends CompositeLayer<
     return decodeURI(tilesUrlObject.toString())
   }
 
+  _getTimeFilterProps() {
+    const { startTime, endTime, startTimeProperty, endTimeProperty } = this.props
+    if (!startTime && !endTime && !startTimeProperty && !endTimeProperty) return {}
+
+    if (startTimeProperty && endTimeProperty) {
+      return {
+        getFilterValue: (d: UserContextFeature) => [
+          d.properties[startTimeProperty as string],
+          d.properties[endTimeProperty as string],
+        ],
+        filterRange: [
+          [startTime, endTime],
+          [startTime, endTime],
+        ],
+        extensions: [new DataFilterExtension({ filterSize: 2 })],
+      }
+    }
+    if (endTimeProperty) {
+      return {
+        getFilterValue: (d: UserContextFeature) => d.properties[endTimeProperty as string],
+        filterRange: [0, endTime],
+        extensions: [new DataFilterExtension({ filterSize: 1 })],
+      }
+    }
+    if (startTimeProperty) {
+      return {
+        getFilterValue: (d: UserContextFeature) => d.properties[startTimeProperty as string],
+        filterRange: [startTime, Infinity],
+        extensions: [new DataFilterExtension({ filterSize: 1 })],
+      }
+    }
+    return {}
+  }
+
   renderLayers() {
     const { highlightedFeatures, color, layers, steps, stepsPickValue } = this.props
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
+    const filterProps = this._getTimeFilterProps()
     return layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserContextFeature>>({
         id: `${layer.id}-base-layer`,
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
         onViewportLoad: this.props.onViewportLoad,
+        ...filterProps,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
