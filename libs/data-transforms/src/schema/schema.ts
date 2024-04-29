@@ -107,7 +107,7 @@ export const getDatasetConfigurationClean = (
       const cleanValue = CONFIGURATION_KEYS_TO_CLEAN.includes(key as keyof DatasetConfigurationUI)
         ? getSchemaIdClean(value)
         : value
-      return { ...acc, key: cleanValue }
+      return { ...acc, [key]: cleanValue }
     },
     {} as DatasetConfigurationUI
   )
