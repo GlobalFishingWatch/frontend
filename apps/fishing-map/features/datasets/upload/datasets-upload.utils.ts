@@ -8,6 +8,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import {
   cleanProperties,
+  getDatasetConfigurationClean,
   getDatasetSchema,
   getDatasetSchemaClean,
   getSchemaIdClean,
@@ -127,7 +128,9 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
     unit: 'TBD',
     subcategory: 'info',
     schema: getDatasetSchemaClean(datasetMetadata.schema),
-    fieldsAllowed: datasetMetadata.fieldsAllowed?.map((field) => getSchemaIdClean(field)) || [],
+    configuration: getDatasetConfigurationClean(datasetMetadata.configuration),
+    fieldsAllowed:
+      datasetMetadata.fieldsAllowed?.map((field) => getSchemaIdClean(field) as string) || [],
   }
   const timestampProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
