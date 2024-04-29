@@ -8,7 +8,7 @@ steps:
       - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
     script: |
       if [ $_NEXT_PUBLIC_WORKSPACE_ENV = "production" ]; then
-          tag=$(git describe --match "@globalfishingwatchapp/fishing-map*" --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          tag=$(git describe --match "@gfw/fishing-map*" --abbrev=0 --tags $(git rev-list --tags --max-count=1))
           git checkout $tag
       fi
 
