@@ -35,6 +35,27 @@ steps:
       yarn -v
       yarn install --immutable
 
+  - id: 'save_cache'
+    waitFor: ['install-yarn']
+    name: 'gcr.io/$PROJECT_ID/restore_cache'
+    script: |
+      #!/usr/bin/env bash
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=node_modules-$( checksum yarn.lock ) \
+        --path=./node_modules \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-$( checksum yarn.lock ) \
+        --path=.yarn/cache \
+        --no-clobber
+      save_cache \
+        --bucket=gs://frontend-cache-dependencies \
+        --key=yarn-install-state-$( checksum yarn.lock ) \
+        --path=.yarn/install-state.gz \
+        --no-clobber
+
   - id: 'smoke-test-e2e-live'
     name: cypress/included:13.7.3
     waitFor: ['install-yarn']
