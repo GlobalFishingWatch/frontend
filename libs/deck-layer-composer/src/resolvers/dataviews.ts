@@ -224,6 +224,37 @@ type ResolverGlobalConfig = {
   singleTrack?: boolean
 }
 
+const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
+  DataviewType.Basemap,
+  DataviewType.BasemapLabels,
+  DataviewType.Heatmap,
+  DataviewType.HeatmapStatic,
+  DataviewType.HeatmapAnimated,
+  DataviewType.TileCluster,
+  DataviewType.Track,
+  DataviewType.VesselEvents,
+  DataviewType.VesselEventsShapes,
+  DataviewType.Context,
+  DataviewType.UserContext,
+  DataviewType.UserPoints,
+  DataviewType.Polygons,
+  DataviewType.Rulers,
+  DataviewType.Annotation,
+]
+
+export function getDataviewsSorted(
+  dataviews: (UrlDataviewInstance | DataviewInstance)[],
+  order = DATAVIEWS_LAYER_ORDER
+) {
+  return dataviews.toSorted((a, b) => {
+    const aType = a.config?.type as DataviewType
+    const bType = b.config?.type as DataviewType
+    const aPos = order.indexOf(aType)
+    const bPos = order.indexOf(bType)
+    return aPos - bPos
+  }) as DataviewInstance[]
+}
+
 export function getDataviewsResolved(
   dataviews: (UrlDataviewInstance | DataviewInstance)[],
   params: ResolverGlobalConfig = {}
@@ -231,7 +262,7 @@ export function getDataviewsResolved(
   const {
     activityDataviews,
     detectionDataviews,
-    fourwingsDataviews,
+    environmentalDataviews,
     staticDataviews,
     trackDataviews,
     otherDataviews,
@@ -242,7 +273,7 @@ export function getDataviewsResolved(
       } else if (isDetectionsDataview(dataview)) {
         acc.detectionDataviews.push(dataview)
       } else if (isEnvironmentalDataview(dataview)) {
-        acc.fourwingsDataviews.push(dataview)
+        acc.environmentalDataviews.push(dataview)
       } else if (isHeatmapStaticDataview(dataview)) {
         acc.staticDataviews.push(dataview)
       } else if (isTrackDataview(dataview)) {
@@ -255,7 +286,7 @@ export function getDataviewsResolved(
     {
       activityDataviews: [] as UrlDataviewInstance[],
       detectionDataviews: [] as UrlDataviewInstance[],
-      fourwingsDataviews: [] as UrlDataviewInstance[],
+      environmentalDataviews: [] as UrlDataviewInstance[],
       staticDataviews: [] as UrlDataviewInstance[],
       trackDataviews: [] as UrlDataviewInstance[],
       otherDataviews: [] as UrlDataviewInstance[],
@@ -263,7 +294,7 @@ export function getDataviewsResolved(
   )
 
   const singleHeatmapDataview =
-    [...activityDataviews, ...detectionDataviews, ...fourwingsDataviews].length === 1
+    [...activityDataviews, ...detectionDataviews, ...environmentalDataviews].length === 1
   const activityComparisonMode = activityDataviews.every((dataview) =>
     params.bivariateDataviews?.includes(dataview.id)
   )
@@ -291,7 +322,7 @@ export function getDataviewsResolved(
         colorRampWhiteEnd: singleHeatmapDataview,
       })
     : []
-  const fourwingsDataviewsParsed = fourwingsDataviews.flatMap(
+  const environmentalDataviewsParsed = environmentalDataviews.flatMap(
     (d) =>
       getFourwingsDataviewsResolved(d, {
         colorRampWhiteEnd:
@@ -315,7 +346,7 @@ export function getDataviewsResolved(
   const dataviewsMerged = [
     ...otherDataviews,
     ...staticDataviewsParsed,
-    ...fourwingsDataviewsParsed,
+    ...environmentalDataviewsParsed,
     ...mergedDetectionsDataview,
     ...mergedActivityDataview,
     ...trackDataviewsParsed,
