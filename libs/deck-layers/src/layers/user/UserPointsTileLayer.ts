@@ -19,7 +19,6 @@ import {
   getMVTSublayerProps,
 } from '../../utils'
 import { UserPointsLayerProps, UserContextFeature } from './user.types'
-import { getTilesUrl, getTimeFilterProps } from './user.utils'
 import { UserTileLayer } from './UserTileLayer'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
@@ -100,11 +99,11 @@ export class UserPointsTileLayer<PropsT = {}> extends UserTileLayer<
 
   renderLayers() {
     const { highlightedFeatures, layers, color, pickable, maxPointSize } = this.props
-    const filterProps = getTimeFilterProps(this.props)
+    const filterProps = this._getTimeFilterProps()
     return layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserContextFeature>>({
         id: `${layer.id}-base-layer`,
-        data: getTilesUrl(layer.tilesUrl, this.props),
+        data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
         onViewportLoad: this.props.onViewportLoad,
         ...filterProps,

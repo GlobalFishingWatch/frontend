@@ -1,6 +1,7 @@
 import { CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { DataFilterExtension } from '@deck.gl/extensions'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import { ContextFeature } from '../context'
@@ -12,6 +13,7 @@ import {
   UserContextFeature,
   UserContextPickingObject,
   BaseUserLayerProps,
+  UserContextLayerProps,
 } from './user.types'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
@@ -27,6 +29,9 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
   maxPointSize: 15,
   circleRadiusRange: POINT_SIZES_DEFAULT_RANGE,
 }
+
+// update this in Sat Nov 20 2286 as deck gl does not support Infinity
+const INFINITY_TIMERANGE_LIMIT = 9999999999999
 
 type UserTileLayerProps = BaseLayerProps & BaseUserLayerProps
 export abstract class UserTileLayer<
@@ -65,7 +70,7 @@ export abstract class UserTileLayer<
       // TODO:deck remove this hardcoded type here and make a decision how to handle it
       subcategory: DataviewType.UserContext,
     } as UserContextPickingObject
-    console.log('🚀 ~ object:', object)
+
     return { ...info, object }
   }
 
@@ -99,5 +104,72 @@ export abstract class UserTileLayer<
     }
 
     return renderedFeatures
+  }
+
+  _getTilesUrl(tilesUrl: string) {
+    const { filter, valueProperties, startTimeProperty, endTimeProperty } = this.props
+    const stepsPickValue = (this.props as UserContextLayerProps)?.stepsPickValue
+    const circleRadiusProperty = (this.props as UserPointsLayerProps)?.circleRadiusProperty
+    const tilesUrlObject = new URL(tilesUrl)
+    if (filter) {
+      tilesUrlObject.searchParams.set('filter', filter)
+    }
+    // Needed for invalidate caches on user changes
+    const properties = [
+      ...(valueProperties || []),
+      startTimeProperty || '',
+      endTimeProperty || '',
+      stepsPickValue || '',
+      circleRadiusProperty || '',
+    ].filter((p) => !!p)
+    if (properties.length) {
+      properties.forEach((property, index) => {
+        tilesUrlObject.searchParams.set(`properties[${index}]`, property)
+      })
+    }
+    // Decode the url is needed to keep the {x|y|z} format in the coordinates tiles
+    return decodeURI(tilesUrlObject.toString())
+  }
+
+  _getTimeFilterProps() {
+    const { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType } = this.props
+    if (!timeFilterType || (!startTime && !endTime && !startTimeProperty && !endTimeProperty))
+      return {}
+    if (timeFilterType === 'date') {
+      if (startTimeProperty) {
+        return {
+          getFilterValue: (d: UserContextFeature) => d.properties[startTimeProperty as string],
+          filterRange: [startTime, endTime],
+          extensions: [new DataFilterExtension({ filterSize: 1 })],
+        }
+      }
+    } else if (timeFilterType === 'dateRange') {
+      if (startTimeProperty && endTimeProperty) {
+        return {
+          getFilterValue: (d: UserContextFeature) => [
+            d.properties[startTimeProperty as string],
+            d.properties[endTimeProperty as string],
+          ],
+          filterRange: [
+            [0, endTime],
+            [startTime, INFINITY_TIMERANGE_LIMIT],
+          ],
+          extensions: [new DataFilterExtension({ filterSize: 2 })],
+        }
+      } else if (endTimeProperty) {
+        return {
+          getFilterValue: (d: UserContextFeature) => d.properties[endTimeProperty as string],
+          filterRange: [startTime, INFINITY_TIMERANGE_LIMIT],
+          extensions: [new DataFilterExtension({ filterSize: 1 })],
+        }
+      } else if (startTimeProperty) {
+        return {
+          getFilterValue: (d: UserContextFeature) => d.properties[startTimeProperty as string],
+          filterRange: [0, endTime],
+          extensions: [new DataFilterExtension({ filterSize: 1 })],
+        }
+      }
+    }
+    return {}
   }
 }
