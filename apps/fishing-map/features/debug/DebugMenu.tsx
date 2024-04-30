@@ -54,6 +54,15 @@ const DebugMenu: React.FC = () => {
         <p>Renders fishing activity as stacked 3D bars. Will disable interaction on this layer.</p>
         <div className={styles.header}>
           <Switch
+            id="option_map_stats"
+            active={debugOptions.mapStats}
+            onClick={() => dispatch(toggleOption(DebugOption.MapStats))}
+          />
+          <label htmlFor="option_map_stats">Map stats</label>
+        </div>
+        <p>Show fps and memory stats</p>
+        <div className={styles.header}>
+          <Switch
             id="option_debug"
             active={debugOptions.debug}
             onClick={() => dispatch(toggleOption(DebugOption.Debug))}

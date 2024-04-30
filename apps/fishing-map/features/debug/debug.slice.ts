@@ -6,6 +6,7 @@ export enum DebugOption {
   DatasetRelationship = 'datasetRelationship',
   Extruded = 'extruded',
   Debug = 'debug',
+  MapStats = 'mapStats',
   Thinning = 'thinning',
 }
 
@@ -22,6 +23,7 @@ const initialState: DebugState = {
     blob: false,
     datasetRelationship: false,
     debug: false,
+    mapStats: false,
     thinning: true,
     extruded: false,
   },
