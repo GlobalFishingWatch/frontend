@@ -5,13 +5,14 @@ import { DataviewCategory, DataviewType, TimeFilterType } from '@globalfishingwa
 import { ContextLayerConfig } from '../context'
 import { BaseLayerProps } from '../../types'
 
-export type UserContextLayerProps = BaseLayerProps & {
+export type BaseUserLayerProps = {
   id: string
   layers: ContextLayerConfig<string>[]
   color: string
   idProperty?: string
   valueProperties?: string[]
   highlightedFeatures?: UserContextPickingObject[]
+
   // TODO:deck implement logic for all of these properties
   /**
    * Disable interaction (needed when user uploaded a non-polygon layer)
@@ -23,14 +24,12 @@ export type UserContextLayerProps = BaseLayerProps & {
    */
   filter?: string
   /**
-   * Custom color ramp for filled layers
+   * Filters object without parse
    */
-  steps?: number[]
+  filters?: Record<string, any>
   /**
-   * Property to get value to display the ramp
-   * legacy known as pickValueAt
+   * Global timerange config filter timestamps
    */
-  stepsPickValue?: string
   startTime?: number
   endTime?: number
   /**
@@ -40,6 +39,40 @@ export type UserContextLayerProps = BaseLayerProps & {
   endTimeProperty?: string
   timeFilterType?: TimeFilterType
 }
+
+export type UserContextLayerProps = BaseLayerProps &
+  BaseUserLayerProps & {
+    /**
+     * Custom color ramp for filled layers
+     */
+    steps?: number[]
+    /**
+     * Property to get value to display the ramp
+     * legacy known as pickValueAt
+     */
+    stepsPickValue?: string
+  }
+
+export type UserPointsLayerProps = BaseLayerProps &
+  BaseUserLayerProps & {
+    /**
+     * Feature property to drive circle radius
+     */
+    circleRadiusProperty?: string
+    /**
+     * min max values of the circleRadiusProperty
+     * circle radius linear interpolation will be based on this range
+     */
+    circleRadiusRange?: number[]
+    /**
+     * min point size of the values range lower end
+     */
+    minPointSize?: number
+    /**
+     * man point size of the values range higher end
+     */
+    maxPointSize?: number
+  }
 
 export type UserContextFeatureProperties = {
   id: string

@@ -1,22 +1,3 @@
-import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
-import {
-  AnyDeckLayer,
-  BaseMapLabelsLayer,
-  BaseMapLayer,
-  ClusterLayer,
-  ContextLayer,
-  FourwingsLayer,
-  UserContextTileLayer,
-  VesselLayer,
-} from '@globalfishingwatch/deck-layers'
-import { ResolverGlobalConfig } from './types'
-import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
-import { resolveDeckFourwingsLayerProps } from './fourwings'
-import { resolveDeckContextLayerProps } from './context'
-import { resolveDeckClusterLayerProps } from './clusters'
-import { resolveDeckVesselLayerProps } from './vessels'
-import { resolveDeckUserContextLayerProps } from './user'
-
 export * from './basemap'
 export * from './context'
 export * from './clusters'
@@ -25,47 +6,5 @@ export * from './fourwings'
 export * from './types'
 export * from './tile-cluster'
 export * from './vessels'
+export * from './resolvers'
 export * from './user'
-
-export const dataviewToDeckLayer = (
-  dataview: DataviewInstance,
-  globalConfig: ResolverGlobalConfig
-): AnyDeckLayer => {
-  if (dataview.config?.type === DataviewType.Basemap) {
-    const deckLayerProps = resolveDeckBasemapLayerProps(dataview, globalConfig)
-    return new BaseMapLayer(deckLayerProps)
-  }
-  if (dataview.config?.type === DataviewType.BasemapLabels) {
-    const deckLayerProps = resolveDeckBasemapLabelsLayerProps(dataview, globalConfig)
-    return new BaseMapLabelsLayer(deckLayerProps)
-  }
-  if (
-    dataview.config?.type === DataviewType.HeatmapAnimated ||
-    dataview.config?.type === DataviewType.HeatmapStatic
-  ) {
-    const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, globalConfig)
-    const layer = new FourwingsLayer(deckLayerProps)
-    return layer
-  }
-  if (dataview.config?.type === DataviewType.Context) {
-    const deckLayerProps = resolveDeckContextLayerProps(dataview, globalConfig)
-    const layer = new ContextLayer(deckLayerProps)
-    return layer
-  }
-  if (dataview.config?.type === DataviewType.UserContext) {
-    const deckLayerProps = resolveDeckUserContextLayerProps(dataview, globalConfig)
-    const layer = new UserContextTileLayer(deckLayerProps)
-    return layer
-  }
-  if (dataview.config?.type === DataviewType.TileCluster) {
-    const deckLayerProps = resolveDeckClusterLayerProps(dataview, globalConfig)
-    const layer = new ClusterLayer(deckLayerProps)
-    return layer
-  }
-  if (dataview.config?.type === DataviewType.Track) {
-    const deckLayerProps = resolveDeckVesselLayerProps(dataview, globalConfig)
-    const layer = new VesselLayer(deckLayerProps)
-    return layer
-  }
-  throw new Error(`Unknown deck layer generator type: ${dataview.config?.type}`)
-}

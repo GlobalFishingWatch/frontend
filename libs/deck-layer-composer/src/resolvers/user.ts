@@ -1,7 +1,9 @@
 import { DRAW_DATASET_SOURCE, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
+  BaseUserLayerProps,
   UserContextLayerProps,
   UserContextPickingObject,
+  UserPointsLayerProps,
   getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
 import {
@@ -21,7 +23,7 @@ const getUserContexTimeFilterProps = ({
   dataset: Dataset
   start: string
   end: string
-}): Partial<UserContextLayerProps> => {
+}): Partial<UserContextLayerProps | UserPointsLayerProps> => {
   if (!start && !end) {
     return {}
   }
@@ -69,7 +71,43 @@ export const getUserPolygonColorProps = ({
   return {}
 }
 
-export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserContextLayerProps> = (
+export const getUserCircleProps = ({
+  dataset,
+}: {
+  dataset: Dataset
+}): Partial<UserPointsLayerProps> => {
+  const circleRadiusProperty = getDatasetConfigurationProperty({
+    dataset,
+    property: 'pointSize',
+  })
+  if (!circleRadiusProperty) {
+    return {}
+  }
+
+  const circleRadiusRange = circleRadiusProperty
+    ? [
+        dataset.schema?.[circleRadiusProperty].enum?.[0] as number,
+        dataset.schema?.[circleRadiusProperty].enum?.[1] as number,
+      ]
+    : []
+  const minPointSize = getDatasetConfigurationProperty({
+    dataset,
+    property: 'minPointSize',
+  })
+  const maxPointSize = getDatasetConfigurationProperty({
+    dataset,
+    property: 'maxPointSize',
+  })
+
+  return {
+    circleRadiusProperty: circleRadiusProperty.toLowerCase(),
+    circleRadiusRange,
+    ...(minPointSize && { minPointSize }),
+    ...(maxPointSize && { maxPointSize }),
+  }
+}
+
+export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps> = (
   dataview,
   { highlightedFeatures, start, end }
 ) => {
@@ -95,19 +133,41 @@ export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserContextL
   }
   const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
   const timeFilters = getUserContexTimeFilterProps({ dataset, start, end })
-  const polygonColor = getUserPolygonColorProps({ dataset })
   const { filter } = dataview.config || {}
+
   return {
     id: dataview.id,
     layers: [layer],
     category: dataview.category!,
     color: dataview.config?.color!,
-    interactive: !dataset.configuration?.disableInteraction ?? true,
+    pickable: !dataset.configuration?.disableInteraction ?? true,
     highlightedFeatures: highlightedFeatures as UserContextPickingObject[],
     ...(filter && { filter }),
     ...(idProperty && { idProperty }),
     ...(valueProperties?.length && { valueProperties }),
     ...timeFilters,
-    ...polygonColor,
   }
+}
+export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserContextLayerProps> = (
+  dataview,
+  globalConfig
+) => {
+  const dataset = findDatasetByType(dataview.datasets, DatasetTypes.UserContext) as Dataset
+  const polygonColor = getUserPolygonColorProps({ dataset })
+  return {
+    ...resolveDeckUserLayerProps(dataview, globalConfig),
+    ...polygonColor,
+  } as UserContextLayerProps
+}
+
+export const resolveDeckUserPointsLayerProps: DeckResolverFunction<UserPointsLayerProps> = (
+  dataview,
+  globalConfig
+) => {
+  const dataset = findDatasetByType(dataview.datasets, DatasetTypes.UserContext) as Dataset
+  const circleProps = getUserCircleProps({ dataset })
+  return {
+    ...resolveDeckUserLayerProps(dataview, globalConfig),
+    ...circleProps,
+  } as UserPointsLayerProps
 }
