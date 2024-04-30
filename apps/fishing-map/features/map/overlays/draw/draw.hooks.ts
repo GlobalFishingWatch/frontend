@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useState } from 'react'
-import { FeatureCollection, GeoJSON, GeoJsonProperties, Geometry } from 'geojson'
-import { atom, useSetAtom, useAtomValue, useAtom } from 'jotai'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FeatureCollection, GeoJSON, GeoJsonProperties, Geometry, Polygon } from 'geojson'
+import { atom, useAtom } from 'jotai'
 import {
   CompositeMode,
   DrawPolygonMode,
   GeoJsonEditMode,
   ModifyMode,
-  TranslateMode,
   ViewMode,
 } from '@deck.gl-community/editable-layers'
+import kinks from '@turf/kinks'
 import {
   DeckLayerPickingObject,
   DrawLayer,
@@ -16,41 +16,42 @@ import {
 } from '@globalfishingwatch/deck-layers'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-
-type DrawLayerMode = DrawPolygonMode | ViewMode | 'draw'
-const drawFeaturesAtom = atom<FeatureCollection<Geometry, GeoJsonProperties>>({
+const INITIAL_FEATURE_COLLECTION: FeatureCollection<Geometry, GeoJsonProperties> = {
   type: 'FeatureCollection',
   features: [],
-})
+}
+const INITIAL_DRAW_MODE = 'draw'
+type DrawLayerMode = DrawPolygonMode | ViewMode | 'draw'
+const drawFeaturesAtom = atom(INITIAL_FEATURE_COLLECTION)
 export const drawMode = new DrawPolygonMode()
 const selectMode = () => ViewMode
 const editModeInstance = new CompositeMode([new GeoJsonEditMode(), new ModifyMode()])
 // const editModeInstance = new GeoJsonEditMode()
 const updatedPointAtom = atom<{ coordinates: [number, number]; index: number } | null>(null)
 const drawFeaturesIndexesAtom = atom<number[]>([0])
-const drawLayerModeAtom = atom<DrawLayerMode>('draw')
+const drawLayerModeAtom = atom<DrawLayerMode>(INITIAL_DRAW_MODE)
+const layerInstanceAtom = atom<DrawLayer | null>(null)
+const hasOverlappingFeaturesAtom = atom<boolean>(false)
 
 export const useDrawLayer = () => {
   const map = useDeckMap()
   const { isMapDrawing } = useMapDrawConnect()
   map && map.setProps({ controller: { doubleClickZoom: false } })
   const [drawFeatures, setDrawFeatures] = useAtom(drawFeaturesAtom)
+  const [layerInstance, setLayerInstance] = useAtom(layerInstanceAtom)
   const [drawFeaturesIndexes, setDrawFeaturesIndexes] = useAtom(drawFeaturesIndexesAtom)
   const [drawLayerMode, setDrawLayerMode] = useAtom(drawLayerModeAtom)
   const [updatedPoint, setUpdatedPoint] = useAtom(updatedPointAtom)
-  // const [drawLayerMode, setDrawLayerMode] = useState<DrawLayerMode>('draw')
+  const [hasOverlappingFeatures, setHasOverlappingFeatures] = useAtom(hasOverlappingFeaturesAtom)
+
   const resetDrawFeatures = useCallback(() => {
-    setDrawFeatures({
-      type: 'FeatureCollection',
-      features: [],
-    })
-    setDrawFeaturesIndexes([0])
-    setDrawLayerMode(new ViewMode())
-  }, [setDrawFeatures, setDrawFeaturesIndexes, setDrawLayerMode])
+    setDrawFeatures(INITIAL_FEATURE_COLLECTION)
+    setDrawLayerMode(INITIAL_DRAW_MODE)
+  }, [setDrawFeatures, setDrawLayerMode])
 
   const onDrawEdit = useCallback(
     // TODO:deck fix types here
-    ({ updatedData, editType }: any) => {
+    ({ updatedData, editType, featureIndexes, editContext }: any) => {
       if (editType === 'addFeature' || editType === 'addPosition') {
         setDrawLayerMode(new ViewMode())
         setDrawFeatures(updatedData)
@@ -59,13 +60,21 @@ export const useDrawLayer = () => {
       if (editType === 'movePosition') {
         setDrawFeatures(updatedData)
       }
+      if (editType === 'updateTentativeFeature') {
+        setHasOverlappingFeatures(kinks(editContext.feature.geometry).features.length > 0)
+      }
     },
-    [setDrawFeatures, setDrawFeaturesIndexes, setDrawLayerMode]
+    [setDrawFeatures, setDrawFeaturesIndexes, setDrawLayerMode, setHasOverlappingFeatures]
   )
+
   const isDrawFeature = (feature: DeckLayerPickingObject) => {
     return (
       feature.category === 'draw' && (feature as DrawPickingObject).geometry?.type === 'Polygon'
     )
+  }
+
+  const isDrawHandle = (feature: DeckLayerPickingObject) => {
+    return feature.category === 'draw' && (feature as DrawPickingObject).geometry?.type === 'Point'
   }
 
   const isDrawSelectMode = useCallback(() => {
@@ -74,31 +83,33 @@ export const useDrawLayer = () => {
 
   const onDrawClick = useCallback(
     (features: DeckLayerPickingObject[] | undefined) => {
+      const drawFeature = features?.find(isDrawFeature) as DrawPickingObject
+      const drawHandle = features?.find(isDrawHandle) as DrawPickingObject
       if (drawLayerMode instanceof ViewMode) {
-        const drawFeature = features?.find(isDrawFeature)
         if (drawFeature) {
+          setDrawFeaturesIndexes([(drawFeature as DrawPickingObject).index])
           setDrawLayerMode(new ModifyMode())
         } else {
           setDrawFeaturesIndexes([])
+          setDrawLayerMode(new ViewMode())
         }
       }
-      // if (info.object) {
-      //   console.log('changing to edit mode')
-      //   setDrawLayerMode(selectModeInstance)
-      //   return console.log(info.object)
-      // }
-      // console.log('🚀 ~ useDrawLayer ~ editModeInstance:', editModeInstance)
-      // if (info.featureType === 'polygons') {
-      //   setDrawFeaturesIndexes([info.index])
-      // }
-      // if (info.featureType === 'points') {
-      //   setUpdatedPoint({
-      //     coordinates: info.object.geometry.coordinates,
-      //     index: info.index,
-      //   })
-      // }
+      if (drawLayerMode instanceof ModifyMode) {
+        if (drawFeature) {
+          setDrawFeaturesIndexes([(drawFeature as DrawPickingObject).index])
+        }
+        if (drawHandle) {
+          setUpdatedPoint({
+            coordinates: drawHandle.geometry.coordinates,
+            index: drawHandle.index,
+          })
+        }
+        if (!drawFeature || !drawHandle) {
+          setDrawLayerMode(new ViewMode())
+        }
+      }
     },
-    [drawLayerMode, setDrawFeaturesIndexes, setDrawLayerMode]
+    [drawLayerMode, setDrawFeaturesIndexes, setDrawLayerMode, setUpdatedPoint]
   )
 
   const onDrawingMapHover = useCallback(
@@ -112,18 +123,32 @@ export const useDrawLayer = () => {
     },
     [setDrawFeaturesIndexes]
   )
-  const instance = isMapDrawing
-    ? new DrawLayer({
-        data: drawFeatures,
-        onEdit: onDrawEdit,
-        // onClick: onDrawClick,
-        selectedFeatureIndexes: drawFeaturesIndexes,
-        mode: drawLayerMode,
+
+  const removeDrawFeature = useCallback(() => {
+    if (drawFeaturesIndexes.length) {
+      const newFeatures = drawFeatures.features.filter((f, i) => drawFeaturesIndexes[0] !== i)
+      setDrawFeatures({
+        ...drawFeatures,
+        features: newFeatures,
       })
-    : null
+    }
+  }, [drawFeatures, drawFeaturesIndexes, setDrawFeatures])
+
+  useEffect(() => {
+    !isMapDrawing
+      ? setLayerInstance(null)
+      : setLayerInstance(
+          new DrawLayer({
+            data: drawFeatures,
+            onEdit: onDrawEdit,
+            selectedFeatureIndexes: drawFeaturesIndexes,
+            mode: drawLayerMode,
+          })
+        )
+  }, [drawFeatures, drawFeaturesIndexes, drawLayerMode, isMapDrawing, onDrawEdit, setLayerInstance])
 
   return {
-    instance,
+    instance: layerInstance,
     onDrawClick,
     drawFeaturesIndexes,
     drawFeatures,
@@ -132,5 +157,8 @@ export const useDrawLayer = () => {
     resetDrawFeatures,
     isDrawSelectMode,
     onDrawingMapHover,
+    setDrawLayerMode,
+    hasOverlappingFeatures,
+    removeDrawFeature,
   }
 }

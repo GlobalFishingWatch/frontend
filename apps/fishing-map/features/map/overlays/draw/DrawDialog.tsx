@@ -1,7 +1,6 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import cx from 'classnames'
-import kinks from '@turf/kinks'
 import { useTranslation } from 'react-i18next'
 import { Feature, Polygon } from 'geojson'
 import { DrawModes, DrawSelectionChangeEvent } from '@mapbox/mapbox-gl-draw'
@@ -31,8 +30,7 @@ import {
   updateFeaturePointByIndex,
 } from '../../map.draw.utils'
 import styles from './DrawDialog.module.css'
-import { useDrawLayer, drawMode } from './draw.hooks'
-import { DRAW_MODE } from './draw.config'
+import { useDrawLayer } from './draw.hooks'
 import { CoordinateEditOverlay } from './CoordinateEditOverlay'
 
 export type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
@@ -79,7 +77,14 @@ function MapDraw() {
   const mapDrawEditDatasetId = useSelector(selectMapDrawingEditId)
   const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
-  const { drawFeatures, resetDrawFeatures, setDrawLayerMode } = useDrawLayer()
+  const {
+    drawFeatures,
+    resetDrawFeatures,
+    setDrawLayerMode,
+    hasOverlappingFeatures,
+    drawFeaturesIndexes,
+    removeDrawFeature,
+  } = useDrawLayer()
 
   useEffect(() => {
     if (mapDrawEditDataset) {
@@ -120,7 +125,6 @@ function MapDraw() {
   // const selectedFeature = getSelectedFeature(drawControl)
   // const selectedFeatureId = selectedFeature?.id as string
 
-  // const hasFeatureSelected = selectedFeature !== undefined
   // const currentPointCoordinates =
   //   selectedFeature && selectedPointIndex !== null
   //     ? getCoordinatePrecisionRounded(
@@ -299,51 +303,44 @@ function MapDraw() {
     },
     [createDataset, layerName]
   )
-
-  // const overLapInFeatures = useMemo(() => {
-  //   if (features?.length) {
-  //     return features.map((feature) => kinks(feature.geometry).features.length > 0)
-  //   }
-  //   return []
-  // }, [features])
-
-  // const hasOverLapInFeatures = overLapInFeatures.some(Boolean)
-  // const hasFeaturesDrawn = features !== null && features.length > 0
+  const hasFeaturesDrawn = drawFeatures.features.length > 0
   const layerNameMinLength = layerName.length >= MIN_DATASET_NAME_LENGTH
   let saveTooltip = ''
 
-  // if (!layerName) {
-  //   saveTooltip = t('layer.nameRequired', 'Layer name is required')
-  // } else if (!layerNameMinLength) {
-  //   saveTooltip = t('layer.nameLengthError', 'Layer name requires at least {{count}} characters', {
-  //     count: MIN_DATASET_NAME_LENGTH,
-  //   })
-  // } else if (!hasFeaturesDrawn) {
-  //   saveTooltip = t('layer.geometryRequired', 'Draw a polygon is required')
-  // } else if (hasOverLapInFeatures) {
-  //   saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
-  // }
+  if (!layerName) {
+    saveTooltip = t('layer.nameRequired', 'Layer name is required')
+  } else if (!layerNameMinLength) {
+    saveTooltip = t('layer.nameLengthError', 'Layer name requires at least {{count}} characters', {
+      count: MIN_DATASET_NAME_LENGTH,
+    })
+    // } else if (!hasFeaturesDrawn) {
+    //   saveTooltip = t('layer.geometryRequired', 'Draw a polygon is required')
+  } else if (hasOverlappingFeatures) {
+    saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
+  }
 
   return (
     <Fragment>
       <CoordinateEditOverlay />
       <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
-        {
-          <div className={cx(styles.hint, { [styles.warning]: error })}>
+        {(drawFeatures?.features?.length > 0 || hasOverlappingFeatures) && (
+          <div className={cx(styles.hint, { [styles.warning]: error || hasOverlappingFeatures })}>
             <IconButton
               size="small"
               className={styles.hintIcon}
-              type={error ? 'warning' : 'border'}
-              icon={error ? 'warning' : 'help'}
-              onClick={error ? undefined : () => {}}
+              type={error || hasOverlappingFeatures ? 'warning' : 'border'}
+              icon={error || hasOverlappingFeatures ? 'warning' : 'help'}
+              onClick={error || hasOverlappingFeatures ? undefined : () => {}}
             />
             {error ? (
               <span>{error}</span>
+            ) : hasOverlappingFeatures ? (
+              t('layer.geometryError', 'Some polygons have self-intersections')
             ) : (
               t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')
             )}
           </div>
-        }
+        )}
         <InputText
           label={t('layer.name', 'Layer name')}
           labelClassName={styles.layerLabel}
@@ -361,13 +358,13 @@ function MapDraw() {
         <IconButton
           type="warning"
           icon="delete"
-          // disabled={!hasFeatureSelected}
-          // tooltip={
-          //   !hasFeatureSelected
-          //     ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
-          //     : ''
-          // }
-          // onClick={onRemoveClick}
+          disabled={!drawFeaturesIndexes.length}
+          tooltip={
+            !drawFeaturesIndexes.length
+              ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
+              : ''
+          }
+          onClick={removeDrawFeature}
         />
         <div className={styles.buttonsContainer}>
           <SwitchRow
@@ -390,6 +387,8 @@ function MapDraw() {
               disabled={
                 !layerName ||
                 !layerNameMinLength ||
+                !hasFeaturesDrawn ||
+                hasOverlappingFeatures ||
                 mapDrawEditGeometry?.status === AsyncReducerStatus.Loading
               }
               tooltip={saveTooltip}
