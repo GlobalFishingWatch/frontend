@@ -12,13 +12,11 @@ export type BaseUserLayerProps = {
   idProperty?: string
   valueProperties?: string[]
   highlightedFeatures?: UserContextPickingObject[]
-
-  // TODO:deck implement logic for all of these properties
   /**
    * Disable interaction (needed when user uploaded a non-polygon layer)
    * legacy known as disableInteraction
    */
-  interactive?: boolean
+  pickable?: boolean
   /**
    * SQL filter to apply to the dataset
    */

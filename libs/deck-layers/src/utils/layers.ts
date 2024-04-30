@@ -27,7 +27,7 @@ export function getMVTSublayerProps({
   extensions,
 }: {
   tile: Tile2DHeader
-  extensions: TileLayerProps['extensions']
+  extensions?: TileLayerProps['extensions']
 }): {
   modelMatrix: Matrix4
   coordinateOrigin: [number, number, number]

@@ -63,6 +63,7 @@ export abstract class UserTileLayer<
         this.context.viewport
       ),
       title,
+      tile: info.tile,
       color: this.props.color,
       layerId: this.props.layers[0].id,
       datasetId: this.props.layers[0].datasetId,

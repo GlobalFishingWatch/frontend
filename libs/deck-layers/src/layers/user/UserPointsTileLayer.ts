@@ -4,6 +4,7 @@ import {
   AccessorFunction,
   UpdateParameters,
   LayerContext,
+  Layer,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
@@ -14,7 +15,6 @@ import {
   hexToDeckColor,
   LayerGroup,
   getLayerGroupOffset,
-  getPickedFeatureToHighlight,
   GFWMVTLoader,
   getMVTSublayerProps,
 } from '../../utils'
@@ -78,10 +78,7 @@ export class UserPointsTileLayer<PropsT = {}> extends UserTileLayer<
   }
 
   _getFillColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { highlightedFeatures = [], idProperty, color } = this.props
-    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)
-      ? COLOR_HIGHLIGHT_LINE
-      : hexToDeckColor(color)
+    return hexToDeckColor(this.props.color)
   }
 
   _getPointRadius: AccessorFunction<Feature<Geometry, GeoJsonProperties>, number> = (d): number => {
@@ -100,7 +97,7 @@ export class UserPointsTileLayer<PropsT = {}> extends UserTileLayer<
   renderLayers() {
     const { highlightedFeatures, layers, color, pickable, maxPointSize } = this.props
     const filterProps = this._getTimeFilterProps()
-    return layers.map((layer) => {
+    const renderLayers: Layer[] = layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserContextFeature>>({
         id: `${layer.id}-base-layer`,
         data: this._getTilesUrl(layer.tilesUrl),
@@ -126,12 +123,34 @@ export class UserPointsTileLayer<PropsT = {}> extends UserTileLayer<
               getLineColor: this._getFillColor,
               getFillColor: this._getFillColor,
               updateTriggers: {
-                getFillColor: [color, highlightedFeatures],
+                getFillColor: [color],
               },
             }),
           ]
         },
       })
     })
+    if (highlightedFeatures?.length) {
+      highlightedFeatures.forEach((feature) => {
+        renderLayers.push(
+          new GeoJsonLayer<GeoJsonProperties, { data: any }>(this.props, {
+            id: `${this.props.id}-highlight-points`,
+            pickable: false,
+            data: feature,
+            pointRadiusMinPixels: 0,
+            pointRadiusMaxPixels: maxPointSize,
+            filled: true,
+            pointType: 'circle',
+            pointRadiusUnits: 'pixels',
+            getPolygonOffset: (params) =>
+              getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+            getPointRadius: this._getPointRadius,
+            getLineColor: COLOR_HIGHLIGHT_LINE,
+            getFillColor: COLOR_HIGHLIGHT_LINE,
+          })
+        )
+      })
+    }
+    return renderLayers
   }
 }
