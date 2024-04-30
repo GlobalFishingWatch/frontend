@@ -5,11 +5,21 @@ import { LayerGroup, getLayerGroupOffset } from '../../utils'
 import { DeckLayerCategory } from '../../types'
 import { DrawPickingInfo, DrawPickingObject } from './draw.types'
 
-const DEFAULT_STYLES = {
+type Color = [number, number, number, number]
+const FILL_COLOR: Color = [189, 189, 189, 25]
+const LINE_COLOR: Color = [38, 181, 242, 255]
+const HANDLE_COLOR: Color = [122, 202, 67, 255]
+const POLYGON_STYLES = {
+  getFillColor: FILL_COLOR,
+}
+const LINE_STYLES = {
   lineJointRounded: true,
-  getLineWidth: 1,
-  getFillColor: [120, 0, 120, 120],
+  getLineWidth: 2,
+  getPointRadius: 10,
+  getEditHandlePointColor: HANDLE_COLOR,
+  getLineColor: LINE_COLOR,
   getDashArray: [4, 2],
+  editHandlePointOutline: false,
   extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
 }
 
@@ -38,20 +48,15 @@ export class DrawLayer extends EditableGeoJsonLayer {
         mode,
         onEdit,
         selectedFeatureIndexes,
-        getFillColor: [0, 0, 0, 0],
-        modeConfig: {
-          preventOverlappingLines: true,
-        },
-        editHandlePointOutline: false,
+        ...POLYGON_STYLES,
+        ...LINE_STYLES,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
         _subLayerProps: {
           geojson: {
-            ...DEFAULT_STYLES,
+            ...POLYGON_STYLES,
           },
           guides: {
-            getPointRadius: 10,
-            ...DEFAULT_STYLES,
-            getLineColor: [255, 0, 0],
+            ...LINE_STYLES,
           },
         },
       }),
