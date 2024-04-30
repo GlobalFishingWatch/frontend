@@ -11,17 +11,13 @@ export const CoordinateEditOverlay = (): React.ReactNode | null => {
   const viewport = useMapViewport()
   const [newPointLatitude, setNewPointLatitude] = useState<number | string | null>(null)
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
-  console.log('🚀 ~ CoordinateEditOverlay ~ newPointLatitude:', newPointLatitude)
-  console.log('🚀 ~ CoordinateEditOverlay ~ newPointLongitude:', newPointLongitude)
   const { updatedPoint, drawFeaturesIndexes, drawFeatures, setDrawFeatures } = useDrawLayer()
 
   const currentPointCoordinates = updatedPoint?.coordinates
   const editingPointLatitude =
     newPointLatitude !== null ? Number(newPointLatitude) : Number(currentPointCoordinates?.[1])
-  // console.log('🚀 ~ CoordinateEditOverlay ~ editingPointLatitude:', editingPointLatitude)
   const editingPointLongitude =
     newPointLongitude !== null ? Number(newPointLongitude) : Number(currentPointCoordinates?.[0])
-  // console.log('🚀 ~ CoordinateEditOverlay ~ editingPointLongitude:', editingPointLongitude)
   const onHandleLatitudeChange = useCallback(
     (e: any) => {
       if (e.target.value) {
