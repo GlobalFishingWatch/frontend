@@ -23,7 +23,6 @@ import {
   createAsyncSlice,
 } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { getVesselId } from 'features/vessel/vessel.utils'
 import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
 
@@ -213,9 +212,7 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
     { signal, rejectWithValue, getState, dispatch }
   ) => {
     const state = getState() as any
-    // const datasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
-    // TODO remove once the api replaces the lecagy old datasets
-    const datasets = [DEFAULT_VESSEL_IDENTITY_ID]
+    const datasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
     const datasetId = datasets[0]
     let dataset = selectDatasetById(datasetId)(state)
     if (!dataset) {
