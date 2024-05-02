@@ -36,7 +36,7 @@ const hasOverlappingFeaturesAtom = atom<boolean>(false)
 export const useDrawLayer = () => {
   const map = useDeckMap()
   const { isMapDrawing } = useMapDrawConnect()
-  map && map.setProps({ controller: { doubleClickZoom: false } })
+  // map && map.setProps({ controller: { doubleClickZoom: false } })
   const [drawFeatures, setDrawFeatures] = useAtom(drawFeaturesAtom)
   const [layerInstance, setLayerInstance] = useAtom(layerInstanceAtom)
   const [drawFeaturesIndexes, setDrawFeaturesIndexes] = useAtom(drawFeaturesIndexesAtom)
