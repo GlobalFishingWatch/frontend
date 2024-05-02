@@ -1,6 +1,7 @@
 import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
   AnyDeckLayer,
+  BaseMapLabelsLayer,
   BaseMapLayer,
   ClusterLayer,
   ContextLayer,
@@ -8,7 +9,7 @@ import {
   VesselLayer,
 } from '@globalfishingwatch/deck-layers'
 import { ResolverGlobalConfig } from './types'
-import { resolveDeckBasemapLayerProps } from './basemap'
+import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckContextLayerProps } from './context'
 import { resolveDeckClusterLayerProps } from './clusters'
@@ -30,6 +31,10 @@ export const dataviewToDeckLayer = (
   if (dataview.config?.type === DataviewType.Basemap) {
     const deckLayerProps = resolveDeckBasemapLayerProps(dataview, globalConfig)
     return new BaseMapLayer(deckLayerProps)
+  }
+  if (dataview.config?.type === DataviewType.BasemapLabels) {
+    const deckLayerProps = resolveDeckBasemapLabelsLayerProps(dataview, globalConfig)
+    return new BaseMapLabelsLayer(deckLayerProps)
   }
   if (
     dataview.config?.type === DataviewType.HeatmapAnimated ||

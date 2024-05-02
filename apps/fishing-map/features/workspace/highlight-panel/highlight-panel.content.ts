@@ -57,7 +57,14 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
       title:
         'Resolved - Global Fishing Watch has resolved an underlying AIS data error in the platform.',
       description:
-        'If you accessed Global Fishing Watch AIS or VMS data between 26 January - 10 April 2024, there may be errors in the fishing effort and fishing event data. The AIS error has been resolved, and we are working on the VMS issue now. Our advice is to repeat any analysis completed with the correct data. We’re sorry for any inconvenience caused.',
+        'If you accessed Global Fishing Watch AIS or VMS data between 26 January - 10 April 2024, there may be errors in the fishing effort and fishing event data. All errors have been resolved and the data has been corrected. Our advice is to repeat any analysis completed with the correct data. We’re sorry for any inconvenience caused.',
+    },
+    es: {
+      title:
+        'Resuelto - Global Fishing Watch ha resuelto un error en los datos AIS en la plataforma.',
+      description:
+        'Si accedió a los datos AIS o VMS de Global Fishing Watch entre el 26 de enero y el 10 de abril de 2024, es posible que haya errores en los datos de esfuerzo pesquero y eventos de pesca. Todos los errores han sido resueltos y los datos han sido corregidos. Nuestra recomendación es repetir cualquier análisis que se haya completado en ese periodo utilizando los datos correctos que ya están disponibles. Sentimos las molestias ocasionadas.',
+      learnMoreUrl: 'https://globalfishingwatch.org/es/faqs/abril-2024-error-de-datos/',
     },
   },
   {

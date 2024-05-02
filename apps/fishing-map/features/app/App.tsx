@@ -3,6 +3,8 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
+import MemoryStatsComponent from 'next-react-memory-stats'
+import { FpsView } from 'react-fps'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -55,6 +57,7 @@ import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import { selectReportAreaBounds } from 'features/app/selectors/app.reports.selector'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import ErrorBoundary from 'features/app/ErrorBoundary'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import styles from './App.module.css'
@@ -101,6 +104,7 @@ const Main = () => {
         </div>
       )}
       {showTimebar && <Timebar />}
+
       <Footer />
     </Fragment>
   )
@@ -225,6 +229,11 @@ function App() {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })
   }, [dispatchQueryParams, sidebarOpen])
 
+  const debugOptions = useSelector(selectDebugOptions)
+  const [isReady, setReady] = useState(false)
+  useEffect(() => setReady(true), [])
+  const showStats = isReady && debugOptions.mapStats === true
+
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
     if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
@@ -254,7 +263,10 @@ function App() {
       <a href="https://globalfishingwatch.org" className="print-only">
         <Logo className={styles.logo} />
       </a>
-
+      <div style={{ position: 'fixed', zIndex: 1 }}>
+        {showStats && <FpsView top="0" right="8rem" bottom="auto" left="auto" />}
+        {showStats && <MemoryStatsComponent corner="topRight" />}
+      </div>
       <ErrorBoundary>
         <SplitView
           isOpen={sidebarOpen && !isMapDrawing}
