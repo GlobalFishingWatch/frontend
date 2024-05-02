@@ -77,6 +77,29 @@ export const useDrawLayer = () => {
     return feature.category === 'draw' && (feature as DrawPickingObject).geometry?.type === 'Point'
   }
 
+  const getDrawCursor = ({
+    features,
+    isDragging,
+  }: {
+    features: DeckLayerPickingObject[] | undefined
+    isDragging: boolean
+  }) => {
+    if (drawLayerMode instanceof ViewMode) {
+      if (features?.some(isDrawFeature)) {
+        return 'pointer'
+      }
+    }
+    if (drawLayerMode instanceof ModifyMode) {
+      if (features?.some(isDrawHandle)) {
+        return 'move'
+      }
+    }
+    if (drawLayerMode === 'draw') {
+      return 'crosshair'
+    }
+    return isDragging ? 'grabbing' : 'grab'
+  }
+
   const isDrawSelectMode = useCallback(() => {
     return drawLayerMode instanceof ViewMode
   }, [drawLayerMode])
@@ -160,5 +183,6 @@ export const useDrawLayer = () => {
     setDrawLayerMode,
     hasOverlappingFeatures,
     removeDrawFeature,
+    getDrawCursor,
   }
 }

@@ -445,33 +445,33 @@ export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
 
 export const useMapCursor = () => {
   const { isMapDrawing } = useMapDrawConnect()
-  const { isDrawSelectMode } = useDrawLayer()
+  const { getDrawCursor } = useDrawLayer()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
-  const { rulersEditing } = useRulers()
+  const { rulersEditing, getRulersCursor } = useRulers()
   const hoverFeatures = useMapHoverInteraction()?.features
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
-      if (isMapAnnotating || isErrorNotificationEditing || rulersEditing || isMapDrawing) {
-        if (rulersEditing && hoverFeatures?.some(isRulerLayerPoint)) {
-          return 'move'
-        }
-        if (isDrawSelectMode() && hoverFeatures?.some(isDrawFeature)) {
-          return 'pointer'
-        }
-        return 'crosshair'
-      } else if (isDragging) {
-        return 'grabbing'
+      const defaultCursor = isDragging ? 'grabbing' : 'grab'
+      if (isMapDrawing) {
+        return getDrawCursor({ features: hoverFeatures, isDragging })
       }
-      return 'grab'
+      if (rulersEditing) {
+        return getRulersCursor({ features: hoverFeatures })
+      }
+      if (isMapAnnotating || isErrorNotificationEditing) {
+        return 'crosshair'
+      }
+      return defaultCursor
     },
     [
-      isDrawSelectMode,
-      hoverFeatures,
-      isErrorNotificationEditing,
-      isMapAnnotating,
       isMapDrawing,
       rulersEditing,
+      isMapAnnotating,
+      isErrorNotificationEditing,
+      getDrawCursor,
+      hoverFeatures,
+      getRulersCursor,
     ]
   )
   return { getCursor }
