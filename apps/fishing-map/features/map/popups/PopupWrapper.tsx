@@ -27,6 +27,7 @@ import {
   selectFishingInteractionStatus,
 } from '../map.slice'
 import { MAP_WRAPPER_ID } from '../map.config'
+import { useMapToolsActive } from '../map-interactions.hooks'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
 import EncounterTooltipRow from './EncounterTooltipRow'
@@ -66,6 +67,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const mapViewport = useMapViewport()
+  const isMapToolsActive = useMapToolsActive()
 
   const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
@@ -83,9 +85,9 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
       }),
     ],
   })
-
   if (!mapViewport || !interaction || !interaction.features?.length) return null
-
+  // Map tools overlays are handled by each tool
+  if (isMapToolsActive) return null
   // const visibleFeatures = interaction.features.filter(
   //   (feature) => feature.visible || feature.source === WORKSPACE_GENERATOR_ID
   // )

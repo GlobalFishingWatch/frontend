@@ -348,6 +348,14 @@ export const useHandleMapToolsClick = () => {
   return handleMapClickInteraction
 }
 
+export const useMapToolsActive = () => {
+  const { isMapDrawing } = useMapDrawConnect()
+  const { isMapAnnotating } = useMapAnnotation()
+  const { isErrorNotificationEditing } = useMapErrorNotification()
+  const { rulersEditing } = useRulers()
+  return isMapDrawing || isMapAnnotating || isErrorNotificationEditing || rulersEditing
+}
+
 export const useMapMouseClick = () => {
   const getPickingInteraction = useGetPickingInteraction()
   const handleMapToolsClick = useHandleMapToolsClick()
