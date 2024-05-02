@@ -85,9 +85,6 @@ const ErrorNotification = (): React.ReactNode | null => {
     }
   }
   const ref = useEventKeyListener(['Enter'], onConfirmClick)
-  if (isErrorNotificationEditing) {
-    deck.setProps({ getCursor: () => 'crosshair' })
-  }
 
   if (!errorNotification) {
     return null
