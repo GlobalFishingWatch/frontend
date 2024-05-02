@@ -8,13 +8,11 @@ import type {
   RulerPointProperties,
 } from '@globalfishingwatch/deck-layers'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
-import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectMapRulersVisible } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { isRulerLayerPoint } from 'features/map/map-interaction.utils'
 
 export function useMapRulersDrag() {
-  const deck = useDeckMap()
   const rulers = useSelector(selectMapRulersVisible)
   const { dispatchQueryParams } = useLocationConnect()
 
@@ -55,7 +53,6 @@ export function useMapRulersDrag() {
       if (!interaction) return
       const { features } = interaction
       if (features?.some(isRulerLayerPoint)) {
-        deck?.setProps({ controller: { dragPan: false } })
         const point = features?.find(isRulerLayerPoint) as RulerPickingObject
         draggedRuler.current = {
           ruler: rulers.find((r) => Number(r.id) === point.properties.id),
@@ -64,11 +61,10 @@ export function useMapRulersDrag() {
         }
       }
     },
-    [deck, rulers]
+    [rulers]
   )
   const onRulerDragEnd = useCallback(() => {
     draggedRuler.current = null
-    deck?.setProps({ controller: { dragPan: true } })
-  }, [deck])
+  }, [])
   return { onRulerDrag, onRulerDragStart, onRulerDragEnd }
 }

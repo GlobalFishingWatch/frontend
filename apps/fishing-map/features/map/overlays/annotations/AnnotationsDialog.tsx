@@ -43,10 +43,6 @@ const MapAnnotationsDialog = (): React.ReactNode | null => {
   }
   const ref = useEventKeyListener(['Enter'], onConfirmClick)
 
-  if (isMapAnnotating) {
-    deck.setProps({ getCursor: () => 'crosshair' })
-  }
-
   if (!isDialogVisible) {
     return null
   }

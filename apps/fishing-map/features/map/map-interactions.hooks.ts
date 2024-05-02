@@ -484,6 +484,7 @@ export const useMapDrag = () => {
       const dragstartInteraction = getPickingInteraction(info, 'dragstart')
       if (!map || !info.coordinate) return
       if (rulersEditing) {
+        map?.setProps({ controller: { dragPan: false } })
         try {
           onRulerDragStart(dragstartInteraction)
         } catch (e) {
@@ -508,10 +509,11 @@ export const useMapDrag = () => {
     (info: PickingInfo, event: any) => {
       if (!info.coordinate) return
       if (rulersEditing) {
+        map?.setProps({ controller: { dragPan: true } })
         onRulerDragEnd()
       }
     },
-    [onRulerDragEnd, rulersEditing]
+    [map, onRulerDragEnd, rulersEditing]
   )
   return { onMapDrag, onMapDragStart, onMapDragEnd }
 }
