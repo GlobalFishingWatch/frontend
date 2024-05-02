@@ -6,3 +6,19 @@ export const isRulerLayerPoint = (feature: DeckLayerPickingObject) =>
 
 export const isDrawFeature = (feature: DeckLayerPickingObject) =>
   feature.category === 'draw' && (feature as DrawPickingObject).geometry?.type === 'Polygon'
+
+export const getDefaultCursor = ({
+  features,
+  isDragging,
+}: {
+  features: DeckLayerPickingObject[] | undefined
+  isDragging: boolean
+}) => {
+  if (features?.length) {
+    return 'pointer'
+  }
+  if (isDragging) {
+    return 'grabbing'
+  }
+  return 'grab'
+}

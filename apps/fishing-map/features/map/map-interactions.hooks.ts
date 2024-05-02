@@ -28,7 +28,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import { isRulerLayerPoint, isDrawFeature } from './map-interaction.utils'
+import { getDefaultCursor } from './map-interaction.utils'
 import {
   SliceInteractionEvent,
   fetchFishingActivityInteractionThunk,
@@ -249,8 +249,6 @@ export const useGetPickingInteraction = () => {
 export const useMapMouseHover = () => {
   const getPickingInteraction = useGetPickingInteraction()
   const setMapHoverFeatures = useSetMapHoverInteraction()
-  const { isMapDrawing } = useMapDrawConnect()
-  const { isMapAnnotating } = useMapAnnotation()
   const { onRulerMapHover, rulersEditing } = useRulers()
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
@@ -452,7 +450,6 @@ export const useMapCursor = () => {
   const hoverFeatures = useMapHoverInteraction()?.features
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
-      const defaultCursor = isDragging ? 'grabbing' : 'grab'
       if (isMapDrawing) {
         return getDrawCursor({ features: hoverFeatures, isDragging })
       }
@@ -462,7 +459,7 @@ export const useMapCursor = () => {
       if (isMapAnnotating || isErrorNotificationEditing) {
         return 'crosshair'
       }
-      return defaultCursor
+      return getDefaultCursor({ features: hoverFeatures, isDragging })
     },
     [
       isMapDrawing,
