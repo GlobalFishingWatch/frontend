@@ -1,9 +1,16 @@
 import { GeoJsonLayer } from '@deck.gl/layers'
-import { Color, CompositeLayer, DefaultProps } from '@deck.gl/core'
+import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { Feature, Point } from '@turf/turf'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
-import { RulersLayerProps, RulerData, RulerPointProperties } from './rulers.types'
+import { DeckLayerCategory } from '../../types'
+import {
+  RulersLayerProps,
+  RulerData,
+  RulerPointProperties,
+  RulerPickingObject,
+  RulerPickingInfo,
+} from './rulers.types'
 import {
   getGreatCircleMultiLine,
   getRulerCenterPointWithLabel,
@@ -28,6 +35,19 @@ const getFeaturesFromRulers = (rulers: RulerData[]) => {
 export class RulersLayer extends CompositeLayer<RulersLayerProps> {
   static layerName = 'RulersLayer'
   static defaultProps = defaultProps
+
+  getPickingInfo({ info }: { info: PickingInfo }): RulerPickingInfo {
+    const object = {
+      ...info.object,
+      id: this.props.id,
+      layerId: 'ruler-layer',
+      category: 'rulers' as DeckLayerCategory,
+    } as RulerPickingObject
+    return {
+      ...info,
+      object,
+    }
+  }
   renderLayers() {
     const { rulers, color, visible } = this.props
 
