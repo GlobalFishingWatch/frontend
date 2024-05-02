@@ -2,7 +2,12 @@ import { useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import type { PickingInfo } from '@deck.gl/core'
-import type { RulerData, RulerPointProperties } from '@globalfishingwatch/deck-layers'
+import type {
+  RulerData,
+  RulerPickingObject,
+  RulerPointProperties,
+} from '@globalfishingwatch/deck-layers'
+import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectMapRulersVisible } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -46,10 +51,12 @@ export function useMapRulersDrag() {
   )
 
   const onRulerDragStart = useCallback(
-    (info: PickingInfo, features: any) => {
+    (interaction: InteractionEvent | undefined) => {
+      if (!interaction) return
+      const { features } = interaction
       if (features?.some(isRulerLayerPoint)) {
         deck?.setProps({ controller: { dragPan: false } })
-        const point = features.find(isRulerLayerPoint).object
+        const point = features?.find(isRulerLayerPoint) as RulerPickingObject
         draggedRuler.current = {
           ruler: rulers.find((r) => Number(r.id) === point.properties.id),
           order: point.properties.order,

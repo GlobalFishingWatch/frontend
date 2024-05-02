@@ -478,27 +478,23 @@ export const useMapCursor = () => {
 }
 
 export const useMapDrag = () => {
+  const getPickingInteraction = useGetPickingInteraction()
   const map = useDeckMap()
   const { rulersEditing } = useRulers()
   const { onRulerDrag, onRulerDragStart, onRulerDragEnd } = useMapRulersDrag()
-
   const onMapDragStart = useCallback(
     (info: PickingInfo, event: any) => {
+      const dragstartInteraction = getPickingInteraction(info, 'dragstart')
       if (!map || !info.coordinate) return
       if (rulersEditing) {
         try {
-          const features = map?.pickMultipleObjects({
-            x: info.x,
-            y: info.y,
-            radius: 0,
-          })
-          onRulerDragStart(info, features)
+          onRulerDragStart(dragstartInteraction)
         } catch (e) {
           console.warn(e)
         }
       }
     },
-    [map, onRulerDragStart, rulersEditing]
+    [getPickingInteraction, map, onRulerDragStart, rulersEditing]
   )
 
   const onMapDrag = useCallback(
