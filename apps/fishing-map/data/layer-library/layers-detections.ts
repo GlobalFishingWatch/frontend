@@ -9,6 +9,7 @@ export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/VIIRS.jpg`,
     config: {
       color: '#FFEA00',
+      colorRamp: 'yellow',
     },
   },
   {
@@ -17,6 +18,7 @@ export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/SAR.jpg`,
     config: {
       color: '#9CA4FF',
+      colorRamp: 'lilac',
     },
   },
 ]

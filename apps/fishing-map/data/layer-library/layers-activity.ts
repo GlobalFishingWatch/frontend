@@ -9,6 +9,7 @@ export const LAYERS_LIBRARY_ACTIVITY: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/AIS-apparent-fishing-effort.jpg`,
     config: {
       color: '#00FFBC',
+      colorRamp: 'teal',
     },
   },
   {
@@ -17,6 +18,7 @@ export const LAYERS_LIBRARY_ACTIVITY: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/presence.jpg`,
     config: {
       color: '#FF64CE',
+      colorRamp: 'magenta',
     },
   },
 ]
