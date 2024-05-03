@@ -1,10 +1,10 @@
 import { Icon } from '@globalfishingwatch/ui-components'
-import { ContextPickingObject, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
+import { ContextPickingObject, UserPolygonsPickingObject } from '@globalfishingwatch/deck-layers'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import styles from './Popup.module.css'
 
 type ReportBufferLayersProps = {
-  features: (ContextPickingObject | UserContextPickingObject)[]
+  features: (ContextPickingObject | UserPolygonsPickingObject)[]
 }
 
 function ReportBufferTooltip({ features }: ReportBufferLayersProps) {

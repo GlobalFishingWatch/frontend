@@ -10,7 +10,7 @@ import { ContextPickingObject, ContextPickingInfo } from './layers/context'
 import { FourwingsPickingObject, FourwingsPickingInfo } from './layers/fourwings'
 import { RulerPickingObject, RulerPickingInfo } from './layers/rulers'
 import { VesselEventPickingObject, VesselEventPickingInfo } from './layers/vessel'
-import { UserContextPickingObject } from './layers/user'
+import { UserPolygonsPickingObject } from './layers/user'
 
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers'
 
@@ -40,7 +40,7 @@ export type LayerWithIndependentSublayersLoadState = VesselLayer
 export type DeckLayerPickingObject =
   | FourwingsPickingObject
   | ContextPickingObject
-  | UserContextPickingObject
+  | UserPolygonsPickingObject
   | ClusterPickingObject
   | RulerPickingObject
   | VesselEventPickingObject

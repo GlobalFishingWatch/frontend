@@ -1,3 +1,3 @@
 export * from './user.types'
-export * from './UserContextTileLayer'
+export * from './UserPolygonsTileLayer'
 export * from './UserPointsTileLayer'

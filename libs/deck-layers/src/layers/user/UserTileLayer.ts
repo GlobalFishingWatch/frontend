@@ -9,11 +9,11 @@ import { getContextId } from '../context/context.utils'
 import { BaseLayerProps } from '../../types'
 import {
   UserPointsLayerProps,
-  UserContextPickingInfo,
-  UserContextFeature,
-  UserContextPickingObject,
+  UserPolygonsPickingInfo,
+  UserPolygonsFeature,
+  UserPolygonsPickingObject,
   BaseUserLayerProps,
-  UserContextLayerProps,
+  UserPolygonsLayerProps,
 } from './user.types'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
@@ -43,12 +43,12 @@ export abstract class UserTileLayer<
   getPickingInfo = ({
     info,
   }: {
-    info: PickingInfo<UserContextFeature, { tile?: Tile2DHeader }>
-  }): UserContextPickingInfo => {
+    info: PickingInfo<UserPolygonsFeature, { tile?: Tile2DHeader }>
+  }): UserPolygonsPickingInfo => {
     const { idProperty, valueProperties } = this.props
     let title = this.props.id
     if (valueProperties) {
-      const properties = { ...(info.object as UserContextFeature)?.properties }
+      const properties = { ...(info.object as UserPolygonsFeature)?.properties }
       title =
         valueProperties?.length === 1
           ? properties[valueProperties[0]]
@@ -58,7 +58,7 @@ export abstract class UserTileLayer<
     }
     const object = {
       ...transformTileCoordsToWGS84(
-        info.object as UserContextFeature,
+        info.object as UserPolygonsFeature,
         info.tile!.bbox as GeoBoundingBox,
         this.context.viewport
       ),
@@ -70,7 +70,7 @@ export abstract class UserTileLayer<
       category: this.props.category,
       // TODO:deck remove this hardcoded type here and make a decision how to handle it
       subcategory: DataviewType.UserContext,
-    } as UserContextPickingObject
+    } as UserPolygonsPickingObject
 
     return { ...info, object }
   }
@@ -86,21 +86,21 @@ export abstract class UserTileLayer<
     return features
   }
 
-  getRenderedFeatures(maxFeatures: number | null = null): UserContextFeature[] {
+  getRenderedFeatures(maxFeatures: number | null = null): UserPolygonsFeature[] {
     const features = this._pickObjects(maxFeatures)
     const featureCache = new Set()
-    const renderedFeatures: UserContextFeature[] = []
+    const renderedFeatures: UserPolygonsFeature[] = []
 
     for (const f of features) {
       const featureId = getContextId(f.object as ContextFeature, this.props.idProperty)
 
       if (featureId === undefined) {
         // we have no id for the feature, we just add to the list
-        renderedFeatures.push(f.object as UserContextFeature)
+        renderedFeatures.push(f.object as UserPolygonsFeature)
       } else if (!featureCache.has(featureId)) {
         // Add removing duplicates
         featureCache.add(featureId)
-        renderedFeatures.push(f.object as UserContextFeature)
+        renderedFeatures.push(f.object as UserPolygonsFeature)
       }
     }
 
@@ -109,7 +109,7 @@ export abstract class UserTileLayer<
 
   _getTilesUrl(tilesUrl: string) {
     const { filter, valueProperties, startTimeProperty, endTimeProperty } = this.props
-    const stepsPickValue = (this.props as UserContextLayerProps)?.stepsPickValue
+    const stepsPickValue = (this.props as UserPolygonsLayerProps)?.stepsPickValue
     const circleRadiusProperty = (this.props as UserPointsLayerProps)?.circleRadiusProperty
     const tilesUrlObject = new URL(tilesUrl)
     if (filter) {
@@ -139,7 +139,7 @@ export abstract class UserTileLayer<
     if (timeFilterType === 'date') {
       if (startTimeProperty) {
         return {
-          getFilterValue: (d: UserContextFeature) => d.properties[startTimeProperty as string],
+          getFilterValue: (d: UserPolygonsFeature) => d.properties[startTimeProperty as string],
           filterRange: [startTime, endTime],
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
@@ -147,7 +147,7 @@ export abstract class UserTileLayer<
     } else if (timeFilterType === 'dateRange') {
       if (startTimeProperty && endTimeProperty) {
         return {
-          getFilterValue: (d: UserContextFeature) => [
+          getFilterValue: (d: UserPolygonsFeature) => [
             d.properties[startTimeProperty as string],
             d.properties[endTimeProperty as string],
           ],
@@ -159,13 +159,13 @@ export abstract class UserTileLayer<
         }
       } else if (endTimeProperty) {
         return {
-          getFilterValue: (d: UserContextFeature) => d.properties[endTimeProperty as string],
+          getFilterValue: (d: UserPolygonsFeature) => d.properties[endTimeProperty as string],
           filterRange: [startTime, INFINITY_TIMERANGE_LIMIT],
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
       } else if (startTimeProperty) {
         return {
-          getFilterValue: (d: UserContextFeature) => d.properties[startTimeProperty as string],
+          getFilterValue: (d: UserPolygonsFeature) => d.properties[startTimeProperty as string],
           filterRange: [0, endTime],
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }

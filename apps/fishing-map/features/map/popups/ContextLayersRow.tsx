@@ -3,7 +3,7 @@ import parse from 'html-react-parser'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { ContextPickingObject, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
+import { ContextPickingObject, UserPolygonsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   selectActiveHeatmapDowloadDataviews,
   selectHasReportLayersVisible,
@@ -73,10 +73,10 @@ const DownloadPopupButton: React.FC<DownloadPopupButtonProps> = ({
 }
 
 interface ReportPopupButtonProps {
-  feature: ContextPickingObject | UserContextPickingObject
+  feature: ContextPickingObject | UserPolygonsPickingObject
   onClick?: (
     e: React.MouseEvent<Element, MouseEvent>,
-    feature: ContextPickingObject | UserContextPickingObject
+    feature: ContextPickingObject | UserPolygonsPickingObject
   ) => void
 }
 
@@ -162,14 +162,14 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
 interface ContextLayersRowProps {
   id: string
   label: string
-  feature: ContextPickingObject | UserContextPickingObject
+  feature: ContextPickingObject | UserPolygonsPickingObject
   showFeaturesDetails: boolean
   showActions?: boolean
   linkHref?: string
   handleDownloadClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
   handleReportClick?: (
     e: React.MouseEvent<Element, MouseEvent>,
-    feature: ContextPickingObject | UserContextPickingObject
+    feature: ContextPickingObject | UserPolygonsPickingObject
   ) => void
 }
 const ContextLayersRow = ({

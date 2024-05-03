@@ -1,8 +1,8 @@
 import { DRAW_DATASET_SOURCE, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   BaseUserLayerProps,
-  UserContextLayerProps,
-  UserContextPickingObject,
+  UserPolygonsLayerProps,
+  UserPolygonsPickingObject,
   UserPointsLayerProps,
   getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
@@ -23,7 +23,7 @@ const getUserContexTimeFilterProps = ({
   dataset: Dataset
   start: string
   end: string
-}): Partial<UserContextLayerProps | UserPointsLayerProps> => {
+}): Partial<UserPolygonsLayerProps | UserPointsLayerProps> => {
   if (!start && !end) {
     return {}
   }
@@ -55,7 +55,7 @@ export const getUserPolygonColorProps = ({
   dataset,
 }: {
   dataset: Dataset
-}): Partial<UserContextLayerProps> => {
+}): Partial<UserPolygonsLayerProps> => {
   const polygonColor = getDatasetConfigurationProperty({
     dataset,
     property: 'polygonColor',
@@ -141,14 +141,14 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
     category: dataview.category!,
     color: dataview.config?.color!,
     pickable: !dataset.configuration?.disableInteraction ?? true,
-    highlightedFeatures: highlightedFeatures as UserContextPickingObject[],
+    highlightedFeatures: highlightedFeatures as UserPolygonsPickingObject[],
     ...(filter && { filter }),
     ...(idProperty && { idProperty }),
     ...(valueProperties?.length && { valueProperties }),
     ...timeFilters,
   }
 }
-export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserContextLayerProps> = (
+export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserPolygonsLayerProps> = (
   dataview,
   globalConfig
 ) => {
@@ -157,7 +157,7 @@ export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserContextL
   return {
     ...resolveDeckUserLayerProps(dataview, globalConfig),
     ...polygonColor,
-  } as UserContextLayerProps
+  } as UserPolygonsLayerProps
 }
 
 export const resolveDeckUserPointsLayerProps: DeckResolverFunction<UserPointsLayerProps> = (

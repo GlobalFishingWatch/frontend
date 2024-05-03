@@ -11,7 +11,7 @@ export type BaseUserLayerProps = {
   color: string
   idProperty?: string
   valueProperties?: string[]
-  highlightedFeatures?: UserContextPickingObject[]
+  highlightedFeatures?: UserPolygonsPickingObject[]
   /**
    * Disable interaction (needed when user uploaded a non-polygon layer)
    * legacy known as disableInteraction
@@ -38,7 +38,7 @@ export type BaseUserLayerProps = {
   timeFilterType?: TimeFilterType
 }
 
-export type UserContextLayerProps = BaseLayerProps &
+export type UserPolygonsLayerProps = BaseLayerProps &
   BaseUserLayerProps & {
     /**
      * Custom color ramp for filled layers
@@ -72,7 +72,7 @@ export type UserPointsLayerProps = BaseLayerProps &
     maxPointSize?: number
   }
 
-export type UserContextFeatureProperties = {
+export type UserPolygonsFeatureProperties = {
   id: string
   title: string
   color: string
@@ -83,8 +83,11 @@ export type UserContextFeatureProperties = {
   link?: string
 }
 
-export type UserContextFeature = Feature<Geometry, Record<string, any>>
+export type UserPolygonsFeature = Feature<Geometry, Record<string, any>>
 
-export type UserContextPickingObject = UserContextFeature & UserContextFeatureProperties
+export type UserPolygonsPickingObject = UserPolygonsFeature & UserPolygonsFeatureProperties
 
-export type UserContextPickingInfo = PickingInfo<UserContextPickingObject, { tile?: Tile2DHeader }>
+export type UserPolygonsPickingInfo = PickingInfo<
+  UserPolygonsPickingObject,
+  { tile?: Tile2DHeader }
+>

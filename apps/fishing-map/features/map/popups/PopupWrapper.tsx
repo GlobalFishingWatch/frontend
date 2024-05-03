@@ -17,7 +17,7 @@ import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   ContextPickingObject,
-  UserContextPickingObject,
+  UserPolygonsPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
