@@ -2,7 +2,7 @@ import { PickingInfo } from '@deck.gl/core'
 import { Feature, Point } from 'geojson'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { BaseLayerProps, BasePickingInfo } from '../../types'
+import { BaseLayerProps, BasePickingObject } from '../../types'
 
 export type ClusterEventType =
   | `${EventTypes.Encounter}`
@@ -30,6 +30,6 @@ type ClusterFeatureProps = {
 }
 
 export type ClusterFeature = Feature<Point, ClusterFeatureProps>
-export type ClusterPickingObject = ClusterFeature & BasePickingInfo
+export type ClusterPickingObject = ClusterFeature & BasePickingObject
 
 export type ClusterPickingInfo = PickingInfo<ClusterPickingObject, { tile?: Tile2DHeader }>

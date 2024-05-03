@@ -11,7 +11,7 @@ import {
   FourwingsInterval,
   Cell,
 } from '@globalfishingwatch/deck-loaders'
-import { BasePickingInfo } from '../../types'
+import { BasePickingObject } from '../../types'
 import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 
 export type FourwingsSublayerId = string
@@ -61,7 +61,7 @@ export type SublayerColorRanges = ColorRange[]
 export type FourwingsPickingObject = FourwingsFeature<
   FourwingsFeatureProperties & Partial<FourwingsStaticFeatureProperties>
 > &
-  BasePickingInfo & {
+  BasePickingObject & {
     title: string
     tile: { x: number; y: number; z: number }
     startTime: number

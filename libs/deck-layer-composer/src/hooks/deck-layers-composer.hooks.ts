@@ -2,7 +2,7 @@ import { atom, useAtom, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
-import { getDataviewsResolved } from '../resolvers'
+import { getDataviewsResolved, getDataviewsSorted } from '../resolvers'
 import { dataviewToDeckLayer, ResolverGlobalConfig } from '../resolvers'
 
 // Atom used to have all deck instances available
@@ -19,7 +19,8 @@ export function useDeckLayerComposer({
 
   const layerInstances = useMemo(() => {
     const dataviewsMerged = getDataviewsResolved(dataviews, globalConfig) as DataviewInstance[]
-    const deckLayers = dataviewsMerged?.flatMap((dataview) => {
+    const dataviewsMergedSorted = getDataviewsSorted(dataviewsMerged)
+    const deckLayers = dataviewsMergedSorted?.flatMap((dataview) => {
       // TODO research if we can use atoms here
       try {
         return dataviewToDeckLayer(dataview, globalConfig)
