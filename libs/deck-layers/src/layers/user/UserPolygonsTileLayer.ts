@@ -22,7 +22,7 @@ import {
   rgbaStringToComponents,
   getColorRampByOpacitySteps,
 } from '../../utils'
-import { UserPolygonsLayerProps, UserPolygonsFeature } from './user.types'
+import { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
 import { UserTileLayer } from './UserTileLayer'
 
 type _UserContextLayerProps = TileLayerProps & UserPolygonsLayerProps
@@ -103,7 +103,7 @@ export class UserContextTileLayer<PropsT = {}> extends UserTileLayer<
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const filterProps = this._getTimeFilterProps()
     return layers.map((layer) => {
-      return new TileLayer<TileLayerProps<UserPolygonsFeature>>({
+      return new TileLayer<TileLayerProps<UserLayerFeature>>({
         id: `${layer.id}-base-layer`,
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],

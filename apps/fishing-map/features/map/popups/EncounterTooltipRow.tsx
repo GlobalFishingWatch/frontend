@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { EventVessel } from '@globalfishingwatch/api-types'
-import { ContextPickingObject, UserPolygonsPickingObject } from '@globalfishingwatch/deck-layers'
+import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
@@ -187,7 +187,7 @@ function GenericClusterTooltipRow({ feature, showFeaturesDetails }: EncountersLa
 }
 
 type UserContextLayersProps = {
-  features: (ContextPickingObject | UserPolygonsPickingObject)[]
+  features: (ContextPickingObject | UserLayerPickingObject)[]
   showFeaturesDetails: boolean
 }
 

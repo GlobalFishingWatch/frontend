@@ -11,7 +11,7 @@ export type BaseUserLayerProps = {
   color: string
   idProperty?: string
   valueProperties?: string[]
-  highlightedFeatures?: UserPolygonsPickingObject[]
+  highlightedFeatures?: UserLayerPickingObject[]
   /**
    * Disable interaction (needed when user uploaded a non-polygon layer)
    * legacy known as disableInteraction
@@ -72,22 +72,18 @@ export type UserPointsLayerProps = BaseLayerProps &
     maxPointSize?: number
   }
 
-export type UserPolygonsFeatureProperties = {
+export type UserLayerFeatureProperties = {
   id: string
   title: string
   color: string
   value: string | number
   datasetId: string
   category: DataviewCategory
-  type: DataviewType
-  link?: string
+  subcategory: DataviewType
 }
 
-export type UserPolygonsFeature = Feature<Geometry, Record<string, any>>
+export type UserLayerFeature = Feature<Geometry, Record<string, any>>
 
-export type UserPolygonsPickingObject = UserPolygonsFeature & UserPolygonsFeatureProperties
+export type UserLayerPickingObject = UserLayerFeature & UserLayerFeatureProperties
 
-export type UserPolygonsPickingInfo = PickingInfo<
-  UserPolygonsPickingObject,
-  { tile?: Tile2DHeader }
->
+export type UserLayerPickingInfo = PickingInfo<UserLayerPickingObject, { tile?: Tile2DHeader }>

@@ -2,7 +2,7 @@ import { DRAW_DATASET_SOURCE, Dataset, DatasetTypes } from '@globalfishingwatch/
 import {
   BaseUserLayerProps,
   UserPolygonsLayerProps,
-  UserPolygonsPickingObject,
+  UserLayerPickingObject,
   UserPointsLayerProps,
   getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
@@ -139,15 +139,17 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
     id: dataview.id,
     layers: [layer],
     category: dataview.category!,
+    subcategory: dataview.config?.type!,
     color: dataview.config?.color!,
     pickable: !dataset.configuration?.disableInteraction ?? true,
-    highlightedFeatures: highlightedFeatures as UserPolygonsPickingObject[],
+    highlightedFeatures: highlightedFeatures as UserLayerPickingObject[],
     ...(filter && { filter }),
     ...(idProperty && { idProperty }),
     ...(valueProperties?.length && { valueProperties }),
     ...timeFilters,
   }
 }
+
 export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserPolygonsLayerProps> = (
   dataview,
   globalConfig

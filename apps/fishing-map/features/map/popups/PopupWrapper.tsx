@@ -12,12 +12,12 @@ import {
   arrow,
   FloatingArrow,
 } from '@floating-ui/react'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   ContextPickingObject,
-  UserPolygonsPickingObject,
+  UserLayerPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
@@ -227,9 +227,6 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 // const rulersFeatures = features.filter(
                 //   (feature) => feature.type === DataviewType.Rulers
                 // )
-                // const userPointFeatures = features.filter(
-                //   (feature) => feature.type === DataviewType.UserPoints
-                // )
                 return (
                   <Fragment key={featureCategory}>
                     {/*
@@ -241,10 +238,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                       />
                       <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
                       <ReportBufferTooltip features={areaBufferFeatures} />
-                      <UserPointsTooltipSection
-                        features={userPointFeatures}
-                        showFeaturesDetails={type === 'click'}
-                      /> */}
+                    */}
                     <ContextTooltipSection
                       features={features as ContextPickingObject[]}
                       showFeaturesDetails={type === 'click'}
@@ -254,21 +248,20 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
               }
               // TODO: deck restore this popup
               case DataviewCategory.User: {
-                // TODO:deck think how to manage different layer types in the same dataview categories
-                // const userPointFeatures = features.filter(
-                //   (feature) => feature.type === DataviewType.UserPoints
-                // )
-                // const userContextFeatures = (features as UserContextPickingObject[]).filter(
-                //   (feature) => feature.type === DataviewType.UserContext
-                // )
+                const userPointFeatures = (features as UserLayerPickingObject[]).filter(
+                  (feature) => feature.subcategory === DataviewType.UserPoints
+                )
+                const userContextFeatures = (features as UserLayerPickingObject[]).filter(
+                  (feature) => feature.subcategory === DataviewType.UserContext
+                )
                 return (
                   <Fragment key={featureCategory}>
-                    {/* <UserPointsTooltipSection
+                    <UserPointsTooltipSection
                       features={userPointFeatures}
                       showFeaturesDetails={type === 'click'}
-                    /> */}
+                    />
                     <UserContextTooltipSection
-                      features={features as UserContextPickingObject[]}
+                      features={userContextFeatures}
                       showFeaturesDetails={type === 'click'}
                     />
                   </Fragment>

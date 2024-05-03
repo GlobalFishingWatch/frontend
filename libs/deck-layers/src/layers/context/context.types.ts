@@ -1,8 +1,7 @@
 import { PickingInfo } from '@deck.gl/core'
 import { Feature, Polygon, MultiPolygon } from 'geojson'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { BaseLayerProps } from '../../types'
+import { BaseLayerProps, BasePickingObject } from '../../types'
 
 export enum ContextLayerId {
   EEZ = 'eez-areas',
@@ -40,12 +39,11 @@ export type ContextFeatureProperties = {
   value: string | number
   layerId: ContextLayerId
   datasetId: string
-  category: DataviewCategory
   link?: string
 }
 
 export type ContextFeature = Feature<Polygon | MultiPolygon, Record<string, any>>
 
-export type ContextPickingObject = ContextFeature & ContextFeatureProperties
+export type ContextPickingObject = BasePickingObject & ContextFeature & ContextFeatureProperties
 
 export type ContextPickingInfo = PickingInfo<ContextPickingObject, { tile?: Tile2DHeader }>

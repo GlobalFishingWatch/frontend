@@ -1,13 +1,13 @@
 import { Fragment } from 'react'
 import { groupBy } from 'lodash'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { ContextPickingObject, UserPolygonsPickingObject } from '@globalfishingwatch/deck-layers'
+import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
 
 type UserPointsLayersProps = {
-  features: (ContextPickingObject | UserPolygonsPickingObject)[]
+  features: (ContextPickingObject | UserLayerPickingObject)[]
   showFeaturesDetails: boolean
 }
 

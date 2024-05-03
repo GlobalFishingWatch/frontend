@@ -23,7 +23,7 @@ import {
   FourwingsDeckSublayer,
   FourwingsPickingObject,
   RulerPickingObject,
-  UserPolygonsPickingObject,
+  UserLayerPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
@@ -66,7 +66,7 @@ export type SliceExtendedFourwingsPickingObject = Omit<FourwingsPickingObject, '
 export type SliceExtendedFeature =
   | SliceExtendedFourwingsPickingObject
   | ContextPickingObject
-  | UserPolygonsPickingObject
+  | UserLayerPickingObject
   | ClusterPickingObject
   | RulerPickingObject
   | VesselEventPickingObject
