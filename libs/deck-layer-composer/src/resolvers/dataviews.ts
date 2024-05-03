@@ -226,7 +226,6 @@ type ResolverGlobalConfig = {
 
 const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
   DataviewType.Basemap,
-  DataviewType.BasemapLabels,
   DataviewType.Heatmap,
   DataviewType.HeatmapStatic,
   DataviewType.HeatmapAnimated,
@@ -238,6 +237,7 @@ const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
   DataviewType.UserContext,
   DataviewType.UserPoints,
   DataviewType.Polygons,
+  DataviewType.BasemapLabels,
   DataviewType.Rulers,
   DataviewType.Annotation,
 ]
