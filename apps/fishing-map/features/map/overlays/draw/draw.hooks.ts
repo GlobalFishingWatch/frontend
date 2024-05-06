@@ -165,9 +165,9 @@ export const useDrawLayer = () => {
       : setLayerInstance(
           new DrawLayer({
             // data: drawFeatures,
-            onEdit: onDrawEdit,
+            // onEdit: onDrawEdit,
             // selectedFeatureIndexes: drawFeaturesIndexes,
-            // mode: drawLayerMode,
+            // mode: 'draw',
           })
         )
   }, [isMapDrawing, onDrawEdit, setLayerInstance])

@@ -9,13 +9,15 @@ import {
   Geometry,
   ClickEvent,
   EditAction,
+  ModeProps,
 } from '@deck.gl-community/editable-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { PickingInfo } from '@deck.gl/core'
+import { CompositeLayer, LayerContext, PickingInfo } from '@deck.gl/core'
 import kinks from '@turf/kinks'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
 import { DeckLayerCategory, DeckLayerPickingObject } from '../../types'
 import { DrawPickingInfo, DrawPickingObject } from './draw.types'
+import { EditableLayer } from './EditableGeojsonLayer'
 
 type Color = [number, number, number, number]
 const FILL_COLOR: Color = [189, 189, 189, 25]
@@ -41,10 +43,10 @@ const INITIAL_FEATURE_COLLECTION: FeatureCollection = {
   features: [],
 }
 
-type DrawLayerMode = DrawPolygonMode | ViewMode | ModifyMode
-type DrawLayerState = EditableGeoJsonLayer['state'] & {
+type DrawLayerMode = DrawPolygonMode | ViewMode | ModifyMode | GFWDrawingMode
+type DrawLayerState = {
   data: FeatureCollection
-  mode: DrawLayerMode
+  mode: GFWDrawingMode
   hasOverlappingFeatures: boolean
   selectedFeatureIndexes?: number[]
 }
@@ -57,15 +59,70 @@ const isDrawHandle = (feature: DeckLayerPickingObject) => {
   return feature.category === 'draw' && (feature as DrawPickingObject).geometry?.type === 'Point'
 }
 
-export class DrawLayer extends EditableGeoJsonLayer {
+class GFWDrawingMode extends DrawPolygonMode {
+  firstPick = null
+
+  handleClick(event: ClickEvent, props: ModeProps<FeatureCollection>) {
+    const polygon = event.picks?.find(
+      ({ object }) =>
+        object.geometry?.type === 'Polygon' && object.properties?.guideType !== 'tentative'
+    )
+    // super.handleClick(event, props)
+    if (polygon) {
+      props.onEdit({
+        updatedData: props.data,
+        editType: 'selectedFeature',
+        editContext: {
+          position: event.mapCoords,
+          feature: polygon.object,
+        },
+      })
+    } else {
+      super.handleClick(event, props)
+    }
+  }
+
+  handlePointerMove(event: PointerMoveEvent, props: ModeProps<FeatureCollection>) {
+    // console.log('🚀 ~ handlePointerMove ~ props:', props)
+    // console.log('🚀 ~ handlePointerMove ~ event:', event)
+    props.onUpdateCursor('crosshair')
+    super.handlePointerMove(event, props)
+  }
+
+  // getGuides({ lastPointerMoveEvent }) {
+  //   if (this.firstPick && lastPointerMoveEvent) {
+  //     return {
+  //       type: 'FeatureCollection',
+  //       features: [
+  //         {
+  //           type: 'Feature',
+  //           properties: {
+  //             guideType: 'tentative',
+  //           },
+  //           geometry: {
+  //             type: 'LineString',
+
+  //             coordinates: [
+  //               this.firstPick.object.geometry.coordinates,
+  //               lastPointerMoveEvent.mapCoords,
+  //             ],
+  //           },
+  //         },
+  //       ],
+  //     }
+  //   }
+  // }
+}
+
+export class DrawLayer extends CompositeLayer {
   static layerName = 'draw-layer'
   state!: DrawLayerState
 
-  initializeState() {
-    super.initializeState()
+  initializeState(context: LayerContext) {
+    super.initializeState(context)
     this.state = {
-      ...this.state,
-      mode: INITIAL_DRAW_MODE,
+      // mode: new CompositeMode([new DrawPolygonMode(), new ViewMode(), new ModifyMode()]),
+      mode: new GFWDrawingMode(),
       data: INITIAL_FEATURE_COLLECTION,
       selectedFeatureIndexes: [],
       hasOverlappingFeatures: false,
@@ -85,10 +142,10 @@ export class DrawLayer extends EditableGeoJsonLayer {
   }
 
   reset = () => {
-    this.setState({
-      data: INITIAL_FEATURE_COLLECTION,
-      mode: INITIAL_DRAW_MODE,
-    })
+    // this.setState({
+    //   data: INITIAL_FEATURE_COLLECTION,
+    //   mode: INITIAL_DRAW_MODE,
+    // })
   }
 
   deleteSelectedFeature = () => {
@@ -105,45 +162,47 @@ export class DrawLayer extends EditableGeoJsonLayer {
   //   console.log(event)
   // }
 
-  getPickingInfo({ info }: { info: PickingInfo }): DrawPickingInfo {
-    const object = {
-      ...info.object,
-      id: this.props.id,
-      layerId: 'draw-layer',
-      category: 'draw' as DeckLayerCategory,
-      index: info.index,
-    } as DrawPickingObject
+  // getPickingInfo({ info }: { info: PickingInfo }): DrawPickingInfo {
+  //   const object = {
+  //     ...info.object,
+  //     id: this.props.id,
+  //     layerId: 'draw-layer',
+  //     category: 'draw' as DeckLayerCategory,
+  //     index: info.index,
+  //   } as DrawPickingObject
 
-    return {
-      ...info,
-      object,
-    }
+  //   return {
+  //     ...info,
+  //     object,
+  //   }
+  // }
+
+  setDrawingMode = () => {
+    this.setState({ mode: new GFWDrawingMode() })
   }
 
-  setMode = (mode: DrawLayerMode) => {
-    this.setState({ mode })
+  onLayerClick = (event: ClickEvent) => {
+    if (this.state.mode instanceof ViewMode) {
+      console.log('🚀 ~ event:', event)
+    }
   }
 
   onEdit = (editAction: EditAction<FeatureCollection>) => {
-    const { mode } = this.state
-    console.log('🚀 ~ mode:', mode)
     const { updatedData, editType, editContext } = editAction
-    if (editType === 'addFeature' || editType === 'addPosition') {
-      debugger
-      console.log('🚀 ~ editAction:', editAction.updatedData)
-
-      this.setState({
-        features: updatedData,
-      })
-    }
-
-    return
-
-    if (editType === 'addFeature' || editType === 'addPosition') {
+    console.log('🚀 ~ editType:', editType)
+    if (editType === 'selectedFeature') {
       this.setState({
         mode: new ViewMode(),
         data: updatedData,
         featuresIndexes: [],
+      })
+    }
+
+    if (editType === 'addFeature' || editType === 'addPosition') {
+      this.setState({
+        // mode: new ViewMode(),
+        data: updatedData,
+        // featuresIndexes: [],
       })
     }
     if (editType === 'movePosition') {
@@ -185,13 +244,11 @@ export class DrawLayer extends EditableGeoJsonLayer {
   }
 
   renderLayers() {
-    const { selectedFeatureIndexes, onEdit } = this.props
-    const { mode, data, features } = this.state
-    console.log('🚀 ~ renderLayers ~ data:', features)
+    const { data, mode, selectedFeatureIndexes } = this.state
     return [
       new EditableGeoJsonLayer({
         id: 'draw',
-        data: features,
+        data,
         mode,
         onEdit: this.onEdit,
         selectedFeatureIndexes,

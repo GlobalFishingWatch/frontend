@@ -350,7 +350,7 @@ function MapDraw() {
         <IconButton
           icon="add-polygon"
           onClick={() => {
-            drawLayer?.setMode('draw')
+            drawLayer?.setDrawingMode()
           }}
         />
         <IconButton
