@@ -61,8 +61,8 @@ export const useMapDeckLayers = () => {
 }
 
 export const useMapOverlayLayers = () => {
-  const { instance: drawLayerInstance } = useDrawLayer()
-  return [drawLayerInstance]
+  const drawLayerInstance = useDrawLayer()
+  return useMemo(() => (drawLayerInstance ? [drawLayerInstance] : []), [drawLayerInstance])
 }
 
 export const useMapLayersLoaded = () => {

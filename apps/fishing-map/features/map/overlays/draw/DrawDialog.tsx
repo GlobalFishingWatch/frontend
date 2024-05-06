@@ -77,14 +77,10 @@ function MapDraw() {
   const mapDrawEditDatasetId = useSelector(selectMapDrawingEditId)
   const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
-  const {
-    drawFeatures,
-    resetDrawFeatures,
-    setDrawLayerMode,
-    hasOverlappingFeatures,
-    drawFeaturesIndexes,
-    removeDrawFeature,
-  } = useDrawLayer()
+  const drawLayer = useDrawLayer()
+  const drawFeatures = drawLayer?.getData() || []
+  const drawFeaturesIndexes = drawLayer?.getSelectedFeatureIndexes() || []
+  const hasOverlappingFeatures = drawLayer?.getHasOverlappingFeatures()
 
   useEffect(() => {
     if (mapDrawEditDataset) {
@@ -239,7 +235,9 @@ function MapDraw() {
   }, [resetEditHandler])
 
   const closeDraw = useCallback(() => {
-    resetDrawFeatures()
+    if (drawLayer) {
+      drawLayer.reset()
+    }
     resetState()
     dispatch(resetAreaList({ datasetId: mapDrawEditDatasetId }))
     dispatchResetMapDraw()
@@ -253,7 +251,7 @@ function MapDraw() {
     dispatchQueryParams,
     dispatchResetMapDraw,
     mapDrawEditDatasetId,
-    resetDrawFeatures,
+    // resetDrawFeatures,
     resetState,
   ])
 
@@ -303,7 +301,7 @@ function MapDraw() {
     },
     [createDataset, layerName]
   )
-  const hasFeaturesDrawn = drawFeatures.features.length > 0
+  const hasFeaturesDrawn = drawFeatures.features?.length > 0
   const layerNameMinLength = layerName.length >= MIN_DATASET_NAME_LENGTH
   let saveTooltip = ''
 
@@ -352,7 +350,7 @@ function MapDraw() {
         <IconButton
           icon="add-polygon"
           onClick={() => {
-            setDrawLayerMode('draw')
+            drawLayer?.setMode('draw')
           }}
         />
         <IconButton
@@ -364,7 +362,7 @@ function MapDraw() {
               ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
               : ''
           }
-          onClick={removeDrawFeature}
+          onClick={drawLayer?.deleteSelectedFeature}
         />
         <div className={styles.buttonsContainer}>
           <SwitchRow

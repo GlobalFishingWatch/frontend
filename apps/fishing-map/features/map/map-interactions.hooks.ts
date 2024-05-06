@@ -323,7 +323,7 @@ export const useMapMouseClick = () => {
 
 export const useMapCursor = () => {
   const { isMapDrawing } = useMapDrawConnect()
-  const { getDrawCursor } = useDrawLayer()
+  // const { getDrawCursor } = useDrawLayer()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing, getRulersCursor } = useRulers()
