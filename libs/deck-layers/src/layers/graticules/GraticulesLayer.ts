@@ -54,11 +54,16 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
   }
 
   _getLineWidth: Accessor<GeoJsonProperties, number> = (d) => {
-    return checkScaleRankByViewport(d?.properties.scaleRank, this.context.viewport) ? 1 : 0
+    return checkScaleRankByViewport(d as GraticulesFeature, this.context.viewport) ? 1 : 0
   }
 
   _getLabel: AccessorFunction<GeoJsonProperties, string> = (d) => {
-    return checkScaleRankByViewport(d?.properties.scaleRank, this.context.viewport)
+    if (d?.properties.label === '0') {
+      const bounds = this.context.viewport.getBounds()
+      const lonDelta = Math.abs(bounds[0] - bounds[2])
+      return lonDelta >= 360 && d?.properties.type === 'lat' ? '' : d?.properties.label
+    }
+    return checkScaleRankByViewport(d as GraticulesFeature, this.context.viewport)
       ? d?.properties.label
       : ''
   }
@@ -89,7 +94,7 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
         data: this.state.data,
         widthUnits: 'pixels',
         getPath: (d) => d.geometry.coordinates as PathGeometry,
-        getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.BasemapFill, params),
+        getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.OutlinePolygonsFill, params),
         getWidth: this._getLineWidth,
         getColor: hexToDeckColor(this.props.color, 0.3),
         updateTriggers: {
@@ -104,11 +109,12 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
         getPosition: this._getLabelPosition,
         getColor: hexToDeckColor(this.props.color, 0.5),
         outlineColor: hexToDeckColor(BLEND_BACKGROUND),
-        outlineWidth: 2,
-        fontSettings: { sdf: true },
+        fontFamily: 'Roboto',
+        outlineWidth: 200,
+        fontSettings: { sdf: true, smoothing: 0.2 },
         sizeUnits: 'pixels',
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Overlay, params),
-        getSize: 11,
+        getSize: 12,
         getTextAnchor: this._getTextAnchor,
         getAlignmentBaseline: this._getAlignmentBaseline,
         getPixelOffset: this._getPixelOffset,
