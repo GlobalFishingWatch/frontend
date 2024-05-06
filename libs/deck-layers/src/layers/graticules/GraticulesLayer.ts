@@ -1,17 +1,19 @@
 import {
   CompositeLayer,
-  Color,
   DefaultProps,
   Accessor,
   LayerContext,
   UpdateParameters,
+  AccessorFunction,
+  Position,
 } from '@deck.gl/core'
-import { PathLayer } from '@deck.gl/layers'
-import { Feature, GeoJsonProperties, LineString } from 'geojson'
+import { PathLayer, TextLayer } from '@deck.gl/layers'
+import { GeoJsonProperties } from 'geojson'
 import { PathGeometry } from '@deck.gl/layers/dist/path-layer/path'
-import { hexToDeckColor, LayerGroup, getLayerGroupOffset } from '../../utils'
-import { GraticulesLayerProps, GraticulesLayerState } from './graticules.types'
+import { hexToDeckColor, LayerGroup, getLayerGroupOffset, BLEND_BACKGROUND } from '../../utils'
+import { GraticulesFeature, GraticulesLayerProps, GraticulesLayerState } from './graticules.types'
 import { generateGraticulesFeatures } from './graticules.data'
+import { checkScaleRankByViewport } from './graticules.utils'
 
 const defaultProps: DefaultProps<GraticulesLayerProps> = {
   color: '#fff',
@@ -22,59 +24,100 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
   static defaultProps = defaultProps
   state!: GraticulesLayerState
 
-  _getContextZoom = (context: LayerContext) => Math.round(context.viewport.zoom * 10) / 10
+  _getContextZoom = (context: LayerContext) => Math.round(context.viewport.zoom * 1000) / 1000
+
+  _getViewPortHash = (context: LayerContext) =>
+    [
+      ...context.viewport.getBounds().map((n) => Math.round(n * 1000) / 1000),
+      this._getContextZoom(context),
+    ].join(',')
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
+      viewPortHash: this._getViewPortHash(context),
       zoom: this._getContextZoom(context),
       data: generateGraticulesFeatures(),
     }
   }
 
   shouldUpdateState({ context }: UpdateParameters<this>) {
-    const newZoom = this._getContextZoom(context)
-    return this.state.zoom !== newZoom
+    const viewPortHash = this._getViewPortHash(context)
+    return this.state.viewPortHash !== viewPortHash
   }
 
   updateState({ context }: UpdateParameters<this>) {
     this.setState({
       zoom: this._getContextZoom(context),
+      viewPortHash: this._getViewPortHash(context),
     })
   }
 
   _getLineWidth: Accessor<GeoJsonProperties, number> = (d) => {
-    const { zoom } = this.state
-    if (zoom < 4) {
-      return d?.properties.scaleRank >= 30 ? 1 : 0
-    } else if (zoom >= 4 && zoom < 5.7) {
-      return d?.properties.scaleRank >= 10 ? 1 : 0
-    } else if (zoom >= 5.7 && zoom < 7) {
-      return d?.properties.scaleRank >= 5 ? 1 : 0
-    } else {
-      return 1
-    }
+    return checkScaleRankByViewport(d?.properties.scaleRank, this.context.viewport) ? 1 : 0
   }
 
-  _getLineColor: Accessor<GeoJsonProperties, Color> = (d) => {
-    return hexToDeckColor(this.props.color, 0.3)
+  _getLabel: AccessorFunction<GeoJsonProperties, string> = (d) => {
+    return checkScaleRankByViewport(d?.properties.scaleRank, this.context.viewport)
+      ? d?.properties.label
+      : ''
+  }
+
+  _getLabelPosition: AccessorFunction<GeoJsonProperties, Position> = (d) => {
+    const bounds = this.context.viewport.getBounds()
+    return d?.properties.type === 'lat'
+      ? [bounds[0], d?.geometry.coordinates[0][1]]
+      : [d?.geometry.coordinates[0][0], bounds[3]]
+  }
+
+  _getTextAnchor: AccessorFunction<GeoJsonProperties, 'start' | 'middle' | 'end'> = (d) => {
+    return d?.properties.type === 'lat' ? 'start' : 'middle'
+  }
+
+  _getAlignmentBaseline: AccessorFunction<GeoJsonProperties, 'top' | 'center' | 'bottom'> = (d) => {
+    return d?.properties.type === 'lat' ? 'center' : 'top'
+  }
+
+  _getPixelOffset: AccessorFunction<GeoJsonProperties, [number, number]> = (d) => {
+    return d?.properties.type === 'lat' ? [5, 0] : [0, 5]
   }
 
   renderLayers() {
-    return new PathLayer<Feature<LineString>>({
-      id: `${this.props.id}-lines`,
-      data: this.state.data,
-      pickable: false,
-      widthMinPixels: 0,
-      widthUnits: 'pixels',
-      getPath: (d) => d.geometry.coordinates as PathGeometry,
-      getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.BasemapFill, params),
-      getWidth: this._getLineWidth,
-      getColor: this._getLineColor,
-      updateTriggers: {
-        getWidth: [this.state.zoom],
-        getColor: [this.props.color],
-      },
-    })
+    return [
+      new PathLayer<GraticulesFeature>({
+        id: `${this.props.id}-lines`,
+        data: this.state.data,
+        widthUnits: 'pixels',
+        getPath: (d) => d.geometry.coordinates as PathGeometry,
+        getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.BasemapFill, params),
+        getWidth: this._getLineWidth,
+        getColor: hexToDeckColor(this.props.color, 0.3),
+        updateTriggers: {
+          getWidth: [this.state.zoom],
+          getColor: [this.props.color],
+        },
+      }),
+      new TextLayer<GraticulesFeature>({
+        id: `${this.props.id}-labels`,
+        data: this.state.data,
+        getText: this._getLabel,
+        getPosition: this._getLabelPosition,
+        getColor: hexToDeckColor(this.props.color, 0.5),
+        outlineColor: hexToDeckColor(BLEND_BACKGROUND),
+        outlineWidth: 2,
+        fontSettings: { sdf: true },
+        sizeUnits: 'pixels',
+        getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Overlay, params),
+        getSize: 11,
+        getTextAnchor: this._getTextAnchor,
+        getAlignmentBaseline: this._getAlignmentBaseline,
+        getPixelOffset: this._getPixelOffset,
+        updateTriggers: {
+          getText: [this.state.zoom],
+          getPosition: [this.state.viewPortHash],
+          getColor: [this.props.color],
+        },
+      }),
+    ]
   }
 }
