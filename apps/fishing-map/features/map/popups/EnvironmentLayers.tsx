@@ -3,7 +3,6 @@ import { format } from 'd3-format'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/layer-composer'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { ContextPickingObject, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
 import styles from './Popup.module.css'
 
 type ContextTooltipRowProps = {

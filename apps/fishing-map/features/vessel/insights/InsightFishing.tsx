@@ -6,6 +6,7 @@ import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import InsightEventDetails from 'features/vessel/insights/InsightEventsDetails'
+import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
 import { selectVesselEventsDataWithVoyages } from '../selectors/vessel.resources.selectors'
 import styles from './Insights.module.css'
 
@@ -36,15 +37,17 @@ const InsightFishing = ({
 
   const eventsInNoTakeMpasDetails = useMemo(() => {
     return eventsInNoTakeMpas
-      ? (vesselEvents || []).filter((event) => eventsInNoTakeMpas?.includes(event.id))
+      ? (vesselEvents || [])
+          .filter((event) => eventsInNoTakeMpas?.includes(event.id))
+          .map(removeNonTunaRFMO)
       : []
   }, [eventsInNoTakeMpas, vesselEvents])
 
   const eventsInRfmoWithoutKnownAuthorizationDetails = useMemo(() => {
     return eventsInRfmoWithoutKnownAuthorization
-      ? (vesselEvents || []).filter((event) =>
-          eventsInRfmoWithoutKnownAuthorization?.includes(event.id)
-        )
+      ? (vesselEvents || [])
+          .filter((event) => eventsInRfmoWithoutKnownAuthorization?.includes(event.id))
+          .map(removeNonTunaRFMO)
       : []
   }, [eventsInRfmoWithoutKnownAuthorization, vesselEvents])
 

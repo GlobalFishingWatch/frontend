@@ -10,7 +10,7 @@ const WORLD_SIZE = 512
 export function getPickedFeatureToHighlight(
   data: any,
   pickedFeatures: DeckLayerPickingObject[],
-  idProperty: string
+  idProperty = 'gfw_id'
 ) {
   return (
     pickedFeatures &&
@@ -27,7 +27,7 @@ export function getMVTSublayerProps({
   extensions,
 }: {
   tile: Tile2DHeader
-  extensions: TileLayerProps['extensions']
+  extensions?: TileLayerProps['extensions']
 }): {
   modelMatrix: Matrix4
   coordinateOrigin: [number, number, number]

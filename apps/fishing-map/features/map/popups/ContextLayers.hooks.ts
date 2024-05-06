@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { ContextPickingObject, UserContextPickingObject } from '@globalfishingwatch/deck-layers'
+import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { getEventLabel } from 'utils/analytics'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
@@ -51,7 +51,7 @@ export const useHighlightArea = () => {
 }
 
 export const getAreaIdFromFeature = (
-  feature: ContextPickingObject | UserContextPickingObject
+  feature: ContextPickingObject | UserLayerPickingObject
 ): AreaKeyId => {
   return (
     feature.properties?.gfw_id ||
@@ -71,7 +71,10 @@ export const useContextInteractions = () => {
   const fitMapBounds = useMapFitBounds()
 
   const onDownloadClick = useCallback(
-    (ev: React.MouseEvent<Element, MouseEvent>, feature: ContextPickingObject) => {
+    (
+      ev: React.MouseEvent<Element, MouseEvent>,
+      feature: ContextPickingObject | UserLayerPickingObject
+    ) => {
       const areaId = getAreaIdFromFeature(feature)
       if (!areaId) {
         console.warn('No gfw_id available in the feature to analyze', feature)
@@ -99,7 +102,7 @@ export const useContextInteractions = () => {
   )
 
   const setReportArea = useCallback(
-    (feature: ContextPickingObject | UserContextPickingObject) => {
+    (feature: ContextPickingObject | UserLayerPickingObject) => {
       const { title, value } = feature
       const areaId = getAreaIdFromFeature(feature) as string
       // Report already does it on page reload but to avoid waiting
@@ -129,7 +132,7 @@ export const useContextInteractions = () => {
   const onReportClick = useCallback(
     (
       ev: React.MouseEvent<Element, MouseEvent>,
-      feature: ContextPickingObject | UserContextPickingObject
+      feature: ContextPickingObject | UserLayerPickingObject
     ) => {
       const featureAreaId = getAreaIdFromFeature(feature)
       if (!featureAreaId) {

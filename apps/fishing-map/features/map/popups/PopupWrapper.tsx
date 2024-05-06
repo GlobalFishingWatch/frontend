@@ -12,13 +12,18 @@ import {
   arrow,
   FloatingArrow,
 } from '@floating-ui/react'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
-import { ContextPickingObject, VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
+import {
+  ContextPickingObject,
+  UserLayerPickingObject,
+  VesselEventPickingObject,
+} from '@globalfishingwatch/deck-layers'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
 import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
+import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import {
@@ -28,6 +33,7 @@ import {
 } from '../map.slice'
 import { MAP_WRAPPER_ID } from '../map.config'
 import { useMapToolsActive } from '../map-interactions.hooks'
+import UserContextTooltipSection from './UserContextLayers'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
 import EncounterTooltipRow from './EncounterTooltipRow'
@@ -223,9 +229,6 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 // const rulersFeatures = features.filter(
                 //   (feature) => feature.type === DataviewType.Rulers
                 // )
-                // const userPointFeatures = features.filter(
-                //   (feature) => feature.type === DataviewType.UserPoints
-                // )
                 return (
                   <Fragment key={featureCategory}>
                     {/*
@@ -237,10 +240,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                       />
                       <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
                       <ReportBufferTooltip features={areaBufferFeatures} />
-                      <UserPointsTooltipSection
-                        features={userPointFeatures}
-                        showFeaturesDetails={type === 'click'}
-                      /> */}
+                    */}
                     <ContextTooltipSection
                       features={features as ContextPickingObject[]}
                       showFeaturesDetails={type === 'click'}
@@ -249,26 +249,26 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 )
               }
               // TODO: deck restore this popup
-              // case DataviewCategory.User: {
-              //   const userPointFeatures = features.filter(
-              //     (feature) => feature.type === DataviewType.UserPoints
-              //   )
-              //   const userContextFeatures = features.filter(
-              //     (feature) => feature.type === DataviewType.UserContext
-              //   )
-              //   return (
-              //     <Fragment key={featureCategory}>
-              //       <UserPointsTooltipSection
-              //         features={userPointFeatures}
-              //         showFeaturesDetails={type === 'click'}
-              //       />
-              //       <UserContextTooltipSection
-              //         features={userContextFeatures}
-              //         showFeaturesDetails={type === 'click'}
-              //       />
-              //     </Fragment>
-              //   )
-              // }
+              case DataviewCategory.User: {
+                const userPointFeatures = (features as UserLayerPickingObject[]).filter(
+                  (feature) => feature.subcategory === DataviewType.UserPoints
+                )
+                const userContextFeatures = (features as UserLayerPickingObject[]).filter(
+                  (feature) => feature.subcategory === DataviewType.UserContext
+                )
+                return (
+                  <Fragment key={featureCategory}>
+                    <UserPointsTooltipSection
+                      features={userPointFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                    <UserContextTooltipSection
+                      features={userContextFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  </Fragment>
+                )
+              }
 
               case DataviewCategory.Vessels:
                 return (

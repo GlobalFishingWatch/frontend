@@ -1,7 +1,7 @@
 import { Color, PickingInfo } from '@deck.gl/core'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
-import { BasePickingInfo } from '../../types'
+import { BasePickingObject } from '../../types'
 import { TRACK_LAYER_TYPE } from './vessel.config'
 
 export interface VesselDeckLayersEvent {
@@ -22,7 +22,6 @@ export type _VesselLayerProps = {
 //   timestamp: number
 // }
 // export type VesselTrackFeature = Feature<LineString | MultiLineString, VesselTrackProperties>
-// export type VesselTrackPickingObject = VesselTrackFeature & BasePickingInfo
 // export type VesselTrackPickingInfo = PickingInfo<VesselTrackPickingObject, { tile?: Tile2DHeader }>
 
 export type VesselEventProperties = ApiEvent & {
@@ -31,5 +30,5 @@ export type VesselEventProperties = ApiEvent & {
   vesselId: string
 }
 
-export type VesselEventPickingObject = VesselEventProperties & BasePickingInfo
+export type VesselEventPickingObject = VesselEventProperties & BasePickingObject
 export type VesselEventPickingInfo = PickingInfo<VesselEventPickingObject, { tile?: Tile2DHeader }>

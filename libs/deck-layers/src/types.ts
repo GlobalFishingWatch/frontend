@@ -1,34 +1,33 @@
 import type { Layer } from '@deck.gl/core'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
 import type { ContextLayer } from './layers/context/ContextLayer'
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
 import { ClusterPickingObject, ClusterPickingInfo, ClusterLayer } from './layers/cluster'
-import {
-  ContextPickingObject,
-  UserContextPickingObject,
-  ContextPickingInfo,
-} from './layers/context'
+import { ContextPickingObject, ContextPickingInfo } from './layers/context'
 import { FourwingsPickingObject, FourwingsPickingInfo } from './layers/fourwings'
 import { RulerPickingObject, RulerPickingInfo } from './layers/rulers'
 import { VesselEventPickingObject, VesselEventPickingInfo } from './layers/vessel'
 import { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
+import { UserLayerPickingObject } from './layers/user'
 
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
 
 // TODO:deck move this type to a generic like DeckLayerProps<SpecificLayerProps>
 export type BaseLayerProps = {
   category: DeckLayerCategory
+  subcategory?: DataviewType
 }
 
 // TODO:deck move this type to a generic like DeckPickingInfo<SpecificLayerInfo>
-export type BasePickingInfo = {
+export type BasePickingObject = {
   id: string
   title?: string
   layerId: string
   category: DeckLayerCategory
+  subcategory?: DataviewType
 }
 
 export type AnyDeckLayer<D extends {} = {}> =
@@ -44,7 +43,7 @@ export type LayerWithIndependentSublayersLoadState = VesselLayer
 export type DeckLayerPickingObject =
   | FourwingsPickingObject
   | ContextPickingObject
-  | UserContextPickingObject
+  | UserLayerPickingObject
   | ClusterPickingObject
   | RulerPickingObject
   | VesselEventPickingObject
