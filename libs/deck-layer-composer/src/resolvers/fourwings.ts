@@ -128,7 +128,6 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
-    debug: debug ?? false,
     visible: dataview.config?.visible ?? true,
     colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd ?? false,
     ...(tilesUrl && { tilesUrl }),

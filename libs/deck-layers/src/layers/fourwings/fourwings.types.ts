@@ -118,7 +118,6 @@ export type FourwingsHeatmapTileData = FourwingsFeature[]
 
 export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFourwingsLayerProps & {
   data?: DataT
-  debug?: boolean
   availableIntervals?: FourwingsInterval[]
   resolution?: FourwingsResolution
   colorRampWhiteEnd?: boolean

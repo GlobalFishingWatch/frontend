@@ -1,6 +1,6 @@
 import { atom, useAtom, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
-import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
+import { AnyDeckLayer, TilesBoundariesLayer } from '@globalfishingwatch/deck-layers'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { getDataviewsResolved, getDataviewsSorted } from '../resolvers'
 import { dataviewToDeckLayer, ResolverGlobalConfig } from '../resolvers'
@@ -29,6 +29,9 @@ export function useDeckLayerComposer({
         return []
       }
     })
+    if (globalConfig.debug) {
+      return [...deckLayers, new TilesBoundariesLayer()]
+    }
     return deckLayers
   }, [dataviews, globalConfig])
 
