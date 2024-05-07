@@ -26,7 +26,7 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
 
   _getContextZoom = (context: LayerContext) => Math.round(context.viewport.zoom * 1000) / 1000
 
-  _getViewPortHash = (context: LayerContext) =>
+  _getViewportHash = (context: LayerContext) =>
     [
       ...context.viewport.getBounds().map((n) => Math.round(n * 1000) / 1000),
       this._getContextZoom(context),
@@ -35,21 +35,21 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
-      viewPortHash: this._getViewPortHash(context),
+      viewportHash: this._getViewportHash(context),
       zoom: this._getContextZoom(context),
       data: generateGraticulesFeatures(),
     }
   }
 
   shouldUpdateState({ context }: UpdateParameters<this>) {
-    const viewPortHash = this._getViewPortHash(context)
-    return this.state.viewPortHash !== viewPortHash
+    const viewportHash = this._getViewportHash(context)
+    return this.state.viewportHash !== viewportHash
   }
-
+  // TODO:deck check against changeFlags.onViewportChange instead this manual check
   updateState({ context }: UpdateParameters<this>) {
     this.setState({
       zoom: this._getContextZoom(context),
-      viewPortHash: this._getViewPortHash(context),
+      viewportHash: this._getViewportHash(context),
     })
   }
 
@@ -120,7 +120,7 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
         getPixelOffset: this._getPixelOffset,
         updateTriggers: {
           getText: [this.state.zoom],
-          getPosition: [this.state.viewPortHash],
+          getPosition: [this.state.viewportHash],
           getColor: [this.props.color],
         },
       }),
