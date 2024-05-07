@@ -61,7 +61,7 @@ export type AnyGeneratorClass =
   | VesselEventsGenerator
   | VesselsEventsShapesGenerator
 
-export type GeneratorsRecord = Record<DataviewType, AnyGeneratorClass>
+export type GeneratorsRecord = Record<any, AnyGeneratorClass>
 
 const GeneratorConfig: GeneratorsRecord = {
   [DataviewType.Annotation]: new AnnotationsGenerator(),
