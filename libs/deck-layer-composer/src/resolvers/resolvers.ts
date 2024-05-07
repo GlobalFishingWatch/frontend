@@ -6,6 +6,7 @@ import {
   ClusterLayer,
   ContextLayer,
   FourwingsLayer,
+  GraticulesLayer,
   UserContextTileLayer,
   UserPointsTileLayer,
   VesselLayer,
@@ -17,6 +18,7 @@ import { resolveDeckContextLayerProps } from './context'
 import { resolveDeckClusterLayerProps } from './clusters'
 import { resolveDeckVesselLayerProps } from './vessels'
 import { resolveDeckUserContextLayerProps, resolveDeckUserPointsLayerProps } from './user'
+import { resolveDeckGraticulesLayerProps } from './graticules'
 
 export const dataviewToDeckLayer = (
   dataview: DataviewInstance,
@@ -29,6 +31,10 @@ export const dataviewToDeckLayer = (
   if (dataview.config?.type === DataviewType.BasemapLabels) {
     const deckLayerProps = resolveDeckBasemapLabelsLayerProps(dataview, globalConfig)
     return new BaseMapLabelsLayer(deckLayerProps)
+  }
+  if (dataview.config?.type === DataviewType.Graticules) {
+    const deckLayerProps = resolveDeckGraticulesLayerProps(dataview, globalConfig)
+    return new GraticulesLayer(deckLayerProps)
   }
   if (
     dataview.config?.type === DataviewType.HeatmapAnimated ||
