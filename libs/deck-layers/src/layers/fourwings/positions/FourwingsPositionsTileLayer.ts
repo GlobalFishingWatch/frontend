@@ -13,7 +13,6 @@ import { IconLayer, TextLayer } from '@deck.gl/layers'
 import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { groupBy, orderBy } from 'lodash'
-import { Feature, Point } from 'geojson'
 import { stringify } from 'qs'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -42,8 +41,8 @@ import {
 } from './fourwings-positions.types'
 
 type FourwingsPositionsTileLayerState = {
-  positions: Feature<Point>[]
-  lastPositions: Feature<Point>[]
+  positions: FourwingsPositionFeature[]
+  lastPositions: FourwingsPositionFeature[]
   colorScale?: FourwingsTileLayerColorScale
 }
 
@@ -93,7 +92,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return { ...info, object }
   }
 
-  getColorRamp(positions: Feature[]) {
+  getColorRamp(positions: FourwingsPositionFeature[]) {
     if (positions?.length > 0) {
       const hours = positions.map((d) => d?.properties?.value).filter(Number)
       const dataSampled = hours.length > 1000 ? sample(hours, 1000, Math.random) : hours
@@ -177,14 +176,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return 12
   }
 
-  getVesselLabel = (d: Feature) => {
+  getVesselLabel = (d: FourwingsPositionFeature) => {
     const label = cleanVesselShipname(d.properties?.shipname) || d.properties?.id
     return label?.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
-  getLatestVesselPositions = (positions: Feature<Point>[]) => {
+  getLatestVesselPositions = (positions: FourwingsPositionFeature[]) => {
     const positionsByVessel = groupBy(positions, 'properties.id')
-    const lastPositions: Feature<Point>[] = []
+    const lastPositions: FourwingsPositionFeature[] = []
     Object.keys(positionsByVessel)
       .filter((p) => p !== 'undefined')
       .forEach((vesselId) => {
@@ -196,7 +195,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   onViewportLoad = (tiles: Tile2DHeader[]) => {
     const positions = orderBy(
-      tiles.flatMap((tile: any) => tile.dataInWGS84 as Feature<Point>[]),
+      tiles.flatMap((tile: any) => tile.dataInWGS84 as FourwingsPositionFeature[]),
       'properties.htime'
     ).filter(Boolean)
 
@@ -244,7 +243,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
     const params = {
       // datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
-      datasets: ['public-global-presence:v3.0'],
+      datasets: ['public-global-fishing-effort:v3.0'],
       format: 'MVT',
       properties: [['speed', 'bearing', 'shipname'].join(',')],
       // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
@@ -292,7 +291,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getPosition: (d: any) => d.geometry.coordinates,
         getColor: (d: any) => this.getFillColor(d),
         getSize: (d: any) => this.getSize(d),
-        getAngle: (d: any) => d.properties.bearing,
+        getAngle: (d: any) => d.properties.bearing - 90,
         pickable: true,
         getPickingInfo: this.getPickingInfo,
         updateTriggers: {

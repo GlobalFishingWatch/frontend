@@ -859,6 +859,7 @@
     "noVoyagesinTimeRange": "There are no voyages fully contained in your timerange.",
     "noVoyagesWithoutPorts": "Please turn on port visits visibility",
     "origin": "Origin",
+    "onScreen": "Vessels on screen",
     "owner": "Owner",
     "owners": "Owners",
     "registeredGearType": "Registered Gear Type",

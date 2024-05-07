@@ -18,6 +18,7 @@ import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.i
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
+import VesselsFromPositions from './VesselsFromPositions'
 
 function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
@@ -121,6 +122,7 @@ function VesselsSection(): React.ReactElement {
         </p>
       )}
       <VesselEventsLegend dataviews={dataviews} />
+      <VesselsFromPositions />
     </div>
   )
 }

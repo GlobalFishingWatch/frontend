@@ -23,6 +23,15 @@
   padding: var(--space-XS) var(--space-S);
 }
 
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
 .relative {
   position: relative;
 }
