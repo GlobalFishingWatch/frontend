@@ -9,14 +9,14 @@ import {
   FourwingsInterval,
   TileCell,
 } from '@globalfishingwatch/deck-loaders'
-import { getUTCDateTime } from '../../utils'
+import { getUTCDateTime } from '../../../utils'
+import { FourwingsDeckSublayer } from '../fourwings.types'
+import { HEATMAP_API_TILES_URL, getChunkByInterval, getInterval } from '../fourwings.config'
 import {
   AggregateCellParams,
-  FourwingsChunk,
-  FourwingsDeckSublayer,
   FourwingsAggregationOperation,
-} from './fourwings.types'
-import { HEATMAP_API_TILES_URL, getChunkByInterval, getInterval } from './fourwings.config'
+  FourwingsChunk,
+} from './fourwings-heatmap.types'
 
 function aggregateSublayerValues(
   values: number[],

@@ -12,7 +12,7 @@ import {
 import {
   ClusterPickingObject,
   DeckLayerInteractionPickingInfo,
-  FourwingsPickingObject,
+  FourwingsHeatmapPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
@@ -159,7 +159,7 @@ export const useClickedEventConnect = () => {
     dispatch(setClickedEvent(event as SliceInteractionEvent))
 
     // get temporal grid clicked features and order them by sublayerindex
-    const fishingActivityFeatures = (event.features as FourwingsPickingObject[]).filter(
+    const fishingActivityFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
       (feature) => {
         if (feature?.sublayers?.every((sublayer) => !sublayer.visible)) {
           return false

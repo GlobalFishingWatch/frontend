@@ -1,4 +1,4 @@
 export * from './fourwings.config'
 export * from './fourwings.types'
-export * from './fourwings.utils'
+export * from './heatmap/fourwings-heatmap.utils'
 export * from './FourwingsLayer'

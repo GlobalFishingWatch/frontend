@@ -26,31 +26,34 @@ import {
   ColorRampId,
   getBivariateRamp,
   getColorRamp,
-} from '../../utils/colorRamps'
-import {
-  aggregateCellTimeseries,
-  getFourwingsChunk,
-  getDataUrlBySublayer,
-  filterCells,
-} from './fourwings.utils'
-import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
+} from '../../../utils/colorRamps'
 import {
   HEATMAP_API_TILES_URL,
   FOURWINGS_MAX_ZOOM,
   getInterval,
   MAX_RAMP_VALUES_PER_TILE,
-} from './fourwings.config'
+} from '../fourwings.config'
 import {
   FourwingsDeckSublayer,
-  FourwingsHeatmapTileLayerProps,
-  FourwingsTileLayerState,
-  FourwingsHeatmapTilesCache,
-  FourwingsComparisonMode,
-  FourwingsAggregationOperation,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
+  FourwingsTileLayerColorScale,
+} from '../fourwings.types'
+import {
+  aggregateCellTimeseries,
+  getFourwingsChunk,
+  getDataUrlBySublayer,
+  filterCells,
+} from './fourwings-heatmap.utils'
+import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
+import {
+  FourwingsAggregationOperation,
+  FourwingsComparisonMode,
+  FourwingsHeatmapTileLayerProps,
+  FourwingsHeatmapTilesCache,
+  FourwingsTileLayerState,
   FourwinsTileLayerScale,
-} from './fourwings.types'
+} from './fourwings-heatmap.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   maxRequests: 100,
@@ -274,9 +277,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     if (tile.signal?.aborted) {
       return null
     }
-    if (this.props.onTileDataLoading) {
-      this.props.onTileDataLoading(tile)
-    }
     return this._fetchTileData(tile)
   }
 
@@ -427,8 +427,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
 
   getColorScale = () => {
     return {
-      range: this.getColorRange(),
-      domain: this.getColorDomain(),
-    }
+      colorRange: this.getColorRange(),
+      colorDomain: this.getColorDomain(),
+    } as FourwingsTileLayerColorScale
   }
 }

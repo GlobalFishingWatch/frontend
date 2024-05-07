@@ -23,28 +23,28 @@ import {
   FourwingsStaticFeatureProperties,
 } from '@globalfishingwatch/deck-loaders'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS, ColorRampId, getColorRamp } from '../../utils/colorRamps'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS, ColorRampId, getColorRamp } from '../../../utils/colorRamps'
 import {
   COLOR_HIGHLIGHT_LINE,
   GFWMVTLoader,
   LayerGroup,
   getLayerGroupOffset,
   rgbaStringToComponents,
-} from '../../utils'
-import { EMPTY_CELL_COLOR, filterCells } from './fourwings.utils'
+} from '../../../utils'
 import {
   FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
   MAX_RAMP_VALUES_PER_TILE,
-} from './fourwings.config'
+} from '../fourwings.config'
+import { FourwingsPickingInfo, FourwingsPickingObject } from '../fourwings.types'
+import { EMPTY_CELL_COLOR, filterCells } from './fourwings-heatmap.utils'
 import {
+  FourwingsAggregationOperation,
+  FourwingsHeatmapPickingInfo,
+  FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapTileLayerProps,
   FourwingsTileLayerState,
-  FourwingsAggregationOperation,
-  FourwingsHeatmapStaticLayerProps,
-  FourwingsPickingInfo,
-  FourwingsPickingObject,
-} from './fourwings.types'
+} from './fourwings-heatmap.types'
 
 const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
   maxRequests: 100,
@@ -123,7 +123,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     info,
   }: {
     info: PickingInfo<FourwingsPickingObject>
-  }): FourwingsPickingInfo => {
+  }): FourwingsHeatmapPickingInfo => {
     if (!info.object) {
       info.object = {} as FourwingsPickingObject
     }
@@ -132,7 +132,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<
     }
     info.object.layerId = this.root.id
     info.object.category = this.props.category
-    return info
+    // TODO:deck fix this typing and create FourwingsStaticPickingInfo
+    return info as any
   }
 
   getFillColor = (feature: Feature<Geometry, FourwingsStaticFeatureProperties>) => {

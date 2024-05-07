@@ -1,6 +1,6 @@
 import type { LoaderOptions } from '@loaders.gl/loader-utils'
 import { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { Feature, Polygon } from 'geojson'
+import { Feature, Point, Polygon } from 'geojson'
 
 export type FourwingsRawData = number[]
 
@@ -53,9 +53,17 @@ export type FourwingsFeatureProperties = {
   col: number
   row: number
 }
+
+export type FourwingsPositionFeatureProperties = {
+  id: string
+  value: number
+  [key: string]: any
+}
+
 export type FourwingsStaticFeatureProperties = {
   count: number
 }
 
 export type FourwingsFeature<Properties = FourwingsFeatureProperties> = Feature<Polygon, Properties>
 export type FourwingsStaticFeature = FourwingsFeature<FourwingsStaticFeatureProperties>
+export type FourwingsPositionFeature = Feature<Point, FourwingsPositionFeatureProperties>

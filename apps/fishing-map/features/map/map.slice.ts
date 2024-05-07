@@ -21,7 +21,9 @@ import {
   ClusterPickingObject,
   ContextPickingObject,
   FourwingsDeckSublayer,
+  FourwingsHeatmapPickingObject,
   FourwingsPickingObject,
+  FourwingsPositionsPickingObject,
   RulerPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
@@ -60,11 +62,15 @@ export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
 export type SliceExtendedFourwingsDeckSublayer = FourwingsDeckSublayer & {
   vessels: ExtendedFeatureVessel[]
 }
-export type SliceExtendedFourwingsPickingObject = Omit<FourwingsPickingObject, 'sublayers'> & {
+export type SliceExtendedFourwingsPickingObject = Omit<
+  FourwingsHeatmapPickingObject,
+  'sublayers'
+> & {
   sublayers: SliceExtendedFourwingsDeckSublayer[]
 }
 export type SliceExtendedFeature =
   | SliceExtendedFourwingsPickingObject
+  | FourwingsPositionsPickingObject
   | ContextPickingObject
   | UserLayerPickingObject
   | ClusterPickingObject
@@ -98,7 +104,7 @@ type SublayerVessels = {
 }
 
 const getInteractionEndpointDatasetConfig = (
-  features: FourwingsPickingObject[],
+  features: FourwingsHeatmapPickingObject[],
   temporalgridDataviews: UrlDataviewInstance[] = []
 ) => {
   // use the first feature/dv for common parameters
@@ -212,7 +218,10 @@ export const fetchVesselInfo = async (
 export type ActivityProperty = 'hours' | 'detections'
 export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
-  { fishingActivityFeatures: FourwingsPickingObject[]; activityProperties?: ActivityProperty[] },
+  {
+    fishingActivityFeatures: FourwingsHeatmapPickingObject[]
+    activityProperties?: ActivityProperty[]
+  },
   {
     dispatch: AppDispatch
   }

@@ -1,9 +1,7 @@
 import { Color, CompositeLayer, LayersList, PickingInfo } from '@deck.gl/core'
-import { PathLayer, SolidPolygonLayer, TextLayer } from '@deck.gl/layers'
-import { GeoBoundingBox } from '@deck.gl/geo-layers'
+import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { screen } from 'color-blend'
-import { isEqual } from 'lodash'
 import { FourwingsFeature, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_HIGHLIGHT_LINE,
@@ -12,20 +10,24 @@ import {
   rgbaStringToComponents,
   rgbaStringToObject,
   rgbaToDeckColor,
-} from '../../utils'
-import { EMPTY_CELL_COLOR, aggregateCell, getIntervalFrames } from './fourwings.utils'
+} from '../../../utils'
+import { FourwingsPickingObject } from '../fourwings.types'
+import { EMPTY_CELL_COLOR, aggregateCell, getIntervalFrames } from './fourwings-heatmap.utils'
 import {
   FourwingsComparisonMode,
   FourwingsHeatmapLayerProps,
-  FourwingsPickingInfo,
-  FourwingsPickingObject,
-} from './fourwings.types'
+  FourwingsHeatmapPickingInfo,
+} from './fourwings-heatmap.types'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
   layers: LayersList = []
 
-  getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }): FourwingsPickingInfo => {
+  getPickingInfo = ({
+    info,
+  }: {
+    info: PickingInfo<FourwingsFeature>
+  }): FourwingsHeatmapPickingInfo => {
     const {
       id,
       tile,

@@ -1,17 +1,17 @@
 import { Color, CompositeLayer, Layer, LayersList } from '@deck.gl/core'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { FourwingsHeatmapTileLayer } from './FourwingsHeatmapTileLayer'
-import { FourwingsHeatmapStaticLayer } from './FourwingsHeatmapStaticLayer'
-import { FourwingsPositionsTileLayer } from './FourwingsPositionsTileLayer'
+import { FourwingsHeatmapTileLayer } from './heatmap/FourwingsHeatmapTileLayer'
+import { FourwingsHeatmapStaticLayer } from './heatmap/FourwingsHeatmapStaticLayer'
+import { FourwingsPositionsTileLayer } from './positions/FourwingsPositionsTileLayer'
 import { HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
+import { FourwingsVisualizationMode } from './fourwings.types'
+import { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
 import {
   FourwingsChunk,
   FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapTileLayerProps,
-  FourwingsPositionsTileLayerProps,
-  FourwingsVisualizationMode,
-} from './fourwings.types'
+} from './heatmap/fourwings-heatmap.types'
 
 export type FourwingsColorRamp = {
   colorDomain: number[]
