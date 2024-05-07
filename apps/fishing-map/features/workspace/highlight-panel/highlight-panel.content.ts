@@ -50,6 +50,24 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
   {
     ...BASE_HIGHLIGHT_CONFIG,
     dataviewInstanceId: 'fishing-ais',
+    releaseDateTimestamp: Date.parse('2024-05-07T00:00:00Z'),
+    imageUrl: `${PATH_BASENAME}/images/marine-traffic-ais.jpg`,
+    learnMoreUrl: 'https://globalfishingwatch.org/faqs/marine-traffic-new-ais-source/',
+    en: {
+      title: 'New - Marine Traffic as a terrestrial AIS data source to improve coverage',
+      description:
+        'From 3 January 2024, Global Fishing Watch has added Marine Traffic as a terrestrial automatic identification system (AIS) data source to improve coverage in three areas - Mediterranean Sea, South China Sea, and the North Sea. This data is now automatically included in the apparent fishing effort and vessel presence map layers.',
+    },
+    es: {
+      title: 'Marine Traffic - nueva fuente de datos terrestre de AIS para mejorar la cobertura',
+      description:
+        'Desde el 3 de enero de 2024, Global Fishing Watch ha incorporado Marine Traffic como fuente de datos del sistema de identificación automática (AIS) terrestre para mejorar la cobertura en tres áreas: el Mar Mediterráneo, el Mar de China Meridional y el Mar del Norte. Estos datos ahora se incluyen automáticamente en las capas de esfuerzo de pesca aparente y presencia.',
+      learnMoreUrl: 'https://globalfishingwatch.org/es/faqs/marine-traffic-nueva-fuente-ais/',
+    },
+  },
+  {
+    ...BASE_HIGHLIGHT_CONFIG,
+    dataviewInstanceId: 'fishing-ais',
     releaseDateTimestamp: Date.parse('2024-04-08T00:00:00Z'),
     imageUrl: ``,
     learnMoreUrl: 'https://globalfishingwatch.org/faqs/2024-april-data-error/',
