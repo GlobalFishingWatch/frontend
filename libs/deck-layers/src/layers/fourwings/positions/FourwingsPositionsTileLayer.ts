@@ -41,6 +41,7 @@ import {
 } from './fourwings-positions.types'
 
 type FourwingsPositionsTileLayerState = {
+  fontLoaded: boolean
   positions: FourwingsPositionFeature[]
   lastPositions: FourwingsPositionFeature[]
   colorScale?: FourwingsTileLayerColorScale
@@ -69,7 +70,24 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
+    let fontLoaded = true
+    if (typeof document !== 'undefined') {
+      fontLoaded = false
+      const font = new FontFace(
+        'Roboto',
+        "url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2')"
+      )
+      font
+        .load()
+        .then(() => {
+          ;(document.fonts as any).add(font)
+        })
+        .finally(() => {
+          this.setState({ fontLoaded: true })
+        })
+    }
     this.state = {
+      fontLoaded,
       positions: [],
       lastPositions: [],
       highlightedFeatureIds: new Set<string>(),
@@ -234,88 +252,91 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
   }
 
-  renderLayers(): Layer<{}> | LayersList {
-    // TODO:deck fuerte remove the hardcoded id and use sublayers
-    const { startTime, endTime, sublayers } = this.props
-    const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
-    const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
-    const params = {
-      // datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
-      datasets: ['public-global-fishing-effort:v3.0'],
-      format: 'MVT',
-      properties: [['speed', 'bearing', 'shipname'].join(',')],
-      // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
-      'date-range': `${getRoundedDateFromTS(startTime)},${getRoundedDateFromTS(endTime)}`,
-    }
+  renderLayers(): Layer<{}> | LayersList | null {
+    if (this.state.fontLoaded) {
+      // TODO:deck fuerte remove the hardcoded id and use sublayers
+      const { startTime, endTime, sublayers } = this.props
+      const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
+      const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
+      const params = {
+        // datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
+        datasets: ['public-global-fishing-effort:v3.0'],
+        format: 'MVT',
+        properties: [['speed', 'bearing', 'shipname'].join(',')],
+        // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
+        'date-range': `${getRoundedDateFromTS(startTime)},${getRoundedDateFromTS(endTime)}`,
+      }
 
-    const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
-    return [
-      new MVTLayer(this.props, {
-        id: `tiles`,
-        data: `${baseUrl}?${stringify(params)}`,
-        minZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
-        maxZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
-        loaders: [MVTWorkerLoader],
-        onViewportLoad: this._onViewportLoad,
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
-        renderSubLayers: () => null,
-      }),
-      new IconLayerClass(this.props, {
-        id: 'allPositions',
-        data: positions,
-        iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
-        iconMapping: ICON_MAPPING,
-        getIcon: () => 'vessel',
-        getPosition: (d: any) => d.geometry.coordinates,
-        getColor: this._getFillColor,
-        getSize: this._getIconSize,
-        getAngle: (d: any) => d.properties.bearing - 90,
-        pickable: true,
-        getPickingInfo: this.getPickingInfo,
-        updateTriggers: {
-          getColor: [sublayers],
-          getSize: [highlightedFeatureIds, highlightedVesselIds],
-        },
-      }),
-      new IconLayerClass(this.props, {
-        id: 'allPositionsHighlight',
-        data: positions,
-        iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
-        iconMapping: ICON_MAPPING,
-        getIcon: () => 'vesselHighlight',
-        getPosition: (d: any) => d.geometry.coordinates,
-        getColor: this._getHighlightColor,
-        getSize: this._getIconSize,
-        getAngle: (d: any) => d.properties.bearing - 90,
-        pickable: true,
-        getPickingInfo: this.getPickingInfo,
-        updateTriggers: {
-          getColor: [highlightedFeatureIds, highlightedVesselIds],
-          getSize: [highlightedFeatureIds, highlightedVesselIds],
-        },
-      }),
-      new TextLayer({
-        id: `lastPositionsNames`,
-        data: lastPositions,
-        getText: this._getVesselLabel,
-        getPosition: (d) => d.geometry.coordinates,
-        getPixelOffset: [15, 0],
-        getColor: this._getLabelColor,
-        getSize: 13,
-        outlineColor: hexToDeckColor(BLEND_BACKGROUND),
-        fontFamily: 'Roboto',
-        outlineWidth: 200,
-        fontSettings: { sdf: true, smoothing: 0.2 },
-        sizeUnits: 'pixels',
-        getTextAnchor: 'start',
-        getAlignmentBaseline: 'center',
-        pickable: true,
-        getPickingInfo: this.getPickingInfo,
-        updateTriggers: {
-          getColor: [highlightedFeatureIds, highlightedVesselIds],
-        },
-      }),
-    ]
+      const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
+      return [
+        new MVTLayer(this.props, {
+          id: `tiles`,
+          data: `${baseUrl}?${stringify(params)}`,
+          minZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
+          maxZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
+          loaders: [MVTWorkerLoader],
+          onViewportLoad: this._onViewportLoad,
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
+          renderSubLayers: () => null,
+        }),
+        new IconLayerClass(this.props, {
+          id: 'allPositions',
+          data: positions,
+          iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
+          iconMapping: ICON_MAPPING,
+          getIcon: () => 'vessel',
+          getPosition: (d: any) => d.geometry.coordinates,
+          getColor: this._getFillColor,
+          getSize: this._getIconSize,
+          getAngle: (d: any) => d.properties.bearing - 90,
+          pickable: true,
+          getPickingInfo: this.getPickingInfo,
+          updateTriggers: {
+            getColor: [sublayers],
+            getSize: [highlightedFeatureIds, highlightedVesselIds],
+          },
+        }),
+        new IconLayerClass(this.props, {
+          id: 'allPositionsHighlight',
+          data: positions,
+          iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
+          iconMapping: ICON_MAPPING,
+          getIcon: () => 'vesselHighlight',
+          getPosition: (d: any) => d.geometry.coordinates,
+          getColor: this._getHighlightColor,
+          getSize: this._getIconSize,
+          getAngle: (d: any) => d.properties.bearing - 90,
+          pickable: true,
+          getPickingInfo: this.getPickingInfo,
+          updateTriggers: {
+            getColor: [highlightedFeatureIds, highlightedVesselIds],
+            getSize: [highlightedFeatureIds, highlightedVesselIds],
+          },
+        }),
+        new TextLayer({
+          id: `lastPositionsNames`,
+          data: lastPositions,
+          getText: this._getVesselLabel,
+          getPosition: (d) => d.geometry.coordinates,
+          getPixelOffset: [15, 0],
+          getColor: this._getLabelColor,
+          getSize: 13,
+          outlineColor: hexToDeckColor(BLEND_BACKGROUND),
+          fontFamily: 'Roboto',
+          outlineWidth: 200,
+          fontSettings: { sdf: true, smoothing: 0.2 },
+          sizeUnits: 'pixels',
+          getTextAnchor: 'start',
+          getAlignmentBaseline: 'center',
+          pickable: true,
+          getPickingInfo: this.getPickingInfo,
+          updateTriggers: {
+            getColor: [highlightedFeatureIds, highlightedVesselIds],
+          },
+        }),
+      ]
+    }
+    return null
   }
 
   getViewportData = () => {
