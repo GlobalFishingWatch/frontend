@@ -115,7 +115,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return { colorDomain: [], colorRange: [] } as FourwingsTileLayerColorScale
   }
 
-  getFillColor(d: FourwingsPositionFeature): Color {
+  _getFillColor = (d: FourwingsPositionFeature): Color => {
     const { colorScale } = this.state
     const { colorDomain, colorRange } = colorScale as FourwingsTileLayerColorScale
     const colorIndex =
@@ -132,12 +132,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           })
 
     const color = colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
-    if (this.highlightedVesselIds?.length) {
-      if (this.getIsHighlightedVessel(d)) {
-        return color as Color
-      }
-      return [color[0], color[1], color[2], 0] as Color
-    }
     return color as Color
   }
 
@@ -145,38 +139,35 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.highlightedVesselIds.includes(d?.properties?.id)
   }
 
-  getHighlightColor(d: FourwingsPositionFeature): Color {
+  _getHighlightColor = (d: FourwingsPositionFeature): Color => {
     if (this.highlightedVesselIds?.length) {
       if (this.getIsHighlightedVessel(d)) {
         return [255, 255, 255, 255]
       } else return [255, 255, 255, 0]
     }
-    return [255, 255, 255, 120]
+    return [255, 255, 255, 0]
   }
 
-  getLineColor(d: FourwingsPositionFeature): Color {
+  _getLineColor = (d: FourwingsPositionFeature): Color => {
     return this.getIsHighlightedVessel(d) ? [255, 255, 255, 255] : [0, 0, 0, 0]
   }
 
-  getRadius(d: FourwingsPositionFeature): number {
+  _getRadius = (d: FourwingsPositionFeature): number => {
     return this.getIsHighlightedVessel(d) ? 5 : 3
   }
 
-  getSize(d: FourwingsPositionFeature): number {
-    return this.getIsHighlightedVessel(d) ? 15 : 15
+  _getSize = (d: FourwingsPositionFeature): number => {
+    return this.getIsHighlightedVessel(d) ? 22 : 15
   }
 
-  getLabelSize(d: FourwingsPositionFeature): number {
-    if (this.highlightedVesselIds?.length) {
-      if (this.getIsHighlightedVessel(d)) {
-        return 12
-      }
-      return 0
+  _getLabelColor = (d: FourwingsPositionFeature): Color => {
+    if (this.getIsHighlightedVessel(d)) {
+      return [255, 255, 255, 255]
     }
-    return 12
+    return [255, 255, 255, 120]
   }
 
-  getVesselLabel = (d: FourwingsPositionFeature) => {
+  _getVesselLabel = (d: FourwingsPositionFeature): string => {
     const label = cleanVesselShipname(d.properties?.shipname) || d.properties?.id
     return label?.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
@@ -260,7 +251,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         loaders: [MVTWorkerLoader],
         onViewportLoad: this.onViewportLoad,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
-        renderSubLayers: undefined,
+        renderSubLayers: () => null,
       }),
       // CIRCLES
       // new ScatterplotLayer(this.props, {
@@ -289,40 +280,41 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         iconMapping: ICON_MAPPING,
         getIcon: () => 'vessel',
         getPosition: (d: any) => d.geometry.coordinates,
-        getColor: (d: any) => this.getFillColor(d),
-        getSize: (d: any) => this.getSize(d),
+        getColor: this._getFillColor,
+        getSize: this._getSize,
         getAngle: (d: any) => d.properties.bearing - 90,
         pickable: true,
         getPickingInfo: this.getPickingInfo,
         updateTriggers: {
-          getColor: [highlightedFeatures, sublayers],
+          getColor: [sublayers],
           getSize: [highlightedFeatures],
         },
       }),
-      // new IconLayerClass(this.props, {
-      //   id: 'lastPositionsOver',
-      //   data: lastPositions,
-      //   iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
-      //   iconMapping: ICON_MAPPING,
-      //   getIcon: () => 'vessel',
-      //   getSize: 19,
-      //   getPosition: (d: any) => d.geometry.coordinates,
-      //   getAngle: (d: any) => d.properties.bearing,
-      //   getColor: (d: any) => this.getFillColor(d),
-      //   pickable: true,
-      //   getPickingInfo: this.getPickingInfo,
-      //   updateTriggers: {
-      //     getColor: [highlightedVesselId],
-      //   },
-      // }),
+      new IconLayerClass(this.props, {
+        id: 'allPositionsHighlight',
+        data: positions,
+        iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
+        iconMapping: ICON_MAPPING,
+        getIcon: () => 'vesselHighlight',
+        getPosition: (d: any) => d.geometry.coordinates,
+        getColor: this._getHighlightColor,
+        getSize: this._getSize,
+        getAngle: (d: any) => d.properties.bearing - 90,
+        pickable: true,
+        getPickingInfo: this.getPickingInfo,
+        updateTriggers: {
+          getColor: [highlightedFeatures],
+          getSize: [highlightedFeatures],
+        },
+      }),
       new TextLayer({
         id: `lastPositionsNames`,
         data: lastPositions,
-        getText: (d) => this.getVesselLabel(d),
+        getText: this._getVesselLabel,
         getPosition: (d) => d.geometry.coordinates,
-        getPixelOffset: [10, 0],
-        getColor: [255, 255, 255, 120],
-        getSize: (d) => this.getLabelSize(d),
+        getPixelOffset: [15, 0],
+        getColor: this._getLabelColor,
+        getSize: 13,
         outlineColor: hexToDeckColor(BLEND_BACKGROUND),
         fontFamily: 'Roboto',
         outlineWidth: 200,
@@ -330,8 +322,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         sizeUnits: 'pixels',
         getTextAnchor: 'start',
         getAlignmentBaseline: 'center',
+        pickable: true,
+        getPickingInfo: this.getPickingInfo,
         updateTriggers: {
-          getSize: [highlightedFeatures],
+          getColor: [highlightedFeatures],
         },
       }),
     ]
