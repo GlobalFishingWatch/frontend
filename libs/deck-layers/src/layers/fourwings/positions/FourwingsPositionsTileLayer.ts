@@ -118,7 +118,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         highlightedFeatureIds.add(feature?.properties?.id)
       }
     }
-    this.setState({ highlightedFeatureIds })
+    requestAnimationFrame(() => {
+      this.setState({ highlightedFeatureIds })
+    })
   }
 
   getPickingInfo = ({
