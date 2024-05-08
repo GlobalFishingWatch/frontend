@@ -24,6 +24,7 @@ import {
   COLOR_RAMP_BIVARIATE_NUM_STEPS,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   ColorRampId,
+  TIME_COMPARE_COLOR_RAMP,
   getBivariateRamp,
   getColorRamp,
 } from '../../../utils/colorRamps'
@@ -44,6 +45,7 @@ import {
   getFourwingsChunk,
   getDataUrlBySublayer,
   filterCells,
+  compareCell,
 } from './fourwings-heatmap.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import {
@@ -90,6 +92,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
       return getBivariateRamp(this.props.sublayers.map((s) => s?.colorRamp) as ColorRampId[])
     }
+    if (this.props.comparisonMode === FourwingsComparisonMode.TimeCompare) {
+      return [TIME_COMPARE_COLOR_RAMP]
+    }
     return this.props.sublayers.map(({ colorRamp }) =>
       getColorRamp({ rampId: colorRamp as ColorRampId, whiteEnd: this.props.colorRampWhiteEnd })
     )
@@ -133,6 +138,40 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return steps
     }
 
+    if (comparisonMode === FourwingsComparisonMode.TimeCompare) {
+      const allPositiveValues = []
+      const allNegativeValues = []
+      for (const feature of dataSample) {
+        const aggregatedCellValues = compareCell({
+          cellValues: feature.properties.values,
+          aggregationOperation,
+        })
+        if (aggregatedCellValues[0] >= 0) {
+          allPositiveValues.push(aggregatedCellValues[0])
+        } else {
+          allNegativeValues.push(aggregatedCellValues[0])
+        }
+      }
+      if (!allNegativeValues.length || !allPositiveValues.length) {
+        return this.getColorDomain()
+      }
+      const negativeValuesFiltered = this.removeOutliers({
+        allValues: allNegativeValues,
+        aggregationOperation,
+      })
+      const positiveValuesFiltered = this.removeOutliers({
+        allValues: allPositiveValues,
+        aggregationOperation,
+      })
+      const negativeSteps = ckmeans(
+        negativeValuesFiltered,
+        COLOR_RAMP_DEFAULT_NUM_STEPS / 2 - 1
+      ).map((step) => step[0])
+      const positiveSteps = ckmeans(positiveValuesFiltered, COLOR_RAMP_DEFAULT_NUM_STEPS / 2).map(
+        (step) => step[0]
+      )
+      return [...negativeSteps, 0, ...positiveSteps]
+    }
     const allValues = dataSample.flatMap((feature) =>
       feature.properties?.values.flatMap((values) => {
         if (!values || !values.length || !Array.isArray(values)) {
@@ -146,18 +185,28 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return this.getColorDomain()
     }
 
-    const meanValue = mean(allValues)
-    const deviationScale = aggregationOperation === FourwingsAggregationOperation.Avg ? 2 : 5
-    const standardDeviationValue = standardDeviation(allValues)
-    const upperCut = meanValue + standardDeviationValue * deviationScale
-    const lowerCut = meanValue - standardDeviationValue * deviationScale
-    const dataFiltered = allValues.filter((a) => a >= lowerCut && a <= upperCut)
+    const dataFiltered = this.removeOutliers({ allValues, aggregationOperation })
 
     const steps = ckmeans(
       dataFiltered,
       Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
     ).map((step) => step[0])
     return steps
+  }
+
+  removeOutliers = ({
+    allValues,
+    aggregationOperation,
+  }: {
+    allValues: number[]
+    aggregationOperation: FourwingsAggregationOperation | undefined
+  }) => {
+    const meanValue = mean(allValues)
+    const deviationScale = aggregationOperation === FourwingsAggregationOperation.Avg ? 2 : 5
+    const standardDeviationValue = standardDeviation(allValues)
+    const upperCut = meanValue + standardDeviationValue * deviationScale
+    const lowerCut = meanValue - standardDeviationValue * deviationScale
+    return allValues.filter((a) => a >= lowerCut && a <= upperCut)
   }
 
   updateColorDomain = debounce(() => {
@@ -177,6 +226,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return (colorDomain as number[][]).map((cd, i) => {
         return scaleLinear(cd, colorRanges[i] as string[]).clamp(true)
       })
+    }
+    if (this.props.comparisonMode === FourwingsComparisonMode.TimeCompare) {
+      return [scaleLinear(colorDomain as number[], colorRanges[0] as string[]).clamp(true)]
     }
     return colorRanges.map((cr) => scaleLinear(colorDomain as number[], cr as string[]).clamp(true))
   }

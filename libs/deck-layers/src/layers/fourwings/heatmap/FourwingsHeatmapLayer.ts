@@ -11,7 +11,12 @@ import {
   rgbaStringToObject,
   rgbaToDeckColor,
 } from '../../../utils'
-import { EMPTY_CELL_COLOR, aggregateCell, getIntervalFrames } from './fourwings-heatmap.utils'
+import {
+  EMPTY_CELL_COLOR,
+  aggregateCell,
+  compareCell,
+  getIntervalFrames,
+} from './fourwings-heatmap.utils'
 import {
   FourwingsComparisonMode,
   FourwingsHeatmapLayerProps,
@@ -73,70 +78,27 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   }
 
   getTimeCompareFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
-    const {
-      endTime,
-      startTime,
-      colorDomain,
-      colorRanges,
-      availableIntervals,
-      aggregationOperation,
-      minVisibleValue,
-      maxVisibleValue,
-      tilesCache,
-      scales,
-    } = this.props
-    const { startFrame, endFrame } = getIntervalFrames({
-      startTime,
-      endTime,
-      availableIntervals,
-      bufferedStart: tilesCache.bufferedStart,
-    })
-    const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
-    if (!colorDomain || !colorRanges) {
+    const { compareStart, compareEnd, colorDomain, colorRanges, aggregationOperation, scales } =
+      this.props
+
+    if (!colorDomain || !colorRanges || !compareStart || !compareEnd || !scales.length) {
       target = EMPTY_CELL_COLOR
       return target
     }
 
-    const aggregatedCellValues =
-      feature.properties.initialValues[timeRangeKey] ||
-      aggregateCell({
-        cellValues: feature.properties.values,
-        startFrame,
-        endFrame,
-        aggregationOperation,
-        cellStartOffsets: feature.properties.startOffsets,
-      })
-    let chosenValueIndex = 0
-    let chosenValue: number | undefined
-    try {
-      feature.properties.aggregatedValues = aggregatedCellValues
-    } catch (e: any) {
-      console.warn(e.message)
-    }
-    aggregatedCellValues.forEach((value, index) => {
-      if (value && (!chosenValue || value > chosenValue)) {
-        chosenValue = value
-        chosenValueIndex = index
-      }
+    const aggregatedCellValues = compareCell({
+      cellValues: feature.properties.values,
+      aggregationOperation,
     })
-    if (
-      !chosenValue ||
-      (minVisibleValue && chosenValue < minVisibleValue) ||
-      (maxVisibleValue && chosenValue > maxVisibleValue)
-    ) {
-      target = EMPTY_CELL_COLOR
+    feature.properties.aggregatedValues = aggregatedCellValues
+    const chosenValue = aggregatedCellValues[0]
+
+    if (scales[0]) {
+      const color = scales[0](chosenValue)
+      target = color ? (rgbaStringToComponents(color) as Color) : [0, 0, 0, 0]
       return target
     }
-    if (scales[chosenValueIndex]) {
-      const color = scales[chosenValueIndex](chosenValue)
-      target = color ? (rgbaStringToComponents(color) as Color) : EMPTY_CELL_COLOR
-      return target
-    }
-    const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
-      (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
-    )
-    target = rgbaStringToComponents(colorRanges[chosenValueIndex][colorIndex]) as Color
-    return target
+    return EMPTY_CELL_COLOR
   }
 
   getCompareFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {

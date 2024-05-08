@@ -68,6 +68,11 @@ export type AggregateCellParams = {
   cellStartOffsets: number[]
 }
 
+export type CompareCellParams = {
+  cellValues: Cell
+  aggregationOperation?: FourwingsAggregationOperation
+}
+
 export type FourwingsHeatmapResolution = 'default' | 'high'
 export type FourwingsHeatmapTileData = FourwingsFeature[]
 
