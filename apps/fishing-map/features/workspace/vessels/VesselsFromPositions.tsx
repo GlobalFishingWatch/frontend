@@ -27,6 +27,16 @@ function VesselsFromPositions() {
   const id = activityDataviews?.length ? getMergedDataviewId(activityDataviews) : ''
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
 
+  const setHighlightVessel = (vessel: { id: string; shipname: string } | undefined) => {
+    if (fourwingsActivityLayer?.instance) {
+      if (vessel) {
+        fourwingsActivityLayer.instance.setHighlightedVessel(vessel.id)
+      } else {
+        fourwingsActivityLayer.instance.setHighlightedVessel(undefined)
+      }
+    }
+  }
+
   useEffect(() => {
     if (fourwingsActivityLayer?.instance) {
       if (fourwingsActivityLayer.instance.getMode() === 'positions') {
@@ -57,7 +67,12 @@ function VesselsFromPositions() {
     <Collapsable label={t('vessel.onScreen', 'Vessels on screen')} open className={styles.header}>
       <ul>
         {vessels.map((vessel) => (
-          <li className={styles.row} key={vessel.id}>
+          <li
+            className={styles.row}
+            key={vessel.id}
+            onMouseEnter={() => setHighlightVessel(vessel)}
+            onMouseLeave={() => setHighlightVessel(undefined)}
+          >
             <VesselPin vesselToResolve={vessel} />
             <span className={styles.secondary}>{formatInfoField(vessel.shipname, 'shipname')}</span>
           </li>

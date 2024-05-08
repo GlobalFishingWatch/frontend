@@ -44,6 +44,8 @@ type FourwingsPositionsTileLayerState = {
   positions: FourwingsPositionFeature[]
   lastPositions: FourwingsPositionFeature[]
   colorScale?: FourwingsTileLayerColorScale
+  highlightedVesselIds: Set<string>
+  highlightedFeatureIds: Set<string>
 }
 
 const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
@@ -64,14 +66,41 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   static layerName = 'FourwingsPositionsTileLayer'
   static defaultProps = defaultProps
   state!: FourwingsPositionsTileLayerState
-  highlightedVesselIds: string[] = []
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
       positions: [],
       lastPositions: [],
+      highlightedFeatureIds: new Set<string>(),
+      highlightedVesselIds: new Set<string>(),
     }
+  }
+
+  updateState({ props, oldProps, changeFlags }: UpdateParameters<this>) {
+    if (changeFlags.viewportChanged) {
+      const positionsInViewport = filteredPositionsByViewport(
+        this.state.positions,
+        this.context.viewport
+      )
+      const lastPositions = this._getLatestVesselPositions(positionsInViewport)
+      this.setState({ lastPositions })
+    }
+    if (
+      props.sublayers?.map(({ colorRamp }) => colorRamp).join(',') !==
+      oldProps.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
+    ) {
+      // TODO:deck split this in a separate method to avoid calculate the steps again
+      // as we only need to re-calculate the colors here
+      this.setState({ colorScale: this._getColorRamp(this.state.positions) })
+    }
+    const highlightedFeatureIds = new Set<string>()
+    if (props.highlightedFeatures?.length) {
+      for (const feature of props.highlightedFeatures) {
+        highlightedFeatureIds.add(feature?.properties?.id)
+      }
+    }
+    this.setState({ highlightedFeatureIds })
   }
 
   getPickingInfo = ({
@@ -92,7 +121,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return { ...info, object }
   }
 
-  getColorRamp(positions: FourwingsPositionFeature[]) {
+  _getColorRamp(positions: FourwingsPositionFeature[]) {
     if (positions?.length > 0) {
       const hours = positions.map((d) => d?.properties?.value).filter(Number)
       const dataSampled = hours.length > 1000 ? sample(hours, 1000, Math.random) : hours
@@ -135,36 +164,35 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return color as Color
   }
 
-  getIsHighlightedVessel(d: FourwingsPositionFeature) {
-    return this.highlightedVesselIds.includes(d?.properties?.id)
+  _hasHighlightedVessels() {
+    return this.state.highlightedVesselIds.size > 0 || this.state.highlightedFeatureIds.size > 0
+  }
+
+  _getIsHighlightedVessel(d: FourwingsPositionFeature) {
+    return (
+      this.state.highlightedVesselIds.has(d.properties?.id) ||
+      this.state.highlightedFeatureIds.has(d.properties?.id)
+    )
   }
 
   _getHighlightColor = (d: FourwingsPositionFeature): Color => {
-    if (this.highlightedVesselIds?.length) {
-      if (this.getIsHighlightedVessel(d)) {
-        return [255, 255, 255, 255]
-      } else return [255, 255, 255, 0]
-    }
-    return [255, 255, 255, 0]
+    return [255, 255, 255, this._getIsHighlightedVessel(d) ? 255 : 0]
   }
 
   _getLineColor = (d: FourwingsPositionFeature): Color => {
-    return this.getIsHighlightedVessel(d) ? [255, 255, 255, 255] : [0, 0, 0, 0]
+    return this._getIsHighlightedVessel(d) ? [255, 255, 255, 255] : [0, 0, 0, 0]
   }
 
   _getRadius = (d: FourwingsPositionFeature): number => {
-    return this.getIsHighlightedVessel(d) ? 5 : 3
+    return this._getIsHighlightedVessel(d) ? 5 : 3
   }
 
-  _getSize = (d: FourwingsPositionFeature): number => {
-    return this.getIsHighlightedVessel(d) ? 22 : 15
+  _getIconSize = (d: FourwingsPositionFeature): number => {
+    return this._getIsHighlightedVessel(d) ? 22 : 15
   }
 
   _getLabelColor = (d: FourwingsPositionFeature): Color => {
-    if (this.getIsHighlightedVessel(d)) {
-      return [255, 255, 255, 255]
-    }
-    return [255, 255, 255, 120]
+    return [255, 255, 255, this._getIsHighlightedVessel(d) ? 255 : 120]
   }
 
   _getVesselLabel = (d: FourwingsPositionFeature): string => {
@@ -172,7 +200,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return label?.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
-  getLatestVesselPositions = (positions: FourwingsPositionFeature[]) => {
+  _getLatestVesselPositions = (positions: FourwingsPositionFeature[]) => {
     const positionsByVessel = groupBy(positions, 'properties.id')
     const lastPositions: FourwingsPositionFeature[] = []
     Object.keys(positionsByVessel)
@@ -184,15 +212,15 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return lastPositions
   }
 
-  onViewportLoad = (tiles: Tile2DHeader[]) => {
+  _onViewportLoad = (tiles: Tile2DHeader[]) => {
     const positions = orderBy(
       tiles.flatMap((tile: any) => tile.dataInWGS84 as FourwingsPositionFeature[]),
       'properties.htime'
     ).filter(Boolean)
 
     const positionsInViewport = filteredPositionsByViewport(positions, this.context.viewport)
-    const lastPositions = this.getLatestVesselPositions(positionsInViewport)
-    const colorScale = this.getColorRamp(positions)
+    const lastPositions = this._getLatestVesselPositions(positionsInViewport)
+    const colorScale = this._getColorRamp(positions)
 
     requestAnimationFrame(() => {
       this.setState({
@@ -206,31 +234,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
   }
 
-  updateState({ props, oldProps, changeFlags }: UpdateParameters<this>) {
-    if (changeFlags.viewportChanged) {
-      const positionsInViewport = filteredPositionsByViewport(
-        this.state.positions,
-        this.context.viewport
-      )
-      const lastPositions = this.getLatestVesselPositions(positionsInViewport)
-      this.setState({ lastPositions })
-    }
-    if (
-      props.sublayers.map(({ colorRamp }) => colorRamp).join(',') !==
-      oldProps.sublayers.map(({ colorRamp }) => colorRamp).join(',')
-    ) {
-      // TODO:deck split this in a separate method to avoid calculate the steps again
-      // as we only need to re-calculate the colors here
-      this.setState({ colorScale: this.getColorRamp(this.state.positions) })
-    }
-    this.highlightedVesselIds =
-      props.highlightedFeatures?.flatMap((f) => f?.properties?.id || []) || []
-  }
-
   renderLayers(): Layer<{}> | LayersList {
     // TODO:deck fuerte remove the hardcoded id and use sublayers
-    const { startTime, endTime, sublayers, highlightedFeatures } = this.props
-    const { positions, lastPositions } = this.state as FourwingsPositionsTileLayerState
+    const { startTime, endTime, sublayers } = this.props
+    const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
     const params = {
       // datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
@@ -249,30 +256,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         minZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
         maxZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
         loaders: [MVTWorkerLoader],
-        onViewportLoad: this.onViewportLoad,
+        onViewportLoad: this._onViewportLoad,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
         renderSubLayers: () => null,
       }),
-      // CIRCLES
-      // new ScatterplotLayer(this.props, {
-      //   id: 'allPositions',
-      //   data: allPositions,
-      //   getPosition: (d) => d.geometry.coordinates,
-      //   filled: true,
-      //   stroked: true,
-      //   getFillColor: (d) => this.getFillColor(d),
-      //   getRadius: (d) => this.getRadius(d),
-      //   getLineColor: (d) => this.getLineColor(d),
-      //   radiusUnits: 'pixels',
-      //   lineWidthMinPixels: 1,
-      //   pickable: true,
-      //   getPickingInfo: this.getPickingInfo,
-      //   updateTriggers: {
-      //     getRadius: [highlightedVesselId],
-      //     getLineColor: [highlightedVesselId],
-      //   },
-      // }),
-      // LINES
       new IconLayerClass(this.props, {
         id: 'allPositions',
         data: positions,
@@ -281,13 +268,13 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getIcon: () => 'vessel',
         getPosition: (d: any) => d.geometry.coordinates,
         getColor: this._getFillColor,
-        getSize: this._getSize,
+        getSize: this._getIconSize,
         getAngle: (d: any) => d.properties.bearing - 90,
         pickable: true,
         getPickingInfo: this.getPickingInfo,
         updateTriggers: {
           getColor: [sublayers],
-          getSize: [highlightedFeatures],
+          getSize: [highlightedFeatureIds, highlightedVesselIds],
         },
       }),
       new IconLayerClass(this.props, {
@@ -298,13 +285,13 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getIcon: () => 'vesselHighlight',
         getPosition: (d: any) => d.geometry.coordinates,
         getColor: this._getHighlightColor,
-        getSize: this._getSize,
+        getSize: this._getIconSize,
         getAngle: (d: any) => d.properties.bearing - 90,
         pickable: true,
         getPickingInfo: this.getPickingInfo,
         updateTriggers: {
-          getColor: [highlightedFeatures],
-          getSize: [highlightedFeatures],
+          getColor: [highlightedFeatureIds, highlightedVesselIds],
+          getSize: [highlightedFeatureIds, highlightedVesselIds],
         },
       }),
       new TextLayer({
@@ -325,7 +312,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         pickable: true,
         getPickingInfo: this.getPickingInfo,
         updateTriggers: {
-          getColor: [highlightedFeatures],
+          getColor: [highlightedFeatureIds, highlightedVesselIds],
         },
       }),
     ]
@@ -353,5 +340,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   getTimeseries() {
     return this.getViewportData()
+  }
+
+  setHighlightedVessel(vessels: string | string[] | undefined) {
+    if (vessels) {
+      const highlightedVesselIds = new Set<string>(Array.isArray(vessels) ? vessels : [vessels])
+      this.setState({ highlightedVesselIds })
+    } else {
+      this.setState({ highlightedVesselIds: new Set<string>() })
+    }
   }
 }

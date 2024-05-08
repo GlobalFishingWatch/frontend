@@ -59,6 +59,13 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
         )
   }
 
+  setHighlightedVessel(vesselId: string | string[] | undefined) {
+    const layer = this.getLayer()
+    if (layer instanceof FourwingsPositionsTileLayer) {
+      return layer?.setHighlightedVessel(vesselId)
+    }
+  }
+
   getData() {
     return this.getLayer()?.getData()
   }
