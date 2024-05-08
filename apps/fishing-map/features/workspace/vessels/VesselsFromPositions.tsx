@@ -73,7 +73,7 @@ function VesselsFromPositions() {
             onMouseEnter={() => setHighlightVessel(vessel)}
             onMouseLeave={() => setHighlightVessel(undefined)}
           >
-            <VesselPin vesselToResolve={vessel} />
+            <VesselPin vesselToResolve={vessel} onClick={() => setHighlightVessel(undefined)} />
             <span className={styles.secondary}>{formatInfoField(vessel.shipname, 'shipname')}</span>
           </li>
         ))}
