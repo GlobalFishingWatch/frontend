@@ -80,6 +80,8 @@ export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFour
   minVisibleValue?: number
   maxVisibleValue?: number
   comparisonMode?: FourwingsComparisonMode
+  compareStart?: number
+  compareEnd?: number
   aggregationOperation?: FourwingsAggregationOperation
   highlightedFeatures?: FourwingsHeatmapPickingObject[]
 }

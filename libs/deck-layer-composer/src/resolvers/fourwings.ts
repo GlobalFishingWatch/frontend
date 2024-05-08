@@ -22,7 +22,7 @@ import { DeckResolverFunction } from './types'
 // TODO: decide if include static here or create a new one
 export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayerProps> = (
   dataview,
-  { start, end, highlightedFeatures, onPositionsMaxPointsError }
+  { start, end, highlightedFeatures, compareStart, compareEnd, onPositionsMaxPointsError }
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
@@ -132,6 +132,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd ?? false,
     ...(onPositionsMaxPointsError && { onPositionsMaxPointsError }),
     ...(tilesUrl && { tilesUrl }),
+    ...(compareStart && { compareStart: getUTCDateTime(compareStart).toMillis() }),
+    ...(compareEnd && { compareEnd: getUTCDateTime(compareEnd).toMillis() }),
     // if any of the activity dataviews has a max zoom level defined
     // apply the minimum max zoom level (the most restrictive approach)
     ...(maxZoomLevels &&
