@@ -371,19 +371,48 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<
     return layer
   }
 
-  getData({ aggregated } = {} as { aggregated?: boolean }) {
+  getTilesData({ aggregated } = {} as { aggregated?: boolean }) {
     const layer = this.getLayerInstance()
     if (layer) {
       const zoom = Math.round(this.context.viewport.zoom)
       const offset = this.props.resolution === 'high' ? 1 : 0
-      return layer.getSubLayers().flatMap((l: any) => {
-        if (l.props.tile.zoom === l.props.maxZoom) {
-          return l.getData({ aggregated })
-        }
-        return l.props.tile.zoom === zoom + offset ? l.getData({ aggregated }) : []
-      }) as FourwingsFeature[]
+      return layer
+        .getSubLayers()
+        .map((l: any) => {
+          if (!l.props.tile.isVisible) {
+            return []
+          }
+          if (l.props.tile.zoom === l.props.maxZoom) {
+            return l.getData({ aggregated })
+          }
+          return l.props.tile.zoom === zoom + offset ? l.getData({ aggregated }) : []
+        })
+        .filter((t) => t.length > 0) as FourwingsFeature[][]
     }
-    return [] as FourwingsFeature[]
+    return [[]] as FourwingsFeature[][]
+  }
+
+  getData({ aggregated } = {} as { aggregated?: boolean }) {
+    return this.getTilesData({ aggregated }).flat()
+  }
+
+  getTilesStats({ aggregated } = {} as { aggregated?: boolean }) {
+    const tilesData = this.getTilesData({ aggregated })
+    return tilesData.map((tileData) => ({
+      count: Math.round(
+        tileData.reduce((acc, feature) => {
+          if (!feature.properties?.values?.length) {
+            return acc
+          }
+          return Math.round(
+            acc +
+              feature.properties?.values.flat().reduce((acc, value) => {
+                return value ? acc + value : acc
+              }, 0)
+          )
+        }, 0)
+      ),
+    }))
   }
 
   getViewportData() {

@@ -23,6 +23,8 @@ export const HEATMAP_STATIC_ID = 'heatmap-static'
 export const POSITIONS_ID = 'positions'
 
 export const FOURWINGS_MAX_ZOOM = 12
+// TODO:deck validate this is a good number
+export const MAX_POSITIONS_PER_TILE_SUPPORTED = 1000
 export const POSITIONS_VISUALIZATION_MIN_ZOOM = 9
 
 export const MAX_RAMP_VALUES_PER_TILE = 1000

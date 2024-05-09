@@ -4,7 +4,12 @@ import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsHeatmapTileLayer } from './heatmap/FourwingsHeatmapTileLayer'
 import { FourwingsHeatmapStaticLayer } from './heatmap/FourwingsHeatmapStaticLayer'
 import { FourwingsPositionsTileLayer } from './positions/FourwingsPositionsTileLayer'
-import { HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
+import {
+  HEATMAP_ID,
+  HEATMAP_STATIC_ID,
+  MAX_POSITIONS_PER_TILE_SUPPORTED,
+  POSITIONS_ID,
+} from './fourwings.config'
 import { FourwingsVisualizationMode } from './fourwings.types'
 import { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
 import {
@@ -68,6 +73,21 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   getData() {
     return this.getLayer()?.getData()
+  }
+
+  getIsPositionsAvailable() {
+    if (this.props.visualizationMode === HEATMAP_ID) {
+      const heatmapLayer = this.getLayer() as FourwingsHeatmapTileLayer
+      if (!heatmapLayer.isLoaded) {
+        return false
+      }
+      const tileStats = heatmapLayer?.getTilesStats()
+      if (!tileStats.length) {
+        return false
+      }
+      return tileStats.every((tileStat) => tileStat.count < MAX_POSITIONS_PER_TILE_SUPPORTED)
+    }
+    return this.props.visualizationMode === POSITIONS_ID
   }
 
   getInterval() {

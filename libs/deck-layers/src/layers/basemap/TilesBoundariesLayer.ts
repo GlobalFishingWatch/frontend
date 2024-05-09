@@ -18,7 +18,6 @@ export class TilesBoundariesLayer extends CompositeLayer<TileLayerProps> {
         const {
           bbox: { west, south, east, north },
         } = props.tile
-        console.log('🚀 ~ renderLayers ~ props:', props)
         return [
           new PathLayer(
             props,
