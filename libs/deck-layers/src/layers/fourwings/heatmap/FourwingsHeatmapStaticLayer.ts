@@ -55,9 +55,7 @@ const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
   resolution: 'default',
 }
 
-export class FourwingsHeatmapStaticLayer extends CompositeLayer<
-  FourwingsHeatmapTileLayerProps & TileLayerProps
-> {
+export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmapTileLayerProps> {
   static layerName = 'FourwingsHeatmapStaticLayer'
   static defaultProps = defaultProps
 

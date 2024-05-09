@@ -23,7 +23,7 @@ import { DeckResolverFunction } from './types'
 // TODO: decide if include static here or create a new one
 export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayerProps> = (
   dataview,
-  { start, end, resolution, highlightedFeatures }
+  { start, end, highlightedFeatures }
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
@@ -119,7 +119,6 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     endTime,
     category: dataview.category!,
     static: dataview.config?.type === DataviewType.HeatmapStatic,
-    resolution,
     sublayers,
     comparisonMode,
     visualizationMode,

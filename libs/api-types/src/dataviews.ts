@@ -56,7 +56,7 @@ export interface DataviewConfig<Type = DataviewType> {
   colorCyclingType?: ColorCyclingType
   /** Fourwings modes: 'compare' | 'bivariate' */
   comparisonMode?: string
-  /** Fourwings visualizations: 'heatmap' | 'positions' */
+  /** FourwingsVisualizationMode = 'hetamap' | 'heatmap-high-res' | 'positions' */
   visualizationMode?: string
   /** Property used when a layer can use white as last step in its color ramp */
   colorRampWhiteEnd?: boolean

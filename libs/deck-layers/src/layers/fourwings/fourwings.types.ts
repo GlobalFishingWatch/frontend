@@ -1,6 +1,6 @@
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { ColorRampsIds } from '../../utils'
-import { HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
+import { HEATMAP_HIGH_RES_ID, HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 import {
   FourwingsHeatmapPickingInfo,
   FourwingsHeatmapPickingObject,
@@ -15,7 +15,10 @@ export * from './positions/fourwings-positions.types'
 
 export type FourwingsSublayerId = string
 export type FourwingsDatasetId = string
-export type FourwingsVisualizationMode = typeof HEATMAP_ID | typeof POSITIONS_ID
+export type FourwingsVisualizationMode =
+  | typeof HEATMAP_ID
+  | typeof HEATMAP_HIGH_RES_ID
+  | typeof POSITIONS_ID
 
 export type FourwingsTileLayerColorDomain = number[] | number[][]
 export type FourwingsTileLayerColorRange = string[][] | string[]

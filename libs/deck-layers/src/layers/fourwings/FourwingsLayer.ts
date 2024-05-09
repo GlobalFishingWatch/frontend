@@ -5,6 +5,7 @@ import { FourwingsHeatmapTileLayer } from './heatmap/FourwingsHeatmapTileLayer'
 import { FourwingsHeatmapStaticLayer } from './heatmap/FourwingsHeatmapStaticLayer'
 import { FourwingsPositionsTileLayer } from './positions/FourwingsPositionsTileLayer'
 import {
+  HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_STATIC_ID,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
@@ -23,20 +24,21 @@ export type FourwingsColorRamp = {
   colorRange: Color[]
 }
 
-export type FourwingsLayerProps = FourwingsPositionsTileLayerProps &
-  FourwingsHeatmapStaticLayerProps &
-  FourwingsHeatmapTileLayerProps & {
-    id: string
-    visualizationMode?: FourwingsVisualizationMode
-  }
+export type FourwingsLayerProps = Omit<
+  FourwingsPositionsTileLayerProps &
+    FourwingsHeatmapStaticLayerProps &
+    FourwingsHeatmapTileLayerProps & {
+      id: string
+      visualizationMode?: FourwingsVisualizationMode
+    },
+  'resolution'
+>
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
 
   renderLayers(): Layer<{}> | LayersList {
     const visualizationMode = this.getMode()
-    const HeatmapLayerClass = this.getSubLayerClass('heatmap', FourwingsHeatmapTileLayer)
-    const HeatmapStaticLayerClass = this.getSubLayerClass('heatmap', FourwingsHeatmapStaticLayer)
     const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
     if (visualizationMode === POSITIONS_ID) {
       return new PositionsLayerClass(
@@ -47,21 +49,22 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
         })
       )
     }
-    return this.props.static
-      ? new HeatmapStaticLayerClass(
-          this.props,
-          this.getSubLayerProps({
-            id: HEATMAP_STATIC_ID,
-            onViewportLoad: this.props.onViewportLoad,
-          })
+    const resolution = visualizationMode === HEATMAP_HIGH_RES_ID ? 'high' : 'default'
+    const HeatmapLayerClass = this.props.static
+      ? this.getSubLayerClass(HEATMAP_STATIC_ID, FourwingsHeatmapStaticLayer)
+      : this.getSubLayerClass(
+          resolution === 'high' ? HEATMAP_HIGH_RES_ID : HEATMAP_ID,
+          FourwingsHeatmapTileLayer
         )
-      : new HeatmapLayerClass(
-          this.props,
-          this.getSubLayerProps({
-            id: HEATMAP_ID,
-            onViewportLoad: this.props.onViewportLoad,
-          })
-        )
+
+    return new HeatmapLayerClass(
+      this.props,
+      this.getSubLayerProps({
+        id: HEATMAP_STATIC_ID,
+        resolution,
+        onViewportLoad: this.props.onViewportLoad,
+      })
+    )
   }
 
   setHighlightedVessel(vesselId: string | string[] | undefined) {
@@ -76,7 +79,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getIsPositionsAvailable() {
-    if (this.props.visualizationMode === HEATMAP_ID) {
+    if (this.props.visualizationMode?.includes(HEATMAP_ID)) {
       const heatmapLayer = this.getLayer() as FourwingsHeatmapTileLayer
       if (!heatmapLayer.isLoaded) {
         return false
@@ -91,14 +94,14 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getInterval() {
-    if (this.props.visualizationMode === HEATMAP_ID) {
+    if (this.props.visualizationMode?.includes(HEATMAP_ID)) {
       return (this.getLayer() as FourwingsHeatmapTileLayer)?.getInterval()
     }
     return '' as FourwingsInterval
   }
 
   getChunk() {
-    if (this.props.visualizationMode === HEATMAP_ID) {
+    if (this.props.visualizationMode?.includes(HEATMAP_ID)) {
       return (this.getLayer() as FourwingsHeatmapTileLayer)?.getChunk()
     }
     return {} as FourwingsChunk
@@ -113,7 +116,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getResolution() {
-    return this.props.resolution
+    return this.props.visualizationMode === HEATMAP_HIGH_RES_ID ? 'high' : 'default'
   }
 
   getLayer() {
