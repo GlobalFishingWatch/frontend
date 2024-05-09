@@ -2,7 +2,7 @@ import { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { Choice, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
@@ -20,6 +20,7 @@ import { setModalOpen } from 'features/modals/modals.slice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from '../activity/ActivityLayerPanel'
 import activityStyles from '../activity/ActivitySection.module.css'
+import { useVisualizationsOptions } from '../activity/activity.hooks'
 
 function DetectionsSection(): React.ReactElement {
   const { t } = useTranslation()
@@ -29,6 +30,8 @@ function DetectionsSection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
+    useVisualizationsOptions(DataviewCategory.Detections)
 
   const dispatch = useAppDispatch()
   const onAddLayerClick = useCallback(() => {
@@ -99,6 +102,13 @@ function DetectionsSection(): React.ReactElement {
         </h2>
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
+            <Choice
+              options={visualizationOptions}
+              size="small"
+              testId="detections-visualizations-change"
+              activeOption={activeVisualizationOption}
+              onSelect={(option) => onVisualizationModeChange(option.id)}
+            />
             <IconButton
               icon="plus"
               type="border"

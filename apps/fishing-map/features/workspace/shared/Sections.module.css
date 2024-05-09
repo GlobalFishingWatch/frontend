@@ -44,6 +44,11 @@
   flex: 1;
 }
 
+.sectionButtons {
+  display: flex;
+  align-items: center;
+}
+
 .sectionButtons > *:not(:last-child) {
   margin-right: 1rem;
 }

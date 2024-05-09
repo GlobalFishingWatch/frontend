@@ -73,6 +73,10 @@ export function Choice({
     return () => resizeObserver.disconnect()
   }, [updateActiveElementPoperties])
 
+  if (!options?.length) {
+    return null
+  }
+
   return (
     <div>
       {label && (

@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   ResolverGlobalConfig,
@@ -10,11 +9,7 @@ import {
 } from '@globalfishingwatch/deck-layer-composer'
 import { DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import {
-  selectHighlightedEvents,
-  selectHighlightedTime,
-  setHighlightedEvents,
-} from 'features/timebar/timebar.slice'
+import { selectHighlightedTime, setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectShowTimeComparison,
@@ -24,7 +19,6 @@ import {
   selectActivityVisualizationMode,
   selectBivariateDataviews,
   selectDetectionsVisualizationMode,
-  selectMapResolution,
 } from 'features/app/selectors/app.selectors'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
@@ -55,7 +49,6 @@ export const useGlobalConfigConnect = () => {
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
-  const mapResolution = useSelector(selectMapResolution)
   const clickedFeatures = useSelector(selectClickedEvent)
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
@@ -74,7 +67,6 @@ export const useGlobalConfigConnect = () => {
       bivariateDataviews,
       activityVisualizationMode,
       detectionsVisualizationMode,
-      resolution: mapResolution,
       highlightedTime: highlightedTime || {},
       visibleEvents,
       highlightedFeatures,
@@ -94,7 +86,6 @@ export const useGlobalConfigConnect = () => {
     bivariateDataviews,
     activityVisualizationMode,
     detectionsVisualizationMode,
-    mapResolution,
     highlightedTime,
     visibleEvents,
     highlightedFeatures,

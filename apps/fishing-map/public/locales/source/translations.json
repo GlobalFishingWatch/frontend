@@ -610,6 +610,8 @@
     "lowRes": "See low resolution heatmaps",
     "mapLoadingWait": "Please wait until map loads",
     "nauticalMilesAbbr": "nm",
+    "positions": "See positions visualizations mode",
+    "positionsDisabled": "Positions visualizations mode not available",
     "rulers_add": "Add rulers",
     "rulersStop": "Stop measures",
     "rulersDelete": "Delete all measures",

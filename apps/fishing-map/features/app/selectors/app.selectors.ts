@@ -37,7 +37,6 @@ export const selectMapRulers = selectWorkspaceStateProperty('mapRulers')
 export const selectAreMapAnnotationsVisible = selectWorkspaceStateProperty('mapAnnotationsVisible')
 export const selectMapAnnotations = selectWorkspaceStateProperty('mapAnnotations')
 export const selectVisibleEvents = selectWorkspaceStateProperty('visibleEvents')
-export const selectMapResolution = selectWorkspaceStateProperty('mapResolution')
 export const selectActivityVisualizationMode = selectWorkspaceStateProperty(
   'activityVisualizationMode'
 )
