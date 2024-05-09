@@ -87,3 +87,13 @@
   padding: var(--space-M) var(--space-S);
   color: var(--color-secondary-blue);
 }
+
+.visualizationsSwitch > ul > li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.visualizationsSwitch > ul > li > button {
+  padding: 0 var(--space-XS);
+}

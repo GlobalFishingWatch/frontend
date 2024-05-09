@@ -50,7 +50,7 @@ export const useVisualizationsOptions = (
           <Icon
             icon={'heatmap-low-res'}
             tooltip={t('map.lowRes', 'See low resolution heatmaps')}
-            tooltipPlacement="top"
+            tooltipPlacement="bottom"
           />
         ),
       },
@@ -60,7 +60,7 @@ export const useVisualizationsOptions = (
           <Icon
             icon={'heatmap-high-res'}
             tooltip={t('map.highRes', 'See high resolution heatmaps')}
-            tooltipPlacement="top"
+            tooltipPlacement="bottom"
           />
         ),
       },
@@ -74,7 +74,7 @@ export const useVisualizationsOptions = (
                 ? t('map.positions', 'See positions visualization mode')
                 : t('map.positionsDisabled', 'Positions visualizations mode not available')
             }
-            tooltipPlacement="top"
+            tooltipPlacement="bottom"
           />
         ),
         disabled: !isPositionsLayerAvailable,
