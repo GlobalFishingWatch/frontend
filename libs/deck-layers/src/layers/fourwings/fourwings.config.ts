@@ -20,7 +20,7 @@ export const POSITIONS_API_TILES_URL = BASE_API_TILES_URL.replace(
 
 export const HEATMAP_ID = 'heatmap'
 export const HEATMAP_HIGH_RES_ID = `${HEATMAP_ID}-high-res`
-export const HEATMAP_STATIC_ID = 'heatmap-static'
+export const HEATMAP_STATIC_ID = `${HEATMAP_ID}-static`
 export const POSITIONS_ID = 'positions'
 
 export const FOURWINGS_MAX_ZOOM = 12

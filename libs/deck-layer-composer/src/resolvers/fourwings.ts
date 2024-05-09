@@ -4,7 +4,6 @@ import {
   FourwingsComparisonMode,
   FourwingsDeckSublayer,
   FourwingsLayerProps,
-  FourwingsPickingObject,
   FourwingsVisualizationMode,
   TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
   getUTCDateTime,
