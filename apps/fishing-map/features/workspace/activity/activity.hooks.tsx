@@ -33,10 +33,11 @@ export const useVisualizationsOptions = (
   const activeVisualizationOption = useSelector(selectActivityVisualizationMode)
 
   const onVisualizationModeChange = useCallback(
-    (activityVisualizationMode: FourwingsVisualizationMode) => {
-      dispatchQueryParams({ activityVisualizationMode })
+    (visualizationMode: FourwingsVisualizationMode) => {
+      const categoryQueryParam = `${category}VisualizationMode`
+      dispatchQueryParams({ [categoryQueryParam]: visualizationMode })
     },
-    [dispatchQueryParams]
+    [category, dispatchQueryParams]
   )
 
   const visualizationOptions: ChoiceOption<FourwingsVisualizationMode>[] = useMemo(() => {
