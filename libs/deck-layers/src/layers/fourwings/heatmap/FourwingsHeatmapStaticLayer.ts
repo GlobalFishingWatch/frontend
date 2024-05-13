@@ -130,6 +130,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     }
     info.object.layerId = this.root.id
     info.object.category = this.props.category
+    info.object.subcategory = this.props.subcategory
     // TODO:deck fix this typing and create FourwingsStaticPickingInfo
     return info as any
   }
@@ -155,10 +156,13 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    const { minVisibleValue, maxVisibleValue } = props
+    const { minVisibleValue, maxVisibleValue, sublayers } = props
+    const oldColors = oldProps.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
+    const colors = sublayers?.map(({ colorRamp }) => colorRamp).join(',')
+    const isColorChanged = oldColors !== colors
     const isVisibleValuesChanged =
       minVisibleValue !== oldProps.minVisibleValue || maxVisibleValue !== oldProps.maxVisibleValue
-    if (isVisibleValuesChanged) {
+    if (isVisibleValuesChanged || isColorChanged) {
       this._updateColorDomain()
     }
   }
