@@ -134,6 +134,11 @@
     "description": "",
     "moreInfoLink": ""
   },
+  "species": {
+    "name": "Species",
+    "description": "",
+    "moreInfoLink": ""
+  },
   "thgt": {
     "name": "Wave height",
     "description": "Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.",
