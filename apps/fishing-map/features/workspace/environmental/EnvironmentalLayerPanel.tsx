@@ -59,6 +59,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       { field: 'Height', label: t('layer.height', 'Height') },
       { field: 'REALM', label: t('layer.REALM', 'REALM') },
       { field: 'genus', label: t('layer.genus', 'Genus') },
+      { field: 'specie', label: t('layer.specie', 'specie') },
       { field: 'period', label: t('layer.period', 'Period') },
       { field: 'scenario', label: t('layer.scenario', 'Scenario') },
     ],

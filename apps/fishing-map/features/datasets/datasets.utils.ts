@@ -94,6 +94,9 @@ export type SupportedEnvDatasetSchema =
   | 'vessel_type'
   | 'Height'
   | 'REALM'
+  // TODO: remove this when the dataset is updated
+  | 'specie' // species-mm
+  | 'species' // species-mm
   | 'genus' // species-mm
   | 'period' // species-mm
   | 'scenario' // species-mm
