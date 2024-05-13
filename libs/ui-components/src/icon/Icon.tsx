@@ -105,6 +105,7 @@ import { ReactComponent as Upload } from '../assets/icons/upload.svg'
 import { ReactComponent as User } from '../assets/icons/user.svg'
 import { ReactComponent as UNEPLogo } from '../assets/icons/unep-logo.svg'
 import { ReactComponent as Vessel } from '../assets/icons/vessel.svg'
+import { ReactComponent as VesselDisabled } from '../assets/icons/vessel-disabled.svg'
 import { ReactComponent as ViewOnMap } from '../assets/icons/view-on-map.svg'
 import { ReactComponent as VisibilityOff } from '../assets/icons/visibility-off.svg'
 import { ReactComponent as VisibilityOn } from '../assets/icons/visibility-on.svg'
@@ -216,6 +217,7 @@ export const IconComponents = {
   user: User,
   'unep-logo': UNEPLogo,
   vessel: Vessel,
+  'vessel-disabled': VesselDisabled,
   warning: Warning,
 }
 

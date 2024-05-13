@@ -92,7 +92,6 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   sidebarOpen: true,
   mapAnnotationsVisible: true,
   mapRulersVisible: true,
-  mapResolution: 'default',
   activityVisualizationMode: 'heatmap',
   detectionsVisualizationMode: 'heatmap',
   dataviewInstances: undefined,

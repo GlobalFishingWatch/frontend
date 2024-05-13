@@ -208,8 +208,8 @@ type ResolverGlobalConfig = {
   zoom?: number
   token?: string
   bivariateDataviews?: [string, string]
-  activityVisualizationMode?: 'heatmap' | 'positions'
-  detectionsVisualizationMode?: 'heatmap' | 'positions'
+  activityVisualizationMode?: FourwingsVisualizationMode
+  detectionsVisualizationMode?: FourwingsVisualizationMode
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string

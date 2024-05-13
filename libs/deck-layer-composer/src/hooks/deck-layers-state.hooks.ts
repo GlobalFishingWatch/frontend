@@ -19,7 +19,7 @@ export const useSetDeckLayerLoadedState = () => {
   return useCallback(
     (layers: AnyDeckLayer[]) => {
       if (layers?.length) {
-        setDeckLayerLoadedState(() => {
+        setDeckLayerLoadedState((loadedState) => {
           const newLoadedState = {} as DeckLayerState
           layers.forEach((layer) => {
             if ((layer as LayerWithIndependentSublayersLoadState).getAllSublayersLoaded) {
@@ -30,7 +30,15 @@ export const useSetDeckLayerLoadedState = () => {
               newLoadedState[layer.id] = { loaded: layer.isLoaded }
             }
           })
-          return newLoadedState
+          if (
+            Object.keys(newLoadedState).length !== Object.keys(loadedState).length ||
+            Object.keys(newLoadedState).some(
+              (key) => newLoadedState[key].loaded !== loadedState[key].loaded
+            )
+          ) {
+            return newLoadedState
+          }
+          return loadedState
         })
       }
     },

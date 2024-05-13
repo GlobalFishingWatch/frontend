@@ -2,19 +2,15 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { Locale } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   ResolverGlobalConfig,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
-import { DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import { DeckLayerPickingObject, FourwingsLayer, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import {
-  selectHighlightedEvents,
-  selectHighlightedTime,
-  setHighlightedEvents,
-} from 'features/timebar/timebar.slice'
+import { selectHighlightedTime, setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectShowTimeComparison,
@@ -24,10 +20,10 @@ import {
   selectActivityVisualizationMode,
   selectBivariateDataviews,
   selectDetectionsVisualizationMode,
-  selectMapResolution,
 } from 'features/app/selectors/app.selectors'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+import { useLocationConnect } from 'routes/routes.hook'
 import { MAX_TOOLTIP_LIST, ExtendedFeatureVessel, selectClickedEvent } from './map.slice'
 import { useViewStateAtom } from './map-viewport.hooks'
 
@@ -48,6 +44,7 @@ export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
   const { viewState } = useViewStateAtom()
+  const { dispatchQueryParams } = useLocationConnect()
   const { i18n } = useTranslation()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
@@ -55,7 +52,6 @@ export const useGlobalConfigConnect = () => {
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
-  const mapResolution = useSelector(selectMapResolution)
   const clickedFeatures = useSelector(selectClickedEvent)
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
@@ -63,6 +59,20 @@ export const useGlobalConfigConnect = () => {
   const highlightedFeatures = useMemo(() => {
     return [...(clickedFeatures?.features || []), ...(hoverFeatures || [])]
   }, [clickedFeatures?.features, hoverFeatures])
+
+  const onPositionsMaxPointsError = useCallback(
+    (layer: FourwingsLayer, max: number) => {
+      if (
+        layer.props.category === DataviewCategory.Activity ||
+        layer.props.category === DataviewCategory.Detections
+      ) {
+        const categoryQueryParam = `${layer.props.category}VisualizationMode`
+        dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
+        alert(`Max points visualization exceeded (${max}), swithing to heatmap mode.`)
+      }
+    },
+    [dispatchQueryParams]
+  )
 
   return useMemo(() => {
     let globalConfig: ResolverGlobalConfig = {
@@ -74,10 +84,11 @@ export const useGlobalConfigConnect = () => {
       bivariateDataviews,
       activityVisualizationMode,
       detectionsVisualizationMode,
-      resolution: mapResolution,
       highlightedTime: highlightedTime || {},
       visibleEvents,
       highlightedFeatures,
+      // TODO:deck should this be in another param like callbacks ?
+      onPositionsMaxPointsError,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -94,10 +105,10 @@ export const useGlobalConfigConnect = () => {
     bivariateDataviews,
     activityVisualizationMode,
     detectionsVisualizationMode,
-    mapResolution,
     highlightedTime,
     visibleEvents,
     highlightedFeatures,
+    onPositionsMaxPointsError,
     showTimeComparison,
     timeComparisonValues,
   ])
