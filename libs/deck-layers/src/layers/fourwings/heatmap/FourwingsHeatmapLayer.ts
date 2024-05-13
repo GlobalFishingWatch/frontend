@@ -11,12 +11,12 @@ import {
   rgbaStringToObject,
   rgbaToDeckColor,
 } from '../../../utils'
-import { FourwingsPickingObject } from '../fourwings.types'
 import { EMPTY_CELL_COLOR, aggregateCell, getIntervalFrames } from './fourwings-heatmap.utils'
 import {
   FourwingsComparisonMode,
   FourwingsHeatmapLayerProps,
   FourwingsHeatmapPickingInfo,
+  FourwingsHeatmapPickingObject,
 } from './fourwings-heatmap.types'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
@@ -46,7 +46,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       availableIntervals,
       bufferedStart: tilesCache.bufferedStart,
     })
-    const object: FourwingsPickingObject = {
+    const object: FourwingsHeatmapPickingObject = {
       ...(info.object || ({} as FourwingsFeature)),
       layerId: this.root.id,
       id: id,
@@ -60,12 +60,12 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       comparisonMode,
     }
     if (info.object) {
-      object.sublayers = object.sublayers.flatMap((sublayer, i) =>
+      object.sublayers = object.sublayers?.flatMap((sublayer, i) =>
         info.object?.properties?.aggregatedValues?.[i]
           ? { ...sublayer, value: info.object?.properties?.aggregatedValues?.[i] }
           : []
       )
-      if (!object.sublayers.length) {
+      if (!object.sublayers?.length) {
         return { ...info, object: undefined }
       }
     }

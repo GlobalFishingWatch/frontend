@@ -49,10 +49,12 @@ export type FourwingsHeatmapPickingObject = FourwingsFeature<
 > &
   BasePickingObject & {
     title: string
+    color?: string
     tile: { x: number; y: number; z: number }
     startTime: number
     endTime: number
     interval: FourwingsInterval
+    value?: number
     sublayers: FourwingsDeckSublayer[]
     comparisonMode?: FourwingsComparisonMode
   }

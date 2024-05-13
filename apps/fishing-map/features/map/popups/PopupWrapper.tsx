@@ -38,6 +38,7 @@ import ActivityTooltipRow from './ActivityLayers'
 import EncounterTooltipRow from './EncounterTooltipRow'
 import ContextTooltipSection from './ContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
+import EnvironmentTooltipSection from './EnvironmentLayers'
 
 const overflowMiddlware: Middleware = {
   name: 'overflow',
@@ -187,30 +188,31 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 )
               }
               // TODO: deck restore this popup
-              // case DataviewCategory.Environment: {
-              //   const contextEnvironmentalFeatures = features.filter(
-              //     (feature) =>
-              //       feature.type === DataviewType.Context ||
-              //       feature.type === DataviewType.UserContext
-              //   )
-              //   const environmentalFeatures = features.filter(
-              //     (feature) =>
-              //       feature.type !== DataviewType.Context &&
-              //       feature.type !== DataviewType.UserContext
-              //   )
-              //   return (
-              //     <Fragment key={featureCategory}>
-              //       <ContextTooltipSection
-              //         features={contextEnvironmentalFeatures}
-              //         showFeaturesDetails={type === 'click'}
-              //       />
-              //       <EnvironmentTooltipSection
-              //         features={environmentalFeatures}
-              //         showFeaturesDetails={type === 'click'}
-              //       />
-              //     </Fragment>
-              //   )
-              // }
+              case DataviewCategory.Environment: {
+                // TODO:deck review if this is needed
+                //   const contextEnvironmentalFeatures = features.filter(
+                //     (feature) =>
+                //       feature.type === DataviewType.Context ||
+                //       feature.type === DataviewType.UserContext
+                //   )
+                // const environmentalFeatures = features.filter(
+                //   (feature) =>
+                //     feature.type !== DataviewType.Context &&
+                //     feature.type !== DataviewType.UserContext
+                // )
+                return (
+                  <Fragment key={featureCategory}>
+                    {/* <ContextTooltipSection
+                      features={contextEnvironmentalFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    /> */}
+                    <EnvironmentTooltipSection
+                      features={features as SliceExtendedFourwingsPickingObject[]}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  </Fragment>
+                )
+              }
               case DataviewCategory.Context: {
                 // const defaultContextFeatures = features.filter(
                 //   (feature) => feature.type === DataviewType.Context

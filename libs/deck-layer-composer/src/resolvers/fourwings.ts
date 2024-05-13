@@ -117,6 +117,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     startTime,
     endTime,
     category: dataview.category!,
+    subcategory: dataview.config?.type!,
     static: dataview.config?.type === DataviewType.HeatmapStatic,
     sublayers,
     comparisonMode,

@@ -3,11 +3,11 @@ import { format } from 'd3-format'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/layer-composer'
 import { DataviewType } from '@globalfishingwatch/api-types'
+import { FourwingsHeatmapPickingObject } from '@globalfishingwatch/deck-layers'
 import styles from './Popup.module.css'
 
 type ContextTooltipRowProps = {
-  // TODO:deck review typing here
-  features: any[]
+  features: FourwingsHeatmapPickingObject[]
   showFeaturesDetails: boolean
 }
 
@@ -29,12 +29,14 @@ function EnvironmentTooltipSection({
     <Fragment>
       {features.map((feature, index) => {
         const isHeatmapFeature =
-          feature.type === DataviewType.HeatmapAnimated ||
-          feature.type === DataviewType.HeatmapStatic
+          feature.subcategory === DataviewType.HeatmapAnimated ||
+          feature.subcategory === DataviewType.HeatmapStatic
         const value =
-          feature.type === DataviewType.HeatmapAnimated
+          feature.subcategory === DataviewType.HeatmapAnimated
             ? feature.value
             : feature.properties?.[HEATMAP_STATIC_PROPERTY_ID]
+
+        const unit = feature.sublayers?.[0]?.unit
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <Icon
@@ -46,10 +48,7 @@ function EnvironmentTooltipSection({
               {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
               <div className={styles.row}>
                 <span className={styles.rowText}>
-                  {parseEnvironmentalValue(value)}{' '}
-                  {/* TODO will need to not pick from temporalgrid once user polygons support units  */}
-                  {feature?.unit && <span>{feature.temporalgrid?.unit}</span>}
-                  {feature.unit && <span>{feature.unit}</span>}
+                  {parseEnvironmentalValue(value)} {unit && <span>{unit}</span>}
                 </span>
               </div>
             </div>

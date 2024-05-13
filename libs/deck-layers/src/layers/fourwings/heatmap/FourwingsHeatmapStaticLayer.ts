@@ -129,6 +129,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       info.object.properties.values = [[info.object.properties.count]]
     }
     info.object.layerId = this.root.id
+    info.object.sublayers = this.props.sublayers
     info.object.category = this.props.category
     info.object.subcategory = this.props.subcategory
     // TODO:deck fix this typing and create FourwingsStaticPickingInfo

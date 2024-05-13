@@ -1,5 +1,5 @@
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { ColorRampsIds } from '../../utils'
+import { BaseLayerProps } from '../../types'
 import { HEATMAP_HIGH_RES_ID, HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 import {
   FourwingsHeatmapPickingInfo,
@@ -39,10 +39,9 @@ export type FourwingsDeckSublayer = {
   vesselGroups?: string | string[]
 }
 
-export type BaseFourwingsLayerProps = {
+export type BaseFourwingsLayerProps = BaseLayerProps & {
   startTime: number
   endTime: number
-  category: DataviewCategory
   sublayers: FourwingsDeckSublayer[]
   tilesUrl?: string
 }
