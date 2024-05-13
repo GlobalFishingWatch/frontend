@@ -3,6 +3,7 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   AnyDeckLayer,
   DeckLayerPickingObject,
+  FourwingsLayer,
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
 import { TimeRange } from './dataviews'
@@ -16,6 +17,7 @@ export type ResolverGlobalConfig = {
   bivariateDataviews?: [string, string]
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
+  onPositionsMaxPointsError?: (layer: FourwingsLayer, maxPoints: number) => void
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string

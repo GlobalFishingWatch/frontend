@@ -1,3 +1,4 @@
+import { parse } from '@loaders.gl/core'
 import {
   Color,
   CompositeLayer,
@@ -10,29 +11,31 @@ import {
 } from '@deck.gl/core'
 import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers'
 import { IconLayer, TextLayer } from '@deck.gl/layers'
-import { MVTWorkerLoader } from '@loaders.gl/mvt'
 import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
 import { groupBy, orderBy } from 'lodash'
 import { stringify } from 'qs'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import {
   BLEND_BACKGROUND,
   getColorRamp,
   getLayerGroupOffset,
+  GFWMVTLoader,
   hexToDeckColor,
   LayerGroup,
   rgbaStringToComponents,
 } from '../../../utils'
 import {
+  MAX_POSITIONS_PER_TILE_SUPPORTED,
   PATH_BASENAME,
   POSITIONS_API_TILES_URL,
   POSITIONS_VISUALIZATION_MIN_ZOOM,
 } from '../fourwings.config'
 import { getRoundedDateFromTS } from '../heatmap/fourwings-heatmap.utils'
 import { FourwingsTileLayerColorScale } from '../fourwings.types'
+import type { FourwingsLayer } from '../FourwingsLayer'
 import { cleanVesselShipname, filteredPositionsByViewport } from './fourwings-positions.utils'
 import {
   FourwingsPositionsPickingInfo,
@@ -254,6 +257,41 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
   }
 
+  _fetch = async (
+    url: string,
+    {
+      signal,
+      layer,
+      loadOptions,
+    }: {
+      layer: Layer
+      signal?: AbortSignal
+      loadOptions?: any
+    }
+  ) => {
+    try {
+      const response = await GFWAPI.fetch<any>(url, {
+        signal,
+        method: 'GET',
+        responseType: 'arrayBuffer',
+      })
+      return await parse(response, GFWMVTLoader, loadOptions)
+    } catch (error: any) {
+      if (
+        (error as ParsedAPIError).status === 422 &&
+        (error as ParsedAPIError).message?.includes('Maximum points exceeded by tile')
+      ) {
+        if (this.props.onPositionsMaxPointsError) {
+          const totalNumber = parseInt(error.message.match(/Total (\d+)/)?.[1])
+          this.props.onPositionsMaxPointsError(layer.root as FourwingsLayer, totalNumber)
+        } else {
+          throw error
+        }
+      }
+      throw error
+    }
+  }
+
   renderLayers(): Layer<{}> | LayersList | null {
     if (this.state.fontLoaded) {
       // TODO:deck fuerte remove the hardcoded id and use sublayers
@@ -264,6 +302,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         // datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
         datasets: ['public-global-fishing-effort:v3.0'],
         format: 'MVT',
+        'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
         properties: [['speed', 'bearing', 'shipname'].join(',')],
         // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
         'date-range': `${getRoundedDateFromTS(startTime)},${getRoundedDateFromTS(endTime)}`,
@@ -276,7 +315,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           data: `${baseUrl}?${stringify(params)}`,
           minZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
           maxZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
-          loaders: [MVTWorkerLoader],
+          // loaders: [MVTWorkerLoader],
+          fetch: this._fetch,
           onViewportLoad: this._onViewportLoad,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
           renderSubLayers: () => null,
