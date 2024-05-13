@@ -25,12 +25,7 @@ import ErrorNotification from 'features/map/overlays/error-notification/ErrorNot
 import { useMapDeckLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
-import {
-  MAP_VIEW,
-  useViewStateAtom,
-  useUpdateViewStateUrlParams,
-  useDisablePositionsOnZoomChanges,
-} from './map-viewport.hooks'
+import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
@@ -73,7 +68,6 @@ const MapWrapper = () => {
     [setViewState]
   )
   useUpdateViewStateUrlParams()
-  useDisablePositionsOnZoomChanges()
   const onMapClick = useMapMouseClick()
   const { onMouseMove } = useMapMouseHover()
   const { getCursor } = useMapCursor()

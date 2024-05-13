@@ -31,7 +31,7 @@ import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   PATH_BASENAME,
   POSITIONS_API_TILES_URL,
-  POSITIONS_VISUALIZATION_MIN_ZOOM,
+  POSITIONS_VISUALIZATION_MAX_ZOOM,
 } from '../fourwings.config'
 import { getRoundedDateFromTS } from '../heatmap/fourwings-heatmap.utils'
 import { FourwingsTileLayerColorScale } from '../fourwings.types'
@@ -313,8 +313,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         new MVTLayer(this.props, {
           id: `tiles`,
           data: `${baseUrl}?${stringify(params)}`,
-          minZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
-          maxZoom: POSITIONS_VISUALIZATION_MIN_ZOOM,
+          // minZoom: 0,
+          maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
           // loaders: [MVTWorkerLoader],
           fetch: this._fetch,
           onViewportLoad: this._onViewportLoad,
