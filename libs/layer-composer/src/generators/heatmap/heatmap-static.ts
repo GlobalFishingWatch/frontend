@@ -61,6 +61,7 @@ class HeatmapStaticGenerator {
       {
         id: getHeatmapStaticSourceId(config.id),
         type: 'vector',
+        ...(config.maxZoom && { maxzoom: parseInt(config.maxZoom.toString()) }),
         tiles: [decodeURI(url.toString())],
       },
     ]

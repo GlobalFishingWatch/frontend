@@ -65,6 +65,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
     config: {
       color: '#FFAE9B',
       colorRamp: 'salmon',
+      maxZoom: 5,
     },
     datasetsConfig: [
       {
