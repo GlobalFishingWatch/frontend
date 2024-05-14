@@ -134,6 +134,11 @@
     "description": "",
     "moreInfoLink": ""
   },
+  "species": {
+    "name": "Species",
+    "description": "TODO",
+    "moreInfoLink": ""
+  },
   "thgt": {
     "name": "Tinggi gelombang",
     "description": "Tinggi gelombang adalah jarak vertikal dari palung (bawah) sampai puncak (puncak) gelombang di permukaan laut. Kumpulan data ini menggunakan tinggi gelombang signifikan, yang merupakan rata-rata sepertiga tertinggi dari seluruh tinggi gelombang selama periode sampel tertentu.",
