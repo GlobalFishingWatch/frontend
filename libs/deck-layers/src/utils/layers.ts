@@ -22,6 +22,13 @@ export function getPickedFeatureToHighlight(
   )
 }
 
+export function getFeatureInFilter(feature: any, filters?: Record<string, any>) {
+  if (!filters || !Object.keys(filters).length) return true
+  return Object.keys(filters).some((filter) =>
+    filters[filter]?.includes(feature?.properties?.[filter]?.toString())
+  )
+}
+
 export function getMVTSublayerProps({
   tile,
   extensions,

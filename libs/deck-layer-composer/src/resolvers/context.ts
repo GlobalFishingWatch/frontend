@@ -40,6 +40,7 @@ export const resolveDeckContextLayerProps: DeckResolverFunction<ContextLayerProp
       id: layer.id as ContextLayerId,
       datasetId: dataset.id,
       tilesUrl,
+      filters: dataview.config?.filters,
     }
   })
 
