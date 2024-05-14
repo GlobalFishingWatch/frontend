@@ -95,10 +95,6 @@ const getGeneratorsConfig = ({
   bivariateDataviews,
   showTimeComparison,
 }: GetGeneratorConfigParams) => {
-  const animatedHeatmapDataviews = dataviews.filter((dataview) => {
-    return dataview.config?.type === DataviewType.HeatmapAnimated
-  })
-
   const visibleDataviewIds = dataviews.map(({ id }) => id)
   const bivariateVisible =
     bivariateDataviews?.filter((dataviewId) => visibleDataviewIds.includes(dataviewId))?.length ===
@@ -108,11 +104,7 @@ const getGeneratorsConfig = ({
     ? HeatmapAnimatedMode.Bivariate
     : HeatmapAnimatedMode.Compare
 
-  if (debugOptions.extruded) {
-    heatmapAnimatedMode = HeatmapAnimatedMode.Extruded
-  } else if (debugOptions.blob && animatedHeatmapDataviews.length === 1) {
-    heatmapAnimatedMode = HeatmapAnimatedMode.Blob
-  } else if (showTimeComparison) {
+  if (showTimeComparison) {
     heatmapAnimatedMode = HeatmapAnimatedMode.TimeCompare
   }
 

@@ -33,27 +33,6 @@ const DebugMenu: React.FC = () => {
       <section className={styles.section}>
         <div className={styles.header}>
           <Switch
-            id="option_blob"
-            active={debugOptions.blob}
-            onClick={() => dispatch(toggleOption(DebugOption.Blob))}
-          />
-          <label htmlFor="option_blob">[experimental] Smooth heatmap style</label>
-        </div>
-        <p>
-          Render fishing layer with a smoother rendering style. Only works when a single fishing
-          layer is shown. Will disable interaction on this layer.
-        </p>
-        <div className={styles.header}>
-          <Switch
-            id="option_extruded"
-            active={debugOptions.extruded}
-            onClick={() => dispatch(toggleOption(DebugOption.Extruded))}
-          />
-          <label htmlFor="option_extruded">[experimental] Stacked 3D bars</label>
-        </div>
-        <p>Renders fishing activity as stacked 3D bars. Will disable interaction on this layer.</p>
-        <div className={styles.header}>
-          <Switch
             id="option_map_stats"
             active={debugOptions.mapStats}
             onClick={() => dispatch(toggleOption(DebugOption.MapStats))}
@@ -110,13 +89,6 @@ const DebugMenu: React.FC = () => {
           defaultValue={JSON.stringify(locationQuery, undefined, 2)}
         />
       </section>
-      <hr className={styles.separation} />
-      {/* <section>
-        <div className={styles.header}>
-          <label>Current map GL style</label>
-        </div>
-        <textarea className={styles.editor} defaultValue={JSON.stringify(style, undefined, 2)} />
-      </section> */}
     </div>
   )
 }
