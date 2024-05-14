@@ -59,6 +59,22 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry.jpg`,
   },
   {
+    id: 'species',
+    dataviewId: TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/species-distribution.jpg`,
+    config: {
+      color: '#FFAE9B',
+      colorRamp: 'salmon',
+      maxZoom: 5,
+    },
+    datasetsConfig: [
+      {
+        ...heatmapDatasetConfig,
+        datasetId: 'public-global-species-mm',
+      },
+    ],
+  },
+  {
     id: 'chlorophyl',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/chlorophyl.jpg`,

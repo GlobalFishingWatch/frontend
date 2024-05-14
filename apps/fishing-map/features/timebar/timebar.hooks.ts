@@ -18,7 +18,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
-  selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry,
+  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
@@ -226,7 +226,7 @@ export const useTimebarVisualisation = () => {
   const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
-  const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry)
+  const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutStatic)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 
   // const prevTimebarVisualisation = usePrevious(timebarVisualisation)

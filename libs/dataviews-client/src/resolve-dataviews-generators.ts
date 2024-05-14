@@ -280,11 +280,11 @@ export function getGeneratorConfig(
       const heatmapDataset = dataview.datasets?.find(
         (dataset) => dataset.type === DatasetTypes.Fourwings
       )
-
       generator = {
         ...generator,
         maxZoom: dataview.config.maxZoom || 8,
         breaks: dataview.config.breaks,
+        filters: dataview.config?.filter,
         datasets: [heatmapDataset?.id],
         metadata: {
           color: dataview?.config?.color,
@@ -518,8 +518,8 @@ export function getMergedHeatmapAnimatedDataview(
     }
     const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
 
-    const activeDatasets = dataview.datasets.filter(
-      (dataset) => dataview?.config?.datasets?.includes(dataset.id)
+    const activeDatasets = dataview.datasets.filter((dataset) =>
+      dataview?.config?.datasets?.includes(dataset.id)
     )
     const units = uniq(activeDatasets?.map((dataset) => dataset.unit))
     if (units.length > 0 && units.length !== 1) {
