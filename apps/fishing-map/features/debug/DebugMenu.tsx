@@ -16,7 +16,6 @@ const DebugMenu: React.FC = () => {
   const locationQuery = useSelector(selectLocationQuery)
   const [datasetId, setDatasetId] = useState<string>('')
   // TODO:deck think if there is a way of debugging from here
-  // const style = useMapStyle()
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const datasets = useSelector(selectAllDatasets)
 

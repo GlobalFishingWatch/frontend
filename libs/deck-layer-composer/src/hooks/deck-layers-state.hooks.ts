@@ -33,7 +33,7 @@ export const useSetDeckLayerLoadedState = () => {
           if (
             Object.keys(newLoadedState).length !== Object.keys(loadedState).length ||
             Object.keys(newLoadedState).some(
-              (key) => newLoadedState[key].loaded !== loadedState[key].loaded
+              (key) => newLoadedState[key]?.loaded !== loadedState[key]?.loaded
             )
           ) {
             return newLoadedState
