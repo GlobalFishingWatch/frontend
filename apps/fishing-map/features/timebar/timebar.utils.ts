@@ -1,17 +1,7 @@
 import { DateTime } from 'luxon'
-import { EventTypes, ApiEvent } from '@globalfishingwatch/api-types'
-import {
-  TimebarChartChunk,
-  TrackEventChunkProps,
-  ActivityTimeseriesFrame,
-} from '@globalfishingwatch/timebar'
+import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { getEventColors, getEventDescription } from 'utils/events'
 import { getUTCDateTime } from 'utils/dates'
-
-export const getTimebarChunkEventColor = (ev: TimebarChartChunk<TrackEventChunkProps>) => {
-  return ev.type ? getEventColors({ type: ev.type })?.color : 'white'
-}
 
 type GetGraphDataFromFourwingsFeaturesParams = {
   start: number
