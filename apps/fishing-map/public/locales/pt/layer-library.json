@@ -134,6 +134,11 @@
     "description": "",
     "moreInfoLink": ""
   },
+  "species": {
+    "name": "Species",
+    "description": "TODO",
+    "moreInfoLink": ""
+  },
   "thgt": {
     "name": "Altura da onda",
     "description": "A altura da onda é a distância vertical do vale (fundo) até a crista (topo) de uma onda na superfície do mar. Este conjunto de dados usa a altura significativa da onda, que é a média do terço mais alto de todas as alturas das ondas durante um determinado período de amostragem.",
