@@ -134,6 +134,11 @@
     "description": "",
     "moreInfoLink": ""
   },
+  "species": {
+    "name": "Species",
+    "description": "TODO",
+    "moreInfoLink": ""
+  },
   "thgt": {
     "name": "Altura de ola",
     "description": "La altura de ola es la distancia vertical desde el valle (abajo) hasta la cresta (arriba) de una ola sobre la superficie del mar. Este conjunto de datos utiliza la altura de ola significante, la cual es el promedio del tercio más alto de todas las alturas de ola durante un período de muestra determinado.",

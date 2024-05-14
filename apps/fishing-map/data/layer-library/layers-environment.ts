@@ -61,10 +61,11 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'species',
     dataviewId: TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/species.jpg`,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/species-distribution.jpg`,
     config: {
       color: '#FFAE9B',
       colorRamp: 'salmon',
+      maxZoom: 5,
     },
     datasetsConfig: [
       {
