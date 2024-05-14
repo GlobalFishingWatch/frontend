@@ -50,6 +50,13 @@ class HeatmapStaticGenerator {
     url.searchParams.set('temporal-aggregation', 'true')
     url.searchParams.set('format', 'MVT')
     url = addURLSearchParams(url, 'datasets', config.datasets)
+
+    if (config.filters) {
+      config.datasets.forEach((_, index) => {
+        url.searchParams.set(`filters[${index}]`, config.filters)
+      })
+    }
+
     return [
       {
         id: getHeatmapStaticSourceId(config.id),

@@ -94,11 +94,14 @@ export type SupportedEnvDatasetSchema =
   | 'vessel_type'
   | 'Height'
   | 'REALM'
+  | 'genus' // species-mm
+  | 'period' // species-mm
+  | 'scenario' // species-mm
 export type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
 export type SupportedEventsDatasetSchema = 'duration'
 
 const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
-const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups']
+const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups', 'period', 'scenario']
 
 export type SchemaCompatibilityOperation = 'every' | 'some'
 export type SchemaOriginParam =
