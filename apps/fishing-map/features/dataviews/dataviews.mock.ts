@@ -13,7 +13,7 @@ export const dataviews: Dataview[] = [
     category: DataviewCategory.Context,
     config: {
       type: DataviewType.Graticules,
-      color: '#fff',
+      color: '#FCA26F',
       layers: [
         {
           id: 'graticules',
