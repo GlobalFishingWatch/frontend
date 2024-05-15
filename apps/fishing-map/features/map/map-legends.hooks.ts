@@ -8,6 +8,7 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 export type AnyLegend = LegendLayer | LegendLayerBivariate
 export type LegendTranslated = AnyLegend & { label: string }
 
+// TODO:deck remove if not needed anymore
 export const useLegendsTranslated = (legends: AnyLegend[], portalled = true) => {
   const { t } = useTranslation()
   return useMemo(() => {
