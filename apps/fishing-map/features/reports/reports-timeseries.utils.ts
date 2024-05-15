@@ -12,17 +12,6 @@ import { getUTCDateTime } from 'utils/dates'
 import { ComparisonGraphData } from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromFourwingsFeatures } from 'features/timebar/timebar.utils'
 
-export const removeTimeseriesPadding = (timeseries?: ReportGraphProps[]) => {
-  return timeseries?.map((timeserie) => {
-    return {
-      ...timeserie,
-      timeseries: timeserie.timeseries?.filter(
-        (time) => time.min[0] !== 0 || time.min[1] !== 0 || time.max[0] !== 0 || time.max[1] !== 0
-      ),
-    }
-  })
-}
-
 export const filterTimeseriesByTimerange = (
   timeseries: ReportGraphProps[],
   start: string,

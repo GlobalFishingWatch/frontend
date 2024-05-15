@@ -18,7 +18,6 @@ import {
   FeaturesToTimeseriesParams,
   featuresToTimeseries,
   filterTimeseriesByTimerange,
-  removeTimeseriesPadding,
 } from 'features/reports/reports-timeseries.utils'
 import { useReportAreaInViewport } from 'features/reports/reports.hooks'
 import {
@@ -185,9 +184,9 @@ export const useReportFilteredTimeSeries = () => {
       return []
     }
     if (showTimeComparison) {
-      return removeTimeseriesPadding(timeseries)
+      return timeseries
     } else {
-      if (timebarStart && timebarEnd && timeseries) {
+      if (!timebarStart && timebarEnd && timeseries) {
         return memoizedFilterTimeseriesByTimerange(timeseries, timebarStart, timebarEnd)
       }
     }
