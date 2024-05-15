@@ -186,7 +186,7 @@ export const useReportFilteredTimeSeries = () => {
     if (showTimeComparison) {
       return timeseries
     } else {
-      if (!timebarStart && timebarEnd && timeseries) {
+      if (timebarStart && timebarEnd && timeseries) {
         return memoizedFilterTimeseriesByTimerange(timeseries, timebarStart, timebarEnd)
       }
     }
