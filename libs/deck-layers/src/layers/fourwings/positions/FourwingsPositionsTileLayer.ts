@@ -401,6 +401,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.state.colorScale
   }
 
+  getFourwingsLayers() {
+    return this.props.sublayers
+  }
+
   getTimeseries() {
     return this.getViewportData()
   }

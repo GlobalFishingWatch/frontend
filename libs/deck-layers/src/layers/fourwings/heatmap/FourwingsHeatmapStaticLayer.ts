@@ -9,7 +9,7 @@ import {
   PickingInfo,
 } from '@deck.gl/core'
 import { scaleLinear } from 'd3-scale'
-import { MVTLayer, TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import { MVTLayer, TileLayer } from '@deck.gl/geo-layers'
 import { ckmeans } from 'simple-statistics'
 import { debounce } from 'lodash'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
@@ -254,6 +254,10 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       return dataFiltered as FourwingsFeature[]
     }
     return []
+  }
+
+  getFourwingsLayers() {
+    return this.props.sublayers
   }
 
   getColorDomain = () => {

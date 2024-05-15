@@ -240,24 +240,18 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
   }
 
-  _fetchTimeCompareTileData: any = async (tile: TileLoadProps) => {
-    const {
-      startTime,
-      endTime,
-      aggregationOperation,
-      availableIntervals,
-      tilesUrl,
-      compareStart,
-      compareEnd,
-    } = this.props
+  _getTimeCompareSublayers = () => {
+    const { startTime, endTime, availableIntervals, compareStart, compareEnd } = this.props
     if (!compareStart || !compareEnd) {
       // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
-    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
+    const interval = getInterval(startTime, endTime, availableIntervals)
+    if (!interval) {
+      throw new Error('Missing valid interval in time compare mode')
+    }
     const visibleSublayers = this.props.sublayers.filter((sublayer) => sublayer.visible)
     const sublayerDatasets = Array.from(new Set(visibleSublayers.flatMap((d) => d.datasets)))
-    const interval = getInterval(startTime, endTime, availableIntervals)
     const sublayers: (FourwingsDeckSublayer & { chunk: FourwingsChunk })[] = [
       {
         ...visibleSublayers[0],
@@ -286,6 +280,29 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         },
       },
     ]
+    return sublayers
+  }
+
+  _fetchTimeCompareTileData: any = async (tile: TileLoadProps) => {
+    const {
+      startTime,
+      endTime,
+      aggregationOperation,
+      availableIntervals,
+      tilesUrl,
+      compareStart,
+      compareEnd,
+    } = this.props
+    if (!compareStart || !compareEnd) {
+      // TODO:deck handle this
+      throw new Error('Missing compare start or end')
+    }
+    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
+    const interval = getInterval(startTime, endTime, availableIntervals)
+    if (!interval) {
+      throw new Error('Invalid interval')
+    }
+    const sublayers = this._getTimeCompareSublayers()
     let cols: number = 0
     let rows: number = 0
     let scale: number = 0
@@ -607,10 +624,19 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return []
   }
 
+  getFourwingsLayers() {
+    const sublayers =
+      this.props.comparisonMode === FourwingsComparisonMode.TimeCompare
+        ? this._getTimeCompareSublayers()
+        : this.props.sublayers
+    return sublayers
+  }
+
   getTimeseries() {
     const data = this.getData()
     if (data?.length) {
-      const cells = aggregateCellTimeseries(data, this.props.sublayers)
+      const sublayers = this.getFourwingsLayers()
+      const cells = aggregateCellTimeseries(data, sublayers)
       return cells
     }
     return []

@@ -127,6 +127,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return this.getLayer()?.getColorScale()
   }
 
+  getFourwingsLayers() {
+    return this.getLayer()?.getFourwingsLayers()
+  }
+
   getTimeseries() {
     return this.getLayer()?.getTimeseries()
   }
