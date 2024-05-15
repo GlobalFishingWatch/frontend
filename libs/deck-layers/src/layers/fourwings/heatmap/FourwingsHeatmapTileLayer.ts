@@ -7,7 +7,7 @@ import {
   UpdateParameters,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
-import { ckmeans, mean, standardDeviation } from 'simple-statistics'
+import { mean, standardDeviation } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
@@ -40,6 +40,7 @@ import {
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
 } from '../fourwings.types'
+import { getSteps, removeOutliers } from '../../../utils'
 import {
   aggregateCellTimeseries,
   getFourwingsChunk,
@@ -129,12 +130,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
       const steps = allValues
         .filter((sublayer) => sublayer.length)
-        .map((sublayerValues) =>
-          ckmeans(
-            sublayerValues,
-            Math.min(sublayerValues.length, COLOR_RAMP_BIVARIATE_NUM_STEPS)
-          ).map((step) => step[0])
-        )
+        .map((sublayerValues) => getSteps(sublayerValues, COLOR_RAMP_BIVARIATE_NUM_STEPS))
       return steps
     }
 
@@ -155,21 +151,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       if (!allNegativeValues.length || !allPositiveValues.length) {
         return this.getColorDomain()
       }
-      const negativeValuesFiltered = this.removeOutliers({
+      const negativeValuesFiltered = removeOutliers({
         allValues: allNegativeValues,
         aggregationOperation,
       })
-      const positiveValuesFiltered = this.removeOutliers({
+      const positiveValuesFiltered = removeOutliers({
         allValues: allPositiveValues,
         aggregationOperation,
       })
-      const negativeSteps = ckmeans(
-        negativeValuesFiltered,
-        COLOR_RAMP_DEFAULT_NUM_STEPS / 2 - 1
-      ).map((step) => step[0])
-      const positiveSteps = ckmeans(positiveValuesFiltered, COLOR_RAMP_DEFAULT_NUM_STEPS / 2).map(
-        (step) => step[0]
-      )
+      const negativeSteps = getSteps(negativeValuesFiltered, COLOR_RAMP_DEFAULT_NUM_STEPS / 2 - 1)
+      const positiveSteps = getSteps(positiveValuesFiltered, COLOR_RAMP_DEFAULT_NUM_STEPS / 2)
       return [...negativeSteps, 0, ...positiveSteps]
     }
     const allValues = dataSample.flatMap((feature) =>
@@ -185,28 +176,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return this.getColorDomain()
     }
 
-    const dataFiltered = this.removeOutliers({ allValues, aggregationOperation })
+    const dataFiltered = removeOutliers({ allValues, aggregationOperation })
 
-    const steps = ckmeans(
-      dataFiltered,
-      Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
-    ).map((step) => step[0])
+    const steps = getSteps(dataFiltered)
     return steps
-  }
-
-  removeOutliers = ({
-    allValues,
-    aggregationOperation,
-  }: {
-    allValues: number[]
-    aggregationOperation: FourwingsAggregationOperation | undefined
-  }) => {
-    const meanValue = mean(allValues)
-    const deviationScale = aggregationOperation === FourwingsAggregationOperation.Avg ? 2 : 5
-    const standardDeviationValue = standardDeviation(allValues)
-    const upperCut = meanValue + standardDeviationValue * deviationScale
-    const lowerCut = meanValue - standardDeviationValue * deviationScale
-    return allValues.filter((a) => a >= lowerCut && a <= upperCut)
   }
 
   updateColorDomain = debounce(() => {

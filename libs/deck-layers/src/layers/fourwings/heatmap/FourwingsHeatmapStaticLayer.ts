@@ -10,7 +10,6 @@ import {
 } from '@deck.gl/core'
 import { scaleLinear } from 'd3-scale'
 import { MVTLayer, TileLayer } from '@deck.gl/geo-layers'
-import { ckmeans } from 'simple-statistics'
 import { debounce } from 'lodash'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { PathLayer } from '@deck.gl/layers'
@@ -29,6 +28,7 @@ import {
   GFWMVTLoader,
   LayerGroup,
   getLayerGroupOffset,
+  getSteps,
   rgbaStringToComponents,
 } from '../../../utils'
 import {
@@ -94,10 +94,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         ? values.filter((d, i) => filterCells(d, i, minVisibleValue, maxVisibleValue))
         : values
 
-    const steps = ckmeans(allValues, Math.min(allValues.length, COLOR_RAMP_DEFAULT_NUM_STEPS)).map(
-      (step) => step[0]
-    )
-    return steps
+    return getSteps(allValues)
   }
 
   _updateColorDomain = () => {
