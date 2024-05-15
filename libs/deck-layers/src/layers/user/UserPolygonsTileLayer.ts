@@ -21,6 +21,7 @@ import {
   getMVTSublayerProps,
   rgbaStringToComponents,
   getColorRampByOpacitySteps,
+  getFetchLoadOptions,
 } from '../../utils'
 import { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
 import { UserTileLayer } from './UserTileLayer'
@@ -107,6 +108,9 @@ export class UserContextTileLayer<PropsT = {}> extends UserTileLayer<
         id: `${layer.id}-base-layer`,
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
+        loadOptions: {
+          ...getFetchLoadOptions(),
+        },
         onViewportLoad: this.props.onViewportLoad,
         ...filterProps,
         renderSubLayers: (props) => {

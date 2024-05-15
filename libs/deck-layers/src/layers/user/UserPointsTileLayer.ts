@@ -18,6 +18,7 @@ import {
   GFWMVTLoader,
   getMVTSublayerProps,
   DEFAULT_LINE_COLOR,
+  getFetchLoadOptions,
 } from '../../utils'
 import { UserPointsLayerProps, UserLayerFeature } from './user.types'
 import { UserTileLayer } from './UserTileLayer'
@@ -108,6 +109,9 @@ export class UserPointsTileLayer<PropsT = {}> extends UserTileLayer<
         id: `${layer.id}-base-layer`,
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
+        loadOptions: {
+          ...getFetchLoadOptions(),
+        },
         onViewportLoad: this.props.onViewportLoad,
         ...filterProps,
         renderSubLayers: (props) => {

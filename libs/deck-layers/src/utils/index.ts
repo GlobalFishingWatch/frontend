@@ -1,6 +1,7 @@
 export * from './colorRamps'
 export * from './colors'
 export * from './dates'
+export * from './fetch'
 export * from './layers'
 export * from './loaders'
 export * from './sort'

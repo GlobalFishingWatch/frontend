@@ -13,7 +13,7 @@ import {
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
 import { deckToHexColor } from '../../utils/colors'
-import { getLayerGroupOffset, LayerGroup } from '../../utils'
+import { getFetchLoadOptions, getLayerGroupOffset, LayerGroup } from '../../utils'
 import { BaseLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
@@ -113,6 +113,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           id: chunkId,
           visible,
           data: this._getTracksUrl({ start, end, trackUrl }),
+          loadOptions: {
+            ...getFetchLoadOptions(),
+          },
           type: TRACK_LAYER_TYPE,
           loaders: [VesselTrackLoader],
           _pathType: 'open',
@@ -170,6 +173,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           this.getSubLayerProps({
             id: chunkId,
             data: eventUrl.toString(),
+            loadOptions: {
+              ...getFetchLoadOptions(),
+            },
             visible,
             type,
             onError: this.onSublayerError,
