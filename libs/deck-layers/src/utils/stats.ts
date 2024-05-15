@@ -2,6 +2,7 @@ import { ckmeans, mean, standardDeviation } from 'simple-statistics'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from './colorRamps'
 
 export function getSteps(values: number[], numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS) {
+  if (!values?.length) return []
   const steps = Math.min(values.length, numSteps)
   return ckmeans(values, steps).map((step) => step[0])
 }

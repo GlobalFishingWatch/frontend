@@ -153,13 +153,13 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
     }
   }, [dtLastDataUpdate, timeComparison])
 
-  const baselineTimeseries = timeseries.slice(0, timeComparison.duration + 1).map((t) => ({
+  const comparisonStartIndex = timeseries.findIndex((t) => t.date === timeComparison.compareStart)
+  const baselineTimeseries = timeseries.slice(0, comparisonStartIndex).map((t) => ({
     d: t.date,
     date: getUTCDateTime(t.date)?.toMillis(),
     min: t.min[0],
     max: t.max[0],
   }))
-  const comparisonStartIndex = timeseries.findIndex((t) => t.date === timeComparison.compareStart)
   const comparisonTimeseries = timeseries.slice(comparisonStartIndex).map((t) => ({
     d: t.date,
     date: getUTCDateTime(t.date)?.toMillis(),
