@@ -4,7 +4,7 @@ import { TileLayer } from '@deck.gl/geo-layers'
 import { MVTLayerProps } from '@deck.gl/geo-layers'
 import { Locale } from '@globalfishingwatch/api-types'
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
-import { LayerGroup, getLayerGroupOffset } from '../../utils'
+import { LayerGroup, getFetchLoadOptions, getLayerGroupOffset } from '../../utils'
 import { _BasemapLabelsLayerProps } from './basemap.types'
 
 export type BaseMapLabelsLayerProps = Omit<MVTLayerProps, 'data'> & _BasemapLabelsLayerProps
@@ -23,6 +23,9 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
     return new TileLayer({
       id: BaseMapLabelsLayer.layerName,
       data: getLabelsTilesUrlByLocale(this.props.locale),
+      loadOptions: {
+        ...getFetchLoadOptions(),
+      },
       minZoom: 0,
       maxZoom: 9,
       maxRequests: 100,

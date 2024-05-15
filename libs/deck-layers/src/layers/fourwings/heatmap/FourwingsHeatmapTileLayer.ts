@@ -214,6 +214,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         responseType: 'default',
       })
       if (tile.signal?.aborted || response.status !== 200) {
+        // TODO:deck handle this error better
         throw new Error()
       }
       cols = parseInt(response.headers.get('X-columns') as string)

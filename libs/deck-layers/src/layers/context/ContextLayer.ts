@@ -14,6 +14,7 @@ import {
   getPickedFeatureToHighlight,
   GFWMVTLoader,
   getMVTSublayerProps,
+  getFetchLoadOptions,
 } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import { EEZ_SETTLED_BOUNDARIES } from './context.config'
@@ -147,6 +148,9 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
         id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,
         loaders: [GFWMVTLoader],
+        loadOptions: {
+          ...getFetchLoadOptions(),
+        },
         onViewportLoad: this.props.onViewportLoad,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
