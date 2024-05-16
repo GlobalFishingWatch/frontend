@@ -14,7 +14,7 @@ const TimeComparisonLegend = () => {
   const layerId = useSelector(selectActivityMergedDataviewId)
   const legend = useGetDeckLayerLegend(layerId)
 
-  if (!legend) {
+  if (!legend || !timeCompareTimeDescription) {
     return null
   }
 
