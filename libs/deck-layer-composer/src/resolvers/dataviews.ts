@@ -226,14 +226,14 @@ type ResolverGlobalConfig = {
 
 const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
   DataviewType.Basemap,
-  DataviewType.Heatmap,
+  DataviewType.Context,
   DataviewType.HeatmapStatic,
+  DataviewType.Heatmap,
   DataviewType.HeatmapAnimated,
   DataviewType.TileCluster,
   DataviewType.Track,
   DataviewType.VesselEvents,
   DataviewType.VesselEventsShapes,
-  DataviewType.Context,
   DataviewType.UserContext,
   DataviewType.UserPoints,
   DataviewType.Polygons,
