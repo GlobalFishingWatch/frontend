@@ -296,8 +296,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
       const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
       const params = {
-        // datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
-        datasets: ['public-global-fishing-effort:v3.0'],
+        datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
         format: 'MVT',
         'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
         properties: [['speed', 'bearing', 'shipname'].join(',')],
