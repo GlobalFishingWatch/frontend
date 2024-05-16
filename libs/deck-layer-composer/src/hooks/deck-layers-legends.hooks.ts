@@ -34,7 +34,6 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
       const gridAreaFormatted = gridArea ? `${gridArea}${isSquareKm ? 'km' : 'm'}` : ''
       label = `hours / ${gridAreaFormatted}²`
     }
-
     return {
       id: layer.id,
       type:

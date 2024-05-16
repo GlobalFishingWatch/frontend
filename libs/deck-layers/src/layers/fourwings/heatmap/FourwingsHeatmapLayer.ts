@@ -62,11 +62,10 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       comparisonMode,
     }
     if (info.object) {
-      object.sublayers = object.sublayers?.flatMap((sublayer, i) =>
-        info.object?.properties?.aggregatedValues?.[i]
-          ? { ...sublayer, value: info.object?.properties?.aggregatedValues?.[i] }
-          : []
-      )
+      object.sublayers = object.sublayers?.map((sublayer, i) => ({
+        ...sublayer,
+        value: info.object?.properties?.aggregatedValues?.[i],
+      }))
       if (!object.sublayers?.length) {
         return { ...info, object: undefined }
       }
