@@ -134,6 +134,11 @@
     "description": "",
     "moreInfoLink": ""
   },
+  "species": {
+    "name": "Species",
+    "description": "TODO",
+    "moreInfoLink": ""
+  },
   "thgt": {
     "name": "Hauteur de houle",
     "description": "La hauteur de houle est la distance verticale entre le creux (bas) et la crête (haut) d'une vague à la surface de la mer. Ce jeu de données utilise la hauteur de houle significative, qui est la moyenne du tiers le plus élevé de toutes les hauteurs de houle sur une période d'échantillonnage donnée.",

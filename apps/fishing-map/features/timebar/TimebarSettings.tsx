@@ -9,7 +9,7 @@ import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
-  selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry,
+  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { ReactComponent as AreaIcon } from 'assets/icons/timebar-area.svg'
@@ -63,7 +63,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEnvironmentalDataviews = useSelector(
-    selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry
+    selectActiveHeatmapEnvironmentalDataviewsWithoutStatic
   )
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
@@ -129,8 +129,8 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
           loading
             ? t('vessel.loadingInfo')
             : optionsPanelOpen
-              ? t('timebarSettings.settings_close', 'Close timebar settings')
-              : t('timebarSettings.settings_open', 'Open timebar settings')
+            ? t('timebarSettings.settings_close', 'Close timebar settings')
+            : t('timebarSettings.settings_open', 'Open timebar settings')
         }
       />
       {optionsPanelOpen && (
@@ -209,11 +209,11 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 !activeTrackDataviews?.length
                   ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
                   : !timebarGraphEnabled
-                    ? t(
-                        'timebarSettings.graphDisabled',
-                        'Not available with more than 2 vessels selected'
-                      )
-                    : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
+                  ? t(
+                      'timebarSettings.graphDisabled',
+                      'Not available with more than 2 vessels selected'
+                    )
+                  : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
               }
               onClick={setVesselGraphSpeed}
             />
@@ -236,11 +236,11 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 !activeTrackDataviews?.length
                   ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
                   : !timebarGraphEnabled
-                    ? t(
-                        'timebarSettings.graphDisabled',
-                        'Not available with more than 2 vessels selected'
-                      )
-                    : t('timebarSettings.showGraphDepth', 'Show track depth graph')
+                  ? t(
+                      'timebarSettings.graphDisabled',
+                      'Not available with more than 2 vessels selected'
+                    )
+                  : t('timebarSettings.showGraphDepth', 'Show track depth graph')
               }
               onClick={setVesselGraphDepth}
             />
