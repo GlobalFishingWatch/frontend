@@ -12,6 +12,7 @@ import {
   VesselEventsLoader,
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
+import { Bbox } from '@globalfishingwatch/data-transforms'
 import { deckToHexColor } from '../../utils/colors'
 import { getFetchLoadOptions, getLayerGroupOffset, LayerGroup } from '../../utils'
 import { BaseLayerProps } from '../../types'
@@ -258,6 +259,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   getVesselTrackSegments() {
     return this.getTrackLayers()?.flatMap((l) => l.getSegments())
+  }
+
+  getVesselTrackBounds() {
+    return this.getTrackLayers()?.flatMap((l) => l.getBbox()) as Bbox
   }
 
   getVesselEventsLayersLoaded() {

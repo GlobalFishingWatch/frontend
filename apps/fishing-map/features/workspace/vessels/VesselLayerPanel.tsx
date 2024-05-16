@@ -230,7 +230,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   ) : (
     <FitBounds
       hasError={trackError}
-      trackResource={trackResource as any}
+      vesselLayer={vesselLayer?.instance}
       infoResource={infoResource}
     />
   )
