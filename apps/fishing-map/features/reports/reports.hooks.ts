@@ -46,7 +46,6 @@ import {
 export type DateTimeSeries = {
   date: string
   values: number[]
-  compareDate?: string
 }[]
 
 export function useReportAreaCenter(bounds?: Bbox) {

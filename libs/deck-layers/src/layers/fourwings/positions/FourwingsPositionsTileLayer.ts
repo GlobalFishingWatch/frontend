@@ -11,7 +11,7 @@ import {
 } from '@deck.gl/core'
 import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers'
 import { IconLayer, TextLayer } from '@deck.gl/layers'
-import { ckmeans, sample, mean, standardDeviation } from 'simple-statistics'
+import { sample, mean, standardDeviation } from 'simple-statistics'
 import { groupBy, orderBy } from 'lodash'
 import { stringify } from 'qs'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
@@ -22,6 +22,7 @@ import {
   BLEND_BACKGROUND,
   getColorRamp,
   getLayerGroupOffset,
+  getSteps,
   GFWMVTLoader,
   hexToDeckColor,
   LayerGroup,
@@ -154,11 +155,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const upperCut = meanValue + standardDeviationValue * 2
       const lowerCut = meanValue - standardDeviationValue * 2
       const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
-      const stepsNum = Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
-      // using ckmeans as jenks
-      const steps = ckmeans(dataFiltered, stepsNum).map(([clusterFirst]) =>
-        parseFloat(clusterFirst.toFixed(3))
-      )
+      const steps = getSteps(dataFiltered).map((value) => parseFloat(value.toFixed(3)))
       const colorRange = getColorRamp({ rampId: this.props.sublayers?.[0]?.colorRamp as any }).map(
         (c) => rgbaStringToComponents(c)
       )
@@ -299,8 +296,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
       const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
       const params = {
-        // datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
-        datasets: ['public-global-fishing-effort:v3.0'],
+        datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
         format: 'MVT',
         'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
         properties: [['speed', 'bearing', 'shipname'].join(',')],
@@ -399,6 +395,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   getColorScale() {
     return this.state.colorScale
+  }
+
+  getFourwingsLayers() {
+    return this.props.sublayers
   }
 
   getTimeseries() {

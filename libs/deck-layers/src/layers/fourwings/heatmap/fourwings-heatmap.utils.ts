@@ -14,6 +14,7 @@ import { FourwingsDeckSublayer } from '../fourwings.types'
 import { HEATMAP_API_TILES_URL, getChunkByInterval, getInterval } from '../fourwings.config'
 import {
   AggregateCellParams,
+  CompareCellParams,
   FourwingsAggregationOperation,
   FourwingsChunk,
 } from './fourwings-heatmap.types'
@@ -60,6 +61,26 @@ export const aggregateCell = ({
       aggregationOperation
     )
   })
+}
+
+export const compareCell = ({
+  cellValues,
+  aggregationOperation = FourwingsAggregationOperation.Sum,
+}: CompareCellParams): number[] => {
+  const [initialValue, comparedValue] = cellValues.map((sublayerValues) => {
+    if (!sublayerValues || !sublayerValues?.length) {
+      return 0
+    }
+    const value = aggregateSublayerValues(sublayerValues, aggregationOperation)
+    return value ?? 0
+  })
+  if (!comparedValue) {
+    return [-initialValue]
+  }
+  if (!initialValue) {
+    return [comparedValue]
+  }
+  return [comparedValue - initialValue]
 }
 
 function stringHash(s: string): number {

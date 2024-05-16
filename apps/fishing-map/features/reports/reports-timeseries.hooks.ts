@@ -13,13 +13,11 @@ import {
   selectReportCategory,
   selectReportTimeComparison,
 } from 'features/app/selectors/app.reports.selector'
-import { getUTCDateTime } from 'utils/dates'
 import { filterByPolygon } from 'features/reports/reports-geo.utils'
 import {
   FeaturesToTimeseriesParams,
   featuresToTimeseries,
   filterTimeseriesByTimerange,
-  removeTimeseriesPadding,
 } from 'features/reports/reports-timeseries.utils'
 import { useReportAreaInViewport } from 'features/reports/reports.hooks'
 import {
@@ -77,7 +75,6 @@ export const hasMapTimeseriesAtom = atom((get) => {
 export type DateTimeSeries = {
   date: string
   values: number[]
-  compareDate?: string
 }[]
 
 export function useSetTimeseries() {
@@ -111,16 +108,8 @@ const useReportTimeseries = (reportLayer: DeckLayerAtom<FourwingsLayer>) => {
   const areaInViewport = useReportAreaInViewport()
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportCategory = useSelector(selectReportCategory)
-  const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparison = useSelector(selectReportTimeComparison)
   const reportBufferHash = useSelector(selectReportBufferHash)
-
-  let compareDeltaMillis: number | undefined = undefined
-  if (showTimeComparison && timeComparison) {
-    const startMillis = getUTCDateTime(timeComparison.start).toMillis()
-    const compareStartMillis = getUTCDateTime(timeComparison.compareStart).toMillis()
-    compareDeltaMillis = compareStartMillis - startMillis
-  }
 
   const { loaded, instance } = reportLayer || { loaded: false, instance: undefined }
 
@@ -134,24 +123,25 @@ const useReportTimeseries = (reportLayer: DeckLayerAtom<FourwingsLayer>) => {
       )
       const props = instance.props as FourwingsLayerProps
       const chunk = instance.getChunk()
+      const sublayers = instance.getFourwingsLayers()
 
       const params: FeaturesToTimeseriesParams = {
         staticHeatmap: props.static,
         interval: instance.getInterval(),
-        start: chunk.bufferedStart,
-        end: chunk.bufferedEnd,
+        start: timeComparison ? props.startTime : chunk.bufferedStart,
+        end: timeComparison ? props.endTime : chunk.bufferedEnd,
+        compareStart: props.compareStart,
+        compareEnd: props.compareEnd,
         aggregationOperation: props.aggregationOperation,
         minVisibleValue: props.minVisibleValue,
         maxVisibleValue: props.maxVisibleValue,
-        sublayers: props.sublayers,
-        showTimeComparison,
-        compareDeltaMillis: compareDeltaMillis as number,
+        sublayers,
         graphMode,
       }
       const timeseries = featuresToTimeseries(filteredFeatures, params)
       setTimeseries(timeseries)
     },
-    [reportCategory, showTimeComparison, compareDeltaMillis, setTimeseries]
+    [reportCategory, setTimeseries, timeComparison]
   )
 
   // We need to re calculate the timeseries when area or timerange changes
@@ -194,7 +184,7 @@ export const useReportFilteredTimeSeries = () => {
       return []
     }
     if (showTimeComparison) {
-      return removeTimeseriesPadding(timeseries)
+      return timeseries
     } else {
       if (timebarStart && timebarEnd && timeseries) {
         return memoizedFilterTimeseriesByTimerange(timeseries, timebarStart, timebarEnd)

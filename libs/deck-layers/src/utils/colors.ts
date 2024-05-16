@@ -62,6 +62,7 @@ export const rgbaStringToObject = (rgba?: string) => {
 }
 
 export const rgbaStringToComponents = (color: string) => {
+  if (!color) return []
   const rgba = color.match(/[.?\d]+/g)
   if (rgba)
     return [

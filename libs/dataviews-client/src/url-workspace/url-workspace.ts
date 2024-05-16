@@ -52,6 +52,10 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),
   vesselIdentityIndex: (index) => parseInt(index),
+  reportTimeComparison: (reportTimeComparison = {}) => ({
+    ...reportTimeComparison,
+    duration: parseInt(reportTimeComparison.duration),
+  }),
   dataviewInstances: (dataviewInstances: UrlDataviewInstance[]) => {
     return dataviewInstances.map(parseDataviewInstance)
   },

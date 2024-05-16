@@ -1,8 +1,8 @@
-import { Dataview, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { Dataview, DataviewType, DataviewCategory } from '@globalfishingwatch/api-types'
 import { GRATICULES_DATAVIEW_SLUG } from 'data/workspaces'
 
 // TODO:deck remove this and use the real dataview slug from workspaces.ts
-export const MOCKED_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track'
+export const MOCKED_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3-deck'
 
 export const dataviews: Dataview[] = [
   {
@@ -46,52 +46,24 @@ export const dataviews: Dataview[] = [
     datasetsConfig: [
       {
         query: [
-          {
-            id: 'binary',
-            value: true,
-          },
-          {
-            id: 'wrap-longitudes',
-            value: false,
-          },
-          {
-            id: 'fields',
-            value: ['LONLAT', 'TIMESTAMP', 'SPEED', 'ELEVATION'],
-          },
-          {
-            id: 'format',
-            value: 'DECKGL',
-          },
+          { id: 'binary', value: true },
+          { id: 'wrap-longitudes', value: false },
+          { id: 'fields', value: ['LONLAT', 'TIMESTAMP', 'SPEED', 'ELEVATION'] },
+          { id: 'format', value: 'VALUE_ARRAY' },
         ],
-        params: [
-          {
-            id: 'vesselId',
-            value: '',
-          },
-        ],
+        params: [{ id: 'vesselId', value: '' }],
         endpoint: 'tracks',
         datasetId: 'public-global-all-tracks:v20201001',
       },
       {
-        params: [
-          {
-            id: 'vesselId',
-            value: '',
-          },
-        ],
+        params: [{ id: 'vesselId', value: '' }],
         endpoint: 'vessel',
-        datasetId: 'public-global-vessel-identity:v20231026',
+        datasetId: 'public-global-vessel-identity:v3.0',
       },
       {
         query: [
-          {
-            id: 'vessels',
-            value: '',
-          },
-          {
-            id: 'vessel-types',
-            value: ['FISHING'],
-          },
+          { id: 'vessels', value: '' },
+          { id: 'vessel-types', value: ['FISHING'] },
           {
             id: 'includes',
             value: [
@@ -107,25 +79,16 @@ export const dataviews: Dataview[] = [
               'fishing.averageSpeedKnots',
             ],
           },
-          {
-            id: 'limit',
-            value: 9999999,
-          },
-          {
-            id: 'offset',
-            value: 0,
-          },
+          { id: 'limit', value: 9999999 },
+          { id: 'offset', value: 0 },
         ],
         params: [],
         endpoint: 'events',
-        datasetId: 'public-global-fishing-events:v20231026',
+        datasetId: 'public-global-fishing-events:v3.0',
       },
       {
         query: [
-          {
-            id: 'vessels',
-            value: '',
-          },
+          { id: 'vessels', value: '' },
           {
             id: 'includes',
             value: [
@@ -142,25 +105,16 @@ export const dataviews: Dataview[] = [
               'loitering.averageSpeedKnots',
             ],
           },
-          {
-            id: 'limit',
-            value: 9999999,
-          },
-          {
-            id: 'offset',
-            value: 0,
-          },
+          { id: 'limit', value: 9999999 },
+          { id: 'offset', value: 0 },
         ],
         params: [],
         endpoint: 'events',
-        datasetId: 'public-global-loitering-events:v20231026',
+        datasetId: 'public-global-loitering-events:v3.0',
       },
       {
         query: [
-          {
-            id: 'vessels',
-            value: '',
-          },
+          { id: 'vessels', value: '' },
           {
             id: 'includes',
             value: [
@@ -188,29 +142,17 @@ export const dataviews: Dataview[] = [
             id: 'encounter-types',
             value: ['CARRIER-FISHING', 'FISHING-CARRIER', 'FISHING-SUPPORT', 'SUPPORT-FISHING'],
           },
-          {
-            id: 'limit',
-            value: 9999999,
-          },
-          {
-            id: 'offset',
-            value: 0,
-          },
+          { id: 'limit', value: 9999999 },
+          { id: 'offset', value: 0 },
         ],
         params: [],
         endpoint: 'events',
-        datasetId: 'public-global-encounters-events:v20231026',
+        datasetId: 'public-global-encounters-events:v3.0',
       },
       {
         query: [
-          {
-            id: 'vessels',
-            value: '',
-          },
-          {
-            id: 'confidences',
-            value: [4],
-          },
+          { id: 'vessels', value: '' },
+          { id: 'confidences', value: [4] },
           {
             id: 'includes',
             value: [
@@ -227,23 +169,17 @@ export const dataviews: Dataview[] = [
               'port_visit.intermediateAnchorage.flag',
             ],
           },
-          {
-            id: 'limit',
-            value: 9999999,
-          },
-          {
-            id: 'offset',
-            value: 0,
-          },
+          { id: 'limit', value: 9999999 },
+          { id: 'offset', value: 0 },
         ],
         params: [],
         endpoint: 'events',
-        datasetId: 'public-global-port-visits-c2-events:v20231026',
+        datasetId: 'public-global-port-visits-events:v3.0',
       },
     ],
-    description: 'Fishing map vessel with track, info and events',
-    createdAt: '2023-01-16T15:35:34.588Z',
-    updatedAt: '2024-04-19T08:36:46.983Z',
+    description: 'Fishing map vessel with track, info and events in pipe 3',
+    createdAt: '2024-05-16T07:24:11.534Z',
+    updatedAt: '2024-05-16T08:21:11.679Z',
   },
 ]
 
