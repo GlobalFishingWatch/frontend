@@ -9,7 +9,7 @@ import {
   PickingInfo,
 } from '@deck.gl/core'
 import { scaleLinear } from 'd3-scale'
-import { MVTLayer, TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import { MVTLayer, TileLayer } from '@deck.gl/geo-layers'
 import { ckmeans } from 'simple-statistics'
 import { debounce } from 'lodash'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
@@ -36,7 +36,7 @@ import {
   HEATMAP_API_TILES_URL,
   MAX_RAMP_VALUES_PER_TILE,
 } from '../fourwings.config'
-import { FourwingsPickingInfo, FourwingsPickingObject } from '../fourwings.types'
+import { FourwingsPickingObject } from '../fourwings.types'
 import { EMPTY_CELL_COLOR, filterCells } from './fourwings-heatmap.utils'
 import {
   FourwingsAggregationOperation,
@@ -125,7 +125,14 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     if (!info.object) {
       info.object = {} as FourwingsPickingObject
     }
+    const { minVisibleValue, maxVisibleValue } = this.props
     if (info.object?.properties?.count) {
+      if (
+        (minVisibleValue && info.object?.properties?.count < minVisibleValue) ||
+        (maxVisibleValue && info.object?.properties?.count > maxVisibleValue)
+      ) {
+        return info as any
+      }
       info.object.properties.values = [[info.object.properties.count]]
     }
     info.object.layerId = this.root.id
