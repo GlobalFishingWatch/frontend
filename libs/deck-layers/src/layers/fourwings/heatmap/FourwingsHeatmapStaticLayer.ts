@@ -128,7 +128,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         (minVisibleValue && info.object?.properties?.count < minVisibleValue) ||
         (maxVisibleValue && info.object?.properties?.count > maxVisibleValue)
       ) {
-        return info as any
+        return { ...info, object: undefined } as any
       }
       info.object.properties.values = [[info.object.properties.count]]
     }

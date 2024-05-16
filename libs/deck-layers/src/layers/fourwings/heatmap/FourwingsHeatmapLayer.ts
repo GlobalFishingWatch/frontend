@@ -71,7 +71,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         ...sublayer,
         value: info.object?.properties?.aggregatedValues?.[i],
       }))
-      if (!object.sublayers?.length) {
+      if (!object.sublayers?.filter(({ value }) => value).length) {
         return { ...info, object: undefined }
       }
     }
