@@ -1,4 +1,5 @@
 import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
+import { intersection } from 'lodash'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import { getUTCDateTime } from '../../utils/dates'
@@ -86,7 +87,14 @@ export const getInterval = (
       ? (interval as FourwingsInterval)
       : []
   })
-  return validIntervals[0]
+  if (validIntervals.length) {
+    return validIntervals[0]
+  }
+  const sortedIntervals = intersection(
+    DEFAULT_FOURWINGS_INTERVALS,
+    availableIntervals
+  ) as FourwingsInterval[]
+  return sortedIntervals[sortedIntervals.length - 1]
 }
 
 export const getDateInIntervalResolution = (date: number, interval: FourwingsInterval): number => {

@@ -34,6 +34,7 @@ import { useDrawLayer } from './overlays/draw/draw.hooks'
 import { useMapDrawConnect } from './map-draw.hooks'
 import MapInfo from './controls/MapInfo'
 import { MAP_CANVAS_ID } from './map.config'
+import TimeComparisonLegend from './TimeComparisonLegend'
 
 // This avoids type checking to complain
 // https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
@@ -163,6 +164,7 @@ const MapWrapper = () => {
       )}
       {/* TODO:deck pass hovered cursor coordinates */}
       <MapInfo center={null} />
+      <TimeComparisonLegend />
     </div>
   )
 }

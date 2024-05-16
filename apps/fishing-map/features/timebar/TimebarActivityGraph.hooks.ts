@@ -39,7 +39,7 @@ export const useHeatmapActivityGraph = () => {
           start: chunk.bufferedStart,
           end: chunk.bufferedEnd,
           interval: chunk.interval,
-          sublayers: instance.props.sublayers.length,
+          sublayers: instance.props.sublayers,
         }) || EMPTY_ACTIVITY_DATA
       )
     }

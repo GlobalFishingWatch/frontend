@@ -7,7 +7,7 @@ import {
   UpdateParameters,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
-import { ckmeans, mean, standardDeviation } from 'simple-statistics'
+import { mean, standardDeviation } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
@@ -24,6 +24,7 @@ import {
   COLOR_RAMP_BIVARIATE_NUM_STEPS,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
   ColorRampId,
+  TIME_COMPARE_COLOR_RAMP,
   getBivariateRamp,
   getColorRamp,
 } from '../../../utils/colorRamps'
@@ -39,15 +40,18 @@ import {
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
 } from '../fourwings.types'
+import { getSteps, removeOutliers } from '../../../utils'
 import {
   aggregateCellTimeseries,
   getFourwingsChunk,
   getDataUrlBySublayer,
   filterCells,
+  compareCell,
 } from './fourwings-heatmap.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import {
   FourwingsAggregationOperation,
+  FourwingsChunk,
   FourwingsComparisonMode,
   FourwingsHeatmapTileLayerProps,
   FourwingsHeatmapTilesCache,
@@ -89,6 +93,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
       return getBivariateRamp(this.props.sublayers.map((s) => s?.colorRamp) as ColorRampId[])
     }
+    if (this.props.comparisonMode === FourwingsComparisonMode.TimeCompare) {
+      return [TIME_COMPARE_COLOR_RAMP]
+    }
     return this.props.sublayers.map(({ colorRamp }) =>
       getColorRamp({ rampId: colorRamp as ColorRampId, whiteEnd: this.props.colorRampWhiteEnd })
     )
@@ -123,15 +130,39 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
       const steps = allValues
         .filter((sublayer) => sublayer.length)
-        .map((sublayerValues) =>
-          ckmeans(
-            sublayerValues,
-            Math.min(sublayerValues.length, COLOR_RAMP_BIVARIATE_NUM_STEPS)
-          ).map((step) => step[0])
-        )
+        .map((sublayerValues) => getSteps(sublayerValues, COLOR_RAMP_BIVARIATE_NUM_STEPS))
       return steps
     }
 
+    if (comparisonMode === FourwingsComparisonMode.TimeCompare) {
+      const allPositiveValues = []
+      const allNegativeValues = []
+      for (const feature of dataSample) {
+        const aggregatedCellValues = compareCell({
+          cellValues: feature.properties.values,
+          aggregationOperation,
+        })
+        if (aggregatedCellValues[0] >= 0) {
+          allPositiveValues.push(aggregatedCellValues[0])
+        } else {
+          allNegativeValues.push(aggregatedCellValues[0])
+        }
+      }
+      if (!allNegativeValues.length || !allPositiveValues.length) {
+        return this.getColorDomain()
+      }
+      const negativeValuesFiltered = removeOutliers({
+        allValues: allNegativeValues,
+        aggregationOperation,
+      })
+      const positiveValuesFiltered = removeOutliers({
+        allValues: allPositiveValues,
+        aggregationOperation,
+      })
+      const negativeSteps = getSteps(negativeValuesFiltered, COLOR_RAMP_DEFAULT_NUM_STEPS / 2 - 1)
+      const positiveSteps = getSteps(positiveValuesFiltered, COLOR_RAMP_DEFAULT_NUM_STEPS / 2)
+      return [...negativeSteps, 0, ...positiveSteps]
+    }
     const allValues = dataSample.flatMap((feature) =>
       feature.properties?.values.flatMap((values) => {
         if (!values || !values.length || !Array.isArray(values)) {
@@ -145,17 +176,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return this.getColorDomain()
     }
 
-    const meanValue = mean(allValues)
-    const deviationScale = aggregationOperation === FourwingsAggregationOperation.Avg ? 2 : 5
-    const standardDeviationValue = standardDeviation(allValues)
-    const upperCut = meanValue + standardDeviationValue * deviationScale
-    const lowerCut = meanValue - standardDeviationValue * deviationScale
-    const dataFiltered = allValues.filter((a) => a >= lowerCut && a <= upperCut)
+    const dataFiltered = removeOutliers({ allValues, aggregationOperation })
 
-    const steps = ckmeans(
-      dataFiltered,
-      Math.min(dataFiltered.length, COLOR_RAMP_DEFAULT_NUM_STEPS)
-    ).map((step) => step[0])
+    const steps = getSteps(dataFiltered)
     return steps
   }
 
@@ -177,6 +200,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         return scaleLinear(cd, colorRanges[i] as string[]).clamp(true)
       })
     }
+    if (this.props.comparisonMode === FourwingsComparisonMode.TimeCompare) {
+      return [scaleLinear(colorDomain as number[], colorRanges[0] as string[]).clamp(true)]
+    }
     return colorRanges.map((cr) => scaleLinear(colorDomain as number[], cr as string[]).clamp(true))
   }
 
@@ -187,7 +213,150 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
   }
 
-  _fetchTileData: any = async (tile: TileLoadProps) => {
+  _getTimeCompareSublayers = () => {
+    const { startTime, endTime, availableIntervals, compareStart, compareEnd } = this.props
+    if (!compareStart || !compareEnd) {
+      // TODO:deck handle this
+      throw new Error('Missing compare start or end')
+    }
+    const interval = getInterval(startTime, endTime, availableIntervals)
+    if (!interval) {
+      throw new Error('Missing valid interval in time compare mode')
+    }
+    const visibleSublayers = this.props.sublayers.filter((sublayer) => sublayer.visible)
+    const sublayerDatasets = Array.from(new Set(visibleSublayers.flatMap((d) => d.datasets)))
+    const sublayers: (FourwingsDeckSublayer & { chunk: FourwingsChunk })[] = [
+      {
+        ...visibleSublayers[0],
+        id: `${startTime}-${endTime}`,
+        datasets: sublayerDatasets,
+        chunk: {
+          id: `${startTime}-${endTime}`,
+          start: startTime,
+          bufferedStart: startTime,
+          end: endTime,
+          bufferedEnd: endTime,
+          interval,
+        },
+      },
+      {
+        ...visibleSublayers[0],
+        id: `${compareStart}-${compareEnd}`,
+        datasets: sublayerDatasets,
+        chunk: {
+          id: `${compareStart}-${compareEnd}`,
+          start: compareStart,
+          bufferedStart: compareStart,
+          end: compareEnd,
+          bufferedEnd: compareEnd,
+          interval,
+        },
+      },
+    ]
+    return sublayers
+  }
+
+  _fetchTimeCompareTileData: any = async (tile: TileLoadProps) => {
+    const {
+      startTime,
+      endTime,
+      aggregationOperation,
+      availableIntervals,
+      tilesUrl,
+      compareStart,
+      compareEnd,
+    } = this.props
+    if (!compareStart || !compareEnd) {
+      // TODO:deck handle this
+      throw new Error('Missing compare start or end')
+    }
+    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
+    const interval = getInterval(startTime, endTime, availableIntervals)
+    if (!interval) {
+      throw new Error('Invalid interval')
+    }
+    const sublayers = this._getTimeCompareSublayers()
+    let cols: number = 0
+    let rows: number = 0
+    let scale: number = 0
+    let offset: number = 0
+    let noDataValue: number = 0
+
+    const getSublayerData: any = async (
+      sublayer: FourwingsDeckSublayer & { chunk: FourwingsChunk }
+    ) => {
+      const url = getDataUrlBySublayer({
+        tile,
+        chunk: sublayer.chunk,
+        sublayer,
+        tilesUrl,
+      }) as string
+      const response = await GFWAPI.fetch<Response>(url!, {
+        signal: tile.signal,
+        responseType: 'default',
+      })
+      if (tile.signal?.aborted || response.status !== 200) {
+        throw new Error()
+      }
+      cols = parseInt(response.headers.get('X-columns') as string)
+      rows = parseInt(response.headers.get('X-rows') as string)
+      scale = parseFloat(response.headers.get('X-scale') as string)
+      offset = parseInt(response.headers.get('X-offset') as string)
+      noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+
+      // TODO:deck is this needed?
+      // const bins = JSON.parse(response.headers.get('X-bins-0') as string)?.map((n: string) => {
+      //   return (parseInt(n) - offset) * scale
+      // })
+      // if (
+      //   !colorDomain?.length &&
+      //   !this.initialBinsLoad &&
+      //   comparisonMode === FourwingsComparisonMode.Compare &&
+      //   bins
+      // ) {
+      //   const scales = this._getColorScales(bins, colorRanges)
+      //   this.setState({ colorDomain: bins, scales })
+      //   this.initialBinsLoad = true
+      // }
+      return await response.arrayBuffer()
+    }
+
+    const promises = sublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
+    // TODO:deck decide what to do when a chunk load fails
+    const settledPromises = await Promise.allSettled(promises)
+    const arrayBuffers = settledPromises.flatMap((d) => {
+      return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
+    })
+    if (tile.signal?.aborted) {
+      throw new Error('tile aborted')
+    }
+
+    const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
+      worker: true,
+      fourwings: {
+        sublayers: 1,
+        cols,
+        rows,
+        scale,
+        offset,
+        noDataValue,
+        bufferedStartDate: sublayers[0]?.chunk.bufferedStart,
+        initialTimeRange: {
+          start: startTime,
+          end: endTime,
+        },
+        interval,
+        tile,
+        aggregationOperation,
+        buffersLength: settledPromises.map((p) =>
+          p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
+        ),
+      } as ParseFourwingsOptions,
+    })
+    return data
+  }
+
+  _fetchTimeseriesTileData: any = async (tile: TileLoadProps) => {
     const {
       startTime,
       endTime,
@@ -239,7 +408,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const promises = visibleSublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
-    // TODO decide what to do when a chunk load fails
+    // TODO:deck decide what to do when a chunk load fails
     const settledPromises = await Promise.allSettled(promises)
     const arrayBuffers = settledPromises.flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
@@ -276,7 +445,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     if (tile.signal?.aborted) {
       return null
     }
-    return this._fetchTileData(tile)
+    return this.props.comparisonMode === FourwingsComparisonMode.TimeCompare
+      ? this._fetchTimeCompareTileData(tile)
+      : this._fetchTimeseriesTileData(tile)
   }
 
   _getTileDataCache = (
@@ -426,10 +597,19 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return []
   }
 
+  getFourwingsLayers() {
+    const sublayers =
+      this.props.comparisonMode === FourwingsComparisonMode.TimeCompare
+        ? this._getTimeCompareSublayers()
+        : this.props.sublayers
+    return sublayers
+  }
+
   getTimeseries() {
     const data = this.getData()
     if (data?.length) {
-      const cells = aggregateCellTimeseries(data, this.props.sublayers)
+      const sublayers = this.getFourwingsLayers()
+      const cells = aggregateCellTimeseries(data, sublayers)
       return cells
     }
     return []

@@ -256,6 +256,19 @@ export function getDataviewsSorted(
   }) as DataviewInstance[]
 }
 
+export function getComparisonMode(
+  dataviews: (UrlDataviewInstance | DataviewInstance)[],
+  params: ResolverGlobalConfig
+) {
+  const dataviewsArray = Array.isArray(dataviews) ? dataviews : [dataviews]
+  if (params.compareStart && params.compareEnd) {
+    return FourwingsComparisonMode.TimeCompare
+  }
+  return dataviewsArray.every((dataview) => params.bivariateDataviews?.includes(dataview.id))
+    ? FourwingsComparisonMode.Bivariate
+    : FourwingsComparisonMode.Compare
+}
+
 export function getDataviewsResolved(
   dataviews: (UrlDataviewInstance | DataviewInstance)[],
   params: ResolverGlobalConfig = {}
@@ -296,16 +309,10 @@ export function getDataviewsResolved(
 
   const singleHeatmapDataview =
     [...activityDataviews, ...detectionDataviews, ...environmentalDataviews].length === 1
-  const activityComparisonMode = activityDataviews.every((dataview) =>
-    params.bivariateDataviews?.includes(dataview.id)
-  )
-    ? FourwingsComparisonMode.Bivariate
-    : FourwingsComparisonMode.Compare
-  const detectionsComparisonMode = detectionDataviews.every((dataview) =>
-    params.bivariateDataviews?.includes(dataview.id)
-  )
-    ? FourwingsComparisonMode.Bivariate
-    : FourwingsComparisonMode.Compare
+
+  const activityComparisonMode = getComparisonMode(activityDataviews, params)
+  const detectionsComparisonMode = getComparisonMode(detectionDataviews, params)
+
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
   const mergedActivityDataview = activityDataviews?.length
     ? getFourwingsDataviewsResolved(activityDataviews, {
