@@ -3,13 +3,20 @@ import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from 'utils/dates'
 import { FeaturesToTimeseriesParams } from 'features/reports/reports-timeseries.utils'
+import { FourwingsAggregationOperation } from '../../../../libs/deck-layers/src/layers/fourwings'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
   FeaturesToTimeseriesParams,
-  'start' | 'end' | 'compareStart' | 'compareEnd' | 'interval' | 'sublayers'
+  | 'start'
+  | 'end'
+  | 'compareStart'
+  | 'compareEnd'
+  | 'interval'
+  | 'sublayers'
+  | 'aggregationOperation'
 >
 
-type FeatureDates = Record<number, ActivityTimeseriesFrame>
+type FeatureDates = Record<number, ActivityTimeseriesFrame & { count: number[] }>
 function getDatesPopulated({
   start,
   end,
@@ -31,7 +38,7 @@ function getDatesPopulated({
     now
   )
   while (date <= endPlusOne) {
-    data[date] = { date }
+    data[date] = { date, count: [] as number[] }
     for (let i = 0; i < sublayerLength; i++) {
       data[date][i] = 0
     }
@@ -58,6 +65,7 @@ export function getGraphDataFromFourwingsFeatures(
     compareEnd,
     interval,
     sublayers,
+    aggregationOperation,
   }: GetGraphDataFromFourwingsFeaturesParams
 ): ActivityTimeseriesFrame[] {
   if (!features?.length || !start || !end) {
@@ -79,10 +87,27 @@ export function getGraphDataFromFourwingsFeatures(
         sublayerDates.forEach((sublayerDate, dateIndex) => {
           if (data[sublayerDate]) {
             data[sublayerDate][sublayerIndex] += values[sublayerIndex][dateIndex]
+            if (aggregationOperation === FourwingsAggregationOperation.Avg) {
+              if (!data[sublayerDate].count[sublayerIndex]) {
+                data[sublayerDate].count[sublayerIndex] = 0
+              }
+              data[sublayerDate].count[sublayerIndex]++
+            }
           }
         })
       })
     }
+  }
+  if (aggregationOperation === FourwingsAggregationOperation.Avg) {
+    return Object.values(data).map(({ date, count, ...rest }) => {
+      Object.keys(rest).forEach((key) => {
+        const indexKey = parseInt(key)
+        if (rest[indexKey]) {
+          rest[indexKey] = rest[indexKey] / count[indexKey]
+        }
+      })
+      return { date, ...rest }
+    })
   }
 
   return Object.values(data)

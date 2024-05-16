@@ -22,7 +22,7 @@ import {
   FourwingsStaticFeatureProperties,
 } from '@globalfishingwatch/deck-loaders'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS, ColorRampId, getColorRamp } from '../../../utils/colorRamps'
+import { ColorRampId, getColorRamp } from '../../../utils/colorRamps'
 import {
   COLOR_HIGHLIGHT_LINE,
   GFWMVTLoader,
@@ -36,7 +36,7 @@ import {
   HEATMAP_API_TILES_URL,
   MAX_RAMP_VALUES_PER_TILE,
 } from '../fourwings.config'
-import { FourwingsPickingInfo, FourwingsPickingObject } from '../fourwings.types'
+import { FourwingsPickingObject } from '../fourwings.types'
 import { EMPTY_CELL_COLOR, filterCells } from './fourwings-heatmap.utils'
 import {
   FourwingsAggregationOperation,
@@ -122,7 +122,14 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     if (!info.object) {
       info.object = {} as FourwingsPickingObject
     }
+    const { minVisibleValue, maxVisibleValue } = this.props
     if (info.object?.properties?.count) {
+      if (
+        (minVisibleValue && info.object?.properties?.count < minVisibleValue) ||
+        (maxVisibleValue && info.object?.properties?.count > maxVisibleValue)
+      ) {
+        return { ...info, object: undefined } as any
+      }
       info.object.properties.values = [[info.object.properties.count]]
     }
     info.object.layerId = this.root.id

@@ -26,7 +26,11 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
-import { isGFWOnlyDataset, isPrivateDataset } from 'features/datasets/datasets.utils'
+import {
+  getSchemaFiltersInDataview,
+  isGFWOnlyDataset,
+  isPrivateDataset,
+} from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
@@ -36,6 +40,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { t } from 'features/i18n/i18n'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import Filters from '../common/LayerFilters'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -160,6 +165,11 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     ? getVesselIdentityTooltipSummary(vesselData, { showVesselId: gfwUser || false })
     : ''
 
+  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const hasSchemaFilterSelection = filtersAllowed.some(
+    (schema) => schema.optionsSelected?.length > 0
+  )
+
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
       (p: DataviewDatasetConfigParam) => p.id === 'vesselId'
@@ -230,7 +240,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   ) : (
     <FitBounds
       hasError={trackError}
-      trackResource={trackResource as any}
+      vesselLayer={vesselLayer?.instance}
       infoResource={infoResource}
     />
   )
@@ -335,6 +345,17 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
           />
         )}
       </div>
+      {hasSchemaFilterSelection && (
+        <div className={styles.properties}>
+          <div className={styles.filters}>
+            <div className={styles.filters}>
+              {filtersAllowed.map(({ id, label }) => (
+                <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -33,7 +33,7 @@ function EnvironmentTooltipSection({
           feature.subcategory === DataviewType.HeatmapStatic
         const value =
           feature.subcategory === DataviewType.HeatmapAnimated
-            ? feature.value
+            ? feature.sublayers?.[0]?.value
             : feature.properties?.[HEATMAP_STATIC_PROPERTY_ID]
 
         const unit = feature.sublayers?.[0]?.unit
@@ -42,7 +42,7 @@ function EnvironmentTooltipSection({
             <Icon
               icon={isHeatmapFeature ? 'heatmap' : 'polygons'}
               className={styles.layerIcon}
-              style={{ color: feature.color }}
+              style={{ color: feature.sublayers?.[0]?.color }}
             />
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}

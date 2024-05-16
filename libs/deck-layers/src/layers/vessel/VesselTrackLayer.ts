@@ -1,8 +1,10 @@
 import type { NumericArray } from '@math.gl/core'
 import { AccessorFunction, ChangeFlags, DefaultProps, UpdateParameters } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
+import { point } from '@turf/helpers'
 import { TrackSegment } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
+import { Bbox, getBboxFromPoints } from '@globalfishingwatch/data-transforms'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
 
 /** Properties added by VesselTrackLayer. */
@@ -244,7 +246,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
 
   getSegments(): TrackSegment[] {
     const data = this.props.data as VesselTrackData
-    const segmentsIndex = data.startIndices
+    const segmentsIndexes = data.startIndices
     const positions = data.attributes?.getPath?.value
     const timestamps = data.attributes?.getTimestamp?.value
     const speeds = data.attributes?.getSpeed?.value
@@ -253,34 +255,54 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     if (!positions?.length || !timestamps.length) {
       return []
     }
-    const size = data.attributes.getTimestamp!?.size
-    const segments = segmentsIndex.map((segment, i, segments) => {
+    const timestampSize = data.attributes.getTimestamp!?.size
+    const speedSize = data.attributes.getSpeed!?.size
+    const elevationSize = data.attributes.getElevation!?.size
+    const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
       const initialPoint = {
-        // longitude: positions[segment],
-        // latitude: positions[segment + 1],
-        timestamp: timestamps[segment / size],
-        speed: speeds?.[segment / size],
-        elevation: elevations?.[segment / size],
+        // longitude: positions[segmentIndex * pathSize],
+        // latitude: positions[segmentIndex * pathSize + 1],
+        timestamp: timestamps[segmentIndex / timestampSize],
+        speed: speeds?.[segmentIndex / speedSize],
+        elevation: elevations?.[segmentIndex / elevationSize],
       }
-      const nextSegmentIndex = segments[i + 1]
+      const nextSegmentIndex = segmentsIndexes[i + 1]
       const lastPoint =
-        i === segmentsIndex.length - 1
+        i === segmentsIndexes.length - 1
           ? {
-              // longitude: positions[positions.length - size],
-              // latitude: positions[positions.length - size + 1],
+              // longitude: positions[positions.length - pathSize],
+              // latitude: positions[positions.length - pathSize + 1],
               timestamp: timestamps[timestamps.length - 1],
               speed: speeds?.[speeds.length - 1],
               elevation: elevations?.[elevations.length - 1],
             }
           : {
-              // longitude: positions[nextSegmentIndex],
-              // latitude: positions[nextSegmentIndex + 1],
-              timestamp: timestamps[nextSegmentIndex / size - 1],
-              speed: speeds?.[nextSegmentIndex / size - 1],
-              elevation: elevations?.[nextSegmentIndex / size - 1],
+              // longitude: positions[nextSegmentIndex * pathSize - pathSize],
+              // latitude: positions[nextSegmentIndex * pathSize - pathSize + 1],
+              timestamp: timestamps[nextSegmentIndex / timestampSize - 1],
+              speed: speeds?.[nextSegmentIndex / speedSize - 1],
+              elevation: elevations?.[nextSegmentIndex / elevationSize - 1],
             }
       return [initialPoint, lastPoint]
     })
     return segments
+  }
+
+  getBbox(): Bbox {
+    const data = this.props.data as VesselTrackData
+    const positions = data.attributes?.getPath?.value
+    const positionsSize = data.attributes?.getPath?.size
+    const timestamps = data.attributes?.getTimestamp?.value
+    const pointsArray = Array.from(timestamps)
+    const firstPointIndex = timestamps.findIndex((t) => t > this.props.startTime)
+    const lastPointIndex = timestamps.findLastIndex((t) => t < this.props.endTime)
+    const filteredPointsArray = pointsArray.slice(firstPointIndex, lastPointIndex + 1)
+    const points = filteredPointsArray.map((_, index) =>
+      point([
+        positions[(firstPointIndex + index) * positionsSize],
+        positions[(firstPointIndex + index) * positionsSize + 1],
+      ])
+    )
+    return getBboxFromPoints(points) as Bbox
   }
 }

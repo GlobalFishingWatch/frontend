@@ -40,6 +40,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       endTime,
       availableIntervals,
       category,
+      subcategory,
       sublayers,
       tilesCache,
       comparisonMode,
@@ -58,6 +59,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       title: id, // TODO:deck get the proper title
       tile: tile.index,
       category,
+      subcategory,
       sublayers,
       startTime,
       endTime,
@@ -65,12 +67,11 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       comparisonMode,
     }
     if (info.object) {
-      object.sublayers = object.sublayers?.flatMap((sublayer, i) =>
-        info.object?.properties?.aggregatedValues?.[i]
-          ? { ...sublayer, value: info.object?.properties?.aggregatedValues?.[i] }
-          : []
-      )
-      if (!object.sublayers?.length) {
+      object.sublayers = object.sublayers?.map((sublayer, i) => ({
+        ...sublayer,
+        value: info.object?.properties?.aggregatedValues?.[i],
+      }))
+      if (!object.sublayers?.filter(({ value }) => value).length) {
         return { ...info, object: undefined }
       }
     }

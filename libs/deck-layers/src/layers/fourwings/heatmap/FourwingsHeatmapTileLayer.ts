@@ -7,7 +7,6 @@ import {
   UpdateParameters,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
-import { mean, standardDeviation } from 'simple-statistics'
 import { load } from '@loaders.gl/core'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
@@ -270,7 +269,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
-    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
+    // const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
     const interval = getInterval(startTime, endTime, availableIntervals)
     if (!interval) {
       throw new Error('Invalid interval')

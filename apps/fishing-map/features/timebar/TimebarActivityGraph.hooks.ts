@@ -40,6 +40,7 @@ export const useHeatmapActivityGraph = () => {
           end: chunk.bufferedEnd,
           interval: chunk.interval,
           sublayers: instance.props.sublayers,
+          aggregationOperation: instance.props.aggregationOperation,
         }) || EMPTY_ACTIVITY_DATA
       )
     }

@@ -1,4 +1,4 @@
-import { CompositeLayer, Color, DefaultProps, PickingInfo } from '@deck.gl/core'
+import { CompositeLayer, Color, DefaultProps, PickingInfo, LayerContext } from '@deck.gl/core'
 import { GeoBoundingBox, TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import { GeoJsonProperties } from 'geojson'
@@ -29,6 +29,9 @@ import {
 import { getContextId, getContextLink, getContextValue } from './context.utils'
 
 type _ContextLayerProps = TileLayerProps & ContextLayerProps
+type ContextLayerState = {
+  highlightedFeatures?: ContextPickingObject[]
+}
 
 const defaultProps: DefaultProps<_ContextLayerProps> = {
   idProperty: 'gfw_id',
@@ -40,10 +43,23 @@ const defaultProps: DefaultProps<_ContextLayerProps> = {
 export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps & PropsT> {
   static layerName = 'ContextLayer'
   static defaultProps = defaultProps
+  state!: ContextLayerState
+
+  initializeState(context: LayerContext) {
+    super.initializeState(context)
+    this.state = {
+      highlightedFeatures: this.props.highlightedFeatures,
+    }
+  }
+
+  _getHighlightedFeatures() {
+    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
+  }
 
   getHighlightLineWidth(d: ContextFeature, filters?: Record<string, any>): number {
     if (!getFeatureInFilter(d, filters)) return 0
-    const { highlightedFeatures = [], idProperty } = this.props
+    const { idProperty } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!) ? 1.5 : 0
   }
 
@@ -53,7 +69,8 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
 
   getFillColor(d: ContextFeature, filters?: Record<string, any>): Color {
     if (!getFeatureInFilter(d, filters)) return COLOR_TRANSPARENT
-    const { highlightedFeatures = [], idProperty } = this.props
+    const { idProperty } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)
       ? COLOR_HIGHLIGHT_FILL
       : COLOR_TRANSPARENT
@@ -125,7 +142,8 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
   }
 
   renderLayers() {
-    const { highlightedFeatures, color, layers } = this.props
+    const { color, layers } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     return layers.map((layer) => {
       if (layer.id === ContextLayerId.EEZBoundaries) {
         return new TileLayer<TileLayerProps>({
@@ -218,5 +236,9 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
         },
       })
     })
+  }
+
+  setHighlightedFeatures(highlightedFeatures: ContextFeature[]) {
+    this.setState({ highlightedFeatures })
   }
 }
