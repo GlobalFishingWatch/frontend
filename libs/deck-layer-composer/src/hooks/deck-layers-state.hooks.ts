@@ -30,15 +30,17 @@ export const useSetDeckLayerLoadedState = () => {
               newLoadedState[layer.id] = { loaded: layer.isLoaded }
             }
           })
-          if (
-            Object.keys(newLoadedState).length !== Object.keys(loadedState).length ||
-            Object.keys(newLoadedState).some(
-              (key) => newLoadedState[key]?.loaded !== loadedState[key]?.loaded
-            )
-          ) {
-            return newLoadedState
-          }
-          return loadedState
+          return newLoadedState
+          // TODO:deck make this more effective to avoid re-renders
+          // if (
+          //   Object.keys(newLoadedState).length !== Object.keys(loadedState).length ||
+          //   Object.keys(newLoadedState).some(
+          //     (key) => newLoadedState[key]?.loaded !== loadedState[key]?.loaded
+          //   )
+          // ) {
+          //   return newLoadedState
+          // }
+          // return loadedState
         })
       }
     },
