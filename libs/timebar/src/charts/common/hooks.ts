@@ -179,11 +179,11 @@ export const useTimeseriesToChartData = (
 ): TimebarChartData => {
   return useMemo(() => {
     if (!data || !data.length || !dataviews?.length) return []
-    return dataviews?.map((dataview) => {
+    return dataviews?.map((dataview, dataviewIndex) => {
       const values: TimebarChartValue[] = data.map((frame) => {
         return {
           timestamp: frame.date,
-          value: frame[dataview.id],
+          value: frame[dataviewIndex],
         }
       })
       const chunk: TimebarChartChunk = {
@@ -197,7 +197,7 @@ export const useTimeseriesToChartData = (
         getHighlighterLabel: highlighterCallback,
         getHighlighterIcon: highlighterIconCallback,
         props: {
-          unit: '',
+          unit: dataview.datasets?.[0].unit || '',
           dataviewId: dataview.id,
         },
       }

@@ -18,13 +18,12 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   const { loading, heatmapActivity } = useHeatmapActivityGraph()
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
-    ({ chunk, value, item }: HighlighterCallbackFnArgs) => {
+    ({ value, item }: HighlighterCallbackFnArgs) => {
       if (!value || !value.value) return ''
       const maxHighlighterFractionDigits =
         visualisation === TimebarVisualisations.Environment ? 2 : undefined
       const labels = [
         formatNumber(value.value, maxHighlighterFractionDigits),
-        // TODO ensure we store unit in the item props
         item?.props.unit || '',
         t('common.onScreen', 'on screen'),
       ]

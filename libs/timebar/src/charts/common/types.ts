@@ -82,4 +82,4 @@ export type HighlightedChunks = Partial<Record<ChartType, string[]>>
 
 export type Timeseries = { frame?: number; date: number; [key: number]: number }[]
 
-export type ActivityTimeseriesFrame = { date: number; [key: string]: number }
+export type ActivityTimeseriesFrame = { date: number; [key: number]: number }
