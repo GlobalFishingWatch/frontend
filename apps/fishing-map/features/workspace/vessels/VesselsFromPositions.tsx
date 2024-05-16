@@ -39,7 +39,7 @@ function VesselsFromPositions() {
 
   useEffect(() => {
     if (fourwingsActivityLayer?.instance) {
-      if (fourwingsActivityLayer.instance.getMode() === 'positions') {
+      if (fourwingsActivityLayer.instance.getVisualizationMode() === 'positions') {
         const positions =
           fourwingsActivityLayer.instance.getViewportData() as FourwingsPositionFeature[]
         const vessels = uniqBy(positions, 'properties.id').flatMap((position) => {

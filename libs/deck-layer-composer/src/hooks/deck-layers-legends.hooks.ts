@@ -35,7 +35,7 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
     return {
       id: layer.id,
       type:
-        layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
+        layer.instance.getComparisonMode() === FourwingsComparisonMode.Bivariate
           ? LegendType.Bivariate
           : LegendType.ColorRampDiscrete,
       sublayers: layer.instance.props.sublayers,

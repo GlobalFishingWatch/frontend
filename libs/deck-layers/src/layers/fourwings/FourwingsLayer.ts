@@ -15,6 +15,7 @@ import { FourwingsVisualizationMode } from './fourwings.types'
 import { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
 import {
   FourwingsChunk,
+  FourwingsComparisonMode,
   FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapTileLayerProps,
 } from './heatmap/fourwings-heatmap.types'
@@ -38,7 +39,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   static layerName = 'FourwingsLayer'
 
   renderLayers(): Layer<{}> | LayersList {
-    const visualizationMode = this.getMode()
+    const visualizationMode = this.getVisualizationMode()
     const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
     if (visualizationMode === POSITIONS_ID) {
       return new PositionsLayerClass(
@@ -81,7 +82,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   getIsPositionsAvailable() {
     if (this.props.visualizationMode?.includes(HEATMAP_ID)) {
       const heatmapLayer = this.getLayer() as FourwingsHeatmapTileLayer
-      if (!heatmapLayer.isLoaded) {
+      if (!heatmapLayer?.isLoaded) {
         return false
       }
       const tileStats = heatmapLayer?.getTilesStats()
@@ -111,8 +112,12 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return this.getLayer()?.getViewportData()
   }
 
-  getMode() {
+  getVisualizationMode() {
     return this.props.visualizationMode || HEATMAP_ID
+  }
+
+  getComparisonMode() {
+    return this.props.comparisonMode || FourwingsComparisonMode.Compare
   }
 
   getResolution() {

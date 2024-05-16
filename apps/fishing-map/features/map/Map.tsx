@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic'
 import { RulersLayer, DrawLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
+  useSetDeckLayerAtom,
   useSetDeckLayerComposer,
   useSetDeckLayerLoadedState,
 } from '@globalfishingwatch/deck-layer-composer'
@@ -98,6 +99,7 @@ const MapWrapper = () => {
   const mapLoading = useIsDeckLayersLoading()
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
+  const setDeckLayersAtom = useSetDeckLayerAtom()
   const { onDrawEdit, onDrawClick, drawLayerMode, drawFeaturesIndexes, drawFeatures } =
     useDrawLayer()
 
@@ -111,7 +113,7 @@ const MapWrapper = () => {
         views={MAP_VIEW}
         layers={deckRef ? (layers as LayersList) : []}
         onAfterRender={() => {
-          setDeckLayerLoadedState(layers)
+          setDeckLayersAtom(layers)
         }}
         style={mapStyles}
         getCursor={getCursor}
