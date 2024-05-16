@@ -33,7 +33,7 @@ function EnvironmentTooltipSection({
           feature.subcategory === DataviewType.HeatmapStatic
         const value =
           feature.subcategory === DataviewType.HeatmapAnimated
-            ? feature.value
+            ? feature.sublayers?.[0]?.value
             : feature.properties?.[HEATMAP_STATIC_PROPERTY_ID]
 
         const unit = feature.sublayers?.[0]?.unit

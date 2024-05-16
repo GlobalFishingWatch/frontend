@@ -35,6 +35,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       endTime,
       availableIntervals,
       category,
+      subcategory,
       sublayers,
       tilesCache,
       comparisonMode,
@@ -53,6 +54,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       title: id, // TODO:deck get the proper title
       tile: tile.index,
       category,
+      subcategory,
       sublayers,
       startTime,
       endTime,
