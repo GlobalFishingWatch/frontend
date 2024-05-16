@@ -24,19 +24,13 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
   static defaultProps = defaultProps
   state!: GraticulesLayerState
 
-  _getContextZoom = (context: LayerContext) => Math.round(context.viewport.zoom * 1000) / 1000
-
   _getViewportHash = (context: LayerContext) =>
-    [
-      ...context.viewport.getBounds().map((n) => Math.round(n * 1000) / 1000),
-      this._getContextZoom(context),
-    ].join(',')
+    [...context.viewport.getBounds().map((n) => Math.round(n * 1000) / 1000)].join(',')
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
       viewportHash: this._getViewportHash(context),
-      zoom: this._getContextZoom(context),
       data: generateGraticulesFeatures(),
     }
   }
@@ -48,7 +42,6 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
   // TODO:deck check against changeFlags.onViewportChange instead this manual check
   updateState({ context }: UpdateParameters<this>) {
     this.setState({
-      zoom: this._getContextZoom(context),
       viewportHash: this._getViewportHash(context),
     })
   }
@@ -94,11 +87,11 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
         data: this.state.data,
         widthUnits: 'pixels',
         getPath: (d) => d.geometry.coordinates as PathGeometry,
-        getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.OutlinePolygonsFill, params),
+        getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Overlay, params),
         getWidth: this._getLineWidth,
         getColor: hexToDeckColor(this.props.color, 0.3),
         updateTriggers: {
-          getWidth: [this.state.zoom],
+          getWidth: [this.state.viewportHash],
           getColor: [this.props.color],
         },
       }),
@@ -119,7 +112,7 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
         getAlignmentBaseline: this._getAlignmentBaseline,
         getPixelOffset: this._getPixelOffset,
         updateTriggers: {
-          getText: [this.state.zoom],
+          getText: [this.state.viewportHash],
           getPosition: [this.state.viewportHash],
           getColor: [this.props.color],
         },

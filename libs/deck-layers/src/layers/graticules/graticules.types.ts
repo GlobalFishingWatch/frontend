@@ -14,7 +14,6 @@ export type ViewportSize = {
 
 export type GraticulesLayerState = {
   viewportHash: string
-  zoom: number
   data: Feature<LineString>[]
 }
 
