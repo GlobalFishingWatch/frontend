@@ -42,7 +42,7 @@ function EnvironmentTooltipSection({
             <Icon
               icon={isHeatmapFeature ? 'heatmap' : 'polygons'}
               className={styles.layerIcon}
-              style={{ color: feature.color }}
+              style={{ color: feature.sublayers?.[0]?.color }}
             />
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
