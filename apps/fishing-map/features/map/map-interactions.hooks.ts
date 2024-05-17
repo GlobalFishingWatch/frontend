@@ -441,6 +441,9 @@ export const useMapCursor = () => {
       } else if (isDragging) {
         return 'grabbing'
       }
+      if (hoverFeatures?.length) {
+        return 'pointer'
+      }
       return 'grab'
     },
     [hoverFeatures, isErrorNotificationEditing, isMapAnnotating, rulersEditing]
