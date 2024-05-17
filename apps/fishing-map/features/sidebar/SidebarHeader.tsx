@@ -55,6 +55,7 @@ import { cleanVesselSearchResults } from 'features/search/search.slice'
 import UserButton from 'features/user/UserButton'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
+import { useHighlightReportArea } from 'features/map/popups/ContextLayers.hooks'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
@@ -283,11 +284,11 @@ function CloseReportButton() {
   const locationQuery = useSelector(selectLocationQuery)
   const locationPayload = useSelector(selectLocationPayload)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const highlightArea = useHighlightReportArea()
 
   const onCloseClick = () => {
     resetSidebarScroll()
-    // TODO:deck:featureState review if this still needed
-    // cleanFeatureState('highlight')
+    highlightArea(undefined)
     dispatch(resetReportData())
     dispatch(resetAreaDetail(reportAreaIds))
     dispatch(cleanCurrentWorkspaceStateBufferParams())
