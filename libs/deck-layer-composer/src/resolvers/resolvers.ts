@@ -1,4 +1,4 @@
-import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewType, DataviewInstance, DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   AnyDeckLayer,
   BaseMapLabelsLayer,
@@ -10,6 +10,7 @@ import {
   PolygonsLayer,
   UserContextTileLayer,
   UserPointsTileLayer,
+  UserTracksLayer,
   VesselLayer,
 } from '@globalfishingwatch/deck-layers'
 import { ResolverGlobalConfig } from './types'
@@ -18,7 +19,11 @@ import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckContextLayerProps } from './context'
 import { resolveDeckClusterLayerProps } from './clusters'
 import { resolveDeckVesselLayerProps } from './vessels'
-import { resolveDeckUserContextLayerProps, resolveDeckUserPointsLayerProps } from './user'
+import {
+  resolveDeckUserContextLayerProps,
+  resolveDeckUserPointsLayerProps,
+  resolveDeckUserTracksLayerProps,
+} from './user'
 import { resolveDeckGraticulesLayerProps } from './graticules'
 import { resolveDeckPolygonsLayerProps } from './polygons'
 
@@ -72,6 +77,11 @@ export const dataviewToDeckLayer = (
     return layer
   }
   if (dataview.config?.type === DataviewType.Track) {
+    if (dataview.category === DataviewCategory.User) {
+      const deckLayerProps = resolveDeckUserTracksLayerProps(dataview, globalConfig)
+      const layer = new UserTracksLayer(deckLayerProps)
+      return layer
+    }
     const deckLayerProps = resolveDeckVesselLayerProps(dataview, globalConfig)
     const layer = new VesselLayer(deckLayerProps)
     return layer
