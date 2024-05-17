@@ -8,7 +8,7 @@ export const selectVessel = (state: RootState) => {
   const vesselId = selectVesselId(state)
   // TODO:deck review why the vessel info is no longer saved in state.vessel.data
   //   return state.vessel.data?.[vesselId]
-  return state.vessel[vesselId]
+  return (state.vessel as any)[vesselId]
 }
 export const selectVesselInfoData = createSelector(
   [selectVessel],
@@ -17,8 +17,8 @@ export const selectVesselInfoData = createSelector(
 export const selectVesselInfoDataId = createSelector([selectVessel], (vessel) => vessel?.data?.id)
 export const selectSelfReportedVesselIds = createSelector([selectVessel], (vessel) =>
   vessel?.data?.identities
-    ?.filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
-    .map((i) => i.id)
+    ?.filter((i: any) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
+    .map((i: any) => i.id)
 )
 export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)
 export const selectVesselInfoError = createSelector([selectVessel], (vessel) => vessel?.error)
