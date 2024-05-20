@@ -23,7 +23,7 @@ export const resolveDeckPolygonsLayerProps: DeckResolverFunction<PolygonsLayerPr
     .replace('end-date=', `end-date=${end}`)
 
   return {
-    id: `${dataview.id}-polygons`,
+    id: dataview.id,
     dataUrl: dataUrlWithDates,
     category: dataview.category!,
     color: dataview.config?.color!,
