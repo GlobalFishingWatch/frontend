@@ -7,6 +7,7 @@ import {
   ContextLayer,
   FourwingsLayer,
   GraticulesLayer,
+  PolygonsLayer,
   UserContextTileLayer,
   UserPointsTileLayer,
   VesselLayer,
@@ -19,6 +20,7 @@ import { resolveDeckClusterLayerProps } from './clusters'
 import { resolveDeckVesselLayerProps } from './vessels'
 import { resolveDeckUserContextLayerProps, resolveDeckUserPointsLayerProps } from './user'
 import { resolveDeckGraticulesLayerProps } from './graticules'
+import { resolveDeckPolygonsLayerProps } from './polygons'
 
 export const dataviewToDeckLayer = (
   dataview: DataviewInstance,
@@ -47,6 +49,11 @@ export const dataviewToDeckLayer = (
   if (dataview.config?.type === DataviewType.Context) {
     const deckLayerProps = resolveDeckContextLayerProps(dataview, globalConfig)
     const layer = new ContextLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.Polygons) {
+    const deckLayerProps = resolveDeckPolygonsLayerProps(dataview, globalConfig)
+    const layer = new PolygonsLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.UserContext) {

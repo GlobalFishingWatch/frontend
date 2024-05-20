@@ -1,5 +1,8 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps, Color, PickingInfo } from '@deck.gl/core'
+import bbox from '@turf/bbox'
+import bboxPolygon from '@turf/bbox-polygon'
+import { BBox, Feature, featureCollection } from '@turf/turf'
 import {
   ApiEvent,
   DataviewCategory,
@@ -262,7 +265,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselTrackBounds() {
-    return this.getTrackLayers()?.flatMap((l) => l.getBbox()) as Bbox
+    const trackLayerBboxes = this.getTrackLayers()
+      .map((l) => l.getBbox())
+      .filter(Boolean)
+    if (trackLayerBboxes.length === 1) return trackLayerBboxes[0]
+    return bbox(featureCollection([...trackLayerBboxes.map((l) => bboxPolygon(l as BBox))])) as Bbox
   }
 
   getVesselEventsLayersLoaded() {

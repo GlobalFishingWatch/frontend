@@ -20,12 +20,15 @@ import {
   UserLayerPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
 import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
 import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
+import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
 import {
   SliceExtendedFourwingsPickingObject,
   selectApiEventStatus,
@@ -73,6 +76,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const mapViewport = useMapViewport()
+  const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
 
   const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
@@ -140,34 +144,44 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
               //   )
               case DataviewCategory.Activity: {
                 return (features as SliceExtendedFourwingsPickingObject[])?.map((feature, i) => {
-                  return feature.sublayers.map((sublayer, j) => (
-                    <ActivityTooltipRow
-                      key={`${i}-${j}`}
-                      loading={activityInteractionStatus === AsyncReducerStatus.Loading}
-                      feature={{
-                        ...sublayer,
-                        category: feature.category as DataviewCategory,
-                        title: feature.title,
-                      }}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                  ))
+                  return feature.sublayers.map((sublayer, j) => {
+                    const dataview = dataviews.find((d) => d.id === sublayer.id)
+                    return (
+                      <ActivityTooltipRow
+                        key={`${i}-${j}`}
+                        loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                        feature={{
+                          ...sublayer,
+                          category: feature.category as DataviewCategory,
+                          title: dataview
+                            ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+                            : feature.title,
+                        }}
+                        showFeaturesDetails={type === 'click'}
+                      />
+                    )
+                  })
                 })
               }
               case DataviewCategory.Detections: {
                 return (features as SliceExtendedFourwingsPickingObject[])?.map((feature, i) => {
-                  return feature.sublayers.map((sublayer, j) => (
-                    <DetectionsTooltipRow
-                      key={`${i}-${j}`}
-                      loading={activityInteractionStatus === AsyncReducerStatus.Loading}
-                      feature={{
-                        ...sublayer,
-                        category: feature.category as DataviewCategory,
-                        title: feature.title,
-                      }}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                  ))
+                  return feature.sublayers.map((sublayer, j) => {
+                    const dataview = dataviews.find((d) => d.id === sublayer.id)
+                    return (
+                      <DetectionsTooltipRow
+                        key={`${i}-${j}`}
+                        loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                        feature={{
+                          ...sublayer,
+                          category: feature.category as DataviewCategory,
+                          title: dataview
+                            ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+                            : feature.title,
+                        }}
+                        showFeaturesDetails={type === 'click'}
+                      />
+                    )
+                  })
                 })
               }
               case DataviewCategory.Events: {

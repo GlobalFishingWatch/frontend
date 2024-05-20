@@ -268,7 +268,10 @@ export const useMapMouseHover = () => {
 
   const onMouseMove: DeckProps['onHover'] = useCallback(
     (info: PickingInfo, event: any) => {
-      if (!info.coordinate) return
+      if (event.type === 'pointerleave') {
+        setMapHoverFeatures({} as InteractionEvent)
+        return
+      }
       // TODO:deck handle when hovering a cluster point as we don't want to show anything else
       // const clusterFeature = event.features.find(
       //   (f) => f.generatorType === DataviewType.TileCluster && parseInt(f.properties.count) > 1
@@ -440,6 +443,9 @@ export const useMapCursor = () => {
         return 'crosshair'
       } else if (isDragging) {
         return 'grabbing'
+      }
+      if (hoverFeatures?.length) {
+        return 'pointer'
       }
       return 'grab'
     },

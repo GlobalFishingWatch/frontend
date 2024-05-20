@@ -18,6 +18,8 @@ import {
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
+export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
+
 const getDatasetsAvailableIntervals = (datasets: Dataset[]) =>
   uniq((datasets || [])?.flatMap((d) => (d?.configuration?.intervals as FourwingsInterval[]) || []))
 
@@ -175,6 +177,7 @@ export function getFourwingsDataviewsResolved(
       // Prepare a new dataview only for the auxiliar activity layer
       const auxiliarDataview: UrlDataviewInstance = {
         ...dataview,
+        id: `${dataview.id}-${AUXILIAR_DATAVIEW_SUFIX}`,
         datasets: dataview.datasets?.filter((d) => d.type === DatasetTypes.TemporalContext),
         datasetsConfig,
         config: {
