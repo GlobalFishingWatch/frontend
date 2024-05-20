@@ -146,7 +146,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
   }
   const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
   const timeFilters = getUserContexTimeFilterProps({ dataset, start, end })
-  const { filter } = dataview.config || {}
+  const { filter, filters } = dataview.config || {}
 
   return {
     ...baseLayerProps,
@@ -160,6 +160,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
       highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
     }),
     ...(filter && { filter }),
+    ...(filters && { filters }),
     ...(idProperty && { idProperty }),
     ...(valueProperties?.length && { valueProperties }),
     ...timeFilters,

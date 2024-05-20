@@ -1,5 +1,28 @@
-import { TrackPointProperties, UserTrack } from '@globalfishingwatch/api-types'
+import { UserTrack } from '@globalfishingwatch/api-types'
+import { TrackCoordinatesPropertyFilter, filterTrackByCoordinateProperties } from './utils'
 import { UserTrackData } from './types'
+
+function isNumeric(str: string | number) {
+  if (!str) return false
+  if (typeof str == 'number') return true
+  return !isNaN(parseFloat(str))
+}
+
+function getCoordinatesFilter(filters = {} as Record<string, any>) {
+  const coordinateFilters: TrackCoordinatesPropertyFilter[] = Object.entries(filters).map(
+    ([id, values]) => {
+      if (isNumeric(values[0]) && isNumeric(values[1])) {
+        return {
+          id,
+          min: parseFloat(values[0] as string),
+          max: parseFloat(values[1] as string),
+        }
+      }
+      return { id, values }
+    }
+  )
+  return coordinateFilters
+}
 
 function arrayBufferToJson(arrayBuffer: ArrayBuffer) {
   try {
@@ -13,7 +36,7 @@ function arrayBufferToJson(arrayBuffer: ArrayBuffer) {
 }
 
 export type ParseUserTrackParams = {
-  timestampProperty: string
+  filters: Record<string, any>
   workerUrl?: string
 }
 
@@ -23,34 +46,55 @@ export const parseUserTrack = (
   arrayBuffer: ArrayBuffer,
   params = {} as ParseUserTrackParams
 ): UserTrackData => {
-  // const { timestampProperty = 'times' } = params
   const data = arrayBufferToJson(arrayBuffer)
   if (!data) {
     return {} as UserTrackData
   }
-  const startIndices = [0]
-  data.features.forEach((f, index, indices) => {
-    if (index > 0) {
-      const lenght = indices[index - 1]?.geometry.coordinates.length
-      startIndices.push(lenght || startIndices[index - 1])
-    }
+
+  const filteredTrack = filterTrackByCoordinateProperties(data, {
+    filters: getCoordinatesFilter(params.filters),
+    includeNonTemporalFeatures: true,
   })
+
+  const length = filteredTrack.features.reduce((acc, feature) => {
+    return acc + feature.geometry.coordinates.length
+  }, 0)
+
+  const startIndices = filteredTrack.features.reduce(
+    (acc, feature) => {
+      const lastIndex = acc[acc.length - 1]
+      if (feature.geometry.type === 'MultiLineString') {
+        feature.geometry.coordinates.forEach((line) => {
+          acc.push(lastIndex + line.length)
+        })
+      } else {
+        acc.push(lastIndex + feature.geometry.coordinates.length)
+      }
+      return acc
+    },
+    [0]
+  )
+
   const track = {
-    length: data.features.length,
+    length,
     startIndices,
     attributes: {
       getPath: {
-        value: new Float32Array(data.features.flatMap((f) => f.geometry.coordinates.flat())),
+        value: new Float32Array(
+          filteredTrack.features.flatMap((f) => f.geometry.coordinates.flatMap((l) => l.flat()))
+        ),
         size: 2,
       },
       getTimestamp: {
         value: new Float32Array(
-          data.features.flatMap((f) => f.properties.coordinateProperties?.[timestampProperty] || 0)
+          filteredTrack.features.flatMap(
+            (f) => f.properties?.coordinateProperties?.[timestampProperty] || 0
+          )
         ),
         size: 1,
       },
     },
   } as UserTrackData
-  console.log('🚀 ~ track:', track)
+
   return track
 }

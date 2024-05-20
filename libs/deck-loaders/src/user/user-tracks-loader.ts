@@ -12,7 +12,7 @@ export type UserTracksLoaderOptions = LoaderOptions & {
 }
 
 export const UserTrackWorkerLoader: Loader<UserTrackData, any, UserTracksLoaderOptions> = {
-  id: 'user-tracks',
+  id: 'userTracks',
   name: 'gfw-user-tracks',
   module: 'tracks',
   category: 'geometry',
@@ -23,7 +23,7 @@ export const UserTrackWorkerLoader: Loader<UserTrackData, any, UserTracksLoaderO
   worker: false,
   options: {
     userTracks: {
-      timestampProperty: 'timestamp',
+      filters: {},
       workerUrl: `${PATH_BASENAME}/workers/user-tracks-worker.js`,
     },
   },
