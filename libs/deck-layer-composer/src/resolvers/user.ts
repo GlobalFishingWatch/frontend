@@ -110,7 +110,7 @@ export const getUserCircleProps = ({
 
 export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps> = (
   dataview,
-  { highlightedFeatures, start, end }
+  { highlightedFeatures, start, end, highlightedTime }
 ) => {
   const baseLayerProps = {
     id: dataview.id,
@@ -153,6 +153,12 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
     pickable: !dataset.configuration?.disableInteraction ?? true,
     layers: [layer],
     highlightedFeatures: highlightedFeatures as UserLayerPickingObject[],
+    ...(highlightedTime?.start && {
+      highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
+    }),
+    ...(highlightedTime?.end && {
+      highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
+    }),
     ...(filter && { filter }),
     ...(idProperty && { idProperty }),
     ...(valueProperties?.length && { valueProperties }),
@@ -189,9 +195,9 @@ export const resolveDeckUserTracksLayerProps: DeckResolverFunction<UserPointsLay
   globalConfig
 ) => {
   // const dataset = findDatasetByType(dataview.datasets, DatasetTypes.UserContext) as Dataset
-  // const circleProps = getUserCircleProps({ dataset })
+  // const tracksProps = getUserTracksProps({ dataset })
   return {
     ...resolveDeckUserLayerProps(dataview, globalConfig),
-    // ...circleProps,
+    // ...tracksProps,
   } as UserPointsLayerProps
 }

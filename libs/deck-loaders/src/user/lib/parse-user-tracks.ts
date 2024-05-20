@@ -17,18 +17,27 @@ export type ParseUserTrackParams = {
   workerUrl?: string
 }
 
+const timestampProperty = 'times'
+
 export const parseUserTrack = (
   arrayBuffer: ArrayBuffer,
   params = {} as ParseUserTrackParams
 ): UserTrackData => {
-  const { timestampProperty = 'times' } = params
+  // const { timestampProperty = 'times' } = params
   const data = arrayBufferToJson(arrayBuffer)
   if (!data) {
     return {} as UserTrackData
   }
+  const startIndices = [0]
+  data.features.forEach((f, index, indices) => {
+    if (index > 0) {
+      const lenght = indices[index - 1]?.geometry.coordinates.length
+      startIndices.push(lenght || startIndices[index - 1])
+    }
+  })
   const track = {
     length: data.features.length,
-    startIndices: data.features.map((f) => f.geometry.coordinates.length),
+    startIndices,
     attributes: {
       getPath: {
         value: new Float32Array(data.features.flatMap((f) => f.geometry.coordinates.flat())),
@@ -36,7 +45,7 @@ export const parseUserTrack = (
       },
       getTimestamp: {
         value: new Float32Array(
-          data.features.flatMap((f) => f.properties.coordinateProperties?.[timestampProperty] | 0)
+          data.features.flatMap((f) => f.properties.coordinateProperties?.[timestampProperty] || 0)
         ),
         size: 1,
       },

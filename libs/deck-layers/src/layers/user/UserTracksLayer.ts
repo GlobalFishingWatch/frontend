@@ -2,6 +2,7 @@ import { CompositeLayer, DefaultProps, Layer, LayerProps } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
+import { hexToDeckColor } from '../../utils'
 import { UserTrackLayerProps } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
@@ -14,7 +15,7 @@ const defaultProps: DefaultProps<_UserTrackLayerProps> = {
   startTime: { type: 'number', value: 0, min: 0 },
   highlightStartTime: { type: 'number', value: 0, min: 0 },
   highlightEndTime: { type: 'number', value: 0, min: 0 },
-  getPath: { type: 'accessor', value: () => [0, 0] },
+  getPath: { type: 'accessor', value: (d) => d },
   getTimestamp: { type: 'accessor', value: (d) => d },
 }
 
@@ -118,13 +119,21 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   static defaultProps = defaultProps
 
   renderLayers() {
-    const { layers, startTimeProperty } = this.props
+    const { layers, startTimeProperty, color } = this.props
     return layers.map((layer) => {
       return new UserTracksPathLayer<any>({
         ...(this.props as any),
         id: layer.id,
         data: layer.tilesUrl,
         loaders: [UserTrackLoader],
+        _pathType: 'open',
+        widthUnits: 'pixels',
+        getWidth: 1,
+        widthScale: 1,
+        wrapLongitude: true,
+        jointRounded: true,
+        capRounded: true,
+        getColor: hexToDeckColor(color),
         loadOptions: {
           userTracks: {
             timestampProperty: startTimeProperty,

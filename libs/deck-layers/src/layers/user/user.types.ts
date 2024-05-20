@@ -76,6 +76,7 @@ export type UserTrackLayerProps = BaseLayerProps &
   BaseUserLayerProps & {
     highlightStartTime?: number
     highlightEndTime?: number
+    timestampProperty?: string
     getTimestamp?: Accessor<any, number>
   }
 
