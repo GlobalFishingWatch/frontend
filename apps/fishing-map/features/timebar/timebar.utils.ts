@@ -41,6 +41,7 @@ function getDatesPopulated({
     data[date] = { date, count: [] as number[] }
     for (let i = 0; i < sublayerLength; i++) {
       data[date][i] = 0
+      data[date].count.push(0)
     }
     date = Math.min(
       getUTCDateTime(date)
@@ -80,24 +81,19 @@ export function getGraphDataFromFourwingsFeatures(
       }),
   }
 
-  for (const feature of features) {
-    const { dates, values } = feature.properties
-    if (dates) {
-      dates.forEach((sublayerDates, sublayerIndex) => {
+  features.forEach((feature) => {
+    if (feature.properties.dates) {
+      feature.properties.dates.forEach((sublayerDates, sublayerIndex) => {
         sublayerDates.forEach((sublayerDate, dateIndex) => {
           if (data[sublayerDate]) {
-            data[sublayerDate][sublayerIndex] += values[sublayerIndex][dateIndex]
-            if (aggregationOperation === FourwingsAggregationOperation.Avg) {
-              if (!data[sublayerDate].count[sublayerIndex]) {
-                data[sublayerDate].count[sublayerIndex] = 0
-              }
-              data[sublayerDate].count[sublayerIndex]++
-            }
+            data[sublayerDate][sublayerIndex] += feature.properties.values[sublayerIndex][dateIndex]
+            data[sublayerDate].count[sublayerIndex]++
           }
         })
       })
     }
-  }
+  })
+
   if (aggregationOperation === FourwingsAggregationOperation.Avg) {
     return Object.values(data).map(({ date, count, ...rest }) => {
       Object.keys(rest).forEach((key) => {
