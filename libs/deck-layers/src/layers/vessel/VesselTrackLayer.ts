@@ -288,7 +288,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     return segments
   }
 
-  getBbox(): Bbox {
+  getBbox() {
     const data = this.props.data as VesselTrackData
     const positions = data.attributes?.getPath?.value
     const positionsSize = data.attributes?.getPath?.size
@@ -297,12 +297,15 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     const firstPointIndex = timestamps.findIndex((t) => t > this.props.startTime)
     const lastPointIndex = timestamps.findLastIndex((t) => t < this.props.endTime)
     const filteredPointsArray = pointsArray.slice(firstPointIndex, lastPointIndex + 1)
-    const points = filteredPointsArray.map((_, index) =>
-      point([
-        positions[(firstPointIndex + index) * positionsSize],
-        positions[(firstPointIndex + index) * positionsSize + 1],
-      ])
+    const points = filteredPointsArray?.flatMap((_, index) =>
+      positions[(firstPointIndex + index) * positionsSize + 1]
+        ? point([
+            positions[(firstPointIndex + index) * positionsSize],
+            positions[(firstPointIndex + index) * positionsSize + 1],
+          ])
+        : []
     )
+    if (!points?.length) return null
     return getBboxFromPoints(points) as Bbox
   }
 }
