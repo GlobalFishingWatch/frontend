@@ -1,6 +1,6 @@
 import { CompositeLayer, DefaultProps } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
-import { PolygonsLayerProps } from 'libs/deck-layers/src/layers/polygons/polygons.types'
+import { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
 import { hexToDeckColor, LayerGroup, getLayerGroupOffset } from '../../utils'
 
 type _PolygonsLayerProps = PolygonsLayerProps
