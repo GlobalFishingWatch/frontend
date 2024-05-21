@@ -4,6 +4,7 @@ import { HEATMAP_HIGH_RES_ID, HEATMAP_ID, POSITIONS_ID } from './fourwings.confi
 import {
   FourwingsHeatmapPickingInfo,
   FourwingsHeatmapPickingObject,
+  FourwingsHeatmapStaticPickingInfo,
 } from './heatmap/fourwings-heatmap.types'
 import {
   FourwingsPositionsPickingInfo,
@@ -47,4 +48,7 @@ export type BaseFourwingsLayerProps = BaseLayerProps & {
 }
 
 export type FourwingsPickingInfo = FourwingsHeatmapPickingInfo | FourwingsPositionsPickingInfo
-export type FourwingsPickingObject = FourwingsHeatmapPickingObject | FourwingsPositionsPickingObject
+export type FourwingsPickingObject =
+  | FourwingsHeatmapPickingObject
+  | FourwingsHeatmapStaticPickingInfo
+  | FourwingsPositionsPickingObject

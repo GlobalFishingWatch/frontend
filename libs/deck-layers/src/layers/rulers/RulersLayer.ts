@@ -1,4 +1,4 @@
-import { GeoJsonLayerProps, GeoJsonLayer } from '@deck.gl/layers'
+import { GeoJsonLayer } from '@deck.gl/layers'
 import { Color, CompositeLayer, DefaultProps } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { Feature, Point } from '@turf/turf'

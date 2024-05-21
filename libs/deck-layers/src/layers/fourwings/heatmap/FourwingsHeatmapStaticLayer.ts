@@ -36,12 +36,12 @@ import {
   HEATMAP_API_TILES_URL,
   MAX_RAMP_VALUES_PER_TILE,
 } from '../fourwings.config'
-import { FourwingsPickingObject } from '../fourwings.types'
 import { EMPTY_CELL_COLOR, filterCells } from './fourwings-heatmap.utils'
 import {
   FourwingsAggregationOperation,
-  FourwingsHeatmapPickingInfo,
   FourwingsHeatmapStaticLayerProps,
+  FourwingsHeatmapStaticPickingInfo,
+  FourwingsHeatmapStaticPickingObject,
   FourwingsHeatmapTileLayerProps,
   FourwingsTileLayerState,
 } from './fourwings-heatmap.types'
@@ -117,10 +117,10 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   getPickingInfo = ({
     info,
   }: {
-    info: PickingInfo<FourwingsPickingObject>
-  }): FourwingsHeatmapPickingInfo => {
+    info: PickingInfo<FourwingsHeatmapStaticPickingObject>
+  }): FourwingsHeatmapStaticPickingInfo => {
     if (!info.object) {
-      info.object = {} as FourwingsPickingObject
+      info.object = {} as FourwingsHeatmapStaticPickingObject
     }
     const { minVisibleValue, maxVisibleValue } = this.props
     if (info.object?.properties?.count) {
@@ -136,8 +136,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     info.object.sublayers = this.props.sublayers
     info.object.category = this.props.category
     info.object.subcategory = this.props.subcategory
-    // TODO:deck fix this typing and create FourwingsStaticPickingInfo
-    return info as any
+    return info as FourwingsHeatmapStaticPickingInfo
   }
 
   getFillColor = (feature: Feature<Geometry, FourwingsStaticFeatureProperties>) => {
