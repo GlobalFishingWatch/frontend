@@ -250,28 +250,29 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                 type="border-secondary"
                 size="small"
                 className={styles.actionButton}
-                tooltip={
-                  <BufferButtonTooltip
-                    areaType={area?.properties?.originalGeometryType}
-                    activeUnit={previewBuffer.unit || NAUTICAL_MILES}
-                    defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                    activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
-                    handleRemoveBuffer={handleRemoveBuffer}
-                    handleConfirmBuffer={handleConfirmBuffer}
-                    handleBufferUnitChange={handleBufferUnitChange}
-                    handleBufferValueChange={handleBufferValueChange}
-                    handleBufferOperationChange={handleBufferOperationChange}
-                  />
-                }
-                tooltipPlacement="bottom"
-                tooltipProps={{
-                  interactive: true,
-                  trigger: 'click',
-                  delay: 0,
-                  className: styles.bufferContainer,
-                  onHide: handleTooltipHide,
-                  onShow: handleTooltipShow,
-                }}
+                disabled
+                // tooltip={
+                //   <BufferButtonTooltip
+                //     areaType={area?.properties?.originalGeometryType}
+                //     activeUnit={previewBuffer.unit || NAUTICAL_MILES}
+                //     defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
+                //     activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
+                //     handleRemoveBuffer={handleRemoveBuffer}
+                //     handleConfirmBuffer={handleConfirmBuffer}
+                //     handleBufferUnitChange={handleBufferUnitChange}
+                //     handleBufferValueChange={handleBufferValueChange}
+                //     handleBufferOperationChange={handleBufferOperationChange}
+                //   />
+                // }
+                // tooltipPlacement="bottom"
+                // tooltipProps={{
+                //   interactive: true,
+                //   trigger: 'click',
+                //   delay: 0,
+                //   className: styles.bufferContainer,
+                //   onHide: handleTooltipHide,
+                //   onShow: handleTooltipShow,
+                // }}
               >
                 {t('analysis.buffer', 'Buffer Area')}
                 <Icon icon="expand" type="default" />
