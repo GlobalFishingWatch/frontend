@@ -97,12 +97,12 @@ export const getBivariateRampLegend = (colorRampsIds: ColorRampId[]) => {
     rgbaToString(getBlend(ramp1[3], ramp2[1])),
     rgbaToString(getBlend(ramp1[0], ramp2[2])),
     rgbaToString(getBlend(ramp1[1], ramp2[2])),
-    rgbaToString(getBlend({ ...white, a: 0.25 }, getBlend(ramp1[2], ramp2[2]))),
-    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[3], ramp2[2]))),
+    rgbaToString(getBlend(ramp1[2], ramp2[2])),
+    rgbaToString(getBlend(ramp1[3], ramp2[2])),
     rgbaToString(getBlend(ramp1[0], ramp2[3])),
     rgbaToString(getBlend(ramp1[1], ramp2[3])),
-    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[2], ramp2[3]))),
-    rgbaToString(getBlend(white, getBlend(ramp1[3], ramp2[3]))),
+    rgbaToString(getBlend(ramp1[2], ramp2[3])),
+    rgbaToString(getBlend(ramp1[3], ramp2[3])),
   ]
 }
 
