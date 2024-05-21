@@ -239,7 +239,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       const offset = this.props.resolution === 'high' ? 1 : 0
       return layer.getSubLayers().flatMap((l: any) => {
         if (l.props.tile.zoom === l.props.maxZoom) {
-          return l.props.data()
+          return l.props.data
         }
         return l.props.tile.zoom === zoom + offset ? l.props.data : []
       }) as FourwingsStaticFeature[]
