@@ -116,8 +116,6 @@ export const useClickedEventConnect = () => {
             longitude: lon,
             zoom: expansionZoom,
           })
-          // TODO:deck:featureState review if this still needed
-          // cleanFeatureState('click')
         }
         return
       }
