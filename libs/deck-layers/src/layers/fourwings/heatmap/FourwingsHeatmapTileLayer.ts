@@ -141,10 +141,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
           cellValues: feature.properties.values,
           aggregationOperation,
         })
-        if (aggregatedCellValues[0] >= 0) {
-          allPositiveValues.push(aggregatedCellValues[0])
-        } else {
-          allNegativeValues.push(aggregatedCellValues[0])
+        if (aggregatedCellValues[0] !== undefined) {
+          if (aggregatedCellValues[0] >= 0) {
+            allPositiveValues.push(aggregatedCellValues[0])
+          } else {
+            allNegativeValues.push(aggregatedCellValues[0])
+          }
         }
       }
       if (!allNegativeValues.length || !allPositiveValues.length) {
@@ -154,6 +156,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         allValues: allNegativeValues,
         aggregationOperation,
       })
+
       const positiveValuesFiltered = removeOutliers({
         allValues: allPositiveValues,
         aggregationOperation,

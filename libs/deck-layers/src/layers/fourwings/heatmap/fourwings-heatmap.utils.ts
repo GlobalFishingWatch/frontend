@@ -74,6 +74,9 @@ export const compareCell = ({
     const value = aggregateSublayerValues(sublayerValues, aggregationOperation)
     return value ?? 0
   })
+  if (!initialValue && !comparedValue) {
+    return []
+  }
   if (!comparedValue) {
     return [-initialValue]
   }
