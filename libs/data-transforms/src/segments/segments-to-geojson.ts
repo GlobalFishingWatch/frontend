@@ -38,10 +38,10 @@ const segmentsToFeatures = (segment: TrackSegment | TrackSegment[]): Feature<Lin
         id: segment[0]?.id,
         ...(segment[0].properties && { ...segment[0].properties }),
         coordinateProperties: {
-          ...coordinateProperties,
           times: times.some((time) => !!time) ? times : undefined,
           speed: speeds.some((speed) => !!speed) ? speeds : undefined,
           elevation: elevations.some((elevation) => !!elevation) ? elevations : undefined,
+          ...coordinateProperties,
         },
       },
     }
