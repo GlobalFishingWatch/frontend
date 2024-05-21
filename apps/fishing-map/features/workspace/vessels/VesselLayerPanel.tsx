@@ -61,7 +61,7 @@ export const getVesselIdentityTooltipSummary = (
   }
   const identitiesByNormalizedShipname = groupBy(vessel?.selfReportedInfo, 'nShipname')
   const identities = Object.entries(identitiesByNormalizedShipname).flatMap(
-    ([_, selfReportedInfo]) => {
+    ([_, selfReportedInfo], index) => {
       const firstTransmissionDateFrom = selfReportedInfo.reduce((acc, curr) => {
         if (!acc) {
           return curr.transmissionDateFrom
@@ -81,20 +81,24 @@ export const getVesselIdentityTooltipSummary = (
       let info = `${name} - (${flag}) (${formatI18nDate(
         firstTransmissionDateFrom
       )} - ${formatI18nDate(lastTransmissionDateTo)})`
-      if (showVesselId) {
-        return [
-          info,
-          <br />,
-          selfReportedInfo.map((s, index) => (
+      return showVesselId ? (
+        <Fragment key={index}>
+          {info}
+          <br />
+          {selfReportedInfo.map((s, index) => (
             <Fragment key={s.id}>
               <GFWOnly type="only-icon" /> {s.id}
               {index < selfReportedInfo.length - 1 && <br />}
             </Fragment>
-          )),
-          <br />,
-        ]
-      }
-      return [info, <br />]
+          ))}
+          <br />
+        </Fragment>
+      ) : (
+        <Fragment key={index}>
+          {info}
+          <br />
+        </Fragment>
+      )
     }
   )
   return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
