@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckProps, PickingInfo, Position } from '@deck.gl/core'
-import { MjolnirPointerEvent } from 'mjolnir.js'
+import type { MjolnirPointerEvent } from 'mjolnir.js'
 import { InteractionEventCallback, useSimpleMapHover } from '@globalfishingwatch/react-hooks'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
