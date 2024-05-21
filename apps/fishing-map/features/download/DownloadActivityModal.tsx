@@ -68,8 +68,6 @@ function DownloadActivityModal() {
   }
 
   const onClose = () => {
-    // TODO:deck:featureState review if this still needed
-    // cleanFeatureState('click')
     dispatch(resetDownloadActivityState())
   }
 
