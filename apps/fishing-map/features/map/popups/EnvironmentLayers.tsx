@@ -4,14 +4,17 @@ import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/layer-composer'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { FourwingsHeatmapPickingObject } from '@globalfishingwatch/deck-layers'
+import {
+  FourwingsHeatmapPickingObject,
+  FourwingsHeatmapStaticPickingObject,
+} from '@globalfishingwatch/deck-layers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import styles from './Popup.module.css'
 
 type ContextTooltipRowProps = {
-  features: FourwingsHeatmapPickingObject[]
+  features: (FourwingsHeatmapPickingObject | FourwingsHeatmapStaticPickingObject)[]
   showFeaturesDetails: boolean
 }
 
@@ -40,7 +43,9 @@ function EnvironmentTooltipSection({
         const value =
           feature.subcategory === DataviewType.HeatmapAnimated
             ? feature.sublayers?.[0]?.value
-            : feature.properties?.[HEATMAP_STATIC_PROPERTY_ID]
+            : (feature as FourwingsHeatmapStaticPickingObject).properties?.[
+                HEATMAP_STATIC_PROPERTY_ID
+              ]
 
         const unit = feature.sublayers?.[0]?.unit
         return (

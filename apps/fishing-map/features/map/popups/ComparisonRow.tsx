@@ -20,11 +20,11 @@ function ComparisonRow({ feature, showFeaturesDetails = false }: ComparisonRowPr
         )}
         <div className={styles.row}>
           <span className={styles.rowText}>
-            {parseInt(feature.value) > 0 && '+'}
-            <I18nNumber number={feature.value} />{' '}
+            {feature.sublayers[0].value > 0 ? '+' : ''}
+            <I18nNumber number={feature.sublayers[0].value} />{' '}
             {/* sad little hack because i18n key is not plural while unit is */}
             {t([`common.${feature.unit?.replace(/s$/, '')}` as any, 'common.hour'], 'hours', {
-              count: parseInt(feature.value), // neded to select the plural automatically
+              count: feature.sublayers[0].value, // neded to select the plural automatically
             })}
           </span>
         </div>

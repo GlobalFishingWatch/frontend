@@ -71,7 +71,6 @@ export function getGraphDataFromFourwingsFeatures(
   if (!features?.length || !start || !end) {
     return []
   }
-  console.log('calculating', features.length, start, end, interval, sublayers, aggregationOperation)
 
   const sublayerLength = sublayers.length
   const data = {

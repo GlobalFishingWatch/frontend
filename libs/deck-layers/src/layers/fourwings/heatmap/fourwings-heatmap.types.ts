@@ -4,8 +4,8 @@ import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { ScaleLinear } from 'd3-scale'
 import {
   FourwingsFeature,
+  FourwingsStaticFeature,
   FourwingsFeatureProperties,
-  FourwingsStaticFeatureProperties,
   FourwingsInterval,
   Cell,
 } from '@globalfishingwatch/deck-loaders'
@@ -44,9 +44,13 @@ export type ColorDomain = number[] | number[][]
 export type ColorRange = string[]
 export type SublayerColorRanges = ColorRange[]
 
-export type FourwingsHeatmapPickingObject = FourwingsFeature<
-  FourwingsFeatureProperties & Partial<FourwingsStaticFeatureProperties>
-> &
+export type FourwingsHeatmapStaticPickingObject = BasePickingObject &
+  FourwingsStaticFeature & {
+    sublayers: FourwingsDeckSublayer[]
+  }
+export type FourwingsHeatmapStaticPickingInfo = PickingInfo<FourwingsHeatmapStaticPickingObject>
+
+export type FourwingsHeatmapPickingObject = FourwingsFeature<FourwingsFeatureProperties> &
   BasePickingObject & {
     title: string
     color?: string
@@ -122,8 +126,10 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
 
 export type _FourwingsHeatmapStaticLayerProps = Omit<
   _FourwingsHeatmapTileLayerProps,
-  'data' | 'availableIntervals' | 'comparisonMode'
->
+  'data' | 'availableIntervals' | 'comparisonMode' | 'highlightedFeatures'
+> & {
+  highlightedFeatures: FourwingsHeatmapStaticPickingObject[]
+}
 
 export type FourwingsHeatmapStaticLayerProps = _FourwingsHeatmapStaticLayerProps &
   Partial<TileLayerProps>

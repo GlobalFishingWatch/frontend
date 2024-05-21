@@ -70,7 +70,7 @@ const MapWrapper = () => {
   )
   useUpdateViewStateUrlParams()
   const onMapClick = useMapMouseClick()
-  const { onMouseMove } = useMapMouseHover()
+  const { onMouseMove, hoveredCoordinates } = useMapMouseHover()
   const { getCursor } = useMapCursor()
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
   ////////////////////////////////////////
@@ -162,8 +162,9 @@ const MapWrapper = () => {
       {isWorkspace && !reportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
-      {/* TODO:deck pass hovered cursor coordinates */}
-      <MapInfo center={null} />
+      {hoveredCoordinates && (
+        <MapInfo center={{ x: hoveredCoordinates[0], y: hoveredCoordinates[1] }} />
+      )}
       <TimeComparisonLegend />
     </div>
   )

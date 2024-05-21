@@ -17,6 +17,7 @@ import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   ContextPickingObject,
+  FourwingsComparisonMode,
   UserLayerPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
@@ -29,6 +30,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
+import ComparisonRow from 'features/map/popups/ComparisonRow'
 import {
   SliceExtendedFourwingsPickingObject,
   selectApiEventStatus,
@@ -146,7 +148,13 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 return (features as SliceExtendedFourwingsPickingObject[])?.map((feature, i) => {
                   return feature.sublayers.map((sublayer, j) => {
                     const dataview = dataviews.find((d) => d.id === sublayer.id)
-                    return (
+                    return feature.comparisonMode === FourwingsComparisonMode.TimeCompare ? (
+                      <ComparisonRow
+                        key={featureCategory}
+                        feature={features[0]}
+                        showFeaturesDetails={type === 'click'}
+                      />
+                    ) : (
                       <ActivityTooltipRow
                         key={`${i}-${j}`}
                         loading={activityInteractionStatus === AsyncReducerStatus.Loading}

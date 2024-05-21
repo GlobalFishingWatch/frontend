@@ -291,7 +291,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   renderLayers(): Layer<{}> | LayersList | null {
     if (this.state.fontLoaded) {
-      // TODO:deck fuerte remove the hardcoded id and use sublayers
       const { startTime, endTime, sublayers } = this.props
       const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
       const IconLayerClass = this.getSubLayerClass('icons', IconLayer)

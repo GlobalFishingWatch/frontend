@@ -4,6 +4,7 @@ import {
   FourwingsComparisonMode,
   FourwingsDeckSublayer,
   FourwingsLayerProps,
+  FourwingsPickingObject,
   FourwingsVisualizationMode,
   TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
   getUTCDateTime,
@@ -124,8 +125,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     visualizationMode,
     aggregationOperation,
     availableIntervals,
-    // TODO:deck fix this typings
-    highlightedFeatures: highlightedFeatures as any[],
+    highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
     visible: dataview.config?.visible ?? true,

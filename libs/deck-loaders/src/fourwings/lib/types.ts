@@ -62,6 +62,7 @@ export type FourwingsPositionFeatureProperties = {
 
 export type FourwingsStaticFeatureProperties = {
   count: number
+  values: number[][]
 }
 
 export type FourwingsFeature<Properties = FourwingsFeatureProperties> = Feature<Polygon, Properties>
