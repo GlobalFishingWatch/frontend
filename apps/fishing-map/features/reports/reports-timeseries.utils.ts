@@ -36,7 +36,7 @@ export const filterTimeseriesByTimerange = (
 
 const frameTimeseriesToDateTimeseries = (frameTimeseries: TimeSeriesFrame[]): DateTimeSeries => {
   const dateFrameseries = frameTimeseries.map((frameValues) => {
-    const { frame, date, ...rest } = frameValues
+    const { frame, count, date, ...rest } = frameValues
     const dateTime = getUTCDate(date)
     return {
       values: Object.values(rest) as number[],

@@ -100,18 +100,15 @@ export function getGraphDataFromFourwingsFeatures(
       })
     }
   })
-
-  if (aggregationOperation === FourwingsAggregationOperation.Avg) {
-    return Object.values(data).map(({ date, count, ...rest }) => {
-      Object.keys(rest).forEach((key) => {
+  return Object.values(data).map(({ date, count, ...rest }) => {
+    Object.keys(rest).forEach((key) => {
+      if (aggregationOperation === FourwingsAggregationOperation.Avg) {
         const indexKey = parseInt(key)
         if (rest[indexKey]) {
           rest[indexKey] = rest[indexKey] / count[indexKey]
         }
-      })
-      return { date, ...rest }
+      }
     })
-  }
-
-  return Object.values(data)
+    return { date, ...rest }
+  })
 }
