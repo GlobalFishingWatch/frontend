@@ -131,7 +131,9 @@ function UserSection(): React.ReactElement {
               icon="draw"
               type="border"
               size="medium"
-              tooltip={t('layer.drawPolygon', 'Draw a layer')}
+              // tooltip={t('layer.drawPolygon', 'Draw a layer')}
+              disabled={true}
+              tooltip="WIP"
               tooltipPlacement="top"
               className="print-hidden"
               onClick={onDrawClick}
