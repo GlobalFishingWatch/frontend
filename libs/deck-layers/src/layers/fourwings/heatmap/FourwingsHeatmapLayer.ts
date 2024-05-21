@@ -44,6 +44,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       sublayers,
       tilesCache,
       comparisonMode,
+      minVisibleValue,
+      maxVisibleValue,
     } = this.props
 
     const { interval } = getIntervalFrames({
@@ -71,7 +73,14 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         ...sublayer,
         value: info.object?.properties?.aggregatedValues?.[i],
       }))
-      if (!object.sublayers?.filter(({ value }) => value).length) {
+      if (
+        !object.sublayers?.filter(
+          ({ value }) =>
+            value &&
+            (!minVisibleValue || value >= minVisibleValue) &&
+            (!maxVisibleValue || value <= maxVisibleValue)
+        ).length
+      ) {
         return { ...info, object: undefined }
       }
     }

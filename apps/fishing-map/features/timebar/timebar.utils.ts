@@ -14,6 +14,8 @@ type GetGraphDataFromFourwingsFeaturesParams = Pick<
   | 'interval'
   | 'sublayers'
   | 'aggregationOperation'
+  | 'minVisibleValue'
+  | 'maxVisibleValue'
 >
 
 type FeatureDates = Record<number, ActivityTimeseriesFrame & { count: number[] }>
@@ -38,10 +40,9 @@ function getDatesPopulated({
     now
   )
   while (date <= endPlusOne) {
-    data[date] = { date, count: [] as number[] }
+    data[date] = { date, count: new Array(sublayerLength).fill(0) }
     for (let i = 0; i < sublayerLength; i++) {
       data[date][i] = 0
-      data[date].count.push(0)
     }
     date = Math.min(
       getUTCDateTime(date)
@@ -53,10 +54,6 @@ function getDatesPopulated({
   return data
 }
 
-// TODO:deck choose a better naming for this as also used in reports
-// TODO:deck support
-// - [] aggregationOperation
-// - [] min and maxVisibleValues
 export function getGraphDataFromFourwingsFeatures(
   features: FourwingsFeature[],
   {
@@ -67,11 +64,15 @@ export function getGraphDataFromFourwingsFeatures(
     interval,
     sublayers,
     aggregationOperation,
+    minVisibleValue,
+    maxVisibleValue,
   }: GetGraphDataFromFourwingsFeaturesParams
 ): ActivityTimeseriesFrame[] {
   if (!features?.length || !start || !end) {
     return []
   }
+  console.log('calculating', features.length, start, end, interval, sublayers, aggregationOperation)
+
   const sublayerLength = sublayers.length
   const data = {
     ...getDatesPopulated({ start, end, interval, sublayerLength }),
@@ -82,12 +83,19 @@ export function getGraphDataFromFourwingsFeatures(
   }
 
   features.forEach((feature) => {
-    if (feature.properties.dates) {
-      feature.properties.dates.forEach((sublayerDates, sublayerIndex) => {
+    const { dates, values } = feature.properties
+    if (dates) {
+      dates.forEach((sublayerDates, sublayerIndex) => {
+        const valueArray = values[sublayerIndex]
         sublayerDates.forEach((sublayerDate, dateIndex) => {
-          if (data[sublayerDate]) {
-            data[sublayerDate][sublayerIndex] += feature.properties.values[sublayerIndex][dateIndex]
-            data[sublayerDate].count[sublayerIndex]++
+          const sublayerDateData = data[sublayerDate]
+          if (
+            sublayerDateData &&
+            (!minVisibleValue || valueArray[dateIndex] >= minVisibleValue) &&
+            (!maxVisibleValue || valueArray[dateIndex] <= maxVisibleValue)
+          ) {
+            sublayerDateData[sublayerIndex] += valueArray[dateIndex]
+            sublayerDateData.count[sublayerIndex]++
           }
         })
       })

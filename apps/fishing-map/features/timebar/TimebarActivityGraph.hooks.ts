@@ -41,6 +41,8 @@ export const useHeatmapActivityGraph = () => {
           interval: chunk.interval,
           sublayers: instance.props.sublayers,
           aggregationOperation: instance.props.aggregationOperation,
+          minVisibleValue: instance.props.minVisibleValue,
+          maxVisibleValue: instance.props.maxVisibleValue,
         }) || EMPTY_ACTIVITY_DATA
       )
     }
@@ -53,6 +55,8 @@ export const useHeatmapActivityGraph = () => {
     chunk.bufferedStart,
     chunk.bufferedEnd,
     chunk.interval,
+    instance?.props.minVisibleValue,
+    instance?.props.maxVisibleValue,
   ])
 
   return useMemo(() => ({ loading: !loaded, heatmapActivity }), [heatmapActivity, loaded])
