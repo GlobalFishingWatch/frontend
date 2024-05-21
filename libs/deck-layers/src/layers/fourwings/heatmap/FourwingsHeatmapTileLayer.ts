@@ -264,12 +264,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       tilesUrl,
       compareStart,
       compareEnd,
+      comparisonMode,
     } = this.props
     if (!compareStart || !compareEnd) {
       // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
-    // const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
+    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
     const interval = getInterval(startTime, endTime, availableIntervals)
     if (!interval) {
       throw new Error('Invalid interval')
@@ -303,20 +304,19 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       offset = parseInt(response.headers.get('X-offset') as string)
       noDataValue = parseInt(response.headers.get('X-empty-value') as string)
 
-      // TODO:deck is this needed?
-      // const bins = JSON.parse(response.headers.get('X-bins-0') as string)?.map((n: string) => {
-      //   return (parseInt(n) - offset) * scale
-      // })
-      // if (
-      //   !colorDomain?.length &&
-      //   !this.initialBinsLoad &&
-      //   comparisonMode === FourwingsComparisonMode.Compare &&
-      //   bins
-      // ) {
-      //   const scales = this._getColorScales(bins, colorRanges)
-      //   this.setState({ colorDomain: bins, scales })
-      //   this.initialBinsLoad = true
-      // }
+      const bins = JSON.parse(response.headers.get('X-bins-0') as string)?.map((n: string) => {
+        return (parseInt(n) - offset) * scale
+      })
+      if (
+        !colorDomain?.length &&
+        !this.initialBinsLoad &&
+        comparisonMode === FourwingsComparisonMode.Compare &&
+        bins
+      ) {
+        const scales = this._getColorScales(bins, colorRanges)
+        this.setState({ colorDomain: bins, scales })
+        this.initialBinsLoad = true
+      }
       return await response.arrayBuffer()
     }
 
