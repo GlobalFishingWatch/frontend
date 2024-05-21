@@ -49,9 +49,12 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     }
   })
 
-  const maxZoomLevels = dataview.config?.sublayers?.flatMap(({ maxZoom }) =>
+  const maxZoomLevels = (dataview.config?.sublayers || [])?.flatMap(({ maxZoom }) =>
     maxZoom !== undefined ? (maxZoom as number) : []
   )
+  if (dataview.config?.maxZoom !== undefined) {
+    maxZoomLevels.push(dataview.config?.maxZoom)
+  }
 
   const allAvailableIntervals = getDataviewAvailableIntervals(dataview)
   const availableIntervals =
