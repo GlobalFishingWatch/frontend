@@ -11,7 +11,7 @@ import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   POSITIONS_ID,
 } from './fourwings.config'
-import { FourwingsVisualizationMode } from './fourwings.types'
+import { FourwingsPickingObject, FourwingsVisualizationMode } from './fourwings.types'
 import { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
 import {
   FourwingsChunk,
@@ -31,8 +31,10 @@ export type FourwingsLayerProps = Omit<
       id: string
       visualizationMode?: FourwingsVisualizationMode
     },
-  'resolution'
->
+  'resolution' | 'highlightedFeatures'
+> & {
+  highlightedFeatures?: FourwingsPickingObject[]
+}
 
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'

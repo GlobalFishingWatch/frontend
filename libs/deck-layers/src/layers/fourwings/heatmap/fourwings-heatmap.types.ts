@@ -126,8 +126,10 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
 
 export type _FourwingsHeatmapStaticLayerProps = Omit<
   _FourwingsHeatmapTileLayerProps,
-  'data' | 'availableIntervals' | 'comparisonMode'
->
+  'data' | 'availableIntervals' | 'comparisonMode' | 'highlightedFeatures'
+> & {
+  highlightedFeatures: FourwingsHeatmapStaticPickingObject[]
+}
 
 export type FourwingsHeatmapStaticLayerProps = _FourwingsHeatmapStaticLayerProps &
   Partial<TileLayerProps>
