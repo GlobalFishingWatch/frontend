@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckProps, PickingInfo, Position } from '@deck.gl/core'
+import { MjolnirPointerEvent } from 'mjolnir.js'
 import { InteractionEventCallback, useSimpleMapHover } from '@globalfishingwatch/react-hooks'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -104,7 +105,7 @@ export const useClickedEventConnect = () => {
     // }
 
     const clusterFeature = event?.features?.find(
-      (f) => f.category === DataviewCategory.Events
+      (f) => (f as ClusterPickingObject).category === DataviewCategory.Events
     ) as ClusterPickingObject
 
     if (clusterFeature?.properties?.expansionZoom) {
@@ -251,12 +252,12 @@ export const useMapMouseHover = () => {
   const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
   const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
 
-  const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
+  const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
   const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
     null
   )
 
-  const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
+  // const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
   // const onMapHover = useMapHover(
   //   setHoveredEvent as InteractionEventCallback,
   //   setHoveredDebouncedEvent as InteractionEventCallback,
@@ -265,7 +266,8 @@ export const useMapMouseHover = () => {
   // )
 
   const onMouseMove: DeckProps['onHover'] = useCallback(
-    (info: PickingInfo, event: any) => {
+    (info: PickingInfo, event: MjolnirPointerEvent) => {
+      setHoveredCoordinates(info.coordinate)
       if (event.type === 'pointerleave') {
         setMapHoverFeatures({} as InteractionEvent)
         return
@@ -299,7 +301,7 @@ export const useMapMouseHover = () => {
   return {
     onMouseMove,
     // resetHoverState,
-    hoveredEvent,
+    hoveredCoordinates,
     hoveredDebouncedEvent,
     // hoveredTooltipEvent,
   }
@@ -367,64 +369,6 @@ export const useMapMouseClick = () => {
   )
 
   return onMapClick
-}
-
-export const _deprecatedUseMapCursor = (hoveredTooltipEvent?: any) => {
-  const { isMapAnnotating } = useMapAnnotation()
-  const { isErrorNotificationEditing } = useMapErrorNotification()
-  const { isMapDrawing } = useMapDrawConnect()
-  const { rulersEditing } = useRulers()
-  const gfwUser = useSelector(selectIsGFWUser)
-  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
-  const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
-  const setViewState = useSetViewState()
-  // TODO:deck tilesClusterLoaded from Layer instance
-  const tilesClusterLoaded = true
-
-  const getCursor = useCallback(() => {
-    // if (hoveredTooltipEvent && hasToolFeature(hoveredTooltipEvent)) {
-    //   if (hasTooltipEventFeature(hoveredTooltipEvent, DataviewType.Annotation) && !gfwUser) {
-    //     return 'grab'
-    //   }
-    //   return 'all-scroll'
-    // } else if (isMapAnnotating || rulersEditing || isErrorNotificationEditing) {
-    //   return 'crosshair'
-    // } else if (isMapDrawing || isMarineManagerLocation) {
-    //   // updating cursor using css at style.css as the library sets classes depending on the state
-    //   return undefined
-    // } else if (hoveredTooltipEvent) {
-    //   // Workaround to fix cluster events duplicated, only working for encounters and needs
-    //   // TODO if wanted to scale it to other layers
-    //   const clusterConfig = dataviews.find((d) => d.config?.type === DataviewType.TileCluster)
-    //   const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
-
-    //   const clusterFeature = hoveredTooltipEvent.features.find(
-    //     (f: any) =>
-    //       f.type === DataviewType.TileCluster && parseInt(f.properties.count) > eventsCount
-    //   )
-
-    //   if (clusterFeature) {
-    //     if (!tilesClusterLoaded) {
-    //       return 'progress'
-    //     }
-    //     const { expansionZoom, lat, lng, lon } = clusterFeature.properties
-    //     const longitude = lng || lon
-    //     return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
-    //   }
-    //   const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
-    //     (f: any) => f.category === DataviewCategory.Vessels
-    //   )
-    //   if (vesselFeatureEvents.length > 1) {
-    //     return 'grab'
-    //   }
-    //   return 'pointer'
-    // } else if (map?.isMoving()) {
-    //   return 'grabbing'
-    // }
-    return 'grab'
-  }, [])
-
-  return getCursor()
 }
 
 export const useMapCursor = () => {

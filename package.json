@@ -102,6 +102,7 @@
     "match-sorter": "^6.3.4",
     "material-react-table": "^2.11.3",
     "memoize-one": "^6.0.0",
+    "mjolnir.js": "2.7.3",
     "next": "14.2.2",
     "next-pwa": "^5.6.0",
     "next-redux-wrapper": "^8.1.0",

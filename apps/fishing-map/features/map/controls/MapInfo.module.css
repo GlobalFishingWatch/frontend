@@ -16,7 +16,7 @@
 
 .mouseCoordinates {
   position: absolute;
-  bottom: 1.4rem;
+  bottom: 0;
   right: var(--space-S);
   font: var(--font-XS);
   opacity: var(--opacity-secondary);
