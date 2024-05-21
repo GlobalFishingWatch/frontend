@@ -39,7 +39,7 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
     const viewportHash = this._getViewportHash(context)
     return this.state.viewportHash !== viewportHash
   }
-  // TODO:deck check against changeFlags.onViewportChange instead this manual check
+
   updateState({ context }: UpdateParameters<this>) {
     this.setState({
       viewportHash: this._getViewportHash(context),
