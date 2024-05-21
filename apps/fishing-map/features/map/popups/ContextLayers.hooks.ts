@@ -21,7 +21,6 @@ import { selectContextAreasDataviews } from 'features/dataviews/selectors/datavi
 import { getBufferedAreaBbox } from 'features/reports/reports.utils'
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { setClickedEvent } from '../map.slice'
-import { useMapFitBounds } from '../map-bounds.hooks'
 
 export const getFeatureBounds = (feature: ContextPickingObject) => {
   if (feature.geometry) {
@@ -37,7 +36,9 @@ export const useHighlightReportArea = () => {
 
   return useCallback(
     (area?: ContextFeature) => {
-      areaLayer?.instance.setHighlightedFeatures(area ? [area] : [])
+      if (areaLayer?.instance?.setHighlightedFeatures) {
+        areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
+      }
     },
     [areaLayer]
   )

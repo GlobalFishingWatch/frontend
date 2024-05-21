@@ -24,7 +24,7 @@ import {
   getFetchLoadOptions,
 } from '../../utils'
 import { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
-import { UserBaseLayer } from './UserBaseLayer'
+import { UserBaseLayer, UserBaseLayerState } from './UserBaseLayer'
 
 type _UserContextLayerProps = TileLayerProps & UserPolygonsLayerProps
 
@@ -35,7 +35,7 @@ const defaultProps: DefaultProps<_UserContextLayerProps> = {
   debounceTime: 500,
 }
 
-type UserContextLayerState = {
+type UserContextLayerState = UserBaseLayerState & {
   scale: ScaleLinear<string, string, never>
 }
 
@@ -73,19 +73,22 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   _getHighlightLineWidth: AccessorFunction<Feature<Geometry, GeoJsonProperties>, number> = (d) => {
-    const { highlightedFeatures = [], idProperty } = this.props
+    const { idProperty } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!) ? 1 : 0
   }
 
   _getFillColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { highlightedFeatures = [], idProperty } = this.props
+    const { idProperty } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)
       ? COLOR_HIGHLIGHT_FILL
       : COLOR_TRANSPARENT
   }
 
   _getFillStepsColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { highlightedFeatures = [], idProperty } = this.props
+    const { idProperty } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     if (getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)) {
       return COLOR_HIGHLIGHT_FILL
     }
@@ -100,7 +103,8 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   renderLayers() {
-    const { highlightedFeatures, color, layers, steps, stepsPickValue } = this.props
+    const { color, layers, steps, stepsPickValue } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const filterProps = this._getTimeFilterProps()
     return layers.map((layer) => {
