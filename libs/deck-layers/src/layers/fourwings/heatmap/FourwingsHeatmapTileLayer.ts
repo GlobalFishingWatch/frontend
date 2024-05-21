@@ -7,7 +7,7 @@ import {
   UpdateParameters,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
-import { load } from '@loaders.gl/core'
+import { parse } from '@loaders.gl/core'
 import { debounce } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
@@ -330,7 +330,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       throw new Error('tile aborted')
     }
 
-    const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
+    const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
       fourwings: {
         sublayers: 1,
@@ -415,7 +415,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     if (tile.signal?.aborted) {
       throw new Error('tile aborted')
     }
-    const data = await load(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
+    const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
       fourwings: {
         sublayers: 1,

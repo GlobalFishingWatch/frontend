@@ -19,8 +19,7 @@ export const UserTrackWorkerLoader: Loader<UserTrackData, any, UserTracksLoaderO
   version: packageJson?.version,
   extensions: ['*'],
   mimeTypes: ['application/json'],
-  // TODO:deck restore this once working
-  worker: false,
+  worker: true,
   options: {
     userTracks: {
       filters: {},

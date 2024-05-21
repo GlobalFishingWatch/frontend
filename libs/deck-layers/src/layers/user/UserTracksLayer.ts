@@ -40,7 +40,7 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
       // Timestamp of the vertex
       'vs:#main-end': `
         vTime = instanceTimestamps;
-        if(vTime > highlightStartTime && vTime < highlightEndTime) {
+        if(vTime > 0.0 && vTime > highlightStartTime && vTime < highlightEndTime) {
           gl_Position.z = 1.0;
         }
       `,
@@ -53,12 +53,12 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
       `,
       // Drop the segments outside of the time window
       'fs:#main-start': `
-        if(vTime < startTime || vTime > endTime) {
+        if(vTime > 0.0 && (vTime < startTime || vTime > endTime)) {
           discard;
         }
       `,
       'fs:DECKGL_FILTER_COLOR': `
-        if (vTime > highlightStartTime && vTime < highlightEndTime) {
+        if (vTime > 0.0 && vTime > highlightStartTime && vTime < highlightEndTime) {
           // color = vHighlightColor;
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
@@ -108,56 +108,6 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   static layerName = 'UserTracksLayer'
   static defaultProps = defaultProps
 
-  // _getFilterExtensionProps() {
-  //   const { filters } = this.props
-
-  //   if (!filters || !Object.keys(filters).length) {
-  //     return {
-  //       getFilterValue: (d) => d,
-  //       getFilterCategory: (d) => d,
-  //     }
-  //   }
-  //   const filtersByType = Object.entries(filters).reduce(
-  //     (acc, [key, value]) => {
-  //       if (!value) {
-  //         return acc
-  //       }
-  //       if (Array.isArray(value) && value.length === 2 && value.every((v) => v && isNumeric(v))) {
-  //         acc.numeric[key] = value.map((v) => parseFloat(v))
-  //       } else {
-  //         acc.category[key] = value
-  //       }
-  //       return acc
-  //     },
-  //     { numeric: {} as TrackPointProperties, category: {} as TrackPointProperties }
-  //   )
-  //   const numericFiltersLength = Object.keys(filtersByType.numeric).length
-  //   const hasNumericFilters = numericFiltersLength > 0
-  //   const numericFilterRanges = hasNumericFilters ? Object.values(filtersByType?.numeric) : []
-  //   const categoryFiltersLength = Object.keys(filtersByType.category).length
-  //   const hasCategoryFilters = categoryFiltersLength > 0
-  //   const categoryFilterRanges = hasCategoryFilters ? Object.values(filtersByType?.category) : []
-  //   return {
-  //     getFilterValue: (d) =>
-  //       Object.keys(filtersByType.numeric).map((key: any) => d?.properties[key]),
-  //     filterRange: numericFiltersLength === 1 ? numericFilterRanges[0] : numericFilterRanges,
-  //     getFilterCategory: (d) =>
-  //       Object.keys(filtersByType.category).map((key: any) => d?.properties[key]),
-  //     filterCategories:
-  //       categoryFiltersLength === 1 ? categoryFilterRanges[0] : categoryFilterRanges,
-  //     extensions: [
-  //       new DataFilterExtension({
-  //         filterSize: hasNumericFilters
-  //           ? (Object.keys(filtersByType.numeric || {}).length as any)
-  //           : 0,
-  //         categorySize: hasCategoryFilters
-  //           ? (Object.keys(filtersByType.category || {}).length as any)
-  //           : 0,
-  //       }),
-  //     ],
-  //   }
-  // }
-
   _fetch = async (
     url: string,
     {
@@ -166,11 +116,9 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     }: {
       layer: Layer
       signal?: AbortSignal
-      loaders: any[]
       loadOptions?: any
     }
   ) => {
-    const { filters } = this.props
     const urlObject = new URL(url)
     urlObject.searchParams.delete('filters')
     const response = await GFWAPI.fetch<any>(urlObject.toString(), {
@@ -182,16 +130,14 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     const userTracksLoadOptions = {
       ...loadOptions,
       userTracks: {
-        filters,
+        filters: this.props.filters,
       },
     }
     return await parse(response, UserTrackLoader, userTracksLoadOptions)
   }
 
   renderLayers() {
-    const { layers, startTimeProperty, color, filters } = this.props
-
-    // const filterExtension = this._getFilterExtensionProps()
+    const { layers, color, filters } = this.props
     return layers.map((layer) => {
       const tilesUrl = new URL(layer.tilesUrl)
       tilesUrl.searchParams.set('filters', Object.values(filters || {}).join(','))
@@ -199,7 +145,6 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         ...(this.props as any),
         id: layer.id,
         data: tilesUrl.toString(),
-        loaders: [UserTrackLoader],
         _pathType: 'open',
         fetch: this._fetch,
         widthUnits: 'pixels',
@@ -209,14 +154,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         capRounded: true,
         widthMinPixels: 1,
         width: 1,
-        // getPath: (d: any) => d.coordinates,
         getColor: hexToDeckColor(color),
-        loadOptions: {
-          userTracks: {
-            timestampProperty: startTimeProperty,
-            filters,
-          },
-        },
       })
     })
   }

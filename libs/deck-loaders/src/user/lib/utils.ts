@@ -235,7 +235,12 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
             type: 'Feature',
             geometry: {
               type: 'MultiLineString',
-              coordinates: filteredLines.flatMap((line) => line.coordinates),
+              coordinates: filteredLines.flatMap((line) => {
+                if (!line.coordinates) {
+                  return []
+                }
+                return line.coordinates.filter((c) => c.length > 1)
+              }),
             } as MultiLineString,
             properties: {
               ...feature.properties,

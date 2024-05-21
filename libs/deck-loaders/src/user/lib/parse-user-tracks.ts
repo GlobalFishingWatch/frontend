@@ -57,15 +57,20 @@ export const parseUserTrack = (
   })
 
   const length = filteredTrack.features.reduce((acc, feature) => {
-    return acc + feature.geometry.coordinates.length
+    if (feature.geometry.type === 'MultiLineString') {
+      return acc + feature.geometry.coordinates.length
+    }
+    return acc + 1
   }, 0)
 
   const startIndices = filteredTrack.features.reduce(
     (acc, feature) => {
       const lastIndex = acc[acc.length - 1]
       if (feature.geometry.type === 'MultiLineString') {
+        let multiLineIndex = 0
         feature.geometry.coordinates.forEach((line) => {
-          acc.push(lastIndex + line.length)
+          acc.push(lastIndex + multiLineIndex + line.length)
+          multiLineIndex += line.length
         })
       } else {
         acc.push(lastIndex + feature.geometry.coordinates.length)
@@ -88,7 +93,9 @@ export const parseUserTrack = (
       getTimestamp: {
         value: new Float32Array(
           filteredTrack.features.flatMap(
-            (f) => f.properties?.coordinateProperties?.[timestampProperty] || 0
+            (f) =>
+              f.properties?.coordinateProperties?.[timestampProperty] ||
+              Array(f.geometry.coordinates.length).fill(0)
           )
         ),
         size: 1,
