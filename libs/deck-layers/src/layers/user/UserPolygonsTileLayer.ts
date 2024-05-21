@@ -24,7 +24,7 @@ import {
   getFetchLoadOptions,
 } from '../../utils'
 import { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
-import { UserTileLayer } from './UserTileLayer'
+import { UserBaseLayer } from './UserBaseLayer'
 
 type _UserContextLayerProps = TileLayerProps & UserPolygonsLayerProps
 
@@ -39,7 +39,7 @@ type UserContextLayerState = {
   scale: ScaleLinear<string, string, never>
 }
 
-export class UserContextTileLayer<PropsT = {}> extends UserTileLayer<
+export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   _UserContextLayerProps & PropsT
 > {
   static layerName = 'UserContextTileLayer'

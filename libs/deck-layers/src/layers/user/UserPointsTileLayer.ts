@@ -21,7 +21,7 @@ import {
   getFetchLoadOptions,
 } from '../../utils'
 import { UserPointsLayerProps, UserLayerFeature } from './user.types'
-import { UserTileLayer } from './UserTileLayer'
+import { UserBaseLayer } from './UserBaseLayer'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
 
@@ -39,7 +39,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 type UserPointsLayerState = {
   scale?: ScalePower<number, number, never>
 }
-export class UserPointsTileLayer<PropsT = {}> extends UserTileLayer<
+export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
   _UserPointsLayerProps & PropsT
 > {
   static layerName = 'UserPointsTileLayer'

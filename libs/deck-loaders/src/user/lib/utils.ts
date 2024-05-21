@@ -7,8 +7,8 @@ import {
   Position,
   MultiLineString,
 } from 'geojson'
-import { isEqual } from 'lodash'
-import { isNumeric } from './utils'
+
+// TODO:deck this comes duplicated from data-transforms libs to avoid circular dependencies
 
 // TODO define types for this filter so we can avoid the buggy isNumeric approach
 // to extract when using min or max or the list of values
@@ -254,44 +254,4 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
     features: featuresFiltered,
   }
   return geojsonFiltered
-}
-
-export const filterByTimerangeMemoizeEqualityCheck = (
-  newArgs: FilterTrackByCoordinatePropertiesArgs,
-  lastArgs: FilterTrackByCoordinatePropertiesArgs
-) => {
-  const newData = newArgs[0]
-  const lastData = lastArgs[0]
-  const newFilters = newArgs[1].filters
-  const lastFilters = lastArgs[1].filters
-  return newData.features.length === lastData.features.length && isEqual(newFilters, lastFilters)
-}
-
-export const getTrackFilters = (
-  dataviewFilters: Record<string, (string | number)[]> | undefined
-): TrackCoordinatesPropertyFilter[] => {
-  if (!dataviewFilters) return []
-  return Object.entries(dataviewFilters || {}).map(([id, values]) => {
-    if (isNumeric(values[0]) && isNumeric(values[1])) {
-      return {
-        id,
-        min: parseFloat(values[0] as string),
-        max: parseFloat(values[1] as string),
-      }
-    }
-    return { id, values }
-  })
-}
-
-export const getTimeFilter = (start?: string, end?: string): TrackCoordinatesPropertyFilter[] => {
-  if (!start || !end) {
-    return []
-  }
-  return [
-    {
-      id: 'times',
-      min: new Date(start).getTime(),
-      max: new Date(end).getTime(),
-    },
-  ]
 }

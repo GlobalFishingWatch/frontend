@@ -1,4 +1,4 @@
-import { PickingInfo } from '@deck.gl/core'
+import { Accessor, PickingInfo } from '@deck.gl/core'
 import { Feature, Geometry } from 'geojson'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { DataviewCategory, DataviewType, TimeFilterType } from '@globalfishingwatch/api-types'
@@ -70,6 +70,14 @@ export type UserPointsLayerProps = BaseLayerProps &
      * man point size of the values range higher end
      */
     maxPointSize?: number
+  }
+
+export type UserTrackLayerProps = BaseLayerProps &
+  BaseUserLayerProps & {
+    highlightStartTime?: number
+    highlightEndTime?: number
+    timestampProperty?: string
+    getTimestamp?: Accessor<any, number>
   }
 
 export type UserLayerFeatureProperties = {

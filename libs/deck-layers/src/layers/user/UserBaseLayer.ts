@@ -13,12 +13,16 @@ import {
   UserLayerPickingObject,
   BaseUserLayerProps,
   UserPolygonsLayerProps,
+  UserTrackLayerProps,
 } from './user.types'
 
-type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
+type _UserBaseLayerProps =
+  | (TileLayerProps & UserPointsLayerProps)
+  | UserTrackLayerProps
+  | UserPointsLayerProps
 
 export const POINT_SIZES_DEFAULT_RANGE = [3, 15]
-const defaultProps: DefaultProps<_UserPointsLayerProps> = {
+const defaultProps: DefaultProps<_UserBaseLayerProps> = {
   idProperty: 'gfw_id',
   pickable: true,
   valueProperties: [],
@@ -32,11 +36,11 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 // update this in Sat Nov 20 2286 as deck gl does not support Infinity
 const INFINITY_TIMERANGE_LIMIT = 9999999999999
 
-type UserTileLayerProps = BaseLayerProps & BaseUserLayerProps
-export abstract class UserTileLayer<
-  PropsT extends UserTileLayerProps
+type UserBaseLayerProps = BaseLayerProps & BaseUserLayerProps
+export abstract class UserBaseLayer<
+  PropsT extends UserBaseLayerProps
 > extends CompositeLayer<PropsT> {
-  static layerName = 'UserTileLayer'
+  static layerName = 'UserBaseLayer'
   static defaultProps = defaultProps
 
   getPickingInfo = ({
@@ -56,11 +60,13 @@ export abstract class UserTileLayer<
               .join('<br/>')
     }
     const object = {
-      ...transformTileCoordsToWGS84(
-        info.object as UserLayerFeature,
-        info.tile!.bbox as GeoBoundingBox,
-        this.context.viewport
-      ),
+      ...(info.tile && {
+        ...transformTileCoordsToWGS84(
+          info.object as UserLayerFeature,
+          info.tile.bbox as GeoBoundingBox,
+          this.context.viewport
+        ),
+      }),
       value,
       title: this.props.id,
       color: this.props.color,
