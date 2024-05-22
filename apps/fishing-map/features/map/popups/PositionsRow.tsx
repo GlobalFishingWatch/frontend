@@ -17,7 +17,6 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
   const { t } = useTranslation()
   // TODO get the value based on the sublayer
   const color = feature.sublayers?.[0]?.color
-  console.log('🚀 ~ PositionsRow ~ feature:', feature)
 
   return (
     <Fragment>

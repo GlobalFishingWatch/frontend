@@ -60,7 +60,6 @@ export abstract class UserBaseLayer<
   }
 
   setHighlightedFeatures(highlightedFeatures: ContextFeature[]) {
-    console.log('🚀 ~ setHighlightedFeatures ~ highlightedFeatures:', highlightedFeatures)
     this.setState({ highlightedFeatures })
   }
 
