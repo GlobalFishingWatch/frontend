@@ -69,8 +69,9 @@ export abstract class UserBaseLayer<
     info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
   }): UserLayerPickingInfo => {
     const { idProperty, valueProperties } = this.props
-    let value = this.props.id
-    if (valueProperties) {
+
+    let value = info.object?.properties.value
+    if (valueProperties && valueProperties?.length) {
       const properties = { ...(info.object as UserLayerFeature)?.properties }
       value =
         valueProperties?.length === 1

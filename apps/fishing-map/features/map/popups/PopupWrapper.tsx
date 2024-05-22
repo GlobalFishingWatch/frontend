@@ -243,6 +243,12 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 )
               }
               case DataviewCategory.Context: {
+                const contextFeatures = (features as ContextPickingObject[]).filter(
+                  (feature) => feature.subcategory !== DataviewType.UserPoints
+                )
+                const pointFeatures = (features as UserLayerPickingObject[]).filter(
+                  (feature) => feature.subcategory === DataviewType.UserPoints
+                )
                 // const defaultContextFeatures = features.filter(
                 //   (feature) => feature.type === DataviewType.Context
                 // )
@@ -270,8 +276,12 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                       <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
                       <ReportBufferTooltip features={areaBufferFeatures} />
                     */}
+                    <UserPointsTooltipSection
+                      features={pointFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
                     <ContextTooltipSection
-                      features={features as ContextPickingObject[]}
+                      features={contextFeatures}
                       showFeaturesDetails={type === 'click'}
                     />
                   </Fragment>
