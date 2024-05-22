@@ -15,6 +15,7 @@ import {
   FourwingsDeckSublayer,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
+  FourwingsVisualizationMode,
 } from '../fourwings.types'
 
 export type FourwingsChunk = {
@@ -60,6 +61,7 @@ export type FourwingsHeatmapPickingObject = FourwingsFeature<FourwingsFeaturePro
     interval: FourwingsInterval
     value?: number
     sublayers: FourwingsDeckSublayer[]
+    visualizationMode?: FourwingsVisualizationMode
     comparisonMode?: FourwingsComparisonMode
   }
 export type FourwingsHeatmapPickingInfo = PickingInfo<FourwingsHeatmapPickingObject>

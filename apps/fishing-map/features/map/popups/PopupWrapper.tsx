@@ -19,6 +19,7 @@ import {
   ContextPickingObject,
   FourwingsComparisonMode,
   FourwingsHeatmapPickingObject,
+  FourwingsPositionsPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
@@ -44,6 +45,7 @@ import TileClusterTooltipRow from './TileClusterTooltipRow'
 import ContextTooltipSection from './ContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
 import EnvironmentTooltipSection from './EnvironmentLayers'
+import PositionsRow from './PositionsRow'
 
 const overflowMiddlware: Middleware = {
   name: 'overflow',
@@ -142,6 +144,15 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
               //   )
               case DataviewCategory.Activity: {
                 return (features as SliceExtendedFourwingsPickingObject[])?.map((feature, i) => {
+                  if (feature.visualizationMode === 'positions') {
+                    return (
+                      <PositionsRow
+                        key={feature.id}
+                        feature={feature as any as FourwingsPositionsPickingObject}
+                        showFeaturesDetails
+                      />
+                    )
+                  }
                   return feature.sublayers.map((sublayer, j) => {
                     const dataview = dataviews.find((d) => d.id === sublayer.id)
                     return feature.comparisonMode === FourwingsComparisonMode.TimeCompare ? (

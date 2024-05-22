@@ -11,6 +11,7 @@ import {
   rgbaStringToObject,
   rgbaToDeckColor,
 } from '../../../utils'
+import { HEATMAP_HIGH_RES_ID, HEATMAP_ID } from '../fourwings.config'
 import {
   EMPTY_CELL_COLOR,
   aggregateCell,
@@ -41,6 +42,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       availableIntervals,
       category,
       subcategory,
+      resolution,
       sublayers,
       tilesCache,
       comparisonMode,
@@ -67,6 +69,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       endTime,
       interval,
       comparisonMode,
+      visualizationMode: resolution === 'high' ? HEATMAP_HIGH_RES_ID : HEATMAP_ID,
     }
     if (info.object) {
       object.sublayers = object.sublayers?.map((sublayer, i) => ({
