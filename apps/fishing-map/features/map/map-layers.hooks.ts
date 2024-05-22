@@ -7,18 +7,20 @@ import {
 } from '@globalfishingwatch/deck-layer-composer'
 import { useGlobalConfigConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectMapReportBufferDataviews } from './map.selectors'
+import { selectMapReportBufferDataviews, selectWorkspacesListDataview } from './map.selectors'
 
 export const useMapDeckLayers = () => {
   const workspaceDataviews = useSelector(selectDataviewInstancesResolvedVisible)
   const bufferDataviews = useSelector(selectMapReportBufferDataviews)
+  const workspacesListDataview = useSelector(selectWorkspacesListDataview)
   const globalConfig = useGlobalConfigConnect()
   const dataviews = useMemo(() => {
-    if (bufferDataviews?.length) {
-      return [...workspaceDataviews, ...bufferDataviews]
+    const allDataviews = [...(workspaceDataviews || []), ...(bufferDataviews || [])]
+    if (workspacesListDataview) {
+      allDataviews.push(workspacesListDataview)
     }
-    return workspaceDataviews
-  }, [bufferDataviews, workspaceDataviews])
+    return allDataviews
+  }, [bufferDataviews, workspaceDataviews, workspacesListDataview])
   const { layers } = useDeckLayerComposer({
     dataviews: dataviews as DataviewInstance[],
     globalConfig,
