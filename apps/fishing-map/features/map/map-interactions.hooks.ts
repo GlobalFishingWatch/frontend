@@ -289,15 +289,6 @@ export const useMapMouseHover = () => {
     [getPickingInteraction, onRulerMapHover, rulersEditing, setMapHoverFeatures]
   )
 
-  // const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
-  // useMapHighlightedEvent(hoveredTooltipEvent?.features)
-
-  // const resetHoverState = useCallback(() => {
-  //   setHoveredEvent(null)
-  //   setHoveredDebouncedEvent(null)
-  //   cleanFeatureState('hover')
-  // }, [cleanFeatureState])
-
   return {
     onMouseMove,
     // resetHoverState,

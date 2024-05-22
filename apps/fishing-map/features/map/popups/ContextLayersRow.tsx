@@ -138,8 +138,6 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
         },
         query: {
           ...query,
-          // TODO:deck validate this is not needed anymore
-          // reportAreaSource: feature.source,
           reportBufferUnit: isPointFeature ? DEFAULT_POINT_BUFFER_UNIT : undefined,
           reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
           reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,

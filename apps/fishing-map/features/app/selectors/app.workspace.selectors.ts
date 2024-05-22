@@ -14,7 +14,6 @@ import {
 import {
   selectReportActivityGraph,
   selectReportAreaBounds,
-  selectReportAreaSource,
   selectReportCategory,
   selectReportResultsPerPage,
   selectReportTimeComparison,
@@ -41,7 +40,6 @@ export const selectWorkspaceReportState = createSelector(
   [
     selectReportActivityGraph,
     selectReportAreaBounds,
-    selectReportAreaSource,
     selectReportCategory,
     selectReportResultsPerPage,
     selectReportTimeComparison,
@@ -55,7 +53,6 @@ export const selectWorkspaceReportState = createSelector(
   (
     reportActivityGraph,
     reportAreaBounds,
-    reportAreaSource,
     reportCategory,
     reportResultsPerPage,
     reportTimeComparison,
@@ -68,7 +65,6 @@ export const selectWorkspaceReportState = createSelector(
   ) => ({
     ...(reportActivityGraph && { reportActivityGraph }),
     ...(reportAreaBounds && { reportAreaBounds }),
-    ...(reportAreaSource && { reportAreaSource }),
     ...(reportCategory && { reportCategory }),
     ...(reportResultsPerPage && { reportResultsPerPage }),
     ...(reportTimeComparison && { reportTimeComparison }),

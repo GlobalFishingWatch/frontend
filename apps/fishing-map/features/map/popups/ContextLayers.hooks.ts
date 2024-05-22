@@ -14,7 +14,6 @@ import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectReportAreaSource } from 'features/app/selectors/app.reports.selector'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
@@ -58,7 +57,6 @@ export const getAreaIdFromFeature = (
 export const useContextInteractions = () => {
   const dispatch = useAppDispatch()
   const areaId = useSelector(selectLocationAreaId)
-  const sourceId = useSelector(selectReportAreaSource)
   const datasets = useSelector(selectAllDatasets)
   const dataviews = useSelector(selectContextAreasDataviews)
   // const fitMapBounds = useMapFitBounds()

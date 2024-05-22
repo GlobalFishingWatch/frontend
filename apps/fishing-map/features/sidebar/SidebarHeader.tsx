@@ -263,7 +263,6 @@ function cleanReportQuery(query: QueryParams) {
     ...query,
     reportActivityGraph: undefined,
     reportAreaBounds: undefined,
-    reportAreaSource: undefined,
     reportCategory: undefined,
     reportResultsPerPage: undefined,
     reportTimeComparison: undefined,
