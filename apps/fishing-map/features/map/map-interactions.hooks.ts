@@ -2,8 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckProps, PickingInfo, Position } from '@deck.gl/core'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
-import { InteractionEventCallback, useSimpleMapHover } from '@globalfishingwatch/react-hooks'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
   useMapHoverInteraction,
   useSetMapHoverInteraction,
@@ -21,17 +20,19 @@ import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectIsMarineManagerLocation, selectLocationType } from 'routes/routes.selectors'
+import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/help/hints.slice'
-import { useLocationConnect } from 'routes/routes.hook'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 import { isRulerLayerPoint } from './map-interaction.utils'
 import {
+  SliceExtendedClusterPickingObject,
   SliceInteractionEvent,
+  fetchBQEventThunk,
+  fetchEncounterEventThunk,
   fetchFishingActivityInteractionThunk,
   selectApiEventStatus,
   selectClickedEvent,
@@ -43,10 +44,8 @@ import { useSetViewState } from './map-viewport.hooks'
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
-  const locationType = useSelector(selectLocationType)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
-  const { dispatchLocation } = useLocationConnect()
   const setViewState = useSetViewState()
   // TODO:deck tilesClusterLoaded from Layer instance
   const tilesClusterLoaded = true
@@ -177,14 +176,14 @@ export const useClickedEventConnect = () => {
       )
     }
 
-    // const tileClusterFeature = event.features.find(
-    //   (f) => f.generatorType === DataviewType.TileCluster
-    // )
-    // if (tileClusterFeature) {
-    //   const bqPocQuery = tileClusterFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
-    //   const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
-    //   eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
-    // }
+    const tileClusterFeature = event.features.find(
+      (f) => f.category === DataviewCategory.Events && f.subcategory === DataviewType.TileCluster
+    ) as SliceExtendedClusterPickingObject
+    if (tileClusterFeature) {
+      const bqPocQuery = tileClusterFeature.layerId !== ENCOUNTER_EVENTS_SOURCE_ID
+      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
+      eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
+    }
   }
 
   return {

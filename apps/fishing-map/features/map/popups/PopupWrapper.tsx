@@ -18,6 +18,7 @@ import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   ContextPickingObject,
   FourwingsComparisonMode,
+  FourwingsHeatmapPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
@@ -39,7 +40,7 @@ import { MAP_WRAPPER_ID } from '../map.config'
 import UserContextTooltipSection from './UserContextLayers'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
-import EncounterTooltipRow from './EncounterTooltipRow'
+import TileClusterTooltipRow from './TileClusterTooltipRow'
 import ContextTooltipSection from './ContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
 import EnvironmentTooltipSection from './EnvironmentLayers'
@@ -146,7 +147,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                     return feature.comparisonMode === FourwingsComparisonMode.TimeCompare ? (
                       <ComparisonRow
                         key={featureCategory}
-                        feature={features[0]}
+                        feature={features[0] as FourwingsHeatmapPickingObject}
                         showFeaturesDetails={type === 'click'}
                       />
                     ) : (
@@ -196,7 +197,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                   )
                 }
                 return (
-                  <EncounterTooltipRow
+                  <TileClusterTooltipRow
                     key={featureCategory}
                     // TODO:deck review typings here
                     features={features as any}

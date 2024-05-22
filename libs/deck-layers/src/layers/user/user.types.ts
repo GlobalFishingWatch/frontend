@@ -1,9 +1,9 @@
 import { Accessor, PickingInfo } from '@deck.gl/core'
 import { Feature, Geometry } from 'geojson'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { DataviewCategory, DataviewType, TimeFilterType } from '@globalfishingwatch/api-types'
+import { TimeFilterType } from '@globalfishingwatch/api-types'
 import { ContextLayerConfig } from '../context'
-import { BaseLayerProps } from '../../types'
+import { BaseLayerProps, BasePickingObject } from '../../types'
 
 export type BaseUserLayerProps = {
   id: string
@@ -82,16 +82,17 @@ export type UserTrackLayerProps = BaseLayerProps &
 
 export type UserLayerFeatureProperties = {
   id: string
+  layerId: string
   title: string
   color: string
   value: string | number
   datasetId: string
-  category: DataviewCategory
-  subcategory: DataviewType
 }
 
 export type UserLayerFeature = Feature<Geometry, Record<string, any>>
 
-export type UserLayerPickingObject = UserLayerFeature & UserLayerFeatureProperties
+export type UserLayerPickingObject = BasePickingObject &
+  UserLayerFeature &
+  UserLayerFeatureProperties
 
 export type UserLayerPickingInfo = PickingInfo<UserLayerPickingObject, { tile?: Tile2DHeader }>
