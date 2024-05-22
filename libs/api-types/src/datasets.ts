@@ -151,6 +151,7 @@ export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
   scale: number
   propertyToInclude: string
   propertyToIncludeRange: { min: number; max: number }
+  maxZoom?: number
 }
 
 export type AnyDatasetConfiguration = DatasetConfiguration | EnviromentalDatasetConfiguration

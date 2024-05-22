@@ -9,6 +9,7 @@ import {
   EventTypes,
   DataviewSublayerConfig,
   DataviewType,
+  EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_FOURWINGS_INTERVALS,
@@ -92,7 +93,7 @@ type GetMergedHeatmapAnimatedDataviewParams = {
 }
 
 export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
-  const { config, datasetsConfig } = dataview
+  const { config, datasetsConfig, datasets } = dataview
 
   if (!dataview?.datasets?.length) {
     console.warn('No datasets found on dataview:', dataview)
@@ -108,6 +109,12 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
       ? dataview.datasets
       : dataview.datasets.filter((dataset) => dataview?.config?.datasets?.includes(dataset.id))
 
+  const maxZoomLevels = datasets?.flatMap(({ configuration }) =>
+    (configuration as EnviromentalDatasetConfiguration)?.maxZoom !== undefined
+      ? ((configuration as EnviromentalDatasetConfiguration).maxZoom as number)
+      : []
+  )
+
   const sublayer: DataviewSublayerConfig = {
     id: dataview.id,
     datasets: activeDatasets,
@@ -116,7 +123,10 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     visible: config.visible,
     filter: config.filter,
     vesselGroups: config['vessel-groups'],
-    maxZoom: config.maxZoom,
+    ...(maxZoomLevels &&
+      maxZoomLevels.length > 0 && {
+        maxZoom: Math.min(...maxZoomLevels),
+      }),
   }
 
   return sublayer
