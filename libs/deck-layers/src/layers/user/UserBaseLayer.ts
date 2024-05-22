@@ -48,8 +48,6 @@ export abstract class UserBaseLayer<
   static defaultProps = defaultProps
   state!: UserBaseLayerState
 
-  //TODO:deck implement setHighlightedFeatures into the state
-
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
