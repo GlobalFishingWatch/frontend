@@ -68,16 +68,20 @@ const deepReplaceKeys = (obj: Dictionary<any>, keysMap: Dictionary<string>) => {
   })
 }
 
+const getObjectTokens = (obj: Dictionary<any>) => {
+  const tokens: string[] = []
+  Object.entries(obj).forEach(([key, value]) => {
+    if (key !== 'start' && key !== 'end') {
+      if (isObject(value)) tokens.push(...getObjectTokens(value))
+      else if (isString(value)) tokens.push(value as string)
+    }
+  })
+  return tokens
+}
+
 // Replace repeated values
 const deepTokenizeValues = (obj: Dictionary<any>) => {
-  const tokens: string[] = []
-  const collectTokens = (obj: Dictionary<any>) => {
-    Object.values(obj).forEach((value) => {
-      if (isObject(value)) collectTokens(value)
-      else if (isString(value)) tokens.push(value as string)
-    })
-  }
-  collectTokens(obj)
+  const tokens = getObjectTokens(obj)
 
   const tokensCount: Dictionary<number> = {}
   tokens.forEach((token) => {
