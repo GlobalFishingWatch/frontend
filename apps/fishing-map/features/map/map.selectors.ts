@@ -3,7 +3,12 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { LayerGroup } from '@globalfishingwatch/deck-layers'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
-import { selectMapDrawingEditId } from 'routes/routes.selectors'
+import {
+  selectIsAnyReportLocation,
+  selectIsWorkspaceLocation,
+  selectIsWorkspaceVesselLocation,
+  selectMapDrawingEditId,
+} from 'routes/routes.selectors'
 import {
   selectReportPreviewBufferFeature,
   selectReportBufferFeature,
@@ -69,36 +74,12 @@ export const selectWorkspacesListDataview = createSelector(
   }
 )
 
-// export const selectMarineManagerGenerators = createSelector(
-//   [selectIsMarineManagerLocation, selectMarineManagerDataviewInstanceResolved],
-//   (isMarineManagerLocation, marineManagerDataviewInstances) => {
-//     if (isMarineManagerLocation && marineManagerDataviewInstances?.length) {
-//       const mpaGeneratorConfig = getDataviewsGeneratorConfigs(marineManagerDataviewInstances)
-//       if (mpaGeneratorConfig) {
-//         return mpaGeneratorConfig
-//       }
-//     }
-//   }
-// )
-
-// export const selectMapWorkspacesListGenerators = createSelector(
-//   [selectDefaultBasemapGenerator, selectWorkspacesListGenerator, selectMarineManagerGenerators],
-//   (basemapGenerator, workspaceGenerator, marineManagerGenerators): AnyGeneratorConfig[] => {
-//     const generators: AnyGeneratorConfig[] = [basemapGenerator]
-//     if (marineManagerGenerators?.length) {
-//       generators.push(...(marineManagerGenerators as any))
-//     }
-//     if (workspaceGenerator) generators.push(workspaceGenerator)
-//     return generators
-//   }
-// )
-
-// export const selectShowWorkspaceDetail = createSelector(
-//   [selectIsWorkspaceLocation, selectIsAnyReportLocation, selectIsWorkspaceVesselLocation],
-//   (isWorkspacelLocation, isReportLocation, isVesselLocation) => {
-//     return isWorkspacelLocation || isReportLocation || isVesselLocation
-//   }
-// )
+export const selectShowWorkspaceDetail = createSelector(
+  [selectIsWorkspaceLocation, selectIsAnyReportLocation, selectIsWorkspaceVesselLocation],
+  (isWorkspacelLocation, isReportLocation, isVesselLocation) => {
+    return isWorkspacelLocation || isReportLocation || isVesselLocation
+  }
+)
 
 export const selectMapReportBufferDataviews = createSelector(
   [selectReportBufferFeature, selectReportPreviewBufferFeature],
@@ -131,28 +112,6 @@ export const selectMapReportBufferDataviews = createSelector(
     return dataviews
   }
 )
-
-// export const selectDefaultMapGeneratorsConfig = createSelector(
-//   [],
-//   (): AnyGeneratorConfig[] => {
-//     if (isVesselLocation) {
-//       return workspaceGenerators as any
-//     }
-//     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
-//       return [basemapGenerator]
-//     }
-//     if (showWorkspaceDetail) {
-//       TODO:deck render the basemap while the workspace is loading
-//       const generators =
-//         workspaceStatus !== AsyncReducerStatus.Finished ? [basemapGenerator] : workspaceGenerators
-//       if (isReportLocation) {
-//         return [...generators, ...mapReportGenerators] as any
-//       }
-//       return generators as any
-//     }
-//     return workspaceListGenerators
-//   }
-// )
 
 export const selectDrawEditDataset = createSelector(
   [selectAllDatasets, selectMapDrawingEditId],
