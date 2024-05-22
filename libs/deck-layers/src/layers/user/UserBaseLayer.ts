@@ -1,4 +1,4 @@
-import { CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
+import { CompositeLayer, DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core'
 import { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { DataFilterExtension } from '@deck.gl/extensions'
@@ -36,12 +36,33 @@ const defaultProps: DefaultProps<_UserBaseLayerProps> = {
 // update this in Sat Nov 20 2286 as deck gl does not support Infinity
 const INFINITY_TIMERANGE_LIMIT = 9999999999999
 
+export type UserBaseLayerState = {
+  highlightedFeatures?: UserLayerPickingObject[]
+}
+
 type UserBaseLayerProps = BaseLayerProps & BaseUserLayerProps
 export abstract class UserBaseLayer<
   PropsT extends UserBaseLayerProps
 > extends CompositeLayer<PropsT> {
   static layerName = 'UserBaseLayer'
   static defaultProps = defaultProps
+  state!: UserBaseLayerState
+
+  initializeState(context: LayerContext) {
+    super.initializeState(context)
+    this.state = {
+      highlightedFeatures: [],
+    }
+  }
+
+  _getHighlightedFeatures() {
+    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
+  }
+
+  setHighlightedFeatures(highlightedFeatures: ContextFeature[]) {
+    console.log('🚀 ~ setHighlightedFeatures ~ highlightedFeatures:', highlightedFeatures)
+    this.setState({ highlightedFeatures })
+  }
 
   getPickingInfo = ({
     info,

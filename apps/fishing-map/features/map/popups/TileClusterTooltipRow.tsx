@@ -3,18 +3,22 @@ import { useTranslation } from 'react-i18next'
 import { stringify } from 'qs'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { EventVessel } from '@globalfishingwatch/api-types'
-import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
 import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
+import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { useViewStateAtom } from '../map-viewport.hooks'
-import { ExtendedEventVessel, ExtendedFeatureEvent } from '../map.slice'
+import {
+  ExtendedEventVessel,
+  ExtendedFeatureEvent,
+  SliceExtendedClusterPickingObject,
+} from '../map.slice'
 import styles from './Popup.module.css'
 
 const parseEvent = (event: ExtendedFeatureEvent | undefined): ExtendedFeatureEvent | undefined => {
@@ -36,8 +40,7 @@ const parseEvent = (event: ExtendedFeatureEvent | undefined): ExtendedFeatureEve
 }
 
 type EncountersLayerProps = {
-  // TODO:deck type this with its own type
-  feature: any
+  feature: SliceExtendedClusterPickingObject
   showFeaturesDetails: boolean
 }
 
@@ -83,12 +86,12 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
       'This event happened outside the timerange of the Carrier Vessel Portal data'
     )
   }
-
+  const title = getDatasetLabel({ id: feature.datasetId })
   return (
     <div className={styles.popupSection}>
       <Icon icon="encounters" className={styles.layerIcon} style={{ color: feature.color }} />
       <div className={styles.popupSectionContent}>
-        {<h3 className={styles.popupSectionTitle}>{feature.title}</h3>}
+        {<h3 className={styles.popupSectionTitle}>{title}</h3>}
         {showFeaturesDetails && (
           <div className={styles.row}>
             {event ? (
@@ -186,18 +189,17 @@ function GenericClusterTooltipRow({ feature, showFeaturesDetails }: EncountersLa
   )
 }
 
-type UserContextLayersProps = {
-  features: (ContextPickingObject | UserLayerPickingObject)[]
+type TileContextLayersProps = {
+  features: SliceExtendedClusterPickingObject[]
   showFeaturesDetails: boolean
 }
 
-function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLayersProps) {
+function TileClusterTooltipRow({ features, showFeaturesDetails }: TileContextLayersProps) {
   return (
     <Fragment>
       {features.map((feature, index) => {
         const key = `${feature.title}-${index}`
-        // TODO:deck decide how to manage this
-        if ((feature as any).source === ENCOUNTER_EVENTS_SOURCE_ID) {
+        if (feature.layerId === ENCOUNTER_EVENTS_SOURCE_ID) {
           return (
             <EncounterTooltipRow
               key={key}

@@ -24,7 +24,6 @@ import {
   FourwingsHeatmapPickingObject,
   FourwingsPickingObject,
   FourwingsPositionsPickingObject,
-  RulerPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
@@ -68,13 +67,18 @@ export type SliceExtendedFourwingsPickingObject = Omit<
 > & {
   sublayers: SliceExtendedFourwingsDeckSublayer[]
 }
+
+export type SliceExtendedClusterPickingObject = ClusterPickingObject & {
+  event: ExtendedFeatureEvent
+}
+
 export type SliceExtendedFeature =
   | SliceExtendedFourwingsPickingObject
+  | SliceExtendedClusterPickingObject
   | FourwingsPositionsPickingObject
   | ContextPickingObject
   | UserLayerPickingObject
   | ClusterPickingObject
-  | RulerPickingObject
   | VesselEventPickingObject
 
 // Extends the default extendedEvent including event and vessels information from API
@@ -358,14 +362,14 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
 export const fetchEncounterEventThunk = createAsyncThunk<
   ExtendedFeatureEvent | undefined,
-  FourwingsPickingObject,
+  ClusterPickingObject,
   {
     dispatch: AppDispatch
   }
->('map/fetchEncounterEvent', async (eventFeature: any, { signal, getState }) => {
+>('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
   const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
-  const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
+  const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
 
   if (dataset) {

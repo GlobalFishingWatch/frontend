@@ -14,6 +14,7 @@ export const resolveDeckClusterLayerProps: DeckResolverFunction<ClusterLayerProp
   return {
     id: dataview.id,
     category: dataview.category!,
+    subcategory: dataview.config?.type!,
     datasetId: dataset?.id || '',
     color: dataview.config?.color || '',
     start: start,

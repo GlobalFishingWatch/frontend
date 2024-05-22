@@ -21,7 +21,7 @@ import {
   getFetchLoadOptions,
 } from '../../utils'
 import { UserPointsLayerProps, UserLayerFeature } from './user.types'
-import { UserBaseLayer } from './UserBaseLayer'
+import { UserBaseLayer, UserBaseLayerState } from './UserBaseLayer'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
 
@@ -36,7 +36,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
   maxPointSize: 15,
 }
 
-type UserPointsLayerState = {
+type UserPointsLayerState = UserBaseLayerState & {
   scale?: ScalePower<number, number, never>
 }
 export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
@@ -102,7 +102,8 @@ export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   renderLayers() {
-    const { highlightedFeatures, layers, color, pickable, maxPointSize } = this.props
+    const { layers, color, pickable, maxPointSize } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     const filterProps = this._getTimeFilterProps()
     const renderLayers: Layer[] = layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserLayerFeature>>({

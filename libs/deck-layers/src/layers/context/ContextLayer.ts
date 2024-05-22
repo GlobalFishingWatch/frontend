@@ -48,7 +48,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
-      highlightedFeatures: this.props.highlightedFeatures,
+      highlightedFeatures: [],
     }
   }
 

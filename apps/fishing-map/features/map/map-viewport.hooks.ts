@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { debounce } from 'lodash'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { MapView, WebMercatorViewport } from '@deck.gl/core'
+import { MapView, MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
@@ -58,7 +58,13 @@ export function useSetMapCoordinates() {
 }
 
 export const MAP_VIEW_ID = 'mapViewport'
-export const MAP_VIEW = new MapView({ id: MAP_VIEW_ID, repeat: true, controller: true })
+export const MAP_VIEW = new MapView({
+  id: MAP_VIEW_ID,
+  repeat: true,
+  controller: true,
+  bearing: 0,
+  pitch: 0,
+} as MapViewProps)
 const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 
 export const useUpdateViewStateUrlParams = () => {

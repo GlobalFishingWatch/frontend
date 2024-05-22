@@ -31,8 +31,11 @@ export class ClusterLayer extends CompositeLayer<LayerProps & TileLayerProps & C
       id:
         info.object?.properties.event_id ||
         `${(info.object?.geometry?.coordinates || []).join('-')}`,
+      color: this.props.color,
       layerId: this.root.id,
+      datasetId: this.props.datasetId,
       category: this.props.category,
+      subcategory: this.props.subcategory,
     }
     return { ...info, object }
   }

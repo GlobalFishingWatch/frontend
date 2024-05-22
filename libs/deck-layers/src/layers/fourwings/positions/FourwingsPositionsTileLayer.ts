@@ -136,11 +136,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       ...(info.object || ({} as FourwingsPositionFeature)),
       id: info.object!?.id!?.toString(),
       layerId: this.root.id,
-      title: this.props.id, // TODO:deck get the proper title
+      title: info.object?.properties?.shipname,
       category: this.props.category,
       startTime: this.props.startTime,
       endTime: this.props.endTime,
       sublayers: [], // TODO:deck
+      visualizationMode: 'positions',
     }
     return { ...info, object }
   }
@@ -343,7 +344,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getColor: this._getHighlightColor,
           getSize: this._getIconSize,
           getAngle: (d: any) => d.properties.bearing - 90,
-          pickable: true,
           getPickingInfo: this.getPickingInfo,
           updateTriggers: {
             getColor: [highlightedFeatureIds, highlightedVesselIds],

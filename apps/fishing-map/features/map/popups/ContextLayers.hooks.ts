@@ -14,14 +14,12 @@ import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectReportAreaSource } from 'features/app/selectors/app.reports.selector'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getBufferedAreaBbox } from 'features/reports/reports.utils'
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { setClickedEvent } from '../map.slice'
-import { useMapFitBounds } from '../map-bounds.hooks'
 
 export const getFeatureBounds = (feature: ContextPickingObject) => {
   if (feature.geometry) {
@@ -37,7 +35,9 @@ export const useHighlightReportArea = () => {
 
   return useCallback(
     (area?: ContextFeature) => {
-      areaLayer?.instance.setHighlightedFeatures(area ? [area] : [])
+      if (areaLayer?.instance?.setHighlightedFeatures) {
+        areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
+      }
     },
     [areaLayer]
   )
@@ -57,7 +57,6 @@ export const getAreaIdFromFeature = (
 export const useContextInteractions = () => {
   const dispatch = useAppDispatch()
   const areaId = useSelector(selectLocationAreaId)
-  const sourceId = useSelector(selectReportAreaSource)
   const datasets = useSelector(selectAllDatasets)
   const dataviews = useSelector(selectContextAreasDataviews)
   // const fitMapBounds = useMapFitBounds()

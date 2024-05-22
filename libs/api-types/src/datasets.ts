@@ -136,6 +136,7 @@ export interface DatasetConfiguration {
    */
   valueProperties?: string[]
   propertyToInclude?: string
+  maxZoom?: number
   min?: number
   max?: number
   intervals?: DatasetConfigurationInterval[]

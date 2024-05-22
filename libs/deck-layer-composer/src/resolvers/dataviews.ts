@@ -9,7 +9,6 @@ import {
   EventTypes,
   DataviewSublayerConfig,
   DataviewType,
-  EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_FOURWINGS_INTERVALS,
@@ -93,7 +92,7 @@ type GetMergedHeatmapAnimatedDataviewParams = {
 }
 
 export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
-  const { config, datasetsConfig, datasets } = dataview
+  const { config, datasetsConfig } = dataview
 
   if (!dataview?.datasets?.length) {
     console.warn('No datasets found on dataview:', dataview)
@@ -109,11 +108,10 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
       ? dataview.datasets
       : dataview.datasets.filter((dataset) => dataview?.config?.datasets?.includes(dataset.id))
 
-  const maxZoomLevels = datasets?.flatMap(({ configuration }) =>
-    (configuration as EnviromentalDatasetConfiguration)?.maxZoom !== undefined
-      ? ((configuration as EnviromentalDatasetConfiguration).maxZoom as number)
-      : []
+  const maxZoomLevels = activeDatasets?.flatMap(({ configuration }) =>
+    configuration?.maxZoom !== undefined ? (configuration?.maxZoom as number) : []
   )
+  const maxZoom = maxZoomLevels?.length ? Math.min(...maxZoomLevels) : undefined
 
   const sublayer: DataviewSublayerConfig = {
     id: dataview.id,
@@ -123,10 +121,7 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     visible: config.visible,
     filter: config.filter,
     vesselGroups: config['vessel-groups'],
-    ...(maxZoomLevels &&
-      maxZoomLevels.length > 0 && {
-        maxZoom: Math.min(...maxZoomLevels),
-      }),
+    maxZoom,
   }
 
   return sublayer
@@ -152,6 +147,7 @@ export function getFourwingsDataviewsResolved(
     category: fourwingsDataviews[0]?.category,
     config: {
       type: fourwingsDataviews[0]?.config?.type,
+      maxZoom: fourwingsDataviews[0]?.config?.maxZoom,
       sublayers: fourwingsDataviews.flatMap(getFourwingsDataviewSublayers),
       minVisibleValue: fourwingsDataviews[0].config?.minVisibleValue,
       maxVisibleValue: fourwingsDataviews[0].config?.maxVisibleValue,

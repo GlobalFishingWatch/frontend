@@ -251,6 +251,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
                 size="small"
                 className={styles.actionButton}
                 disabled
+                tooltip="WIP"
                 // tooltip={
                 //   <BufferButtonTooltip
                 //     areaType={area?.properties?.originalGeometryType}

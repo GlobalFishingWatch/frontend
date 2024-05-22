@@ -28,7 +28,6 @@ export type BufferOperation = 'dissolve' | 'difference'
 export type ReportStateProperty =
   | 'reportActivityGraph'
   | 'reportAreaBounds'
-  | 'reportAreaSource'
   | 'reportCategory'
   | 'reportResultsPerPage'
   | 'reportTimeComparison'
@@ -94,7 +93,6 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   readOnly?: boolean
   reportActivityGraph?: ReportActivityGraph
   reportAreaBounds?: Bbox
-  reportAreaSource?: string
   reportCategory?: ReportCategory
   reportTimeComparison?: ReportActivityTimeComparison
   reportVesselFilter?: string
