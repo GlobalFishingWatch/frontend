@@ -44,10 +44,9 @@
 }
 
 .hover .content {
-  min-width: max-content;
   background: var(--color-primary-blue);
   color: var(--color-white);
-  max-width: var(--sidebar-width);
+  min-width: max-content;
 }
 
 .click .content,
@@ -83,6 +82,7 @@
 
 .hover .popupSection {
   border: var(--border-white);
+  max-width: var(--sidebar-width);
 }
 
 .click .popupSection {
