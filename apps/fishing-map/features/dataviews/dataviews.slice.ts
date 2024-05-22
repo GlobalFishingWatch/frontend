@@ -1,51 +1,15 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
 import { uniqBy, kebabCase } from 'lodash'
 import { stringify } from 'qs'
-import {
-  Dataview,
-  APIPagination,
-  DataviewDatasetConfig,
-  DataviewInstance,
-  DatasetTypes,
-} from '@globalfishingwatch/api-types'
+import { Dataview, APIPagination } from '@globalfishingwatch/api-types'
 import {
   GFWAPI,
   parseAPIError,
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
-import {
-  mergeWorkspaceUrlDataviewInstances,
-  resolveDataviews,
-  UrlDataviewInstance,
-} from '@globalfishingwatch/dataviews-client'
-import {
-  selectWorkspaceDataviewInstances,
-  selectWorkspaceStatus,
-} from 'features/workspace/workspace.selectors'
-import {
-  selectIsAnyVesselLocation,
-  selectIsMarineManagerLocation,
-  selectIsVesselLocation,
-  selectIsWorkspaceLocation,
-  selectUrlDataviewInstances,
-  selectUrlDataviewInstancesOrder,
-  selectVesselId,
-} from 'routes/routes.selectors'
-import { AsyncReducerStatus, AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
-import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
-import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import {
-  getVesselDataviewInstanceDatasetConfig,
-  VESSEL_DATAVIEW_INSTANCE_PREFIX,
-} from 'features/dataviews/dataviews.utils'
-import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
-import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 
 export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
@@ -191,138 +155,5 @@ export function selectDataviewBySlug(slug: string) {
 }
 
 export const selectDataviewsStatus = (state: DataviewsSliceState) => state.dataviews.status
-
-export const selectDataviewInstancesMerged = createSelector(
-  [
-    selectIsWorkspaceLocation,
-    selectWorkspaceStatus,
-    selectWorkspaceDataviewInstances,
-    selectUrlDataviewInstances,
-    selectIsAnyVesselLocation,
-    selectIsVesselLocation,
-    selectVesselId,
-    selectVesselInfoData,
-  ],
-  (
-    isWorkspaceLocation,
-    workspaceStatus,
-    workspaceDataviewInstances,
-    urlDataviewInstances = [],
-    isAnyVesselLocation,
-    isVesselLocation,
-    urlVesselId,
-    vessel
-  ): UrlDataviewInstance[] | undefined => {
-    if (isWorkspaceLocation && workspaceStatus !== AsyncReducerStatus.Finished) {
-      return
-    }
-    const mergedDataviewInstances =
-      mergeWorkspaceUrlDataviewInstances(
-        workspaceDataviewInstances as DataviewInstance<any>[],
-        urlDataviewInstances
-      ) || []
-    if (isAnyVesselLocation) {
-      const existingDataviewInstance = mergedDataviewInstances?.find(
-        ({ id }) => urlVesselId && id.includes(urlVesselId)
-      )
-      if (!existingDataviewInstance && vessel?.identities) {
-        const vesselDatasets = {
-          info: vessel.info,
-          track: vessel.track,
-          ...(vessel?.events?.length && {
-            events: vessel?.events,
-          }),
-          relatedVesselIds: getRelatedIdentityVesselIds(vessel),
-        }
-
-        const dataviewInstance = getVesselDataviewInstance({ id: urlVesselId }, vesselDatasets)
-        const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-          urlVesselId,
-          vesselDatasets
-        )
-        mergedDataviewInstances.push({ ...dataviewInstance, datasetsConfig })
-      }
-      if (isVesselLocation) {
-        VESSEL_PROFILE_DATAVIEWS_INSTANCES.forEach((dataviewInstance) => {
-          if (!mergedDataviewInstances.find(({ id }) => id === dataviewInstance.id)) {
-            mergedDataviewInstances.push({ ...dataviewInstance })
-          }
-        })
-      }
-    }
-    return mergedDataviewInstances
-  }
-)
-
-export const selectDataviewInstancesMergedOrdered = createSelector(
-  [selectDataviewInstancesMerged, selectUrlDataviewInstancesOrder],
-  (dataviewInstances = [], dataviewInstancesOrder): UrlDataviewInstance[] => {
-    if (!dataviewInstancesOrder || !dataviewInstancesOrder.length) {
-      return dataviewInstances
-    }
-    const dataviewInstancesOrdered = dataviewInstances.sort(
-      (a, b) => dataviewInstancesOrder.indexOf(a.id) - dataviewInstancesOrder.indexOf(b.id)
-    )
-    return [...dataviewInstancesOrdered]
-  }
-)
-
-export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets, selectIsUserLogged],
-  (dataviewInstances, dataviews, datasets, loggedUser): UrlDataviewInstance[] | undefined => {
-    if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
-      return []
-    }
-    const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
-      if (
-        dataviewInstance.id.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX) &&
-        !dataviewInstance.datasetsConfig?.length &&
-        dataviewInstance.config?.info
-      ) {
-        const vesselId = dataviewInstance.id.split(VESSEL_DATAVIEW_INSTANCE_PREFIX)[1]
-        // New way to resolve datasetConfig for vessels to avoid storing all
-        // the datasetConfig in the instance and save url string characters
-        const config = { ...dataviewInstance.config }
-        // Vessel pined from not logged user but is logged now and the related dataset is available
-        if (loggedUser && !config.track) {
-          const dataset = datasets.find((d) => d.id === config.info)
-          const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id
-          if (trackDatasetId) {
-            config.track = trackDatasetId
-          }
-        }
-
-        const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-          vesselId,
-          config
-        )
-        return {
-          ...dataviewInstance,
-          datasetsConfig,
-        }
-      }
-      return dataviewInstance
-    })
-    const dataviewInstancesResolved = resolveDataviews(
-      dataviewInstancesWithDatasetConfig,
-      dataviews,
-      datasets
-    )
-    return dataviewInstancesResolved
-  }
-)
-
-export const selectMarineManagerDataviewInstanceResolved = createSelector(
-  [selectIsMarineManagerLocation, selectAllDataviews, selectAllDatasets],
-  (isMarineManagerLocation, dataviews, datasets): UrlDataviewInstance[] | undefined => {
-    if (!isMarineManagerLocation || !dataviews.length || !datasets.length) return []
-    const dataviewInstancesResolved = resolveDataviews(
-      MARINE_MANAGER_DATAVIEWS,
-      dataviews,
-      datasets
-    )
-    return dataviewInstancesResolved
-  }
-)
 
 export default dataviewsSlice.reducer

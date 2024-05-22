@@ -28,7 +28,7 @@ import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
-import { selectAllDataviewInstancesResolved } from 'features/dataviews/dataviews.slice'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import ComparisonRow from 'features/map/popups/ComparisonRow'
 import {
   SliceExtendedFourwingsPickingObject,
