@@ -63,7 +63,7 @@ function VesselsFromPositions() {
   if (!vessels.length) {
     return null
   }
-
+  // TODO:deck add number of vessels and a button to pin all of them
   return (
     <Collapsable
       label={`${t('vessel.onScreen', 'Vessels on screen')} (${vessels.length})`}
