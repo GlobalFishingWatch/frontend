@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { uniqBy } from 'lodash'
 import { t } from 'i18next'
@@ -64,7 +65,11 @@ function VesselsFromPositions() {
   }
 
   return (
-    <Collapsable label={t('vessel.onScreen', 'Vessels on screen')} open className={styles.header}>
+    <Collapsable
+      label={`${t('vessel.onScreen', 'Vessels on screen')} (${vessels.length})`}
+      open
+      className={cx(styles.header, styles.vesselsOnScreen)}
+    >
       <ul>
         {vessels.map((vessel) => (
           <li
