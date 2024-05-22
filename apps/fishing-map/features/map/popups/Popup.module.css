@@ -73,6 +73,10 @@
   padding-left: 2.5rem;
 }
 
+.popupSection.noIcon {
+  padding-left: var(--space-XS);
+}
+
 .popupSection:not(:last-child) {
   border-bottom: none;
 }
@@ -268,6 +272,10 @@
 }
 
 .secondary {
+  opacity: var(--opacity-secondary);
+}
+
+.click .secondary {
   color: var(--color-secondary-blue);
 }
 
