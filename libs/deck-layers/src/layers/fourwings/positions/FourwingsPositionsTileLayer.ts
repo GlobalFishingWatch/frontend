@@ -140,9 +140,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       category: this.props.category,
       startTime: this.props.startTime,
       endTime: this.props.endTime,
-      sublayers: info.object?.properties.layer
-        ? [this.props.sublayers[info.object.properties.layer]]
-        : [],
+      sublayers:
+        info.object?.properties.layer !== undefined
+          ? [this.props.sublayers[info.object.properties.layer]]
+          : [],
       visualizationMode: 'positions',
     }
     return { ...info, object }
