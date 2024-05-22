@@ -21,9 +21,9 @@ import {
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { VesselInstanceDatasets, isPrivateDataset } from 'features/datasets/datasets.utils'
-import { MOCKED_VESSEL_DATAVIEW_SLUG } from './dataviews.mock'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -107,8 +107,7 @@ export const getVesselDataviewInstance = (
 ): DataviewInstance => {
   const vesselDataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
-    // TODO:deck rollback TEMPLATE_VESSEL_DATAVIEW_SLUG
-    ...vesselDataviewInstanceTemplate(MOCKED_VESSEL_DATAVIEW_SLUG, datasets),
+    ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG, datasets),
   }
   return vesselDataviewInstance
 }

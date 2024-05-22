@@ -54,8 +54,7 @@ export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-3'
 export const SAR_DATAVIEW_SLUG = 'sar-v-3'
 export const PRESENCE_DATAVIEW_SLUG = 'presence-activity-v-3'
 export const TEMPLATE_USER_TRACK_SLUG = 'user-track'
-// TODO:deck remove mocked dataview and uncomment this
-// export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3'
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3'
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer'
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer'
 export const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer'
@@ -67,7 +66,7 @@ export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-ev
 
 export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_USER_TRACK_SLUG,
-  // TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
   TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
@@ -122,7 +121,7 @@ export const PROFILE_DATAVIEW_SLUGS = [
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
-  // TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
 ]
 
 export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []
