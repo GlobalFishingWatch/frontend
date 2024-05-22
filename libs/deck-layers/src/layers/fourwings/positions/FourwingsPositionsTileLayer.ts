@@ -344,7 +344,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getColor: this._getHighlightColor,
           getSize: this._getIconSize,
           getAngle: (d: any) => d.properties.bearing - 90,
-          pickable: true,
           getPickingInfo: this.getPickingInfo,
           updateTriggers: {
             getColor: [highlightedFeatureIds, highlightedVesselIds],
