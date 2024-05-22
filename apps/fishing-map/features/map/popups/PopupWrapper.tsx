@@ -1,6 +1,6 @@
 import { Fragment, useRef } from 'react'
 import cx from 'classnames'
-import { groupBy } from 'lodash'
+import { groupBy, uniqBy } from 'lodash'
 import { useSelector } from 'react-redux'
 import {
   offset,
@@ -143,13 +143,21 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
               //     />
               //   )
               case DataviewCategory.Activity: {
-                return (features as SliceExtendedFourwingsPickingObject[])?.map((feature, i) => {
+                const positionFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
+                  (feature) => feature.visualizationMode === 'positions'
+                )
+                const uniqPositionFeatures = uniqBy(positionFeatures, 'properties.id')
+                const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
+                  (feature) => feature.visualizationMode !== 'positions'
+                )
+
+                return [...uniqPositionFeatures, ...heatmapFeatures].map((feature, i) => {
                   if (feature.visualizationMode === 'positions') {
                     return (
                       <PositionsRow
                         key={feature.id}
                         feature={feature as any as FourwingsPositionsPickingObject}
-                        showFeaturesDetails
+                        showFeaturesDetails={type === 'click'}
                       />
                     )
                   }
