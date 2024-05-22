@@ -356,104 +356,85 @@ export const selectShowWorkspaceDetail = createSelector(
   }
 )
 
-export const selectMapReportGenerators = createSelector(
+export const selectMapReportBufferDataviews = createSelector(
   [selectReportBufferFeature, selectReportPreviewBufferFeature],
   (reportBufferFeature, reportPreviewBufferFeature) => {
-    const reportGenerators: PolygonsGeneratorConfig[] = []
+    const dataviews = [] as UrlDataviewInstance<DataviewType>[]
     if (reportBufferFeature?.geometry) {
-      reportGenerators.push({
-        type: DataviewType.Polygons,
+      dataviews.push({
         id: REPORT_BUFFER_GENERATOR_ID,
-        data: { type: 'FeatureCollection', features: [reportBufferFeature] },
-        color: '#FFF',
-        visible: true,
-        group: Group.OutlinePolygonsHighlighted,
-        metadata: {
-          interactive: true,
+        config: {
+          type: DataviewType.Polygons,
+          data: { type: 'FeatureCollection', features: [reportBufferFeature] },
+          color: '#ffffff',
+          visible: true,
+          group: Group.OutlinePolygonsHighlighted,
         },
       })
     }
     if (reportPreviewBufferFeature?.geometry) {
-      reportGenerators.push({
-        type: DataviewType.Polygons,
+      dataviews.push({
         id: PREVIEW_BUFFER_GENERATOR_ID,
-        data: { type: 'FeatureCollection', features: [reportPreviewBufferFeature] },
-        color: BUFFER_PREVIEW_COLOR,
-        visible: true,
-        group: Group.OutlinePolygonsHighlighted,
-        metadata: {
-          interactive: true,
+        config: {
+          type: DataviewType.Polygons,
+          data: { type: 'FeatureCollection', features: [reportPreviewBufferFeature] },
+          color: BUFFER_PREVIEW_COLOR,
+          visible: true,
+          group: Group.OutlinePolygonsHighlighted,
         },
       })
     }
-    return reportGenerators
+    return dataviews
   }
 )
 
-export const selectDefaultMapGeneratorsConfig = createSelector(
-  [
-    selectWorkspaceError,
-    selectWorkspaceStatus,
-    selectShowWorkspaceDetail,
-    selectIsAnyReportLocation,
-    selectIsVesselLocation,
-    selectDefaultBasemapGenerator,
-    selectMapGeneratorsConfig,
-    selectMapWorkspacesListGenerators,
-    selectMapReportGenerators,
-  ],
-  (
-    workspaceError,
-    workspaceStatus,
-    showWorkspaceDetail,
-    isReportLocation,
-    isVesselLocation,
-    basemapGenerator,
-    workspaceGenerators = EMPTY_ARRAY as any[],
-    workspaceListGenerators,
-    mapReportGenerators
-  ): AnyGeneratorConfig[] => {
-    if (isVesselLocation) {
-      return workspaceGenerators as any
-    }
-    if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
-      return [basemapGenerator]
-    }
-    if (showWorkspaceDetail) {
-      const generators =
-        workspaceStatus !== AsyncReducerStatus.Finished ? [basemapGenerator] : workspaceGenerators
-      if (isReportLocation) {
-        return [...generators, ...mapReportGenerators] as any
-      }
-      return generators as any
-    }
-    return workspaceListGenerators
-  }
-)
-
-const selectGeneratorConfigsByType = (type: DataviewType) => {
-  return createSelector([selectStaticGeneratorsConfig], (generators = []) => {
-    return generators?.filter((generator) => generator.type === type)
-  })
-}
+// export const selectDefaultMapGeneratorsConfig = createSelector(
+//   [
+//     selectWorkspaceError,
+//     selectWorkspaceStatus,
+//     selectShowWorkspaceDetail,
+//     selectIsAnyReportLocation,
+//     selectIsVesselLocation,
+//     selectDefaultBasemapGenerator,
+//     selectMapGeneratorsConfig,
+//     selectMapWorkspacesListGenerators,
+//     selectMapReportGenerators,
+//   ],
+//   (
+//     workspaceError,
+//     workspaceStatus,
+//     showWorkspaceDetail,
+//     isReportLocation,
+//     isVesselLocation,
+//     basemapGenerator,
+//     workspaceGenerators = EMPTY_ARRAY as any[],
+//     workspaceListGenerators,
+//     mapReportGenerators
+//   ): AnyGeneratorConfig[] => {
+//     if (isVesselLocation) {
+//       return workspaceGenerators as any
+//     }
+//     if (workspaceError.status === 401 || workspaceStatus === AsyncReducerStatus.Loading) {
+//       return [basemapGenerator]
+//     }
+//     if (showWorkspaceDetail) {
+//       // TODO:deck render the basemap while the workspace is loading
+//       const generators =
+//         workspaceStatus !== AsyncReducerStatus.Finished ? [basemapGenerator] : workspaceGenerators
+//       if (isReportLocation) {
+//         return [...generators, ...mapReportGenerators] as any
+//       }
+//       return generators as any
+//     }
+//     return workspaceListGenerators
+//   }
+// )
 
 export const selectGeneratorConfigsById = (id: string) => {
   return createSelector([selectStaticGeneratorsConfig], (generators = []) => {
     return generators?.filter((generator: any) => generator.id === id)
   })
 }
-
-const selectHeatmapAnimatedGeneratorConfigs = createSelector(
-  [selectGeneratorConfigsByType(DataviewType.HeatmapAnimated)],
-  (dataviews) => dataviews
-)
-
-export const selectActiveHeatmapAnimatedGeneratorConfigs = createSelector(
-  [selectHeatmapAnimatedGeneratorConfigs],
-  (generators) => {
-    return generators?.filter((generator: any) => generator.visible)
-  }
-)
 
 export const selectDrawEditDataset = createSelector(
   [selectAllDatasets, selectMapDrawingEditId],

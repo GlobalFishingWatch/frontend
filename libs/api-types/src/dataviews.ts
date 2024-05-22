@@ -49,6 +49,8 @@ export type DataviewSublayerConfig = {
 export interface DataviewConfig<Type = DataviewType> {
   /** Type to define what kind of layer to render, ex: fourwings, context, draw... */
   type?: Type
+  /** Used in buffers report to store the geometry, normally a FeatureCollection */
+  data?: any
   /** Used in activity or detections layers to define which layers are active in all the options available */
   datasets?: string[]
   color?: string
