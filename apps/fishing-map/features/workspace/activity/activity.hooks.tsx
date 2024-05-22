@@ -15,7 +15,10 @@ import {
   selectActivityMergedDataviewId,
   selectDetectionsMergedDataviewId,
 } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectActivityVisualizationMode } from 'features/app/selectors/app.selectors'
+import {
+  selectActivityVisualizationMode,
+  selectDetectionsVisualizationMode,
+} from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 
 export const useVisualizationsOptions = (
@@ -30,7 +33,11 @@ export const useVisualizationsOptions = (
   )
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(layerId)
   const isPositionsLayerAvailable = fourwingsActivityLayer?.instance?.getIsPositionsAvailable()
-  const activeVisualizationOption = useSelector(selectActivityVisualizationMode)
+  const activeVisualizationOption = useSelector(
+    DataviewCategory.Detections
+      ? selectDetectionsVisualizationMode
+      : selectActivityVisualizationMode
+  )
 
   const onVisualizationModeChange = useCallback(
     (visualizationMode: FourwingsVisualizationMode) => {

@@ -97,3 +97,15 @@
 .visualizationsSwitch > ul > li > button {
   padding: 0 var(--space-XS);
 }
+
+.vesselsOnScreen summary {
+  justify-content: left;
+}
+
+.vesselsOnScreen summary::before {
+  content: unset;
+}
+
+.vesselsOnScreen summary span {
+  padding: 0;
+}

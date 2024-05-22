@@ -23,7 +23,6 @@ import {
 } from '@globalfishingwatch/deck-layers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
 import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
 import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -76,7 +75,6 @@ type PopupWrapperProps = {
 
 function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: PopupWrapperProps) {
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
-  const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const mapViewport = useMapViewport()
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
 
@@ -130,9 +128,6 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
           </div>
         )}
         <div className={styles.content}>
-          {timeCompareTimeDescription && (
-            <div className={styles.popupSection}>{timeCompareTimeDescription}</div>
-          )}
           {Object.entries(featureByCategory)?.map(([featureCategory, features]) => {
             switch (featureCategory) {
               // TODO: deck restore this popup

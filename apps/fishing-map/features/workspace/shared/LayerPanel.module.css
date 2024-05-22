@@ -311,3 +311,9 @@
 .gfwIcon {
   margin-left: var(--space-XS);
 }
+
+.LayerPanel .areasOnScreen summary,
+.LayerPanel .areasOnScreen summary > span,
+.LayerPanel .areasOnScreen summary > svg {
+  background: none;
+}
