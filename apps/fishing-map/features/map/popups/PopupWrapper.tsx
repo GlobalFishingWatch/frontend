@@ -22,6 +22,7 @@ import {
   FourwingsPositionsPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
+  WorkspacesPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
@@ -32,6 +33,7 @@ import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import ComparisonRow from 'features/map/popups/ComparisonRow'
+import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
 import {
   SliceExtendedFourwingsPickingObject,
   selectApiEventStatus,
@@ -281,7 +283,6 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                         features={rulersFeatures}
                         showFeaturesDetails={type === 'click'}
                       />
-                      <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
                       <ReportBufferTooltip features={areaBufferFeatures} />
                     */}
                     <UserPointsTooltipSection
@@ -317,7 +318,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 )
               }
 
-              case DataviewCategory.Vessels:
+              case DataviewCategory.Vessels: {
                 return (
                   <VesselEventsLayers
                     key={featureCategory}
@@ -325,6 +326,16 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                     showFeaturesDetails={type === 'click'}
                   />
                 )
+              }
+
+              case DataviewCategory.Workspaces: {
+                return (
+                  <WorkspacePointsTooltipSection
+                    features={features as any}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                )
+              }
 
               default:
                 return null

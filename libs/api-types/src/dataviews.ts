@@ -32,6 +32,7 @@ export enum DataviewType {
   UserPoints = 'USER_POINTS',
   VesselEvents = 'VESSEL_EVENTS',
   VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
+  Workspaces = 'WORKSPACES',
 }
 
 export type DataviewSublayerConfig = {
@@ -188,6 +189,7 @@ export enum DataviewCategory {
   Events = 'events',
   User = 'user',
   Vessels = 'vessels',
+  Workspaces = 'workspaces',
 }
 
 export interface Dataview<Type = any, Category = DataviewCategory> {

@@ -12,7 +12,9 @@ import {
   UserPointsTileLayer,
   UserTracksLayer,
   VesselLayer,
+  WorkspacesLayer,
 } from '@globalfishingwatch/deck-layers'
+import { resolveDeckWorkspacesLayerProps } from './workspaces'
 import { ResolverGlobalConfig } from './types'
 import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
@@ -84,6 +86,11 @@ export const dataviewToDeckLayer = (
     }
     const deckLayerProps = resolveDeckVesselLayerProps(dataview, globalConfig)
     const layer = new VesselLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.Workspaces) {
+    const deckLayerProps = resolveDeckWorkspacesLayerProps(dataview, globalConfig)
+    const layer = new WorkspacesLayer(deckLayerProps)
     return layer
   }
   throw new Error(`Unknown deck layer generator type: ${dataview.config?.type}`)

@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DataviewType } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { LayerGroup } from '@globalfishingwatch/deck-layers'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import {
@@ -42,6 +42,7 @@ export const selectWorkspacesListFeatures = createSelector(
           label: workspace.name,
           type: WORKSPACES_POINTS_TYPE,
           category: workspace.category || WorkspaceCategory.FishingActivity,
+          viewAccess: workspace.viewAccess,
           latitude,
           longitude,
           zoom,
@@ -60,8 +61,9 @@ export const selectWorkspacesListDataview = createSelector(
     if (!workspaceListFeatures?.length) return
     const dataview: UrlDataviewInstance<DataviewType> = {
       id: WORKSPACE_GENERATOR_ID,
+      category: DataviewCategory.Workspaces,
       config: {
-        type: DataviewType.Polygons,
+        type: DataviewType.Workspaces,
         color: '#ffffff',
         data: {
           type: 'FeatureCollection',
