@@ -8,7 +8,6 @@ import {
   ResourceStatus,
   DataviewDatasetConfigParam,
   Resource,
-  EndpointId,
   IdentityVessel,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
@@ -16,8 +15,6 @@ import { IconButton, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
-  pickTrackResource,
-  selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { VesselLayer } from '@globalfishingwatch/deck-layers'
@@ -109,11 +106,11 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-  const resources = useSelector(selectResources)
   const vesselLayer = useGetDeckLayer<VesselLayer>(dataview.id)
   // const vesselInstance = useMapVesselLayer(dataview.id)
   const gfwUser = useSelector(selectIsGFWUser)
-  const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
+  const trackDatasetId = dataview.datasets?.find((rld) => rld.type === DatasetTypes.Tracks)?.id
+
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
   )
@@ -273,12 +270,14 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
           })}
         >
           <Fragment>
-            <VesselDownload
-              dataview={dataview}
-              vesselIds={[vesselId]}
-              vesselTitle={vesselLabel || t('common.unknownVessel', 'Unknown vessel')}
-              datasetId={trackResource?.dataset!?.id}
-            />
+            {trackDatasetId && (
+              <VesselDownload
+                dataview={dataview}
+                vesselIds={[vesselId]}
+                vesselTitle={vesselLabel || t('common.unknownVessel', 'Unknown vessel')}
+                datasetId={trackDatasetId}
+              />
+            )}
             <Color
               dataview={dataview}
               open={colorOpen}

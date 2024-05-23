@@ -95,13 +95,17 @@ export const featuresToTimeseries = (
     }
 
     // const sourceInterval = sourceMetadata.timeChunks.interval
-    const valuesContainedRaw = getGraphDataFromFourwingsFeatures(
-      contained as FourwingsFeature[],
-      { sublayers, interval, start, end, compareStart, compareEnd }
-      // aggregationOperation: sourceMetadata.aggregationOperation,
-      // minVisibleValue: sourceMetadata.minVisibleValue,
-      // maxVisibleValue: sourceMetadata.maxVisibleValue,
-    )
+    const valuesContainedRaw = getGraphDataFromFourwingsFeatures(contained as FourwingsFeature[], {
+      sublayers,
+      interval,
+      start,
+      end,
+      compareStart,
+      compareEnd,
+      aggregationOperation,
+      minVisibleValue,
+      maxVisibleValue,
+    })
 
     // const { values: valuesContainedRaw } = getTimeSeries({
     //   features: (filteredFeature.contained as any) || ([] as any),
@@ -126,10 +130,17 @@ export const featuresToTimeseries = (
     if (featuresContainedAndOverlapping.length > 0) {
       valuesContainedAndOverlappingRaw = getGraphDataFromFourwingsFeatures(
         featuresContainedAndOverlapping as FourwingsFeature[],
-        { sublayers, interval, start, end, compareStart, compareEnd }
-        // aggregationOperation: sourceMetadata.aggregationOperation,
-        // minVisibleValue: sourceMetadata.minVisibleValue,
-        // maxVisibleValue: sourceMetadata.maxVisibleValue,
+        {
+          sublayers,
+          interval,
+          start,
+          end,
+          compareStart,
+          compareEnd,
+          aggregationOperation,
+          minVisibleValue,
+          maxVisibleValue,
+        }
       ) as any
     }
 

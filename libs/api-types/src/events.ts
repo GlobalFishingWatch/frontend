@@ -200,6 +200,7 @@ export interface ApiEvent<Vessel = EventVessel> {
   start: number | string // Depends on timestamp format API param
   type: EventTypes
   vessel: Vessel
+  coordinates?: [number, number]
 }
 
 export interface ApiEvents<T = ApiEvent> {

@@ -285,3 +285,13 @@
   column-gap: var(--space-M);
   flex-wrap: wrap;
 }
+
+.vesselTitle {
+  display: flex;
+  align-items: center;
+  overflow: visible;
+}
+
+.marginRight {
+  margin-right: var(--space-XS);
+}

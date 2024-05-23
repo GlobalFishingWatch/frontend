@@ -140,7 +140,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       category: this.props.category,
       startTime: this.props.startTime,
       endTime: this.props.endTime,
-      sublayers: [], // TODO:deck
+      sublayers:
+        info.object?.properties.layer !== undefined
+          ? [this.props.sublayers[info.object.properties.layer]]
+          : [],
       visualizationMode: 'positions',
     }
     return { ...info, object }
@@ -157,8 +160,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const lowerCut = meanValue - standardDeviationValue * 2
       const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
       const steps = getSteps(dataFiltered).map((value) => parseFloat(value.toFixed(3)))
-      const colorRange = getColorRamp({ rampId: this.props.sublayers?.[0]?.colorRamp as any }).map(
-        (c) => rgbaStringToComponents(c)
+      const colorRange = this.props.sublayers?.map((sublayer) =>
+        getColorRamp({ rampId: sublayer.colorRamp as any }).map((c) => rgbaStringToComponents(c))
       )
       return { colorDomain: steps, colorRange }
     }
@@ -168,9 +171,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   _getFillColor = (d: FourwingsPositionFeature): Color => {
     const { colorScale } = this.state
     const { colorDomain, colorRange } = colorScale as FourwingsTileLayerColorScale
+    const sublayerColorRange = colorRange[d.properties.layer]
     const colorIndex =
       colorDomain.length === 1
-        ? colorRange.length - 1
+        ? sublayerColorRange.length - 1
         : colorDomain.findIndex((domain: any, i: number) => {
             if (colorDomain[i + 1]) {
               return (
@@ -181,7 +185,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
             return i
           })
 
-    const color = colorIndex >= 0 ? colorRange[colorIndex] : [0, 0, 0, 0]
+    const color = colorIndex >= 0 ? sublayerColorRange[colorIndex] : [0, 0, 0, 0]
     return color as Color
   }
 
@@ -296,7 +300,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
       const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
       const params = {
-        datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
+        datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
         format: 'MVT',
         'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
         properties: [['speed', 'bearing', 'shipname'].join(',')],
