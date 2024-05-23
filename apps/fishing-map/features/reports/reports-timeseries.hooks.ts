@@ -4,7 +4,7 @@ import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { atom, useAtom } from 'jotai'
 import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import { DeckLayerAtom, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { DeckLayerAtom, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import { FourwingsLayer, FourwingsLayerProps } from '@globalfishingwatch/deck-layers'
 import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
@@ -25,7 +25,7 @@ import {
   selectReportBufferHash,
   selectShowTimeComparison,
 } from 'features/reports/reports.selectors'
-import { ReportActivityGraph } from 'types'
+import { ReportActivityGraph, ReportCategory } from 'types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 
 export interface EvolutionGraphData {
@@ -84,22 +84,30 @@ export function useSetTimeseries() {
 const emptyArray: UrlDataviewInstance[] = []
 
 export const useReportFeaturesLoading = () => {
-  const reportLayerInstanceLoaded = useReportInstance()?.loaded
+  const reportLayerInstanceLoaded = useReportInstances()?.every((layer) => layer.loaded)
   const areaInViewport = useReportAreaInViewport()
   return areaInViewport && !reportLayerInstanceLoaded
 }
 
 export const useReportFeaturesError = () => {
   // TODO:deck handle errors in layer instances
-  const reportLayerInstanceLoaded = useReportInstance()?.loaded
+  const reportLayerInstanceLoaded = useReportInstances()?.every((layer) => layer.loaded)
   return false
 }
 
-const useReportInstance = () => {
+const useReportInstances = () => {
+  const currentCategory = useSelector(selectReportCategory)
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
-  const id = currentCategoryDataviews?.length ? getMergedDataviewId(currentCategoryDataviews) : ''
-  const reportLayerInstance = useGetDeckLayer<FourwingsLayer>(id)
-  return reportLayerInstance
+  let ids = ['']
+  if (currentCategoryDataviews?.length > 0) {
+    if (currentCategory === ReportCategory.Environment) {
+      ids = currentCategoryDataviews.map((dataview) => dataview.id)
+    } else {
+      ids = [getMergedDataviewId(currentCategoryDataviews)]
+    }
+  }
+  const reportLayerInstances = useGetDeckLayers<FourwingsLayer>(ids)
+  return reportLayerInstances
 }
 
 const useReportTimeseries = (reportLayer: DeckLayerAtom<FourwingsLayer>) => {
@@ -170,8 +178,9 @@ const useReportTimeseries = (reportLayer: DeckLayerAtom<FourwingsLayer>) => {
 
 // Run only once in Report.tsx parent component
 export const useComputeReportTimeSeries = () => {
-  const reportLayer = useReportInstance()
-  useReportTimeseries(reportLayer)
+  const reportLayers = useReportInstances()
+  const heatmapAnimatedLayers = reportLayers?.filter((layer) => !layer.instance.props.static)
+  useReportTimeseries(heatmapAnimatedLayers[0])
 }
 
 const memoizedFilterTimeseriesByTimerange = memoizeOne(filterTimeseriesByTimerange)

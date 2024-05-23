@@ -15,6 +15,7 @@ import {
   UserPolygonsLayerProps,
   UserTrackLayerProps,
 } from './user.types'
+import { getPropertiesList } from './user.utils'
 
 type _UserBaseLayerProps =
   | (TileLayerProps & UserPointsLayerProps)
@@ -68,17 +69,12 @@ export abstract class UserBaseLayer<
   }: {
     info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
   }): UserLayerPickingInfo => {
-    const { idProperty, valueProperties } = this.props
+    const { valueProperties } = this.props
     let value = this.props.id
-    if (valueProperties) {
-      const properties = { ...(info.object as UserLayerFeature)?.properties }
-      value =
-        valueProperties?.length === 1
-          ? properties[valueProperties[0]]
-          : valueProperties
-              .flatMap((prop) => (properties?.[prop] ? `${prop}: ${properties?.[prop]}` : []))
-              .join('<br/>')
-    }
+    const properties = { ...(info.object as UserLayerFeature)?.properties }
+    value =
+      valueProperties?.length === 1 ? properties[valueProperties[0]] : getPropertiesList(properties)
+
     const object = {
       ...(info.tile && {
         ...transformTileCoordsToWGS84(

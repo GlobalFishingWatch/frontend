@@ -2,7 +2,7 @@ import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps, Color, PickingInfo } from '@deck.gl/core'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
-import { BBox, Feature, featureCollection } from '@turf/turf'
+import { BBox, Position, featureCollection, point } from '@turf/turf'
 import {
   ApiEvent,
   DataviewCategory,
@@ -270,6 +270,19 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       .filter(Boolean)
     if (trackLayerBboxes.length === 1) return trackLayerBboxes[0]
     return bbox(featureCollection([...trackLayerBboxes.map((l) => bboxPolygon(l as BBox))])) as Bbox
+  }
+
+  getVesselEventsBounds() {
+    const { startTime, endTime } = this.props
+    const events = this.getVesselEventsData()
+    const filteredEvents = events
+      .filter(
+        (event) =>
+          (!endTime || (event.start as number) < endTime) &&
+          (!startTime || (event.end as number) > startTime)
+      )
+      .map((e) => point(e.coordinates as Position))
+    return (filteredEvents ? bbox(featureCollection([...filteredEvents])) : []) as Bbox
   }
 
   getVesselEventsLayersLoaded() {

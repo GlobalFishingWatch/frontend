@@ -111,7 +111,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
           )}
         </div>
       </div>
-      {hasSchemaFilterSelection && (
+      {layerActive && hasSchemaFilterSelection && (
         <div className={styles.properties}>
           <div className={styles.filters}>
             <div className={styles.filters}>
