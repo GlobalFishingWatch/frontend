@@ -91,6 +91,10 @@
   padding-left: 3rem;
 }
 
+.click .popupSection.noIcon {
+  padding-left: var(--space-S);
+}
+
 .click .popupSection:not(:last-child) {
   border-bottom: var(--border);
 }
@@ -294,4 +298,17 @@
 
 .marginRight {
   margin-right: var(--space-XS);
+}
+
+.workspaceLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.workspaceLabel {
+  white-space: nowrap;
+  max-width: var(--sidebar-width);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

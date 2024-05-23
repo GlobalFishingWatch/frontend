@@ -70,11 +70,10 @@ export abstract class UserBaseLayer<
     info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
   }): UserLayerPickingInfo => {
     const { valueProperties } = this.props
-    let value = this.props.id
+    let value = info.object?.properties.value
     const properties = { ...(info.object as UserLayerFeature)?.properties }
     value =
       valueProperties?.length === 1 ? properties[valueProperties[0]] : getPropertiesList(properties)
-
     const object = {
       ...(info.tile && {
         ...transformTileCoordsToWGS84(

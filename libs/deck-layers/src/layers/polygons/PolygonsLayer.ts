@@ -3,23 +3,21 @@ import { GeoJsonLayer } from '@deck.gl/layers'
 import { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
 import { hexToDeckColor, LayerGroup, getLayerGroupOffset } from '../../utils'
 
-type _PolygonsLayerProps = PolygonsLayerProps
+const defaultProps: DefaultProps<PolygonsLayerProps> = {}
 
-const defaultProps: DefaultProps<_PolygonsLayerProps> = {}
-
-export class PolygonsLayer<PropsT = {}> extends CompositeLayer<_PolygonsLayerProps & PropsT> {
+export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProps & PropsT> {
   static layerName = 'PolygonsLayer'
   static defaultProps = defaultProps
 
   renderLayers() {
-    const { color, dataUrl } = this.props
+    const { color, data, group = LayerGroup.OutlinePolygons } = this.props
+    // TODO:deck implement highlightedFeatures
     return new GeoJsonLayer({
-      data: dataUrl,
+      data,
       id: `${this.props.id}-layer`,
       lineWidthMinPixels: 1,
       filled: false,
-      getPolygonOffset: (params: { layerIndex: number }) =>
-        getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
+      getPolygonOffset: (params: { layerIndex: number }) => getLayerGroupOffset(group, params),
       getLineColor: hexToDeckColor(color),
       lineWidthUnits: 'pixels',
       lineJointRounded: true,
