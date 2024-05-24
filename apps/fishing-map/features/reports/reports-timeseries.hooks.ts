@@ -110,7 +110,7 @@ const useReportInstances = () => {
   return reportLayerInstances
 }
 
-const useReportTimeseries = (reportLayer: DeckLayerAtom<FourwingsLayer>) => {
+const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const [timeseries, setTimeseries] = useAtom(mapTimeseriesAtom)
   const area = useSelector(selectReportArea)
   const areaInViewport = useReportAreaInViewport()
@@ -119,34 +119,38 @@ const useReportTimeseries = (reportLayer: DeckLayerAtom<FourwingsLayer>) => {
   const timeComparison = useSelector(selectReportTimeComparison)
   const reportBufferHash = useSelector(selectReportBufferHash)
 
-  const { loaded, instance } = reportLayer || { loaded: false, instance: undefined }
+  const instances = reportLayers.map((l) => l.instance)
+  const layersLoaded = reportLayers.every((l) => l.loaded)
 
   const computeTimeseries = useCallback(
-    (instance: FourwingsLayer, geometry: Polygon | MultiPolygon, graphMode: ReportGraphMode) => {
-      const features = instance.getData() as FourwingsFeature[]
-      const filteredFeatures = filterByPolygon(
-        [features],
-        geometry,
-        reportCategory === 'environment' ? 'point' : 'cell'
-      )
-      const props = instance.props as FourwingsLayerProps
-      const chunk = instance.getChunk()
-      const sublayers = instance.getFourwingsLayers()
+    (instances: FourwingsLayer[], geometry: Polygon | MultiPolygon, graphMode: ReportGraphMode) => {
+      const timeseries: ReportGraphProps[] = []
+      instances.forEach((instance) => {
+        const features = instance.getData() as FourwingsFeature[]
+        const filteredFeatures = filterByPolygon(
+          [features],
+          geometry,
+          reportCategory === 'environment' ? 'point' : 'cell'
+        )
+        const props = instance.props as FourwingsLayerProps
+        const chunk = instance.getChunk()
+        const sublayers = instance.getFourwingsLayers()
 
-      const params: FeaturesToTimeseriesParams = {
-        staticHeatmap: props.static,
-        interval: instance.getInterval(),
-        start: timeComparison ? props.startTime : chunk.bufferedStart,
-        end: timeComparison ? props.endTime : chunk.bufferedEnd,
-        compareStart: props.compareStart,
-        compareEnd: props.compareEnd,
-        aggregationOperation: props.aggregationOperation,
-        minVisibleValue: props.minVisibleValue,
-        maxVisibleValue: props.maxVisibleValue,
-        sublayers,
-        graphMode,
-      }
-      const timeseries = featuresToTimeseries(filteredFeatures, params)
+        const params: FeaturesToTimeseriesParams = {
+          staticHeatmap: props.static,
+          interval: instance.getInterval(),
+          start: timeComparison ? props.startTime : chunk.bufferedStart,
+          end: timeComparison ? props.endTime : chunk.bufferedEnd,
+          compareStart: props.compareStart,
+          compareEnd: props.compareEnd,
+          aggregationOperation: props.aggregationOperation,
+          minVisibleValue: props.minVisibleValue,
+          maxVisibleValue: props.maxVisibleValue,
+          sublayers,
+          graphMode,
+        }
+        timeseries.push(featuresToTimeseries(filteredFeatures, params)[0])
+      })
       setTimeseries(timeseries)
     },
     [reportCategory, setTimeseries, timeComparison]
@@ -167,11 +171,18 @@ const useReportTimeseries = (reportLayer: DeckLayerAtom<FourwingsLayer>) => {
   }, [reportGraphMode])
 
   useEffect(() => {
-    if (loaded && area?.geometry && areaInViewport) {
-      computeTimeseries(instance, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
+    if (layersLoaded && area?.geometry && areaInViewport) {
+      computeTimeseries(instances, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, area?.geometry, areaInViewport, reportCategory, reportBufferHash, reportGraphMode])
+  }, [
+    layersLoaded,
+    area?.geometry,
+    areaInViewport,
+    reportCategory,
+    reportBufferHash,
+    reportGraphMode,
+  ])
 
   return timeseries
 }
@@ -180,7 +191,7 @@ const useReportTimeseries = (reportLayer: DeckLayerAtom<FourwingsLayer>) => {
 export const useComputeReportTimeSeries = () => {
   const reportLayers = useReportInstances()
   const heatmapAnimatedLayers = reportLayers?.filter((layer) => !layer.instance.props.static)
-  useReportTimeseries(heatmapAnimatedLayers[0])
+  useReportTimeseries(heatmapAnimatedLayers)
 }
 
 const memoizedFilterTimeseriesByTimerange = memoizeOne(filterTimeseriesByTimerange)
