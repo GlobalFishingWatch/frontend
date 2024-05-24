@@ -1,11 +1,11 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import { Feature, Polygon, MultiPolygon } from 'geojson'
+import { Polygon, MultiPolygon } from 'geojson'
 import { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { Bbox } from 'types'
 
 export type FilteredPolygons = {
-  contained: Feature[] | FourwingsFeature[]
-  overlapping: Feature[] | FourwingsFeature[]
+  contained: FourwingsFeature[]
+  overlapping: FourwingsFeature[]
 }
 
 function isBboxContained(container: Bbox, cell: Bbox) {
@@ -49,7 +49,7 @@ export function filterByPolygon(
             coordinates: [(minX + maxX) / 2, (minY + maxY) / 2],
           }
           if (booleanPointInPolygon(center, polygon)) {
-            acc.contained.push(cell as Feature)
+            acc.contained.push(cell as FourwingsFeature)
           } else {
             return acc
           }
@@ -67,7 +67,7 @@ export function filterByPolygon(
               : isCellInPolygon(cell.geometry as Polygon, polygon as Polygon)
 
           if (isContained) {
-            acc.contained.push(cell as Feature)
+            acc.contained.push(cell as FourwingsFeature)
           } else {
             const center = {
               type: 'Point' as const,
@@ -75,13 +75,13 @@ export function filterByPolygon(
             }
             const overlaps = booleanPointInPolygon(center, polygon)
             if (overlaps) {
-              acc.overlapping.push(cell as Feature)
+              acc.overlapping.push(cell as FourwingsFeature)
             }
           }
         }
         return acc
       },
-      { contained: [] as Feature[], overlapping: [] as Feature[] }
+      { contained: [] as FourwingsFeature[], overlapping: [] as FourwingsFeature[] }
     )
   })
   return filtered

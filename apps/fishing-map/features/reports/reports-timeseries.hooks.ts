@@ -3,9 +3,16 @@ import memoizeOne from 'memoize-one'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { atom, useAtom } from 'jotai'
+import { mean, min, max } from 'simple-statistics'
+import { DateTime } from 'luxon'
 import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { DeckLayerAtom, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import { FourwingsLayer, FourwingsLayerProps } from '@globalfishingwatch/deck-layers'
+import {
+  FourwingsLayer,
+  FourwingsLayerProps,
+  getIntervalFrames,
+  sliceCellValues,
+} from '@globalfishingwatch/deck-layers'
 import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
   selectActiveReportDataviews,
@@ -27,6 +34,7 @@ import {
 } from 'features/reports/reports.selectors'
 import { ReportActivityGraph, ReportCategory } from 'types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
 export interface EvolutionGraphData {
   date: string
@@ -118,6 +126,8 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const reportCategory = useSelector(selectReportCategory)
   const timeComparison = useSelector(selectReportTimeComparison)
   const reportBufferHash = useSelector(selectReportBufferHash)
+  const dataviews = useSelector(selectActiveReportDataviews)
+  const timerange = useTimerangeConnect()
 
   const instances = reportLayers.map((l) => l.instance)
   const layersLoaded = reportLayers.every((l) => l.loaded)
@@ -132,6 +142,32 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
           geometry,
           reportCategory === 'environment' ? 'point' : 'cell'
         )
+        if (reportCategory === 'environment' && filteredFeatures[0].contained.length > 0) {
+          const dataview = dataviews.find((dv) => dv.id === instance.id)
+          const chunk = instance.getChunk()
+          const { startFrame, endFrame } = getIntervalFrames({
+            startTime: DateTime.fromISO(timerange.start).toUTC().toMillis(),
+            endTime: DateTime.fromISO(timerange.end).toUTC().toMillis(),
+            availableIntervals: [chunk.interval],
+            bufferedStart: chunk.bufferedStart,
+          })
+          const allValues = filteredFeatures[0].contained.flatMap((f) => {
+            const values = sliceCellValues({
+              values: f.properties.values[0],
+              startFrame,
+              endFrame,
+              startOffset: f.properties.startOffsets[0],
+            })
+            return values || []
+          })
+          if (dataview?.config && allValues.length > 0) {
+            dataview.config.stats = {
+              min: min(allValues),
+              max: max(allValues),
+              mean: mean(allValues),
+            }
+          }
+        }
         const props = instance.props as FourwingsLayerProps
         const chunk = instance.getChunk()
         const sublayers = instance.getFourwingsLayers()
@@ -153,7 +189,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       })
       setTimeseries(timeseries)
     },
-    [reportCategory, setTimeseries, timeComparison]
+    [dataviews, reportCategory, setTimeseries, timeComparison]
   )
 
   // We need to re calculate the timeseries when area or timerange changes

@@ -52,15 +52,32 @@ export const aggregateCell = ({
       return 0
     }
     return aggregateSublayerValues(
-      sublayerValues.slice(
-        Math.max(startFrame - cellStartOffsets[sublayerIndex], 0),
-        endFrame - cellStartOffsets[sublayerIndex] < sublayerValues.length
-          ? endFrame - cellStartOffsets[sublayerIndex]
-          : undefined
-      ),
+      sliceCellValues({
+        values: sublayerValues,
+        startFrame,
+        endFrame,
+        startOffset: cellStartOffsets[sublayerIndex],
+      }),
       aggregationOperation
     )
   })
+}
+
+export const sliceCellValues = ({
+  values,
+  startFrame,
+  endFrame,
+  startOffset,
+}: {
+  values: number[]
+  startFrame: number
+  endFrame: number
+  startOffset: number
+}): number[] => {
+  return values.slice(
+    Math.max(startFrame - startOffset, 0),
+    endFrame - startOffset < values.length ? endFrame - startOffset : undefined
+  )
 }
 
 export const compareCell = ({
