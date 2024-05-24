@@ -15,11 +15,18 @@ import { selectDownloadActivityAreaKey } from 'features/download/downloadActivit
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDatasetUploadModalOpen, setModalOpen } from 'features/modals/modals.slice'
+import {
+  selectCreateWorkspaceModalOpen,
+  selectDatasetUploadModalOpen,
+  selectEditWorkspaceModalOpen,
+  setModalOpen,
+} from 'features/modals/modals.slice'
 import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/modals.selectors'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
 import { selectLayerLibraryModalOpen } from 'features/modals/modals.slice'
+import EditWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
+import CreateWorkspaceModal from 'features/workspace/save/WorkspaceCreateModal'
 import styles from './Modals.module.css'
 
 const NewDataset = dynamic(
@@ -91,6 +98,8 @@ const AppModals = () => {
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
   const isVesselGroupModalOpen = useSelector(selectVesselGroupModalOpen)
   const isDatasetUploadModalOpen = useSelector(selectDatasetUploadModalOpen)
+  const editWorkspaceModalOpen = useSelector(selectEditWorkspaceModalOpen)
+  const isCreateWorkspaceModalOpen = useSelector(selectCreateWorkspaceModalOpen)
   const isLayerLibraryModalOpen = useSelector(selectLayerLibraryModalOpen)
   const downloadTrackModalOpen = useSelector(selectDownloadTrackModalOpen)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
@@ -157,6 +166,8 @@ const AppModals = () => {
         <LayerLibrary />
       </Modal>
       {isDatasetUploadModalOpen && <NewDataset />}
+      {editWorkspaceModalOpen && <EditWorkspaceModal isOpen />}
+      {isCreateWorkspaceModalOpen && <CreateWorkspaceModal isOpen />}
       {downloadActivityAreaKey && <DownloadActivityModal />}
       {downloadTrackModalOpen && <DownloadTrackModal />}
       {!readOnly && (

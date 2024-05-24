@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
@@ -14,6 +15,7 @@ import {
 import { useFeatureState, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   selectCurrentWorkspaceId,
+  selectIsDefaultWorkspace,
   selectLastVisitedWorkspace,
   selectWorkspace,
   selectWorkspaceCustomStatus,
@@ -56,14 +58,14 @@ import { cleanVesselSearchResults } from 'features/search/search.slice'
 import UserButton from 'features/user/UserButton'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
+import TooltipContainer from 'features/workspace/shared/TooltipContainer'
+import { setModalOpen } from 'features/modals/modals.slice'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
 const NewWorkspaceModal = dynamic(
   () =>
-    import(
-      /* webpackChunkName: "NewWorkspaceModal" */ 'features/workspace/shared/NewWorkspaceModal'
-    )
+    import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/workspace/save/WorkspaceEditModal')
 )
 const NewReportModal = dynamic(
   () => import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/NewReportModal')
@@ -134,65 +136,175 @@ function SaveReportButton() {
   )
 }
 
+// function SaveWorkspaceButton() {
+//   const [showWorkspaceCreateModal, setShowWorkspaceCreateModal] = useState(false)
+//   const { t } = useTranslation()
+//   const workspaceStatus = useSelector(selectWorkspaceStatus)
+//   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
+//   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
+//   const workspace = useSelector(selectWorkspace)
+//   const customWorkspace = useSelector(selectWorkspaceWithCurrentState)
+
+//   const onCloseCreateWorkspace = useCallback(() => {
+//     setShowWorkspaceCreateModal(false)
+//   }, [])
+
+//   const onSaveCreateWorkspace = useCallback(() => {
+//     copyToClipboard(window.location.href)
+//     onCloseCreateWorkspace()
+//   }, [copyToClipboard, onCloseCreateWorkspace])
+
+//   const onSaveClick = async () => {
+//     if (!showClipboardNotification) {
+//       setShowWorkspaceCreateModal(true)
+//     }
+//   }
+
+//   if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
+//     return null
+//   }
+
+//   return (
+//     <Fragment>
+//       <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+//         <IconButton
+//           icon={showClipboardNotification ? 'tick' : 'save'}
+//           size="medium"
+//           className="print-hidden"
+//           onClick={onSaveClick}
+//           loading={workspaceCustomStatus === AsyncReducerStatus.Loading}
+//           tooltip={
+//             showClipboardNotification
+//               ? t(
+//                   'workspace.saved',
+//                   "The workspace was saved and it's available in your user profile"
+//                 )
+//               : t('workspace.save', 'Save this workspace')
+//           }
+//           tooltipPlacement="bottom"
+//           testId="save-workspace-button"
+//         />
+//       </LoginButtonWrapper>
+//       {showWorkspaceCreateModal && (
+//         <NewWorkspaceModal
+//           isOpen={showWorkspaceCreateModal}
+//           onClose={onCloseCreateWorkspace}
+//           onFinish={onSaveCreateWorkspace}
+//           workspace={customWorkspace}
+//         />
+//       )}
+//     </Fragment>
+//   )
+// }
+
 function SaveWorkspaceButton() {
-  const [showWorkspaceCreateModal, setShowWorkspaceCreateModal] = useState(false)
   const { t } = useTranslation()
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
   const workspace = useSelector(selectWorkspace)
-  const customWorkspace = useSelector(selectWorkspaceWithCurrentState)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const isDefaultWorkspace = useSelector(selectIsDefaultWorkspace)
+  const dispatch = useAppDispatch()
+  const [saveWorkspaceTooltipOpen, setSaveWorkspaceTooltipOpen] = useState(false)
 
-  const onCloseCreateWorkspace = useCallback(() => {
-    setShowWorkspaceCreateModal(false)
-  }, [])
-
-  const onSaveCreateWorkspace = useCallback(() => {
-    copyToClipboard(window.location.href)
-    onCloseCreateWorkspace()
-  }, [copyToClipboard, onCloseCreateWorkspace])
-
-  const onSaveClick = async () => {
-    if (!showClipboardNotification) {
-      setShowWorkspaceCreateModal(true)
-    }
+  const onSaveClick = () => {
+    dispatch(setModalOpen({ id: 'editWorkspace', open: true }))
+    dispatch(setModalOpen({ id: 'createWorkspace', open: false }))
+    setSaveWorkspaceTooltipOpen(false)
   }
 
-  if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
-    return null
+  const onSaveAsClick = () => {
+    dispatch(setModalOpen({ id: 'editWorkspace', open: false }))
+    dispatch(setModalOpen({ id: 'createWorkspace', open: true }))
+    setSaveWorkspaceTooltipOpen(false)
+  }
+
+  const onClickOutside = () => {
+    setSaveWorkspaceTooltipOpen(false)
+    dispatch(setModalOpen({ id: 'editWorkspace', open: false }))
+    dispatch(setModalOpen({ id: 'createWorkspace', open: false }))
+  }
+
+  // if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
+  //   return null
+  // }
+
+  if (isDefaultWorkspace) {
+    return (
+      <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+        <IconButton
+          icon="save"
+          size="medium"
+          className="print-hidden"
+          onClick={onSaveAsClick}
+          tooltip={t('analysis.save', 'Save this report')}
+          tooltipPlacement="bottom"
+        />
+      </LoginButtonWrapper>
+    )
   }
 
   return (
     <Fragment>
-      <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
-        <IconButton
-          icon={showClipboardNotification ? 'tick' : 'save'}
-          size="medium"
-          className="print-hidden"
-          onClick={onSaveClick}
-          loading={workspaceCustomStatus === AsyncReducerStatus.Loading}
-          tooltip={
-            showClipboardNotification
-              ? t(
-                  'workspace.saved',
-                  "The workspace was saved and it's available in your user profile"
-                )
-              : t('workspace.save', 'Save this workspace')
-          }
-          tooltipPlacement="bottom"
-          testId="save-workspace-button"
-        />
-      </LoginButtonWrapper>
-      {showWorkspaceCreateModal && (
-        <NewWorkspaceModal
-          isOpen={showWorkspaceCreateModal}
-          onClose={onCloseCreateWorkspace}
-          onFinish={onSaveCreateWorkspace}
-          workspace={customWorkspace}
-        />
-      )}
+      <TooltipContainer
+        visible={saveWorkspaceTooltipOpen}
+        onClickOutside={onClickOutside}
+        placement="bottom"
+        component={
+          <ul className={styles.groupOptions}>
+            <li className={styles.groupOption} onClick={onSaveClick} key="workspace-save">
+              {t('workspace.save', 'Save this workspace')}
+            </li>
+            <li className={styles.groupOption} onClick={onSaveAsClick} key="workspace-save-as">
+              {t('workspace.saveAs', 'Save this as a new workspace')}
+            </li>
+          </ul>
+        }
+      >
+        <div>
+          <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+            <IconButton
+              icon="save"
+              size="medium"
+              className="print-hidden"
+              onClick={() => setSaveWorkspaceTooltipOpen(true)}
+              tooltip={t('analysis.save', 'Save this report')}
+              tooltipPlacement="bottom"
+            />
+          </LoginButtonWrapper>
+        </div>
+      </TooltipContainer>
     </Fragment>
   )
+
+  // return (
+  //   <Fragment>
+  //     <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+  //       <IconButton
+  //         icon={showClipboardNotification ? 'tick' : 'save'}
+  //         size="medium"
+  //         className="print-hidden"
+  //         onClick={onSaveClick}
+  //         loading={reportStatus === AsyncReducerStatus.Loading}
+  //         tooltip={
+  //           showClipboardNotification
+  //             ? t(
+  //                 'workspace.saved',
+  //                 "The workspace was saved and it's available in your user profile"
+  //               )
+  //             : t('analysis.save', 'Save this report')
+  //         }
+  //         tooltipPlacement="bottom"
+  //       />
+  //     </LoginButtonWrapper>
+  //     {showReportCreateModal && (
+  //       <NewReportModal
+  //         isOpen={showReportCreateModal}
+  //         onClose={onCloseCreateReport}
+  //         onFinish={onSaveCreateReport}
+  //         report={report}
+  //       />
+  //     )}
+  //   </Fragment>
+  // )
 }
 
 function ShareWorkspaceButton() {

@@ -980,6 +980,7 @@
     "privateTitle_other": "Private workspaces",
     "remove": "Remove workspace",
     "save": "Save the current view",
+    "saveAs": "Save as a new workspace",
     "saved": "Current view was saved and it's available in your user profile",
     "saveLogin": "You need to login to save views",
     "siteDescription": {
