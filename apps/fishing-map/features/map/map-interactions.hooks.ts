@@ -47,6 +47,9 @@ export const useClickedEventConnect = () => {
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const setViewState = useSetViewState()
+  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
+  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
+  const { rulersEditing, onRulerMapClick } = useRulers()
   // TODO:deck tilesClusterLoaded from Layer instance
   const tilesClusterLoaded = true
   const fishingPromiseRef = useRef<any>()
@@ -67,41 +70,18 @@ export const useClickedEventConnect = () => {
       dispatch(setClickedEvent(null))
       return
     }
-
-    // Used on workspaces-list or user panel to go to the workspace detail page
-    // if (locationType === USER || locationType === WORKSPACES_LIST) {
-    //   const workspace = event?.features?.find(
-    //     (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
-    //   )
-    //   if (workspace) {
-    //     const isDefaultWorkspace = workspace.properties.id === DEFAULT_WORKSPACE_ID
-    //     dispatchLocation(
-    //       isDefaultWorkspace ? HOME : WORKSPACE,
-    //       isDefaultWorkspace
-    //         ? {}
-    //         : {
-    //             payload: {
-    //               category:
-    //                 workspace.properties?.category && workspace.properties.category !== 'null'
-    //                   ? workspace.properties.category
-    //                   : DEFAULT_WORKSPACE_CATEGORY,
-    //               workspaceId: workspace.properties.id,
-    //             },
-    //           },
-    //       { replaceQuery: true }
-    //     )
-    //     const { latitude, longitude, zoom } = workspace.properties
-    //     if (latitude && longitude && zoom) {
-    //       setViewState({ latitude, longitude, zoom })
-    //     }
-    // trackEvent({
-    //   category: TrackCategory.WorkspaceManagement,
-    //   action: `click_map_workspace_link`,
-    //   label: workspace.properties.id,
-    // })
-    //     return
-    //   }
-    // }
+    if (isMapAnnotating) {
+      addMapAnnotation([event.longitude, event.latitude])
+      return
+    }
+    if (isErrorNotificationEditing) {
+      addErrorNotification([event.longitude, event.latitude])
+      return
+    }
+    if (rulersEditing) {
+      onRulerMapClick([event.longitude, event.latitude])
+      return
+    }
 
     const clusterFeature = event?.features?.find(
       (f) => (f as ClusterPickingObject).category === DataviewCategory.Events
@@ -203,12 +183,7 @@ export const useGetPickingInteraction = () => {
       if (!map || !info?.coordinate) {
         return
       }
-
       let pickingInfo = [] as DeckLayerInteractionPickingInfo[]
-      // TODO:deck handle when hovering a cluster point as we don't want to show anything else
-      // const clusterFeature = event.features.find(
-      //   (f) => f.generatorType === DataviewType.TileCluster && parseInt(f.properties.count) > 1
-      // )
       try {
         pickingInfo = map?.pickMultipleObjects({
           x: info.x,
@@ -247,9 +222,8 @@ export const useMapMouseHover = () => {
   const setMapHoverFeatures = useSetMapHoverInteraction()
   const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating } = useMapAnnotation()
+  const { isErrorNotificationEditing } = useMapErrorNotification()
   const { onRulerMapHover, rulersEditing } = useRulers()
-  const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
   const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
@@ -267,25 +241,43 @@ export const useMapMouseHover = () => {
   const onMouseMove: DeckProps['onHover'] = useCallback(
     (info: PickingInfo, event: MjolnirPointerEvent) => {
       setHoveredCoordinates(info.coordinate)
-      if (event.type === 'pointerleave') {
+      if (
+        event.type === 'pointerleave' ||
+        isMapAnnotating ||
+        isMapDrawing ||
+        isErrorNotificationEditing
+      ) {
         setMapHoverFeatures({} as InteractionEvent)
         return
       }
-      // TODO:deck handle when hovering a cluster point as we don't want to show anything else
-      // const clusterFeature = event.features.find(
-      //   (f) => f.generatorType === DataviewType.TileCluster && parseInt(f.properties.count) > 1
-      // )
-      const hoverInteraction = getPickingInteraction(info, 'hover')
-      if (hoverInteraction) {
-        setMapHoverFeatures(hoverInteraction)
-      }
-      // onRulerDrag(features)
-
       if (rulersEditing) {
         onRulerMapHover(info)
+        return
+      }
+      const hoverInteraction = getPickingInteraction(info, 'hover')
+      if (hoverInteraction) {
+        const eventsInteraction = {
+          ...hoverInteraction,
+          features: hoverInteraction.features?.filter(
+            (f) => f.category === DataviewCategory.Events
+          ),
+        }
+        if (eventsInteraction.features?.length) {
+          setMapHoverFeatures(eventsInteraction)
+          return
+        }
+        setMapHoverFeatures(hoverInteraction)
       }
     },
-    [getPickingInteraction, onRulerMapHover, rulersEditing, setMapHoverFeatures]
+    [
+      getPickingInteraction,
+      isErrorNotificationEditing,
+      isMapAnnotating,
+      isMapDrawing,
+      onRulerMapHover,
+      rulersEditing,
+      setMapHoverFeatures,
+    ]
   )
 
   return {
@@ -297,48 +289,9 @@ export const useMapMouseHover = () => {
   }
 }
 
-// Hook to wrap the custom tools click interactions with the map that has more priority
-// returning undefined when not handled so we can continue with the propagation
-export const useHandleMapToolsClick = () => {
-  const { isMapDrawing } = useMapDrawConnect()
-  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
-  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
-  const { onRulerMapClick, rulersEditing } = useRulers()
-  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
-  const handleMapClickInteraction = useCallback(
-    (interaction: InteractionEvent) => {
-      const { latitude, longitude, features } = interaction
-      const position = [longitude, latitude] as Position
-      if (isMapAnnotating) {
-        return addMapAnnotation(position)
-      }
-      if (isErrorNotificationEditing) {
-        return addErrorNotification(position)
-      }
-      if (rulersEditing) {
-        return onRulerMapClick(position)
-      }
-      return undefined
-    },
-    [
-      addErrorNotification,
-      addMapAnnotation,
-      isErrorNotificationEditing,
-      isMapAnnotating,
-      onRulerMapClick,
-      rulersEditing,
-    ]
-  )
-  return handleMapClickInteraction
-}
-
 export const useMapMouseClick = () => {
   const getPickingInteraction = useGetPickingInteraction()
-  const handleMapToolsClick = useHandleMapToolsClick()
-  // const setMapClickFeatures = useSetMapClickInteraction()
-  const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+  const { dispatchClickedEvent } = useClickedEventConnect()
 
   const onMapClick: DeckProps['onClick'] = useCallback(
     (info: PickingInfo, event: any) => {
@@ -349,13 +302,10 @@ export const useMapMouseClick = () => {
       }
       const clickInteraction = getPickingInteraction(info, 'click')
       if (clickInteraction) {
-        const clickStopPropagation = handleMapToolsClick(clickInteraction) !== undefined
-        if (!clickStopPropagation) {
-          dispatchClickedEvent(clickInteraction)
-        }
+        dispatchClickedEvent(clickInteraction)
       }
     },
-    [getPickingInteraction, handleMapToolsClick, dispatchClickedEvent]
+    [getPickingInteraction, dispatchClickedEvent]
   )
 
   return onMapClick
@@ -373,7 +323,8 @@ export const useMapCursor = () => {
           return 'move'
         }
         return 'crosshair'
-      } else if (isDragging) {
+      }
+      if (isDragging) {
         return 'grabbing'
       }
       if (hoverFeatures?.length) {
@@ -395,16 +346,13 @@ export const useMapDrag = () => {
     (info: PickingInfo, event: any) => {
       if (!map || !info.coordinate) return
       if (rulersEditing) {
-        try {
-          const features = map?.pickMultipleObjects({
-            x: info.x,
-            y: info.y,
-            radius: 0,
-          })
-          onRulerDragStart(info, features)
-        } catch (e) {
-          console.warn(e)
-        }
+        const pickedInfo = map?.pickMultipleObjects({
+          x: info.x,
+          y: info.y,
+          radius: 0,
+        })
+        const features = pickedInfo.flatMap((p) => p.object || [])
+        onRulerDragStart(info, features)
       }
     },
     [map, onRulerDragStart, rulersEditing]

@@ -1,5 +1,5 @@
 import { GeoJsonLayer } from '@deck.gl/layers'
-import { Color, CompositeLayer, DefaultProps } from '@deck.gl/core'
+import { Color, CompositeLayer, DefaultProps, GetPickingInfoParams } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { Feature, Point } from '@turf/turf'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
@@ -28,6 +28,17 @@ const getFeaturesFromRulers = (rulers: RulerData[]) => {
 export class RulersLayer extends CompositeLayer<RulersLayerProps> {
   static layerName = 'RulersLayer'
   static defaultProps = defaultProps
+
+  getPickingInfo({ info }: GetPickingInfoParams) {
+    return {
+      ...info,
+      object: {
+        ...info.object,
+        category: 'rulers',
+      },
+    }
+  }
+
   renderLayers() {
     const { rulers, color, visible } = this.props
 

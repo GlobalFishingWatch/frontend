@@ -47,13 +47,13 @@ export function useMapRulersDrag() {
 
   const onRulerDragStart = useCallback(
     (info: PickingInfo, features: any) => {
-      if (features?.some(isRulerLayerPoint)) {
+      const rulerPoint = features.find(isRulerLayerPoint)
+      if (rulerPoint) {
         deck?.setProps({ controller: { dragPan: false } })
-        const point = features.find(isRulerLayerPoint).object
         draggedRuler.current = {
-          ruler: rulers.find((r) => Number(r.id) === point.properties.id),
-          order: point.properties.order,
-          id: point.properties.id,
+          ruler: rulers.find((r) => Number(r.id) === rulerPoint.properties.id),
+          order: rulerPoint.properties.order,
+          id: rulerPoint.properties.id,
         }
       }
     },
