@@ -10,6 +10,8 @@ import {
   Dataset,
   DatasetTypes,
   DatasetCategory,
+  WorkspaceEditAccessType,
+  WorkspaceViewAccessType,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import {
@@ -265,24 +267,40 @@ const parseUpsertWorkspace = (workspace: AppWorkspace): WorkspaceUpsert<Workspac
   return restWorkspace
 }
 
+export type SaveWorkspaceThunkProperties = {
+  name: string
+  description?: string
+  password?: string
+  createAsPublic: boolean
+  viewAccess: WorkspaceViewAccessType
+  editAccess: WorkspaceEditAccessType
+}
+
 export const saveWorkspaceThunk = createAsyncThunk(
   'workspace/saveCurrent',
   async (
     {
-      name: defaultName,
-      createAsPublic,
+      properties,
       workspace,
     }: {
-      name: string
-      createAsPublic: boolean
+      properties: SaveWorkspaceThunkProperties
       workspace: AppWorkspace
     },
     { dispatch, getState }
   ) => {
     const state = getState() as any
     const workspaceUpsert = parseUpsertWorkspace(workspace)
-
+    const {
+      name: defaultName,
+      description = '',
+      createAsPublic,
+      viewAccess,
+      editAccess,
+      password,
+    } = properties
+    debugger
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
+      debugger
       let workspaceUpdated
       if (tries < 2) {
         try {
@@ -292,6 +310,10 @@ export const saveWorkspaceThunk = createAsyncThunk(
             body: {
               ...workspaceUpsert,
               name,
+              description,
+              viewAccess,
+              editAccess,
+              password,
               public: createAsPublic,
             },
           } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)

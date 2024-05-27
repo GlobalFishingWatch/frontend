@@ -2,6 +2,18 @@ import { DataviewInstance } from './dataviews'
 
 export type ApiAppName = 'fishing-map' | 'marine-manager'
 
+export const WORKSPACE_PUBLIC_ACCESS = 'public'
+export const WORKSPACE_PASSWORD_ACCESS = 'password'
+export const WORKSPACE_PRIVATE_ACCESS = 'private'
+
+export type WorkspaceViewAccessType =
+  | typeof WORKSPACE_PUBLIC_ACCESS
+  | typeof WORKSPACE_PASSWORD_ACCESS
+  | typeof WORKSPACE_PRIVATE_ACCESS
+export type WorkspaceEditAccessType =
+  | typeof WORKSPACE_PASSWORD_ACCESS
+  | typeof WORKSPACE_PRIVATE_ACCESS
+
 export interface WorkspaceViewport {
   zoom: number
   latitude: number
@@ -16,6 +28,8 @@ export interface Workspace<State = unknown, Category = string> {
   app: ApiAppName
   description: string
   category?: Category
+  viewAccess: WorkspaceViewAccessType
+  editccess: WorkspaceEditAccessType
   public?: boolean
   viewport: WorkspaceViewport
   startAt: string

@@ -1,4 +1,12 @@
-import React, { useRef, forwardRef, useImperativeHandle, Ref, Fragment } from 'react'
+import React, {
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+  Ref,
+  Fragment,
+  useState,
+  useCallback,
+} from 'react'
 import cx from 'classnames'
 import { IconButton } from '../icon-button'
 import { Tooltip } from '../tooltip'
@@ -8,7 +16,7 @@ import { TooltipTypes } from '../types/types'
 import styles from './InputText.module.css'
 
 export type InputSize = 'default' | 'small'
-export type InputType = 'text' | 'email' | 'search' | 'number'
+export type InputType = 'text' | 'email' | 'search' | 'number' | 'password'
 
 type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   id?: string
@@ -46,8 +54,17 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
     onCleanButtonClick,
     ...rest
   } = props
-  const inputRef = useRef<HTMLInputElement>(null)
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [passwordVisible, setPasswordVisible] = useState(false)
+  let inputType = type
+  if (type === 'password' && passwordVisible) {
+    inputType = 'text'
+  }
+
+  const togglePasswordVisibility = useCallback(() => {
+    setPasswordVisible((prev) => !prev)
+  }, [])
 
   const inputProps = {
     id: id ?? label,
@@ -73,7 +90,7 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
         className={cx(styles.input, { [styles.invalid]: invalid })}
         key={inputKey}
         ref={inputRef}
-        type={type}
+        type={inputType}
         {...(testId && { 'data-test': testId })}
         {...inputProps}
       />
@@ -84,6 +101,15 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
           size="medium"
           className={styles.delete}
           onClick={onCleanButtonClick}
+        />
+      )}
+      {!loading && type === 'password' && (
+        <IconButton
+          icon={passwordVisible ? 'visibility-off' : 'visibility-on'}
+          size="tiny"
+          onClick={togglePasswordVisibility}
+          className={styles.icon}
+          type={!inputRef.current || inputRef.current.validity.valid ? 'default' : 'warning'}
         />
       )}
       {!loading && (type === 'email' || type === 'search') && (

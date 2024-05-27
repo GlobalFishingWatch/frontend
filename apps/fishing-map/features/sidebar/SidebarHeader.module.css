@@ -64,6 +64,10 @@
   background-color: var(--color-terthiary-blue);
 }
 
+.disabled {
+  cursor: not-allowed;
+}
+
 @media print {
   .logo {
     margin-left: 0;

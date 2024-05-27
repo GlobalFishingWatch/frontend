@@ -171,7 +171,7 @@ import { useEffect, useState } from 'react'
 //         value={name}
 //         label={t('common.name', 'Name')}
 //         className={styles.input}
-//         testId="create-workspace-input"
+//         testId="create-workspace-name"
 //         onChange={(e) => setName(e.target.value)}
 //         autoFocus
 //       />

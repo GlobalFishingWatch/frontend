@@ -11,14 +11,15 @@ import {
   IconButton,
   Logo,
   SubBrands,
+  Tooltip,
 } from '@globalfishingwatch/ui-components'
 import { useFeatureState, useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
 import {
   selectCurrentWorkspaceId,
   selectIsDefaultWorkspace,
   selectLastVisitedWorkspace,
   selectWorkspace,
-  selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
@@ -60,13 +61,10 @@ import LanguageToggle from 'features/i18n/LanguageToggle'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
-const NewWorkspaceModal = dynamic(
-  () =>
-    import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/workspace/save/WorkspaceEditModal')
-)
 const NewReportModal = dynamic(
   () => import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/NewReportModal')
 )
@@ -201,14 +199,22 @@ function SaveWorkspaceButton() {
   const { t } = useTranslation()
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const userData = useSelector(selectUserData)
   const isDefaultWorkspace = useSelector(selectIsDefaultWorkspace)
+
+  const isOwnerWorkspace = workspace?.ownerId === userData?.id
+  const isPassWordEditAccess = workspace?.editccess === WORKSPACE_PASSWORD_ACCESS
+  const canEditWorkspace = isOwnerWorkspace || isPassWordEditAccess
+
   const dispatch = useAppDispatch()
   const [saveWorkspaceTooltipOpen, setSaveWorkspaceTooltipOpen] = useState(false)
 
   const onSaveClick = () => {
-    dispatch(setModalOpen({ id: 'editWorkspace', open: true }))
-    dispatch(setModalOpen({ id: 'createWorkspace', open: false }))
-    setSaveWorkspaceTooltipOpen(false)
+    if (canEditWorkspace) {
+      dispatch(setModalOpen({ id: 'editWorkspace', open: true }))
+      dispatch(setModalOpen({ id: 'createWorkspace', open: false }))
+      setSaveWorkspaceTooltipOpen(false)
+    }
   }
 
   const onSaveAsClick = () => {
@@ -223,9 +229,9 @@ function SaveWorkspaceButton() {
     dispatch(setModalOpen({ id: 'createWorkspace', open: false }))
   }
 
-  // if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
-  //   return null
-  // }
+  if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
+    return null
+  }
 
   if (isDefaultWorkspace) {
     return (
@@ -250,9 +256,21 @@ function SaveWorkspaceButton() {
         placement="bottom"
         component={
           <ul className={styles.groupOptions}>
-            <li className={styles.groupOption} onClick={onSaveClick} key="workspace-save">
-              {t('workspace.save', 'Save this workspace')}
-            </li>
+            <Tooltip
+              content={
+                canEditWorkspace
+                  ? t('workspace.save', 'Save this report')
+                  : t('common.disabled', 'Disabled')
+              }
+            >
+              <li
+                className={cx(styles.groupOption, styles.disabled)}
+                onClick={onSaveClick}
+                key="workspace-save"
+              >
+                {t('workspace.save', 'Save this report')}
+              </li>
+            </Tooltip>
             <li className={styles.groupOption} onClick={onSaveAsClick} key="workspace-save-as">
               {t('workspace.saveAs', 'Save this as a new workspace')}
             </li>

@@ -974,6 +974,7 @@
     "emptyStateUser": "Upload custom datasets clicking on the plus icon.",
     "emptyStateVessels": "The vessels selected in the search or by clicking on activity grid cells will appear here.",
     "nameInput": "Workspace name",
+    "nameRequired": "Workspace name is required",
     "new": "New Workspace",
     "noDetectionInFilters": "No detections match your current filters",
     "noVesselInFilters": "No vessels match your current filters",
@@ -994,6 +995,8 @@
     "uploadPublic": "Allow other users to see this workspace",
     "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
     "user": "User workspace",
+    "passwordMinLength": "Password must be at least 5 characters",
+    "passwordRequired": "Password is required",
     "wizard": {
       "exploreArea": "See area",
       "exploreGlobal": "See global",
