@@ -7,6 +7,8 @@ import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { useSetViewState } from 'features/map/map-viewport.hooks'
 import { MapCoordinates } from 'types'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setClickedEvent } from '../map.slice'
 import styles from './Popup.module.css'
 
 type WorkspacePointsLayersProps = {
@@ -19,14 +21,16 @@ function WorkspacePointsTooltipSection({
   showFeaturesDetails,
 }: WorkspacePointsLayersProps) {
   const setViewState = useSetViewState()
+  const dispatch = useAppDispatch()
 
   const onWorkspaceClick = useCallback(
     (viewport: MapCoordinates) => {
       if (viewport) {
         setViewState(viewport)
+        dispatch(setClickedEvent(null))
       }
     },
-    [setViewState]
+    [dispatch, setViewState]
   )
 
   const WorkspaceLabel = ({

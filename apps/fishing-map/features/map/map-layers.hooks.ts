@@ -7,7 +7,7 @@ import {
 } from '@globalfishingwatch/deck-layer-composer'
 import { useGlobalConfigConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectIsMarineManagerLocation, selectIsUserLocation } from 'routes/routes.selectors'
+import { selectIsWorkspaceIndexLocation, selectIsUserLocation } from 'routes/routes.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/workspaces'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -22,7 +22,7 @@ export const useMapDeckLayers = () => {
   const workspaceDataviews = useSelector(selectDataviewInstancesResolvedVisible)
   const bufferDataviews = useSelector(selectMapReportBufferDataviews)
   const workspacesListDataview = useSelector(selectWorkspacesListDataview)
-  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
+  const isWorkspaceIndexLocation = useSelector(selectIsWorkspaceIndexLocation)
   const isUserLocation = useSelector(selectIsUserLocation)
   const showWorkspaceDetail = useSelector(selectShowWorkspaceDetail)
   const workspaceLoading =
@@ -31,7 +31,7 @@ export const useMapDeckLayers = () => {
   const globalConfig = useGlobalConfigConnect()
 
   const dataviews = useMemo(() => {
-    if (isMarineManagerLocation || isUserLocation) {
+    if (isWorkspaceIndexLocation || isUserLocation) {
       const dataviews = [DEFAULT_BASEMAP_DATAVIEW_INSTANCE]
       if (workspacesListDataview) {
         dataviews.push(workspacesListDataview as DataviewInstance)
@@ -44,7 +44,7 @@ export const useMapDeckLayers = () => {
     return [...(workspaceDataviews || []), ...(bufferDataviews || [])]
   }, [
     bufferDataviews,
-    isMarineManagerLocation,
+    isWorkspaceIndexLocation,
     isUserLocation,
     workspaceDataviews,
     workspaceLoading,
