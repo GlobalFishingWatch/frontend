@@ -10,6 +10,7 @@ import {
 import { RootState } from 'store'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
+export const selectWorkspacePassword = (state: RootState) => state.workspace?.password
 export const selectWorkspaceError = (state: RootState) => state.workspace?.error
 export const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
 export const selectLastVisitedWorkspace = (state: RootState) => state.workspace?.lastVisited

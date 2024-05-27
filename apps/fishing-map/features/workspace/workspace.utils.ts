@@ -3,6 +3,8 @@ import { PUBLIC_SUFIX } from 'data/config'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { WorkspaceState } from 'types'
 
+export const MIN_WORKSPACE_PASSWORD_LENGTH = 5
+
 export const getWorkspaceLabel = (workspace: AppWorkspace | Workspace<WorkspaceState, string>) => {
   const isPrivate = !workspace.id.endsWith(`-${PUBLIC_SUFIX}`)
   return `${isPrivate ? '🔒 ' : ''}${workspace.name}`

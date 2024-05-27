@@ -22,6 +22,10 @@
   margin-bottom: var(--space-S);
 }
 
+.error {
+  color: var(--color-danger-red);
+}
+
 .logged {
   color: var(--color-secondary-blue);
   margin-top: var(--space-M);

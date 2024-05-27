@@ -17,27 +17,18 @@ import {
   WorkspaceEditAccessType,
   WorkspaceViewAccessType,
 } from '@globalfishingwatch/api-types'
-import {
-  saveWorkspaceThunk,
-  updatedCurrentWorkspaceThunk,
-} from 'features/workspace/workspace.slice'
+import { saveWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
-import { selectUserData } from 'features/user/selectors/user.selectors'
-import { selectUserWorkspaceEditPermissions } from 'features/user/selectors/user.permissions.selectors'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import {
-  selectIsDefaultWorkspace,
-  selectIsGFWWorkspace,
-} from 'features/workspace/workspace.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
+import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
 import { useSaveWorkspaceModalConnect } from './workspace-save.hooks'
 import { getEditAccessOptionsByViewAccess, getViewAccessOptions } from './workspace-access.utils'
@@ -127,7 +118,7 @@ function CreateWorkspaceModal({
       if (!password) {
         return t('workspace.passwordRequired', 'Workspace password is required')
       }
-      if (password.length < 5) {
+      if (password.length < MIN_WORKSPACE_PASSWORD_LENGTH) {
         return t('workspace.passwordMinLength', 'Password must be at least 5 characters')
       }
     }

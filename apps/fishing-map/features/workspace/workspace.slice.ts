@@ -64,6 +64,7 @@ interface WorkspaceSliceState {
   customStatus: AsyncReducerStatus
   error: AsyncError
   data: Workspace<WorkspaceState> | null
+  password: string
   lastVisited: LastWorkspaceVisited | undefined
 }
 
@@ -72,6 +73,7 @@ const initialState: WorkspaceSliceState = {
   customStatus: AsyncReducerStatus.Idle,
   error: {},
   data: null,
+  password: '',
   lastVisited: undefined,
 }
 
@@ -392,9 +394,13 @@ const workspaceSlice = createSlice({
         ;(state.data as any)[key] = value
       }
     },
+    setWorkspacePassword: (state, action: PayloadAction<string>) => {
+      state.password = action.payload
+    },
     resetWorkspaceSlice: (state) => {
       state.status = initialState.status
       state.customStatus = initialState.customStatus
+      state.password = initialState.password
       state.data = initialState.data
       state.error = initialState.error
     },
@@ -474,6 +480,7 @@ const workspaceSlice = createSlice({
 
 export const {
   setWorkspaceProperty,
+  setWorkspacePassword,
   resetWorkspaceSlice,
   setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,

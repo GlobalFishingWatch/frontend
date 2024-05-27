@@ -125,7 +125,7 @@ function Workspace() {
   if (
     workspace?.viewAccess === WORKSPACE_PASSWORD_ACCESS &&
     // When password required dataviewInstances are not sent
-    workspace?.dataviewInstances === undefined
+    !workspace?.dataviewInstances.length
   ) {
     return <WorkspacePassword />
   }
