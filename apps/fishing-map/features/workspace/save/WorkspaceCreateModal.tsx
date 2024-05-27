@@ -149,14 +149,19 @@ function CreateWorkspaceModal({
         })
         setCreateLoading(false)
         if (onFinish) {
-          dispatchWorkspaceModalOpen(false)
           onFinish(workspace)
         }
+        onClose()
       } else {
         setCreateLoading(false)
         setError('Error saving workspace')
       }
     }
+  }
+
+  const handleSubmit = async (event: any) => {
+    event.preventDefault()
+    createWorkspace()
   }
 
   return (
@@ -168,87 +173,92 @@ function CreateWorkspaceModal({
       contentClassName={styles.modal}
       onClose={onClose}
     >
-      <InputText
-        value={name}
-        className={styles.input}
-        testId="create-workspace-name"
-        label={t('common.name', 'Name')}
-        onChange={(e) => setName(e.target.value)}
-        autoFocus
-      />
-      <InputText
-        value={description}
-        className={styles.input}
-        testId="create-workspace-input"
-        label={t('common.description', 'Description')}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <div className={styles.row}>
-        <Select
-          options={viewOptions}
-          direction="top"
-          label={t('workspace.viewAccess', 'View access')}
-          containerClassName={styles.select}
-          onSelect={(option: SelectOption<WorkspaceViewAccessType>) => setViewAccess(option.id)}
-          selectedOption={viewOptions.find((o) => o.id === viewAccess) || viewOptions[0]}
+      <form onSubmit={handleSubmit}>
+        <InputText
+          value={name}
+          className={styles.input}
+          testId="create-workspace-name"
+          label={t('common.name', 'Name')}
+          onChange={(e) => setName(e.target.value)}
+          autoFocus
         />
-        <Select
-          options={editOptions}
-          direction="top"
-          label={t('workspace.editAccess', 'Edit access')}
-          placeholder={
-            viewAccess === WORKSPACE_PRIVATE_ACCESS
-              ? t('workspace.private', 'Private')
-              : t('selects.placeholder', 'Select an option')
-          }
-          infoTooltip={
-            viewAccess === WORKSPACE_PRIVATE_ACCESS
-              ? t('workspace.privateEditAcessInfo', 'Private view workspace does not allow editing')
+        <InputText
+          value={description}
+          className={styles.input}
+          testId="create-workspace-input"
+          label={t('common.description', 'Description')}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <div className={styles.row}>
+          <Select
+            options={viewOptions}
+            direction="top"
+            label={t('workspace.viewAccess', 'View access')}
+            containerClassName={styles.select}
+            onSelect={(option: SelectOption<WorkspaceViewAccessType>) => setViewAccess(option.id)}
+            selectedOption={viewOptions.find((o) => o.id === viewAccess) || viewOptions[0]}
+          />
+          <Select
+            options={editOptions}
+            direction="top"
+            label={t('workspace.editAccess', 'Edit access')}
+            placeholder={
+              viewAccess === WORKSPACE_PRIVATE_ACCESS
+                ? t('workspace.private', 'Private')
+                : t('selects.placeholder', 'Select an option')
+            }
+            infoTooltip={
+              viewAccess === WORKSPACE_PRIVATE_ACCESS
+                ? t(
+                    'workspace.privateEditAcessInfo',
+                    'Private view workspace does not allow editing'
+                  )
+                : ''
+            }
+            disabled={viewAccess === WORKSPACE_PRIVATE_ACCESS}
+            containerClassName={styles.select}
+            onSelect={(option: SelectOption<WorkspaceEditAccessType>) => setEditAccess(option.id)}
+            selectedOption={editOptions.find((o) => o.id === editAccess) || editOptions[0]}
+          />
+          {(viewAccess === WORKSPACE_PASSWORD_ACCESS ||
+            (viewAccess !== WORKSPACE_PRIVATE_ACCESS &&
+              editAccess === WORKSPACE_PASSWORD_ACCESS)) && (
+            <InputText
+              value={password}
+              className={styles.select}
+              type="password"
+              testId="create-workspace-password"
+              label={t('common.password', 'password')}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          )}
+        </div>
+        <SwitchRow
+          label={t('workspace.uploadPublic', 'Allow other users to see this workspace')}
+          active={createAsPublic}
+          disabled={containsPrivateDatasets}
+          tooltip={
+            containsPrivateDatasets
+              ? `${t(
+                  'workspace.uploadPublicDisabled',
+                  "This workspace can't be shared publicly because it contains private datasets"
+                )}: ${privateDatasets.join(', ')}`
               : ''
           }
-          disabled={viewAccess === WORKSPACE_PRIVATE_ACCESS}
-          containerClassName={styles.select}
-          onSelect={(option: SelectOption<WorkspaceEditAccessType>) => setEditAccess(option.id)}
-          selectedOption={editOptions.find((o) => o.id === editAccess) || editOptions[0]}
+          onClick={() => setCreateAsPublic(!createAsPublic)}
         />
-        {(viewAccess === WORKSPACE_PASSWORD_ACCESS ||
-          (viewAccess !== WORKSPACE_PRIVATE_ACCESS &&
-            editAccess === WORKSPACE_PASSWORD_ACCESS)) && (
-          <InputText
-            value={password}
-            className={styles.select}
-            type="password"
-            testId="create-workspace-password"
-            label={t('common.password', 'password')}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        )}
-      </div>
-      <SwitchRow
-        label={t('workspace.uploadPublic', 'Allow other users to see this workspace')}
-        active={createAsPublic}
-        disabled={containsPrivateDatasets}
-        tooltip={
-          containsPrivateDatasets
-            ? `${t(
-                'workspace.uploadPublicDisabled',
-                "This workspace can't be shared publicly because it contains private datasets"
-              )}: ${privateDatasets.join(', ')}`
-            : ''
-        }
-        onClick={() => setCreateAsPublic(!createAsPublic)}
-      />
-      <div className={styles.footer}>
-        {error && <p className={styles.error}>{error}</p>}
-        <Button
-          loading={createLoading}
-          disabled={!name}
-          onClick={createWorkspace}
-          testId="create-workspace-button"
-        >
-          {t('workspace.create', 'Create as new workspace') as string}
-        </Button>
-      </div>
+        <div className={styles.footer}>
+          {error && <p className={styles.error}>{error}</p>}
+          <Button
+            loading={createLoading}
+            disabled={!name}
+            htmlType="submit"
+            testId="create-workspace-button"
+          >
+            {t('workspace.create', 'Create as new workspace') as string}
+          </Button>
+        </div>
+      </form>
     </Modal>
   )
 }

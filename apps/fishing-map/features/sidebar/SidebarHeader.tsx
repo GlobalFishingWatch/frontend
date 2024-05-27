@@ -37,7 +37,6 @@ import {
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
@@ -134,67 +133,6 @@ function SaveReportButton() {
   )
 }
 
-// function SaveWorkspaceButton() {
-//   const [showWorkspaceCreateModal, setShowWorkspaceCreateModal] = useState(false)
-//   const { t } = useTranslation()
-//   const workspaceStatus = useSelector(selectWorkspaceStatus)
-//   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-//   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
-//   const workspace = useSelector(selectWorkspace)
-//   const customWorkspace = useSelector(selectWorkspaceWithCurrentState)
-
-//   const onCloseCreateWorkspace = useCallback(() => {
-//     setShowWorkspaceCreateModal(false)
-//   }, [])
-
-//   const onSaveCreateWorkspace = useCallback(() => {
-//     copyToClipboard(window.location.href)
-//     onCloseCreateWorkspace()
-//   }, [copyToClipboard, onCloseCreateWorkspace])
-
-//   const onSaveClick = async () => {
-//     if (!showClipboardNotification) {
-//       setShowWorkspaceCreateModal(true)
-//     }
-//   }
-
-//   if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
-//     return null
-//   }
-
-//   return (
-//     <Fragment>
-//       <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
-//         <IconButton
-//           icon={showClipboardNotification ? 'tick' : 'save'}
-//           size="medium"
-//           className="print-hidden"
-//           onClick={onSaveClick}
-//           loading={workspaceCustomStatus === AsyncReducerStatus.Loading}
-//           tooltip={
-//             showClipboardNotification
-//               ? t(
-//                   'workspace.saved',
-//                   "The workspace was saved and it's available in your user profile"
-//                 )
-//               : t('workspace.save', 'Save this workspace')
-//           }
-//           tooltipPlacement="bottom"
-//           testId="save-workspace-button"
-//         />
-//       </LoginButtonWrapper>
-//       {showWorkspaceCreateModal && (
-//         <NewWorkspaceModal
-//           isOpen={showWorkspaceCreateModal}
-//           onClose={onCloseCreateWorkspace}
-//           onFinish={onSaveCreateWorkspace}
-//           workspace={customWorkspace}
-//         />
-//       )}
-//     </Fragment>
-//   )
-// }
-
 function SaveWorkspaceButton() {
   const { t } = useTranslation()
   const workspace = useSelector(selectWorkspace)
@@ -203,7 +141,7 @@ function SaveWorkspaceButton() {
   const isDefaultWorkspace = useSelector(selectIsDefaultWorkspace)
 
   const isOwnerWorkspace = workspace?.ownerId === userData?.id
-  const isPassWordEditAccess = workspace?.editccess === WORKSPACE_PASSWORD_ACCESS
+  const isPassWordEditAccess = workspace?.editAccess === WORKSPACE_PASSWORD_ACCESS
   const canEditWorkspace = isOwnerWorkspace || isPassWordEditAccess
 
   const dispatch = useAppDispatch()
@@ -264,7 +202,7 @@ function SaveWorkspaceButton() {
               }
             >
               <li
-                className={cx(styles.groupOption, styles.disabled)}
+                className={cx(styles.groupOption, { [styles.disabled]: !canEditWorkspace })}
                 onClick={onSaveClick}
                 key="workspace-save"
               >

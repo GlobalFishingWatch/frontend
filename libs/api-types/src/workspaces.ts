@@ -29,7 +29,7 @@ export interface Workspace<State = unknown, Category = string> {
   description: string
   category?: Category
   viewAccess: WorkspaceViewAccessType
-  editccess: WorkspaceEditAccessType
+  editAccess: WorkspaceEditAccessType
   public?: boolean
   viewport: WorkspaceViewport
   startAt: string
@@ -43,5 +43,5 @@ export interface Workspace<State = unknown, Category = string> {
 
 export type WorkspaceUpsert<State = unknown, Category = string> = Omit<
   Workspace<State, Category>,
-  'id' | 'ownerId' | 'createdAt' | 'ownerType'
+  'id' | 'ownerId' | 'createdAt' | 'ownerType' | 'viewAccess' | 'editAccess'
 >

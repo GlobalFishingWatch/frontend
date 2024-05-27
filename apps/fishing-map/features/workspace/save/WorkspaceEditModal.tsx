@@ -1,39 +1,36 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { InputText, Button, Modal, SwitchRow } from '@globalfishingwatch/ui-components'
-import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import {
-  saveWorkspaceThunk,
-  updatedCurrentWorkspaceThunk,
-} from 'features/workspace/workspace.slice'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { InputText, Button, Modal } from '@globalfishingwatch/ui-components'
+import { WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
+import { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { updatedCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT } from 'data/config'
-import { selectUserData } from 'features/user/selectors/user.selectors'
-import { selectUserWorkspaceEditPermissions } from 'features/user/selectors/user.permissions.selectors'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { selectIsGFWWorkspace } from 'features/workspace/workspace.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
-import { setModalOpen } from 'features/modals/modals.slice'
+import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import styles from './WorkspaceSaveModal.module.css'
 import { useSaveWorkspaceModalConnect } from './workspace-save.hooks'
 
 type EditWorkspaceModalProps = {
   title?: string
   isOpen: boolean
-  workspace: AppWorkspace
   onFinish?: (workspace: AppWorkspace) => void
 }
 
-function EditWorkspaceModal({ title, isOpen, onFinish, workspace }: EditWorkspaceModalProps) {
-  const { t, i18n } = useTranslation()
+function EditWorkspaceModal({ title, isOpen, onFinish }: EditWorkspaceModalProps) {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const workspace = useSelector(selectWorkspaceWithCurrentState)
+  const [name, setName] = useState(workspace?.name)
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const userData = useSelector(selectUserData)
+  const isOwnerWorkspace = workspace?.ownerId === userData?.id
+  const isPassWordEditAccess = workspace?.editAccess === WORKSPACE_PASSWORD_ACCESS
 
   const { dispatchWorkspaceModalOpen } = useSaveWorkspaceModalConnect('editWorkspace')
 
@@ -42,24 +39,41 @@ function EditWorkspaceModal({ title, isOpen, onFinish, workspace }: EditWorkspac
   }
 
   const updateWorkspace = async () => {
-    // if (workspace) {
-    //   setUpdateLoading(true)
-    //   const dispatchedAction = await dispatch(updatedCurrentWorkspaceThunk({ ...workspace, name }))
-    //   if (updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
-    //     trackEvent({
-    //       category: TrackCategory.WorkspaceManagement,
-    //       action: 'Edit current workspace',
-    //       label: dispatchedAction.payload?.name ?? 'Unknown',
-    //     })
-    //     setUpdateLoading(false)
-    //     if (onFinish) {
-    //       onFinish(dispatchedAction.payload)
-    //     }
-    //   } else {
-    //     setUpdateLoading(false)
-    //     setError('Error updating workspace')
-    //   }
-    // }
+    if (workspace) {
+      setLoading(true)
+      const dispatchedAction = await dispatch(
+        updatedCurrentWorkspaceThunk({ ...workspace, name, password })
+      )
+      if (updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
+        const workspace = dispatchedAction.payload as AppWorkspace
+        if (!workspace?.dataviewInstances.length) {
+          setError(t('workspace.passwordIncorrect', 'Invalid password'))
+        }
+        trackEvent({
+          category: TrackCategory.WorkspaceManagement,
+          action: 'Edit current workspace',
+          label: dispatchedAction.payload?.name ?? 'Unknown',
+        })
+        setLoading(false)
+        if (onFinish) {
+          onFinish(dispatchedAction.payload)
+        }
+        onClose()
+      } else {
+        const error = (dispatchedAction.payload as any)?.error as ParsedAPIError
+        if (error.status === 401) {
+          setError(t('workspace.passwordIncorrect', 'Invalid password'))
+        } else {
+          setError('Error updating workspace')
+        }
+        setLoading(false)
+      }
+    }
+  }
+
+  const handleSubmit = async (event: any) => {
+    event.preventDefault()
+    updateWorkspace()
   }
 
   return (
@@ -71,7 +85,38 @@ function EditWorkspaceModal({ title, isOpen, onFinish, workspace }: EditWorkspac
       contentClassName={styles.modal}
       onClose={onClose}
     >
-      TODO
+      <form onSubmit={handleSubmit}>
+        <InputText
+          value={name}
+          className={styles.input}
+          testId="create-workspace-name"
+          label={t('common.name', 'Name')}
+          onChange={(e) => setName(e.target.value)}
+          autoFocus
+        />
+        {isPassWordEditAccess && !isOwnerWorkspace && (
+          <InputText
+            value={password}
+            className={styles.select}
+            type="password"
+            testId="create-workspace-password"
+            label={t('common.password', 'password')}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        )}
+        <div className={styles.footer}>
+          {error && <p className={styles.error}>{error}</p>}
+          <Button
+            loading={loading}
+            disabled={!name}
+            onClick={updateWorkspace}
+            htmlType="submit"
+            testId="create-workspace-button"
+          >
+            {t('workspace.edit', 'Edit workspace') as string}
+          </Button>
+        </div>
+      </form>
     </Modal>
   )
 }

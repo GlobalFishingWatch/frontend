@@ -278,7 +278,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 )
 
 const parseUpsertWorkspace = (workspace: AppWorkspace): WorkspaceUpsert<WorkspaceState> => {
-  const { id, ownerId, createdAt, ownerType, ...restWorkspace } = workspace
+  const { id, ownerId, createdAt, ownerType, viewAccess, editAccess, ...restWorkspace } = workspace
   return restWorkspace
 }
 
@@ -365,20 +365,30 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
 export const updatedCurrentWorkspaceThunk = createAsyncThunk<
   AppWorkspace,
-  AppWorkspace,
+  AppWorkspace & { password?: string },
   {
     dispatch: AppDispatch
   }
->('workspace/updatedCurrent', async (workspace: AppWorkspace, { dispatch }) => {
-  const workspaceUpsert = parseUpsertWorkspace(workspace)
-  const workspaceUpdated = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${workspace.id}`, {
-    method: 'PATCH',
-    body: workspaceUpsert,
-  } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
-  if (workspaceUpdated) {
-    dispatch(cleanQueryLocation())
+>('workspace/updatedCurrent', async (workspaceWithPassword, { dispatch, rejectWithValue }) => {
+  try {
+    const { password, ...workspace } = workspaceWithPassword
+    const workspaceUpsert = parseUpsertWorkspace(workspace)
+    const workspaceUpdated = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${workspace.id}`, {
+      method: 'PATCH',
+      body: workspaceUpsert,
+      ...(password && {
+        headers: {
+          'x-workspace-password': password,
+        },
+      }),
+    } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
+    if (workspaceUpdated) {
+      dispatch(cleanQueryLocation())
+    }
+    return workspaceUpdated
+  } catch (e: any) {
+    return rejectWithValue({ error: parseAPIError(e) })
   }
-  return workspaceUpdated
 })
 
 const workspaceSlice = createSlice({
