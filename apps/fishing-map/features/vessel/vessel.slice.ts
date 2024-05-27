@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
 import {
+  ApiEvent,
   Dataset,
   DatasetTypes,
   IdentityVessel,
@@ -63,12 +64,14 @@ type VesselState = {
   fitBoundsOnLoad: boolean
   printMode: boolean
   data: VesselInfoState
+  events: ApiEvent[]
 }
 
 const initialState: VesselState = {
   fitBoundsOnLoad: false,
   printMode: false,
   data: {},
+  events: [],
 }
 
 type VesselSliceState = { vessel: VesselState }
@@ -170,6 +173,9 @@ const vesselSlice = createSlice({
     setVesselFitBoundsOnLoad: (state, action: PayloadAction<boolean>) => {
       state.fitBoundsOnLoad = action.payload
     },
+    setVesselEvents: (state, action: PayloadAction<ApiEvent[]>) => {
+      state.events = action.payload
+    },
     setVesselPrintMode: (state, action: PayloadAction<boolean>) => {
       state.printMode = action.payload
     },
@@ -214,7 +220,7 @@ const vesselSlice = createSlice({
   },
 })
 
-export const { setVesselFitBoundsOnLoad, setVesselPrintMode, resetVesselState } =
+export const { setVesselFitBoundsOnLoad, setVesselPrintMode, resetVesselState, setVesselEvents } =
   vesselSlice.actions
 
 export default vesselSlice.reducer

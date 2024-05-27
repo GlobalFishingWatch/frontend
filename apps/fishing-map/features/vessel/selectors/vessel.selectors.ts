@@ -23,5 +23,6 @@ export const selectSelfReportedVesselIds = createSelector([selectVessel], (vesse
 export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)
 export const selectVesselInfoError = createSelector([selectVessel], (vessel) => vessel?.error)
 export const selectVesselPrintMode = (state: RootState) => state.vessel.printMode as boolean
+export const selectVesselEventsData = (state: RootState) => state.vessel.events
 export const selectVesselFitBoundsOnLoad = (state: RootState) =>
   state.vessel.fitBoundsOnLoad as boolean

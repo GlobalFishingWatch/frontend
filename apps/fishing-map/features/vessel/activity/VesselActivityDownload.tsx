@@ -4,10 +4,7 @@ import { saveAs } from 'file-saver'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { parseEventsToCSV } from 'features/vessel/vessel.download'
-import {
-  selectVesselEventsFilteredByTimerange,
-  selectVesselEventsResourcesLoading,
-} from 'features/vessel/selectors/vessel.resources.selectors'
+import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import {
   selectVesselActivityMode,
   selectVesselIdentityId,
@@ -16,6 +13,7 @@ import {
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
 
 const VesselActivityDownload = () => {
   const { t } = useTranslation()
@@ -23,7 +21,7 @@ const VesselActivityDownload = () => {
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const timerange = useSelector(selectTimeRange)
-  const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
+  const eventsLoading = useVesselProfileEventsLoading()
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const activityMode = useSelector(selectVesselActivityMode)
 

@@ -6,10 +6,7 @@ import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import {
-  selectVesselTracksData,
-  selectVesselEventsFilteredByTimerange,
-} from 'features/vessel/selectors/vessel.resources.selectors'
+import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import { setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -20,6 +17,7 @@ import {
   selectVesselInfoData,
 } from 'features/vessel/selectors/vessel.selectors'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
+import { useVesselProfileTrack } from './vessel-track.hooks'
 
 export type UseVesselBoundsType = 'events' | 'track'
 export const useVesselBounds = (type?: UseVesselBoundsType) => {
@@ -67,7 +65,7 @@ export const useVesselFitBoundsOnLoad = () => {
 export const useVesselFitTranmissionsBounds = () => {
   const isVesselLocation = useSelector(selectIsVesselLocation)
   const fitBounds = useMapFitBounds()
-  const segments = useSelector(selectVesselTracksData)
+  const segments = useVesselProfileTrack()
   const urlTimerange = useSelector(selectUrlTimeRange)
   const vessel = useSelector(selectVesselInfoData)
   const { setTimerange } = useTimerangeConnect()

@@ -17,10 +17,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_COLORS, ROOT_DOM_ELEMENT } from 'data/config'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import {
-  selectVesselEventsFilteredByTimerange,
-  selectVesselEventsResourcesLoading,
-} from 'features/vessel/selectors/vessel.resources.selectors'
+import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
@@ -29,6 +26,7 @@ import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileColor } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {
@@ -107,11 +105,11 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const eventsGrouped = useSelector(selectEventsGroupedByArea)
   const eventsGroupedWithoutUnknown = eventsGrouped.filter((group) => group.region !== UNKNOWN_AREA)
   const eventsGroupedUnknown = eventsGrouped.find((group) => group.region === UNKNOWN_AREA)
-  const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
   const vesselColor = useSelector(selectVesselProfileColor)
   const eventTypes = useSelector(selectVesselEventTypes)
   const [graphWidth, setGraphWidth] = useState(getSidebarContentWidth())
   const areaDataview = VESSEL_PROFILE_DATAVIEWS_INSTANCES.find((d) => d.dataviewId === vesselArea)
+  const eventsLoading = useVesselProfileEventsLoading()
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
