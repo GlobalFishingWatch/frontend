@@ -997,6 +997,7 @@
     "user": "User workspace",
     "passwordMinLength": "Password must be at least 5 characters",
     "passwordRequired": "Password is required",
+    "passwordProtected": "This workspace is password protected",
     "wizard": {
       "exploreArea": "See area",
       "exploreGlobal": "See global",

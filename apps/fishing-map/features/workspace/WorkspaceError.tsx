@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button } from '@globalfishingwatch/ui-components'
+import { Button, InputText } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { selectWorkspaceError } from 'features/workspace/workspace.selectors'
 import { logoutUserThunk } from 'features/user/user.slice'
@@ -14,6 +14,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-groups.slice'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import styles from './Workspace.module.css'
+import { fetchWorkspaceThunk } from './workspace.slice'
 
 export function ErrorPlaceHolder({
   title,
@@ -119,6 +120,41 @@ function WorkspaceError(): React.ReactElement {
         'There was an error loading the workspace, please try again later'
       )}
     ></ErrorPlaceHolder>
+  )
+}
+
+export function WorkspacePassword(): React.ReactElement {
+  const [loading, setLoading] = useState(false)
+  const [password, setPassword] = useState<string>('')
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const workspaceId = useSelector(selectWorkspaceId)
+  const title = t('workspace.passwordProtected', 'This workspace is password protected')
+
+  const fetchWorkspaceWithPassword = async () => {
+    setLoading(true)
+    await dispatch(fetchWorkspaceThunk({ workspaceId, password }))
+    setLoading(false)
+  }
+
+  return (
+    <ErrorPlaceHolder title={title}>
+      <InputText
+        value={password}
+        className={styles.password}
+        type="password"
+        testId="create-workspace-password"
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <Button
+        size="small"
+        disabled={!password}
+        loading={loading}
+        onClick={fetchWorkspaceWithPassword}
+      >
+        {t('common.send', 'Send') as string}
+      </Button>
+    </ErrorPlaceHolder>
   )
 }
 

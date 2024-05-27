@@ -88,9 +88,17 @@ export const getDefaultWorkspace = () => {
   return workspace as Promise<AppWorkspace>
 }
 
+export type FetchWorkspacesThunkParams = {
+  workspaceId: string
+  password?: string
+}
+
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }: any) => {
+  async (
+    { workspaceId, password }: FetchWorkspacesThunkParams,
+    { signal, dispatch, getState, rejectWithValue }: any
+  ) => {
     const state = getState() as any
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
@@ -122,6 +130,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
         workspace = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
           signal,
+          ...(password && {
+            headers: {
+              'x-workspace-password': password,
+            },
+          }),
         })
       }
       if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
@@ -249,7 +262,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     }
   },
   {
-    condition: (workspaceId, { getState }) => {
+    condition: ({ workspaceId }, { getState }) => {
       const rootState = getState() as any
       if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
         const currentWorkspaceId = selectCurrentWorkspaceId(rootState)

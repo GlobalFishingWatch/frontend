@@ -28,6 +28,10 @@
   margin-bottom: var(--space-S);
 }
 
+.password {
+  margin-bottom: var(--space-S);
+}
+
 .button,
 .button:visited {
   font: var(--font-S);
