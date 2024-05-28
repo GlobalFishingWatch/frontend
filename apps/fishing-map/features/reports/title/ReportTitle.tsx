@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
+import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import geojsonArea from '@mapbox/geojson-area'
@@ -226,73 +228,83 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     urlBufferUnit,
   ])
 
-  const reportAreaSpace = reportArea?.geometry ? (geojsonArea.geometry(reportArea?.geometry) / 1000000) : null
+  const reportDescription =
+    typeof report?.description === 'string' && report?.description.length
+      ? parse(report?.description)
+      : report?.description || ''
+
+  const reportAreaSpace = reportArea?.geometry
+    ? geojsonArea.geometry(reportArea?.geometry) / 1000000
+    : null
+
+  if (!reportTitle) {
+    return <ReportTitlePlaceholder />
+  }
 
   return (
     <div className={styles.container}>
-      {reportTitle ? (
-        <Fragment>
-          <h1 className={styles.title} data-test="report-title">
-            {reportTitle}
-            {reportAreaSpace && (
-              <span className={styles.secondary}>
-                {' '}
-                {formatI18nNumber(reportAreaSpace)} km²
-              </span>
-            )}
-          </h1>
-          <a className={styles.reportLink} href={window.location.href}>
-            {t('analysis.linkToReport', 'Check the dynamic report here')}
-          </a>
+      <div className={cx(styles.row, styles.border)}>
+        <h1 className={styles.title} data-test="report-title">
+          {reportTitle}
 
-          <div className={styles.actions}>
-            {/* https://atomiks.github.io/tippyjs/v6/accessibility/#interactivity */}
-            {/* 👇 extra div needed to allow element to be keyboard accessible */}
-            <div>
-              <Button
-                type="border-secondary"
-                size="small"
-                className={styles.actionButton}
-                tooltip={
-                  <BufferButtonTooltip
-                    areaType={area?.properties?.originalGeometryType}
-                    activeUnit={previewBuffer.unit || NAUTICAL_MILES}
-                    defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                    activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
-                    handleRemoveBuffer={handleRemoveBuffer}
-                    handleConfirmBuffer={handleConfirmBuffer}
-                    handleBufferUnitChange={handleBufferUnitChange}
-                    handleBufferValueChange={handleBufferValueChange}
-                    handleBufferOperationChange={handleBufferOperationChange}
-                  />
-                }
-                tooltipPlacement="bottom"
-                tooltipProps={{
-                  interactive: true,
-                  trigger: 'click',
-                  delay: 0,
-                  className: styles.bufferContainer,
-                  onHide: handleTooltipHide,
-                  onShow: handleTooltipShow,
-                }}
-              >
-                {t('analysis.buffer', 'Buffer Area')}
-                <Icon icon="expand" type="default" />
-              </Button>
-            </div>
+          {reportAreaSpace && (
+            <span className={styles.secondary}> {formatI18nNumber(reportAreaSpace)} km²</span>
+          )}
+        </h1>
+        <a className={styles.reportLink} href={window.location.href}>
+          {t('analysis.linkToReport', 'Check the dynamic report here')}
+        </a>
+
+        <div className={styles.actions}>
+          {/* https://atomiks.github.io/tippyjs/v6/accessibility/#interactivity */}
+          {/* 👇 extra div needed to allow element to be keyboard accessible */}
+          <div>
             <Button
               type="border-secondary"
               size="small"
               className={styles.actionButton}
-              onClick={onPrintClick}
+              tooltip={
+                <BufferButtonTooltip
+                  areaType={area?.properties?.originalGeometryType}
+                  activeUnit={previewBuffer.unit || NAUTICAL_MILES}
+                  defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
+                  activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
+                  handleRemoveBuffer={handleRemoveBuffer}
+                  handleConfirmBuffer={handleConfirmBuffer}
+                  handleBufferUnitChange={handleBufferUnitChange}
+                  handleBufferValueChange={handleBufferValueChange}
+                  handleBufferOperationChange={handleBufferOperationChange}
+                />
+              }
+              tooltipPlacement="bottom"
+              tooltipProps={{
+                interactive: true,
+                trigger: 'click',
+                delay: 0,
+                className: styles.bufferContainer,
+                onHide: handleTooltipHide,
+                onShow: handleTooltipShow,
+              }}
             >
-              <p>{t('analysis.print ', 'print')}</p>
-              <Icon icon="print" type="default" />
+              {t('analysis.buffer', 'Buffer Area')}
+              <Icon icon="expand" type="default" />
             </Button>
           </div>
-        </Fragment>
-      ) : (
-        <ReportTitlePlaceholder />
+          <Button
+            type="border-secondary"
+            size="small"
+            className={styles.actionButton}
+            onClick={onPrintClick}
+          >
+            <p>{t('analysis.print ', 'print')}</p>
+            <Icon icon="print" type="default" />
+          </Button>
+        </div>
+      </div>
+      {reportDescription && (
+        <div className={styles.row}>
+          <h2 className={styles.description}>{reportDescription}</h2>
+        </div>
       )}
     </div>
   )
