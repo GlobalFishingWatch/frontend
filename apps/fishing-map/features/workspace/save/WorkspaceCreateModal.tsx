@@ -35,7 +35,6 @@ import { getEditAccessOptionsByViewAccess, getViewAccessOptions } from './worksp
 
 type CreateWorkspaceModalProps = {
   title?: string
-  isOpen: boolean
   onFinish?: (workspace: AppWorkspace) => void
   suggestName?: boolean
 }
@@ -50,12 +49,7 @@ const formatTimerangeBoundary = (
   }).replace(/[.,]/g, '')
 }
 
-function CreateWorkspaceModal({
-  title,
-  isOpen,
-  onFinish,
-  suggestName = true,
-}: CreateWorkspaceModalProps) {
+function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWorkspaceModalProps) {
   const { t, i18n } = useTranslation()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -73,7 +67,8 @@ function CreateWorkspaceModal({
 
   const viewOptions = getViewAccessOptions()
   const editOptions = getEditAccessOptionsByViewAccess(viewAccess)
-  const { dispatchWorkspaceModalOpen } = useSaveWorkspaceModalConnect('createWorkspace')
+  const { workspaceModalOpen, dispatchWorkspaceModalOpen } =
+    useSaveWorkspaceModalConnect('createWorkspace')
 
   const onClose = () => {
     dispatchWorkspaceModalOpen(false)
@@ -104,11 +99,11 @@ function CreateWorkspaceModal({
         setName(workspaceName)
       }
     }
-    if (isOpen) {
+    if (workspaceModalOpen) {
       updateWorkspaceName()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen])
+  }, [workspaceModalOpen])
 
   const getWorkspaceError = () => {
     if (!name) {
@@ -168,7 +163,7 @@ function CreateWorkspaceModal({
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
       title={title || t('workspace.save', 'Save the current workspace')}
-      isOpen={isOpen}
+      isOpen={workspaceModalOpen}
       shouldCloseOnEsc
       contentClassName={styles.modal}
       onClose={onClose}

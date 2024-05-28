@@ -55,6 +55,7 @@ import {
   selectDaysFromLatest,
   selectWorkspaceStatus,
 } from './workspace.selectors'
+import { parseUpsertWorkspace } from './workspace.utils'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
 
@@ -276,11 +277,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     },
   }
 )
-
-const parseUpsertWorkspace = (workspace: AppWorkspace): WorkspaceUpsert<WorkspaceState> => {
-  const { id, ownerId, createdAt, ownerType, viewAccess, editAccess, ...restWorkspace } = workspace
-  return restWorkspace
-}
 
 export type SaveWorkspaceThunkProperties = {
   name: string

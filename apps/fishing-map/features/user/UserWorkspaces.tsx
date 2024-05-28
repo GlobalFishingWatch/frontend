@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
+import { Spinner, IconButton, Modal } from '@globalfishingwatch/ui-components'
 // import TooltipContainer, { TooltipListContainer } from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
@@ -11,36 +11,22 @@ import {
   deleteWorkspaceThunk,
   selectWorkspaceListStatus,
   selectWorkspaceListStatusId,
-  updateWorkspaceThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import useViewport from 'features/map/map-viewport.hooks'
-// import {
-//   selectDefaultWorkspace,
-//   selectWorkspacesByUserGroup,
-// } from 'features/workspaces-list/workspaces-list.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
-import NewWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
-import { cleanCurrentWorkspaceData } from 'features/workspace/workspace.slice'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
+import EditWorkspace from 'features/workspace/save/WorkspaceEdit'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import styles from './User.module.css'
 import { selectUserWorkspaces } from './selectors/user.permissions.selectors'
 
 function UserWorkspaces() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchLocation } = useLocationConnect()
-  // const [workspaceTemplatesOpen, setWorkspaceTemplatesOpen] = useState(false)
-  const [workspaceTemplateSelected, setWorkspaceTemplateSelected] = useState<
-    AppWorkspace | undefined
-  >()
-  // const [workspaceTemplates, setWorkspaceTemplates] = useState<string[] | undefined>()
   const { setMapCoordinates } = useViewport()
-  // const defaultWorkspace = useSelector(selectDefaultWorkspace)
+  const [editWorkspace, setEditWorkspace] = useState<AppWorkspace | undefined>()
   const workspaces = useSelector(selectUserWorkspaces)
-  // const userGroups = useSelector(selectUserGroups)
-  // const workspacesByUserGroup = useSelector(selectWorkspacesByUserGroup)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const workspacesStatusId = useSelector(selectWorkspaceListStatusId)
 
@@ -49,76 +35,6 @@ function UserWorkspaces() {
     workspacesStatus === AsyncReducerStatus.LoadingItem
   const updateLoading = workspacesStatus === AsyncReducerStatus.LoadingUpdate
   const deleteLoading = workspacesStatus === AsyncReducerStatus.LoadingDelete
-
-  const onEditClick = useCallback(
-    async (workspace: AppWorkspace) => {
-      const name = prompt(t('workspace.nameInput', 'Workspace name'), workspace.name)
-      if (name) {
-        await dispatch(updateWorkspaceThunk({ id: workspace.id, name }))
-      }
-    },
-    [dispatch, t]
-  )
-
-  // const createWorkspaceByUserGroup = useCallback(
-  //   (userGroup: string) => {
-  //     const workspaceId = workspacesByUserGroup[userGroup]
-  //     const template = workspaces.find((w) => w?.id === workspaceId) || defaultWorkspace
-  //     setWorkspaceTemplateSelected({
-  //       ...template,
-  //       name: '',
-  //     })
-  //   },
-  //   [defaultWorkspace, workspaces, workspacesByUserGroup]
-  // )
-
-  const closeWorkspaceCreate = useCallback(() => {
-    setWorkspaceTemplateSelected(undefined)
-  }, [])
-
-  const onWorkspaceCreateFinish = useCallback(
-    (workspace: AppWorkspace) => {
-      if (workspace) {
-        closeWorkspaceCreate()
-        dispatch(cleanCurrentWorkspaceData())
-        dispatchLocation(
-          WORKSPACE,
-          {
-            payload: {
-              category: workspace.category || DEFAULT_WORKSPACE_CATEGORY,
-              workspaceId: workspace.id,
-            },
-          },
-          { replaceQuery: true }
-        )
-      }
-    },
-    [closeWorkspaceCreate, dispatch, dispatchLocation]
-  )
-
-  // const onWorkspaceUserGroupClick = useCallback(
-  //   (userGroup: string) => {
-  //     setWorkspaceTemplatesOpen(false)
-  //     createWorkspaceByUserGroup(userGroup)
-  //   },
-  //   [createWorkspaceByUserGroup]
-  // )
-
-  // const onNewWorkspaceClick = useCallback(() => {
-  //   const groupsWithTemplates = userGroups?.filter(
-  //     (group) => workspacesByUserGroup?.[group] !== undefined
-  //   )
-  //   if (!groupsWithTemplates) {
-  //     console.warn('Missing template for user groups', userGroups)
-  //     return
-  //   }
-  //   if (groupsWithTemplates.length === 1) {
-  //     createWorkspaceByUserGroup(groupsWithTemplates[0])
-  //   } else {
-  //     setWorkspaceTemplates(groupsWithTemplates)
-  //     setWorkspaceTemplatesOpen(true)
-  //   }
-  // }, [createWorkspaceByUserGroup, userGroups, workspacesByUserGroup])
 
   const onWorkspaceClick = useCallback(
     (workspace: AppWorkspace) => {
@@ -144,44 +60,26 @@ function UserWorkspaces() {
     [dispatch, t]
   )
 
+  const onClose = () => {
+    setEditWorkspace(undefined)
+  }
+  console.log(editWorkspace)
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
         <label>{t('workspace.title_other', 'Workspaces')}</label>
-        {/* COMMENTED OUT UNTIL WE HAVE THE WORKSPACE GENERATOR */}
-        {/* <TooltipContainer
-          visible={workspaceTemplatesOpen}
-          placement="right"
-          onClickOutside={() => {
-            setWorkspaceTemplatesOpen(false)
-          }}
-          component={
-            <TooltipListContainer>
-              {workspaceTemplates?.map((template) => (
-                <li key={template}>
-                  <button onClick={() => onWorkspaceUserGroupClick(template)}>{template}</button>
-                </li>
-              ))}
-            </TooltipListContainer>
-          }
-        >
-          // Div needed because of https://github.com/atomiks/tippyjs-react#component-children
-          <div>
-            <Button disabled={loading} type="secondary" onClick={onNewWorkspaceClick}>
-              {t('workspace.new', 'New Workspace') as string}
-            </Button>
-          </div>
-        </TooltipContainer> */}
       </div>
-      {workspaceTemplateSelected && (
-        <NewWorkspaceModal
-          title={t('workspace.new', 'New workspace')}
-          isOpen={workspaceTemplateSelected !== undefined}
-          onClose={closeWorkspaceCreate}
-          onFinish={onWorkspaceCreateFinish}
-          workspace={workspaceTemplateSelected}
-          suggestName={false}
-        />
+      {editWorkspace && (
+        <Modal
+          appSelector={ROOT_DOM_ELEMENT}
+          title={t('workspace.edit', 'Edit workspace')}
+          isOpen
+          shouldCloseOnEsc
+          contentClassName={styles.modal}
+          onClose={onClose}
+        >
+          <EditWorkspace workspace={editWorkspace} isWorkspaceList onFinish={onClose} />
+        </Modal>
       )}
       {loading ? (
         <div className={styles.placeholder}>
@@ -214,7 +112,7 @@ function UserWorkspaces() {
                     icon="edit"
                     loading={workspace.id === workspacesStatusId && updateLoading}
                     tooltip={t('workspace.editName', 'Edit workspace name')}
-                    onClick={() => onEditClick(workspace)}
+                    onClick={() => setEditWorkspace(workspace)}
                   />
                   <IconButton
                     icon="delete"
