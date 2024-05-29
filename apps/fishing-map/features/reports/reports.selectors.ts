@@ -187,6 +187,7 @@ export const selectReportVesselsList = createSelector(
             property: 'vesselType',
           }),
           hours: vesselActivity[0]?.hours,
+          detections: vesselActivity[0]?.detections,
           infoDataset,
           trackDataset,
           sourceColor: vesselActivity[0]?.sourceColor,
