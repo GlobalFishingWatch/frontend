@@ -8,7 +8,11 @@ module.exports = {
   // Indentation of the catalog files
   indentation: 2,
   // Keep keys from the catalog that are no longer in code
-  keepRemoved: false,
+  keepRemoved: true,
+  // Plural separator used in your translation keys
+  // If you want to use plain english keys, separators such as `_` might conflict. You might want to set `pluralSeparator` to a different string that does not occur in your keys.
+  // If you don't want to generate keys for plurals (for example, in case you are using ICU format), set `pluralSeparator: false`.
+  pluralSeparator: '_',
   // Key separator used in your translation keys
   // If you want to use plain english keys, separators such as `.` and `:` will conflict. You might want to set `keySeparator: false` and `namespaceSeparator: false`. That way, `t('Status: Loading...')` will not think that there are a namespace and three separator dots for instance.
   keySeparator: '.',
@@ -50,4 +54,7 @@ module.exports = {
   },
   // Display info about the parsing including some stats
   verbose: true,
+  i18nextOptions: {
+    compatibilityJSON: "v4"
+  }
 }
