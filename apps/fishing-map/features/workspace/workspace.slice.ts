@@ -309,9 +309,8 @@ export const saveWorkspaceThunk = createAsyncThunk(
       editAccess,
       password,
     } = properties
-    debugger
+
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
-      debugger
       let workspaceUpdated
       if (tries < 2) {
         try {

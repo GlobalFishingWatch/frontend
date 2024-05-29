@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import {
-  InputText,
-  Button,
-  Modal,
-  SwitchRow,
-  Select,
-  SelectOption,
-} from '@globalfishingwatch/ui-components'
+import { InputText, Button, Modal, Select, SelectOption } from '@globalfishingwatch/ui-components'
 import { getOceanAreaName, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import {
   WORKSPACE_PASSWORD_ACCESS,
@@ -51,11 +44,6 @@ const formatTimerangeBoundary = (
 
 function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWorkspaceModalProps) {
   const { t, i18n } = useTranslation()
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(WORKSPACE_PUBLIC_ACCESS)
-  const [editAccess, setEditAccess] = useState<WorkspaceEditAccessType>(WORKSPACE_PRIVATE_ACCESS)
-  const [password, setPassword] = useState<string>('')
   const [error, setError] = useState('')
   const [createLoading, setCreateLoading] = useState(false)
   const dispatch = useAppDispatch()
@@ -65,6 +53,14 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
   const workspace = useSelector(selectWorkspaceWithCurrentState)
   const containsPrivateDatasets = privateDatasets.length > 0
 
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(
+    containsPrivateDatasets ? WORKSPACE_PRIVATE_ACCESS : WORKSPACE_PUBLIC_ACCESS
+  )
+  const [editAccess, setEditAccess] = useState<WorkspaceEditAccessType>(WORKSPACE_PRIVATE_ACCESS)
+  const [password, setPassword] = useState<string>('')
+
   const viewOptions = getViewAccessOptions()
   const editOptions = getEditAccessOptionsByViewAccess(viewAccess)
   const { workspaceModalOpen, dispatchWorkspaceModalOpen } =
@@ -73,8 +69,6 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
   const onClose = () => {
     dispatchWorkspaceModalOpen(false)
   }
-
-  const [createAsPublic, setCreateAsPublic] = useState(!containsPrivateDatasets)
 
   useEffect(() => {
     const updateWorkspaceName = async () => {
@@ -131,7 +125,7 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
         description,
         viewAccess,
         editAccess,
-        createAsPublic,
+        createAsPublic: viewAccess !== WORKSPACE_PRIVATE_ACCESS,
         password,
       }
       const dispatchedAction = await dispatch(saveWorkspaceThunk({ workspace, properties }))
@@ -189,6 +183,15 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
             options={viewOptions}
             direction="top"
             label={t('workspace.viewAccess', 'View access')}
+            disabled={containsPrivateDatasets}
+            infoTooltip={
+              containsPrivateDatasets
+                ? `${t(
+                    'workspace.uploadPublicDisabled',
+                    "This workspace can't be shared publicly because it contains private datasets"
+                  )}: ${privateDatasets.join(', ')}`
+                : ''
+            }
             containerClassName={styles.select}
             onSelect={(option: SelectOption<WorkspaceViewAccessType>) => setViewAccess(option.id)}
             selectedOption={viewOptions.find((o) => o.id === viewAccess) || viewOptions[0]}
@@ -228,20 +231,6 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
             />
           )}
         </div>
-        <SwitchRow
-          label={t('workspace.uploadPublic', 'Allow other users to see this workspace')}
-          active={createAsPublic}
-          disabled={containsPrivateDatasets}
-          tooltip={
-            containsPrivateDatasets
-              ? `${t(
-                  'workspace.uploadPublicDisabled',
-                  "This workspace can't be shared publicly because it contains private datasets"
-                )}: ${privateDatasets.join(', ')}`
-              : ''
-          }
-          onClick={() => setCreateAsPublic(!createAsPublic)}
-        />
         <div className={styles.footer}>
           {error && <p className={styles.error}>{error}</p>}
           <Button

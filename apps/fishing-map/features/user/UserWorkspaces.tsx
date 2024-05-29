@@ -63,7 +63,7 @@ function UserWorkspaces() {
   const onClose = () => {
     setEditWorkspace(undefined)
   }
-  console.log(editWorkspace)
+
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>

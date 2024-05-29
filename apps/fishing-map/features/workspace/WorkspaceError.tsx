@@ -5,6 +5,7 @@ import { Button, InputText } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { Workspace } from '@globalfishingwatch/api-types'
 import {
+  selectWorkspace,
   selectWorkspaceError,
   selectWorkspacePassword,
 } from 'features/workspace/workspace.selectors'
@@ -19,7 +20,7 @@ import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import styles from './Workspace.module.css'
 import { fetchWorkspaceThunk, setWorkspacePassword } from './workspace.slice'
-import { MIN_WORKSPACE_PASSWORD_LENGTH } from './workspace.utils'
+import { MIN_WORKSPACE_PASSWORD_LENGTH, isPrivateWorkspaceNotAllowed } from './workspace.utils'
 
 export function ErrorPlaceHolder({
   title,
@@ -91,7 +92,12 @@ function WorkspaceError(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const workspaceId = useSelector(selectWorkspaceId)
-  if (isAuthError(error) || isAuthError(vesselGroupsError)) {
+  const workspace = useSelector(selectWorkspace)
+  if (
+    isAuthError(error) ||
+    isAuthError(vesselGroupsError) ||
+    isPrivateWorkspaceNotAllowed(workspace)
+  ) {
     return (
       <WorkspaceLoginError
         title={t('errors.privateView', 'This is a private view')}

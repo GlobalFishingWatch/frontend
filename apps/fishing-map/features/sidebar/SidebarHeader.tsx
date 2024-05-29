@@ -61,6 +61,7 @@ import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
+import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
@@ -97,7 +98,11 @@ function SaveReportButton() {
     }
   }
 
-  if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
+  if (
+    !workspace ||
+    isPrivateWorkspaceNotAllowed(workspace) ||
+    workspaceStatus === AsyncReducerStatus.Loading
+  ) {
     return null
   }
 
@@ -167,7 +172,11 @@ function SaveWorkspaceButton() {
     dispatch(setModalOpen({ id: 'createWorkspace', open: false }))
   }
 
-  if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
+  if (
+    !workspace ||
+    isPrivateWorkspaceNotAllowed(workspace) ||
+    workspaceStatus === AsyncReducerStatus.Loading
+  ) {
     return null
   }
 

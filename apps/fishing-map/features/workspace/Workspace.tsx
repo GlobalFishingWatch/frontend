@@ -26,7 +26,7 @@ import {
   selectWorkspaceVesselGroupsStatus,
 } from 'features/vessel-groups/vessel-groups.slice'
 import WorkspaceError, { WorkspacePassword } from 'features/workspace/WorkspaceError'
-import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
+import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import UserSection from 'features/workspace/user/UserSection'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -131,6 +131,7 @@ function Workspace() {
   }
 
   if (
+    isPrivateWorkspaceNotAllowed(workspace) ||
     workspaceStatus === AsyncReducerStatus.Error ||
     workspaceVesselGroupsStatus === AsyncReducerStatus.Error
   ) {

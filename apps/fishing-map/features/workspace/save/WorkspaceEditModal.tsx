@@ -19,7 +19,6 @@ function EditWorkspaceModal({ title }: EditWorkspaceModalProps) {
 
   const { workspaceModalOpen, dispatchWorkspaceModalOpen } =
     useSaveWorkspaceModalConnect('editWorkspace')
-  console.log('🚀 ~ EditWorkspaceModal ~ workspaceModalOpen:', workspaceModalOpen)
 
   const onClose = () => {
     dispatchWorkspaceModalOpen(false)
