@@ -1,11 +1,12 @@
 import { FeatureCollection, Geometry } from 'geojson'
 import { OceanAreaProperties } from '../ocean-areas'
-import areas from './areas'
+import oceans from './oceans'
+import eezs from './eezs'
 import mpas from './mpas'
 
 const geometries: FeatureCollection<Geometry, OceanAreaProperties> = {
   type: 'FeatureCollection',
-  features: [...areas.features, ...mpas.features],
+  features: [...oceans.features, ...eezs.features, ...mpas.features],
 }
 
 export default geometries

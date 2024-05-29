@@ -4,8 +4,10 @@
   "main": "./index.cjs",
   "module": "./index.js",
   "scripts": {
-    "mpas": "ts-node -P tsconfig.node.json src/scripts/mpas.ts",
-    "locales": "ts-node -P tsconfig.node.json src/scripts/names.ts"
+    "mpas": "ts-node -P tsconfig.json src/scripts/mpas.ts",
+    "eezs": "ts-node -P tsconfig.json src/scripts/eezs.ts",
+    "prepare": "yarn mpas && yarn eezs && yarn locales",
+    "locales": "ts-node -P tsconfig.json src/scripts/names.ts"
   },
   "dependencies": {
     "@turf/bbox": "6.x",
@@ -17,5 +19,11 @@
     "geojson": "0.x",
     "lodash": "4.x",
     "match-sorter": "6.x"
+  },
+  "devDependencies": {
+    "@types/lodash": "4.x",
+    "@types/node": "20.x",
+    "ts-node": "10.x",
+    "typescript": "5.x"
   }
 }

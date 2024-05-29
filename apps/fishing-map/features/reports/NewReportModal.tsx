@@ -31,6 +31,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   const privateDatasets = useSelector(selectPrivateDatasetsInWorkspace)
 
   const [name, setName] = useState(report?.name || reportArea?.name || '')
+  const [description, setDescription] = useState(report?.description || '')
   const [error, setError] = useState('')
   const [createAsPublic, setCreateAsPublic] = useState(true)
   const [loading, setLoading] = useState(false)
@@ -41,7 +42,9 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   const updateReport = async () => {
     if (report) {
       setLoading(true)
-      const dispatchedAction = await dispatch(updateReportThunk({ ...report, name, workspace }))
+      const dispatchedAction = await dispatch(
+        updateReportThunk({ ...report, name, description, workspace })
+      )
       if (updateReportThunk.fulfilled.match(dispatchedAction)) {
         trackEvent({
           category: TrackCategory.WorkspaceManagement,
@@ -111,6 +114,12 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         className={styles.input}
         onChange={(e) => setName(e.target.value)}
         autoFocus
+      />
+      <InputText
+        value={description}
+        label={t('common.description', 'Description')}
+        className={styles.input}
+        onChange={(e) => setDescription(e.target.value)}
       />
       {!report?.id && (
         <SwitchRow

@@ -54,6 +54,7 @@
     "searchHelp": "Use commas to search by multiple fields, '|' to include one query or another and '-' before a search term to exclude vessels.",
     "searchHelpExamples": "e.g. \"flag:china, gear:trawlers\", \"-spain\", \"cargo|passenger\"...",
     "searchPlaceholder": "Filter vessels by name, MMSI, flag or gear type",
+    "see": "See report",
     "share": "Share report",
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
