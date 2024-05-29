@@ -54,6 +54,7 @@
     "searchHelp": "Gunakan tanda koma untuk mencari dengan beberapa bidang, \"|\" untuk menyertakan satu kueri atau yang lain, dan \"-\" sebelum istilah pencarian untuk mengecualikan kapal.",
     "searchHelpExamples": "mis. \"bendera:tiongkok, penangkap:pukat\", \"-spanyol\", \"kargo|penumpang\"...",
     "searchPlaceholder": "Filter kapal berdasarkan nama, MMSI, bendera, atau jenis penangkap",
+    "see": "See report",
     "share": "Bagikan laporan",
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
