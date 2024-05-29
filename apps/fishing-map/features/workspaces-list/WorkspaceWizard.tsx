@@ -163,7 +163,7 @@ function WorkspaceWizard() {
   }, [viewport, map, selectedItem])
 
   const linkToReport = useMemo(() => {
-    if (!selectedItem) {
+    if (!selectedItem || selectedItem?.properties?.type === 'ocean') {
       return null
     }
     const dataview = dataviews.find((d) =>
