@@ -2,6 +2,10 @@ div.modal {
   height: auto;
 }
 
+div.modalContentWrapper {
+  max-width: 84rem;
+}
+
 .row {
   display: flex;
   align-items: center;

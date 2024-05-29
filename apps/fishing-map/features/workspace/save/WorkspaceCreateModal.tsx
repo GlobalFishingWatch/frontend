@@ -165,6 +165,7 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
       title={title || t('workspace.save', 'Save the current workspace')}
       isOpen={workspaceModalOpen}
       shouldCloseOnEsc
+      className={styles.modalContentWrapper}
       contentClassName={styles.modal}
       onClose={onClose}
     >
