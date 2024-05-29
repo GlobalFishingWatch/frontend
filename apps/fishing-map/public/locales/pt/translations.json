@@ -54,6 +54,7 @@
     "searchHelp": "Use vírgulas para pesquisar por vários campos, \"|\" para incluir uma consulta ou outra e \"-\" antes de um termo de pesquisa para excluir embarcações.",
     "searchHelpExamples": "ex: \"bandeira:china, petrecho:arrastões\", \"-espanha\", \"carga|passageiro\"...",
     "searchPlaceholder": "Filtre embarcações por nome, MMSI, bandeira ou tipo de petrecho",
+    "see": "See report",
     "share": "Compartilhar relatório",
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
