@@ -54,6 +54,7 @@
     "searchHelp": "Utilisez des virgules pour effectuer une recherche sur plusieurs champs, '|' pour inclure une requête ou une autre et '-' avant un terme de recherche pour exclure des navires.",
     "searchHelpExamples": "par exemple \"pavillon:chine, engin:chalutier\", \"-espagne\", \"fret|passager\"...",
     "searchPlaceholder": "Filtrer les navires par nom, MMSI, pavillon ou type d'engin",
+    "see": "See report",
     "share": "Partager le rapport",
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
