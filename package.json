@@ -11,6 +11,9 @@
     "affected:libs": "nx show projects --affected --base=origin/develop~1 --exclude='apps/*' --plain > affected-libs.txt",
     "prepare": "husky"
   },
+  "workspaces": [
+    "apps/fishing-map"
+  ],
   "dependencies": {
     "@deck.gl/core": "^8.9.34",
     "@deck.gl/extensions": "^8.9.34",
