@@ -5,6 +5,7 @@ import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 import { Spinner, Button, IconButton, Modal, InputText } from '@globalfishingwatch/ui-components'
+import { WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectWorkspaceStatus, selectWorkspace } from 'features/workspace/workspace.selectors'
@@ -24,8 +25,8 @@ import {
   fetchWorkspaceVesselGroupsThunk,
   selectWorkspaceVesselGroupsStatus,
 } from 'features/vessel-groups/vessel-groups.slice'
-import WorkspaceError from 'features/workspace/WorkspaceError'
-import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
+import WorkspaceError, { WorkspacePassword } from 'features/workspace/WorkspaceError'
+import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import UserSection from 'features/workspace/user/UserSection'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -122,6 +123,15 @@ function Workspace() {
   }
 
   if (
+    workspace?.viewAccess === WORKSPACE_PASSWORD_ACCESS &&
+    // When password required dataviewInstances are not sent
+    !workspace?.dataviewInstances.length
+  ) {
+    return <WorkspacePassword />
+  }
+
+  if (
+    isPrivateWorkspaceNotAllowed(workspace) ||
     workspaceStatus === AsyncReducerStatus.Error ||
     workspaceVesselGroupsStatus === AsyncReducerStatus.Error
   ) {

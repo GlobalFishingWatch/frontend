@@ -19,6 +19,7 @@ import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { WorkspaceState } from 'types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
+import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 
 export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategory>
 
@@ -158,8 +159,8 @@ export const createWorkspaceThunk = createAsyncThunk<
 )
 
 export const updateWorkspaceThunk = createAsyncThunk<
-  Workspace,
-  Partial<Workspace>,
+  AppWorkspace,
+  Partial<AppWorkspace> & { id: string; password?: string },
   {
     rejectValue: AsyncError
   }
@@ -167,10 +168,15 @@ export const updateWorkspaceThunk = createAsyncThunk<
   'workspaces/update',
   async (workspace, { rejectWithValue }) => {
     try {
-      const { id, ...rest } = workspace
-      const updatedWorkspace = await GFWAPI.fetch<Workspace>(`/workspaces/${id}`, {
+      const { id, password, ...rest } = workspace
+      const updatedWorkspace = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${id}`, {
         method: 'PATCH',
-        body: rest as any,
+        body: parseUpsertWorkspace(rest as AppWorkspace) as any,
+        ...(password && {
+          headers: {
+            'x-workspace-password': password,
+          },
+        }),
       })
       return updatedWorkspace
     } catch (e: any) {

@@ -73,7 +73,7 @@ function Search() {
   const { fetchResults, fetchMoreResults } = useFetchSearchResults()
 
   useEffect(() => {
-    dispatch(fetchWorkspaceThunk(urlWorkspaceId))
+    dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId }))
   }, [dispatch, urlWorkspaceId])
 
   useEffect(() => {

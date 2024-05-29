@@ -1,8 +1,14 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { InputText, Button, Modal, SwitchRow } from '@globalfishingwatch/ui-components'
-import { Report } from '@globalfishingwatch/api-types'
+import { InputText, Button, Modal, Select, SelectOption } from '@globalfishingwatch/ui-components'
+import {
+  Report,
+  WORKSPACE_PASSWORD_ACCESS,
+  WORKSPACE_PRIVATE_ACCESS,
+  WORKSPACE_PUBLIC_ACCESS,
+  WorkspaceViewAccessType,
+} from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
@@ -12,6 +18,7 @@ import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/d
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { AsyncError } from 'utils/async-slice'
+import { getViewAccessOptions } from 'features/workspace/save/workspace-access.utils'
 import styles from './NewReportModal.module.css'
 
 type NewReportModalProps = {
@@ -29,14 +36,18 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   const reportArea = useSelector(selectDatasetAreaDetail(reportAreaIds))
   const workspace = useSelector(selectWorkspaceWithCurrentState)
   const privateDatasets = useSelector(selectPrivateDatasetsInWorkspace)
+  const containsPrivateDatasets = privateDatasets.length > 0
 
   const [name, setName] = useState(report?.name || reportArea?.name || '')
   const [description, setDescription] = useState(report?.description || '')
   const [error, setError] = useState('')
-  const [createAsPublic, setCreateAsPublic] = useState(true)
+
+  const viewOptions = getViewAccessOptions().filter((o) => o.id !== WORKSPACE_PASSWORD_ACCESS)
+  const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(
+    containsPrivateDatasets ? WORKSPACE_PRIVATE_ACCESS : WORKSPACE_PUBLIC_ACCESS
+  )
   const [loading, setLoading] = useState(false)
 
-  const containsPrivateDatasets = privateDatasets.length > 0
   const isEditing = report?.id !== undefined
 
   const updateReport = async () => {
@@ -73,7 +84,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
           datasetId: reportAreaIds?.datasetId,
           areaId: reportAreaIds?.areaId?.toString(),
           workspace: workspaceProperties,
-          public: createAsPublic,
+          public: viewAccess === WORKSPACE_PUBLIC_ACCESS,
         })
       )
       if (createReportThunk.fulfilled.match(dispatchedAction)) {
@@ -102,7 +113,11 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={title || t('analysis.saveTitle', 'Save the current report')}
+      title={
+        report?.id
+          ? t('analysis.editTitle', 'Edit report')
+          : t('analysis.saveTitle', 'Save the current report')
+      }
       isOpen={isOpen}
       shouldCloseOnEsc
       contentClassName={styles.modal}
@@ -122,19 +137,22 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         onChange={(e) => setDescription(e.target.value)}
       />
       {!report?.id && (
-        <SwitchRow
-          label={t('analysis.savePublic', 'Allow other users to see this report')}
-          active={createAsPublic}
+        <Select
+          options={viewOptions}
+          direction="top"
+          label={t('workspace.viewAccess', 'View access')}
           disabled={containsPrivateDatasets}
-          tooltip={
+          infoTooltip={
             containsPrivateDatasets
               ? `${t(
-                  'analysis.savePublicDisabled',
-                  "This reoport can't be shared publicly because it contains private datasets"
+                  'workspace.uploadPublicDisabled',
+                  "This workspace can't be shared publicly because it contains private datasets"
                 )}: ${privateDatasets.join(', ')}`
               : ''
           }
-          onClick={() => setCreateAsPublic(!createAsPublic)}
+          containerClassName={styles.select}
+          onSelect={(option: SelectOption<WorkspaceViewAccessType>) => setViewAccess(option.id)}
+          selectedOption={viewOptions.find((o) => o.id === viewAccess) || viewOptions[0]}
         />
       )}
       <div className={styles.footer}>

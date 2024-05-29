@@ -2,10 +2,15 @@ import { createSelector } from '@reduxjs/toolkit'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE } from 'data/config'
 import { selectQueryParam } from 'routes/routes.selectors'
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+import {
+  DEFAULT_BASEMAP_DATAVIEW_INSTANCE,
+  DEFAULT_WORKSPACE_CATEGORY,
+  DEFAULT_WORKSPACE_ID,
+} from 'data/workspaces'
 import { RootState } from 'store'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
+export const selectWorkspacePassword = (state: RootState) => state.workspace?.password
 export const selectWorkspaceError = (state: RootState) => state.workspace?.error
 export const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
 export const selectLastVisitedWorkspace = (state: RootState) => state.workspace?.lastVisited
@@ -21,6 +26,10 @@ export const selectCurrentWorkspaceCategory = createSelector([selectWorkspace], 
 
 export const selectIsGFWWorkspace = createSelector([selectWorkspace], (workspace) => {
   return workspace?.ownerType === 'super-user'
+})
+
+export const selectIsDefaultWorkspace = createSelector([selectWorkspace], (workspace) => {
+  return workspace?.id === DEFAULT_WORKSPACE_ID
 })
 
 export const selectWorkspaceViewport = createSelector([selectWorkspace], (workspace) => {

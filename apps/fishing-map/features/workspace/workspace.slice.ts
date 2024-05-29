@@ -10,6 +10,8 @@ import {
   Dataset,
   DatasetTypes,
   DatasetCategory,
+  WorkspaceEditAccessType,
+  WorkspaceViewAccessType,
 } from '@globalfishingwatch/api-types'
 import { GFWAPI, FetchOptions, parseAPIError } from '@globalfishingwatch/api-client'
 import {
@@ -53,6 +55,7 @@ import {
   selectDaysFromLatest,
   selectWorkspaceStatus,
 } from './workspace.selectors'
+import { parseUpsertWorkspace } from './workspace.utils'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
 
@@ -62,6 +65,7 @@ interface WorkspaceSliceState {
   customStatus: AsyncReducerStatus
   error: AsyncError
   data: Workspace<WorkspaceState> | null
+  password: string
   lastVisited: LastWorkspaceVisited | undefined
 }
 
@@ -70,6 +74,7 @@ const initialState: WorkspaceSliceState = {
   customStatus: AsyncReducerStatus.Idle,
   error: {},
   data: null,
+  password: '',
   lastVisited: undefined,
 }
 
@@ -86,9 +91,17 @@ export const getDefaultWorkspace = () => {
   return workspace as Promise<AppWorkspace>
 }
 
+export type FetchWorkspacesThunkParams = {
+  workspaceId: string
+  password?: string
+}
+
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
-  async (workspaceId: string, { signal, dispatch, getState, rejectWithValue }: any) => {
+  async (
+    { workspaceId, password }: FetchWorkspacesThunkParams,
+    { signal, dispatch, getState, rejectWithValue }: any
+  ) => {
     const state = getState() as any
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
@@ -120,6 +133,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
         workspace = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
           signal,
+          ...(password && {
+            headers: {
+              'x-workspace-password': password,
+            },
+          }),
         })
       }
       if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
@@ -247,7 +265,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     }
   },
   {
-    condition: (workspaceId, { getState }) => {
+    condition: ({ workspaceId }, { getState }) => {
       const rootState = getState() as any
       if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
         const currentWorkspaceId = selectCurrentWorkspaceId(rootState)
@@ -260,27 +278,37 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   }
 )
 
-const parseUpsertWorkspace = (workspace: AppWorkspace): WorkspaceUpsert<WorkspaceState> => {
-  const { id, ownerId, createdAt, ownerType, ...restWorkspace } = workspace
-  return restWorkspace
+export type SaveWorkspaceThunkProperties = {
+  name: string
+  description?: string
+  password?: string
+  createAsPublic: boolean
+  viewAccess: WorkspaceViewAccessType
+  editAccess: WorkspaceEditAccessType
 }
 
 export const saveWorkspaceThunk = createAsyncThunk(
   'workspace/saveCurrent',
   async (
     {
-      name: defaultName,
-      createAsPublic,
+      properties,
       workspace,
     }: {
-      name: string
-      createAsPublic: boolean
+      properties: SaveWorkspaceThunkProperties
       workspace: AppWorkspace
     },
     { dispatch, getState }
   ) => {
     const state = getState() as any
     const workspaceUpsert = parseUpsertWorkspace(workspace)
+    const {
+      name: defaultName,
+      description = '',
+      createAsPublic,
+      viewAccess,
+      editAccess,
+      password,
+    } = properties
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
       let workspaceUpdated
@@ -292,6 +320,10 @@ export const saveWorkspaceThunk = createAsyncThunk(
             body: {
               ...workspaceUpsert,
               name,
+              description,
+              viewAccess,
+              editAccess,
+              password,
               public: createAsPublic,
             },
           } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
@@ -328,20 +360,30 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
 export const updatedCurrentWorkspaceThunk = createAsyncThunk<
   AppWorkspace,
-  AppWorkspace,
+  AppWorkspace & { password?: string },
   {
     dispatch: AppDispatch
   }
->('workspace/updatedCurrent', async (workspace: AppWorkspace, { dispatch }) => {
-  const workspaceUpsert = parseUpsertWorkspace(workspace)
-  const workspaceUpdated = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${workspace.id}`, {
-    method: 'PATCH',
-    body: workspaceUpsert,
-  } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
-  if (workspaceUpdated) {
-    dispatch(cleanQueryLocation())
+>('workspace/updatedCurrent', async (workspaceWithPassword, { dispatch, rejectWithValue }) => {
+  try {
+    const { password, ...workspace } = workspaceWithPassword
+    const workspaceUpsert = parseUpsertWorkspace(workspace)
+    const workspaceUpdated = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${workspace.id}`, {
+      method: 'PATCH',
+      body: workspaceUpsert,
+      ...(password && {
+        headers: {
+          'x-workspace-password': password,
+        },
+      }),
+    } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
+    if (workspaceUpdated) {
+      dispatch(cleanQueryLocation())
+    }
+    return workspaceUpdated
+  } catch (e: any) {
+    return rejectWithValue({ error: parseAPIError(e) })
   }
-  return workspaceUpdated
 })
 
 const workspaceSlice = createSlice({
@@ -357,9 +399,13 @@ const workspaceSlice = createSlice({
         ;(state.data as any)[key] = value
       }
     },
+    setWorkspacePassword: (state, action: PayloadAction<string>) => {
+      state.password = action.payload
+    },
     resetWorkspaceSlice: (state) => {
       state.status = initialState.status
       state.customStatus = initialState.customStatus
+      state.password = initialState.password
       state.data = initialState.data
       state.error = initialState.error
     },
@@ -439,6 +485,7 @@ const workspaceSlice = createSlice({
 
 export const {
   setWorkspaceProperty,
+  setWorkspacePassword,
   resetWorkspaceSlice,
   setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,
