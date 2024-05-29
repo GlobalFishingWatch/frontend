@@ -7,6 +7,7 @@ export type ReportVessel = {
   flag: string
   geartype: string
   hours: number
+  detections?: number
   imo: string
   lastTransmissionDate: string
   lat: string
