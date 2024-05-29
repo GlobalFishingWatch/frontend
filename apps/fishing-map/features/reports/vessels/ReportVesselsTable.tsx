@@ -38,7 +38,6 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
     dataviews,
     userData?.permissions || []
   )
-  const activityUnitVessel = activityUnit === 'hour' ? 'hours' : 'detections'
 
   const onFilterClick = (reportVesselFilter: any) => {
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
@@ -157,7 +156,7 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   {type}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
-                  <I18nNumber number={vessel[activityUnitVessel] || vessel.hours} />
+                  <I18nNumber number={vessel.value} />
                 </div>
               </Fragment>
             )
