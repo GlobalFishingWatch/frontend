@@ -62,7 +62,7 @@ function ReportEnvironment() {
             {!loading && min && mean && max && (
               <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
                 {isDynamic
-                  ? t('analysis.statsDisclaimerDinamic', {
+                  ? t('analysis.statsDisclaimerDynamic', {
                       defaultValue:
                         'During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.',
                       interval: t(`common.${interval.toLowerCase()}s`, { count: 1 }).toLowerCase(),
