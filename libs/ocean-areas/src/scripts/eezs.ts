@@ -3,6 +3,8 @@ import path from 'path'
 import { uniqBy } from 'lodash'
 import eezData from '../data/source/eezs.json'
 import eezGFW from '../data/source/eezs-gfw.json'
+// EEZs manual prepared data that doesn't match names between GFW and Natural Earth
+import eezManual from '../data/source/eezs-manual.json'
 
 async function start() {
   try {
@@ -22,18 +24,19 @@ async function start() {
       }),
       'properties.name'
     )
+    const allEezData = [...eezManual, ...eezs]
     const eezsAreasString = `
     import { FeatureCollection } from 'geojson'
     import { OceanAreaProperties } from '../ocean-areas'
 
     const eezsAreas: FeatureCollection<any, OceanAreaProperties> = {
       type: 'FeatureCollection',
-      features: ${JSON.stringify(eezs)},
+      features: ${JSON.stringify(allEezData)},
     }
     export default eezsAreas
     `
     await fs.writeFile(path.resolve(__dirname, '../data/eezs.ts'), eezsAreasString)
-    console.log(`✅ ${eezs.length} EEZs`)
+    console.log(`✅ ${allEezData.length} EEZs`)
   } catch (e) {
     console.error(e)
   }

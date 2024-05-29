@@ -25,7 +25,7 @@ async function start() {
       }),
       'properties.name'
     )
-    console.log(mpas.length, 'MPAs')
+
     const mpasAreasString = `
     import { FeatureCollection } from 'geojson'
     import { OceanAreaProperties } from '../ocean-areas'
