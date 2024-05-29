@@ -1,27 +1,31 @@
 import fs from 'fs/promises'
 import path from 'path'
 import { uniqBy } from 'lodash'
-import mpaData from '../data/source/top1000mpa.json'
-import manualUpdates from '../data/source/manual-updates.json'
+import mpasData from '../data/source/mpas-top1000.json'
+import mpasGFW from '../data/source/mpas-gfw.json'
+import manualUpdates from '../data/source/mpas-manual.json'
 
-const features = [...mpaData.features, ...manualUpdates.features]
+const features = [...mpasData.features, ...manualUpdates.features]
 
 async function start() {
   try {
     const mpas = uniqBy(
-      features.map((f) => {
+      features.flatMap((f) => {
+        const area = mpasGFW.find((gfw) => gfw.NAME === f.properties.NAME)?.id
+        if (!area) return []
         return {
           type: 'Feature',
           geometry: f.geometry,
           properties: {
             name: f.properties.NAME,
             type: 'mpa',
-            area: Math.round(f.properties.GIS_AREA),
+            area: parseInt(area),
           },
         }
       }),
       'properties.name'
     )
+    console.log(mpas.length, 'MPAs')
     const mpasAreasString = `
     import { FeatureCollection } from 'geojson'
     import { OceanAreaProperties } from '../ocean-areas'
@@ -33,7 +37,7 @@ async function start() {
     export default mpasAreas
     `
     await fs.writeFile(path.resolve(__dirname, '../data/mpas.ts'), mpasAreasString)
-    console.log('✅')
+    console.log(`✅ ${mpas.length} MPAs`)
   } catch (e) {
     console.error(e)
   }
