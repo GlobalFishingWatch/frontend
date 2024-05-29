@@ -50,6 +50,8 @@ import { selectReportVesselsData, selectReportPreviewBuffer } from './report.sli
 const EMPTY_ARRAY: [] = []
 
 export type ReportVesselWithMeta = ReportVessel & {
+  // Merging detections or hours depending on the activity unit into the same property
+  value: number
   sourceColor: string
   activityDatasetId: string
   category: ReportCategory
@@ -58,9 +60,9 @@ export type ReportVesselWithMeta = ReportVessel & {
   flagTranslatedClean: string
 }
 
-export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName' | 'hours'> &
+export type ReportVesselWithDatasets = Pick<ReportVessel, 'vesselId' | 'shipName'> &
   Partial<ReportVessel> &
-  Pick<ReportVesselWithMeta, 'sourceColor'> & {
+  Pick<ReportVesselWithMeta, 'sourceColor' | 'value'> & {
     infoDataset?: Dataset
     trackDataset?: Dataset
     dataviewId?: string
@@ -108,12 +110,13 @@ export const selectReportAreaIds = createSelector(
 )
 
 export const selectReportActivityFlatten = createSelector(
-  [selectReportVesselsData, selectReportDataviewsWithPermissions],
-  (reportDatasets, dataviews) => {
+  [selectReportVesselsData, selectAllDatasets, selectReportDataviewsWithPermissions],
+  (reportDatasets, datasets, dataviews) => {
     if (!dataviews?.length || !reportDatasets?.length) return null
 
     return reportDatasets.flatMap((dataset, index) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
+        const activityDataset = datasets.find((d) => d.id === datasetId)
         const dataview = dataviews[index]
         if (!dataview) {
           console.warn('Missing dataview for report dataset:', dataset)
@@ -122,6 +125,8 @@ export const selectReportActivityFlatten = createSelector(
         return (vessels || ([] as any)).flatMap((vessel) => {
           return {
             ...vessel,
+            // Using hours as fallback to keep compatibility with old datasets
+            value: (vessel as any)?.[activityDataset?.unit as any] || vessel?.hours,
             shipName: EMPTY_API_VALUES.includes(vessel.shipName)
               ? t('common.unknownVessel', 'Unknown Vessel')
               : vessel.shipName,
@@ -147,7 +152,7 @@ export const selectReportVesselsNumber = createSelector(
 
 export const selectReportVesselsHours = createSelector([selectReportActivityFlatten], (vessels) => {
   if (!vessels?.length) return null
-  return vessels.map((vessel) => vessel?.hours || 0).reduce((acc, hours) => acc + hours, 0)
+  return vessels.map((vessel) => vessel?.value || 0).reduce((acc, value) => acc + value, 0)
 })
 
 export const selectReportVesselsList = createSelector(
@@ -186,14 +191,13 @@ export const selectReportVesselsList = createSelector(
             value: vesselActivity[0]?.vesselType,
             property: 'vesselType',
           }),
-          hours: vesselActivity[0]?.hours,
-          detections: vesselActivity[0]?.detections,
+          value: vesselActivity[0]?.value,
           infoDataset,
           trackDataset,
           sourceColor: vesselActivity[0]?.sourceColor,
         } as ReportVesselWithDatasets
       })
-      .sort((a, b) => (b.hours as number) - (a.hours as number))
+      .sort((a, b) => (b.value as number) - (a.value as number))
   }
 )
 
@@ -210,7 +214,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
       .map((vesselActivity) => {
         return {
           ...vesselActivity[0],
-          hours: sumBy(vesselActivity, 'hours'),
+          value: sumBy(vesselActivity, 'value'),
           flagTranslated: t(
             `flags:${vesselActivity[0]?.flag as string}` as any,
             vesselActivity[0]?.flag
@@ -225,7 +229,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
           ),
         }
       })
-      .sort((a, b) => b.hours - a.hours)
+      .sort((a, b) => b.value - a.value)
   }
 )
 
@@ -300,7 +304,7 @@ export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: 
         return uniqMatched
       }
     }, vessels)
-    .sort((a, b) => (b.hours as number) - (a.hours as number))
+    .sort((a, b) => b.value - a.value)
 }
 
 export const selectReportVesselsFiltered = createSelector(
