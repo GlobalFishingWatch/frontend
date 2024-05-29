@@ -111,3 +111,7 @@
   background-color: var(--color-terthiary-blue);
   cursor: not-allowed;
 }
+
+.confirmBtn + .confirmBtn {
+  margin-left: var(--space-S);
+}

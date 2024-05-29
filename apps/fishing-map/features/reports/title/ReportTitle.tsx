@@ -238,7 +238,11 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     : null
 
   if (!reportTitle) {
-    return <ReportTitlePlaceholder />
+    return (
+      <div className={cx(styles.container, styles.placeholder)}>
+        <ReportTitlePlaceholder />
+      </div>
+    )
   }
 
   return (

@@ -5,6 +5,11 @@
   min-height: 5.2rem;
 }
 
+.placeholder {
+  display: flex;
+  align-items: center;
+}
+
 .row {
   flex: 1;
   gap: var(--space-S);
