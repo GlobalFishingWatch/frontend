@@ -71,6 +71,12 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
   }
 
   useEffect(() => {
+    if (containsPrivateDatasets) {
+      setViewAccess(WORKSPACE_PRIVATE_ACCESS)
+    }
+  }, [containsPrivateDatasets])
+
+  useEffect(() => {
     const updateWorkspaceName = async () => {
       let workspaceName = workspace?.name
       if (!workspaceName && suggestName) {
@@ -202,7 +208,7 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
             label={t('workspace.editAccess', 'Edit access')}
             placeholder={
               viewAccess === WORKSPACE_PRIVATE_ACCESS
-                ? t('workspace.private', 'Private')
+                ? t('common.onlyMe', 'Only me')
                 : t('selects.placeholder', 'Select an option')
             }
             infoTooltip={
