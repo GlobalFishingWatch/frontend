@@ -50,11 +50,21 @@
   padding-top: var(--space-S);
 }
 
+@media only screen and (width <= 800px) {
+  .actions {
+    flex-direction: column;
+  }
+}
+
 .hint {
   font: var(--font-S);
   color: var(--color-secondary-blue);
   display: flex;
   align-items: center;
+}
+
+.linksContainer {
+  display: flex;
 }
 
 .error {

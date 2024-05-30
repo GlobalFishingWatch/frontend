@@ -243,7 +243,7 @@ function WorkspaceWizard() {
             {t('workspace.wizard.help', 'You can move the map and update your workspace later')}
           </p>
         </div>
-        <div>
+        <div className={styles.linksContainer}>
           {selectedItem && linkToReport && (
             <Link to={linkToReport} target="_self" className={cx(styles.confirmBtn)}>
               {t('analysis.see', 'See report')}
