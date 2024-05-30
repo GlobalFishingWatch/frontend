@@ -89,3 +89,7 @@ a.linkButton,
   flex: none;
   margin-top: auto;
 }
+
+.link + .link {
+  margin-top: var(--space-XS);
+}
