@@ -97,6 +97,7 @@ export type HighlightedWorkspace = {
   }
   img?: string
   userGroup?: string
+  reportUrl?: string
   visible?: 'visible' | 'hidden'
 }
 
@@ -114,9 +115,9 @@ export const fetchHighlightWorkspacesThunk = createAsyncThunk(
       `/highlighted-workspaces/${WORKSPACES_APP}`
     )
 
-    const workspacesIds = workspaces.entries.flatMap(({ workspaces }) =>
-      workspaces.flatMap(({ id, visible }) => (visible === 'visible' && id) || [])
-    )
+    const workspacesIds = workspaces.entries.flatMap(({ workspaces }) => {
+      return workspaces.flatMap(({ id, visible }) => (visible === 'visible' && id) || [])
+    })
 
     dispatch(fetchWorkspacesThunk({ ids: workspacesIds }))
     return workspaces.entries
