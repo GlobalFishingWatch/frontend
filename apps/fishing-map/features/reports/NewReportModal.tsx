@@ -80,7 +80,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
       const dispatchedAction = await dispatch(
         createReportThunk({
           name,
-          description: '',
+          description,
           datasetId: reportAreaIds?.datasetId,
           areaId: reportAreaIds?.areaId?.toString(),
           workspace: workspaceProperties,
