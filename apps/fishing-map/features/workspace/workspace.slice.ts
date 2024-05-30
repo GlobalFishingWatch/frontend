@@ -370,7 +370,7 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk<
     const workspaceUpsert = parseUpsertWorkspace(workspace)
     const workspaceUpdated = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${workspace.id}`, {
       method: 'PATCH',
-      body: workspaceUpsert,
+      body: password ? { ...workspaceUpsert, editAccess: workspace.viewAccess } : workspaceUpsert,
       ...(password && {
         headers: {
           'x-workspace-password': password,
