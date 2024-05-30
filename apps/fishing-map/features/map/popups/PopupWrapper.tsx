@@ -175,6 +175,10 @@ function PopupWrapper({
                 const userPointFeatures = features.filter(
                   (feature) => feature.type === GeneratorType.UserPoints
                 )
+                // Workaround to show user context features in the context section
+                const userContextFeatures = features.filter(
+                  (feature) => feature.type === GeneratorType.UserContext
+                )
                 return (
                   <Fragment key={featureCategory}>
                     <AnnotationTooltip features={annotationFeatures} />
@@ -190,6 +194,10 @@ function PopupWrapper({
                     />
                     <ContextTooltipSection
                       features={defaultContextFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                    <UserContextTooltipSection
+                      features={userContextFeatures}
                       showFeaturesDetails={type === 'click'}
                     />
                   </Fragment>
