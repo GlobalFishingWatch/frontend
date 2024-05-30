@@ -2,8 +2,24 @@ div.modal {
   height: auto;
 }
 
+div.modalContentWrapper {
+  max-width: 84rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+  margin-bottom: var(--space-M);
+}
+
 .input {
   margin-bottom: var(--space-M);
+}
+
+.select {
+  flex: 1;
+  width: 100%;
 }
 
 .footer {

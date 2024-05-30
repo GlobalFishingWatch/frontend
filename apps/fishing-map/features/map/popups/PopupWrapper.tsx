@@ -274,6 +274,10 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 // const rulersFeatures = features.filter(
                 //   (feature) => feature.type === DataviewType.Rulers
                 // )
+                // Workaround to show user context features in the context section
+                const userContextFeatures = (features as UserLayerPickingObject[]).filter(
+                  (feature) => feature.subcategory === DataviewType.UserContext
+                )
                 return (
                   <Fragment key={featureCategory}>
                     {/*
@@ -291,6 +295,10 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                     />
                     <ContextTooltipSection
                       features={contextFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                    <UserContextTooltipSection
+                      features={userContextFeatures}
                       showFeaturesDetails={type === 'click'}
                     />
                   </Fragment>

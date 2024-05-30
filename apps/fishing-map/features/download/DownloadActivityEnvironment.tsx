@@ -237,7 +237,7 @@ function DownloadActivityGridded() {
             <p className={cx(styles.footerLabel, styles.error)}>
               {isDownloadAreaTooBig
                 ? `${t(
-                    'analysis."errorTooComplex',
+                    'analysis.errorTooComplex',
                     'The geometry of the area is too complex to perform a report, try to simplify and upload again.'
                   )}`
                 : `${t('analysis.errorMessage', 'Something went wrong')} 🙈`}

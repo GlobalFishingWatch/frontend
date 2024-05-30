@@ -60,7 +60,7 @@ function WorkspacesList() {
       ) : (
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
-            const { name, cta, description, img } = highlightedWorkspace
+            const { name, cta, description, reportUrl, img } = highlightedWorkspace
             const i18nName = (name?.[i18n.language as Locale] as string) || name.en
             const i18nDescription =
               (description?.[i18n.language as Locale] as string) || description.en
@@ -134,6 +134,11 @@ function WorkspacesList() {
                         __html: i18nDescription,
                       }}
                     ></p>
+                  )}
+                  {reportUrl && (
+                    <a href={reportUrl as string} className={styles.link}>
+                      {t('analysis.see', 'See report')}
+                    </a>
                   )}
                   {active &&
                     (isExternalLink ? (

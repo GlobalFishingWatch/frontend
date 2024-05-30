@@ -11,6 +11,16 @@
   height: var(--header-height);
 }
 
+.groupOption {
+  cursor: pointer;
+  padding: var(--space-XS);
+  padding-right: var(--space-M);
+}
+
+.groupOption:not(:last-of-type) {
+  border-bottom: var(--border);
+}
+
 .logoLink {
   line-height: 0;
   margin-right: auto;
@@ -52,6 +62,10 @@
 
 .userButton:hover {
   background-color: var(--color-terthiary-blue);
+}
+
+.disabled {
+  cursor: not-allowed;
 }
 
 @media print {

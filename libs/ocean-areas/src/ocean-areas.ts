@@ -76,15 +76,19 @@ const localizeArea = (area: typeof oceanAreas, locale = OceanAreaLocale.en) => {
   }
 }
 
+type SearchOceanAreaParams = GetOceanAreaNameLocaleParam & { types?: OceanAreaType[] }
 export const searchOceanAreas = async (
   query: string,
-  { locale = OceanAreaLocale.en }: GetOceanAreaNameLocaleParam = {} as GetOceanAreaNameLocaleParam
+  { locale = OceanAreaLocale.en, types } = {} as SearchOceanAreaParams
 ): Promise<OceanArea[]> => {
   await importOceanAreasData()
   const localizedAreas = localizeArea(oceanAreas, locale)
-  const matchingFeatures = matchSorter(localizedAreas.features, query, {
+  let matchingFeatures = matchSorter(localizedAreas.features, query, {
     keys: ['properties.name'],
   })
+  if (types?.length) {
+    matchingFeatures = matchingFeatures.filter((feature) => types.includes(feature.properties.type))
+  }
   const areas = matchingFeatures.slice(0, MAX_RESULTS_NUMBER).map((feature) => ({
     ...feature,
     properties: {
@@ -131,9 +135,11 @@ export const getAreasByDistance = (areas: FeatureCollection, { latitude, longitu
 
 // Returns all overlapping areas, ordered from smallest to biggest
 // If no overlapping area found, returns only the closest area
+
+type GetOceanAreaParams = GetOceanAreaNameLocaleParam & { types?: OceanAreaType[] }
 const getOceanAreas = async (
   center: LatLon,
-  { locale = OceanAreaLocale.en }: GetOceanAreaNameLocaleParam = {} as GetOceanAreaNameLocaleParam
+  { locale = OceanAreaLocale.en, types } = {} as GetOceanAreaParams
 ): Promise<OceanAreaProperties[]> => {
   await importOceanAreasData()
   let matchingAreas = getOverlappingAreas(oceanAreas, center)
@@ -145,6 +151,9 @@ const getOceanAreas = async (
         name: await localizeName(closestFeature?.name as OceanAreaLocaleKey, locale),
       },
     ]
+  }
+  if (types?.length) {
+    matchingAreas = matchingAreas.filter((feature) => types.includes(feature.properties.type))
   }
   return matchingAreas.map((area) => ({
     ...area,

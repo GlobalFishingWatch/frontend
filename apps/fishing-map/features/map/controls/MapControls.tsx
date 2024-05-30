@@ -198,7 +198,7 @@ const MapControls = ({
           {showExtendedControls && (
             <Fragment>
               <Rulers />
-              {gfwUser && <MapAnnotations />}
+              <MapAnnotations />
               {gfwUser && (
                 <IconButton
                   icon="feedback-error"

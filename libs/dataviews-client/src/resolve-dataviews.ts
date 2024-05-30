@@ -412,6 +412,8 @@ export function resolveDataviews(
 
       const resolvedDataview = {
         ...dataview,
+        // Supports overriding the category so we can easily move user layers to context section
+        category: dataviewInstance.category || dataview.category,
         id: dataviewInstance.id,
         dataviewId: dataview.slug,
         config,
