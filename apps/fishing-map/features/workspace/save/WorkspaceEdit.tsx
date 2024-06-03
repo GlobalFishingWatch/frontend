@@ -30,7 +30,8 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
   const [name, setName] = useState(workspace?.name)
   const [editAccess, setEditAccess] = useState<WorkspaceEditAccessType>(workspace?.editAccess)
   const editOptions = getEditAccessOptionsByViewAccess(workspace?.viewAccess)
-  const [password, setPassword] = useState('')
+  const [editPassword, setEditPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -41,9 +42,16 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
   const updateWorkspace = async () => {
     if (workspace) {
       setLoading(true)
+      const updateParams = {
+        ...workspace,
+        name,
+        editAccess,
+        password: editPassword,
+        newPassword,
+      }
       const dispatchedAction = isWorkspaceList
-        ? await dispatch(updateWorkspaceThunk({ ...workspace, name, editAccess, password }))
-        : await dispatch(updatedCurrentWorkspaceThunk({ ...workspace, name, editAccess, password }))
+        ? await dispatch(updateWorkspaceThunk(updateParams))
+        : await dispatch(updatedCurrentWorkspaceThunk(updateParams))
       if (
         updateWorkspaceThunk.fulfilled.match(dispatchedAction) ||
         updatedCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)
@@ -78,6 +86,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
     updateWorkspace()
   }
 
+  const password = isOwnerWorkspace ? newPassword : editPassword
   const passwordDisabled =
     editAccess === WORKSPACE_PASSWORD_ACCESS &&
     editAccess !== workspace?.editAccess &&
@@ -130,7 +139,9 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
                 ? t('common.setNewPassword', 'Set a new password')
                 : t('common.password', 'Password')
             }
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) =>
+              isOwnerWorkspace ? setNewPassword(e.target.value) : setEditPassword(e.target.value)
+            }
           />
         )}
       </div>

@@ -100,7 +100,7 @@ function SaveReportButton() {
 
   if (
     !workspace ||
-    workspace.viewAccess !== WORKSPACE_PUBLIC_ACCESS ||
+    (workspace.viewAccess !== undefined && workspace.viewAccess !== WORKSPACE_PUBLIC_ACCESS) ||
     workspaceStatus === AsyncReducerStatus.Loading
   ) {
     return null

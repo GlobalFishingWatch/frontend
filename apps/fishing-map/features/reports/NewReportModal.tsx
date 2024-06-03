@@ -7,6 +7,7 @@ import {
   WORKSPACE_PASSWORD_ACCESS,
   WORKSPACE_PRIVATE_ACCESS,
   WORKSPACE_PUBLIC_ACCESS,
+  Workspace,
   WorkspaceViewAccessType,
 } from '@globalfishingwatch/api-types'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -29,6 +30,12 @@ type NewReportModalProps = {
   report?: Report
 }
 
+function getWorkspaceReport(workspace: Workspace) {
+  const { ownerId, createdAt, ownerType, viewAccess, editAccess, ...workspaceProperties } =
+    workspace
+  return workspaceProperties
+}
+
 function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportModalProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -40,7 +47,6 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
 
   const [name, setName] = useState(report?.name || reportArea?.name || '')
   const [description, setDescription] = useState(report?.description || '')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
   const viewOptions = getViewAccessOptions().filter((o) => o.id !== WORKSPACE_PASSWORD_ACCESS)
@@ -54,8 +60,9 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   const updateReport = async () => {
     if (report) {
       setLoading(true)
+      const workspaceReport = getWorkspaceReport(workspace)
       const dispatchedAction = await dispatch(
-        updateReportThunk({ ...report, name, description, workspace })
+        updateReportThunk({ ...report, name, description, workspace: workspaceReport })
       )
       if (updateReportThunk.fulfilled.match(dispatchedAction)) {
         trackEvent({
@@ -77,14 +84,14 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   const createReport = async () => {
     if (name) {
       setLoading(true)
-      const { ownerId, createdAt, ownerType, ...workspaceProperties } = workspace
+      const workspaceReport = getWorkspaceReport(workspace)
       const dispatchedAction = await dispatch(
         createReportThunk({
           name,
           description,
           datasetId: reportAreaIds?.datasetId,
           areaId: reportAreaIds?.areaId?.toString(),
-          workspace: { ...workspaceProperties, password },
+          workspace: workspaceReport,
           public: viewAccess === WORKSPACE_PUBLIC_ACCESS,
         })
       )
@@ -154,16 +161,6 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
           containerClassName={styles.input}
           onSelect={(option: SelectOption<WorkspaceViewAccessType>) => setViewAccess(option.id)}
           selectedOption={viewOptions.find((o) => o.id === viewAccess) || viewOptions[0]}
-        />
-      )}
-      {workspace?.editAccess === WORKSPACE_PASSWORD_ACCESS && (
-        <InputText
-          value={password}
-          className={styles.input}
-          type="password"
-          testId="create-workspace-password"
-          label={t('common.password', 'Password')}
-          onChange={(e) => setPassword(e.target.value)}
         />
       )}
       <div className={styles.footer}>

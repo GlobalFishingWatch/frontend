@@ -114,7 +114,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         const action = dispatch(fetchReportsThunk([reportId]))
         const resolvedAction = await action
         if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
-          workspace = resolvedAction.payload?.[0]?.workspace
+          workspace = resolvedAction.payload?.[0]?.workspace as Workspace
           if (!workspace) {
             return rejectWithValue({
               error: {
@@ -360,17 +360,19 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
 export const updatedCurrentWorkspaceThunk = createAsyncThunk<
   AppWorkspace,
-  AppWorkspace & { password?: string },
+  AppWorkspace & { password?: string; newPassword?: string },
   {
     dispatch: AppDispatch
   }
 >('workspace/updatedCurrent', async (workspaceWithPassword, { dispatch, rejectWithValue }) => {
   try {
-    const { password, ...workspace } = workspaceWithPassword
+    const { password, newPassword, ...workspace } = workspaceWithPassword
     const workspaceUpsert = parseUpsertWorkspace(workspace)
     const workspaceUpdated = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${workspace.id}`, {
       method: 'PATCH',
-      body: password ? { ...workspaceUpsert, editAccess: workspace.viewAccess } : workspaceUpsert,
+      body: newPassword
+        ? { ...workspaceUpsert, editAccess: workspace.editAccess, password: newPassword }
+        : workspaceUpsert,
       ...(password && {
         headers: {
           'x-workspace-password': password,
