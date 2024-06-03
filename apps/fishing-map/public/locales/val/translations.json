@@ -193,6 +193,7 @@
     "seeDefault": "crwdns59857:0crwdne59857:0",
     "seeMore": "crwdns83166:0crwdne83166:0",
     "send": "crwdns83228:0crwdne83228:0",
+    "setNewPassword": "crwdns83252:0crwdne83252:0",
     "share": "crwdns59859:0crwdne59859:0",
     "sources": "crwdns59861:0crwdne59861:0",
     "summary": "crwdns69352:0crwdne69352:0",
@@ -1000,6 +1001,7 @@
     "saveAs": "crwdns83248:0crwdne83248:0",
     "saved": "crwdns60733:0crwdne60733:0",
     "saveLogin": "crwdns60735:0crwdne60735:0",
+    "saveOwnerOnly": "crwdns83254:0crwdne83254:0",
     "siteDescription": {
       "default": "crwdns60737:0crwdne60737:0",
       "fishing-activity": "crwdns60739:0crwdne60739:0",
