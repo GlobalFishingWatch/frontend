@@ -15,14 +15,12 @@ import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { ROOT_DOM_ELEMENT } from 'data/config'
+import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, ROOT_DOM_ELEMENT } from 'data/config'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './FeedbackModal.module.css'
-
-const AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX = 'gfw-feedback-auto-saved-'
 
 type FeedbackModalProps = {
   isOpen?: boolean
