@@ -135,31 +135,33 @@ function WorkspacesList() {
                       }}
                     ></p>
                   )}
-                  {reportUrl && (
-                    <a href={reportUrl as string} className={styles.link}>
-                      {t('analysis.see', 'See report')}
-                    </a>
-                  )}
-                  {active &&
-                    (isExternalLink ? (
-                      <a
-                        target="_blank"
-                        href={linkTo as string}
-                        className={styles.link}
-                        rel="noreferrer"
-                      >
-                        {i18nCta}
+                  <div className={styles.linksContainer}>
+                    {reportUrl && (
+                      <a href={reportUrl as string} className={styles.link}>
+                        {t('analysis.see', 'See report')}
                       </a>
-                    ) : (
-                      <Link
-                        to={linkTo}
-                        target="_self"
-                        className={styles.link}
-                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                      >
-                        {i18nCta}
-                      </Link>
-                    ))}
+                    )}
+                    {active &&
+                      (isExternalLink ? (
+                        <a
+                          target="_blank"
+                          href={linkTo as string}
+                          className={styles.link}
+                          rel="noreferrer"
+                        >
+                          {i18nCta}
+                        </a>
+                      ) : (
+                        <Link
+                          to={linkTo}
+                          target="_self"
+                          className={styles.link}
+                          onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                        >
+                          {i18nCta}
+                        </Link>
+                      ))}
+                  </div>
                 </div>
               </li>
             )

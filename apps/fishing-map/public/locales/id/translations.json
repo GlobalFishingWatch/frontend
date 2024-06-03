@@ -193,6 +193,7 @@
     "seeDefault": "Lihat tampilan default",
     "seeMore": "See more",
     "send": "Send",
+    "setNewPassword": "Set a new password",
     "share": "Bagikan tampilan saat ini",
     "sources": "Sumber",
     "summary": "Ringkasan",
@@ -1000,6 +1001,7 @@
     "saveAs": "Save as a new workspace",
     "saved": "Tampilan saat ini telah disimpan dan tersedia di profil Anda",
     "saveLogin": "Anda harus masuk untuk menyimpan tampilan (gratis, 2 menit)",
+    "saveOwnerOnly": "This workspace can only be edited by its creator",
     "siteDescription": {
       "default": "Peta Global Fishing Watch adalah platform akses terbuka pertama untuk visualisasi dan analisis lalu lintas laut dan aktivitas manusia berbasis kapal di laut.",
       "fishing-activity": "Peta Global Fishing Watch adalah platform akses terbuka pertama untuk visualisasi dan analisis lalu lintas laut dan aktivitas manusia berbasis kapal di laut.",

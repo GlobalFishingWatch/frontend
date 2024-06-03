@@ -175,6 +175,7 @@ export function WorkspacePassword(): React.ReactElement {
             value={password}
             className={styles.password}
             type="password"
+            invalid={!!error || !!workspacePassword}
             testId="create-workspace-password"
             onChange={handlePasswordChange}
           />
@@ -184,8 +185,15 @@ export function WorkspacePassword(): React.ReactElement {
           )}
         </div>
         <Button
-          size="small"
+          size="default"
           htmlType="submit"
+          className={styles.passwordButton}
+          tooltip={
+            !password || password.length < MIN_WORKSPACE_PASSWORD_LENGTH
+              ? t('workspace.passwordMinLength', 'passwordMinLength')
+              : undefined
+          }
+          tooltipPlacement="top"
           disabled={!password || password.length < MIN_WORKSPACE_PASSWORD_LENGTH}
           loading={loading}
         >
