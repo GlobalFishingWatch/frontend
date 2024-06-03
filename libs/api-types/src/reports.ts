@@ -7,7 +7,7 @@ export type Report = {
   public?: boolean
   areaId: string
   datasetId: string
-  workspace: Workspace
+  workspace: Omit<Workspace, 'viewAccess' | 'editAccess'>
   createdAt: string
   ownerId: number
   ownerType: OwnerType

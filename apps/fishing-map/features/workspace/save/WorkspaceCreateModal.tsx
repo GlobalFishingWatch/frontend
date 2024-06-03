@@ -233,7 +233,7 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
               className={styles.select}
               type="password"
               testId="create-workspace-password"
-              label={t('common.password', 'password')}
+              label={t('common.setNewPassword', 'Set a new password')}
               onChange={(e) => setPassword(e.target.value)}
             />
           )}

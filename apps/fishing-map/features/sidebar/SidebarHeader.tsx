@@ -14,8 +14,9 @@ import {
   Tooltip,
 } from '@globalfishingwatch/ui-components'
 import { useFeatureState, useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
+import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import {
+  selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
   selectIsDefaultWorkspace,
   selectLastVisitedWorkspace,
@@ -100,7 +101,7 @@ function SaveReportButton() {
 
   if (
     !workspace ||
-    isPrivateWorkspaceNotAllowed(workspace) ||
+    (workspace.viewAccess !== undefined && workspace.viewAccess !== WORKSPACE_PUBLIC_ACCESS) ||
     workspaceStatus === AsyncReducerStatus.Loading
   ) {
     return null
@@ -201,13 +202,14 @@ function SaveWorkspaceButton() {
         visible={saveWorkspaceTooltipOpen}
         onClickOutside={onClickOutside}
         placement="bottom"
+        arrowClass={styles.arrow}
         component={
-          <ul className={styles.groupOptions}>
+          <ul>
             <Tooltip
               content={
                 canEditWorkspace
                   ? t('workspace.save', 'Save this report')
-                  : t('common.disabled', 'Disabled')
+                  : t('workspace.saveOwnerOnly', 'This workspace can only be edited by its creator')
               }
             >
               <li
@@ -357,10 +359,10 @@ function CloseReportButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const reportAreaIds = useSelector(selectReportAreaIds)
-  const locationType = useSelector(selectLocationType)
   const locationQuery = useSelector(selectLocationQuery)
   const locationPayload = useSelector(selectLocationPayload)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
 
   const { cleanFeatureState } = useFeatureState(useMapInstance())
 
@@ -372,9 +374,13 @@ function CloseReportButton() {
     dispatch(cleanCurrentWorkspaceStateBufferParams())
   }
 
+  const isWorkspaceRoute = workspaceId !== DEFAULT_WORKSPACE_ID
   const linkTo = {
-    type: locationType === REPORT || workspaceId === DEFAULT_WORKSPACE_ID ? HOME : WORKSPACE,
-    payload: cleanReportPayload(locationPayload),
+    type: isWorkspaceRoute ? WORKSPACE : HOME,
+    payload: {
+      ...cleanReportPayload(locationPayload),
+      ...(isWorkspaceRoute && { category: workspaceCategory, workspaceId }),
+    },
     query: cleanReportQuery(locationQuery),
   }
 
