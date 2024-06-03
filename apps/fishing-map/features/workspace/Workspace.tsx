@@ -152,14 +152,14 @@ function Workspace() {
             )}
             <h2 className={styles.title} data-test="user-workspace-title">
               {getWorkspaceLabel(workspace)}
-              {gfwUser && (
+              {/* {gfwUser && (
                 <IconButton
                   className="print-hidden"
                   size="small"
                   icon="edit"
                   onClick={() => setWorkspaceEditModalOpen(true)}
                 />
-              )}
+              )} */}
             </h2>
             <Modal
               appSelector={ROOT_DOM_ELEMENT}
