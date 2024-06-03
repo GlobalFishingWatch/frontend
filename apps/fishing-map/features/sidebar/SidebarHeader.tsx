@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from '@globalfishingwatch/ui-components'
 import { useFeatureState, useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
+import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import {
   selectCurrentWorkspaceId,
   selectIsDefaultWorkspace,
@@ -100,7 +100,7 @@ function SaveReportButton() {
 
   if (
     !workspace ||
-    isPrivateWorkspaceNotAllowed(workspace) ||
+    workspace.viewAccess !== WORKSPACE_PUBLIC_ACCESS ||
     workspaceStatus === AsyncReducerStatus.Loading
   ) {
     return null

@@ -40,6 +40,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
 
   const [name, setName] = useState(report?.name || reportArea?.name || '')
   const [description, setDescription] = useState(report?.description || '')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
   const viewOptions = getViewAccessOptions().filter((o) => o.id !== WORKSPACE_PASSWORD_ACCESS)
@@ -83,7 +84,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
           description,
           datasetId: reportAreaIds?.datasetId,
           areaId: reportAreaIds?.areaId?.toString(),
-          workspace: workspaceProperties,
+          workspace: { ...workspaceProperties, password },
           public: viewAccess === WORKSPACE_PUBLIC_ACCESS,
         })
       )
@@ -150,9 +151,19 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
                 )}: ${privateDatasets.join(', ')}`
               : ''
           }
-          containerClassName={styles.select}
+          containerClassName={styles.input}
           onSelect={(option: SelectOption<WorkspaceViewAccessType>) => setViewAccess(option.id)}
           selectedOption={viewOptions.find((o) => o.id === viewAccess) || viewOptions[0]}
+        />
+      )}
+      {workspace?.editAccess === WORKSPACE_PASSWORD_ACCESS && (
+        <InputText
+          value={password}
+          className={styles.input}
+          type="password"
+          testId="create-workspace-password"
+          label={t('common.password', 'Password')}
+          onChange={(e) => setPassword(e.target.value)}
         />
       )}
       <div className={styles.footer}>
