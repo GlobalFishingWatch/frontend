@@ -27,6 +27,8 @@ export const isPrivateWorkspaceNotAllowed = (
 export const getWorkspaceLabel = (workspace: AppWorkspace | Workspace<WorkspaceState, string>) => {
   const isPrivate = !workspace.id.endsWith(`-${PUBLIC_SUFIX}`)
   const isPasswordProtected = workspace.viewAccess === WORKSPACE_PASSWORD_ACCESS
-  const prefix = isPasswordProtected ? '🔐' : isPrivate ? '🔒 ' : ''
-  return `${prefix}${workspace.name}`
+  if (isPrivate || isPasswordProtected) {
+    return `${isPasswordProtected ? '🔐' : '🔒'} ${workspace.name}`
+  }
+  return workspace.name
 }
