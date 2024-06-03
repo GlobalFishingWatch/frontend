@@ -45,10 +45,6 @@ const MapAnnotations = () => {
     resetMapAnnotation()
   }
 
-  if (!gfwUser) {
-    return null
-  }
-
   return (
     <Popup
       latitude={mapAnnotation.lat as number}
