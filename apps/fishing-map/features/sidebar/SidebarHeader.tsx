@@ -201,13 +201,14 @@ function SaveWorkspaceButton() {
         visible={saveWorkspaceTooltipOpen}
         onClickOutside={onClickOutside}
         placement="bottom"
+        arrowClass={styles.arrow}
         component={
-          <ul className={styles.groupOptions}>
+          <ul>
             <Tooltip
               content={
                 canEditWorkspace
                   ? t('workspace.save', 'Save this report')
-                  : t('common.disabled', 'Disabled')
+                  : t('workspace.saveOwnerOnly', 'This workspace can only be edited by its creator')
               }
             >
               <li

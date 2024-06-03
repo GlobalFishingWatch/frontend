@@ -78,3 +78,8 @@
   justify-content: flex-end;
   align-items: center;
 }
+
+.passwordButton {
+  margin-top: var(--space-S);
+  min-width: 15rem;
+}

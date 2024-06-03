@@ -13,7 +13,7 @@
 
 .groupOption {
   cursor: pointer;
-  padding: var(--space-XS);
+  padding: var(--space-S);
   padding-right: var(--space-M);
 }
 
@@ -65,7 +65,12 @@
 }
 
 .disabled {
+  color: var(--color-secondary-blue);
   cursor: not-allowed;
+}
+
+.arrow {
+  display: none;
 }
 
 @media print {
