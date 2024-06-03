@@ -36,6 +36,7 @@ import { selectLocationCategory } from 'routes/routes.selectors'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 
 export const selectWorkspaceReportState = createSelector(
   [
@@ -140,7 +141,7 @@ export const selectWorkspaceWithCurrentState = createSelector(
     return {
       ...(workspace || ({} as Workspace)),
       app: APP_NAME,
-      category,
+      category: category || DEFAULT_WORKSPACE_CATEGORY,
       viewport: viewport as Workspace['viewport'],
       startAt: timerange.start,
       endAt: timerange.end,
