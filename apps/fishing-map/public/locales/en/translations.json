@@ -193,6 +193,7 @@
     "seeDefault": "See default workspace",
     "seeMore": "See more",
     "send": "Send",
+    "setNewPassword": "Set a new password",
     "share": "Share map",
     "sources": "Sources",
     "summary": "Summary",
@@ -1000,6 +1001,7 @@
     "saveAs": "Save as a new workspace",
     "saved": "The current workspace has been saved and it's available in your profile.",
     "saveLogin": "Register and log in to save workspaces (free, 2 minutes)",
+    "saveOwnerOnly": "This workspace can only be edited by its creator",
     "siteDescription": {
       "default": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
       "fishing-activity": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
