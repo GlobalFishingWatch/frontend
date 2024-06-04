@@ -9,7 +9,7 @@ import {
   selectEnvironmentalDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
-import { PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
+import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
 import {
   selectAllVesselGroups,
   selectWorkspaceVesselGroups,
@@ -59,7 +59,11 @@ export const selectUserWorkspaces = createSelector(
   [selectUserData, selectWorkspaces],
   (userData, workspaces) => {
     return orderBy(
-      workspaces?.filter((workspace) => workspace.ownerId === userData?.id),
+      workspaces?.filter(
+        (workspace) =>
+          workspace.ownerId === userData?.id &&
+          !workspace.id.startsWith(AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX)
+      ),
       'createdAt',
       'desc'
     )
@@ -116,9 +120,8 @@ export const selectUserDatasets = createSelector(
 )
 
 export const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
-  createSelector(
-    [selectUserDatasets],
-    (datasets) => datasets?.filter((d) => d.category === datasetCategory)
+  createSelector([selectUserDatasets], (datasets) =>
+    datasets?.filter((d) => d.category === datasetCategory)
   )
 
 export const selectUserContextDatasets = selectUserDatasetsByCategory(DatasetCategory.Context)
