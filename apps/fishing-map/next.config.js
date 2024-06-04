@@ -87,6 +87,7 @@ const nextConfig = {
   output: 'standalone',
   outputFileTracing: true,
   experimental: {
+    reactCompiler: true,
     outputFileTracingRoot: join(__dirname, '../../'),
     optimizePackageImports: [
       '@globalfishingwatch/api-client',
