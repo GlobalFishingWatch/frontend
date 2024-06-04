@@ -51,17 +51,11 @@ steps:
     env:
       - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
-      - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
-
-  - id: 'docker-prepare'
-    waitFor: ['build-app']
-    name: node:21
-    entrypoint: yarn
-    args: ['nx', 'docker-prepare', 'image-labeler']
+      - 'API_GATEWAY=$_API_GATEWAY'
 
   - name: 'gcr.io/kaniko-project/executor:latest'
     id: 'build-image'
-    waitFor: ['docker-prepare']
+    waitFor: ['build-app']
     args:
       [
         '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/image-labeler:$SHORT_SHA',
