@@ -7,7 +7,7 @@
   justify-content: space-between;
 }
 
-.task:last-child {
+.task:last-of-type {
   border-bottom: var(--border);
 }
 
@@ -21,16 +21,21 @@
 .images {
   display: flex;
   gap: var(--space-S);
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+  max-width: 11rem;
+  opacity: 0.5;
 }
 
 .images img {
   width: 5rem;
   background-color: var(--color-terthiary-blue);
+  transition: all 0.2s ease-in-out;
 }
 
 .open .images {
-  width: 100%;
   max-width: 80vh;
+  opacity: 1;
 }
 
 .open .images img {
