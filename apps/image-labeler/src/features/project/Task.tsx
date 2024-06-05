@@ -19,10 +19,11 @@ type TaskProps = {
   projectId: string
   task: LabellingTask
   open: boolean
-  onFinishTask: () => void
+  onClick?: () => void
+  onFinishTask: (taskId: string) => void
 }
 
-export function Task({ projectId, task, open, onFinishTask }: TaskProps) {
+export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps) {
   const options: ChoiceOption[] = useMemo(
     () =>
       task.labels.map((label, index) => ({
@@ -36,24 +37,27 @@ export function Task({ projectId, task, open, onFinishTask }: TaskProps) {
     fixedCacheKey: [projectId, task.id].join(),
   })
 
+  const setFinishedTask = useCallback(() => {
+    onFinishTask(task.id)
+  }, [onFinishTask, task.id])
+
   const handleSubmit = useCallback(() => {
     if (activeOption) {
-      console.log('activeOption:', activeOption)
-      onFinishTask()
+      setFinishedTask()
       setTask({ projectId, taskId: task.id, label: activeOption })
     }
-  }, [activeOption, onFinishTask, projectId, setTask, task.id])
+  }, [activeOption, setFinishedTask, projectId, setTask, task.id])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      e.preventDefault()
+      // e.preventDefault()
       if (e.key === 'Enter') {
         handleSubmit()
         return
       }
       if (e.key === 'Escape') {
         setActiveOption(undefined)
-        onFinishTask()
+        setFinishedTask()
         return
       }
       const option = options[parseInt(e.key) - 1]
@@ -65,16 +69,21 @@ export function Task({ projectId, task, open, onFinishTask }: TaskProps) {
       window.addEventListener('keydown', handleKeyDown)
     }
     return () => {
-      window.removeEventListener('keydown', handleKeyDown)
+      if (open) {
+        window.removeEventListener('keydown', handleKeyDown)
+      }
     }
-  }, [handleSubmit, onFinishTask, open, options])
+  }, [handleSubmit, setFinishedTask, open, options, task.id])
 
   const setOption = (option: ChoiceOption) => {
     setActiveOption(option.id)
   }
 
   return (
-    <div className={cx(styles.task, { [styles.open]: open })}>
+    <div
+      onClick={open || isLoading ? undefined : onClick}
+      className={cx(styles.task, { [styles.open]: open })}
+    >
       <div className={styles.images}>
         {task.thumbnails.map((thumbnail, index) => (
           <img src={thumbnail} alt="thumbnail" key={index} />
@@ -82,9 +91,13 @@ export function Task({ projectId, task, open, onFinishTask }: TaskProps) {
       </div>
       {open ? (
         <div className={styles.labels}>
-          <Choice options={options} activeOption={activeOption} onSelect={setOption} />
+          <Choice
+            options={options}
+            activeOption={data?.label || activeOption}
+            onSelect={setOption}
+          />
           <div className={styles.buttons}>
-            <Button onClick={onFinishTask} type="secondary">
+            <Button onClick={setFinishedTask} type="secondary">
               Skip (Esc)
             </Button>
             <Button
@@ -98,7 +111,7 @@ export function Task({ projectId, task, open, onFinishTask }: TaskProps) {
         </div>
       ) : (
         <div>
-          {isLoading ? <Spinner size="small" /> : <label>{activeOption || 'Unlabeled'}</label>}
+          {isLoading ? <Spinner size="small" /> : <label>{data?.label || 'Unlabeled'}</label>}
           {error !== undefined && <p>{JSON.stringify(error)}</p>}
         </div>
       )}
