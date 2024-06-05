@@ -15,7 +15,7 @@
 # https://github.com/alpinelinux/docker-alpine/issues/182
 FROM nginx:stable-alpine as production
 
-COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.template
 # COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 # RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
 COPY ./entrypoint.sh entrypoint.sh
