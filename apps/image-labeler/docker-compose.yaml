@@ -10,4 +10,5 @@ services:
     env_file:
       - .env
     environment:
+      - PORT=80
       - API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
