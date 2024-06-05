@@ -1,6 +1,5 @@
 import { getRouteApi } from '@tanstack/react-router'
-import { useEffect, useMemo, useState } from 'react'
-import { set } from 'lodash'
+import { useEffect, useState } from 'react'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { useGetLabellingProjectTasksQuery } from '../../api/project'
 import styles from './Project.module.css'

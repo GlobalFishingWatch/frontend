@@ -52,6 +52,7 @@ export function Task({ projectId, task, open, onFinishTask }: TaskProps) {
         return
       }
       if (e.key === 'Escape') {
+        setActiveOption(undefined)
         onFinishTask()
         return
       }
@@ -66,7 +67,7 @@ export function Task({ projectId, task, open, onFinishTask }: TaskProps) {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [handleSubmit, open, options])
+  }, [handleSubmit, onFinishTask, open, options])
 
   const setOption = (option: ChoiceOption) => {
     setActiveOption(option.id)
