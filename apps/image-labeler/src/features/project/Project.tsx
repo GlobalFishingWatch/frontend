@@ -30,8 +30,6 @@ export function Project() {
       (task) => task.id === activeTaskId
     )
     setActiveTaskId((data?.entries as LabellingTask[])[currentIndex + 1]?.id)
-    console.log(window)
-
     window.scrollTo(0, window.scrollY + 71)
   }
 
