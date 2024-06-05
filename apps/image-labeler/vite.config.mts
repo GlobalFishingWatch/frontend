@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
+import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
 
 export default defineConfig({
   root: __dirname,
@@ -21,6 +22,10 @@ export default defineConfig({
   plugins: [
     react(),
     nxViteTsPaths(),
+    TanStackRouterVite({
+      routesDirectory: './apps/image-labeler/src/routes',
+      generatedRouteTree: './apps/image-labeler/src/routeTree.gen.ts',
+    }),
     viteStaticCopy({
       targets: [
         {
