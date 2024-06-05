@@ -1,218 +1,326 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { Placement } from 'tippy.js'
 import cx from 'classnames'
 import { Tooltip } from '../tooltip'
 import { TooltipTypes } from '../types/types'
-import { ReactComponent as AddPolygon } from '../assets/icons/add-polygon.svg'
-import { ReactComponent as Analysis } from '../assets/icons/analysis.svg'
-import { ReactComponent as Annotation } from '../assets/icons/annotation.svg'
-import { ReactComponent as BlueHabitatsLogo } from '../assets/icons/blue-habitats-logo.svg'
-import { ReactComponent as ArrowDown } from '../assets/icons/arrow-down.svg'
-import { ReactComponent as ArrowLeft } from '../assets/icons/arrow-left.svg'
-import { ReactComponent as ArrowRight } from '../assets/icons/arrow-right.svg'
-import { ReactComponent as ArrowTop } from '../assets/icons/arrow-top.svg'
-import { ReactComponent as Calendar } from '../assets/icons/calendar.svg'
-import { ReactComponent as Camera } from '../assets/icons/camera.svg'
-import { ReactComponent as CategoryCountryPortals } from '../assets/icons/category-country-portals.svg'
-import { ReactComponent as CategoryFishing } from '../assets/icons/category-fishing.svg'
-import { ReactComponent as CategoryMarineManager } from '../assets/icons/category-marine-manager.svg'
-import { ReactComponent as CategoryNews } from '../assets/icons/category-news.svg'
-import { ReactComponent as CategoryReports } from '../assets/icons/category-reports.svg'
-import { ReactComponent as CategorySearch } from '../assets/icons/category-search.svg'
-import { ReactComponent as Close } from '../assets/icons/close.svg'
-import { ReactComponent as Clusters } from '../assets/icons/clusters.svg'
-import { ReactComponent as ColorPicker } from '../assets/icons/color-picker.svg'
-import { ReactComponent as ColorPickerFilled } from '../assets/icons/color-picker-filled.svg'
-import { ReactComponent as Compare } from '../assets/icons/compare.svg'
-import { ReactComponent as CopernicusLogo } from '../assets/icons/copernicus-logo.svg'
-import { ReactComponent as Copy } from '../assets/icons/copy.svg'
-import { ReactComponent as Delete } from '../assets/icons/delete.svg'
-import { ReactComponent as Dots } from '../assets/icons/dots.svg'
-import { ReactComponent as Download } from '../assets/icons/download.svg'
-import { ReactComponent as Drag } from '../assets/icons/drag.svg'
-import { ReactComponent as Draw } from '../assets/icons/draw.svg'
-import { ReactComponent as Edit } from '../assets/icons/edit.svg'
-import { ReactComponent as EditOff } from '../assets/icons/edit-off.svg'
-import { ReactComponent as Email } from '../assets/icons/email.svg'
-import { ReactComponent as Encounters } from '../assets/icons/encounters.svg'
-import { ReactComponent as EventLegendEncounter } from '../assets/icons/event-legend-encounter.svg'
-import { ReactComponent as EventLegendFishing } from '../assets/icons/event-legend-fishing.svg'
-import { ReactComponent as EventLegendLoitering } from '../assets/icons/event-legend-loitering.svg'
-import { ReactComponent as EventLegendPort } from '../assets/icons/event-legend-port_visit.svg'
-import { ReactComponent as EventEncounter } from '../assets/icons/event-encounter.svg'
-import { ReactComponent as EventFishing } from '../assets/icons/event-fishing.svg'
-import { ReactComponent as EventLoitering } from '../assets/icons/event-loitering.svg'
-import { ReactComponent as EventPort } from '../assets/icons/event-port.svg'
-import { ReactComponent as EventPortVisit } from '../assets/icons/event-port-visit.svg'
-import { ReactComponent as Expand } from '../assets/icons/expand.svg'
-import { ReactComponent as ExternalLink } from '../assets/icons/external-link.svg'
-import { ReactComponent as Feedback } from '../assets/icons/feedback.svg'
-import { ReactComponent as FAOLogo } from '../assets/icons/fao-logo.svg'
-import { ReactComponent as FeedbackError } from '../assets/icons/feedback-error.svg'
-import { ReactComponent as FilterOff } from '../assets/icons/filter-off.svg'
-import { ReactComponent as FilterOn } from '../assets/icons/filter-on.svg'
-import { ReactComponent as FitToTimeRange } from '../assets/icons/fit-to-timerange.svg'
-import { ReactComponent as GEBCOLogo } from '../assets/icons/gebco-logo.svg'
-import { ReactComponent as GFWLogo } from '../assets/icons/gfw-logo.svg'
-import { ReactComponent as GCALogo } from '../assets/icons/gca-logo.svg'
-import { ReactComponent as Graph } from '../assets/icons/graph.svg'
-import { ReactComponent as Heatmap } from '../assets/icons/heatmap.svg'
-import { ReactComponent as Help } from '../assets/icons/help.svg'
-import { ReactComponent as History } from '../assets/icons/history.svg'
-import { ReactComponent as Home } from '../assets/icons/home.svg'
-import { ReactComponent as HycomLogo } from '../assets/icons/hycom-logo.svg'
-import { ReactComponent as Info } from '../assets/icons/info.svg'
-import { ReactComponent as Language } from '../assets/icons/language.svg'
-import { ReactComponent as Layers } from '../assets/icons/layers.svg'
-import { ReactComponent as LayersOn } from '../assets/icons/layers-on.svg'
-import { ReactComponent as LayersOff } from '../assets/icons/layers-off.svg'
-import { ReactComponent as Logout } from '../assets/icons/logout.svg'
-import { ReactComponent as Magic } from '../assets/icons/magic.svg'
-import { ReactComponent as MarineRegionsLogo } from '../assets/icons/marine-regions-logo.svg'
-import { ReactComponent as Menu } from '../assets/icons/menu.svg'
-import { ReactComponent as Minus } from '../assets/icons/minus.svg'
-import { ReactComponent as More } from '../assets/icons/more.svg'
-import { ReactComponent as NASALogo } from '../assets/icons/nasa-logo.svg'
-import { ReactComponent as PacIOOSLogo } from '../assets/icons/pacioos-logo.svg'
-import { ReactComponent as Pin } from '../assets/icons/pin.svg'
-import { ReactComponent as PinFilled } from '../assets/icons/pin-filled.svg'
-import { ReactComponent as Plus } from '../assets/icons/plus.svg'
-import { ReactComponent as Polygons } from '../assets/icons/polygons.svg'
-import { ReactComponent as Print } from '../assets/icons/print.svg'
-import { ReactComponent as Private } from '../assets/icons/private.svg'
-import { ReactComponent as ProtectedPlanetLogo } from '../assets/icons/protected-planet-logo.svg'
-import { ReactComponent as ProtectedSeasLogo } from '../assets/icons/protected-seas-logo.svg'
-import { ReactComponent as Publish } from '../assets/icons/publish.svg'
-import { ReactComponent as RemoveFromMap } from '../assets/icons/remove-from-map.svg'
-import { ReactComponent as Report } from '../assets/icons/report.svg'
-import { ReactComponent as Ruler } from '../assets/icons/ruler.svg'
-import { ReactComponent as Satellite } from '../assets/icons/satellite.svg'
-import { ReactComponent as Save } from '../assets/icons/save.svg'
-import { ReactComponent as Search } from '../assets/icons/search.svg'
-import { ReactComponent as Settings } from '../assets/icons/settings.svg'
-import { ReactComponent as Share } from '../assets/icons/share.svg'
-import { ReactComponent as Skip } from '../assets/icons/skip.svg'
-import { ReactComponent as Sparks } from '../assets/icons/sparks.svg'
-import { ReactComponent as Split } from '../assets/icons/split.svg'
-import { ReactComponent as Target } from '../assets/icons/target.svg'
-import { ReactComponent as Tick } from '../assets/icons/tick.svg'
-import { ReactComponent as Track } from '../assets/icons/track.svg'
-import { ReactComponent as EventGap } from '../assets/icons/event-gap.svg'
-// import { ReactComponent as TransmissionsOn } from '../assets/icons/transmissions-on.svg'
-import { ReactComponent as Upload } from '../assets/icons/upload.svg'
-import { ReactComponent as User } from '../assets/icons/user.svg'
-import { ReactComponent as UNEPLogo } from '../assets/icons/unep-logo.svg'
-import { ReactComponent as Vessel } from '../assets/icons/vessel.svg'
-import { ReactComponent as ViewOnMap } from '../assets/icons/view-on-map.svg'
-import { ReactComponent as VisibilityOff } from '../assets/icons/visibility-off.svg'
-import { ReactComponent as VisibilityOn } from '../assets/icons/visibility-on.svg'
-import { ReactComponent as Warning } from '../assets/icons/warning.svg'
 import styles from './Icon.module.css'
 
 export const IconComponents = {
-  'add-polygon': AddPolygon,
-  'arrow-down': ArrowDown,
-  'arrow-left': ArrowLeft,
-  'arrow-right': ArrowRight,
-  'arrow-top': ArrowTop,
-  'category-country-portals': CategoryCountryPortals,
-  'category-fishing-activity': CategoryFishing,
-  'category-marine-manager': CategoryMarineManager,
-  'category-news': CategoryNews,
-  'category-reports': CategoryReports,
-  'category-search': CategorySearch,
-  'color-picker-filled': ColorPickerFilled,
-  'color-picker': ColorPicker,
-  'event-encounter': EventEncounter,
-  'event-fishing': EventFishing,
-  'event-gap': EventGap,
-  'event-loitering': EventLoitering,
-  'event-legend-encounter': EventLegendEncounter,
-  'event-legend-fishing': EventLegendFishing,
-  'event-legend-loitering': EventLegendLoitering,
-  'event-legend-port_visit': EventLegendPort,
-  'event-port_visit': EventPortVisit,
-  'event-port': EventPort,
-  expand: Expand,
-  'external-link': ExternalLink,
-  'fao-logo': FAOLogo,
-  'filter-off': FilterOff,
-  'filter-on': FilterOn,
-  'fit-to-timerange': FitToTimeRange,
-  'gebco-logo': GEBCOLogo,
-  'gfw-logo': GFWLogo,
-  'layers-on': LayersOn,
-  'layers-off': LayersOff,
-  'pin-filled': PinFilled,
-  'remove-from-map': RemoveFromMap,
-  'view-on-map': ViewOnMap,
-  'visibility-off': VisibilityOff,
-  'visibility-on': VisibilityOn,
-  analysis: Analysis,
-  annotation: Annotation,
-  'blue-habitats-logo': BlueHabitatsLogo,
-  calendar: Calendar,
-  camera: Camera,
-  close: Close,
-  clusters: Clusters,
-  compare: Compare,
-  'copernicus-logo': CopernicusLogo,
-  copy: Copy,
-  delete: Delete,
-  dots: Dots,
-  download: Download,
-  drag: Drag,
-  draw: Draw,
-  edit: Edit,
-  'edit-off': EditOff,
-  email: Email,
-  encounters: Encounters,
-  feedback: Feedback,
-  'feedback-error': FeedbackError,
-  'gca-logo': GCALogo,
-  graph: Graph,
-  heatmap: Heatmap,
-  help: Help,
-  history: History,
-  home: Home,
-  'hycom-logo': HycomLogo,
-  info: Info,
-  language: Language,
-  layers: Layers,
-  logout: Logout,
-  magic: Magic,
-  'marine-regions-logo': MarineRegionsLogo,
-  menu: Menu,
-  minus: Minus,
-  more: More,
-  'nasa-logo': NASALogo,
-  'pacioos-logo': PacIOOSLogo,
-  pin: Pin,
-  plus: Plus,
-  polygons: Polygons,
-  print: Print,
-  private: Private,
-  'protected-planet-logo': ProtectedPlanetLogo,
-  'protected-seas-logo': ProtectedSeasLogo,
-  publish: Publish,
-  report: Report,
-  ruler: Ruler,
-  satellite: Satellite,
-  save: Save,
-  search: Search,
-  settings: Settings,
-  share: Share,
-  skip: Skip,
-  sparks: Sparks,
-  split: Split,
-  target: Target,
-  tick: Tick,
-  track: Track,
-  upload: Upload,
-  user: User,
-  'unep-logo': UNEPLogo,
-  vessel: Vessel,
-  warning: Warning,
+  'add-polygon': lazy(() =>
+    import('../assets/icons/add-polygon.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'arrow-down': lazy(() =>
+    import('../assets/icons/analysis.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'arrow-left': lazy(() =>
+    import('../assets/icons/annotation.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'arrow-right': lazy(() =>
+    import('../assets/icons/arrow-down.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'arrow-top': lazy(() =>
+    import('../assets/icons/arrow-left.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'category-country-portals': lazy(() =>
+    import('../assets/icons/arrow-right.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'category-fishing-activity': lazy(() =>
+    import('../assets/icons/arrow-top.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'category-marine-manager': lazy(() =>
+    import('../assets/icons/blue-habitats-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'category-news': lazy(() =>
+    import('../assets/icons/calendar.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'category-reports': lazy(() =>
+    import('../assets/icons/camera.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'category-search': lazy(() =>
+    import('../assets/icons/category-country-portals.svg').then((m) => ({
+      default: m.ReactComponent,
+    }))
+  ),
+  'color-picker-filled': lazy(() =>
+    import('../assets/icons/category-fishing.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'color-picker': lazy(() =>
+    import('../assets/icons/category-marine-manager.svg').then((m) => ({
+      default: m.ReactComponent,
+    }))
+  ),
+  'event-encounter': lazy(() =>
+    import('../assets/icons/category-news.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'event-fishing': lazy(() =>
+    import('../assets/icons/category-reports.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'event-gap': lazy(() =>
+    import('../assets/icons/category-search.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'event-loitering': lazy(() =>
+    import('../assets/icons/close.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'event-legend-encounter': lazy(() =>
+    import('../assets/icons/clusters.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'event-legend-fishing': lazy(() =>
+    import('../assets/icons/color-picker.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'event-legend-loitering': lazy(() =>
+    import('../assets/icons/color-picker-filled.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'event-legend-port_visit': lazy(() =>
+    import('../assets/icons/compare.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'event-port_visit': lazy(() =>
+    import('../assets/icons/copernicus-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'event-port': lazy(() =>
+    import('../assets/icons/copy.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  expand: lazy(() =>
+    import('../assets/icons/delete.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'external-link': lazy(() =>
+    import('../assets/icons/dots.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'fao-logo': lazy(() =>
+    import('../assets/icons/download.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'filter-off': lazy(() =>
+    import('../assets/icons/drag.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'filter-on': lazy(() =>
+    import('../assets/icons/draw.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'fit-to-timerange': lazy(() =>
+    import('../assets/icons/edit.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'gebco-logo': lazy(() =>
+    import('../assets/icons/edit-off.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'gfw-logo': lazy(() =>
+    import('../assets/icons/email.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'layers-on': lazy(() =>
+    import('../assets/icons/encounters.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'layers-off': lazy(() =>
+    import('../assets/icons/event-encounter.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'pin-filled': lazy(() =>
+    import('../assets/icons/event-fishing.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'remove-from-map': lazy(() =>
+    import('../assets/icons/event-gap.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'view-on-map': lazy(() =>
+    import('../assets/icons/event-legend-encounter.svg').then((m) => ({
+      default: m.ReactComponent,
+    }))
+  ),
+  'visibility-off': lazy(() =>
+    import('../assets/icons/event-legend-fishing.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'visibility-on': lazy(() =>
+    import('../assets/icons/event-legend-loitering.svg').then((m) => ({
+      default: m.ReactComponent,
+    }))
+  ),
+  analysis: lazy(() =>
+    import('../assets/icons/event-legend-port_visit.svg').then((m) => ({
+      default: m.ReactComponent,
+    }))
+  ),
+  annotation: lazy(() =>
+    import('../assets/icons/event-loitering.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'blue-habitats-logo': lazy(() =>
+    import('../assets/icons/event-port.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  calendar: lazy(() =>
+    import('../assets/icons/event-port-visit.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  camera: lazy(() =>
+    import('../assets/icons/expand.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  close: lazy(() =>
+    import('../assets/icons/external-link.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  clusters: lazy(() =>
+    import('../assets/icons/fao-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  compare: lazy(() =>
+    import('../assets/icons/feedback.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'copernicus-logo': lazy(() =>
+    import('../assets/icons/feedback-error.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  copy: lazy(() =>
+    import('../assets/icons/filter-off.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  delete: lazy(() =>
+    import('../assets/icons/filter-on.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  dots: lazy(() =>
+    import('../assets/icons/fit-to-timerange.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  download: lazy(() =>
+    import('../assets/icons/gca-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  drag: lazy(() =>
+    import('../assets/icons/gebco-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  draw: lazy(() =>
+    import('../assets/icons/gfw-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  edit: lazy(() =>
+    import('../assets/icons/graph.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'edit-off': lazy(() =>
+    import('../assets/icons/heatmap.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  email: lazy(() =>
+    import('../assets/icons/help.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  encounters: lazy(() =>
+    import('../assets/icons/history.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  feedback: lazy(() =>
+    import('../assets/icons/home.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'feedback-error': lazy(() =>
+    import('../assets/icons/hycom-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'gca-logo': lazy(() =>
+    import('../assets/icons/info.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  graph: lazy(() =>
+    import('../assets/icons/language.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  heatmap: lazy(() =>
+    import('../assets/icons/layers.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  help: lazy(() =>
+    import('../assets/icons/layers-off.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  history: lazy(() =>
+    import('../assets/icons/layers-on.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  home: lazy(() =>
+    import('../assets/icons/logout.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'hycom-logo': lazy(() =>
+    import('../assets/icons/magic.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  info: lazy(() =>
+    import('../assets/icons/marine-regions-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  language: lazy(() =>
+    import('../assets/icons/menu.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  layers: lazy(() =>
+    import('../assets/icons/minus.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  logout: lazy(() =>
+    import('../assets/icons/more.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  magic: lazy(() =>
+    import('../assets/icons/nasa-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'marine-regions-logo': lazy(() =>
+    import('../assets/icons/pacioos-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  menu: lazy(() => import('../assets/icons/pin.svg').then((m) => ({ default: m.ReactComponent }))),
+  minus: lazy(() =>
+    import('../assets/icons/pin-filled.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  more: lazy(() => import('../assets/icons/plus.svg').then((m) => ({ default: m.ReactComponent }))),
+  'nasa-logo': lazy(() =>
+    import('../assets/icons/polygons.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'pacioos-logo': lazy(() =>
+    import('../assets/icons/print.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  pin: lazy(() =>
+    import('../assets/icons/private.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  plus: lazy(() =>
+    import('../assets/icons/protected-planet-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  polygons: lazy(() =>
+    import('../assets/icons/protected-seas-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  print: lazy(() =>
+    import('../assets/icons/publish.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  private: lazy(() =>
+    import('../assets/icons/remove-from-map.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'protected-planet-logo': lazy(() =>
+    import('../assets/icons/report.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'protected-seas-logo': lazy(() =>
+    import('../assets/icons/ruler.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  publish: lazy(() =>
+    import('../assets/icons/satellite.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  report: lazy(() =>
+    import('../assets/icons/save.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  ruler: lazy(() =>
+    import('../assets/icons/search.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  satellite: lazy(() =>
+    import('../assets/icons/settings.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  save: lazy(() =>
+    import('../assets/icons/share.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  search: lazy(() =>
+    import('../assets/icons/skip.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  settings: lazy(() =>
+    import('../assets/icons/sparks.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  share: lazy(() =>
+    import('../assets/icons/split.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  skip: lazy(() =>
+    import('../assets/icons/target.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  sparks: lazy(() =>
+    import('../assets/icons/tick.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  split: lazy(() =>
+    import('../assets/icons/track.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  target: lazy(() =>
+    import('../assets/icons/unep-logo.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  tick: lazy(() =>
+    import('../assets/icons/upload.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  track: lazy(() =>
+    import('../assets/icons/user.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  upload: lazy(() =>
+    import('../assets/icons/vessel.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  user: lazy(() =>
+    import('../assets/icons/view-on-map.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  'unep-logo': lazy(() =>
+    import('../assets/icons/visibility-off.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  vessel: lazy(() =>
+    import('../assets/icons/visibility-on.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
+  warning: lazy(() =>
+    import('../assets/icons/warning.svg').then((m) => ({ default: m.ReactComponent }))
+  ),
 }
 
 export type IconType = keyof typeof IconComponents
@@ -238,11 +346,13 @@ export function Icon(props: IconProps) {
   }
   return (
     <Tooltip content={tooltip as React.ReactNode} placement="auto">
-      <Component
-        className={cx(styles.icon, styles[type], className)}
-        style={style}
-        {...(testId && { 'data-test': testId })}
-      />
+      <Suspense fallback={null}>
+        <Component
+          className={cx(styles.icon, styles[type], className)}
+          style={style}
+          {...(testId && { 'data-test': testId })}
+        />
+      </Suspense>
     </Tooltip>
   )
 }
