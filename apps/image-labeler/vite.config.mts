@@ -34,6 +34,10 @@ export default defineConfig({
           src: 'nginx.conf',
           dest: '',
         },
+        {
+          src: '../../config/entrypoint.sh',
+          dest: '',
+        },
       ],
     }),
   ],

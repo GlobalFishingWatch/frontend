@@ -18,7 +18,7 @@ FROM nginx:stable-alpine as production
 COPY ./nginx.conf /etc/nginx/nginx.conf
 # COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 # RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-# COPY ./entrypoint.sh entrypoint.sh
+COPY ./entrypoint.sh entrypoint.sh
 COPY ./ /usr/share/nginx/www/
-# ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 
