@@ -1,0 +1,29 @@
+.pageTitle {
+  font: var(--font-XL);
+  margin-bottom: var(--space-M);
+}
+
+.project {
+  display: block;
+  margin-bottom: var(--space-M);
+  padding-block: var(--space-M);
+}
+
+.project:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.projectName {
+  font: var(--font-L);
+  text-decoration: underline;
+  margin-bottom: var(--space-S);
+}
+
+.projectProperties {
+  display: flex;
+  gap: var(--space-M);
+}
+
+.projectProperties > div {
+  max-width: 50vw;
+}

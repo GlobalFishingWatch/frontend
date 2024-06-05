@@ -1,0 +1,50 @@
+.task {
+  border: var(--border);
+  border-bottom: none;
+  padding: var(--space-S);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.task:last-child {
+  border-bottom: var(--border);
+}
+
+.open {
+  padding: var(--space-L);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-S);
+}
+
+.images {
+  display: flex;
+  gap: var(--space-S);
+}
+
+.images img {
+  width: 5rem;
+  background-color: var(--color-terthiary-blue);
+}
+
+.open .images {
+  width: 100%;
+  max-width: 80vh;
+}
+
+.open .images img {
+  width: 100%;
+}
+
+.labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-S);
+}
+
+.buttons {
+  display: flex;
+  gap: var(--space-S);
+}

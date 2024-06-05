@@ -3049,6 +3049,7 @@ __metadata:
     usehooks-ts: "npm:^2.14.0"
     vite: "npm:~5.0.0"
     vite-plugin-static-copy: "npm:^1.0.5"
+    vite-plugin-svgr: "npm:^3.2.0"
     vitest: "npm:^1.3.1"
     web-vitals: "npm:^3.5.1"
   languageName: unknown
@@ -5520,7 +5521,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/pluginutils@npm:^5.0.2":
+"@rollup/pluginutils@npm:^5.0.2, @rollup/pluginutils@npm:^5.0.4":
   version: 5.1.0
   resolution: "@rollup/pluginutils@npm:5.1.0"
   dependencies:
@@ -5796,7 +5797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@svgr/core@npm:8.1.0":
+"@svgr/core@npm:8.1.0, @svgr/core@npm:^8.1.0":
   version: 8.1.0
   resolution: "@svgr/core@npm:8.1.0"
   dependencies:
@@ -5819,7 +5820,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@svgr/plugin-jsx@npm:8.1.0":
+"@svgr/plugin-jsx@npm:8.1.0, @svgr/plugin-jsx@npm:^8.1.0":
   version: 8.1.0
   resolution: "@svgr/plugin-jsx@npm:8.1.0"
   dependencies:
@@ -26088,6 +26089,19 @@ __metadata:
   peerDependencies:
     vite: ^5.0.0
   checksum: 10/8bc472f9a902bff443f24d8ff0e6ea58a74d31c1bb7f9eda4015cffe88bbe27d896d2c4af6b220908aef1b9b835b3bd0a8bde4b9707735cc2d4117f224ff24a7
+  languageName: node
+  linkType: hard
+
+"vite-plugin-svgr@npm:^3.2.0":
+  version: 3.3.0
+  resolution: "vite-plugin-svgr@npm:3.3.0"
+  dependencies:
+    "@rollup/pluginutils": "npm:^5.0.4"
+    "@svgr/core": "npm:^8.1.0"
+    "@svgr/plugin-jsx": "npm:^8.1.0"
+  peerDependencies:
+    vite: ^2.6.0 || 3 || 4
+  checksum: 10/014840a0d98a54422fb94520086bb20c99c7ee21285d7049e4496f529b7be69e23d34f543a29867372e5cbdf135c5a96eae01474c88ec1223c78b7e4b18008b0
   languageName: node
   linkType: hard
 

@@ -17,7 +17,7 @@ import { Route as rootRoute } from './routes/__root'
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
-const TasksTaskIdLazyImport = createFileRoute('/tasks/$taskId')()
+const ProjectProjectIdLazyImport = createFileRoute('/project/$projectId')()
 
 // Create/Update Routes
 
@@ -26,10 +26,12 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const TasksTaskIdLazyRoute = TasksTaskIdLazyImport.update({
-  path: '/tasks/$taskId',
+const ProjectProjectIdLazyRoute = ProjectProjectIdLazyImport.update({
+  path: '/project/$projectId',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/tasks.$taskId.lazy').then((d) => d.Route))
+} as any).lazy(() =>
+  import('./routes/project.$projectId.lazy').then((d) => d.Route),
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -42,11 +44,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/tasks/$taskId': {
-      id: '/tasks/$taskId'
-      path: '/tasks/$taskId'
-      fullPath: '/tasks/$taskId'
-      preLoaderRoute: typeof TasksTaskIdLazyImport
+    '/project/$projectId': {
+      id: '/project/$projectId'
+      path: '/project/$projectId'
+      fullPath: '/project/$projectId'
+      preLoaderRoute: typeof ProjectProjectIdLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -56,7 +58,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
-  TasksTaskIdLazyRoute,
+  ProjectProjectIdLazyRoute,
 })
 
 /* prettier-ignore-end */
@@ -68,14 +70,14 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/tasks/$taskId"
+        "/project/$projectId"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
     },
-    "/tasks/$taskId": {
-      "filePath": "tasks.$taskId.lazy.tsx"
+    "/project/$projectId": {
+      "filePath": "project.$projectId.lazy.tsx"
     }
   }
 }

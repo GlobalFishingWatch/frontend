@@ -1,6 +1,7 @@
 /// <reference types='vitest' />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import svgr from 'vite-plugin-svgr'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
@@ -21,6 +22,7 @@ export default defineConfig({
 
   plugins: [
     react(),
+    svgr(),
     nxViteTsPaths(),
     TanStackRouterVite({
       routesDirectory: './apps/image-labeler/src/routes',
