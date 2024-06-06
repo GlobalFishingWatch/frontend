@@ -4,7 +4,7 @@
 
 # Production image, copy all the files and run next
 FROM node:21-alpine AS production
-ENV YARN_VERSION 3.6.1
+ENV YARN_VERSION 4.2.2
 
 RUN yarn set version $YARN_VERSION
 WORKDIR /app
