@@ -29,7 +29,9 @@ const IndexLazyRoute = IndexLazyImport.update({
 const ProjectProjectIdRoute = ProjectProjectIdImport.update({
   path: '/project/$projectId',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/project.$projectId.lazy').then((d) => d.Route),
+)
 
 // Populate the FileRoutesByPath interface
 
