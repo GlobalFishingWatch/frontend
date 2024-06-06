@@ -1,1 +1,0 @@
-# @globalfishingwatchapp/user-groups-admin

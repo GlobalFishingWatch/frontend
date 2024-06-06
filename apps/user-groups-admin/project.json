@@ -1,72 +1,57 @@
 {
   "name": "user-groups-admin",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/user-groups-admin",
+  "sourceRoot": "apps/user-groups-admin/src",
   "projectType": "application",
+  "tags": [],
   "targets": {
-    "deploy": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "nx build user-groups-admin --parallel",
-          "nx docker-prepare user-groups-admin"
-        ],
-        "parallel": false
-      }
-    },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/user-groups-admin",
-          "cp apps/user-groups-admin/nginx.conf dist/apps/user-groups-admin"
-        ]
-      }
-    },
     "build": {
-      "executor": "@nx/next:build",
-      "output": "export",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/user-groups-admin"
       },
       "configurations": {
-        "production": {}
-      }
-    },
-    "start": {
-      "executor": "@nx/next:server",
-      "options": {
-        "buildTarget": "user-groups-admin:build",
-        "dev": true,
-        "port": 3000
-      },
-      "configurations": {
+        "development": {
+          "mode": "development"
+        },
         "production": {
-          "buildTarget": "user-groups-admin:build:production",
-          "dev": false
+          "mode": "production"
         }
       }
     },
-    "export": {
-      "executor": "@nx/next:export",
+    "start": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "user-groups-admin:build:production"
+        "buildTarget": "user-groups-admin:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "user-groups-admin:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "user-groups-admin:build:production",
+          "hmr": false
+        }
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/user-groups-admin"],
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
       "options": {
-        "jestConfig": "apps/user-groups-admin/jest.config.ts"
+        "buildTarget": "user-groups-admin:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "user-groups-admin:build:development"
+        },
+        "production": {
+          "buildTarget": "user-groups-admin:build:production"
+        }
       }
     }
-  },
-  "tags": []
+  }
 }
