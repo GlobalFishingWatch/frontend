@@ -30,7 +30,6 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "debug": true,
         "outputPath": "dist/apps/user-groups-admin"
       },
       "configurations": {
