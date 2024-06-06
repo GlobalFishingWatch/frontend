@@ -31,14 +31,14 @@
     "next-react-memory-stats": "^1.0.2",
     "parquet-wasm": "0.5.0",
     "qs": "^6.11.2",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
     "react-dom": "^18.2.0",
     "react-fps": "^1.0.6",
     "recoil": "0.7.7",
     "recoil-sync": "^0.2.0",
     "recoil-sync-next": "^0.0.5",
     "simple-statistics": "^7.8.3",
-    "typescript": "5.3.3"
+    "typescript": "5.4.5"
   },
   "devDependencies": {
     "@globalfishingwatch/linting": "2.0.2",
