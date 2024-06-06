@@ -1,0 +1,32 @@
+.project {
+  display: flex;
+  flex-direction: column;
+}
+
+.loadMoreButton {
+  margin-block: var(--space-L);
+  margin-inline: auto;
+  width: 30rem;
+}
+
+.pageTitle {
+  font: var(--font-XL);
+  margin-bottom: var(--space-M);
+}
+
+.projectInfo code {
+  background-color: var(--color-terthiary-blue);
+  line-height: 1;
+  font-weight: 500;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.projectInfoItem {
+  margin-bottom: var(--space-S);
+}
+
+.tasksTitle {
+  font: var(--font-L);
+  margin-top: var(--space-M);
+  margin-bottom: var(--space-S);
+}

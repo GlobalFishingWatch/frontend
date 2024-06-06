@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, kebabCase } from 'lodash'
 import { stringify } from 'qs'
-import { APIPagination, Workspace } from '@globalfishingwatch/api-types'
+import { APIPagination, WORKSPACE_PUBLIC_ACCESS, Workspace } from '@globalfishingwatch/api-types'
 import {
   GFWAPI,
   parseAPIError,
@@ -19,7 +19,6 @@ import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { WorkspaceState } from 'types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
-import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 
 export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategory>
 
@@ -131,33 +130,22 @@ export const createWorkspaceThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->(
-  'workspaces/create',
-  async (workspace, { rejectWithValue }) => {
-    const parsedWorkspace = {
-      ...workspace,
-      id: kebabCase(workspace.name),
-      public: true,
-    }
-    try {
-      const newWorkspace = await GFWAPI.fetch<Workspace>(`/workspaces`, {
-        method: 'POST',
-        body: parsedWorkspace as any,
-      })
-      return newWorkspace
-    } catch (e: any) {
-      return rejectWithValue(parseAPIError(e))
-    }
-  },
-  {
-    condition: (partialWorkspace) => {
-      if (!partialWorkspace || !partialWorkspace.id) {
-        console.warn('To update the workspace you need the id')
-        return false
-      }
-    },
+>('workspaces/create', async (workspace, { rejectWithValue }) => {
+  const id = kebabCase(workspace.name)
+  const parsedWorkspace = {
+    ...workspace,
+    id: workspace.viewAccess === WORKSPACE_PUBLIC_ACCESS ? `${id}-public` : id,
   }
-)
+  try {
+    const newWorkspace = await GFWAPI.fetch<Workspace>(`/workspaces`, {
+      method: 'POST',
+      body: parsedWorkspace as any,
+    })
+    return newWorkspace
+  } catch (e: any) {
+    return rejectWithValue(parseAPIError(e))
+  }
+})
 
 export const updateWorkspaceThunk = createAsyncThunk<
   AppWorkspace,

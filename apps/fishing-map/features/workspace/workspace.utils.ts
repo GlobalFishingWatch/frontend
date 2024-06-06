@@ -1,4 +1,9 @@
-import { WORKSPACE_PRIVATE_ACCESS, Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
+import {
+  WORKSPACE_PASSWORD_ACCESS,
+  WORKSPACE_PRIVATE_ACCESS,
+  Workspace,
+  WorkspaceUpsert,
+} from '@globalfishingwatch/api-types'
 import { PUBLIC_SUFIX } from 'data/config'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { WorkspaceState } from 'types'
@@ -21,5 +26,9 @@ export const isPrivateWorkspaceNotAllowed = (
 
 export const getWorkspaceLabel = (workspace: AppWorkspace | Workspace<WorkspaceState, string>) => {
   const isPrivate = !workspace.id.endsWith(`-${PUBLIC_SUFIX}`)
-  return `${isPrivate ? '🔒 ' : ''}${workspace.name}`
+  const isPasswordProtected = workspace.viewAccess === WORKSPACE_PASSWORD_ACCESS
+  if (isPrivate || isPasswordProtected) {
+    return `${isPasswordProtected ? '🔐' : '🔒'} ${workspace.name}`
+  }
+  return workspace.name
 }

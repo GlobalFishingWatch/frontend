@@ -15,7 +15,7 @@ type ActiveChoiceProperties = {
 
 interface ChoiceProps {
   options: ChoiceOption[]
-  activeOption: string
+  activeOption?: string
   disabled?: boolean
   onSelect?: (option: ChoiceOption<any>, e: React.MouseEvent) => void
   size?: ButtonSize
@@ -36,7 +36,7 @@ export function Choice({
   label,
   infoTooltip,
 }: ChoiceProps) {
-  const activeOptionId = activeOption || options?.[0]?.id
+  const activeOptionId = activeOption
 
   const activeRef = useRef<HTMLLIElement | null>(null)
   const [activeElementProperties, setActiveElementProperties] = useState<
@@ -119,7 +119,7 @@ export function Choice({
               </li>
             )
           })}
-          {activeElementProperties && (
+          {activeOption && activeElementProperties && (
             <div
               className={styles.activeChip}
               style={{
