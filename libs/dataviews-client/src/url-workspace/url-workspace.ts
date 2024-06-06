@@ -56,6 +56,9 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
     ...reportTimeComparison,
     duration: parseInt(reportTimeComparison.duration),
   }),
+  rulers: (rulers: { id: string }[]) => {
+    return rulers?.map((ruler) => ({ ...ruler, id: parseInt(ruler.id) }))
+  },
   dataviewInstances: (dataviewInstances: UrlDataviewInstance[]) => {
     return dataviewInstances.map(parseDataviewInstance)
   },
