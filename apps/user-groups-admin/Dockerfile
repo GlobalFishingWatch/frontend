@@ -19,6 +19,6 @@ COPY ./nginx.conf /etc/nginx/nginx.template
 COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
 COPY ./entrypoint.sh entrypoint.sh
-COPY ./exported /usr/share/nginx/www/
+COPY ./ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
 
