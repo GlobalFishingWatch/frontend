@@ -20,6 +20,8 @@ import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/mo
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { WorkspaceCategory } from 'data/workspaces'
 import { selectLayerLibraryModalOpen } from 'features/modals/modals.slice'
+import CreateWorkspaceModal from 'features/workspace/save/WorkspaceCreateModal'
+import EditWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
 import styles from './Modals.module.css'
 
 const NewDataset = dynamic(
@@ -157,6 +159,8 @@ const AppModals = () => {
         <LayerLibrary />
       </Modal>
       {isDatasetUploadModalOpen && <NewDataset />}
+      <EditWorkspaceModal />
+      <CreateWorkspaceModal />
       {downloadActivityAreaKey && <DownloadActivityModal />}
       {downloadTrackModalOpen && <DownloadTrackModal />}
       {!readOnly && (

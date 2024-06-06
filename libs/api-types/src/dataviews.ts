@@ -20,6 +20,7 @@ export enum DataviewType {
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
   GL = 'GL',
+  Graticules = 'GRATICULES',
   Heatmap = 'HEATMAP',
   HeatmapStatic = 'HEATMAP_STATIC',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
@@ -31,6 +32,7 @@ export enum DataviewType {
   UserPoints = 'USER_POINTS',
   VesselEvents = 'VESSEL_EVENTS',
   VesselEventsShapes = 'VESSEL_EVENTS_SHAPES',
+  Workspaces = 'WORKSPACES',
 }
 
 export type DataviewSublayerConfig = {
@@ -48,6 +50,8 @@ export type DataviewSublayerConfig = {
 export interface DataviewConfig<Type = DataviewType> {
   /** Type to define what kind of layer to render, ex: fourwings, context, draw... */
   type?: Type
+  /** Used in buffers report to store the geometry, normally a FeatureCollection */
+  data?: any
   /** Used in activity or detections layers to define which layers are active in all the options available */
   datasets?: string[]
   color?: string
@@ -55,7 +59,7 @@ export interface DataviewConfig<Type = DataviewType> {
   colorCyclingType?: ColorCyclingType
   /** Fourwings modes: 'compare' | 'bivariate' */
   comparisonMode?: string
-  /** Fourwings visualizations: 'heatmap' | 'positions' */
+  /** FourwingsVisualizationMode = 'heatmap' | 'heatmap-high-res' | 'positions' */
   visualizationMode?: string
   /** Property used when a layer can use white as last step in its color ramp */
   colorRampWhiteEnd?: boolean
@@ -185,6 +189,7 @@ export enum DataviewCategory {
   Events = 'events',
   User = 'user',
   Vessels = 'vessels',
+  Workspaces = 'workspaces',
 }
 
 export interface Dataview<Type = any, Category = DataviewCategory> {

@@ -2,10 +2,10 @@ api-portal:
   - apps/api-portal/**/*
 fishing-map:
   - apps/fishing-map/**/*
+image-labeler:
+  - apps/image-labeler/**/*
 port-labeler:
   - apps/port-labeler/**/*
-tile-inspector:
-  - apps/tile-inspector/**/*
 user-groups-admin:
   - apps/user-groups-admin/**/*
 vessel-history:

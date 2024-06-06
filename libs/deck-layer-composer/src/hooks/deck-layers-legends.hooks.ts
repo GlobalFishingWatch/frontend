@@ -18,9 +18,11 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
     if (!layer.instance || !(layer.instance instanceof FourwingsLayer)) {
       return []
     }
-    const interaction = deckLayerHoverFeatures?.features?.find((i: any) => i.layer?.id === layer.id)
-
-    const { domain, range } = layer.instance.getColorScale() || {}
+    const interaction = (deckLayerHoverFeatures?.features as FourwingsPickingObject[])?.find(
+      (feature) => feature.layerId === layer.id
+    )
+    // TODO:deck review what to do here with positions
+    const { colorDomain, colorRange } = layer.instance.getColorScale() || {}
     let label = layer.instance.props.sublayers?.[0]?.unit || ''
     if (label === 'hours') {
       const gridZoom = Math.round(
@@ -39,13 +41,13 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
           ? LegendType.Bivariate
           : LegendType.ColorRampDiscrete,
       sublayers: layer.instance.props.sublayers,
-      domain,
+      domain: colorDomain,
       ranges:
         layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
           ? getBivariateRampLegend(
               layer.instance.props.sublayers.map((sublayer) => sublayer.colorRamp as ColorRampId)
             )
-          : range,
+          : colorRange,
       currentValues: (interaction as FourwingsPickingObject)?.sublayers?.map((s: any) => s.value)!,
       label,
     }

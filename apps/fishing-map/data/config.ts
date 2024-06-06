@@ -46,6 +46,7 @@ export const PUBLIC_SUFIX = 'public'
 export const FULL_SUFIX = 'full'
 export const USER_SUFIX = 'user'
 export const PRIVATE_SUFIX = 'private'
+export const AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX = 'gfw-feedback-auto-saved'
 
 export const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
@@ -92,7 +93,6 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   sidebarOpen: true,
   mapAnnotationsVisible: true,
   mapRulersVisible: true,
-  mapResolution: 'default',
   activityVisualizationMode: 'heatmap',
   detectionsVisualizationMode: 'heatmap',
   dataviewInstances: undefined,

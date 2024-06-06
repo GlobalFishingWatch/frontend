@@ -292,10 +292,12 @@ export const selectActiveHeatmapVesselDatasets = createSelector(
   }
 )
 
-export const selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry = createSelector(
+export const selectActiveHeatmapEnvironmentalDataviewsWithoutStatic = createSelector(
   [selectActiveHeatmapEnvironmentalDataviews],
   (dataviews) => {
-    return dataviews.filter((dv) => !isBathymetryDataview(dv))
+    return dataviews.filter(
+      (dv) => !isBathymetryDataview(dv) && dv.config?.type !== DataviewType.HeatmapStatic
+    )
   }
 )
 
@@ -325,7 +327,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
     [
       selectActiveReportActivityDataviews,
       selectActiveDetectionsDataviews,
-      selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry,
+      selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
       selectTimebarSelectedEnvId,
     ],
     (activityDataviews, detectionsDataviews, environmentDataviews, timebarSelectedEnvId) => {

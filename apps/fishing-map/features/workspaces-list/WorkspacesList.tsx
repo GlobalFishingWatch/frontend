@@ -60,7 +60,7 @@ function WorkspacesList() {
       ) : (
         <ul>
           {highlightedWorkspaces?.map((highlightedWorkspace) => {
-            const { name, cta, description, img } = highlightedWorkspace
+            const { name, cta, description, reportUrl, img } = highlightedWorkspace
             const i18nName = (name?.[i18n.language as Locale] as string) || name.en
             const i18nDescription =
               (description?.[i18n.language as Locale] as string) || description.en
@@ -135,26 +135,33 @@ function WorkspacesList() {
                       }}
                     ></p>
                   )}
-                  {active &&
-                    (isExternalLink ? (
-                      <a
-                        target="_blank"
-                        href={linkTo as string}
-                        className={styles.link}
-                        rel="noreferrer"
-                      >
-                        {i18nCta}
+                  <div className={styles.linksContainer}>
+                    {reportUrl && (
+                      <a href={reportUrl as string} className={styles.link}>
+                        {t('analysis.see', 'See report')}
                       </a>
-                    ) : (
-                      <Link
-                        to={linkTo}
-                        target="_self"
-                        className={styles.link}
-                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                      >
-                        {i18nCta}
-                      </Link>
-                    ))}
+                    )}
+                    {active &&
+                      (isExternalLink ? (
+                        <a
+                          target="_blank"
+                          href={linkTo as string}
+                          className={styles.link}
+                          rel="noreferrer"
+                        >
+                          {i18nCta}
+                        </a>
+                      ) : (
+                        <Link
+                          to={linkTo}
+                          target="_self"
+                          className={styles.link}
+                          onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                        >
+                          {i18nCta}
+                        </Link>
+                      ))}
+                  </div>
                 </div>
               </li>
             )

@@ -153,6 +153,20 @@ export const selectIsMarineManagerLocation = createSelector(
   }
 )
 
+export const selectIsFishingIndexLocation = createSelector(
+  [selectLocationCategory, selectWorkspaceId],
+  (category, workspaceId) => {
+    return category === WorkspaceCategory.FishingActivity && !workspaceId
+  }
+)
+
+export const selectIsWorkspaceIndexLocation = createSelector(
+  [selectIsMarineManagerLocation, selectIsFishingIndexLocation],
+  (isMarineManagerLocation, isFishingIndexLocation) => {
+    return isMarineManagerLocation || isFishingIndexLocation
+  }
+)
+
 export const selectUserTab = selectQueryParam('userTab')
 export const selectUrlMapZoomQuery = selectQueryParam('zoom')
 export const selectUrlMapLatitudeQuery = selectQueryParam('latitude')

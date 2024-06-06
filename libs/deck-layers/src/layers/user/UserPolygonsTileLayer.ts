@@ -21,9 +21,10 @@ import {
   getMVTSublayerProps,
   rgbaStringToComponents,
   getColorRampByOpacitySteps,
+  getFetchLoadOptions,
 } from '../../utils'
 import { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
-import { UserTileLayer } from './UserTileLayer'
+import { UserBaseLayer, UserBaseLayerState } from './UserBaseLayer'
 
 type _UserContextLayerProps = TileLayerProps & UserPolygonsLayerProps
 
@@ -34,11 +35,11 @@ const defaultProps: DefaultProps<_UserContextLayerProps> = {
   debounceTime: 500,
 }
 
-type UserContextLayerState = {
+type UserContextLayerState = UserBaseLayerState & {
   scale: ScaleLinear<string, string, never>
 }
 
-export class UserContextTileLayer<PropsT = {}> extends UserTileLayer<
+export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   _UserContextLayerProps & PropsT
 > {
   static layerName = 'UserContextTileLayer'
@@ -72,19 +73,22 @@ export class UserContextTileLayer<PropsT = {}> extends UserTileLayer<
   }
 
   _getHighlightLineWidth: AccessorFunction<Feature<Geometry, GeoJsonProperties>, number> = (d) => {
-    const { highlightedFeatures = [], idProperty } = this.props
+    const { idProperty } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!) ? 1 : 0
   }
 
   _getFillColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { highlightedFeatures = [], idProperty } = this.props
+    const { idProperty } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)
       ? COLOR_HIGHLIGHT_FILL
       : COLOR_TRANSPARENT
   }
 
   _getFillStepsColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { highlightedFeatures = [], idProperty } = this.props
+    const { idProperty } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     if (getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)) {
       return COLOR_HIGHLIGHT_FILL
     }
@@ -99,7 +103,8 @@ export class UserContextTileLayer<PropsT = {}> extends UserTileLayer<
   }
 
   renderLayers() {
-    const { highlightedFeatures, color, layers, steps, stepsPickValue } = this.props
+    const { color, layers, steps, stepsPickValue } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const filterProps = this._getTimeFilterProps()
     return layers.map((layer) => {
@@ -107,6 +112,9 @@ export class UserContextTileLayer<PropsT = {}> extends UserTileLayer<
         id: `${layer.id}-base-layer`,
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
+        loadOptions: {
+          ...getFetchLoadOptions(),
+        },
         onViewportLoad: this.props.onViewportLoad,
         ...filterProps,
         renderSubLayers: (props) => {

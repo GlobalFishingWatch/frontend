@@ -1,4 +1,8 @@
-import { Workspace } from '@globalfishingwatch/api-types'
+import {
+  WORKSPACE_PRIVATE_ACCESS,
+  WORKSPACE_PUBLIC_ACCESS,
+  Workspace,
+} from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
 import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/layer-library/layers-environment'
@@ -27,6 +31,8 @@ const workspace: Workspace<WorkspaceState> = {
   app: APP_NAME,
   name: 'Default public Fishing Map workspace',
   description: '',
+  viewAccess: WORKSPACE_PUBLIC_ACCESS,
+  editAccess: WORKSPACE_PRIVATE_ACCESS,
   category: DEFAULT_WORKSPACE_CATEGORY,
   startAt: DEFAULT_TIME_RANGE.start,
   endAt: DEFAULT_TIME_RANGE.end,
@@ -42,7 +48,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
-        datasets: ['public-global-fishing-effort:v20231026'],
+        datasets: ['public-global-fishing-effort:v3.0'],
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
     },

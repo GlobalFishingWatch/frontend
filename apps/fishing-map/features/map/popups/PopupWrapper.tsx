@@ -1,6 +1,6 @@
 import { Fragment, useRef } from 'react'
 import cx from 'classnames'
-import { groupBy } from 'lodash'
+import { groupBy, uniqBy } from 'lodash'
 import { useSelector } from 'react-redux'
 import {
   offset,
@@ -17,15 +17,23 @@ import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   ContextPickingObject,
+  FourwingsComparisonMode,
+  FourwingsHeatmapPickingObject,
+  FourwingsPositionsPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
+  WorkspacesPickingObject,
 } from '@globalfishingwatch/deck-layers'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
 import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
 import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
+import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import ComparisonRow from 'features/map/popups/ComparisonRow'
+import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
 import {
   SliceExtendedFourwingsPickingObject,
   selectApiEventStatus,
@@ -36,9 +44,11 @@ import { useMapToolsActive } from '../map-interactions.hooks'
 import UserContextTooltipSection from './UserContextLayers'
 import styles from './Popup.module.css'
 import ActivityTooltipRow from './ActivityLayers'
-import EncounterTooltipRow from './EncounterTooltipRow'
+import TileClusterTooltipRow from './TileClusterTooltipRow'
 import ContextTooltipSection from './ContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
+import EnvironmentTooltipSection from './EnvironmentLayers'
+import PositionsRow from './PositionsRow'
 
 const overflowMiddlware: Middleware = {
   name: 'overflow',
@@ -71,9 +81,9 @@ type PopupWrapperProps = {
 
 function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: PopupWrapperProps) {
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
-  const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const mapViewport = useMapViewport()
   const isMapToolsActive = useMapToolsActive()
+  const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
 
   const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
@@ -125,9 +135,6 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
           </div>
         )}
         <div className={styles.content}>
-          {timeCompareTimeDescription && (
-            <div className={styles.popupSection}>{timeCompareTimeDescription}</div>
-          )}
           {Object.entries(featureByCategory)?.map(([featureCategory, features]) => {
             switch (featureCategory) {
               // TODO: deck restore this popup
@@ -140,35 +147,68 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
               //     />
               //   )
               case DataviewCategory.Activity: {
-                return (features as SliceExtendedFourwingsPickingObject[])?.map((feature, i) => {
-                  return feature.sublayers.map((sublayer, j) => (
-                    <ActivityTooltipRow
-                      key={`${i}-${j}`}
-                      loading={activityInteractionStatus === AsyncReducerStatus.Loading}
-                      feature={{
-                        ...sublayer,
-                        category: feature.category as DataviewCategory,
-                        title: feature.title,
-                      }}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                  ))
+                const positionFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
+                  (feature) => feature.visualizationMode === 'positions'
+                )
+                const uniqPositionFeatures = uniqBy(positionFeatures, 'properties.id')
+                const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
+                  (feature) => feature.visualizationMode !== 'positions'
+                )
+
+                return [...uniqPositionFeatures, ...heatmapFeatures].map((feature, i) => {
+                  if (feature.visualizationMode === 'positions') {
+                    return (
+                      <PositionsRow
+                        key={feature.id}
+                        feature={feature as any as FourwingsPositionsPickingObject}
+                        showFeaturesDetails={type === 'click'}
+                      />
+                    )
+                  }
+                  return feature.sublayers.map((sublayer, j) => {
+                    const dataview = dataviews.find((d) => d.id === sublayer.id)
+                    return feature.comparisonMode === FourwingsComparisonMode.TimeCompare ? (
+                      <ComparisonRow
+                        key={featureCategory}
+                        feature={features[0] as FourwingsHeatmapPickingObject}
+                        showFeaturesDetails={type === 'click'}
+                      />
+                    ) : (
+                      <ActivityTooltipRow
+                        key={`${i}-${j}`}
+                        loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                        feature={{
+                          ...sublayer,
+                          category: feature.category as DataviewCategory,
+                          title: dataview
+                            ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+                            : feature.title,
+                        }}
+                        showFeaturesDetails={type === 'click'}
+                      />
+                    )
+                  })
                 })
               }
               case DataviewCategory.Detections: {
                 return (features as SliceExtendedFourwingsPickingObject[])?.map((feature, i) => {
-                  return feature.sublayers.map((sublayer, j) => (
-                    <DetectionsTooltipRow
-                      key={`${i}-${j}`}
-                      loading={activityInteractionStatus === AsyncReducerStatus.Loading}
-                      feature={{
-                        ...sublayer,
-                        category: feature.category as DataviewCategory,
-                        title: feature.title,
-                      }}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                  ))
+                  return feature.sublayers.map((sublayer, j) => {
+                    const dataview = dataviews.find((d) => d.id === sublayer.id)
+                    return (
+                      <DetectionsTooltipRow
+                        key={`${i}-${j}`}
+                        loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                        feature={{
+                          ...sublayer,
+                          category: feature.category as DataviewCategory,
+                          title: dataview
+                            ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+                            : feature.title,
+                        }}
+                        showFeaturesDetails={type === 'click'}
+                      />
+                    )
+                  })
                 })
               }
               case DataviewCategory.Events: {
@@ -180,7 +220,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                   )
                 }
                 return (
-                  <EncounterTooltipRow
+                  <TileClusterTooltipRow
                     key={featureCategory}
                     // TODO:deck review typings here
                     features={features as any}
@@ -189,31 +229,38 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 )
               }
               // TODO: deck restore this popup
-              // case DataviewCategory.Environment: {
-              //   const contextEnvironmentalFeatures = features.filter(
-              //     (feature) =>
-              //       feature.type === DataviewType.Context ||
-              //       feature.type === DataviewType.UserContext
-              //   )
-              //   const environmentalFeatures = features.filter(
-              //     (feature) =>
-              //       feature.type !== DataviewType.Context &&
-              //       feature.type !== DataviewType.UserContext
-              //   )
-              //   return (
-              //     <Fragment key={featureCategory}>
-              //       <ContextTooltipSection
-              //         features={contextEnvironmentalFeatures}
-              //         showFeaturesDetails={type === 'click'}
-              //       />
-              //       <EnvironmentTooltipSection
-              //         features={environmentalFeatures}
-              //         showFeaturesDetails={type === 'click'}
-              //       />
-              //     </Fragment>
-              //   )
-              // }
+              case DataviewCategory.Environment: {
+                // TODO:deck review if this is needed
+                //   const contextEnvironmentalFeatures = features.filter(
+                //     (feature) =>
+                //       feature.type === DataviewType.Context ||
+                //       feature.type === DataviewType.UserContext
+                //   )
+                // const environmentalFeatures = features.filter(
+                //   (feature) =>
+                //     feature.type !== DataviewType.Context &&
+                //     feature.type !== DataviewType.UserContext
+                // )
+                return (
+                  <Fragment key={featureCategory}>
+                    {/* <ContextTooltipSection
+                      features={contextEnvironmentalFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    /> */}
+                    <EnvironmentTooltipSection
+                      features={features as SliceExtendedFourwingsPickingObject[]}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                  </Fragment>
+                )
+              }
               case DataviewCategory.Context: {
+                const contextFeatures = (features as ContextPickingObject[]).filter(
+                  (feature) => feature.subcategory !== DataviewType.UserPoints
+                )
+                const pointFeatures = (features as UserLayerPickingObject[]).filter(
+                  (feature) => feature.subcategory === DataviewType.UserPoints
+                )
                 // const defaultContextFeatures = features.filter(
                 //   (feature) => feature.type === DataviewType.Context
                 // )
@@ -229,6 +276,10 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 // const rulersFeatures = features.filter(
                 //   (feature) => feature.type === DataviewType.Rulers
                 // )
+                // Workaround to show user context features in the context section
+                const userContextFeatures = (features as UserLayerPickingObject[]).filter(
+                  (feature) => feature.subcategory === DataviewType.UserContext
+                )
                 return (
                   <Fragment key={featureCategory}>
                     {/*
@@ -238,11 +289,18 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                         features={rulersFeatures}
                         showFeaturesDetails={type === 'click'}
                       />
-                      <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
                       <ReportBufferTooltip features={areaBufferFeatures} />
                     */}
+                    <UserPointsTooltipSection
+                      features={pointFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
                     <ContextTooltipSection
-                      features={features as ContextPickingObject[]}
+                      features={contextFeatures}
+                      showFeaturesDetails={type === 'click'}
+                    />
+                    <UserContextTooltipSection
+                      features={userContextFeatures}
                       showFeaturesDetails={type === 'click'}
                     />
                   </Fragment>
@@ -270,7 +328,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 )
               }
 
-              case DataviewCategory.Vessels:
+              case DataviewCategory.Vessels: {
                 return (
                   <VesselEventsLayers
                     key={featureCategory}
@@ -278,6 +336,16 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                     showFeaturesDetails={type === 'click'}
                   />
                 )
+              }
+
+              case DataviewCategory.Workspaces: {
+                return (
+                  <WorkspacePointsTooltipSection
+                    features={features as any}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                )
+              }
 
               default:
                 return null

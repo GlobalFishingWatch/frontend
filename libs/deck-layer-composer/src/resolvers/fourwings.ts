@@ -23,7 +23,7 @@ import { DeckResolverFunction } from './types'
 // TODO: decide if include static here or create a new one
 export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayerProps> = (
   dataview,
-  { start, end, resolution, debug, highlightedFeatures }
+  { start, end, highlightedFeatures, compareStart, compareEnd, onPositionsMaxPointsError }
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
@@ -49,9 +49,12 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     }
   })
 
-  const maxZoomLevels = dataview.config?.sublayers?.flatMap(({ maxZoom }) =>
+  const maxZoomLevels = (dataview.config?.sublayers || [])?.flatMap(({ maxZoom }) =>
     maxZoom !== undefined ? (maxZoom as number) : []
   )
+  if (dataview.config?.maxZoom !== undefined) {
+    maxZoomLevels.push(dataview.config?.maxZoom)
+  }
 
   const allAvailableIntervals = getDataviewAvailableIntervals(dataview)
   const availableIntervals =
@@ -118,8 +121,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     startTime,
     endTime,
     category: dataview.category!,
+    subcategory: dataview.config?.type!,
     static: dataview.config?.type === DataviewType.HeatmapStatic,
-    resolution,
     sublayers,
     comparisonMode,
     visualizationMode,
@@ -128,10 +131,12 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
-    debug: debug ?? false,
     visible: dataview.config?.visible ?? true,
     colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd ?? false,
+    ...(onPositionsMaxPointsError && { onPositionsMaxPointsError }),
     ...(tilesUrl && { tilesUrl }),
+    ...(compareStart && { compareStart: getUTCDateTime(compareStart).toMillis() }),
+    ...(compareEnd && { compareEnd: getUTCDateTime(compareEnd).toMillis() }),
     // if any of the activity dataviews has a max zoom level defined
     // apply the minimum max zoom level (the most restrictive approach)
     ...(maxZoomLevels &&

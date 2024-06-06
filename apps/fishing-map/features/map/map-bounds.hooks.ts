@@ -100,7 +100,7 @@ export function useMapFitBounds() {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [viewport]
   )
   return fitBounds
 }

@@ -51,7 +51,6 @@ export const selectReportCategory = createSelector(
 )
 
 export const selectReportAreaBounds = selectWorkspaceStateProperty('reportAreaBounds')
-export const selectReportAreaSource = selectWorkspaceStateProperty('reportAreaSource')
 
 export const selectActiveReportDataviews = createDeepEqualSelector(
   [

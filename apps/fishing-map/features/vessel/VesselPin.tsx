@@ -41,12 +41,14 @@ function VesselPin({
   disabled,
   className = '',
   size = 'small',
+  onClick,
 }: {
   vessel?: IdentityVessel
   vesselToResolve?: VesselToResolve
   className?: string
   disabled?: boolean
   size?: IconButtonSize
+  onClick?: () => void
 }) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
@@ -146,6 +148,7 @@ function VesselPin({
       }
     }
     setLoading(false)
+    onClick?.()
   }
 
   return (

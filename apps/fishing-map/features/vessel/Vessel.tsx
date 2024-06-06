@@ -23,6 +23,7 @@ import {
   selectVesselSection,
 } from 'features/vessel/vessel.config.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
 import { useUpdateVesselEventsVisibility } from 'features/vessel/vessel.hooks'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
@@ -74,6 +75,7 @@ const Vessel = () => {
   const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
   useVesselFitBounds()
   useUpdateVesselEventsVisibility()
+  useSetVesselProfileEvents()
   useFetchDataviewResources(infoStatus === AsyncReducerStatus.Finished)
 
   const updateAreaLayersVisibility = useCallback(
@@ -149,7 +151,7 @@ const Vessel = () => {
 
   useEffect(() => {
     if (isWorkspaceVesselLocation) {
-      dispatch(fetchWorkspaceThunk(urlWorkspaceId))
+      dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId }))
     }
     if (
       !infoStatus ||

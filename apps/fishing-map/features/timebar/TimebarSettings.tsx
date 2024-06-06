@@ -11,7 +11,7 @@ import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
-  selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry,
+  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { ReactComponent as AreaIcon } from 'assets/icons/timebar-area.svg'
@@ -64,7 +64,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeActivityDataviews = useSelector(selectActiveReportActivityDataviews)
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEnvironmentalDataviews = useSelector(
-    selectActiveHeatmapEnvironmentalDataviewsWithoutBathymetry
+    selectActiveHeatmapEnvironmentalDataviewsWithoutStatic
   )
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)

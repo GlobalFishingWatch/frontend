@@ -44,7 +44,6 @@ import {
   useTimebarVesselEvents,
   useTimebarVesselTracks,
 } from 'features/timebar/timebar-vessel.hooks'
-import { getTimebarChunkEventColor } from 'features/timebar/timebar.utils'
 import {
   selectTimebarGraph,
   selectTimebarVisualisation,
@@ -351,7 +350,6 @@ const TimebarWrapper = () => {
             <TimebarTracksEvents
               data={events}
               highlightedEventsIds={highlightedEvents}
-              getEventColor={getTimebarChunkEventColor}
               onEventClick={onEventClick}
             />
           </Fragment>

@@ -3,22 +3,23 @@ import { ClipExtension } from '@deck.gl/extensions'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { Matrix4 } from '@math.gl/core'
-import { DeckLayerPickingObject } from '../types'
+import { ContextPickingObject } from '../layers/context'
+import { UserLayerPickingObject } from '../layers/user'
 
 const WORLD_SIZE = 512
 
 export function getPickedFeatureToHighlight(
   data: any,
-  pickedFeatures: DeckLayerPickingObject[],
+  pickedFeatures: (ContextPickingObject | UserLayerPickingObject)[],
   idProperty = 'gfw_id'
 ) {
-  return (
-    pickedFeatures &&
-    pickedFeatures.some(
-      (f) =>
-        // TODO:deck remove this any and fix typings
-        f.type === 'Feature' && (f.properties as any)?.[idProperty] === data.properties[idProperty]
-    )
+  return pickedFeatures?.some((f) => f.properties?.[idProperty] === data.properties[idProperty])
+}
+
+export function getFeatureInFilter(feature: any, filters?: Record<string, any>) {
+  if (!filters || !Object.keys(filters).length) return true
+  return Object.keys(filters).some((filter) =>
+    filters[filter]?.includes(feature?.properties?.[filter]?.toString())
   )
 }
 

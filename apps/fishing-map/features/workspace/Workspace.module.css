@@ -22,9 +22,17 @@
   margin-bottom: var(--space-S);
 }
 
+.error {
+  color: var(--color-danger-red);
+}
+
 .logged {
   color: var(--color-secondary-blue);
   margin-top: var(--space-M);
+  margin-bottom: var(--space-S);
+}
+
+.password {
   margin-bottom: var(--space-S);
 }
 
@@ -69,4 +77,9 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+}
+
+.passwordButton {
+  margin-top: var(--space-S);
+  min-width: 15rem;
 }

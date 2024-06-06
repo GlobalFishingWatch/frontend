@@ -136,6 +136,7 @@ export interface DatasetConfiguration {
    */
   valueProperties?: string[]
   propertyToInclude?: string
+  maxZoom?: number
   min?: number
   max?: number
   intervals?: DatasetConfigurationInterval[]
@@ -151,6 +152,7 @@ export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
   scale: number
   propertyToInclude: string
   propertyToIncludeRange: { min: number; max: number }
+  maxZoom?: number
 }
 
 export type AnyDatasetConfiguration = DatasetConfiguration | EnviromentalDatasetConfiguration

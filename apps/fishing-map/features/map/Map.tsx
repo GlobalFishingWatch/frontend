@@ -25,12 +25,7 @@ import ErrorNotification from 'features/map/overlays/error-notification/ErrorNot
 import { useMapDeckLayers, useMapOverlayLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
-import {
-  MAP_VIEW,
-  useViewStateAtom,
-  useUpdateViewStateUrlParams,
-  useDisablePositionsOnZoomChanges,
-} from './map-viewport.hooks'
+import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
@@ -38,6 +33,7 @@ import useRulers from './overlays/rulers/rulers.hooks'
 import { useMapDrawConnect } from './map-draw.hooks'
 import MapInfo from './controls/MapInfo'
 import { MAP_CANVAS_ID } from './map.config'
+import TimeComparisonLegend from './TimeComparisonLegend'
 
 // This avoids type checking to complain
 // https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
@@ -71,9 +67,8 @@ const MapWrapper = () => {
     [setViewState]
   )
   useUpdateViewStateUrlParams()
-  useDisablePositionsOnZoomChanges()
   const onMapClick = useMapMouseClick()
-  const { onMouseMove } = useMapMouseHover()
+  const { onMouseMove, hoveredCoordinates } = useMapMouseHover()
   const { getCursor } = useMapCursor()
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
   ////////////////////////////////////////
@@ -156,8 +151,10 @@ const MapWrapper = () => {
       {isWorkspace && !reportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
-      {/* TODO:deck pass hovered cursor coordinates */}
-      <MapInfo center={null} />
+      {hoveredCoordinates && (
+        <MapInfo center={{ x: hoveredCoordinates[0], y: hoveredCoordinates[1] }} />
+      )}
+      <TimeComparisonLegend />
     </div>
   )
 }

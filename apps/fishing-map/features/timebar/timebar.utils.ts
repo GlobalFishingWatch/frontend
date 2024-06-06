@@ -1,39 +1,38 @@
 import { DateTime } from 'luxon'
-import { EventTypes, ApiEvent } from '@globalfishingwatch/api-types'
-import {
-  TimebarChartChunk,
-  TrackEventChunkProps,
-  ActivityTimeseriesFrame,
-} from '@globalfishingwatch/timebar'
+import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { getEventColors, getEventDescription } from 'utils/events'
 import { getUTCDateTime } from 'utils/dates'
+import { FeaturesToTimeseriesParams } from 'features/reports/reports-timeseries.utils'
+import { FourwingsAggregationOperation } from '../../../../libs/deck-layers/src/layers/fourwings'
 
-export const getTimebarChunkEventColor = (ev: TimebarChartChunk<TrackEventChunkProps>) => {
-  return ev.type ? getEventColors({ type: ev.type })?.color : 'white'
-}
+type GetGraphDataFromFourwingsFeaturesParams = Pick<
+  FeaturesToTimeseriesParams,
+  | 'start'
+  | 'end'
+  | 'compareStart'
+  | 'compareEnd'
+  | 'interval'
+  | 'sublayers'
+  | 'aggregationOperation'
+  | 'minVisibleValue'
+  | 'maxVisibleValue'
+>
 
-type GetGraphDataFromFourwingsFeaturesParams = {
+type FeatureDates = Record<number, ActivityTimeseriesFrame & { count: number[] }>
+function getDatesPopulated({
+  start,
+  end,
+  interval,
+  sublayerLength,
+}: {
   start: number
   end: number
   interval: FourwingsInterval
-  sublayers: number
-}
-
-// TODO:deck choose a better naming for this as also used in reports
-// TODO:deck support
-// - [] aggregationOperation
-// - [] min and maxVisibleValues
-export function getGraphDataFromFourwingsFeatures(
-  features: FourwingsFeature[],
-  { start, end, interval, sublayers }: GetGraphDataFromFourwingsFeaturesParams
-): ActivityTimeseriesFrame[] {
-  if (!features?.length || !start || !end) {
-    return []
-  }
-  const data: Record<number, ActivityTimeseriesFrame> = {}
-  let date = getUTCDateTime(start).toMillis()
+  sublayerLength: number
+}): FeatureDates {
+  const data = {} as FeatureDates
   const now = DateTime.now().toUTC().toMillis()
+  let date = getUTCDateTime(start).toMillis()
   const endPlusOne = Math.min(
     getUTCDateTime(end)
       .plus({ [interval]: 1 })
@@ -41,8 +40,8 @@ export function getGraphDataFromFourwingsFeatures(
     now
   )
   while (date <= endPlusOne) {
-    data[date] = { date }
-    for (let i = 0; i < sublayers; i++) {
+    data[date] = { date, count: new Array(sublayerLength).fill(0) }
+    for (let i = 0; i < sublayerLength; i++) {
       data[date][i] = 0
     }
     date = Math.min(
@@ -52,17 +51,64 @@ export function getGraphDataFromFourwingsFeatures(
       now + 1
     )
   }
-  for (const feature of features) {
+  return data
+}
+
+export function getGraphDataFromFourwingsFeatures(
+  features: FourwingsFeature[],
+  {
+    start,
+    end,
+    compareStart,
+    compareEnd,
+    interval,
+    sublayers,
+    aggregationOperation,
+    minVisibleValue,
+    maxVisibleValue,
+  }: GetGraphDataFromFourwingsFeaturesParams
+): ActivityTimeseriesFrame[] {
+  if (!features?.length || !start || !end) {
+    return []
+  }
+
+  const sublayerLength = sublayers.length
+  const data = {
+    ...getDatesPopulated({ start, end, interval, sublayerLength }),
+    ...(compareStart &&
+      compareEnd && {
+        ...getDatesPopulated({ start: compareStart, end: compareEnd, interval, sublayerLength }),
+      }),
+  }
+
+  features.forEach((feature) => {
     const { dates, values } = feature.properties
     if (dates) {
       dates.forEach((sublayerDates, sublayerIndex) => {
-        sublayerDates.forEach((date, dateIndex) => {
-          if (data[date]) {
-            data[date][sublayerIndex] += values[sublayerIndex][dateIndex]
+        const valueArray = values[sublayerIndex]
+        sublayerDates.forEach((sublayerDate, dateIndex) => {
+          const sublayerDateData = data[sublayerDate]
+          if (
+            sublayerDateData &&
+            (!minVisibleValue || valueArray[dateIndex] >= minVisibleValue) &&
+            (!maxVisibleValue || valueArray[dateIndex] <= maxVisibleValue)
+          ) {
+            sublayerDateData[sublayerIndex] += valueArray[dateIndex]
+            sublayerDateData.count[sublayerIndex]++
           }
         })
       })
     }
-  }
-  return Object.values(data)
+  })
+  return Object.values(data).map(({ date, count, ...rest }) => {
+    Object.keys(rest).forEach((key) => {
+      if (aggregationOperation === FourwingsAggregationOperation.Avg) {
+        const indexKey = parseInt(key)
+        if (rest[indexKey]) {
+          rest[indexKey] = rest[indexKey] / count[indexKey]
+        }
+      }
+    })
+    return { date, ...rest }
+  })
 }

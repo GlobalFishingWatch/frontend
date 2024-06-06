@@ -5,6 +5,7 @@ import {
   UserLayerPickingObject,
   UserPointsLayerProps,
   getUTCDateTime,
+  ContextLayerConfig,
 } from '@globalfishingwatch/deck-layers'
 import {
   findDatasetByType,
@@ -109,9 +110,21 @@ export const getUserCircleProps = ({
 
 export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps> = (
   dataview,
-  { highlightedFeatures, start, end }
+  { highlightedFeatures, start, end, highlightedTime }
 ) => {
-  const dataset = findDatasetByType(dataview.datasets, DatasetTypes.UserContext) as Dataset
+  const baseLayerProps = {
+    id: dataview.id,
+    category: dataview.category!,
+    subcategory: dataview.config?.type!,
+    color: dataview.config?.color!,
+  }
+  const dataset =
+    findDatasetByType(dataview.datasets, DatasetTypes.UserContext) ||
+    findDatasetByType(dataview.datasets, DatasetTypes.UserTracks)
+
+  if (!dataset) {
+    return { ...baseLayerProps, layers: [] }
+  }
 
   const datasetConfig = dataview.datasetsConfig?.find(
     (datasetConfig) => datasetConfig.datasetId === dataset.id
@@ -126,24 +139,28 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
     tilesUrl = `${tilesUrl}?cache=${dataset.configuration?.filePath}`
   }
 
-  const layer = {
+  const layer: ContextLayerConfig<string> = {
     id: dataset.id,
     datasetId: dataset.id,
     tilesUrl,
   }
   const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
   const timeFilters = getUserContexTimeFilterProps({ dataset, start, end })
-  const { filter } = dataview.config || {}
+  const { filter, filters } = dataview.config || {}
 
   return {
-    id: dataview.id,
-    layers: [layer],
-    category: dataview.category!,
-    subcategory: dataview.config?.type!,
-    color: dataview.config?.color!,
+    ...baseLayerProps,
     pickable: !dataset.configuration?.disableInteraction ?? true,
+    layers: [layer],
     highlightedFeatures: highlightedFeatures as UserLayerPickingObject[],
+    ...(highlightedTime?.start && {
+      highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
+    }),
+    ...(highlightedTime?.end && {
+      highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
+    }),
     ...(filter && { filter }),
+    ...(filters && { filters }),
     ...(idProperty && { idProperty }),
     ...(valueProperties?.length && { valueProperties }),
     ...timeFilters,
@@ -171,5 +188,17 @@ export const resolveDeckUserPointsLayerProps: DeckResolverFunction<UserPointsLay
   return {
     ...resolveDeckUserLayerProps(dataview, globalConfig),
     ...circleProps,
+  } as UserPointsLayerProps
+}
+
+export const resolveDeckUserTracksLayerProps: DeckResolverFunction<UserPointsLayerProps> = (
+  dataview,
+  globalConfig
+) => {
+  // const dataset = findDatasetByType(dataview.datasets, DatasetTypes.UserContext) as Dataset
+  // const tracksProps = getUserTracksProps({ dataset })
+  return {
+    ...resolveDeckUserLayerProps(dataview, globalConfig),
+    // ...tracksProps,
   } as UserPointsLayerProps
 }

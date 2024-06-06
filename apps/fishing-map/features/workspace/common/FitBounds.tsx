@@ -1,48 +1,30 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
-import { FeatureCollection } from 'geojson'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import {
-  segmentsToBbox,
-  filterSegmentsByTimerange,
-  geoJSONToSegments,
-} from '@globalfishingwatch/data-transforms'
-import { IdentityVessel, Resource, TrackSegment } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
+import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { Bbox } from 'types'
 
 type FitBoundsProps = {
   hasError: boolean
-  trackResource: Resource<TrackSegment[] | FeatureCollection>
+  vesselLayer: VesselLayer
   infoResource?: Resource<IdentityVessel>
   className?: string
 }
 
-const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoundsProps) => {
+const FitBounds = ({ className, vesselLayer, hasError, infoResource }: FitBoundsProps) => {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
   const { setTimerange, start, end } = useTimerangeConnect()
 
   const onFitBoundsClick = useCallback(() => {
-    if (trackResource?.data && start && end) {
-      const sourceFormat = getDatasetConfigurationProperty({
-        dataset: trackResource?.dataset,
-        property: 'sourceFormat',
-      })
-      const segments = (trackResource.data as FeatureCollection).features
-        ? geoJSONToSegments(trackResource.data as FeatureCollection)
-        : (trackResource?.data as TrackSegment[])
-      const filteredSegments = filterSegmentsByTimerange(segments, {
-        start,
-        end,
-        // Datasets uploaded as shapefile, geojson or kml are not temporal
-        includeNonTemporalSegments: sourceFormat ? sourceFormat !== 'CSV' : false,
-      })
-      const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
+    if (vesselLayer && start && end) {
+      const bbox = vesselLayer.getVesselTrackBounds()
       if (bbox) {
-        fitBounds(bbox)
+        fitBounds(bbox, { padding: 60 })
       } else {
         if (
           infoResource &&
@@ -71,6 +53,7 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
               ).toISOString(),
             })
           } else {
+            const segments = vesselLayer.getVesselTrackSegments()
             let minTimestamp = Number.POSITIVE_INFINITY
             let maxTimestamp = Number.NEGATIVE_INFINITY
             segments.forEach((seg) => {
@@ -93,16 +76,7 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
         }
       }
     }
-  }, [
-    trackResource?.data,
-    trackResource?.dataset,
-    start,
-    end,
-    fitBounds,
-    infoResource,
-    t,
-    setTimerange,
-  ])
+  }, [vesselLayer, start, end, fitBounds, infoResource, t, setTimerange])
 
   return (
     <IconButton

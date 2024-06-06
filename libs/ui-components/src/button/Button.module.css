@@ -42,7 +42,8 @@ a.button:visited,
   background-color: var(--color-terthiary-blue);
 }
 
-.secondary.disabled {
+.secondary.disabled,
+.border-secondary.disabled {
   color: rgba(var(--primary-blue-rgb), 0.5);
   background-color: var(--color-terthiary-blue);
 }

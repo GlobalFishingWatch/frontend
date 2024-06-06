@@ -18,7 +18,7 @@ import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_ORDER } from 'features/vessel/activity/activity-by-type/ActivityByType'
-import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
+import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -32,7 +32,7 @@ export const VesselActivitySummary = () => {
   const voyages = useSelector(selectVoyagesNumber)
   const timerange = useSelector(selectTimeRange)
   const visibleEvents = useSelector(selectVisibleEvents)
-  const { setVesselEventVisibility } = useVesselEvents()
+  const { setVesselEventVisibility } = useVisibleVesselEvents()
   const eventsByType = useSelector(selectEventsGroupedByType)
   const { getRegionNamesByType } = useRegionNamesByType()
   const { activityRegions, mostVisitedPortCountries, fishingHours } =

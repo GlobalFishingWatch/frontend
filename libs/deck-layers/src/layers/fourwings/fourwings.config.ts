@@ -1,4 +1,5 @@
 import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
+import { intersection } from 'lodash'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import { getUTCDateTime } from '../../utils/dates'
@@ -19,11 +20,14 @@ export const POSITIONS_API_TILES_URL = BASE_API_TILES_URL.replace(
 )
 
 export const HEATMAP_ID = 'heatmap'
-export const HEATMAP_STATIC_ID = 'heatmap-static'
+export const HEATMAP_HIGH_RES_ID = `${HEATMAP_ID}-high-res`
+export const HEATMAP_STATIC_ID = `${HEATMAP_ID}-static`
 export const POSITIONS_ID = 'positions'
 
 export const FOURWINGS_MAX_ZOOM = 12
-export const POSITIONS_VISUALIZATION_MIN_ZOOM = 9
+// TODO:deck validate this is a good number
+export const MAX_POSITIONS_PER_TILE_SUPPORTED = 10000
+export const POSITIONS_VISUALIZATION_MAX_ZOOM = 9
 
 export const MAX_RAMP_VALUES_PER_TILE = 1000
 
@@ -83,7 +87,14 @@ export const getInterval = (
       ? (interval as FourwingsInterval)
       : []
   })
-  return validIntervals[0]
+  if (validIntervals.length) {
+    return validIntervals[0]
+  }
+  const sortedIntervals = intersection(
+    DEFAULT_FOURWINGS_INTERVALS,
+    availableIntervals
+  ) as FourwingsInterval[]
+  return sortedIntervals[sortedIntervals.length - 1]
 }
 
 export const getDateInIntervalResolution = (date: number, interval: FourwingsInterval): number => {

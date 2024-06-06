@@ -1,7 +1,7 @@
 .scale {
   position: absolute;
   bottom: var(--space-M);
-  left: var(--space-S);
+  left: 0;
   min-height: 1.5rem;
   font: var(--font-XS);
   background: none;

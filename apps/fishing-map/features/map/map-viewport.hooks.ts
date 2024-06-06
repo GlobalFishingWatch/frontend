@@ -1,17 +1,13 @@
 import { useCallback, useEffect } from 'react'
 import { debounce } from 'lodash'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { MapView, WebMercatorViewport } from '@deck.gl/core'
-import { useSelector } from 'react-redux'
-import { HEATMAP_ID, POSITIONS_VISUALIZATION_MIN_ZOOM } from '@globalfishingwatch/deck-layers'
+import { MapView, MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { getUrlViewstateNumericParam } from 'utils/url'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectIsPositionsVisualizationMode } from 'features/map/map.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 
 export const viewStateAtom = atom<MapCoordinates>({
   longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
@@ -62,30 +58,14 @@ export function useSetMapCoordinates() {
 }
 
 export const MAP_VIEW_ID = 'mapViewport'
-export const MAP_VIEW = new MapView({ id: MAP_VIEW_ID, repeat: true, controller: true })
+export const MAP_VIEW = new MapView({
+  id: MAP_VIEW_ID,
+  repeat: true,
+  controller: true,
+  bearing: 0,
+  pitch: 0,
+} as MapViewProps)
 const URL_VIEWPORT_DEBOUNCED_TIME = 1000
-
-export const useDisablePositionsOnZoomChanges = () => {
-  const dispatch = useAppDispatch()
-  const [viewState, setViewState] = useAtom(viewStateAtom)
-  const { dispatchQueryParams } = useLocationConnect()
-  const isLowerZoomThanAllowed = viewState?.zoom < POSITIONS_VISUALIZATION_MIN_ZOOM
-  const isPositionsVisualizationMode = useSelector(selectIsPositionsVisualizationMode)
-  useEffect(() => {
-    if (isPositionsVisualizationMode && isLowerZoomThanAllowed) {
-      dispatchQueryParams({
-        activityVisualizationMode: HEATMAP_ID,
-        detectionsVisualizationMode: HEATMAP_ID,
-      })
-    }
-  }, [
-    dispatch,
-    dispatchQueryParams,
-    setViewState,
-    isPositionsVisualizationMode,
-    isLowerZoomThanAllowed,
-  ])
-}
 
 export const useUpdateViewStateUrlParams = () => {
   const viewState = useAtomValue(viewStateAtom)

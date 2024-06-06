@@ -14,7 +14,7 @@ import {
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { ContextLayer } from '@globalfishingwatch/deck-layers'
+import { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
@@ -32,8 +32,6 @@ import {
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
   HIDDEN_DATAVIEW_FILTERS,
-  BASEMAP_DATAVIEW_SLUG,
-  BASEMAP_LABELS_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
 import {
@@ -64,10 +62,6 @@ type LayerPanelProps = {
   onToggle?: () => void
 }
 
-export const DATAVIEWS_WITHOUT_SCREEN_FEATURES = [
-  BASEMAP_DATAVIEW_SLUG,
-  BASEMAP_LABELS_DATAVIEW_SLUG,
-]
 export const DATAVIEWS_WARNING = [
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
@@ -79,7 +73,7 @@ const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
 
-export type FeaturesOnScreen = { total: number; closest: any[] }
+export type FeaturesOnScreen = { total: number; closest: ContextPickingObject[] }
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -121,7 +115,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         })
       }
     }
-    if (layerActive && layerLoaded && !DATAVIEWS_WITHOUT_SCREEN_FEATURES.includes(dataview.id)) {
+    if (layerActive && layerLoaded && DataviewType.Context === dataview.config?.type) {
       updateFeaturesOnScreen()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -203,17 +197,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     (schema) => schema.optionsSelected?.length > 0
   )
 
-  const handleHoverArea = (feature: any) => {
-    const { source, id } = feature
-    if (source && id) {
-      const featureState = {
-        source,
-        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
-        id,
-      }
-      // TODO:deck:featureState review if this still needed
-      // updateFeatureState([featureState], 'highlight')
-    }
+  const highlightArea = (feature?: ContextPickingObject) => {
+    contextLayer?.instance?.setHighlightedFeatures(feature ? [feature] : [])
   }
 
   return (
@@ -360,8 +345,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                 <ul>
                   {featuresOnScreen.closest.map((feature) => {
                     const id = feature?.id || feature?.properties!.id
-                    let title =
-                      feature.properties.value || feature.properties.name || feature.properties.id
+                    let title = feature.value || feature.properties.name || feature.properties.id
                     if (dataset?.configuration?.valueProperties?.length) {
                       title = dataset.configuration.valueProperties
                         .flatMap((prop) => feature.properties[prop] || [])
@@ -371,9 +355,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                       <li
                         key={`${id}-${title}`}
                         className={styles.area}
-                        onMouseEnter={() => handleHoverArea(feature)}
-                        // TODO:deck:featureState review if this still needed
-                        // onMouseLeave={() => cleanFeatureState('highlight')}
+                        onMouseEnter={() => highlightArea(feature)}
+                        onMouseLeave={() => highlightArea(undefined)}
                       >
                         <span
                           title={title.length > 40 ? title : undefined}

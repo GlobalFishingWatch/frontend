@@ -1,0 +1,14 @@
+services:
+  image-labeler:
+    build:
+      context: ../../dist/apps/image-labeler
+      dockerfile: ../../../apps/image-labeler/Dockerfile
+      target: production
+    container_name: image-labeler
+    ports:
+      - 3000:80
+    env_file:
+      - .env
+    environment:
+      - PORT=80
+      - API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org

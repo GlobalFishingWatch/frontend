@@ -41,20 +41,20 @@ export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas'
 export const RFMO_DATAVIEW_INSTANCE_ID = 'context-layer-rfmo'
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas'
 export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas'
-export const GRATICULES_DATAVIEW_SLUG = 'graticules'
+// TODO:deck restore the original 'graticules' slug
+export const GRATICULES_DATAVIEW_SLUG = 'graticules-mocked' //'graticules'
 export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure'
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas'
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas'
 
 // Workspaces dataviews
-export const FISHING_DATAVIEW_SLUG = 'apparent-fishing-effort'
-export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events'
-export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match'
-export const SAR_DATAVIEW_SLUG = 'sar'
-export const PRESENCE_DATAVIEW_SLUG = 'presence-activity'
+export const FISHING_DATAVIEW_SLUG = 'apparent-fishing-effort-v-3'
+export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events-v-3'
+export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-3'
+export const SAR_DATAVIEW_SLUG = 'sar-v-3'
+export const PRESENCE_DATAVIEW_SLUG = 'presence-activity-v-3'
 export const TEMPLATE_USER_TRACK_SLUG = 'user-track'
-// TODO:deck remove mocked dataview and uncomment this
-// export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track'
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3'
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer'
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer'
 export const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer'
@@ -66,7 +66,7 @@ export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-ev
 
 export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_USER_TRACK_SLUG,
-  // TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
   TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
@@ -108,6 +108,7 @@ export const ENVIRONMENT_DATAVIEWS = [
 ]
 
 export const DEFAULT_DATAVIEW_SLUGS = [
+  BASEMAP_DATAVIEW_SLUG,
   FISHING_DATAVIEW_SLUG,
   ...PRESENCE_DATAVIEWS,
   ...ENVIRONMENT_DATAVIEWS,
@@ -120,7 +121,7 @@ export const PROFILE_DATAVIEW_SLUGS = [
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
-  // TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
 ]
 
 export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []

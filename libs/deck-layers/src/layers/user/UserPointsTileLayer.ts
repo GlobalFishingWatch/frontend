@@ -18,9 +18,10 @@ import {
   GFWMVTLoader,
   getMVTSublayerProps,
   DEFAULT_LINE_COLOR,
+  getFetchLoadOptions,
 } from '../../utils'
 import { UserPointsLayerProps, UserLayerFeature } from './user.types'
-import { UserTileLayer } from './UserTileLayer'
+import { UserBaseLayer, UserBaseLayerState } from './UserBaseLayer'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
 
@@ -35,10 +36,10 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
   maxPointSize: 15,
 }
 
-type UserPointsLayerState = {
+type UserPointsLayerState = UserBaseLayerState & {
   scale?: ScalePower<number, number, never>
 }
-export class UserPointsTileLayer<PropsT = {}> extends UserTileLayer<
+export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
   _UserPointsLayerProps & PropsT
 > {
   static layerName = 'UserPointsTileLayer'
@@ -101,13 +102,17 @@ export class UserPointsTileLayer<PropsT = {}> extends UserTileLayer<
   }
 
   renderLayers() {
-    const { highlightedFeatures, layers, color, pickable, maxPointSize } = this.props
+    const { layers, color, pickable, maxPointSize } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     const filterProps = this._getTimeFilterProps()
     const renderLayers: Layer[] = layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserLayerFeature>>({
         id: `${layer.id}-base-layer`,
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
+        loadOptions: {
+          ...getFetchLoadOptions(),
+        },
         onViewportLoad: this.props.onViewportLoad,
         ...filterProps,
         renderSubLayers: (props) => {

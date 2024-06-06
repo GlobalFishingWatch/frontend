@@ -1,11 +1,7 @@
-import {
-  ContextFeature,
-  ContextLayerId,
-  ContextPickingInfo,
-  ContextPickingObject,
-} from './context.types'
+import { ContextFeature, ContextLayerId, ContextPickingObject } from './context.types'
 
 export const getContextId = (feature: ContextFeature, idProperty = 'gfw_id'): string => {
+  if (!feature) return ''
   return feature.properties?.[idProperty] || feature.properties?.gfw_id || feature.properties.id
 }
 

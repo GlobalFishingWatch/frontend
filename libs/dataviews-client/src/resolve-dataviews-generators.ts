@@ -282,11 +282,11 @@ export function getGeneratorConfig(
       const heatmapDataset = dataview.datasets?.find(
         (dataset) => dataset.type === DatasetTypes.Fourwings
       )
-
       generator = {
         ...generator,
         maxZoom: dataview.config.maxZoom || 8,
         breaks: dataview.config.breaks,
+        filters: dataview.config?.filter,
         datasets: [heatmapDataset?.id],
         metadata: {
           color: dataview?.config?.color,

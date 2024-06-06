@@ -1,4 +1,4 @@
-import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewType, DataviewInstance, DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   AnyDeckLayer,
   BaseMapLabelsLayer,
@@ -6,17 +6,28 @@ import {
   ClusterLayer,
   ContextLayer,
   FourwingsLayer,
+  GraticulesLayer,
+  PolygonsLayer,
   UserContextTileLayer,
   UserPointsTileLayer,
+  UserTracksLayer,
   VesselLayer,
+  WorkspacesLayer,
 } from '@globalfishingwatch/deck-layers'
+import { resolveDeckWorkspacesLayerProps } from './workspaces'
 import { ResolverGlobalConfig } from './types'
 import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckContextLayerProps } from './context'
 import { resolveDeckClusterLayerProps } from './clusters'
 import { resolveDeckVesselLayerProps } from './vessels'
-import { resolveDeckUserContextLayerProps, resolveDeckUserPointsLayerProps } from './user'
+import {
+  resolveDeckUserContextLayerProps,
+  resolveDeckUserPointsLayerProps,
+  resolveDeckUserTracksLayerProps,
+} from './user'
+import { resolveDeckGraticulesLayerProps } from './graticules'
+import { resolveDeckPolygonsLayerProps } from './polygons'
 
 export const dataviewToDeckLayer = (
   dataview: DataviewInstance,
@@ -30,6 +41,10 @@ export const dataviewToDeckLayer = (
     const deckLayerProps = resolveDeckBasemapLabelsLayerProps(dataview, globalConfig)
     return new BaseMapLabelsLayer(deckLayerProps)
   }
+  if (dataview.config?.type === DataviewType.Graticules) {
+    const deckLayerProps = resolveDeckGraticulesLayerProps(dataview, globalConfig)
+    return new GraticulesLayer(deckLayerProps)
+  }
   if (
     dataview.config?.type === DataviewType.HeatmapAnimated ||
     dataview.config?.type === DataviewType.HeatmapStatic
@@ -41,6 +56,11 @@ export const dataviewToDeckLayer = (
   if (dataview.config?.type === DataviewType.Context) {
     const deckLayerProps = resolveDeckContextLayerProps(dataview, globalConfig)
     const layer = new ContextLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.Polygons) {
+    const deckLayerProps = resolveDeckPolygonsLayerProps(dataview, globalConfig)
+    const layer = new PolygonsLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.UserContext) {
@@ -59,8 +79,18 @@ export const dataviewToDeckLayer = (
     return layer
   }
   if (dataview.config?.type === DataviewType.Track) {
+    if (dataview.category === DataviewCategory.User) {
+      const deckLayerProps = resolveDeckUserTracksLayerProps(dataview, globalConfig)
+      const layer = new UserTracksLayer(deckLayerProps)
+      return layer
+    }
     const deckLayerProps = resolveDeckVesselLayerProps(dataview, globalConfig)
     const layer = new VesselLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.Workspaces) {
+    const deckLayerProps = resolveDeckWorkspacesLayerProps(dataview, globalConfig)
+    const layer = new WorkspacesLayer(deckLayerProps)
     return layer
   }
   throw new Error(`Unknown deck layer generator type: ${dataview.config?.type}`)

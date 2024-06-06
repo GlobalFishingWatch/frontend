@@ -87,5 +87,10 @@ a.linkButton,
   color: var(--color-danger-red);
   text-transform: uppercase;
   flex: none;
+}
+
+.linksContainer {
   margin-top: auto;
+  display: flex;
+  gap: var(--space-M);
 }

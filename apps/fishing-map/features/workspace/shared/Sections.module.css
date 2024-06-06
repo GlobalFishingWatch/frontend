@@ -23,6 +23,15 @@
   padding: var(--space-XS) var(--space-S);
 }
 
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
 .relative {
   position: relative;
 }
@@ -33,6 +42,11 @@
   margin: 0;
   text-transform: uppercase;
   flex: 1;
+}
+
+.sectionButtons {
+  display: flex;
+  align-items: center;
 }
 
 .sectionButtons > *:not(:last-child) {
@@ -72,4 +86,26 @@
 .surveyLink {
   padding: var(--space-M) var(--space-S);
   color: var(--color-secondary-blue);
+}
+
+.visualizationsSwitch > ul > li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.visualizationsSwitch > ul > li > button {
+  padding: 0 var(--space-XS);
+}
+
+.vesselsOnScreen summary {
+  justify-content: left;
+}
+
+.vesselsOnScreen summary::before {
+  content: unset;
+}
+
+.vesselsOnScreen summary span {
+  padding: 0;
 }

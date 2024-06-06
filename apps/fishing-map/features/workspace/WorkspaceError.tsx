@@ -1,9 +1,14 @@
 import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button } from '@globalfishingwatch/ui-components'
+import { Button, InputText } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
-import { selectWorkspaceError } from 'features/workspace/workspace.selectors'
+import { Workspace } from '@globalfishingwatch/api-types'
+import {
+  selectWorkspace,
+  selectWorkspaceError,
+  selectWorkspacePassword,
+} from 'features/workspace/workspace.selectors'
 import { logoutUserThunk } from 'features/user/user.slice'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import { HOME } from 'routes/routes'
@@ -14,6 +19,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-groups.slice'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import styles from './Workspace.module.css'
+import { fetchWorkspaceThunk, setWorkspacePassword } from './workspace.slice'
+import { MIN_WORKSPACE_PASSWORD_LENGTH, isPrivateWorkspaceNotAllowed } from './workspace.utils'
 
 export function ErrorPlaceHolder({
   title,
@@ -85,7 +92,12 @@ function WorkspaceError(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const workspaceId = useSelector(selectWorkspaceId)
-  if (isAuthError(error) || isAuthError(vesselGroupsError)) {
+  const workspace = useSelector(selectWorkspace)
+  if (
+    isAuthError(error) ||
+    isAuthError(vesselGroupsError) ||
+    isPrivateWorkspaceNotAllowed(workspace)
+  ) {
     return (
       <WorkspaceLoginError
         title={t('errors.privateView', 'This is a private view')}
@@ -119,6 +131,76 @@ function WorkspaceError(): React.ReactElement {
         'There was an error loading the workspace, please try again later'
       )}
     ></ErrorPlaceHolder>
+  )
+}
+
+export function WorkspacePassword(): React.ReactElement {
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const workspaceId = useSelector(selectWorkspaceId)
+  const workspacePassword = useSelector(selectWorkspacePassword)
+
+  const handlePasswordChange = (event: any) => {
+    setPassword(event.target.value)
+  }
+
+  const handleSubmit = async (event: any) => {
+    event.preventDefault()
+    if (password.length >= MIN_WORKSPACE_PASSWORD_LENGTH) {
+      setLoading(true)
+      dispatch(setWorkspacePassword(password))
+      const action = await dispatch(fetchWorkspaceThunk({ workspaceId, password }))
+      if (fetchWorkspaceThunk.fulfilled.match(action)) {
+        const workspace = action.payload as Workspace
+        if (workspace?.dataviewInstances?.length) {
+          dispatch(setWorkspacePassword(''))
+        }
+      }
+      setLoading(false)
+    } else {
+      setError(t('workspace.passwordMinLength', 'Password must be at least 5 characters'))
+    }
+  }
+
+  return (
+    <ErrorPlaceHolder
+      title={t('workspace.passwordProtected', 'This workspace is password protected')}
+    >
+      <form onSubmit={handleSubmit}>
+        <div>
+          <InputText
+            value={password}
+            className={styles.password}
+            type="password"
+            invalid={!!error || !!workspacePassword}
+            testId="create-workspace-password"
+            onChange={handlePasswordChange}
+          />
+          {error && <p className={styles.error}>{error}</p>}
+          {!error && workspacePassword && (
+            <p className={styles.error}>{t('workspace.passwordIncorrect', 'Invalid password')}</p>
+          )}
+        </div>
+        <Button
+          size="default"
+          htmlType="submit"
+          className={styles.passwordButton}
+          tooltip={
+            !password || password.length < MIN_WORKSPACE_PASSWORD_LENGTH
+              ? t('workspace.passwordMinLength', 'passwordMinLength')
+              : undefined
+          }
+          tooltipPlacement="top"
+          disabled={!password || password.length < MIN_WORKSPACE_PASSWORD_LENGTH}
+          loading={loading}
+        >
+          {t('common.send', 'Send') as string}
+        </Button>
+      </form>
+    </ErrorPlaceHolder>
   )
 }
 

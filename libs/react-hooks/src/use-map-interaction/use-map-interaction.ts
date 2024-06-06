@@ -87,7 +87,8 @@ const getExtendedFeature = (
   const uniqueFeatureInteraction = feature.layer?.metadata?.uniqueFeatureInteraction ?? false
   const stopPropagation = feature.layer?.metadata?.stopPropagation ?? false
   const properties = feature.properties || {}
-  let value = properties.value || properties.name || properties.id || properties?.count
+
+  let value = properties.value || properties.name || properties?.count || properties.id
   const { valueProperties } = feature.layer.metadata || {}
   if (valueProperties?.length) {
     value =
@@ -184,7 +185,7 @@ const getExtendedFeature = (
       return [
         {
           ...extendedFeature,
-          value: extendedFeature.value / VALUE_MULTIPLIER,
+          value: extendedFeature.value,
           unit: generatorMetadata.legends[0]?.unit,
         },
       ]

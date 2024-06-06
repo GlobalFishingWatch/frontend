@@ -8,6 +8,7 @@ import { VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
 import { getEventDescriptionComponent } from 'utils/events'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { formatInfoField } from 'utils/info'
 import { MAX_TOOLTIP_LIST } from '../map.slice'
 import styles from './Popup.module.css'
 
@@ -55,7 +56,9 @@ function VesselEventsTooltipSection({
           />
           <div className={styles.popupSectionContent}>
             {vesselNamesByType[index] && showFeaturesDetails && (
-              <h3 className={styles.popupSectionTitle}>{vesselNamesByType[index]}</h3>
+              <h3 className={styles.popupSectionTitle}>
+                {formatInfoField(vesselNamesByType[index], 'shipname')}
+              </h3>
             )}
             {featureByType.map((feature, index) => {
               const { description, DescriptionComponent } = getEventDescriptionComponent(feature)

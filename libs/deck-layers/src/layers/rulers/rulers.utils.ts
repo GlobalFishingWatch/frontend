@@ -35,7 +35,7 @@ export const getRulerCenterPointWithLabel = (
 ): Feature<Point, RulerPointProperties> => {
   const lineGeomCoords =
     line.geometry.type === 'LineString' ? line.geometry.coordinates : line.geometry.coordinates[0]
-  const centerIndex = Math.round(lineGeomCoords.length / 2)
+  const centerIndex = Math.floor(lineGeomCoords.length / 2)
   const centerPoint = lineGeomCoords[centerIndex] as Position
   const anchorPoints = lineGeomCoords.slice(centerIndex, centerIndex + 2)
   const bearing = rhumbBearing(anchorPoints[0] as Coord, anchorPoints[1] as Coord)

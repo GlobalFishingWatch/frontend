@@ -13,7 +13,7 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
   const { bounds } = useMapBounds()
   const deboncedBounds = useDebounce(bounds, 1000)
   const environmentalLayer = useGetDeckLayer<FourwingsLayer>(dataview.id)
-  const sourcesLoaded = environmentalLayer.loaded
+  const sourcesLoaded = environmentalLayer?.loaded
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
   ) as Dataset

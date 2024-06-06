@@ -1,17 +1,22 @@
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
+import { FourwingsHeatmapPickingObject } from '@globalfishingwatch/deck-layers'
 import I18nNumber from 'features/i18n/i18nNumber'
+import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
 import styles from './Popup.module.css'
 
 type ComparisonRowProps = {
-  // TODO:deck type this with its own type
-  feature: any
+  feature: FourwingsHeatmapPickingObject
   showFeaturesDetails: boolean
 }
 function ComparisonRow({ feature, showFeaturesDetails = false }: ComparisonRowProps) {
   const { t } = useTranslation()
+  const timeCompareTimeDescription = useTimeCompareTimeDescription()
+  const value = feature.sublayers?.[0]?.value as number
+  const unit = feature.sublayers?.[0]?.unit as string
 
   return (
-    <div className={styles.popupSection}>
+    <div className={cx(styles.popupSection, styles.noIcon)}>
       <div className={styles.popupSectionContent}>
         {showFeaturesDetails && (
           <h3 className={styles.popupSectionTitle}>
@@ -20,11 +25,13 @@ function ComparisonRow({ feature, showFeaturesDetails = false }: ComparisonRowPr
         )}
         <div className={styles.row}>
           <span className={styles.rowText}>
-            {parseInt(feature.value) > 0 && '+'}
-            <I18nNumber number={feature.value} />{' '}
+            <span className={styles.secondary}>{timeCompareTimeDescription}</span>
+            <br />
+            {value > 0 ? '+' : ''}
+            <I18nNumber number={value} />{' '}
             {/* sad little hack because i18n key is not plural while unit is */}
-            {t([`common.${feature.unit?.replace(/s$/, '')}` as any, 'common.hour'], 'hours', {
-              count: parseInt(feature.value), // neded to select the plural automatically
+            {t([`common.${unit?.replace(/s$/, '')}` as any, 'common.hour'], 'hours', {
+              count: value, // neded to select the plural automatically
             })}
           </span>
         </div>

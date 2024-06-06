@@ -53,13 +53,11 @@ const TracksEvents = ({
   data,
   useTrackColor,
   highlightedEventsIds,
-  getEventColor,
   onEventClick,
   onEventHover,
 }: {
   data: TimebarChartData<TrackEventChunkProps>
   useTrackColor?: boolean
-  getEventColor?: (event: TimebarChartChunk<TrackEventChunkProps>) => string
   highlightedEventsIds?: string[]
   onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
   onEventHover?: (event?: TimebarChartChunk<TrackEventChunkProps>) => void
@@ -129,7 +127,6 @@ const TracksEvents = ({
       </div>
     ))
   }, [
-    getEventColor,
     highlightedEventsIds,
     onEventClick,
     tracksEventsWithCoords,

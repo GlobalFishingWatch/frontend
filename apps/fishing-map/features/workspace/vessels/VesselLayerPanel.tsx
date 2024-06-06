@@ -8,7 +8,6 @@ import {
   ResourceStatus,
   DataviewDatasetConfigParam,
   Resource,
-  EndpointId,
   IdentityVessel,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
@@ -16,8 +15,6 @@ import { IconButton, ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   resolveDataviewDatasetResource,
   UrlDataviewInstance,
-  pickTrackResource,
-  selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { VesselLayer } from '@globalfishingwatch/deck-layers'
@@ -26,7 +23,11 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
-import { isGFWOnlyDataset, isPrivateDataset } from 'features/datasets/datasets.utils'
+import {
+  getSchemaFiltersInDataview,
+  isGFWOnlyDataset,
+  isPrivateDataset,
+} from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
@@ -36,6 +37,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { t } from 'features/i18n/i18n'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
+import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import Filters from '../common/LayerFilters'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -56,7 +58,7 @@ export const getVesselIdentityTooltipSummary = (
   }
   const identitiesByNormalizedShipname = groupBy(vessel?.selfReportedInfo, 'nShipname')
   const identities = Object.entries(identitiesByNormalizedShipname).flatMap(
-    ([_, selfReportedInfo]) => {
+    ([_, selfReportedInfo], index) => {
       const firstTransmissionDateFrom = selfReportedInfo.reduce((acc, curr) => {
         if (!acc) {
           return curr.transmissionDateFrom
@@ -76,20 +78,24 @@ export const getVesselIdentityTooltipSummary = (
       let info = `${name} - (${flag}) (${formatI18nDate(
         firstTransmissionDateFrom
       )} - ${formatI18nDate(lastTransmissionDateTo)})`
-      if (showVesselId) {
-        return [
-          info,
-          <br />,
-          selfReportedInfo.map((s, index) => (
+      return showVesselId ? (
+        <Fragment key={index}>
+          {info}
+          <br />
+          {selfReportedInfo.map((s, index) => (
             <Fragment key={s.id}>
               <GFWOnly type="only-icon" /> {s.id}
               {index < selfReportedInfo.length - 1 && <br />}
             </Fragment>
-          )),
-          <br />,
-        ]
-      }
-      return [info, <br />]
+          ))}
+          <br />
+        </Fragment>
+      ) : (
+        <Fragment key={index}>
+          {info}
+          <br />
+        </Fragment>
+      )
     }
   )
   return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
@@ -100,11 +106,11 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-  const resources = useSelector(selectResources)
   const vesselLayer = useGetDeckLayer<VesselLayer>(dataview.id)
   // const vesselInstance = useMapVesselLayer(dataview.id)
   const gfwUser = useSelector(selectIsGFWUser)
-  const trackResource = pickTrackResource(dataview, EndpointId.Tracks, resources)
+  const trackDatasetId = dataview.datasets?.find((rld) => rld.type === DatasetTypes.Tracks)?.id
+
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
   )
@@ -159,6 +165,11 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const identitiesSummary = vesselData
     ? getVesselIdentityTooltipSummary(vesselData, { showVesselId: gfwUser || false })
     : ''
+
+  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const hasSchemaFilterSelection = filtersAllowed.some(
+    (schema) => schema.optionsSelected?.length > 0
+  )
 
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
@@ -230,7 +241,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   ) : (
     <FitBounds
       hasError={trackError}
-      trackResource={trackResource as any}
+      vesselLayer={vesselLayer?.instance}
       infoResource={infoResource}
     />
   )
@@ -259,12 +270,14 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
           })}
         >
           <Fragment>
-            <VesselDownload
-              dataview={dataview}
-              vesselIds={[vesselId]}
-              vesselTitle={vesselLabel || t('common.unknownVessel', 'Unknown vessel')}
-              datasetId={trackResource?.dataset!?.id}
-            />
+            {trackDatasetId && (
+              <VesselDownload
+                dataview={dataview}
+                vesselIds={[vesselId]}
+                vesselTitle={vesselLabel || t('common.unknownVessel', 'Unknown vessel')}
+                datasetId={trackDatasetId}
+              />
+            )}
             <Color
               dataview={dataview}
               open={colorOpen}
@@ -335,6 +348,17 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
           />
         )}
       </div>
+      {hasSchemaFilterSelection && (
+        <div className={styles.properties}>
+          <div className={styles.filters}>
+            <div className={styles.filters}>
+              {filtersAllowed.map(({ id, label }) => (
+                <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

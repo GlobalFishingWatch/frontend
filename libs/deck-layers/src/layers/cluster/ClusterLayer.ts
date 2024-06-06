@@ -2,7 +2,7 @@ import { CompositeLayer, DefaultProps, LayerProps, PickingInfo } from '@deck.gl/
 import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { LayerGroup, getLayerGroupOffset, hexToDeckColor } from '../../utils'
+import { LayerGroup, getFetchLoadOptions, getLayerGroupOffset, hexToDeckColor } from '../../utils'
 import {
   ClusterEventType,
   ClusterFeature,
@@ -31,8 +31,11 @@ export class ClusterLayer extends CompositeLayer<LayerProps & TileLayerProps & C
       id:
         info.object?.properties.event_id ||
         `${(info.object?.geometry?.coordinates || []).join('-')}`,
+      color: this.props.color,
       layerId: this.root.id,
+      datasetId: this.props.datasetId,
       category: this.props.category,
+      subcategory: this.props.subcategory,
     }
     return { ...info, object }
   }
@@ -48,6 +51,9 @@ export class ClusterLayer extends CompositeLayer<LayerProps & TileLayerProps & C
 
     return new MVTLayer<TileLayerProps<ClusterFeature>>({
       data: url,
+      loadOptions: {
+        ...getFetchLoadOptions(),
+      },
       maxRequests: 100,
       debounceTime: 500,
       pickable: true,

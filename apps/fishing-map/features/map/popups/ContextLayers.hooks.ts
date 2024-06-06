@@ -1,24 +1,25 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import {
+  ContextFeature,
+  ContextLayer,
+  ContextPickingObject,
+  UserLayerPickingObject,
+} from '@globalfishingwatch/deck-layers'
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { getEventLabel } from 'utils/analytics'
-import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
-import { FOOTER_HEIGHT } from 'features/footer/Footer'
-import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectReportAreaSource } from 'features/app/selectors/app.reports.selector'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getBufferedAreaBbox } from 'features/reports/reports.utils'
+import { selectReportAreaDataview } from 'features/reports/reports.selectors'
 import { setClickedEvent } from '../map.slice'
-import { useMapFitBounds } from '../map-bounds.hooks'
 
 export const getFeatureBounds = (feature: ContextPickingObject) => {
   if (feature.geometry) {
@@ -28,25 +29,17 @@ export const getFeatureBounds = (feature: ContextPickingObject) => {
   }
 }
 
-export type HighlightedAreaParams = {
-  sourceId: string
-  areaId: string
-  sourceLayer?: string
-}
-export const useHighlightArea = () => {
+export const useHighlightReportArea = () => {
+  const areaDataview = useSelector(selectReportAreaDataview)
+  const areaLayer = useGetDeckLayer<ContextLayer>(areaDataview?.id || '')
+
   return useCallback(
-    ({ sourceId, areaId, sourceLayer = DEFAULT_CONTEXT_SOURCE_LAYER }: HighlightedAreaParams) => {
-      // TODO:deck:featureState review if this still needed
-      // cleanFeatureState('click')
-      // const featureState = {
-      //   source: sourceId,
-      //   sourceLayer: sourceLayer !== '' ? sourceLayer : undefined,
-      //   id: areaId,
-      // }
-      // TODO:deck:featureState review if this still needed
-      // updateFeatureState([featureState], 'highlight')
+    (area?: ContextFeature) => {
+      if (areaLayer?.instance?.setHighlightedFeatures) {
+        areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
+      }
     },
-    []
+    [areaLayer]
   )
 }
 
@@ -63,12 +56,10 @@ export const getAreaIdFromFeature = (
 
 export const useContextInteractions = () => {
   const dispatch = useAppDispatch()
-  const highlightArea = useHighlightArea()
   const areaId = useSelector(selectLocationAreaId)
-  const sourceId = useSelector(selectReportAreaSource)
   const datasets = useSelector(selectAllDatasets)
   const dataviews = useSelector(selectContextAreasDataviews)
-  const fitMapBounds = useMapFitBounds()
+  // const fitMapBounds = useMapFitBounds()
 
   const onDownloadClick = useCallback(
     (
@@ -104,7 +95,7 @@ export const useContextInteractions = () => {
   const setReportArea = useCallback(
     (feature: ContextPickingObject | UserLayerPickingObject) => {
       const { title, value } = feature
-      const areaId = getAreaIdFromFeature(feature) as string
+      // const areaId = getAreaIdFromFeature(feature) as string
       // Report already does it on page reload but to avoid waiting
       // this moves the map to the same position
       // const bounds = getFeatureBounds(feature)
@@ -117,7 +108,6 @@ export const useContextInteractions = () => {
       //   fitMapBounds(bounds, boundsParams)
       // }
 
-      highlightArea({ sourceId, areaId })
       dispatch(setClickedEvent(null))
 
       trackEvent({
@@ -126,7 +116,7 @@ export const useContextInteractions = () => {
         label: getEventLabel([title ?? '', value.toString()]),
       })
     },
-    [highlightArea, dispatch]
+    [dispatch]
   )
 
   const onReportClick = useCallback(
@@ -144,7 +134,7 @@ export const useContextInteractions = () => {
         setReportArea(feature)
       }
     },
-    [areaId, sourceId, setReportArea]
+    [areaId, setReportArea]
   )
 
   return useMemo(() => ({ onDownloadClick, onReportClick }), [onDownloadClick, onReportClick])

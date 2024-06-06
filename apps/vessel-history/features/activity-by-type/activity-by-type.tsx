@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useState } from 'react'
+import React, { Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'

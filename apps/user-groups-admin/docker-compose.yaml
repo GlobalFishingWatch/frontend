@@ -1,0 +1,15 @@
+services:
+  user-groups-admin:
+    build:
+      context: ../../dist/apps/user-groups-admin
+      dockerfile: ../../../apps/user-groups-admin/Dockerfile
+      target: production
+    container_name: user-groups-admin
+    ports:
+      - 3000:80
+    env_file:
+      - .env
+    environment:
+      - PORT=80
+      - BASIC_AUTH="off"
+      - API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org

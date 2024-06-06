@@ -21,6 +21,7 @@ export type ContextLayerConfig<Id = ContextLayerId> = {
   id: Id
   datasetId: string
   tilesUrl: string
+  filters?: Record<string, any>
 }
 
 export type ContextLayerProps = BaseLayerProps & {

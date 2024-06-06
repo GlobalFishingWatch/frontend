@@ -172,7 +172,7 @@ function App() {
     let action: any
     let actionResolved = false
     const fetchWorkspace = async () => {
-      action = dispatch(fetchWorkspaceThunk(urlWorkspaceId as string))
+      action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string }))
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace

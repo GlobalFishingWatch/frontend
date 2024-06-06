@@ -1,5 +1,8 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps, Color, PickingInfo } from '@deck.gl/core'
+import bbox from '@turf/bbox'
+import bboxPolygon from '@turf/bbox-polygon'
+import { BBox, Position, featureCollection, point } from '@turf/turf'
 import {
   ApiEvent,
   DataviewCategory,
@@ -12,8 +15,9 @@ import {
   VesselEventsLoader,
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
+import { Bbox } from '@globalfishingwatch/data-transforms'
 import { deckToHexColor } from '../../utils/colors'
-import { getLayerGroupOffset, LayerGroup } from '../../utils'
+import { getFetchLoadOptions, getLayerGroupOffset, LayerGroup } from '../../utils'
 import { BaseLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
@@ -113,6 +117,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           id: chunkId,
           visible,
           data: this._getTracksUrl({ start, end, trackUrl }),
+          loadOptions: {
+            ...getFetchLoadOptions(),
+          },
           type: TRACK_LAYER_TYPE,
           loaders: [VesselTrackLoader],
           _pathType: 'open',
@@ -170,6 +177,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           this.getSubLayerProps({
             id: chunkId,
             data: eventUrl.toString(),
+            loadOptions: {
+              ...getFetchLoadOptions(),
+            },
             visible,
             type,
             onError: this.onSublayerError,
@@ -252,6 +262,27 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   getVesselTrackSegments() {
     return this.getTrackLayers()?.flatMap((l) => l.getSegments())
+  }
+
+  getVesselTrackBounds() {
+    const trackLayerBboxes = this.getTrackLayers()
+      .map((l) => l.getBbox())
+      .filter(Boolean)
+    if (trackLayerBboxes.length === 1) return trackLayerBboxes[0]
+    return bbox(featureCollection([...trackLayerBboxes.map((l) => bboxPolygon(l as BBox))])) as Bbox
+  }
+
+  getVesselEventsBounds() {
+    const { startTime, endTime } = this.props
+    const events = this.getVesselEventsData()
+    const filteredEvents = events
+      .filter(
+        (event) =>
+          (!endTime || (event.start as number) < endTime) &&
+          (!startTime || (event.end as number) > startTime)
+      )
+      .map((e) => point(e.coordinates as Position))
+    return (filteredEvents ? bbox(featureCollection([...filteredEvents])) : []) as Bbox
   }
 
   getVesselEventsLayersLoaded() {

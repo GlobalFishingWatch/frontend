@@ -110,7 +110,7 @@ const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
 
 const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
   const { options } = schemaFilter
-  const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
+  const optionValues = options.map(({ id }) => parseFloat(id)).sort((a, b) => a - b)
   return optionValues.length === 1
     ? optionValues
     : [optionValues[0], optionValues[optionValues.length - 1]]

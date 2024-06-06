@@ -29,7 +29,12 @@ type ClusterFeatureProps = {
   lon: number
 }
 
+type ClusterProperties = {
+  datasetId: string
+  color: string
+}
+
 export type ClusterFeature = Feature<Point, ClusterFeatureProps>
-export type ClusterPickingObject = ClusterFeature & BasePickingObject
+export type ClusterPickingObject = ClusterFeature & BasePickingObject & ClusterProperties
 
 export type ClusterPickingInfo = PickingInfo<ClusterPickingObject, { tile?: Tile2DHeader }>

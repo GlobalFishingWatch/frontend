@@ -21,8 +21,9 @@ import {
   ClusterPickingObject,
   ContextPickingObject,
   FourwingsDeckSublayer,
+  FourwingsHeatmapPickingObject,
   FourwingsPickingObject,
-  RulerPickingObject,
+  FourwingsPositionsPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
@@ -60,15 +61,24 @@ export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
 export type SliceExtendedFourwingsDeckSublayer = FourwingsDeckSublayer & {
   vessels: ExtendedFeatureVessel[]
 }
-export type SliceExtendedFourwingsPickingObject = Omit<FourwingsPickingObject, 'sublayers'> & {
+export type SliceExtendedFourwingsPickingObject = Omit<
+  FourwingsHeatmapPickingObject,
+  'sublayers'
+> & {
   sublayers: SliceExtendedFourwingsDeckSublayer[]
 }
+
+export type SliceExtendedClusterPickingObject = ClusterPickingObject & {
+  event: ExtendedFeatureEvent
+}
+
 export type SliceExtendedFeature =
   | SliceExtendedFourwingsPickingObject
+  | SliceExtendedClusterPickingObject
+  | FourwingsPositionsPickingObject
   | ContextPickingObject
   | UserLayerPickingObject
   | ClusterPickingObject
-  | RulerPickingObject
   | VesselEventPickingObject
 
 // Extends the default extendedEvent including event and vessels information from API
@@ -98,7 +108,7 @@ type SublayerVessels = {
 }
 
 const getInteractionEndpointDatasetConfig = (
-  features: FourwingsPickingObject[],
+  features: FourwingsHeatmapPickingObject[],
   temporalgridDataviews: UrlDataviewInstance[] = []
 ) => {
   // use the first feature/dv for common parameters
@@ -212,7 +222,10 @@ export const fetchVesselInfo = async (
 export type ActivityProperty = 'hours' | 'detections'
 export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
-  { fishingActivityFeatures: FourwingsPickingObject[]; activityProperties?: ActivityProperty[] },
+  {
+    fishingActivityFeatures: FourwingsHeatmapPickingObject[]
+    activityProperties?: ActivityProperty[]
+  },
   {
     dispatch: AppDispatch
   }
@@ -349,14 +362,14 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
 export const fetchEncounterEventThunk = createAsyncThunk<
   ExtendedFeatureEvent | undefined,
-  FourwingsPickingObject,
+  ClusterPickingObject,
   {
     dispatch: AppDispatch
   }
->('map/fetchEncounterEvent', async (eventFeature: any, { signal, getState }) => {
+>('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
   const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
-  const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
+  const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
 
   if (dataset) {

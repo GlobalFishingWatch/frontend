@@ -18,6 +18,8 @@ import {
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
+export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
+
 const getDatasetsAvailableIntervals = (datasets: Dataset[]) =>
   uniq((datasets || [])?.flatMap((d) => (d?.configuration?.intervals as FourwingsInterval[]) || []))
 
@@ -106,6 +108,11 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
       ? dataview.datasets
       : dataview.datasets.filter((dataset) => dataview?.config?.datasets?.includes(dataset.id))
 
+  const maxZoomLevels = activeDatasets?.flatMap(({ configuration }) =>
+    configuration?.maxZoom !== undefined ? (configuration?.maxZoom as number) : []
+  )
+  const maxZoom = maxZoomLevels?.length ? Math.min(...maxZoomLevels) : undefined
+
   const sublayer: DataviewSublayerConfig = {
     id: dataview.id,
     datasets: activeDatasets,
@@ -114,7 +121,7 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     visible: config.visible,
     filter: config.filter,
     vesselGroups: config['vessel-groups'],
-    maxZoom: config.maxZoom,
+    maxZoom,
   }
 
   return sublayer
@@ -140,6 +147,7 @@ export function getFourwingsDataviewsResolved(
     category: fourwingsDataviews[0]?.category,
     config: {
       type: fourwingsDataviews[0]?.config?.type,
+      maxZoom: fourwingsDataviews[0]?.config?.maxZoom,
       sublayers: fourwingsDataviews.flatMap(getFourwingsDataviewSublayers),
       minVisibleValue: fourwingsDataviews[0].config?.minVisibleValue,
       maxVisibleValue: fourwingsDataviews[0].config?.maxVisibleValue,
@@ -175,6 +183,7 @@ export function getFourwingsDataviewsResolved(
       // Prepare a new dataview only for the auxiliar activity layer
       const auxiliarDataview: UrlDataviewInstance = {
         ...dataview,
+        id: `${dataview.id}-${AUXILIAR_DATAVIEW_SUFIX}`,
         datasets: dataview.datasets?.filter((d) => d.type === DatasetTypes.TemporalContext),
         datasetsConfig,
         config: {
@@ -208,8 +217,8 @@ type ResolverGlobalConfig = {
   zoom?: number
   token?: string
   bivariateDataviews?: [string, string]
-  activityVisualizationMode?: 'heatmap' | 'positions'
-  detectionsVisualizationMode?: 'heatmap' | 'positions'
+  activityVisualizationMode?: FourwingsVisualizationMode
+  detectionsVisualizationMode?: FourwingsVisualizationMode
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
@@ -226,18 +235,19 @@ type ResolverGlobalConfig = {
 
 const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
   DataviewType.Basemap,
-  DataviewType.Heatmap,
+  DataviewType.Context,
   DataviewType.HeatmapStatic,
+  DataviewType.Heatmap,
   DataviewType.HeatmapAnimated,
   DataviewType.TileCluster,
   DataviewType.Track,
   DataviewType.VesselEvents,
   DataviewType.VesselEventsShapes,
-  DataviewType.Context,
   DataviewType.UserContext,
   DataviewType.UserPoints,
   DataviewType.Polygons,
   DataviewType.BasemapLabels,
+  DataviewType.Graticules,
   DataviewType.Rulers,
   DataviewType.Annotation,
 ]
@@ -253,6 +263,19 @@ export function getDataviewsSorted(
     const bPos = order.indexOf(bType)
     return aPos - bPos
   }) as DataviewInstance[]
+}
+
+export function getComparisonMode(
+  dataviews: (UrlDataviewInstance | DataviewInstance)[],
+  params: ResolverGlobalConfig
+) {
+  const dataviewsArray = Array.isArray(dataviews) ? dataviews : [dataviews]
+  if (params.compareStart && params.compareEnd) {
+    return FourwingsComparisonMode.TimeCompare
+  }
+  return dataviewsArray.every((dataview) => params.bivariateDataviews?.includes(dataview.id))
+    ? FourwingsComparisonMode.Bivariate
+    : FourwingsComparisonMode.Compare
 }
 
 export function getDataviewsResolved(
@@ -295,16 +318,10 @@ export function getDataviewsResolved(
 
   const singleHeatmapDataview =
     [...activityDataviews, ...detectionDataviews, ...environmentalDataviews].length === 1
-  const activityComparisonMode = activityDataviews.every((dataview) =>
-    params.bivariateDataviews?.includes(dataview.id)
-  )
-    ? FourwingsComparisonMode.Bivariate
-    : FourwingsComparisonMode.Compare
-  const detectionsComparisonMode = detectionDataviews.every((dataview) =>
-    params.bivariateDataviews?.includes(dataview.id)
-  )
-    ? FourwingsComparisonMode.Bivariate
-    : FourwingsComparisonMode.Compare
+
+  const activityComparisonMode = getComparisonMode(activityDataviews, params)
+  const detectionsComparisonMode = getComparisonMode(detectionDataviews, params)
+
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
   const mergedActivityDataview = activityDataviews?.length
     ? getFourwingsDataviewsResolved(activityDataviews, {

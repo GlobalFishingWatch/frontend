@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import formatcoords from 'formatcoords'
 import cx from 'classnames'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
-import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { toFixed } from 'utils/shared'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import I18nDate from 'features/i18n/i18nDate'
@@ -44,7 +43,14 @@ export const TimelineDatesRange = () => {
   )
 }
 
-const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
+const MapInfo = ({
+  center,
+}: {
+  center: {
+    x: number
+    y: number
+  }
+}) => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   return (
     <div className={styles.info}>
@@ -52,9 +58,9 @@ const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
         <MapScaleControl />
         {center && (
           <div className={cx('print-hidden', styles.mouseCoordinates)}>
-            {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
+            {toFixed(center.y, 4)} {toFixed(center.x, 4)}
             <br />
-            {formatcoords(center.latitude, center.longitude).format('DDMMssX', {
+            {formatcoords(center.y, center.x).format('DDMMssX', {
               latLonSeparator: ' ',
               decimalPlaces: 2,
             })}

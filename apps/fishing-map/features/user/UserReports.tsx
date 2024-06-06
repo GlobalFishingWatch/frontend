@@ -51,8 +51,8 @@ function UserReports() {
     (report: Report) => {
       const confirmation = window.confirm(
         `${t(
-          'vesselGroup.confirmRemove',
-          'Are you sure you want to permanently delete this vessel group?'
+          'analysis.confirmRemove',
+          'Are you sure you want to permanently delete this report?'
         )}\n${report.name}`
       )
       if (confirmation) {

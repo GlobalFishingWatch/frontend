@@ -97,12 +97,12 @@ export const getBivariateRampLegend = (colorRampsIds: ColorRampId[]) => {
     rgbaToString(getBlend(ramp1[3], ramp2[1])),
     rgbaToString(getBlend(ramp1[0], ramp2[2])),
     rgbaToString(getBlend(ramp1[1], ramp2[2])),
-    rgbaToString(getBlend({ ...white, a: 0.25 }, getBlend(ramp1[2], ramp2[2]))),
-    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[3], ramp2[2]))),
+    rgbaToString(getBlend(ramp1[2], ramp2[2])),
+    rgbaToString(getBlend(ramp1[3], ramp2[2])),
     rgbaToString(getBlend(ramp1[0], ramp2[3])),
     rgbaToString(getBlend(ramp1[1], ramp2[3])),
-    rgbaToString(getBlend({ ...white, a: 0.5 }, getBlend(ramp1[2], ramp2[3]))),
-    rgbaToString(getBlend(white, getBlend(ramp1[3], ramp2[3]))),
+    rgbaToString(getBlend(ramp1[2], ramp2[3])),
+    rgbaToString(getBlend(ramp1[3], ramp2[3])),
   ]
 }
 
@@ -131,14 +131,16 @@ export const HEATMAP_COLORS_BY_ID: Record<ColorRampId, string> = {
 }
 
 export const TIME_COMPARE_COLOR_RAMP = [
-  '#3EF0FF', // -100 000
-  '#3DADDF', // -50000 -> -100000
-  '#4286C1', // -8000 -> -50000
-  '#3F69A4', // 0 -> -8000
-  '#4A4174',
-  '#844A7F',
-  '#B0547F',
-  '#FF677D',
+  '#00D7E6',
+  '#02AFCC',
+  '#0392B9',
+  '#0474A6',
+  '#055994',
+  '#5F2B64',
+  '#84396A',
+  '#B14972',
+  '#D75879',
+  '#FF6680',
 ]
 
 export const getColorRamp = ({

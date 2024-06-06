@@ -37,6 +37,7 @@ export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
 
 export const FILTERABLE_GENERATORS: DataviewType[] = [
   DataviewType.HeatmapAnimated,
+  DataviewType.HeatmapStatic,
   DataviewType.TileCluster,
   DataviewType.UserContext,
   DataviewType.UserPoints,
@@ -280,6 +281,59 @@ export const resolveDataviewDatasetResource = (
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
+export function getDataviewSqlFiltersResolved(dataview: UrlDataviewInstance) {
+  if (!dataview.config?.filters) {
+    return ''
+  }
+  const { filters, filterOperators } = dataview.config
+
+  const sqlFilters = Object.keys(filters)
+    .filter((key) => key !== 'vessel-groups')
+    .flatMap((filterKey) => {
+      if (!filters[filterKey]) return []
+      const filterValues = Array.isArray(filters[filterKey])
+        ? filters[filterKey]
+        : [filters[filterKey]]
+
+      const dataset = dataview.datasets?.find(
+        (d) => getDatasetSchemaItem(d, filterKey) !== undefined
+      )
+      const datasetSchema = getDatasetSchemaItem(dataset as Dataset, filterKey)
+      const isUserDataset = dataview.category === DataviewCategory.User
+      const queryFilterKey =
+        // User context layers requires wrapping the filter key with double quotes
+        filterKey.includes('_') && isUserDataset ? `"${filterKey}"` : filterKey
+      if (datasetSchema && datasetSchema.type === 'range') {
+        const minPossible = Number(datasetSchema?.enum?.[0])
+        const minSelected = Number(filterValues[0])
+        const minValue = isUserDataset ? `'${minSelected}'` : minSelected
+        const maxPossible = Number(datasetSchema?.enum?.[datasetSchema.enum.length - 1])
+        const maxSelected = Number(filterValues[filterValues.length - 1])
+        const maxValue = isUserDataset ? `'${maxSelected}'` : maxSelected
+        if (minSelected !== minPossible && maxSelected !== maxPossible) {
+          return `${queryFilterKey} >= ${minValue} AND ${queryFilterKey} <= ${maxValue}`
+        }
+        if (minSelected !== minPossible) {
+          return `${queryFilterKey} >= ${minValue}`
+        }
+        if (maxSelected !== maxPossible) {
+          return `${queryFilterKey} <= ${maxValue}`
+        }
+      }
+      const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
+      const query = `${queryFilterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
+        .map((f: string) => `'${f}'`)
+        .join(', ')})`
+      if (filterOperator === EXCLUDE_FILTER_ID) {
+        // workaround as bigquery exludes null values
+        return `(${queryFilterKey} IS NULL OR ${query})`
+      }
+      return query
+    })
+
+  return sqlFilters.length ? sqlFilters.join(' AND ') : ''
+}
+
 /**
  * Gets list of dataviews and those present in the workspace, and applies any config or datasetConfig
  * from it (merges dataview.config and workspace's dataviewConfig and datasetConfig).
@@ -358,6 +412,8 @@ export function resolveDataviews(
 
       const resolvedDataview = {
         ...dataview,
+        // Supports overriding the category so we can easily move user layers to context section
+        category: dataviewInstance.category || dataview.category,
         id: dataviewInstance.id,
         dataviewId: dataview.slug,
         config,
@@ -371,57 +427,12 @@ export function resolveDataviews(
   // resolved array filters to url filters
   dataviewInstancesResolved = dataviewInstancesResolved.map((dataviewInstance) => {
     if (dataviewInstance.config && isFilterableDataviewInstanceGenerator(dataviewInstance)) {
-      const { filters, filterOperators } = dataviewInstance.config
+      const { filters } = dataviewInstance.config
       if (filters) {
-        if (filters['vessel-groups']) {
-          dataviewInstance.config['vessel-groups'] = filters['vessel-groups'].join(',')
-        }
-        const sqlFilters = Object.keys(filters)
-          .filter((key) => key !== 'vessel-groups')
-          .flatMap((filterKey) => {
-            if (!filters[filterKey]) return []
-            const filterValues = Array.isArray(filters[filterKey])
-              ? filters[filterKey]
-              : [filters[filterKey]]
-
-            const dataset = dataviewInstance.datasets?.find(
-              (d) => getDatasetSchemaItem(d, filterKey) !== undefined
-            )
-            const datasetSchema = getDatasetSchemaItem(dataset as Dataset, filterKey)
-            const isUserDataset = dataviewInstance.category === DataviewCategory.User
-            const queryFilterKey =
-              // User context layers requires wrapping the filter key with double quotes
-              filterKey.includes('_') && isUserDataset ? `"${filterKey}"` : filterKey
-            if (datasetSchema && datasetSchema.type === 'range') {
-              const minPossible = Number(datasetSchema?.enum?.[0])
-              const minSelected = Number(filterValues[0])
-              const minValue = isUserDataset ? `'${minSelected}'` : minSelected
-              const maxPossible = Number(datasetSchema?.enum?.[datasetSchema.enum.length - 1])
-              const maxSelected = Number(filterValues[filterValues.length - 1])
-              const maxValue = isUserDataset ? `'${maxSelected}'` : maxSelected
-              if (minSelected !== minPossible && maxSelected !== maxPossible) {
-                return `${queryFilterKey} >= ${minValue} AND ${queryFilterKey} <= ${maxValue}`
-              }
-              if (minSelected !== minPossible) {
-                return `${queryFilterKey} >= ${minValue}`
-              }
-              if (maxSelected !== maxPossible) {
-                return `${queryFilterKey} <= ${maxValue}`
-              }
-            }
-            const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
-            const query = `${queryFilterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
-              .map((f: string) => `'${f}'`)
-              .join(', ')})`
-            if (filterOperator === EXCLUDE_FILTER_ID) {
-              // workaround as bigquery exludes null values
-              return `(${queryFilterKey} IS NULL OR ${query})`
-            }
-            return query
-          })
-        if (sqlFilters.length) {
-          dataviewInstance.config.filter = sqlFilters.join(' AND ')
-        }
+        dataviewInstance.config.filter = getDataviewSqlFiltersResolved(dataviewInstance)
+      }
+      if (filters?.['vessel-groups']) {
+        dataviewInstance.config['vessel-groups'] = filters['vessel-groups'].join(',')
       }
       return dataviewInstance
     }

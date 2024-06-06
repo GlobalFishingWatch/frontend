@@ -13,7 +13,7 @@ async function start() {
       path.resolve(__dirname, '../data/locales/source.json'),
       JSON.stringify(names)
     )
-    console.log('✅')
+    console.log(`✅ ${geometries.features.length} source translations`)
   } catch (e) {
     console.error(e)
   }

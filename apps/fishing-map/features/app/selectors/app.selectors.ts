@@ -7,6 +7,7 @@ import {
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
 import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 
 const EMPTY_ARRAY: [] = []
 
@@ -37,12 +38,25 @@ export const selectMapRulers = selectWorkspaceStateProperty('mapRulers')
 export const selectAreMapAnnotationsVisible = selectWorkspaceStateProperty('mapAnnotationsVisible')
 export const selectMapAnnotations = selectWorkspaceStateProperty('mapAnnotations')
 export const selectVisibleEvents = selectWorkspaceStateProperty('visibleEvents')
-export const selectMapResolution = selectWorkspaceStateProperty('mapResolution')
-export const selectActivityVisualizationMode = selectWorkspaceStateProperty(
-  'activityVisualizationMode'
+
+export const selectActivityVisualizationMode = createSelector(
+  [selectIsAnyReportLocation, selectWorkspaceStateProperty('activityVisualizationMode')],
+  (isAnyReportLocation, activityVisualizationMode) => {
+    if (isAnyReportLocation && activityVisualizationMode === 'positions') {
+      return 'heatmap-high-res'
+    }
+    return activityVisualizationMode
+  }
 )
-export const selectDetectionsVisualizationMode = selectWorkspaceStateProperty(
-  'detectionsVisualizationMode'
+
+export const selectDetectionsVisualizationMode = createSelector(
+  [selectIsAnyReportLocation, selectWorkspaceStateProperty('detectionsVisualizationMode')],
+  (isAnyReportLocation, detectionsVisualizationMode) => {
+    if (isAnyReportLocation && detectionsVisualizationMode === 'positions') {
+      return 'heatmap-high-res'
+    }
+    return detectionsVisualizationMode
+  }
 )
 
 export const selectMapRulersVisible = createSelector(
