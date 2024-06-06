@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckProps, PickingInfo, Position } from '@deck.gl/core'
+import { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
@@ -19,15 +19,12 @@ import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.
 import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map.hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
-import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import { getDefaultCursor, isRulerLayerPoint } from './map-interaction.utils'
+import { isRulerLayerPoint } from './map-interaction.utils'
 import {
   SliceExtendedClusterPickingObject,
   SliceInteractionEvent,
@@ -289,14 +286,6 @@ export const useMapMouseHover = () => {
     hoveredDebouncedEvent,
     // hoveredTooltipEvent,
   }
-}
-
-export const useMapToolsActive = () => {
-  const { isMapDrawing } = useMapDrawConnect()
-  const { isMapAnnotating } = useMapAnnotation()
-  const { isErrorNotificationEditing } = useMapErrorNotification()
-  const { rulersEditing } = useRulers()
-  return isMapDrawing || isMapAnnotating || isErrorNotificationEditing || rulersEditing
 }
 
 export const useMapMouseClick = () => {

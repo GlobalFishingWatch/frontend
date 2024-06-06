@@ -1,7 +1,8 @@
-import { GeoJsonLayer } from '@deck.gl/layers'
+import { GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers'
 import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { Feature, Point } from '@turf/turf'
+import { Feature, Point, feature } from '@turf/turf'
+import { LineString, MultiLineString } from 'geojson'
 import { LayerGroup, getLayerGroupOffset } from '../../utils'
 import { DeckLayerCategory } from '../../types'
 import {
@@ -14,6 +15,8 @@ import {
 import {
   getGreatCircleMultiLine,
   getRulerCenterPointWithLabel,
+  getRulerCoordsPairs,
+  getRulerLengthLabel,
   getRulerStartAndEndPoints,
   hasRulerStartAndEnd,
 } from './rulers.utils'
@@ -25,10 +28,15 @@ const defaultProps: DefaultProps<RulersLayerProps> = {
   color: RULERS_COLOR,
 }
 
-const getFeaturesFromRulers = (rulers: RulerData[]) => {
+const getRulersLines = (rulers: RulerData[]) => {
   return rulers.flatMap((ruler: RulerData) => {
-    const line = getGreatCircleMultiLine(ruler)
-    return [line, ...getRulerStartAndEndPoints(ruler), getRulerCenterPointWithLabel(line)]
+    return getGreatCircleMultiLine(ruler)
+  })
+}
+
+const getRulersLinesLabels = (lines: Feature<LineString | MultiLineString>[]) => {
+  return lines.flatMap((line) => {
+    return getRulerCenterPointWithLabel(line)
   })
 }
 
@@ -53,17 +61,21 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
 
     if (!hasRulerStartAndEnd(rulers)) return null
 
+    const rulersLines = getRulersLines(rulers)
+    const rulersLabels = getRulersLinesLabels(rulersLines)
     const data = {
       type: 'FeatureCollection',
-      features: getFeaturesFromRulers(rulers),
+      features: [...rulersLines, ...rulersLabels],
     }
 
-    return new GeoJsonLayer(
+    const rulersPoints = rulers.flatMap((ruler) => getRulerStartAndEndPoints(ruler))
+
+    const lineLayer = new GeoJsonLayer(
       this.getSubLayerProps({
         id: 'ruler-layer',
         data,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
-        pickable: true,
+        pickable: false,
         stroked: true,
         filled: true,
         visible,
@@ -83,5 +95,21 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
         extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
       })
     )
+    const pointsLayer = new ScatterplotLayer(
+      this.getSubLayerProps({
+        id: 'ruler-layer-points',
+        data: rulersPoints,
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
+        getPosition: (d: any) => d.geometry.coordinates,
+        pickable: true,
+        visible,
+        getFillColor: color,
+        radiusUnits: 'pixels',
+        getRadius: (d: Feature<Point, RulerPointProperties>) =>
+          d.properties?.order === 'center' ? 0 : 3,
+        lineWidthMinPixels: 2,
+      })
+    )
+    return [lineLayer, pointsLayer]
   }
 }

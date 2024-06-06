@@ -162,20 +162,20 @@ export class DrawLayer extends CompositeLayer {
   //   console.log(event)
   // }
 
-  // getPickingInfo({ info }: { info: PickingInfo }): DrawPickingInfo {
-  //   const object = {
-  //     ...info.object,
-  //     id: this.props.id,
-  //     layerId: 'draw-layer',
-  //     category: 'draw' as DeckLayerCategory,
-  //     index: info.index,
-  //   } as DrawPickingObject
+  getPickingInfo({ info }: { info: PickingInfo }): DrawPickingInfo {
+    const object = {
+      ...info.object,
+      id: this.props.id,
+      layerId: 'draw-layer',
+      category: 'draw' as DeckLayerCategory,
+      index: info.index,
+    } as DrawPickingObject
 
-  //   return {
-  //     ...info,
-  //     object,
-  //   }
-  // }
+    return {
+      ...info,
+      object,
+    }
+  }
 
   setDrawingMode = () => {
     this.setState({ mode: new GFWDrawingMode() })
