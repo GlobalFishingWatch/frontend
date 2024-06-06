@@ -47,34 +47,30 @@ steps:
     waitFor: ['install-yarn']
     name: node:21
     entrypoint: yarn
-    args: ['nx', 'build', 'real-time-prototype', '--parallel']
+    args: ['nx', 'build', 'image-labeler', '--parallel']
     env:
       - 'NX_BRANCH=$_NX_BRANCH'
       - 'NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN'
-      - 'NEXT_PUBLIC_API_GATEWAY=$_NEXT_PUBLIC_API_GATEWAY'
+      - 'API_GATEWAY=$_API_GATEWAY'
 
-  - name: 'gcr.io/kaniko-project/executor:debug'
+  - name: 'gcr.io/kaniko-project/executor:latest'
     id: 'build-image'
     waitFor: ['build-app']
-    entrypoint: ''
-    env:
-      - 'REF_NAME=$REF_NAME'
-      - 'SHORT_SHA=$SHORT_SHA'
-    script: |
-      image_version=`echo $REF_NAME | grep -Eo "(develop)" || echo $REF_NAME | grep -Eo "real-time-prototype@([0-9].*)" | grep -Eo "([0-9].*)" || echo $SHORT_SHA`
-      /kaniko/executor \
-        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:latest \
-        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$SHORT_SHA \
-        --destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$image_version \
-        --cache=true \
-        --build-arg \
-          APP_NAME=real-time-prototype \
-        --target \
-          production \
-        -f \
-          ./apps/real-time-prototype/Dockerfile \
-        -c \
-          ./dist/apps/real-time-prototype
+    args:
+      [
+        '--destination=gcr.io/world-fishing-827/github.com/globalfishingwatch/image-labeler:$SHORT_SHA',
+        '--cache=true',
+        '--build-arg',
+        'BASIC_AUTH_USER=$_BASIC_AUTH_USER',
+        '--build-arg',
+        'BASIC_AUTH_PASS=$_BASIC_AUTH_PASS',
+        '--target',
+        'production',
+        '-f',
+        './apps/image-labeler/Dockerfile',
+        '-c',
+        './dist/apps/image-labeler',
+      ]
 
   # Deploy to the appropriate environment
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -88,23 +84,19 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        branch_service_name=`echo real-time-prototype-$BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print substr(tolower($0),0,62)}'`
+        branch_service_name=`echo image-labeler-$BRANCH_NAME | sed -r 's,[/\.],-,g' | awk '{print substr(tolower($0),0,62)}'`
         service_name=${_RUN_SERVICE_NAME:-${branch_service_name}}
         gcloud beta run deploy \
         $service_name \
         --project \
         $_RUN_PROJECT \
         --image \
-        gcr.io/world-fishing-827/github.com/globalfishingwatch/real-time-prototype:$SHORT_SHA \
+        gcr.io/world-fishing-827/github.com/globalfishingwatch/image-labeler:$SHORT_SHA \
         --region \
         $_RUN_REGION \
         --platform managed \
         --set-env-vars \
         BASIC_AUTH=$_BASIC_AUTH \
-        --set-env-vars \
-        BASIC_AUTH_USER=$_BASIC_AUTH_USER \
-        --set-env-vars \
-        BASIC_AUTH_PASS=$_BASIC_AUTH_PASS \
         --allow-unauthenticated
 
 timeout: 1800s
