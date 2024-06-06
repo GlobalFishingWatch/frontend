@@ -1,6 +1,5 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { Fragment, useCallback } from 'react'
+import { useCallback } from 'react'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks/use-login'
@@ -28,12 +27,7 @@ const RootComponent = () => {
     )
   }
 
-  return (
-    <Fragment>
-      <Outlet />
-      <TanStackRouterDevtools />
-    </Fragment>
-  )
+  return <Outlet />
 }
 
 export const Route = createRootRoute({

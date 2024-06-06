@@ -53,7 +53,7 @@ export function Project() {
     (taskId: string) => {
       const currentIndex = data.findIndex((task) => task.id === taskId)
       setActiveTaskId(data[currentIndex + 1]?.id)
-      window.scrollTo(0, window.scrollY + 71)
+      window.scrollBy({ top: 71, behavior: 'smooth' })
     },
     [data, setActiveTaskId]
   )
@@ -75,7 +75,7 @@ export function Project() {
 
   return (
     <div className={styles.project}>
-      <h1 className={styles.pageTitle}>{taskData.metadata.name}</h1>
+      <h1 className={styles.pageTitle}>Project: {taskData.metadata.name}</h1>
       <div className={styles.projectInfo}>
         <div className={styles.projectInfoItem}>
           <label>Big Query Table</label>
