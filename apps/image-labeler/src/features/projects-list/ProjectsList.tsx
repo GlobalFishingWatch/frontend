@@ -24,7 +24,7 @@ export function ProjectsList() {
   return (
     <div>
       <h1 className={styles.pageTitle}>Labelling Projects</h1>
-      {data.entries.map((project: LabellingProject) => (
+      {data?.entries?.map((project: LabellingProject) => (
         <Link
           to="/project/$projectId"
           params={{

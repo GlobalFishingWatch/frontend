@@ -1,9 +1,16 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks/use-login'
 import { Button } from '@globalfishingwatch/ui-components/button'
+
+const labelerPermission = {
+  type: 'labeler-project',
+  value: '*',
+  action: 'read',
+}
 
 const RootComponent = () => {
   const login = useGFWLogin()
@@ -17,11 +24,15 @@ const RootComponent = () => {
     return <Spinner />
   }
 
-  const isAdmin = login.user?.groups.some((group) => group.toLowerCase() === 'admin-group')
-  if (login.logged && !isAdmin) {
+  const hasAccessPermissions = checkExistPermissionInList(
+    login.user?.permissions,
+    labelerPermission
+  )
+  if (login.logged && !hasAccessPermissions) {
     return (
       <div>
-        You need to be an admin to access
+        <p>{login.user?.email}</p>
+        <p>You don't have permissions to access this page</p>
         <Button onClick={handleLogoutClick}>Logout</Button>
       </div>
     )
