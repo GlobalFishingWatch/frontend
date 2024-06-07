@@ -34,7 +34,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 const layerInstanceAtom = atom<DrawLayer | null>(null)
 // const hasOverlappingFeaturesAtom = atom<boolean>(false)
 
-export const useDrawLayer = () => {
+export const useDrawLayerInstance = () => {
   const { isMapDrawing } = useMapDrawConnect()
   // map && map.setProps({ controller: { doubleClickZoom: false } })
   // const [drawFeatures, setDrawFeatures] = useAtom(drawFeaturesAtom)
@@ -172,7 +172,15 @@ export const useDrawLayer = () => {
         )
   }, [isMapDrawing, onDrawEdit, setLayerInstance])
 
-  return layerInstance
+  return isMapDrawing
+    ? new DrawLayer({
+        // data: drawFeatures,
+        // onEdit: onDrawEdit,
+        // selectedFeatureIndexes: drawFeaturesIndexes,
+        // mode: 'draw',
+      })
+    : undefined
+
   // return {
   // instance: layerInstance,
   // onDrawClick,

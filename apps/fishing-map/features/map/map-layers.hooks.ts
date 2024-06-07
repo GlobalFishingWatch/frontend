@@ -5,20 +5,22 @@ import {
   useDeckLayerComposer,
   useDeckLayerLoadedState,
 } from '@globalfishingwatch/deck-layer-composer'
+import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import { useGlobalConfigConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsWorkspaceIndexLocation, selectIsUserLocation } from 'routes/routes.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/workspaces'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { useDrawLayer } from './overlays/draw/draw.hooks'
+import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
 import {
   selectMapReportBufferDataviews,
   selectShowWorkspaceDetail,
   selectWorkspacesListDataview,
 } from './map.selectors'
+import useRulers, { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
 
-export const useMapDeckLayers = () => {
+export const useMapDataviewsLayers = () => {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceDataviews = useSelector(selectDataviewInstancesResolvedVisible)
   const bufferDataviews = useSelector(selectMapReportBufferDataviews)
@@ -61,8 +63,17 @@ export const useMapDeckLayers = () => {
 }
 
 export const useMapOverlayLayers = () => {
-  const drawLayerInstance = useDrawLayer()
-  return useMemo(() => (drawLayerInstance ? [drawLayerInstance] : []), [drawLayerInstance])
+  const drawLayerInstance = useDrawLayerInstance()
+  const rulerLayerInstance = useMapRulerInstance()
+  return useMemo(() => {
+    return [drawLayerInstance!, rulerLayerInstance!].filter(Boolean)
+  }, [drawLayerInstance, rulerLayerInstance])
+}
+
+export const useMapLayers = () => {
+  const dataviewsLayers = useMapDataviewsLayers()
+  const overlays = useMapOverlayLayers()
+  return useMemo(() => [...dataviewsLayers, ...overlays], [dataviewsLayers, overlays])
 }
 
 export const useMapLayersLoaded = () => {

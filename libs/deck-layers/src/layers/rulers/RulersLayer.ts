@@ -1,9 +1,9 @@
 import { GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers'
 import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { Feature, Point, feature } from '@turf/turf'
+import { Feature, Point } from '@turf/turf'
 import { LineString, MultiLineString } from 'geojson'
-import { LayerGroup, getLayerGroupOffset } from '../../utils'
+import { COLOR_TRANSPARENT, LayerGroup, getLayerGroupOffset } from '../../utils'
 import { DeckLayerCategory } from '../../types'
 import {
   RulersLayerProps,
@@ -15,8 +15,6 @@ import {
 import {
   getGreatCircleMultiLine,
   getRulerCenterPointWithLabel,
-  getRulerCoordsPairs,
-  getRulerLengthLabel,
   getRulerStartAndEndPoints,
   hasRulerStartAndEnd,
 } from './rulers.utils'
@@ -83,8 +81,7 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
         getLineColor: color,
         pointType: 'circle+text',
         pointRadiusUnits: 'pixels',
-        getPointRadius: (d: Feature<Point, RulerPointProperties>) =>
-          d.properties?.order === 'center' ? 0 : 3,
+        getPointRadius: 0,
         getText: (d: Feature<Point, RulerPointProperties>) => d.properties?.text,
         getTextAngle: (d: Feature<Point, RulerPointProperties>) => d.properties?.bearing,
         getTextSize: 12,
@@ -95,21 +92,22 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
         extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
       })
     )
-    const pointsLayer = new ScatterplotLayer(
-      this.getSubLayerProps({
-        id: 'ruler-layer-points',
-        data: rulersPoints,
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
-        getPosition: (d: any) => d.geometry.coordinates,
-        pickable: true,
-        visible,
-        getFillColor: color,
-        radiusUnits: 'pixels',
-        getRadius: (d: Feature<Point, RulerPointProperties>) =>
-          d.properties?.order === 'center' ? 0 : 3,
-        lineWidthMinPixels: 2,
-      })
-    )
+    const pointsLayer = new ScatterplotLayer({
+      id: 'ruler-layer-points',
+      data: rulersPoints,
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
+      getPosition: (d: any) => d.geometry.coordinates,
+      pickable: true,
+      stroked: true,
+      visible,
+      getFillColor: color,
+      getLineColor: COLOR_TRANSPARENT,
+      radiusUnits: 'pixels',
+      lineWidthUnits: 'pixels',
+      lineWidthScale: 1,
+      lineWidthMinPixels: 5,
+      getRadius: 6,
+    })
     return [lineLayer, pointsLayer]
   }
 }

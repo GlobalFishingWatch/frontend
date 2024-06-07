@@ -30,7 +30,7 @@ import {
   updateFeaturePointByIndex,
 } from '../../map.draw.utils'
 import styles from './DrawDialog.module.css'
-import { useDrawLayer } from './draw.hooks'
+import { useDrawLayerInstance } from './draw.hooks'
 import { CoordinateEditOverlay } from './CoordinateEditOverlay'
 
 export type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
@@ -77,7 +77,7 @@ function MapDraw() {
   const mapDrawEditDatasetId = useSelector(selectMapDrawingEditId)
   const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
-  const drawLayer = useDrawLayer()
+  const drawLayer = useDrawLayerInstance()
   const drawFeatures = drawLayer?.getData() || []
   const drawFeaturesIndexes = drawLayer?.getSelectedFeatureIndexes() || []
   const hasOverlappingFeatures = drawLayer?.getHasOverlappingFeatures()

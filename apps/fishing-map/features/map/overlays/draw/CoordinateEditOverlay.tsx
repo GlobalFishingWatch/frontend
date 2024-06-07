@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useCallback, useState } from 'react'
 import { Button, InputText } from '@globalfishingwatch/ui-components'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
-import { useDrawLayer } from './draw.hooks'
+import { useDrawLayerInstance } from './draw.hooks'
 import styles from './DrawDialog.module.css'
 
 export const CoordinateEditOverlay = (): React.ReactNode | null => {

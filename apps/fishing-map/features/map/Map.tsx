@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react'
-import { LayersList } from '@deck.gl/core'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
 import { RulersLayer } from '@globalfishingwatch/deck-layers'
@@ -20,24 +19,19 @@ import {
   useMapMouseClick,
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
-import { useMapRulersDrag } from 'features/map/overlays/rulers/rulers-drag.hooks'
 import ErrorNotification from 'features/map/overlays/error-notification/ErrorNotification'
-import { useMapDeckLayers, useMapOverlayLayers } from 'features/map/map-layers.hooks'
+import { useMapLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
 import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
-import useRulers from './overlays/rulers/rulers.hooks'
 import { useMapDrawConnect } from './map-draw.hooks'
 import MapInfo from './controls/MapInfo'
 import { MAP_CANVAS_ID } from './map.config'
 import TimeComparisonLegend from './TimeComparisonLegend'
 
-// This avoids type checking to complain
-// https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
-const RulersLayerComponent = RulersLayer as any
 const DrawDialog = dynamic(
   () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
 )
@@ -66,10 +60,8 @@ const MapWrapper = () => {
   const { onMouseMove, hoveredCoordinates } = useMapMouseHover()
   const getCursor = useMapCursor()
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
-  const { rulers, editingRuler, rulersVisible } = useRulers()
   const { isMapDrawing } = useMapDrawConnect()
-  const layers = useMapDeckLayers()
-  const overlays = useMapOverlayLayers()
+  const layers = useMapLayers()
 
   const setDeckLayers = useSetDeckLayerComposer()
   useEffect(() => {
@@ -91,15 +83,13 @@ const MapWrapper = () => {
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
 
-  const currentRuler = editingRuler ? [editingRuler] : []
-
   return (
     <div className={styles.container}>
       <DeckGL
         id={MAP_CANVAS_ID}
         ref={deckRef}
         views={MAP_VIEW}
-        layers={deckRef ? ([...layers, ...overlays] as LayersList) : []}
+        layers={deckRef ? layers : []}
         onAfterRender={() => {
           setDeckLayerLoadedState(layers)
         }}
@@ -126,12 +116,6 @@ const MapWrapper = () => {
         <MapAnnotations />
         <MapAnnotationsDialog />
         <ErrorNotification />
-        {(editingRuler || rulers) && (
-          <RulersLayerComponent
-            rulers={[...(rulers || []), ...currentRuler]}
-            visible={rulersVisible}
-          />
-        )}
         {isMapDrawing && <DrawDialog />}
       </DeckGL>
       <MapPopups />

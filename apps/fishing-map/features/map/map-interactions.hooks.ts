@@ -38,7 +38,7 @@ import {
   setClickedEvent,
 } from './map.slice'
 import { useSetViewState } from './map-viewport.hooks'
-import { useDrawLayer } from './overlays/draw/draw.hooks'
+import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
 
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
