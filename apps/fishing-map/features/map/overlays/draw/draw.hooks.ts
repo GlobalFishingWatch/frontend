@@ -38,7 +38,7 @@ export const useDrawLayerInstance = () => {
   const { isMapDrawing } = useMapDrawConnect()
   // map && map.setProps({ controller: { doubleClickZoom: false } })
   // const [drawFeatures, setDrawFeatures] = useAtom(drawFeaturesAtom)
-  const [layerInstance, setLayerInstance] = useAtom(layerInstanceAtom)
+  // const [layerInstance, setLayerInstance] = useAtom(layerInstanceAtom)
   // const [drawFeaturesIndexes, setDrawFeaturesIndexes] = useAtom(drawFeaturesIndexesAtom)
   // const [drawLayerMode, setDrawLayerMode] = useAtom(drawLayerModeAtom)
   // const [updatedPoint, setUpdatedPoint] = useAtom(updatedPointAtom)
@@ -49,19 +49,19 @@ export const useDrawLayerInstance = () => {
   //   setDrawLayerMode(INITIAL_DRAW_MODE)
   // }, [setDrawFeatures, setDrawLayerMode])
 
-  const onDrawEdit = useCallback((editAction: any) => {
-    // console.log(editAction)
-  }, [])
+  // const onDrawEdit = useCallback((editAction: any) => {
+  //   // console.log(editAction)
+  // }, [])
 
-  const isDrawFeature = (feature: DeckLayerPickingObject) => {
-    return (
-      feature.category === 'draw' && (feature as DrawPickingObject).geometry?.type === 'Polygon'
-    )
-  }
+  // const isDrawFeature = (feature: DeckLayerPickingObject) => {
+  //   return (
+  //     feature.category === 'draw' && (feature as DrawPickingObject).geometry?.type === 'Polygon'
+  //   )
+  // }
 
-  const isDrawHandle = (feature: DeckLayerPickingObject) => {
-    return feature.category === 'draw' && (feature as DrawPickingObject).geometry?.type === 'Point'
-  }
+  // const isDrawHandle = (feature: DeckLayerPickingObject) => {
+  //   return feature.category === 'draw' && (feature as DrawPickingObject).geometry?.type === 'Point'
+  // }
 
   // const getDrawCursor = ({
   //   features,
@@ -148,29 +148,29 @@ export const useDrawLayerInstance = () => {
   //   [setDrawFeaturesIndexes]
   // )
 
-  const removeDrawFeature = useCallback(() => {
-    console.log('removing')
-    // if (drawFeaturesIndexes.length) {
-    //   const newFeatures = drawFeatures.features.filter((f, i) => drawFeaturesIndexes[0] !== i)
-    //   setDrawFeatures({
-    //     ...drawFeatures,
-    //     features: newFeatures,
-    //   })
-    // }
-  }, [])
+  // const removeDrawFeature = useCallback(() => {
+  //   console.log('removing')
+  //   // if (drawFeaturesIndexes.length) {
+  //   //   const newFeatures = drawFeatures.features.filter((f, i) => drawFeaturesIndexes[0] !== i)
+  //   //   setDrawFeatures({
+  //   //     ...drawFeatures,
+  //   //     features: newFeatures,
+  //   //   })
+  //   // }
+  // }, [])
 
-  useEffect(() => {
-    !isMapDrawing
-      ? setLayerInstance(null)
-      : setLayerInstance(
-          new DrawLayer({
-            // data: drawFeatures,
-            // onEdit: onDrawEdit,
-            // selectedFeatureIndexes: drawFeaturesIndexes,
-            // mode: 'draw',
-          })
-        )
-  }, [isMapDrawing, onDrawEdit, setLayerInstance])
+  // useEffect(() => {
+  //   !isMapDrawing
+  //     ? setLayerInstance(null)
+  //     : setLayerInstance(
+  //         new DrawLayer({
+  //           // data: drawFeatures,
+  //           // onEdit: onDrawEdit,
+  //           // selectedFeatureIndexes: drawFeaturesIndexes,
+  //           // mode: 'draw',
+  //         })
+  //       )
+  // }, [isMapDrawing, onDrawEdit, setLayerInstance])
 
   return isMapDrawing
     ? new DrawLayer({
