@@ -41,9 +41,6 @@ const RulersLayerComponent = RulersLayer as any
 const DrawDialog = dynamic(
   () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
 )
-const PopupWrapper = dynamic(
-  () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
-)
 const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/Hint'))
 
 const mapStyles = {
@@ -53,8 +50,6 @@ const mapStyles = {
 }
 
 const MapWrapper = () => {
-  ///////////////////////////////////////
-  // DECK related code
   const deckRef = useRef<DeckGLRef>(null)
   useSetMapInstance(deckRef)
   const { viewState, setViewState } = useViewStateAtom()
@@ -69,11 +64,8 @@ const MapWrapper = () => {
   useUpdateViewStateUrlParams()
   const onMapClick = useMapMouseClick()
   const { onMouseMove, hoveredCoordinates } = useMapMouseHover()
-  const { getCursor } = useMapCursor()
+  const getCursor = useMapCursor()
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
-  ////////////////////////////////////////
-  // Used it only once here to attach the listener only once
-  useMapRulersDrag()
   const { rulers, editingRuler, rulersVisible } = useRulers()
   const { isMapDrawing } = useMapDrawConnect()
   const layers = useMapDeckLayers()

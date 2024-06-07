@@ -83,13 +83,6 @@ const useRulers = () => {
     [dispatchQueryParams, resetMapControlValue, rulers, setRuleStart, value]
   )
 
-  const getRulersCursor = ({ features }: { features: DeckLayerPickingObject[] | undefined }) => {
-    if (features?.some(isRulerLayerPoint)) {
-      return 'move'
-    }
-    return 'crosshair'
-  }
-
   const toggleRulersVisibility = useCallback(() => {
     dispatchQueryParams({ mapRulersVisible: !rulersVisible })
   }, [rulersVisible, dispatchQueryParams])
@@ -113,7 +106,6 @@ const useRulers = () => {
     resetEditingRule: resetMapControlValue,
     setRulersEditing: setMapControl,
     toggleRulersVisibility,
-    getRulersCursor,
   }
 }
 

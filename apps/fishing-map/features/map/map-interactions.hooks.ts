@@ -12,6 +12,7 @@ import {
 import {
   ClusterPickingObject,
   DeckLayerInteractionPickingInfo,
+  DeckLayerPickingObject,
   FourwingsHeatmapPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -225,9 +226,9 @@ export const useMapMouseHover = () => {
   const { onRulerMapHover, rulersEditing } = useRulers()
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
-    null
-  )
+  // const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
+  //   null
+  // )
 
   // const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
   // const onMapHover = useMapHover(
@@ -283,7 +284,7 @@ export const useMapMouseHover = () => {
     onMouseMove,
     // resetHoverState,
     hoveredCoordinates,
-    hoveredDebouncedEvent,
+    // hoveredDebouncedEvent,
     // hoveredTooltipEvent,
   }
 }
@@ -315,14 +316,15 @@ export const useMapCursor = () => {
   // const { getDrawCursor } = useDrawLayer()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
-  const { rulersEditing, getRulersCursor } = useRulers()
+  const { rulersEditing } = useRulers()
   const hoverFeatures = useMapHoverInteraction()?.features
+
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
+      if (hoverFeatures?.some(isRulerLayerPoint)) {
+        return 'move'
+      }
       if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
-        if (rulersEditing && hoverFeatures?.some(isRulerLayerPoint)) {
-          return 'move'
-        }
         return 'crosshair'
       }
       if (isDragging) {
@@ -335,44 +337,46 @@ export const useMapCursor = () => {
     },
     [rulersEditing, isMapAnnotating, isErrorNotificationEditing, hoverFeatures]
   )
-  return { getCursor }
+
+  return getCursor
 }
 
 export const useMapDrag = () => {
-  const getPickingInteraction = useGetPickingInteraction()
-  const map = useDeckMap()
-  const { rulersEditing } = useRulers()
   const { onRulerDrag, onRulerDragStart, onRulerDragEnd } = useMapRulersDrag()
+
   const onMapDragStart = useCallback(
     (info: PickingInfo, event: any) => {
-      const dragstartInteraction = getPickingInteraction(info, 'dragstart')
-      if (!map || !info.coordinate) return
-      if (dragstartInteraction) {
-        onRulerDragStart(info, dragstartInteraction.features)
+      if (!info.coordinate || !info.object) return
+      const isRulerPoint = isRulerLayerPoint(info.object)
+      if (isRulerPoint) {
+        onRulerDragStart(info)
+        event.stopPropagation()
       }
     },
-    [getPickingInteraction, map, onRulerDragStart]
+    [onRulerDragStart]
   )
 
   const onMapDrag = useCallback(
-    (info: PickingInfo, event: any) => {
-      if (!info.coordinate) return
-      if (rulersEditing) {
+    (info: PickingInfo<DeckLayerPickingObject>, event: any) => {
+      if (!info.coordinate || !info.object) return
+      const isRulerPoint = isRulerLayerPoint(info.object)
+      if (isRulerPoint) {
         onRulerDrag(info)
+        event.stopPropagation()
       }
     },
-    [onRulerDrag, rulersEditing]
+    [onRulerDrag]
   )
 
   const onMapDragEnd = useCallback(
     (info: PickingInfo, event: any) => {
-      if (!info.coordinate) return
-      if (rulersEditing) {
-        map?.setProps({ controller: { dragPan: true } })
+      if (!info.coordinate || !info.object) return
+      const isRulerPoint = isRulerLayerPoint(info.object)
+      if (isRulerPoint) {
         onRulerDragEnd()
       }
     },
-    [map, onRulerDragEnd, rulersEditing]
+    [onRulerDragEnd]
   )
   return { onMapDrag, onMapDragStart, onMapDragEnd }
 }

@@ -106,7 +106,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
   if (!mapViewport || !interaction || !interaction.features?.length) return null
 
   const visibleFeatures = interaction?.features.filter(
-    (feature) => feature.visible || !OMITED_CATEGORIES.includes(feature.category)
+    (feature) => !OMITED_CATEGORIES.includes(feature.category)
   )
 
   if (!visibleFeatures.length) return null
@@ -335,6 +335,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
               case DataviewCategory.Workspaces: {
                 return (
                   <WorkspacePointsTooltipSection
+                    key={featureCategory}
                     features={features as any}
                     showFeaturesDetails={type === 'click'}
                   />
@@ -346,7 +347,11 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                   (f) => f.properties.order === 'start' || f.properties.order === 'end'
                 )
                 return (
-                  <RulerTooltip features={rulersFeatures} showFeaturesDetails={type === 'click'} />
+                  <RulerTooltip
+                    key={featureCategory}
+                    features={rulersFeatures}
+                    showFeaturesDetails={type === 'click'}
+                  />
                 )
               }
 
