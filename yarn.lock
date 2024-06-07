@@ -4082,8 +4082,8 @@ __metadata:
   linkType: hard
 
 "@mui/x-date-pickers@npm:^6.19.3":
-  version: 6.20.0
-  resolution: "@mui/x-date-pickers@npm:6.20.0"
+  version: 6.20.1
+  resolution: "@mui/x-date-pickers@npm:6.20.1"
   dependencies:
     "@babel/runtime": "npm:^7.23.2"
     "@mui/base": "npm:^5.0.0-beta.22"
@@ -4125,7 +4125,7 @@ __metadata:
       optional: true
     moment-jalaali:
       optional: true
-  checksum: 10/9d9cd686d63a10d53634ae4bb33e93f2448ff1d6237bc085cc5d3b735114f126c108d8df0551e26aea65304f5630869deeebc524b3015e878ca8727df2b18c7a
+  checksum: 10/c154ba61f811148a027a333408d7a3ce751a4e86e0000a555265a9cd132643437c24190dd61ae0ac8676e6acd9352699b375bf0cd7ce5384b720e222f8a6060c
   languageName: node
   linkType: hard
 
@@ -13345,9 +13345,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.668":
-  version: 1.4.792
-  resolution: "electron-to-chromium@npm:1.4.792"
-  checksum: 10/0095256bd3b8665243863575487b706811fb3bbfb54afc670296022b57a1841545748792a5e4cdec82053c629fb465f84c67678e04f62a845a4102750597b1ee
+  version: 1.4.794
+  resolution: "electron-to-chromium@npm:1.4.794"
+  checksum: 10/1b87249dd2e68b7584efb16676c89fd1b6b84d80491c3d720e5aa48ee3c10b634b552146a45df5f0c976567619c5816fff6433886ffe785c7c4fcc6224b3a72c
   languageName: node
   linkType: hard
 
@@ -24734,8 +24734,8 @@ __metadata:
   linkType: hard
 
 "terser@npm:^5.0.0, terser@npm:^5.26.0":
-  version: 5.31.0
-  resolution: "terser@npm:5.31.0"
+  version: 5.31.1
+  resolution: "terser@npm:5.31.1"
   dependencies:
     "@jridgewell/source-map": "npm:^0.3.3"
     acorn: "npm:^8.8.2"
@@ -24743,7 +24743,7 @@ __metadata:
     source-map-support: "npm:~0.5.20"
   bin:
     terser: bin/terser
-  checksum: 10/11b28065d6fd9f496acf1f23b22982867e4625e769d0a1821861a15e6bebfdb414142a8444f74f2a93f458d0182b8314ceb889be053b50eb5907cc98e8230467
+  checksum: 10/4b22b62e762aebcd538dc3f5d5323fb3b51786e9294f7069d591cb61401a1161778039fdf283bbaf06244f500ee8563e0c49fc3c64176310556f34cc6637d463
   languageName: node
   linkType: hard
 

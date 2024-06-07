@@ -7,8 +7,9 @@ import {
   useGetLabellingProjectTasksByIdQuery,
   useGetLabellingProjectTasksQuery,
 } from '../../api/project'
+import { LabellingTask } from '../../types'
+import Task from './Task'
 import styles from './Project.module.css'
-import Task, { LabellingTask } from './Task'
 
 const routePath = '/project/$projectId'
 const route = getRouteApi(routePath)

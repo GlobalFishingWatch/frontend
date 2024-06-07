@@ -1,12 +1,11 @@
 .task {
-  height: 7.1rem;
   border: var(--border);
   border-bottom: none;
   padding: var(--space-S);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: all 0.2s ease-out;
+  transition: all 0.3s ease-out;
 }
 
 .task:not(.open) {
@@ -18,9 +17,7 @@
 }
 
 .open {
-  height: 70rem;
-  max-height: 70vh;
-  padding: var(--space-L);
+  padding: var(--space-M);
   flex-direction: column;
   align-items: center;
   gap: var(--space-S);
@@ -30,25 +27,29 @@
 .images {
   display: flex;
   gap: var(--space-S);
-  transition: all 0.2s ease-out;
-  width: 100%;
-  max-width: 11rem;
+  justify-content: center;
   opacity: 0.5;
-}
-
-.images img {
-  width: 5rem;
-  background-color: var(--color-terthiary-blue);
-  transition: all 0.2s ease-out;
+  width: 11rem;
+  height: 5rem;
+  max-width: 120rem;
+  max-height: 50vh;
 }
 
 .open .images {
-  max-width: 80vh;
+  transition: all 0.3s ease-out;
+  width: calc(100vw - var(--space-L) * 4);
+  height: calc((100vw - var(--space-L) * 4) / 2);
   opacity: 1;
 }
 
-.open .images img {
+.images .img {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  display: block;
   width: 100%;
+  height: 100%;
+  transition: all 0.3s ease-out;
 }
 
 .labels {
@@ -61,4 +62,8 @@
 .buttons {
   display: flex;
   gap: var(--space-S);
+}
+
+.hidden {
+  display: none;
 }
