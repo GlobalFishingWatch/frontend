@@ -76,10 +76,13 @@ export class DrawLayer extends CompositeLayer {
   }
 
   deleteSelectedFeature = () => {
-    const { selectedFeatureIndexes } = this.state
-    const { data } = this.state
+    const { data, selectedFeatureIndexes } = this.state
     const features = data.features.filter((_, index) => !selectedFeatureIndexes?.includes(index))
-    this.setState({ data: { ...data, features } })
+    this.setState({
+      data: { ...data, features },
+      selectedFeatureIndexes: [],
+      mode: new CustomViewMode(),
+    })
   }
 
   getPickingInfo({ info }: { info: PickingInfo }): DrawPickingInfo {
@@ -103,10 +106,8 @@ export class DrawLayer extends CompositeLayer {
 
   onEdit = (editAction: EditAction<FeatureCollection>) => {
     const { updatedData, editType, editContext } = editAction
-    console.log('🚀 ~ editType:', editType)
     switch (editType) {
       case 'addFeature': {
-        console.log(editAction)
         this.setState({
           data: updatedData,
           mode: new CustomModifyMode(),
@@ -115,7 +116,6 @@ export class DrawLayer extends CompositeLayer {
         break
       }
       case 'customClickOutside': {
-        console.log(editAction)
         this.setState({
           data: updatedData,
           mode: new CustomViewMode(),
@@ -124,7 +124,6 @@ export class DrawLayer extends CompositeLayer {
         break
       }
       case 'customClickInFeature': {
-        console.log(editAction)
         this.setState({
           data: updatedData,
           mode: new CustomModifyMode(),

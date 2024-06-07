@@ -116,8 +116,8 @@ const MapWrapper = () => {
         <MapAnnotations />
         <MapAnnotationsDialog />
         <ErrorNotification />
-        {isMapDrawing && <DrawDialog />}
       </DeckGL>
+      {isMapDrawing && <DrawDialog />}
       <MapPopups />
       {/* TODO in deck.gl to get the mapLoading state */}
       <MapControls onMouseEnter={resetHoverState} mapLoading={mapLoading} />

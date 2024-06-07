@@ -250,8 +250,8 @@ function MapDraw() {
     dispatch,
     dispatchQueryParams,
     dispatchResetMapDraw,
+    drawLayer,
     mapDrawEditDatasetId,
-    // resetDrawFeatures,
     resetState,
   ])
 
@@ -301,6 +301,7 @@ function MapDraw() {
     },
     [createDataset, layerName]
   )
+
   const hasFeaturesDrawn = drawFeatures.features?.length > 0
   const layerNameMinLength = layerName.length >= MIN_DATASET_NAME_LENGTH
   let saveTooltip = ''
@@ -347,12 +348,7 @@ function MapDraw() {
           onChange={onInputChange}
           className={styles.input}
         />
-        <IconButton
-          icon="add-polygon"
-          onClick={() => {
-            drawLayer?.setDrawingMode()
-          }}
-        />
+        <IconButton icon="add-polygon" onClick={drawLayer?.setDrawingMode} />
         <IconButton
           type="warning"
           icon="delete"
