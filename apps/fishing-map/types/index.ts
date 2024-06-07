@@ -8,7 +8,7 @@ import {
   VesselType,
 } from '@globalfishingwatch/api-types'
 import { MapAnnotation, Ruler } from '@globalfishingwatch/layer-composer'
-import { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
+import { DrawFeatureType, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -164,7 +164,7 @@ export enum UserTab {
 
 export type AppState = {
   userTab?: UserTab
-  mapDrawing?: boolean
+  mapDrawing?: DrawFeatureType | boolean
   mapDrawingEditId?: string
 }
 

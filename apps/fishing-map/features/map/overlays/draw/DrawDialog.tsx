@@ -78,7 +78,7 @@ function MapDraw() {
   const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
   const drawLayer = useDrawLayerInstance()
-  const drawFeatures = drawLayer?.getData() || []
+  const drawFeatures = drawLayer?.getData()
   const drawFeaturesIndexes = drawLayer?.getSelectedFeatureIndexes() || []
   const hasOverlappingFeatures = drawLayer?.getHasOverlappingFeatures()
 
@@ -302,7 +302,7 @@ function MapDraw() {
     [createDataset, layerName]
   )
 
-  const hasFeaturesDrawn = drawFeatures.features?.length > 0
+  const hasFeaturesDrawn = drawFeatures?.features && drawFeatures?.features?.length > 0
   const layerNameMinLength = layerName.length >= MIN_DATASET_NAME_LENGTH
   let saveTooltip = ''
 
@@ -322,7 +322,8 @@ function MapDraw() {
     <Fragment>
       <CoordinateEditOverlay />
       <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
-        {(drawFeatures?.features?.length > 0 || hasOverlappingFeatures) && (
+        {((drawFeatures?.features && drawFeatures?.features?.length > 0) ||
+          hasOverlappingFeatures) && (
           <div className={cx(styles.hint, { [styles.warning]: error || hasOverlappingFeatures })}>
             <IconButton
               size="small"

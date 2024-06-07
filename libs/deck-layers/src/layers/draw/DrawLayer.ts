@@ -3,6 +3,7 @@ import {
   DrawPolygonMode,
   FeatureCollection,
   EditAction,
+  DrawPointMode,
 } from '@deck.gl-community/editable-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { CompositeLayer, LayerContext, PickingInfo } from '@deck.gl/core'
@@ -30,7 +31,6 @@ const LINE_STYLES = {
   extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
 }
 
-const INITIAL_DRAW_MODE = new DrawPolygonMode()
 const INITIAL_FEATURE_COLLECTION: FeatureCollection = {
   type: 'FeatureCollection',
   features: [],
@@ -42,14 +42,23 @@ export type DrawLayerState = {
   selectedFeatureIndexes?: number[]
 }
 
-export class DrawLayer extends CompositeLayer {
+export type DrawFeatureType = 'polygons' | 'points'
+export type DrawLayerProps = {
+  featureType: DrawFeatureType
+}
+
+export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   static layerName = 'draw-layer'
   state!: DrawLayerState
+
+  _getDrawingMode = () => {
+    return this.props.featureType === 'points' ? new DrawPointMode() : new DrawPolygonMode()
+  }
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
-      mode: INITIAL_DRAW_MODE,
+      mode: this._getDrawingMode(),
       data: INITIAL_FEATURE_COLLECTION,
       selectedFeatureIndexes: [],
       hasOverlappingFeatures: false,
@@ -71,7 +80,7 @@ export class DrawLayer extends CompositeLayer {
   reset = () => {
     this.setState({
       data: INITIAL_FEATURE_COLLECTION,
-      mode: INITIAL_DRAW_MODE,
+      mode: this._getDrawingMode(),
     })
   }
 
@@ -101,11 +110,12 @@ export class DrawLayer extends CompositeLayer {
   }
 
   setDrawingMode = () => {
-    this.setState({ mode: new DrawPolygonMode() })
+    this.setState({ mode: this._getDrawingMode() })
   }
 
   onEdit = (editAction: EditAction<FeatureCollection>) => {
     const { updatedData, editType, editContext } = editAction
+    const { featureType } = this.props
     switch (editType) {
       case 'addFeature': {
         this.setState({
@@ -132,14 +142,21 @@ export class DrawLayer extends CompositeLayer {
         break
       }
       case 'movePosition': {
+        const hasOverlappingFeatures =
+          featureType === 'polygons'
+            ? updatedData.features.some((feature: any) => kinks(feature).features.length > 0)
+            : false
         this.setState({
           data: updatedData,
+          hasOverlappingFeatures,
         })
         break
       }
       case 'updateTentativeFeature': {
-        const hasOverlappingFeatures = kinks(editContext.feature.geometry).features.length > 0
-        this.setState({ hasOverlappingFeatures })
+        if (featureType === 'polygons') {
+          const hasOverlappingFeatures = kinks(editContext.feature.geometry).features.length > 0
+          this.setState({ hasOverlappingFeatures })
+        }
         break
       }
       default:

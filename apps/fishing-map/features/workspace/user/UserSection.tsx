@@ -8,6 +8,7 @@ import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventLabel } from 'utils/analytics'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -56,13 +57,16 @@ function UserSection(): React.ReactElement {
 
   const onAddNewClick = useAddDataset({})
 
-  const onDrawClick = useCallback(() => {
-    dispatchSetMapDrawing(true)
-    trackEvent({
-      category: TrackCategory.ReferenceLayer,
-      action: `Draw a custom reference layer - Start`,
-    })
-  }, [dispatchSetMapDrawing])
+  const onDrawClick = useCallback(
+    (drawFeatureType: DrawFeatureType) => {
+      dispatchSetMapDrawing(drawFeatureType)
+      trackEvent({
+        category: TrackCategory.ReferenceLayer,
+        action: `Draw a custom reference layer - Start`,
+      })
+    },
+    [dispatchSetMapDrawing]
+  )
 
   const userDatasets = useSelector(selectUserContextDatasets)
 
@@ -134,7 +138,20 @@ function UserSection(): React.ReactElement {
               tooltip={t('layer.drawPolygon', 'Draw a layer')}
               tooltipPlacement="top"
               className="print-hidden"
-              onClick={onDrawClick}
+              onClick={() => onDrawClick('polygons')}
+              loginTooltip={t(
+                'download.eventsDownloadLogin',
+                'Register and login to download vessel events (free, 2 minutes)'
+              )}
+            />
+            <UserLoggedIconButton
+              icon="event-port"
+              type="border"
+              size="medium"
+              tooltip={t('layer.drawPoints', 'Draw points')}
+              tooltipPlacement="top"
+              className="print-hidden"
+              onClick={() => onDrawClick('points')}
               loginTooltip={t(
                 'download.eventsDownloadLogin',
                 'Register and login to download vessel events (free, 2 minutes)'

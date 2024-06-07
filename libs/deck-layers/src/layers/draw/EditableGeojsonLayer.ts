@@ -73,13 +73,4 @@ export class EditableLayer extends EditableGeoJsonLayer {
       object,
     }
   }
-
-  // onLayerClick = (event: any) => {
-  //   const activeMode = this.getActiveMode()
-  //   console.log('🚀 ~ activeMode:', activeMode)
-  //   const modeProps = this.getModeProps(this.props)
-  //   console.log('🚀 ~ modeProps:', modeProps)
-  //   const data = this.getActiveMode().handleClick(event, this.getModeProps(this.props))
-  //   console.log('🚀 ~ data:', data)
-  // }
 }

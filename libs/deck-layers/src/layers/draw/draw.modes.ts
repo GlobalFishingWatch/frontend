@@ -1,5 +1,6 @@
 import {
   ClickEvent,
+  DrawPointMode,
   DrawPolygonMode,
   FeatureCollection,
   ModeProps,
@@ -7,7 +8,7 @@ import {
   ViewMode,
 } from '@deck.gl-community/editable-layers'
 
-export type DrawLayerMode = DrawPolygonMode | CustomViewMode | CustomModifyMode
+export type DrawLayerMode = DrawPolygonMode | DrawPointMode | CustomViewMode | CustomModifyMode
 
 export class CustomViewMode extends ViewMode {
   handleClick(event: ClickEvent, props: ModeProps<FeatureCollection>) {

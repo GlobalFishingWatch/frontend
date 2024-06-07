@@ -1,27 +1,24 @@
 import { useEffect } from 'react'
 import { atom, useAtom } from 'jotai'
-import { DrawLayer } from '@globalfishingwatch/deck-layers'
+import { DrawFeatureType, DrawLayer } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 
 const layerInstanceAtom = atom<DrawLayer | null>(null)
 
 export const useDrawLayerInstance = () => {
-  const { isMapDrawing } = useMapDrawConnect()
+  const { isMapDrawing, mapDrawingMode } = useMapDrawConnect()
   const [layerInstance, setLayerInstance] = useAtom(layerInstanceAtom)
   useEffect(() => {
     if (isMapDrawing) {
       setLayerInstance(
         new DrawLayer({
-          // data: drawFeatures,
-          // onEdit: onDrawEdit,
-          // selectedFeatureIndexes: drawFeaturesIndexes,
-          // mode: 'draw',
+          featureType: mapDrawingMode as DrawFeatureType,
         })
       )
     } else {
       setLayerInstance(null)
     }
-  }, [isMapDrawing, setLayerInstance])
+  }, [isMapDrawing, mapDrawingMode, setLayerInstance])
 
   return layerInstance
 }
