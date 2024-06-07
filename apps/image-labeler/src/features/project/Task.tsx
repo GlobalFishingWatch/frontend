@@ -1,19 +1,11 @@
 import cx from 'classnames'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components/choice'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { useSetTaskMutation } from '../../api/task'
+import { LabellingTask } from '../../types'
 import styles from './Task.module.css'
-
-export type LabellingTask = {
-  id: string
-  labels: string[]
-  metadata: {
-    score: number
-  }
-  thumbnails: string[]
-}
 
 type TaskProps = {
   projectId: string
@@ -84,13 +76,31 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
       onClick={open || isLoading ? undefined : onClick}
       className={cx(styles.task, { [styles.open]: open })}
     >
+      {Object.keys(task.metadata).length > 0 && (
+        <div className={cx(styles.metadata, { [styles.hidden]: !open })}>
+          <label>
+            {Object.entries(task.metadata).map(([key, value], index) => (
+              <Fragment key={key}>
+                <span>
+                  {key}: {value}
+                </span>
+                {index < Object.keys(task.metadata).length - 1 && <span> | </span>}
+              </Fragment>
+            ))}
+          </label>
+        </div>
+      )}
       <div className={styles.images}>
         {task.thumbnails.map((thumbnail, index) => (
-          <img src={thumbnail} alt="thumbnail" key={index} />
+          <div
+            className={styles.img}
+            style={{ backgroundImage: `url(${thumbnail})` }}
+            key={index}
+          />
         ))}
       </div>
-      {open ? (
-        <div className={styles.labels}>
+      {
+        <div className={cx(styles.labels, { [styles.hidden]: !open })}>
           <Choice
             options={options}
             activeOption={data?.label || activeOption}
@@ -109,12 +119,12 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
             </Button>
           </div>
         </div>
-      ) : (
-        <div>
-          {isLoading ? <Spinner size="small" /> : <label>{data?.label || 'Unlabeled'}</label>}
-          {error !== undefined && <p>{JSON.stringify(error)}</p>}
-        </div>
-      )}
+      }
+
+      <div className={cx({ [styles.hidden]: open })}>
+        {isLoading ? <Spinner size="small" /> : <label>{data?.label || 'Unlabeled'}</label>}
+        {error !== undefined && <p>{JSON.stringify(error)}</p>}
+      </div>
     </div>
   )
 }

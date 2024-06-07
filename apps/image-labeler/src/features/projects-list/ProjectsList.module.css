@@ -27,3 +27,31 @@
 .projectProperties > div {
   max-width: 50vw;
 }
+
+.editModal {
+  height: min-content;
+}
+
+.projectEditProperty {
+  margin-bottom: var(--space-S);
+}
+
+.textArea {
+  font-family: 'Courier New', Courier, monospace;
+  line-height: 1;
+  color: var(--color-primary-blue);
+  border-radius: var(--border-radius);
+  background-color: var(--color-terthiary-blue);
+  border: var(--border);
+  padding: var(--space-S);
+}
+
+.saveProjectBtn {
+  display: block;
+  margin-left: auto;
+}
+
+label .secondary {
+  text-transform: none;
+  font: var(--font-S);
+}

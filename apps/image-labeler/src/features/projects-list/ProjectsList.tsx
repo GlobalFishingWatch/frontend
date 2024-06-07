@@ -1,51 +1,53 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks/use-login'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+import { Modal } from '@globalfishingwatch/ui-components/modal'
+import { Button } from '@globalfishingwatch/ui-components/button'
 import { useGetLabellingProjectsListQuery } from '../../api/projects-list'
+import { LabellingProject } from '../../types'
+import ProjectForm from './ProjectForm'
 import styles from './ProjectsList.module.css'
+import ProjectItem from './ProjectItem'
 
-type LabellingProject = {
-  id: number
-  name: string
-  labels: string[]
-  bqQuery: string
-  bqTable: string
-  gcsThumbnails: string
+const EMPTY_PROJECT: Omit<LabellingProject, 'id'> = {
+  name: '',
+  labels: [],
+  gcsThumbnails: '',
+  bqQuery: '',
+  bqTable: '',
 }
 
 export function ProjectsList() {
   const login = useGFWLogin()
   useGFWLoginRedirect(login)
   const { data, isLoading } = useGetLabellingProjectsListQuery({}, { skip: !login.logged })
+  const [createOpen, setCreateOpen] = useState(false)
   if (!login.logged || isLoading) {
     return <Spinner />
   }
+
+  const closeModal = () => {
+    setCreateOpen(false)
+  }
+
   return (
     <div>
       <h1 className={styles.pageTitle}>Labelling Projects</h1>
       {data?.entries?.map((project: LabellingProject) => (
-        <Link
-          to="/project/$projectId"
-          params={{
-            projectId: project.id.toString(),
-          }}
-          className={styles.project}
-          key={project.id}
-        >
-          <h2 className={styles.projectName}>{project.name}</h2>
-          <div className={styles.projectProperties}>
-            <div>
-              <label>Labels</label>
-              {project.labels.join(', ')}
-            </div>
-            {/* <div>
-              <label>BQ Query</label>
-              {project.bqQuery}
-            </div> */}
-          </div>
-        </Link>
+        <ProjectItem project={project} key={project.id} />
       ))}
+      <Button className={styles.createProjectBtn} onClick={() => setCreateOpen(true)}>
+        Create new project
+      </Button>
+      <Modal
+        appSelector={'app'}
+        title="Create new project"
+        isOpen={createOpen}
+        shouldCloseOnEsc
+        onClose={closeModal}
+      >
+        <ProjectForm mode="create" project={EMPTY_PROJECT} closeModal={closeModal} />
+      </Modal>
     </div>
   )
 }
