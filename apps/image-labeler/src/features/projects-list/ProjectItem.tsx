@@ -29,7 +29,7 @@ export function ProjectItem({ project }: { project: LabellingProject }) {
             <label>Labels</label>
             {project.labels.join(', ')}
           </div>
-          <IconButton icon="edit" onClick={() => setEditOpen(true)} />
+          <IconButton icon="edit" type="border" onClick={() => setEditOpen(true)} />
         </div>
       </div>
       <Modal

@@ -55,3 +55,13 @@ label .secondary {
   text-transform: none;
   font: var(--font-S);
 }
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.error {
+  color: var(--color-danger-red);
+}

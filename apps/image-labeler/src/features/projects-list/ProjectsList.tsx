@@ -40,6 +40,7 @@ export function ProjectsList() {
         Create new project
       </Button>
       <Modal
+        contentClassName={styles.editModal}
         appSelector={'app'}
         title="Create new project"
         isOpen={createOpen}

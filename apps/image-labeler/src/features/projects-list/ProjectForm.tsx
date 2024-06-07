@@ -14,6 +14,7 @@ export function ProjectForm({
   mode: 'edit' | 'create'
   closeModal: () => void
 }) {
+  const [error, setError] = useState('')
   const [projectInfo, setProjectInfo] = useState(project)
   const [editProject, { isLoading: isEditLoading }] = useEditProjectMutation({
     fixedCacheKey: [project.id].join(),
@@ -27,13 +28,17 @@ export function ProjectForm({
   }
 
   const saveProject = async () => {
+    let res = null
     if (mode === 'edit') {
-      await editProject(projectInfo)
+      res = await editProject(projectInfo)
     } else {
-      await createProject(projectInfo)
+      res = await createProject(projectInfo)
     }
-    console.log('save', projectInfo)
-    closeModal()
+    if (res.data) {
+      window.location.reload()
+    } else if (res.error) {
+      setError((res.error as any).message)
+    }
   }
 
   const confirmDisabled =
@@ -96,14 +101,17 @@ export function ProjectForm({
           onChange={(e) => handleChange({ value: e.target.value, field: 'bqTable' })}
         />
       </div>
-      <Button
-        disabled={confirmDisabled}
-        loading={mode === 'edit' ? isEditLoading : isCreateLoading}
-        className={styles.saveProjectBtn}
-        onClick={saveProject}
-      >
-        {mode === 'edit' ? 'Update project' : 'Create project'}
-      </Button>
+      <div className={styles.footer}>
+        {error && <p className={styles.error}>{error}</p>}
+        <Button
+          disabled={confirmDisabled}
+          loading={mode === 'edit' ? isEditLoading : isCreateLoading}
+          className={styles.saveProjectBtn}
+          onClick={saveProject}
+        >
+          {mode === 'edit' ? 'Update project' : 'Create project'}
+        </Button>
+      </div>
     </div>
   )
 }
