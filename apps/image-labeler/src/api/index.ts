@@ -1,6 +1,5 @@
 export * from './project'
 export * from './project-edit'
 export * from './project-create'
-export * from './project-delete'
 export * from './projects-list'
 export * from './task'
