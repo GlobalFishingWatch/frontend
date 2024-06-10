@@ -1,12 +1,12 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { atom, useRecoilState } from 'recoil'
 import cx from 'classnames'
-import kinks from '@turf/kinks'
 import { useTranslation } from 'react-i18next'
 import { Feature, Polygon } from 'geojson'
 import { DrawModes, DrawSelectionChangeEvent } from '@mapbox/mapbox-gl-draw'
 import { useSelector } from 'react-redux'
 import { Button, InputText, IconButton, SwitchRow } from '@globalfishingwatch/ui-components'
+import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   useAddDataviewFromDatasetToWorkspace,
@@ -21,7 +21,7 @@ import {
   selectDatasetAreasById,
 } from 'features/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectMapDrawingEditId } from 'routes/routes.selectors'
+import { selectMapDrawingEditId, selectMapDrawingMode } from 'routes/routes.selectors'
 import { useMapDrawConnect } from '../../map-draw.hooks'
 import {
   getCoordinatePrecisionRounded,
@@ -31,6 +31,8 @@ import {
   updateFeaturePointByIndex,
 } from '../../map.draw.utils'
 import styles from './DrawDialog.module.css'
+import { useDrawLayerInstance } from './draw.hooks'
+import { CoordinateEditOverlay } from './CoordinateEditOverlay'
 
 export type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
 export type DrawPointPosition = [number, number]
@@ -73,9 +75,14 @@ function MapDraw() {
   const { dispatchQueryParams } = useLocationConnect()
   const { dispatchUpsertDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
+  const mapDrawingMode = useSelector(selectMapDrawingMode)
   const mapDrawEditDatasetId = useSelector(selectMapDrawingEditId)
   const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
+  const drawLayer = useDrawLayerInstance()
+  const drawFeatures = drawLayer?.getData()
+  const drawFeaturesIndexes = drawLayer?.getSelectedFeatureIndexes() || []
+  const hasOverlappingFeatures = drawLayer?.getHasOverlappingFeatures()
 
   useEffect(() => {
     if (mapDrawEditDataset) {
@@ -116,7 +123,6 @@ function MapDraw() {
   // const selectedFeature = getSelectedFeature(drawControl)
   // const selectedFeatureId = selectedFeature?.id as string
 
-  // const hasFeatureSelected = selectedFeature !== undefined
   // const currentPointCoordinates =
   //   selectedFeature && selectedPointIndex !== null
   //     ? getCoordinatePrecisionRounded(
@@ -231,6 +237,9 @@ function MapDraw() {
   }, [resetEditHandler])
 
   const closeDraw = useCallback(() => {
+    if (drawLayer) {
+      drawLayer.reset()
+    }
     resetState()
     dispatch(resetAreaList({ datasetId: mapDrawEditDatasetId }))
     dispatchResetMapDraw()
@@ -239,7 +248,14 @@ function MapDraw() {
       category: TrackCategory.ReferenceLayer,
       action: `Draw a custom reference layer - Click dismiss`,
     })
-  }, [dispatch, dispatchQueryParams, dispatchResetMapDraw, mapDrawEditDatasetId, resetState])
+  }, [
+    dispatch,
+    dispatchQueryParams,
+    dispatchResetMapDraw,
+    drawLayer,
+    mapDrawEditDatasetId,
+    resetState,
+  ])
 
   const toggleCreateAsPublic = useCallback(() => {
     setCreateAsPublic((createAsPublic) => !createAsPublic)
@@ -250,7 +266,10 @@ function MapDraw() {
       if (features && features.length > 0) {
         setLoading(true)
         const { payload, error } = await dispatchUpsertDataset({
-          dataset: { id: mapDrawEditDatasetId, ...getDrawDatasetDefinition(name) },
+          dataset: {
+            id: mapDrawEditDatasetId,
+            ...getDrawDatasetDefinition(name, mapDrawingMode as DrawFeatureType),
+          },
           file: getFileWithFeatures(name, features),
           createAsPublic,
         })
@@ -272,13 +291,14 @@ function MapDraw() {
       createAsPublic,
       dispatchUpsertDataset,
       mapDrawEditDatasetId,
+      mapDrawingMode,
     ]
   )
 
   const onSaveClick = useCallback(
-    (features: any) => {
-      if (features && features.length > 0 && layerName) {
-        createDataset(features, layerName)
+    (featureCollection: any) => {
+      if (featureCollection.features && featureCollection.features.length > 0 && layerName) {
+        createDataset(featureCollection.features, layerName)
         trackEvent({
           category: TrackCategory.ReferenceLayer,
           action: `Draw a custom reference layer - Click save`,
@@ -288,106 +308,45 @@ function MapDraw() {
     [createDataset, layerName]
   )
 
-  // const overLapInFeatures = useMemo(() => {
-  //   if (features?.length) {
-  //     return features.map((feature) => kinks(feature.geometry).features.length > 0)
-  //   }
-  //   return []
-  // }, [features])
-
-  // const hasOverLapInFeatures = overLapInFeatures.some(Boolean)
-  // const hasFeaturesDrawn = features !== null && features.length > 0
+  const hasFeaturesDrawn = drawFeatures?.features && drawFeatures?.features?.length > 0
   const layerNameMinLength = layerName.length >= MIN_DATASET_NAME_LENGTH
   let saveTooltip = ''
 
-  // if (!layerName) {
-  //   saveTooltip = t('layer.nameRequired', 'Layer name is required')
-  // } else if (!layerNameMinLength) {
-  //   saveTooltip = t('layer.nameLengthError', 'Layer name requires at least {{count}} characters', {
-  //     count: MIN_DATASET_NAME_LENGTH,
-  //   })
-  // } else if (!hasFeaturesDrawn) {
-  //   saveTooltip = t('layer.geometryRequired', 'Draw a polygon is required')
-  // } else if (hasOverLapInFeatures) {
-  //   saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
-  // }
+  if (!layerName) {
+    saveTooltip = t('layer.nameRequired', 'Layer name is required')
+  } else if (!layerNameMinLength) {
+    saveTooltip = t('layer.nameLengthError', 'Layer name requires at least {{count}} characters', {
+      count: MIN_DATASET_NAME_LENGTH,
+    })
+    // } else if (!hasFeaturesDrawn) {
+    //   saveTooltip = t('layer.geometryRequired', 'Draw a polygon is required')
+  } else if (hasOverlappingFeatures) {
+    saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
+  }
 
   return (
     <Fragment>
-      {/* {isMapDrawing && currentPointCoordinates && (
-        <Popup
-          latitude={currentPointCoordinates[1]}
-          longitude={currentPointCoordinates[0]}
-          closeButton={true}
-          closeOnClick={false}
-          onClose={resetEditHandler}
-          maxWidth="320px"
-          className={styles.popup}
-        >
-          <div className={styles.popupContent}>
-            <div className={styles.flex}>
-              <InputText
-                step="0.01"
-                type="number"
-                value={editingPointLatitude}
-                label={t('common.latitude', 'Latitude')}
-                onChange={onHandleLatitudeChange}
-                className={styles.shortInput}
-              />
-              <InputText
-                step="0.01"
-                type="number"
-                className={styles.shortInput}
-                value={editingPointLongitude}
-                label={t('common.longitude', 'longitude')}
-                onChange={onHandleLongitudeChange}
-              />
-            </div>
-            <div className={styles.popupButtons}>
-              <IconButton
-                icon="delete"
-                type="warning-border"
-                onClick={onDeletePoint}
-                disabled={!allowDeletePoint}
-                tooltip={
-                  allowDeletePoint
-                    ? t('layer.removePoint', 'Remove point')
-                    : t('layer.removePointNotAllowed', 'Geometry needs at least 3 points')
-                }
-              />
-              <Button
-                disabled={
-                  editingPointLatitude === null ||
-                  editingPointLatitude === '' ||
-                  editingPointLongitude === null ||
-                  editingPointLongitude === ''
-                }
-                onClick={onConfirmNewPointPosition}
-                className={styles.confirmBtn}
-              >
-                {t('common.confirm', 'Confirm')}
-              </Button>
-            </div>
-          </div>
-        </Popup>
-      )} */}
+      <CoordinateEditOverlay />
       <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
-        {
-          <div className={cx(styles.hint, { [styles.warning]: error })}>
+        {((drawFeatures?.features && drawFeatures?.features?.length > 0) ||
+          hasOverlappingFeatures) && (
+          <div className={cx(styles.hint, { [styles.warning]: error || hasOverlappingFeatures })}>
             <IconButton
               size="small"
               className={styles.hintIcon}
-              type={error ? 'warning' : 'border'}
-              icon={error ? 'warning' : 'help'}
-              onClick={error ? undefined : () => {}}
+              type={error || hasOverlappingFeatures ? 'warning' : 'border'}
+              icon={error || hasOverlappingFeatures ? 'warning' : 'help'}
+              onClick={error || hasOverlappingFeatures ? undefined : () => {}}
             />
             {error ? (
               <span>{error}</span>
+            ) : hasOverlappingFeatures ? (
+              t('layer.geometryError', 'Some polygons have self-intersections')
             ) : (
               t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')
             )}
           </div>
-        }
+        )}
         <InputText
           label={t('layer.name', 'Layer name')}
           labelClassName={styles.layerLabel}
@@ -396,17 +355,20 @@ function MapDraw() {
           onChange={onInputChange}
           className={styles.input}
         />
-        <IconButton icon="add-polygon" onClick={() => {}} />
+        <IconButton
+          icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
+          onClick={drawLayer?.setDrawingMode}
+        />
         <IconButton
           type="warning"
           icon="delete"
-          // disabled={!hasFeatureSelected}
-          // tooltip={
-          //   !hasFeatureSelected
-          //     ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
-          //     : ''
-          // }
-          // onClick={onRemoveClick}
+          disabled={!drawFeaturesIndexes.length}
+          tooltip={
+            !drawFeaturesIndexes.length
+              ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
+              : ''
+          }
+          onClick={drawLayer?.deleteSelectedFeature}
         />
         <div className={styles.buttonsContainer}>
           <SwitchRow
@@ -429,11 +391,13 @@ function MapDraw() {
               disabled={
                 !layerName ||
                 !layerNameMinLength ||
+                !hasFeaturesDrawn ||
+                hasOverlappingFeatures ||
                 mapDrawEditGeometry?.status === AsyncReducerStatus.Loading
               }
               tooltip={saveTooltip}
               tooltipPlacement="top"
-              // onClick={() => onSaveClick(features)}
+              onClick={() => onSaveClick(drawFeatures)}
             >
               {t('common.save', 'Save')}
             </Button>

@@ -2,10 +2,11 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import { PickingInfo, Position } from '@deck.gl/core'
-import { RulerData } from '@globalfishingwatch/deck-layers'
+import { DeckLayerPickingObject, RulerData, RulersLayer } from '@globalfishingwatch/deck-layers'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
+import { isRulerLayerPoint } from 'features/map/map-interaction.utils'
 
 const useRulers = () => {
   const rulers = useSelector(selectMapRulers)
@@ -105,6 +106,17 @@ const useRulers = () => {
     resetEditingRule: resetMapControlValue,
     setRulersEditing: setMapControl,
     toggleRulersVisibility,
+  }
+}
+
+export const useMapRulerInstance = () => {
+  const { rulers, editingRuler, rulersVisible } = useRulers()
+  const currentRuler = editingRuler ? [editingRuler] : []
+  if (editingRuler || rulers) {
+    return new RulersLayer({
+      rulers: [...(rulers || []), ...currentRuler],
+      visible: rulersVisible,
+    })
   }
 }
 

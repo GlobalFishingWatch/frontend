@@ -130,7 +130,7 @@ export const getUserPolygonsDataviewInstance = (
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
     },
-    dataviewId: TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
+    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
     datasetsConfig: [
       {
         datasetId,

@@ -27,7 +27,12 @@ export const getRulerStartAndEndPoints = (
   ruler: RulerData
 ): Feature<Point, RulerPointProperties>[] => {
   const { start, end, id } = getRulerCoordsPairs(ruler)
-  return [point(start, { id, order: 'start' }), point(end, { id, order: 'end' })]
+  const line = getGreatCircleMultiLine(ruler)
+  const lengthLabel = getRulerLengthLabel(line)
+  return [
+    point(start, { id, order: 'start', lengthLabel }),
+    point(end, { id, order: 'end', lengthLabel }),
+  ]
 }
 
 export const getRulerCenterPointWithLabel = (

@@ -180,8 +180,12 @@ export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')
 
 export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstancesOrder')
 
-export const selectIsMapDrawing = selectQueryParam('mapDrawing')
+export const selectMapDrawingMode = selectQueryParam('mapDrawing')
 export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
+
+export const selectIsMapDrawing = createSelector([selectMapDrawingMode], (mapDrawingMode) => {
+  return mapDrawingMode === 'polygons' || mapDrawingMode === 'points'
+})
 
 export const selectUrlViewport = createSelector(
   [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],

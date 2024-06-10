@@ -1,14 +1,16 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { selectIsMapDrawing } from 'routes/routes.selectors'
+import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import { selectIsMapDrawing, selectMapDrawingMode } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 
 export const useMapDrawConnect = () => {
   const isMapDrawing = useSelector(selectIsMapDrawing)
+  const mapDrawingMode = useSelector(selectMapDrawingMode)
   const { dispatchQueryParams } = useLocationConnect()
 
   const dispatchSetMapDrawing = useCallback(
-    (mapDrawing: boolean) => {
+    (mapDrawing: DrawFeatureType | false) => {
       dispatchQueryParams({ mapDrawing })
     },
     [dispatchQueryParams]
@@ -27,6 +29,7 @@ export const useMapDrawConnect = () => {
 
   return {
     isMapDrawing,
+    mapDrawingMode,
     dispatchResetMapDraw,
     dispatchSetMapDrawing,
     dispatchSetMapDrawEditDataset,

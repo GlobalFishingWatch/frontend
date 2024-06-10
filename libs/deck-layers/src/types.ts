@@ -10,14 +10,16 @@ import { ContextPickingObject, ContextPickingInfo } from './layers/context'
 import { FourwingsPickingObject, FourwingsPickingInfo } from './layers/fourwings'
 import { RulerPickingObject, RulerPickingInfo } from './layers/rulers'
 import { VesselEventPickingObject, VesselEventPickingInfo } from './layers/vessel'
+import { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
 import { UserLayerPickingObject } from './layers/user'
 
-export type DeckLayerCategory = `${DataviewCategory}` | 'rulers'
+export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
+export type DeckLayerSubcategory = `${DataviewType}` | 'draw-polygons' | 'draw-points'
 
 // TODO:deck move this type to a generic like DeckLayerProps<SpecificLayerProps>
 export type BaseLayerProps = {
   category: DeckLayerCategory
-  subcategory?: DataviewType
+  subcategory?: DeckLayerSubcategory
 }
 
 // TODO:deck move this type to a generic like DeckPickingInfo<SpecificLayerInfo>
@@ -26,7 +28,7 @@ export type BasePickingObject = {
   title?: string
   layerId: string
   category: DeckLayerCategory
-  subcategory?: DataviewType
+  subcategory?: DeckLayerSubcategory
 }
 
 export type AnyDeckLayer<D extends {} = {}> =
@@ -46,6 +48,7 @@ export type DeckLayerPickingObject =
   | ClusterPickingObject
   | RulerPickingObject
   | VesselEventPickingObject
+  | DrawPickingObject
 
 export type DeckLayerInteractionPickingInfo =
   | (FourwingsPickingInfo & { layer: FourwingsLayer })
@@ -53,3 +56,4 @@ export type DeckLayerInteractionPickingInfo =
   | (ClusterPickingInfo & { layer: ClusterLayer })
   | (RulerPickingInfo & { layer: RulersLayer })
   | (VesselEventPickingInfo & { layer: VesselLayer })
+  | (DrawPickingInfo & { layer: DrawLayer })

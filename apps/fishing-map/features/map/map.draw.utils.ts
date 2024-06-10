@@ -6,13 +6,17 @@ import {
   DatasetConfiguration,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
+import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import type { DrawFeature, DrawPointPosition } from './overlays/draw/DrawDialog'
 
 export const getCoordinatePrecisionRounded = (coordinate: Position): Position => {
   return coordinate.map((points) => Math.round(points * 100000) / 100000)
 }
 
-export const getDrawDatasetDefinition = (name: string): Partial<Dataset> => {
+export const getDrawDatasetDefinition = (
+  name: string,
+  geometryType: DrawFeatureType
+): Partial<Dataset> => {
   return {
     name,
     type: DatasetTypes.UserContext,
@@ -23,7 +27,7 @@ export const getDrawDatasetDefinition = (name: string): Partial<Dataset> => {
     configuration: {
       propertyToInclude: 'draw_id',
       format: 'geojson',
-      geometryType: 'polygons',
+      geometryType,
     } as DatasetConfiguration,
   }
 }

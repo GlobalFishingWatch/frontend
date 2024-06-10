@@ -2,14 +2,15 @@ import { useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import type { PickingInfo } from '@deck.gl/core'
-import type { RulerData, RulerPointProperties } from '@globalfishingwatch/deck-layers'
-import { useDeckMap } from 'features/map/map-context.hooks'
+import type {
+  RulerData,
+  RulerPickingObject,
+  RulerPointProperties,
+} from '@globalfishingwatch/deck-layers'
 import { selectMapRulersVisible } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { isRulerLayerPoint } from 'features/map/map-interaction.utils'
 
 export function useMapRulersDrag() {
-  const deck = useDeckMap()
   const rulers = useSelector(selectMapRulersVisible)
   const { dispatchQueryParams } = useLocationConnect()
 
@@ -33,9 +34,7 @@ export function useMapRulersDrag() {
       const [longitude, latitude] = info.coordinate as number[]
       const newRulers = rulers.map((r) => {
         if (Number(r.id) === draggedRuler.current?.id) {
-          return draggedRuler.current.order === 'start'
-            ? { ...r, start: { longitude, latitude } }
-            : { ...r, end: { longitude, latitude } }
+          return { ...r, [draggedRuler.current.order]: { longitude, latitude } }
         } else {
           return r
         }
@@ -46,10 +45,9 @@ export function useMapRulersDrag() {
   )
 
   const onRulerDragStart = useCallback(
-    (info: PickingInfo, features: any) => {
-      const rulerPoint = features.find(isRulerLayerPoint)
+    (info: PickingInfo) => {
+      const rulerPoint = info.object as RulerPickingObject
       if (rulerPoint) {
-        deck?.setProps({ controller: { dragPan: false } })
         draggedRuler.current = {
           ruler: rulers.find((r) => Number(r.id) === rulerPoint.properties.id),
           order: rulerPoint.properties.order,
@@ -57,11 +55,11 @@ export function useMapRulersDrag() {
         }
       }
     },
-    [deck, rulers]
+    [rulers]
   )
   const onRulerDragEnd = useCallback(() => {
     draggedRuler.current = null
-    deck?.setProps({ controller: { dragPan: true } })
-  }, [deck])
+  }, [])
+
   return { onRulerDrag, onRulerDragStart, onRulerDragEnd }
 }

@@ -1,9 +1,17 @@
-import { GeoJsonLayer } from '@deck.gl/layers'
-import { Color, CompositeLayer, DefaultProps, GetPickingInfoParams } from '@deck.gl/core'
+import { GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers'
+import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { Feature, Point } from '@turf/turf'
-import { LayerGroup, getLayerGroupOffset } from '../../utils'
-import { RulersLayerProps, RulerData, RulerPointProperties } from './rulers.types'
+import { LineString, MultiLineString } from 'geojson'
+import { COLOR_TRANSPARENT, LayerGroup, getLayerGroupOffset } from '../../utils'
+import { DeckLayerCategory } from '../../types'
+import {
+  RulersLayerProps,
+  RulerData,
+  RulerPointProperties,
+  RulerPickingObject,
+  RulerPickingInfo,
+} from './rulers.types'
 import {
   getGreatCircleMultiLine,
   getRulerCenterPointWithLabel,
@@ -18,10 +26,15 @@ const defaultProps: DefaultProps<RulersLayerProps> = {
   color: RULERS_COLOR,
 }
 
-const getFeaturesFromRulers = (rulers: RulerData[]) => {
+const getRulersLines = (rulers: RulerData[]) => {
   return rulers.flatMap((ruler: RulerData) => {
-    const line = getGreatCircleMultiLine(ruler)
-    return [line, ...getRulerStartAndEndPoints(ruler), getRulerCenterPointWithLabel(line)]
+    return getGreatCircleMultiLine(ruler)
+  })
+}
+
+const getRulersLinesLabels = (lines: Feature<LineString | MultiLineString>[]) => {
+  return lines.flatMap((line) => {
+    return getRulerCenterPointWithLabel(line)
   })
 }
 
@@ -29,32 +42,38 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
   static layerName = 'RulersLayer'
   static defaultProps = defaultProps
 
-  getPickingInfo({ info }: GetPickingInfoParams) {
+  getPickingInfo({ info }: { info: PickingInfo }): RulerPickingInfo {
+    const object = {
+      ...info.object,
+      id: this.props.id,
+      layerId: 'ruler-layer',
+      category: 'rulers' as DeckLayerCategory,
+    } as RulerPickingObject
     return {
       ...info,
-      object: {
-        ...info.object,
-        category: 'rulers',
-      },
+      object,
     }
   }
-
   renderLayers() {
     const { rulers, color, visible } = this.props
 
     if (!hasRulerStartAndEnd(rulers)) return null
 
+    const rulersLines = getRulersLines(rulers)
+    const rulersLabels = getRulersLinesLabels(rulersLines)
     const data = {
       type: 'FeatureCollection',
-      features: getFeaturesFromRulers(rulers),
+      features: [...rulersLines, ...rulersLabels],
     }
 
-    return new GeoJsonLayer(
+    const rulersPoints = rulers.flatMap((ruler) => getRulerStartAndEndPoints(ruler))
+
+    const lineLayer = new GeoJsonLayer(
       this.getSubLayerProps({
         id: 'ruler-layer',
         data,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
-        pickable: true,
+        pickable: false,
         stroked: true,
         filled: true,
         visible,
@@ -62,8 +81,7 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
         getLineColor: color,
         pointType: 'circle+text',
         pointRadiusUnits: 'pixels',
-        getPointRadius: (d: Feature<Point, RulerPointProperties>) =>
-          d.properties?.order === 'center' ? 0 : 3,
+        getPointRadius: 0,
         getText: (d: Feature<Point, RulerPointProperties>) => d.properties?.text,
         getTextAngle: (d: Feature<Point, RulerPointProperties>) => d.properties?.bearing,
         getTextSize: 12,
@@ -74,5 +92,22 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
         extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
       })
     )
+    const pointsLayer = new ScatterplotLayer({
+      id: 'ruler-layer-points',
+      data: rulersPoints,
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
+      getPosition: (d: any) => d.geometry.coordinates,
+      pickable: true,
+      stroked: true,
+      visible,
+      getFillColor: color,
+      getLineColor: COLOR_TRANSPARENT,
+      radiusUnits: 'pixels',
+      lineWidthUnits: 'pixels',
+      lineWidthScale: 1,
+      lineWidthMinPixels: 5,
+      getRadius: 6,
+    })
+    return [lineLayer, pointsLayer]
   }
 }

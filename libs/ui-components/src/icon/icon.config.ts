@@ -1,4 +1,5 @@
 const icons = [
+  'add-point',
   'add-polygon',
   'analysis',
   'annotation',
@@ -27,6 +28,7 @@ const icons = [
   'download',
   'drag',
   'draw',
+  'draw-points',
   'edit-off',
   'edit',
   'email',

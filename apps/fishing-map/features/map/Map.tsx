@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react'
-import { LayersList } from '@deck.gl/core'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
-import { RulersLayer, DrawLayer } from '@globalfishingwatch/deck-layers'
+import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
@@ -20,31 +19,21 @@ import {
   useMapMouseClick,
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
-import { useMapRulersDrag } from 'features/map/overlays/rulers/rulers-drag.hooks'
 import ErrorNotification from 'features/map/overlays/error-notification/ErrorNotification'
-import { useMapDeckLayers } from 'features/map/map-layers.hooks'
+import { useMapLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
 import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
-import useRulers from './overlays/rulers/rulers.hooks'
-import { useDrawLayer } from './overlays/draw/draw.hooks'
 import { useMapDrawConnect } from './map-draw.hooks'
 import MapInfo from './controls/MapInfo'
 import { MAP_CANVAS_ID } from './map.config'
 import TimeComparisonLegend from './TimeComparisonLegend'
 
-// This avoids type checking to complain
-// https://github.com/visgl/deck.gl/issues/7304#issuecomment-1277850750
-const RulersLayerComponent = RulersLayer as any
-const DrawLayerComponent = DrawLayer as any
 const DrawDialog = dynamic(
   () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
-)
-const PopupWrapper = dynamic(
-  () => import(/* webpackChunkName: "PopupWrapper" */ './popups/PopupWrapper')
 )
 const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/Hint'))
 
@@ -55,8 +44,6 @@ const mapStyles = {
 }
 
 const MapWrapper = () => {
-  ///////////////////////////////////////
-  // DECK related code
   const deckRef = useRef<DeckGLRef>(null)
   useSetMapInstance(deckRef)
   const { viewState, setViewState } = useViewStateAtom()
@@ -71,14 +58,11 @@ const MapWrapper = () => {
   useUpdateViewStateUrlParams()
   const onMapClick = useMapMouseClick()
   const { onMouseMove, hoveredCoordinates } = useMapMouseHover()
-  const { getCursor } = useMapCursor()
+  const getCursor = useMapCursor()
   const { onMapDrag, onMapDragStart, onMapDragEnd } = useMapDrag()
-  ////////////////////////////////////////
-  // Used it only once here to attach the listener only once
-  useMapRulersDrag()
-  const { rulers, editingRuler, rulersVisible } = useRulers()
   const { isMapDrawing } = useMapDrawConnect()
-  const layers = useMapDeckLayers()
+  const layers = useMapLayers()
+
   const setDeckLayers = useSetDeckLayerComposer()
   useEffect(() => {
     return () => {
@@ -98,10 +82,6 @@ const MapWrapper = () => {
   const mapLoading = useIsDeckLayersLoading()
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
-  const { onDrawEdit, onDrawClick, drawLayerMode, drawFeaturesIndexes, drawFeatures } =
-    useDrawLayer()
-
-  const currentRuler = editingRuler ? [editingRuler] : []
 
   return (
     <div className={styles.container}>
@@ -109,7 +89,7 @@ const MapWrapper = () => {
         id={MAP_CANVAS_ID}
         ref={deckRef}
         views={MAP_VIEW}
-        layers={deckRef ? (layers as LayersList) : []}
+        layers={deckRef ? layers : []}
         onAfterRender={() => {
           setDeckLayerLoadedState(layers)
         }}
@@ -136,21 +116,6 @@ const MapWrapper = () => {
         <MapAnnotations />
         <MapAnnotationsDialog />
         <ErrorNotification />
-        {(editingRuler || rulers) && (
-          <RulersLayerComponent
-            rulers={[...(rulers || []), ...currentRuler]}
-            visible={rulersVisible}
-          />
-        )}
-        {isMapDrawing && (
-          <DrawLayerComponent
-            data={drawFeatures}
-            onEdit={onDrawEdit}
-            onClick={onDrawClick}
-            selectedFeatureIndexes={drawFeaturesIndexes}
-            mode={drawLayerMode}
-          />
-        )}
       </DeckGL>
       {isMapDrawing && <DrawDialog />}
       <MapPopups />

@@ -20,9 +20,9 @@ import {
   FourwingsComparisonMode,
   FourwingsHeatmapPickingObject,
   FourwingsPositionsPickingObject,
+  RulerPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
-  WorkspacesPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
@@ -48,6 +48,7 @@ import ContextTooltipSection from './ContextLayers'
 import VesselEventsLayers from './VesselEventsLayers'
 import EnvironmentTooltipSection from './EnvironmentLayers'
 import PositionsRow from './PositionsRow'
+import RulerTooltip from './RulerTooltip'
 
 const overflowMiddlware: Middleware = {
   name: 'overflow',
@@ -78,6 +79,8 @@ type PopupWrapperProps = {
   type?: 'hover' | 'click'
 }
 
+const OMITED_CATEGORIES = ['draw']
+
 function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: PopupWrapperProps) {
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const mapViewport = useMapViewport()
@@ -102,14 +105,16 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
 
   if (!mapViewport || !interaction || !interaction.features?.length) return null
 
-  // const visibleFeatures = interaction.features.filter(
-  //   (feature) => feature.visible || feature.source === WORKSPACE_GENERATOR_ID
-  // )
+  const visibleFeatures = interaction?.features.filter(
+    (feature) => !OMITED_CATEGORIES.includes(feature.category)
+  )
+
+  if (!visibleFeatures.length) return null
 
   const [left, top] = mapViewport.project([interaction.longitude, interaction.latitude])
 
   const featureByCategory = groupBy(
-    interaction.features
+    visibleFeatures
       // Needed to create a new array and not muting with sort
       .map((feature) => feature)
       .sort(
@@ -119,6 +124,7 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
       ),
     'category'
   )
+
   return (
     <div
       ref={refs.setReference}
@@ -268,11 +274,8 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 // const areaBufferFeatures = features.filter(
                 //   (feature) => feature.source === REPORT_BUFFER_GENERATOR_ID
                 // )
-                // const annotationFeatures = features.filter(
-                //   (feature) => feature.type === DataviewType.Annotation
-                // )
-                // const rulersFeatures = features.filter(
-                //   (feature) => feature.type === DataviewType.Rulers
+                // const annotationFeatures = (features as MapAnnotation[]).filter(
+                //   (feature) => feature.category === 'annotations'
                 // )
                 // Workaround to show user context features in the context section
                 const userContextFeatures = (features as UserLayerPickingObject[]).filter(
@@ -280,15 +283,8 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
                 )
                 return (
                   <Fragment key={featureCategory}>
-                    {/*
-                      // TODO: deck restore this popup
-                      <AnnotationTooltip features={annotationFeatures} />
-                      <RulerTooltip
-                        features={rulersFeatures}
-                        showFeaturesDetails={type === 'click'}
-                      />
-                      <ReportBufferTooltip features={areaBufferFeatures} />
-                    */}
+                    {/* <AnnotationTooltip features={annotationFeatures} /> */}
+                    {/* <ReportBufferTooltip features={areaBufferFeatures} /> */}
                     <UserPointsTooltipSection
                       features={pointFeatures}
                       showFeaturesDetails={type === 'click'}
@@ -307,10 +303,14 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
               // TODO: deck restore this popup
               case DataviewCategory.User: {
                 const userPointFeatures = (features as UserLayerPickingObject[]).filter(
-                  (feature) => feature.subcategory === DataviewType.UserPoints
+                  (feature) =>
+                    feature.subcategory === DataviewType.UserPoints ||
+                    feature.subcategory === 'draw-points'
                 )
                 const userContextFeatures = (features as UserLayerPickingObject[]).filter(
-                  (feature) => feature.subcategory === DataviewType.UserContext
+                  (feature) =>
+                    feature.subcategory === DataviewType.UserContext ||
+                    feature.subcategory === 'draw-polygons'
                 )
                 return (
                   <Fragment key={featureCategory}>
@@ -339,7 +339,21 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
               case DataviewCategory.Workspaces: {
                 return (
                   <WorkspacePointsTooltipSection
+                    key={featureCategory}
                     features={features as any}
+                    showFeaturesDetails={type === 'click'}
+                  />
+                )
+              }
+
+              case 'rulers': {
+                const rulersFeatures = (features as RulerPickingObject[]).filter(
+                  (f) => f.properties.order === 'start' || f.properties.order === 'end'
+                )
+                return (
+                  <RulerTooltip
+                    key={featureCategory}
+                    features={rulersFeatures}
                     showFeaturesDetails={type === 'click'}
                   />
                 )
