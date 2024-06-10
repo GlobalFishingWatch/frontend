@@ -28,7 +28,7 @@ const LINE_STYLES = {
   getPointRadius: 10,
   getEditHandlePointColor: HANDLE_COLOR,
   getLineColor: (feature: any) => {
-    return feature.properties.hasOverlappingFeatures ? ERROR_COLOR : LINE_COLOR
+    return kinks(feature.geometry).features.length > 0 ? ERROR_COLOR : LINE_COLOR
   },
   getDashArray: [4, 2],
   editHandlePointOutline: false,
