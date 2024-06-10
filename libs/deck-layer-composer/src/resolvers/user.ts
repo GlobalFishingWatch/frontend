@@ -6,6 +6,7 @@ import {
   UserPointsLayerProps,
   getUTCDateTime,
   ContextLayerConfig,
+  DeckLayerSubcategory,
 } from '@globalfishingwatch/deck-layers'
 import {
   findDatasetByType,
@@ -119,7 +120,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
   const baseLayerProps = {
     id: dataview.id,
     category: dataview.category!,
-    subcategory: dataview.config?.type!,
+    subcategory: dataview.config?.type! as DeckLayerSubcategory,
     color: dataview.config?.color!,
   }
   const dataset =
@@ -128,6 +129,14 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
 
   if (!dataset) {
     return { ...baseLayerProps, layers: [] }
+  }
+
+  if (dataset.source === DRAW_DATASET_SOURCE) {
+    const geometryType = getDatasetConfigurationProperty({
+      dataset,
+      property: 'geometryType',
+    })
+    baseLayerProps.subcategory = `draw-${geometryType}` as DeckLayerSubcategory
   }
 
   const datasetConfig = dataview.datasetsConfig?.find(

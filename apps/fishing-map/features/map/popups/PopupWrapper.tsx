@@ -303,10 +303,14 @@ function PopupWrapper({ interaction, type = 'hover', className = '', onClose }: 
               // TODO: deck restore this popup
               case DataviewCategory.User: {
                 const userPointFeatures = (features as UserLayerPickingObject[]).filter(
-                  (feature) => feature.subcategory === DataviewType.UserPoints
+                  (feature) =>
+                    feature.subcategory === DataviewType.UserPoints ||
+                    feature.subcategory === 'draw-points'
                 )
                 const userContextFeatures = (features as UserLayerPickingObject[]).filter(
-                  (feature) => feature.subcategory === DataviewType.UserContext
+                  (feature) =>
+                    feature.subcategory === DataviewType.UserContext ||
+                    feature.subcategory === 'draw-polygons'
                 )
                 return (
                   <Fragment key={featureCategory}>

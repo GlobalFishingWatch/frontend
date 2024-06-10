@@ -69,11 +69,7 @@ export abstract class UserBaseLayer<
   }: {
     info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
   }): UserLayerPickingInfo => {
-    const { valueProperties } = this.props
-    let value = info.object?.properties.value
-    const properties = { ...(info.object as UserLayerFeature)?.properties }
-    value =
-      valueProperties?.length === 1 ? properties[valueProperties[0]] : getPropertiesList(properties)
+    const { subcategory, valueProperties } = this.props
     const object = {
       ...(info.tile && {
         ...transformTileCoordsToWGS84(
@@ -82,7 +78,7 @@ export abstract class UserBaseLayer<
           this.context.viewport
         ),
       }),
-      value,
+      value: info.object?.properties.value,
       title: this.props.id,
       color: this.props.color,
       layerId: this.props.layers[0].id,
@@ -90,7 +86,14 @@ export abstract class UserBaseLayer<
       category: this.props.category,
       subcategory: this.props.subcategory,
     } as UserLayerPickingObject
+    if (!subcategory?.includes('draw')) {
+      const properties = { ...((info.object as UserLayerFeature)?.properties || {}) }
 
+      object.value =
+        valueProperties?.length === 1
+          ? properties[valueProperties[0]]
+          : getPropertiesList(properties)
+    }
     return { ...info, object }
   }
 
