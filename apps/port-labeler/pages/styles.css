@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap');
+
 :root {
   --print-width: 17in;
   --print-height: 10in;
@@ -27,8 +29,7 @@
 
 .scrollContainer {
   height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
   width: 100%;
 }
 
@@ -101,9 +102,7 @@
   font: var(--font-L);
   line-height: 1;
   margin: var(--space-XS);
-  transition:
-    opacity 150ms linear,
-    color 150ms linear;
+  transition: opacity 150ms linear, color 150ms linear;
   z-index: 1;
   top: -2rem;
   right: -2rem;
