@@ -8,7 +8,7 @@ import {
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { CompositeLayer, LayerContext, PickingInfo } from '@deck.gl/core'
 import kinks from '@turf/kinks'
-import { LayerGroup, getLayerGroupOffset } from '../../utils'
+import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
 import { DeckLayerCategory } from '../../types'
 import { DrawPickingInfo, DrawPickingObject } from './draw.types'
 import { CustomModifyMode, CustomViewMode, DrawLayerMode } from './draw.modes'
@@ -33,6 +33,13 @@ const LINE_STYLES = {
   getDashArray: [4, 2],
   editHandlePointOutline: false,
   extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
+}
+const POINTS_STYLES = {
+  lineWidthMaxPixels: 0,
+  pointRadiusMinPixels: 10,
+  getFillColor: HANDLE_COLOR,
+  getEditHandlePointRadius: 10,
+  getEditHandlePointColor: COLOR_HIGHLIGHT_LINE as any,
 }
 
 function getFeaturesWithOverlapping(features: FeatureCollection['features']) {
@@ -191,8 +198,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
 
   renderLayers() {
     const { data, mode, selectedFeatureIndexes, hasTentativeOverlappingFeatures } = this.state
+    console.log('🚀 ~ renderLayers ~ data:', data)
+    const { featureType } = this.props
 
-    return [
+    const layer = [
       new EditableGeoJsonLayer({
         id: 'draw',
         data,
@@ -200,7 +209,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         onEdit: this.onEdit,
         selectedFeatureIndexes,
         ...POLYGON_STYLES,
-        ...LINE_STYLES,
+        ...(featureType === 'polygons' ? LINE_STYLES : POINTS_STYLES),
         getLineColor: (feature: any) => {
           return hasTentativeOverlappingFeatures || feature.properties.hasOverlappingFeatures
             ? ERROR_COLOR
@@ -213,6 +222,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         _subLayerProps: {
           geojson: {
             ...POLYGON_STYLES,
+            ...POINTS_STYLES,
           },
           guides: {
             ...LINE_STYLES,
@@ -220,5 +230,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         },
       }),
     ]
+    console.log('🚀 ~ renderLayers ~ layer:', layer)
+    return layer
   }
 }

@@ -77,6 +77,10 @@ export const getUserCircleProps = ({
 }: {
   dataset: Dataset
 }): Partial<UserPointsLayerProps> => {
+  if (dataset.source === DRAW_DATASET_SOURCE) {
+    return { staticPointRadius: 8 }
+  }
+
   const circleRadiusProperty = getDatasetConfigurationProperty({
     dataset,
     property: 'pointSize',

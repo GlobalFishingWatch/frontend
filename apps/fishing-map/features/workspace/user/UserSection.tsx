@@ -145,7 +145,7 @@ function UserSection(): React.ReactElement {
               )}
             />
             <UserLoggedIconButton
-              icon="event-port"
+              icon="draw-points"
               type="border"
               size="medium"
               tooltip={t('layer.drawPoints', 'Draw points')}

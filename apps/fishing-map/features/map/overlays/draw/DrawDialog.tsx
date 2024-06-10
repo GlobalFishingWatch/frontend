@@ -6,6 +6,7 @@ import { Feature, Polygon } from 'geojson'
 import { DrawModes, DrawSelectionChangeEvent } from '@mapbox/mapbox-gl-draw'
 import { useSelector } from 'react-redux'
 import { Button, InputText, IconButton, SwitchRow } from '@globalfishingwatch/ui-components'
+import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   useAddDataviewFromDatasetToWorkspace,
@@ -20,7 +21,7 @@ import {
   selectDatasetAreasById,
 } from 'features/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectMapDrawingEditId } from 'routes/routes.selectors'
+import { selectMapDrawingEditId, selectMapDrawingMode } from 'routes/routes.selectors'
 import { useMapDrawConnect } from '../../map-draw.hooks'
 import {
   getCoordinatePrecisionRounded,
@@ -74,6 +75,7 @@ function MapDraw() {
   const { dispatchQueryParams } = useLocationConnect()
   const { dispatchUpsertDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
+  const mapDrawingMode = useSelector(selectMapDrawingMode)
   const mapDrawEditDatasetId = useSelector(selectMapDrawingEditId)
   const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
@@ -264,7 +266,10 @@ function MapDraw() {
       if (features && features.length > 0) {
         setLoading(true)
         const { payload, error } = await dispatchUpsertDataset({
-          dataset: { id: mapDrawEditDatasetId, ...getDrawDatasetDefinition(name) },
+          dataset: {
+            id: mapDrawEditDatasetId,
+            ...getDrawDatasetDefinition(name, mapDrawingMode as DrawFeatureType),
+          },
           file: getFileWithFeatures(name, features),
           createAsPublic,
         })
@@ -286,6 +291,7 @@ function MapDraw() {
       createAsPublic,
       dispatchUpsertDataset,
       mapDrawEditDatasetId,
+      mapDrawingMode,
     ]
   )
 
@@ -349,7 +355,10 @@ function MapDraw() {
           onChange={onInputChange}
           className={styles.input}
         />
-        <IconButton icon="add-polygon" onClick={drawLayer?.setDrawingMode} />
+        <IconButton
+          icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
+          onClick={drawLayer?.setDrawingMode}
+        />
         <IconButton
           type="warning"
           icon="delete"
