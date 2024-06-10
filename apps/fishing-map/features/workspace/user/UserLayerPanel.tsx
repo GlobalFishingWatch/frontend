@@ -194,10 +194,13 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
             <IconButton
               icon="edit"
               size="small"
-              disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
+              disabled={
+                datasetGeometryType === 'draw' ||
+                dataview.datasets?.[0]?.status === DatasetStatus.Importing
+              }
               tooltip={
                 datasetGeometryType === 'draw'
-                  ? t('layer.editDraw', 'Edit draw')
+                  ? 'WIP' //t('layer.editDraw', 'Edit draw')
                   : t('dataset.edit', 'Edit dataset')
               }
               tooltipPlacement="top"
