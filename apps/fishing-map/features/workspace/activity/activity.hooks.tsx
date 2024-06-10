@@ -51,37 +51,23 @@ export const useVisualizationsOptions = (
     return [
       {
         id: HEATMAP_ID,
-        label: (
-          <Icon
-            icon={'heatmap-low-res'}
-            tooltip={t('map.lowRes', 'See low resolution heatmaps')}
-            tooltipPlacement="bottom"
-          />
-        ),
+        label: <Icon icon={'heatmap-low-res'} />,
+        tooltip: t('map.lowRes', 'See low resolution heatmaps'),
+        tooltipPlacement: 'bottom',
       },
       {
         id: HEATMAP_HIGH_RES_ID,
-        label: (
-          <Icon
-            icon={'heatmap-high-res'}
-            tooltip={t('map.highRes', 'See high resolution heatmaps')}
-            tooltipPlacement="bottom"
-          />
-        ),
+        label: <Icon icon={'heatmap-high-res'} />,
+        tooltip: t('map.highRes', 'See high resolution heatmaps'),
+        tooltipPlacement: 'bottom',
       },
       {
         id: POSITIONS_ID,
-        label: (
-          <Icon
-            icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'}
-            tooltip={
-              isPositionsLayerAvailable
-                ? t('map.positions', 'See positions visualization mode')
-                : t('map.positionsDisabled', 'Positions visualizations mode not available')
-            }
-            tooltipPlacement="bottom"
-          />
-        ),
+        label: <Icon icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'} />,
+        tooltip: isPositionsLayerAvailable
+          ? t('map.positions', 'See positions visualization mode')
+          : t('map.positionsDisabled', 'Positions visualizations mode not available'),
+        tooltipPlacement: 'bottom',
         disabled: !isPositionsLayerAvailable,
       },
     ]
