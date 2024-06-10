@@ -30,7 +30,7 @@ import {
   updateFeaturePointByIndex,
 } from '../../map.draw.utils'
 import styles from './DrawDialog.module.css'
-import { useDrawLayer } from './draw.hooks'
+import { useDrawLayerInstance } from './draw.hooks'
 import { CoordinateEditOverlay } from './CoordinateEditOverlay'
 
 export type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
@@ -77,14 +77,10 @@ function MapDraw() {
   const mapDrawEditDatasetId = useSelector(selectMapDrawingEditId)
   const mapDrawEditDataset = useSelector(selectDrawEditDataset)
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
-  const {
-    drawFeatures,
-    resetDrawFeatures,
-    setDrawLayerMode,
-    hasOverlappingFeatures,
-    drawFeaturesIndexes,
-    removeDrawFeature,
-  } = useDrawLayer()
+  const drawLayer = useDrawLayerInstance()
+  const drawFeatures = drawLayer?.getData()
+  const drawFeaturesIndexes = drawLayer?.getSelectedFeatureIndexes() || []
+  const hasOverlappingFeatures = drawLayer?.getHasOverlappingFeatures()
 
   useEffect(() => {
     if (mapDrawEditDataset) {
@@ -239,7 +235,9 @@ function MapDraw() {
   }, [resetEditHandler])
 
   const closeDraw = useCallback(() => {
-    resetDrawFeatures()
+    if (drawLayer) {
+      drawLayer.reset()
+    }
     resetState()
     dispatch(resetAreaList({ datasetId: mapDrawEditDatasetId }))
     dispatchResetMapDraw()
@@ -252,8 +250,8 @@ function MapDraw() {
     dispatch,
     dispatchQueryParams,
     dispatchResetMapDraw,
+    drawLayer,
     mapDrawEditDatasetId,
-    resetDrawFeatures,
     resetState,
   ])
 
@@ -303,7 +301,8 @@ function MapDraw() {
     },
     [createDataset, layerName]
   )
-  const hasFeaturesDrawn = drawFeatures.features.length > 0
+
+  const hasFeaturesDrawn = drawFeatures?.features && drawFeatures?.features?.length > 0
   const layerNameMinLength = layerName.length >= MIN_DATASET_NAME_LENGTH
   let saveTooltip = ''
 
@@ -323,7 +322,8 @@ function MapDraw() {
     <Fragment>
       <CoordinateEditOverlay />
       <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
-        {(drawFeatures?.features?.length > 0 || hasOverlappingFeatures) && (
+        {((drawFeatures?.features && drawFeatures?.features?.length > 0) ||
+          hasOverlappingFeatures) && (
           <div className={cx(styles.hint, { [styles.warning]: error || hasOverlappingFeatures })}>
             <IconButton
               size="small"
@@ -349,12 +349,7 @@ function MapDraw() {
           onChange={onInputChange}
           className={styles.input}
         />
-        <IconButton
-          icon="add-polygon"
-          onClick={() => {
-            setDrawLayerMode('draw')
-          }}
-        />
+        <IconButton icon="add-polygon" onClick={drawLayer?.setDrawingMode} />
         <IconButton
           type="warning"
           icon="delete"
@@ -364,7 +359,7 @@ function MapDraw() {
               ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
               : ''
           }
-          onClick={removeDrawFeature}
+          onClick={drawLayer?.deleteSelectedFeature}
         />
         <div className={styles.buttonsContainer}>
           <SwitchRow

@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { DeckProps, PickingInfo, Position } from '@deck.gl/core'
+import { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
@@ -12,6 +12,7 @@ import {
 import {
   ClusterPickingObject,
   DeckLayerInteractionPickingInfo,
+  DeckLayerPickingObject,
   FourwingsHeatmapPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -19,15 +20,12 @@ import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.
 import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map.hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
-import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import { getDefaultCursor, isRulerLayerPoint } from './map-interaction.utils'
+import { isRulerLayerPoint } from './map-interaction.utils'
 import {
   SliceExtendedClusterPickingObject,
   SliceInteractionEvent,
@@ -40,7 +38,7 @@ import {
   setClickedEvent,
 } from './map.slice'
 import { useSetViewState } from './map-viewport.hooks'
-import { useDrawLayer } from './overlays/draw/draw.hooks'
+import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
 
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
@@ -228,9 +226,9 @@ export const useMapMouseHover = () => {
   const { onRulerMapHover, rulersEditing } = useRulers()
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
-    null
-  )
+  // const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
+  //   null
+  // )
 
   // const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
   // const onMapHover = useMapHover(
@@ -286,17 +284,9 @@ export const useMapMouseHover = () => {
     onMouseMove,
     // resetHoverState,
     hoveredCoordinates,
-    hoveredDebouncedEvent,
+    // hoveredDebouncedEvent,
     // hoveredTooltipEvent,
   }
-}
-
-export const useMapToolsActive = () => {
-  const { isMapDrawing } = useMapDrawConnect()
-  const { isMapAnnotating } = useMapAnnotation()
-  const { isErrorNotificationEditing } = useMapErrorNotification()
-  const { rulersEditing } = useRulers()
-  return isMapDrawing || isMapAnnotating || isErrorNotificationEditing || rulersEditing
 }
 
 export const useMapMouseClick = () => {
@@ -323,17 +313,18 @@ export const useMapMouseClick = () => {
 
 export const useMapCursor = () => {
   const { isMapDrawing } = useMapDrawConnect()
-  const { getDrawCursor } = useDrawLayer()
+  // const { getDrawCursor } = useDrawLayer()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
-  const { rulersEditing, getRulersCursor } = useRulers()
+  const { rulersEditing } = useRulers()
   const hoverFeatures = useMapHoverInteraction()?.features
+
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
+      if (hoverFeatures?.some(isRulerLayerPoint)) {
+        return 'move'
+      }
       if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
-        if (rulersEditing && hoverFeatures?.some(isRulerLayerPoint)) {
-          return 'move'
-        }
         return 'crosshair'
       }
       if (isDragging) {
@@ -346,44 +337,46 @@ export const useMapCursor = () => {
     },
     [rulersEditing, isMapAnnotating, isErrorNotificationEditing, hoverFeatures]
   )
-  return { getCursor }
+
+  return getCursor
 }
 
 export const useMapDrag = () => {
-  const getPickingInteraction = useGetPickingInteraction()
-  const map = useDeckMap()
-  const { rulersEditing } = useRulers()
   const { onRulerDrag, onRulerDragStart, onRulerDragEnd } = useMapRulersDrag()
+
   const onMapDragStart = useCallback(
     (info: PickingInfo, event: any) => {
-      const dragstartInteraction = getPickingInteraction(info, 'dragstart')
-      if (!map || !info.coordinate) return
-      if (dragstartInteraction) {
-        onRulerDragStart(info, dragstartInteraction.features)
+      if (!info.coordinate || !info.object) return
+      const isRulerPoint = isRulerLayerPoint(info.object)
+      if (isRulerPoint) {
+        onRulerDragStart(info)
+        event.stopPropagation()
       }
     },
-    [getPickingInteraction, map, onRulerDragStart]
+    [onRulerDragStart]
   )
 
   const onMapDrag = useCallback(
-    (info: PickingInfo, event: any) => {
-      if (!info.coordinate) return
-      if (rulersEditing) {
+    (info: PickingInfo<DeckLayerPickingObject>, event: any) => {
+      if (!info.coordinate || !info.object) return
+      const isRulerPoint = isRulerLayerPoint(info.object)
+      if (isRulerPoint) {
         onRulerDrag(info)
+        event.stopPropagation()
       }
     },
-    [onRulerDrag, rulersEditing]
+    [onRulerDrag]
   )
 
   const onMapDragEnd = useCallback(
     (info: PickingInfo, event: any) => {
-      if (!info.coordinate) return
-      if (rulersEditing) {
-        map?.setProps({ controller: { dragPan: true } })
+      if (!info.coordinate || !info.object) return
+      const isRulerPoint = isRulerLayerPoint(info.object)
+      if (isRulerPoint) {
         onRulerDragEnd()
       }
     },
-    [map, onRulerDragEnd, rulersEditing]
+    [onRulerDragEnd]
   )
   return { onMapDrag, onMapDragStart, onMapDragEnd }
 }

@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { throttle } from 'lodash'
 import { PickingInfo, Position } from '@deck.gl/core'
-import { DeckLayerPickingObject, RulerData } from '@globalfishingwatch/deck-layers'
+import { DeckLayerPickingObject, RulerData, RulersLayer } from '@globalfishingwatch/deck-layers'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
@@ -83,13 +83,6 @@ const useRulers = () => {
     [dispatchQueryParams, resetMapControlValue, rulers, setRuleStart, value]
   )
 
-  const getRulersCursor = ({ features }: { features: DeckLayerPickingObject[] | undefined }) => {
-    if (features?.some(isRulerLayerPoint)) {
-      return 'move'
-    }
-    return 'crosshair'
-  }
-
   const toggleRulersVisibility = useCallback(() => {
     dispatchQueryParams({ mapRulersVisible: !rulersVisible })
   }, [rulersVisible, dispatchQueryParams])
@@ -113,7 +106,17 @@ const useRulers = () => {
     resetEditingRule: resetMapControlValue,
     setRulersEditing: setMapControl,
     toggleRulersVisibility,
-    getRulersCursor,
+  }
+}
+
+export const useMapRulerInstance = () => {
+  const { rulers, editingRuler, rulersVisible } = useRulers()
+  const currentRuler = editingRuler ? [editingRuler] : []
+  if (editingRuler || rulers) {
+    return new RulersLayer({
+      rulers: [...(rulers || []), ...currentRuler],
+      visible: rulersVisible,
+    })
   }
 }
 
