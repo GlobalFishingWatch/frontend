@@ -15,6 +15,7 @@ import {
   getDatasetGeometryType,
   getUserDataviewDataset,
 } from '@globalfishingwatch/datasets-client'
+import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -104,7 +105,8 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const onEditClick = () => {
     if (datasetGeometryType === 'draw') {
       dispatchSetMapDrawEditDataset(dataset?.id)
-      dispatchSetMapDrawing(true)
+      const geometryType = getDatasetConfigurationProperty({ dataset, property: 'geometryType' })
+      dispatchSetMapDrawing(geometryType as DrawFeatureType)
     } else {
       dispatchDatasetModalOpen(true)
       dispatchDatasetModalConfig({

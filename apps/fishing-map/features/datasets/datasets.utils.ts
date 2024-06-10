@@ -26,6 +26,7 @@ import {
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
+  getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getEnvironmentalDatasetRange,
 } from '@globalfishingwatch/datasets-client'
@@ -151,6 +152,10 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
   if (dataset.type === DatasetTypes.Events) return 'clusters'
   const geometryType = getDatasetGeometryType(dataset)
+  if (geometryType === 'draw') {
+    const geometryType = getDatasetConfigurationProperty({ dataset, property: 'geometryType' })
+    return geometryType === 'points' ? 'dots' : 'polygons'
+  }
   if (geometryType === 'points') {
     return 'dots'
   }
