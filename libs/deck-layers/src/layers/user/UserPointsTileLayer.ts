@@ -89,8 +89,11 @@ export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   _getPointRadius: Accessor<GeoJsonProperties, number> = (d) => {
+    const { staticPointRadius, circleRadiusProperty, circleRadiusRange } = this.props
+    if (staticPointRadius) {
+      return staticPointRadius
+    }
     const { scale } = this.state
-    const { circleRadiusProperty, circleRadiusRange } = this.props
     const value = d?.properties?.[circleRadiusProperty!]
     if (!value) {
       return circleRadiusRange && scale ? scale(circleRadiusRange[0]) : DEFAULT_POINT_RADIUS

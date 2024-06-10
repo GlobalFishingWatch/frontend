@@ -54,6 +54,10 @@ export type UserPolygonsLayerProps = BaseLayerProps &
 export type UserPointsLayerProps = BaseLayerProps &
   BaseUserLayerProps & {
     /**
+     * Fixed point radius for all points, used in drawn layers
+     */
+    staticPointRadius?: number
+    /**
      * Feature property to drive circle radius
      */
     circleRadiusProperty?: string
