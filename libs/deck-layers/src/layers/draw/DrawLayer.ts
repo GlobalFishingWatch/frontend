@@ -16,7 +16,9 @@ import { CustomModifyMode, CustomViewMode, DrawLayerMode } from './draw.modes'
 type Color = [number, number, number, number]
 const FILL_COLOR: Color = [189, 189, 189, 25]
 const LINE_COLOR: Color = [38, 181, 242, 255]
+const ERROR_COLOR: Color = [360, 62, 98, 255]
 const HANDLE_COLOR: Color = [122, 202, 67, 255]
+
 const POLYGON_STYLES = {
   getFillColor: FILL_COLOR,
 }
@@ -25,10 +27,30 @@ const LINE_STYLES = {
   getLineWidth: 2,
   getPointRadius: 10,
   getEditHandlePointColor: HANDLE_COLOR,
-  getLineColor: LINE_COLOR,
+  getLineColor: (feature: any) => {
+    return feature.properties.hasOverlappingFeatures ? ERROR_COLOR : LINE_COLOR
+  },
   getDashArray: [4, 2],
   editHandlePointOutline: false,
   extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
+}
+
+function getFeaturesWithOverlapping(features: FeatureCollection['features']) {
+  return features.map((feature: any) => ({
+    ...feature,
+    properties: {
+      ...feature.properties,
+      hasOverlappingFeatures: kinks(feature.geometry).features.length > 0,
+    },
+  }))
+}
+
+function getDrawDataParsed(data: FeatureCollection, featureType: 'polygons' | 'points') {
+  if (featureType === 'points') return data
+  return {
+    ...data,
+    features: getFeaturesWithOverlapping(data.features),
+  }
 }
 
 const INITIAL_FEATURE_COLLECTION: FeatureCollection = {
@@ -38,8 +60,8 @@ const INITIAL_FEATURE_COLLECTION: FeatureCollection = {
 export type DrawLayerState = {
   data: FeatureCollection
   mode: DrawLayerMode
-  hasOverlappingFeatures: boolean
   selectedFeatureIndexes?: number[]
+  hasTentativeOverlappingFeatures: boolean
 }
 
 export type DrawFeatureType = 'polygons' | 'points'
@@ -61,7 +83,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       mode: this._getDrawingMode(),
       data: INITIAL_FEATURE_COLLECTION,
       selectedFeatureIndexes: [],
-      hasOverlappingFeatures: false,
+      hasTentativeOverlappingFeatures: false,
     }
   }
 
@@ -70,7 +92,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   }
 
   getHasOverlappingFeatures = () => {
-    return this.state?.hasOverlappingFeatures
+    return (
+      this.state?.hasTentativeOverlappingFeatures ||
+      this.state?.data.features.some((feature: any) => feature.properties.hasOverlappingFeatures)
+    )
   }
 
   getSelectedFeatureIndexes = () => {
@@ -80,7 +105,9 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   reset = () => {
     this.setState({
       data: INITIAL_FEATURE_COLLECTION,
+      selectedFeatureIndexes: [],
       mode: this._getDrawingMode(),
+      hasTentativeOverlappingFeatures: false,
     })
   }
 
@@ -90,6 +117,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     this.setState({
       data: { ...data, features },
       selectedFeatureIndexes: [],
+      hasTentativeOverlappingFeatures: false,
       mode: new CustomViewMode(),
     })
   }
@@ -119,9 +147,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     switch (editType) {
       case 'addFeature': {
         this.setState({
-          data: updatedData,
+          data: getDrawDataParsed(updatedData, featureType),
           mode: new CustomModifyMode(),
           selectedFeatureIndexes: editContext.featureIndexes,
+          hasTentativeOverlappingFeatures: false,
         })
         break
       }
@@ -142,20 +171,16 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         break
       }
       case 'movePosition': {
-        const hasOverlappingFeatures =
-          featureType === 'polygons'
-            ? updatedData.features.some((feature: any) => kinks(feature).features.length > 0)
-            : false
         this.setState({
-          data: updatedData,
-          hasOverlappingFeatures,
+          data: getDrawDataParsed(updatedData, featureType),
         })
         break
       }
       case 'updateTentativeFeature': {
         if (featureType === 'polygons') {
-          const hasOverlappingFeatures = kinks(editContext.feature.geometry).features.length > 0
-          this.setState({ hasOverlappingFeatures })
+          const hasTentativeOverlappingFeatures =
+            kinks(editContext.feature.geometry).features.length > 0
+          this.setState({ hasTentativeOverlappingFeatures })
         }
         break
       }
@@ -165,7 +190,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   }
 
   renderLayers() {
-    const { data, mode, selectedFeatureIndexes } = this.state
+    const { data, mode, selectedFeatureIndexes, hasTentativeOverlappingFeatures } = this.state
 
     return [
       new EditableGeoJsonLayer({
@@ -176,6 +201,14 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         selectedFeatureIndexes,
         ...POLYGON_STYLES,
         ...LINE_STYLES,
+        getLineColor: (feature: any) => {
+          return hasTentativeOverlappingFeatures || feature.properties.hasOverlappingFeatures
+            ? ERROR_COLOR
+            : LINE_COLOR
+        },
+        updateTriggers: {
+          getLineColor: [hasTentativeOverlappingFeatures],
+        },
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
         _subLayerProps: {
           geojson: {
