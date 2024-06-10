@@ -46,6 +46,18 @@ export class CustomModifyMode extends ModifyMode {
   handleClick(event: ClickEvent, props: ModeProps<FeatureCollection>) {
     event.sourceEvent.preventDefault()
     if (event.picks.length) {
+      const hasDifferentSelectedIndex = event.picks.some((pick) => {
+        return !props.selectedIndexes.includes(pick.index)
+      })
+      if (hasDifferentSelectedIndex) {
+        props.onEdit({
+          updatedData: props.data,
+          editType: 'customUpdateSelectedIndexes',
+          editContext: {
+            featureIndexes: event.picks.map((pick) => pick.index),
+          },
+        })
+      }
       super.handleClick(event, props)
     } else {
       props.onEdit({

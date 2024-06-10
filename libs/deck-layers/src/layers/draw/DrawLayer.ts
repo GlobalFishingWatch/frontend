@@ -168,6 +168,12 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         })
         break
       }
+      case 'customUpdateSelectedIndexes': {
+        this.setState({
+          selectedFeatureIndexes: editContext.featureIndexes,
+        })
+        break
+      }
       case 'customClickOutside': {
         this.setState({
           data: updatedData,
