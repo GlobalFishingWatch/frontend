@@ -96,6 +96,7 @@
 
 .visualizationsSwitch > ul > li > button {
   padding: 0 var(--space-XS);
+  height: 2.6rem;
 }
 
 .vesselsOnScreen summary {
@@ -108,4 +109,8 @@
 
 .vesselsOnScreen summary span {
   padding: 0;
+}
+
+.hidden {
+  display: none;
 }

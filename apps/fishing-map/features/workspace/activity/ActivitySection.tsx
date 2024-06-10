@@ -110,7 +110,9 @@ function ActivitySection(): React.ReactElement {
               testId="activity-visualizations-change"
               activeOption={activeVisualizationOption}
               onSelect={(option) => onVisualizationModeChange(option.id)}
-              className={styles.visualizationsSwitch}
+              className={cx(styles.visualizationsSwitch, {
+                [styles.hidden]: !hasVisibleDataviews,
+              })}
             />
             <IconButton
               icon="plus"

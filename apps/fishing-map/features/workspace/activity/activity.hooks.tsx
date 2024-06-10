@@ -34,7 +34,7 @@ export const useVisualizationsOptions = (
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(layerId)
   const isPositionsLayerAvailable = fourwingsActivityLayer?.instance?.getIsPositionsAvailable()
   const activeVisualizationOption = useSelector(
-    DataviewCategory.Detections
+    category === DataviewCategory.Detections
       ? selectDetectionsVisualizationMode
       : selectActivityVisualizationMode
   )
@@ -48,9 +48,6 @@ export const useVisualizationsOptions = (
   )
 
   const visualizationOptions: ChoiceOption<FourwingsVisualizationMode>[] = useMemo(() => {
-    if (!layerId) {
-      return []
-    }
     return [
       {
         id: HEATMAP_ID,
@@ -88,7 +85,7 @@ export const useVisualizationsOptions = (
         disabled: !isPositionsLayerAvailable,
       },
     ]
-  }, [isPositionsLayerAvailable, layerId, t])
+  }, [isPositionsLayerAvailable, t])
 
   return { visualizationOptions, activeVisualizationOption, onVisualizationModeChange }
 }
