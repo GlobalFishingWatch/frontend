@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
-import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import {
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
@@ -31,6 +30,7 @@ import { useMapDrawConnect } from './map-draw.hooks'
 import MapInfo from './controls/MapInfo'
 import { MAP_CANVAS_ID } from './map.config'
 import TimeComparisonLegend from './TimeComparisonLegend'
+import { CoordinateEditOverlay } from './overlays/draw/CoordinateEditOverlay'
 
 const DrawDialog = dynamic(
   () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
@@ -114,6 +114,7 @@ const MapWrapper = () => {
         onDragEnd={onMapDragEnd}
       >
         <MapAnnotations />
+        <CoordinateEditOverlay />
         <MapAnnotationsDialog />
         <ErrorNotification />
       </DeckGL>
