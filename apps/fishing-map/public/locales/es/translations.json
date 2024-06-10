@@ -994,7 +994,7 @@
     "passwordProtected": "This workspace is password protected",
     "passwordRequired": "Password is required",
     "private": "Private",
-    "privateEditAcessInfo": "Private view workspace does not allow editing",
+    "privateEditAcessInfo": "Your current view access permissions do not allow for others to edit this workspace",
     "privateTitle_other": "Espacios de trabajo privados",
     "remove": "Eliminar el espacio de trabajo",
     "save": "Guardar el mapa actual",
