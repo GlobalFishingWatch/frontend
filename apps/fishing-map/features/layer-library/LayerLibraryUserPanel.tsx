@@ -78,7 +78,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
   }, [datasets.length, onAddNewClick, dispatch])
 
   const onDrawClick = useCallback(() => {
-    dispatchSetMapDrawing(true)
+    dispatchSetMapDrawing('polygons')
     dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
     trackEvent({
       category: TrackCategory.ReferenceLayer,
