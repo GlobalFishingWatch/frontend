@@ -1,9 +1,7 @@
 import {
   EditableGeoJsonLayer,
-  DrawPolygonMode,
   FeatureCollection,
   EditAction,
-  DrawPointMode,
 } from '@deck.gl-community/editable-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { CompositeLayer, LayerContext, PickingInfo } from '@deck.gl/core'
@@ -11,7 +9,13 @@ import kinks from '@turf/kinks'
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
 import { DeckLayerCategory } from '../../types'
 import { DrawPickingInfo, DrawPickingObject } from './draw.types'
-import { CustomModifyMode, CustomViewMode, DrawLayerMode } from './draw.modes'
+import {
+  CustomDrawPointMode,
+  CustomDrawPolygonMode,
+  CustomModifyMode,
+  CustomViewMode,
+  DrawLayerMode,
+} from './draw.modes'
 
 type Color = [number, number, number, number]
 const FILL_COLOR: Color = [189, 189, 189, 25]
@@ -47,7 +51,8 @@ function getFeaturesWithOverlapping(features: FeatureCollection['features']) {
     ...feature,
     properties: {
       ...feature.properties,
-      hasOverlappingFeatures: kinks(feature.geometry).features.length > 0,
+      hasOverlappingFeatures:
+        feature.geometry.type !== 'Point' ? kinks(feature.geometry).features.length > 0 : false,
     },
   }))
 }
@@ -81,7 +86,9 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   state!: DrawLayerState
 
   _getDrawingMode = () => {
-    return this.props.featureType === 'points' ? new DrawPointMode() : new DrawPolygonMode()
+    return this.props.featureType === 'points'
+      ? new CustomDrawPointMode()
+      : new CustomDrawPolygonMode()
   }
 
   initializeState(context: LayerContext) {
@@ -184,7 +191,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         break
       }
       case 'updateTentativeFeature': {
-        if (featureType === 'polygons') {
+        if (featureType === 'polygons' && editContext.feature.geometry.type !== 'Point') {
           const hasTentativeOverlappingFeatures =
             kinks(editContext.feature.geometry).features.length > 0
           this.setState({ hasTentativeOverlappingFeatures })
@@ -198,7 +205,6 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
 
   renderLayers() {
     const { data, mode, selectedFeatureIndexes, hasTentativeOverlappingFeatures } = this.state
-    console.log('🚀 ~ renderLayers ~ data:', data)
     const { featureType } = this.props
 
     const layer = [
@@ -221,8 +227,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
         _subLayerProps: {
           geojson: {
-            ...POLYGON_STYLES,
-            ...POINTS_STYLES,
+            ...(featureType === 'polygons' ? POLYGON_STYLES : POINTS_STYLES),
           },
           guides: {
             ...LINE_STYLES,
@@ -230,7 +235,6 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         },
       }),
     ]
-    console.log('🚀 ~ renderLayers ~ layer:', layer)
     return layer
   }
 }
