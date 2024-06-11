@@ -8,7 +8,12 @@ import icons, { IconType } from './icon.config'
 
 const IconComponents = icons.reduce((acc, icon) => {
   acc[icon] = lazy(() =>
-    import(`../assets/icons/${icon}.svg`).then((m) => ({ default: m.ReactComponent }))
+    import(
+      /* webpackChunkName: "icon-[request]" */
+      `../assets/icons/${icon}.svg`
+    ).then((m) => ({
+      default: m.ReactComponent,
+    }))
   )
   return acc
 }, {} as Record<IconType, any>)
