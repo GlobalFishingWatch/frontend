@@ -216,7 +216,7 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
               viewAccess === WORKSPACE_PRIVATE_ACCESS
                 ? t(
                     'workspace.privateEditAcessInfo',
-                    'Private view workspace does not allow editing'
+                    'Your current view access permissions do not allow for others to edit this workspace'
                   )
                 : ''
             }

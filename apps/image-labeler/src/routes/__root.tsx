@@ -1,14 +1,15 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
-import { useCallback } from 'react'
+import { Fragment, useCallback } from 'react'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
+import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks/use-login'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
-import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks/use-login'
 import { Button } from '@globalfishingwatch/ui-components/button'
+import styles from './__root.module.css'
 
 const labelerPermission = {
-  type: 'labeler-project',
-  value: '*',
+  type: 'entity',
+  value: 'labelling-project',
   action: 'read',
 }
 
@@ -38,7 +39,17 @@ const RootComponent = () => {
     )
   }
 
-  return <Outlet />
+  return (
+    <Fragment>
+      <div className={styles.userInfo}>
+        <p>{login.user?.email}</p>
+        <Button type="secondary" size="small" onClick={handleLogoutClick}>
+          Logout
+        </Button>
+      </div>
+      <Outlet />
+    </Fragment>
+  )
 }
 
 export const Route = createRootRoute({

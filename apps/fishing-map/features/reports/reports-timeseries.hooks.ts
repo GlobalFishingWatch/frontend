@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import memoizeOne from 'memoize-one'
 import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
-import { atom, useAtom } from 'jotai'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import { mean, min, max } from 'simple-statistics'
 import { DateTime } from 'luxon'
 import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
@@ -232,7 +232,7 @@ export const useComputeReportTimeSeries = () => {
 
 const memoizedFilterTimeseriesByTimerange = memoizeOne(filterTimeseriesByTimerange)
 export const useReportFilteredTimeSeries = () => {
-  const [timeseries] = useAtom(mapTimeseriesAtom)
+  const timeseries = useAtomValue(mapTimeseriesAtom)
   const { start: timebarStart, end: timebarEnd } = useSelector(selectTimeRange)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const layersTimeseriesFiltered = useMemo(() => {

@@ -4,11 +4,9 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 // Import the generated route tree
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
-import { projectsListApi } from './api/projects-list'
+import { projectApi, projectCreateApi, projectEditApi, projectsListApi, taskApi } from './api'
 import { routeTree } from './routeTree.gen'
-import { projectApi } from './api/project'
 import styles from './main.module.css'
-import { taskApi } from './api/task'
 import '../../../libs/ui-components/src/base.css'
 
 // Create a new router instance
@@ -28,12 +26,16 @@ if (!rootElement?.innerHTML) {
     reducer: {
       [projectsListApi.reducerPath]: projectsListApi.reducer,
       [projectApi.reducerPath]: projectApi.reducer,
+      [projectEditApi.reducerPath]: projectEditApi.reducer,
+      [projectCreateApi.reducerPath]: projectCreateApi.reducer,
       [taskApi.reducerPath]: taskApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([
         projectsListApi.middleware,
         projectApi.middleware,
+        projectEditApi.middleware,
+        projectCreateApi.middleware,
         taskApi.middleware,
       ]),
   })
