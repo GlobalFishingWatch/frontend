@@ -94,3 +94,7 @@ a.linkButton,
   display: flex;
   gap: var(--space-M);
 }
+
+.link + .link {
+  margin-top: var(--space-XS);
+}
