@@ -16,6 +16,7 @@ import {
   Resource,
 } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import { isNumeric } from '@globalfishingwatch/data-transforms'
 
 export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
   if (!dataviews.length) {
@@ -321,8 +322,9 @@ export function getDataviewSqlFiltersResolved(dataview: UrlDataviewInstance) {
         }
       }
       const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
+      const hasNumericFilterValues = filterValues.every((v: any) => isNumeric(v))
       const query = `${queryFilterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
-        .map((f: string) => `'${f}'`)
+        .map((f: string) => (hasNumericFilterValues ? `${f}` : `'${f}'`))
         .join(', ')})`
       if (filterOperator === EXCLUDE_FILTER_ID) {
         // workaround as bigquery exludes null values

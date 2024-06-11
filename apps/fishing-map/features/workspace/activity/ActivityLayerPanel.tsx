@@ -160,6 +160,7 @@ function ActivityLayerPanel({
     const fields: { field: SupportedDatasetSchema; label: string }[] = [
       { field: 'radiance', label: t('layer.radiance', 'Radiance') },
       { field: 'geartype', label: t('layer.gearType_other', 'Gear types') },
+      { field: 'speed', label: t('layer.speed', 'Speed') },
       { field: 'fleet', label: t('layer.fleet_other', 'Fleets') },
       { field: 'shiptype', label: t('vessel.shiptype', 'Ship type') },
       { field: 'origin', label: t('vessel.origin', 'Origin') },

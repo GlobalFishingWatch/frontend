@@ -10,6 +10,8 @@ import {
 import { isEqual } from 'lodash'
 import { isNumeric } from './utils'
 
+export { isNumeric }
+
 // TODO define types for this filter so we can avoid the buggy isNumeric approach
 // to extract when using min or max or the list of values
 export type TrackCoordinatesPropertyFilter = {
