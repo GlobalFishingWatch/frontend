@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
-import { Fragment } from 'react'
 import geojsonArea from '@mapbox/geojson-area'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
@@ -38,6 +37,7 @@ import { BufferOperation, BufferUnit } from 'types'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
 
@@ -51,6 +51,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
+  const loading = useReportFeaturesLoading()
   const areaDataview = useSelector(selectReportAreaDataview)
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
@@ -297,6 +298,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
             size="small"
             className={styles.actionButton}
             onClick={onPrintClick}
+            disabled={loading}
           >
             <p>{t('analysis.print ', 'print')}</p>
             <Icon icon="print" type="default" />

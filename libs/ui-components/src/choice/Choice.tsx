@@ -91,7 +91,7 @@ export function Choice({
       )}
       <div className={cx(styles.Choice, className)}>
         <ul className={styles.list} role="radiogroup" {...(testId && { 'data-test': `${testId}` })}>
-          {options.map((option, index) => {
+          {options.map((option) => {
             const optionSelected = activeOptionId === option.id
             return (
               <li

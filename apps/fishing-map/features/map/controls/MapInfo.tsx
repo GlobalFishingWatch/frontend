@@ -46,7 +46,7 @@ export const TimelineDatesRange = () => {
 const MapInfo = ({
   center,
 }: {
-  center: {
+  center?: {
     x: number
     y: number
   }

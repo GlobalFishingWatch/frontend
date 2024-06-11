@@ -34,7 +34,7 @@ export const useVisualizationsOptions = (
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(layerId)
   const isPositionsLayerAvailable = fourwingsActivityLayer?.instance?.getIsPositionsAvailable()
   const activeVisualizationOption = useSelector(
-    DataviewCategory.Detections
+    category === DataviewCategory.Detections
       ? selectDetectionsVisualizationMode
       : selectActivityVisualizationMode
   )
@@ -48,47 +48,30 @@ export const useVisualizationsOptions = (
   )
 
   const visualizationOptions: ChoiceOption<FourwingsVisualizationMode>[] = useMemo(() => {
-    if (!layerId) {
-      return []
-    }
     return [
       {
         id: HEATMAP_ID,
-        label: (
-          <Icon
-            icon={'heatmap-low-res'}
-            tooltip={t('map.lowRes', 'See low resolution heatmaps')}
-            tooltipPlacement="bottom"
-          />
-        ),
+        label: <Icon icon={'heatmap-low-res'} />,
+        tooltip: t('map.lowRes', 'See low resolution heatmaps'),
+        tooltipPlacement: 'bottom',
       },
       {
         id: HEATMAP_HIGH_RES_ID,
-        label: (
-          <Icon
-            icon={'heatmap-high-res'}
-            tooltip={t('map.highRes', 'See high resolution heatmaps')}
-            tooltipPlacement="bottom"
-          />
-        ),
+        label: <Icon icon={'heatmap-high-res'} />,
+        tooltip: t('map.highRes', 'See high resolution heatmaps'),
+        tooltipPlacement: 'bottom',
       },
       {
         id: POSITIONS_ID,
-        label: (
-          <Icon
-            icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'}
-            tooltip={
-              isPositionsLayerAvailable
-                ? t('map.positions', 'See positions visualization mode')
-                : t('map.positionsDisabled', 'Positions visualizations mode not available')
-            }
-            tooltipPlacement="bottom"
-          />
-        ),
+        label: <Icon icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'} />,
+        tooltip: isPositionsLayerAvailable
+          ? t('map.positions', 'See positions visualization mode')
+          : t('map.positionsDisabled', 'Positions visualizations mode not available'),
+        tooltipPlacement: 'bottom',
         disabled: !isPositionsLayerAvailable,
       },
     ]
-  }, [isPositionsLayerAvailable, layerId, t])
+  }, [isPositionsLayerAvailable, t])
 
   return { visualizationOptions, activeVisualizationOption, onVisualizationModeChange }
 }
