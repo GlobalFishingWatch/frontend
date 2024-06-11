@@ -1030,7 +1030,7 @@
     "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage."
   },
   "public-global-encounters-events": {
-    "name": "Encounter Events. (AIS)",
+    "name": "Encounter Events (AIS)",
     "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
     "schema": {
       "duration": {
