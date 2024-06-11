@@ -10,6 +10,8 @@ import {
 import { isEqual } from 'lodash'
 import { isNumeric } from './utils'
 
+export { isNumeric }
+
 // TODO define types for this filter so we can avoid the buggy isNumeric approach
 // to extract when using min or max or the list of values
 export type TrackCoordinatesPropertyFilter = {
@@ -221,16 +223,13 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
           return filteredFeatures
         }
 
-        const coordinateProperties = filters.reduce(
-          (acc, { id }) => {
-            const properties = filteredLines.flatMap(
-              (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[id]
-            )
-            acc[id] = properties
-            return acc
-          },
-          {} as Record<string, (string | number)[][]>
-        )
+        const coordinateProperties = filters.reduce((acc, { id }) => {
+          const properties = filteredLines.flatMap(
+            (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[id]
+          )
+          acc[id] = properties
+          return acc
+        }, {} as Record<string, (string | number)[][]>)
 
         filteredFeatures.push({
           type: 'Feature',
