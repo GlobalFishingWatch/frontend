@@ -153,7 +153,7 @@ const Vessel = () => {
 
   useEffect(() => {
     if (isWorkspaceVesselLocation) {
-      dispatch(fetchWorkspaceThunk(urlWorkspaceId))
+      dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId }))
     }
     if (
       !infoStatus ||

@@ -21,7 +21,7 @@ steps:
     waitFor: ['restore_cache']
     name: node:21
     script: |
-      yarn set version 4.1.1
+      yarn set version 4.2.2
       yarn -v
       yarn install --immutable
 
@@ -62,6 +62,7 @@ steps:
       - '-c'
       - |-
         AFFECTED_APPS=(`cat affected-apps.txt`)
+        echo `cat affected-apps.txt`
         for i in ${AFFECTED_APPS[@]//,/}; do
           [ ! -z "$i" ] && gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
         done

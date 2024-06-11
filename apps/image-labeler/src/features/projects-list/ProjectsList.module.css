@@ -1,0 +1,67 @@
+.pageTitle {
+  font: var(--font-XL);
+  margin-bottom: var(--space-M);
+}
+
+.project {
+  display: block;
+  margin-bottom: var(--space-M);
+  padding-block: var(--space-M);
+}
+
+.project:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.projectName {
+  font: var(--font-L);
+  text-decoration: underline;
+  margin-bottom: var(--space-S);
+}
+
+.projectProperties {
+  display: flex;
+  gap: var(--space-M);
+}
+
+.projectProperties > div {
+  max-width: 50vw;
+}
+
+.editModal {
+  height: min-content;
+}
+
+.projectEditProperty {
+  margin-bottom: var(--space-S);
+}
+
+.textArea {
+  font-family: 'Courier New', Courier, monospace;
+  line-height: 1;
+  color: var(--color-primary-blue);
+  border-radius: var(--border-radius);
+  background-color: var(--color-terthiary-blue);
+  border: var(--border);
+  padding: var(--space-S);
+}
+
+.saveProjectBtn {
+  display: block;
+  margin-left: auto;
+}
+
+label .secondary {
+  text-transform: none;
+  font: var(--font-S);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.error {
+  color: var(--color-danger-red);
+}

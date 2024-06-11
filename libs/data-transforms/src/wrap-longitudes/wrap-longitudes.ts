@@ -15,7 +15,6 @@ export const wrapBBoxLongitudes = (bbox: Bbox) => {
   let currentLon: number
   let lonOffset = 0
   return bbox.map((coordinate, index) => {
-    // only needed for longitudes wich
     if (index === 0 || index === 2) {
       if (currentLon) {
         if (coordinate - currentLon < -180) {

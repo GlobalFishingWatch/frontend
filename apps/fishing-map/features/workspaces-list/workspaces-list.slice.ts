@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { memoize, kebabCase } from 'lodash'
 import { stringify } from 'qs'
-import { APIPagination, Workspace } from '@globalfishingwatch/api-types'
+import { APIPagination, WORKSPACE_PUBLIC_ACCESS, Workspace } from '@globalfishingwatch/api-types'
 import {
   GFWAPI,
   parseAPIError,
@@ -130,37 +130,26 @@ export const createWorkspaceThunk = createAsyncThunk<
   {
     rejectValue: AsyncError
   }
->(
-  'workspaces/create',
-  async (workspace, { rejectWithValue }) => {
-    const parsedWorkspace = {
-      ...workspace,
-      id: kebabCase(workspace.name),
-      public: true,
-    }
-    try {
-      const newWorkspace = await GFWAPI.fetch<Workspace>(`/workspaces`, {
-        method: 'POST',
-        body: parsedWorkspace as any,
-      })
-      return newWorkspace
-    } catch (e: any) {
-      return rejectWithValue(parseAPIError(e))
-    }
-  },
-  {
-    condition: (partialWorkspace) => {
-      if (!partialWorkspace || !partialWorkspace.id) {
-        console.warn('To update the workspace you need the id')
-        return false
-      }
-    },
+>('workspaces/create', async (workspace, { rejectWithValue }) => {
+  const id = kebabCase(workspace.name)
+  const parsedWorkspace = {
+    ...workspace,
+    id: workspace.viewAccess === WORKSPACE_PUBLIC_ACCESS ? `${id}-public` : id,
   }
-)
+  try {
+    const newWorkspace = await GFWAPI.fetch<Workspace>(`/workspaces`, {
+      method: 'POST',
+      body: parsedWorkspace as any,
+    })
+    return newWorkspace
+  } catch (e: any) {
+    return rejectWithValue(parseAPIError(e))
+  }
+})
 
 export const updateWorkspaceThunk = createAsyncThunk<
-  Workspace,
-  Partial<Workspace>,
+  AppWorkspace,
+  Partial<AppWorkspace> & { id: string; password?: string; newPassword?: string },
   {
     rejectValue: AsyncError
   }
@@ -168,10 +157,15 @@ export const updateWorkspaceThunk = createAsyncThunk<
   'workspaces/update',
   async (workspace, { rejectWithValue }) => {
     try {
-      const { id, ...rest } = workspace
-      const updatedWorkspace = await GFWAPI.fetch<Workspace>(`/workspaces/${id}`, {
+      const { id, password, newPassword, ...rest } = workspace
+      const updatedWorkspace = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${id}`, {
         method: 'PATCH',
-        body: rest as any,
+        body: newPassword ? { ...rest, editAccess: workspace.editAccess, newPassword } : rest,
+        ...(password && {
+          headers: {
+            'x-workspace-password': password,
+          },
+        }),
       })
       return updatedWorkspace
     } catch (e: any) {

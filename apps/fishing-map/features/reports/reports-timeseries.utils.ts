@@ -144,8 +144,9 @@ export const featuresToTimeseries = (
     featureToTimeseries.interval = sourceInterval
     featureToTimeseries.sublayers = sourceMetadata.sublayers as any
     featureToTimeseries.timeseries = valuesContained.map(({ values, date, compareDate }) => {
-      const maxValues = valuesContainedAndOverlapping.find((overlap) => overlap.date === date)
-        ?.values
+      const maxValues = valuesContainedAndOverlapping.find(
+        (overlap) => overlap.date === date
+      )?.values
       const minValues = getRealValues(values)
       return {
         date,
@@ -155,8 +156,8 @@ export const featuresToTimeseries = (
         max: maxValues
           ? getRealValues(maxValues)
           : valuesContainedAndOverlapping.length > 0
-            ? new Array(values.length).fill(0)
-            : minValues,
+          ? new Array(values.length).fill(0)
+          : minValues,
       } as ComparisonGraphData
     })
     return featureToTimeseries

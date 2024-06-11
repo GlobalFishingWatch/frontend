@@ -25,11 +25,9 @@ All of them availables with the `@globalfishingwatch/` prefix:
 |                                                     |                                        |
 | --------------------------------------------------- | -------------------------------------- |
 | [api-portal](apps/api-portal)                       | Api documentation portal               |
-| [deck-playground](apps/deck-playground)             | Playground for deck layers             |
 | [fishing-map-e2e](apps/fishing-map-e2e)             | Cypress e2e testing for the map        |
 | [fishing-map](apps/fishing-map)                     | Version 3.0 of the fishing map project |
 | [port-labeler](apps/port-labeler)                   | Labeling tool for ports                |
-| [tile-inspector](applications/tile-inspector)       | Debugger for 4wings tiles              |
 | [user-groups-admin](applications/user-groups-admin) | Tool to manage user groups with ease   |
 | [vessel-history](apps/vessel-history)               | Vessel history app                     |
 

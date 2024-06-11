@@ -2,6 +2,7 @@ import { Fragment, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { groupBy } from 'lodash'
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { IdentityVessel, Locale, VesselRegistryInfo } from '@globalfishingwatch/api-types'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearType } from 'utils/info'
@@ -92,7 +93,7 @@ function groupSearchVesselsIdentityBy(vessels: IdentityVessel[] | null, groupByK
         ({
           dataset: v.dataset,
           ...getLatestIdentityPrioritised(v),
-        }) as VesselGroupDataIdentity
+        } as VesselGroupDataIdentity)
     ),
     groupByKey
   )
@@ -118,8 +119,9 @@ function VesselGroupVessels() {
   const onVesselRemoveClick = useCallback(
     (vessel: VesselGroupDataIdentity, list: 'search' | 'new' = 'search') => {
       const vessels = list === 'search' ? vesselGroupSearchVessels : newVesselGroupSearchVessels
-      const action =
+      const action = (
         list === 'search' ? setVesselGroupSearchVessels : setNewVesselGroupSearchVessels
+      ) as ActionCreatorWithPayload<IdentityVessel[], any>
       const index = vessels!.findIndex(
         (v) => getLatestIdentityPrioritised(v).id === vessel?.id && v.dataset === vessel.dataset
       )

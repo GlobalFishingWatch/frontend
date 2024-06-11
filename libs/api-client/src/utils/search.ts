@@ -1,4 +1,4 @@
-import { partition } from 'lodash'
+import partition from 'lodash/partition'
 import type { JSX } from 'react'
 
 // Copied from ui-components to avoid circular dependencies

@@ -76,3 +76,7 @@
 .textSpaced {
   padding: var(--space-XS) 0;
 }
+
+div.modal {
+  height: auto;
+}

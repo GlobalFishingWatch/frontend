@@ -4,13 +4,22 @@ import { useSelector } from 'react-redux'
 import { Modal, Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+import {
+  WORKSPACE_PRIVATE_ACCESS,
+  WORKSPACE_PUBLIC_ACCESS,
+  Workspace,
+} from '@globalfishingwatch/api-types'
 import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { ROOT_DOM_ELEMENT } from 'data/config'
+import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, ROOT_DOM_ELEMENT } from 'data/config'
+import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
+import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
+import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
+import { useAppDispatch } from 'features/app/app.hooks'
 import styles from './FeedbackModal.module.css'
 
 type FeedbackModalProps = {
@@ -64,12 +73,14 @@ export const FEEDBACK_FEATURE_IDS = [
 
 function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const activeDataviews = useSelector(selectActiveDataviews)
   const userData = useSelector(selectUserData)
   const [loading, setLoading] = useState(false)
   const [suficientData, setSuficientData] = useState(false)
   const userGroups = useSelector(selectUserGroupsClean)
   const guestUser = useSelector(selectIsGuestUser)
+  const currentWorkspace = useSelector(selectWorkspaceWithCurrentState)
 
   const initialFeedbackState = {
     date: new Date().toISOString(),
@@ -152,10 +163,31 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     try {
       const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(FEEDBACK_SPREADSHEET_ID)
       // loads document properties and worksheets
+
+      let url = window.location.href
+
+      if (!guestUser) {
+        const createWorkspaceAction = await dispatch(
+          createWorkspaceThunk({
+            ...parseUpsertWorkspace(currentWorkspace),
+            name: `${AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX}-${Date.now()}`,
+            viewAccess: WORKSPACE_PUBLIC_ACCESS,
+            editAccess: WORKSPACE_PRIVATE_ACCESS,
+          })
+        )
+
+        if (createWorkspaceThunk.fulfilled.match(createWorkspaceAction)) {
+          const workspace = createWorkspaceAction.payload as Workspace
+          url = window.location.origin + `/${workspace?.category}/${workspace?.id}`
+        } else {
+          console.error('Error creating feedback workspace, using default url to feedback sheet.')
+        }
+      }
+
       const sheet = feedbackSpreadsheetDoc.sheetsByTitle[FEEDBACK_SHEET_TITLE]
       const finalFeedbackData = {
         ...feedbackData,
-        url: window.location.href,
+        url,
         userId: feedbackData.userId || GUEST_USER_TYPE,
       }
       await sheet.addRow(finalFeedbackData)

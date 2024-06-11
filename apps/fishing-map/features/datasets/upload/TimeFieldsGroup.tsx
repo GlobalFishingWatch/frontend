@@ -86,8 +86,8 @@ export const TimeFieldsGroup = ({
     geometryType === 'tracks'
       ? t('dataset.typeTracks', 'Tracks')
       : geometryType === 'polygons'
-        ? t('dataset.typePolygons', 'Polygons')
-        : t('dataset.typePoints', 'Points')
+      ? t('dataset.typePolygons', 'Polygons')
+      : t('dataset.typePoints', 'Points')
 
   return (
     <div className={styles.row}>
@@ -105,7 +105,7 @@ export const TimeFieldsGroup = ({
       />
       {timeFilterType && (
         <Select
-          placeholder={t('datasetUploadUI.fieldPlaceholder', 'Select a field from your dataset')}
+          placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
           label={
             timeFilterType === 'date'

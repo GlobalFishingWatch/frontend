@@ -1,0 +1,8 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  padding: var(--space-L);
+  background: var(--gradient);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}

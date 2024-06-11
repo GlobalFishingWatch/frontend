@@ -2,7 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
 import { DatasetGeometryType, DataviewCategory } from '@globalfishingwatch/api-types'
 
-export type ModalId = 'feedback' | 'screenshot' | 'layerLibrary' | 'datasetUpload'
+export type ModalId =
+  | 'feedback'
+  | 'screenshot'
+  | 'layerLibrary'
+  | 'datasetUpload'
+  | 'editWorkspace'
+  | 'createWorkspace'
 
 export type LayerLibraryMode = DataviewCategory | false
 export type DatasetUploadStyle = 'default' | 'transparent'
@@ -18,6 +24,8 @@ export type ModalsOpenState = {
   feedback: boolean
   screenshot: boolean
   layerLibrary: LayerLibraryMode
+  editWorkspace: boolean
+  createWorkspace: boolean
   datasetUpload: { open: boolean } & DatasetUploadConfig
 }
 
@@ -25,6 +33,8 @@ const initialState: ModalsOpenState = {
   feedback: false,
   screenshot: false,
   layerLibrary: false,
+  editWorkspace: false,
+  createWorkspace: false,
   datasetUpload: {
     open: false,
     id: undefined,
@@ -63,6 +73,8 @@ export const selectLayerLibraryModal = (state: RootState) => state.modals.layerL
 export const selectLayerLibraryModalOpen = (state: RootState) => state.modals.layerLibrary !== false
 export const selectDatasetUploadModalConfig = (state: RootState) => state.modals.datasetUpload
 export const selectDatasetUploadModalOpen = (state: RootState) => state.modals.datasetUpload?.open
+export const selectEditWorkspaceModalOpen = (state: RootState) => state.modals.editWorkspace
+export const selectCreateWorkspaceModalOpen = (state: RootState) => state.modals.createWorkspace
 export const selectScreenshotModalOpen = (state: RootState) => state.modals.screenshot
 
 export default modals.reducer

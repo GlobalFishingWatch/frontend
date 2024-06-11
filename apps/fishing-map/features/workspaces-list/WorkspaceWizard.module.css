@@ -50,11 +50,21 @@
   padding-top: var(--space-S);
 }
 
+@media only screen and (width <= 800px) {
+  .actions {
+    flex-direction: column;
+  }
+}
+
 .hint {
   font: var(--font-S);
   color: var(--color-secondary-blue);
   display: flex;
   align-items: center;
+}
+
+.linksContainer {
+  display: flex;
 }
 
 .error {
@@ -110,4 +120,8 @@
   color: var(--color-secondary-blue);
   background-color: var(--color-terthiary-blue);
   cursor: not-allowed;
+}
+
+.confirmBtn + .confirmBtn {
+  margin-left: var(--space-S);
 }

@@ -3,6 +3,7 @@ import cx from 'classnames'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useCombobox, UseComboboxStateChange } from 'downshift'
+import { useSelector } from 'react-redux'
 import { searchOceanAreas, OceanAreaLocale, OceanArea } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { Dataview } from '@globalfishingwatch/api-types'
@@ -17,7 +18,7 @@ import {
   WIZARD_TEMPLATE_ID,
 } from 'data/default-workspaces/marine-manager'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
+import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import useMapInstance from 'features/map/map-context.hooks'
@@ -26,7 +27,7 @@ import {
   MPA_DATAVIEW_INSTANCE_ID,
   WorkspaceCategory,
 } from 'data/workspaces'
-import { WORKSPACE } from 'routes/routes'
+import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import { getEventLabel } from 'utils/analytics'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './WorkspaceWizard.module.css'
@@ -50,6 +51,7 @@ function WorkspaceWizard() {
   const fitBounds = useMapFitBounds()
   const map = useMapInstance()
   const { viewport } = useViewport()
+  const dataviews = useSelector(selectAllDataviews)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
@@ -130,8 +132,7 @@ function WorkspaceWizard() {
       setAreasMatching([])
     }
   }
-
-  const linkTo = useMemo(() => {
+  const linkToArea = useMemo(() => {
     const linkViewport = selectedItem
       ? getMapCoordinatesFromBounds(map, selectedItem.properties?.bounds as any)
       : viewport
@@ -160,6 +161,40 @@ function WorkspaceWizard() {
       replaceQuery: true,
     }
   }, [viewport, map, selectedItem])
+
+  const linkToReport = useMemo(() => {
+    if (!selectedItem || selectedItem?.properties?.type === 'ocean') {
+      return null
+    }
+    const dataview = dataviews.find((d) =>
+      (d.slug as string).includes(selectedItem?.properties?.type)
+    )
+
+    if (!dataview) {
+      return null
+    }
+    const datasetId = dataview.datasetsConfig?.[0]?.datasetId
+    if (!datasetId) {
+      return null
+    }
+    // TODO:deck remove this as it is only needed for mapbox
+    const reportAreaSource = selectedItem?.properties?.type.includes('mpa')
+      ? 'context-layer-mpa__mpa'
+      : 'context-layer-eez__eez-areas'
+    return {
+      ...linkToArea,
+      type: WORKSPACE_REPORT,
+      payload: {
+        ...linkToArea.payload,
+        datasetId,
+        areaId: selectedItem?.properties?.area,
+      },
+      query: {
+        ...linkToArea.query,
+        reportAreaSource,
+      },
+    }
+  }, [selectedItem, dataviews, linkToArea])
 
   const linkLabel = selectedItem
     ? t('workspace.wizard.exploreArea', 'Explore area')
@@ -202,13 +237,22 @@ function WorkspaceWizard() {
         </div>
       </div>
       <div className={styles.actions}>
-        <p className={styles.hint}>
-          <Icon icon="magic" />
-          {t('workspace.wizard.help', 'You can move the map and update your workspace later')}
-        </p>
-        <Link to={linkTo} target="_self" className={cx(styles.confirmBtn)}>
-          {linkLabel}
-        </Link>
+        <div>
+          <p className={styles.hint}>
+            <Icon icon="magic" />
+            {t('workspace.wizard.help', 'You can move the map and update your workspace later')}
+          </p>
+        </div>
+        <div className={styles.linksContainer}>
+          {selectedItem && linkToReport && (
+            <Link to={linkToReport} target="_self" className={cx(styles.confirmBtn)}>
+              {t('analysis.see', 'See report')}
+            </Link>
+          )}
+          <Link to={linkToArea} target="_self" className={cx(styles.confirmBtn)}>
+            {linkLabel}
+          </Link>
+        </div>
       </div>
     </div>
   )

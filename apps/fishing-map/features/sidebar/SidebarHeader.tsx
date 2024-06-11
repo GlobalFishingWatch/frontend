@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Sticky from 'react-sticky-el'
@@ -10,13 +11,16 @@ import {
   IconButton,
   Logo,
   SubBrands,
+  Tooltip,
 } from '@globalfishingwatch/ui-components'
 import { useFeatureState, useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import {
+  selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
+  selectIsDefaultWorkspace,
   selectLastVisitedWorkspace,
   selectWorkspace,
-  selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
@@ -34,7 +38,6 @@ import {
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
@@ -56,15 +59,13 @@ import { cleanVesselSearchResults } from 'features/search/search.slice'
 import UserButton from 'features/user/UserButton'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
+import TooltipContainer from 'features/workspace/shared/TooltipContainer'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import styles from './SidebarHeader.module.css'
 import { useClipboardNotification } from './sidebar.hooks'
 
-const NewWorkspaceModal = dynamic(
-  () =>
-    import(
-      /* webpackChunkName: "NewWorkspaceModal" */ 'features/workspace/shared/NewWorkspaceModal'
-    )
-)
 const NewReportModal = dynamic(
   () => import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/NewReportModal')
 )
@@ -98,7 +99,11 @@ function SaveReportButton() {
     }
   }
 
-  if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
+  if (
+    !workspace ||
+    (workspace.viewAccess !== undefined && workspace.viewAccess !== WORKSPACE_PUBLIC_ACCESS) ||
+    workspaceStatus === AsyncReducerStatus.Loading
+  ) {
     return null
   }
 
@@ -135,64 +140,138 @@ function SaveReportButton() {
 }
 
 function SaveWorkspaceButton() {
-  const [showWorkspaceCreateModal, setShowWorkspaceCreateModal] = useState(false)
   const { t } = useTranslation()
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
   const workspace = useSelector(selectWorkspace)
-  const customWorkspace = useSelector(selectWorkspaceWithCurrentState)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const userData = useSelector(selectUserData)
+  const isDefaultWorkspace = useSelector(selectIsDefaultWorkspace)
 
-  const onCloseCreateWorkspace = useCallback(() => {
-    setShowWorkspaceCreateModal(false)
-  }, [])
+  const isOwnerWorkspace = workspace?.ownerId === userData?.id
+  const isPassWordEditAccess = workspace?.editAccess === WORKSPACE_PASSWORD_ACCESS
+  const canEditWorkspace = isOwnerWorkspace || isPassWordEditAccess
 
-  const onSaveCreateWorkspace = useCallback(() => {
-    copyToClipboard(window.location.href)
-    onCloseCreateWorkspace()
-  }, [copyToClipboard, onCloseCreateWorkspace])
+  const dispatch = useAppDispatch()
+  const [saveWorkspaceTooltipOpen, setSaveWorkspaceTooltipOpen] = useState(false)
 
-  const onSaveClick = async () => {
-    if (!showClipboardNotification) {
-      setShowWorkspaceCreateModal(true)
+  const onSaveClick = () => {
+    if (canEditWorkspace) {
+      dispatch(setModalOpen({ id: 'editWorkspace', open: true }))
+      dispatch(setModalOpen({ id: 'createWorkspace', open: false }))
+      setSaveWorkspaceTooltipOpen(false)
     }
   }
 
-  if (!workspace || workspaceStatus === AsyncReducerStatus.Loading) {
+  const onSaveAsClick = () => {
+    dispatch(setModalOpen({ id: 'editWorkspace', open: false }))
+    dispatch(setModalOpen({ id: 'createWorkspace', open: true }))
+    setSaveWorkspaceTooltipOpen(false)
+  }
+
+  const onClickOutside = () => {
+    setSaveWorkspaceTooltipOpen(false)
+    dispatch(setModalOpen({ id: 'editWorkspace', open: false }))
+    dispatch(setModalOpen({ id: 'createWorkspace', open: false }))
+  }
+
+  if (
+    !workspace ||
+    isPrivateWorkspaceNotAllowed(workspace) ||
+    workspaceStatus === AsyncReducerStatus.Loading
+  ) {
     return null
+  }
+
+  if (isDefaultWorkspace) {
+    return (
+      <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+        <IconButton
+          icon="save"
+          size="medium"
+          className="print-hidden"
+          onClick={onSaveAsClick}
+          tooltip={t('analysis.save', 'Save this report')}
+          tooltipPlacement="bottom"
+        />
+      </LoginButtonWrapper>
+    )
   }
 
   return (
     <Fragment>
-      <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
-        <IconButton
-          icon={showClipboardNotification ? 'tick' : 'save'}
-          size="medium"
-          className="print-hidden"
-          onClick={onSaveClick}
-          loading={workspaceCustomStatus === AsyncReducerStatus.Loading}
-          tooltip={
-            showClipboardNotification
-              ? t(
-                  'workspace.saved',
-                  "The workspace was saved and it's available in your user profile"
-                )
-              : t('workspace.save', 'Save this workspace')
-          }
-          tooltipPlacement="bottom"
-          testId="save-workspace-button"
-        />
-      </LoginButtonWrapper>
-      {showWorkspaceCreateModal && (
-        <NewWorkspaceModal
-          isOpen={showWorkspaceCreateModal}
-          onClose={onCloseCreateWorkspace}
-          onFinish={onSaveCreateWorkspace}
-          workspace={customWorkspace}
-        />
-      )}
+      <TooltipContainer
+        visible={saveWorkspaceTooltipOpen}
+        onClickOutside={onClickOutside}
+        placement="bottom"
+        arrowClass={styles.arrow}
+        component={
+          <ul>
+            <Tooltip
+              content={
+                canEditWorkspace
+                  ? t('workspace.save', 'Save this report')
+                  : t('workspace.saveOwnerOnly', 'This workspace can only be edited by its creator')
+              }
+            >
+              <li
+                className={cx(styles.groupOption, { [styles.disabled]: !canEditWorkspace })}
+                onClick={onSaveClick}
+                key="workspace-save"
+              >
+                {t('workspace.save', 'Save this report')}
+              </li>
+            </Tooltip>
+            <li className={styles.groupOption} onClick={onSaveAsClick} key="workspace-save-as">
+              {t('workspace.saveAs', 'Save this as a new workspace')}
+            </li>
+          </ul>
+        }
+      >
+        <div>
+          <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+            <IconButton
+              icon="save"
+              size="medium"
+              className="print-hidden"
+              onClick={() => setSaveWorkspaceTooltipOpen(true)}
+              tooltip={t('analysis.save', 'Save this report')}
+              tooltipPlacement="bottom"
+            />
+          </LoginButtonWrapper>
+        </div>
+      </TooltipContainer>
     </Fragment>
   )
+
+  // return (
+  //   <Fragment>
+  //     <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+  //       <IconButton
+  //         icon={showClipboardNotification ? 'tick' : 'save'}
+  //         size="medium"
+  //         className="print-hidden"
+  //         onClick={onSaveClick}
+  //         loading={reportStatus === AsyncReducerStatus.Loading}
+  //         tooltip={
+  //           showClipboardNotification
+  //             ? t(
+  //                 'workspace.saved',
+  //                 "The workspace was saved and it's available in your user profile"
+  //               )
+  //             : t('analysis.save', 'Save this report')
+  //         }
+  //         tooltipPlacement="bottom"
+  //       />
+  //     </LoginButtonWrapper>
+  //     {showReportCreateModal && (
+  //       <NewReportModal
+  //         isOpen={showReportCreateModal}
+  //         onClose={onCloseCreateReport}
+  //         onFinish={onSaveCreateReport}
+  //         report={report}
+  //       />
+  //     )}
+  //   </Fragment>
+  // )
 }
 
 function ShareWorkspaceButton() {
@@ -280,10 +359,10 @@ function CloseReportButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const reportAreaIds = useSelector(selectReportAreaIds)
-  const locationType = useSelector(selectLocationType)
   const locationQuery = useSelector(selectLocationQuery)
   const locationPayload = useSelector(selectLocationPayload)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
 
   const { cleanFeatureState } = useFeatureState(useMapInstance())
 
@@ -295,9 +374,13 @@ function CloseReportButton() {
     dispatch(cleanCurrentWorkspaceStateBufferParams())
   }
 
+  const isWorkspaceRoute = workspaceId !== DEFAULT_WORKSPACE_ID
   const linkTo = {
-    type: locationType === REPORT || workspaceId === DEFAULT_WORKSPACE_ID ? HOME : WORKSPACE,
-    payload: cleanReportPayload(locationPayload),
+    type: isWorkspaceRoute ? WORKSPACE : HOME,
+    payload: {
+      ...cleanReportPayload(locationPayload),
+      ...(isWorkspaceRoute && { category: workspaceCategory, workspaceId }),
+    },
     query: cleanReportQuery(locationQuery),
   }
 

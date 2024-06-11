@@ -16,8 +16,8 @@ describe('Save a workspace', () => {
 
   it('Should create and delete a workspace', () => {
     cy.getBySel('save-workspace-button').click()
-    cy.getBySel('create-workspace-input').clear()
-    cy.getBySel('create-workspace-input').type(WORKSPACE_NAME)
+    cy.getBySel('create-workspace-name').clear()
+    cy.getBySel('create-workspace-name').type(WORKSPACE_NAME)
     cy.getBySel('create-workspace-button').click()
     getWorkspaceTitle().should('contain', WORKSPACE_NAME)
     cy.getBySel(SIDEBAR_USER_BUTTON).click()
