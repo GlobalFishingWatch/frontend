@@ -21,6 +21,7 @@ import {
   BASEMAP_DATAVIEW_INSTANCE_ID,
   FIXED_SAR_INFRASTRUCTURE,
   DEFAULT_WORKSPACE_CATEGORY,
+  ENCOUNTER_EVENTS_30MIN_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -108,7 +109,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'context-layer-graticules',
       config: {
-        visible: true,
+        visible: false,
       },
       dataviewId: GRATICULES_DATAVIEW_SLUG,
     },
@@ -133,6 +134,15 @@ const workspace: Workspace<WorkspaceState> = {
         colorRamp: 'seance',
       },
       dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    },
+    {
+      id: 'proto-global-encounters-events-30min',
+      config: {
+        visible: true,
+        color: '#FAE9A0',
+        datasets: ['proto-global-encounters-events-30min:v3.0'],
+      },
+      dataviewId: ENCOUNTER_EVENTS_30MIN_DATAVIEW_SLUG,
     },
     {
       id: BASEMAP_DATAVIEW_INSTANCE_ID,
