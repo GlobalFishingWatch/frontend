@@ -31,7 +31,7 @@ import {
   HEATMAP_API_TILES_URL,
   FOURWINGS_MAX_ZOOM,
   getInterval,
-  MAX_RAMP_VALUES_PER_TILE,
+  MAX_RAMP_VALUES,
 } from '../fourwings.config'
 import {
   FourwingsDeckSublayer,
@@ -111,7 +111,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return this.getColorDomain()
     }
     const dataSample =
-      currentZoomData.length > MAX_RAMP_VALUES_PER_TILE
+      currentZoomData.length > MAX_RAMP_VALUES
         ? currentZoomData.filter((d, i) => filterCells(d, i))
         : currentZoomData
 
@@ -120,7 +120,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       let allValues: [number[], number[]] = [[], []]
       dataSample.forEach((feature) => {
         feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
-          allValues[sublayerIndex].push(...sublayerValues.filter((d, i) => filterCells(d, i)))
+          allValues[sublayerIndex].push(...sublayerValues.filter(Boolean))
         })
       })
       if (!allValues.length) {

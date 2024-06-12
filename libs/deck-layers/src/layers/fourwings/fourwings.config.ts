@@ -29,7 +29,7 @@ export const FOURWINGS_MAX_ZOOM = 12
 export const MAX_POSITIONS_PER_TILE_SUPPORTED = 10000
 export const POSITIONS_VISUALIZATION_MAX_ZOOM = 9
 
-export const MAX_RAMP_VALUES_PER_TILE = 1000
+export const MAX_RAMP_VALUES = 10000
 
 export const DEFAULT_FOURWINGS_INTERVALS: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
 export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']
