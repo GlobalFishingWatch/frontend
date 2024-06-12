@@ -31,7 +31,7 @@ function MapPopups() {
           <PopupByCategory interaction={hoverInteraction} type="hover" />
         </PopupWrapper>
       )}
-      {clickInteraction && (
+      {clickInteraction && clickInteraction?.features?.length && (
         <PopupWrapper
           latitude={clickInteraction.latitude}
           longitude={clickInteraction.longitude}

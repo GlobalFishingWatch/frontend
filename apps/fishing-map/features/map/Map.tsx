@@ -18,7 +18,7 @@ import {
   useMapMouseClick,
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
-import ErrorNotification from 'features/map/overlays/error-notification/ErrorNotification'
+import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
@@ -114,11 +114,11 @@ const MapWrapper = () => {
         onDragEnd={onMapDragEnd}
       >
         <MapAnnotations />
-        <MapAnnotationsDialog />
-        <ErrorNotification />
       </DeckGL>
       {isMapDrawing && <DrawDialog />}
       <MapPopups />
+      <ErrorNotificationDialog />
+      <MapAnnotationsDialog />
       <CoordinateEditOverlay />
       {/* TODO in deck.gl to get the mapLoading state */}
       <MapControls onMouseEnter={resetHoverState} mapLoading={mapLoading} />
