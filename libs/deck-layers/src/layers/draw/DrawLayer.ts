@@ -101,6 +101,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     }
   }
 
+  setData = (data: FeatureCollection) => {
+    return this.setState({ data })
+  }
+
   getData = () => {
     return this.state?.data
   }
@@ -151,8 +155,8 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     }
   }
 
-  setDrawingMode = () => {
-    this.setState({ mode: this._getDrawingMode() })
+  setMode = (mode: 'modify' | 'draw' = 'draw') => {
+    this.setState({ mode: mode === 'modify' ? new CustomModifyMode() : this._getDrawingMode() })
   }
 
   onEdit = (editAction: EditAction<FeatureCollection>) => {

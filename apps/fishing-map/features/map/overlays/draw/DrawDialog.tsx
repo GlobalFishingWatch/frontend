@@ -56,6 +56,23 @@ function MapDraw() {
     }
   }, [dispatch, mapDrawEditDataset])
 
+  useEffect(() => {
+    if (
+      drawLayer &&
+      mapDrawEditDataset &&
+      mapDrawEditGeometry?.status === AsyncReducerStatus.Finished
+    ) {
+      drawLayer.setData(mapDrawEditGeometry?.data as any)
+      drawLayer.setMode('modify')
+    }
+  }, [
+    dispatch,
+    drawLayer,
+    mapDrawEditDataset,
+    mapDrawEditGeometry?.data,
+    mapDrawEditGeometry?.status,
+  ])
+
   const onInputChange = useCallback(
     (e: any) => {
       setLayerName(e.target.value)
@@ -186,7 +203,7 @@ function MapDraw() {
       />
       <IconButton
         icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
-        onClick={drawLayer?.setDrawingMode}
+        onClick={() => drawLayer?.setMode('draw')}
       />
       <IconButton
         type="warning"

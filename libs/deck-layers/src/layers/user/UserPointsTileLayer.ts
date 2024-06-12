@@ -149,7 +149,6 @@ export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
       })
     })
     if (highlightedFeatures?.length) {
-      console.log('🚀 ~ renderLayers ~ highlightedFeatures:', highlightedFeatures)
       renderLayers.push(
         new ScatterplotLayer<GeoJsonProperties, { data: any }>(this.props, {
           id: `${this.props.id}-highlight-points`,
