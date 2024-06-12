@@ -102,7 +102,9 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   }
 
   setData = (data: FeatureCollection) => {
-    return this.setState({ data })
+    if (data && this.state) {
+      return this.setState({ data })
+    }
   }
 
   getData = () => {
@@ -121,23 +123,27 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   }
 
   reset = () => {
-    this.setState({
-      data: INITIAL_FEATURE_COLLECTION,
-      selectedFeatureIndexes: [],
-      mode: this._getDrawingMode(),
-      hasTentativeOverlappingFeatures: false,
-    })
+    if (this.state) {
+      this.setState({
+        data: INITIAL_FEATURE_COLLECTION,
+        selectedFeatureIndexes: [],
+        mode: this._getDrawingMode(),
+        hasTentativeOverlappingFeatures: false,
+      })
+    }
   }
 
   deleteSelectedFeature = () => {
     const { data, selectedFeatureIndexes } = this.state
     const features = data.features.filter((_, index) => !selectedFeatureIndexes?.includes(index))
-    this.setState({
-      data: { ...data, features },
-      selectedFeatureIndexes: [],
-      hasTentativeOverlappingFeatures: false,
-      mode: new CustomViewMode(),
-    })
+    if (this.state) {
+      this.setState({
+        data: { ...data, features },
+        selectedFeatureIndexes: [],
+        hasTentativeOverlappingFeatures: false,
+        mode: new CustomViewMode(),
+      })
+    }
   }
 
   getPickingInfo({ info }: { info: PickingInfo }): DrawPickingInfo {
@@ -156,7 +162,9 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   }
 
   setMode = (mode: 'modify' | 'draw' = 'draw') => {
-    this.setState({ mode: mode === 'modify' ? new CustomModifyMode() : this._getDrawingMode() })
+    if (this.state) {
+      this.setState({ mode: mode === 'modify' ? new CustomModifyMode() : this._getDrawingMode() })
+    }
   }
 
   onEdit = (editAction: EditAction<FeatureCollection>) => {

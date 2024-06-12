@@ -114,12 +114,12 @@ const MapWrapper = () => {
         onDragEnd={onMapDragEnd}
       >
         <MapAnnotations />
-        <CoordinateEditOverlay />
         <MapAnnotationsDialog />
         <ErrorNotification />
       </DeckGL>
       {isMapDrawing && <DrawDialog />}
       <MapPopups />
+      <CoordinateEditOverlay />
       {/* TODO in deck.gl to get the mapLoading state */}
       <MapControls onMouseEnter={resetHoverState} mapLoading={mapLoading} />
       {isWorkspace && !reportLocation && (
