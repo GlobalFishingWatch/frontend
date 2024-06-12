@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
 import MemoryStatsComponent from 'next-react-memory-stats'
+import { ToastContainer } from 'react-toastify'
 import { FpsView } from 'react-fps'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
@@ -60,8 +61,9 @@ import ErrorBoundary from 'features/app/ErrorBoundary'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
-import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
+import styles from './App.module.css'
+import 'react-toastify/dist/ReactToastify.min.css'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
 const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
@@ -291,6 +293,11 @@ function App() {
           />
         )}
         <AppModals />
+        <ToastContainer
+          position="top-center"
+          className={styles.toastContainer}
+          closeButton={false}
+        />
       </ErrorBoundary>
     </Fragment>
   )

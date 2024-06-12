@@ -713,6 +713,9 @@
     "tracks": "Tracks",
     "tracksDisabled": "Select at least one vessel"
   },
+  "toasts": {
+    "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
+  },
   "user": {
     "datasets": "User datasets",
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",

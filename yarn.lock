@@ -3433,6 +3433,7 @@ __metadata:
     react-redux: "npm:^9.1.0"
     react-spring: "npm:^9.7.3"
     react-sticky-el: "npm:2.1.0"
+    react-toastify: "npm:^10.0.5"
     react-virtualized-auto-sizer: "npm:^1.0.20"
     react-virtuoso: "npm:4.6.2"
     react-window: "npm:^1.8.10"
@@ -23016,6 +23017,18 @@ __metadata:
     react: ">=16.3.0"
     react-dom: ">=16.3.0"
   checksum: 10/da0689e16c7c9a2799041da5e3dc4b4abb91999b0cc291f9d34fddb1a1b1304fadbf1b3f9dc8431c4174cd507ca2b72f6d864155663ec09a997c56f7a90ec1ae
+  languageName: node
+  linkType: hard
+
+"react-toastify@npm:^10.0.5":
+  version: 10.0.5
+  resolution: "react-toastify@npm:10.0.5"
+  dependencies:
+    clsx: "npm:^2.1.0"
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  checksum: 10/6630f4b6d6902d827efd5e66c09df693c7ab8abeeb6ef24d880080f47b636614ef9cc251dd5e6564d49fe2f6f25f720ce0f7ef72cd4b0cd58a65b7c4b8052fac
   languageName: node
   linkType: hard
 
