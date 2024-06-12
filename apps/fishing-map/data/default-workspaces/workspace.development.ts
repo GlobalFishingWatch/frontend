@@ -21,6 +21,7 @@ import {
   BASEMAP_DATAVIEW_INSTANCE_ID,
   FIXED_SAR_INFRASTRUCTURE,
   DEFAULT_WORKSPACE_CATEGORY,
+  FIXED_SAR_INFRASTRUCTURE_V2,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -133,6 +134,15 @@ const workspace: Workspace<WorkspaceState> = {
         colorRamp: 'seance',
       },
       dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    },
+    {
+      id: 'fixed-sar-infrastructure-v2',
+      config: {
+        visible: true,
+        color: '#FFEA00',
+        datasets: ['public-fixed-infrastructure-v2'],
+      },
+      dataviewId: FIXED_SAR_INFRASTRUCTURE_V2,
     },
     {
       id: BASEMAP_DATAVIEW_INSTANCE_ID,
