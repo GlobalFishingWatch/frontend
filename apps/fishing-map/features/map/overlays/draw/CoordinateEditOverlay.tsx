@@ -15,19 +15,15 @@ export const CoordinateEditOverlay = () => {
   const [newPointLatitude, setNewPointLatitude] = useState<number | string | null>(null)
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
 
-  const currentPointIndex = drawLayer?.getSelectedFeatureIndexes()?.[0] as number
   const drawData = drawLayer?.getData()
-  const currentPointCoordinates =
-    drawData?.features[currentPointIndex]?.geometry.type === 'Point'
-      ? drawData?.features[currentPointIndex]?.geometry?.coordinates
-      : null
+  const currentPointCoordinates = drawLayer?.getSelectedPointCoordinates()
   const editingPointLatitude =
     newPointLatitude !== null ? Number(newPointLatitude) : Number(currentPointCoordinates?.[1])
   const editingPointLongitude =
     newPointLongitude !== null ? Number(newPointLongitude) : Number(currentPointCoordinates?.[0])
 
   const allowDeletePoint =
-    drawingMode === 'polygons' ? drawData && drawData?.features.length > 3 : true
+    drawData && drawData?.features.length > (drawingMode === 'polygons' ? 3 : 0)
 
   const onHandleLatitudeChange = useCallback(
     (e: any) => {
@@ -35,12 +31,13 @@ export const CoordinateEditOverlay = () => {
         const latitude = parseFloat(e.target.value)
         if (latitude > -90 && latitude < 90) {
           setNewPointLatitude(latitude)
+          drawLayer?.setTentativeCurrentPointCoordinates([editingPointLongitude, latitude])
         }
       } else {
         setNewPointLatitude('')
       }
     },
-    [setNewPointLatitude]
+    [drawLayer, editingPointLongitude]
   )
 
   const onHandleLongitudeChange = useCallback(
@@ -49,48 +46,40 @@ export const CoordinateEditOverlay = () => {
         const longitude = parseFloat(e.target.value)
         if (longitude > -180 && longitude < 180) {
           setNewPointLongitude(longitude)
+          drawLayer?.setTentativeCurrentPointCoordinates([longitude, editingPointLatitude])
         }
       } else {
         setNewPointLongitude('')
       }
     },
-    [setNewPointLongitude]
+    [drawLayer, editingPointLatitude]
   )
 
   const onDeletePoint = useCallback(() => {
     drawLayer?.deleteSelectedFeature()
   }, [drawLayer])
 
+  const resetEditingPoint = useCallback(() => {
+    setNewPointLatitude(null)
+    setNewPointLongitude(null)
+    drawLayer?.resetSelectedPoint()
+  }, [drawLayer])
+
   const onConfirm = useCallback(() => {
-    console.log('TODO')
-    // if (drawData) {
-    //   const data = {
-    //     ...drawData,
-    //     features: drawData.features.map((feature, index) => {
-    //       const featureToUpdate = index === currentPointIndex
-    //       return featureToUpdate
-    //         ? {
-    //             ...feature,
-    //             geometry: {
-    //               ...feature.geometry,
-    //               coordinates: feature.geometry.coordinates[0].map((c, i) =>
-    //                 i === updatedPoint?.index ? [editingPointLongitude, editingPointLatitude] : c
-    //               ),
-    //             },
-    //           }
-    //         : feature
-    //     }),
-    //   }
-    //   console.log(data)
-    // }
-  }, [])
+    drawLayer?.setCurrentPointCoordinates([editingPointLongitude, editingPointLatitude])
+    drawLayer?.resetSelectedPoint()
+  }, [drawLayer, editingPointLatitude, editingPointLongitude])
 
   if (!currentPointCoordinates?.length) {
     return null
   }
 
   return (
-    <PopupWrapper latitude={editingPointLongitude} longitude={editingPointLatitude}>
+    <PopupWrapper
+      latitude={editingPointLatitude}
+      longitude={editingPointLongitude}
+      onClose={resetEditingPoint}
+    >
       <div className={styles.popupContent}>
         <div className={styles.flex}>
           <InputText
@@ -99,14 +88,14 @@ export const CoordinateEditOverlay = () => {
             value={editingPointLatitude}
             label={t('common.latitude', 'Latitude')}
             onChange={onHandleLatitudeChange}
-            className={styles.shortInput}
+            className={styles.coordinateInput}
           />
           <InputText
             step="0.01"
             type="number"
-            className={styles.shortInput}
             value={editingPointLongitude}
             label={t('common.longitude', 'longitude')}
+            className={styles.coordinateInput}
             onChange={onHandleLongitudeChange}
           />
         </div>

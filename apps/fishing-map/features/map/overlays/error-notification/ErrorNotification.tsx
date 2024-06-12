@@ -87,7 +87,6 @@ const ErrorNotification = (): React.ReactNode | null => {
     setSuccess(false)
   }
 
-  console.log('🚀 ~ ErrorNotification ~ errorNotification:', errorNotification)
   if (!errorNotification) {
     return null
   }

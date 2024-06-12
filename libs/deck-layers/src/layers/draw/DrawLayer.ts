@@ -8,6 +8,7 @@ import {
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { CompositeLayer, LayerContext, PickingInfo } from '@deck.gl/core'
 import kinks from '@turf/kinks'
+import { Position } from 'geojson'
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
 import { DeckLayerCategory } from '../../types'
 import { DrawPickingInfo, DrawPickingObject } from './draw.types'
@@ -18,6 +19,7 @@ import {
   CustomViewMode,
   DrawLayerMode,
 } from './draw.modes'
+import { updateFeatureCoordinateByIndex } from './draw.utils'
 
 type Color = [number, number, number, number]
 const FILL_COLOR: Color = [189, 189, 189, 25]
@@ -73,8 +75,10 @@ const INITIAL_FEATURE_COLLECTION: FeatureCollection = {
 }
 export type DrawLayerState = {
   data: FeatureCollection
+  tentativeData?: FeatureCollection
   mode: DrawLayerMode
   selectedFeatureIndexes?: number[]
+  selectedCoordinateIndex?: number
   hasTentativeOverlappingFeatures: boolean
 }
 
@@ -89,6 +93,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   isTranslating = false
   isMoving = false
 
+  _getModifyMode = () => {
+    // return new CustomModifyMode()
+    return new CompositeMode([new CustomModifyMode(), new TranslateMode()])
+  }
 
   _getDrawingMode = () => {
     return this.props.featureType === 'points'
@@ -102,6 +110,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       mode: this._getDrawingMode(),
       data: INITIAL_FEATURE_COLLECTION,
       selectedFeatureIndexes: [],
+      selectedCoordinateIndex: undefined,
       hasTentativeOverlappingFeatures: false,
     }
   }
@@ -127,13 +136,74 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     return this.state?.selectedFeatureIndexes
   }
 
+  getSelectedCoordinateIndex = () => {
+    return this.state?.selectedCoordinateIndex
+  }
+
+  getSelectedPointCoordinates = () => {
+    const data = this.getData()
+    const currentFeatureIndex = this?.getSelectedFeatureIndexes()?.[0]
+    const currentPointIndex = this?.getSelectedCoordinateIndex()
+    let currentPointCoordinates: Position | undefined = []
+    if (
+      data?.features.length &&
+      currentFeatureIndex !== undefined &&
+      currentPointIndex !== undefined
+    ) {
+      currentPointCoordinates = (
+        data?.features[currentFeatureIndex]?.geometry.type === 'Point'
+          ? data?.features[currentPointIndex]?.geometry?.coordinates
+          : data?.features[currentFeatureIndex]?.geometry?.coordinates[currentPointIndex]
+      ) as Position
+    }
+    return currentPointCoordinates
+  }
+
+  getFeaturesWithCustomPointCoordinates = (pointPosition: [number, number]) => {
+    const data = this.getData()
+    const featureIndex = this?.getSelectedFeatureIndexes()?.[0]
+    const coordinateIndex = this?.getSelectedCoordinateIndex()
+    if (data?.features?.length && featureIndex !== undefined && coordinateIndex !== undefined) {
+      const features = updateFeatureCoordinateByIndex(data?.features, {
+        featureIndex,
+        coordinateIndex,
+        pointPosition,
+      })
+      return features
+    }
+    return data?.features
+  }
+
+  setCurrentPointCoordinates = (pointPosition: [number, number]) => {
+    const data = this.getData()
+    const features = this.getFeaturesWithCustomPointCoordinates(pointPosition)
+    this.setState({ data: { ...data, features } })
+  }
+
+  setTentativeCurrentPointCoordinates = (pointPosition: [number, number]) => {
+    const data = this.getData()
+    const features = this.getFeaturesWithCustomPointCoordinates(pointPosition)
+    this.setState({ tentativeData: { ...data, features } })
+  }
+
   reset = () => {
     if (this.state) {
       this.setState({
         data: INITIAL_FEATURE_COLLECTION,
+        tentativeData: undefined,
         selectedFeatureIndexes: [],
         mode: this._getDrawingMode(),
         hasTentativeOverlappingFeatures: false,
+      })
+    }
+  }
+
+  resetSelectedPoint = () => {
+    if (this.state) {
+      this.setState({
+        tentativeData: undefined,
+        selectedFeatureIndexes: [],
+        selectedCoordinateIndex: undefined,
       })
     }
   }
@@ -180,8 +250,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       case 'addFeature': {
         this.setState({
           data: getDrawDataParsed(updatedData, featureType),
+          tentativeData: undefined,
           mode: this._getModifyMode(),
           selectedFeatureIndexes: editContext.featureIndexes,
+          selectedCoordinateIndex: undefined,
           hasTentativeOverlappingFeatures: false,
         })
         break
@@ -202,10 +274,15 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         break
       }
       case 'customClickInFeature': {
+        let selectedCoordinateIndex = this.state.selectedCoordinateIndex
+        if (featureType === 'points') {
+          selectedCoordinateIndex = 0
+        }
         this.setState({
           data: updatedData,
           mode: this._getModifyMode(),
           selectedFeatureIndexes: editContext.featureIndexes,
+          selectedCoordinateIndex,
         })
         break
       }
@@ -249,13 +326,14 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   }
 
   renderLayers() {
-    const { data, mode, selectedFeatureIndexes, hasTentativeOverlappingFeatures } = this.state
+    const { data, tentativeData, mode, selectedFeatureIndexes, hasTentativeOverlappingFeatures } =
+      this.state
     const { featureType } = this.props
 
     const layer = [
       new EditableGeoJsonLayer({
         id: 'draw',
-        data,
+        data: tentativeData || data,
         mode,
         onEdit: this.onEdit,
         selectedFeatureIndexes,

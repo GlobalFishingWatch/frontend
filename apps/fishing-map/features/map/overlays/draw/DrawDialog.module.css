@@ -54,11 +54,11 @@
   min-width: 15rem;
 }
 
-.shortInput {
-  width: 12rem;
+.coordinateInput {
+  min-width: 15rem;
 }
 
-.shortInput + .shortInput {
+.coordinateInput + .coordinateInput {
   margin-left: var(--space-M);
 }
 
