@@ -124,6 +124,9 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
         'fs:DECKGL_FILTER_COLOR': `
           vec2 uv = abs(geometry.uv);
           int shape = int(vShape);
+          if (vStart > highlightStartTime && vEnd < highlightEndTime) {
+            color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
+          }
           if (shape == SHAPE_SQUARE) {
             if (uv.x > 0.7 || uv.y > 0.7) {
               color = vec4(0,0,0,0);
@@ -136,9 +139,6 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
             if (uv.x + uv.y > 1.0 || uv.x + uv.y < 0.7) {
               color = vec4(0,0,0,0);
             }
-          }
-          if (vStart > highlightStartTime && vEnd < highlightEndTime) {
-            color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
           }
         `,
       },
