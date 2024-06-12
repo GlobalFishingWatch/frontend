@@ -63,3 +63,35 @@ export const updateFeatureCoordinateByIndex = (
     return feature
   }) as FeatureCollection['features']
 }
+
+export const removeFeaturePointByIndex = (
+  feature: Feature<Polygon>,
+  coordinateIndex: number | undefined
+): Feature<Polygon> => {
+  if (coordinateIndex === undefined) {
+    return feature
+  }
+  return {
+    ...feature,
+    geometry: {
+      ...feature.geometry,
+      coordinates: feature.geometry.coordinates.map((coordinates) => {
+        const coordinatesLength = coordinates.length - 1
+        const isFirstCoordinate = coordinateIndex === 0
+        const isLastCoordinate = coordinateIndex === coordinatesLength
+        return coordinates
+          .filter((point, index) => {
+            return index !== coordinateIndex
+          })
+          .map((point, index, coordinates) => {
+            if (isFirstCoordinate && index === coordinatesLength - 1) {
+              return coordinates[1]
+            } else if (isLastCoordinate && index === 0) {
+              return coordinates[coordinatesLength - 1]
+            }
+            return point
+          })
+      }),
+    },
+  } as Feature<Polygon>
+}

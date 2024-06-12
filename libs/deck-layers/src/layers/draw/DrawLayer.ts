@@ -8,7 +8,7 @@ import {
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { CompositeLayer, LayerContext, PickingInfo } from '@deck.gl/core'
 import kinks from '@turf/kinks'
-import { Position } from 'geojson'
+import { Feature, Point, Polygon, Position } from 'geojson'
 import { COLOR_HIGHLIGHT_LINE, LayerGroup, getLayerGroupOffset } from '../../utils'
 import { DeckLayerCategory } from '../../types'
 import { DrawPickingInfo, DrawPickingObject } from './draw.types'
@@ -19,7 +19,7 @@ import {
   CustomViewMode,
   DrawLayerMode,
 } from './draw.modes'
-import { updateFeatureCoordinateByIndex } from './draw.utils'
+import { removeFeaturePointByIndex, updateFeatureCoordinateByIndex } from './draw.utils'
 
 type Color = [number, number, number, number]
 const FILL_COLOR: Color = [189, 189, 189, 25]
@@ -152,8 +152,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     ) {
       currentPointCoordinates = (
         data?.features[currentFeatureIndex]?.geometry.type === 'Point'
-          ? data?.features[currentPointIndex]?.geometry?.coordinates
-          : data?.features[currentFeatureIndex]?.geometry?.coordinates[currentPointIndex]
+          ? (data?.features as Feature<Point>[])[currentPointIndex]?.geometry?.coordinates
+          : (data?.features as Feature<Polygon>[])[currentFeatureIndex]?.geometry?.coordinates[0][
+              currentPointIndex
+            ]
       ) as Position
     }
     return currentPointCoordinates
@@ -209,8 +211,23 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   }
 
   deleteSelectedFeature = () => {
-    const { data, selectedFeatureIndexes } = this.state
-    const features = data.features.filter((_, index) => !selectedFeatureIndexes?.includes(index))
+    const { data, selectedFeatureIndexes, selectedCoordinateIndex } = this.state
+    // const newData = new ImmutableFeatureCollection(data)
+    // selectedFeatureIndexes?.forEach((index) => {
+    //   newData.removePosition(index as number, selectedCoordinateIndex).getObject()
+    // })
+    const { featureType } = this.props
+    const features =
+      featureType === 'points'
+        ? data.features.filter((_, index) => !selectedFeatureIndexes?.includes(index))
+        : data.features.map((feature, index) => {
+            if (selectedFeatureIndexes?.includes(index)) {
+              // TODO:draw find the correct index
+              return removeFeaturePointByIndex(feature as Feature<Polygon>, 1)
+            }
+            return feature
+          })
+    console.log('🚀 ~ deleteSelectedFeature ~ features:', features[0])
     if (this.state) {
       this.setState({
         data: { ...data, features },
@@ -283,6 +300,15 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
           mode: this._getModifyMode(),
           selectedFeatureIndexes: editContext.featureIndexes,
           selectedCoordinateIndex,
+        })
+        break
+      }
+      // default action for clicking on a polygon corner, used for us to select the point and update manually
+      case 'removePosition': {
+        this.setState({
+          selectedFeatureIndexes: editContext.featureIndexes,
+          selectedCoordinateIndex:
+            editContext.positionIndexes[editContext.positionIndexes.length - 1],
         })
         break
       }

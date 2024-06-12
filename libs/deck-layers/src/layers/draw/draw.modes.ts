@@ -7,6 +7,7 @@ import {
   ModifyMode,
   ViewMode,
 } from '@deck.gl-community/editable-layers'
+import uniqBy from 'lodash/uniqBy'
 
 export type DrawLayerMode =
   | CustomDrawPolygonMode
@@ -46,9 +47,12 @@ export class CustomModifyMode extends ModifyMode {
   handleClick(event: ClickEvent, props: ModeProps<FeatureCollection>) {
     event.sourceEvent.preventDefault()
     if (event.picks.length) {
-      const geometryPicks = event.picks.filter((p) => !p.isGuide)
+      const geometryPicks = uniqBy(
+        event.picks.filter((p) => !p.isGuide),
+        'index'
+      )
       const hasDifferentSelectedIndex =
-        props.selectedIndexes.length !== geometryPicks.length ||
+        props.selectedIndexes?.length !== geometryPicks.length ||
         geometryPicks.some((pick) => {
           return !props.selectedIndexes.includes(pick.index)
         })

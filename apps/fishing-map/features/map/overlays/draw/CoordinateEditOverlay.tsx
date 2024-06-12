@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { Feature, Polygon } from 'geojson'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { selectMapDrawingMode } from 'routes/routes.selectors'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
@@ -16,6 +17,7 @@ export const CoordinateEditOverlay = () => {
   const [newPointLongitude, setNewPointLongitude] = useState<number | string | null>(null)
 
   const drawData = drawLayer?.getData()
+  const currentFeatureIndexes = drawLayer?.getSelectedFeatureIndexes()
   const currentPointCoordinates = drawLayer?.getSelectedPointCoordinates()
   const editingPointLatitude =
     newPointLatitude !== null ? Number(newPointLatitude) : Number(currentPointCoordinates?.[1])
@@ -23,7 +25,13 @@ export const CoordinateEditOverlay = () => {
     newPointLongitude !== null ? Number(newPointLongitude) : Number(currentPointCoordinates?.[0])
 
   const allowDeletePoint =
-    drawData && drawData?.features.length > (drawingMode === 'polygons' ? 3 : 0)
+    drawingMode === 'polygons'
+      ? drawData &&
+        currentFeatureIndexes?.every(
+          (index) =>
+            (drawData?.features as Feature<Polygon>[])[index].geometry.coordinates[0].length > 3
+        )
+      : true
 
   const onHandleLatitudeChange = useCallback(
     (e: any) => {
@@ -56,8 +64,10 @@ export const CoordinateEditOverlay = () => {
   )
 
   const onDeletePoint = useCallback(() => {
-    drawLayer?.deleteSelectedFeature()
-  }, [drawLayer])
+    if (allowDeletePoint) {
+      drawLayer?.deleteSelectedFeature()
+    }
+  }, [allowDeletePoint, drawLayer])
 
   const resetEditingPoint = useCallback(() => {
     setNewPointLatitude(null)
@@ -104,7 +114,7 @@ export const CoordinateEditOverlay = () => {
             icon="delete"
             type="warning-border"
             onClick={onDeletePoint}
-            disabled={false}
+            disabled={!allowDeletePoint}
             tooltip={
               allowDeletePoint
                 ? t('layer.removePoint', 'Remove point')
