@@ -46,9 +46,12 @@ export class CustomModifyMode extends ModifyMode {
   handleClick(event: ClickEvent, props: ModeProps<FeatureCollection>) {
     event.sourceEvent.preventDefault()
     if (event.picks.length) {
-      const hasDifferentSelectedIndex = event.picks.some((pick) => {
-        return !props.selectedIndexes.includes(pick.index)
-      })
+      const geometryPicks = event.picks.filter((p) => !p.isGuide)
+      const hasDifferentSelectedIndex =
+        props.selectedIndexes.length !== geometryPicks.length ||
+        geometryPicks.some((pick) => {
+          return !props.selectedIndexes.includes(pick.index)
+        })
       if (hasDifferentSelectedIndex) {
         props.onEdit({
           updatedData: props.data,

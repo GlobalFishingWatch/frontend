@@ -2,6 +2,8 @@ import {
   EditableGeoJsonLayer,
   FeatureCollection,
   EditAction,
+  CompositeMode,
+  TranslateMode,
 } from '@deck.gl-community/editable-layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { CompositeLayer, LayerContext, PickingInfo } from '@deck.gl/core'
@@ -84,6 +86,9 @@ export type DrawLayerProps = {
 export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   static layerName = 'draw-layer'
   state!: DrawLayerState
+  isTranslating = false
+  isMoving = false
+
 
   _getDrawingMode = () => {
     return this.props.featureType === 'points'
@@ -163,7 +168,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
 
   setMode = (mode: 'modify' | 'draw' = 'draw') => {
     if (this.state) {
-      this.setState({ mode: mode === 'modify' ? new CustomModifyMode() : this._getDrawingMode() })
+      this.setState({ mode: mode === 'modify' ? this._getModifyMode() : this._getDrawingMode() })
     }
   }
 
@@ -171,10 +176,11 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     const { updatedData, editType, editContext } = editAction
     const { featureType } = this.props
     switch (editType) {
+      case 'addPosition':
       case 'addFeature': {
         this.setState({
           data: getDrawDataParsed(updatedData, featureType),
-          mode: new CustomModifyMode(),
+          mode: this._getModifyMode(),
           selectedFeatureIndexes: editContext.featureIndexes,
           hasTentativeOverlappingFeatures: false,
         })
@@ -182,6 +188,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       }
       case 'customUpdateSelectedIndexes': {
         this.setState({
+          data: getDrawDataParsed(updatedData, featureType),
           selectedFeatureIndexes: editContext.featureIndexes,
         })
         break
@@ -197,15 +204,35 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       case 'customClickInFeature': {
         this.setState({
           data: updatedData,
-          mode: new CustomModifyMode(),
+          mode: this._getModifyMode(),
           selectedFeatureIndexes: editContext.featureIndexes,
         })
         break
       }
+      case 'translated': {
+        this.isTranslating = false
+        break
+      }
+      case 'finishMovePosition': {
+        this.isMoving = false
+        break
+      }
+      case 'translating': {
+        this.isTranslating = !this.isMoving
+        if (!this.isMoving) {
+          this.setState({
+            data: getDrawDataParsed(updatedData, featureType),
+          })
+        }
+        break
+      }
       case 'movePosition': {
-        this.setState({
-          data: getDrawDataParsed(updatedData, featureType),
-        })
+        this.isMoving = true
+        if (!this.isTranslating) {
+          this.setState({
+            data: getDrawDataParsed(updatedData, featureType),
+          })
+        }
         break
       }
       case 'updateTentativeFeature': {
