@@ -146,6 +146,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
 
   const closeExpandedContainer = () => {
     setColorOpen(false)
+    setFiltersOpen(false)
     setInfoOpen(false)
   }
 
