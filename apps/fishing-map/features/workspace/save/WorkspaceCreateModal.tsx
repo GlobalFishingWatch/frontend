@@ -13,7 +13,6 @@ import {
 import { saveWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
-import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -24,22 +23,20 @@ import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.work
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
 import { useSaveWorkspaceModalConnect } from './workspace-save.hooks'
-import { getEditAccessOptionsByViewAccess, getViewAccessOptions } from './workspace-access.utils'
+import {
+  formatTimerangeBoundary,
+  getEditAccessOptionsByViewAccess,
+  getTimeRangeOptions,
+  getViewAccessOptions,
+} from './workspace-access.utils'
+
+const DAYS_FROM_LATEST_MIN = 1
+const DAYS_FROM_LATEST_MAX = 100
 
 type CreateWorkspaceModalProps = {
   title?: string
   onFinish?: (workspace: AppWorkspace) => void
   suggestName?: boolean
-}
-
-const formatTimerangeBoundary = (
-  boundary: string | undefined,
-  dateFormat: Intl.DateTimeFormatOptions
-) => {
-  if (!boundary) return ''
-  return formatI18nDate(boundary, {
-    format: dateFormat,
-  }).replace(/[.,]/g, '')
 }
 
 function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWorkspaceModalProps) {
@@ -63,6 +60,10 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
 
   const viewOptions = getViewAccessOptions()
   const editOptions = getEditAccessOptionsByViewAccess(viewAccess)
+  const timeRangeOptions = getTimeRangeOptions(timerange.start, timerange.end)
+  const [timeRangeOption, setTimeRangeOption] = useState(timeRangeOptions[0].id)
+  const [daysFromLatest, setDaysFromLatest] = useState<number>()
+
   const { workspaceModalOpen, dispatchWorkspaceModalOpen } =
     useSaveWorkspaceModalConnect('createWorkspace')
 
@@ -129,6 +130,7 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
       const properties = {
         name,
         description,
+        daysFromLatest,
         viewAccess,
         editAccess,
         createAsPublic: viewAccess !== WORKSPACE_PRIVATE_ACCESS,
@@ -154,6 +156,13 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
     }
   }
 
+  const handleSelectTimeRangeOption = (option: SelectOption) => {
+    setTimeRangeOption(option.id)
+    if (option.id === 'static') {
+      setDaysFromLatest(undefined)
+    }
+  }
+
   const handleSubmit = async (event: any) => {
     event.preventDefault()
     createWorkspace()
@@ -170,21 +179,45 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
       onClose={onClose}
     >
       <form onSubmit={handleSubmit}>
-        <InputText
-          value={name}
-          className={styles.input}
-          testId="create-workspace-name"
-          label={t('common.name', 'Name')}
-          onChange={(e) => setName(e.target.value)}
-          autoFocus
-        />
-        <InputText
-          value={description}
-          className={styles.input}
-          testId="create-workspace-input"
-          label={t('common.description', 'Description')}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+        <div className={styles.row}>
+          <InputText
+            value={name}
+            className={styles.input}
+            testId="create-workspace-name"
+            label={t('common.name', 'Name')}
+            onChange={(e) => setName(e.target.value)}
+            autoFocus
+          />
+          <InputText
+            value={description}
+            className={styles.input}
+            testId="create-workspace-input"
+            label={t('common.description', 'Description')}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className={styles.row}>
+          <Select
+            options={timeRangeOptions}
+            label={t('common.timerange', 'Time range')}
+            containerClassName={styles.select}
+            onSelect={handleSelectTimeRangeOption}
+            selectedOption={
+              timeRangeOptions.find((o) => o.id === timeRangeOption) || timeRangeOptions[0]
+            }
+          />
+          {timeRangeOption === 'dynamic' && (
+            <InputText
+              value={daysFromLatest}
+              type="number"
+              className={styles.select}
+              label={t('common.timerangeDaysFromLatest', 'Days from latest data update (1-100)')}
+              onChange={(e) => setDaysFromLatest(e.target.value as any)}
+              min={DAYS_FROM_LATEST_MIN}
+              max={DAYS_FROM_LATEST_MAX}
+            />
+          )}
+        </div>
         <div className={styles.row}>
           <Select
             options={viewOptions}
@@ -242,7 +275,13 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
           {error && <p className={styles.error}>{error}</p>}
           <Button
             loading={createLoading}
-            disabled={!name}
+            disabled={
+              !name ||
+              (timeRangeOption === 'dynamic' &&
+                (daysFromLatest === undefined ||
+                  daysFromLatest < DAYS_FROM_LATEST_MIN ||
+                  daysFromLatest > DAYS_FROM_LATEST_MAX))
+            }
             htmlType="submit"
             testId="create-workspace-button"
           >
