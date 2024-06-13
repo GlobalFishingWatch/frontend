@@ -62,7 +62,7 @@ function VesselsSection(): React.ReactElement {
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={styles.header}>
+      <div className={cx('print-hidden', styles.header)}>
         {dataviews.length > 1 && (
           <Switch
             active={someVesselsVisible}
@@ -71,7 +71,7 @@ function VesselsSection(): React.ReactElement {
             tooltipPlacement="top"
           />
         )}
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>
+        <h2 className={styles.sectionTitle}>
           {t('common.vessel_other', 'Vessels')}
           {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
         </h2>
