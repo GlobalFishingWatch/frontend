@@ -129,7 +129,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   getHasOverlappingFeatures = () => {
     return (
       this.state?.hasTentativeOverlappingFeatures ||
-      this.state?.data.features.some((feature: any) => feature.properties.hasOverlappingFeatures)
+      this.state?.data?.features?.some(
+        (feature: any) => feature.properties.hasOverlappingFeatures
+      ) ||
+      false
     )
   }
 
@@ -145,20 +148,20 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     const data = this.getData()
     const currentFeatureIndex = this?.getSelectedFeatureIndexes()?.[0]
     const currentPointIndexes = this?.getSelectedPositionIndexes()
-    let currentPointCoordinates: Position | undefined = []
+    let currentPointCoordinates: Position | undefined
     if (
-      data?.features.length &&
+      data?.features?.length &&
       currentFeatureIndex !== undefined &&
       currentPointIndexes !== undefined
     ) {
-      const currentPointIndex = currentPointIndexes?.[currentPointIndexes.length - 1] || 0
-      currentPointCoordinates = (
-        data?.features[currentFeatureIndex]?.geometry.type === 'Point'
-          ? (data?.features as Feature<Point>[])[currentPointIndex]?.geometry?.coordinates
-          : (data?.features as Feature<Polygon>[])[currentFeatureIndex]?.geometry?.coordinates[0][
-              currentPointIndex
-            ]
-      ) as Position
+      if (data?.features[currentFeatureIndex]?.geometry.type === 'Point') {
+        currentPointCoordinates = (data?.features as Feature<Point>[])[currentFeatureIndex]
+          ?.geometry.coordinates
+      } else {
+        const currentPointIndex = currentPointIndexes?.[currentPointIndexes.length - 1] || 0
+        currentPointCoordinates = (data?.features as Feature<Polygon>[])[currentFeatureIndex]
+          ?.geometry?.coordinates[0][currentPointIndex]
+      }
     }
     return currentPointCoordinates
   }
