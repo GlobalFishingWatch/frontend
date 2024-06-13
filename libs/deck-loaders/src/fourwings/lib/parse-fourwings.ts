@@ -38,17 +38,17 @@ export const getCellTimeseries = (
   // TODO ensure we use the UTC dates here to avoid the .ceil
   const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
   const timeRangeStartFrame =
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.start) - tileStartFrame
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start) - tileStartFrame
   const timeRangeEndFrame =
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange.end) - tileStartFrame
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.end) - tileStartFrame
 
   const timeRangeKey = getTimeRangeKey(timeRangeStartFrame, timeRangeEndFrame)
 
   const tileBBox: BBox = [
-    (tile.bbox as GeoBoundingBox).west,
-    (tile.bbox as GeoBoundingBox).south,
-    (tile.bbox as GeoBoundingBox).east,
-    (tile.bbox as GeoBoundingBox).north,
+    (tile?.bbox as GeoBoundingBox).west,
+    (tile?.bbox as GeoBoundingBox).south,
+    (tile?.bbox as GeoBoundingBox).east,
+    (tile?.bbox as GeoBoundingBox).north,
   ]
   const features = {} as Record<number, FourwingsFeature>
   const sublayersLength = intArrays.length
@@ -97,7 +97,7 @@ export const getCellTimeseries = (
               row,
               values: new Array(sublayersLength),
               dates: new Array(sublayersLength),
-              cellId: generateUniqueId(tile.index.x, tile.index.y, cellNum),
+              cellId: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
               cellNum,
               startOffsets: new Array(sublayersLength),
               initialValues: { [timeRangeKey]: new Array(sublayersLength) },

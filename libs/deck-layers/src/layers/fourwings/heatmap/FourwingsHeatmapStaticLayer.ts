@@ -31,11 +31,7 @@ import {
   getSteps,
   rgbaStringToComponents,
 } from '../../../utils'
-import {
-  FOURWINGS_MAX_ZOOM,
-  HEATMAP_API_TILES_URL,
-  MAX_RAMP_VALUES_PER_TILE,
-} from '../fourwings.config'
+import { FOURWINGS_MAX_ZOOM, HEATMAP_API_TILES_URL, MAX_RAMP_VALUES } from '../fourwings.config'
 import { EMPTY_CELL_COLOR, filterCells } from './fourwings-heatmap.utils'
 import {
   FourwingsAggregationOperation,
@@ -90,7 +86,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     }
     const values = currentZoomData.flatMap((d) => d.properties?.count || [])
     const allValues =
-      values.length > MAX_RAMP_VALUES_PER_TILE
+      values.length > MAX_RAMP_VALUES
         ? values.filter((d, i) => filterCells(d, i, minVisibleValue, maxVisibleValue))
         : values
 
