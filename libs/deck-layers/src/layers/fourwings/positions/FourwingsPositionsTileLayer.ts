@@ -16,7 +16,6 @@ import { groupBy, orderBy } from 'lodash'
 import { stringify } from 'qs'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/layer-composer'
 import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import {
   BLEND_BACKGROUND,
@@ -30,13 +29,13 @@ import {
 } from '../../../utils'
 import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
-  PATH_BASENAME,
   POSITIONS_API_TILES_URL,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
 } from '../fourwings.config'
 import { getRoundedDateFromTS } from '../heatmap/fourwings-heatmap.utils'
 import { FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
+import { PATH_BASENAME } from '../../layers.config'
 import { cleanVesselShipname, filteredPositionsByViewport } from './fourwings-positions.utils'
 import {
   FourwingsPositionsPickingInfo,
