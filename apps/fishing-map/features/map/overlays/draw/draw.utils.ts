@@ -1,61 +1,58 @@
-import { FeatureCollection, Position } from '@deck.gl-community/editable-layers'
-import { Feature, Point, Polygon } from 'geojson'
+import { Feature, Position } from 'geojson'
+import {
+  DRAW_DATASET_SOURCE,
+  Dataset,
+  DatasetCategory,
+  DatasetConfiguration,
+  DatasetTypes,
+} from '@globalfishingwatch/api-types'
+import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 
-function updateFeaturePointByIndex(
-  feature: Feature<Polygon> | Feature<Point>,
-  coordinateIndex: number,
-  pointPosition: Position
-): Feature {
-  if (feature.geometry?.type === 'Point') {
-    return {
-      ...feature,
-      geometry: {
-        ...feature.geometry,
-        coordinates: pointPosition,
-      },
-    }
-  }
+export const getCoordinatePrecisionRounded = (coordinate: Position): Position => {
+  return coordinate.map((points) => Math.round(points * 100000) / 100000)
+}
+
+export const getDrawDatasetDefinition = (
+  name: string,
+  geometryType: DrawFeatureType
+): Partial<Dataset> => {
   return {
-    ...feature,
-    geometry: {
-      ...feature.geometry,
-      coordinates: feature.geometry.coordinates.map((coordinates) => {
-        const coordinatesLength = coordinates.length - 1
-        const isFirstCoordinate = coordinateIndex === 0
-        const isLastCoordinate = coordinateIndex === coordinatesLength
-        return coordinates.map((point, index) => {
-          if (
-            index === coordinateIndex ||
-            (isLastCoordinate && index === 0) ||
-            (isFirstCoordinate && index === coordinatesLength)
-          ) {
-            return pointPosition
-          }
-          return point
-        })
-      }),
-    },
+    name,
+    type: DatasetTypes.UserContext,
+    category: DatasetCategory.Context,
+    subcategory: 'user',
+    unit: 'NA',
+    source: DRAW_DATASET_SOURCE,
+    configuration: {
+      propertyToInclude: 'draw_id',
+      format: 'geojson',
+      geometryType,
+    } as DatasetConfiguration,
   }
 }
 
-export const updateFeaturePointByIndexex = (
-  features: (Feature<Point> | Feature<Polygon>)[],
-
-  featureIndex: number | undefined,
-  coordinateIndex: number | undefined,
-  pointPosition: Position
-): FeatureCollection['features'] => {
-  if (featureIndex === undefined || coordinateIndex === undefined) {
-    return features as FeatureCollection['features']
-  }
-  return features.map((feature, index) => {
-    if (index === featureIndex) {
-      return updateFeaturePointByIndex(
-        feature as Feature<Point> | Feature<Polygon>,
-        coordinateIndex,
-        pointPosition
-      )
+export const getFileWithFeatures = (name: string, features: Feature[]) => {
+  const startingIndex = features.reduce((acc, feature) => {
+    const featureIndex = feature.properties?.gfw_id
+    return featureIndex && featureIndex > acc ? featureIndex : acc
+  }, 1)
+  return new File(
+    [
+      JSON.stringify({
+        type: 'FeatureCollection',
+        features: features.map((feature, index) => ({
+          ...feature,
+          properties: {
+            ...(feature.properties || {}),
+            gfw_id: feature.properties?.gfw_id || startingIndex + index,
+            draw_id: feature.properties?.gfw_id || startingIndex + index,
+          },
+        })),
+      }),
+    ],
+    `${name}.json`,
+    {
+      type: 'application/json',
     }
-    return feature
-  }) as FeatureCollection['features']
+  )
 }

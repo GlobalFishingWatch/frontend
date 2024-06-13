@@ -21,7 +21,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectMapDrawingEditId, selectMapDrawingMode } from 'routes/routes.selectors'
 import { useMapDrawConnect } from '../../map-draw.hooks'
-import { getDrawDatasetDefinition, getFileWithFeatures } from '../../map.draw.utils'
+import { getDrawDatasetDefinition, getFileWithFeatures } from './draw.utils'
 import styles from './DrawDialog.module.css'
 import { useDrawLayerInstance } from './draw.hooks'
 
