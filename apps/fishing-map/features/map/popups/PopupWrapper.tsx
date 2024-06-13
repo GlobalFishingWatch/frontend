@@ -13,6 +13,7 @@ import {
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
+import useClickedOutside from 'hooks/use-clicked-outside'
 import { MAP_WRAPPER_ID } from '../map.config'
 import styles from './Popup.module.css'
 
@@ -59,6 +60,7 @@ function PopupWrapper({
   const mapViewport = useMapViewport()
 
   const arrowRef = useRef<SVGSVGElement>(null)
+  const clickOutsideRef = useClickedOutside(onClose)
   const { refs, floatingStyles, context } = useFloating({
     whileElementsMounted: autoUpdate,
     middleware: [
@@ -88,7 +90,9 @@ function PopupWrapper({
             <IconButton type="invert" size="small" icon="close" onClick={onClose} />
           </div>
         )}
-        <div className={styles.content}>{children}</div>
+        <div ref={clickOutsideRef} className={styles.content}>
+          {children}
+        </div>
       </div>
     </div>
   )

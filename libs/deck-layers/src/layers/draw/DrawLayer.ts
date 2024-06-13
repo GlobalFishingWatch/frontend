@@ -168,13 +168,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       if (data?.features[currentFeatureIndex]?.geometry.type === 'Point') {
         currentPointCoordinates = (data?.features as Feature<Point>[])[currentFeatureIndex]
           ?.geometry.coordinates
-        console.log('🚀 ~ currentPointCoordinates:', currentPointCoordinates)
       } else {
         const currentPointIndex = currentPointIndexes?.[currentPointIndexes.length - 1] || 0
         currentPointCoordinates = (data?.features as Feature<Polygon>[])[currentFeatureIndex]
           ?.geometry?.coordinates[0][currentPointIndex]
-
-        console.log('🚀 ~ currentPointCoordinates:', currentPointCoordinates)
       }
     }
     return currentPointCoordinates
