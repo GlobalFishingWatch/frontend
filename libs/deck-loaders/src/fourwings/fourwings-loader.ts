@@ -19,6 +19,18 @@ export const FourwingsWorkerLoader: Loader = {
   options: {
     fourwings: {
       workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
+      sublayers: 1,
+      cols: 113,
+      rows: 53,
+      scale: 1,
+      offset: 0,
+      noDataValue: 0,
+      bufferedStartDate: 0,
+      initialTimeRange: undefined,
+      tile: undefined,
+      interval: 'DAY',
+      aggregationOperation: 'sum',
+      buffersLength: [],
     } as ParseFourwingsOptions,
   } as FourwingsLoaderOptions,
 }
