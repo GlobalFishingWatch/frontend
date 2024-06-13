@@ -102,6 +102,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return '' as FourwingsInterval
   }
 
+  getVisualizationMode() {
+    return this.props.visualizationMode || HEATMAP_ID
+  }
+
   getChunk() {
     if (this.props.visualizationMode?.includes(HEATMAP_ID) && !this.props.static) {
       return (this.getLayer() as FourwingsHeatmapTileLayer)?.getChunk()

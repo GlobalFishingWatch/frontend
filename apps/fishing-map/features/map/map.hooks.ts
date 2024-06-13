@@ -1,13 +1,14 @@
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   ResolverGlobalConfig,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
-import { DeckLayerPickingObject, FourwingsLayer, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
+import { FourwingsLayer, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedTime, setHighlightedEvents } from 'features/timebar/timebar.slice'
@@ -45,7 +46,7 @@ export const useGlobalConfigConnect = () => {
   const highlightedTime = useSelector(selectHighlightedTime)
   const { viewState } = useViewStateAtom()
   const { dispatchQueryParams } = useLocationConnect()
-  const { i18n } = useTranslation()
+  const { t } = useTranslation()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
@@ -68,10 +69,15 @@ export const useGlobalConfigConnect = () => {
       ) {
         const categoryQueryParam = `${layer.props.category}VisualizationMode`
         dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
-        alert(`Max points visualization exceeded (${max}), swithing to heatmap mode.`)
+        toast(
+          t(
+            'toasts.maxPointsVisualizationExceeded',
+            'Max points visualization exceeded, swithing to heatmap mode.'
+          )
+        )
       }
     },
-    [dispatchQueryParams]
+    [dispatchQueryParams, t]
   )
 
   return useMemo(() => {

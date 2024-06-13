@@ -146,6 +146,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
 
   const closeExpandedContainer = () => {
     setColorOpen(false)
+    setFiltersOpen(false)
     setInfoOpen(false)
   }
 
@@ -248,9 +249,13 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
 
   return (
     <div
-      className={cx(styles.LayerPanel, {
-        [styles.expandedContainerOpen]: colorOpen || infoOpen || filterOpen,
-      })}
+      className={cx(
+        styles.LayerPanel,
+        {
+          [styles.expandedContainerOpen]: colorOpen || infoOpen || filterOpen,
+        },
+        { 'print-hidden': !layerActive }
+      )}
       ref={setNodeRef}
       style={style}
       {...attributes}

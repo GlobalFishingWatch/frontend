@@ -15,8 +15,16 @@ import {
   HighlightedWorkspaceMerged,
   selectCurrentHighlightedWorkspaces,
 } from './workspaces-list.selectors'
-import { selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
+import { HighlightedWorkspace, selectHighlightedWorkspacesStatus } from './workspaces-list.slice'
 import WorkspaceWizard from './WorkspaceWizard'
+
+const geti18nProperty = (
+  workspace: HighlightedWorkspace,
+  property: 'name' | 'description' | 'cta',
+  language: Locale
+) => {
+  return (workspace[property][language] as string) || workspace[property].en
+}
 
 function WorkspacesList() {
   const { t, i18n } = useTranslation()
@@ -46,6 +54,15 @@ function WorkspacesList() {
       </div>
     )
   }
+  const highlightedWorkspacesSorted =
+    locationCategory === WorkspaceCategory.MarineManager
+      ? highlightedWorkspaces?.toSorted((a, b) =>
+          geti18nProperty(a, 'name', i18n.language as Locale) >
+          geti18nProperty(b, 'name', i18n.language as Locale)
+            ? 1
+            : -1
+        )
+      : highlightedWorkspaces
 
   return (
     <div className={styles.container}>
@@ -59,12 +76,15 @@ function WorkspacesList() {
         <Spinner size="small" />
       ) : (
         <ul>
-          {highlightedWorkspaces?.map((highlightedWorkspace) => {
-            const { name, cta, description, reportUrl, img } = highlightedWorkspace
-            const i18nName = (name?.[i18n.language as Locale] as string) || name.en
-            const i18nDescription =
-              (description?.[i18n.language as Locale] as string) || description.en
-            const i18nCta = (cta?.[i18n.language as Locale] as string) || cta.en
+          {highlightedWorkspacesSorted?.map((highlightedWorkspace) => {
+            const { reportUrl, img } = highlightedWorkspace
+            const i18nName = geti18nProperty(highlightedWorkspace, 'name', i18n.language as Locale)
+            const i18nDescription = geti18nProperty(
+              highlightedWorkspace,
+              'description',
+              i18n.language as Locale
+            )
+            const i18nCta = geti18nProperty(highlightedWorkspace, 'cta', i18n.language as Locale)
             const active = highlightedWorkspace?.id !== undefined && highlightedWorkspace?.id !== ''
             const isExternalLink = highlightedWorkspace.id.includes('http')
             let linkTo: To

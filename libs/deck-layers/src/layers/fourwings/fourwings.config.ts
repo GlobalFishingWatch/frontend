@@ -5,9 +5,6 @@ import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import { getUTCDateTime } from '../../utils/dates'
 import { FourwingsChunk } from './fourwings.types'
 
-export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
-export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || (IS_PRODUCTION ? '/map' : '')
-
 const BASE_API_TILES_URL =
   `${API_GATEWAY}/${API_VERSION}/4wings/tile/{FOURWINGS_VISUALIZATION_MODE}/{z}/{x}/{y}` as const
 export const HEATMAP_API_TILES_URL = BASE_API_TILES_URL.replace(
@@ -29,7 +26,7 @@ export const FOURWINGS_MAX_ZOOM = 12
 export const MAX_POSITIONS_PER_TILE_SUPPORTED = 10000
 export const POSITIONS_VISUALIZATION_MAX_ZOOM = 9
 
-export const MAX_RAMP_VALUES_PER_TILE = 1000
+export const MAX_RAMP_VALUES = 10000
 
 export const DEFAULT_FOURWINGS_INTERVALS: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
 export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']

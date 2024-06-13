@@ -3,6 +3,7 @@ import { MVTLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { LayerGroup, getFetchLoadOptions, getLayerGroupOffset, hexToDeckColor } from '../../utils'
+import { PATH_BASENAME } from '../../layers/layers.config'
 import {
   ClusterEventType,
   ClusterFeature,
@@ -62,7 +63,7 @@ export class ClusterLayer extends CompositeLayer<LayerProps & TileLayerProps & C
       getIconColor: color,
       getPointRadius: (d: any) =>
         d.properties.count > 1 ? 11 + Math.sqrt(d.properties.count) / 3 : 0,
-      iconAtlas: '/events-sprite.png',
+      iconAtlas: `${PATH_BASENAME}/events-sprite.png`,
       iconMapping: ICON_MAPPING,
       getIcon: (d: ClusterFeature) => d.properties.count === 1 && this.props.eventType,
       getIconSize: 16,

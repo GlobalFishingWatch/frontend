@@ -34,7 +34,7 @@ import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { selectDaysFromLatest, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 
 export const selectWorkspaceReportState = createSelector(
@@ -92,6 +92,7 @@ export const selectWorkspaceAppState = createSelector(
     selectTimebarVisualisation,
     selectVisibleEvents,
     selectWorkspaceReportState,
+    selectDaysFromLatest,
   ],
   (
     activityCategory,
@@ -105,7 +106,8 @@ export const selectWorkspaceAppState = createSelector(
     timebarSelectedEnvId,
     timebarVisualisation,
     visibleEvents,
-    reportState
+    reportState,
+    daysFromLatest
   ) => {
     return {
       activityCategory,
@@ -120,6 +122,7 @@ export const selectWorkspaceAppState = createSelector(
       timebarVisualisation,
       visibleEvents,
       ...reportState,
+      daysFromLatest,
     }
   }
 )

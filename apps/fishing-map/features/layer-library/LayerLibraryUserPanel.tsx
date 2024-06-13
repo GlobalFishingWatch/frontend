@@ -143,7 +143,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
         </div>
       ) : (
         <Fragment>
-          <ul>
+          <ul className={styles.userDatasetList}>
             {filteredDatasets && filteredDatasets.length > 0 ? (
               sortByCreationDate<Dataset>(filteredDatasets).map((dataset) => {
                 const datasetError = dataset.status === DatasetStatus.Error
