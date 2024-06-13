@@ -66,7 +66,10 @@ export const useVisualizationsOptions = (
         label: <Icon icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'} />,
         tooltip: isPositionsLayerAvailable
           ? t('map.positions', 'See positions visualization mode')
-          : t('map.positionsDisabled', 'Positions visualizations mode not available'),
+          : t(
+              'map.positionsDisabled',
+              'A more detailed visualization is available in areas with less activity, please zoom in or reduce your time range to see it'
+            ),
         tooltipPlacement: 'bottom',
         disabled: !isPositionsLayerAvailable,
       },
