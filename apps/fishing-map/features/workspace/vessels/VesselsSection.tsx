@@ -67,18 +67,19 @@ function VesselsSection(): React.ReactElement {
           <Switch
             active={someVesselsVisible}
             onClick={onToggleAllVessels}
-            tooltip={t('layer.toggleAllVisibility', 'Toggle all layers visibility')}
+            tooltip={t('vessel.toggleAllVessels', 'Toggle all vessels visibility')}
             tooltipPlacement="top"
           />
         )}
         <h2 className={cx('print-hidden', styles.sectionTitle)}>
           {t('common.vessel_other', 'Vessels')}
+          {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
         </h2>
         {dataviews.length > 0 && (
           <IconButton
             icon="delete"
             size="medium"
-            tooltip={t('layer.removeAllLayers', 'Remove all layers')}
+            tooltip={t('vessel.removeAllVessels', 'Remove all vessels')}
             tooltipPlacement="top"
             className="print-hidden"
             onClick={onDeleteAllClick}
