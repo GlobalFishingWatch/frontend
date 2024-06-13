@@ -13,6 +13,9 @@ export const useDrawLayerInstance = () => {
       setLayerInstance(
         new DrawLayer({
           featureType: mapDrawingMode as DrawFeatureType,
+          onStateChange: (instance: DrawLayer) => {
+            setLayerInstance(instance)
+          },
         })
       )
     } else {

@@ -86,6 +86,7 @@ export type DrawLayerState = {
 export type DrawFeatureType = 'polygons' | 'points'
 export type DrawLayerProps = {
   featureType: DrawFeatureType
+  onStateChange?: (instance: DrawLayer) => void
 }
 
 export class DrawLayer extends CompositeLayer<DrawLayerProps> {
@@ -118,18 +119,28 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
 
   setData = (data: FeatureCollection) => {
     if (data && this.state) {
-      return this.setState({ data })
+      return this._setState({ data })
     }
   }
 
   getData = () => {
-    return this.state?.data
+    return this.state?.tentativeData || this.state?.data
+  }
+
+  _setState(state: Partial<DrawLayerState>) {
+    this.setState(state)
+    if (this.props.onStateChange) {
+      this.props.onStateChange(this)
+    }
   }
 
   getHasOverlappingFeatures = () => {
     return (
       this.state?.hasTentativeOverlappingFeatures ||
       this.state?.data?.features?.some(
+        (feature: any) => feature.properties.hasOverlappingFeatures
+      ) ||
+      this.state?.tentativeData?.features?.some(
         (feature: any) => feature.properties.hasOverlappingFeatures
       ) ||
       false
@@ -192,26 +203,26 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     featureIndexes.forEach((featureIndex) => {
       data = data.replacePosition(featureIndex, coordinateIndex, pointPosition)
     })
-    return data.getObject()
+    return getDrawDataParsed(data.getObject(), this.props.featureType)
   }
 
   setCurrentPointCoordinates = (pointPosition: [number, number]) => {
     const data = this.getDataWithReplacedPosition(pointPosition)
-    this.setState({ data })
+    this._setState({ data })
   }
 
   setTentativeCurrentPointCoordinates = (pointPosition: [number, number]) => {
     const tentativeData = this.getDataWithReplacedPosition(pointPosition)
-    console.log('🚀 ~ tentativeData:', tentativeData)
-    this.setState({ tentativeData })
+    this._setState({ tentativeData })
   }
 
   reset = () => {
     if (this.state) {
-      this.setState({
+      this._setState({
         data: INITIAL_FEATURE_COLLECTION,
         tentativeData: undefined,
         selectedFeatureIndexes: [],
+        selectedPositionIndexes: undefined,
         mode: this._getDrawingMode(),
         hasTentativeOverlappingFeatures: false,
       })
@@ -220,7 +231,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
 
   resetSelectedPoint = () => {
     if (this.state) {
-      this.setState({
+      this._setState({
         tentativeData: undefined,
         selectedFeatureIndexes: [],
         selectedPositionIndexes: undefined,
@@ -249,9 +260,8 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     //         }
     //         return feature
     //       })
-    // console.log('🚀 ~ deleteSelectedFeature ~ features:', features[0])
     if (this.state) {
-      this.setState({
+      this._setState({
         data: updatedData.getObject(),
         selectedFeatureIndexes: [],
         selectedPositionIndexes: undefined,
@@ -278,18 +288,17 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
 
   setMode = (mode: 'modify' | 'draw' = 'draw') => {
     if (this.state) {
-      this.setState({ mode: mode === 'modify' ? this._getModifyMode() : this._getDrawingMode() })
+      this._setState({ mode: mode === 'modify' ? this._getModifyMode() : this._getDrawingMode() })
     }
   }
 
   onEdit = (editAction: EditAction<FeatureCollection>) => {
     const { updatedData, editType, editContext } = editAction
-    console.log('🚀 ~ editAction:', editAction)
     const { featureType } = this.props
     switch (editType) {
       case 'addPosition':
       case 'addFeature': {
-        this.setState({
+        this._setState({
           data: getDrawDataParsed(updatedData, featureType),
           tentativeData: undefined,
           mode: this._getModifyMode(),
@@ -300,17 +309,18 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         break
       }
       case 'customUpdateSelectedIndexes': {
-        this.setState({
+        this._setState({
           data: getDrawDataParsed(updatedData, featureType),
           selectedFeatureIndexes: editContext.featureIndexes,
         })
         break
       }
       case 'customClickOutside': {
-        this.setState({
-          data: updatedData,
+        this._setState({
           mode: new CustomViewMode(),
+          tentativeData: undefined,
           selectedFeatureIndexes: [],
+          selectedPositionIndexes: undefined,
         })
         break
       }
@@ -319,8 +329,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         if (featureType === 'points') {
           selectedPositionIndexes = []
         }
-        this.setState({
-          data: updatedData,
+        this._setState({
           mode: this._getModifyMode(),
           selectedFeatureIndexes: editContext.featureIndexes,
           selectedPositionIndexes,
@@ -329,7 +338,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       }
       // default action for clicking on a polygon corner, used for us to select the point and update manually
       case 'removePosition': {
-        this.setState({
+        this._setState({
           selectedFeatureIndexes: editContext.featureIndexes,
           selectedPositionIndexes: editContext.positionIndexes,
         })
@@ -346,7 +355,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       case 'translating': {
         this.isTranslating = !this.isMoving
         if (!this.isMoving) {
-          this.setState({
+          this._setState({
             data: getDrawDataParsed(updatedData, featureType),
           })
         }
@@ -355,7 +364,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       case 'movePosition': {
         this.isMoving = true
         if (!this.isTranslating) {
-          this.setState({
+          this._setState({
             data: getDrawDataParsed(updatedData, featureType),
           })
         }
@@ -365,7 +374,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         if (featureType === 'polygons' && editContext.feature.geometry.type !== 'Point') {
           const hasTentativeOverlappingFeatures =
             kinks(editContext.feature.geometry).features.length > 0
-          this.setState({ hasTentativeOverlappingFeatures })
+          this._setState({ hasTentativeOverlappingFeatures })
         }
         break
       }

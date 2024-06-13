@@ -19,6 +19,7 @@ export const CoordinateEditOverlay = () => {
   const drawData = drawLayer?.getData()
   const currentFeatureIndexes = drawLayer?.getSelectedFeatureIndexes()
   const currentPointCoordinates = drawLayer?.getSelectedPointCoordinates()
+  const hasOverlappingFeatures = drawLayer?.getHasOverlappingFeatures()
   const editingPointLatitude =
     newPointLatitude !== null ? Number(newPointLatitude) : Number(currentPointCoordinates?.[1])
   const editingPointLongitude =
@@ -123,7 +124,11 @@ export const CoordinateEditOverlay = () => {
             }
           />
           <Button
-            disabled={editingPointLatitude === null || editingPointLongitude === null}
+            disabled={
+              editingPointLatitude === null ||
+              editingPointLongitude === null ||
+              hasOverlappingFeatures
+            }
             onClick={onConfirm}
             className={styles.confirmBtn}
           >
