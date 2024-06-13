@@ -5,6 +5,7 @@ import {
   FourwingsPickingObject,
   getBivariateRampLegend,
   ColorRampId,
+  HEATMAP_ID,
 } from '@globalfishingwatch/deck-layers'
 import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
 import { DeckLegend, LegendType } from '../types'
@@ -21,10 +22,10 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
     const interaction = (deckLayerHoverFeatures?.features as FourwingsPickingObject[])?.find(
       (feature) => feature.layerId === layer.id
     )
-    // TODO:deck review what to do here with positions
     const { colorDomain, colorRange } = layer.instance.getColorScale() || {}
+    const visualizationMode = layer.instance.getVisualizationMode()
     let label = layer.instance.props.sublayers?.[0]?.unit || ''
-    if (label === 'hours') {
+    if (label === 'hours' && visualizationMode === HEATMAP_ID) {
       const gridZoom = Math.round(
         Math.min(layer.instance.context.viewport.zoom, HEATMAP_DEFAULT_MAX_ZOOM)
       )

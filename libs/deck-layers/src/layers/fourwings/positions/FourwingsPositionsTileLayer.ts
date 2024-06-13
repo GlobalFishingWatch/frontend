@@ -19,6 +19,7 @@ import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import {
   BLEND_BACKGROUND,
+  deckToRgbaColor,
   getColorRamp,
   getLayerGroupOffset,
   getSteps,
@@ -396,7 +397,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getColorScale() {
-    return this.state.colorScale
+    return {
+      colorDomain: this.state.colorScale?.colorDomain,
+      colorRange: this.state.colorScale?.colorRange.map((sublayer) =>
+        (sublayer as string[]).map((c) => deckToRgbaColor(c))
+      ),
+    }
   }
 
   getFourwingsLayers() {
