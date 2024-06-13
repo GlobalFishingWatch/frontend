@@ -7,7 +7,7 @@ import { UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
-import styles from './Popup.module.css'
+import styles from '../Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
 

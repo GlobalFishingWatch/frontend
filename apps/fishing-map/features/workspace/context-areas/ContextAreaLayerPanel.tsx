@@ -39,8 +39,8 @@ import {
   filterFeaturesByDistance,
   parseContextFeatures,
 } from 'features/workspace/context-areas/context.utils'
-import { ReportPopupLink } from 'features/map/popups/ContextLayersRow'
-import { useContextInteractions } from 'features/map/popups/ContextLayers.hooks'
+import { ReportPopupLink } from 'features/map/popups/categories/ContextLayersRow'
+import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
 import {
   getDatasetLabel,
   getSchemaFiltersInDataview,

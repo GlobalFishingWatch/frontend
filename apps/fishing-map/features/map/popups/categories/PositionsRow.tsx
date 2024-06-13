@@ -7,7 +7,7 @@ import { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers
 import { formatInfoField } from 'utils/info'
 import VesselPin from 'features/vessel/VesselPin'
 import I18nDate from 'features/i18n/i18nDate'
-import popupStyles from './Popup.module.css'
+import popupStyles from '../Popup.module.css'
 
 type PositionsRowProps = {
   feature: FourwingsPositionsPickingObject

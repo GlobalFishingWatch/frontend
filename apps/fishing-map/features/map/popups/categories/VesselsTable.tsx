@@ -38,7 +38,7 @@ import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/Vess
 import {
   SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
   getVesselsInfoConfig,
-} from '../map.hooks'
+} from '../../map.hooks'
 import styles from './VesselsTable.module.css'
 
 export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {

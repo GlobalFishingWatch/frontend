@@ -5,7 +5,7 @@ import { RulerPickingObject } from '@globalfishingwatch/deck-layers'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setClickedEvent } from 'features/map/map.slice'
-import styles from './Popup.module.css'
+import styles from '../Popup.module.css'
 
 type RulerTooltipProps = {
   features: RulerPickingObject[]

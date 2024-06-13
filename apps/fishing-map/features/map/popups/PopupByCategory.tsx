@@ -15,28 +15,28 @@ import {
 } from '@globalfishingwatch/deck-layers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { POPUP_CATEGORY_ORDER } from 'data/config'
-import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
-import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import ComparisonRow from 'features/map/popups/ComparisonRow'
-import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
+import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
+import WorkspacePointsTooltipSection from 'features/map/popups/categories/WorkspacePointsLayers'
+import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
+import UserPointsTooltipSection from 'features/map/popups/categories/UserPointsLayers'
+import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
+import TileClusterTooltipRow from 'features/map/popups/categories/TileClusterTooltipRow'
+import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
+import VesselEventsLayers from 'features/map/popups/categories/VesselEventsLayers'
+import EnvironmentTooltipSection from 'features/map/popups/categories/EnvironmentLayers'
+import PositionsRow from 'features/map/popups/categories/PositionsRow'
+import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
 import {
   SliceExtendedFourwingsPickingObject,
   selectApiEventStatus,
   selectFishingInteractionStatus,
 } from '../map.slice'
-import UserContextTooltipSection from './UserContextLayers'
 import styles from './Popup.module.css'
-import ActivityTooltipRow from './ActivityLayers'
-import TileClusterTooltipRow from './TileClusterTooltipRow'
-import ContextTooltipSection from './ContextLayers'
-import VesselEventsLayers from './VesselEventsLayers'
-import EnvironmentTooltipSection from './EnvironmentLayers'
-import PositionsRow from './PositionsRow'
-import RulerTooltip from './RulerTooltip'
+import UserContextTooltipSection from './categories/UserContextLayers'
 
 type PopupByCategoryProps = {
   interaction: InteractionEvent | null

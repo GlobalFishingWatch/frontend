@@ -4,8 +4,8 @@ import { useMapHoverInteraction } from '@globalfishingwatch/deck-layer-composer'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
 import { selectClickedEvent } from '../map.slice'
 import { useClickedEventConnect } from '../map-interactions.hooks'
-import PopupByCategory from './PopupByCategory'
 import styles from './Popup.module.css'
+import PopupByCategory from './PopupByCategory'
 
 function MapPopups() {
   const hoverInteraction = useMapHoverInteraction()

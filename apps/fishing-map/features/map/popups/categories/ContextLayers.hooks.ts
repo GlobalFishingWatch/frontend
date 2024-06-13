@@ -19,7 +19,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getBufferedAreaBbox } from 'features/reports/reports.utils'
 import { selectReportAreaDataview } from 'features/reports/reports.selectors'
-import { setClickedEvent } from '../map.slice'
+import { setClickedEvent } from '../../map.slice'
 
 export const getFeatureBounds = (feature: ContextPickingObject) => {
   if (feature.geometry) {

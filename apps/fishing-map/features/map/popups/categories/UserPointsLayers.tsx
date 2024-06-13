@@ -3,7 +3,7 @@ import { groupBy } from 'lodash'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import styles from './Popup.module.css'
+import styles from '../Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
 

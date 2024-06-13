@@ -13,13 +13,13 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { useViewStateAtom } from '../map-viewport.hooks'
+import { useViewStateAtom } from '../../map-viewport.hooks'
 import {
   ExtendedEventVessel,
   ExtendedFeatureEvent,
   SliceExtendedClusterPickingObject,
-} from '../map.slice'
-import styles from './Popup.module.css'
+} from '../../map.slice'
+import styles from '../Popup.module.css'
 
 const parseEvent = (event: ExtendedFeatureEvent | undefined): ExtendedFeatureEvent | undefined => {
   if (!event) return event
