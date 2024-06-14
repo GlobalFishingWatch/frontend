@@ -123,7 +123,7 @@ export const EVENTS_COLORS: Record<string, string> = {
 }
 
 export const THINNING_CONFIG: { user: ThinningConfig; guest: ThinningConfig } = {
-  user: THINNING_LEVELS[ThinningLevels.Default],
+  user: THINNING_LEVELS[ThinningLevels.Medium],
   guest: THINNING_LEVELS[ThinningLevels.Aggressive],
 }
 

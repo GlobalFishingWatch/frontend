@@ -23,7 +23,7 @@ export const selectTrackThinningConfig = createSelector(
     return {
       config: guestUser
         ? THINNING_LEVELS[ThinningLevels.Aggressive]
-        : THINNING_LEVELS[ThinningLevels.Default],
+        : THINNING_LEVELS[ThinningLevels.Medium],
     }
   }
 )

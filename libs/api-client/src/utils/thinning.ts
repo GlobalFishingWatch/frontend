@@ -5,6 +5,7 @@ export enum ThinningLevels {
   Insane = 'Insane',
   VeryAggressive = 'VeryAggressive',
   Aggressive = 'aggressive',
+  Medium = 'medium',
   Default = 'default',
 }
 
@@ -48,6 +49,16 @@ export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {
     'bearing-val-transit': 5,
     'change-speed-transit': 200,
     'min-accuracy-transit': 100,
+  },
+  [ThinningLevels.Medium]: {
+    'distance-fishing': 1,
+    'bearing-val-fishing': 3,
+    'change-speed-fishing': 200,
+    'min-accuracy-fishing': 40,
+    'distance-transit': 1,
+    'bearing-val-transit': 3,
+    'change-speed-transit': 200,
+    'min-accuracy-transit': 70,
   },
   [ThinningLevels.Default]: {
     'distance-fishing': 0.5,
