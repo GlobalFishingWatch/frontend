@@ -30,13 +30,18 @@ export function getViewAccessOptions(): SelectOption<WorkspaceViewAccessType>[] 
     { id: WORKSPACE_PRIVATE_ACCESS, label: t('common.onlyMe', 'Only me') },
   ]
 }
-export function getTimeRangeOptions(start: string, end: string) {
+
+export type WorkspaceTimeRangeMode = 'static' | 'dynamic'
+export function getTimeRangeOptions(
+  start: string,
+  end: string
+): SelectOption<WorkspaceTimeRangeMode>[] {
   const dateFormat = pickDateFormatByRange(start, end)
   return [
     {
       id: 'static',
       label: t('common.timerangeStatic', {
-        defaultValue: 'Static: from {{start}} to {{end}}',
+        defaultValue: 'Static ({{start}} - {{end}})',
         start: formatTimerangeBoundary(start, dateFormat),
         end: formatTimerangeBoundary(end, dateFormat),
       }),
@@ -65,4 +70,92 @@ export function getEditAccessOptionsByViewAccess(
     return []
   }
   return getEditAccessOptions()
+}
+
+export const getStaticWorkspaceName = ({
+  timerange,
+}: {
+  timerange: { start: string; end: string }
+}) => {
+  if (timerange?.start && timerange?.end) {
+    const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
+    return t('common.timerangeDescription', {
+      defaultValue: 'From {{start}} to {{end}}',
+      start: formatTimerangeBoundary(timerange.start, dateFormat),
+      end: formatTimerangeBoundary(timerange.end, dateFormat),
+    })
+  }
+  return ''
+}
+
+export const getDynamicWorkspaceName = ({ daysFromLatest }: { daysFromLatest: number }) => {
+  return t('common.latestDays', {
+    defaultValue: 'Latest {{count}} days',
+    count: daysFromLatest || 0,
+  })
+}
+
+export const getWorkspaceTimerangeName = (
+  timeRangeOption: WorkspaceTimeRangeMode,
+  {
+    timerange,
+    daysFromLatest,
+  }: { timerange?: { start: string; end: string }; daysFromLatest?: number }
+) => {
+  if (timeRangeOption === 'static') {
+    return getStaticWorkspaceName({
+      timerange: timerange as { start: string; end: string },
+    })
+  } else if (timeRangeOption === 'dynamic') {
+    return getDynamicWorkspaceName({ daysFromLatest: daysFromLatest as number })
+  }
+  return ''
+}
+
+export const getUpdateNameWithStaticTimerange = ({
+  name,
+  daysFromLatest,
+  timeRangeOption,
+  timerange,
+}: {
+  name: string
+  timeRangeOption: WorkspaceTimeRangeMode
+  daysFromLatest?: number
+  timerange: { start: string; end: string }
+}) => {
+  const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
+    timerange,
+    daysFromLatest: daysFromLatest as number,
+  })
+  if (name && name.includes(workspaceTimerangeName)) {
+    const workspaceLatestDescription = getStaticWorkspaceName({ timerange })
+    return name.replace(workspaceTimerangeName, workspaceLatestDescription)
+  }
+  return name
+}
+
+export const getUpdateNameWithDynamicTimerange = ({
+  name,
+  timeRangeOption,
+  timerange,
+  prevDaysFromLatest,
+  newDaysFromLatest,
+}: {
+  name: string
+  timerange: { start: string; end: string }
+  timeRangeOption: WorkspaceTimeRangeMode
+  prevDaysFromLatest: number
+  newDaysFromLatest: number
+}) => {
+  const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
+    timerange,
+    daysFromLatest: prevDaysFromLatest,
+  })
+  if (name && name.includes(workspaceTimerangeName)) {
+    const workspaceLatestDescription = getDynamicWorkspaceName({
+      daysFromLatest: newDaysFromLatest,
+    })
+    return name.replace(workspaceTimerangeName, workspaceLatestDescription)
+  }
+  return name
 }

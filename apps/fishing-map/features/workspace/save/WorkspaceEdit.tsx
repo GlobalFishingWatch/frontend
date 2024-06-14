@@ -17,6 +17,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
 import { getEditAccessOptionsByViewAccess, getTimeRangeOptions } from './workspace-access.utils'
+import { DAYS_FROM_LATEST_MAX, DAYS_FROM_LATEST_MIN } from './WorkspaceCreateModal'
 
 type EditWorkspaceProps = {
   workspace: AppWorkspace
@@ -45,6 +46,12 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
   const userData = useSelector(selectUserData)
   const isOwnerWorkspace = workspace?.ownerId === userData?.id
   const isPassWordEditAccess = workspace?.editAccess === WORKSPACE_PASSWORD_ACCESS
+  const validDaysFromLatestValue =
+    timeRangeOption === 'dynamic'
+      ? daysFromLatest !== undefined &&
+        daysFromLatest > DAYS_FROM_LATEST_MIN &&
+        daysFromLatest < DAYS_FROM_LATEST_MAX
+      : true
 
   const updateWorkspace = async () => {
     if (workspace) {
@@ -198,7 +205,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
               ? t('workspace.passwordMinLength', 'Password must be at least 5 characters')
               : ''
           }
-          disabled={!name || passwordDisabled}
+          disabled={!name || passwordDisabled || !validDaysFromLatestValue}
           onClick={updateWorkspace}
           htmlType="submit"
           testId="create-workspace-button"
