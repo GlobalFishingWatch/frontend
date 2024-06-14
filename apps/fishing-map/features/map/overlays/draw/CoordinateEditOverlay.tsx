@@ -31,7 +31,7 @@ export const CoordinateEditOverlay = () => {
         currentFeatureIndexes?.every(
           (index) =>
             (drawData?.features as Feature<Polygon>[])?.[index]?.geometry?.coordinates?.[0].length >
-            3
+            4
         )
       : true
 

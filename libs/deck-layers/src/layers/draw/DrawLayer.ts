@@ -240,15 +240,20 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
 
   deleteSelectedPosition = () => {
     const { data, selectedFeatureIndexes, selectedPositionIndexes } = this.state
-    let updatedData = new ImmutableFeatureCollection(data)
+    let updatedData: ImmutableFeatureCollection | undefined
     selectedFeatureIndexes?.forEach((featureIndex) => {
-      if (this.props.featureType === 'points') {
-        updatedData = updatedData.deleteFeature(featureIndex)
-      } else {
-        updatedData = updatedData.removePosition(featureIndex, selectedPositionIndexes)
-      }
+      try {
+        if (this.props.featureType === 'points') {
+          updatedData = new ImmutableFeatureCollection(data).deleteFeature(featureIndex)
+        } else {
+          updatedData = new ImmutableFeatureCollection(data).removePosition(
+            featureIndex,
+            selectedPositionIndexes
+          )
+        }
+      } catch (ignore) {}
     })
-    if (this.state) {
+    if (updatedData && this.state) {
       this._setState({
         data: getDrawDataParsed(updatedData.getObject()),
         selectedPositionIndexes: undefined,
@@ -295,10 +300,17 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         })
         break
       }
-      case 'customUpdateSelectedIndexes': {
+      case 'customUpdateSelectedFeaturesIndexes': {
         this._setState({
           data: getDrawDataParsed(updatedData),
           selectedFeatureIndexes: editContext.featureIndexes,
+        })
+        break
+      }
+      case 'customUpdateSelectedPositionIndexes': {
+        this._setState({
+          data: getDrawDataParsed(updatedData),
+          selectedPositionIndexes: editContext.positionIndexes,
         })
         break
       }
