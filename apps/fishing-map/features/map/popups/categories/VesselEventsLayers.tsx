@@ -9,8 +9,8 @@ import { getEventDescriptionComponent } from 'utils/events'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { formatInfoField } from 'utils/info'
-import { MAX_TOOLTIP_LIST } from '../map.slice'
-import styles from './Popup.module.css'
+import { MAX_TOOLTIP_LIST } from '../../map.slice'
+import styles from '../Popup.module.css'
 
 type VesselEventsTooltipRowProps = {
   features: VesselEventPickingObject[]

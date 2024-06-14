@@ -87,7 +87,6 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
   }): ContextPickingInfo => {
     if (!info.object) return { ...info, object: undefined }
     const { idProperty, valueProperties } = this.props
-    const layerId = this.props.layers[0].id
     const object = {
       ...transformTileCoordsToWGS84(
         info.object as ContextFeature,
@@ -96,12 +95,15 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
       ),
       title: this.props.id,
       color: this.props.color,
-      layerId,
+      layerId: this.props.id,
       datasetId: this.props.layers[0].datasetId,
       category: this.props.category,
       id: getContextId(info.object as ContextFeature, idProperty),
       value: getContextValue(info.object as ContextFeature, valueProperties),
-      link: getContextLink({ ...info.object, layerId } as ContextPickingObject),
+      link: getContextLink({
+        ...info.object,
+        layerId: this.props.layers[0].id,
+      } as ContextPickingObject),
     } as ContextPickingObject
     return {
       ...info,

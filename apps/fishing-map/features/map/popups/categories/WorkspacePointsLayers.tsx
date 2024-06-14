@@ -8,8 +8,8 @@ import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { useSetViewState } from 'features/map/map-viewport.hooks'
 import { MapCoordinates } from 'types'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setClickedEvent } from '../map.slice'
-import styles from './Popup.module.css'
+import { setClickedEvent } from '../../map.slice'
+import styles from '../Popup.module.css'
 
 type WorkspacePointsLayersProps = {
   features: WorkspacesPickingObject[]

@@ -127,7 +127,8 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
               id: `${props.id}-highlight-fills`,
               stroked: false,
               pickable: true,
-              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
+              getPolygonOffset: (params) =>
+                getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
               getFillColor: hasColorSteps ? this._getFillStepsColor : this._getFillColor,
               updateTriggers: {
                 getFillColor: [highlightedFeatures],
@@ -146,7 +147,8 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
               lineWidthUnits: 'pixels',
               filled: false,
               visible: highlightedFeatures && highlightedFeatures?.length > 0,
-              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
+              getPolygonOffset: (params) =>
+                getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
               getLineWidth: this._getHighlightLineWidth,
               getLineColor: COLOR_HIGHLIGHT_LINE,
               updateTriggers: {

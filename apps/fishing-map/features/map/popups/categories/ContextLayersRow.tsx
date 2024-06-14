@@ -16,7 +16,7 @@ import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspace
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationAreaId, selectLocationQuery } from 'routes/routes.selectors'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
-import { getAreaIdFromFeature } from 'features/map/popups/ContextLayers.hooks'
+import { getAreaIdFromFeature } from 'features/map/popups/categories/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { resetReportData } from 'features/reports/report.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -27,7 +27,7 @@ import {
   DEFAULT_POINT_BUFFER_VALUE,
 } from 'features/reports/reports.config'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
-import styles from './Popup.module.css'
+import styles from '../Popup.module.css'
 
 interface DownloadPopupButtonProps {
   onClick: (e: React.MouseEvent<Element, MouseEvent>) => void

@@ -54,11 +54,11 @@
   min-width: 15rem;
 }
 
-.shortInput {
-  width: 12rem;
+.coordinateInput {
+  min-width: 15rem;
 }
 
-.shortInput + .shortInput {
+.coordinateInput + .coordinateInput {
   margin-left: var(--space-M);
 }
 
@@ -67,13 +67,10 @@
   margin-right: var(--space-M);
 }
 
-.popup {
+.popupContent {
   color: var(--color-primary-blue);
   box-shadow: var(--box-shadow);
   max-width: 40vw;
-}
-
-.popup .popupContent {
   background: var(--color-white);
   padding: var(--space-S);
 }

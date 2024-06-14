@@ -1,10 +1,4 @@
-.popup {
-  color: var(--color-primary-blue);
-  box-shadow: var(--box-shadow);
-  max-width: 40vw;
-}
-
-.popup .popupContent {
+.popupContent {
   background: var(--color-white);
   padding: var(--space-S);
 }
@@ -27,45 +21,4 @@
 
 .successIcon {
   transform: scale(1.5);
-}
-
-.tooltipArrow::before {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  background: white;
-}
-
-.tooltipArrow {
-  visibility: hidden;
-  position: relative;
-}
-
-.tooltipArrow::before {
-  visibility: visible;
-  top: 123px;
-  left: 195px;
-  content: '';
-  transform: rotate(45deg);
-}
-.closeButton {
-  position: absolute;
-  cursor: pointer;
-  width: var(--size-S);
-  height: var(--size-S);
-  border-radius: 50%;
-  font: var(--font-L);
-  line-height: 1;
-  margin: var(--space-XS);
-  z-index: 1;
-  top: -2rem;
-  right: -2rem;
-  background-color: var(--color-primary-blue);
-  color: rgba(var(--white-rgb), 0.8);
-  opacity: 1;
-  border: var(--border-white);
-}
-
-.closeButton:hover:not(:disabled) {
-  background-color: var(--color-primary-blue);
 }

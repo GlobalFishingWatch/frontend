@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { SliceExtendedFourwingsDeckSublayer } from '../map.slice'
-import popupStyles from './Popup.module.css'
+import { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
+import popupStyles from '../Popup.module.css'
 import VesselsTable from './VesselsTable'
 
 type ActivityTooltipRowProps = {

@@ -62,7 +62,7 @@ import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import TooltipContainer from 'features/workspace/shared/TooltipContainer'
-import { useHighlightReportArea } from 'features/map/popups/ContextLayers.hooks'
+import { useHighlightReportArea } from 'features/map/popups/categories/ContextLayers.hooks'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 

@@ -81,7 +81,7 @@ export abstract class UserBaseLayer<
       value: info.object?.properties.value,
       title: this.props.id,
       color: this.props.color,
-      layerId: this.props.layers[0].id,
+      layerId: this.props.id,
       datasetId: this.props.layers[0].datasetId,
       category: this.props.category,
       subcategory: this.props.subcategory,

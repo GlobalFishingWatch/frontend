@@ -11,7 +11,7 @@ import {
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
-import styles from './Popup.module.css'
+import styles from '../Popup.module.css'
 
 type ContextTooltipRowProps = {
   features: (FourwingsHeatmapPickingObject | FourwingsHeatmapStaticPickingObject)[]
