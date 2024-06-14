@@ -46,6 +46,8 @@ import {
   getDataUrlBySublayer,
   filterCells,
   compareCell,
+  aggregateCell,
+  getIntervalFrames,
 } from './fourwings-heatmap.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import {
@@ -105,11 +107,32 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
-    const { comparisonMode, aggregationOperation, minVisibleValue, maxVisibleValue } = this.props
+    const {
+      comparisonMode,
+      aggregationOperation,
+      minVisibleValue,
+      maxVisibleValue,
+      startTime,
+      endTime,
+      availableIntervals,
+    } = this.props
     const currentZoomData = this.getData()
     if (!currentZoomData.length) {
       return this.getColorDomain()
     }
+
+    const { startFrame, endFrame } = getIntervalFrames({
+      startTime,
+      endTime,
+      availableIntervals,
+      bufferedStart:
+        this._getTileDataCache(
+          this.props.startTime,
+          this.props.endTime,
+          this.props.availableIntervals
+        )?.bufferedStart || 0,
+    })
+
     const dataSample =
       currentZoomData.length > MAX_RAMP_VALUES
         ? currentZoomData.filter((d, i) => filterCells(d, i))
@@ -129,7 +152,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
       const steps = allValues
         .filter((sublayer) => sublayer.length)
-        .map((sublayerValues) => getSteps(sublayerValues, COLOR_RAMP_BIVARIATE_NUM_STEPS))
+        .map((sublayerValues) =>
+          getSteps(
+            removeOutliers({ allValues: sublayerValues, aggregationOperation }),
+            COLOR_RAMP_BIVARIATE_NUM_STEPS
+          )
+        )
       return steps
     }
 
@@ -165,23 +193,29 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       const positiveSteps = getSteps(positiveValuesFiltered, COLOR_RAMP_DEFAULT_NUM_STEPS / 2)
       return [...negativeSteps, 0, ...positiveSteps]
     }
+
     const allValues = dataSample.flatMap((feature) =>
-      feature.properties?.values.flatMap((values) => {
-        if (!values || !values.length || !Array.isArray(values)) {
-          return []
-        }
-        return values.filter((d, i) => filterCells(d, i, minVisibleValue, maxVisibleValue))
+      aggregateCell({
+        cellValues: feature.properties.values.filter((sublayerValues) =>
+          sublayerValues.map(
+            (value) =>
+              value &&
+              (!minVisibleValue || value >= minVisibleValue) &&
+              (!maxVisibleValue || value <= maxVisibleValue)
+          )
+        ),
+        aggregationOperation,
+        startFrame,
+        endFrame,
+        cellStartOffsets: feature.properties.startOffsets,
       })
     )
-
     if (!allValues.length) {
       return this.getColorDomain()
     }
 
     const dataFiltered = removeOutliers({ allValues, aggregationOperation })
-
-    const steps = getSteps(dataFiltered)
-    return steps
+    return getSteps(dataFiltered)
   }
 
   updateColorDomain = debounce(() => {
