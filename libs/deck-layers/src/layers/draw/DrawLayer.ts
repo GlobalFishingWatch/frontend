@@ -20,7 +20,6 @@ import {
   CustomViewMode,
   DrawLayerMode,
 } from './draw.modes'
-// import { updateFeatureCoordinateByIndex, removeFeaturePointByIndex } from './draw.utils'
 
 type Color = [number, number, number, number]
 const FILL_COLOR: Color = [189, 189, 189, 25]
@@ -62,8 +61,7 @@ function getFeaturesWithOverlapping(features: FeatureCollection['features']) {
   }))
 }
 
-function getDrawDataParsed(data: FeatureCollection, featureType: 'polygons' | 'points') {
-  if (featureType === 'points') return data
+function getDrawDataParsed(data: FeatureCollection) {
   return {
     ...data,
     features: getFeaturesWithOverlapping(data.features),
@@ -177,22 +175,6 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     return currentPointCoordinates
   }
 
-  // getDataWithReplacedPosition = (pointPosition: [number, number]) => {
-  //   const data = this.getData()
-  //   const featureIndex = this?.getSelectedFeatureIndexes()?.[0]
-  //   const coordinateIndexes = this?.getSelectedPositionIndexes()
-  //   if (data?.features?.length && featureIndex !== undefined && coordinateIndexes !== undefined) {
-  //     const coordinateIndex = coordinateIndexes[coordinateIndexes.length - 1]
-  //     const features = updateFeatureCoordinateByIndex(data?.features, {
-  //       featureIndex,
-  //       coordinateIndex,
-  //       pointPosition,
-  //     })
-  //     return { ...data, features }
-  //   }
-  //   return data
-  // }
-
   getDataWithReplacedPosition = (pointPosition: [number, number]) => {
     const featureIndexes = this?.getSelectedFeatureIndexes()
     const coordinateIndex = this?.getSelectedPositionIndexes()
@@ -203,7 +185,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     featureIndexes.forEach((featureIndex) => {
       data = data.replacePosition(featureIndex, coordinateIndex, pointPosition)
     })
-    return getDrawDataParsed(data.getObject(), this.props.featureType)
+    return getDrawDataParsed(data.getObject())
   }
 
   setCurrentPointCoordinates = (pointPosition: [number, number]) => {
@@ -240,6 +222,23 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   }
 
   deleteSelectedFeature = () => {
+    const { data, selectedFeatureIndexes } = this.state
+    let updatedData = new ImmutableFeatureCollection(data)
+    selectedFeatureIndexes?.forEach((featureIndex) => {
+      updatedData = updatedData.deleteFeature(featureIndex)
+    })
+    if (this.state) {
+      this._setState({
+        data: getDrawDataParsed(updatedData.getObject()),
+        selectedFeatureIndexes: [],
+        selectedPositionIndexes: undefined,
+        hasTentativeOverlappingFeatures: false,
+        mode: new CustomViewMode(),
+      })
+    }
+  }
+
+  deleteSelectedPosition = () => {
     const { data, selectedFeatureIndexes, selectedPositionIndexes } = this.state
     let updatedData = new ImmutableFeatureCollection(data)
     selectedFeatureIndexes?.forEach((featureIndex) => {
@@ -249,21 +248,9 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         updatedData = updatedData.removePosition(featureIndex, selectedPositionIndexes)
       }
     })
-    // const { featureType } = this.props
-    // const features =
-    //   featureType === 'points'
-    //     ? data.features.filter((_, index) => !selectedFeatureIndexes?.includes(index))
-    //     : data.features.map((feature, index) => {
-    //         if (selectedFeatureIndexes?.includes(index)) {
-    //           // TODO:draw find the correct index
-    //           return removeFeaturePointByIndex(feature as Feature<Polygon>, 1)
-    //         }
-    //         return feature
-    //       })
     if (this.state) {
       this._setState({
-        data: updatedData.getObject(),
-        selectedFeatureIndexes: [],
+        data: getDrawDataParsed(updatedData.getObject()),
         selectedPositionIndexes: undefined,
         hasTentativeOverlappingFeatures: false,
         mode: new CustomViewMode(),
@@ -299,7 +286,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       case 'addPosition':
       case 'addFeature': {
         this._setState({
-          data: getDrawDataParsed(updatedData, featureType),
+          data: getDrawDataParsed(updatedData),
           tentativeData: undefined,
           mode: this._getModifyMode(),
           selectedFeatureIndexes: editContext.featureIndexes,
@@ -310,7 +297,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       }
       case 'customUpdateSelectedIndexes': {
         this._setState({
-          data: getDrawDataParsed(updatedData, featureType),
+          data: getDrawDataParsed(updatedData),
           selectedFeatureIndexes: editContext.featureIndexes,
         })
         break
@@ -356,7 +343,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         this.isTranslating = !this.isMoving
         if (!this.isMoving) {
           this._setState({
-            data: getDrawDataParsed(updatedData, featureType),
+            data: getDrawDataParsed(updatedData),
           })
         }
         break
@@ -365,7 +352,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         this.isMoving = true
         if (!this.isTranslating) {
           this._setState({
-            data: getDrawDataParsed(updatedData, featureType),
+            data: getDrawDataParsed(updatedData),
           })
         }
         break

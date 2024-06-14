@@ -3,7 +3,6 @@ import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Feature, Polygon } from 'geojson'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
-import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { selectMapDrawingMode } from 'routes/routes.selectors'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
 import { useDrawLayerInstance } from './draw.hooks'
@@ -68,20 +67,24 @@ export const CoordinateEditOverlay = () => {
 
   const onDeletePoint = useCallback(() => {
     if (allowDeletePoint) {
-      drawLayer?.deleteSelectedFeature()
+      drawLayer?.deleteSelectedPosition()
     }
   }, [allowDeletePoint, drawLayer])
 
   const resetEditingPoint = useCallback(() => {
-    setNewPointLatitude(null)
-    setNewPointLongitude(null)
-    drawLayer?.resetSelectedPoint()
+    // As this is triggered with clickOutside we need to wait to reset
+    // in case before the deleteSelectedPosition is called
+    setTimeout(() => {
+      setNewPointLatitude(null)
+      setNewPointLongitude(null)
+      drawLayer?.resetSelectedPoint()
+    }, 1)
   }, [drawLayer])
 
   const onConfirm = useCallback(() => {
     drawLayer?.setCurrentPointCoordinates([editingPointLongitude, editingPointLatitude])
-    drawLayer?.resetSelectedPoint()
-  }, [drawLayer, editingPointLatitude, editingPointLongitude])
+    resetEditingPoint()
+  }, [drawLayer, editingPointLatitude, editingPointLongitude, resetEditingPoint])
 
   if (!currentPointCoordinates?.length) {
     return null
