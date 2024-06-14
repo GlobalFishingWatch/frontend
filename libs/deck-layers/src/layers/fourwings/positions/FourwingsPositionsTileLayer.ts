@@ -330,7 +330,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getFillColor,
           getSize: this._getIconSize,
-          getAngle: (d: any) => d.properties.bearing - 90,
+          getAngle: (d: any) => (d.properties.bearing ? d.properties.bearing - 90 : 0),
           pickable: true,
           getPickingInfo: this.getPickingInfo,
           updateTriggers: {
@@ -347,7 +347,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getHighlightColor,
           getSize: this._getIconSize,
-          getAngle: (d: any) => d.properties.bearing - 90,
+          getAngle: (d: any) => (d.properties.bearing ? d.properties.bearing - 90 : 0),
           getPickingInfo: this.getPickingInfo,
           updateTriggers: {
             getColor: [highlightedFeatureIds, highlightedVesselIds],
