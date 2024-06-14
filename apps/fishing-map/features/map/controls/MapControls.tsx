@@ -23,7 +23,7 @@ import {
   selectIsMapDrawing,
 } from 'routes/routes.selectors'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
-import setInlineStyles from 'utils/dom'
+import { setInlineStyles, cleantInlineStyles } from 'utils/dom'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -139,6 +139,7 @@ const MapControls = ({
   const handleModalClose = useCallback(() => {
     if (domElement.current) {
       domElement.current.classList.remove('printing')
+      cleantInlineStyles(domElement.current)
     }
     dispatch(setModalOpen({ id: 'screenshot', open: false }))
   }, [dispatch])
