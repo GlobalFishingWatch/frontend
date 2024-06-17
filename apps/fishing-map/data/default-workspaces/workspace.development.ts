@@ -29,7 +29,7 @@ import { WorkspaceState } from 'types'
 const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
-  name: 'Default public Fishing Map workspace',
+  name: '',
   description: '',
   viewAccess: WORKSPACE_PUBLIC_ACCESS,
   editAccess: WORKSPACE_PRIVATE_ACCESS,
