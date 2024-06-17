@@ -13,9 +13,10 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { AppWorkspace, updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
-import { getEditAccessOptionsByViewAccess } from './workspace-access.utils'
+import { getEditAccessOptionsByViewAccess, getTimeRangeOptions } from './workspace-access.utils'
 
 type EditWorkspaceProps = {
   workspace: AppWorkspace
@@ -34,6 +35,12 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
   const [newPassword, setNewPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const timerange = useTimerangeConnect()
+  const [daysFromLatest, setDaysFromLatest] = useState(workspace?.state?.daysFromLatest)
+  const timeRangeOptions = getTimeRangeOptions(timerange.start, timerange.end)
+  const [timeRangeOption, setTimeRangeOption] = useState(
+    workspace?.state?.daysFromLatest ? 'dynamic' : 'static'
+  )
 
   const userData = useSelector(selectUserData)
   const isOwnerWorkspace = workspace?.ownerId === userData?.id
@@ -46,6 +53,10 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
         ...workspace,
         name,
         editAccess,
+        state: {
+          ...workspace.state,
+          daysFromLatest,
+        },
         password: editPassword,
         newPassword,
       }
@@ -81,6 +92,15 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
     }
   }
 
+  const handleSelectTimeRangeOption = (option: SelectOption) => {
+    setTimeRangeOption(option.id)
+    if (option.id === 'static') {
+      setDaysFromLatest(undefined)
+    } else if (option.id === 'dynamic') {
+      setDaysFromLatest(workspace?.state?.daysFromLatest)
+    }
+  }
+
   const handleSubmit = async (event: any) => {
     event.preventDefault()
     updateWorkspace()
@@ -94,14 +114,38 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
 
   return (
     <form onSubmit={handleSubmit}>
-      <InputText
-        value={name}
-        className={styles.input}
-        testId="create-workspace-name"
-        label={t('common.name', 'Name')}
-        onChange={(e) => setName(e.target.value)}
-        autoFocus
-      />
+      <div className={styles.row}>
+        <InputText
+          value={name}
+          className={styles.input}
+          testId="create-workspace-name"
+          label={t('common.name', 'Name')}
+          onChange={(e) => setName(e.target.value)}
+          autoFocus
+        />
+      </div>
+      <div className={styles.row}>
+        <Select
+          options={timeRangeOptions}
+          label={t('common.timerange', 'Time range')}
+          containerClassName={styles.select}
+          onSelect={handleSelectTimeRangeOption}
+          selectedOption={
+            timeRangeOptions.find((o) => o.id === timeRangeOption) || timeRangeOptions[0]
+          }
+        />
+        {timeRangeOption === 'dynamic' && (
+          <InputText
+            value={daysFromLatest}
+            type="number"
+            className={styles.select}
+            label={t('common.timerangeDaysFromLatest', 'Days from latest data update (1-100)')}
+            onChange={(e) => setDaysFromLatest(e.target.value as any)}
+            min={1}
+            max={100}
+          />
+        )}
+      </div>
       <div className={styles.row}>
         {isOwnerWorkspace && (
           <Select

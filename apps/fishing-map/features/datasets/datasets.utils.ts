@@ -832,9 +832,6 @@ export const getFiltersBySchema = (
   const filterOperator = getSchemaFilterOperationInDataview(dataview, schema) as FilterOperator
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   const unit = getSchemaFilterUnitInDataview(dataview, schema)
-  if (schema === 'speed') {
-    debugger
-  }
   const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)!?.map((d) => d.id)
   const activeDatasets = getActiveDatasetsInActivityDataviews([dataview as UrlDataviewInstance])
   const hasDatasetsWithSchema =

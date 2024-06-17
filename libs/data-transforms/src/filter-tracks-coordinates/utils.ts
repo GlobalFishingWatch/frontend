@@ -1,4 +1,5 @@
 export function isNumeric(str: string | number) {
+  const regex = /^-?\d*\.?\d+$/
   if (typeof str == 'number') return true
-  return !isNaN(parseFloat(str))
+  return regex.test(str.toString())
 }
