@@ -20,7 +20,8 @@ import {
   MultiSelect,
   ChoiceOption,
 } from '@globalfishingwatch/ui-components'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS, Interval } from '@globalfishingwatch/layer-composer'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/deck-layers'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { createDataviewThunk, updateDataviewThunk } from 'features/dataviews/dataviews.slice'
 import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'
@@ -46,7 +47,7 @@ const dynamicHeatmapOption: ChoiceOption = { id: 'dynamic', label: 'Dynamic' }
 const staticHeatmapOption: ChoiceOption = { id: 'static', label: 'Static' }
 const heatmapTypesOptions = [dynamicHeatmapOption, staticHeatmapOption]
 
-type temporalResolutionOption = { id: Interval; label: string }
+type temporalResolutionOption = { id: FourwingsInterval; label: string }
 const temporalResolutionOptions: temporalResolutionOption[] = [
   { id: 'MONTH', label: 'Month' },
   { id: 'DAY', label: 'Day' },

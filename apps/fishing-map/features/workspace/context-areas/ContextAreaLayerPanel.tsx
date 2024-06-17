@@ -12,7 +12,6 @@ import {
   Collapsable,
 } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_CONTEXT_SOURCE_LAYER } from '@globalfishingwatch/layer-composer'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/LayerPanel.module.css'

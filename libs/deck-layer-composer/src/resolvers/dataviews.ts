@@ -11,7 +11,7 @@ import {
   DataviewType,
 } from '@globalfishingwatch/api-types'
 import {
-  DEFAULT_FOURWINGS_INTERVALS,
+  FOURWINGS_INTERVALS_ORDER,
   FourwingsComparisonMode,
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
@@ -25,7 +25,7 @@ const getDatasetsAvailableIntervals = (datasets: Dataset[]) =>
 
 export const getDataviewAvailableIntervals = (
   dataview: UrlDataviewInstance,
-  defaultIntervals = DEFAULT_FOURWINGS_INTERVALS
+  defaultIntervals = FOURWINGS_INTERVALS_ORDER
 ): FourwingsInterval[] => {
   const allDatasets = dataview.datasets?.length
     ? dataview.datasets

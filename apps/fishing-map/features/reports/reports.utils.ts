@@ -4,11 +4,11 @@ import { featureCollection, multiPolygon } from '@turf/helpers'
 import { difference, dissolve } from '@turf/turf'
 import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { parse } from 'qs'
-import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { API_VERSION } from '@globalfishingwatch/api-client'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -80,7 +80,7 @@ export const tickFormatter = (tick: number) => {
   return format(formatter)(tick)
 }
 
-export const formatDate = (date: DateTime, timeChunkInterval: Interval | string) => {
+export const formatDate = (date: DateTime, timeChunkInterval: FourwingsInterval | string) => {
   let formattedLabel = ''
   switch (timeChunkInterval) {
     case 'month':

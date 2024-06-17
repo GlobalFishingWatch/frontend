@@ -14,9 +14,12 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import {
+  FOURWINGS_INTERVALS_ORDER,
+  FourwingsLayer,
+  getInterval,
+} from '@globalfishingwatch/deck-layers'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import {
   useTimerangeConnect,
@@ -378,7 +381,7 @@ const TimebarWrapper = () => {
         minimumRange={1}
         // TODO: set this by current active activity dataviews
         // minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
-        intervals={INTERVAL_ORDER}
+        intervals={FOURWINGS_INTERVALS_ORDER}
         getCurrentInterval={getInterval}
         trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language}

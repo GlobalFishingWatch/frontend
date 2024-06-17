@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import { DateTime } from 'luxon'
 import { useSelector } from 'react-redux'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { selectReportTimeComparison } from 'features/app/selectors/app.reports.selector'
 import { ReportActivityTimeComparison } from 'types'
 import i18n from 'features/i18n/i18n'
@@ -38,7 +38,7 @@ export interface ComparisonGraphProps {
       unit?: string
     }
   }[]
-  interval: Interval
+  interval: FourwingsInterval
 }
 
 const formatTooltipValue = (value: number, payload: any, unit: string) => {

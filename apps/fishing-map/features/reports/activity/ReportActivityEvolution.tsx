@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import { max, min } from 'lodash'
 import { DateTime } from 'luxon'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { toFixed } from 'utils/shared'
@@ -33,7 +33,7 @@ type ReportGraphTooltipProps = {
     unit: string
   }[]
   label: number
-  timeChunkInterval: Interval
+  timeChunkInterval: FourwingsInterval
 }
 
 const formatTooltipValue = (value: number, payload: any, unit: string) => {
@@ -84,7 +84,7 @@ const ReportGraphTooltip = (props: any) => {
   return null
 }
 
-const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
+const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
   const date = getUTCDateTime(tick).setLocale(i18n.language)
   return formatDateForInterval(date, timeChunkInterval)
 }
