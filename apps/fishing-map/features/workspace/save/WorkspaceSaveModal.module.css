@@ -10,11 +10,11 @@ div.modalContentWrapper {
   display: flex;
   align-items: center;
   gap: var(--space-M);
-  margin-bottom: var(--space-M);
+  margin-bottom: var(--space-S);
 }
 
 .input {
-  margin-bottom: var(--space-M);
+  flex: 1;
 }
 
 .select {
