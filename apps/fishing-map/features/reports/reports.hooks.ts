@@ -193,24 +193,6 @@ export function useFetchReportVessel() {
       isDifferentDateRange &&
       workspaceStatus === AsyncReducerStatus.Finished
     ) {
-      dispatch(
-        fetchReportVesselsThunk({
-          datasets: reportDataviews.map(({ datasets }) =>
-            datasets.map((d: Dataset) => d.id).join(',')
-          ),
-          filters: reportDataviews.map(({ filter }) => filter) as any,
-          vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups) as any,
-          region: {
-            id: areaId,
-            dataset: datasetId,
-          },
-          dateRange: timerange,
-          spatialAggregation: true,
-          reportBufferUnit,
-          reportBufferValue,
-          reportBufferOperation,
-        })
-      )
       dispatchFetchReport()
     }
     // Avoid re-fetching when timerange changes
