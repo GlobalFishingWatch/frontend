@@ -77,8 +77,8 @@ export function ActivityByType() {
         const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
         // TODO
         setMapCoordinates({
-          latitude: event.position.lat,
-          longitude: event.position.lon,
+          latitude: event.coordinates?.[1],
+          longitude: event.coordinates?.[0],
           zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
         })
         if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })

@@ -100,8 +100,8 @@ const ActivityByVoyage = () => {
       if (viewport?.zoom) {
         const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
         setMapCoordinates({
-          latitude: event.position.lat,
-          longitude: event.position.lon,
+          latitude: event.coordinates?.[1],
+          longitude: event.coordinates?.[0],
           zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
         })
         if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
