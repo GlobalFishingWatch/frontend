@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { InputText, Button, Select, SelectOption } from '@globalfishingwatch/ui-components'
@@ -13,10 +13,14 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { AppWorkspace, updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
-import { getEditAccessOptionsByViewAccess, getTimeRangeOptions } from './workspace-access.utils'
+import {
+  WorkspaceTimeRangeMode,
+  getEditAccessOptionsByViewAccess,
+  isValidDaysFromLatest,
+} from './workspace-save.utils'
+import { useSaveWorkspaceTimerange } from './workspace-save.hooks'
 
 type EditWorkspaceProps = {
   workspace: AppWorkspace
@@ -35,16 +39,19 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
   const [newPassword, setNewPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const timerange = useTimerangeConnect()
-  const [daysFromLatest, setDaysFromLatest] = useState(workspace?.state?.daysFromLatest)
-  const timeRangeOptions = getTimeRangeOptions(timerange.start, timerange.end)
-  const [timeRangeOption, setTimeRangeOption] = useState(
-    workspace?.state?.daysFromLatest ? 'dynamic' : 'static'
-  )
+  const {
+    timeRangeOptions,
+    timeRangeOption,
+    daysFromLatest,
+    handleTimeRangeChange,
+    handleDaysFromLatestChange,
+  } = useSaveWorkspaceTimerange(workspace)
 
   const userData = useSelector(selectUserData)
   const isOwnerWorkspace = workspace?.ownerId === userData?.id
   const isPassWordEditAccess = workspace?.editAccess === WORKSPACE_PASSWORD_ACCESS
+  const validDaysFromLatestValue =
+    timeRangeOption === 'dynamic' ? isValidDaysFromLatest(daysFromLatest) : true
 
   const updateWorkspace = async () => {
     if (workspace) {
@@ -92,15 +99,19 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
     }
   }
 
-  const handleSelectTimeRangeOption = (option: SelectOption) => {
-    setTimeRangeOption(option.id)
-    if (option.id === 'static') {
-      setDaysFromLatest(undefined)
-    } else if (option.id === 'dynamic') {
-      setDaysFromLatest(workspace?.state?.daysFromLatest)
+  const onDaysFromLatestChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newName = handleDaysFromLatestChange(event, name)
+    if (newName !== name) {
+      setName(newName)
     }
   }
 
+  const onSelectTimeRangeChange = (option: SelectOption<WorkspaceTimeRangeMode>) => {
+    const newName = handleTimeRangeChange(option, name)
+    if (newName !== name) {
+      setName(newName)
+    }
+  }
   const handleSubmit = async (event: any) => {
     event.preventDefault()
     updateWorkspace()
@@ -129,7 +140,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
           options={timeRangeOptions}
           label={t('common.timerange', 'Time range')}
           containerClassName={styles.select}
-          onSelect={handleSelectTimeRangeOption}
+          onSelect={onSelectTimeRangeChange}
           selectedOption={
             timeRangeOptions.find((o) => o.id === timeRangeOption) || timeRangeOptions[0]
           }
@@ -140,7 +151,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
             type="number"
             className={styles.select}
             label={t('common.timerangeDaysFromLatest', 'Days from latest data update (1-100)')}
-            onChange={(e) => setDaysFromLatest(e.target.value as any)}
+            onChange={onDaysFromLatestChange}
             min={1}
             max={100}
           />
@@ -198,7 +209,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
               ? t('workspace.passwordMinLength', 'Password must be at least 5 characters')
               : ''
           }
-          disabled={!name || passwordDisabled}
+          disabled={!name || passwordDisabled || !validDaysFromLatestValue}
           onClick={updateWorkspace}
           htmlType="submit"
           testId="create-workspace-button"

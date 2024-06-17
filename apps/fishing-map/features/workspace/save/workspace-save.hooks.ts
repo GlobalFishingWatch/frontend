@@ -1,11 +1,20 @@
-import { useCallback } from 'react'
+import { ChangeEvent, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { SelectOption } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectCreateWorkspaceModalOpen,
   selectEditWorkspaceModalOpen,
   setModalOpen,
 } from 'features/modals/modals.slice'
+import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import {
+  WorkspaceTimeRangeMode,
+  getTimeRangeOptions,
+  isValidDaysFromLatest,
+  replaceTimerangeWorkspaceName,
+} from './workspace-save.utils'
 
 export const useSaveWorkspaceModalConnect = (id: 'editWorkspace' | 'createWorkspace') => {
   const dispatch = useAppDispatch()
@@ -27,5 +36,70 @@ export const useSaveWorkspaceModalConnect = (id: 'editWorkspace' | 'createWorksp
         ? createWorkspaceModalOpen
         : false,
     dispatchWorkspaceModalOpen,
+  }
+}
+
+const DEFAULT_DAYS_FROM_LATEST = 30
+
+export const useSaveWorkspaceTimerange = (workspace: AppWorkspace) => {
+  const timerange = useTimerangeConnect()
+  const timeRangeOptions = getTimeRangeOptions(timerange.start, timerange.end)
+  const [timeRangeOption, setTimeRangeOption] = useState<WorkspaceTimeRangeMode>(
+    workspace?.state?.daysFromLatest ? 'dynamic' : 'static'
+  )
+  const defaultDaysFromLatest = workspace?.state?.daysFromLatest || DEFAULT_DAYS_FROM_LATEST
+  const [daysFromLatest, setDaysFromLatest] = useState<number | undefined>(defaultDaysFromLatest)
+
+  const handleTimeRangeChange = (
+    option: SelectOption<WorkspaceTimeRangeMode>,
+    workspaceName: string
+  ) => {
+    const newTimeRangeOption = option.id
+    setTimeRangeOption(newTimeRangeOption)
+
+    if (newTimeRangeOption === 'static') {
+      setDaysFromLatest(undefined)
+    } else if (newTimeRangeOption === 'dynamic') {
+      setDaysFromLatest(defaultDaysFromLatest)
+    }
+
+    const newName = replaceTimerangeWorkspaceName({
+      name: workspaceName,
+      timerange,
+      prevTimeRangeOption: timeRangeOption,
+      timeRangeOption: newTimeRangeOption,
+      prevDaysFromLatest: daysFromLatest as number,
+      ...(newTimeRangeOption === 'dynamic' && { daysFromLatest: defaultDaysFromLatest }),
+    })
+    return newName
+  }
+
+  const handleDaysFromLatestChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    workspaceName: string
+  ) => {
+    const newDaysFromLatest = parseInt(event.target.value)
+    if (isValidDaysFromLatest(newDaysFromLatest)) {
+      setDaysFromLatest(newDaysFromLatest)
+    } else if (!newDaysFromLatest) {
+      setDaysFromLatest('' as any)
+    }
+
+    const newName = replaceTimerangeWorkspaceName({
+      name: workspaceName,
+      timerange,
+      timeRangeOption,
+      prevDaysFromLatest: daysFromLatest as number,
+      daysFromLatest: newDaysFromLatest,
+    })
+    return newName
+  }
+
+  return {
+    timeRangeOptions,
+    timeRangeOption,
+    daysFromLatest,
+    handleTimeRangeChange,
+    handleDaysFromLatestChange,
   }
 }
