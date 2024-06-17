@@ -142,6 +142,19 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#FAE9A0',
         datasets: ['proto-global-encounters-events-30min:v3.0'],
       },
+      datasetsConfig: [
+        {
+          datasetId: 'proto-global-encounters-events-30min:v3.0',
+          endpoint: 'events-cluster-tiles',
+          params: [],
+          query: [
+            {
+              id: 'encounter-types',
+              value: ['CARRIER-FISHING', 'FISHING-CARRIER', 'FISHING-SUPPORT', 'SUPPORT-FISHING'],
+            },
+          ],
+        },
+      ],
       dataviewId: ENCOUNTER_EVENTS_30MIN_DATAVIEW_SLUG,
     },
     {
