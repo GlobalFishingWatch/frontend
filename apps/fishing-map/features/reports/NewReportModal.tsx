@@ -19,7 +19,7 @@ import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/d
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { AsyncError } from 'utils/async-slice'
-import { getViewAccessOptions } from 'features/workspace/save/workspace-access.utils'
+import { getViewAccessOptions } from 'features/workspace/save/workspace-save.utils'
 import styles from './NewReportModal.module.css'
 
 type NewReportModalProps = {

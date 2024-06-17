@@ -16,7 +16,7 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
-import { getEditAccessOptionsByViewAccess, getTimeRangeOptions } from './workspace-access.utils'
+import { getEditAccessOptionsByViewAccess, getTimeRangeOptions } from './workspace-save.utils'
 import { DAYS_FROM_LATEST_MAX, DAYS_FROM_LATEST_MIN } from './WorkspaceCreateModal'
 
 type EditWorkspaceProps = {

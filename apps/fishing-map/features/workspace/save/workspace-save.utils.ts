@@ -112,48 +112,30 @@ export const getWorkspaceTimerangeName = (
   return ''
 }
 
-export const getUpdateNameWithStaticTimerange = ({
-  name,
-  daysFromLatest,
-  timeRangeOption,
-  timerange,
-}: {
+type ReplaceTimerangeWorkspaceNameParams = {
   name: string
+  prevTimeRangeOption?: WorkspaceTimeRangeMode
   timeRangeOption: WorkspaceTimeRangeMode
   daysFromLatest?: number
+  prevDaysFromLatest?: number
   timerange: { start: string; end: string }
-}) => {
-  const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
-    timerange,
-    daysFromLatest: daysFromLatest as number,
-  })
-  if (name && name.includes(workspaceTimerangeName)) {
-    const workspaceLatestDescription = getStaticWorkspaceName({ timerange })
-    return name.replace(workspaceTimerangeName, workspaceLatestDescription)
-  }
-  return name
 }
-
-export const getUpdateNameWithDynamicTimerange = ({
+export const replaceTimerangeWorkspaceName = ({
   name,
+  daysFromLatest,
+  prevTimeRangeOption,
+  prevDaysFromLatest,
   timeRangeOption,
   timerange,
-  prevDaysFromLatest,
-  newDaysFromLatest,
-}: {
-  name: string
-  timerange: { start: string; end: string }
-  timeRangeOption: WorkspaceTimeRangeMode
-  prevDaysFromLatest: number
-  newDaysFromLatest: number
-}) => {
-  const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
+}: ReplaceTimerangeWorkspaceNameParams) => {
+  const workspaceTimerangeName = getWorkspaceTimerangeName(prevTimeRangeOption || timeRangeOption, {
     timerange,
-    daysFromLatest: prevDaysFromLatest,
+    daysFromLatest: prevDaysFromLatest as number,
   })
   if (name && name.includes(workspaceTimerangeName)) {
-    const workspaceLatestDescription = getDynamicWorkspaceName({
-      daysFromLatest: newDaysFromLatest,
+    const workspaceLatestDescription = getWorkspaceTimerangeName(timeRangeOption, {
+      timerange,
+      daysFromLatest,
     })
     return name.replace(workspaceTimerangeName, workspaceLatestDescription)
   }

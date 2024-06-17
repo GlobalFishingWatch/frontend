@@ -26,11 +26,10 @@ import {
   WorkspaceTimeRangeMode,
   getEditAccessOptionsByViewAccess,
   getTimeRangeOptions,
-  getUpdateNameWithDynamicTimerange,
-  getUpdateNameWithStaticTimerange,
   getViewAccessOptions,
   getWorkspaceTimerangeName,
-} from './workspace-access.utils'
+  replaceTimerangeWorkspaceName,
+} from './workspace-save.utils'
 
 export const DEFAULT_DAYS_FROM_LATEST = 30
 export const DAYS_FROM_LATEST_MIN = 1
@@ -93,13 +92,15 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
     } else if (!newDaysFromLatest) {
       setDaysFromLatest('' as any)
     }
-    updateNameWithDynamicTimerange({
+
+    const newName = replaceTimerangeWorkspaceName({
       name,
       timerange,
       timeRangeOption,
       prevDaysFromLatest: daysFromLatest as number,
-      newDaysFromLatest,
+      daysFromLatest: newDaysFromLatest,
     })
+    setName(newName)
   }
 
   const setDefaultWorkspaceName = async () => {
@@ -122,49 +123,6 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
     if (workspaceName) {
       setName(workspaceName)
     }
-  }
-
-  const updateNameWithDynamicTimerange = ({
-    name,
-    timerange,
-    timeRangeOption,
-    prevDaysFromLatest,
-    newDaysFromLatest,
-  }: {
-    name: string
-    timerange: { start: string; end: string }
-    timeRangeOption: WorkspaceTimeRangeMode
-    prevDaysFromLatest: number
-    newDaysFromLatest: number
-  }) => {
-    const newName = getUpdateNameWithDynamicTimerange({
-      name,
-      timerange,
-      timeRangeOption,
-      prevDaysFromLatest,
-      newDaysFromLatest,
-    })
-    setName(newName)
-  }
-
-  const updateNameWithStaticTimerange = ({
-    name,
-    timeRangeOption,
-    daysFromLatest,
-    timerange,
-  }: {
-    name: string
-    timeRangeOption: WorkspaceTimeRangeMode
-    daysFromLatest?: number
-    timerange: { start: string; end: string }
-  }) => {
-    const newName = getUpdateNameWithStaticTimerange({
-      name,
-      timeRangeOption,
-      daysFromLatest,
-      timerange,
-    })
-    setName(newName)
   }
 
   useEffect(() => {
@@ -231,19 +189,21 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   }
 
   const handleSelectTimeRangeOption = (option: SelectOption<WorkspaceTimeRangeMode>) => {
+    const newTimeRangeOption = option.id
     if (option.id === 'static') {
       setDaysFromLatest(undefined)
-      updateNameWithStaticTimerange({ name, timeRangeOption, timerange, daysFromLatest })
     } else if (option.id === 'dynamic') {
       setDaysFromLatest(DEFAULT_DAYS_FROM_LATEST)
-      updateNameWithDynamicTimerange({
-        name,
-        timerange,
-        timeRangeOption,
-        prevDaysFromLatest: daysFromLatest || 0,
-        newDaysFromLatest: DEFAULT_DAYS_FROM_LATEST,
-      })
     }
+    const newName = replaceTimerangeWorkspaceName({
+      name,
+      timerange,
+      prevTimeRangeOption: timeRangeOption,
+      timeRangeOption: newTimeRangeOption,
+      prevDaysFromLatest: daysFromLatest as number,
+      ...(newTimeRangeOption === 'dynamic' && { daysFromLatest: DEFAULT_DAYS_FROM_LATEST }),
+    })
+    setName(newName)
     setTimeRangeOption(option.id)
   }
 
