@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { saveAs } from 'file-saver'
-import setInlineStyles from 'utils/dom'
+import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 import { useDeckMap } from 'features/map/map-context.hooks'
 
 export const useDownloadDomElementAsImage = (
@@ -75,6 +75,7 @@ export const useDownloadDomElementAsImage = (
               return false
             }
           })
+          cleantInlineStyles(domElement)
         } catch (e: any) {
           setError('Something went wrong generating the screenshot, please try again')
           setLoading(false)

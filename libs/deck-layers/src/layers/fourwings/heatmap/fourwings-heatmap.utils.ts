@@ -19,7 +19,7 @@ import {
   FourwingsChunk,
 } from './fourwings-heatmap.types'
 
-function aggregateSublayerValues(
+export function aggregateSublayerValues(
   values: number[],
   aggregationOperation = FourwingsAggregationOperation.Sum
 ) {

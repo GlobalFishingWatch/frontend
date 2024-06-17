@@ -318,7 +318,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           // loaders: [MVTWorkerLoader],
           fetch: this._fetch,
           onViewportLoad: this._onViewportLoad,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
           renderSubLayers: () => null,
         }),
         new IconLayerClass(this.props, {
@@ -330,7 +329,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getFillColor,
           getSize: this._getIconSize,
-          getAngle: (d: any) => d.properties.bearing - 90,
+          getAngle: (d: any) => (d.properties.bearing ? d.properties.bearing - 90 : 0),
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
           pickable: true,
           getPickingInfo: this.getPickingInfo,
           updateTriggers: {
@@ -347,7 +347,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getHighlightColor,
           getSize: this._getIconSize,
-          getAngle: (d: any) => d.properties.bearing - 90,
+          getAngle: (d: any) => (d.properties.bearing ? d.properties.bearing - 90 : 0),
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
           getPickingInfo: this.getPickingInfo,
           updateTriggers: {
             getColor: [highlightedFeatureIds, highlightedVesselIds],
@@ -363,6 +364,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getColor: this._getLabelColor,
           getSize: 13,
           outlineColor: hexToDeckColor(BLEND_BACKGROUND),
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
           fontFamily: 'Roboto',
           outlineWidth: 200,
           fontSettings: { sdf: true, smoothing: 0.2 },

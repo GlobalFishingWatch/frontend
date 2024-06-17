@@ -293,6 +293,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     const positions = data.attributes?.getPath?.value
     const positionsSize = data.attributes?.getPath?.size
     const timestamps = data.attributes?.getTimestamp?.value
+    if (!timestamps?.length) return null
     const pointsArray = Array.from(timestamps)
     const firstPointIndex = timestamps.findIndex((t) => t > this.props.startTime)
     const lastPointIndex = timestamps.findLastIndex((t) => t < this.props.endTime)
