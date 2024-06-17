@@ -175,7 +175,9 @@ export class LayerComposer {
     let layersPromises: GeneratorPromise[] = []
     const singleTrackLayersVisible =
       layers.filter(({ type, visible }) => type === GeneratorType.Track && visible).length === 1
-    const layersGenerated = layers.map((layer) => {
+    // Temporal workaound to avoid crashes when graticules layer is present
+    const layersWithoutGraticules = layers.filter((layer) => layer.type !== ('GRATICULES' as any))
+    const layersGenerated = layersWithoutGraticules.map((layer) => {
       // Paint fishing events white if only one vessel is shown
       if (layer.type === GeneratorType.VesselEventsShapes && singleTrackLayersVisible) {
         layer.color = EVENTS_COLORS.fishing
