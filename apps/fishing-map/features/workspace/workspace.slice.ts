@@ -283,6 +283,7 @@ export type SaveWorkspaceThunkProperties = {
   description?: string
   password?: string
   createAsPublic: boolean
+  daysFromLatest?: number
   viewAccess: WorkspaceViewAccessType
   editAccess: WorkspaceEditAccessType
 }
@@ -304,6 +305,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
     const {
       name: defaultName,
       description = '',
+      daysFromLatest,
       createAsPublic,
       viewAccess,
       editAccess,
@@ -325,6 +327,10 @@ export const saveWorkspaceThunk = createAsyncThunk(
               editAccess,
               password,
               public: createAsPublic,
+              state: {
+                ...workspaceUpsert.state,
+                daysFromLatest,
+              },
             },
           } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
         } catch (e: any) {
