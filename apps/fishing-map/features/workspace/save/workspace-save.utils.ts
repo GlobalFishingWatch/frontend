@@ -10,6 +10,17 @@ import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
 
+export const DAYS_FROM_LATEST_MIN = 1
+export const DAYS_FROM_LATEST_MAX = 100
+
+export function isValidDaysFromLatest(daysFromLatest: number | undefined) {
+  return (
+    daysFromLatest !== undefined &&
+    daysFromLatest >= DAYS_FROM_LATEST_MIN &&
+    daysFromLatest <= DAYS_FROM_LATEST_MAX
+  )
+}
+
 export const formatTimerangeBoundary = (
   boundary: string | undefined,
   dateFormat: Intl.DateTimeFormatOptions

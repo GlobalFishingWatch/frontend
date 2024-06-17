@@ -21,19 +21,16 @@ import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/d
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
-import { useSaveWorkspaceModalConnect } from './workspace-save.hooks'
+import { useSaveWorkspaceModalConnect, useSaveWorkspaceTimerange } from './workspace-save.hooks'
 import {
+  DAYS_FROM_LATEST_MAX,
+  DAYS_FROM_LATEST_MIN,
   WorkspaceTimeRangeMode,
   getEditAccessOptionsByViewAccess,
-  getTimeRangeOptions,
   getViewAccessOptions,
   getWorkspaceTimerangeName,
-  replaceTimerangeWorkspaceName,
+  isValidDaysFromLatest,
 } from './workspace-save.utils'
-
-export const DEFAULT_DAYS_FROM_LATEST = 30
-export const DAYS_FROM_LATEST_MIN = 1
-export const DAYS_FROM_LATEST_MAX = 100
 
 type CreateWorkspaceModalProps = {
   title?: string
@@ -52,7 +49,6 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   const containsPrivateDatasets = privateDatasets.length > 0
 
   const [name, setName] = useState('')
-  const [hasWorkspaceNameChanged, setHasWorkspaceNameChanged] = useState(false)
   const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(
     containsPrivateDatasets ? WORKSPACE_PRIVATE_ACCESS : WORKSPACE_PUBLIC_ACCESS
   )
@@ -60,16 +56,16 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   const [password, setPassword] = useState<string>('')
 
   const viewOptions = getViewAccessOptions()
+  const {
+    timeRangeOptions,
+    timeRangeOption,
+    daysFromLatest,
+    handleTimeRangeChange,
+    handleDaysFromLatestChange,
+  } = useSaveWorkspaceTimerange(workspace)
   const editOptions = getEditAccessOptionsByViewAccess(viewAccess)
-  const timeRangeOptions = getTimeRangeOptions(timerange.start, timerange.end)
-  const [timeRangeOption, setTimeRangeOption] = useState(timeRangeOptions[0].id)
-  const [daysFromLatest, setDaysFromLatest] = useState<number>()
   const validDaysFromLatestValue =
-    timeRangeOption === 'dynamic'
-      ? daysFromLatest !== undefined &&
-        daysFromLatest > DAYS_FROM_LATEST_MIN &&
-        daysFromLatest < DAYS_FROM_LATEST_MAX
-      : true
+    timeRangeOption === 'dynamic' ? isValidDaysFromLatest(daysFromLatest) : true
 
   const { workspaceModalOpen, dispatchWorkspaceModalOpen } =
     useSaveWorkspaceModalConnect('createWorkspace')
@@ -80,27 +76,6 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
 
   const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value)
-    if (!hasWorkspaceNameChanged) {
-      setHasWorkspaceNameChanged(true)
-    }
-  }
-
-  const onDaysFromLatestChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newDaysFromLatest = parseInt(event.target.value)
-    if (newDaysFromLatest >= DAYS_FROM_LATEST_MIN && newDaysFromLatest <= DAYS_FROM_LATEST_MAX) {
-      setDaysFromLatest(newDaysFromLatest)
-    } else if (!newDaysFromLatest) {
-      setDaysFromLatest('' as any)
-    }
-
-    const newName = replaceTimerangeWorkspaceName({
-      name,
-      timerange,
-      timeRangeOption,
-      prevDaysFromLatest: daysFromLatest as number,
-      daysFromLatest: newDaysFromLatest,
-    })
-    setName(newName)
   }
 
   const setDefaultWorkspaceName = async () => {
@@ -188,23 +163,18 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
     }
   }
 
-  const handleSelectTimeRangeOption = (option: SelectOption<WorkspaceTimeRangeMode>) => {
-    const newTimeRangeOption = option.id
-    if (option.id === 'static') {
-      setDaysFromLatest(undefined)
-    } else if (option.id === 'dynamic') {
-      setDaysFromLatest(DEFAULT_DAYS_FROM_LATEST)
+  const onDaysFromLatestChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newName = handleDaysFromLatestChange(event, name)
+    if (newName !== name) {
+      setName(newName)
     }
-    const newName = replaceTimerangeWorkspaceName({
-      name,
-      timerange,
-      prevTimeRangeOption: timeRangeOption,
-      timeRangeOption: newTimeRangeOption,
-      prevDaysFromLatest: daysFromLatest as number,
-      ...(newTimeRangeOption === 'dynamic' && { daysFromLatest: DEFAULT_DAYS_FROM_LATEST }),
-    })
-    setName(newName)
-    setTimeRangeOption(option.id)
+  }
+
+  const onSelectTimeRangeChange = (option: SelectOption<WorkspaceTimeRangeMode>) => {
+    const newName = handleTimeRangeChange(option, name)
+    if (newName !== name) {
+      setName(newName)
+    }
   }
 
   const handleSubmit = async (event: any) => {
@@ -238,7 +208,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
             options={timeRangeOptions}
             label={t('common.timerange', 'Time range')}
             containerClassName={styles.select}
-            onSelect={handleSelectTimeRangeOption}
+            onSelect={onSelectTimeRangeChange}
             selectedOption={
               timeRangeOptions.find((o) => o.id === timeRangeOption) || timeRangeOptions[0]
             }
