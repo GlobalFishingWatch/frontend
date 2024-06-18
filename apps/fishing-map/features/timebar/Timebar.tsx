@@ -43,6 +43,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   useTimebarVesselEvents,
   useTimebarVesselTracks,
+  useTimebarVesselTracksGraph,
 } from 'features/timebar/timebar-vessel.hooks'
 import {
   selectTimebarGraph,
@@ -51,7 +52,6 @@ import {
 import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
-  selectTracksGraphData,
   selectAvailableStart,
   selectAvailableEnd,
   selectTimebarSelectedDataviews,
@@ -161,7 +161,6 @@ const TimebarWrapper = () => {
   const availableStart = useSelector(selectAvailableStart)
   const availableEnd = useSelector(selectAvailableEnd)
   const timebarGraph = useSelector(selectTimebarGraph)
-  const tracksGraphsData = useSelector(selectTracksGraphData)
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
@@ -170,6 +169,7 @@ const TimebarWrapper = () => {
   const dispatch = useAppDispatch()
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
+  const tracksGraphsData = useTimebarVesselTracksGraph()
   const events = useTimebarVesselEvents()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
