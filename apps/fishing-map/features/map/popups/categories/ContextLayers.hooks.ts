@@ -8,7 +8,7 @@ import {
   ContextPickingObject,
   UserLayerPickingObject,
 } from '@globalfishingwatch/deck-layers'
-import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import { getEventLabel } from 'utils/analytics'
 import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -18,7 +18,7 @@ import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getBufferedAreaBbox } from 'features/reports/reports.utils'
-import { selectReportAreaDataview } from 'features/reports/reports.selectors'
+import { selectReportAreaDataviews } from 'features/reports/reports.selectors'
 import { setClickedEvent } from '../../map.slice'
 
 export const getFeatureBounds = (feature: ContextPickingObject) => {
@@ -29,17 +29,21 @@ export const getFeatureBounds = (feature: ContextPickingObject) => {
   }
 }
 
+const defaultIds = [] as string[]
 export const useHighlightReportArea = () => {
-  const areaDataview = useSelector(selectReportAreaDataview)
-  const areaLayer = useGetDeckLayer<ContextLayer>(areaDataview?.id || '')
+  const areaDataviews = useSelector(selectReportAreaDataviews)
+  const ids = areaDataviews?.map((d) => d.id) || defaultIds
+  const areaLayers = useGetDeckLayers<ContextLayer>(ids)
 
   return useCallback(
     (area?: ContextFeature) => {
-      if (areaLayer?.instance?.setHighlightedFeatures) {
-        areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
-      }
+      areaLayers.forEach((areaLayer) => {
+        if (areaLayer?.instance?.setHighlightedFeatures) {
+          areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
+        }
+      })
     },
-    [areaLayer]
+    [areaLayers]
   )
 }
 
@@ -84,7 +88,7 @@ export const useContextInteractions = () => {
             : feature.value.toString() || feature.title
         dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
         dispatch(setClickedEvent(null))
-        dispatch(fetchAreaDetailThunk({ dataset, areaId, areaName }))
+        dispatch(fetchAreaDetailThunk({ datasetId, areaId, areaName }))
       }
       // TODO:deck:featureState review if this still needed
       // cleanFeatureState('highlight')

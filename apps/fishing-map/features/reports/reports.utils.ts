@@ -280,7 +280,7 @@ export const getBufferedFeature = ({
     const multi = multiPolygon(
       area.geometry.features.map((f) => (f as Feature<Polygon>).geometry.coordinates)
     )
-    const diff = difference(dissolvedBufferedPolygonsFeatures, multi)
+    const diff = difference(featureCollection([dissolvedBufferedPolygonsFeatures, multi]))
     if (diff) {
       diff.properties = {
         ...diff.properties,

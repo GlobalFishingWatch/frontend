@@ -128,12 +128,12 @@ export const selectLocationCategory = createSelector(
 
 export const selectLocationDatasetId = createSelector(
   [selectLocationPayload],
-  (payload) => payload?.datasetId as string
+  (payload) => decodeURIComponent(payload?.datasetId) as string
 )
 
 export const selectLocationAreaId = createSelector(
   [selectLocationPayload],
-  (payload) => payload?.areaId as number
+  (payload) => decodeURIComponent(payload?.areaId) as string
 )
 
 export const selectLocationVesselId = createSelector(

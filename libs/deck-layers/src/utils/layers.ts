@@ -13,7 +13,12 @@ export function getPickedFeatureToHighlight(
   pickedFeatures: (ContextPickingObject | UserLayerPickingObject)[],
   idProperty = 'gfw_id'
 ) {
-  return pickedFeatures?.some((f) => f.properties?.[idProperty] === data.properties[idProperty])
+  return pickedFeatures?.some((f) => {
+    return (
+      f.properties?.[idProperty] === data.properties[idProperty] ||
+      f.properties?.unionIds?.includes(data.properties[idProperty])
+    )
+  })
 }
 
 export function getFeatureInFilter(feature: any, filters?: Record<string, any>) {
