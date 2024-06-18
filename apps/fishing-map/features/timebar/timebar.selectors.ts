@@ -35,14 +35,12 @@ import { t } from 'features/i18n/i18n'
 import { selectResources } from 'features/resources/resources.slice'
 import { getVesselLabel } from 'utils/info'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
-import { TimebarGraphs, TimebarVisualisations } from 'types'
+import { TimebarVisualisations } from 'types'
 import {
   selectActiveTrackDataviews,
-  selectActiveVesselsDataviews,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
-  selectTimebarGraph,
   selectTimebarSelectedEnvId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
@@ -209,73 +207,6 @@ export const selectTracksData = createSelector(
   }
 )
 
-const getTrackGraphSpeedHighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
-  value ? `${value.value?.toFixed(2)} knots` : ''
-const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
-  value ? `${value.value} m` : ''
-
-export const selectTracksGraphData = createSelector(
-  [selectActiveVesselsDataviews, selectResources, selectTimebarGraph],
-  (vesselDataviews, resources, timebarGraphType) => {
-    if (!resources) return
-    const tracksGraphsData: TimebarChartData = vesselDataviews.flatMap((dataview) => {
-      const trackGraphData: TimebarChartItem = {
-        color: dataview.config?.color,
-        chunks: [],
-        status: ResourceStatus.Idle,
-        getHighlighterLabel:
-          timebarGraphType === TimebarGraphs.Speed
-            ? getTrackGraphSpeedHighlighterLabel
-            : getTrackGraphElevationighlighterLabel,
-        getHighlighterIcon: 'vessel',
-      }
-
-      const resourcesQueries = resolveDataviewDatasetResources(dataview, DatasetTypes.Tracks)
-      const resourceQuery = resourcesQueries.find((r) =>
-        r.datasetConfig.query?.find(
-          (q) =>
-            q.id === 'fields' &&
-            (q.value.toString().includes(timebarGraphType) ||
-              q.value.toString().toLowerCase().includes(timebarGraphType))
-        )
-      )
-      const graphUrl = resourceQuery?.url
-      if (!graphUrl) return trackGraphData
-      const graphResource = resources[graphUrl] as Resource<TrackResourceData>
-
-      if (!graphResource || graphResource.status === ResourceStatus.Loading) {
-        return { ...trackGraphData, status: ResourceStatus.Loading }
-      } else if (
-        graphResource.status === ResourceStatus.Error ||
-        (graphResource.status === ResourceStatus.Finished && !graphResource?.data)
-      ) {
-        return { ...trackGraphData, status: ResourceStatus.Error }
-      }
-      const graphChunks: TimebarChartChunk[] = graphResource.data!?.flatMap((segment) => {
-        if (!segment) {
-          return EMPTY_ARRAY
-        }
-        return {
-          start: segment[0].timestamp || Number.POSITIVE_INFINITY,
-          // TODO This assumes that segments ends at last value's timestamp, which is probably incorrect
-          end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
-          values: segment.map((segmentPoint) => {
-            const value = (segmentPoint as any)?.[timebarGraphType]
-            return {
-              timestamp: segmentPoint.timestamp,
-              value,
-            }
-          }),
-        } as TimebarChartChunk
-      })
-
-      trackGraphData.chunks = graphChunks
-      return trackGraphData
-    })
-    return tracksGraphsData
-  }
-)
-
 const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs) => {
   if (chunk.cluster) {
     return `${chunk.props?.descriptionGeneric} (${chunk.cluster.numChunks} ${t(
@@ -289,6 +220,7 @@ const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackF
   return chunk.props?.descriptionGeneric
 }
 
+// TODO:deck review if we can delete this
 export const selectTracksEvents = createSelector(
   [selectActiveTrackDataviews, selectResources, selectVisibleEvents],
   (trackDataviews, resources, visibleEvents) => {
