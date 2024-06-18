@@ -85,25 +85,30 @@ export const useTimebarVesselTracks = () => {
     requestAnimationFrame(() => {
       if (vessels?.length) {
         const vesselTracks = vessels.flatMap(({ instance }) => {
-          const segments = instance.getVesselTrackSegments()
-          const chunks = segments?.map((t) => {
-            const start = t[0]?.timestamp
-            const end = t[t.length - 1]?.timestamp
-            return {
-              start,
-              end,
-              props: { color: instance.getVesselColor() },
-              values: t,
-            }
-          })
-          return {
-            status: ResourceStatus.Finished,
-            chunks,
+          const status = instance.getVesselTracksLayersLoaded()
+            ? ResourceStatus.Finished
+            : ResourceStatus.Loading
+          const trackGraphData: TimebarChartItem<{ color: string }> = {
             color: instance.getVesselColor(),
-            defaultLabel: instance.getVesselName() || '',
+            chunks: [] as TimebarChartChunk<{ color: string }>[],
+            status,
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
           }
+          const segments = instance.getVesselTrackSegments()
+          if (segments?.length && status === ResourceStatus.Finished) {
+            trackGraphData.chunks = segments?.map((segment) => {
+              const start = segment[0]?.timestamp
+              const end = segment[segment.length - 1]?.timestamp
+              return {
+                start,
+                end,
+                props: { color: instance.getVesselColor() },
+                values: segment,
+              } as TimebarChartChunk<{ color: string }>
+            })
+          }
+          return trackGraphData
         })
         setVesselTracks(vesselTracks as any)
       }
@@ -162,10 +167,13 @@ export const useTimebarVesselTracksGraph = () => {
       const showGraph = timebarGraph === TimebarGraphs.Speed || timebarGraph === TimebarGraphs.Depth
       if (showGraph && vessels?.length) {
         const vesselTracks = vessels.flatMap(({ instance }) => {
+          const status = instance.getVesselTracksLayersLoaded()
+            ? ResourceStatus.Finished
+            : ResourceStatus.Loading
           const trackGraphData: TimebarChartItem = {
             color: instance.getVesselColor(),
             chunks: [] as TimebarChartChunk[],
-            status: ResourceStatus.Finished,
+            status,
             getHighlighterLabel:
               timebarGraph === TimebarGraphs.Speed
                 ? getTrackGraphSpeedHighlighterLabel
@@ -173,7 +181,7 @@ export const useTimebarVesselTracksGraph = () => {
             getHighlighterIcon: 'vessel',
           }
           const segments = instance.getVesselTrackSegments({ includeMiddlePoints: true })
-          if (segments?.length) {
+          if (segments?.length && status === ResourceStatus.Finished) {
             trackGraphData.chunks = segments?.flatMap((segment) => {
               if (!segment) {
                 return []
@@ -219,16 +227,18 @@ export const useTimebarVesselEvents = () => {
     requestAnimationFrame(() => {
       if (vessels?.length) {
         const vesselEvents: TimebarChartData<any> = vessels.map(({ instance }) => {
-          const chunks = instance.getVesselEventsData(visibleEvents) as any
+          const status = instance.getVesselTracksLayersLoaded()
+            ? ResourceStatus.Finished
+            : ResourceStatus.Loading
           return {
             color: instance.getVesselColor(),
-            chunks,
-            // TODO:deck vessel status
-            // status: instance.dataStatus.find((s) => s.type === 'track')?.status,
+            chunks:
+              status === ResourceStatus.Finished ? instance.getVesselEventsData(visibleEvents) : [],
+            status,
             defaultLabel: instance.getVesselName(),
             getHighlighterLabel: getTrackEventHighlighterLabel,
             getHighlighterIcon: 'vessel',
-          }
+          } as TimebarChartItem<any>
         })
         setVesselEvents(vesselEvents)
       }
