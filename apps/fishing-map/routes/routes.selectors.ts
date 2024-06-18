@@ -126,14 +126,12 @@ export const selectLocationCategory = createSelector(
   (payload) => payload?.category as WorkspaceCategory
 )
 
-export const selectLocationDatasetId = createSelector(
-  [selectLocationPayload],
-  (payload) => decodeURIComponent(payload?.datasetId) as string
+export const selectLocationDatasetId = createSelector([selectLocationPayload], (payload) =>
+  payload?.datasetId ? decodeURIComponent(payload?.datasetId) : ''
 )
 
-export const selectLocationAreaId = createSelector(
-  [selectLocationPayload],
-  (payload) => decodeURIComponent(payload?.areaId) as string
+export const selectLocationAreaId = createSelector([selectLocationPayload], (payload) =>
+  payload?.areaId ? decodeURIComponent(payload?.areaId) : ''
 )
 
 export const selectLocationVesselId = createSelector(

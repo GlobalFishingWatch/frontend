@@ -95,8 +95,8 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
 export const selectReportAreaDataviews = createSelector(
   [selectDataviewInstancesResolved, selectReportDatasetId],
   (dataviewsInstances, datasetId) => {
-    const datasetIds = datasetId.split(',')
-    const areaDataview = datasetIds.flatMap((datasetId) => {
+    const datasetIds = datasetId?.split(',')
+    const areaDataview = datasetIds?.flatMap((datasetId) => {
       return (
         dataviewsInstances?.find((dataview) => {
           return dataview.datasets?.some((dataset) => datasetId === dataset.id)

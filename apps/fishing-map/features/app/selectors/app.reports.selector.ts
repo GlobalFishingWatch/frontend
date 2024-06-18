@@ -32,12 +32,17 @@ export const selectCurrentReport = createSelector(
 
 export const selectReportDatasetId = createSelector(
   [selectLocationDatasetId, selectCurrentReport],
-  (locationDatasetId, report) => (locationDatasetId || report?.datasetId) as string
+  (locationDatasetId, report) => {
+    return locationDatasetId || report?.datasetId || ''
+  }
 )
 
 export const selectReportAreaId = createSelector(
   [selectLocationAreaId, selectCurrentReport],
-  (locationAreaId, report) => (locationAreaId || report?.areaId) as string
+  (locationAreaId, report) => {
+    console.log('🚀 ~ report:', report)
+    return locationAreaId || report?.areaId || ''
+  }
 )
 
 export const selectReportCategorySelector = selectWorkspaceStateProperty('reportCategory')
