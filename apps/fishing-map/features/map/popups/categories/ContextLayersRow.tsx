@@ -98,7 +98,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const reportAreaId = useSelector(selectLocationAreaId)
   const areaId = getAreaIdFromFeature(feature)
   const isSameArea = reportAreaId?.toString() === areaId?.toString()
-  const addAreaToReport = reportAreaId !== undefined && !isSameArea
+  const addAreaToReport = reportAreaDataset && reportAreaId && !isSameArea
 
   if (!hasAnalysableLayer || isSameArea) {
     return (
