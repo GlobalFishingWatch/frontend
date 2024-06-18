@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import parse from 'html-react-parser'
 import { useTranslation } from 'react-i18next'
 import Link from 'redux-first-router-link'
+import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import {
@@ -14,7 +15,11 @@ import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { selectLocationAreaId, selectLocationQuery } from 'routes/routes.selectors'
+import {
+  selectLocationAreaId,
+  selectLocationDatasetId,
+  selectLocationQuery,
+} from 'routes/routes.selectors'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
 import { getAreaIdFromFeature } from 'features/map/popups/categories/ContextLayers.hooks'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
@@ -89,9 +94,12 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
   const isPointFeature = (feature?.geometry as any)?.type === 'Point'
   const query = useSelector(selectLocationQuery)
   // const bounds = getFeatureBounds(feature)
+  const reportAreaDataset = useSelector(selectLocationDatasetId)
   const reportAreaId = useSelector(selectLocationAreaId)
   const areaId = getAreaIdFromFeature(feature)
   const isSameArea = reportAreaId?.toString() === areaId?.toString()
+  const addAreaToReport = reportAreaId !== undefined && !isSameArea
+
   if (!hasAnalysableLayer || isSameArea) {
     return (
       <IconButton
@@ -124,36 +132,55 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     }
   }
 
+  const reportLinkTo = {
+    type: WORKSPACE_REPORT,
+    payload: {
+      category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+      // TODO: deck fix this typing
+      datasetId: (feature as any).datasetId,
+      areaId,
+    },
+    query: {
+      ...query,
+      reportBufferUnit: isPointFeature ? DEFAULT_POINT_BUFFER_UNIT : undefined,
+      reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
+      reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
+      // ...(bounds && { reportAreaBounds: bounds }),
+      ...(!isSidebarOpen && { sidebarOpen: true }),
+    },
+  }
+
+  const addReportLinkTo = {
+    ...reportLinkTo,
+    payload: {
+      ...reportLinkTo.payload,
+      datasetId: [reportAreaDataset, (feature as any).datasetId].join(','),
+      areaId: [reportAreaId, areaId].join(','),
+    },
+  }
+
   return (
-    <Link
-      className={styles.workspaceLink}
-      to={{
-        type: WORKSPACE_REPORT,
-        payload: {
-          category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-          workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-          // TODO: deck fix this typing
-          datasetId: (feature as any).datasetId,
-          areaId,
-        },
-        query: {
-          ...query,
-          reportBufferUnit: isPointFeature ? DEFAULT_POINT_BUFFER_UNIT : undefined,
-          reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
-          reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
-          // ...(bounds && { reportAreaBounds: bounds }),
-          ...(!isSidebarOpen && { sidebarOpen: true }),
-        },
-      }}
-      onClick={onReportClick}
-    >
-      <IconButton
-        icon="analysis"
-        tooltip={t('common.analysis', 'Create an analysis for this area')}
-        testId="open-analysis"
-        size="small"
-      />
-    </Link>
+    <Fragment>
+      <Link className={styles.workspaceLink} to={reportLinkTo} onClick={onReportClick}>
+        <IconButton
+          icon="analysis"
+          tooltip={t('common.analysis', 'Create an analysis for this area')}
+          testId="open-analysis"
+          size="small"
+        />
+      </Link>
+      {addAreaToReport && (
+        <Link className={styles.workspaceLink} to={addReportLinkTo} onClick={onReportClick}>
+          <IconButton
+            icon="add-polygon"
+            tooltip={t('common.analysisAddArea', 'Add this area for the analysis')}
+            testId="add-analysis"
+            size="small"
+          />
+        </Link>
+      )}
+    </Fragment>
   )
 }
 
