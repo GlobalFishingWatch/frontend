@@ -223,7 +223,7 @@ export const useTimebarVesselEvents = () => {
           return {
             color: instance.getVesselColor(),
             chunks,
-            // TODO vessel status
+            // TODO:deck vessel status
             // status: instance.dataStatus.find((s) => s.type === 'track')?.status,
             defaultLabel: instance.getVesselName(),
             getHighlighterLabel: getTrackEventHighlighterLabel,
