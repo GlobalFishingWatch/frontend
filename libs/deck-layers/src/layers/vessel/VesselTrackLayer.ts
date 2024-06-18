@@ -244,7 +244,9 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     return this.props.data as VesselTrackData
   }
 
-  getSegments(): TrackSegment[] {
+  getSegments(
+    { includeMiddlePoints = false } = {} as { includeMiddlePoints: boolean }
+  ): TrackSegment[] {
     const data = this.props.data as VesselTrackData
     const segmentsIndexes = data.startIndices
     const positions = data.attributes?.getPath?.value
@@ -258,6 +260,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     const timestampSize = data.attributes.getTimestamp!?.size
     const speedSize = data.attributes.getSpeed!?.size
     const elevationSize = data.attributes.getElevation!?.size
+
     const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
       const initialPoint = {
         // longitude: positions[segmentIndex * pathSize],
@@ -267,6 +270,18 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         elevation: elevations?.[segmentIndex / elevationSize],
       }
       const nextSegmentIndex = segmentsIndexes[i + 1]
+      const middlePoints = [] as (typeof initialPoint)[]
+      if (includeMiddlePoints && segmentIndex + 1 < nextSegmentIndex) {
+        for (let index = segmentIndex + 1; index < nextSegmentIndex; index++) {
+          middlePoints.push({
+            // longitude: positions[nextSegmentIndex * pathSize - pathSize],
+            // latitude: positions[nextSegmentIndex * pathSize - pathSize + 1],
+            timestamp: timestamps[index / timestampSize],
+            speed: speeds?.[index / speedSize],
+            elevation: elevations?.[index / elevationSize],
+          })
+        }
+      }
       const lastPoint =
         i === segmentsIndexes.length - 1
           ? {
@@ -283,7 +298,9 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
               speed: speeds?.[nextSegmentIndex / speedSize - 1],
               elevation: elevations?.[nextSegmentIndex / elevationSize - 1],
             }
-      return [initialPoint, lastPoint]
+      return middlePoints?.length
+        ? [initialPoint, ...middlePoints, lastPoint]
+        : [initialPoint, lastPoint]
     })
     return segments
   }

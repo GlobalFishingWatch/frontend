@@ -260,8 +260,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return this.getTrackLayers()?.flatMap((l) => l.getData())
   }
 
-  getVesselTrackSegments() {
-    return this.getTrackLayers()?.flatMap((l) => l.getSegments())
+  getVesselTrackSegments(params = {} as { includeMiddlePoints: boolean }) {
+    return this.getTrackLayers()?.flatMap((l) => l.getSegments(params))
   }
 
   getVesselTrackBounds() {

@@ -172,7 +172,7 @@ export const useTimebarVesselTracksGraph = () => {
                 : getTrackGraphElevationighlighterLabel,
             getHighlighterIcon: 'vessel',
           }
-          const segments = instance.getVesselTrackSegments()
+          const segments = instance.getVesselTrackSegments({ includeMiddlePoints: true })
           if (segments?.length) {
             trackGraphData.chunks = segments?.flatMap((segment) => {
               if (!segment) {
