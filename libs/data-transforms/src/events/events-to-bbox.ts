@@ -1,4 +1,5 @@
-import { point, Position } from '@turf/helpers'
+import { point } from '@turf/helpers'
+import { Position } from 'geojson'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { BBox } from '../types'
 import { getBboxFromPoints } from '../segments'

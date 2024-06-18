@@ -1,8 +1,8 @@
 import greatCircle from '@turf/great-circle'
 import length from '@turf/length'
-import { Coord, Feature, LineString, Point, Position, point } from '@turf/helpers'
+import { Coord, point } from '@turf/helpers'
 import { rhumbBearing } from '@turf/turf'
-import { MultiLineString } from 'geojson'
+import { Feature, LineString, MultiLineString, Point, Position } from 'geojson'
 import { RulerData, RulerPointProperties } from './rulers.types'
 
 export const getRulerCoordsPairs = (

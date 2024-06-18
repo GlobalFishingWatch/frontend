@@ -2,7 +2,8 @@ import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps, Color, PickingInfo } from '@deck.gl/core'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
-import { BBox, Position, featureCollection, point } from '@turf/turf'
+import { featureCollection, point } from '@turf/turf'
+import { BBox, Position } from 'geojson'
 import {
   ApiEvent,
   DataviewCategory,
