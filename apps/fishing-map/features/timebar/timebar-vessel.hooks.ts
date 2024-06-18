@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import {
   HighlighterCallbackFnArgs,
@@ -18,6 +19,15 @@ const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
 }
 
+export const hasTracksWithNoData = (tracks = [] as VesselTrackAtom) => {
+  if (!tracks) {
+    return false
+  }
+  return tracks.some(
+    ({ chunks, status }) => status !== ResourceStatus.Loading && chunks.length === 0
+  )
+}
+
 export const useTimebarVesselsLayers = () => {
   const dataviews = useSelector(selectActiveVesselsDataviews)
   const ids = useMemo(() => {
@@ -27,9 +37,15 @@ export const useTimebarVesselsLayers = () => {
   return vessels
 }
 
+export const useTimebarVesselTracksData = () => {
+  return useAtomValue(vesselTracksAtom)
+}
+
+export type VesselTrackAtom = TimebarChartData<any>
+export const vesselTracksAtom = atom<VesselTrackAtom | undefined>(undefined)
 export const useTimebarVesselTracks = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
-  const [tracks, setVesselTracks] = useState<TimebarChartData<any> | null>(null)
+  const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
   const vessels = useTimebarVesselsLayers()
 
   const tracksLoaded = useMemo(

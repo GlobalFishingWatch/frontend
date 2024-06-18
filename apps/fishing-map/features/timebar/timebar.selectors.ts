@@ -209,12 +209,6 @@ export const selectTracksData = createSelector(
   }
 )
 
-export const selectHasTracksWithNoData = createSelector([selectTracksData], (tracks = []) => {
-  return tracks.some(
-    ({ chunks, status }) => status !== ResourceStatus.Loading && chunks.length === 0
-  )
-})
-
 const getTrackGraphSpeedHighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
   value ? `${value.value?.toFixed(2)} knots` : ''
 const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
