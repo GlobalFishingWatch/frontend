@@ -60,7 +60,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       id: 'basemap-satellite',
       data: 'https://gateway.api.dev.globalfishingwatch.org/v3/tileset/sat/tile?x={x}&y={y}&z={z}',
       minZoom: 0,
-      maxZoom: 9,
+      // maxZoom: 18,
       maxRequests: 100,
       debounceTime: 200,
       onDataLoad: this.props.onDataLoad,
