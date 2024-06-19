@@ -122,9 +122,10 @@ export const fetchAreaDetailThunk = createAsyncThunk(
   ) => {
     const isMultipleDatasets = datasetId.includes(',')
     if (isMultipleDatasets) {
-      const datasets = datasetId
-        .split(',')
-        .flatMap((id) => selectDatasetById(id)(getState() as RootState) || [])
+      const datasetIds = datasetId.split(',')
+      const datasets = datasetIds.flatMap(
+        (id) => selectDatasetById(id)(getState() as RootState) || []
+      )
 
       const simplifies = simplify?.split(',')
       const areaIds = areaId.toString().split(',')
@@ -149,7 +150,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
           name: areaName || `Union of ${listAsSentence(areas.flatMap((a) => a?.name || []))}`,
           bounds: bounds,
           geometry: mergedFeature.geometry as AreaGeometry,
-          properties: { unionIds: areaId.toString() },
+          properties: { areaIds, datasetIds },
         }
         return area
       }

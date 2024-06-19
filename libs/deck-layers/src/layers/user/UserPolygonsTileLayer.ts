@@ -73,23 +73,36 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   _getHighlightLineWidth: AccessorFunction<Feature<Geometry, GeoJsonProperties>, number> = (d) => {
-    const { idProperty } = this.props
+    const { idProperty, layers } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
-    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!) ? 1 : 0
+    return getPickedFeatureToHighlight(d, highlightedFeatures, {
+      idProperty,
+      datasetId: layers?.[0].datasetId,
+    })
+      ? 1
+      : 0
   }
 
   _getFillColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { idProperty } = this.props
+    const { idProperty, layers } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
-    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)
+    return getPickedFeatureToHighlight(d, highlightedFeatures, {
+      idProperty,
+      datasetId: layers?.[0].datasetId,
+    })
       ? COLOR_HIGHLIGHT_FILL
       : COLOR_TRANSPARENT
   }
 
   _getFillStepsColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { idProperty } = this.props
+    const { idProperty, layers } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
-    if (getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)) {
+    if (
+      getPickedFeatureToHighlight(d, highlightedFeatures, {
+        idProperty,
+        datasetId: layers?.[0].datasetId,
+      })
+    ) {
       return COLOR_HIGHLIGHT_FILL
     }
 

@@ -11,13 +11,21 @@ const WORLD_SIZE = 512
 export function getPickedFeatureToHighlight(
   data: any,
   pickedFeatures: (ContextPickingObject | UserLayerPickingObject)[],
-  idProperty = 'gfw_id'
+  { idProperty = 'gfw_id', datasetId } = {} as { idProperty?: string; datasetId?: string }
 ) {
   return pickedFeatures?.some((f) => {
-    return (
-      f.properties?.[idProperty] === data.properties[idProperty] ||
-      f.properties?.unionIds?.includes(data.properties[idProperty])
-    )
+    if (f.properties?.[idProperty] === data.properties?.[idProperty]) {
+      return true
+    }
+    if (!datasetId || !f.properties?.datasetIds?.length) {
+      return false
+    }
+    return (f.properties?.datasetIds as string[])?.some((id, index) => {
+      return (
+        f.properties?.areaIds?.[index] === data.properties[idProperty].toString() &&
+        id === datasetId
+      )
+    })
   })
 }
 

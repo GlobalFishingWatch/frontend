@@ -58,9 +58,14 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
 
   getHighlightLineWidth(d: ContextFeature, filters?: Record<string, any>): number {
     if (!getFeatureInFilter(d, filters)) return 0
-    const { idProperty } = this.props
+    const { idProperty, layers } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
-    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!) ? 1.5 : 0
+    return getPickedFeatureToHighlight(d, highlightedFeatures, {
+      idProperty,
+      datasetId: layers?.[0]?.datasetId,
+    })
+      ? 1.5
+      : 0
   }
 
   getLineWidth(d: ContextFeature, filters?: Record<string, any>): number {
@@ -69,9 +74,12 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
 
   getFillColor(d: ContextFeature, filters?: Record<string, any>): Color {
     if (!getFeatureInFilter(d, filters)) return COLOR_TRANSPARENT
-    const { idProperty } = this.props
+    const { idProperty, layers } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
-    return getPickedFeatureToHighlight(d, highlightedFeatures, idProperty!)
+    return getPickedFeatureToHighlight(d, highlightedFeatures, {
+      idProperty,
+      datasetId: layers?.[0]?.datasetId,
+    })
       ? COLOR_HIGHLIGHT_FILL
       : COLOR_TRANSPARENT
   }

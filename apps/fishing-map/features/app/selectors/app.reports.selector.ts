@@ -40,7 +40,6 @@ export const selectReportDatasetId = createSelector(
 export const selectReportAreaId = createSelector(
   [selectLocationAreaId, selectCurrentReport],
   (locationAreaId, report) => {
-    console.log('🚀 ~ report:', report)
     return locationAreaId || report?.areaId || ''
   }
 )
