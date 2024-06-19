@@ -16,9 +16,10 @@ import { groupBy, orderBy } from 'lodash'
 import { stringify } from 'qs'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
-import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import { CONFIG_BY_INTERVAL, FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import {
   BLEND_BACKGROUND,
+  COLOR_HIGHLIGHT_LINE,
   deckToRgbaColor,
   getColorRamp,
   getLayerGroupOffset,
@@ -46,6 +47,7 @@ import {
 
 type FourwingsPositionsTileLayerState = {
   fontLoaded: boolean
+  viewportLoaded: boolean
   positions: FourwingsPositionFeature[]
   lastPositions: FourwingsPositionFeature[]
   colorScale?: FourwingsTileLayerColorScale
@@ -176,6 +178,16 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   _getFillColor = (d: FourwingsPositionFeature): Color => {
     const { colorScale } = this.state
     const { colorDomain, colorRange } = colorScale as FourwingsTileLayerColorScale
+    const { highlightStartTime, highlightEndTime } = this.props
+    const date = CONFIG_BY_INTERVAL['HOUR'].getTime(d.properties.htime)
+    if (
+      highlightStartTime &&
+      highlightEndTime &&
+      date >= highlightStartTime &&
+      date < highlightEndTime
+    ) {
+      return COLOR_HIGHLIGHT_LINE
+    }
     const sublayerColorRange = colorRange[d.properties.layer]
     const colorIndex =
       colorDomain.length === 1
@@ -210,7 +222,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getLineColor = (d: FourwingsPositionFeature): Color => {
-    return this._getIsHighlightedVessel(d) ? [255, 255, 255, 255] : [0, 0, 0, 0]
+    return this._getIsHighlightedVessel(d) ? COLOR_HIGHLIGHT_LINE : [0, 0, 0, 0]
   }
 
   _getRadius = (d: FourwingsPositionFeature): number => {
