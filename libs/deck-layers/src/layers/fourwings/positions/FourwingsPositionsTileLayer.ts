@@ -72,6 +72,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   static defaultProps = defaultProps
   state!: FourwingsPositionsTileLayerState
 
+  get isLoaded(): boolean {
+    return super.isLoaded && this.state.fontLoaded && this.state.viewportLoaded
+  }
+
   initializeState(context: LayerContext) {
     super.initializeState(context)
     let fontLoaded = true
@@ -92,6 +96,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
     this.state = {
       fontLoaded,
+      viewportLoaded: false,
       positions: [],
       lastPositions: [],
       highlightedFeatureIds: new Set<string>(),
@@ -249,6 +254,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
     requestAnimationFrame(() => {
       this.setState({
+        viewportLoaded: true,
         positions,
         lastPositions,
         colorScale,
@@ -271,6 +277,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       loadOptions?: any
     }
   ) => {
+    this.setState({ viewportLoaded: false })
     try {
       const response = await GFWAPI.fetch<any>(url, {
         signal,

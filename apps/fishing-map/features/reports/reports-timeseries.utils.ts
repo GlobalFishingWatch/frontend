@@ -10,7 +10,7 @@ import { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import { DateTimeSeries } from 'features/reports/reports.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { ComparisonGraphData } from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
-import { getGraphDataFromFourwingsFeatures } from 'features/timebar/timebar.utils'
+import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
 
 export const filterTimeseriesByTimerange = (
   timeseries: ReportGraphProps[],
@@ -95,7 +95,7 @@ export const featuresToTimeseries = (
     }
 
     // const sourceInterval = sourceMetadata.timeChunks.interval
-    const valuesContainedRaw = getGraphDataFromFourwingsFeatures(contained as FourwingsFeature[], {
+    const valuesContainedRaw = getGraphDataFromFourwingsHeatmap(contained as FourwingsFeature[], {
       sublayers,
       interval,
       start,
@@ -128,7 +128,7 @@ export const featuresToTimeseries = (
 
     let valuesContainedAndOverlappingRaw: TimeSeries['values'] = []
     if (featuresContainedAndOverlapping.length > 0) {
-      valuesContainedAndOverlappingRaw = getGraphDataFromFourwingsFeatures(
+      valuesContainedAndOverlappingRaw = getGraphDataFromFourwingsHeatmap(
         featuresContainedAndOverlapping as FourwingsFeature[],
         {
           sublayers,

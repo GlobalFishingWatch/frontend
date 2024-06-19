@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { getDatasetsExtent } from '@globalfishingwatch/dataviews-client'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { TimebarVisualisations } from 'types'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
@@ -14,6 +15,10 @@ import {
   selectActiveDetectionsDataviews,
   selectActiveEnvironmentalDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  selectActivityVisualizationMode,
+  selectDetectionsVisualizationMode,
+} from 'features/app/selectors/app.selectors'
 
 export const selectDatasetsExtent = createSelector(
   [selectDataviewInstancesResolved, selectAllDatasets],
@@ -64,5 +69,21 @@ export const selectTimebarSelectedDataviews = createSelector(
     return timebarVisualisation === TimebarVisualisations.HeatmapDetections
       ? detectionsDataviews
       : activityDataviews
+  }
+)
+
+export const selectTimebarSelectedVisualizationMode = createSelector(
+  [
+    selectTimebarSelectedDataviews,
+    selectActivityVisualizationMode,
+    selectDetectionsVisualizationMode,
+  ],
+  (timebarDataviews, activityVisualizationMode, detectionsVisualizationMode) => {
+    if (timebarDataviews[0]?.category === DataviewCategory.Activity) {
+      return activityVisualizationMode
+    }
+    if (timebarDataviews[0]?.category === DataviewCategory.Detections) {
+      return detectionsVisualizationMode
+    }
   }
 )
