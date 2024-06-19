@@ -270,7 +270,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         speed: speeds?.[segmentIndex / speedSize],
         elevation: elevations?.[segmentIndex / elevationSize],
       })
-      const nextSegmentIndex = segmentsIndexes[i + 1]
+      const nextSegmentIndex = segmentsIndexes[i + 1] || timestamps.length - 1
       if (includeMiddlePoints && segmentIndex + 1 < nextSegmentIndex) {
         for (let index = segmentIndex + 1; index < nextSegmentIndex; index++) {
           points.push({
