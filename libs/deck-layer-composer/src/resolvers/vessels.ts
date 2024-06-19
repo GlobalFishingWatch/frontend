@@ -13,6 +13,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
 ): VesselLayerProps => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
   const { start, end, highlightedFeatures, visibleEvents, highlightedTime } = globalConfig
+
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
@@ -24,6 +25,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
       trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
     }),
     singleTrack: dataview.config?.singleTrack,
+    trackThinningZoomConfig: dataview.config?.trackThinningZoomConfig,
     color: hexToDeckColor(dataview.config?.color!),
     events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
       const eventType = resource.dataset?.subcategory as EventTypes

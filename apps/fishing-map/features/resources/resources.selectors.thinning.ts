@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { DateTime, Duration } from 'luxon'
 import { range } from 'lodash'
 import {} from '@globalfishingwatch/dataviews-client'
-import { THINNING_LEVELS, ThinningLevels } from '@globalfishingwatch/api-client'
+import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectUrlEndQuery, selectUrlStartQuery } from 'routes/routes.selectors'
@@ -16,15 +16,17 @@ export {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 
+const TRACK_THINNING_BY_ZOOM_GUEST = {
+  0: ThinningLevels.Insane,
+  4: ThinningLevels.VeryAggressive,
+}
+const TRACK_THINNING_BY_ZOOM_USER = { ...TRACK_THINNING_BY_ZOOM_GUEST, 7: ThinningLevels.Default }
+
 export const selectTrackThinningConfig = createSelector(
   [selectIsGuestUser, selectDebugOptions],
   (guestUser, { thinning }) => {
-    if (!thinning) return null
-    return {
-      config: guestUser
-        ? THINNING_LEVELS[ThinningLevels.Aggressive]
-        : THINNING_LEVELS[ThinningLevels.Medium],
-    }
+    if (!thinning) return undefined
+    return guestUser ? TRACK_THINNING_BY_ZOOM_GUEST : TRACK_THINNING_BY_ZOOM_USER
   }
 )
 

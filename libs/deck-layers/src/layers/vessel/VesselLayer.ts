@@ -17,6 +17,7 @@ import {
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
 import { Bbox } from '@globalfishingwatch/data-transforms'
+import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { deckToHexColor } from '../../utils/colors'
 import { getFetchLoadOptions, getLayerGroupOffset, LayerGroup } from '../../utils'
 import { BaseLayerProps } from '../../types'
@@ -28,6 +29,7 @@ import {
   EVENT_LAYER_TYPE,
   DEFAULT_FISHING_EVENT_COLOR,
   TRACK_LAYER_TYPE,
+  TRACK_DEFAULT_THINNING,
 } from './vessel.config'
 import {
   VesselDataType,
@@ -76,10 +78,32 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     this.setState({ error })
   }
 
-  _getTracksUrl({ start, end, trackUrl }: { start: string; end: string; trackUrl: string }) {
+  _getTracksUrl({
+    start,
+    end,
+    trackUrl,
+    zoom,
+    trackThinningZoomConfig,
+  }: {
+    start: string
+    end: string
+    trackUrl: string
+    zoom: number
+    trackThinningZoomConfig?: _VesselTrackLayerProps['trackThinningZoomConfig']
+  }) {
     const trackUrlObject = new URL(trackUrl)
     trackUrlObject.searchParams.append('start-date', start)
     trackUrlObject.searchParams.append('end-date', end)
+    if (trackThinningZoomConfig) {
+      const thinningLevel =
+        Object.entries(trackThinningZoomConfig)
+          .sort(([zoomLevelA], [zoomLevelB]) => parseInt(zoomLevelA) - parseInt(zoomLevelB))
+          .findLast(([zoomLevel]) => zoom >= parseInt(zoomLevel))?.[1] || TRACK_DEFAULT_THINNING
+
+      Object.entries(THINNING_LEVELS[thinningLevel]).forEach(([key, value]) => {
+        trackUrlObject.searchParams.set(key, value)
+      })
+    }
     const format = trackUrlObject.searchParams.get('format') || 'DECKGL'
     if (format !== 'DECKGL' && !warnLogged) {
       console.warn(`only DECKGL format is supported, the current format (${format}) was replaced`)
@@ -100,6 +124,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       highlightEndTime,
       minSpeedFilter,
       maxSpeedFilter,
+      trackThinningZoomConfig,
       minElevationFilter,
       maxElevationFilter,
     } = this.props
@@ -107,6 +132,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       if (!trackUrl) console.warn('trackUrl needed for vessel layer')
       return []
     }
+    const { zoom } = this.context.viewport
     const chunks = getVesselResourceChunks(startTime, endTime)
     return chunks.flatMap(({ start, end }) => {
       if (!start || !end) {
@@ -117,7 +143,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         this.getSubLayerProps({
           id: chunkId,
           visible,
-          data: this._getTracksUrl({ start, end, trackUrl }),
+          data: this._getTracksUrl({ start, end, trackUrl, zoom, trackThinningZoomConfig }),
           loadOptions: {
             ...getFetchLoadOptions(),
           },
