@@ -12,6 +12,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { RootState } from 'store'
 import { listAsSentence } from 'utils/shared'
+import { t } from 'features/i18n/i18n'
 
 export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
 
@@ -147,7 +148,11 @@ export const fetchAreaDetailThunk = createAsyncThunk(
           : wrapGeometryBbox(mergedFeature.geometry)
         const area = {
           id: areaId.toString(),
-          name: areaName || `Union of ${listAsSentence(areas.flatMap((a) => a?.name || []))}`,
+          name:
+            areaName ||
+            `${t('common.unionOf', 'Union of')} ${listAsSentence(
+              areas.flatMap((a) => a?.name || [])
+            )}`,
           bounds: bounds,
           geometry: mergedFeature.geometry as AreaGeometry,
           properties: { areaIds, datasetIds },
