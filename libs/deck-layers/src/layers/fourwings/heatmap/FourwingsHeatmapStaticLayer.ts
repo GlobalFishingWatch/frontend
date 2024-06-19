@@ -31,7 +31,12 @@ import {
   getSteps,
   rgbaStringToComponents,
 } from '../../../utils'
-import { FOURWINGS_MAX_ZOOM, HEATMAP_API_TILES_URL, MAX_RAMP_VALUES } from '../fourwings.config'
+import {
+  FOURWINGS_MAX_ZOOM,
+  HEATMAP_API_TILES_URL,
+  HEATMAP_STATIC_PROPERTY_ID,
+  MAX_RAMP_VALUES,
+} from '../fourwings.config'
 import { EMPTY_CELL_COLOR, filterCells } from './fourwings-heatmap.utils'
 import {
   FourwingsAggregationOperation,
@@ -84,7 +89,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     if (!currentZoomData.length) {
       return this.getColorDomain()
     }
-    const values = currentZoomData.flatMap((d) => d.properties?.count || [])
+    const values = currentZoomData.flatMap((d) => d.properties?.[HEATMAP_STATIC_PROPERTY_ID] || [])
     const allValues =
       values.length > MAX_RAMP_VALUES
         ? values.filter((d, i) => filterCells(d, i, minVisibleValue, maxVisibleValue))
@@ -119,14 +124,15 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       info.object = {} as FourwingsHeatmapStaticPickingObject
     }
     const { minVisibleValue, maxVisibleValue } = this.props
-    if (info.object?.properties?.count) {
+    if (info.object?.properties?.[HEATMAP_STATIC_PROPERTY_ID]) {
       if (
-        (minVisibleValue && info.object?.properties?.count < minVisibleValue) ||
-        (maxVisibleValue && info.object?.properties?.count > maxVisibleValue)
+        (minVisibleValue &&
+          info.object?.properties?.[HEATMAP_STATIC_PROPERTY_ID] < minVisibleValue) ||
+        (maxVisibleValue && info.object?.properties?.[HEATMAP_STATIC_PROPERTY_ID] > maxVisibleValue)
       ) {
         return { ...info, object: undefined } as any
       }
-      info.object.properties.values = [[info.object.properties.count]]
+      info.object.properties.values = [[info.object.properties?.[HEATMAP_STATIC_PROPERTY_ID]]]
     }
     info.object.layerId = this.root.id
     info.object.sublayers = this.props.sublayers
@@ -140,14 +146,16 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     const scale = scales?.[0]
     if (
       !scale ||
-      !feature.properties.count ||
-      (this.props.minVisibleValue && feature.properties.count < this.props.minVisibleValue) ||
-      (this.props.maxVisibleValue && feature.properties.count > this.props.maxVisibleValue)
+      !feature.properties?.[HEATMAP_STATIC_PROPERTY_ID] ||
+      (this.props.minVisibleValue &&
+        feature.properties?.[HEATMAP_STATIC_PROPERTY_ID] < this.props.minVisibleValue) ||
+      (this.props.maxVisibleValue &&
+        feature.properties?.[HEATMAP_STATIC_PROPERTY_ID] > this.props.maxVisibleValue)
     ) {
       return EMPTY_CELL_COLOR
     }
 
-    const value = scale(feature.properties.count)
+    const value = scale(feature.properties?.[HEATMAP_STATIC_PROPERTY_ID])
     if (!value) {
       return EMPTY_CELL_COLOR
     }

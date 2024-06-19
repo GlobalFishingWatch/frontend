@@ -20,6 +20,7 @@ export const HEATMAP_ID = 'heatmap'
 export const HEATMAP_HIGH_RES_ID = `${HEATMAP_ID}-high-res`
 export const HEATMAP_STATIC_ID = `${HEATMAP_ID}-static`
 export const POSITIONS_ID = 'positions'
+export const HEATMAP_STATIC_PROPERTY_ID = 'count'
 
 export const FOURWINGS_MAX_ZOOM = 12
 // TODO:deck validate this is a good number
@@ -28,7 +29,7 @@ export const POSITIONS_VISUALIZATION_MAX_ZOOM = 9
 
 export const MAX_RAMP_VALUES = 10000
 
-export const DEFAULT_FOURWINGS_INTERVALS: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
+export const FOURWINGS_INTERVALS_ORDER: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
 export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']
 
 export const CHUNKS_BY_INTERVAL: Record<
@@ -72,11 +73,13 @@ export const LIMITS_BY_INTERVAL: Record<
 // TODO: ensure this is not missing any funciontality from the original
 // layer-composer/src/generators/heatmap/util/get-time-chunks-interval.ts
 export const getInterval = (
-  start: number,
-  end: number,
-  availableIntervals = DEFAULT_FOURWINGS_INTERVALS
+  start: number | string,
+  end: number | string,
+  availableIntervals = FOURWINGS_INTERVALS_ORDER
 ): FourwingsInterval => {
-  const duration = Duration.fromMillis(end - start)
+  const startMillis = typeof start === 'string' ? DateTime.fromISO(start).toMillis() : start
+  const endMillis = typeof end === 'string' ? DateTime.fromISO(end).toMillis() : end
+  const duration = Duration.fromMillis(endMillis - startMillis)
   const validIntervals = Object.entries(LIMITS_BY_INTERVAL).flatMap(([interval, limits]) => {
     if (!availableIntervals.includes(interval as FourwingsInterval)) return []
     if (!limits) return interval as FourwingsInterval
@@ -88,7 +91,7 @@ export const getInterval = (
     return validIntervals[0]
   }
   const sortedIntervals = intersection(
-    DEFAULT_FOURWINGS_INTERVALS,
+    FOURWINGS_INTERVALS_ORDER,
     availableIntervals
   ) as FourwingsInterval[]
   return sortedIntervals[sortedIntervals.length - 1]

@@ -11,9 +11,9 @@ import {
   Spinner,
   Button,
 } from '@globalfishingwatch/ui-components'
-import { BasemapType } from '@globalfishingwatch/layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { DataviewType } from '@globalfishingwatch/api-types'
+import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useSetMapCoordinates, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import {

@@ -23,8 +23,9 @@ const overflowMiddlware: Middleware = {
     if (!state) {
       return {}
     }
+
     const overflow = await detectOverflow(state, {
-      boundary: document.getElementById(MAP_WRAPPER_ID),
+      boundary: document.getElementById(MAP_WRAPPER_ID)!,
     })
     Object.entries(overflow).forEach(([key, value]) => {
       if (value > 0) {

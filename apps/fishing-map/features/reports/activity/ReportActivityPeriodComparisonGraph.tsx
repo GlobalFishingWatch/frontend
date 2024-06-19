@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import { Interval as TimeInterval } from 'luxon'
 import { useSelector } from 'react-redux'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import { selectReportTimeComparison } from 'features/app/selectors/app.reports.selector'
 import i18n, { t } from 'features/i18n/i18n'
@@ -43,10 +43,10 @@ export interface ComparisonGraphProps {
       unit?: string
     }
   }[]
-  interval: Interval
+  interval: FourwingsInterval
 }
 
-const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interval) => {
+const formatDateTicks = (tick: number, start: string, timeChunkInterval: FourwingsInterval) => {
   if (!tick || !start) {
     return ''
   }
@@ -76,7 +76,7 @@ type PeriodComparisonGraphTooltipProps = {
     unit: string
   }[]
   label: number
-  timeChunkInterval: Interval
+  timeChunkInterval: FourwingsInterval
   offsetedLastDataUpdate: number
 }
 const PeriodComparisonGraphTooltip = (props: any) => {

@@ -120,12 +120,16 @@ const nextConfig = {
   outputFileTracing: true,
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
+    esmExternals: true,
     optimizePackageImports: [
       '@globalfishingwatch/api-client',
       '@globalfishingwatch/api-types',
       '@globalfishingwatch/data-transforms',
       '@globalfishingwatch/datasets-client',
       '@globalfishingwatch/dataviews-client',
+      '@globalfishingwatch/deck-layer-composer',
+      '@globalfishingwatch/deck-layers',
+      '@globalfishingwatch/deck-loaders',
       '@globalfishingwatch/ocean-areas',
       '@globalfishingwatch/pbf-decoders',
       '@globalfishingwatch/react-hooks',

@@ -1,5 +1,3 @@
-import { RULER_INTERACTIVE_LAYER } from '@globalfishingwatch/layer-composer'
-
 export const MAP_CANVAS_ID = 'map'
 export const MAP_WRAPPER_ID = `${MAP_CANVAS_ID}-wrapper`
 
@@ -10,6 +8,5 @@ export const PREVIEW_BUFFER_GENERATOR_ID = 'report-area-preview-buffer'
 export const MAPBOX_GL_DRAW_PREFIX = 'mapbox-gl-draw'
 export const ANNOTATIONS_GENERATOR_ID = 'annotations'
 export const RULERS_GENERATOR_ID = 'rulers'
-export const RULERS_LAYER_ID = `${RULERS_GENERATOR_ID}-${RULER_INTERACTIVE_LAYER}`
 
 export const DEFAUL_ANNOTATION_COLOR = '#ffffff'

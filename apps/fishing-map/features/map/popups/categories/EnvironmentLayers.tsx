@@ -2,11 +2,11 @@ import { Fragment } from 'react'
 import { format } from 'd3-format'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/layer-composer'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import {
   FourwingsHeatmapPickingObject,
   FourwingsHeatmapStaticPickingObject,
+  HEATMAP_STATIC_PROPERTY_ID,
 } from '@globalfishingwatch/deck-layers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'

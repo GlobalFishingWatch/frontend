@@ -1,5 +1,6 @@
-const HIDDEN_KEYS = ['gfw_id', 'bbox']
+export const POINT_SIZES_DEFAULT_RANGE = [3, 15]
 
+const HIDDEN_KEYS = ['gfw_id', 'bbox']
 export const getPropertiesList = (properties: Record<string, any>) => {
   const keys = Object.keys(properties)
     .filter((k) => !HIDDEN_KEYS.includes(k))

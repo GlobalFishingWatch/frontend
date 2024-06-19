@@ -7,8 +7,11 @@ import {
   VesselIdentitySourceEnum,
   VesselType,
 } from '@globalfishingwatch/api-types'
-import { MapAnnotation, Ruler } from '@globalfishingwatch/layer-composer'
-import { DrawFeatureType, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
+import {
+  DrawFeatureType,
+  FourwingsVisualizationMode,
+  RulerData,
+} from '@globalfishingwatch/deck-layers'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -18,6 +21,7 @@ import {
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
 import { SearchType } from 'features/search/search.config'
+import { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
 export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -87,7 +91,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   bivariateDataviews?: BivariateDataviews
   mapAnnotations?: MapAnnotation[]
   mapAnnotationsVisible?: boolean
-  mapRulers?: Ruler[]
+  mapRulers?: RulerData[]
   mapRulersVisible?: boolean
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   readOnly?: boolean

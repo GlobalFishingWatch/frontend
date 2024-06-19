@@ -181,7 +181,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     if (!featureIndexes || !coordinateIndex) {
       return
     }
-    let data = new ImmutableFeatureCollection({ ...this.getData() })
+    let data = new ImmutableFeatureCollection(this.getData())
     featureIndexes.forEach((featureIndex) => {
       data = data.replacePosition(featureIndex, coordinateIndex, pointPosition)
     })

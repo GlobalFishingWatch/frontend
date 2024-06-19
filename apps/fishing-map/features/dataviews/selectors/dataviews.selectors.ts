@@ -12,7 +12,6 @@ import {
   getGeneratorConfig,
   getMergedDataviewId,
 } from '@globalfishingwatch/dataviews-client'
-import { BasemapGeneratorConfig } from '@globalfishingwatch/layer-composer'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getActiveDatasetsInDataview,
@@ -52,21 +51,6 @@ const VESSEL_ONLY_VISIBLE_LAYERS = [
   DataviewType.UserContext,
   DataviewType.UserPoints,
 ]
-
-export const selectBasemapDataview = createSelector([selectAllDataviews], (dataviews) => {
-  const basemapDataview = dataviews.find((d) => d.config?.type === DataviewType.Basemap)
-  return basemapDataview || DEFAULT_BASEMAP_DATAVIEW_INSTANCE
-})
-
-export const selectDefaultBasemapGenerator = createSelector(
-  [selectBasemapDataview],
-  (basemapDataview) => {
-    const basemapGenerator = getGeneratorConfig(
-      basemapDataview as UrlDataviewInstance<DataviewType>
-    ) as BasemapGeneratorConfig
-    return basemapGenerator
-  }
-)
 
 export const selectActiveDataviewsCategories = createSelector(
   [selectDataviewInstancesResolved],

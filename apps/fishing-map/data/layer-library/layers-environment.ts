@@ -1,4 +1,4 @@
-import { Group } from '@globalfishingwatch/layer-composer'
+import { LayerGroup } from '@globalfishingwatch/deck-layers'
 import { PATH_BASENAME } from 'data/config'
 import { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
@@ -23,7 +23,7 @@ export const BATHYMETRY_DATAVIEW_INSTANCE: Omit<LibraryLayerConfig, 'previewImag
   config: {
     color: 'bathymetry',
     colorRamp: 'bathymetry',
-    group: Group.Bathymetry,
+    group: LayerGroup.Bathymetry,
     maxZoom: 8,
   },
   datasetsConfig: [
