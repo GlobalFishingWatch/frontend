@@ -1,6 +1,6 @@
 import bbox from '@turf/bbox'
-import { LineString, feature, geometry, polygon } from '@turf/helpers'
-import { Feature, MultiPolygon, Point, Polygon } from 'geojson'
+import { feature, geometry, polygon } from '@turf/helpers'
+import { Feature, LineString, MultiPolygon, Point, Polygon, Position } from 'geojson'
 
 export type Bbox = [number, number, number, number]
 
@@ -87,7 +87,7 @@ export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
   let [minX, minY, maxX, maxY] = bbox(geometry)
   if (minX === -180 && maxX === 180) {
     geometry.coordinates.forEach((polygon) => {
-      const polygonBbox = bbox({ type: 'Polygon', coordinates: polygon })
+      const polygonBbox = bbox({ type: 'Polygon', coordinates: polygon as Position[][] })
       if (polygonBbox[2] === 180 && (minX === -180 || polygonBbox[0] < minX)) {
         minX = polygonBbox[0]
       } else if (polygonBbox[0] === -180 && (maxX === 180 || polygonBbox[2] + 360 > maxX)) {

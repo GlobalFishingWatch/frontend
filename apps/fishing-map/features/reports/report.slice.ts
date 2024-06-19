@@ -37,7 +37,7 @@ const initialState: ReportState = {
 }
 type ReportRegion = {
   dataset: string
-  id: number
+  id: string | number
 }
 
 type FetchReportVesselsThunkParams = {

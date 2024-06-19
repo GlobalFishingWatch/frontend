@@ -1,8 +1,7 @@
 import { GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers'
 import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { Feature, Point } from '@turf/turf'
-import { LineString, MultiLineString } from 'geojson'
+import { Feature, LineString, MultiLineString, Point } from 'geojson'
 import { COLOR_TRANSPARENT, LayerGroup, getLayerGroupOffset } from '../../utils'
 import { DeckLayerCategory } from '../../types'
 import {

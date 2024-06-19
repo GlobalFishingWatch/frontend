@@ -1,6 +1,7 @@
 const icons = [
   'add-point',
   'add-polygon',
+  'add-polygon-to-analysis',
   'analysis',
   'annotation',
   'arrow-down',
