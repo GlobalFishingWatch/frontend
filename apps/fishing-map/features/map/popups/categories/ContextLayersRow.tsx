@@ -173,7 +173,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
       {addAreaToReport && (
         <Link className={styles.workspaceLink} to={addReportLinkTo} onClick={onReportClick}>
           <IconButton
-            icon="add-polygon"
+            icon="add-polygon-to-analysis"
             tooltip={t('common.analysisAddArea', 'Add area to the analysis')}
             testId="add-analysis"
             size="small"
