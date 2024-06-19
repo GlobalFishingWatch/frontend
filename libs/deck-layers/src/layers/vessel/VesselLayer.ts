@@ -206,7 +206,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
               return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
             },
             getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end],
-            filterRange: [[startTime, endTime] as any, [startTime, endTime]],
+            filterRange: [
+              [Number.MIN_SAFE_INTEGER, endTime] as any,
+              [startTime, Number.MAX_SAFE_INTEGER],
+            ],
             extensions: [new DataFilterExtension({ filterSize: 2 })],
           })
         )

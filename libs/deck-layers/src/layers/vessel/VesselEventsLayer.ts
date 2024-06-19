@@ -106,7 +106,7 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
           vShape = instanceShapes;
           vStart = instanceStart;
           vEnd = instanceEnd;
-          if(vStart > highlightStartTime && vEnd < highlightEndTime) {
+          if(vStart < highlightEndTime && vEnd > highlightStartTime) {
             gl_Position.z = 1.0;
           }
         `,
@@ -124,7 +124,7 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
         'fs:DECKGL_FILTER_COLOR': `
           vec2 uv = abs(geometry.uv);
           int shape = int(vShape);
-          if (vStart > highlightStartTime && vEnd < highlightEndTime) {
+          if(vStart < highlightEndTime && vEnd > highlightStartTime) {
             color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
           }
           if (shape == SHAPE_SQUARE) {
