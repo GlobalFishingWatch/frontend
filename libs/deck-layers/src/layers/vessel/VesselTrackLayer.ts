@@ -262,45 +262,38 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     const elevationSize = data.attributes.getElevation!?.size
 
     const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
-      const initialPoint = {
+      const points = [] as TrackSegment
+      points.push({
         // longitude: positions[segmentIndex * pathSize],
         // latitude: positions[segmentIndex * pathSize + 1],
         timestamp: timestamps[segmentIndex / timestampSize],
         speed: speeds?.[segmentIndex / speedSize],
         elevation: elevations?.[segmentIndex / elevationSize],
-      }
+      })
       const nextSegmentIndex = segmentsIndexes[i + 1]
-      const middlePoints = [] as (typeof initialPoint)[]
       if (includeMiddlePoints && segmentIndex + 1 < nextSegmentIndex) {
         for (let index = segmentIndex + 1; index < nextSegmentIndex; index++) {
-          middlePoints.push({
-            // longitude: positions[nextSegmentIndex * pathSize - pathSize],
-            // latitude: positions[nextSegmentIndex * pathSize - pathSize + 1],
+          points.push({
             timestamp: timestamps[index / timestampSize],
             speed: speeds?.[index / speedSize],
             elevation: elevations?.[index / elevationSize],
           })
         }
       }
-      const lastPoint =
-        i === segmentsIndexes.length - 1
-          ? {
-              // longitude: positions[positions.length - pathSize],
-              // latitude: positions[positions.length - pathSize + 1],
-              timestamp: timestamps[timestamps.length - 1],
-              speed: speeds?.[speeds.length - 1],
-              elevation: elevations?.[elevations.length - 1],
-            }
-          : {
-              // longitude: positions[nextSegmentIndex * pathSize - pathSize],
-              // latitude: positions[nextSegmentIndex * pathSize - pathSize + 1],
-              timestamp: timestamps[nextSegmentIndex / timestampSize - 1],
-              speed: speeds?.[nextSegmentIndex / speedSize - 1],
-              elevation: elevations?.[nextSegmentIndex / elevationSize - 1],
-            }
-      return middlePoints?.length
-        ? [initialPoint, ...middlePoints, lastPoint]
-        : [initialPoint, lastPoint]
+      if (i === segmentsIndexes.length - 1) {
+        points.push({
+          timestamp: timestamps[timestamps.length - 1],
+          speed: speeds?.[speeds.length - 1],
+          elevation: elevations?.[elevations.length - 1],
+        })
+      } else {
+        points.push({
+          timestamp: timestamps[nextSegmentIndex / timestampSize - 1],
+          speed: speeds?.[nextSegmentIndex / speedSize - 1],
+          elevation: elevations?.[nextSegmentIndex / elevationSize - 1],
+        })
+      }
+      return points
     })
     return segments
   }
