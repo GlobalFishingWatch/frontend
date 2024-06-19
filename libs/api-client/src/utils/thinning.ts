@@ -4,9 +4,9 @@ export enum ThinningLevels {
   Footprint = 'Footprint',
   Insane = 'Insane',
   VeryAggressive = 'VeryAggressive',
-  Aggressive = 'aggressive',
-  Medium = 'medium',
-  Default = 'default',
+  Aggressive = 'Aggressive',
+  Medium = 'Medium',
+  Default = 'Default',
 }
 
 export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {

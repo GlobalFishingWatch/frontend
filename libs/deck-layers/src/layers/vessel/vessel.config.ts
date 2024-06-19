@@ -1,5 +1,6 @@
 import { Color } from '@deck.gl/core'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { hexToDeckColor } from '../../utils'
 
 export const TRACK_LAYER_TYPE = 'track'
@@ -30,3 +31,5 @@ export const EVENTS_COLORS: Record<string, Color> = {
 
 export const DEFAULT_FISHING_EVENT_COLOR = [255, 255, 255] as Color
 export const DEFAULT_HIGHLIGHT_COLOR_VEC = [1.0, 1.0, 1.0, 1.0]
+
+export const TRACK_DEFAULT_THINNING = ThinningLevels.Aggressive

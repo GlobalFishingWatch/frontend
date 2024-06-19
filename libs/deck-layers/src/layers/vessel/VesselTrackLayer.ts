@@ -5,6 +5,7 @@ import { point } from '@turf/helpers'
 import { TrackSegment } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 import { Bbox, getBboxFromPoints } from '@globalfishingwatch/data-transforms'
+import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
 
 /** Properties added by VesselTrackLayer. */
@@ -69,6 +70,12 @@ export type _VesselTrackLayerProps<DataT = any> = {
    * Track API url accessor.
    */
   trackUrl?: string
+  /**
+   * Tracks thinning config {[minZoomLevel]: params }
+   * e.g. To apply Insane between 0 and 4 zoom levels, and Aggresive for higher
+   * { 0: ThinningLevels.Insane, 4: ThinningLevels.Aggressive }
+   */
+  trackThinningZoomConfig?: Record<number, ThinningLevels>
 }
 
 // Example of how to use pass an accesor to the shaders

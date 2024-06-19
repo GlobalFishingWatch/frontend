@@ -27,7 +27,7 @@ import {
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import {
   infoDatasetConfigsCallback,
-  trackDatasetConfigsCallback,
+  // trackDatasetConfigsCallback,
   // eventsDatasetConfigsCallback,
   // infoDatasetConfigsCallback,
 } from 'features/resources/resources.utils'
@@ -145,7 +145,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     dataviews,
     datasets,
     loggedUser,
-    thinningConfig,
+    trackThinningZoomConfig,
     guestUser
   ): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
@@ -175,6 +175,10 @@ export const selectAllDataviewInstancesResolved = createSelector(
         )
         return {
           ...dataviewInstance,
+          config: {
+            ...dataviewInstance.config,
+            trackThinningZoomConfig,
+          },
           datasetsConfig,
         }
       }
@@ -186,7 +190,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
       datasets
     )
     const callbacks: GetDatasetConfigsCallbacks = {
-      track: trackDatasetConfigsCallback(thinningConfig),
+      // track: trackDatasetConfigsCallback(thinningConfig),
       // events: eventsDatasetConfigsCallback,
       info: infoDatasetConfigsCallback(guestUser),
     }
