@@ -37,5 +37,8 @@ export const useGetDeckLayer = <L = AnyDeckLayer>(id: string) => {
 
 export const useGetDeckLayers = <L = AnyDeckLayer>(ids: string[]) => {
   const deckLayers = useDeckLayers()
-  return deckLayers.filter((layer) => ids.includes(layer.id)) as DeckLayerAtom<L>[]
+  const uniqIds = Array.from(new Set(ids))
+  return uniqIds.flatMap(
+    (id) => deckLayers.find((layer) => id === layer.id) || []
+  ) as DeckLayerAtom<L>[]
 }

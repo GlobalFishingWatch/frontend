@@ -17,13 +17,12 @@ import {
 } from 'features/areas/areas.slice'
 import {
   selectReportArea,
-  selectReportAreaDataview,
+  selectReportAreaDataviews,
   selectReportAreaIds,
   selectReportBufferHash,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
 import { useDeckMap } from 'features/map/map-context.hooks'
-import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Bbox } from 'types'
 import { useSetViewState, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
@@ -99,21 +98,22 @@ export function useFetchReportArea() {
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
-  const reportAreaDataset = useSelector(selectDatasetById(datasetId))
-  const areaDataview = useSelector(selectReportAreaDataview)
+  const areaDataviews = useSelector(selectReportAreaDataviews)
 
   useEffect(() => {
-    if (reportAreaDataset && areaId && areaDataview) {
-      const simplify = getSimplificationByDataview(areaDataview)
+    if (datasetId && areaId && areaDataviews?.length) {
+      const simplify = areaDataviews
+        .map((dataview) => getSimplificationByDataview(dataview))
+        .join(',')
       dispatch(
         fetchAreaDetailThunk({
-          dataset: reportAreaDataset,
+          datasetId,
           areaId,
           simplify,
         })
       )
     }
-  }, [areaId, reportAreaDataset, dispatch, areaDataview])
+  }, [areaId, datasetId, dispatch, areaDataviews])
 
   return useMemo(() => ({ status, data }), [status, data])
 }

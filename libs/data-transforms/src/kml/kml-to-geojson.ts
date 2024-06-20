@@ -6,7 +6,7 @@ import { DatasetGeometryType } from '@globalfishingwatch/api-types'
 
 export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
   const isKMZ = file.name.endsWith('.kmz')
-  const results = [] as Feature<Geometry | null, GeoJsonProperties>[]
+  const results = [] as Feature<Geometry, GeoJsonProperties>[]
   let files: JSZip.JSZipObject[] | File[] = [file]
   if (isKMZ) {
     const zip = await JSZip.loadAsync(file)
@@ -34,7 +34,7 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
 
       if (hasFeaturesOfDesiredType) {
         const { features } = kml(kmlDoc)
-        results.push(...features)
+        results.push(...(features as Feature<Geometry, GeoJsonProperties>[]))
       } else {
         invalidDataErrorHandler(type)
       }

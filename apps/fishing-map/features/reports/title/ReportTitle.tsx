@@ -21,7 +21,7 @@ import {
 } from 'features/reports/report.slice'
 import {
   selectReportArea,
-  selectReportAreaDataview,
+  selectReportAreaDataviews,
   selectReportAreaStatus,
 } from 'features/reports/reports.selectors'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
@@ -52,7 +52,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
-  const areaDataview = useSelector(selectReportAreaDataview)
+  const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
@@ -221,7 +221,8 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     urlBufferOperation,
     areaDataview?.config?.type,
     reportAreaStatus,
-    reportArea,
+    reportArea?.properties,
+    reportArea?.name,
     area?.name,
     t,
     urlBufferUnit,
