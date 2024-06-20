@@ -79,7 +79,6 @@ export function getGraphDataFromFourwingsPositions(
   if (!features?.length || !start || !end) {
     return []
   }
-  debugger
   const sublayerLength = sublayers.length
   const data = getDatesPopulated({ start, end, interval, sublayerLength, count: false })
 
@@ -88,7 +87,6 @@ export function getGraphDataFromFourwingsPositions(
     if (htime && value) {
       const date = getDateInIntervalResolution(CONFIG_BY_INTERVAL['HOUR'].getTime(htime), interval)
       if (!data[date]) {
-        debugger
         data[date] = { date }
       }
       data[date][layer] += value
