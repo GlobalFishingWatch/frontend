@@ -31,7 +31,7 @@ import {
   DEFAULT_POINT_BUFFER_UNIT,
   DEFAULT_POINT_BUFFER_VALUE,
 } from 'features/reports/reports.config'
-import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
+import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import styles from '../Popup.module.css'
 
 interface DownloadPopupButtonProps {
@@ -125,7 +125,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     })
     resetSidebarScroll()
     dispatch(resetReportData())
-    dispatch(cleanCurrentWorkspaceStateBufferParams())
+    dispatch(cleanCurrentWorkspaceReportState())
     if (onClick) {
       // TODO:deck review typing here
       onClick(e, feature as any)

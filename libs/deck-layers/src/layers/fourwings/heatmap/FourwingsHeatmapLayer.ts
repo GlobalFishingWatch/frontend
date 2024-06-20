@@ -134,7 +134,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       bufferedStart: tilesCache.bufferedStart,
     })
     const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
-    if (!colorDomain || !colorRanges) {
+    if (!colorDomain?.length || !colorRanges?.length) {
       target = EMPTY_CELL_COLOR
       return target
     }

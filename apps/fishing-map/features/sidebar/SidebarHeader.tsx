@@ -23,7 +23,10 @@ import {
   selectWorkspace,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
+import {
+  cleanCurrentWorkspaceReportState,
+  cleanReportQuery,
+} from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectIsAnySearchLocation,
@@ -337,23 +340,6 @@ function cleanReportPayload(payload: Record<string, any>) {
   return rest
 }
 
-function cleanReportQuery(query: QueryParams) {
-  return {
-    ...query,
-    reportActivityGraph: undefined,
-    reportAreaBounds: undefined,
-    reportCategory: undefined,
-    reportResultsPerPage: undefined,
-    reportTimeComparison: undefined,
-    reportVesselFilter: undefined,
-    reportVesselGraph: undefined,
-    reportVesselPage: undefined,
-    reportBufferUnit: undefined,
-    reportBufferValue: undefined,
-    reportBufferOperation: undefined,
-  }
-}
-
 function CloseReportButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -369,7 +355,7 @@ function CloseReportButton() {
     highlightArea(undefined)
     dispatch(resetReportData())
     dispatch(resetAreaDetail(reportAreaIds))
-    dispatch(cleanCurrentWorkspaceStateBufferParams())
+    dispatch(cleanCurrentWorkspaceReportState())
   }
 
   const isWorkspaceRoute = workspaceId !== DEFAULT_WORKSPACE_ID
