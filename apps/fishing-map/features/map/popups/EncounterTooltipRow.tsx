@@ -6,7 +6,7 @@ import { EventVessel } from '@globalfishingwatch/api-types'
 import { TooltipEventFeature } from 'features/map/map.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import I18nDate from 'features/i18n/i18nDate'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
 import { formatInfoField } from 'utils/info'
 import { CARRIER_PORTAL_URL } from 'data/config'
 import { useCarrierLatestConnect } from 'features/datasets/datasets.hook'
@@ -195,7 +195,7 @@ function TileClusterTooltipRow({ features, showFeaturesDetails }: UserContextLay
     <Fragment>
       {features.map((feature, index) => {
         const key = `${feature.title}-${index}`
-        if (feature.source === ENCOUNTER_EVENTS_SOURCE_ID) {
+        if (ENCOUNTER_EVENTS_SOURCES.some((source) => feature.source === source)) {
           return (
             <EncounterTooltipRow
               key={key}
