@@ -14,8 +14,8 @@ export enum LayerGroup {
   OutlinePolygonsHighlighted = 'outlinePolygonsHighlighted', // Context layers with selected features
   CustomLayer = 'customLayer', // Context custom user layers
   Default = 'default', // Default stack position when group is not specified
-  Point = 'point', // Events, etc
   Track = 'track', // Tracks
+  Point = 'point', // Events, etc
   TrackHighlightedEvent = 'trackHighlightedEvent', // Fixed highlight section normally used for a event duration
   TrackHighlighted = 'trackHighlighted', // Highlighted sections of tracks
   BasemapForeground = 'basemapForeground', // Graticule labels, bathymetry labels, etc

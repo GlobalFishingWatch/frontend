@@ -28,6 +28,7 @@ import {
   hexToDeckColor,
   LayerGroup,
   rgbaStringToComponents,
+  VESSEL_SPRITE_ICON_MAPPING,
 } from '../../../utils'
 import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
@@ -60,11 +61,6 @@ const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
 }
 
 const MAX_LABEL_LENGTH = 20
-const ICON_MAPPING = {
-  vessel: { x: 0, y: 0, width: 22, height: 40, mask: true },
-  vesselHighlight: { x: 24, y: 0, width: 22, height: 40, mask: false },
-  rect: { x: 6, y: 0, width: 10, height: 30, mask: true },
-}
 
 // TODO:deck migrate this to an abstract layer to ensure methods like .getViewportData are implemented
 export class FourwingsPositionsTileLayer extends CompositeLayer<
@@ -332,9 +328,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         new MVTLayer(this.props, {
           id: `tiles`,
           data: `${baseUrl}?${stringify(params)}`,
-          // minZoom: 0,
           maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
-          // loaders: [MVTWorkerLoader],
           fetch: this._fetch,
           onViewportLoad: this._onViewportLoad,
           renderSubLayers: () => null,
@@ -343,12 +337,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           id: 'allPositions',
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
-          iconMapping: ICON_MAPPING,
+          iconMapping: VESSEL_SPRITE_ICON_MAPPING,
           getIcon: () => 'vessel',
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getFillColor,
           getSize: this._getIconSize,
-          getAngle: (d: any) => (d.properties.bearing ? d.properties.bearing - 90 : 0),
+          getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
           pickable: true,
           getPickingInfo: this.getPickingInfo,
@@ -361,12 +355,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           id: 'allPositionsHighlight',
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
-          iconMapping: ICON_MAPPING,
+          iconMapping: VESSEL_SPRITE_ICON_MAPPING,
           getIcon: () => 'vesselHighlight',
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getHighlightColor,
           getSize: this._getIconSize,
-          getAngle: (d: any) => (d.properties.bearing ? d.properties.bearing - 90 : 0),
+          getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
           getPickingInfo: this.getPickingInfo,
           updateTriggers: {

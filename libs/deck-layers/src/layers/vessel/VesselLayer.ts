@@ -2,8 +2,11 @@ import { DataFilterExtension } from '@deck.gl/extensions'
 import { CompositeLayer, Layer, LayersList, LayerProps, Color, PickingInfo } from '@deck.gl/core'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
-import { featureCollection, point } from '@turf/turf'
-import { BBox, Position } from 'geojson'
+import bearing from '@turf/bearing'
+import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
+import { BBox, Feature, Point, Position } from 'geojson'
+import { IconLayer } from '@deck.gl/layers'
+import { rhumbBearing } from '@turf/turf'
 import {
   ApiEvent,
   DataviewCategory,
@@ -18,8 +21,15 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 import { Bbox } from '@globalfishingwatch/data-transforms'
 import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { deckToHexColor } from '../../utils/colors'
-import { getFetchLoadOptions, getLayerGroupOffset, LayerGroup } from '../../utils'
+import { PATH_BASENAME } from '../layers.config'
+import { deckToHexColor, hexToDeckColor } from '../../utils/colors'
+import {
+  BLEND_BACKGROUND,
+  getFetchLoadOptions,
+  getLayerGroupOffset,
+  LayerGroup,
+  VESSEL_SPRITE_ICON_MAPPING,
+} from '../../utils'
 import { BaseLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
@@ -39,6 +49,7 @@ import {
   VesselEventProperties,
   _VesselLayerProps,
 } from './vessel.types'
+import { VesselPositionLayer } from './VesselPositionLayer'
 
 export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
   events: VesselDeckLayersEvent[]
@@ -244,8 +255,100 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     })
   }
 
+  _getVesselPositionLayer() {
+    const { visible, highlightStartTime, highlightEndTime, color } = this.props
+    const trackData = this.getVesselTrackData()
+    if (!visible || !trackData?.length || !highlightEndTime || !highlightStartTime) {
+      return []
+    }
+    const highlightCenter = highlightEndTime - (highlightEndTime - highlightStartTime) / 2
+    let timestampIndex = -1
+    const chunkIndex = trackData.findIndex((chunk) => {
+      if (
+        chunk.attributes &&
+        chunk.attributes.getTimestamp.value[0] < highlightCenter &&
+        chunk.attributes.getTimestamp.value[chunk.attributes.getTimestamp.value.length - 1] >
+          highlightCenter
+      ) {
+        timestampIndex = chunk.attributes.getTimestamp.value.findIndex(
+          (t, i) =>
+            t > highlightCenter && chunk.attributes.getTimestamp.value[i - 1] < highlightCenter
+        )
+        return true
+      } else {
+        return false
+      }
+    })
+    if (chunkIndex === -1 || timestampIndex === -1) return []
+
+    const coordIndex = timestampIndex * 2
+    const pointCoords = [
+      trackData[chunkIndex].attributes.getPath.value[coordIndex],
+      trackData[chunkIndex].attributes.getPath.value[coordIndex + 1],
+    ]
+    const nextPointCoords = [
+      trackData[chunkIndex].attributes.getPath.value[coordIndex + 2],
+      trackData[chunkIndex].attributes.getPath.value[coordIndex + 3],
+    ]
+    const pointBearing = rhumbBearing(pointCoords, nextPointCoords)
+    const centerPoint = point(pointCoords, {
+      course: 360 - bearingToAzimuth(pointBearing),
+    })
+
+    if (!centerPoint) return []
+
+    return [
+      new VesselPositionLayer(
+        this.getSubLayerProps({
+          id: 'vessel-position',
+          data: [centerPoint],
+          iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
+          iconMapping: VESSEL_SPRITE_ICON_MAPPING,
+          getIcon: () => 'vessel',
+          getPosition: (d: any) => d.geometry.coordinates,
+          getAngle: (d: any) => d.properties.course,
+          getColor: hexToDeckColor(BLEND_BACKGROUND),
+          getSize: 18,
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+        })
+      ),
+      new VesselPositionLayer(
+        this.getSubLayerProps({
+          id: 'vessel-position',
+          data: [centerPoint],
+          iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
+          iconMapping: VESSEL_SPRITE_ICON_MAPPING,
+          getIcon: () => 'vessel',
+          getPosition: (d: any) => d.geometry.coordinates,
+          getAngle: (d: any) => d.properties.course,
+          getColor: color,
+          getSize: 15,
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+        })
+      ),
+      new VesselPositionLayer(
+        this.getSubLayerProps({
+          id: 'vessel-position',
+          data: [centerPoint],
+          iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
+          iconMapping: VESSEL_SPRITE_ICON_MAPPING,
+          getIcon: () => 'vesselHighlight',
+          getPosition: (d: any) => d.geometry.coordinates,
+          getAngle: (d: any) => d.properties.course,
+          getColor: [255, 255, 255, 255],
+          getSize: 15,
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+        })
+      ),
+    ]
+  }
+
   renderLayers(): Layer<{}> | LayersList {
-    return [...this._getVesselTrackLayers(), ...this._getVesselEventLayers()]
+    return [
+      ...this._getVesselTrackLayers(),
+      ...this._getVesselEventLayers(),
+      ...this._getVesselPositionLayer(),
+    ]
   }
 
   getTrackLayers() {

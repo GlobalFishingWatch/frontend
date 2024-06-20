@@ -18,7 +18,7 @@ export {
 
 const TRACK_THINNING_BY_ZOOM_GUEST = {
   0: ThinningLevels.Insane,
-  4: ThinningLevels.VeryAggressive,
+  4: ThinningLevels.Aggressive,
 }
 const TRACK_THINNING_BY_ZOOM_USER = { ...TRACK_THINNING_BY_ZOOM_GUEST, 7: ThinningLevels.Default }
 
