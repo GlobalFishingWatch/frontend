@@ -368,28 +368,32 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
             getSize: [highlightedFeatureIds, highlightedVesselIds],
           },
         }),
-        new TextLayer({
-          id: `lastPositionsNames`,
-          data: lastPositions,
-          getText: this._getVesselLabel,
-          getPosition: (d) => d.geometry.coordinates,
-          getPixelOffset: [15, 0],
-          getColor: this._getLabelColor,
-          getSize: 13,
-          outlineColor: hexToDeckColor(BLEND_BACKGROUND),
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
-          fontFamily: 'Roboto',
-          outlineWidth: 200,
-          fontSettings: { sdf: true, smoothing: 0.2 },
-          sizeUnits: 'pixels',
-          getTextAnchor: 'start',
-          getAlignmentBaseline: 'center',
-          pickable: true,
-          getPickingInfo: this.getPickingInfo,
-          updateTriggers: {
-            getColor: [highlightedFeatureIds, highlightedVesselIds],
-          },
-        }),
+        ...(lastPositions?.length < 100
+          ? [
+              new TextLayer({
+                id: `lastPositionsNames`,
+                data: lastPositions,
+                getText: this._getVesselLabel,
+                getPosition: (d) => d.geometry.coordinates,
+                getPixelOffset: [15, 0],
+                getColor: this._getLabelColor,
+                getSize: 13,
+                outlineColor: hexToDeckColor(BLEND_BACKGROUND),
+                getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
+                fontFamily: 'Roboto',
+                outlineWidth: 200,
+                fontSettings: { sdf: true, smoothing: 0.2 },
+                sizeUnits: 'pixels',
+                getTextAnchor: 'start',
+                getAlignmentBaseline: 'center',
+                pickable: true,
+                getPickingInfo: this.getPickingInfo,
+                updateTriggers: {
+                  getColor: [highlightedFeatureIds, highlightedVesselIds],
+                },
+              }),
+            ]
+          : []),
       ]
     }
     return null
