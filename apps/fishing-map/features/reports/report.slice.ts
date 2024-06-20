@@ -56,6 +56,17 @@ type FetchReportVesselsThunkParams = {
   reportBufferOperation?: BufferOperation
 }
 
+const REPORT_FIELDS_TO_INCLUDE = [
+  'mmsi',
+  'dataset',
+  'flag',
+  'geartype',
+  'hours',
+  'shipName',
+  'vesselId',
+  'vesselType',
+]
+
 export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
   const {
     region,
@@ -83,6 +94,7 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
         getUTCDateTime(dateRange?.end)?.toString(),
       ].join(','),
       'group-by': groupBy,
+      includes: REPORT_FIELDS_TO_INCLUDE.join(','),
       'spatial-resolution': spatialResolution,
       'spatial-aggregation': spatialAggregation,
       format: format,
