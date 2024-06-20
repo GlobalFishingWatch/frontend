@@ -293,11 +293,11 @@ export const useClickedEventConnect = () => {
     )
 
     if (tileClusterFeature) {
-      const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.some(
+      const isEncountersCluster = ENCOUNTER_EVENTS_SOURCES.some(
         (source) => tileClusterFeature.source === source
       )
 
-      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
+      const fetchFn = isEncountersCluster ? fetchEncounterEventThunk : fetchBQEventThunk
       eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
     }
   }
