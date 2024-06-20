@@ -34,13 +34,15 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { useMapClusterTilesLoaded, useMapSourceTiles } from 'features/map/map-sources.hooks'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
 import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { getEventLabel } from 'utils/analytics'
 import { selectDefaultMapGeneratorsConfig } from './map.selectors'
 import {
   WORKSPACES_POINTS_TYPE,
@@ -62,8 +64,6 @@ import {
   SliceExtendedFeature,
 } from './map.slice'
 import useViewport from './map-viewport.hooks'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { getEventLabel } from 'utils/analytics'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
@@ -291,8 +291,12 @@ export const useClickedEventConnect = () => {
     const tileClusterFeature = event.features.find(
       (f) => f.generatorType === GeneratorType.TileCluster
     )
+
     if (tileClusterFeature) {
-      const bqPocQuery = tileClusterFeature.source !== ENCOUNTER_EVENTS_SOURCE_ID
+      const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.some(
+        (source) => tileClusterFeature.source === source
+      )
+
       const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
       eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
     }
