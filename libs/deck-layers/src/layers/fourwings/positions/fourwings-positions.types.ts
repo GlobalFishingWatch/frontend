@@ -10,6 +10,8 @@ import {
 import type { FourwingsLayer } from '../FourwingsLayer'
 
 export type _FourwingsPositionsTileLayerProps = BaseFourwingsLayerProps & {
+  highlightStartTime?: number
+  highlightEndTime?: number
   highlightedFeatures?: FourwingsPositionsPickingObject[]
   onPositionsMaxPointsError?: (layer: FourwingsLayer, maxPoints: number) => void
 }
