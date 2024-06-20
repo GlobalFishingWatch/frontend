@@ -88,8 +88,8 @@
     "geo-coordinates-parser": "^1.6.4",
     "geojson": "^0.5.0",
     "gl-matrix": "3.4.3",
-    "google-auth-library": "9.4.1",
-    "google-spreadsheet": "4.1.1",
+    "google-auth-library": "9.7.0",
+    "google-spreadsheet": "4.1.2",
     "html-react-parser": "^4.2.10",
     "html2canvas": "1.4.1",
     "i18next": "23.7.16",
@@ -259,7 +259,9 @@
     "webpack-sources": "3.2.3",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
-    "eslint-plugin-react": "7.34.1"
+    "eslint-plugin-react": "7.34.1",
+    "gaxios@npm:^6.1.1": "patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch",
+    "gaxios@npm:^6.0.0": "patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

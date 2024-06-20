@@ -3379,8 +3379,8 @@ __metadata:
     geo-coordinates-parser: "npm:^1.6.4"
     geojson: "npm:^0.5.0"
     gl-matrix: "npm:3.4.3"
-    google-auth-library: "npm:9.4.1"
-    google-spreadsheet: "npm:4.1.1"
+    google-auth-library: "npm:9.7.0"
+    google-spreadsheet: "npm:4.1.2"
     has: "npm:^1.0.4"
     html-react-parser: "npm:^4.2.10"
     html2canvas: "npm:1.4.1"
@@ -16706,16 +16706,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gaxios@npm:^6.0.0, gaxios@npm:^6.1.1":
-  version: 6.5.0
-  resolution: "gaxios@npm:6.5.0"
+"gaxios@npm:6.6.0":
+  version: 6.6.0
+  resolution: "gaxios@npm:6.6.0"
   dependencies:
     extend: "npm:^3.0.2"
     https-proxy-agent: "npm:^7.0.1"
     is-stream: "npm:^2.0.0"
     node-fetch: "npm:^2.6.9"
     uuid: "npm:^9.0.1"
-  checksum: 10/cbfe706ce1fca0e8ca5aff6faa983672d63ee77fd622de9205f00653c8946a9422a06dce944efd0ce356bd7787f9158d59858ff5f388828b0c44acbc074656bd
+  checksum: 10/9f035590374fd168e7bb3ddda369fc8bd487f16a2308fde18284ccc0f685d0af4ac5e3e38d680a8c6342a9000fbf9d77ce691ee110dbed2feebb659e729c640a
+  languageName: node
+  linkType: hard
+
+"gaxios@patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch":
+  version: 6.6.0
+  resolution: "gaxios@patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch::version=6.6.0&hash=c59c1a"
+  dependencies:
+    extend: "npm:^3.0.2"
+    https-proxy-agent: "npm:^7.0.1"
+    is-stream: "npm:^2.0.0"
+    node-fetch: "npm:^2.6.9"
+    uuid: "npm:^9.0.1"
+  checksum: 10/102133fd94a145401a5fbb03a28331ade97aa872034abb6d9d438de8b0e9633b8bc8bbd49ecd6f7a12cf765e75b8944d331cd852ad618ef04fa04aa3477b4d5e
   languageName: node
   linkType: hard
 
@@ -17189,9 +17202,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"google-auth-library@npm:9.4.1":
-  version: 9.4.1
-  resolution: "google-auth-library@npm:9.4.1"
+"google-auth-library@npm:9.7.0":
+  version: 9.7.0
+  resolution: "google-auth-library@npm:9.7.0"
   dependencies:
     base64-js: "npm:^1.3.0"
     ecdsa-sig-formatter: "npm:^1.0.11"
@@ -17199,13 +17212,13 @@ __metadata:
     gcp-metadata: "npm:^6.1.0"
     gtoken: "npm:^7.0.0"
     jws: "npm:^4.0.0"
-  checksum: 10/3fb1b26bec40568edfb9deeac2fdbf4d5d539ea6ed79895f411e508d6ef173f772648bd7ad4cab65a250df60660909e22f3f6863162de794ee065efb9974f723
+  checksum: 10/9f255ba88fa2a0b209cc6a5ca5a24012cd5857a0c2beea494ee2751a0d9674f3fb1e156cf0fe288099df5282cb78fdedc9c9ed81d2ff4aa8858a1a62b8507852
   languageName: node
   linkType: hard
 
-"google-spreadsheet@npm:4.1.1":
-  version: 4.1.1
-  resolution: "google-spreadsheet@npm:4.1.1"
+"google-spreadsheet@npm:4.1.2":
+  version: 4.1.2
+  resolution: "google-spreadsheet@npm:4.1.2"
   dependencies:
     axios: "npm:^1.4.0"
     lodash: "npm:^4.17.21"
@@ -17214,7 +17227,7 @@ __metadata:
   peerDependenciesMeta:
     google-auth-library:
       optional: true
-  checksum: 10/566eda4dac8f04c6be1ce1b2149af7bc85d35e5ac89e8ac594e057f5750b9a552cdde1772b029896806fae5da1e4d1e4b999f7bfd43c38a1803a6b5ce4b231e3
+  checksum: 10/7121b13050e622c1aec0595cda70210b3f354683a06dea6a7a73514bf0c8b34f38e30b5dd59e055687d7da0b466ae26d748a49fc75b612289f04c090ea62f207
   languageName: node
   linkType: hard
 
