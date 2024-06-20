@@ -7,7 +7,7 @@ export function getSteps(values: number[], numSteps = COLOR_RAMP_DEFAULT_NUM_STE
   const buckets = ckmeans(values, steps).map((step) => step[0])
   if (buckets.length < numSteps) {
     for (let i = buckets.length; i < numSteps; i++) {
-      buckets.push(buckets[i - 1] + 1)
+      buckets.push(buckets[i - 1] + 0.5)
     }
   }
   return buckets
