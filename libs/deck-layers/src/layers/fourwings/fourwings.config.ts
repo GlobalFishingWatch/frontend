@@ -99,6 +99,7 @@ export const getInterval = (
 
 export const getDateInIntervalResolution = (date: number, interval: FourwingsInterval): number => {
   return DateTime.fromMillis(date)
+    .toUTC()
     .startOf(interval as any)
     .toMillis()
 }

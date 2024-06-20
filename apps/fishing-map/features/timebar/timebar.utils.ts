@@ -1,9 +1,17 @@
 import { DateTime } from 'luxon'
 import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
-import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import {
+  CONFIG_BY_INTERVAL,
+  FourwingsFeature,
+  FourwingsInterval,
+  FourwingsPositionFeature,
+} from '@globalfishingwatch/deck-loaders'
+import {
+  FourwingsAggregationOperation,
+  getDateInIntervalResolution,
+} from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime } from 'utils/dates'
 import { FeaturesToTimeseriesParams } from 'features/reports/reports-timeseries.utils'
-import { FourwingsAggregationOperation } from '../../../../libs/deck-layers/src/layers/fourwings'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
   FeaturesToTimeseriesParams,
@@ -18,17 +26,19 @@ type GetGraphDataFromFourwingsFeaturesParams = Pick<
   | 'maxVisibleValue'
 >
 
-type FeatureDates = Record<number, ActivityTimeseriesFrame & { count: number[] }>
+type FeatureDates = Record<number, ActivityTimeseriesFrame & { count?: number[] }>
 function getDatesPopulated({
   start,
   end,
   interval,
   sublayerLength,
+  count = true,
 }: {
   start: number
   end: number
   interval: FourwingsInterval
   sublayerLength: number
+  count?: boolean
 }): FeatureDates {
   const data = {} as FeatureDates
   const now = DateTime.now().toUTC().toMillis()
@@ -40,7 +50,10 @@ function getDatesPopulated({
     now
   )
   while (date <= endPlusOne) {
-    data[date] = { date, count: new Array(sublayerLength).fill(0) }
+    data[date] = { date }
+    if (count) {
+      data[date].count = Array(sublayerLength).fill(0)
+    }
     for (let i = 0; i < sublayerLength; i++) {
       data[date][i] = 0
     }
@@ -54,7 +67,35 @@ function getDatesPopulated({
   return data
 }
 
-export function getGraphDataFromFourwingsFeatures(
+export function getGraphDataFromFourwingsPositions(
+  features: FourwingsPositionFeature[],
+  {
+    start,
+    end,
+    interval,
+    sublayers,
+  }: Pick<GetGraphDataFromFourwingsFeaturesParams, 'start' | 'end' | 'interval' | 'sublayers'>
+): ActivityTimeseriesFrame[] {
+  if (!features?.length || !start || !end) {
+    return []
+  }
+  const sublayerLength = sublayers.length
+  const data = getDatesPopulated({ start, end, interval, sublayerLength, count: false })
+
+  features.forEach((feature) => {
+    const { htime, value, layer } = feature.properties
+    if (htime && value) {
+      const date = getDateInIntervalResolution(CONFIG_BY_INTERVAL['HOUR'].getTime(htime), interval)
+      if (!data[date]) {
+        data[date] = { date }
+      }
+      data[date][layer] += value
+    }
+  })
+  return Object.values(data)
+}
+
+export function getGraphDataFromFourwingsHeatmap(
   features: FourwingsFeature[],
   {
     start,
@@ -94,7 +135,7 @@ export function getGraphDataFromFourwingsFeatures(
             (!maxVisibleValue || valueArray[dateIndex] <= maxVisibleValue)
           ) {
             sublayerDateData[sublayerIndex] += valueArray[dateIndex]
-            sublayerDateData.count[sublayerIndex]++
+            sublayerDateData.count![sublayerIndex]++
           }
         })
       })
@@ -104,7 +145,7 @@ export function getGraphDataFromFourwingsFeatures(
     Object.keys(rest).forEach((key) => {
       if (aggregationOperation === FourwingsAggregationOperation.Avg) {
         const indexKey = parseInt(key)
-        if (rest[indexKey]) {
+        if (count && rest[indexKey]) {
           rest[indexKey] = rest[indexKey] / count[indexKey]
         }
       }

@@ -14,13 +14,7 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import {
-  FOURWINGS_INTERVALS_ORDER,
-  FourwingsLayer,
-  getInterval,
-} from '@globalfishingwatch/deck-layers'
-import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
+import { FOURWINGS_INTERVALS_ORDER, getInterval } from '@globalfishingwatch/deck-layers'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -57,7 +51,7 @@ import TimebarSettings from './TimebarSettings'
 import {
   selectAvailableStart,
   selectAvailableEnd,
-  selectTimebarSelectedDataviews,
+  selectTimebarSelectedVisualizationMode,
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
@@ -74,11 +68,9 @@ const TimebarHighlighterWrapper = ({
   // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
-
-  const dataviews = useSelector(selectTimebarSelectedDataviews)
-  const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
-  const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
-  const interval = fourwingsActivityLayer?.instance?.getInterval()
+  const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
+  const { start, end } = useTimerangeConnect()
+  const interval = getInterval(start, end)
 
   const onHighlightChunks = useCallback(
     (chunks?: HighlightedChunks) => {
@@ -134,11 +126,13 @@ const TimebarHighlighterWrapper = ({
     },
     [interval]
   )
+
   const formatDate =
-    timebarVisualisation !== TimebarVisualisations.HeatmapActivity &&
-    timebarVisualisation !== TimebarVisualisations.HeatmapDetections
-      ? undefined
-      : activityDateCallback
+    timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
+    timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
+    visualizationMode !== 'positions'
+      ? activityDateCallback
+      : undefined
 
   return highlightedTime ? (
     <TimebarHighlighter
