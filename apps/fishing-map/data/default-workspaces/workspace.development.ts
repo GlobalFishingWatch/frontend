@@ -49,6 +49,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
+        visible: false,
         datasets: ['public-global-fishing-effort:v3.0'],
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
@@ -126,23 +127,31 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     },
-    {
-      id: 'fixed-sar-infrastructure',
-      config: {
-        visible: false,
-        color: '#8E24A9',
-        colorRamp: 'seance',
-      },
-      dataviewId: FIXED_SAR_INFRASTRUCTURE,
-    },
+    // {
+    //   id: 'fixed-sar-infrastructure',
+    //   config: {
+    //     visible: false,
+    //     color: '#8E24A9',
+    //     colorRamp: 'seance',
+    //   },
+    //   dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    // },
     {
       id: 'fixed-sar-infrastructure-v2',
       config: {
         visible: true,
-        color: '#FFEA00',
-        datasets: ['public-fixed-infrastructure-v2'],
+        color: '#FFFF00',
+        datasets: ['local-fixed-infrastructure-v2'],
+        type: 'USER_CONTEXT',
       },
-      dataviewId: FIXED_SAR_INFRASTRUCTURE_V2,
+      datasetsConfig: [
+        {
+          datasetId: 'local-fixed-infrastructure-v2',
+          endpoint: 'context-tiles',
+          params: [],
+        },
+      ],
+      dataviewId: FIXED_SAR_INFRASTRUCTURE,
     },
     {
       id: BASEMAP_DATAVIEW_INSTANCE_ID,

@@ -31,6 +31,7 @@ export function useDatasetMetadata() {
           propertyToInclude = meta.configuration?.propertyToInclude,
           ...configurationUI
         } = newConfig as DatasetConfiguration
+        console.log('🚀 ~ setDatasetMetadataState ~ newConfig:', newConfig)
         return {
           ...meta,
           configuration: {

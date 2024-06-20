@@ -18,6 +18,7 @@ class UserPointsGenerator {
       : API_GATEWAY + config.tilesUrl
 
     const url = new URL(tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}'))
+    console.log('🚀 ~ UserPointsGenerator ~ url:', url)
 
     if (config.filter) {
       url.searchParams.set('filter', config.filter)
@@ -82,6 +83,7 @@ class UserPointsGenerator {
   }
 
   getStyle = (config: GlobalUserPointsGeneratorConfig) => {
+    console.log('🚀 ~ UserPointsGenerator ~ config:', config)
     return {
       id: config.id,
       sources: this._getStyleSources(config),

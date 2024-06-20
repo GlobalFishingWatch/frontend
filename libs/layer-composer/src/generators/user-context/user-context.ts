@@ -72,6 +72,7 @@ class UserContextGenerator {
     const interactive = !config.disableInteraction
 
     const filters = getTimeFilterForUserContextLayer(config)
+    console.log('🚀 ~ UserContextGenerator ~ filters:', filters)
     if (config.steps?.length) {
       const generatedRamp = getColorRampByOpacitySteps(config.color, config.steps?.length)
       const legendRamp = zip(config.steps, generatedRamp)

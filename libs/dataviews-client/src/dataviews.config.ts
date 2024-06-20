@@ -44,6 +44,7 @@ export const setGeneratorConfigTimeFilter = ({
     dataset,
     property: 'startTime',
   })
+  console.log('🚀 ~ startTimeFilterProperty:', startTimeFilterProperty)
   const endTimeFilterProperty = getDatasetConfigurationProperty({
     dataset,
     property: 'endTime',
