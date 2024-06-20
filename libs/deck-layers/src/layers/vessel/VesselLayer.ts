@@ -270,15 +270,19 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         chunk.attributes.getTimestamp.value[chunk.attributes.getTimestamp.value.length - 1] >
           highlightCenter
       ) {
-        timestampIndex = chunk.attributes.getTimestamp.value.findIndex(
-          (t, i) =>
-            t > highlightCenter && chunk.attributes.getTimestamp.value[i - 1] < highlightCenter
-        )
+        timestampIndex = chunk.attributes.getTimestamp.value.findIndex((t, i) => {
+          return (
+            !chunk.startIndices.includes(i) &&
+            t > highlightCenter &&
+            chunk.attributes.getTimestamp.value[i - 1] < highlightCenter
+          )
+        })
         return true
       } else {
         return false
       }
     })
+
     if (chunkIndex === -1 || timestampIndex === -1) return []
 
     const coordIndex = timestampIndex * 2
@@ -300,7 +304,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return [
       new VesselPositionLayer(
         this.getSubLayerProps({
-          id: 'vessel-position',
+          id: 'vessel-position-bg',
           data: [centerPoint],
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
@@ -328,7 +332,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       ),
       new VesselPositionLayer(
         this.getSubLayerProps({
-          id: 'vessel-position',
+          id: 'vessel-position-hg',
           data: [centerPoint],
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
