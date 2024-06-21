@@ -1006,9 +1006,17 @@
           "unknown": "unknown"
         }
       },
-      "infrastructure_id": "infrastructure_id",
-      "infrastructure_end_date": "infrastructure_end_date",
-      "infrastructure_start_date": "infrastructure_start_date"
+      "structure_id": "structure_id",
+      "label_confidence": {
+        "keyword": "label_confidence",
+        "enum": {
+          "high": "high",
+          "low": "low",
+          "medium": "medium"
+        }
+      },
+      "structure_end_date": "structure_end_date",
+      "structure_start_date": "structure_start_date"
     }
   },
   "public-global-all-tracks": {
