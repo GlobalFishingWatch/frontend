@@ -86,7 +86,7 @@ const getSubLayerVisible = (sublayer: HeatmapAnimatedGeneratorSublayer) =>
 const getSubLayersVisible = (config: HeatmapAnimatedGeneratorConfig) =>
   config.mode === HeatmapAnimatedMode.TimeCompare
     ? [true, true]
-    : config.sublayers.map(getSubLayerVisible)
+    : config.sublayers?.map(getSubLayerVisible)
 
 const serializeBaseSourceParams = (params: TileAggregationSourceParams) => {
   const serialized: TileAggregationSourceParamsSerialized = {
@@ -209,7 +209,7 @@ class HeatmapAnimatedGenerator {
     )
 
     const attributtion = config.sublayers
-      .flatMap((sublayer) => (sublayer.visible ? sublayer.attribution || [] : []))
+      ?.flatMap((sublayer) => (sublayer.visible ? sublayer.attribution || [] : []))
       .join(',')
 
     // TODO should be an array per sublayer?
@@ -371,12 +371,12 @@ class HeatmapAnimatedGenerator {
     }
 
     const cacheKey = this.getCacheKey(breaksConfig)
-    const visible = config.sublayers.some((l) => l.visible === true)
+    const visible = config.sublayers?.some((l) => l.visible === true)
 
-    const useSublayerBreaks = finalConfig.sublayers.some((s) => s.breaks?.length)
+    const useSublayerBreaks = finalConfig.sublayers?.some((s) => s.breaks?.length)
     const breaks =
       useSublayerBreaks && config.mode !== HeatmapAnimatedMode.TimeCompare
-        ? config.sublayers.map(({ breaks }) => breaks || [])
+        ? config.sublayers?.map(({ breaks }) => breaks || [])
         : getSublayersBreaks(breaksConfig, this.breaksCache[cacheKey]?.breaks)
 
     const legends = getLegends(finalConfig, breaks || [])
