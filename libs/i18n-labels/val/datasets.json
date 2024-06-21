@@ -994,6 +994,23 @@
       }
     }
   },
+  "public-fixed-infrastructure-filtered-v1.1": {
+    "name": "crwdns83272:0crwdne83272:0",
+    "description": "crwdns83274:0crwdne83274:0",
+    "schema": {
+      "label": {
+        "keyword": "crwdns83276:0crwdne83276:0",
+        "enum": {
+          "oil": "crwdns83278:0crwdne83278:0",
+          "wind": "crwdns83280:0crwdne83280:0",
+          "unknown": "crwdns83282:0crwdne83282:0"
+        }
+      },
+      "infrastructure_id": "crwdns83284:0crwdne83284:0",
+      "infrastructure_end_date": "crwdns83286:0crwdne83286:0",
+      "infrastructure_start_date": "crwdns83288:0crwdne83288:0"
+    }
+  },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
     "description": "crwdns69890:0crwdne69890:0"
