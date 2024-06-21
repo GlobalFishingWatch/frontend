@@ -136,6 +136,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     visualizationMode,
     aggregationOperation,
     availableIntervals,
+    positionProperties: Object.keys(dataset?.schema || {}),
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     ...(highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),

@@ -34,6 +34,7 @@ import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   POSITIONS_API_TILES_URL,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
+  SUPPORTED_POSITION_PROPERTIES,
 } from '../fourwings.config'
 import { getRoundedDateFromTS } from '../heatmap/fourwings-heatmap.utils'
 import { FourwingsTileLayerColorScale } from '../fourwings.types'
@@ -309,16 +310,23 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
   }
 
+  _getPositionProperties() {
+    return this.props.positionProperties?.filter((p) => SUPPORTED_POSITION_PROPERTIES.includes(p))
+  }
+
   renderLayers(): Layer<{}> | LayersList | null {
     if (this.state.fontLoaded) {
       const { startTime, endTime, sublayers } = this.props
       const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
+      const supportedPositionProperties = this._getPositionProperties()?.join(',')
       const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
       const params = {
         datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
         format: 'MVT',
         'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
-        properties: [['speed', 'bearing', 'shipname'].join(',')],
+        ...(supportedPositionProperties?.length && {
+          properties: [supportedPositionProperties],
+        }),
         // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
         'date-range': `${getRoundedDateFromTS(startTime)},${getRoundedDateFromTS(endTime)}`,
       }

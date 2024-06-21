@@ -22,6 +22,8 @@ export const HEATMAP_STATIC_ID = `${HEATMAP_ID}-static`
 export const POSITIONS_ID = 'positions'
 export const HEATMAP_STATIC_PROPERTY_ID = 'count'
 
+export const SUPPORTED_POSITION_PROPERTIES = ['speed', 'bearing', 'shipname']
+
 export const FOURWINGS_MAX_ZOOM = 12
 // TODO:deck validate this is a good number
 export const MAX_POSITIONS_PER_TILE_SUPPORTED = 10000
