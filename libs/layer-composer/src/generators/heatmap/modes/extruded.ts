@@ -37,7 +37,7 @@ function extruded(
       const pickValueAt = timeChunk.frame.toString()
 
       const baseSlice = ['slice', ['get', pickValueAt]]
-      const extrudedLayers = config.sublayers.map((sublayer, sublayerIndex) => {
+      const extrudedLayers = config.sublayers?.map((sublayer, sublayerIndex) => {
         const ramp = HEATMAP_COLOR_RAMPS[sublayer.colorRamp]
         const baseStartIndex = 6 * (sublayerIndex - 1)
         const heightStartIndex = 6 * sublayerIndex
