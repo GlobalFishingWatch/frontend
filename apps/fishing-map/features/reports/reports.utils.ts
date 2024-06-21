@@ -19,6 +19,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { Bbox, BufferOperation, BufferUnit, ReportCategory } from 'types'
 import { Area, AreaGeometry } from 'features/areas/areas.slice'
+import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
@@ -26,6 +27,7 @@ import {
   DIFFERENCE,
   REPORT_BUFFER_FEATURE_ID,
 } from './reports.config'
+import { ReportVesselWithDatasets } from './reports.selectors'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
 
@@ -302,4 +304,50 @@ export const parseReportUrl = (url: string) => {
     end: (reportConfig['date-range'] as string)?.split(',')[1],
     datasets: reportConfig.datasets,
   }
+}
+
+function parseReportToIdentityVessel(vessel: ReportVesselWithDatasets) {
+  return {
+    id: vessel.id || vessel.vesselId,
+    shipname: vessel.shipName,
+    flag: vessel.flag,
+    gearType: vessel.geartype,
+    vesselType: vessel.vesselType,
+    mmsi: vessel.mmsi,
+    callsign: vessel.callsign,
+    transmissionDateFrom: vessel.firstTransmissionDate,
+    transmissionDateTo: vessel.lastTransmissionDate,
+    identitySource: 'selfReportedInfo',
+    imo: vessel.imo,
+    nShipname: '',
+    ssvid: vessel.mmsi,
+    sourceCode: ['AIS'],
+    geartypes: vessel.geartype ? [vessel.geartype] : [],
+    shiptypes: vessel.vesselType ? [vessel.vesselType] : [],
+  } as VesselDataIdentity
+}
+export function parseReportVesselsToIdentity(
+  vessels?: ReportVesselWithDatasets[] | null
+): IdentityVesselData[] {
+  if (!vessels || !vessels.length) {
+    return []
+  }
+  console.log('🚀 ~ vessels:', vessels)
+  const identityVessels = vessels.flatMap((vessel) => {
+    if (!vessel) {
+      return []
+    }
+    return {
+      id: vessel.id || vessel.vesselId,
+      dataset: vessel.infoDataset,
+      info: vessel.infoDataset?.id!,
+      track: vessel.trackDataset?.id!,
+      registryOwners: [],
+      registryPublicAuthorizations: [],
+      combinedSourcesInfo: [],
+      identities: [parseReportToIdentityVessel(vessel)],
+    } as IdentityVesselData
+  })
+  console.log('🚀 ~ identityVessels ~ identityVessels:', identityVessels)
+  return identityVessels
 }
