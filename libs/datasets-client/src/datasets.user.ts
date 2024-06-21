@@ -6,6 +6,7 @@ export function getUserDataviewDataset(dataview?: Dataview | UrlDataviewInstance
     (d) =>
       d.type === DatasetTypes.Context ||
       d.type === DatasetTypes.UserContext ||
-      d.type === DatasetTypes.UserTracks
+      d.type === DatasetTypes.UserTracks ||
+      d.type === DatasetTypes.Fourwings // Tis is needed for the bq custom datasets
   ) as Dataset
 }
