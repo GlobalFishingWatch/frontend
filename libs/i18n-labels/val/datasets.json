@@ -1006,9 +1006,17 @@
           "unknown": "crwdns83282:0crwdne83282:0"
         }
       },
-      "infrastructure_id": "crwdns83284:0crwdne83284:0",
-      "infrastructure_end_date": "crwdns83286:0crwdne83286:0",
-      "infrastructure_start_date": "crwdns83288:0crwdne83288:0"
+      "structure_id": "crwdns83290:0crwdne83290:0",
+      "label_confidence": {
+        "keyword": "crwdns83292:0crwdne83292:0",
+        "enum": {
+          "high": "crwdns83294:0crwdne83294:0",
+          "low": "crwdns83296:0crwdne83296:0",
+          "medium": "crwdns83298:0crwdne83298:0"
+        }
+      },
+      "structure_end_date": "crwdns83300:0crwdne83300:0",
+      "structure_start_date": "crwdns83302:0crwdne83302:0"
     }
   },
   "public-global-all-tracks": {
