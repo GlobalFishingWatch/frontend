@@ -301,9 +301,13 @@ export function getGeneratorConfig(
       return generator
     }
     case DataviewType.HeatmapAnimated: {
-      const isEnvironmentLayer = dataview.category === DataviewCategory.Environment
+      const isEnvironmentLayer =
+        dataview.category === DataviewCategory.Environment ||
+        dataview.category === DataviewCategory.User
       let environmentalConfig: Partial<HeatmapAnimatedGeneratorConfig> = {}
-      const dataset = dataview.datasets?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
+      const dataset = dataview.datasets?.find((dataset) => {
+        return dataset.type === DatasetTypes.Fourwings
+      })
       if (isEnvironmentLayer) {
         const datasetsIds =
           dataview.config.datasets && dataview.config.datasets?.length > 0
@@ -520,7 +524,6 @@ export function getMergedHeatmapAnimatedDataview(
       return []
     }
     const datasets = config.datasets || datasetsConfig.map((dc) => dc.datasetId)
-
     const activeDatasets = dataview.datasets.filter((dataset) =>
       dataview?.config?.datasets?.includes(dataset.id)
     )
