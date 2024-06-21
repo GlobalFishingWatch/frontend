@@ -27,6 +27,7 @@ import { VesselInstanceDatasets, isPrivateDataset } from 'features/datasets/data
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
+export const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
 export const FISHING_LAYER_PREFIX = 'fishing-'
 export const BIG_QUERY_PREFIX = 'bq-'
 export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
@@ -34,6 +35,10 @@ export const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 export const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
+export const ENCOUNTER_EVENTS_SOURCES = [
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
+]
 
 export const getVesselInfoDataviewInstanceDatasetConfig = (
   vesselId: string,

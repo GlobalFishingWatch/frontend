@@ -106,7 +106,10 @@ function VesselGroupVessels() {
   const groupByKey = [
     ...(vesselGroupSearchVessels || []),
     ...(newVesselGroupSearchVessels || []),
-  ].some((vessel) => getVesselProperty(vessel, 'ssvid') !== undefined)
+  ].some((vessel) => {
+    const ssvid = getVesselProperty(vessel, 'ssvid')
+    return ssvid !== undefined && ssvid !== ''
+  })
     ? 'ssvid'
     : 'id'
   const searchVesselsGrouped = groupSearchVesselsIdentityBy(vesselGroupSearchVessels, groupByKey)
@@ -150,6 +153,9 @@ function VesselGroupVessels() {
       <tbody>
         {Object.keys(newSearchVesselsGrouped)?.length > 0 &&
           Object.keys(newSearchVesselsGrouped).map((mmsi) => {
+            if (!mmsi || mmsi === 'undefined') {
+              return null
+            }
             const vessels = newSearchVesselsGrouped[mmsi]
             return vessels.map((vessel) => (
               <VesselGroupVesselRow
