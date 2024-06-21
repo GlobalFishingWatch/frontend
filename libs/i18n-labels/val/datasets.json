@@ -51,7 +51,10 @@
   },
   "private-belize-fishing-effort": {
     "name": "crwdns64029:0crwdne64029:0",
-    "description": "crwdns64031:0crwdne64031:0"
+    "description": "crwdns64031:0crwdne64031:0",
+    "schema": {
+      "bearing": "crwdns83308:0crwdne83308:0"
+    }
   },
   "private-belize-fishing-vessels": {
     "name": "crwdns64057:0crwdne64057:0",
@@ -69,7 +72,10 @@
   },
   "private-belize-presence": {
     "name": "crwdns64121:0crwdne64121:0",
-    "description": "crwdns64123:0crwdne64123:0"
+    "description": "crwdns64123:0crwdne64123:0",
+    "schema": {
+      "bearing": "crwdns83310:0crwdne83310:0"
+    }
   },
   "private-belize-vessel-identity-fishing": {
     "name": "crwdns68818:0crwdne68818:0",
@@ -681,7 +687,10 @@
   },
   "public-belize-fishing-effort": {
     "name": "crwdns65553:0crwdne65553:0",
-    "description": "crwdns65555:0crwdne65555:0"
+    "description": "crwdns65555:0crwdne65555:0",
+    "schema": {
+      "bearing": "crwdns83312:0crwdne83312:0"
+    }
   },
   "public-belize-fishing-vessels": {
     "name": "crwdns65581:0crwdne65581:0",
