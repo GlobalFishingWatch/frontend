@@ -22,13 +22,7 @@ export const useSetDeckLayerLoadedState = () => {
         setDeckLayerLoadedState((loadedState) => {
           const newLoadedState = {} as DeckLayerState
           layers.forEach((layer) => {
-            if ((layer as LayerWithIndependentSublayersLoadState).getAllSublayersLoaded) {
-              newLoadedState[layer.id] = {
-                loaded: (layer as LayerWithIndependentSublayersLoadState).getAllSublayersLoaded(),
-              }
-            } else {
-              newLoadedState[layer.id] = { loaded: layer.isLoaded }
-            }
+            newLoadedState[layer.id] = { loaded: layer.isLoaded }
           })
           // TODO:deck make this more effective to avoid re-renders
           if (
