@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { uniqBy } from 'lodash'
 import { t } from 'i18next'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
@@ -15,8 +14,10 @@ import { formatInfoField } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 
+const MAX_VESSLES_TO_DISPLAY = 10
+
 function VesselsFromPositions() {
-  const [vessels, setVessels] = useState<{ id: string; shipname: string }[]>([])
+  const [vessels, setVessels] = useState<{ id: string; shipname: string; value: number }[]>([])
 
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const vesselIds = vesselDataviews?.flatMap(
@@ -43,16 +44,20 @@ function VesselsFromPositions() {
       if (fourwingsActivityLayer.instance.getMode() === 'positions') {
         const positions =
           fourwingsActivityLayer.instance.getViewportData() as FourwingsPositionFeature[]
-        const vessels = uniqBy(positions, 'properties.id').flatMap((position) => {
-          if (!vesselIds?.includes(position.properties.id)) {
-            return {
+        const vesselsByValue = positions.reduce((acc, position) => {
+          if (!position.properties.id) return acc
+          if (!acc[position.properties.id]) {
+            acc[position.properties.id] = {
               id: position.properties.id,
               shipname: position.properties.shipname,
+              value: 0,
             }
           }
-          return []
-        })
-        setVessels(vessels)
+          acc[position.properties.id].value += position.properties.value
+          return acc
+        }, {} as Record<string, { id: string; shipname: string; value: number }>)
+        const vesselsArray = Object.values(vesselsByValue).sort((a, b) => b.value - a.value)
+        setVessels(vesselsArray || [])
       } else if (vessels?.length) {
         setVessels([])
       }
@@ -66,12 +71,15 @@ function VesselsFromPositions() {
 
   return (
     <Collapsable
-      label={`${t('vessel.onScreen', 'Vessels on screen')} (${vessels.length})`}
+      label={t('vessel.onScreen', 'Vessels on screen')}
       open
       className={cx(styles.header, styles.vesselsOnScreen)}
     >
       <ul>
-        {vessels.map((vessel) => (
+        {(vessels.length > MAX_VESSLES_TO_DISPLAY
+          ? vessels.slice(0, MAX_VESSLES_TO_DISPLAY)
+          : vessels
+        ).map((vessel, index) => (
           <li
             className={styles.row}
             key={vessel.id}
@@ -79,10 +87,20 @@ function VesselsFromPositions() {
             onMouseLeave={() => setHighlightVessel(undefined)}
           >
             <VesselPin vesselToResolve={vessel} onClick={() => setHighlightVessel(undefined)} />
-            <span className={styles.secondary}>{formatInfoField(vessel.shipname, 'shipname')}</span>
+            <div className={styles.vesselOnScreen}>
+              <span>{formatInfoField(vessel.shipname, 'shipname')} </span>
+              <span>
+                {Math.round(vessel.value)} {index === 0 && ` ${t('common.hour_other', 'hours')}`}
+              </span>
+            </div>
           </li>
         ))}
       </ul>
+      {vessels.length > MAX_VESSLES_TO_DISPLAY && (
+        <span className={styles.moreVesselsOnScreen}>
+          + {vessels.length - MAX_VESSLES_TO_DISPLAY} {t('common.more', 'more')}
+        </span>
+      )}
     </Collapsable>
   )
 }

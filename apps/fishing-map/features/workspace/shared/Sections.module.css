@@ -26,6 +26,11 @@
 .row {
   display: flex;
   align-items: center;
+  color: var(--color-secondary-blue);
+}
+
+.row:hover {
+  color: var(--color-primary-blue);
 }
 
 .secondary {
@@ -109,6 +114,16 @@
 
 .vesselsOnScreen summary span {
   padding: 0;
+}
+
+.vesselOnScreen {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.moreVesselsOnScreen {
+  color: var(--color-secondary-blue);
 }
 
 .hidden {
