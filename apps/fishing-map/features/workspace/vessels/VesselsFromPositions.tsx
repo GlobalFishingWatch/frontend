@@ -16,8 +16,14 @@ import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 
 const MAX_VESSLES_TO_DISPLAY = 10
 
+type VesselFromPosition = {
+  id: string
+  shipname?: string
+  value: number
+}
+
 function VesselsFromPositions() {
-  const [vessels, setVessels] = useState<{ id: string; shipname: string; value: number }[]>([])
+  const [vessels, setVessels] = useState<VesselFromPosition[]>([])
 
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const vesselIds = vesselDataviews?.flatMap(
@@ -29,7 +35,7 @@ function VesselsFromPositions() {
   const id = activityDataviews?.length ? getMergedDataviewId(activityDataviews) : ''
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
 
-  const setHighlightVessel = (vessel: { id: string; shipname: string } | undefined) => {
+  const setHighlightVessel = (vessel: VesselFromPosition | undefined) => {
     if (fourwingsActivityLayer?.instance) {
       if (vessel) {
         fourwingsActivityLayer.instance.setHighlightedVessel(vessel.id)
@@ -55,12 +61,14 @@ function VesselsFromPositions() {
           }
           acc[position.properties.id].value += position.properties.value
           return acc
-        }, {} as Record<string, { id: string; shipname: string; value: number }>)
+        }, {} as Record<string, VesselFromPosition>)
         const vesselsArray = Object.values(vesselsByValue).sort((a, b) => b.value - a.value)
         setVessels(vesselsArray || [])
       } else if (vessels?.length) {
         setVessels([])
       }
+    } else {
+      setVessels([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fourwingsActivityLayer, vesselsHash])

@@ -235,7 +235,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getVesselLabel = (d: FourwingsPositionFeature): string => {
-    const label = cleanVesselShipname(d.properties?.shipname) || d.properties?.id
+    const label = cleanVesselShipname(d.properties?.shipname)
     return label?.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
