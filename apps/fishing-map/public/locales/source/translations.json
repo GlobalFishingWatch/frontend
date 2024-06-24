@@ -633,6 +633,7 @@
     "captureMap": "Capture map",
     "change_basemap_default": "Switch to default basemap",
     "change_basemap_satellite": "Switch to satellite basemap",
+    "defaultRes": "See deafult resolution heatmaps",
     "errorAction": "Log an issue at a specific location",
     "errorLabel": "Please describe the error as detailed as possible",
     "errorPlaceholder": "Please describe the error as detailed as possible",

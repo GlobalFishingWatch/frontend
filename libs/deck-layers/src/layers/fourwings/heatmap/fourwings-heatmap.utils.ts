@@ -10,13 +10,21 @@ import {
   TileCell,
 } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '../../../utils'
-import { FourwingsDeckSublayer } from '../fourwings.types'
-import { HEATMAP_API_TILES_URL, getChunkByInterval, getInterval } from '../fourwings.config'
+import { FourwingsDeckSublayer, FourwingsVisualizationMode } from '../fourwings.types'
+import {
+  HEATMAP_API_TILES_URL,
+  HEATMAP_HIGH_RES_ID,
+  HEATMAP_ID,
+  HEATMAP_LOW_RES_ID,
+  getChunkByInterval,
+  getInterval,
+} from '../fourwings.config'
 import {
   AggregateCellParams,
   CompareCellParams,
   FourwingsAggregationOperation,
   FourwingsChunk,
+  FourwingsHeatmapResolution,
 } from './fourwings-heatmap.types'
 
 export function aggregateSublayerValues(
@@ -381,4 +389,33 @@ export function filterCells(value: any, index: number, minValue?: number, maxVal
   return (
     value && index % 20 === 1 && (!minValue || value > minValue) && (!maxValue || value < maxValue)
   )
+}
+
+export const getResolutionByVisualizationMode = (
+  visualizationMode?: FourwingsVisualizationMode
+) => {
+  if (visualizationMode === HEATMAP_HIGH_RES_ID) {
+    return 'high'
+  } else if (visualizationMode === HEATMAP_LOW_RES_ID) {
+    return 'low'
+  }
+  return 'default'
+}
+
+export const getVisualizationModeByResolution = (resolution?: FourwingsHeatmapResolution) => {
+  if (resolution === 'high') {
+    return HEATMAP_HIGH_RES_ID
+  } else if (resolution === 'low') {
+    return HEATMAP_LOW_RES_ID
+  }
+  return HEATMAP_ID
+}
+
+export const getZoomOffsetByResolution = (resolution?: FourwingsHeatmapResolution) => {
+  if (resolution === 'high') {
+    return 1
+  } else if (resolution === 'low') {
+    return -1
+  }
+  return 0
 }

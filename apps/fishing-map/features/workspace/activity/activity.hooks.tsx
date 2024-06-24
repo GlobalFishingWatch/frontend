@@ -9,6 +9,7 @@ import {
   HEATMAP_HIGH_RES_ID,
   POSITIONS_ID,
   FourwingsVisualizationMode,
+  HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers'
 import { ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
 import {
@@ -50,14 +51,20 @@ export const useVisualizationsOptions = (
   const visualizationOptions: ChoiceOption<FourwingsVisualizationMode>[] = useMemo(() => {
     return [
       {
-        id: HEATMAP_ID,
-        label: <Icon icon={'heatmap-low-res'} />,
+        id: HEATMAP_LOW_RES_ID,
+        label: <Icon icon="heatmap-low-res" />,
         tooltip: t('map.lowRes', 'See low resolution heatmaps'),
         tooltipPlacement: 'bottom',
       },
       {
+        id: HEATMAP_ID,
+        label: <Icon icon="heatmap-default-res" />,
+        tooltip: t('map.defaultRes', 'See default resolution heatmaps'),
+        tooltipPlacement: 'bottom',
+      },
+      {
         id: HEATMAP_HIGH_RES_ID,
-        label: <Icon icon={'heatmap-high-res'} />,
+        label: <Icon icon="heatmap-high-res" />,
         tooltip: t('map.highRes', 'See high resolution heatmaps'),
         tooltipPlacement: 'bottom',
       },

@@ -18,6 +18,7 @@ import {
   FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapTileLayerProps,
 } from './heatmap/fourwings-heatmap.types'
+import { getResolutionByVisualizationMode } from './heatmap/fourwings-heatmap.utils'
 
 export type FourwingsColorRamp = {
   colorDomain: number[]
@@ -51,13 +52,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
         })
       )
     }
-    const resolution = visualizationMode === HEATMAP_HIGH_RES_ID ? 'high' : 'default'
+    let resolution = getResolutionByVisualizationMode(visualizationMode)
     const HeatmapLayerClass = this.props.static
       ? this.getSubLayerClass(HEATMAP_STATIC_ID, FourwingsHeatmapStaticLayer)
-      : this.getSubLayerClass(
-          resolution === 'high' ? HEATMAP_HIGH_RES_ID : HEATMAP_ID,
-          FourwingsHeatmapTileLayer
-        )
+      : this.getSubLayerClass(resolution, FourwingsHeatmapTileLayer)
 
     return new HeatmapLayerClass(
       this.props,
@@ -122,7 +120,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getResolution() {
-    return this.props.visualizationMode === HEATMAP_HIGH_RES_ID ? 'high' : 'default'
+    return getResolutionByVisualizationMode(this.props.visualizationMode)
   }
 
   getLayer() {

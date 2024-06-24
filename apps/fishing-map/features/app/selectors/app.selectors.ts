@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { RulerData } from '@globalfishingwatch/deck-layers'
+import { HEATMAP_HIGH_RES_ID, RulerData } from '@globalfishingwatch/deck-layers'
 import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
 import {
   getActiveActivityDatasetsInDataviews,
@@ -44,7 +44,7 @@ export const selectActivityVisualizationMode = createSelector(
   [selectIsAnyReportLocation, selectWorkspaceStateProperty('activityVisualizationMode')],
   (isAnyReportLocation, activityVisualizationMode) => {
     if (isAnyReportLocation && activityVisualizationMode === 'positions') {
-      return 'heatmap-high-res'
+      return HEATMAP_HIGH_RES_ID
     }
     return activityVisualizationMode
   }

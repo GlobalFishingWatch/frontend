@@ -37,7 +37,7 @@ import {
   HEATMAP_STATIC_PROPERTY_ID,
   MAX_RAMP_VALUES,
 } from '../fourwings.config'
-import { EMPTY_CELL_COLOR, filterCells } from './fourwings-heatmap.utils'
+import { EMPTY_CELL_COLOR, filterCells, getZoomOffsetByResolution } from './fourwings-heatmap.utils'
 import {
   FourwingsAggregationOperation,
   FourwingsHeatmapStaticLayerProps,
@@ -194,7 +194,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         binary: false,
         pickable: true,
         loaders: [GFWMVTLoader],
-        zoomOffset: resolution === 'high' ? 1 : 0,
+        zoomOffset: getZoomOffsetByResolution(resolution),
         onViewportLoad: this._onViewportLoad,
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
         getFillColor: this.getFillColor,
@@ -240,7 +240,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     const layer = this.getLayerInstance()
     if (layer) {
       const zoom = Math.round(this.context.viewport.zoom)
-      const offset = this.props.resolution === 'high' ? 1 : 0
+      const offset = getZoomOffsetByResolution(this.props.resolution)
       return layer.getSubLayers().flatMap((l: any) => {
         if (l.props.tile.zoom === l.props.maxZoom) {
           return l.props.data
