@@ -218,16 +218,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return [255, 255, 255, this._getIsHighlightedVessel(d) ? 255 : 0]
   }
 
-  _getLineColor = (d: FourwingsPositionFeature): Color => {
-    return this._getIsHighlightedVessel(d) ? COLOR_HIGHLIGHT_LINE : [0, 0, 0, 0]
-  }
-
-  _getRadius = (d: FourwingsPositionFeature): number => {
-    return this._getIsHighlightedVessel(d) ? 5 : 3
-  }
-
   _getIconSize = (d: FourwingsPositionFeature): number => {
-    return this._getIsHighlightedVessel(d) ? 22 : 15
+    if (d.properties?.bearing) {
+      return this._getIsHighlightedVessel(d) ? 22 : 15
+    } else {
+      return this._getIsHighlightedVessel(d) ? 13 : 10
+    }
   }
 
   _getLabelColor = (d: FourwingsPositionFeature): Color => {
@@ -350,7 +346,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: () => 'vessel',
+          getIcon: (d: any) => (d.properties.bearing ? 'vessel' : 'circle'),
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getFillColor,
           getSize: this._getIconSize,
@@ -368,7 +364,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: () => 'vesselHighlight',
+          getIcon: (d: any) => (d.properties.shipname ? 'vesselHighlight' : 'circle'),
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getHighlightColor,
           getSize: this._getIconSize,
