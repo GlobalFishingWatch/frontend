@@ -41,10 +41,9 @@ export const formatInfoField = (
         return translationFn('common.unknownVessel', 'Unknown Vessel')
       }
       if (type === 'name' || type === 'shipname' || type === 'owner' || type === 'port') {
-        return fieldValue.replace(
-          /\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b/g,
-          upperFirst
-        )
+        return fieldValue
+          .replace('_', ' ')
+          .replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ,0-9]+)\b/g, upperFirst)
       }
       if (type === 'fleet') {
         const fleetClean = fieldValue.replaceAll('_', ' ')
