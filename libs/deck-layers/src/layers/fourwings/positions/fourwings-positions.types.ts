@@ -13,7 +13,7 @@ export type _FourwingsPositionsTileLayerProps = BaseFourwingsLayerProps & {
   highlightStartTime?: number
   highlightEndTime?: number
   highlightedFeatures?: FourwingsPositionsPickingObject[]
-  positionProperties?: string[]
+  positionProperties?: string[][]
   onPositionsMaxPointsError?: (layer: FourwingsLayer, maxPoints: number) => void
 }
 
