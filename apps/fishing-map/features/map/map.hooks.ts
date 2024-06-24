@@ -73,7 +73,8 @@ export const useGlobalConfigConnect = () => {
           t(
             'toasts.maxPointsVisualizationExceeded',
             'Max points visualization exceeded, swithing to heatmap mode.'
-          )
+          ),
+          { toastId: 'maxPointsVisualizationExceeded' }
         )
       }
     },
