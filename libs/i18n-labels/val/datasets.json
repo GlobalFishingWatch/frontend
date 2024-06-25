@@ -1051,6 +1051,31 @@
       "structure_start_date": "crwdns83302:0crwdne83302:0"
     }
   },
+  "public-fixed-infrastructure-filtered": {
+    "name": "crwdns83352:0crwdne83352:0",
+    "description": "crwdns83354:0crwdne83354:0",
+    "schema": {
+      "label": {
+        "keyword": "crwdns83356:0crwdne83356:0",
+        "enum": {
+          "oil": "crwdns83358:0crwdne83358:0",
+          "wind": "crwdns83360:0crwdne83360:0",
+          "unknown": "crwdns83362:0crwdne83362:0"
+        }
+      },
+      "structure_id": "crwdns83364:0crwdne83364:0",
+      "label_confidence": {
+        "keyword": "crwdns83366:0crwdne83366:0",
+        "enum": {
+          "high": "crwdns83368:0crwdne83368:0",
+          "low": "crwdns83370:0crwdne83370:0",
+          "medium": "crwdns83372:0crwdne83372:0"
+        }
+      },
+      "structure_end_date": "crwdns83374:0crwdne83374:0",
+      "structure_start_date": "crwdns83376:0crwdne83376:0"
+    }
+  },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
     "description": "crwdns69890:0crwdne69890:0"
