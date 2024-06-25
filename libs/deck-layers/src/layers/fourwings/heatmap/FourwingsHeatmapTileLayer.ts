@@ -48,6 +48,7 @@ import {
   compareCell,
   aggregateCell,
   getIntervalFrames,
+  getZoomOffsetByResolution,
 } from './fourwings-heatmap.utils'
 import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 import {
@@ -577,7 +578,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         scales,
         minZoom: 0,
         maxZoom: FOURWINGS_MAX_ZOOM,
-        zoomOffset: this.props.resolution === 'high' ? 1 : 0,
+        zoomOffset: getZoomOffsetByResolution(resolution),
         opacity: 1,
         maxRequests: this.props.maxRequests,
         debounceTime: this.props.debounceTime,
@@ -602,7 +603,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const layer = this.getLayerInstance()
     if (layer) {
       const zoom = Math.round(this.context.viewport.zoom)
-      const offset = this.props.resolution === 'high' ? 1 : 0
+      const offset = getZoomOffsetByResolution(this.props.resolution)
       return layer
         .getSubLayers()
         .map((l: any) => {

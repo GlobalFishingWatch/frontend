@@ -49,7 +49,8 @@ import {
 
 type FourwingsPositionsTileLayerState = {
   fontLoaded: boolean
-  viewportLoaded: boolean
+  viewportDirty: boolean
+  lastViewport: string
   positions: FourwingsPositionFeature[]
   lastPositions: FourwingsPositionFeature[]
   colorScale?: FourwingsTileLayerColorScale
@@ -70,9 +71,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   static layerName = 'FourwingsPositionsTileLayer'
   static defaultProps = defaultProps
   state!: FourwingsPositionsTileLayerState
+  viewportDirtyTimeout!: NodeJS.Timeout
 
   get isLoaded(): boolean {
-    return super.isLoaded && this.state.fontLoaded && this.state.viewportLoaded
+    return super.isLoaded && this.state.fontLoaded && !this.state.viewportDirty
   }
 
   initializeState(context: LayerContext) {
@@ -95,7 +97,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
     this.state = {
       fontLoaded,
-      viewportLoaded: false,
+      viewportDirty: false,
+      lastViewport: '',
       positions: [],
       lastPositions: [],
       highlightedFeatureIds: new Set<string>(),
@@ -103,8 +106,27 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
   }
 
-  updateState({ props, oldProps, changeFlags }: UpdateParameters<this>) {
-    if (changeFlags.viewportChanged) {
+  updateViewportDirty() {
+    if (!this.state.viewportDirty) {
+      this.setState({ viewportDirty: true })
+    }
+    if (this.viewportDirtyTimeout) {
+      clearTimeout(this.viewportDirtyTimeout)
+    }
+    this.viewportDirtyTimeout = setTimeout(() => {
+      this.setState({ viewportDirty: false })
+    }, 500)
+  }
+
+  updateState({ props, oldProps, context }: UpdateParameters<this>) {
+    const viewportHash = [
+      (context.viewport as any)?.longitude?.toFixed(1),
+      (context.viewport as any)?.latitude?.toFixed(1),
+      context.viewport?.zoom?.toFixed(1),
+    ].join(',')
+    if (viewportHash !== this.state.lastViewport) {
+      this.updateViewportDirty()
+      this.setState({ lastViewport: viewportHash })
       const positionsInViewport = filteredPositionsByViewport(
         this.state.positions,
         this.context.viewport
@@ -126,9 +148,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         highlightedFeatureIds.add(feature?.properties?.id)
       }
     }
-    requestAnimationFrame(() => {
-      this.setState({ highlightedFeatureIds })
-    })
+    this.setState({ highlightedFeatureIds })
   }
 
   getPickingInfo = ({
@@ -218,16 +238,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return [255, 255, 255, this._getIsHighlightedVessel(d) ? 255 : 0]
   }
 
-  _getLineColor = (d: FourwingsPositionFeature): Color => {
-    return this._getIsHighlightedVessel(d) ? COLOR_HIGHLIGHT_LINE : [0, 0, 0, 0]
-  }
-
-  _getRadius = (d: FourwingsPositionFeature): number => {
-    return this._getIsHighlightedVessel(d) ? 5 : 3
-  }
-
   _getIconSize = (d: FourwingsPositionFeature): number => {
-    return this._getIsHighlightedVessel(d) ? 22 : 15
+    if (d.properties?.bearing) {
+      return this._getIsHighlightedVessel(d) ? 22 : 15
+    } else {
+      return this._getIsHighlightedVessel(d) ? 13 : 10
+    }
   }
 
   _getLabelColor = (d: FourwingsPositionFeature): Color => {
@@ -235,7 +251,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getVesselLabel = (d: FourwingsPositionFeature): string => {
-    const label = cleanVesselShipname(d.properties?.shipname) || d.properties?.id
+    const label = cleanVesselShipname(d.properties?.shipname)
     return label?.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
@@ -311,21 +327,25 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getPositionProperties() {
-    return this.props.positionProperties?.filter((p) => SUPPORTED_POSITION_PROPERTIES.includes(p))
+    return this.props.positionProperties?.map((sublayerProperties) =>
+      sublayerProperties.filter((p) => SUPPORTED_POSITION_PROPERTIES.includes(p))
+    )
   }
 
   renderLayers(): Layer<{}> | LayersList | null {
     if (this.state.fontLoaded) {
       const { startTime, endTime, sublayers } = this.props
       const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
-      const supportedPositionProperties = this._getPositionProperties()?.join(',')
+      const supportedPositionProperties = this._getPositionProperties()
       const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
       const params = {
         datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
         format: 'MVT',
         'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
         ...(supportedPositionProperties?.length && {
-          properties: [supportedPositionProperties],
+          properties: supportedPositionProperties.map((sublayerProperties) =>
+            sublayerProperties.join(',')
+          ),
         }),
         // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
         'date-range': `${getRoundedDateFromTS(startTime)},${getRoundedDateFromTS(endTime)}`,
@@ -334,7 +354,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
       return [
         new MVTLayer(this.props, {
-          id: `tiles`,
+          id: `${this.props.id}-tiles`,
           data: `${baseUrl}?${stringify(params)}`,
           maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
           fetch: this._fetch,
@@ -342,11 +362,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           renderSubLayers: () => null,
         }),
         new IconLayerClass(this.props, {
-          id: 'allPositions',
+          id: `${this.props.id}-allPositions`,
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: () => 'vessel',
+          getIcon: (d: any) => (d.properties.bearing ? 'vessel' : 'circle'),
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getFillColor,
           getSize: this._getIconSize,
@@ -360,11 +380,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           },
         }),
         new IconLayerClass(this.props, {
-          id: 'allPositionsHighlight',
+          id: `${this.props.id}-allPositionsHighlight`,
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: () => 'vesselHighlight',
+          getIcon: (d: any) => (d.properties.shipname ? 'vesselHighlight' : 'circle'),
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getHighlightColor,
           getSize: this._getIconSize,
@@ -379,7 +399,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         ...(lastPositions?.length < 100
           ? [
               new TextLayer({
-                id: `lastPositionsNames`,
+                id: `${this.props.id}-lastPositionsNames`,
                 data: lastPositions,
                 getText: this._getVesselLabel,
                 getPosition: (d) => d.geometry.coordinates,

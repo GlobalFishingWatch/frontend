@@ -79,7 +79,7 @@ export type CompareCellParams = {
   aggregationOperation?: FourwingsAggregationOperation
 }
 
-export type FourwingsHeatmapResolution = 'default' | 'high'
+export type FourwingsHeatmapResolution = 'low' | 'default' | 'high'
 export type FourwingsHeatmapTileData = FourwingsFeature[]
 
 export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFourwingsLayerProps & {

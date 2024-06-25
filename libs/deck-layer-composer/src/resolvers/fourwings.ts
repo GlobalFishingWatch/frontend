@@ -82,9 +82,10 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     (dataview.config?.visualizationMode as FourwingsVisualizationMode) || 'heatmap'
   const comparisonMode = (dataview.config?.comparisonMode as FourwingsComparisonMode) || 'compare'
 
-  const dataset = dataview.config?.sublayers
-    ?.flatMap((sublayer) => sublayer.datasets)
-    ?.find((dataset) => dataset.type === DatasetTypes.Fourwings)
+  const datasets = dataview.config?.sublayers?.map((sublayer) =>
+    sublayer.datasets.find((dataset) => dataset.type === DatasetTypes.Fourwings)
+  )
+  const dataset = datasets?.[0]
 
   const tilesUrl = dataset
     ? resolveEndpoint(
@@ -136,7 +137,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     visualizationMode,
     aggregationOperation,
     availableIntervals,
-    positionProperties: Object.keys(dataset?.schema || {}),
+    positionProperties: datasets?.map((dataset) => Object.keys(dataset?.schema || {})),
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     ...(highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),

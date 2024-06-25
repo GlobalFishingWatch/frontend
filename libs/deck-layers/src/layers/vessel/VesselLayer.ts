@@ -1,11 +1,17 @@
 import { DataFilterExtension } from '@deck.gl/extensions'
-import { CompositeLayer, Layer, LayersList, LayerProps, Color, PickingInfo } from '@deck.gl/core'
+import {
+  CompositeLayer,
+  Layer,
+  LayersList,
+  LayerProps,
+  Color,
+  PickingInfo,
+  UpdateParameters,
+} from '@deck.gl/core'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
-import bearing from '@turf/bearing'
 import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
-import { BBox, Feature, Point, Position } from 'geojson'
-import { IconLayer } from '@deck.gl/layers'
+import { BBox, Position } from 'geojson'
 import { rhumbBearing } from '@turf/turf'
 import {
   ApiEvent,
@@ -62,6 +68,28 @@ export type VesselLayerProps = BaseLayerProps &
 
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
+  initializeState() {
+    super.initializeState(this.context)
+    this.state = {
+      colorDirty: false,
+    }
+  }
+
+  get isLoaded(): boolean {
+    return super.isLoaded && this.getAllSublayersLoaded() && !this.state.colorDirty
+  }
+
+  updateState({ props, oldProps }: UpdateParameters<this>) {
+    // TODO:deck try to reemove this workaround because we cannot find
+    // why useTimebarVesselTracks is not updating on color change
+    if (oldProps.color?.join('') !== props.color.join('')) {
+      this.setState({ colorDirty: true })
+      requestAnimationFrame(() => {
+        this.setState({ colorDirty: false })
+      })
+    }
+  }
+
   getPickingInfo = ({
     info,
   }: {

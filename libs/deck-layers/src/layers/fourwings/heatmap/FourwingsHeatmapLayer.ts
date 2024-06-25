@@ -17,6 +17,7 @@ import {
   aggregateCell,
   compareCell,
   getIntervalFrames,
+  getVisualizationModeByResolution,
 } from './fourwings-heatmap.utils'
 import {
   FourwingsComparisonMode,
@@ -69,7 +70,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       endTime,
       interval,
       comparisonMode,
-      visualizationMode: resolution === 'high' ? HEATMAP_HIGH_RES_ID : HEATMAP_ID,
+      visualizationMode: getVisualizationModeByResolution(resolution),
     }
     if (info.object) {
       object.sublayers = object.sublayers?.map((sublayer, i) => ({

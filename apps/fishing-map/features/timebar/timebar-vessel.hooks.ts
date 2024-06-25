@@ -111,6 +111,8 @@ export const useTimebarVesselTracks = () => {
           return trackGraphData
         })
         setVesselTracks(vesselTracks as any)
+      } else {
+        setVesselTracks(undefined)
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -208,7 +210,7 @@ export const useTimebarVesselTracksGraph = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksLoaded, timebarGraph])
+  }, [tracksLoaded, timebarGraph, vessels])
 
   return tracksGraph
 }
@@ -220,6 +222,10 @@ export const useTimebarVesselEvents = () => {
   const vessels = useTimebarVesselsLayers()
   const eventsLoaded = useMemo(
     () => vessels.flatMap((v) => (v.instance.getVesselEventsLayersLoaded() ? v.id : [])).join(','),
+    [vessels]
+  )
+  const eventsColor = useMemo(
+    () => vessels.flatMap((v) => v.instance.props.color.join('-')).join(','),
     [vessels]
   )
 
@@ -241,10 +247,12 @@ export const useTimebarVesselEvents = () => {
           } as TimebarChartItem<any>
         })
         setVesselEvents(vesselEvents)
+      } else {
+        setVesselEvents(null)
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventsLoaded, timebarGraph, visibleEvents])
+  }, [eventsLoaded, timebarGraph, visibleEvents, eventsColor])
 
   return events
 }

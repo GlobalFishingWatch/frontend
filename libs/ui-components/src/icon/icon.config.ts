@@ -57,6 +57,7 @@ const icons = [
   'gebco-logo',
   'gfw-logo',
   'graph',
+  'heatmap-default-res',
   'heatmap-high-res',
   'heatmap-low-res',
   'heatmap',
