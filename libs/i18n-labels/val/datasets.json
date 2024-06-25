@@ -285,7 +285,8 @@
           "costarica_vms_atuneros": "crwdns64553:0crwdne64553:0",
           "costarica_vms_sardineros": "crwdns64555:0crwdne64555:0"
         }
-      }
+      },
+      "bearing": "crwdns83314:0crwdne83314:0"
     }
   },
   "private-ecuador-fishing-effort": {
@@ -304,6 +305,7 @@
     "name": "crwdns64591:0crwdne64591:0",
     "description": "crwdns64593:0crwdne64593:0",
     "schema": {
+      "bearing": "crwdns83316:0crwdne83316:0",
       "shiptype": {
         "keyword": "crwdns64601:0crwdne64601:0",
         "enum": {
@@ -334,7 +336,10 @@
   },
   "private-indonesia-aruna-presence": {
     "name": "crwdns64683:0crwdne64683:0",
-    "description": "crwdns64685:0crwdne64685:0"
+    "description": "crwdns64685:0crwdne64685:0",
+    "schema": {
+      "bearing": "crwdns83318:0crwdne83318:0"
+    }
   },
   "private-indonesia-aruna-vessel-identity": {
     "name": "crwdns68896:0crwdne68896:0",
@@ -361,7 +366,10 @@
   },
   "private-indonesia-ipnlf-presence": {
     "name": "crwdns64817:0crwdne64817:0",
-    "description": "crwdns64819:0crwdne64819:0"
+    "description": "crwdns64819:0crwdne64819:0",
+    "schema": {
+      "bearing": "crwdns83320:0crwdne83320:0"
+    }
   },
   "private-indonesia-ipnlf-vessel-identity": {
     "name": "crwdns68908:0crwdne68908:0",
@@ -425,7 +433,10 @@
   },
   "private-indonesia-rare-presence": {
     "name": "crwdns65011:0crwdne65011:0",
-    "description": "crwdns65013:0crwdne65013:0"
+    "description": "crwdns65013:0crwdne65013:0",
+    "schema": {
+      "bearing": "crwdns83322:0crwdne83322:0"
+    }
   },
   "private-indonesia-rare-vessel-identity": {
     "name": "crwdns68938:0crwdne68938:0",
@@ -440,7 +451,10 @@
   },
   "private-indonesia-zebrax-presence": {
     "name": "crwdns65059:0crwdne65059:0",
-    "description": "crwdns65061:0crwdne65061:0"
+    "description": "crwdns65061:0crwdne65061:0",
+    "schema": {
+      "bearing": "crwdns83324:0crwdne83324:0"
+    }
   },
   "private-indonesia-zebrax-vessel-identity": {
     "name": "crwdns68950:0crwdne68950:0",
@@ -479,6 +493,7 @@
     "name": "crwdns65195:0crwdne65195:0",
     "description": "crwdns65197:0crwdne65197:0",
     "schema": {
+      "bearing": "crwdns83326:0crwdne83326:0",
       "shiptype": {
         "keyword": "crwdns65201:0crwdne65201:0",
         "enum": {
@@ -580,7 +595,10 @@
   },
   "private-png-fishing-effort": {
     "name": "crwdns65403:0crwdne65403:0",
-    "description": "crwdns65405:0crwdne65405:0"
+    "description": "crwdns65405:0crwdne65405:0",
+    "schema": {
+      "bearing": "crwdns83328:0crwdne83328:0"
+    }
   },
   "private-png-fishing-identity-vessels": {
     "name": "crwdns70050:0crwdne70050:0",
@@ -595,7 +613,10 @@
   },
   "private-png-presence": {
     "name": "crwdns65447:0crwdne65447:0",
-    "description": "crwdns65449:0crwdne65449:0"
+    "description": "crwdns65449:0crwdne65449:0",
+    "schema": {
+      "bearing": "crwdns83330:0crwdne83330:0"
+    }
   },
   "proto-global-encounters-events": {
     "name": "crwdns65467:0crwdne65467:0",
@@ -645,6 +666,7 @@
     "name": "crwdns69830:0crwdne69830:0",
     "description": "crwdns69832:0crwdne69832:0",
     "schema": {
+      "bearing": "crwdns83332:0crwdne83332:0",
       "matched": {
         "keyword": "crwdns69846:0crwdne69846:0",
         "enum": {
@@ -932,6 +954,7 @@
     "name": "crwdns66047:0crwdne66047:0",
     "description": "crwdns66049:0crwdne66049:0",
     "schema": {
+      "bearing": "crwdns83334:0crwdne83334:0",
       "shiptype": {
         "keyword": "crwdns66057:0crwdne66057:0",
         "enum": {
@@ -1138,6 +1161,7 @@
     "name": "crwdns69930:0crwdne69930:0",
     "description": "crwdns70350:0crwdne70350:0",
     "schema": {
+      "bearing": "crwdns83336:0crwdne83336:0",
       "matched": {
         "keyword": "crwdns66503:0crwdne66503:0",
         "enum": {
@@ -1295,7 +1319,10 @@
   },
   "public-indonesia-zebrax-presence": {
     "name": "crwdns66741:0crwdne66741:0",
-    "description": "crwdns66743:0crwdne66743:0"
+    "description": "crwdns66743:0crwdne66743:0",
+    "schema": {
+      "bearing": "crwdns83338:0crwdne83338:0"
+    }
   },
   "public-inshore-fishing-zone-1618837176535": {
     "name": "crwdns66765:0crwdne66765:0",
@@ -1336,6 +1363,7 @@
     "name": "crwdns66773:0crwdne66773:0",
     "description": "crwdns66775:0crwdne66775:0",
     "schema": {
+      "bearing": "crwdns83340:0crwdne83340:0",
       "shiptype": {
         "keyword": "crwdns66785:0crwdne66785:0",
         "enum": {
@@ -1355,6 +1383,7 @@
     "name": "crwdns66819:0crwdne66819:0",
     "description": "crwdns66821:0crwdne66821:0",
     "schema": {
+      "bearing": "crwdns83342:0crwdne83342:0",
       "shiptype": {
         "keyword": "crwdns66829:0crwdne66829:0",
         "enum": {
@@ -1394,7 +1423,10 @@
   },
   "public-norway-fishing-effort": {
     "name": "crwdns66873:0crwdne66873:0",
-    "description": "crwdns66875:0crwdne66875:0"
+    "description": "crwdns66875:0crwdne66875:0",
+    "schema": {
+      "bearing": "crwdns83344:0crwdne83344:0"
+    }
   },
   "public-norway-fishing-vessels": {
     "name": "crwdns66923:0crwdne66923:0",
@@ -1412,7 +1444,10 @@
   },
   "public-norway-presence": {
     "name": "crwdns67011:0crwdne67011:0",
-    "description": "crwdns67013:0crwdne67013:0"
+    "description": "crwdns67013:0crwdne67013:0",
+    "schema": {
+      "bearing": "crwdns83346:0crwdne83346:0"
+    }
   },
   "public-norway-vessel-identity-fishing": {
     "name": "crwdns69142:0crwdne69142:0",
@@ -1502,7 +1537,10 @@
   },
   "public-png-fishing-effort": {
     "name": "crwdns67261:0crwdne67261:0",
-    "description": "crwdns67263:0crwdne67263:0"
+    "description": "crwdns67263:0crwdne67263:0",
+    "schema": {
+      "bearing": "crwdns83348:0crwdne83348:0"
+    }
   },
   "public-png-fishing-vessels": {
     "name": "crwdns67287:0crwdne67287:0",
@@ -1513,7 +1551,10 @@
   },
   "public-png-presence": {
     "name": "crwdns67305:0crwdne67305:0",
-    "description": "crwdns67307:0crwdne67307:0"
+    "description": "crwdns67307:0crwdne67307:0",
+    "schema": {
+      "bearing": "crwdns83350:0crwdne83350:0"
+    }
   },
   "public-png-vessel-identity-fishing": {
     "name": "crwdns69196:0crwdne69196:0",
