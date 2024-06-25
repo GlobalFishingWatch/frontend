@@ -80,6 +80,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
+    // TODO:deck try to reemove this workaround because we cannot find
+    // why useTimebarVesselTracks is not updating on color change
     if (oldProps.color?.join('') !== props.color.join('')) {
       this.setState({ colorDirty: true })
       requestAnimationFrame(() => {

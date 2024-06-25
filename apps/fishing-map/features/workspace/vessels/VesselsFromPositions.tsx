@@ -7,12 +7,16 @@ import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { Collapsable } from '@globalfishingwatch/ui-components'
-import { selectActiveActivityDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
+} from 'features/dataviews/selectors/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
+import I18nNumber from 'features/i18n/i18nNumber'
 
 const MAX_VESSLES_TO_DISPLAY = 10
 
@@ -32,8 +36,11 @@ function VesselsFromPositions() {
   const vesselsHash = vesselIds.join(',')
 
   const activityDataviews = useSelector(selectActiveActivityDataviews)
-  const id = activityDataviews?.length ? getMergedDataviewId(activityDataviews) : ''
-  const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
+  const detectionsDataviews = useSelector(selectActiveDetectionsDataviews)
+  const activityId = activityDataviews?.length ? getMergedDataviewId(activityDataviews) : ''
+  const detectionsId = detectionsDataviews?.length ? getMergedDataviewId(detectionsDataviews) : ''
+  const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(activityId)
+  const fourwingsDetectionsLayer = useGetDeckLayer<FourwingsLayer>(detectionsId)
 
   const setHighlightVessel = (vessel: VesselFromPosition | undefined) => {
     if (fourwingsActivityLayer?.instance) {
@@ -45,33 +52,44 @@ function VesselsFromPositions() {
     }
   }
 
+  const fourwingsLayers = [fourwingsActivityLayer, fourwingsDetectionsLayer].filter(Boolean)
+
+  const fourwingsLayersLoaded =
+    fourwingsLayers.length && fourwingsLayers.every((l) => l?.instance?.isLoaded)
+
   useEffect(() => {
-    if (fourwingsActivityLayer?.instance) {
-      if (fourwingsActivityLayer.instance.getMode() === 'positions') {
-        const positions =
-          fourwingsActivityLayer.instance.getViewportData() as FourwingsPositionFeature[]
+    if (fourwingsLayersLoaded) {
+      const positions = [
+        ...((fourwingsActivityLayer?.instance.getViewportData() as FourwingsPositionFeature[]) ||
+          []),
+        ...((fourwingsDetectionsLayer?.instance.getViewportData() as FourwingsPositionFeature[]) ||
+          []),
+      ]
+      if (positions.length) {
         const vesselsByValue = positions.reduce((acc, position) => {
-          if (!position.properties.id) return acc
-          if (!acc[position.properties.id]) {
-            acc[position.properties.id] = {
-              id: position.properties.id,
-              shipname: position.properties.shipname,
-              value: 0,
+          if (position.properties.shipname) {
+            if (!acc[position.properties.shipname]) {
+              acc[position.properties.shipname] = {
+                id: position.properties.id,
+                shipname: position.properties.shipname,
+                value: 0,
+              }
             }
+            acc[position.properties.shipname].value += position.properties.value
           }
-          acc[position.properties.id].value += position.properties.value
           return acc
         }, {} as Record<string, VesselFromPosition>)
         const vesselsArray = Object.values(vesselsByValue).sort((a, b) => b.value - a.value)
         setVessels(vesselsArray || [])
-      } else if (vessels?.length) {
+      } else {
         setVessels([])
       }
-    } else {
+    }
+    if (!fourwingsLayers.length) {
       setVessels([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fourwingsActivityLayer, vesselsHash])
+  }, [fourwingsLayers.length, fourwingsLayersLoaded, vesselsHash])
 
   if (!vessels.length) {
     return null
@@ -97,9 +115,18 @@ function VesselsFromPositions() {
             <VesselPin vesselToResolve={vessel} onClick={() => setHighlightVessel(undefined)} />
             <div className={styles.vesselOnScreen}>
               <span>{formatInfoField(vessel.shipname, 'shipname')} </span>
-              <span>
-                {Math.round(vessel.value)} {index === 0 && ` ${t('common.hour_other', 'hours')}`}
-              </span>
+              {fourwingsActivityLayer?.instance && !fourwingsDetectionsLayer?.instance && (
+                <span>
+                  <I18nNumber number={Math.round(vessel.value)} />{' '}
+                  {index === 0 && ` ${t('common.hour_other', 'hours')}`}
+                </span>
+              )}
+              {fourwingsDetectionsLayer?.instance && !fourwingsActivityLayer?.instance && (
+                <span>
+                  <I18nNumber number={Math.round(vessel.value)} />{' '}
+                  {index === 0 && ` ${t('common.detection_other', 'detections').toLowerCase()}`}
+                </span>
+              )}
             </div>
           </li>
         ))}
