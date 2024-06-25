@@ -256,9 +256,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getLatestVesselPositions = (positions: FourwingsPositionFeature[]) => {
-    console.log('positions:', positions)
     const positionsByVessel = groupBy(positions, 'properties.id')
-    console.log('positionsByVessel:', positionsByVessel)
     const lastPositions: FourwingsPositionFeature[] = []
     Object.keys(positionsByVessel)
       .filter((p) => p !== 'undefined')
