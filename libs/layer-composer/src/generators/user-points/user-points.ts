@@ -7,7 +7,7 @@ import { API_GATEWAY } from '../../config'
 import { getCirclePaintWithFeatureState } from '../context/context.utils'
 import { getCircleRadiusWithPointSizeProperty } from '../user-points/user-points.utils'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
-import { getTimeFilterForUserContextLayer } from '../utils'
+import { getFilterForUserPointsLayer } from '../utils'
 
 class UserPointsGenerator {
   type = GeneratorType.UserPoints
@@ -53,7 +53,7 @@ class UserPointsGenerator {
       source: config.id,
       'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
     }
-    const filters = getTimeFilterForUserContextLayer(config)
+    const filters = getFilterForUserPointsLayer(config)
     const circleLayer: CircleLayerSpecification = {
       ...baseLayer,
       type: 'circle',
@@ -83,7 +83,6 @@ class UserPointsGenerator {
   }
 
   getStyle = (config: GlobalUserPointsGeneratorConfig) => {
-    console.log('🚀 ~ UserPointsGenerator ~ config:', config)
     return {
       id: config.id,
       sources: this._getStyleSources(config),
