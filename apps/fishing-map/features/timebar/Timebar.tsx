@@ -221,7 +221,6 @@ const TimebarWrapper = () => {
     [dispatch, dispatchDisableHighlightedTime]
   )
 
-  const [internalRange, setInternalRange] = useState<TimeRange | null>(null)
   const onChange = useCallback(
     (e: any) => {
       const gaActions: Record<string, string> = {
@@ -240,10 +239,9 @@ const TimebarWrapper = () => {
           label: getEventLabel([e.start, e.end]),
         })
       }
-      setInternalRange(null)
       onTimebarChange(e.start, e.end)
     },
-    [setInternalRange, onTimebarChange]
+    [onTimebarChange]
   )
 
   const onMouseEnter = useCallback(() => {
@@ -359,8 +357,8 @@ const TimebarWrapper = () => {
       <Timebar
         enablePlayback={!vesselGroupsFiltering && !isReportLocation}
         labels={labels}
-        start={internalRange ? internalRange.start : start}
-        end={internalRange ? internalRange.end : end}
+        start={start}
+        end={end}
         absoluteStart={availableStart}
         absoluteEnd={availableEnd}
         latestAvailableDataDate={latestAvailableDataDate}

@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { memoize } from 'lodash'
-import { Query, RouteObject } from 'redux-first-router'
+import { Query } from 'redux-first-router'
 import { RootState } from 'reducers'
 import { WorkspaceParam, QueryParams } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
@@ -18,11 +18,6 @@ import {
 } from './routes'
 
 const selectLocation = (state: RootState) => state.location
-
-export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
-  const routeMap = routesMap[type] as RouteObject
-  return { type: type as ROUTE_TYPES, ...routeMap }
-})
 
 export const selectLocationType = createSelector(
   [selectLocation],
