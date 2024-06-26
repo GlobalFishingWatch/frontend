@@ -65,11 +65,8 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
       : category === ReportCategory.Fishing || category === ReportCategory.Presence
-        ? `${t('common.of', 'of')} <strong>${t(
-            `common.activity`,
-            'Activity'
-          ).toLowerCase()}</strong>`
-        : undefined
+      ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
+      : undefined
 
     if (
       reportHours &&
@@ -112,12 +109,9 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
       let activityQuantity =
         !timeseriesLoading && layersTimeseriesFiltered?.[0]
-          ? `<span title="± ${timeseriesImprecision.toFixed(2)}%">~${formatI18nNumber(
-              timeseriesHours.toFixed(),
-              {
-                locale: i18n.language as Locale,
-              }
-            )}</span>`
+          ? `<span>${formatI18nNumber(timeseriesHours.toFixed(), {
+              locale: i18n.language as Locale,
+            })}</span>`
           : ''
       if (
         category === ReportCategory.Detections &&
@@ -134,7 +128,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
           : `<strong>${t(`common.${activityUnit}`, {
               defaultValue: 'hours',
               count: Math.floor(reportHours),
-            })}</strong> ${t('common.of', 'of')}`
+            })}</strong> ± ${timeseriesImprecision.toFixed(2)}% ${t('common.of', 'of')}`
 
       return t('analysis.summaryNoVessels', {
         defaultValue:
