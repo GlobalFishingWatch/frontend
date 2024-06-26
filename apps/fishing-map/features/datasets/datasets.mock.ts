@@ -2,7 +2,7 @@ import { Dataset, DatasetCategory, DatasetTypes, EndpointId } from '@globalfishi
 
 export const datasets: Dataset[] = [
   {
-    id: 'local-fixed-infrastructure-v2',
+    id: 'local-fixed-infrastructure-filtered-v1.1',
     category: DatasetCategory.Context,
     name: 'Fixed infrastructure',
     type: 'user-context-layer:v1' as DatasetTypes.UserContext,
@@ -25,8 +25,8 @@ export const datasets: Dataset[] = [
       geometryType: 'points',
       configurationUI: {
         timeFilterType: 'dateRange',
-        startTime: 'infrastructure_start_date',
-        endTime: 'infrastructure_end_date',
+        startTime: 'structure_start_date',
+        endTime: 'structure_end_date',
       },
       valueProperties: ['label'],
       propertyToInclude: 'label',
@@ -39,7 +39,7 @@ export const datasets: Dataset[] = [
         enum: ['oil', 'wind', 'unknown'],
         type: 'string',
       },
-      confidence: {
+      label_confidence: {
         enum: ['high', 'low', 'medium'],
         type: 'string',
       },
@@ -53,7 +53,7 @@ export const datasets: Dataset[] = [
         type: 'string',
       },
     },
-    fieldsAllowed: ['label', 'confidence'],
+    fieldsAllowed: ['label', 'label_confidence'],
     createdAt: '2024-04-23T09:12:57.032Z',
     endpoints: [
       {
@@ -62,7 +62,7 @@ export const datasets: Dataset[] = [
         downloadable: true,
         method: 'GET',
         pathTemplate:
-          '/v3/datasets/public-fixed-infrastructure-v2/context-layers/{{z}}/{{x}}/{{y}}',
+          '/v3/datasets/public-fixed-infrastructure-filtered:v1.1/context-layers/{{z}}/{{x}}/{{y}}',
         params: [
           {
             label: 'Z',
@@ -87,7 +87,8 @@ export const datasets: Dataset[] = [
         description: 'Endpoint to retrieve a feature from a context layer',
         downloadable: true,
         method: 'GET',
-        pathTemplate: '/v3/datasets/public-fixed-infrastructure-v2/context-layers/{{id}}',
+        pathTemplate:
+          '/v3/datasets/public-fixed-infrastructure-filtered:v1.1/context-layers/{{id}}',
         params: [
           {
             label: 'ID',
