@@ -148,5 +148,10 @@
     "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.",
     "moreInfoLink": "",
     "name": "Night light detections (VIIRS)"
+  },
+  "offshore-fixed-infrastructure": {
+    "description": "TODO.",
+    "moreInfoLink": "",
+    "name": "Offsore fixed infrastructure"
   }
 }
