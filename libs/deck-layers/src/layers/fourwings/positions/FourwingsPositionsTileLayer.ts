@@ -339,6 +339,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
       const params = {
         datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
+        filters: sublayers.map((sublayer) => sublayer.filter),
         format: 'MVT',
         'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
         ...(supportedPositionProperties?.length && {
