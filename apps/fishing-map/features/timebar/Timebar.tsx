@@ -365,7 +365,6 @@ const TimebarWrapper = () => {
         absoluteEnd={availableEnd}
         latestAvailableDataDate={latestAvailableDataDate}
         onChange={onChange}
-        showLastUpdate={false}
         onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
         onTogglePlay={onTogglePlay}

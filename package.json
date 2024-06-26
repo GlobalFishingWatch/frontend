@@ -127,7 +127,6 @@
     "react-query": "^3.39.3",
     "react-range": "^1.8.14",
     "react-redux": "^9.1.0",
-    "react-spring": "^9.7.3",
     "react-sticky-el": "2.1.0",
     "react-toastify": "^10.0.5",
     "react-virtualized-auto-sizer": "^1.0.20",

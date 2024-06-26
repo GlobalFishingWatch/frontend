@@ -25,7 +25,6 @@
     "simple-statistics": "7.x",
     "use-debounce": "10.x",
     "recoil": "0.x",
-    "react-spring": "9.x",
     "resize-observer-polyfill": "1.x"
   }
 }

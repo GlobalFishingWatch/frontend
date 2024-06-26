@@ -298,7 +298,6 @@ class Timebar extends Component {
               bookmarkStart={bookmarkStart}
               bookmarkEnd={bookmarkEnd}
               bookmarkPlacement={bookmarkPlacement}
-              showLastUpdate={this.props.showLastUpdate}
               latestAvailableDataDate={this.props.latestAvailableDataDate}
               trackGraphOrientation={this.props.trackGraphOrientation}
               stickToUnit={stickToUnit}
@@ -366,7 +365,6 @@ Timebar.propTypes = {
   maximumRange: PropTypes.number,
   maximumRangeUnit: PropTypes.string,
   stickToUnit: PropTypes.func,
-  showLastUpdate: PropTypes.bool,
   // val is used to live edit translations in crowdin
   locale: PropTypes.oneOf(['en', 'es', 'fr', 'id', 'pt', 'val']),
   intervals: PropTypes.array,
@@ -430,7 +428,6 @@ Timebar.defaultProps = {
   minimumRangeUnit: 'day',
   maximumRange: null,
   maximumRangeUnit: 'month',
-  showLastUpdate: true,
   locale: 'en',
   displayWarningWhenInFuture: true,
 }

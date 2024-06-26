@@ -5,7 +5,6 @@ import cx from 'classnames'
 import { scaleTime } from 'd3-scale'
 import dayjs from 'dayjs'
 import { throttle } from 'lodash'
-import { animated, Spring } from 'react-spring'
 import ResizeObserver from 'resize-observer-polyfill'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import ImmediateContext from '../immediateContext'
@@ -348,7 +347,6 @@ class Timeline extends PureComponent {
       bookmarkPlacement,
       onChange,
       onBookmarkChange,
-      showLastUpdate,
       trackGraphOrientation,
       latestAvailableDataDate,
       displayWarningWhenInFuture,
@@ -507,20 +505,6 @@ class Timeline extends PureComponent {
               width: dragging === DRAG_END ? outerWidth - handlerMouseX : outerWidth - innerEndPx,
             }}
           />
-          {showLastUpdate && lastUpdatePosition <= outerWidth && (
-            <Spring native immediate={immediate} to={{ left: lastUpdatePosition }}>
-              {(style) => (
-                <animated.div className={styles.absoluteEnd} style={style}>
-                  <div className={cx(styles.lastUpdate, styles.lastUpdateLabel)}>
-                    {labels.lastUpdate}
-                  </div>
-                  <div className={styles.lastUpdate}>
-                    {dayjs(absoluteEnd).utc().format('MMMM D YYYY')}
-                  </div>
-                </animated.div>
-              )}
-            </Spring>
-          )}
           {isInTheFuture && (
             <div className={styles.last30Days}>
               <button
@@ -562,7 +546,6 @@ Timeline.propTypes = {
   bookmarkEnd: PropTypes.string,
   bookmarkPlacement: PropTypes.string,
   stickToUnit: PropTypes.func,
-  showLastUpdate: PropTypes.bool,
   displayWarningWhenInFuture: PropTypes.bool,
 }
 
@@ -589,7 +572,6 @@ Timeline.defaultProps = {
   onMouseMove: () => {
     // do nothing
   },
-  showLastUpdate: true,
 }
 
 export default Timeline
