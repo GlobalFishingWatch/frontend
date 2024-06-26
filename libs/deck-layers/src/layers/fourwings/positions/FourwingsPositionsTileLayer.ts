@@ -14,9 +14,10 @@ import { IconLayer, TextLayer } from '@deck.gl/layers'
 import { sample, mean, standardDeviation } from 'simple-statistics'
 import { groupBy, orderBy } from 'lodash'
 import { stringify } from 'qs'
-import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { CONFIG_BY_INTERVAL, FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
 import {
   BLEND_BACKGROUND,
   COLOR_HIGHLIGHT_LINE,
@@ -39,7 +40,11 @@ import { getRoundedDateFromTS } from '../heatmap/fourwings-heatmap.utils'
 import { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
 import { PATH_BASENAME } from '../../layers.config'
-import { cleanVesselShipname, filteredPositionsByViewport } from './fourwings-positions.utils'
+import {
+  cleanVesselShipname,
+  filteredPositionsByViewport,
+  isPositionMatched,
+} from './fourwings-positions.utils'
 import {
   FourwingsPositionsPickingInfo,
   FourwingsPositionsPickingObject,
@@ -267,10 +272,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
-    const positions = orderBy(
-      tiles.flatMap((tile: any) => tile.dataInWGS84 as FourwingsPositionFeature[]),
-      'properties.htime'
-    ).filter(Boolean)
+    const data = tiles.flatMap((tile) => {
+      return tile.content
+        ? tile.content.map((feature: any) =>
+            transformTileCoordsToWGS84(feature, tile.bbox as GeoBoundingBox, this.context.viewport)
+          )
+        : []
+    })
+    const positions = orderBy(data, 'properties.htime').filter(Boolean)
 
     const positionsInViewport = filteredPositionsByViewport(positions, this.context.viewport)
     const lastPositions = this._getLatestVesselPositions(positionsInViewport)
@@ -310,16 +319,15 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       })
       return await parse(response, GFWMVTLoader, loadOptions)
     } catch (error: any) {
-      if (
+      if ((error as ParsedAPIError).status === 404) {
+        return null
+      } else if (
         (error as ParsedAPIError).status === 422 &&
-        (error as ParsedAPIError).message?.includes('Maximum points exceeded by tile')
+        (error as ParsedAPIError).message?.includes('Maximum points exceeded by tile') &&
+        this.props.onPositionsMaxPointsError
       ) {
-        if (this.props.onPositionsMaxPointsError) {
-          const totalNumber = parseInt(error.message.match(/Total (\d+)/)?.[1])
-          this.props.onPositionsMaxPointsError(layer.root as FourwingsLayer, totalNumber)
-        } else {
-          throw error
-        }
+        const totalNumber = parseInt(error.message.match(/Total (\d+)/)?.[1])
+        this.props.onPositionsMaxPointsError(layer.root as FourwingsLayer, totalNumber)
       }
       throw error
     }
@@ -357,6 +365,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           id: `${this.props.id}-tiles`,
           data: `${baseUrl}?${stringify(params)}`,
           maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
+          binary: false,
+          loaders: [GFWMVTLoader],
           fetch: this._fetch,
           onViewportLoad: this._onViewportLoad,
           renderSubLayers: () => null,
@@ -366,7 +376,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: (d: any) => (d.properties.bearing ? 'vessel' : 'circle'),
+          getIcon: (d: any) => (isPositionMatched(d) ? 'vessel' : 'circle'),
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getFillColor,
           getSize: this._getIconSize,
@@ -384,7 +394,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: (d: any) => (d.properties.shipname ? 'vesselHighlight' : 'circle'),
+          getIcon: (d: any) => (isPositionMatched(d) ? 'vesselHighlight' : 'circle'),
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getHighlightColor,
           getSize: this._getIconSize,
