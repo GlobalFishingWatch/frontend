@@ -148,5 +148,10 @@
     "description": "Le calque de détection des navires par lumière nocturne, connu sous le nom de suite de radiomètres pour imageurs dans l'infrarouge et le visible (ou VIIRS), affiche les navires en mer que les satellites ont détecté par la lumière qu'ils émettent la nuit. Bien qu'il ne soit pas exclusivement associé aux navires de pêche, ce calque d'activité est susceptible d'afficher des navires associés à des activités telles que la pêche aux calamars, qui utilisent des lumières vives et ont lieu la nuit.",
     "moreInfoLink": "",
     "name": "Détection de lumière de nuit (VIIRS)"
+  },
+  "offshore-fixed-infrastructure": {
+    "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
+    "moreInfoLink": "",
+    "name": "Offshore Fixed Infrastructure (SAR, Optical)"
   }
 }
