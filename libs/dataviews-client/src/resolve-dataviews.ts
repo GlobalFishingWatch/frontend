@@ -339,14 +339,6 @@ export function resolveDataviews(
   dataviews: Dataview[],
   datasets: Dataset[]
 ) {
-  console.log(
-    '🚀 ~ Fixed DATASET:',
-    datasets.filter((d) => d.id.includes('fixed'))
-  )
-  console.log(
-    '🚀 ~ dataviews:',
-    dataviews.filter((d) => d.slug.includes('fixed'))
-  )
   let dataviewInstancesResolved: UrlDataviewInstance[] = dataviewInstances.flatMap(
     (dataviewInstance) => {
       if (dataviewInstance?.deleted) {

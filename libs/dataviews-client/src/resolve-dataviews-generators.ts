@@ -377,7 +377,6 @@ export function getGeneratorConfig(
     case GeneratorType.Context:
     case GeneratorType.UserPoints:
     case GeneratorType.UserContext: {
-      console.log('DATAVIEW ', dataview)
       if (Array.isArray(dataview.config.layers)) {
         const tilesUrls = dataview.config.layers?.flatMap(({ id, dataset }) => {
           const { dataset: resolvedDataset, url } = resolveDataviewDatasetResource(
@@ -409,7 +408,6 @@ export function getGeneratorConfig(
           })
         )
       } else {
-        console.log('🚀 ~ generator:', generator)
         generator.id = dataview.config.layers
           ? `${dataview.id}${MULTILAYER_SEPARATOR}${dataview.config.layers}`
           : dataview.id
@@ -418,11 +416,9 @@ export function getGeneratorConfig(
           DatasetTypes.Context,
           DatasetTypes.UserContext,
         ])
-        console.log('🚀 ~ dataset:', dataset)
-        console.log('🚀 ~ url:', url)
-        // if (dataset?.status !== DatasetStatus.Done) {
-        //   return []
-        // }
+        if (dataset?.status !== DatasetStatus.Done) {
+          return []
+        }
         generator.datasetId = dataset.id
         if (url) {
           generator.tilesUrl =
@@ -453,7 +449,6 @@ export function getGeneratorConfig(
           (dataview.config?.type === GeneratorType.UserContext ||
             dataview.config?.type === GeneratorType.UserPoints)
         ) {
-          console.log('LETS START FILTERING')
           setGeneratorConfigCircleRadius({ dataset, generator })
           setGeneratorConfigTimeFilter({ dataset, generator })
           setGeneratorConfigPolygonColor({ dataset, generator })
@@ -462,12 +457,10 @@ export function getGeneratorConfig(
           }
         }
       }
-      console.log('GEEEENERATOR', generator)
       if (!generator.tilesUrl) {
         console.warn('Missing tiles url for dataview', dataview)
         return []
       }
-      console.log('🚀 ~ RETURNED generator:', generator)
       return generator
     }
     default: {
