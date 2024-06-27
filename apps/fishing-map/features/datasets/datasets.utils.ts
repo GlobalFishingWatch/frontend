@@ -447,7 +447,6 @@ export const isDataviewSchemaSupported = (
   schema: SupportedDatasetSchema
 ) => {
   const activeDatasets = dataview.config?.datasets
-  // debugger
   const schemaSupported = dataview?.datasets
     ?.filter((dataset) => activeDatasets?.includes(dataset.id))
     .every((dataset) => {
@@ -873,9 +872,7 @@ export const getSchemaFiltersInDataview = (
     // This filter avoids to show the selector for the vessel ids in fourwings layers
     fieldsIds = fieldsIds.filter((f) => f !== 'vessel_id')
   }
-  // if (dataview.id === 'fixed-sar-infrastructure-v2') {
-  //   fieldsIds = [...fieldsIds, 'confidence' as SupportedDatasetSchema]
-  // }
+
   const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetSchema[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewSchemaSupported(dataview, f))
   const fieldsDisabled = fieldsIds.filter((f) => !isDataviewSchemaSupported(dataview, f))
