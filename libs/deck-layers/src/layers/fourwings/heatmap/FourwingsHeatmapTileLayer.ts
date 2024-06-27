@@ -34,12 +34,13 @@ import {
   MAX_RAMP_VALUES,
 } from '../fourwings.config'
 import {
+  FourwingsColorObject,
   FourwingsDeckSublayer,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
 } from '../fourwings.types'
-import { getSteps, removeOutliers } from '../../../utils'
+import { getSteps, hexToRgbString, removeOutliers, rgbaStringToObject } from '../../../utils'
 import {
   aggregateCellTimeseries,
   getFourwingsChunk,
@@ -101,7 +102,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return getBivariateRamp(this.props.sublayers.map((s) => s?.colorRamp) as ColorRampId[])
     }
     if (this.props.comparisonMode === FourwingsComparisonMode.TimeCompare) {
-      return [TIME_COMPARE_COLOR_RAMP]
+      return [TIME_COMPARE_COLOR_RAMP].map((ramp) =>
+        ramp.map((color) => rgbaStringToObject(hexToRgbString(color)))
+      )
     }
     return this.props.sublayers.map(({ colorRamp }) =>
       getColorRamp({ rampId: colorRamp as ColorRampId, whiteEnd: this.props.colorRampWhiteEnd })
@@ -246,13 +249,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   ): FourwinsTileLayerScale[] => {
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
       return (colorDomain as number[][]).map((cd, i) => {
-        return scaleLinear(cd, colorRanges[i] as string[]).clamp(true)
+        return scaleLinear(cd, colorRanges[i] as FourwingsColorObject[]).clamp(true)
       })
     }
     if (this.props.comparisonMode === FourwingsComparisonMode.TimeCompare) {
-      return [scaleLinear(colorDomain as number[], colorRanges[0] as string[]).clamp(true)]
+      return [
+        scaleLinear(colorDomain as number[], colorRanges[0] as FourwingsColorObject[]).clamp(true),
+      ]
     }
-    return colorRanges.map((cr) => scaleLinear(colorDomain as number[], cr as string[]).clamp(true))
+    return colorRanges.map((cr) =>
+      scaleLinear(colorDomain as number[], cr as FourwingsColorObject[]).clamp(true)
+    )
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {

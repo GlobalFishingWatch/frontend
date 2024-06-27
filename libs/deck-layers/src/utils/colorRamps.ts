@@ -4,6 +4,7 @@ import {
   hexToRgb,
   hexToRgbString,
   rgbToRgbString,
+  rgbaStringToComponents,
   rgbaStringToObject,
   rgbaToString,
 } from './colors'
@@ -82,9 +83,7 @@ export const getMixedOpacityToWhiteColorRamp = (
 const white = { r: 255, g: 255, b: 255, a: 1 }
 
 export const getBivariateRampLegend = (colorRampsIds: ColorRampId[]) => {
-  const [ramp1, ramp2] = getBivariateRamp(colorRampsIds).map((ramp) =>
-    ramp.map((rgba) => rgbaStringToObject(rgba))
-  )
+  const [ramp1, ramp2] = getBivariateRamp(colorRampsIds)
   return [
     'transparent',
     rgbaToString({ ...getBlend(ramp1[0], ramp2[0]), a: 0.5 }),
@@ -108,7 +107,9 @@ export const getBivariateRampLegend = (colorRampsIds: ColorRampId[]) => {
 
 export const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
   return colorRampsIds.map((id) =>
-    getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[id], COLOR_RAMP_BIVARIATE_NUM_STEPS)
+    getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[id], COLOR_RAMP_BIVARIATE_NUM_STEPS).map(
+      (rgba) => rgbaStringToObject(rgba)
+    )
   )
 }
 
@@ -154,5 +155,5 @@ export const getColorRamp = ({
     ? getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID[rampId])
     : getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[rampId])
   if (rampId === 'bathymetry') ramp.reverse()
-  return ramp
+  return ramp.map((rgba) => rgbaStringToObject(rgba))
 }

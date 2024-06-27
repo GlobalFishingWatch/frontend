@@ -29,7 +29,7 @@ export const hexToDeckColor = (hex: string, opacity = 1): Color => {
 
 export const rgbaToDeckColor = (rgbaString: string): Color => {
   const { r, g, b, a } = rgbaStringToObject(rgbaString)
-  return [r, g, b, a * 255]
+  return [r, g, b, a]
 }
 
 function componentToHex(c: number) {
@@ -57,7 +57,7 @@ export const rgbaStringToObject = (rgba?: string) => {
     r: parseInt(r),
     g: parseInt(g),
     b: parseInt(b),
-    a: colorHasAlpha ? parseFloat(a) : 1,
+    a: colorHasAlpha ? Math.round(parseFloat(a) * 255) : 255,
   }
 }
 
