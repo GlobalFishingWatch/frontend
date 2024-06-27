@@ -114,6 +114,7 @@ export type SchemaOriginParam =
   | keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'>
   | 'all'
 export type GetSchemaInDataviewParams = {
+  fieldsToInclude?: SupportedDatasetSchema[]
   vesselGroups?: MultiSelectOption[]
   compatibilityOperation?: SchemaCompatibilityOperation
   schemaOrigin?: SchemaOriginParam
@@ -872,11 +873,14 @@ export const getFiltersBySchema = (
 
 export const getSchemaFiltersInDataview = (
   dataview: SchemaFieldDataview,
-  { vesselGroups } = {} as GetSchemaInDataviewParams
+  { vesselGroups, fieldsToInclude } = {} as GetSchemaInDataviewParams
 ): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
   let fieldsIds = uniq(
     dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
+  if (fieldsToInclude?.length) {
+    fieldsIds = fieldsIds.filter((f) => fieldsToInclude.includes(f))
+  }
   if (dataview.datasets?.some((t) => t.type === DatasetTypes.Fourwings)) {
     // This filter avoids to show the selector for the vessel ids in fourwings layers
     fieldsIds = fieldsIds.filter((f) => f !== 'vessel_id')
