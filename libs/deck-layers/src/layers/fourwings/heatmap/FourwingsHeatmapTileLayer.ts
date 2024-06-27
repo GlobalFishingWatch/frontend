@@ -32,6 +32,7 @@ import {
   FOURWINGS_MAX_ZOOM,
   getInterval,
   MAX_RAMP_VALUES,
+  MAX_POSITIONS_PER_TILE_SUPPORTED,
 } from '../fourwings.config'
 import {
   FourwingsColorObject,
@@ -611,23 +612,22 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return this.getTilesData({ aggregated }).flat()
   }
 
-  getTilesStats({ aggregated } = {} as { aggregated?: boolean }) {
+  getIsPositionsAvailable({ aggregated } = {} as { aggregated?: boolean }) {
     const tilesData = this.getTilesData({ aggregated })
-    return tilesData.map((tileData) => ({
-      count: Math.round(
+    return !tilesData.some(
+      (tileData) =>
         tileData.reduce((acc, feature) => {
           if (!feature.properties?.values?.length) {
             return acc
           }
-          return Math.round(
+          return (
             acc +
-              feature.properties?.values.flat().reduce((acc, value) => {
-                return value ? acc + value : acc
-              }, 0)
+            feature.properties?.values.flat().reduce((acc, value) => {
+              return value ? acc + value : acc
+            }, 0)
           )
-        }, 0)
-      ),
-    }))
+        }, 0) > MAX_POSITIONS_PER_TILE_SUPPORTED
+    )
   }
 
   getViewportData() {

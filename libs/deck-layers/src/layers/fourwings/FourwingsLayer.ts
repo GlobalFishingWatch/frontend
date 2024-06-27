@@ -84,11 +84,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
       if (!heatmapLayer.isLoaded) {
         return false
       }
-      const tileStats = heatmapLayer?.getTilesStats()
-      if (!tileStats.length) {
-        return false
-      }
-      return tileStats.every((tileStat) => tileStat.count < MAX_POSITIONS_PER_TILE_SUPPORTED)
+      return heatmapLayer?.getIsPositionsAvailable()
     }
     return this.props.visualizationMode === POSITIONS_ID
   }

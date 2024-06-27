@@ -51,7 +51,6 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
 
   useUpdateChartsData('tracks', filteredTracks)
   const tracksWithCoords = useMemo(() => {
-    console.count('RENDER TRACKS')
     return getTracksWithCoords(filteredTracks, outerScale, graphHeight, trackGraphOrientation)
   }, [filteredTracks, outerScale, graphHeight, trackGraphOrientation])
 
