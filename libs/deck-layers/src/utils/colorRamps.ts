@@ -61,7 +61,7 @@ export const getColorRampToWhite = (
       g: Math.floor(rgbColor.g + (255 - rgbColor.g) * ratio),
       b: Math.floor(rgbColor.b + (255 - rgbColor.b) * ratio),
     }
-    return rgbToRgbString(rgb)
+    return `rgb(${rgbToRgbString(rgb)})`
   })
 
   const ramp = [...steps, 'rgb(255, 255, 255)']

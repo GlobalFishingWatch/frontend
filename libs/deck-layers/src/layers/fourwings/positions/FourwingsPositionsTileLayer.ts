@@ -27,7 +27,6 @@ import {
   GFWMVTLoader,
   hexToDeckColor,
   LayerGroup,
-  rgbaToString,
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../../utils'
 import {
@@ -446,8 +445,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   getColorScale() {
     return {
       colorDomain: this.state.colorScale?.colorDomain,
-      colorRange: this.state.colorScale?.colorRange.map((sublayer) =>
-        (sublayer as FourwingsColorObject[]).map((c) => rgbaToString(c))
+      colorRange: this.state.colorScale?.colorRange.map(
+        (sublayer) => sublayer as FourwingsColorObject[]
       ),
     }
   }

@@ -48,9 +48,10 @@ export const deckToRgbaColor = ([r, g, b, a]: Color) => {
 export const EMPTY_RGBA_COLOR = { r: 0, g: 0, b: 0, a: 0 }
 export const rgbaStringToObject = (rgba?: string) => {
   if (!rgba) return EMPTY_RGBA_COLOR
+  const startIndex = rgba.startsWith('rgb') ? 4 : 0
   const colorHasAlpha = rgba.includes('rgba')
   const [r, g, b, a] = rgba
-    .substring(colorHasAlpha ? 5 : 4, rgba.length - 1)
+    .substring(startIndex + (colorHasAlpha ? 1 : 0), rgba.length - 1)
     .replace(/ /g, '')
     .split(',')
 
@@ -85,5 +86,5 @@ export const hexToRgbString = (hex: string) => {
 }
 
 export const rgbToRgbString = ({ r, g, b }: { r: number; g: number; b: number }) => {
-  return `rgb(${r}, ${g}, ${b})`
+  return `${r}, ${g}, ${b}`
 }
