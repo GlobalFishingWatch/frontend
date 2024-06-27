@@ -41,7 +41,7 @@ import {
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
 } from '../fourwings.types'
-import { getSteps, hexToRgbString, removeOutliers, rgbaStringToObject } from '../../../utils'
+import { getSteps, hexToRgb, removeOutliers } from '../../../utils'
 import {
   aggregateCellTimeseries,
   getFourwingsChunk,
@@ -104,7 +104,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
     if (this.props.comparisonMode === FourwingsComparisonMode.TimeCompare) {
       return [TIME_COMPARE_COLOR_RAMP].map((ramp) =>
-        ramp.map((color) => rgbaStringToObject(hexToRgbString(color)))
+        ramp.map((color) => hexToRgb(color) as FourwingsColorObject)
       )
     }
     return this.props.sublayers.map(({ colorRamp }) =>

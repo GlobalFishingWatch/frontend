@@ -37,11 +37,11 @@ function componentToHex(c: number) {
   return hex.length === 1 ? '0' + hex : hex
 }
 
-export const deckToHexColor = ([r, g, b]: any) => {
+export const deckToHexColor = ([r, g, b]: Color) => {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
-export const deckToRgbaColor = ([r, g, b, a]: any) => {
+export const deckToRgbaColor = ([r, g, b, a]: Color) => {
   return `rgba(${r},${g}, ${b}, ${a ? a : 1})`
 }
 
@@ -85,5 +85,5 @@ export const hexToRgbString = (hex: string) => {
 }
 
 export const rgbToRgbString = ({ r, g, b }: { r: number; g: number; b: number }) => {
-  return `${r}, ${g}, ${b}`
+  return `rgb(${r}, ${g}, ${b})`
 }

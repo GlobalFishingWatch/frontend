@@ -111,7 +111,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     if (scales[0]) {
       const color = scales[0](chosenValue)
       if (color) {
-        target = [color.r, color.g, color.b, color.a]
+        target = [color.r, color.g, color.b, color.a * 255]
         return target
       }
     }
