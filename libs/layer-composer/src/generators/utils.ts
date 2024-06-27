@@ -67,3 +67,25 @@ export const getTimeFilterForUserContextLayer = (
   }
   return undefined
 }
+
+export const getFilterForUserPointsLayer = (
+  config: GlobalUserPointsGeneratorConfig
+): FilterSpecification => {
+  const startMs = new Date(config.start).getTime()
+  const endMs = new Date(config.end).getTime()
+  const filters: Array<any> = ['all']
+  // Show for every time range after the start
+  if (config?.startTimeFilterProperty) {
+    filters.push(['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs])
+  }
+  if (config?.endTimeFilterProperty) {
+    // Show for every time range before the end
+    filters.push(['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs])
+  }
+  if (config?.filters) {
+    Object.entries(config.filters).forEach(([key, values]) => {
+      filters.push(['match', ['to-string', ['get', key]], values, true, false])
+    })
+  }
+  return filters as FilterSpecification
+}

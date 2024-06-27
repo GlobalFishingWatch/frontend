@@ -7,7 +7,7 @@ import { API_GATEWAY } from '../../config'
 import { getCirclePaintWithFeatureState } from '../context/context.utils'
 import { getCircleRadiusWithPointSizeProperty } from '../user-points/user-points.utils'
 import { DEFAULT_BACKGROUND_COLOR } from '../background/config'
-import { getTimeFilterForUserContextLayer } from '../utils'
+import { getFilterForUserPointsLayer } from '../utils'
 
 class UserPointsGenerator {
   type = GeneratorType.UserPoints
@@ -18,17 +18,20 @@ class UserPointsGenerator {
       : API_GATEWAY + config.tilesUrl
 
     const url = new URL(tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}'))
+    const isUserContextLayer = tilesUrl.includes('user-context')
+    const urlProperties = isUserContextLayer
+      ? [
+          ...Object.keys(config.filters || {}),
+          config.startTimeFilterProperty || '',
+          config.endTimeFilterProperty || '',
+          config.circleRadiusProperty || '',
+        ]
+      : []
 
-    if (config.filter) {
+    if (config.filter && isUserContextLayer) {
       url.searchParams.set('filter', config.filter)
     }
-    const properties = [
-      ...(config.valueProperties || []),
-      ...Object.keys(config.filters || {}),
-      config.startTimeFilterProperty || '',
-      config.endTimeFilterProperty || '',
-      config.circleRadiusProperty || '',
-    ].filter((p) => !!p)
+    const properties = [...(config.valueProperties || []), ...urlProperties].filter((p) => !!p)
     if (properties.length) {
       properties.forEach((property, index) => {
         url.searchParams.set(`properties[${index}]`, property)
@@ -52,7 +55,7 @@ class UserPointsGenerator {
       source: config.id,
       'source-layer': DEFAULT_CONTEXT_SOURCE_LAYER,
     }
-    const filters = getTimeFilterForUserContextLayer(config)
+    const filters = getFilterForUserPointsLayer(config)
     const circleLayer: CircleLayerSpecification = {
       ...baseLayer,
       type: 'circle',

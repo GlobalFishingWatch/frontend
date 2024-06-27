@@ -3,6 +3,7 @@ import { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
+  FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_SLUG,
@@ -66,5 +67,21 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     config: {
       color: '#4184F4',
     },
+  },
+  {
+    id: 'offshore-fixed-infrastructure',
+    dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/offshore-fixed-infrastructure.png`,
+    config: {
+      color: '#8E24A9',
+      datasets: ['public-fixed-infrastructure-filtered:v1.1'],
+    },
+    datasetsConfig: [
+      {
+        datasetId: 'public-fixed-infrastructure-filtered:v1.1',
+        endpoint: 'context-tiles',
+        params: [],
+      },
+    ],
   },
 ]
