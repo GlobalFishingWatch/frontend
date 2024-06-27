@@ -46,6 +46,7 @@ import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
+import { useRootElement } from 'hooks/dom.hooks'
 import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
@@ -168,6 +169,7 @@ const TimebarWrapper = () => {
   const tracks = useTimebarVesselTracks()
   const tracksGraphsData = useTimebarVesselTracksGraph()
   const events = useTimebarVesselEvents()
+  const rootElement = useRootElement()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
@@ -251,6 +253,14 @@ const TimebarWrapper = () => {
   const onMouseLeave = useCallback(() => {
     setMouseInside(false)
   }, [])
+
+  const onMouseDown = useCallback(() => {
+    rootElement?.classList.add('dragging')
+  }, [rootElement?.classList])
+
+  const onMouseUp = useCallback(() => {
+    rootElement?.classList.remove('dragging')
+  }, [rootElement?.classList])
 
   const onTogglePlay = useCallback(
     (isPlaying: boolean) => {
@@ -352,8 +362,15 @@ const TimebarWrapper = () => {
       </Fragment>
     )
   }
+
   return (
-    <div className={styles.timebarWrapper} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    <div
+      className={styles.timebarWrapper}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <Timebar
         enablePlayback={!vesselGroupsFiltering && !isReportLocation}
         labels={labels}
