@@ -112,10 +112,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   _calculateColorDomain = () => {
-    // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
-    // NO_DATA_VALUE = 0
-    // SCALE_VALUE = 0.01
-    // OFFSET_VALUE = 0
     const {
       comparisonMode,
       aggregationOperation,
@@ -147,7 +143,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         ? currentZoomData.filter((d, i) => filterCells(d, i))
         : currentZoomData
 
-    // TODO:deck remove this and calculate values equal to Compare
     if (comparisonMode === FourwingsComparisonMode.Bivariate) {
       let allValues: [number[], number[]] = [[], []]
       dataSample.forEach((feature) => {
@@ -321,13 +316,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       tilesUrl,
       compareStart,
       compareEnd,
-      comparisonMode,
     } = this.props
     if (!compareStart || !compareEnd) {
       // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
-    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
     const interval = getInterval(startTime, endTime, availableIntervals)
     if (!interval) {
       throw new Error('Invalid interval')
@@ -362,19 +355,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       offset = parseInt(response.headers.get('X-offset') as string)
       noDataValue = parseInt(response.headers.get('X-empty-value') as string)
 
-      const bins = JSON.parse(response.headers.get('X-bins-0') as string)?.map((n: string) => {
-        return (parseInt(n) - offset) * scale
-      })
-      if (
-        !colorDomain?.length &&
-        !this.initialBinsLoad &&
-        comparisonMode === FourwingsComparisonMode.Compare &&
-        bins
-      ) {
-        const scales = this._getColorScales(bins, colorRanges)
-        this.setState({ colorDomain: bins, scales })
-        this.initialBinsLoad = true
-      }
       return await response.arrayBuffer()
     }
 

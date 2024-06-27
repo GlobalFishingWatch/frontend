@@ -42,11 +42,12 @@ export const deckToHexColor = ([r, g, b]: any) => {
 }
 
 export const deckToRgbaColor = ([r, g, b, a]: any) => {
-  return `rgba(${r},${g}, ${b}, ${a ? a / 255 : 1})`
+  return `rgba(${r},${g}, ${b}, ${a ? a : 1})`
 }
 
+export const EMPTY_RGBA_COLOR = { r: 0, g: 0, b: 0, a: 0 }
 export const rgbaStringToObject = (rgba?: string) => {
-  if (!rgba) return { r: 0, g: 0, b: 0, a: 0 }
+  if (!rgba) return EMPTY_RGBA_COLOR
   const colorHasAlpha = rgba.includes('rgba')
   const [r, g, b, a] = rgba
     .substring(colorHasAlpha ? 5 : 4, rgba.length - 1)
@@ -57,7 +58,7 @@ export const rgbaStringToObject = (rgba?: string) => {
     r: parseInt(r),
     g: parseInt(g),
     b: parseInt(b),
-    a: colorHasAlpha ? Math.round(parseFloat(a) * 255) : 255,
+    a: colorHasAlpha ? parseFloat(a) : 1,
   }
 }
 

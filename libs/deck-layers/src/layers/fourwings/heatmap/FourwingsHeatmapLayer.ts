@@ -5,10 +5,9 @@ import { screen } from 'color-blend'
 import { FourwingsFeature, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_HIGHLIGHT_LINE,
+  EMPTY_RGBA_COLOR,
   LayerGroup,
   getLayerGroupOffset,
-  rgbaStringToComponents,
-  rgbaToDeckColor,
 } from '../../../utils'
 import { FourwingsColorObject } from '../fourwings.types'
 import {
@@ -175,7 +174,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       color = colorRanges[chosenValueIndex][colorIndex]
     }
     if (color) {
-      target = [color.r, color.g, color.b, color.a]
+      target = [color.r, color.g, color.b, color.a * 255]
     } else {
       target = EMPTY_CELL_COLOR
     }
@@ -183,59 +182,32 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   }
 
   getBivariateFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
-    const {
-      endTime,
-      startTime,
-      colorDomain,
-      colorRanges,
-      availableIntervals,
-      aggregationOperation,
-      tilesCache,
-      scales,
-    } = this.props
-    const { startFrame, endFrame } = getIntervalFrames({
-      startTime,
-      endTime,
-      availableIntervals,
-      bufferedStart: tilesCache.bufferedStart,
-    })
-    const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
-
+    const { colorDomain, colorRanges, aggregationOperation, scales } = this.props
     if (!colorDomain || !colorRanges) {
       target = EMPTY_CELL_COLOR
       return target
     }
     const aggregatedCellValues =
-      feature.properties.initialValues[timeRangeKey] ||
+      feature.properties.initialValues[this.timeRangeKey] ||
       aggregateCell({
         cellValues: feature.properties.values,
-        startFrame,
-        endFrame,
+        startFrame: this.startFrame,
+        endFrame: this.endFrame,
         aggregationOperation,
         cellStartOffsets: feature.properties.startOffsets,
       })
     feature.properties.aggregatedValues = aggregatedCellValues
-    let chosenValue: number | undefined
-    if (scales.length) {
-      const colors = scales.map((s, i) =>
-        aggregatedCellValues[i] ? s(aggregatedCellValues[i]) : undefined
-      )
 
-      if (colors[0] && colors[1]) {
-        const color = screen(
-          { ...colors[0], a: colors[0].a / 255 },
-          { ...colors[1], a: colors[1].a / 255 }
-        )
-        target = color ? [color.r, color.g, color.b, color.a * 255] : EMPTY_CELL_COLOR
-        return target
-      }
-    }
-    // chosenValue = getBivariateValue(aggregatedCellValues, colorDomain as number[][])
-    if (!chosenValue) {
+    if (!scales.length) {
       target = EMPTY_CELL_COLOR
       return target
     }
-    target = rgbaToDeckColor(colorRanges[chosenValue] as unknown as string)
+
+    const colors = scales.map((s, i) =>
+      aggregatedCellValues[i] ? s(aggregatedCellValues[i]) : undefined
+    )
+    const color = screen(colors[0] || EMPTY_RGBA_COLOR, colors[1] || EMPTY_RGBA_COLOR)
+    target = color ? [color.r, color.g, color.b, color.a * 255] : EMPTY_CELL_COLOR
     return target
   }
 
