@@ -7,7 +7,6 @@ import dayjs from 'dayjs'
 import { throttle } from 'lodash'
 import ResizeObserver from 'resize-observer-polyfill'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
-import ImmediateContext from '../immediateContext'
 import {
   getTime,
   clampToAbsoluteBoundaries,
@@ -28,8 +27,6 @@ const DRAG_START = 'DRAG_START'
 const DRAG_END = 'DRAG_END'
 
 class Timeline extends PureComponent {
-  static contextType = ImmediateContext
-
   getOuterScale = memoize((outerStart, outerEnd, outerWidth) =>
     scaleTime()
       .domain([new Date(outerStart), new Date(outerEnd)])
@@ -75,7 +72,7 @@ class Timeline extends PureComponent {
 
     // wait for end of call stack to get rendered CSS
     window.setTimeout(this.onWindowResize, 10)
-    if (window.ResizeObserver) {
+    if (window.ResizeObserver && this.node) {
       this.resizeObserver = new ResizeObserver(this.onWindowResize)
       this.resizeObserver.observe(this.node)
     } else {
@@ -100,7 +97,7 @@ class Timeline extends PureComponent {
     if (this.graphContainer !== null && typeof window !== 'undefined') {
       const graphStyle = window.getComputedStyle(this.graphContainer)
       const outerX = parseFloat(this.graphContainer.getBoundingClientRect().left)
-      const relativeOffsetX = -this.node.offsetLeft
+      const relativeOffsetX = -this.node?.offsetLeft
       const outerWidth = parseFloat(graphStyle.width)
       const outerHeight = parseFloat(graphStyle.height)
       const innerStartPx = outerWidth * 0.15
@@ -214,7 +211,7 @@ class Timeline extends PureComponent {
       return
     }
     const x = clientX - outerX
-    const isMovingInside = this.node.contains(event.target) && x > innerStartPx && x < innerEndPx
+    const isMovingInside = this.node?.contains(event.target) && x > innerStartPx && x < innerEndPx
     const isNodeInside = event.target.contains(this.node)
 
     const isDraggingInner = dragging === DRAG_INNER
@@ -234,14 +231,6 @@ class Timeline extends PureComponent {
       this.throttledMouseMove(x, this.outerScale.invert, isDay)
     } else {
       this.notifyMouseLeave()
-    }
-
-    if (isDraggingInner || isDraggingZoomIn || isDraggingZoomOut) {
-      // trigger setting immediate only once, when any drag interaction starts
-      // this can't be done in onMouseDown because it would disable click interaction on graph or tmln units
-      if (this.context.immediate === false) {
-        this.context.toggleImmediate(true)
-      }
     }
 
     if (isDraggingInner) {
@@ -279,8 +268,6 @@ class Timeline extends PureComponent {
     if (dragging === null) {
       return
     }
-
-    this.context.toggleImmediate(false)
 
     const clientX = event.clientX || (event.changedTouches && event.changedTouches[0].clientX) || 0
     const x = clientX - outerX
@@ -361,7 +348,6 @@ class Timeline extends PureComponent {
       outerWidth,
       outerHeight,
     } = this.state
-    const { immediate } = this.context
 
     this.innerScale = scaleTime()
       .domain([new Date(start), new Date(end)])
@@ -406,10 +392,7 @@ class Timeline extends PureComponent {
           trackGraphOrientation,
         }}
       >
-        <div
-          ref={(node) => (this.node = node)}
-          className={cx(styles.Timeline, { [styles._disabled]: immediate })}
-        >
+        <div ref={(node) => (this.node = node)} className={cx(styles.Timeline)}>
           {bookmarkStart !== undefined && bookmarkStart !== null && bookmarkStart !== '' && (
             <Bookmark
               labels={labels.bookmark}
