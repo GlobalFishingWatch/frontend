@@ -88,34 +88,28 @@ export const useTimerangeConnect = () => {
 
   const setTimerange = useCallback(
     (timerange: TimeRange) => {
-      setAtomTimerange(timerange)
+      setAtomTimerange((timerangeAtom) => {
+        if (
+          (timerange.start !== timerangeAtom?.start || timerange.end !== timerangeAtom.end) &&
+          !hintsDismissed?.changingTheTimeRange
+        ) {
+          dispatch(setHintDismissed('changingTheTimeRange'))
+        }
+        return timerange
+      })
       updateUrlTimerangeDebounced(timerange)
     },
-    [setAtomTimerange, updateUrlTimerangeDebounced]
+    [dispatch, hintsDismissed?.changingTheTimeRange, setAtomTimerange, updateUrlTimerangeDebounced]
   )
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
-      if (
-        (start !== timerangeAtom?.start || end !== timerangeAtom.end) &&
-        !hintsDismissed?.changingTheTimeRange
-      ) {
-        dispatch(setHintDismissed('changingTheTimeRange'))
-      }
       setTimerange({ start, end })
       if (reportLocation) {
         fitAreaInViewport()
       }
     },
-    [
-      dispatch,
-      fitAreaInViewport,
-      hintsDismissed?.changingTheTimeRange,
-      reportLocation,
-      setTimerange,
-      timerangeAtom?.end,
-      timerangeAtom?.start,
-    ]
+    [fitAreaInViewport, reportLocation, setTimerange]
   )
   return useMemo(() => {
     return {

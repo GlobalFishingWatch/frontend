@@ -66,17 +66,7 @@ export const useHeatmapActivityGraph = () => {
     }
     return EMPTY_ACTIVITY_DATA
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    loaded,
-    visualizationMode,
-    debouncedViewportChangeHash,
-    timebarVisualisation,
-    chunk.bufferedStart,
-    chunk.bufferedEnd,
-    chunk.interval,
-    instance?.props.minVisibleValue,
-    instance?.props.maxVisibleValue,
-  ])
+  }, [loaded, instance, visualizationMode])
 
   return useMemo(() => ({ loading: !loaded, heatmapActivity }), [heatmapActivity, loaded])
 }
