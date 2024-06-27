@@ -35,7 +35,7 @@ export function aggregateSublayerValues(
   return values.reduce((acc: number, value = 0, index) => {
     if (value) nonEmptyValuesLength++
     if (index === values.length - 1 && aggregationOperation === FourwingsAggregationOperation.Avg) {
-      return (acc + value) / nonEmptyValuesLength
+      return nonEmptyValuesLength ? (acc + value) / nonEmptyValuesLength : 0
     }
     return acc + value
   }, 0)
