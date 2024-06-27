@@ -18,16 +18,9 @@ class UserPointsGenerator {
       : API_GATEWAY + config.tilesUrl
 
     const url = new URL(tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}'))
-    console.log('🚀 ~ UserPointsGenerator ~ url:', url)
 
-    if (config.filter) {
-      url.searchParams.set('filter', config.filter)
-    }
     const properties = [
       ...(config.valueProperties || []),
-      ...Object.keys(config.filters || {}),
-      config.startTimeFilterProperty || '',
-      config.endTimeFilterProperty || '',
       config.circleRadiusProperty || '',
     ].filter((p) => !!p)
     if (properties.length) {

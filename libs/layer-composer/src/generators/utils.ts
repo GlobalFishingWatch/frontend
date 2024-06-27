@@ -1,4 +1,4 @@
-import { ExpressionSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
+import { FilterSpecification } from '@globalfishingwatch/maplibre-gl'
 import {
   AnyGeneratorConfig,
   GlobalUserContextGeneratorConfig,
