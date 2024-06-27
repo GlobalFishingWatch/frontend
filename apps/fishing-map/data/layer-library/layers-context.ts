@@ -74,6 +74,14 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/offshore-fixed-infrastructure.png`,
     config: {
       color: '#8E24A9',
+      datasets: ['public-fixed-infrastructure-filtered:v1.1'],
     },
+    datasetsConfig: [
+      {
+        datasetId: 'public-fixed-infrastructure-filtered:v1.1',
+        endpoint: 'context-tiles',
+        params: [],
+      },
+    ],
   },
 ]

@@ -43,7 +43,6 @@ export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas'
 export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas'
 export const GRATICULES_DATAVIEW_SLUG = 'graticules'
 export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure'
-export const FIXED_SAR_INFRASTRUCTURE_V2 = 'fixed-infrastructure-v2'
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas'
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas'
 
@@ -112,6 +111,7 @@ export const DEFAULT_DATAVIEW_SLUGS = [
   ...PRESENCE_DATAVIEWS,
   ...ENVIRONMENT_DATAVIEWS,
   ...TEMPLATE_DATAVIEW_SLUGS,
+  ...CONTEXT_LAYERS_DATAVIEWS,
 ]
 
 export const PROFILE_DATAVIEW_SLUGS = [

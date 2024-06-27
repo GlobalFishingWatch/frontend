@@ -21,7 +21,6 @@ import {
   BASEMAP_DATAVIEW_INSTANCE_ID,
   FIXED_SAR_INFRASTRUCTURE,
   DEFAULT_WORKSPACE_CATEGORY,
-  FIXED_SAR_INFRASTRUCTURE_V2,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
@@ -127,30 +126,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     },
-    // {
-    //   id: 'fixed-sar-infrastructure',
-    //   config: {
-    //     visible: false,
-    //     color: '#8E24A9',
-    //     colorRamp: 'seance',
-    //   },
-    //   dataviewId: FIXED_SAR_INFRASTRUCTURE,
-    // },
     {
-      id: 'fixed-sar-infrastructure-v2',
+      id: 'fixed-sar-infrastructure',
       config: {
-        visible: true,
-        color: '#FFFF00',
-        datasets: ['local-fixed-infrastructure-v2'],
-        type: 'USER_CONTEXT',
+        visible: false,
+        color: '#8E24A9',
+        colorRamp: 'seance',
       },
-      datasetsConfig: [
-        {
-          datasetId: 'local-fixed-infrastructure-v2',
-          endpoint: 'context-tiles',
-          params: [],
-        },
-      ],
       dataviewId: FIXED_SAR_INFRASTRUCTURE,
     },
     {
