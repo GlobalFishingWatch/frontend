@@ -150,8 +150,8 @@
     "name": "Night light detections (VIIRS)"
   },
   "offshore-fixed-infrastructure": {
-    "description": "TODO.",
+    "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
     "moreInfoLink": "",
-    "name": "Offsore fixed infrastructure"
+    "name": "Offshore Fixed Infrastructure (SAR, Optical)"
   }
 }

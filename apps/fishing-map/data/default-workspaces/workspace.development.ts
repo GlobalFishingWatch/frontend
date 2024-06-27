@@ -48,7 +48,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
-        visible: false,
+        visible: true,
         datasets: ['public-global-fishing-effort:v3.0'],
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
