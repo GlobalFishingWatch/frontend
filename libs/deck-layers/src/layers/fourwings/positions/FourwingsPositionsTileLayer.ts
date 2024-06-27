@@ -20,14 +20,14 @@ import { CONFIG_BY_INTERVAL, FourwingsPositionFeature } from '@globalfishingwatc
 import {
   BLEND_BACKGROUND,
   COLOR_HIGHLIGHT_LINE,
-  deckToRgbaColor,
+  COLOR_TRANSPARENT,
   getColorRamp,
   getLayerGroupOffset,
   getSteps,
   GFWMVTLoader,
   hexToDeckColor,
   LayerGroup,
-  rgbaStringToComponents,
+  rgbaToString,
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../../utils'
 import {
@@ -37,7 +37,7 @@ import {
   SUPPORTED_POSITION_PROPERTIES,
 } from '../fourwings.config'
 import { getRoundedDateFromTS } from '../heatmap/fourwings-heatmap.utils'
-import { FourwingsTileLayerColorScale } from '../fourwings.types'
+import { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
 import { PATH_BASENAME } from '../../layers.config'
 import { cleanVesselShipname, filteredPositionsByViewport } from './fourwings-positions.utils'
@@ -185,7 +185,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const dataFiltered = dataSampled.filter((a) => a >= lowerCut && a <= upperCut)
       const steps = getSteps(dataFiltered).map((value) => parseFloat(value.toFixed(3)))
       const colorRange = this.props.sublayers?.map((sublayer) =>
-        getColorRamp({ rampId: sublayer.colorRamp as any }).map((c) => rgbaStringToComponents(c))
+        getColorRamp({ rampId: sublayer.colorRamp as any })
       )
       return { colorDomain: steps, colorRange }
     }
@@ -205,7 +205,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     ) {
       return COLOR_HIGHLIGHT_LINE
     }
-    const sublayerColorRange = colorRange[d.properties.layer]
+    const sublayerColorRange = colorRange[d.properties.layer] as FourwingsColorObject[]
     const colorIndex =
       colorDomain.length === 1
         ? sublayerColorRange.length - 1
@@ -219,8 +219,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
             return i
           })
 
-    const color = colorIndex >= 0 ? sublayerColorRange[colorIndex] : [0, 0, 0, 0]
-    return color as Color
+    const color = sublayerColorRange[colorIndex]
+    return color ? ([color.r, color.g, color.b, color.a * 255] as Color) : COLOR_TRANSPARENT
   }
 
   _hasHighlightedVessels() {
@@ -447,7 +447,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return {
       colorDomain: this.state.colorScale?.colorDomain,
       colorRange: this.state.colorScale?.colorRange.map((sublayer) =>
-        (sublayer as string[]).map((c) => deckToRgbaColor(c))
+        (sublayer as FourwingsColorObject[]).map((c) => rgbaToString(c))
       ),
     }
   }
