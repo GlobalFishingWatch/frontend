@@ -18,11 +18,20 @@ class UserPointsGenerator {
       : API_GATEWAY + config.tilesUrl
 
     const url = new URL(tilesUrl.replace(/{{/g, '{').replace(/}}/g, '}'))
+    const isUserContextLayer = tilesUrl.includes('user-context')
+    const urlProperties = isUserContextLayer
+      ? [
+          ...Object.keys(config.filters || {}),
+          config.startTimeFilterProperty || '',
+          config.endTimeFilterProperty || '',
+          config.circleRadiusProperty || '',
+        ]
+      : []
 
-    const properties = [
-      ...(config.valueProperties || []),
-      config.circleRadiusProperty || '',
-    ].filter((p) => !!p)
+    if (config.filter && isUserContextLayer) {
+      url.searchParams.set('filter', config.filter)
+    }
+    const properties = [...(config.valueProperties || []), ...urlProperties].filter((p) => !!p)
     if (properties.length) {
       properties.forEach((property, index) => {
         url.searchParams.set(`properties[${index}]`, property)
