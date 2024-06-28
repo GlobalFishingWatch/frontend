@@ -42,7 +42,7 @@ class UserPointsGenerator {
       {
         id: config.id,
         type: 'vector',
-        promoteId: 'gfw_id',
+        promoteId: config.promoteId || 'gfw_id',
         tiles: [decodeURI(url.toString())],
       },
     ]

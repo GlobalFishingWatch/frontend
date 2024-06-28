@@ -190,6 +190,10 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    */
   datasetId?: string
   /**
+   * Property to use as id internally in mapbox
+   */
+  promoteId?: string
+  /**
    * SQL filter to apply to the dataset
    */
   filter?: string
