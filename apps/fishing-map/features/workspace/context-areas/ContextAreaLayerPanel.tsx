@@ -297,10 +297,12 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       </div>
-      <OutOfTimerangeDisclaimer
-        className={cx(styles.properties, styles.filters)}
-        dataview={dataview}
-      />
+      {layerActive && (
+        <OutOfTimerangeDisclaimer
+          className={cx(styles.properties, styles.filters)}
+          dataview={dataview}
+        />
+      )}
       {layerActive && (DATAVIEWS_WARNING.includes(dataview?.id) || hasSchemaFilterSelection) && (
         <div
           className={cx(styles.properties, styles.dataWarning, styles.drag, {
