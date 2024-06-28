@@ -20,7 +20,7 @@ import {
   selectReportCategory,
   selectReportTimeComparison,
 } from 'features/app/selectors/app.reports.selector'
-import { filterByPolygon } from 'features/reports/reports-geo.utils'
+import { FilteredPolygons, filterByPolygon } from 'features/reports/reports-geo.utils'
 import {
   FeaturesToTimeseriesParams,
   featuresToTimeseries,
@@ -132,17 +132,33 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const instances = reportLayers.map((l) => l.instance)
   const layersLoaded = reportLayers.every((l) => l.loaded)
 
+  const featuresFiltered = useMemo(() => {
+    if (!area?.geometry || !layersLoaded) {
+      return []
+    }
+    return instances.map((instance) => {
+      const features = instance.getData() as FourwingsFeature[]
+      const filteredFeatures = filterByPolygon(
+        [features],
+        area.geometry!,
+        reportCategory === 'environment' ? 'point' : 'cell'
+      )
+      return filteredFeatures
+    })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [area?.geometry, reportCategory, layersLoaded])
+
   const computeTimeseries = useCallback(
-    (instances: FourwingsLayer[], geometry: Polygon | MultiPolygon, graphMode: ReportGraphMode) => {
+    (
+      instances: FourwingsLayer[],
+      filteredFeatures: FilteredPolygons[][],
+      graphMode: ReportGraphMode
+    ) => {
       const timeseries: ReportGraphProps[] = []
-      instances.forEach((instance) => {
-        const features = instance.getData() as FourwingsFeature[]
-        const filteredFeatures = filterByPolygon(
-          [features],
-          geometry,
-          reportCategory === 'environment' ? 'point' : 'cell'
-        )
-        if (reportCategory === 'environment' && filteredFeatures[0].contained.length > 0) {
+      instances.forEach((instance, index) => {
+        const features = filteredFeatures[index]
+        if (reportCategory === 'environment' && features[0].contained.length > 0) {
           const dataview = dataviews.find((dv) => dv.id === instance.id)
           const chunk = instance.getChunk()
           const { startFrame, endFrame } = getIntervalFrames({
@@ -151,7 +167,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
             availableIntervals: [chunk.interval],
             bufferedStart: chunk.bufferedStart,
           })
-          const allValues = filteredFeatures[0].contained.flatMap((f) => {
+          const allValues = features[0].contained.flatMap((f) => {
             const values = sliceCellValues({
               values: f.properties.values[0],
               startFrame,
@@ -171,7 +187,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         const props = instance.props as FourwingsLayerProps
         const chunk = instance.getChunk()
         const sublayers = instance.getFourwingsLayers()
-
         const params: FeaturesToTimeseriesParams = {
           staticHeatmap: props.static,
           interval: instance.getInterval(),
@@ -185,11 +200,11 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
           sublayers,
           graphMode,
         }
-        timeseries.push(featuresToTimeseries(filteredFeatures, params)[0])
+        timeseries.push(featuresToTimeseries(features, params)[0])
       })
       setTimeseries(timeseries)
     },
-    [dataviews, reportCategory, setTimeseries, timeComparison]
+    [dataviews, reportCategory, setTimeseries, timeComparison, timerange.end, timerange.start]
   )
 
   // We need to re calculate the timeseries when area or timerange changes
@@ -206,18 +221,20 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportGraphMode])
 
+  const timeComparisonHash = timeComparison ? JSON.stringify(timeComparison) : undefined
   useEffect(() => {
-    if (layersLoaded && area?.geometry && areaInViewport) {
-      computeTimeseries(instances, area?.geometry as Polygon | MultiPolygon, reportGraphMode)
+    if (layersLoaded && featuresFiltered?.length && areaInViewport) {
+      computeTimeseries(instances, featuresFiltered, reportGraphMode)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     layersLoaded,
-    area?.geometry,
+    featuresFiltered,
     areaInViewport,
     reportCategory,
     reportBufferHash,
     reportGraphMode,
+    timeComparisonHash,
   ])
 
   return timeseries

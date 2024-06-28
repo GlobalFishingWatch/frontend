@@ -29,7 +29,6 @@ import {
   LayerGroup,
   getLayerGroupOffset,
   getSteps,
-  rgbaStringToComponents,
 } from '../../../utils'
 import {
   FOURWINGS_MAX_ZOOM,
@@ -155,12 +154,12 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       return EMPTY_CELL_COLOR
     }
 
-    const value = scale(feature.properties?.[HEATMAP_STATIC_PROPERTY_ID])
-    if (!value) {
+    const color = scale(feature.properties?.[HEATMAP_STATIC_PROPERTY_ID])
+    if (!color) {
       return EMPTY_CELL_COLOR
     }
 
-    return rgbaStringToComponents(value) as Color
+    return [color.r, color.g, color.b, color.a] as Color
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {

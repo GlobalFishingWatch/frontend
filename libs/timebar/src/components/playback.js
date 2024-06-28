@@ -6,7 +6,6 @@ import { scaleLinear } from 'd3-scale'
 import dayjs from 'dayjs'
 import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
-import ImmediateContext from '../immediateContext'
 import { ReactComponent as IconLoop } from '../icons/loop.svg'
 import { ReactComponent as IconBack } from '../icons/back.svg'
 import { ReactComponent as IconPlay } from '../icons/play.svg'
@@ -25,7 +24,6 @@ const MS_IN_INTERVAL = {
 }
 
 class Playback extends Component {
-  static contextType = ImmediateContext
   lastUpdateMs = null
   constructor() {
     super()
@@ -121,10 +119,12 @@ class Playback extends Component {
     this.lastUpdateMs = null
 
     if (playingNext) {
-      this.context.toggleImmediate(true)
+      // TODO:timebar store playing state in its place instead of using inmmediate
+      // this.context.toggleImmediate(true)
       this.requestAnimationFrame = window.requestAnimationFrame(this.tick)
     } else {
-      this.context.toggleImmediate(false)
+      // TODO:timebar store playing state in its place instead of using inmmediate
+      // this.context.toggleImmediate(false)
       window.cancelAnimationFrame(this.requestAnimationFrame)
     }
 
@@ -150,6 +150,7 @@ class Playback extends Component {
   }
 
   onForwardClick = () => {
+    // TODO:timebar fix this
     this.update(1, { byIntervals: true })
   }
 

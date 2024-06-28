@@ -32,6 +32,7 @@ import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { useRootElement } from 'hooks/dom.hooks'
 import { isPrintSupported, MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 import styles from './MapControls.module.css'
 
@@ -83,12 +84,7 @@ const MapControls = ({
   const showExtendedControls =
     (isWorkspaceLocation || isVesselLocation || reportLocation) && !isMapDrawing
   const showScreenshot = !isVesselLocation && !reportLocation
-
-  useEffect(() => {
-    if (!domElement.current) {
-      domElement.current = document.getElementById(ROOT_DOM_ELEMENT) as HTMLElement
-    }
-  }, [])
+  const rootElement = useRootElement()
 
   const setMapCoordinates = useSetMapCoordinates()
   const { viewState, setViewState } = useViewStateAtom()
@@ -123,9 +119,9 @@ const MapControls = ({
       clearTimeout(timeoutRef.current)
     }
     timeoutRef.current = setTimeout(() => {
-      if (domElement.current) {
-        domElement.current.classList.add('printing')
-        setInlineStyles(domElement.current)
+      if (rootElement) {
+        rootElement.classList.add('printing')
+        setInlineStyles(rootElement)
         // leave some time to
         // 1. apply the styles + timebar to re - render
         // 2. map static image generated with debounced finishes
@@ -134,7 +130,7 @@ const MapControls = ({
         }, MAP_IMAGE_DEBOUNCE + 400)
       }
     }, 100)
-  }, [dispatchQueryParams, dispatch, resetPreviewImage, generatePreviewImage])
+  }, [dispatchQueryParams, dispatch, resetPreviewImage, rootElement, generatePreviewImage])
 
   const handleModalClose = useCallback(() => {
     if (domElement.current) {

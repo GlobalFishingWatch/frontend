@@ -7,13 +7,17 @@ import {
   ColorRampId,
   POSITIONS_ID,
   HEATMAP_HIGH_RES_ID,
+  rgbaToString,
+  FourwingsColorObject,
 } from '@globalfishingwatch/deck-layers'
 import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
 import { DeckLegend, LegendType } from '../types'
 import { deckHoverInteractionAtom } from '../interactions'
 import { deckLayersAtom } from './deck-layers.hooks'
 
-export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
+type DeckLegendAtom = Omit<DeckLegend, 'ranges'> & { ranges: string[] | string[][] }
+
+export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
   const deckLayers = get(deckLayersAtom)
   const deckLayerHoverFeatures = get(deckHoverInteractionAtom)
   return deckLayers.flatMap((layer) => {
@@ -41,6 +45,7 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
       const gridAreaFormatted = gridArea ? `${gridArea}${isSquareKm ? 'km' : 'm'}` : ''
       label = `hours / ${gridAreaFormatted}²`
     }
+
     return {
       id: layer.id,
       type:
@@ -54,7 +59,9 @@ export const deckLayersLegendsAtom = atom<DeckLegend[]>((get) => {
           ? getBivariateRampLegend(
               layer.instance.props.sublayers.map((sublayer) => sublayer.colorRamp as ColorRampId)
             )
-          : colorRange,
+          : (colorRange || []).map((range) =>
+              (range as FourwingsColorObject[]).map((color) => rgbaToString(color))
+            ),
       currentValues: (interaction as FourwingsPickingObject)?.sublayers?.map((s: any) => s.value)!,
       label,
     }

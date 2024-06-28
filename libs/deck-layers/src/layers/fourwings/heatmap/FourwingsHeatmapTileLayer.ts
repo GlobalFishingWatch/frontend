@@ -32,14 +32,16 @@ import {
   FOURWINGS_MAX_ZOOM,
   getInterval,
   MAX_RAMP_VALUES,
+  MAX_POSITIONS_PER_TILE_SUPPORTED,
 } from '../fourwings.config'
 import {
+  FourwingsColorObject,
   FourwingsDeckSublayer,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
 } from '../fourwings.types'
-import { getSteps, removeOutliers } from '../../../utils'
+import { getSteps, hexToRgb, removeOutliers } from '../../../utils'
 import {
   aggregateCellTimeseries,
   getFourwingsChunk,
@@ -101,7 +103,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return getBivariateRamp(this.props.sublayers.map((s) => s?.colorRamp) as ColorRampId[])
     }
     if (this.props.comparisonMode === FourwingsComparisonMode.TimeCompare) {
-      return [TIME_COMPARE_COLOR_RAMP]
+      return [TIME_COMPARE_COLOR_RAMP].map((ramp) =>
+        ramp.map((color) => hexToRgb(color) as FourwingsColorObject)
+      )
     }
     return this.props.sublayers.map(({ colorRamp }) =>
       getColorRamp({ rampId: colorRamp as ColorRampId, whiteEnd: this.props.colorRampWhiteEnd })
@@ -109,10 +113,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   _calculateColorDomain = () => {
-    // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
-    // NO_DATA_VALUE = 0
-    // SCALE_VALUE = 0.01
-    // OFFSET_VALUE = 0
     const {
       comparisonMode,
       aggregationOperation,
@@ -144,7 +144,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         ? currentZoomData.filter((d, i) => filterCells(d, i))
         : currentZoomData
 
-    // TODO:deck remove this and calculate values equal to Compare
     if (comparisonMode === FourwingsComparisonMode.Bivariate) {
       let allValues: [number[], number[]] = [[], []]
       dataSample.forEach((feature) => {
@@ -246,13 +245,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   ): FourwinsTileLayerScale[] => {
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
       return (colorDomain as number[][]).map((cd, i) => {
-        return scaleLinear(cd, colorRanges[i] as string[]).clamp(true)
+        return scaleLinear(cd, colorRanges[i] as FourwingsColorObject[]).clamp(true)
       })
     }
     if (this.props.comparisonMode === FourwingsComparisonMode.TimeCompare) {
-      return [scaleLinear(colorDomain as number[], colorRanges[0] as string[]).clamp(true)]
+      return [
+        scaleLinear(colorDomain as number[], colorRanges[0] as FourwingsColorObject[]).clamp(true),
+      ]
     }
-    return colorRanges.map((cr) => scaleLinear(colorDomain as number[], cr as string[]).clamp(true))
+    return colorRanges.map((cr) =>
+      scaleLinear(colorDomain as number[], cr as FourwingsColorObject[]).clamp(true)
+    )
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
@@ -314,13 +317,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       tilesUrl,
       compareStart,
       compareEnd,
-      comparisonMode,
     } = this.props
     if (!compareStart || !compareEnd) {
       // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
-    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
     const interval = getInterval(startTime, endTime, availableIntervals)
     if (!interval) {
       throw new Error('Invalid interval')
@@ -355,19 +356,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       offset = parseInt(response.headers.get('X-offset') as string)
       noDataValue = parseInt(response.headers.get('X-empty-value') as string)
 
-      const bins = JSON.parse(response.headers.get('X-bins-0') as string)?.map((n: string) => {
-        return (parseInt(n) - offset) * scale
-      })
-      if (
-        !colorDomain?.length &&
-        !this.initialBinsLoad &&
-        comparisonMode === FourwingsComparisonMode.Compare &&
-        bins
-      ) {
-        const scales = this._getColorScales(bins, colorRanges)
-        this.setState({ colorDomain: bins, scales })
-        this.initialBinsLoad = true
-      }
       return await response.arrayBuffer()
     }
 
@@ -624,23 +612,22 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return this.getTilesData({ aggregated }).flat()
   }
 
-  getTilesStats({ aggregated } = {} as { aggregated?: boolean }) {
+  getIsPositionsAvailable({ aggregated } = {} as { aggregated?: boolean }) {
     const tilesData = this.getTilesData({ aggregated })
-    return tilesData.map((tileData) => ({
-      count: Math.round(
+    return !tilesData.some(
+      (tileData) =>
         tileData.reduce((acc, feature) => {
           if (!feature.properties?.values?.length) {
             return acc
           }
-          return Math.round(
+          return (
             acc +
-              feature.properties?.values.flat().reduce((acc, value) => {
-                return value ? acc + value : acc
-              }, 0)
+            feature.properties?.values.flat().reduce((acc, value) => {
+              return value ? acc + value : acc
+            }, 0)
           )
-        }, 0)
-      ),
-    }))
+        }, 0) > MAX_POSITIONS_PER_TILE_SUPPORTED
+    )
   }
 
   getViewportData() {

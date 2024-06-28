@@ -5,7 +5,6 @@ import React, { useContext, useMemo } from 'react'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import TimelineContext, { TimelineScale } from '../timelineContext'
-import ImmediateContext from '../immediateContext'
 import { Timeseries, HighlighterCallback } from './common/types'
 import { useTimeseriesToChartData } from './common/hooks'
 import { useUpdateChartsData } from './chartsData.atom'
@@ -66,7 +65,6 @@ const StackedActivity = ({
   highlighterCallback?: HighlighterCallback
   highlighterIconCallback?: HighlighterCallback
 }) => {
-  const { immediate } = useContext(ImmediateContext)
   // todo replace with outerScale hook
   const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
   const dataAsTimebarChartData = useTimeseriesToChartData(
@@ -89,7 +87,7 @@ const StackedActivity = ({
       <g
         transform={svgTransform}
         style={{
-          transition: immediate ? 'none' : `transform ${DEFAULT_CSS_TRANSITION}`,
+          transition: 'none',
         }}
       >
         {hasSublayers &&

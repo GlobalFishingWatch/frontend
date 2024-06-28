@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { getHumanizedDates } from '../utils'
-import ImmediateContext from '../immediateContext'
 import { ReactComponent as IconBookmarkFilled } from '../icons/bookmarkFilled.svg'
 import { ReactComponent as IconDelete } from '../icons/delete.svg'
 import { ReactComponent as Arrow } from '../icons/arrow.svg'
@@ -23,8 +22,6 @@ const Bookmark = ({
   onSelect,
   onDelete,
 }) => {
-  const { immediate } = useContext(ImmediateContext)
-
   const x = scale(new Date(bookmarkStart))
   const width = scale(new Date(bookmarkEnd)) - x
   const { humanizedStart, humanizedEnd } = getHumanizedDates(bookmarkStart, bookmarkEnd)
@@ -62,7 +59,6 @@ const Bookmark = ({
         [styles._overflowingRight]: overflowingRight,
         [styles._compact]: compact,
         [styles._point]: point,
-        [styles._immediate]: immediate,
       })}
       style={{ left: renderedX, width: renderedWidth }}
     >

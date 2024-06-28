@@ -15,6 +15,10 @@
   transition: none !important;
 }
 
+.dragging * {
+  user-select: none !important;
+}
+
 .print-only {
   display: none !important;
 }

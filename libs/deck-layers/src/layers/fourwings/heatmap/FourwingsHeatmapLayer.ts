@@ -5,13 +5,11 @@ import { screen } from 'color-blend'
 import { FourwingsFeature, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_HIGHLIGHT_LINE,
+  EMPTY_RGBA_COLOR,
   LayerGroup,
   getLayerGroupOffset,
-  rgbaStringToComponents,
-  rgbaStringToObject,
-  rgbaToDeckColor,
 } from '../../../utils'
-import { HEATMAP_HIGH_RES_ID, HEATMAP_ID } from '../fourwings.config'
+import { FourwingsColorObject } from '../fourwings.types'
 import {
   EMPTY_CELL_COLOR,
   aggregateCell,
@@ -29,6 +27,9 @@ import {
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
   static layerName = 'FourwingsHeatmapLayer'
   layers: LayersList = []
+  timeRangeKey!: string
+  startFrame!: number
+  endFrame!: number
 
   getPickingInfo = ({
     info,
@@ -109,42 +110,33 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
 
     if (scales[0]) {
       const color = scales[0](chosenValue)
-      target = color ? (rgbaStringToComponents(color) as Color) : [0, 0, 0, 0]
-      return target
+      if (color) {
+        target = [color.r, color.g, color.b, color.a * 255]
+        return target
+      }
     }
     return EMPTY_CELL_COLOR
   }
 
   getCompareFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
     const {
-      endTime,
-      startTime,
       colorDomain,
       colorRanges,
-      availableIntervals,
       aggregationOperation,
       minVisibleValue,
       maxVisibleValue,
-      tilesCache,
       scales,
     } = this.props
-    const { startFrame, endFrame } = getIntervalFrames({
-      startTime,
-      endTime,
-      availableIntervals,
-      bufferedStart: tilesCache.bufferedStart,
-    })
-    const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
     if (!colorDomain?.length || !colorRanges?.length) {
       target = EMPTY_CELL_COLOR
       return target
     }
     const aggregatedCellValues =
-      feature.properties.initialValues[timeRangeKey] ||
+      feature.properties.initialValues[this.timeRangeKey] ||
       aggregateCell({
         cellValues: feature.properties.values,
-        startFrame,
-        endFrame,
+        startFrame: this.startFrame,
+        endFrame: this.endFrame,
         aggregationOperation,
         cellStartOffsets: feature.properties.startOffsets,
       })
@@ -169,66 +161,53 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       target = EMPTY_CELL_COLOR
       return target
     }
+    let color: FourwingsColorObject | undefined
     if (scales[chosenValueIndex]) {
-      const color = scales[chosenValueIndex](chosenValue)
-      target = color ? (rgbaStringToComponents(color) as Color) : EMPTY_CELL_COLOR
-      return target
+      const colorChosen = scales[chosenValueIndex](chosenValue)
+      if (colorChosen) {
+        color = colorChosen
+      }
+    } else {
+      const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
+        (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
+      )
+      color = colorRanges[chosenValueIndex][colorIndex]
     }
-    const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
-      (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
-    )
-    target = rgbaStringToComponents(colorRanges[chosenValueIndex][colorIndex]) as Color
+    if (color) {
+      target = [color.r, color.g, color.b, color.a * 255]
+    } else {
+      target = EMPTY_CELL_COLOR
+    }
     return target
   }
 
   getBivariateFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
-    const {
-      endTime,
-      startTime,
-      colorDomain,
-      colorRanges,
-      availableIntervals,
-      aggregationOperation,
-      tilesCache,
-      scales,
-    } = this.props
-    const { startFrame, endFrame } = getIntervalFrames({
-      startTime,
-      endTime,
-      availableIntervals,
-      bufferedStart: tilesCache.bufferedStart,
-    })
-    const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
-
+    const { colorDomain, colorRanges, aggregationOperation, scales } = this.props
     if (!colorDomain || !colorRanges) {
       target = EMPTY_CELL_COLOR
       return target
     }
     const aggregatedCellValues =
-      feature.properties.initialValues[timeRangeKey] ||
+      feature.properties.initialValues[this.timeRangeKey] ||
       aggregateCell({
         cellValues: feature.properties.values,
-        startFrame,
-        endFrame,
+        startFrame: this.startFrame,
+        endFrame: this.endFrame,
         aggregationOperation,
         cellStartOffsets: feature.properties.startOffsets,
       })
     feature.properties.aggregatedValues = aggregatedCellValues
-    let chosenValue: number | undefined
-    if (scales.length) {
-      const colors = scales.map((s, i) =>
-        aggregatedCellValues[i] ? s(aggregatedCellValues[i]) : undefined
-      )
-      const color = screen(rgbaStringToObject(colors[0]), rgbaStringToObject(colors[1]))
-      target = color ? [color.r, color.g, color.b, color.a * 255] : EMPTY_CELL_COLOR
-      return target
-    }
-    // chosenValue = getBivariateValue(aggregatedCellValues, colorDomain as number[][])
-    if (!chosenValue) {
+
+    if (!scales.length) {
       target = EMPTY_CELL_COLOR
       return target
     }
-    target = rgbaToDeckColor(colorRanges[chosenValue] as unknown as string)
+
+    const colors = scales.map((s, i) =>
+      aggregatedCellValues[i] ? s(aggregatedCellValues[i]) : undefined
+    )
+    const color = screen(colors[0] || EMPTY_RGBA_COLOR, colors[1] || EMPTY_RGBA_COLOR)
+    target = color ? [color.r, color.g, color.b, color.a * 255] : EMPTY_CELL_COLOR
     return target
   }
 
@@ -240,14 +219,28 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       colorDomain,
       colorRanges,
       highlightedFeatures,
+      availableIntervals,
       comparisonMode,
       tilesCache,
       minVisibleValue,
       maxVisibleValue,
     } = this.props
+
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
     }
+
+    const { startFrame, endFrame } = getIntervalFrames({
+      startTime,
+      endTime,
+      availableIntervals,
+      bufferedStart: tilesCache.bufferedStart,
+    })
+
+    this.timeRangeKey = getTimeRangeKey(startFrame, endFrame)
+    this.startFrame = startFrame
+    this.endFrame = endFrame
+
     this.layers = [
       new SolidPolygonLayer(
         this.props,

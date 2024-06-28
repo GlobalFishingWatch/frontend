@@ -12,6 +12,7 @@ import {
 import { BasePickingObject } from '../../../types'
 import {
   BaseFourwingsLayerProps,
+  FourwingsColorObject,
   FourwingsDeckSublayer,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
@@ -42,7 +43,7 @@ export enum FourwingsComparisonMode {
 }
 
 export type ColorDomain = number[] | number[][]
-export type ColorRange = string[]
+export type ColorRange = FourwingsColorObject[]
 export type SublayerColorRanges = ColorRange[]
 
 export type FourwingsHeatmapStaticPickingObject = BasePickingObject &
@@ -107,7 +108,7 @@ export type FourwingsHeatmapTilesCache = {
   interval: FourwingsInterval
 }
 
-export type FourwinsTileLayerScale = ScaleLinear<string, string, never>
+export type FourwinsTileLayerScale = ScaleLinear<FourwingsColorObject, FourwingsColorObject, never>
 export type FourwingsTileLayerState = {
   tilesCache: FourwingsHeatmapTilesCache
   colorDomain: FourwingsTileLayerColorDomain

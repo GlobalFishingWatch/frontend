@@ -27,8 +27,9 @@ export type FourwingsVisualizationMode =
   | typeof HEATMAP_LOW_RES_ID
   | typeof POSITIONS_ID
 
+export type FourwingsColorObject = { r: number; g: number; b: number; a: number }
 export type FourwingsTileLayerColorDomain = number[] | number[][]
-export type FourwingsTileLayerColorRange = string[][] | string[]
+export type FourwingsTileLayerColorRange = FourwingsColorObject[][] | FourwingsColorObject[]
 export type FourwingsTileLayerColorScale = {
   colorDomain: FourwingsTileLayerColorDomain
   colorRange: FourwingsTileLayerColorRange

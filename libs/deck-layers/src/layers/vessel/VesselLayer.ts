@@ -433,6 +433,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     const trackLayerBboxes = this.getTrackLayers()
       .map((l) => l.getBbox())
       .filter(Boolean)
+    if (!trackLayerBboxes.length) return null
     if (trackLayerBboxes.length === 1) return trackLayerBboxes[0]
     return bbox(featureCollection([...trackLayerBboxes.map((l) => bboxPolygon(l as BBox))])) as Bbox
   }

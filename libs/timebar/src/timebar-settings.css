@@ -36,7 +36,9 @@
   --timebar-z-date-selector: 999;
 
   /* OTHER */
-  --timebar-hover-transition: all 150ms linear;
+
+  /* --timebar-hover-transition: all 150ms linear; */
+  --timebar-hover-transition: 'none';
   --timebar-size: 7.2rem;
 
   /* UTILS */

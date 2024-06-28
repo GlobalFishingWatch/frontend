@@ -29,7 +29,7 @@ export const hexToDeckColor = (hex: string, opacity = 1): Color => {
 
 export const rgbaToDeckColor = (rgbaString: string): Color => {
   const { r, g, b, a } = rgbaStringToObject(rgbaString)
-  return [r, g, b, a * 255]
+  return [r, g, b, a]
 }
 
 function componentToHex(c: number) {
@@ -37,19 +37,21 @@ function componentToHex(c: number) {
   return hex.length === 1 ? '0' + hex : hex
 }
 
-export const deckToHexColor = ([r, g, b]: any) => {
+export const deckToHexColor = ([r, g, b]: Color) => {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
-export const deckToRgbaColor = ([r, g, b, a]: any) => {
-  return `rgba(${r},${g}, ${b}, ${a ? a / 255 : 1})`
+export const deckToRgbaColor = ([r, g, b, a]: Color) => {
+  return `rgba(${r},${g}, ${b}, ${a ? a : 1})`
 }
 
+export const EMPTY_RGBA_COLOR = { r: 0, g: 0, b: 0, a: 0 }
 export const rgbaStringToObject = (rgba?: string) => {
-  if (!rgba) return { r: 0, g: 0, b: 0, a: 0 }
+  if (!rgba) return EMPTY_RGBA_COLOR
+  const startIndex = rgba.startsWith('rgb') ? 4 : 0
   const colorHasAlpha = rgba.includes('rgba')
   const [r, g, b, a] = rgba
-    .substring(colorHasAlpha ? 5 : 4, rgba.length - 1)
+    .substring(startIndex + (colorHasAlpha ? 1 : 0), rgba.length - 1)
     .replace(/ /g, '')
     .split(',')
 

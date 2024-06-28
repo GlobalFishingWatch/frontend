@@ -167,7 +167,10 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
     ? getVesselIdentityTooltipSummary(vesselData, { showVesselId: gfwUser || false })
     : ''
 
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
+    fieldsToInclude: ['speed', 'elevation'],
+  })
+
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )

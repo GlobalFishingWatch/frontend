@@ -98,7 +98,6 @@ const TimebarWrapper = () => {
         onChange={onTimebarChange}
         onMouseMove={onMouseMove}
         displayWarningWhenInFuture={false}
-        showLastUpdate={false}
       >
         <TimebarActivityGraph />
         <TimebarHighlighterWrapper />
