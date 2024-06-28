@@ -81,11 +81,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     super.initializeState(context)
     this.state = {
       scales: [],
-      tilesCache: this._getTileDataCache(
-        this.props.startTime,
-        this.props.endTime,
-        this.props.availableIntervals
-      ),
+      tilesCache: this._getTileDataCache({
+        startTime: this.props.startTime,
+        endTime: this.props.endTime,
+        availableIntervals: this.props.availableIntervals,
+        compareStart: this.props.compareStart,
+        compareEnd: this.props.compareEnd,
+      }),
       colorDomain: [],
       colorRanges: this._getColorRanges(),
       rampDirty: false,
@@ -132,11 +134,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       endTime,
       availableIntervals,
       bufferedStart:
-        this._getTileDataCache(
-          this.props.startTime,
-          this.props.endTime,
-          this.props.availableIntervals
-        )?.bufferedStart || 0,
+        this._getTileDataCache({
+          startTime: this.props.startTime,
+          endTime: this.props.endTime,
+          availableIntervals: this.props.availableIntervals,
+        })?.bufferedStart || 0,
     })
 
     const dataSample =
@@ -488,14 +490,22 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       : this._fetchTimeseriesTileData(tile)
   }
 
-  _getTileDataCache = (
-    startTime: number,
-    endTime: number,
+  _getTileDataCache = ({
+    startTime,
+    endTime,
+    availableIntervals,
+    compareStart,
+    compareEnd,
+  }: {
+    startTime: number
+    endTime: number
     availableIntervals?: FourwingsInterval[]
-  ): FourwingsHeatmapTilesCache => {
+    compareStart?: number
+    compareEnd?: number
+  }): FourwingsHeatmapTilesCache => {
     const interval = getInterval(startTime, endTime, availableIntervals)
     const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
-    return { start, end, bufferedStart, interval }
+    return { start, end, bufferedStart, interval, compareStart, compareEnd }
   }
 
   _getTileDataCacheKey = (): string => {
@@ -510,6 +520,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const {
       startTime,
       endTime,
+      compareStart,
+      compareEnd,
       availableIntervals,
       comparisonMode,
       minVisibleValue,
@@ -539,13 +551,25 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const isStartOutRange = startTime <= tilesCache.start
+    const isCompareStartOutRange = compareStart ? compareStart <= tilesCache.compareStart! : false
+    const isCompareEndOutRange = compareEnd ? compareEnd <= tilesCache.compareEnd! : false
     const isEndOutRange = endTime >= tilesCache.end
     const needsCacheKeyUpdate =
       isStartOutRange ||
+      isCompareStartOutRange ||
       isEndOutRange ||
+      isCompareEndOutRange ||
       getInterval(startTime, endTime, availableIntervals) !== tilesCache.interval
     if (needsCacheKeyUpdate) {
-      this.setState({ tilesCache: this._getTileDataCache(startTime, endTime, availableIntervals) })
+      this.setState({
+        tilesCache: this._getTileDataCache({
+          startTime,
+          endTime,
+          availableIntervals,
+          compareStart,
+          compareEnd,
+        }),
+      })
     }
   }
 

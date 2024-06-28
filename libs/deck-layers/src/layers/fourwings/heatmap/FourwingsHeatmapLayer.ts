@@ -224,6 +224,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       tilesCache,
       minVisibleValue,
       maxVisibleValue,
+      compareStart,
+      compareEnd,
     } = this.props
 
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
@@ -264,6 +266,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
               colorDomain,
               colorRanges,
               comparisonMode,
+              compareStart,
+              compareEnd,
               minVisibleValue,
               maxVisibleValue,
             ],
