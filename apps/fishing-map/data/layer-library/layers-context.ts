@@ -11,6 +11,8 @@ import {
   RFMO_DATAVIEW_SLUG,
 } from 'data/workspaces'
 
+export const OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID = 'offshore-fixed-infrastructure'
+
 export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   {
     id: 'graticules',
@@ -69,19 +71,11 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     },
   },
   {
-    id: 'offshore-fixed-infrastructure',
+    id: OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID,
     dataviewId: FIXED_SAR_INFRASTRUCTURE,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/offshore-fixed-infrastructure.png`,
     config: {
       color: '#8E24A9',
-      datasets: ['public-fixed-infrastructure-filtered:v1.1'],
     },
-    datasetsConfig: [
-      {
-        datasetId: 'public-fixed-infrastructure-filtered:v1.1',
-        endpoint: 'context-tiles',
-        params: [],
-      },
-    ],
   },
 ]
