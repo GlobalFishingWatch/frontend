@@ -332,7 +332,6 @@ export function parseReportVesselsToIdentity(
   if (!vessels || !vessels.length) {
     return []
   }
-  console.log('🚀 ~ vessels:', vessels)
   const identityVessels = vessels.flatMap((vessel) => {
     if (!vessel) {
       return []
@@ -348,6 +347,5 @@ export function parseReportVesselsToIdentity(
       identities: [parseReportToIdentityVessel(vessel)],
     } as IdentityVesselData
   })
-  console.log('🚀 ~ identityVessels ~ identityVessels:', identityVessels)
   return identityVessels
 }

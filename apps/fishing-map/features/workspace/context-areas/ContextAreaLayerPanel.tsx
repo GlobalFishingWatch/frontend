@@ -58,6 +58,7 @@ import InfoModal from '../common/InfoModal'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import { showSchemaFilter } from '../common/LayerSchemaFilter'
+import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -296,6 +297,10 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       </div>
+      <OutOfTimerangeDisclaimer
+        className={cx(styles.properties, styles.filters)}
+        dataview={dataview}
+      />
       {layerActive && (DATAVIEWS_WARNING.includes(dataview?.id) || hasSchemaFilterSelection) && (
         <div
           className={cx(styles.properties, styles.dataWarning, styles.drag, {
