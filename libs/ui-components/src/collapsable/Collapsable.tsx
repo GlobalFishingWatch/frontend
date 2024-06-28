@@ -8,12 +8,13 @@ interface CollapsableProps {
   label?: string | ReactNode
   children?: string | ReactNode
   className?: string
+  onToggle?: () => void
 }
 
 export function Collapsable(props: CollapsableProps) {
-  const { open = true, label, className, children } = props
+  const { open = true, label, className, children, onToggle } = props
   return (
-    <details open={open} className={cx(styles.details, className)}>
+    <details open={open} className={cx(styles.details, className)} onToggle={onToggle}>
       <summary className={styles.summary}>
         <span className={styles.label}>{label}</span>
         <Icon className={styles.icon} icon="arrow-down" />

@@ -78,6 +78,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()
   const [filterOpen, setFiltersOpen] = useState(false)
+  const [areasOnScreenOpen, setAreasOnScreenOpen] = useState(false)
   const [featuresOnScreen, setFeaturesOnScreen] = useState<FeaturesOnScreen>({
     total: 0,
     closest: [],
@@ -114,18 +115,23 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         })
       }
     }
-    if (layerActive && layerLoaded && DataviewType.Context === dataview.config?.type) {
+    if (
+      areasOnScreenOpen &&
+      layerActive &&
+      layerLoaded &&
+      DataviewType.Context === dataview.config?.type
+    ) {
       updateFeaturesOnScreen()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataset, layerActive, layerLoaded, viewport])
+  }, [dataset, layerActive, layerLoaded, viewport, areasOnScreenOpen])
 
   const listHeight = Math.min(featuresOnScreen?.total, CONTEXT_FEATURES_LIMIT) * LIST_ELEMENT_HEIGHT
   const ellispsisHeight =
     featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT ? LIST_ELLIPSIS_HEIGHT : 0
   const closestAreasHeight = featuresOnScreen?.total
     ? listHeight + ellispsisHeight + LIST_TITLE_HEIGHT + LIST_MARGIN_HEIGHT
-    : 0
+    : 40
 
   const {
     items,
@@ -155,6 +161,10 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
   }
+
+  const onToggleAreasOnScreenOpen = useCallback(() => {
+    setAreasOnScreenOpen(!areasOnScreenOpen)
+  }, [areasOnScreenOpen])
 
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
@@ -325,58 +335,49 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
       )}
       {layerActive && (
         <div
-          className={cx(
-            styles.closestAreas,
-            { [styles.properties]: featuresOnScreen?.total > 0 },
-            'print-hidden'
-          )}
+          className={cx(styles.closestAreas, styles.properties, 'print-hidden')}
           style={{ maxHeight: closestAreasHeight }}
         >
-          {featuresOnScreen?.total > 0 && (
-            <Fragment>
-              <Collapsable
-                label={`${t('layer.areasOnScreen', 'Areas on screen')} (${
-                  featuresOnScreen?.total
-                })`}
-                open={false}
-                className={styles.areasOnScreen}
-              >
-                <ul>
-                  {featuresOnScreen.closest.map((feature) => {
-                    const id = feature?.id || feature?.properties!.id
-                    let title = feature.value || feature.properties.name || feature.properties.id
-                    if (dataset?.configuration?.valueProperties?.length) {
-                      title = dataset.configuration.valueProperties
-                        .flatMap((prop) => feature.properties[prop] || [])
-                        .join(', ')
-                    }
-                    return (
-                      <li
-                        key={`${id}-${title}`}
-                        className={styles.area}
-                        onMouseEnter={() => highlightArea(feature)}
-                        onMouseLeave={() => highlightArea(undefined)}
+          <Collapsable
+            label={`${t('layer.areasOnScreen', 'Areas on screen')} ${
+              areasOnScreenOpen ? `(${featuresOnScreen?.total})` : ''
+            }`}
+            open={areasOnScreenOpen}
+            onToggle={onToggleAreasOnScreenOpen}
+            className={styles.areasOnScreen}
+          >
+            <ul>
+              {featuresOnScreen?.total > 0 &&
+                featuresOnScreen.closest.map((feature) => {
+                  const id = feature?.id || feature?.properties!.id
+                  let title = feature.value || feature.properties.name || feature.properties.id
+                  if (dataset?.configuration?.valueProperties?.length) {
+                    title = dataset.configuration.valueProperties
+                      .flatMap((prop) => feature.properties[prop] || [])
+                      .join(', ')
+                  }
+                  return (
+                    <li
+                      key={`${id}-${title}`}
+                      className={styles.area}
+                      onMouseEnter={() => highlightArea(feature)}
+                      onMouseLeave={() => highlightArea(undefined)}
+                    >
+                      <span
+                        title={title.length > 40 ? title : undefined}
+                        className={styles.areaTitle}
                       >
-                        <span
-                          title={title.length > 40 ? title : undefined}
-                          className={styles.areaTitle}
-                        >
-                          {title}
-                        </span>
-                        <ReportPopupLink
-                          feature={feature}
-                          onClick={onReportClick}
-                        ></ReportPopupLink>
-                      </li>
-                    )
-                  })}
-                  {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
-                    <li className={cx(styles.area, styles.ellipsis)}>...</li>
-                  )}
-                </ul>
-              </Collapsable>
-            </Fragment>
-          )}
+                        {title}
+                      </span>
+                      <ReportPopupLink feature={feature} onClick={onReportClick}></ReportPopupLink>
+                    </li>
+                  )
+                })}
+              {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
+                <li className={cx(styles.area, styles.ellipsis)}>...</li>
+              )}
+            </ul>
+          </Collapsable>
         </div>
       )}
     </div>
