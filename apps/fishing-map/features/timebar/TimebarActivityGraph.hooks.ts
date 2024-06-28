@@ -7,7 +7,6 @@ import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { FourwingsFeature, FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
-import { selectTimebarVisualisation } from 'features/app/selectors/app.timebar.selectors'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
@@ -22,7 +21,6 @@ import {
 const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
 
 export const useHeatmapActivityGraph = () => {
-  const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const viewport = useMapViewport()
   const viewportChangeHash = useMemo(() => {
     if (!viewport) return ''
