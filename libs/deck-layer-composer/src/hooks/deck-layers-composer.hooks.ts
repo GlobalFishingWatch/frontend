@@ -39,9 +39,7 @@ export function useDeckLayerComposer({
     setDeckLayers(layerInstances)
   }, [layerInstances, setDeckLayers])
 
-  return {
-    layers: deckLayers,
-  }
+  return deckLayers
 }
 
 export function useSetDeckLayerComposer() {

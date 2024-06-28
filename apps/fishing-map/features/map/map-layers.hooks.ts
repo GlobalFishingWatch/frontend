@@ -54,7 +54,7 @@ export const useMapDataviewsLayers = () => {
     workspacesListDataview,
   ])
 
-  const { layers } = useDeckLayerComposer({
+  const layers = useDeckLayerComposer({
     dataviews: dataviews as DataviewInstance[],
     globalConfig,
   })
