@@ -18,7 +18,9 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
   const { t } = useTranslation()
   // TODO get the value based on the sublayer
   const color = feature.sublayers?.[0]?.color
-  const shipname = formatInfoField(feature.properties.shipname, 'shipname')
+  const shipname = feature.properties.shipname
+    ? (formatInfoField(feature.properties.shipname, 'shipname') as string)
+    : ''
   return (
     <Fragment>
       <div className={cx(popupStyles.popupSection, popupStyles.smallPadding)}>
@@ -26,7 +28,7 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
         <div className={popupStyles.popupSectionContent}>
           <div className={popupStyles.row}>
             <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
-              {showFeaturesDetails && (
+              {showFeaturesDetails && shipname && (
                 <VesselPin
                   vesselToResolve={{
                     id: feature.properties.id,

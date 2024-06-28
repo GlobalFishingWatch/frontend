@@ -38,7 +38,6 @@ import {
   setClickedEvent,
 } from './map.slice'
 import { useSetViewState } from './map-viewport.hooks'
-import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
 
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
@@ -138,7 +137,10 @@ export const useClickedEventConnect = () => {
     // get temporal grid clicked features and order them by sublayerindex
     const fishingActivityFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
       (feature) => {
-        if (feature?.sublayers?.every((sublayer) => !sublayer.visible)) {
+        if (
+          feature?.sublayers?.every((sublayer) => !sublayer.visible) ||
+          feature.visualizationMode === 'positions'
+        ) {
           return false
         }
         return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(feature.category)

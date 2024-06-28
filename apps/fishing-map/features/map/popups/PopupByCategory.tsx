@@ -83,7 +83,8 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           //       showFeaturesDetails={type === 'click'}
           //     />
           //   )
-          case DataviewCategory.Activity: {
+          case DataviewCategory.Activity:
+          case DataviewCategory.Detections: {
             const positionFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
               (feature) => feature.visualizationMode === 'positions'
             )
@@ -112,27 +113,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                   />
                 ) : (
                   <ActivityTooltipRow
-                    key={`${i}-${j}`}
-                    loading={activityInteractionStatus === AsyncReducerStatus.Loading}
-                    feature={{
-                      ...sublayer,
-                      category: feature.category as DataviewCategory,
-                      title: dataview
-                        ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
-                        : feature.title,
-                    }}
-                    showFeaturesDetails={type === 'click'}
-                  />
-                )
-              })
-            })
-          }
-          case DataviewCategory.Detections: {
-            return (features as SliceExtendedFourwingsPickingObject[])?.map((feature, i) => {
-              return feature.sublayers.map((sublayer, j) => {
-                const dataview = dataviews.find((d) => d.id === sublayer.id)
-                return (
-                  <DetectionsTooltipRow
                     key={`${i}-${j}`}
                     loading={activityInteractionStatus === AsyncReducerStatus.Loading}
                     feature={{
