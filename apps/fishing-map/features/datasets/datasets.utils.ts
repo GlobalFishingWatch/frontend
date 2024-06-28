@@ -872,6 +872,7 @@ export const getSchemaFiltersInDataview = (
     // This filter avoids to show the selector for the vessel ids in fourwings layers
     fieldsIds = fieldsIds.filter((f) => f !== 'vessel_id')
   }
+
   const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetSchema[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewSchemaSupported(dataview, f))
   const fieldsDisabled = fieldsIds.filter((f) => !isDataviewSchemaSupported(dataview, f))

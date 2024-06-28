@@ -8,5 +8,6 @@ export const MAPBOX_GL_DRAW_PREFIX = 'mapbox-gl-draw'
 export const ANNOTATIONS_GENERATOR_ID = 'annotations'
 export const RULERS_GENERATOR_ID = 'rulers'
 export const RULERS_LAYER_ID = `${RULERS_GENERATOR_ID}-${RULER_INTERACTIVE_LAYER}`
+export const OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID = 'offshore-fixed-infrastructure'
 
 export const DEFAUL_ANNOTATION_COLOR = '#ffffff'
