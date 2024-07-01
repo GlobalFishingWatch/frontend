@@ -13,6 +13,7 @@ export const selectUserSlice = (state: RootState) => state.user
 export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
+export const selectUserSettings = (state: RootState) => state.user.settings
 
 export const selectIsGFWUser = createSelector([selectUserData], (userData) => {
   return userData?.groups.includes(GFW_GROUP_ID)

@@ -9,7 +9,7 @@ import {
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
-import { selectUserSettings } from 'features/user/user.slice'
+import { selectUserSettings } from 'features/user/selectors/user.selectors'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
 export const selectWorkspacePassword = (state: RootState) => state.workspace?.password

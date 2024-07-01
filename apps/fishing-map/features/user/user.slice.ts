@@ -120,8 +120,6 @@ const userSlice = createSlice({
   },
 })
 
-export const selectUserSettings = (state: RootState) => state.user.settings
-
 export const { setUserSetting } = userSlice.actions
 
 export default userSlice.reducer
