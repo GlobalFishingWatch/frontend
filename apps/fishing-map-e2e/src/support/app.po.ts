@@ -1,3 +1,4 @@
+import { HINTS } from 'apps/fishing-map/data/config'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from '../../../fishing-map/features/workspace/highlight-panel/highlight-panel.content'
 import { API_URL_4WINGS_TILES } from '../constants/urls'
 
@@ -42,7 +43,7 @@ export const disablePopups = () => {
   localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
   localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
   localStorage.setItem(
-    'hints',
+    HINTS,
     '{"fishingEffortHeatmap":true,"filterActivityLayers":true,"clickingOnAGridCellToShowVessels":true,"changingTheTimeRange":true,"areaSearch":true,"periodComparisonBaseline":true}'
   )
 }

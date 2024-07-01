@@ -50,7 +50,6 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
-import { initializeHints } from 'features/help/hints.slice'
 import AppModals from 'features/modals/Modals'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useSetViewState } from 'features/map/map-viewport.hooks'
@@ -137,10 +136,6 @@ function App() {
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
   }, [])
-
-  useEffect(() => {
-    dispatch(initializeHints())
-  }, [dispatch])
 
   useEffect(() => {
     setMobileSafeVH()
