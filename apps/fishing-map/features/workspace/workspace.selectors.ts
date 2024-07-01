@@ -10,6 +10,7 @@ import {
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
 import { selectUserSettings } from 'features/user/selectors/user.selectors'
+import { UserSettings } from 'features/user/user.slice'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
 export const selectWorkspacePassword = (state: RootState) => state.workspace?.password
@@ -70,10 +71,9 @@ export function selectWorkspaceStateProperty<P extends WorkspaceStateProperty>(p
     (urlProperty, workspaceState, userSettings): WorkspaceProperty<P> => {
       if (urlProperty !== undefined) return urlProperty
       if (workspaceState[property]) return workspaceState[property] as WorkspaceProperty<P>
-      if (userSettings && userSettings[USER_SETTINGS_FALLBACKS[property]]) {
-        return userSettings[USER_SETTINGS_FALLBACKS[property]] as WorkspaceProperty<P>
-      }
-      return DEFAULT_WORKSPACE[property] as WorkspaceProperty<P>
+      const userSettingsProperty =
+        userSettings[USER_SETTINGS_FALLBACKS[property] as keyof UserSettings]
+      return (userSettingsProperty || DEFAULT_WORKSPACE[property]) as WorkspaceProperty<P>
     }
   )
 }

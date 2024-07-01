@@ -12,10 +12,10 @@ import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
-import { USER_SETTINGS } from 'data/config'
+import { PREFERRED_FOURWINGS_VISUALISATION_MODE, USER_SETTINGS } from 'data/config'
 
-interface UserSettings {
-  preferredFourwingsVisualisationMode?: FourwingsVisualizationMode
+export interface UserSettings {
+  [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode
 }
 
 interface UserState {
@@ -91,7 +91,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState: () => {
     if (typeof window === 'undefined') return initialState
-    const settings = JSON.parse(localStorage.getItem(USER_SETTINGS) || '{}')
+    const settings = JSON.parse(localStorage.getItem(USER_SETTINGS) || '{}') as UserSettings
     return { ...initialState, settings }
   },
   reducers: {

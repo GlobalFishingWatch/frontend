@@ -24,6 +24,7 @@ import {
 import { useLocationConnect } from 'routes/routes.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setUserSetting } from 'features/user/user.slice'
+import { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 
 export const useVisualizationsOptions = (
   category: DataviewCategory.Activity | DataviewCategory.Detections
@@ -48,7 +49,7 @@ export const useVisualizationsOptions = (
     (visualizationMode: FourwingsVisualizationMode) => {
       const categoryQueryParam = `${category}VisualizationMode`
       dispatchQueryParams({ [categoryQueryParam]: visualizationMode })
-      dispatch(setUserSetting({ preferredFourwingsVisualisationMode: visualizationMode }))
+      dispatch(setUserSetting({ [PREFERRED_FOURWINGS_VISUALISATION_MODE]: visualizationMode }))
     },
     [category, dispatch, dispatchQueryParams]
   )
