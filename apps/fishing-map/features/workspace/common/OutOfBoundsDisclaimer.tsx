@@ -12,13 +12,15 @@ import {
 
 type OutOfTimerangeDisclaimerProps = {
   dataview: UrlDataviewInstance
+  className?: string
 }
 
-const OutOfTimerangeDisclaimer = ({ dataview }: OutOfTimerangeDisclaimerProps) => {
+const OutOfTimerangeDisclaimer = ({ dataview, className }: OutOfTimerangeDisclaimerProps) => {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const activeDatasetIds =
-    dataview.category === DataviewCategory.Environment
+    dataview.category === DataviewCategory.Environment ||
+    dataview.category === DataviewCategory.Context
       ? getDatasetsInDataviews([dataview])
       : getActiveDatasetsInActivityDataviews([dataview])
 
@@ -39,7 +41,7 @@ const OutOfTimerangeDisclaimer = ({ dataview }: OutOfTimerangeDisclaimerProps) =
     (start <= startDate && end >= endDate)
 
   return datasetInTimerange ? null : (
-    <span className={cx(styles.dataWarning, styles.error)}>
+    <span className={cx(styles.dataWarning, styles.error, className)}>
       {t('dataset.noDataForTimerange', 'No data for current timerange')}.
       <br />
       {t('dataset.extent', {
