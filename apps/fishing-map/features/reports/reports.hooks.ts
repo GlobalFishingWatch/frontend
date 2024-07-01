@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
@@ -46,6 +48,24 @@ export type DateTimeSeries = {
   date: string
   values: number[]
 }[]
+
+const defaultIds = [] as string[]
+export const useHighlightReportArea = () => {
+  const areaDataviews = useSelector(selectReportAreaDataviews)
+  const ids = areaDataviews?.map((d) => d.id) || defaultIds
+  const areaLayers = useGetDeckLayers<ContextLayer>(ids)
+
+  return useCallback(
+    (area?: ContextFeature) => {
+      areaLayers.forEach((areaLayer) => {
+        if (areaLayer?.instance?.setHighlightedFeatures) {
+          areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
+        }
+      })
+    },
+    [areaLayers]
+  )
+}
 
 export function useReportAreaCenter(bounds?: Bbox) {
   const map = useDeckMap()
