@@ -29,12 +29,11 @@
   color: var(--color-primary-blue);
 }
 
-.optionButton:not(.optionActive) {
+.VisualisationChoice .optionCollapsable {
   width: 0;
 }
 
-.option:last-child .optionButton,
-:global(.hover-target):hover .optionButton:not(.optionActive) {
+:global(.hover-target):hover .VisualisationChoice .optionCollapsable {
   width: 2.6rem;
 }
 

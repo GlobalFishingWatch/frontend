@@ -31,6 +31,10 @@ export function VisualisationChoice({
       <ul className={styles.list} role="radiogroup" {...(testId && { 'data-test': `${testId}` })}>
         {options.map((option) => {
           const optionSelected = activeOption === option.id
+          const optionCollapsable =
+            activeOption === 'positions'
+              ? option.id !== 'positions' && option.id !== 'heatmap'
+              : activeOption !== option.id && option.id !== 'positions'
           return (
             <li
               key={option.id}
@@ -41,6 +45,7 @@ export function VisualisationChoice({
               <Button
                 disabled={option.disabled}
                 className={cx(styles.optionButton, {
+                  [styles.optionCollapsable]: optionCollapsable,
                   [styles.optionActive]: optionSelected,
                   [styles.disabled]: option.disabled,
                 })}

@@ -13,7 +13,6 @@ import {
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
 import { USER_SETTINGS } from 'data/config'
-import { RootState } from 'store'
 
 interface UserSettings {
   preferredFourwingsVisualisationMode?: FourwingsVisualizationMode
