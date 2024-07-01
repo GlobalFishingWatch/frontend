@@ -200,6 +200,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   )
 
   const isBasemapLabelsDataview = dataview.config?.type === DataviewType.BasemapLabels
+  const isContextAreaDataview =
+    dataview.config?.type === DataviewType.Context ||
+    dataview.config?.type === DataviewType.UserContext
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
   const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const hasSchemaFilterSelection = filtersAllowed.some(
@@ -333,7 +336,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       )}
-      {layerActive && (
+      {layerActive && isContextAreaDataview && layerLoaded && (
         <div
           className={cx(styles.closestAreas, styles.properties, 'print-hidden')}
           style={{ maxHeight: closestAreasHeight }}
