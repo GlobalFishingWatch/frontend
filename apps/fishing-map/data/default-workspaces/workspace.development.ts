@@ -5,6 +5,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
+import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/layer-library/layers-context'
 import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/layer-library/layers-environment'
 import {
   DEFAULT_WORKSPACE_ID,
@@ -29,7 +30,7 @@ import { WorkspaceState } from 'types'
 const workspace: Workspace<WorkspaceState> = {
   id: DEFAULT_WORKSPACE_ID,
   app: APP_NAME,
-  name: 'Default public Fishing Map workspace',
+  name: '',
   description: '',
   viewAccess: WORKSPACE_PUBLIC_ACCESS,
   editAccess: WORKSPACE_PRIVATE_ACCESS,
@@ -48,6 +49,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
+        visible: true,
         datasets: ['public-global-fishing-effort:v3.0'],
       },
       dataviewId: FISHING_DATAVIEW_SLUG,
@@ -126,7 +128,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     },
     {
-      id: 'fixed-sar-infrastructure',
+      id: OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID,
       config: {
         visible: false,
         color: '#8E24A9',

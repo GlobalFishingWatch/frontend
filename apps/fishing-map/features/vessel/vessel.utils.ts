@@ -143,12 +143,12 @@ export function getVesselCombinedSourceProperty(
 type VesselProperty<P extends VesselIdentityProperty> = P extends 'shiptypes'
   ? VesselType[]
   : P extends 'geartypes'
-    ? GearType[]
-    : P extends number
-      ? number
-      : P extends string
-        ? string
-        : undefined
+  ? GearType[]
+  : P extends number
+  ? number
+  : P extends string
+  ? string
+  : undefined
 export function getVesselProperty<P extends VesselIdentityProperty>(
   vessel: IdentityVessel | IdentityVesselData | null,
   property: P,

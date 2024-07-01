@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 import { unparse as unparseCSV } from 'papaparse'
 import saveAs from 'file-saver'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
@@ -26,6 +26,7 @@ import {
   getVesselsFiltered,
   ReportVesselWithDatasets,
 } from '../reports.selectors'
+import { parseReportVesselsToIdentity } from '../reports.utils'
 import styles from './ReportVesselsTableFooter.module.css'
 
 type ReportVesselsTableFooterProps = {
@@ -43,6 +44,10 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const pagination = useSelector(selectReportVesselsPagination)
   const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const { start, end } = useSelector(selectTimeRange)
+
+  const vesselGroupIdentityVessels = useMemo(() => {
+    return parseReportVesselsToIdentity(reportVesselFilter ? allFilteredVessels : allVessels)
+  }, [allFilteredVessels, allVessels, reportVesselFilter])
 
   const onDownloadVesselsClick = () => {
     if (allVesselsWithAllInfo?.length) {
@@ -159,7 +164,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
       </div>
       <div className={cx(styles.flex, styles.expand)}>
         <VesselGroupAddButton
-          vessels={reportVesselFilter ? allFilteredVessels : (allVessels as any)}
+          vessels={vesselGroupIdentityVessels}
           showCount={false}
           onAddToVesselGroup={onAddToVesselGroup}
         />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { InputText, Button, Modal, Select, SelectOption } from '@globalfishingwatch/ui-components'
@@ -12,8 +12,6 @@ import {
 } from '@globalfishingwatch/api-types'
 import { saveWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { pickDateFormatByRange } from 'features/map/controls/MapInfo'
-import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -23,26 +21,23 @@ import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/d
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 import styles from './WorkspaceSaveModal.module.css'
-import { useSaveWorkspaceModalConnect } from './workspace-save.hooks'
-import { getEditAccessOptionsByViewAccess, getViewAccessOptions } from './workspace-access.utils'
+import { useSaveWorkspaceModalConnect, useSaveWorkspaceTimerange } from './workspace-save.hooks'
+import {
+  DAYS_FROM_LATEST_MAX,
+  DAYS_FROM_LATEST_MIN,
+  WorkspaceTimeRangeMode,
+  getEditAccessOptionsByViewAccess,
+  getViewAccessOptions,
+  getWorkspaceTimerangeName,
+  isValidDaysFromLatest,
+} from './workspace-save.utils'
 
 type CreateWorkspaceModalProps = {
   title?: string
   onFinish?: (workspace: AppWorkspace) => void
-  suggestName?: boolean
 }
 
-const formatTimerangeBoundary = (
-  boundary: string | undefined,
-  dateFormat: Intl.DateTimeFormatOptions
-) => {
-  if (!boundary) return ''
-  return formatI18nDate(boundary, {
-    format: dateFormat,
-  }).replace(/[.,]/g, '')
-}
-
-function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWorkspaceModalProps) {
+function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   const { t, i18n } = useTranslation()
   const [error, setError] = useState('')
   const [createLoading, setCreateLoading] = useState(false)
@@ -54,7 +49,6 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
   const containsPrivateDatasets = privateDatasets.length > 0
 
   const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
   const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(
     containsPrivateDatasets ? WORKSPACE_PRIVATE_ACCESS : WORKSPACE_PUBLIC_ACCESS
   )
@@ -62,12 +56,48 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
   const [password, setPassword] = useState<string>('')
 
   const viewOptions = getViewAccessOptions()
+  const {
+    timeRangeOptions,
+    timeRangeOption,
+    daysFromLatest,
+    handleTimeRangeChange,
+    handleDaysFromLatestChange,
+  } = useSaveWorkspaceTimerange(workspace)
   const editOptions = getEditAccessOptionsByViewAccess(viewAccess)
+  const validDaysFromLatestValue =
+    timeRangeOption === 'dynamic' ? isValidDaysFromLatest(daysFromLatest) : true
+
   const { workspaceModalOpen, dispatchWorkspaceModalOpen } =
     useSaveWorkspaceModalConnect('createWorkspace')
 
   const onClose = () => {
     dispatchWorkspaceModalOpen(false)
+  }
+
+  const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
+  }
+
+  const setDefaultWorkspaceName = async () => {
+    let workspaceName = workspace?.name
+    if (!workspaceName) {
+      const areaName = await getOceanAreaName(viewport, {
+        locale: i18n.language as OceanAreaLocale,
+      })
+      const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
+        timerange,
+        daysFromLatest,
+      })
+
+      if (workspaceTimerangeName) {
+        workspaceName = `${workspaceTimerangeName} ${areaName ? `near ${areaName}` : ''}`
+      } else {
+        workspaceName = areaName
+      }
+    }
+    if (workspaceName) {
+      setName(workspaceName)
+    }
   }
 
   useEffect(() => {
@@ -77,30 +107,8 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
   }, [containsPrivateDatasets])
 
   useEffect(() => {
-    const updateWorkspaceName = async () => {
-      let workspaceName = workspace?.name
-      if (!workspaceName && suggestName) {
-        const areaName = await getOceanAreaName(viewport, {
-          locale: i18n.language as OceanAreaLocale,
-        })
-        if (timerange.start && timerange.end) {
-          const dateFormat = pickDateFormatByRange(
-            timerange.start as string,
-            timerange.end as string
-          )
-          const start = formatTimerangeBoundary(timerange.start, dateFormat)
-          const end = formatTimerangeBoundary(timerange.end, dateFormat)
-          workspaceName = `From ${start} to ${end} ${areaName ? `near ${areaName}` : ''}`
-        } else {
-          workspaceName = areaName
-        }
-      }
-      if (workspaceName) {
-        setName(workspaceName)
-      }
-    }
     if (workspaceModalOpen) {
-      updateWorkspaceName()
+      setDefaultWorkspaceName()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceModalOpen])
@@ -128,7 +136,8 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
       setCreateLoading(true)
       const properties = {
         name,
-        description,
+        description: '',
+        daysFromLatest,
         viewAccess,
         editAccess,
         createAsPublic: viewAccess !== WORKSPACE_PRIVATE_ACCESS,
@@ -154,6 +163,20 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
     }
   }
 
+  const onDaysFromLatestChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newName = handleDaysFromLatestChange(event, name)
+    if (newName !== name) {
+      setName(newName)
+    }
+  }
+
+  const onSelectTimeRangeChange = (option: SelectOption<WorkspaceTimeRangeMode>) => {
+    const newName = handleTimeRangeChange(option, name)
+    if (newName !== name) {
+      setName(newName)
+    }
+  }
+
   const handleSubmit = async (event: any) => {
     event.preventDefault()
     createWorkspace()
@@ -170,21 +193,38 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
       onClose={onClose}
     >
       <form onSubmit={handleSubmit}>
-        <InputText
-          value={name}
-          className={styles.input}
-          testId="create-workspace-name"
-          label={t('common.name', 'Name')}
-          onChange={(e) => setName(e.target.value)}
-          autoFocus
-        />
-        <InputText
-          value={description}
-          className={styles.input}
-          testId="create-workspace-input"
-          label={t('common.description', 'Description')}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+        <div className={styles.row}>
+          <InputText
+            value={name}
+            className={styles.input}
+            testId="create-workspace-name"
+            label={t('common.name', 'Name')}
+            onChange={onNameChange}
+            autoFocus
+          />
+        </div>
+        <div className={styles.row}>
+          <Select
+            options={timeRangeOptions}
+            label={t('common.timerange', 'Time range')}
+            containerClassName={styles.select}
+            onSelect={onSelectTimeRangeChange}
+            selectedOption={
+              timeRangeOptions.find((o) => o.id === timeRangeOption) || timeRangeOptions[0]
+            }
+          />
+          {timeRangeOption === 'dynamic' && (
+            <InputText
+              value={daysFromLatest}
+              type="number"
+              className={styles.select}
+              label={t('common.timerangeDaysFromLatest', 'Days from latest data update (1-100)')}
+              onChange={onDaysFromLatestChange}
+              min={DAYS_FROM_LATEST_MIN}
+              max={DAYS_FROM_LATEST_MAX}
+            />
+          )}
+        </div>
         <div className={styles.row}>
           <Select
             options={viewOptions}
@@ -242,7 +282,7 @@ function CreateWorkspaceModal({ title, onFinish, suggestName = true }: CreateWor
           {error && <p className={styles.error}>{error}</p>}
           <Button
             loading={createLoading}
-            disabled={!name}
+            disabled={!name || !validDaysFromLatestValue}
             htmlType="submit"
             testId="create-workspace-button"
           >

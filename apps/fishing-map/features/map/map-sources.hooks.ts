@@ -31,6 +31,7 @@ import {
 } from 'features/map/map-sources.utils'
 import {
   BIG_QUERY_EVENTS_PREFIX,
+  ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
   ENCOUNTER_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
 
@@ -144,7 +145,11 @@ export const useMapSourceTilesLoaded = (sourcesId: SourcesHookInput) => {
   return sourceInStyle && allSourcesLoaded.every((loaded) => loaded)
 }
 
-const CLUSTERS_SOURCES_IDS = [ENCOUNTER_EVENTS_SOURCE_ID, BIG_QUERY_EVENTS_PREFIX]
+const CLUSTERS_SOURCES_IDS = [
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  BIG_QUERY_EVENTS_PREFIX,
+  ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
+]
 export const useMapClusterTilesLoaded = () => {
   const sourceTilesLoaded = useMapSourceTiles()
   return Object.entries(sourceTilesLoaded)

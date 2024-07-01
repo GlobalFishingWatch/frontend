@@ -47,12 +47,12 @@ const getDatasets = (config: FetchBreaksParams): string[] => {
 }
 
 const getFiltersQuery = (config: FetchBreaksParams): string => {
-  const filters = config.sublayers.map((sublayer) => sublayer.filter || '')
+  const filters = config.sublayers?.map((sublayer) => sublayer.filter || '')
   return filters?.length ? toURLArray('filters', filters) : ''
 }
 
 const getVesselGroupsQuery = (config: FetchBreaksParams): string => {
-  const filters = config.sublayers.map((sublayer) => sublayer.vesselGroups || '')
+  const filters = config.sublayers?.map((sublayer) => sublayer.vesselGroups || '')
   return filters?.length ? toURLArray('vessel-groups', filters) : ''
 }
 
@@ -110,7 +110,7 @@ const parseBreaksResponse = (config: FetchBreaksParams, breaks: Breaks) => {
   const maxBreaks =
     cleanBreaks.find((b, index) => b[cleanBreaks[index].length - 1] === max) || cleanBreaks[0]
   // We want to use the biggest break in every sublayer
-  return config.sublayers.map(() => maxBreaks)
+  return config.sublayers?.map(() => maxBreaks)
 }
 
 let controllerCache: AbortController | undefined
@@ -169,8 +169,8 @@ export default function fetchBreaks(config: FetchBreaksParams): Promise<Breaks> 
       }
       const defaultDatasetKeys = Object.keys(BREAKS_FALLBACK) as DefaultDatasets[]
       const breaks = allDatasets.map((dataset) => {
-        const defaultDataset = defaultDatasetKeys.find(
-          (defaultDataset) => dataset?.includes(defaultDataset)
+        const defaultDataset = defaultDatasetKeys.find((defaultDataset) =>
+          dataset?.includes(defaultDataset)
         )
         return defaultDataset
           ? BREAKS_FALLBACK[defaultDataset]

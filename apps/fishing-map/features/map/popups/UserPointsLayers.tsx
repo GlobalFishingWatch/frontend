@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { groupBy } from 'lodash'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { TooltipEventFeature } from 'features/map/map.hooks'
+import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/layer-library/layers-context'
 import styles from './Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
@@ -32,8 +33,18 @@ function UserPointsTooltipSection({
             )}
             {featureByType.map((feature, index) => {
               const { gfw_id } = feature.properties
-              const label = feature.value ?? feature.title
-              const id = `${feature.value}-${gfw_id}`
+              let label = feature.value ?? feature.title
+              let id = `${feature.value}-${gfw_id}`
+              if (feature.layerId.includes(OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID)) {
+                label = `${feature.properties.label} - ${
+                  feature.properties.label_confidence
+                } confidence (from ${new Date(
+                  Number(feature.properties.structure_start_date)
+                ).toLocaleDateString()} to ${new Date(
+                  Number(feature.properties.structure_end_date)
+                ).toLocaleDateString()})`
+                id = `${feature.properties.id}-${gfw_id}`
+              }
               return (
                 <ContextLayersRow
                   id={id}
