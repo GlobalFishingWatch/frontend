@@ -90,6 +90,7 @@ export const selectMapReportBufferDataviews = createSelector(
     if (reportBufferFeature?.geometry) {
       dataviews.push({
         id: REPORT_BUFFER_GENERATOR_ID,
+        category: DataviewCategory.Buffer,
         config: {
           type: DataviewType.Polygons,
           data: { type: 'FeatureCollection', features: [reportBufferFeature] },
@@ -102,6 +103,7 @@ export const selectMapReportBufferDataviews = createSelector(
     if (reportPreviewBufferFeature?.geometry) {
       dataviews.push({
         id: PREVIEW_BUFFER_GENERATOR_ID,
+        category: DataviewCategory.Buffer,
         config: {
           type: DataviewType.Polygons,
           data: { type: 'FeatureCollection', features: [reportPreviewBufferFeature] },

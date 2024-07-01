@@ -9,6 +9,7 @@ import {
   FourwingsComparisonMode,
   FourwingsHeatmapPickingObject,
   FourwingsPositionsPickingObject,
+  PolygonPickingObject,
   RulerPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
@@ -37,6 +38,7 @@ import {
 } from '../map.slice'
 import styles from './Popup.module.css'
 import UserContextTooltipSection from './categories/UserContextLayers'
+import ReportBufferTooltip from './categories/ReportBufferLayers'
 
 type PopupByCategoryProps = {
   interaction: InteractionEvent | null
@@ -181,17 +183,8 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const pointFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.UserPoints
             )
-            // const defaultContextFeatures = features.filter(
-            //   (feature) => feature.type === DataviewType.Context
-            // )
             // const workspacePointsFeatures = features.filter(
             //   (feature) => feature.source === WORKSPACE_GENERATOR_ID
-            // )
-            // const areaBufferFeatures = features.filter(
-            //   (feature) => feature.source === REPORT_BUFFER_GENERATOR_ID
-            // )
-            // const annotationFeatures = (features as MapAnnotation[]).filter(
-            //   (feature) => feature.category === 'annotations'
             // )
             // Workaround to show user context features in the context section
             const userContextFeatures = (features as UserLayerPickingObject[]).filter(
@@ -199,8 +192,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
             return (
               <Fragment key={featureCategory}>
-                {/* <AnnotationTooltip features={annotationFeatures} /> */}
-                {/* <ReportBufferTooltip features={areaBufferFeatures} /> */}
                 <UserPointsTooltipSection
                   features={pointFeatures}
                   showFeaturesDetails={type === 'click'}
@@ -216,7 +207,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               </Fragment>
             )
           }
-          // TODO: deck restore this popup
+          case DataviewCategory.Buffer: {
+            return <ReportBufferTooltip features={features as PolygonPickingObject[]} />
+          }
           case DataviewCategory.User: {
             const userPointFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) =>
