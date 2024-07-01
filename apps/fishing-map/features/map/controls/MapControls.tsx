@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useRef, useState, useMemo } from 'react'
+import { Fragment, useCallback, useRef, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
@@ -67,15 +67,6 @@ const MapControls = ({
   const timeoutRef = useRef<NodeJS.Timeout>()
   const { dispatchQueryParams } = useLocationConnect()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const domElement = useRef<HTMLElement>()
-  const {
-    loading,
-    previewImage,
-    downloadImage,
-    resetPreviewImage,
-    previewImageLoading,
-    generatePreviewImage,
-  } = useDownloadDomElementAsImage(domElement.current, false)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const reportLocation = useSelector(selectIsAnyReportLocation)
@@ -86,8 +77,17 @@ const MapControls = ({
   const showScreenshot = !isVesselLocation && !reportLocation
   const rootElement = useRootElement()
 
+  const {
+    loading,
+    previewImage,
+    downloadImage,
+    resetPreviewImage,
+    previewImageLoading,
+    generatePreviewImage,
+  } = useDownloadDomElementAsImage(rootElement, false)
+
   const setMapCoordinates = useSetMapCoordinates()
-  const { viewState, setViewState } = useViewStateAtom()
+  const { viewState } = useViewStateAtom()
   const { latitude, longitude, zoom } = viewState
 
   const { bounds } = useMapBounds()
@@ -104,7 +104,6 @@ const MapControls = ({
 
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ zoom: zoom + 1 })
-    // setViewState({ zoom: zoom + 1 })
   }, [setMapCoordinates, zoom])
 
   const onZoomOutClick = useCallback(() => {
@@ -133,12 +132,12 @@ const MapControls = ({
   }, [dispatchQueryParams, dispatch, resetPreviewImage, rootElement, generatePreviewImage])
 
   const handleModalClose = useCallback(() => {
-    if (domElement.current) {
-      domElement.current.classList.remove('printing')
-      cleantInlineStyles(domElement.current)
+    if (rootElement) {
+      rootElement.classList.remove('printing')
+      cleantInlineStyles(rootElement)
     }
     dispatch(setModalOpen({ id: 'screenshot', open: false }))
-  }, [dispatch])
+  }, [dispatch, rootElement])
 
   const onPDFDownloadClick = useCallback(() => {
     handleModalClose()
