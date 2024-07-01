@@ -3,7 +3,10 @@ import { PickingInfo } from '@deck.gl/core'
 import { BaseLayerProps, BasePickingObject } from '../../types'
 import { LayerGroup } from '../../utils'
 
-export type PolygonFeature = Feature<Polygon | MultiPolygon, Record<string, any>>
+export type PolygonFeature = Feature<
+  Polygon | MultiPolygon,
+  Record<string, any> & { highlighted: boolean }
+>
 
 export type PolygonPickingObject = BasePickingObject & PolygonFeature
 

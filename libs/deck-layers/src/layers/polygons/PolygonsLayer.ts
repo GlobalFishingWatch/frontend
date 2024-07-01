@@ -35,19 +35,17 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
   }
 
   getFillColor(d: PolygonFeature): Color {
-    if (!this.props.highlightedFeatures?.length) {
-      return COLOR_TRANSPARENT
-    }
-    return getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
+    return d.properties.highlighted ||
+      getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
       ? COLOR_HIGHLIGHT_FILL
       : COLOR_TRANSPARENT
   }
 
   getHighlightLineWidth(d: PolygonFeature): number {
-    if (!this.props.highlightedFeatures?.length) {
-      return 0
-    }
-    return getPickedFeatureToHighlight(d, this.props.highlightedFeatures) ? 1.5 : 0
+    return d.properties.highlighted ||
+      getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
+      ? 1
+      : 0
   }
 
   renderLayers() {
