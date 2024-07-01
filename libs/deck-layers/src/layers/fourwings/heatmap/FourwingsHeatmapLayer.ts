@@ -96,7 +96,13 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     const { compareStart, compareEnd, colorDomain, colorRanges, aggregationOperation, scales } =
       this.props
 
-    if (!colorDomain || !colorRanges || !compareStart || !compareEnd || !scales.length) {
+    if (
+      !colorDomain?.length ||
+      !colorRanges?.length ||
+      !compareStart ||
+      !compareEnd ||
+      !scales.length
+    ) {
       target = EMPTY_CELL_COLOR
       return target
     }
@@ -171,7 +177,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       const colorIndex = (colorDomain as number[]).findIndex((d, i) =>
         (chosenValue as number) <= d || i === colorRanges[0].length - 1 ? i : 0
       )
-      color = colorRanges[chosenValueIndex][colorIndex]
+      color = colorRanges[chosenValueIndex]?.[colorIndex]
     }
     if (color) {
       target = [color.r, color.g, color.b, color.a * 255]

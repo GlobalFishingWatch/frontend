@@ -8,6 +8,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   selectActiveReportDataviews,
   selectReportCategory,
+  selectReportTimeComparison,
 } from 'features/app/selectors/app.reports.selector'
 import ReportSummaryTags from 'features/reports/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
@@ -42,6 +43,8 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const timerange = useSelector(selectTimeRange)
   const category = useSelector(selectReportCategory)
   const reportVessels = useSelector(selectReportVesselsNumber)
+  const reportTimeComparison = useSelector(selectReportTimeComparison)
+  console.log('🚀 ~ ReportSummary ~ reportTimeComparison:', reportTimeComparison)
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours) as number
@@ -173,19 +176,21 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       </div>
       {summary ? (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-          <div className={styles.tagsContainer}>
-            {dataviews?.map((dataview, index) => (
-              <ReportSummaryTags
-                key={dataview.id}
-                dataview={dataview}
-                index={index}
-                hiddenProperties={commonProperties}
-                availableFields={FIELDS}
-              />
-            ))}
-          </div>
+          {dataviews?.length > 1 && (
+            <div className={styles.tagsContainer}>
+              {dataviews?.map((dataview, index) => (
+                <ReportSummaryTags
+                  key={dataview.id}
+                  dataview={dataview}
+                  index={index}
+                  hiddenProperties={commonProperties}
+                  availableFields={FIELDS}
+                />
+              ))}
+            </div>
+          )}
         </Sticky>
-      ) : (
+      ) : reportTimeComparison ? null : (
         <div className={styles.tagsContainer}>
           <ReportSummaryTagsPlaceholder />
         </div>
