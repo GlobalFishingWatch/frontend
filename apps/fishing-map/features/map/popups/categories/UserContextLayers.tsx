@@ -3,13 +3,37 @@ import { groupBy } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import { UserLayerPickingObject, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
 import styles from '../Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
+
+export function getContextLayerId(feature: ContextPickingObject | UserLayerPickingObject) {
+  const { gfw_id } = feature.properties
+  let id = `${feature.value}-${gfw_id}}`
+  if (feature.layerId.includes(OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID)) {
+    id = `${feature.properties.id}-${gfw_id}`
+  }
+  return id
+}
+
+export function getContextLayerLabel(feature: ContextPickingObject | UserLayerPickingObject) {
+  let label = (feature.value ?? feature.title) as string
+  if (feature.layerId.includes(OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID)) {
+    label = `${feature.properties.label} - ${
+      feature.properties.label_confidence
+    } confidence (from ${new Date(
+      Number(feature.properties.structure_start_date)
+    ).toLocaleDateString()} to ${new Date(
+      Number(feature.properties.structure_end_date)
+    ).toLocaleDateString()})`
+  }
+  return label
+}
 
 type UserContextLayersProps = {
   features: UserLayerPickingObject[]
@@ -39,14 +63,8 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
                 </h3>
               )}
               {featureByType.map((feature, index) => {
-                const { gfw_id } = feature.properties
-                const defaultLabel = feature.value ?? feature.title
-                const label = defaultLabel as string
-                // TODO:deck restore datasetSource
-                // feature.datasetSource === DRAW_DATASET_SOURCE
-                //   ? `${t('common.polygon', 'Polygon')} ${defaultLabel}`
-                //   : defaultLabel
-                const id = `${feature.value}-${gfw_id}}`
+                const id = getContextLayerId(feature)
+                const label = getContextLayerLabel(feature)
                 return (
                   <ContextLayersRow
                     id={id}

@@ -3,10 +3,10 @@ import { groupBy } from 'lodash'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
 import styles from '../Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
+import { getContextLayerId, getContextLayerLabel } from './UserContextLayers'
 
 type UserPointsLayersProps = {
   features: (ContextPickingObject | UserLayerPickingObject)[]
@@ -30,19 +30,8 @@ function UserPointsTooltipSection({
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>}
               {featureByType.map((feature, index) => {
-                const { gfw_id } = feature.properties
-                let label = feature.value ?? feature.title
-                let id = `${feature.value}-${gfw_id}`
-                if (feature.layerId.includes(OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID)) {
-                  label = `${feature.properties.label} - ${
-                    feature.properties.label_confidence
-                  } confidence (from ${new Date(
-                    Number(feature.properties.structure_start_date)
-                  ).toLocaleDateString()} to ${new Date(
-                    Number(feature.properties.structure_end_date)
-                  ).toLocaleDateString()})`
-                  id = `${feature.properties.id}-${gfw_id}`
-                }
+                const id = getContextLayerId(feature)
+                const label = getContextLayerLabel(feature)
                 return (
                   <ContextLayersRow
                     id={id}

@@ -125,7 +125,8 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
   }
   const dataset =
     findDatasetByType(dataview.datasets, DatasetTypes.UserContext) ||
-    findDatasetByType(dataview.datasets, DatasetTypes.UserTracks)
+    findDatasetByType(dataview.datasets, DatasetTypes.UserTracks) ||
+    findDatasetByType(dataview.datasets, DatasetTypes.Context) // Needed for fixed-infrastructure
 
   if (!dataset) {
     return { ...baseLayerProps, layers: [] }
@@ -196,7 +197,8 @@ export const resolveDeckUserPointsLayerProps: DeckResolverFunction<UserPointsLay
   dataview,
   globalConfig
 ) => {
-  const dataset = findDatasetByType(dataview.datasets, DatasetTypes.UserContext) as Dataset
+  const dataset = (findDatasetByType(dataview.datasets, DatasetTypes.UserContext) ||
+    findDatasetByType(dataview.datasets, DatasetTypes.Context)) as Dataset
   const circleProps = getUserCircleProps({ dataset })
   return {
     ...resolveDeckUserLayerProps(dataview, globalConfig),

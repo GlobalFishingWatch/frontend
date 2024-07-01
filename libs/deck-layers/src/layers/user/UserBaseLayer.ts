@@ -161,7 +161,8 @@ export abstract class UserBaseLayer<
     if (timeFilterType === 'date') {
       if (startTimeProperty) {
         return {
-          getFilterValue: (d: UserLayerFeature) => d.properties[startTimeProperty as string],
+          getFilterValue: (d: UserLayerFeature) =>
+            parseInt(d.properties[startTimeProperty as string]),
           filterRange: [startTime, endTime],
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
@@ -170,8 +171,8 @@ export abstract class UserBaseLayer<
       if (startTimeProperty && endTimeProperty) {
         return {
           getFilterValue: (d: UserLayerFeature) => [
-            d.properties[startTimeProperty as string],
-            d.properties[endTimeProperty as string],
+            parseInt(d.properties[startTimeProperty as string]),
+            parseInt(d.properties[endTimeProperty as string]),
           ],
           filterRange: [
             [0, endTime],
@@ -181,13 +182,15 @@ export abstract class UserBaseLayer<
         }
       } else if (endTimeProperty) {
         return {
-          getFilterValue: (d: UserLayerFeature) => d.properties[endTimeProperty as string],
+          getFilterValue: (d: UserLayerFeature) =>
+            parseInt(d.properties[endTimeProperty as string]),
           filterRange: [startTime, INFINITY_TIMERANGE_LIMIT],
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
       } else if (startTimeProperty) {
         return {
-          getFilterValue: (d: UserLayerFeature) => d.properties[startTimeProperty as string],
+          getFilterValue: (d: UserLayerFeature) =>
+            parseInt(d.properties[startTimeProperty as string]),
           filterRange: [0, endTime],
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
