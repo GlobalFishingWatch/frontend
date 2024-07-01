@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import {
   GFWAPI,
   getAccessTokenFromUrl,
@@ -6,22 +6,31 @@ import {
 } from '@globalfishingwatch/api-client'
 import { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
+import { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
+import { USER_SETTINGS } from 'data/config'
+import { RootState } from 'store'
+
+interface UserSettings {
+  preferredFourwingsVisualisationMode?: FourwingsVisualizationMode
+}
 
 interface UserState {
   logged: boolean
   status: AsyncReducerStatus
   data: UserData | null
+  settings: UserSettings
 }
 
 const initialState: UserState = {
   logged: false,
   status: AsyncReducerStatus.Idle,
   data: null,
+  settings: {},
 }
 
 type UserSliceState = { user: UserState }
@@ -81,8 +90,17 @@ export const logoutUserThunk = createAsyncThunk(
 
 const userSlice = createSlice({
   name: 'user',
-  initialState,
-  reducers: {},
+  initialState: () => {
+    if (typeof window === 'undefined') return initialState
+    const settings = JSON.parse(localStorage.getItem(USER_SETTINGS) || '{}')
+    return { ...initialState, settings }
+  },
+  reducers: {
+    setUserSetting: (state, action: PayloadAction<Partial<UserSettings>>) => {
+      state.settings = { ...state.settings, ...action.payload }
+      localStorage.setItem(USER_SETTINGS, JSON.stringify(state.settings))
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchUserThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
@@ -101,5 +119,9 @@ const userSlice = createSlice({
     })
   },
 })
+
+export const selectUserSettings = (state: RootState) => state.user.settings
+
+export const { setUserSetting } = userSlice.actions
 
 export default userSlice.reducer

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
+import { useLocalStorage } from 'usehooks-ts'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import {
@@ -21,12 +22,15 @@ import {
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setUserSetting } from 'features/user/user.slice'
 
 export const useVisualizationsOptions = (
   category: DataviewCategory.Activity | DataviewCategory.Detections
 ) => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
+  const dispatch = useAppDispatch()
   const layerId = useSelector(
     category === DataviewCategory.Detections
       ? selectDetectionsMergedDataviewId
@@ -44,8 +48,9 @@ export const useVisualizationsOptions = (
     (visualizationMode: FourwingsVisualizationMode) => {
       const categoryQueryParam = `${category}VisualizationMode`
       dispatchQueryParams({ [categoryQueryParam]: visualizationMode })
+      dispatch(setUserSetting({ preferredFourwingsVisualisationMode: visualizationMode }))
     },
-    [category, dispatchQueryParams]
+    [category, dispatch, dispatchQueryParams]
   )
 
   const visualizationOptions: ChoiceOption<FourwingsVisualizationMode>[] = useMemo(() => {
