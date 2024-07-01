@@ -92,7 +92,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
               (feature) => feature.visualizationMode !== 'positions'
             )
-
+            const TooltipComponent =
+              featureCategory === DataviewCategory.Detections
+                ? DetectionsTooltipRow
+                : ActivityTooltipRow
             return [...uniqPositionFeatures, ...heatmapFeatures].map((feature, i) => {
               if (feature.visualizationMode === 'positions') {
                 return (
@@ -112,7 +115,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                     showFeaturesDetails={type === 'click'}
                   />
                 ) : (
-                  <ActivityTooltipRow
+                  <TooltipComponent
                     key={`${i}-${j}`}
                     loading={activityInteractionStatus === AsyncReducerStatus.Loading}
                     feature={{
