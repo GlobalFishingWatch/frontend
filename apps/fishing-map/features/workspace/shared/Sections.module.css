@@ -1,6 +1,7 @@
 .container {
   padding-top: var(--space-XS);
   padding-bottom: var(--space-S);
+  position: relative;
 }
 
 .container ~ .container {
@@ -93,15 +94,13 @@
   color: var(--color-secondary-blue);
 }
 
-.visualizationsSwitch > ul > li {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.visualizationsSwitch {
+  transition: var(--transition);
 }
 
-.visualizationsSwitch > ul > li > button {
-  padding: 0 var(--space-XS);
-  height: 2.6rem;
+.visualizationsSwitch > ul {
+  min-width: unset;
+  gap: 0;
 }
 
 .vesselsOnScreen summary {

@@ -2,7 +2,7 @@ import { Fragment, useCallback } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Choice, IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
@@ -17,6 +17,7 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { VisualisationChoice } from 'features/workspace/common/VisualisationChoice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from '../activity/ActivityLayerPanel'
 import activityStyles from '../activity/ActivitySection.module.css'
@@ -95,22 +96,19 @@ function DetectionsSection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
+    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}>
       <div className={styles.header}>
         <h2 className={cx('print-hidden', styles.sectionTitle)}>
           {t('common.detections', 'Detections')}
         </h2>
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
-            <Choice
+            <VisualisationChoice
               options={visualizationOptions}
-              size="small"
-              testId="detections-visualizations-change"
+              testId="activity-visualizations-change"
               activeOption={activeVisualizationOption}
               onSelect={(option) => onVisualizationModeChange(option.id)}
-              className={cx(styles.visualizationsSwitch, {
-                [styles.hidden]: !hasVisibleDataviews,
-              })}
+              className={cx({ [styles.hidden]: !hasVisibleDataviews })}
             />
             <IconButton
               icon="plus"
