@@ -44,7 +44,6 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const category = useSelector(selectReportCategory)
   const reportVessels = useSelector(selectReportVesselsNumber)
   const reportTimeComparison = useSelector(selectReportTimeComparison)
-  console.log('🚀 ~ ReportSummary ~ reportTimeComparison:', reportTimeComparison)
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours) as number

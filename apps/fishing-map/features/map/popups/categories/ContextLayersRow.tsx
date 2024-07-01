@@ -127,8 +127,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceReportState())
     if (onClick) {
-      // TODO:deck review typing here
-      onClick(e, feature as any)
+      onClick(e, feature)
     }
   }
 
@@ -137,8 +136,7 @@ export const ReportPopupLink = ({ feature, onClick }: ReportPopupButtonProps) =>
     payload: {
       category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
       workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-      // TODO: deck fix this typing
-      datasetId: (feature as any).datasetId,
+      datasetId: feature.datasetId,
       areaId,
     },
     query: {

@@ -21,7 +21,6 @@ function RulerTooltip({ features, showFeaturesDetails }: RulerTooltipProps) {
   if (!feature) {
     return null
   }
-  // TODO:deck review if getRulerLength is needed
   const { id, lengthLabel } = feature.properties
 
   const onDeleteClick = () => {

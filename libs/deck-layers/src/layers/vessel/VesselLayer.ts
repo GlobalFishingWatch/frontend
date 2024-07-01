@@ -261,13 +261,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
               }
               return EVENTS_COLORS[d.type]
             },
-            updateTriggers: {
-              getFillColor: [color, highlightEventIds],
-              getRadius: [highlightEventIds],
-            },
             radiusUnits: 'pixels',
             getRadius: (d: any) => {
-              // TODO:deck highlighlight events using a new layer as we do in FourwingsLayer
               const highlightOffset = highlightEventIds?.includes(d.id) ? 6 : 0
               return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
             },
@@ -277,6 +272,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
               [startTime, Number.MAX_SAFE_INTEGER],
             ],
             extensions: [new DataFilterExtension({ filterSize: 2 })],
+            updateTriggers: {
+              getFillColor: [color, highlightEventIds],
+              getRadius: [highlightEventIds],
+            },
           })
         )
       })

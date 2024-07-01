@@ -40,6 +40,11 @@ export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution'
 export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter'
 export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison'
 
+// Local storage keys
+export const HINTS = 'hints'
+export const USER_SETTINGS = 'userSettings'
+export const PREFERRED_FOURWINGS_VISUALISATION_MODE = 'preferredFourwingsVisualisationMode'
+
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'

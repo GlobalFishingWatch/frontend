@@ -27,8 +27,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
         category: TrackCategory.DataDownloads,
         action: `Click on polygon, click on download icon`,
       })
-      // TODO:deck review typings here
-      onDownloadClick(event, feature as any)
+      onDownloadClick(event, feature)
     },
     [onDownloadClick]
   )
