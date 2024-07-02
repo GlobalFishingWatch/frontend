@@ -6,6 +6,7 @@ import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { useSetTaskMutation } from '../../api/task'
 import { LabellingTask } from '../../types'
 import styles from './Task.module.css'
+import TaskImage from './TaskImage'
 
 type TaskProps = {
   projectId: string
@@ -71,32 +72,58 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
     setActiveOption(option.id)
   }
 
+  const isLabeled = data?.label !== undefined
+
   return (
     <div
       onClick={open || isLoading ? undefined : onClick}
-      className={cx(styles.task, { [styles.open]: open })}
+      className={cx(styles.task, {
+        [styles.open]: open,
+        [styles.loading]: isLoading,
+        [styles.labeled]: isLabeled,
+      })}
     >
       {Object.keys(task.metadata).length > 0 && (
         <div className={cx(styles.metadata, { [styles.hidden]: !open })}>
           <label>
-            {Object.entries(task.metadata).map(([key, value], index) => (
-              <Fragment key={key}>
-                <span>
-                  {key}: {value}
-                </span>
-                {index < Object.keys(task.metadata).length - 1 && <span> | </span>}
-              </Fragment>
-            ))}
+            {Object.entries(task.metadata).map(([key, value], index) => {
+              if (key === 'lon') return null
+              if (key === 'lat' && Object.keys(task.metadata).includes('lon')) {
+                const lat = value
+                const lon = task.metadata.lon
+                return (
+                  <Fragment key={key}>
+                    <span>
+                      Location:{' '}
+                      <a
+                        className={styles.link}
+                        href={`https://maps.google.com/maps?t=k&q=loc:${lat}+${lon}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="See on Google Maps"
+                      >
+                        {lat.toFixed(5)}, {lon.toFixed(5)}
+                      </a>
+                    </span>
+                    {index < Object.keys(task.metadata).length - 1 && <span> | </span>}
+                  </Fragment>
+                )
+              }
+              return (
+                <Fragment key={key}>
+                  <span>
+                    {key}: {value}
+                  </span>
+                  {index < Object.keys(task.metadata).length - 1 && <span> | </span>}
+                </Fragment>
+              )
+            })}
           </label>
         </div>
       )}
       <div className={styles.images}>
         {task.thumbnails.map((thumbnail, index) => (
-          <div
-            className={styles.img}
-            style={{ backgroundImage: `url(${thumbnail})` }}
-            key={index}
-          />
+          <TaskImage thumbnail={thumbnail} key={index} />
         ))}
       </div>
       {
@@ -122,7 +149,13 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
       }
 
       <div className={cx({ [styles.hidden]: open })}>
-        {isLoading ? <Spinner size="small" /> : <label>{data?.label || 'Unlabeled'}</label>}
+        {isLoading ? (
+          <Spinner size="small" />
+        ) : (
+          <label className={cx({ [styles.assignedLabel]: isLabeled })}>
+            {isLabeled ? data.label : 'Unlabeled'}
+          </label>
+        )}
         {error !== undefined && <p>{JSON.stringify(error)}</p>}
       </div>
     </div>
