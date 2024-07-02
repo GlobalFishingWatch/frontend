@@ -1,4 +1,4 @@
-import { FilterSpecification } from '@globalfishingwatch/maplibre-gl'
+import { ExpressionSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
 import {
   AnyGeneratorConfig,
   GlobalUserContextGeneratorConfig,
@@ -44,6 +44,15 @@ export const addURLSearchParams = (url: URL, key: string, values: any[]): URL =>
   return url
 }
 
+const getFallbackFilterExpression = (property: string, fallback: number) => {
+  return [
+    'case',
+    ['>', ['length', ['to-string', ['get', property]]], 0],
+    ['to-number', ['get', property]],
+    fallback,
+  ] as ExpressionSpecification
+}
+
 export const getTimeFilterForUserContextLayer = (
   config: GlobalUserContextGeneratorConfig | GlobalUserPointsGeneratorConfig
 ): FilterSpecification | undefined => {
@@ -53,52 +62,37 @@ export const getTimeFilterForUserContextLayer = (
   if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
     return [
       'all',
-      ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs],
-      ['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs],
+      ['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs],
+      [
+        '>=',
+        getFallbackFilterExpression(config.endTimeFilterProperty, Number.MAX_SAFE_INTEGER),
+        startMs,
+      ],
     ]
   }
   // Show for every time range after the start
   if (config?.startTimeFilterProperty) {
-    return ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs]
+    return [
+      'all',
+      ['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs],
+      ['>=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), startMs],
+    ]
   }
   if (config?.endTimeFilterProperty) {
     // Show for every time range before the end
-    return ['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs]
+    return [
+      'all',
+      [
+        '>=',
+        getFallbackFilterExpression(config.endTimeFilterProperty, Number.MAX_SAFE_INTEGER),
+        startMs,
+      ],
+      [
+        '<=',
+        getFallbackFilterExpression(config.endTimeFilterProperty, Number.MAX_SAFE_INTEGER),
+        endMs,
+      ],
+    ]
   }
   return undefined
-}
-
-const getFallbackFilterExpression = (property: string, fallback: number) => {
-  return [
-    'case',
-    ['>', ['length', ['to-string', ['get', property]]], 0],
-    ['to-number', ['get', property]],
-    fallback,
-  ]
-}
-
-export const getFilterForUserPointsLayer = (
-  config: GlobalUserPointsGeneratorConfig
-): FilterSpecification => {
-  const startMs = new Date(config.start).getTime()
-  const endMs = new Date(config.end).getTime()
-  const filters: Array<any> = ['all']
-  // Show for every time range after the start
-  if (config?.startTimeFilterProperty) {
-    filters.push(['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs])
-  }
-  if (config?.endTimeFilterProperty) {
-    // Show for every time range before the end
-    filters.push([
-      '>=',
-      getFallbackFilterExpression(config.endTimeFilterProperty, Number.MAX_SAFE_INTEGER),
-      startMs,
-    ])
-  }
-  if (config?.filters) {
-    Object.entries(config.filters).forEach(([key, values]) => {
-      filters.push(['match', ['to-string', ['get', key]], values, true, false])
-    })
-  }
-  return filters as FilterSpecification
 }
