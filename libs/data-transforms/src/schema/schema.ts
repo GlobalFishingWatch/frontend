@@ -15,6 +15,13 @@ type GetFieldSchemaParams = {
 }
 const MAX_SCHEMA_ENUM_VALUES = 100
 
+export const normalizePropertiesKeys = (object: Record<string, any> | null) => {
+  return Object.entries(object || {}).reduce((acc, [key, value]) => {
+    acc[snakeCase(key)] = value
+    return acc
+  }, {} as Record<string, any>)
+}
+
 export const getFieldSchema = (
   field: string,
   values: any[],

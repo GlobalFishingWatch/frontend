@@ -1,16 +1,9 @@
 import { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojson'
-import { snakeCase } from 'lodash'
 import { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
 import { PointColumns } from '../types'
 import { parseCoords } from '../coordinates'
 import { getUTCDate } from '../list-to-track-segments'
-
-const normalizePropertiesKeys = (object: Record<string, any> | null) => {
-  return Object.entries(object || {}).reduce((acc, [key, value]) => {
-    acc[snakeCase(key)] = value
-    return acc
-  }, {} as Record<string, any>)
-}
+import { normalizePropertiesKeys } from '../schema'
 
 export const cleanProperties = (
   object: GeoJsonProperties,
