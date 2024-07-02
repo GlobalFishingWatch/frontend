@@ -5,6 +5,7 @@ export type LabellingProject = {
   bqQuery: string
   bqTable: string
   gcsThumbnails: string
+  scale: string
 }
 
 export type LabellingTask = {

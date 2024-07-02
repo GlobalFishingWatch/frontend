@@ -96,6 +96,12 @@ export function Project() {
           <label>Labels</label>
           <div>{taskData.metadata.labels.join(', ')}</div>
         </div>
+        <div className={styles.projectInfoItem}>
+          <label>Scale</label>
+          <div>
+            {taskData.metadata.scale ? `${taskData.metadata.scale} meters per pixel` : 'Unknown'}
+          </div>
+        </div>
       </div>
 
       <h2 className={styles.tasksTitle}>Tasks</h2>

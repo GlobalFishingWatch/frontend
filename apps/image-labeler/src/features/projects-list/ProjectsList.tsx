@@ -15,6 +15,7 @@ const EMPTY_PROJECT: Omit<LabellingProject, 'id'> = {
   gcsThumbnails: '',
   bqQuery: '',
   bqTable: '',
+  scale: '',
 }
 
 export function ProjectsList() {

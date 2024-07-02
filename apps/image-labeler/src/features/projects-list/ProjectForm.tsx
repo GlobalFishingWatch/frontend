@@ -101,6 +101,13 @@ export function ProjectForm({
           onChange={(e) => handleChange({ value: e.target.value, field: 'bqTable' })}
         />
       </div>
+      <div className={styles.projectEditProperty}>
+        <label>Scale (in meters per pixel)</label>
+        <InputText
+          value={projectInfo.scale}
+          onChange={(e) => handleChange({ value: e.target.value, field: 'scale' })}
+        />
+      </div>
       <div className={styles.footer}>
         {error && <p className={styles.error}>{error}</p>}
         <Button
