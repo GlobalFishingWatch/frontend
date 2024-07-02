@@ -68,6 +68,15 @@ export const getTimeFilterForUserContextLayer = (
   return undefined
 }
 
+const getFallbackFilterExpression = (property: string, fallback: number) => {
+  return [
+    'case',
+    ['>', ['length', ['to-string', ['get', property]]], 0],
+    ['to-number', ['get', property]],
+    fallback,
+  ]
+}
+
 export const getFilterForUserPointsLayer = (
   config: GlobalUserPointsGeneratorConfig
 ): FilterSpecification => {
@@ -76,11 +85,15 @@ export const getFilterForUserPointsLayer = (
   const filters: Array<any> = ['all']
   // Show for every time range after the start
   if (config?.startTimeFilterProperty) {
-    filters.push(['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs])
+    filters.push(['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs])
   }
   if (config?.endTimeFilterProperty) {
     // Show for every time range before the end
-    filters.push(['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs])
+    filters.push([
+      '>=',
+      getFallbackFilterExpression(config.endTimeFilterProperty, Number.MAX_SAFE_INTEGER),
+      startMs,
+    ])
   }
   if (config?.filters) {
     Object.entries(config.filters).forEach(([key, values]) => {
