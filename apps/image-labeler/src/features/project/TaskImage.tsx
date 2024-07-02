@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import cx from 'classnames'
 import styles from './TaskImage.module.css'
 
 type TaskImageProps = {
@@ -89,7 +90,7 @@ export function TaskImage({ thumbnail }: TaskImageProps) {
 
   return (
     <div
-      className={styles.imgContainer}
+      className={cx(styles.imgContainer, { [styles.disabled]: !enhancedImageVisible })}
       onMouseDown={() => {
         setEnhancedImageVisible(false)
       }}

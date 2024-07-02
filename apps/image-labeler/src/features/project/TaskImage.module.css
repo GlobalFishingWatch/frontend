@@ -14,3 +14,7 @@
   transition: all 0.3s ease-out;
   filter: saturate(1.5);
 }
+
+.disabled {
+  user-select: none;
+}
