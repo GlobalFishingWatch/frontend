@@ -1,245 +1,101 @@
-import { Fragment } from 'react'
+import { useRef } from 'react'
 import cx from 'classnames'
-import { groupBy } from 'lodash'
-import { Popup } from 'react-map-gl'
-import type { Anchor } from 'react-map-gl'
-import { useSelector } from 'react-redux'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
-import { TooltipEvent } from 'features/map/map.hooks'
-import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
-import DetectionsTooltipRow from 'features/map/popups/DetectionsLayers'
-import UserPointsTooltipSection from 'features/map/popups/UserPointsLayers'
-import { AsyncReducerStatus } from 'utils/async-slice'
-import { WORKSPACE_GENERATOR_ID, REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
-import WorkspacePointsTooltipSection from 'features/map/popups/WorkspacePointsLayers'
-import AnnotationTooltip from 'features/map/popups/AnnotationTooltip'
-import RulerTooltip from 'features/map/popups/RulerTooltip'
-import { selectApiEventStatus, selectFishingInteractionStatus } from '../map.slice'
+import {
+  offset,
+  autoPlacement,
+  autoUpdate,
+  useFloating,
+  detectOverflow,
+  Middleware,
+  arrow,
+  FloatingArrow,
+} from '@floating-ui/react'
+import { IconButton } from '@globalfishingwatch/ui-components'
+import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
+import { useMapViewport } from 'features/map/map-viewport.hooks'
+import useClickedOutside from 'hooks/use-clicked-outside'
+import { MAP_WRAPPER_ID } from '../map.config'
 import styles from './Popup.module.css'
-import ActivityTooltipRow from './ActivityLayers'
-import EncounterTooltipRow from './EncounterTooltipRow'
-import EnvironmentTooltipSection from './EnvironmentLayers'
-import ContextTooltipSection from './ContextLayers'
-import UserContextTooltipSection from './UserContextLayers'
-import VesselEventsLayers from './VesselEventsLayers'
-import ComparisonRow from './ComparisonRow'
-import ReportBufferTooltip from './ReportBufferLayers'
+
+const overflowMiddlware: Middleware = {
+  name: 'overflow',
+  async fn(state) {
+    if (!state) {
+      return {}
+    }
+
+    const overflow = await detectOverflow(state, {
+      boundary: document.getElementById(MAP_WRAPPER_ID)!,
+    })
+    Object.entries(overflow).forEach(([key, value]) => {
+      if (value > 0) {
+        const property = key === 'top' || key === 'bottom' ? 'y' : 'x'
+        state[property] =
+          key === 'bottom' || key === 'right' ? state[property] - value : state[property] + value
+      }
+    })
+    return state
+  },
+}
 
 type PopupWrapperProps = {
-  event: TooltipEvent | null
-  closeButton?: boolean
-  closeOnClick?: boolean
+  latitude: InteractionEvent['latitude'] | null
+  longitude: InteractionEvent['longitude'] | null
+  showArrow?: boolean
+  showClose?: boolean
   className?: string
   onClose?: () => void
-  anchor?: Anchor
-  type?: 'hover' | 'click'
+  children: React.ReactNode
 }
+
 function PopupWrapper({
-  event,
-  closeButton = false,
-  closeOnClick = false,
-  type = 'hover',
+  latitude,
+  longitude,
+  showArrow = true,
+  showClose = true,
   className = '',
   onClose,
-  anchor,
+  children,
 }: PopupWrapperProps) {
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
-  const timeCompareTimeDescription = useTimeCompareTimeDescription()
+  const mapViewport = useMapViewport()
 
-  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
-  const apiEventStatus = useSelector(selectApiEventStatus)
+  const arrowRef = useRef<SVGSVGElement>(null)
+  const clickOutsideRef = useClickedOutside(onClose)
+  const { refs, floatingStyles, context } = useFloating({
+    whileElementsMounted: autoUpdate,
+    middleware: [
+      offset(15),
+      autoPlacement({ padding: 10 }),
+      overflowMiddlware,
+      arrow({
+        element: arrowRef,
+        padding: -5,
+      }),
+    ],
+  })
 
-  const popupNeedsLoading = [fishingInteractionStatus, apiEventStatus].some(
-    (s) => s === AsyncReducerStatus.Loading
-  )
-
-  if (!event) return null
-
-  const visibleFeatures = event.features.filter(
-    (feature) => feature.visible || feature.source === WORKSPACE_GENERATOR_ID
-  )
-
-  const featureByCategory = groupBy(
-    visibleFeatures.sort(
-      (a, b) => POPUP_CATEGORY_ORDER.indexOf(a.category) - POPUP_CATEGORY_ORDER.indexOf(b.category)
-    ),
-    'category'
-  )
+  if (!mapViewport || !latitude || !longitude) return null
+  const [left, top] = mapViewport.project([longitude, latitude])
 
   return (
-    <Popup
-      latitude={event.latitude}
-      longitude={event.longitude}
-      closeButton={closeButton}
-      closeOnClick={closeOnClick}
-      onClose={onClose}
-      className={cx(styles.popup, styles[type], className)}
-      anchor={anchor}
-      focusAfterOpen={false}
-      maxWidth="600px"
+    <div
+      ref={refs.setReference}
+      style={{ position: 'absolute', top, left, zIndex: 2 }}
+      className={cx(styles.popup, className)}
     >
-      {popupNeedsLoading ? (
-        <div className={styles.loading}>
-          <Spinner size="small" />
+      <div className={styles.contentWrapper} ref={refs.setFloating} style={floatingStyles}>
+        {showArrow && <FloatingArrow fill="white" ref={arrowRef} context={context} />}
+        {showClose && onClose !== undefined && (
+          <div className={styles.close}>
+            <IconButton type="invert" size="small" icon="close" onClick={onClose} />
+          </div>
+        )}
+        <div ref={clickOutsideRef} className={styles.content}>
+          {children}
         </div>
-      ) : (
-        <div className={styles.content}>
-          {timeCompareTimeDescription && (
-            <div className={styles.popupSection}>{timeCompareTimeDescription}</div>
-          )}
-          {Object.entries(featureByCategory)?.map(([featureCategory, features]) => {
-            switch (featureCategory) {
-              case DataviewCategory.Comparison:
-                return (
-                  <ComparisonRow
-                    key={featureCategory}
-                    feature={features[0]}
-                    showFeaturesDetails={type === 'click'}
-                  />
-                )
-              case DataviewCategory.Activity:
-                return features?.map((feature, i) => (
-                  <ActivityTooltipRow
-                    key={i + (feature.title as string)}
-                    feature={feature}
-                    showFeaturesDetails={type === 'click'}
-                  />
-                ))
-              case DataviewCategory.Detections:
-                return features?.map((feature, i) => {
-                  return feature.temporalgrid?.sublayerInteractionType === 'detections' ? (
-                    <DetectionsTooltipRow
-                      key={i + (feature.title as string)}
-                      feature={feature}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                  ) : (
-                    <ActivityTooltipRow
-                      key={i + (feature.title as string)}
-                      feature={feature}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                  )
-                })
-              case DataviewCategory.Events:
-                return (
-                  <EncounterTooltipRow
-                    key={featureCategory}
-                    features={features}
-                    showFeaturesDetails={type === 'click'}
-                  />
-                )
-              case DataviewCategory.Environment: {
-                const contextEnvironmentalFeatures = features.filter(
-                  (feature) =>
-                    feature.type === GeneratorType.Context ||
-                    feature.type === GeneratorType.UserContext
-                )
-                const environmentalFeatures = features.filter(
-                  (feature) =>
-                    feature.type !== GeneratorType.Context &&
-                    feature.type !== GeneratorType.UserContext
-                )
-                return (
-                  <Fragment key={featureCategory}>
-                    <ContextTooltipSection
-                      features={contextEnvironmentalFeatures}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                    <EnvironmentTooltipSection
-                      features={environmentalFeatures}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                  </Fragment>
-                )
-              }
-              case DataviewCategory.Context: {
-                const defaultContextFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.Context
-                )
-                const workspacePointsFeatures = features.filter(
-                  (feature) => feature.source === WORKSPACE_GENERATOR_ID
-                )
-                const areaBufferFeatures = features.filter(
-                  (feature) => feature.source === REPORT_BUFFER_GENERATOR_ID
-                )
-                const annotationFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.Annotation
-                )
-                const rulersFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.Rulers
-                )
-                const userPointFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserPoints
-                )
-                // Workaround to show user context features in the context section
-                const userContextFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserContext
-                )
-                return (
-                  <Fragment key={featureCategory}>
-                    <AnnotationTooltip features={annotationFeatures} />
-                    <RulerTooltip
-                      features={rulersFeatures}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                    <WorkspacePointsTooltipSection features={workspacePointsFeatures} />
-                    <ReportBufferTooltip features={areaBufferFeatures} />
-                    <UserPointsTooltipSection
-                      features={userPointFeatures}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                    <ContextTooltipSection
-                      features={defaultContextFeatures}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                    <UserContextTooltipSection
-                      features={userContextFeatures}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                  </Fragment>
-                )
-              }
-              case DataviewCategory.User: {
-                const userPointFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserPoints
-                )
-                const userContextFeatures = features.filter(
-                  (feature) => feature.type === GeneratorType.UserContext
-                )
-                return (
-                  <Fragment key={featureCategory}>
-                    <UserPointsTooltipSection
-                      features={userPointFeatures}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                    <UserContextTooltipSection
-                      features={userContextFeatures}
-                      showFeaturesDetails={type === 'click'}
-                    />
-                  </Fragment>
-                )
-              }
-
-              case DataviewCategory.Vessels:
-                return (
-                  <VesselEventsLayers
-                    key={featureCategory}
-                    features={features}
-                    showFeaturesDetails={type === 'click'}
-                  />
-                )
-
-              default:
-                return null
-            }
-          })}
-        </div>
-      )}
-    </Popup>
+      </div>
+    </div>
   )
 }
 

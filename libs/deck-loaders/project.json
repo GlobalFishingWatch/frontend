@@ -1,0 +1,118 @@
+{
+  "name": "deck-loaders",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/deck-loaders/src",
+  "projectType": "library",
+  "targets": {
+    "dist": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "assets": [],
+        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "main": "libs/deck-loaders/src/index.ts",
+        "outputPath": "dist/libs/deck-loaders",
+        "project": "libs/deck-loaders/package.json",
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json"
+      }
+    },
+    "dist:workers": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx fourwings:worker deck-loaders",
+          "nx tracks:worker deck-loaders",
+          "nx user-tracks:worker deck-loaders",
+          "nx events:worker deck-loaders",
+          "rm -rf dist/libs/deck-loaders/workers/package.json"
+        ],
+        "parallel": false
+      }
+    },
+    "fourwings:worker": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputFileName": "fourwings-worker.js",
+        "main": "libs/deck-loaders/src/fourwings/workers/fourwings-worker.ts",
+        "generateExportsField": true,
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "watch": false,
+        "target": "esnext",
+        "platform": "browser",
+        "deleteOutputPath": false,
+        "bundle": true,
+        "thirdParty": true,
+        "generatePackageJson": false,
+        "minify": false
+      }
+    },
+    "tracks:worker": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputFileName": "vessel-tracks-worker.js",
+        "main": "libs/deck-loaders/src/vessels/workers/tracks-worker.ts",
+        "generateExportsField": true,
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "watch": false,
+        "target": "esnext",
+        "platform": "browser",
+        "deleteOutputPath": false,
+        "bundle": true,
+        "thirdParty": true,
+        "generatePackageJson": false,
+        "minify": false
+      }
+    },
+    "user-tracks:worker": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputFileName": "user-tracks-worker.js",
+        "main": "libs/deck-loaders/src/user/workers/user-tracks-worker.ts",
+        "generateExportsField": true,
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "watch": false,
+        "target": "esnext",
+        "platform": "browser",
+        "deleteOutputPath": false,
+        "bundle": true,
+        "thirdParty": true,
+        "generatePackageJson": false,
+        "minify": false
+      }
+    },
+    "events:worker": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputFileName": "vessel-events-worker.js",
+        "main": "libs/deck-loaders/src/vessels/workers/events-worker.ts",
+        "generateExportsField": true,
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "watch": false,
+        "target": "esnext",
+        "platform": "browser",
+        "deleteOutputPath": false,
+        "bundle": true,
+        "thirdParty": true,
+        "generatePackageJson": false,
+        "minify": false
+      }
+    },
+    "publish": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
+      "options": {
+        "packageRoot": "dist/libs/deck-loaders"
+      }
+    }
+  },
+  "tags": []
+}

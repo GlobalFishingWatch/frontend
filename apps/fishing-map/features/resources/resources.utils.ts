@@ -1,22 +1,17 @@
-import { maxBy, minBy } from 'lodash'
 import {
-  Dataset,
   DataviewDatasetConfig,
   DataviewDatasetConfigParam,
   EndpointId,
   ThinningConfig,
+  TrackField,
 } from '@globalfishingwatch/api-types'
-import {
-  GetDatasetConfigCallback,
-  getTracksChunkSetId,
-  UrlDataviewInstance,
-} from '@globalfishingwatch/dataviews-client'
+import { GetDatasetConfigCallback, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { hasDatasetConfigVesselData } from 'features/datasets/datasets.utils'
 import { TimebarGraphs } from 'types'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.slice'
+import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
 
-type ThinningConfigParam = { zoom: number; config: ThinningConfig }
+export type ThinningConfigParam = { config: ThinningConfig }
 
 export const infoDatasetConfigsCallback = (guestUser: boolean): GetDatasetConfigCallback => {
   return ([info]: DataviewDatasetConfig[]): DataviewDatasetConfig[] => {
@@ -35,8 +30,8 @@ export const infoDatasetConfigsCallback = (guestUser: boolean): GetDatasetConfig
 
 export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) => {
   const allEvents = events.map((event) => {
-    const hasPaginationAdded = Object.keys(DEFAULT_PAGINATION_PARAMS).every(
-      (id) => event.query?.map((q) => q.id).includes(id)
+    const hasPaginationAdded = Object.keys(DEFAULT_PAGINATION_PARAMS).every((id) =>
+      event.query?.map((q) => q.id).includes(id)
     )
     if (hasPaginationAdded) {
       // Pagination already included, not needed to add it
@@ -56,109 +51,18 @@ export const eventsDatasetConfigsCallback: GetDatasetConfigCallback = (events) =
   return allEvents.filter(Boolean)
 }
 
-export const trackDatasetConfigsCallback = (
-  thinningConfig: ThinningConfigParam | null,
-  chunks: { start: string; end: string }[] | null,
-  timebarGraph: TimebarGraphs
-): GetDatasetConfigCallback => {
-  return (
-    [track]: DataviewDatasetConfig[],
-    dataview?: UrlDataviewInstance
-  ): DataviewDatasetConfig[] => {
+export const trackDatasetConfigsCallback = (thinningConfig: ThinningConfigParam | null) => {
+  return ([track]: DataviewDatasetConfig[], dataview?: UrlDataviewInstance) => {
     if (track?.endpoint === EndpointId.Tracks) {
       const thinningQuery = Object.entries(thinningConfig?.config || []).map(([id, value]) => ({
         id,
         value,
       }))
 
-      let trackGraph
-      if (timebarGraph !== TimebarGraphs.None) {
-        trackGraph = { ...track }
-        const fieldsQuery = {
-          id: 'fields',
-          // The api now requieres all params in upperCase
-          value: ['TIMESTAMP', timebarGraph.toUpperCase()],
-        }
-        const graphQuery = [...(track.query || []), ...thinningQuery]
-        const fieldsQueryIndex = graphQuery.findIndex((q) => q.id === 'fields')
-        if (fieldsQueryIndex > -1) {
-          graphQuery[fieldsQueryIndex] = fieldsQuery
-          trackGraph.query = graphQuery
-        } else {
-          trackGraph.query = [...graphQuery, fieldsQuery]
-        }
-        const chunksMinRange = chunks ? minBy(chunks, 'start')?.start : null
-        const chunksMaxRange = chunks ? maxBy(chunks, 'end')?.end : null
-        if (chunksMinRange && chunksMaxRange) {
-          trackGraph.query = [
-            ...trackGraph.query,
-            {
-              id: 'start-date',
-              value: chunksMinRange,
-            },
-            {
-              id: 'end-date',
-              value: chunksMaxRange,
-            },
-          ]
-        }
-      }
+      let trackQuery = [...(track.query?.map((query) => ({ ...query })) || []), ...thinningQuery]
+      const trackWithThinning = { ...track, query: trackQuery }
 
-      const trackWithThinning = {
-        ...track,
-        query: [...(track.query || []), ...thinningQuery],
-        metadata: {
-          zoom: thinningConfig?.zoom || 12,
-        },
-      }
-
-      // Generate one infoconfig per chunk (if specified)
-      // TODO move this in dataviews-client/get-resources, since merging back tracks together is done by the generic slice anyways
-      let allTracks = [trackWithThinning]
-
-      if (chunks) {
-        const chunkSetId = getTracksChunkSetId(trackWithThinning)
-        const dataset = dataview?.datasets?.find(
-          (d) => d.id === trackWithThinning.datasetId
-        ) as Dataset
-        // Workaround to avoid showing tracks outside the dataset bounds as the AIS data is changing at the end of 2022
-        const chunksWithDatasetBounds = chunks.flatMap((chunk) => {
-          if (dataset?.endDate && chunk.start >= dataset?.endDate) {
-            return []
-          }
-          return {
-            start:
-              dataset?.startDate && chunk.start <= dataset?.startDate
-                ? dataset?.startDate
-                : chunk.start,
-            end: dataset?.endDate && chunk.end >= dataset?.endDate ? dataset?.endDate : chunk.end,
-          }
-        })
-        allTracks = chunksWithDatasetBounds.map((chunk) => {
-          const trackChunk = {
-            ...trackWithThinning,
-            query: [
-              ...(trackWithThinning.query || []),
-              {
-                id: 'start-date',
-                value: chunk.start,
-              },
-              {
-                id: 'end-date',
-                value: chunk.end,
-              },
-            ],
-            metadata: {
-              ...(trackWithThinning.metadata || {}),
-              chunkSetId,
-              chunkSetNum: chunks.length,
-            },
-          }
-
-          return trackChunk
-        })
-      }
-      return [...allTracks, ...(trackGraph ? [trackGraph] : [])]
+      return [trackWithThinning]
     }
     return [track].filter(Boolean)
   }

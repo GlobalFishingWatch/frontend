@@ -1,12 +1,14 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { MapAnnotation, Ruler } from '@globalfishingwatch/layer-composer'
+import { HEATMAP_HIGH_RES_ID, RulerData } from '@globalfishingwatch/deck-layers'
 import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
 import {
   getActiveActivityDatasetsInDataviews,
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
 import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
 
 const EMPTY_ARRAY: [] = []
 
@@ -38,9 +40,29 @@ export const selectAreMapAnnotationsVisible = selectWorkspaceStateProperty('mapA
 export const selectMapAnnotations = selectWorkspaceStateProperty('mapAnnotations')
 export const selectVisibleEvents = selectWorkspaceStateProperty('visibleEvents')
 
+export const selectActivityVisualizationMode = createSelector(
+  [selectIsAnyReportLocation, selectWorkspaceStateProperty('activityVisualizationMode')],
+  (isAnyReportLocation, activityVisualizationMode) => {
+    if (isAnyReportLocation && activityVisualizationMode === 'positions') {
+      return HEATMAP_HIGH_RES_ID
+    }
+    return activityVisualizationMode
+  }
+)
+
+export const selectDetectionsVisualizationMode = createSelector(
+  [selectIsAnyReportLocation, selectWorkspaceStateProperty('detectionsVisualizationMode')],
+  (isAnyReportLocation, detectionsVisualizationMode) => {
+    if (isAnyReportLocation && detectionsVisualizationMode === 'positions') {
+      return 'heatmap-high-res'
+    }
+    return detectionsVisualizationMode
+  }
+)
+
 export const selectMapRulersVisible = createSelector(
   [selectMapRulers, selectAreMapRulersVisible],
-  (rulers, areMapRulersVisible): Ruler[] => {
+  (rulers, areMapRulersVisible): RulerData[] => {
     return areMapRulersVisible ? rulers : []
   }
 )

@@ -3,7 +3,10 @@ import { Workspace, WorkspaceViewport } from '@globalfishingwatch/api-types'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { USER } from 'routes/routes'
-import { selectUserWorkspaces } from 'features/user/selectors/user.permissions.selectors'
+import {
+  selectUserWorkspaces,
+  selectUserWorkspacesPrivate,
+} from 'features/user/selectors/user.permissions.selectors'
 import {
   HighlightedWorkspace,
   selectHighlightedWorkspaces,
@@ -72,13 +75,24 @@ type HighlightedMapWorkspace = {
   name: string
   viewport?: WorkspaceViewport
   category?: WorkspaceCategory
+  viewAccess?: 'public' | 'private' | 'password'
 }
 
 export const selectCurrentWorkspacesList = createSelector(
-  [selectLocationType, selectCurrentHighlightedWorkspaces, selectUserWorkspaces],
-  (locationType, highlightedWorkspaces, userWorkspaces): HighlightedMapWorkspace[] | undefined => {
+  [
+    selectLocationType,
+    selectCurrentHighlightedWorkspaces,
+    selectUserWorkspaces,
+    selectUserWorkspacesPrivate,
+  ],
+  (
+    locationType,
+    highlightedWorkspaces,
+    userWorkspaces,
+    userWorkspacesPrivate
+  ): HighlightedMapWorkspace[] | undefined => {
     if (locationType === USER) {
-      return userWorkspaces
+      return [...userWorkspaces, ...userWorkspacesPrivate]
     }
     return highlightedWorkspaces?.map((workspace) => ({
       id: workspace.id,

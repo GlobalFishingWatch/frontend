@@ -38,8 +38,8 @@ export const dataviewStatsApi = createApi({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
       serializeQueryArgs: serializeStatsDataviewKey,
       query: ({ dataview, timerange, fields = DEFAULT_STATS_FIELDS }) => {
-        const datasets = dataview.datasets?.filter(
-          (dataset) => dataview.config?.datasets.includes(dataset.id)
+        const datasets = dataview.datasets?.filter((dataset) =>
+          dataview.config?.datasets?.includes(dataset.id)
         )
         const { extentStart, extentEnd = new Date().toISOString() } = getDatasetsExtent(datasets)
         const laterStartDate = DateTime.max(

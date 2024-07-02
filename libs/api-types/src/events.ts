@@ -35,7 +35,7 @@ export enum EventTypes {
   Loitering = 'loitering',
 }
 
-export type EventType = 'encounter' | 'fishing' | 'gap' | 'port_visit' | 'loitering'
+export type EventType = `${EventTypes}`
 
 export interface EventNextPort {
   id: string
@@ -200,6 +200,7 @@ export interface ApiEvent<Vessel = EventVessel> {
   start: number | string // Depends on timestamp format API param
   type: EventTypes
   vessel: Vessel
+  coordinates?: [number, number]
 }
 
 export interface ApiEvents<T = ApiEvent> {

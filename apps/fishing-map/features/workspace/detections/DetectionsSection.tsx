@@ -3,9 +3,8 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
   selectDetectionsDataviews,
   selectActivityDataviews,
@@ -18,9 +17,11 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { VisualisationChoice } from 'features/workspace/common/VisualisationChoice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from '../activity/ActivityLayerPanel'
 import activityStyles from '../activity/ActivitySection.module.css'
+import { useVisualizationsOptions } from '../activity/activity.hooks'
 
 function DetectionsSection(): React.ReactElement {
   const { t } = useTranslation()
@@ -30,6 +31,8 @@ function DetectionsSection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
+    useVisualizationsOptions(DataviewCategory.Detections)
 
   const dispatch = useAppDispatch()
   const onAddLayerClick = useCallback(() => {
@@ -44,7 +47,7 @@ function DetectionsSection(): React.ReactElement {
         (dataview) =>
           dataview.id !== dataview1.id &&
           dataview.id !== dataview2.id &&
-          dataview.config?.type === GeneratorType.HeatmapAnimated
+          dataview.config?.type === DataviewType.HeatmapAnimated
       )
       const dataviewsToDisable = [...detectionsDataviewsToDisable, ...activityDataviews]
       if (dataviewsToDisable.length) {
@@ -93,13 +96,20 @@ function DetectionsSection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
+    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}>
       <div className={styles.header}>
         <h2 className={cx('print-hidden', styles.sectionTitle)}>
           {t('common.detections', 'Detections')}
         </h2>
         {!readOnly && (
           <div className={cx('print-hidden', styles.sectionButtons)}>
+            <VisualisationChoice
+              options={visualizationOptions}
+              testId="activity-visualizations-change"
+              activeOption={activeVisualizationOption}
+              onSelect={(option) => onVisualizationModeChange(option.id)}
+              className={cx({ [styles.hidden]: !hasVisibleDataviews })}
+            />
             <IconButton
               icon="plus"
               type="border"

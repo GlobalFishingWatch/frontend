@@ -13,7 +13,7 @@ import {
   SubBrands,
   Tooltip,
 } from '@globalfishingwatch/ui-components'
-import { useFeatureState, useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import {
   selectCurrentWorkspaceCategory,
@@ -23,7 +23,10 @@ import {
   selectWorkspace,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
+import {
+  cleanCurrentWorkspaceReportState,
+  cleanReportQuery,
+} from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectIsAnySearchLocation,
@@ -41,7 +44,6 @@ import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import useMapInstance from 'features/map/map-context.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { resetReportData } from 'features/reports/report.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -52,19 +54,19 @@ import { HOME, REPORT, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
 import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH, SearchType } from 'features/search/search.config'
 import { resetAreaDetail } from 'features/areas/areas.slice'
 import { selectReportAreaIds } from 'features/reports/reports.selectors'
-import { QueryParams } from 'types'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import { resetVesselState } from 'features/vessel/vessel.slice'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import UserButton from 'features/user/UserButton'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
-import TooltipContainer from 'features/workspace/shared/TooltipContainer'
-import { setModalOpen } from 'features/modals/modals.slice'
-import { selectUserData } from 'features/user/selectors/user.selectors'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
-import styles from './SidebarHeader.module.css'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import { setModalOpen } from 'features/modals/modals.slice'
+import TooltipContainer from 'features/workspace/shared/TooltipContainer'
+import { useHighlightReportArea } from 'features/reports/reports.hooks'
 import { useClipboardNotification } from './sidebar.hooks'
+import styles from './SidebarHeader.module.css'
 
 const NewReportModal = dynamic(
   () => import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/NewReportModal')
@@ -337,24 +339,6 @@ function cleanReportPayload(payload: Record<string, any>) {
   return rest
 }
 
-function cleanReportQuery(query: QueryParams) {
-  return {
-    ...query,
-    reportActivityGraph: undefined,
-    reportAreaBounds: undefined,
-    reportAreaSource: undefined,
-    reportCategory: undefined,
-    reportResultsPerPage: undefined,
-    reportTimeComparison: undefined,
-    reportVesselFilter: undefined,
-    reportVesselGraph: undefined,
-    reportVesselPage: undefined,
-    reportBufferUnit: undefined,
-    reportBufferValue: undefined,
-    reportBufferOperation: undefined,
-  }
-}
-
 function CloseReportButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -363,15 +347,14 @@ function CloseReportButton() {
   const locationPayload = useSelector(selectLocationPayload)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
-
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
+  const highlightArea = useHighlightReportArea()
 
   const onCloseClick = () => {
     resetSidebarScroll()
-    cleanFeatureState('highlight')
+    highlightArea(undefined)
     dispatch(resetReportData())
     dispatch(resetAreaDetail(reportAreaIds))
-    dispatch(cleanCurrentWorkspaceStateBufferParams())
+    dispatch(cleanCurrentWorkspaceReportState())
   }
 
   const isWorkspaceRoute = workspaceId !== DEFAULT_WORKSPACE_ID

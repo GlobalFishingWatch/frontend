@@ -8,6 +8,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   selectActiveReportDataviews,
   selectReportCategory,
+  selectReportTimeComparison,
 } from 'features/app/selectors/app.reports.selector'
 import ReportSummaryTags from 'features/reports/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
@@ -42,6 +43,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const timerange = useSelector(selectTimeRange)
   const category = useSelector(selectReportCategory)
   const reportVessels = useSelector(selectReportVesselsNumber)
+  const reportTimeComparison = useSelector(selectReportTimeComparison)
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours) as number
@@ -65,11 +67,8 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
       : category === ReportCategory.Fishing || category === ReportCategory.Presence
-        ? `${t('common.of', 'of')} <strong>${t(
-            `common.activity`,
-            'Activity'
-          ).toLowerCase()}</strong>`
-        : undefined
+      ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
+      : undefined
 
     if (
       reportHours &&
@@ -112,12 +111,9 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
       let activityQuantity =
         !timeseriesLoading && layersTimeseriesFiltered?.[0]
-          ? `<span title="± ${timeseriesImprecision.toFixed(2)}%">~${formatI18nNumber(
-              timeseriesHours.toFixed(),
-              {
-                locale: i18n.language as Locale,
-              }
-            )}</span>`
+          ? `<span>${formatI18nNumber(timeseriesHours.toFixed(), {
+              locale: i18n.language as Locale,
+            })}</span>`
           : ''
       if (
         category === ReportCategory.Detections &&
@@ -134,7 +130,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
           : `<strong>${t(`common.${activityUnit}`, {
               defaultValue: 'hours',
               count: Math.floor(reportHours),
-            })}</strong> ${t('common.of', 'of')}`
+            })}</strong> ± ${timeseriesImprecision.toFixed(2)}% ${t('common.of', 'of')}`
 
       return t('analysis.summaryNoVessels', {
         defaultValue:
@@ -179,19 +175,21 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
       </div>
       {summary ? (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-          <div className={styles.tagsContainer}>
-            {dataviews?.map((dataview, index) => (
-              <ReportSummaryTags
-                key={dataview.id}
-                dataview={dataview}
-                index={index}
-                hiddenProperties={commonProperties}
-                availableFields={FIELDS}
-              />
-            ))}
-          </div>
+          {dataviews?.length > 1 && (
+            <div className={styles.tagsContainer}>
+              {dataviews?.map((dataview, index) => (
+                <ReportSummaryTags
+                  key={dataview.id}
+                  dataview={dataview}
+                  index={index}
+                  hiddenProperties={commonProperties}
+                  availableFields={FIELDS}
+                />
+              ))}
+            </div>
+          )}
         </Sticky>
-      ) : (
+      ) : reportTimeComparison ? null : (
         <div className={styles.tagsContainer}>
           <ReportSummaryTagsPlaceholder />
         </div>

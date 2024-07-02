@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useMemo } from 'react'
+import React, { Fragment, useContext, useEffect, useMemo } from 'react'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import { getTrackY } from './common/utils'
@@ -19,7 +19,6 @@ const getTracksWithCoords = (
     if (!track) {
       return
     }
-
     const baseTrackY = getTrackY(tracks.length, trackIndex, graphHeight, orientation)
     const trackItemWithCoords: TimebarChartItem<TrackChunkProps> = {
       ...track,
@@ -49,13 +48,13 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
   const outerScale = useOuterScale()
 
   const filteredTracks = useFilteredChartData(data)
+
   useUpdateChartsData('tracks', filteredTracks)
   const tracksWithCoords = useMemo(() => {
     return getTracksWithCoords(filteredTracks, outerScale, graphHeight, trackGraphOrientation)
   }, [filteredTracks, outerScale, graphHeight, trackGraphOrientation])
 
   if (!tracksWithCoords) return null
-
   return (
     <Fragment>
       {tracksWithCoords.map((track, i) => {

@@ -28,7 +28,6 @@ import {
   getVesselOtherNamesLabel,
 } from 'utils/info'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import {
@@ -39,11 +38,12 @@ import {
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
-import useMapInstance from 'features/map/map-context.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import styles from './SearchBasicResult.module.css'
 
 type SearchBasicResultProps = {
@@ -64,7 +64,7 @@ function SearchBasicResult({
   vesselsSelected,
 }: SearchBasicResultProps) {
   const { t, i18n } = useTranslation()
-  const map = useMapInstance()
+  const map = useDeckMap()
   const dispatch = useAppDispatch()
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()

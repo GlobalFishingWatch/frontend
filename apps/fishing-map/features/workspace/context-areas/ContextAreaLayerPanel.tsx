@@ -1,10 +1,9 @@
-import { useState, useCallback, Fragment, useEffect, useMemo } from 'react'
+import { useState, useCallback, Fragment, useEffect } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
-import { uniqBy } from 'lodash'
-import { DatasetTypes, DatasetStatus, Dataset } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DatasetStatus, Dataset, DataviewType } from '@globalfishingwatch/api-types'
 import {
   Tooltip,
   ColorBarOption,
@@ -13,8 +12,8 @@ import {
   Collapsable,
 } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_CONTEXT_SOURCE_LAYER, GeneratorType } from '@globalfishingwatch/layer-composer'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
@@ -34,15 +33,13 @@ import {
   HIDDEN_DATAVIEW_FILTERS,
 } from 'data/workspaces'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
-import { useMapDataviewFeatures } from 'features/map/map-sources.hooks'
 import {
   CONTEXT_FEATURES_LIMIT,
   filterFeaturesByDistance,
   parseContextFeatures,
 } from 'features/workspace/context-areas/context.utils'
-import { ReportPopupLink } from 'features/map/popups/ContextLayersRow'
-import useMapInstance from 'features/map/map-context.hooks'
-import { useContextInteractions } from 'features/map/popups/ContextLayers.hooks'
+import { ReportPopupLink } from 'features/map/popups/categories/ContextLayersRow'
+import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
 import {
   getDatasetLabel,
   getSchemaFiltersInDataview,
@@ -76,16 +73,19 @@ const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
 
-export type FeaturesOnScreen = { total: number; closest: any[] }
+export type FeaturesOnScreen = { total: number; closest: ContextPickingObject[] }
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()
   const [filterOpen, setFiltersOpen] = useState(false)
+  const [areasOnScreenOpen, setAreasOnScreenOpen] = useState(false)
   const [featuresOnScreen, setFeaturesOnScreen] = useState<FeaturesOnScreen>({
     total: 0,
     closest: [],
   })
+
+  const contextLayer = useGetDeckLayer<ContextLayer>(dataview.id)
   const [colorOpen, setColorOpen] = useState(false)
   const gfwUser = useSelector(selectIsGFWUser)
   const userId = useSelector(selectUserId)
@@ -101,47 +101,38 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
   )
 
-  const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
-  const dataviewFeaturesParams = useMemo(() => {
-    return {
-      queryMethod: 'render' as const,
-      queryCacheKey: [viewport.latitude, viewport.longitude, viewport.zoom]
-        .map((v) => v?.toFixed(3))
-        .join('-'),
-    }
-  }, [viewport])
-
-  const layerFeatures = useMapDataviewFeatures(
-    layerActive ? dataview : [],
-    dataviewFeaturesParams
-  )?.[0]
-  const uniqKey = dataset?.configuration?.idProperty
-    ? `properties.${dataset?.configuration?.idProperty}`
-    : 'id'
-
+  const layerLoaded = contextLayer?.loaded
   useEffect(() => {
     const updateFeaturesOnScreen = async () => {
-      const uniqLayerFeatures = uniqBy(layerFeatures?.features, uniqKey)
-      const filteredFeatures = await filterFeaturesByDistance(uniqLayerFeatures, {
-        viewport,
-        uniqKey,
-      })
-      setFeaturesOnScreen({
-        total: uniqLayerFeatures.length,
-        closest: parseContextFeatures(filteredFeatures, dataset as Dataset),
-      })
+      const features = contextLayer?.instance?.getRenderedFeatures()
+      if (features?.length) {
+        const filteredFeatures = await filterFeaturesByDistance(features, {
+          viewport,
+        })
+        setFeaturesOnScreen({
+          total: features.length,
+          // TODO:deck double check this is not needed anymore as the features are already parsed in the deck getPickingInfo
+          closest: parseContextFeatures(filteredFeatures, dataset as Dataset),
+        })
+      }
     }
-    if (layerActive && layerFeatures?.features) {
+    if (
+      areasOnScreenOpen &&
+      layerActive &&
+      layerLoaded &&
+      DataviewType.Context === dataview.config?.type
+    ) {
       updateFeaturesOnScreen()
     }
-  }, [dataset, layerActive, layerFeatures?.features, uniqKey, viewport])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataset, layerActive, layerLoaded, viewport, areasOnScreenOpen])
 
   const listHeight = Math.min(featuresOnScreen?.total, CONTEXT_FEATURES_LIMIT) * LIST_ELEMENT_HEIGHT
   const ellispsisHeight =
     featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT ? LIST_ELLIPSIS_HEIGHT : 0
   const closestAreasHeight = featuresOnScreen?.total
     ? listHeight + ellispsisHeight + LIST_TITLE_HEIGHT + LIST_MARGIN_HEIGHT
-    : 0
+    : 40
 
   const {
     items,
@@ -171,6 +162,10 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   const onToggleFilterOpen = () => {
     setFiltersOpen(!filterOpen)
   }
+
+  const onToggleAreasOnScreenOpen = useCallback(() => {
+    setAreasOnScreenOpen(!areasOnScreenOpen)
+  }, [areasOnScreenOpen])
 
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
@@ -205,23 +200,18 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     />
   )
 
-  const isBasemapLabelsDataview = dataview.config?.type === GeneratorType.BasemapLabels
+  const isBasemapLabelsDataview = dataview.config?.type === DataviewType.BasemapLabels
+  const isContextAreaDataview =
+    dataview.config?.type === DataviewType.Context ||
+    dataview.config?.type === DataviewType.UserContext
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
   const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
 
-  const handleHoverArea = (feature: any) => {
-    const { source, id } = feature
-    if (source && id) {
-      const featureState = {
-        source,
-        sourceLayer: DEFAULT_CONTEXT_SOURCE_LAYER,
-        id,
-      }
-      updateFeatureState([featureState], 'highlight')
-    }
+  const highlightArea = (feature?: ContextPickingObject) => {
+    contextLayer?.instance?.setHighlightedFeatures(feature ? [feature] : [])
   }
 
   return (
@@ -353,62 +343,51 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       )}
-      {layerActive && (
+      {layerActive && isContextAreaDataview && layerLoaded && (
         <div
-          className={cx(
-            styles.closestAreas,
-            { [styles.properties]: featuresOnScreen?.total > 0 },
-            'print-hidden'
-          )}
+          className={cx(styles.closestAreas, styles.properties, 'print-hidden')}
           style={{ maxHeight: closestAreasHeight }}
         >
-          {featuresOnScreen?.total > 0 && (
-            <Fragment>
-              <Collapsable
-                label={`${t('layer.areasOnScreen', 'Areas on screen')} (${
-                  featuresOnScreen?.total
-                })`}
-                open={false}
-                className={styles.areasOnScreen}
-              >
-                <ul>
-                  {featuresOnScreen.closest.map((feature) => {
-                    const id =
-                      feature?.properties?.[uniqKey] || feature?.properties!.id || feature?.id
-                    let title =
-                      feature.properties.value || feature.properties.name || feature.properties.id
-                    if (dataset?.configuration?.valueProperties?.length) {
-                      title = dataset.configuration.valueProperties
-                        .flatMap((prop) => feature.properties[prop] || [])
-                        .join(', ')
-                    }
-                    return (
-                      <li
-                        key={`${id}-${title}`}
-                        className={styles.area}
-                        onMouseEnter={() => handleHoverArea(feature)}
-                        onMouseLeave={() => cleanFeatureState('highlight')}
+          <Collapsable
+            label={`${t('layer.areasOnScreen', 'Areas on screen')} ${
+              areasOnScreenOpen ? `(${featuresOnScreen?.total})` : ''
+            }`}
+            open={areasOnScreenOpen}
+            onToggle={onToggleAreasOnScreenOpen}
+            className={styles.areasOnScreen}
+          >
+            <ul>
+              {featuresOnScreen?.total > 0 &&
+                featuresOnScreen.closest.map((feature) => {
+                  const id = feature?.id || feature?.properties!.id
+                  let title = feature.value || feature.properties.name || feature.properties.id
+                  if (dataset?.configuration?.valueProperties?.length) {
+                    title = dataset.configuration.valueProperties
+                      .flatMap((prop) => feature.properties[prop] || [])
+                      .join(', ')
+                  }
+                  return (
+                    <li
+                      key={`${id}-${title}`}
+                      className={styles.area}
+                      onMouseEnter={() => highlightArea(feature)}
+                      onMouseLeave={() => highlightArea(undefined)}
+                    >
+                      <span
+                        title={title.length > 40 ? title : undefined}
+                        className={styles.areaTitle}
                       >
-                        <span
-                          title={title.length > 40 ? title : undefined}
-                          className={styles.areaTitle}
-                        >
-                          {title}
-                        </span>
-                        <ReportPopupLink
-                          feature={feature}
-                          onClick={onReportClick}
-                        ></ReportPopupLink>
-                      </li>
-                    )
-                  })}
-                  {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
-                    <li className={cx(styles.area, styles.ellipsis)}>...</li>
-                  )}
-                </ul>
-              </Collapsable>
-            </Fragment>
-          )}
+                        {title}
+                      </span>
+                      <ReportPopupLink feature={feature} onClick={onReportClick}></ReportPopupLink>
+                    </li>
+                  )
+                })}
+              {featuresOnScreen?.total > CONTEXT_FEATURES_LIMIT && (
+                <li className={cx(styles.area, styles.ellipsis)}>...</li>
+              )}
+            </ul>
+          </Collapsable>
         </div>
       )}
     </div>

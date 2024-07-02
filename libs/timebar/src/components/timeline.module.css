@@ -15,10 +15,6 @@
   }
 }
 
-._disabled {
-  pointer-events: none;
-}
-
 .graphContainer {
   width: 100%;
   height: var(--timebar-size);
@@ -38,7 +34,7 @@
   position: absolute;
   height: 100%;
   top: 0;
-  transition: var(--timebar-hover-transition);
+  transition: 'none';
   z-index: 1;
   pointer-events: all;
 }
@@ -60,10 +56,6 @@
     rgba(0, 16, 57, 0.3) 0%,
     var(--timebar-main-background-color) 100%
   );
-}
-
-.veil._immediate {
-  transition: none;
 }
 
 .absoluteEnd {
@@ -117,7 +109,7 @@
   pointer-events: all;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (width <= 800px) {
   .Timeline {
     width: calc(100% - 60px);
   }

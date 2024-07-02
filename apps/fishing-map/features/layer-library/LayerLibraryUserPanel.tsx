@@ -78,7 +78,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
   }, [datasets.length, onAddNewClick, dispatch])
 
   const onDrawClick = useCallback(() => {
-    dispatchSetMapDrawing(true)
+    dispatchSetMapDrawing('polygons')
     dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
     trackEvent({
       category: TrackCategory.ReferenceLayer,
@@ -143,7 +143,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
         </div>
       ) : (
         <Fragment>
-          <ul>
+          <ul className={styles.userDatasetList}>
             {filteredDatasets && filteredDatasets.length > 0 ? (
               sortByCreationDate<Dataset>(filteredDatasets).map((dataset) => {
                 const datasetError = dataset.status === DatasetStatus.Error

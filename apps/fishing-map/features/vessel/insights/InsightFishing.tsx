@@ -7,7 +7,7 @@ import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import InsightEventDetails from 'features/vessel/insights/InsightEventsDetails'
 import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
-import { selectVesselEventsDataWithVoyages } from '../vessel.selectors'
+import { selectVesselEventsDataWithVoyages } from '../selectors/vessel.resources.selectors'
 import styles from './Insights.module.css'
 
 const InsightFishing = ({

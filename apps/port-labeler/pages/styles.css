@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap');
+
 :root {
   --print-width: 17in;
   --print-height: 10in;
@@ -27,8 +29,7 @@
 
 .scrollContainer {
   height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
   width: 100%;
 }
 

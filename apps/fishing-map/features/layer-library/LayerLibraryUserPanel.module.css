@@ -4,6 +4,11 @@
   gap: var(--space-S);
 }
 
+.emptyState,
+.userDatasetList {
+  min-height: calc(100vh - 24rem);
+}
+
 .categoryLabel {
   flex: 1;
   padding-top: var(--space-M);

@@ -1,13 +1,10 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import ImmediateContext from '../immediateContext'
-import { DEFAULT_CSS_TRANSITION } from '../constants'
 import { getUnitsPositions } from '../layouts'
 import { clampToAbsoluteBoundaries, getDeltaMs, getDeltaDays } from '../utils/internal-utils'
 import styles from './timeline-units.module.css'
 
-class TimelineUnits extends Component {
-  static contextType = ImmediateContext
+class TimelineUnits extends PureComponent {
   zoomToUnit({ start, end }) {
     const { absoluteStart, absoluteEnd } = this.props
     const { newStartClamped, newEndClamped } = clampToAbsoluteBoundaries(
@@ -31,7 +28,7 @@ class TimelineUnits extends Component {
       outerStart,
       outerEnd,
     } = this.props
-    const { immediate } = this.context
+
     const innerDays = getDeltaDays(start, end)
 
     let baseUnit = 'day'
@@ -48,6 +45,7 @@ class TimelineUnits extends Component {
       baseUnit,
       labels
     )
+
     return (
       <div>
         {units.map((d) => (
@@ -56,9 +54,10 @@ class TimelineUnits extends Component {
             style={{
               left: d.x,
               width: d.width,
-              transition: immediate
-                ? 'none'
-                : `width ${DEFAULT_CSS_TRANSITION}, left ${DEFAULT_CSS_TRANSITION}`,
+              transition: 'none',
+              // transition: immediate
+              //   ? 'none'
+              //   : `width ${DEFAULT_CSS_TRANSITION}, left ${DEFAULT_CSS_TRANSITION}`,
             }}
             className={styles.unit}
           >

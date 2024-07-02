@@ -1,8 +1,17 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniq } from 'lodash'
-import { DataviewCategory, Dataset, DatasetTypes, Dataview } from '@globalfishingwatch/api-types'
-import { UrlDataviewInstance, getGeneratorConfig } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType, BasemapGeneratorConfig } from '@globalfishingwatch/layer-composer'
+import {
+  DataviewCategory,
+  Dataset,
+  DatasetTypes,
+  Dataview,
+  DataviewType,
+} from '@globalfishingwatch/api-types'
+import {
+  UrlDataviewInstance,
+  getGeneratorConfig,
+  getMergedDataviewId,
+} from '@globalfishingwatch/dataviews-client'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getActiveDatasetsInDataview,
@@ -37,26 +46,11 @@ import { selectDownloadActiveTabId } from 'features/download/downloadActivity.sl
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 
 const VESSEL_ONLY_VISIBLE_LAYERS = [
-  GeneratorType.Basemap,
-  GeneratorType.Context,
-  GeneratorType.UserContext,
-  GeneratorType.UserPoints,
+  DataviewType.Basemap,
+  DataviewType.Context,
+  DataviewType.UserContext,
+  DataviewType.UserPoints,
 ]
-
-export const selectBasemapDataview = createSelector([selectAllDataviews], (dataviews) => {
-  const basemapDataview = dataviews.find((d) => d.config?.type === GeneratorType.Basemap)
-  return basemapDataview || DEFAULT_BASEMAP_DATAVIEW_INSTANCE
-})
-
-export const selectDefaultBasemapGenerator = createSelector(
-  [selectBasemapDataview],
-  (basemapDataview) => {
-    const basemapGenerator = getGeneratorConfig(
-      basemapDataview as UrlDataviewInstance<GeneratorType>
-    ) as BasemapGeneratorConfig
-    return basemapGenerator
-  }
-)
 
 export const selectActiveDataviewsCategories = createSelector(
   [selectDataviewInstancesResolved],
@@ -124,10 +118,10 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     }
     if (isVesselLocation && viewOnlyVessel && vesselId !== undefined) {
       return dataviews.filter(({ id, config }) => {
-        if (VESSEL_ONLY_VISIBLE_LAYERS.includes(config?.type as GeneratorType)) {
+        if (VESSEL_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
           return config?.visible
         }
-        return config?.type === GeneratorType.Track && id.includes(vesselId)
+        return config?.type === DataviewType.Track && id.includes(vesselId)
       })
     }
     return dataviews.filter((dataview) => dataview.config?.visible)
@@ -137,7 +131,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
 export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
   return createSelector(
     [selectDataviewInstancesResolved],
-    (dataviews): UrlDataviewInstance<GeneratorType>[] => {
+    (dataviews): UrlDataviewInstance<DataviewType>[] => {
       return dataviews?.filter((dataview) => dataview.category === category)
     }
   )
@@ -153,7 +147,7 @@ export const selectBasemapLabelsDataviewInstance = createSelector(
   [selectAllDataviewInstancesResolved],
   (dataviews) => {
     const basemapLabelsDataview = dataviews?.find(
-      (d) => d.config?.type === GeneratorType.BasemapLabels
+      (d) => d.config?.type === DataviewType.BasemapLabels
     )
     return basemapLabelsDataview || DEFAULT_BASEMAP_DATAVIEW_INSTANCE
   }
@@ -182,6 +176,13 @@ export const selectActiveActivityDataviews = createSelector(
   }
 )
 
+export const selectActivityMergedDataviewId = createSelector(
+  [selectActiveActivityDataviews],
+  (dataviews): string => {
+    return dataviews?.length ? getMergedDataviewId(dataviews) : ''
+  }
+)
+
 export const selectActiveReportActivityDataviews = createSelector(
   [selectActiveActivityDataviews, selectIsAnyReportLocation, selectReportCategory],
   (dataviews, isReportLocation, reportCategory): UrlDataviewInstance[] => {
@@ -197,6 +198,13 @@ export const selectActiveReportActivityDataviews = createSelector(
 export const selectActiveDetectionsDataviews = createSelector(
   [selectDetectionsDataviews],
   (dataviews): UrlDataviewInstance[] => dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectDetectionsMergedDataviewId = createSelector(
+  [selectActiveDetectionsDataviews],
+  (dataviews): string => {
+    return dataviews?.length ? getMergedDataviewId(dataviews) : ''
+  }
 )
 
 export const selectActiveActivityAndDetectionsDataviews = createSelector(
@@ -226,7 +234,7 @@ export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
 export const selectActiveHeatmapAnimatedEnvironmentalDataviews = createSelector(
   [selectActiveHeatmapEnvironmentalDataviews],
   (dataviews) => {
-    return dataviews.filter((dv) => dv.config?.type === GeneratorType.HeatmapAnimated)
+    return dataviews.filter((dv) => dv.config?.type === DataviewType.HeatmapAnimated)
   }
 )
 
@@ -272,14 +280,14 @@ export const selectActiveHeatmapEnvironmentalDataviewsWithoutStatic = createSele
   [selectActiveHeatmapEnvironmentalDataviews],
   (dataviews) => {
     return dataviews.filter(
-      (dv) => !isBathymetryDataview(dv) && dv.config?.type !== GeneratorType.HeatmapStatic
+      (dv) => !isBathymetryDataview(dv) && dv.config?.type !== DataviewType.HeatmapStatic
     )
   }
 )
 
 export const selectActiveTemporalgridDataviews: (
   state: any
-) => UrlDataviewInstance<GeneratorType>[] = createDeepEqualSelector(
+) => UrlDataviewInstance<DataviewType>[] = createDeepEqualSelector(
   [
     selectActiveActivityDataviews,
     selectActiveDetectionsDataviews,

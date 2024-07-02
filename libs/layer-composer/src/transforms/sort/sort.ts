@@ -1,3 +1,4 @@
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Group, Dictionary, ExtendedStyle, ExtendedLayer, StyleTransformation } from '../../types'
 
 export const GROUP_ORDER = [
@@ -22,6 +23,12 @@ export const GROUP_ORDER = [
   Group.Tool,
   Group.Label,
   Group.Overlay,
+]
+
+export const HEATMAP_GROUP_ORDER: DataviewCategory[] = [
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
+  DataviewCategory.Environment,
 ]
 
 const GROUP_FROM_LEGACY: Dictionary<Group> = {

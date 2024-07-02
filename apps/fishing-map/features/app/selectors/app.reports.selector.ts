@@ -32,12 +32,16 @@ export const selectCurrentReport = createSelector(
 
 export const selectReportDatasetId = createSelector(
   [selectLocationDatasetId, selectCurrentReport],
-  (locationDatasetId, report) => (locationDatasetId || report?.datasetId) as string
+  (locationDatasetId, report) => {
+    return locationDatasetId || report?.datasetId || ''
+  }
 )
 
 export const selectReportAreaId = createSelector(
   [selectLocationAreaId, selectCurrentReport],
-  (locationAreaId, report) => (locationAreaId || report?.areaId) as number
+  (locationAreaId, report) => {
+    return locationAreaId || report?.areaId || ''
+  }
 )
 
 export const selectReportCategorySelector = selectWorkspaceStateProperty('reportCategory')
@@ -51,7 +55,6 @@ export const selectReportCategory = createSelector(
 )
 
 export const selectReportAreaBounds = selectWorkspaceStateProperty('reportAreaBounds')
-export const selectReportAreaSource = selectWorkspaceStateProperty('reportAreaSource')
 
 export const selectActiveReportDataviews = createDeepEqualSelector(
   [

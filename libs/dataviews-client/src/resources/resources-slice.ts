@@ -15,7 +15,7 @@ import {
   ApiEvent,
   ApiEvents,
   DataviewDatasetConfig,
-  Field,
+  TrackField,
 } from '@globalfishingwatch/api-types'
 
 export type ResourcesState = Record<any, Resource>
@@ -72,7 +72,7 @@ export const fetchResourceThunk = createAsyncThunk(
       .then((data: any) => {
         if (isTrackResource && isTrackBinary) {
           const fields = resource.datasetConfig.query?.find((q) => q.id === 'fields')
-            ?.value as Field[]
+            ?.value as TrackField[]
 
           const segments = trackValueArrayToSegments(data as any, fields)
           return segments

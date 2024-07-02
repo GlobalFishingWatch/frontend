@@ -3,7 +3,7 @@ import { Popup, PopupProps } from 'react-map-gl'
 import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import ContextPopup from 'features/map/popups/ContextPopup'
-import styles from './Popup.module.css'
+import styles from '../Popup.module.css'
 
 type MapPopupProps = Partial<PopupProps> & {
   event?: InteractionEvent

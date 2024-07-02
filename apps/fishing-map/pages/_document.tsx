@@ -44,6 +44,12 @@ class MyDocument extends Document {
             href={`${PATH_BASENAME}/icons/favicon-48x48.png`}
           />
           <link rel="manifest" href={`${PATH_BASENAME}/icons/manifest.webmanifest`} />
+          <link rel="preconnect" href="https://fonts.gstatic.com/" />
+          <link rel="preconnect" href="https://fonts.gstatic.com/" crossOrigin="anonymous" />
+          <link
+            href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap"
+            rel="stylesheet"
+          />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta name="theme-color" content="#163f89" />
           <meta name="application-name" content="GFW Fishing map" />

@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import { DateTime } from 'luxon'
 import { useSelector } from 'react-redux'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { selectReportTimeComparison } from 'features/app/selectors/app.reports.selector'
 import { ReportActivityTimeComparison } from 'types'
 import i18n from 'features/i18n/i18n'
@@ -25,7 +25,6 @@ import styles from './ReportActivityEvolution.module.css'
 
 export interface ComparisonGraphData {
   date: string
-  compareDate?: string
   min: number[]
   max: number[]
 }
@@ -39,7 +38,7 @@ export interface ComparisonGraphProps {
       unit?: string
     }
   }[]
-  interval: Interval
+  interval: FourwingsInterval
 }
 
 const formatTooltipValue = (value: number, payload: any, unit: string) => {
@@ -118,17 +117,15 @@ const ReportActivityBeforeAfterGraph: React.FC<{
   }, [timeComparison?.compareStart])
 
   const range = useMemo(() => {
-    const values = (timeseries || [])?.flatMap(({ date, compareDate, min, max }) => {
+    const values = (timeseries || [])?.flatMap(({ date, min, max }) => {
+      // Values from before are in sublayer 0 and values from after are in sublayer 1
+      const minValue = min.reduce((acc, val) => acc + val, 0)
+      const maxValue = max.reduce((acc, val) => acc + val, 0)
       return [
         {
           date: getUTCDateTime(date)?.toMillis(),
-          range: [min[0], max[0]],
-          avg: (max[0] + min[0]) / 2,
-        },
-        {
-          date: getUTCDateTime(compareDate as string)?.toMillis(),
-          range: [min[1], max[1]],
-          avg: (max[1] + min[1]) / 2,
+          range: [minValue, maxValue],
+          avg: (minValue + maxValue) / 2,
         },
       ]
     })

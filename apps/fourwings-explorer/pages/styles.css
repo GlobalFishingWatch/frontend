@@ -101,7 +101,9 @@
   font: var(--font-L);
   line-height: 1;
   margin: var(--space-XS);
-  transition: opacity 150ms linear, color 150ms linear;
+  transition:
+    opacity 150ms linear,
+    color 150ms linear;
   z-index: 1;
   top: -2rem;
   right: -2rem;

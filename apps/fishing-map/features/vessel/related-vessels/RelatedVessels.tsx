@@ -8,15 +8,15 @@ import { useLocationConnect } from 'routes/routes.hook'
 import RelatedEncounterVessels from 'features/vessel/related-vessels/RelatedEncounterVessels'
 import RelatedOwnersVessels from 'features/vessel/related-vessels/RelatedOwnersVessels'
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
-import { selectVesselEventsResourcesLoading } from 'features/vessel/vessel.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
 import styles from './RelatedVessels.module.css'
 
 const RelatedVessels = () => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vesselRelatedSubsection = useSelector(selectVesselRelatedSubsection)
-  const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
+  const eventsLoading = useVesselProfileEventsLoading()
 
   const relatedOptions: ChoiceOption<VesselRelatedSubsection>[] = useMemo(
     () => [

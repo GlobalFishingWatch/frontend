@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { saveAs } from 'file-saver'
-import setInlineStyles from 'utils/dom'
+import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
+import { useDeckMap } from 'features/map/map-context.hooks'
 
 export const useDownloadDomElementAsImage = (
   domElement: HTMLElement | undefined,
@@ -13,6 +14,7 @@ export const useDownloadDomElementAsImage = (
   const [previewImageLoading, setPreviewImageLoading] = useState(false)
   const [finished, setFinished] = useState<boolean>(false)
   const html2canvasRef = useRef<any>(null)
+  const map = useDeckMap()
 
   const getCanvas = useCallback(async () => {
     if (!html2canvasRef.current) {
@@ -44,13 +46,14 @@ export const useDownloadDomElementAsImage = (
   const generatePreviewImage = useCallback(async () => {
     try {
       setPreviewImageLoading(true)
+      map?.redraw('previewImage')
       const canvas = await getCanvas()
       setPreviewImage(canvas.toDataURL())
       setPreviewImageLoading(false)
     } catch (e: any) {
       setPreviewImageLoading(false)
     }
-  }, [getCanvas])
+  }, [getCanvas, map])
 
   const downloadImage = useCallback(
     async (fileName = `GFW-fishingmap-${new Date().toLocaleString()}.png`) => {
@@ -72,6 +75,7 @@ export const useDownloadDomElementAsImage = (
               return false
             }
           })
+          cleantInlineStyles(domElement)
         } catch (e: any) {
           setError('Something went wrong generating the screenshot, please try again')
           setLoading(false)

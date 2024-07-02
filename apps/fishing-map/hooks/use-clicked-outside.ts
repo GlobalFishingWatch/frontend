@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-export default function useClickedOutside(callback: () => void) {
+export default function useClickedOutside(callback?: () => void) {
   const ref = useRef<HTMLDivElement | null>(null)
 
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
-      if (!ref.current?.contains(event.target as Node)) {
+      if (callback && !ref.current?.contains(event.target as Node)) {
         callback()
       }
     },
@@ -13,11 +13,15 @@ export default function useClickedOutside(callback: () => void) {
   )
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true)
-    return () => {
-      document.removeEventListener('click', handleClickOutside, true)
+    if (callback) {
+      document.addEventListener('click', handleClickOutside, true)
     }
-  }, [handleClickOutside])
+    return () => {
+      if (callback) {
+        document.removeEventListener('click', handleClickOutside, true)
+      }
+    }
+  }, [handleClickOutside, callback])
 
   return ref
 }

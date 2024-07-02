@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Radio } from '@globalfishingwatch/ui-components'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
@@ -16,7 +18,6 @@ import { ReactComponent as AreaIcon } from 'assets/icons/timebar-area.svg'
 import { ReactComponent as TracksIcon } from 'assets/icons/timebar-tracks.svg'
 import { ReactComponent as TrackSpeedIcon } from 'assets/icons/timebar-track-speed.svg'
 import { ReactComponent as TrackDepthIcon } from 'assets/icons/timebar-track-depth.svg'
-import { selectHasTracksData } from 'features/timebar/timebar.selectors'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
@@ -67,7 +68,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   )
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
-  const hasTracksData = useSelector(selectHasTracksData)
+  const vesselIds = activeTrackDataviews.map((v) => v.id)
+  const vesselLayers = useGetDeckLayers<VesselLayer>(vesselIds)
+  // TODO:deck better validation of the layer contains data
+  const hasTracksData = vesselLayers?.length > 0
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()

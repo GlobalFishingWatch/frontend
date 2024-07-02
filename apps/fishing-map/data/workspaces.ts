@@ -1,5 +1,5 @@
-import { BasemapType, GeneratorType } from '@globalfishingwatch/layer-composer'
-import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
+import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { PUBLIC_SUFIX } from './config'
 
 export type WorkspaceEnv = 'development' | 'production'
@@ -107,6 +107,7 @@ export const ENVIRONMENT_DATAVIEWS = [
 ]
 
 export const DEFAULT_DATAVIEW_SLUGS = [
+  BASEMAP_DATAVIEW_SLUG,
   FISHING_DATAVIEW_SLUG,
   ...PRESENCE_DATAVIEWS,
   ...ENVIRONMENT_DATAVIEWS,
@@ -130,7 +131,7 @@ export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE: DataviewInstance = {
   dataviewId: BASEMAP_DATAVIEW_SLUG,
   id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   config: {
-    type: GeneratorType.Basemap,
+    type: DataviewType.Basemap,
     basemap: BasemapType.Default,
   },
 }

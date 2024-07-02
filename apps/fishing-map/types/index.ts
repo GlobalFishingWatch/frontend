@@ -7,7 +7,11 @@ import {
   VesselIdentitySourceEnum,
   VesselType,
 } from '@globalfishingwatch/api-types'
-import { MapAnnotation, Ruler } from '@globalfishingwatch/layer-composer'
+import {
+  DrawFeatureType,
+  FourwingsVisualizationMode,
+  RulerData,
+} from '@globalfishingwatch/deck-layers'
 import {
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_FLAG,
@@ -17,6 +21,7 @@ import {
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
 import { SearchType } from 'features/search/search.config'
+import { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
 export { Locale } from '@globalfishingwatch/api-types'
 
 export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
@@ -27,7 +32,6 @@ export type BufferOperation = 'dissolve' | 'difference'
 export type ReportStateProperty =
   | 'reportActivityGraph'
   | 'reportAreaBounds'
-  | 'reportAreaSource'
   | 'reportCategory'
   | 'reportResultsPerPage'
   | 'reportTimeComparison'
@@ -81,17 +85,18 @@ export type ReportVesselGraph =
 export type WorkspaceActivityCategory = 'fishing' | 'presence'
 
 export interface WorkspaceState extends BaseUrlWorkspace {
+  activityVisualizationMode?: FourwingsVisualizationMode
+  detectionsVisualizationMode?: FourwingsVisualizationMode
   dataviewInstances?: UrlDataviewInstance[]
   bivariateDataviews?: BivariateDataviews
   mapAnnotations?: MapAnnotation[]
   mapAnnotationsVisible?: boolean
-  mapRulers?: Ruler[]
+  mapRulers?: RulerData[]
   mapRulersVisible?: boolean
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   readOnly?: boolean
   reportActivityGraph?: ReportActivityGraph
   reportAreaBounds?: Bbox
-  reportAreaSource?: string
   reportCategory?: ReportCategory
   reportTimeComparison?: ReportActivityTimeComparison
   reportVesselFilter?: string
@@ -163,7 +168,7 @@ export enum UserTab {
 
 export type AppState = {
   userTab?: UserTab
-  mapDrawing?: boolean
+  mapDrawing?: DrawFeatureType | boolean
   mapDrawingEditId?: string
 }
 
@@ -198,10 +203,13 @@ export type CoordinatePosition = {
   longitude: number
 }
 
-export interface MapCoordinates extends CoordinatePosition {
+export type MapCoordinates = {
+  latitude: number
+  longitude: number
   zoom: number
   transitionDuration?: number
 }
+
 export interface TrackPosition extends CoordinatePosition {
   timestamp: number
 }

@@ -12,10 +12,6 @@
   bottom: -2.8rem;
 }
 
-.Bookmark._immediate {
-  transition: none;
-}
-
 .Bookmark button {
   background: var(--timebar-ui-btn-color);
   border: none;
@@ -105,6 +101,6 @@ button.delete {
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 5px 5px 0 5px;
+  border-width: 5px 5px 0;
   border-color: var(--timebar-ui-btn-color-faded) transparent transparent transparent;
 }

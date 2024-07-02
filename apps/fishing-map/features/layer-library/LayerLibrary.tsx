@@ -95,18 +95,13 @@ const LayerLibrary: FC = () => {
 
   const layersByCategory = useMemo(
     () =>
-      filteredLayers.reduce(
-        (acc, layer) => {
-          if (!acc[layer.category]) {
-            acc[layer.category] = []
-          }
-          acc[layer.category].push(layer)
-          return acc
-        },
-        Object.fromEntries(
-          uniqCategories.map((category) => [category, []] as [DataviewCategory, LibraryLayer[]])
-        )
-      ),
+      filteredLayers.reduce((acc, layer) => {
+        if (!acc[layer.category]) {
+          acc[layer.category] = []
+        }
+        acc[layer.category].push(layer)
+        return acc
+      }, Object.fromEntries(uniqCategories.map((category) => [category, []] as [DataviewCategory, LibraryLayer[]]))),
     [filteredLayers, uniqCategories]
   )
 

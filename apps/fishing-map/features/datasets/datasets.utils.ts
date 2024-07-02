@@ -6,6 +6,7 @@ import {
   DatasetSchemaType,
   DatasetTypes,
   Dataview,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
@@ -23,9 +24,9 @@ import {
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
+  getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getEnvironmentalDatasetRange,
 } from '@globalfishingwatch/datasets-client'
@@ -91,6 +92,7 @@ export type SupportedActivityDatasetSchema =
 export type SupportedEnvDatasetSchema =
   | 'type'
   | 'speed'
+  | 'elevation'
   | 'flag'
   | 'vessel_type'
   | 'Height'
@@ -112,6 +114,7 @@ export type SchemaOriginParam =
   | keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'>
   | 'all'
 export type GetSchemaInDataviewParams = {
+  fieldsToInclude?: SupportedDatasetSchema[]
   vesselGroups?: MultiSelectOption[]
   compatibilityOperation?: SchemaCompatibilityOperation
   schemaOrigin?: SchemaOriginParam
@@ -151,6 +154,10 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
   if (dataset.type === DatasetTypes.Events) return 'clusters'
   const geometryType = getDatasetGeometryType(dataset)
+  if (geometryType === 'draw') {
+    const geometryType = getDatasetConfigurationProperty({ dataset, property: 'geometryType' })
+    return geometryType === 'points' ? 'dots' : 'polygons'
+  }
   if (geometryType === 'points') {
     return 'dots'
   }
@@ -193,7 +200,7 @@ export const getDatasetTitleByDataview = (
     ...dataview,
     dataviewId: (dataview as UrlDataviewInstance).dataviewId || dataview.slug,
   }
-  const hasDatasetsConfig = dataview.config?.datasets?.length > 0
+  const hasDatasetsConfig = dataview.config?.datasets && dataview.config?.datasets?.length > 0
   const activeDatasets = hasDatasetsConfig
     ? dataview.datasets?.filter((d) => dataview.config?.datasets?.includes(d.id))
     : dataview.datasets
@@ -300,7 +307,7 @@ export const getRelatedDatasetsByType = (
 }
 
 export const getActiveDatasetsInActivityDataviews = (
-  dataviews: UrlDataviewInstance<GeneratorType>[]
+  dataviews: UrlDataviewInstance<DataviewType>[]
 ): string[] => {
   return dataviews.flatMap((dataview) => {
     return dataview?.config?.datasets || []
@@ -344,7 +351,7 @@ export const checkDatasetDownloadTrackPermission = (
 }
 
 export const getActivityDatasetsReportSupported = (
-  dataviews: UrlDataviewInstance<GeneratorType>[],
+  dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
 ) => {
   return dataviews.flatMap((dataview) => {
@@ -360,14 +367,14 @@ export const getActivityDatasetsReportSupported = (
           (d.category === DatasetCategory.Activity ||
             d.category === DatasetCategory.Detections ||
             (d.category === DatasetCategory.Environment &&
-              dataview.config?.type === GeneratorType.HeatmapAnimated))
+              dataview.config?.type === DataviewType.HeatmapAnimated))
       )
       .map((d) => d.id)
   })
 }
 
 export const getVesselDatasetsDownloadTrackSupported = (
-  dataview: UrlDataviewInstance<GeneratorType>,
+  dataview: UrlDataviewInstance<DataviewType>,
   permissions: UserPermission[] = []
 ) => {
   const datasets = (dataview?.datasetsConfig || [])
@@ -383,7 +390,7 @@ export const getVesselDatasetsDownloadTrackSupported = (
 }
 
 export const getDatasetsReportSupported = (
-  dataviews: UrlDataviewInstance<GeneratorType>[],
+  dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
 ) => {
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
@@ -392,7 +399,7 @@ export const getDatasetsReportSupported = (
 }
 
 export const getDatasetsReportNotSupported = (
-  dataviews: UrlDataviewInstance<GeneratorType>[],
+  dataviews: UrlDataviewInstance<DataviewType>[],
   permissions: UserPermission[] = []
 ) => {
   const dataviewDatasets = getActiveDatasetsInActivityDataviews(dataviews)
@@ -651,6 +658,9 @@ export type SchemaFieldSelection = {
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
 
 export const getActiveDatasetsInDataview = (dataview: SchemaFieldDataview) => {
+  if (!dataview) {
+    return [] as Dataset[]
+  }
   if (dataview.category === DataviewCategory.User) {
     return dataview.datasets
   }
@@ -833,11 +843,11 @@ export const getFiltersBySchema = (
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   const unit = getSchemaFilterUnitInDataview(dataview, schema)
   const datasetsWithSchema = getSupportedSchemaFieldsDatasets(dataview, schema)!?.map((d) => d.id)
-  const activeDatasets = getActiveDatasetsInActivityDataviews([dataview as UrlDataviewInstance])
+  const activeDatasets = getActiveDatasetsInDataview(dataview)?.map((d) => d.id)
   const hasDatasetsWithSchema =
     compatibilityOperation === 'some'
-      ? activeDatasets.some((d) => datasetsWithSchema.includes(d))
-      : activeDatasets.every((d) => datasetsWithSchema.includes(d))
+      ? activeDatasets?.some((d) => datasetsWithSchema.includes(d))
+      : activeDatasets?.every((d) => datasetsWithSchema.includes(d))
   const incompatibleFilterSelection = getIncompatibleFilterSelection(dataview, schema)!?.length > 0
   const disabled = !hasDatasetsWithSchema || incompatibleFilterSelection
   const datasetId = removeDatasetVersion(getActiveDatasetsInDataview(dataview)!?.[0]?.id)
@@ -863,11 +873,14 @@ export const getFiltersBySchema = (
 
 export const getSchemaFiltersInDataview = (
   dataview: SchemaFieldDataview,
-  { vesselGroups } = {} as GetSchemaInDataviewParams
+  { vesselGroups, fieldsToInclude } = {} as GetSchemaInDataviewParams
 ): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
   let fieldsIds = uniq(
     dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
   ) as SupportedDatasetSchema[]
+  if (fieldsToInclude?.length) {
+    fieldsIds = fieldsIds.filter((f) => fieldsToInclude.includes(f))
+  }
   if (dataview.datasets?.some((t) => t.type === DatasetTypes.Fourwings)) {
     // This filter avoids to show the selector for the vessel ids in fourwings layers
     fieldsIds = fieldsIds.filter((f) => f !== 'vessel_id')
@@ -885,10 +898,16 @@ export const getSchemaFiltersInDataview = (
         })
       : fieldsAllowed
   const filtersAllowed = fielsAllowedOrdered.map((id) => {
-    return getFiltersBySchema(dataview, id, { vesselGroups })
+    return getFiltersBySchema(dataview, id, {
+      vesselGroups,
+      compatibilityOperation: id === 'speed' || id === 'elevation' ? 'some' : 'every',
+    })
   })
   const filtersDisabled = fieldsDisabled.map((id) => {
-    return getFiltersBySchema(dataview, id, { vesselGroups })
+    return getFiltersBySchema(dataview, id, {
+      vesselGroups,
+      compatibilityOperation: id === 'speed' || id === 'elevation' ? 'some' : 'every',
+    })
   })
   return {
     filtersAllowed,

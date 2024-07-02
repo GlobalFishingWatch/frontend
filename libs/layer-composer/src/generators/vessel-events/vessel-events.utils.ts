@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection } from 'geojson'
-import { EventType, Segment } from '@globalfishingwatch/api-types'
+import { EventType, TrackSegment } from '@globalfishingwatch/api-types'
 import {
   segmentsToGeoJSON,
   filterTrackByCoordinateProperties,
@@ -239,7 +239,7 @@ export const getVesselEventsSegmentsGeojson: GetVesselEventsSegmentsGeojsonFn = 
 
   const geojson = (track as FeatureCollection).type
     ? (track as FeatureCollection)
-    : segmentsToGeoJSON(track as Segment[])
+    : segmentsToGeoJSON(track as TrackSegment[])
   if (!geojson) return featureCollection
   featureCollection.features = events.flatMap((event: RawEvent) => {
     return filterTrackByCoordinateProperties(geojson, {

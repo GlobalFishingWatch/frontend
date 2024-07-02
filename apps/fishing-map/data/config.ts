@@ -40,6 +40,11 @@ export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution'
 export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter'
 export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison'
 
+// Local storage keys
+export const HINTS = 'hints'
+export const USER_SETTINGS = 'userSettings'
+export const PREFERRED_FOURWINGS_VISUALISATION_MODE = 'preferredFourwingsVisualisationMode'
+
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = 'public'
@@ -93,6 +98,8 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   sidebarOpen: true,
   mapAnnotationsVisible: true,
   mapRulersVisible: true,
+  activityVisualizationMode: 'heatmap',
+  detectionsVisualizationMode: 'heatmap',
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   visibleEvents: 'all',
@@ -120,35 +127,20 @@ export const EVENTS_COLORS: Record<string, string> = {
   fishingLabels: '#163f89',
 }
 
-export const THINNING_LEVEL_BY_ZOOM: Record<
-  number,
-  { user: ThinningConfig; guest: ThinningConfig }
-> = {
-  0: {
-    user: THINNING_LEVELS[ThinningLevels.Insane],
-    guest: THINNING_LEVELS[ThinningLevels.Insane],
-  },
-  3: {
-    user: THINNING_LEVELS[ThinningLevels.VeryAggressive],
-    guest: THINNING_LEVELS[ThinningLevels.VeryAggressive],
-  },
-  6: {
-    user: THINNING_LEVELS[ThinningLevels.Default],
-    guest: THINNING_LEVELS[ThinningLevels.Aggressive],
-  },
+export const THINNING_CONFIG: { user: ThinningConfig; guest: ThinningConfig } = {
+  user: THINNING_LEVELS[ThinningLevels.Medium],
+  guest: THINNING_LEVELS[ThinningLevels.Aggressive],
 }
-
-export const THINNING_LEVEL_ZOOMS = Object.keys(THINNING_LEVEL_BY_ZOOM) as unknown as number[]
 
 // Params to use replace instead of push for router history to make navigation easier
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
 
 export const POPUP_CATEGORY_ORDER = [
-  DataviewCategory.Activity,
-  DataviewCategory.Detections,
-  DataviewCategory.Events,
-  DataviewCategory.Environment,
-  DataviewCategory.Context,
+  `${DataviewCategory.Activity}`,
+  `${DataviewCategory.Detections}`,
+  `${DataviewCategory.Events}`,
+  `${DataviewCategory.Environment}`,
+  `${DataviewCategory.Context}`,
 ]
 
 export const FIT_BOUNDS_REPORT_PADDING = 30

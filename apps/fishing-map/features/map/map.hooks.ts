@@ -1,114 +1,101 @@
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
-import { MultiPolygon, Point, Polygon } from 'geojson'
-import {
-  InteractionEvent,
-  TemporalGridFeature,
-  useFeatureState,
-} from '@globalfishingwatch/react-hooks'
-import {
-  ContextLayerType,
-  GeneratorType,
-  GlobalGeneratorConfig,
-} from '@globalfishingwatch/layer-composer'
-import {
-  UrlDataviewInstance,
-  MULTILAYER_SEPARATOR,
-  isMergedAnimatedGenerator,
-} from '@globalfishingwatch/dataviews-client'
-import { DatasetSubCategory, DataviewCategory, Locale } from '@globalfishingwatch/api-types'
+import { toast } from 'react-toastify'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
-import { selectLocationType } from 'routes/routes.selectors'
-import { HOME, USER, WORKSPACE, WORKSPACES_LIST } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import useMapInstance from 'features/map/map-context.hooks'
 import {
-  getActiveDatasetsInActivityDataviews,
-  getDatasetTitleByDataview,
-} from 'features/datasets/datasets.utils'
+  ResolverGlobalConfig,
+  useMapHoverInteraction,
+} from '@globalfishingwatch/deck-layer-composer'
+import { FourwingsLayer, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectHighlightedEvents, setHighlightedEvents } from 'features/timebar/timebar.slice'
-import { setHintDismissed } from 'features/help/hints.slice'
-import { useMapClusterTilesLoaded, useMapSourceTiles } from 'features/map/map-sources.hooks'
-import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
+import { selectHighlightedTime, setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/reports.selectors'
-import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { getEventLabel } from 'utils/analytics'
-import { selectDefaultMapGeneratorsConfig } from './map.selectors'
 import {
-  WORKSPACES_POINTS_TYPE,
-  WORKSPACE_GENERATOR_ID,
-  REPORT_BUFFER_GENERATOR_ID,
-} from './map.config'
-import {
-  setClickedEvent,
-  selectClickedEvent,
-  MAX_TOOLTIP_LIST,
-  fetchEncounterEventThunk,
-  SliceInteractionEvent,
-  selectFishingInteractionStatus,
-  selectApiEventStatus,
-  ExtendedFeatureVessel,
-  ExtendedFeatureEvent,
-  fetchFishingActivityInteractionThunk,
-  fetchBQEventThunk,
-  SliceExtendedFeature,
-} from './map.slice'
-import useViewport from './map-viewport.hooks'
+  selectActivityVisualizationMode,
+  selectBivariateDataviews,
+  selectDetectionsVisualizationMode,
+} from 'features/app/selectors/app.selectors'
+import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
+import { useLocationConnect } from 'routes/routes.hook'
+import { MAX_TOOLTIP_LIST, ExtendedFeatureVessel, selectClickedEvent } from './map.slice'
+import { useViewStateAtom } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
 export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
+  if (!vessels?.length) return {}
   return {
-    vessels,
     numVessels: vessels.length,
     overflow: vessels.length > MAX_TOOLTIP_LIST,
-    overflowNumber: vessels.length - MAX_TOOLTIP_LIST,
+    overflowNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
     overflowLoad: vessels.length > MAX_TOOLTIP_LIST,
-    overflowLoadNumber: vessels.length - MAX_TOOLTIP_LIST,
+    overflowLoadNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
   }
 }
 
-// This is a convenience hook that returns at the same time the portions of the store we interested in
-// as well as the functions we need to update the same portions
-export const useGeneratorsConnect = () => {
+export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
-  const { viewport } = useViewport()
-  const { i18n } = useTranslation()
-  const generatorsConfig = useSelector(selectDefaultMapGeneratorsConfig)
+  const highlightedTime = useSelector(selectHighlightedTime)
+  const { viewState } = useViewStateAtom()
+  const { dispatchQueryParams } = useLocationConnect()
+  const { t } = useTranslation()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
+  const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
+  const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
+  const clickedFeatures = useSelector(selectClickedEvent)
+  const hoverFeatures = useMapHoverInteraction()?.features
+  const debug = useSelector(selectDebugOptions)?.debug
 
-  const sourceTilesLoaded = useMapSourceTiles()
-  const updatedGeneratorConfig = useMemo(() => {
-    return generatorsConfig.map((generatorConfig, i) => {
-      if (generatorConfig.type === GeneratorType.Polygons) {
-        return {
-          ...generatorConfig,
-          opacity: sourceTilesLoaded[generatorConfig.id]?.loaded ? 1 : 0,
-        }
+  const highlightedFeatures = useMemo(() => {
+    return [...(clickedFeatures?.features || []), ...(hoverFeatures || [])]
+  }, [clickedFeatures?.features, hoverFeatures])
+
+  const onPositionsMaxPointsError = useCallback(
+    (layer: FourwingsLayer, max: number) => {
+      if (
+        layer.props.category === DataviewCategory.Activity ||
+        layer.props.category === DataviewCategory.Detections
+      ) {
+        const categoryQueryParam = `${layer.props.category}VisualizationMode`
+        dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
+        toast(
+          t(
+            'toasts.maxPointsVisualizationExceeded',
+            'Max points visualization exceeded, swithing to heatmap mode.'
+          ),
+          { toastId: 'maxPointsVisualizationExceeded' }
+        )
       }
-      return generatorConfig
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [generatorsConfig, sourceTilesLoaded])
+    },
+    [dispatchQueryParams, t]
+  )
 
   return useMemo(() => {
-    let globalConfig: GlobalGeneratorConfig = {
-      zoom: viewport.zoom,
+    let globalConfig: ResolverGlobalConfig = {
+      zoom: viewState.zoom,
       start,
       end,
+      debug,
       token: GFWAPI.getToken(),
-      locale: i18n.language as Locale,
+      bivariateDataviews,
+      activityVisualizationMode,
+      detectionsVisualizationMode,
+      highlightedTime: highlightedTime || {},
+      visibleEvents,
+      highlightedFeatures,
+      // TODO:deck should this be in another param like callbacks ?
+      onPositionsMaxPointsError,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -116,237 +103,22 @@ export const useGeneratorsConnect = () => {
         ...timeComparisonValues,
       }
     }
-    return {
-      generatorsConfig: updatedGeneratorConfig,
-      globalConfig,
-    }
+    return globalConfig
   }, [
-    viewport.zoom,
+    viewState.zoom,
     start,
     end,
-    i18n.language,
+    debug,
+    bivariateDataviews,
+    activityVisualizationMode,
+    detectionsVisualizationMode,
+    highlightedTime,
+    visibleEvents,
+    highlightedFeatures,
+    onPositionsMaxPointsError,
     showTimeComparison,
     timeComparisonValues,
-    updatedGeneratorConfig,
   ])
-}
-
-export const useClickedEventConnect = () => {
-  const map = useMapInstance()
-  const dispatch = useAppDispatch()
-  const clickedEvent = useSelector(selectClickedEvent)
-  const locationType = useSelector(selectLocationType)
-  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
-  const apiEventStatus = useSelector(selectApiEventStatus)
-  const { dispatchLocation } = useLocationConnect()
-  const { cleanFeatureState } = useFeatureState(map)
-  const { setMapCoordinates } = useViewport()
-  const { setMapAnnotation } = useMapAnnotation()
-  const tilesClusterLoaded = useMapClusterTilesLoaded()
-  const fishingPromiseRef = useRef<any>()
-  const presencePromiseRef = useRef<any>()
-  const eventsPromiseRef = useRef<any>()
-
-  const cancelPendingInteractionRequests = useCallback(() => {
-    const promisesRef = [fishingPromiseRef, presencePromiseRef, eventsPromiseRef]
-    promisesRef.forEach((ref) => {
-      if (ref.current) {
-        ref.current.abort()
-      }
-    })
-  }, [])
-
-  const dispatchClickedEvent = (event: InteractionEvent | null) => {
-    if (event === null) {
-      dispatch(setClickedEvent(null))
-      return
-    }
-
-    // Used on workspaces-list or user panel to go to the workspace detail page
-    if (locationType === USER || locationType === WORKSPACES_LIST) {
-      const workspace = event?.features?.find(
-        (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
-      )
-      if (workspace) {
-        const isDefaultWorkspace = workspace.properties.id === DEFAULT_WORKSPACE_ID
-        dispatchLocation(
-          isDefaultWorkspace ? HOME : WORKSPACE,
-          isDefaultWorkspace
-            ? {}
-            : {
-                payload: {
-                  category:
-                    workspace.properties?.category && workspace.properties.category !== 'null'
-                      ? workspace.properties.category
-                      : DEFAULT_WORKSPACE_CATEGORY,
-                  workspaceId: workspace.properties.id,
-                },
-              },
-          { replaceQuery: true }
-        )
-        const { latitude, longitude, zoom } = workspace.properties
-        if (latitude && longitude && zoom) {
-          setMapCoordinates({ latitude, longitude, zoom })
-        }
-
-        trackEvent({
-          category: TrackCategory.WorkspaceManagement,
-          action: `click_map_workspace_link`,
-          label: workspace.properties.id,
-        })
-        return
-      }
-    }
-
-    const clusterFeature = event?.features?.find(
-      (f) => f.generatorType === GeneratorType.TileCluster
-    )
-    if (clusterFeature?.properties?.expansionZoom) {
-      const { count, expansionZoom, lat, lng, lon } = clusterFeature.properties
-      const longitude = lng || lon
-      if (count > 1) {
-        if (tilesClusterLoaded && lat && longitude) {
-          setMapCoordinates({
-            latitude: lat,
-            longitude,
-            zoom: expansionZoom,
-          })
-          cleanFeatureState('click')
-        }
-        return
-      }
-    }
-
-    const annotatedFeature = event?.features?.find(
-      (f) => f.generatorType === GeneratorType.Annotation
-    )
-    if (annotatedFeature?.properties?.id) {
-      setMapAnnotation(annotatedFeature.properties)
-      return
-    }
-
-    // Cancel all pending promises
-    cancelPendingInteractionRequests()
-
-    if (!event || !event.features) {
-      if (clickedEvent) {
-        dispatch(setClickedEvent(null))
-      }
-      return
-    }
-
-    // When hovering in a vessel event we don't want to have clicked events
-    const vesselEventFeatures = event.features.filter(
-      (f) =>
-        f.generatorType === GeneratorType.VesselEvents ||
-        f.generatorType === GeneratorType.VesselEventsShapes
-    )
-    if (vesselEventFeatures?.length) {
-      vesselEventFeatures.forEach((feature) => {
-        if (feature.properties) {
-          trackEvent({
-            category: TrackCategory.Tracks,
-            action: `click_${feature.properties.type}_event_from_track`,
-            label: feature.properties.vesselId,
-          })
-        }
-      })
-      const areAllFeaturesVesselEvents = vesselEventFeatures.length === event.features.length
-      if (areAllFeaturesVesselEvents) {
-        return
-      }
-    }
-
-    dispatch(setClickedEvent(event as SliceInteractionEvent))
-
-    // get temporal grid clicked features and order them by sublayerindex
-    const fishingActivityFeatures = event.features
-      .filter((feature) => {
-        if (!feature.temporalgrid?.visible) {
-          return false
-        }
-        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-          feature.temporalgrid.sublayerInteractionType
-        )
-      })
-      .sort((feature) => feature.temporalgrid?.sublayerIndex ?? 0)
-
-    if (fishingActivityFeatures?.length) {
-      dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
-      const activityProperties = fishingActivityFeatures.map((feature) =>
-        feature.temporalgrid?.sublayerInteractionType === 'detections' ? 'detections' : 'hours'
-      )
-      fishingPromiseRef.current = dispatch(
-        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
-      )
-      trackEvent({
-        category: TrackCategory.ActivityData,
-        action: `click_grid_activity_cell`,
-        label: getEventLabel(
-          fishingActivityFeatures.flatMap((f) => f.temporalgrid?.sublayerId || []) ?? []
-        ),
-      })
-    }
-
-    const tileClusterFeature = event.features.find(
-      (f) => f.generatorType === GeneratorType.TileCluster
-    )
-
-    if (tileClusterFeature) {
-      const isEncountersCluster = ENCOUNTER_EVENTS_SOURCES.some(
-        (source) => tileClusterFeature.source === source
-      )
-
-      const fetchFn = isEncountersCluster ? fetchEncounterEventThunk : fetchBQEventThunk
-      eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
-    }
-  }
-
-  return {
-    clickedEvent,
-    fishingInteractionStatus,
-    apiEventStatus,
-    dispatchClickedEvent,
-    cancelPendingInteractionRequests,
-  }
-}
-
-// TODO this could extend ExtendedFeature
-export type TooltipEventFeature = {
-  category: DataviewCategory
-  color?: string
-  datasetId?: string
-  datasetSource?: string
-  event?: ExtendedFeatureEvent
-  generatorContextLayer?: ContextLayerType | null
-  geometry?: Point | Polygon | MultiPolygon
-  id?: string
-  layerId: string
-  promoteId?: string
-  properties: Record<string, string>
-  source: string
-  sourceLayer: string
-  subcategory?: DatasetSubCategory
-  temporalgrid?: TemporalGridFeature
-  title?: string
-  type?: GeneratorType
-  unit?: string
-  value: string // TODO Why not a number?
-  visible?: boolean
-  vesselsInfo?: {
-    overflow: boolean
-    overflowNumber: number
-    overflowLoad: boolean
-    overflowLoadNumber: number
-    numVessels: number
-    vessels: ExtendedFeatureVessel[]
-  }
-}
-
-export type TooltipEvent = {
-  latitude: number
-  longitude: number
-  features: TooltipEventFeature[]
 }
 
 export const useDebouncedDispatchHighlightedEvent = () => {
@@ -362,203 +134,4 @@ export const useDebouncedDispatchHighlightedEvent = () => {
     }, 100),
     []
   )
-}
-
-export const useMapHighlightedEvent = (features?: TooltipEventFeature[]) => {
-  const highlightedEvents = useSelector(selectHighlightedEvents)
-  const debounceDispatch = useDebouncedDispatchHighlightedEvent()
-
-  const setHighlightedEventDebounced = useCallback(() => {
-    let highlightEvent: string | undefined
-    const vesselFeature = features?.find((f) => f.category === DataviewCategory.Vessels)
-    const clusterFeature = features?.find((f) => f.type === GeneratorType.TileCluster)
-    if (!clusterFeature && vesselFeature) {
-      highlightEvent = vesselFeature.properties?.id
-    } else if (clusterFeature) {
-      highlightEvent = clusterFeature.properties?.event_id
-    }
-    if (highlightEvent) {
-      if (
-        !highlightedEvents ||
-        highlightedEvents.length !== 1 ||
-        highlightedEvents[0] !== highlightEvent
-      ) {
-        debounceDispatch(highlightEvent)
-      }
-    } else if (highlightedEvents && highlightedEvents.length) {
-      debounceDispatch(undefined)
-    }
-  }, [features, highlightedEvents, debounceDispatch])
-
-  useEffect(() => {
-    setHighlightedEventDebounced()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [features])
-}
-
-export const parseMapTooltipFeatures = (
-  features: SliceExtendedFeature[],
-  dataviews: UrlDataviewInstance<GeneratorType>[],
-  temporalgridDataviews?: UrlDataviewInstance<GeneratorType>[]
-): TooltipEventFeature[] => {
-  const tooltipEventFeatures: TooltipEventFeature[] = features.flatMap((feature) => {
-    const { temporalgrid, generatorId, generatorType } = feature
-    const baseFeature = {
-      source: feature.source,
-      sourceLayer: feature.sourceLayer,
-      layerId: feature.layerId as string,
-      type: generatorType as GeneratorType,
-    }
-
-    if (temporalgrid?.sublayerCombinationMode === SublayerCombinationMode.TimeCompare) {
-      return {
-        ...baseFeature,
-        category: DataviewCategory.Comparison,
-        value: features[0]?.value,
-        visible: true,
-        unit: features[0]?.temporalgrid?.unit,
-      } as TooltipEventFeature
-    }
-
-    let dataview
-
-    if (isMergedAnimatedGenerator(generatorId as string)) {
-      if (!temporalgrid || temporalgrid.sublayerId === undefined || !temporalgrid.visible) {
-        return []
-      }
-
-      dataview = temporalgridDataviews?.find((dataview) => dataview.id === temporalgrid.sublayerId)
-    } else {
-      dataview = dataviews?.find((dataview) => {
-        // Needed to get only the initial part to support multiple generator
-        // from the same dataview, see map.selectors L137
-        const cleanGeneratorId = (generatorId as string)?.split(MULTILAYER_SEPARATOR)[0]
-        return dataview.id === cleanGeneratorId
-      })
-    }
-
-    if (!dataview) {
-      // There are three use cases when there is no dataview and we want interaction
-      // 1. Wworkspaces list
-      if (generatorId && (generatorId as string).includes(WORKSPACE_GENERATOR_ID)) {
-        const tooltipWorkspaceFeature: TooltipEventFeature = {
-          ...baseFeature,
-          type: GeneratorType.GL,
-          value: feature.properties.label,
-          properties: {},
-          category: DataviewCategory.Context,
-        }
-        return tooltipWorkspaceFeature
-      }
-      // 2. Report buffer
-      else if (generatorId === REPORT_BUFFER_GENERATOR_ID) {
-        const tooltipWorkspaceFeature: TooltipEventFeature = {
-          ...baseFeature,
-          category: DataviewCategory.Context,
-          properties: {},
-          value: feature.properties.label,
-          visible: true,
-        }
-        return tooltipWorkspaceFeature
-      }
-      // 3. Tools (Annotations and Rulers)
-      else if (
-        generatorType === GeneratorType.Annotation ||
-        generatorType === GeneratorType.Rulers
-      ) {
-        const tooltipToolFeature: TooltipEventFeature = {
-          ...baseFeature,
-          category: DataviewCategory.Context,
-          properties: feature.properties,
-          value: feature.properties.label,
-          visible: true,
-        }
-        return tooltipToolFeature
-      }
-      return []
-    }
-
-    const title = getDatasetTitleByDataview(dataview)
-
-    const datasets =
-      dataview.category === DataviewCategory.Activity ||
-      dataview.category === DataviewCategory.Detections
-        ? getActiveDatasetsInActivityDataviews([dataview])
-        : (dataview.datasets || [])?.map((d) => d.id)
-
-    const dataset = dataview?.datasets?.find(({ id }) => datasets.includes(id))
-    const subcategory = dataset?.subcategory as DatasetSubCategory
-    const tooltipEventFeature: TooltipEventFeature = {
-      title,
-      type: dataview.config?.type,
-      color: dataview.config?.color,
-      visible: dataview.config?.visible,
-      category: dataview.category || DataviewCategory.Context,
-      subcategory,
-      datasetSource: dataset?.source,
-      ...feature,
-      properties: { ...feature.properties },
-    }
-    // Insert custom properties by each dataview configuration
-    const properties = dataview.datasetsConfig
-      ? dataview.datasetsConfig.flatMap((datasetConfig) => {
-          if (!datasetConfig.query?.length) return []
-          return datasetConfig.query.flatMap((query) =>
-            query.id === 'properties' ? (query.value as string) : []
-          )
-        })
-      : []
-    properties.forEach((property) => {
-      if (feature.properties[property]) {
-        tooltipEventFeature.properties[property] = feature.properties[property]
-      }
-    })
-
-    if (feature.vessels) {
-      tooltipEventFeature.vesselsInfo = getVesselsInfoConfig(feature.vessels)
-    }
-    return tooltipEventFeature
-  })
-  return tooltipEventFeatures
-}
-
-export const parseMapTooltipEvent = (
-  event: SliceInteractionEvent | null,
-  dataviews: UrlDataviewInstance<GeneratorType>[],
-  temporalgridDataviews: UrlDataviewInstance<GeneratorType>[]
-) => {
-  if (!event || !event.features) return null
-
-  const baseEvent = {
-    point: event.point,
-    latitude: event.latitude,
-    longitude: event.longitude,
-  }
-
-  const clusterFeature = event.features.find(
-    (f) => f.generatorType === GeneratorType.TileCluster && parseInt(f.properties.count) > 1
-  )
-
-  // We don't want to show anything else when hovering a cluster point
-  if (clusterFeature) {
-    return {
-      ...baseEvent,
-      features: [
-        {
-          type: clusterFeature.generatorType,
-          properties: clusterFeature.properties,
-        } as TooltipEventFeature,
-      ],
-    }
-  }
-  const tooltipEventFeatures = parseMapTooltipFeatures(
-    event.features,
-    dataviews,
-    temporalgridDataviews
-  )
-  if (!tooltipEventFeatures.length) return null
-  return {
-    ...baseEvent,
-    features: tooltipEventFeatures,
-  }
 }

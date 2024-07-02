@@ -7,11 +7,11 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build fishing-map --parallel"],
+        "commands": ["nx prepare-loaders fishing-map", "nx build fishing-map --parallel"],
         "parallel": false
       }
     },
-    "build": {
+    "build:app": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
@@ -22,15 +22,34 @@
         "production": {}
       }
     },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx prepare-loaders fishing-map", "nx build:app fishing-map"],
+        "parallel": false
+      }
+    },
     "start": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx clean-locales fishing-map",
+          "nx prepare-loaders fishing-map",
           "nx serve i18n-labels",
           "nx serve fishing-map --hostname=0.0.0.0"
         ],
         "parallel": true
+      }
+    },
+    "prepare-loaders": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx dist:workers deck-loaders",
+          "mkdir -p apps/fishing-map/public/workers",
+          "cp dist/libs/deck-loaders/workers/* apps/fishing-map/public/workers/"
+        ],
+        "parallel": false
       }
     },
     "clean-locales": {

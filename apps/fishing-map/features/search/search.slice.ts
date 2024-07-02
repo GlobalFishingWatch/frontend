@@ -6,7 +6,7 @@ import {
   ADVANCED_SEARCH_QUERY_FIELDS,
   parseAPIError,
 } from '@globalfishingwatch/api-client'
-import { resolveEndpoint } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import {
   Dataset,
   DatasetTypes,

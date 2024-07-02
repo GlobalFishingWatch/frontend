@@ -5,8 +5,8 @@ import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/data
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
-import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
+import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { selectVesselSelfReportedId } from 'features/vessel/vessel.config.selectors'
 
 export type VesselDataviewInstanceParams = { id: string; dataset: Dataset }
@@ -36,7 +36,7 @@ export const useAddVesselDataviewInstance = () => {
 }
 
 export const useUpdateVesselEventsVisibility = () => {
-  const { setVesselEventVisibility } = useVesselEvents()
+  const { setVesselEventVisibility } = useVisibleVesselEvents()
   const vessel = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselSelfReportedId)
   useEffect(() => {

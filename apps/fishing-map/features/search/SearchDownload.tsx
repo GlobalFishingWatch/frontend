@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { unparse as unparseCSV } from 'papaparse'
-import saveAs from 'file-saver'
+import { saveAs } from 'file-saver'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { formatInfoField, getVesselGearType, getVesselShipType } from 'utils/info'

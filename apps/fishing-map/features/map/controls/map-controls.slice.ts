@@ -1,9 +1,10 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
-import { MapAnnotation, Ruler } from '@globalfishingwatch/layer-composer'
+import { RulerData } from '@globalfishingwatch/deck-layers'
+import { MapAnnotation } from '../overlays/annotations/annotations.types'
 
 export type MapControl = 'annotations' | 'rulers' | 'errorNotification'
-export type MapControlValue = Partial<MapAnnotation> | Ruler | null
+export type MapControlValue = Partial<MapAnnotation> | RulerData | null
 
 type MapControlsSlice = Record<
   MapControl,
@@ -66,7 +67,8 @@ const slice = createSlice({
 export const { setMapControlValue, setMapControlEditing, resetMapControlValue } = slice.actions
 
 export const selectMapControls = (state: RootState) => state.mapControls
-export const selectMapControlRuler = (state: RootState) => state.mapControls.rulers.value as Ruler
+export const selectMapControlRuler = (state: RootState) =>
+  state.mapControls.rulers.value as RulerData
 
 export const selectMapControlEditing = (control: MapControl) =>
   createSelector([selectMapControls], (mapControls) => {

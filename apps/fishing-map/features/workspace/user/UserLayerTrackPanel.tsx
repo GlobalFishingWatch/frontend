@@ -15,10 +15,8 @@ import {
   getUserDataviewDataset,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import useMapInstance from 'features/map/map-context.hooks'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance
@@ -52,7 +50,6 @@ export function useUserLayerTrackResource(dataview: UrlDataviewInstance) {
 function UserLayerTrackPanel({ dataview }: UserPanelProps) {
   const { t } = useTranslation()
   const [seeMoreOpen, setSeeMoreOpen] = useState(false)
-  const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
 
   const { resource, featuresColoredByField } = useUserLayerTrackResource(dataview)
 
@@ -82,7 +79,8 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
         source,
         id,
       }
-      updateFeatureState([featureState], 'highlight')
+      // TODO:deck:featureState review if this still needed
+      // updateFeatureState([featureState], 'highlight')
     }
   }
 
@@ -105,7 +103,8 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
               } as React.CSSProperties
             }
             onMouseEnter={() => handleHoverLine(feature)}
-            onMouseLeave={() => cleanFeatureState('highlight')}
+            // TODO:deck:featureState review if this still needed
+            // onMouseLeave={() => cleanFeatureState('highlight')}
           >
             {feature.properties?.[lineIdProperty]}
           </div>

@@ -99,8 +99,8 @@ const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
       max: 10000,
     }
   }
-  const min = getValueByUnit(schemaFilter.options?.[0]?.id, { unit: schemaFilter.unit }) || 0
-  const max = getValueByUnit(schemaFilter.options?.[1]?.id, { unit: schemaFilter.unit }) || 1
+  const min = getValueByUnit(schemaFilter.options?.[0]?.id, { unit: schemaFilter.unit }) ?? 0
+  const max = getValueByUnit(schemaFilter.options?.[1]?.id, { unit: schemaFilter.unit }) ?? 1
   return {
     steps: [min, max],
     min,
@@ -110,7 +110,7 @@ const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
 
 const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
   const { options } = schemaFilter
-  const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
+  const optionValues = options.map(({ id }) => parseFloat(id)).sort((a, b) => a - b)
   return optionValues.length === 1
     ? optionValues
     : [optionValues[0], optionValues[optionValues.length - 1]]

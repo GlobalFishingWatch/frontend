@@ -4,21 +4,23 @@ This monorepo hosts frontend packages and applications of the <a href="https://g
 
 All of them availables with the `@globalfishingwatch/` prefix:
 
-|                                                   |                                                                                |
-| ------------------------------------------------- | ------------------------------------------------------------------------------ |
-| [api-client](libs/api-client)                     | JS library to simplify GFW API login and resources fetch                       |
-| [api-types](libs/api-types)                       | API typescript schema definitions                                              |
-| [data-transforms](libs/data-transforms)           | Set ot shared tools for data transformations                                   |
-| [deck-layers-composer](libs/deck-layers-composer) | Deck classes for GFW layers and its react integration                          |
-| [dataviews-client](libs/dataviews-client)         | Api-client wrapper to fetch and edit dataviews and associated datasets/data    |
-| [fourwings-aggregate](libs/fourwings-aggregate)   | Logic to turn fourwings tiles or cells into meaningful values for the frontend |
-| [i18n-labels](libs/i18n-labels)                   | GFW shared translations                                                        |
-| [layer-composer](libs/layer-composer)             | Orchestrates various Layer Generators to generate a Mapbox GL Style document   |
-| [ocean-areas](libs/ocean-areas)                   | Small library to get ocean area / eez names by viewport or by text search      |
-| [pbf-decoders](libs/pbf-decoders)                 | PBF custom responses parsers                                                   |
-| [react-hooks](libs/react-hooks)                   | Set of hooks to use libraries easily in react                                  |
-| [timebar](libs/timebar)                           | Timebar component, not many more to say                                        |
-| [ui-components](libs/ui-components)               | Reusable atoms components kit                                                  |
+|                                                 |                                                                                |
+| ----------------------------------------------- | ------------------------------------------------------------------------------ |
+| [api-client](libs/api-client)                   | JS library to simplify GFW API login and resources fetch                       |
+| [api-types](libs/api-types)                     | API typescript schema definitions                                              |
+| [data-transforms](libs/data-transforms)         | Set ot shared tools for data transformations                                   |
+| [deck-layer-composer](libs/deck-layer-composer) | Map integration of the deck-layers                                             |
+| [deck-layers](libs/deck-layers)                 | Deck classes for GFW layers                                                    |
+| [deck-loaders](libs/deck-loaders)               | Deck loaders for GFW layers                                                    |
+| [dataviews-client](libs/dataviews-client)       | Api-client wrapper to fetch and edit dataviews and associated datasets/data    |
+| [fourwings-aggregate](libs/fourwings-aggregate) | Logic to turn fourwings tiles or cells into meaningful values for the frontend |
+| [i18n-labels](libs/i18n-labels)                 | GFW shared translations                                                        |
+| [layer-composer](libs/layer-composer)           | Orchestrates various Layer Generators to generate a Mapbox GL Style document   |
+| [ocean-areas](libs/ocean-areas)                 | Small library to get ocean area / eez names by viewport or by text search      |
+| [pbf-decoders](libs/pbf-decoders)               | PBF custom responses parsers                                                   |
+| [react-hooks](libs/react-hooks)                 | Set of hooks to use libraries easily in react                                  |
+| [timebar](libs/timebar)                         | Timebar component, not many more to say                                        |
+| [ui-components](libs/ui-components)             | Reusable atoms components kit                                                  |
 
 ## Applications
 

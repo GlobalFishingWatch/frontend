@@ -6,6 +6,7 @@
   font: var(--font-S);
   line-height: 1;
   width: 100%;
+  pointer-events: none;
 }
 
 .flex {
@@ -16,7 +17,7 @@
 
 .mouseCoordinates {
   position: absolute;
-  bottom: 1.4rem;
+  bottom: 0;
   right: var(--space-S);
   font: var(--font-XS);
   opacity: var(--opacity-secondary);
@@ -25,6 +26,8 @@
 
 .dateRange {
   text-transform: uppercase;
+  pointer-events: all;
+  width: max-content;
 }
 
 @media print {

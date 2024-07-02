@@ -24,6 +24,7 @@ import {
   DEFAULT_WORKSPACE_CATEGORY,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import { WorkspaceState } from 'types'
 
@@ -59,6 +60,7 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
+        visible: false,
         datasets: [
           'public-belize-fishing-effort:v20220304',
           'public-bra-onyxsat-fishing-effort:v20211126',
@@ -110,7 +112,7 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: 'context-layer-graticules',
       config: {
-        visible: true,
+        visible: false,
       },
       dataviewId: GRATICULES_DATAVIEW_SLUG,
     },
@@ -128,7 +130,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
     },
     {
-      id: OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID,
+      id: OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
       config: {
         visible: false,
         color: '#8E24A9',

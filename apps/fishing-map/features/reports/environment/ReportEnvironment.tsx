@@ -3,8 +3,9 @@ import cx from 'classnames'
 import htmlParse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { GeneratorType, Interval, getInterval } from '@globalfishingwatch/layer-composer'
+import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
+import { getInterval } from '@globalfishingwatch/deck-layers'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
 import {
   useReportFeaturesLoading,
@@ -24,14 +25,17 @@ function ReportEnvironment() {
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
-  const interval = getInterval(timerange.start, timerange.end, [['MONTH', 'DAY']] as Interval[][])
+  const interval = getInterval(timerange.start, timerange.end, [
+    'MONTH',
+    'DAY',
+  ] as FourwingsInterval[])
 
   if (!environmentalDataviews?.length) return null
 
   return (
     <Fragment>
       {environmentalDataviews.map((dataview, index) => {
-        const isDynamic = dataview.config?.type === GeneratorType.HeatmapAnimated
+        const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
         const { min, mean, max } = dataview.config?.stats || {}
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)

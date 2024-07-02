@@ -151,7 +151,7 @@
   outline: none;
 }
 
-@media only screen and (max-width: 540px) {
+@media only screen and (width <= 540px) {
   .TimeRangeSelector {
     width: 100vw;
     position: fixed;
@@ -159,7 +159,7 @@
   }
 }
 
-@media only screen and (max-width: 380px) {
+@media only screen and (width <= 380px) {
   .selectorsContainer {
     flex-direction: column;
   }

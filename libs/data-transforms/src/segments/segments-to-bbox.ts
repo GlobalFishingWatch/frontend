@@ -1,6 +1,7 @@
-import { Feature, featureCollection, Point, point, Position } from '@turf/helpers'
+import { featureCollection, point } from '@turf/helpers'
 import bbox from '@turf/bbox'
-import { Segment } from '@globalfishingwatch/api-types'
+import { Feature, Point, Position } from 'geojson'
+import { TrackSegment } from '@globalfishingwatch/api-types'
 import { wrapPointLongitudes } from '../wrap-longitudes'
 import { BBox } from '../types'
 
@@ -9,7 +10,7 @@ export function getBboxFromPoints(points: Feature<Point>[]): BBox {
   return bbox(wrappedPoints) as BBox
 }
 
-export function segmentsToBbox(segments: Segment[]): BBox {
+export function segmentsToBbox(segments: TrackSegment[]): BBox {
   const points = segments.flatMap((segment) =>
     segment.flatMap((p) => {
       if (p.longitude && p.latitude) return point([p.longitude, p.latitude] as Position)

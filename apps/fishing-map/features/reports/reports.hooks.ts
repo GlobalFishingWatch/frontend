@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
@@ -17,20 +19,20 @@ import {
 } from 'features/areas/areas.slice'
 import {
   selectReportArea,
-  selectReportAreaDataview,
+  selectReportAreaDataviews,
   selectReportAreaIds,
   selectReportBufferHash,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
-import useMapInstance from 'features/map/map-context.hooks'
-import { selectDatasetById } from 'features/datasets/datasets.slice'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
-import useViewport, { getMapCoordinatesFromBounds } from 'features/map/map-viewport.hooks'
+import { useSetViewState, useViewStateAtom } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
 import {
   fetchReportVesselsThunk,
@@ -45,11 +47,28 @@ import {
 export type DateTimeSeries = {
   date: string
   values: number[]
-  compareDate?: string
 }[]
 
+const defaultIds = [] as string[]
+export const useHighlightReportArea = () => {
+  const areaDataviews = useSelector(selectReportAreaDataviews)
+  const ids = areaDataviews?.map((d) => d.id) || defaultIds
+  const areaLayers = useGetDeckLayers<ContextLayer>(ids)
+
+  return useCallback(
+    (area?: ContextFeature) => {
+      areaLayers.forEach((areaLayer) => {
+        if (areaLayer?.instance?.setHighlightedFeatures) {
+          areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
+        }
+      })
+    },
+    [areaLayers]
+  )
+}
+
 export function useReportAreaCenter(bounds?: Bbox) {
-  const map = useMapInstance()
+  const map = useDeckMap()
   return useMemo(() => {
     if (!bounds || !map) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(map, bounds, {
@@ -60,28 +79,28 @@ export function useReportAreaCenter(bounds?: Bbox) {
 }
 
 export function useReportAreaInViewport() {
-  const { viewport } = useViewport()
+  const { viewState } = useViewStateAtom()
   const area = useSelector(selectReportArea)
   const bbox = area?.geometry?.bbox || area!?.bounds
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   return (
-    viewport?.latitude === areaCenter?.latitude &&
-    viewport?.longitude === areaCenter?.longitude &&
-    viewport?.zoom === areaCenter?.zoom
+    viewState?.latitude === areaCenter?.latitude &&
+    viewState?.longitude === areaCenter?.longitude &&
+    viewState?.zoom === areaCenter?.zoom
   )
 }
 
 export function useFitAreaInViewport() {
-  const { setMapCoordinates } = useViewport()
+  const setViewState = useSetViewState()
   const area = useSelector(selectReportArea)
   const bbox = area?.geometry?.bbox || area!?.bounds
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
-      setMapCoordinates(areaCenter)
+      setViewState(areaCenter)
     }
-  }, [areaCenter, areaInViewport, setMapCoordinates])
+  }, [areaCenter, areaInViewport, setViewState])
 }
 
 // 0 - 20MB No simplifyTrack
@@ -99,21 +118,22 @@ export function useFetchReportArea() {
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
-  const reportAreaDataset = useSelector(selectDatasetById(datasetId))
-  const areaDataview = useSelector(selectReportAreaDataview)
+  const areaDataviews = useSelector(selectReportAreaDataviews)
 
   useEffect(() => {
-    if (reportAreaDataset && areaId && areaDataview) {
-      const simplify = getSimplificationByDataview(areaDataview)
+    if (datasetId && areaId && areaDataviews?.length) {
+      const simplify = areaDataviews
+        .map((dataview) => getSimplificationByDataview(dataview))
+        .join(',')
       dispatch(
         fetchAreaDetailThunk({
-          dataset: reportAreaDataset,
+          datasetId,
           areaId,
           simplify,
         })
       )
     }
-  }, [areaId, reportAreaDataset, dispatch, areaDataview])
+  }, [areaId, datasetId, dispatch, areaDataviews])
 
   return useMemo(() => ({ status, data }), [status, data])
 }
@@ -137,7 +157,7 @@ export function useFetchReportVessel() {
 
   const updateWorkspaceReportUrls = useCallback(
     (reportUrl: any) => {
-      setLastReportUrl((lastReportUrls) => {
+      setLastReportUrl((lastReportUrls: LastReportStorage[]) => {
         const newReportUrl = {
           reportUrl,
           workspaceUrl: window.location.href,
@@ -157,8 +177,8 @@ export function useFetchReportVessel() {
       datasets: reportDataviews.map(({ datasets }) =>
         datasets?.map((d: Dataset) => d.id).join(',')
       ),
-      filters: reportDataviews.map(({ filter }) => filter),
-      vesselGroups: reportDataviews.map(({ vesselGroups }) => vesselGroups),
+      filters: reportDataviews.map(({ filter }) => filter).filter(Boolean),
+      vesselGroups: reportDataviews.flatMap(({ vesselGroups }) => vesselGroups || []),
       region: {
         id: areaId,
         dataset: datasetId,

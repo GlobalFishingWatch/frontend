@@ -1,7 +1,8 @@
-import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { HYDRATE } from 'next-redux-wrapper'
 import { GFWAPI, ParsedAPIError, parseAPIError } from '@globalfishingwatch/api-client'
 import {
+  ApiEvent,
   Dataset,
   DatasetTypes,
   IdentityVessel,
@@ -11,7 +12,8 @@ import {
   VesselCombinedSourcesInfo,
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
-import { resolveEndpoint, setResource } from '@globalfishingwatch/dataviews-client'
+import { setResource } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectResources } from 'features/resources/resources.slice'
@@ -32,10 +34,8 @@ import {
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
-import { selectVesselId } from 'routes/routes.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-
-export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
+import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   identitySource: VesselIdentitySourceEnum
@@ -60,16 +60,18 @@ type VesselInfoEntry = {
 }
 type VesselInfoState = Record<string, VesselInfoEntry>
 
-type VesselState =
-  | {
-      fitBoundsOnLoad: boolean
-      printMode: boolean
-    }
-  | VesselInfoState
+type VesselState = {
+  fitBoundsOnLoad: boolean
+  printMode: boolean
+  data: VesselInfoState
+  events: ApiEvent[]
+}
 
 const initialState: VesselState = {
   fitBoundsOnLoad: false,
   printMode: false,
+  data: {},
+  events: [],
 }
 
 type VesselSliceState = { vessel: VesselState }
@@ -171,6 +173,9 @@ const vesselSlice = createSlice({
     setVesselFitBoundsOnLoad: (state, action: PayloadAction<boolean>) => {
       state.fitBoundsOnLoad = action.payload
     },
+    setVesselEvents: (state, action: PayloadAction<ApiEvent[]>) => {
+      state.events = action.payload
+    },
     setVesselPrintMode: (state, action: PayloadAction<boolean>) => {
       state.printMode = action.payload
     },
@@ -215,27 +220,7 @@ const vesselSlice = createSlice({
   },
 })
 
-export const { setVesselFitBoundsOnLoad, setVesselPrintMode, resetVesselState } =
+export const { setVesselFitBoundsOnLoad, setVesselPrintMode, resetVesselState, setVesselEvents } =
   vesselSlice.actions
-
-export const selectVessel = (state: VesselSliceState) => {
-  const vesselId = selectVesselId(state as any) as string
-  return (state as any).vessel[vesselId] as VesselInfoEntry
-}
-export const selectVesselInfoData = createSelector(
-  [selectVessel],
-  (vessel) => vessel?.data as IdentityVesselData
-)
-export const selectVesselInfoDataId = createSelector([selectVessel], (vessel) => vessel?.data?.id)
-export const selectSelfReportedVesselIds = createSelector([selectVessel], (vessel) =>
-  vessel?.data?.identities
-    ?.filter((i) => i.identitySource === VesselIdentitySourceEnum.SelfReported)
-    .map((i) => i.id)
-)
-export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)
-export const selectVesselInfoError = createSelector([selectVessel], (vessel) => vessel?.error)
-export const selectVesselPrintMode = (state: VesselSliceState) => state.vessel.printMode as boolean
-export const selectVesselFitBoundsOnLoad = (state: VesselSliceState) =>
-  state.vessel.fitBoundsOnLoad as boolean
 
 export default vesselSlice.reducer

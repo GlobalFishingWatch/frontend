@@ -82,7 +82,7 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
         return {
           ...dataview,
           datasets: dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)) as Dataset[],
-          filter: dataview.config?.filter || [],
+          filter: dataview.config?.filter || '',
           ...(dataview.config?.['vessel-groups']?.length && {
             vesselGroups: dataview.config?.['vessel-groups'],
           }),
@@ -92,11 +92,16 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
   }
 )
 
-export const selectReportAreaDataview = createSelector(
+export const selectReportAreaDataviews = createSelector(
   [selectDataviewInstancesResolved, selectReportDatasetId],
   (dataviewsInstances, datasetId) => {
-    const areaDataview = dataviewsInstances?.find((dataview) => {
-      return dataview.datasets?.some((dataset) => dataset.id === datasetId)
+    const datasetIds = datasetId?.split(',')
+    const areaDataview = datasetIds?.flatMap((datasetId) => {
+      return (
+        dataviewsInstances?.find((dataview) => {
+          return dataview.datasets?.some((dataset) => datasetId === dataset.id)
+        }) || []
+      )
     })
     return areaDataview
   }
@@ -553,7 +558,7 @@ export const selectReportBufferFeature = createSelector(
   ],
   (area, unit, value, operation) => {
     if (!area || !unit || !value || !operation) return null
-    return getBufferedFeature({ area, value, unit, operation })
+    return getBufferedFeature({ area, value, unit, operation, properties: { highlighted: true } })
   }
 )
 

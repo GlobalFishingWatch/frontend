@@ -8,7 +8,6 @@ import {
   MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
 } from '@globalfishingwatch/dataviews-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
-import { useMapStyle } from 'features/map/map-style.hooks'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
@@ -23,7 +22,6 @@ import {
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import useMapInstance from 'features/map/map-context.hooks'
 import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
@@ -90,34 +88,28 @@ export const useTimerangeConnect = () => {
 
   const setTimerange = useCallback(
     (timerange: TimeRange) => {
-      setAtomTimerange(timerange)
+      setAtomTimerange((timerangeAtom) => {
+        if (
+          (timerange.start !== timerangeAtom?.start || timerange.end !== timerangeAtom.end) &&
+          !hintsDismissed?.changingTheTimeRange
+        ) {
+          dispatch(setHintDismissed('changingTheTimeRange'))
+        }
+        return timerange
+      })
       updateUrlTimerangeDebounced(timerange)
     },
-    [setAtomTimerange, updateUrlTimerangeDebounced]
+    [dispatch, hintsDismissed?.changingTheTimeRange, setAtomTimerange, updateUrlTimerangeDebounced]
   )
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
-      if (
-        (start !== timerangeAtom?.start || end !== timerangeAtom.end) &&
-        !hintsDismissed?.changingTheTimeRange
-      ) {
-        dispatch(setHintDismissed('changingTheTimeRange'))
-      }
       setTimerange({ start, end })
       if (reportLocation) {
         fitAreaInViewport()
       }
     },
-    [
-      dispatch,
-      fitAreaInViewport,
-      hintsDismissed?.changingTheTimeRange,
-      reportLocation,
-      setTimerange,
-      timerangeAtom?.end,
-      timerangeAtom?.start,
-    ]
+    [fitAreaInViewport, reportLocation, setTimerange]
   )
   return useMemo(() => {
     return {
@@ -154,7 +146,7 @@ export const useHighlightedEventsConnect = () => {
   const dispatch = useAppDispatch()
 
   const dispatchHighlightedEvents = useCallback(
-    (eventIds: string[]) => {
+    (eventIds: string[] | undefined) => {
       dispatch(setHighlightedEvents(eventIds))
     },
     [dispatch]
@@ -276,7 +268,7 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
       } else if (activeDetectionsDataviews.length === 1 && prevActiveDetectionsDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
-      } else if (activeTrackDataviews.length === 1 && prevActiveTrackDataviewsNum === 0) {
+      } else if (activeTrackDataviews.length >= 1 && prevActiveTrackDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews.length === 1 && prevactiveEnvDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
@@ -291,36 +283,4 @@ export const useTimebarVisualisation = () => {
     hasChangedSettingsOnce,
   ])
   return { timebarVisualisation, dispatchTimebarVisualisation }
-}
-
-export const useActivityMetadata = () => {
-  const map = useMapInstance()
-  const style = useMapStyle()
-  const { timebarVisualisation } = useTimebarVisualisationConnect()
-
-  if (!map) return null
-
-  const animatedMergedId =
-    timebarVisualisation === TimebarVisualisations.HeatmapDetections
-      ? MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID
-      : MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
-
-  const generatorsMetadata = style?.metadata?.generatorsMetadata
-  if (!generatorsMetadata) return null
-
-  const mergedHeatmapMetadata = generatorsMetadata[animatedMergedId]
-  if (mergedHeatmapMetadata?.timeChunks) {
-    return mergedHeatmapMetadata
-  }
-  const environmentalMetadata = Object.entries(generatorsMetadata).filter(
-    ([id, metadata]) => (metadata as any).temporalgrid === true
-  )
-  const bqEnvironmentalMetadata = environmentalMetadata.filter(([id]) =>
-    id.includes(BIG_QUERY_PREFIX)
-  )
-  if (environmentalMetadata?.length === 1 && bqEnvironmentalMetadata?.length === 1) {
-    return bqEnvironmentalMetadata[0][1]
-  }
-
-  return null
 }

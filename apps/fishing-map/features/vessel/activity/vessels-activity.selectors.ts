@@ -9,7 +9,7 @@ import { getUTCDateTime } from 'utils/dates'
 import {
   selectVesselEventsByType,
   selectVesselEventsFilteredByTimerange,
-} from '../vessel.selectors'
+} from '../selectors/vessel.resources.selectors'
 
 export enum ActivityEventSubType {
   Entry = 'port_entry',

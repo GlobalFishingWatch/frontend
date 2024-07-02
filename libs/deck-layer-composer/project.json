@@ -1,0 +1,29 @@
+{
+  "name": "deck-layer-composer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/deck-layer-composer/src",
+  "projectType": "library",
+  "targets": {
+    "dist": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "assets": [],
+        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "main": "libs/deck-layer-composer/src/index.ts",
+        "outputPath": "dist/libs/deck-layer-composer",
+        "project": "libs/deck-layer-composer/package.json",
+        "tsConfig": "libs/deck-layer-composer/tsconfig.lib.json"
+      }
+    },
+    "publish": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": ["dist"],
+      "options": {
+        "packageRoot": "dist/libs/deck-layer-composer"
+      }
+    }
+  },
+  "tags": []
+}
