@@ -6,6 +6,7 @@ import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { useSetTaskMutation } from '../../api/task'
 import { LabellingTask } from '../../types'
 import styles from './Task.module.css'
+import TaskImage from './TaskImage'
 
 type TaskProps = {
   projectId: string
@@ -98,11 +99,7 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
       )}
       <div className={styles.images}>
         {task.thumbnails.map((thumbnail, index) => (
-          <div
-            className={styles.img}
-            style={{ backgroundImage: `url(${thumbnail})` }}
-            key={index}
-          />
+          <TaskImage thumbnail={thumbnail} key={index} />
         ))}
       </div>
       {
