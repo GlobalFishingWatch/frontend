@@ -72,3 +72,7 @@
 .hidden {
   display: none;
 }
+
+.link {
+  text-decoration: underline;
+}

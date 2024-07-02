@@ -10,8 +10,6 @@ export type LabellingProject = {
 export type LabellingTask = {
   id: string
   labels: string[]
-  metadata: {
-    score: number
-  }
+  metadata: Record<string, any>
   thumbnails: string[]
 }
