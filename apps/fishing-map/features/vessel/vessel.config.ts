@@ -5,7 +5,7 @@ import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselProfileState } from 'types'
 
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity'
-export const DEFAULT_VESSEL_IDENTITY_VERSION = 'v3.0'
+export const DEFAULT_VESSEL_IDENTITY_VERSION = 'v20231026'
 export const DEFAULT_VESSEL_IDENTITY_ID = `${DEFAULT_VESSEL_IDENTITY_DATASET}:${DEFAULT_VESSEL_IDENTITY_VERSION}`
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
