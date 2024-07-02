@@ -1,5 +1,6 @@
 import type { Layer } from '@deck.gl/core'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { PolygonPickingObject } from '@globalfishingwatch/deck-layers'
 import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
 import type { ContextLayer } from './layers/context/ContextLayer'
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
@@ -49,6 +50,7 @@ export type DeckLayerPickingObject =
   | RulerPickingObject
   | VesselEventPickingObject
   | DrawPickingObject
+  | PolygonPickingObject
 
 export type DeckLayerInteractionPickingInfo =
   | (FourwingsPickingInfo & { layer: FourwingsLayer })

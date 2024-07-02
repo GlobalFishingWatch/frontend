@@ -2,13 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import {
-  ContextFeature,
-  ContextLayer,
-  ContextPickingObject,
-  UserLayerPickingObject,
-} from '@globalfishingwatch/deck-layers'
-import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { getEventLabel } from 'utils/analytics'
 import { AreaKeyId, fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -18,7 +12,6 @@ import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getBufferedAreaBbox } from 'features/reports/reports.utils'
-import { selectReportAreaDataviews } from 'features/reports/reports.selectors'
 import { setClickedEvent } from '../../map.slice'
 
 export const getFeatureBounds = (feature: ContextPickingObject) => {
@@ -27,24 +20,6 @@ export const getFeatureBounds = (feature: ContextPickingObject) => {
     const bounds = getBufferedAreaBbox({ area: { geometry } } as any)
     return bounds
   }
-}
-
-const defaultIds = [] as string[]
-export const useHighlightReportArea = () => {
-  const areaDataviews = useSelector(selectReportAreaDataviews)
-  const ids = areaDataviews?.map((d) => d.id) || defaultIds
-  const areaLayers = useGetDeckLayers<ContextLayer>(ids)
-
-  return useCallback(
-    (area?: ContextFeature) => {
-      areaLayers.forEach((areaLayer) => {
-        if (areaLayer?.instance?.setHighlightedFeatures) {
-          areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
-        }
-      })
-    },
-    [areaLayers]
-  )
 }
 
 export const getAreaIdFromFeature = (

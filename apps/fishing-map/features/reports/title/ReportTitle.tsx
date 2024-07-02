@@ -7,6 +7,7 @@ import geojsonArea from '@mapbox/geojson-area'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { DataviewType } from '@globalfishingwatch/api-types'
+import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
 import {
@@ -38,6 +39,7 @@ import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/works
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
+import { useHighlightReportArea } from '../reports.hooks'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
 
@@ -52,6 +54,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
+  const highlightArea = useHighlightReportArea()
   const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
@@ -138,6 +141,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
   const handleConfirmBuffer = useCallback(() => {
     tooltipInstance!.hide()
+    highlightArea(undefined)
     dispatchQueryParams({
       reportBufferValue: previewBuffer.value!,
       reportBufferUnit: previewBuffer.unit!,
@@ -151,10 +155,21 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       action: `Confirm area buffer`,
       label: `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}`,
     })
-  }, [tooltipInstance, previewBuffer, dispatchQueryParams, dispatch])
+  }, [
+    tooltipInstance,
+    highlightArea,
+    dispatchQueryParams,
+    previewBuffer.value,
+    previewBuffer.unit,
+    previewBuffer.operation,
+    dispatch,
+  ])
 
   const handleRemoveBuffer = useCallback(() => {
     tooltipInstance!.hide()
+    if (reportArea) {
+      highlightArea(reportArea as ContextFeature)
+    }
     dispatchQueryParams({
       reportBufferValue: undefined,
       reportBufferUnit: undefined,
@@ -162,7 +177,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     })
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceStateBufferParams())
-  }, [dispatch, dispatchQueryParams, tooltipInstance])
+  }, [dispatch, dispatchQueryParams, highlightArea, reportArea, tooltipInstance])
 
   const dataset = areaDataview?.datasets?.[0]
   const reportTitle = useMemo(() => {

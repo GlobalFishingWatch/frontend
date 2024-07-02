@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import { LayerGroup } from '@globalfishingwatch/deck-layers'
 import { selectCurrentWorkspacesList } from 'features/workspaces-list/workspaces-list.selectors'
 import {
   selectIsAnyReportLocation,
@@ -90,24 +89,24 @@ export const selectMapReportBufferDataviews = createSelector(
     if (reportBufferFeature?.geometry) {
       dataviews.push({
         id: REPORT_BUFFER_GENERATOR_ID,
+        category: DataviewCategory.Buffer,
         config: {
           type: DataviewType.Polygons,
           data: { type: 'FeatureCollection', features: [reportBufferFeature] },
           color: '#ffffff',
           visible: true,
-          group: LayerGroup.OutlinePolygonsHighlighted,
         },
       })
     }
     if (reportPreviewBufferFeature?.geometry) {
       dataviews.push({
         id: PREVIEW_BUFFER_GENERATOR_ID,
+        category: DataviewCategory.Buffer,
         config: {
           type: DataviewType.Polygons,
           data: { type: 'FeatureCollection', features: [reportPreviewBufferFeature] },
           color: BUFFER_PREVIEW_COLOR,
           visible: true,
-          group: LayerGroup.OutlinePolygonsHighlighted,
         },
       })
     }

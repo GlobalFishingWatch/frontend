@@ -1,6 +1,10 @@
 import { FeatureCollection } from 'geojson'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
-import { LayerGroup, PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
+import {
+  LayerGroup,
+  PolygonPickingObject,
+  PolygonsLayerProps,
+} from '@globalfishingwatch/deck-layers'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { DeckResolverFunction } from './types'
@@ -40,5 +44,6 @@ export const resolveDeckPolygonsLayerProps: DeckResolverFunction<PolygonsLayerPr
     subcategory: dataview.config?.type!,
     color: dataview.config?.color!,
     group: dataview.config?.group as LayerGroup,
+    highlightedFeatures: globalConfig.highlightedFeatures as PolygonPickingObject[],
   }
 }

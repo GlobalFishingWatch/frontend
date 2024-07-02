@@ -222,6 +222,7 @@ type BufferedAreaParams = {
   value: number
   unit: BufferUnit
   operation?: BufferOperation
+  properties?: Record<string, any>
 }
 // Area is needed to generate all report results
 export const getBufferedArea = ({
@@ -258,13 +259,15 @@ export const getBufferedFeature = ({
   value,
   unit,
   operation,
+  properties = {},
 }: BufferedAreaParams): Feature | null => {
   if (!area?.geometry) return null
   const bufferedFeatures = getFeatureBuffer(area.geometry.features, { unit, value })
 
   if (!bufferedFeatures.length) return null
 
-  const properties = {
+  const featureProperties = {
+    ...properties,
     id: REPORT_BUFFER_FEATURE_ID,
     value: 'buffer',
     label: t('analysis.bufferedArea', {
@@ -275,7 +278,7 @@ export const getBufferedFeature = ({
   }
   const dissolvedBufferedPolygonsFeatures = multiPolygon(
     dissolve(featureCollection(bufferedFeatures)).features.map((f) => f.geometry.coordinates),
-    properties
+    featureProperties
   )
 
   if (operation === DIFFERENCE) {
@@ -286,7 +289,7 @@ export const getBufferedFeature = ({
     if (diff) {
       diff.properties = {
         ...diff.properties,
-        ...properties,
+        ...featureProperties,
       }
     }
     return diff

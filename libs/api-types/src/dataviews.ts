@@ -192,6 +192,7 @@ export enum DataviewCategory {
   User = 'user',
   Vessels = 'vessels',
   Workspaces = 'workspaces',
+  Buffer = 'buffer',
 }
 
 export interface Dataview<Type = any, Category = DataviewCategory> {

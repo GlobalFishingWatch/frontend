@@ -558,7 +558,7 @@ export const selectReportBufferFeature = createSelector(
   ],
   (area, unit, value, operation) => {
     if (!area || !unit || !value || !operation) return null
-    return getBufferedFeature({ area, value, unit, operation })
+    return getBufferedFeature({ area, value, unit, operation, properties: { highlighted: true } })
   }
 )
 

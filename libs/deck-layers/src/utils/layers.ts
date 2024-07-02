@@ -5,12 +5,13 @@ import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { Matrix4 } from '@math.gl/core'
 import { ContextPickingObject } from '../layers/context'
 import { UserLayerPickingObject } from '../layers/user'
+import { PolygonPickingObject } from '../layers/polygons'
 
 const WORLD_SIZE = 512
 
 export function getPickedFeatureToHighlight(
   data: any,
-  pickedFeatures: (ContextPickingObject | UserLayerPickingObject)[],
+  pickedFeatures: (ContextPickingObject | UserLayerPickingObject | PolygonPickingObject)[],
   { idProperty = 'gfw_id', datasetId } = {} as { idProperty?: string; datasetId?: string }
 ) {
   return pickedFeatures?.some((f) => {

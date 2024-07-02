@@ -18,7 +18,6 @@ import {
   selectHasReportBuffer,
   selectHasReportVessels,
   selectReportArea,
-  selectReportBufferHash,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
@@ -55,10 +54,14 @@ import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
 // import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
-import { useHighlightReportArea } from 'features/map/popups/categories/ContextLayers.hooks'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
-import { useFetchReportArea, useFetchReportVessel, useFitAreaInViewport } from './reports.hooks'
+import {
+  useFetchReportArea,
+  useFetchReportVessel,
+  useFitAreaInViewport,
+  useHighlightReportArea,
+} from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
 import ReportActivity from './activity/ReportActivity'
@@ -373,8 +376,7 @@ export default function Report() {
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const reportArea = useSelector(selectReportArea)
-  // const hasReportBuffer = useSelector(selectHasReportBuffer)
-  // const reportBufferHash = useSelector(selectReportBufferHash)
+  const hasReportBuffer = useSelector(selectHasReportBuffer)
 
   const fitAreaInViewport = useFitAreaInViewport()
 
@@ -388,10 +390,10 @@ export default function Report() {
   }, [status, reportArea])
 
   useEffect(() => {
-    if (reportArea) {
+    if (reportArea && !hasReportBuffer) {
       highlightArea(reportArea as ContextFeature)
     }
-  }, [highlightArea, reportArea])
+  }, [highlightArea, reportArea, hasReportBuffer])
 
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {
