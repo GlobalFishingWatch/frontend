@@ -53,7 +53,7 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
       id,
       color,
       data,
-      group = LayerGroup.OutlinePolygons,
+      group = LayerGroup.OutlinePolygonsBackground,
       highlightedFeatures = [],
     } = this.props
 
@@ -76,7 +76,8 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
         lineWidthMinPixels: 0,
         lineWidthMaxPixels: 1,
         filled: false,
-        getPolygonOffset: (params) => getLayerGroupOffset(group, params),
+        getPolygonOffset: (params) =>
+          getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
         getLineWidth: 1,
         getLineColor: hexToDeckColor(color),
       }),
