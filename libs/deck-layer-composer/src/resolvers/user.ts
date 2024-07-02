@@ -177,6 +177,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
     ...(filters && { filters }),
     ...(idProperty && { idProperty }),
     ...(valueProperties?.length && { valueProperties }),
+    ...(dataview.config?.maxZoom && { maxZoom: dataview.config.maxZoom }),
     ...timeFilters,
   }
 }

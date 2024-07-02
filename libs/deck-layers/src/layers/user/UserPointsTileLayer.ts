@@ -22,6 +22,7 @@ import {
 } from '../../utils'
 import { UserPointsLayerProps, UserLayerFeature } from './user.types'
 import { UserBaseLayer, UserBaseLayerState } from './UserBaseLayer'
+import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
 
@@ -34,6 +35,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
   debounceTime: 500,
   minPointSize: 3,
   maxPointSize: 15,
+  maxZoom: DEFAULT_USER_TILES_MAX_ZOOM,
 }
 
 type UserPointsLayerState = UserBaseLayerState & {
@@ -105,7 +107,7 @@ export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   renderLayers() {
-    const { layers, color, pickable, maxPointSize } = this.props
+    const { layers, color, pickable, maxPointSize, maxZoom } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     const filterProps = this._getTimeFilterProps()
     const renderLayers: Layer[] = layers.map((layer) => {
@@ -113,6 +115,7 @@ export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
         id: `${layer.id}-base-layer`,
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
+        maxZoom,
         loadOptions: {
           ...getFetchLoadOptions(),
         },

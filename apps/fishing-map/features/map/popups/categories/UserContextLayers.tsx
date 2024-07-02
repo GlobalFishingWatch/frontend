@@ -1,6 +1,5 @@
 import { Fragment } from 'react'
 import { groupBy } from 'lodash'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { UserLayerPickingObject, ContextPickingObject } from '@globalfishingwatch/deck-layers'
@@ -8,6 +7,8 @@ import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
+import { t } from 'features/i18n/i18n'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from '../Popup.module.css'
 import ContextLayersRow from './ContextLayersRow'
 import { useContextInteractions } from './ContextLayers.hooks'
@@ -24,13 +25,20 @@ export function getContextLayerId(feature: ContextPickingObject | UserLayerPicki
 export function getContextLayerLabel(feature: ContextPickingObject | UserLayerPickingObject) {
   let label = (feature.value ?? feature.title) as string
   if (feature.layerId.includes(OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID)) {
-    label = `${feature.properties.label} - ${
-      feature.properties.label_confidence
-    } confidence (from ${new Date(
-      Number(feature.properties.structure_start_date)
-    ).toLocaleDateString()} to ${new Date(
-      Number(feature.properties.structure_end_date)
-    ).toLocaleDateString()})`
+    const startDate = Number(feature.properties.structure_start_date)
+    const endDate = Number(feature.properties.structure_end_date)
+    const i18nParams = { format: { month: 'long', year: 'numeric' } }
+    const rangeLabel =
+      startDate && endDate
+        ? t('common.timerangeDescription', {
+            start: formatI18nDate(startDate, i18nParams),
+            end: formatI18nDate(endDate, i18nParams),
+          })
+        : `${t('common.since', 'since')} ${formatI18nDate(startDate, i18nParams)}`
+    label = `${feature.properties.label} - ${feature.properties.label_confidence} ${t(
+      'common.confidence',
+      'confidence'
+    )} (${rangeLabel})`
   }
   return label
 }
@@ -41,7 +49,6 @@ type UserContextLayersProps = {
 }
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
-  const { t } = useTranslation()
   const dataviews = useSelector(selectCustomUserDataviews) as UrlDataviewInstance[]
   const { onReportClick, onDownloadClick } = useContextInteractions()
   const featuresByType = groupBy(features, 'layerId')

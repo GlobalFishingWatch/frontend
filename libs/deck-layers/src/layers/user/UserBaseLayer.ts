@@ -170,10 +170,14 @@ export abstract class UserBaseLayer<
     } else if (timeFilterType === 'dateRange') {
       if (startTimeProperty && endTimeProperty) {
         return {
-          getFilterValue: (d: UserLayerFeature) => [
-            parseInt(d.properties[startTimeProperty as string]),
-            parseInt(d.properties[endTimeProperty as string]),
-          ],
+          getFilterValue: (d: UserLayerFeature) => {
+            const start = d.properties[startTimeProperty as string]
+            const end = d.properties[endTimeProperty as string]
+            return [
+              start ? parseInt(start) : -INFINITY_TIMERANGE_LIMIT,
+              end ? parseInt(end) : INFINITY_TIMERANGE_LIMIT,
+            ]
+          },
           filterRange: [
             [0, endTime],
             [startTime, INFINITY_TIMERANGE_LIMIT],
