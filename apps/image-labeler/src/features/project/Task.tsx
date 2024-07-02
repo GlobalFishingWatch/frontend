@@ -71,10 +71,16 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
     setActiveOption(option.id)
   }
 
+  const isLabeled = data?.label !== undefined
+
   return (
     <div
       onClick={open || isLoading ? undefined : onClick}
-      className={cx(styles.task, { [styles.open]: open })}
+      className={cx(styles.task, {
+        [styles.open]: open,
+        [styles.loading]: isLoading,
+        [styles.labeled]: isLabeled,
+      })}
     >
       {Object.keys(task.metadata).length > 0 && (
         <div className={cx(styles.metadata, { [styles.hidden]: !open })}>
@@ -122,7 +128,13 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
       }
 
       <div className={cx({ [styles.hidden]: open })}>
-        {isLoading ? <Spinner size="small" /> : <label>{data?.label || 'Unlabeled'}</label>}
+        {isLoading ? (
+          <Spinner size="small" />
+        ) : (
+          <label className={cx({ [styles.assignedLabel]: isLabeled })}>
+            {isLabeled ? data.label : 'Unlabeled'}
+          </label>
+        )}
         {error !== undefined && <p>{JSON.stringify(error)}</p>}
       </div>
     </div>
