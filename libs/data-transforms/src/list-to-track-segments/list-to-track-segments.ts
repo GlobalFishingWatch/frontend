@@ -22,6 +22,9 @@ export const getUTCDate = (timestamp: string | number) => {
     DateTime.fromISO,
     DateTime.fromSQL,
     DateTime.fromRFC2822,
+    (date: string) => DateTime.fromFormat(date, 'd/M/yyyy'),
+    (date: string) => DateTime.fromFormat(date, 'd/MM/yyyy'),
+    (date: string) => DateTime.fromFormat(date, 'dd/MM/yyyy'),
   ]
   let result
   for (let index = 0; index < tryParseMethods.length; index++) {
