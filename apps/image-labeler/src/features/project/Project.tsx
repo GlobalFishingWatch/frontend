@@ -1,8 +1,9 @@
-import { getRouteApi, useNavigate } from '@tanstack/react-router'
+import { Link, getRouteApi, useNavigate } from '@tanstack/react-router'
 import { useCallback, useEffect, useMemo } from 'react'
 import uniqBy from 'lodash/uniqBy'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { Button } from '@globalfishingwatch/ui-components/button'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import {
   useGetLabellingProjectTasksByIdQuery,
   useGetLabellingProjectTasksQuery,
@@ -76,7 +77,12 @@ export function Project() {
 
   return (
     <div className={styles.project}>
-      <h1 className={styles.pageTitle}>Project: {taskData.metadata.name}</h1>
+      <h1 className={styles.pageTitle}>
+        <Link to="/" className={styles.backLink}>
+          <IconButton icon="arrow-left" type="border" />
+        </Link>
+        Project: {taskData.metadata.name}
+      </h1>
       <div className={styles.projectInfo}>
         <div className={styles.projectInfoItem}>
           <label>Big Query Table</label>
