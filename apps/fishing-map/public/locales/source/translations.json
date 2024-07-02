@@ -246,6 +246,8 @@
     "emptyFilters": "No filters available",
     "emptyState": "Your datasets will appear here",
     "extent": "Dataset extent: {{extent}}",
+    "extentEnd": "Dataset end date: {{end}}",
+    "extentStart": "Dataset start date: {{start}}",
     "featuresNameField": "Field to name each area",
     "fieldPlaceholder": "Select a field from your dataset",
     "file": "File",
