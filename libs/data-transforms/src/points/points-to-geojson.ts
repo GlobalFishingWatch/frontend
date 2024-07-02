@@ -1,27 +1,27 @@
 import { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojson'
+import { snakeCase } from 'lodash'
 import { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
 import { PointColumns } from '../types'
 import { parseCoords } from '../coordinates'
 import { getUTCDate } from '../list-to-track-segments'
 
+const normalizePropertiesKeys = (object: Record<string, unknown> | null) => {
+  return Object.entries(object || {}).reduce((acc, [key, value]) => {
+    acc[snakeCase(key)] = value
+    return acc
+  }, {} as Record<string, unknown>)
+}
+
 export const cleanProperties = (
   object: GeoJsonProperties,
   schema: Record<string, DatasetSchema | DatasetSchemaItem> | undefined
 ) => {
-  const result = Object.entries(object || {}).reduce(
-    (acc, [key, value]) => {
-      if (acc) {
-        acc[key.toLowerCase()] = value
-      }
-      return acc
-    },
-    {} as Record<string, any>
-  )
+  const result = normalizePropertiesKeys(object)
   for (const property in result) {
     const propertySchema = schema?.[property]
     if (result[property] !== null) {
       if (propertySchema?.type === 'string') {
-        result[property] = result[property].toString()
+        result[property] = String(result[property])
       } else if (
         (propertySchema?.type === 'coordinate' || propertySchema?.type === 'range') &&
         isNaN(Number(result[property]))
@@ -38,17 +38,20 @@ export const pointsListToGeojson = (
   { latitude, longitude, id, startTime, endTime, schema }: PointColumns
 ) => {
   const features: Feature<Point>[] = data.flatMap((point, index) => {
-    if (!point[latitude] || !point[longitude]) return []
-    const coords = parseCoords(point[latitude] as number, point[longitude] as number)
+    const cleanedPoint = normalizePropertiesKeys(point)
+    if (!cleanedPoint[latitude] || !cleanedPoint[longitude]) return []
+    const coords = parseCoords(cleanedPoint[latitude] as number, cleanedPoint[longitude] as number)
     if (coords) {
-      const cleanedProperties = cleanProperties(point, schema)
+      const cleanedProperties = cleanProperties(cleanedPoint, schema)
       return {
         type: 'Feature',
         properties: {
           ...cleanedProperties,
-          ...(startTime && { [startTime]: getUTCDate(point[startTime]).getTime() }),
-          ...(endTime && { [endTime]: getUTCDate(point[endTime]).getTime() }),
-          id: id && point[id] ? point[id] : index,
+          ...(startTime && {
+            [startTime]: getUTCDate(cleanedPoint[startTime] as string).getTime(),
+          }),
+          ...(endTime && { [endTime]: getUTCDate(cleanedPoint[endTime] as string).getTime() }),
+          id: id && cleanedPoint[id] ? cleanedPoint[id] : index,
         },
         geometry: {
           type: 'Point',
