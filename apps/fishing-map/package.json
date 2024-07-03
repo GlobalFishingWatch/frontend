@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/fishing-map",
-  "version": "2.3.6",
+  "version": "2.3.9",
   "private": true,
   "scripts": {
     "dev": "next",

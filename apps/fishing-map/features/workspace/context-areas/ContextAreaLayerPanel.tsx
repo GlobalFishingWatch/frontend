@@ -45,6 +45,7 @@ import {
   getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
+import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/layer-library/layers-context'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -287,10 +288,11 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       </div>
-      {layerActive && (
+      {layerActive && dataview.id.includes(OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID) && (
         <OutOfTimerangeDisclaimer
           className={cx(styles.properties, styles.filters)}
           dataview={dataview}
+          validate="start"
         />
       )}
       {layerActive && (DATAVIEWS_WARNING.includes(dataview?.id) || hasSchemaFilterSelection) && (

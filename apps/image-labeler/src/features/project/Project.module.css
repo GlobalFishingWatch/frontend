@@ -9,6 +9,10 @@
   width: 30rem;
 }
 
+.backLink {
+  margin-right: var(--space-XS);
+}
+
 .pageTitle {
   font: var(--font-XL);
   margin-bottom: var(--space-M);

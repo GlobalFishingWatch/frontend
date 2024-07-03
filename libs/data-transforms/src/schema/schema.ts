@@ -15,6 +15,13 @@ type GetFieldSchemaParams = {
 }
 const MAX_SCHEMA_ENUM_VALUES = 100
 
+export const normalizePropertiesKeys = (object: Record<string, any> | null) => {
+  return Object.entries(object || {}).reduce((acc, [key, value]) => {
+    acc[snakeCase(key)] = value
+    return acc
+  }, {} as Record<string, any>)
+}
+
 export const getFieldSchema = (
   field: string,
   values: any[],
@@ -130,7 +137,7 @@ export const getDatasetSchemaFromGeojson = (
       const uniqDataValues = uniq(geojson.features.flatMap((d) => d.properties?.[field] || []))
       const schema = getFieldSchema(field, uniqDataValues, getFieldSchemaParams)
       if (schema) {
-        return { ...acc, [field.toLowerCase()]: schema }
+        return { ...acc, [snakeCase(field)]: schema }
       }
       return acc
     },
@@ -153,7 +160,7 @@ export const getDatasetSchemaFromList = (
       const uniqDataValues = uniq(data.flatMap((d) => d[field] || []))
       const schema = getFieldSchema(field, uniqDataValues, getFieldSchemaParams)
       if (schema) {
-        return { ...acc, [field]: schema }
+        return { ...acc, [snakeCase(field)]: schema }
       }
       return acc
     },

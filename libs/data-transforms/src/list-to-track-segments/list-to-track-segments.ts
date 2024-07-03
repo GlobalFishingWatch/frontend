@@ -3,6 +3,7 @@ import { DateTime, DateTimeOptions } from 'luxon'
 import { TrackSegment } from '@globalfishingwatch/api-types'
 import { SegmentColumns } from '../types'
 import { parseCoords } from '../coordinates'
+import { normalizePropertiesKeys } from '../schema'
 
 type Args = SegmentColumns & {
   records: Record<string, any>[]
@@ -75,7 +76,8 @@ export const listToTrackSegments = ({
       : { [Object.keys(groupedLines)[index]]: line }
     return Object.values(groupedSegments)
       .map((segment) => {
-        return segment.flatMap((record) => {
+        return segment.flatMap((dirtyRecord) => {
+          const record = normalizePropertiesKeys(dirtyRecord)
           const recordId = lineId && record[lineId] ? record[lineId] : NO_RECORD_ID
           if (record[latitude] && record[longitude]) {
             const { [latitude]: latitudeValue, [longitude]: longitudeValue, ...properties } = record

@@ -234,6 +234,10 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    * These properties would be available on the tile features
    */
   valueProperties?: string[]
+  /**
+   * Maximum zoom level for which tiles are available https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-maxzoom
+   */
+  maxzoom: number
 }
 
 export type GlobalUserPointsGeneratorConfig = Required<
