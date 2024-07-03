@@ -14,7 +14,6 @@ import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
-  TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
   FISHING_DATAVIEW_SLUG,
   // TEMPLATE_VESSEL_DATAVIEW_SLUG,

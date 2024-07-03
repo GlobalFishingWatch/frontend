@@ -5,7 +5,6 @@ import {
   useDeckLayerComposer,
   useDeckLayerLoadedState,
 } from '@globalfishingwatch/deck-layer-composer'
-import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import { useGlobalConfigConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsWorkspaceIndexLocation, selectIsUserLocation } from 'routes/routes.selectors'
@@ -18,7 +17,7 @@ import {
   selectShowWorkspaceDetail,
   selectWorkspacesListDataview,
 } from './map.selectors'
-import useRulers, { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
+import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
 
 export const useMapDataviewsLayers = () => {
   const workspaceStatus = useSelector(selectWorkspaceStatus)

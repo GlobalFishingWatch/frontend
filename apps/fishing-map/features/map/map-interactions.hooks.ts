@@ -8,6 +8,7 @@ import {
   useSetMapHoverInteraction,
   InteractionEvent,
   InteractionEventType,
+  useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import {
   ClusterPickingObject,
@@ -24,8 +25,9 @@ import { useMapErrorNotification } from 'features/map/overlays/error-notificatio
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import { isRulerLayerPoint } from './map-interaction.utils'
+import { isRulerLayerPoint, isTilesClusterLayer } from './map-interaction.utils'
 import {
   SliceExtendedClusterPickingObject,
   SliceInteractionEvent,
@@ -39,6 +41,15 @@ import {
 } from './map.slice'
 import { useSetViewState } from './map-viewport.hooks'
 
+export const useMapClusterTilesLoading = () => {
+  const eventsDataviews = useSelector(selectEventsDataviews)
+  const eventsDeckLayers = useGetDeckLayers(eventsDataviews?.map((d) => d.id))
+  if (!eventsDeckLayers?.length) {
+    return false
+  }
+  return eventsDeckLayers.some((layer) => !layer.instance.isLoaded)
+}
+
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
@@ -48,8 +59,7 @@ export const useClickedEventConnect = () => {
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { rulersEditing, onRulerMapClick } = useRulers()
-  // TODO:deck tilesClusterLoaded from Layer instance
-  const tilesClusterLoaded = true
+  const areTilesClusterLoading = useMapClusterTilesLoading()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
@@ -88,7 +98,7 @@ export const useClickedEventConnect = () => {
     if (clusterFeature?.properties?.expansionZoom) {
       const { count, expansionZoom, lat, lon } = clusterFeature.properties
       if (count > 1) {
-        if (tilesClusterLoaded && lat && lon) {
+        if (!areTilesClusterLoading && lat && lon) {
           setViewState({
             latitude: lat,
             longitude: lon,
@@ -314,8 +324,7 @@ export const useMapMouseClick = () => {
 }
 
 export const useMapCursor = () => {
-  const { isMapDrawing } = useMapDrawConnect()
-  // const { getDrawCursor } = useDrawLayer()
+  const areClusterTilesLoading = useMapClusterTilesLoading()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing } = useRulers()
@@ -325,6 +334,14 @@ export const useMapCursor = () => {
     ({ isDragging }: { isDragging: boolean }) => {
       if (hoverFeatures?.some(isRulerLayerPoint)) {
         return 'move'
+      }
+      if (hoverFeatures?.some(isTilesClusterLayer)) {
+        if (areClusterTilesLoading) {
+          return 'wait'
+        }
+        return (hoverFeatures as ClusterPickingObject[]).some((f) => f.properties?.count > 1)
+          ? 'zoom-in'
+          : 'pointer'
       }
       if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
         return 'crosshair'
@@ -337,7 +354,13 @@ export const useMapCursor = () => {
       }
       return 'grab'
     },
-    [rulersEditing, isMapAnnotating, isErrorNotificationEditing, hoverFeatures]
+    [
+      hoverFeatures,
+      rulersEditing,
+      isMapAnnotating,
+      areClusterTilesLoading,
+      isErrorNotificationEditing,
+    ]
   )
 
   return getCursor
