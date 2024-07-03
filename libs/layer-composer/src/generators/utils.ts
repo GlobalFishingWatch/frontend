@@ -56,43 +56,62 @@ const getFallbackFilterExpression = (property: string, fallback: number) => {
 export const getTimeFilterForUserContextLayer = (
   config: GlobalUserContextGeneratorConfig | GlobalUserPointsGeneratorConfig
 ): FilterSpecification | undefined => {
-  if (!config?.startTimeFilterProperty && !config?.endTimeFilterProperty) return undefined
+  if (!config?.startTimeFilterProperty && !config?.endTimeFilterProperty) {
+    return undefined
+  }
+
   const startMs = new Date(config.start).getTime()
   const endMs = new Date(config.end).getTime()
-  if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
+
+  if (config.timeFilterType === 'date') {
     return [
       'all',
-      ['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs],
-      [
-        '>=',
-        getFallbackFilterExpression(config.endTimeFilterProperty, Number.MAX_SAFE_INTEGER),
-        startMs,
-      ],
+      ['>=', ['to-number', ['get', config.startTimeFilterProperty]], startMs],
+      ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs],
     ]
   }
+
+  const filters: Array<any> = ['all']
   // Show for every time range after the start
   if (config?.startTimeFilterProperty) {
-    return [
-      'all',
-      ['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs],
-      ['>=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), startMs],
-    ]
+    filters.push(['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs])
   }
   if (config?.endTimeFilterProperty) {
     // Show for every time range before the end
-    return [
-      'all',
-      [
+    filters.push(['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs])
+  }
+  return undefined
+}
+
+export const getFilterForUserPointsLayer = (
+  config: GlobalUserPointsGeneratorConfig
+): FilterSpecification => {
+  const startMs = new Date(config.start).getTime()
+  const endMs = new Date(config.end).getTime()
+  const filters: Array<any> = ['all']
+  if (config.timeFilterType === 'date') {
+    filters.push(
+      ['>=', ['get', getFallbackFilterExpression(config.startTimeFilterProperty, 0)], startMs],
+      ['<=', ['get', getFallbackFilterExpression(config.startTimeFilterProperty, 0)], endMs]
+    )
+  } else {
+    if (config?.startTimeFilterProperty) {
+      // Show for every time range after the start
+      filters.push(['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs])
+    }
+    if (config?.endTimeFilterProperty) {
+      // Show for every time range before the end
+      filters.push([
         '>=',
         getFallbackFilterExpression(config.endTimeFilterProperty, Number.MAX_SAFE_INTEGER),
         startMs,
-      ],
-      [
-        '<=',
-        getFallbackFilterExpression(config.endTimeFilterProperty, Number.MAX_SAFE_INTEGER),
-        endMs,
-      ],
-    ]
+      ])
+    }
   }
-  return undefined
+  if (config?.filters) {
+    Object.entries(config.filters).forEach(([key, values]) => {
+      filters.push(['match', ['to-string', ['get', key]], values, true, false])
+    })
+  }
+  return filters as FilterSpecification
 }
