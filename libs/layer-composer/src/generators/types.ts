@@ -250,6 +250,11 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    */
   timeFilterType?: TimeFilterType
   /**
+   * Include features that don't contain and endDate property
+   * filtering by dateRange assumes that the feature is still active
+   */
+  includeWithoutEndDate?: boolean
+  /**
    * Feature property to drive timestamps filtering
    */
   startTimeFilterProperty?: string

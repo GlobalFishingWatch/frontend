@@ -107,7 +107,10 @@ export const getFilterForUserPointsLayer = (
       // Show for every time range before the end
       filters.push([
         '>=',
-        getFallbackFilterExpression(config.endTimeFilterProperty, Number.MAX_SAFE_INTEGER),
+        getFallbackFilterExpression(
+          config.endTimeFilterProperty,
+          config.includeWithoutEndDate ? Number.MAX_SAFE_INTEGER : 0
+        ),
         startMs,
       ])
     }

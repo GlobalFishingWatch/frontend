@@ -115,7 +115,7 @@ function NewPolygonDataset({
         setTimeFilterError(
           t('datasetUpload.errors.invalidDatesFeatures', {
             defaultValue:
-              "Some of your {{featureType}} don't contain a valid date and won't be filtered properly.",
+              "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
             featureType: t('common.polygons', 'polygons'),
           })
         )
