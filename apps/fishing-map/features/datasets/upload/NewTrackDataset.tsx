@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 import { useCallback, useEffect, useState } from 'react'
 import { FeatureCollection } from 'geojson'
 import {
@@ -45,6 +46,7 @@ function NewTrackDataset({
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [timeFilterError, setTimeFilterError] = useState<string>('')
   const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -76,6 +78,12 @@ function NewTrackDataset({
     dataset: datasetMetadata,
     property: 'longitude',
   })
+
+  const timeFilterType = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'timeFilterType',
+  })
+
   const startTimeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
     property: 'startTime',
@@ -102,6 +110,17 @@ function NewTrackDataset({
           setSourceData(data as DataList)
           const geojson = getTrackFromList(data as DataList, datasetMetadata)
           setGeojson(geojson)
+          if (startTimeProperty && geojson.metadata?.hasDatesError) {
+            setTimeFilterError(
+              t('datasetUpload.errors.invalidDatesFeatures', {
+                defaultValue:
+                  "Some of your {{featureType}} don't contain a valid date and won't be filtered properly.",
+                featureType: t('common.points', 'points'),
+              })
+            )
+          } else {
+            setTimeFilterError('')
+          }
         } else {
           setGeojson(data as FeatureCollection)
         }
@@ -111,7 +130,7 @@ function NewTrackDataset({
         onDatasetParseError(e, setDataParseError)
       }
     },
-    [setDatasetMetadata, onDatasetParseError]
+    [setDatasetMetadata, startTimeProperty, t, onDatasetParseError]
   )
 
   useEffect(() => {
@@ -127,6 +146,17 @@ function NewTrackDataset({
     if (sourceData) {
       const geojson = getTrackFromList(sourceData, datasetMetadata)
       setGeojson(geojson)
+      if (startTimeProperty && geojson.metadata?.hasDatesError) {
+        setTimeFilterError(
+          t('datasetUpload.errors.invalidDatesFeatures', {
+            defaultValue:
+              "Some of your {{featureType}} don't contain a valid date and won't be filtered properly.",
+            featureType: t('common.points', 'points'),
+          })
+        )
+      } else {
+        setTimeFilterError('')
+      }
       if (!geojson.features.some((f) => f.geometry.coordinates?.[0]?.length >= 2)) {
         if (lineIdProperty || segmentIdProperty) {
           setError(
@@ -146,6 +176,7 @@ function NewTrackDataset({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    timeFilterType,
     lineIdProperty,
     endTimeProperty,
     latitudeProperty,
@@ -251,11 +282,13 @@ function NewTrackDataset({
         )}
         <div className={styles.row}>
           <TimeFieldsGroup
+            filterOptions={['none', 'date']}
             datasetMetadata={datasetMetadata}
             setDatasetMetadataConfig={setDatasetMetadataConfig}
             disabled={loading || isEditing}
           />
         </div>
+        <p className={cx(styles.errorMsg, styles.errorMargin)}>{timeFilterError}</p>
         {isCSVFile && (
           <div className={styles.row}>
             <NewDatasetField

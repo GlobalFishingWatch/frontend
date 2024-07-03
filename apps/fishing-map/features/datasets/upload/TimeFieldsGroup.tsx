@@ -15,24 +15,28 @@ import styles from './NewDataset.module.css'
 type TimeFilterTypeOption = TimeFilterType | 'none'
 const TIME_FILTER_OPTIONS: TimeFilterTypeOption[] = ['none', 'date', 'dateRange']
 
-export const getTimeFilterOptions = (): SelectOption<TimeFilterTypeOption>[] => {
-  return TIME_FILTER_OPTIONS.map((id) => ({ id, label: t(`datasetUpload.${id}`, id as string) }))
+export const getTimeFilterOptions = (
+  filterOptions = TIME_FILTER_OPTIONS
+): SelectOption<TimeFilterTypeOption>[] => {
+  return filterOptions.map((id) => ({ id, label: t(`datasetUpload.${id}`, id as string) }))
 }
 
 type TimeFieldsGroupProps = {
+  filterOptions?: TimeFilterTypeOption[]
   datasetMetadata: DatasetMetadata
   setDatasetMetadataConfig: (config: Partial<DatasetConfiguration | DatasetConfigurationUI>) => void
   disabled?: boolean
 }
 
 export const TimeFieldsGroup = ({
+  filterOptions = TIME_FILTER_OPTIONS,
   datasetMetadata,
   setDatasetMetadataConfig,
   disabled = false,
 }: TimeFieldsGroupProps) => {
   const { t } = useTranslation()
   const { fieldsOptions, getSelectedOption } = useDatasetMetadataOptions(datasetMetadata)
-  const timeFilterOptions = getTimeFilterOptions()
+  const timeFilterOptions = getTimeFilterOptions(filterOptions)
   const geometryType = datasetMetadata?.configuration?.configurationUI?.geometryType
   const timeFilterType = getDatasetConfigurationProperty({
     dataset: datasetMetadata,

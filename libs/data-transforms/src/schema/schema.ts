@@ -1,5 +1,6 @@
-import { max, min, snakeCase, uniq } from 'lodash'
+import { max, min, snakeCase, toNumber, uniq } from 'lodash'
 import { FeatureCollection } from 'geojson'
+import { DateTime, DateTimeOptions } from 'luxon'
 import {
   Dataset,
   DatasetConfigurationUI,
@@ -14,6 +15,34 @@ type GetFieldSchemaParams = {
   maxSchemaEnumValues?: number
 }
 const MAX_SCHEMA_ENUM_VALUES = 100
+
+type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
+
+export const getUTCDate = (timestamp: string | number) => {
+  // it could receive a timestamp as a string
+  const millis = toNumber(timestamp)
+  if (typeof timestamp === 'number' || !isNaN(millis))
+    return DateTime.fromMillis(millis, { zone: 'UTC' }).toJSDate()
+
+  const tryParseMethods: DateTimeParseFunction[] = [
+    DateTime.fromISO,
+    DateTime.fromSQL,
+    DateTime.fromRFC2822,
+  ]
+  let result
+  for (let index = 0; index < tryParseMethods.length; index++) {
+    const parse = tryParseMethods[index]
+    try {
+      result = parse(timestamp, { zone: 'UTC' })
+      if (result.isValid) {
+        return result.toJSDate()
+      }
+    } catch (e) {
+      return new Date('Invalid Date')
+    }
+  }
+  return new Date('Invalid Date')
+}
 
 export const normalizePropertiesKeys = (object: Record<string, any> | null) => {
   return Object.entries(object || {}).reduce((acc, [key, value]) => {

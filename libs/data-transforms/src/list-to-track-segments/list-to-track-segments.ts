@@ -1,44 +1,12 @@
-import { groupBy, toNumber } from 'lodash'
-import { DateTime, DateTimeOptions } from 'luxon'
+import { groupBy } from 'lodash'
 import { Segment } from '@globalfishingwatch/api-types'
 import { SegmentColumns } from '../types'
 import { parseCoords } from '../coordinates'
-import { normalizePropertiesKeys } from '../schema'
+import { getUTCDate, normalizePropertiesKeys } from '../schema'
 
 type Args = SegmentColumns & {
   records: Record<string, any>[]
   lineColorBarOptions: { value: string }[]
-}
-
-type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
-
-export const getUTCDate = (timestamp: string | number) => {
-  // it could receive a timestamp as a string
-  const millis = toNumber(timestamp)
-  if (typeof timestamp === 'number' || !isNaN(millis))
-    return DateTime.fromMillis(millis, { zone: 'utc' }).toJSDate()
-
-  const tryParseMethods: DateTimeParseFunction[] = [
-    DateTime.fromISO,
-    DateTime.fromSQL,
-    DateTime.fromRFC2822,
-    (date: string) => DateTime.fromFormat(date, 'd/M/yyyy'),
-    (date: string) => DateTime.fromFormat(date, 'd/MM/yyyy'),
-    (date: string) => DateTime.fromFormat(date, 'dd/MM/yyyy'),
-  ]
-  let result
-  for (let index = 0; index < tryParseMethods.length; index++) {
-    const parse = tryParseMethods[index]
-    try {
-      result = parse(timestamp, { zone: 'UTC' })
-      if (result.isValid) {
-        return result.toJSDate()
-      }
-    } catch (e) {
-      return new Date('Invalid Date')
-    }
-  }
-  return new Date('Invalid Date')
 }
 
 export const NO_RECORD_ID = 'no_id'
@@ -65,7 +33,8 @@ export const listToTrackSegments = ({
   segmentId,
   lineId,
   lineColorBarOptions,
-}: Args): Segment[][] => {
+}: Args): { segments: Segment[][]; metadata: Record<string, any> } => {
+  let hasDatesError = false
   const hasIdGroup = lineId !== undefined && lineId !== ''
   const hasSegmentId = segmentId !== undefined && segmentId !== ''
   const recordsArray = Array.isArray(records) ? records : [records]
@@ -73,7 +42,7 @@ export const listToTrackSegments = ({
     ? sortRecordsByTimestamp({ recordsArray, timestampProperty: startTime })
     : recordsArray
   const groupedLines = hasIdGroup ? groupBy(sortedRecords, lineId) : { no_id: sortedRecords }
-  const lines = Object.values(groupedLines).map((line, index) => {
+  const segments = Object.values(groupedLines).map((line, index) => {
     const groupedSegments = hasSegmentId
       ? groupBy(line, segmentId)
       : { [Object.keys(groupedLines)[index]]: line }
@@ -86,6 +55,10 @@ export const listToTrackSegments = ({
             const { [latitude]: latitudeValue, [longitude]: longitudeValue, ...properties } = record
             const coords = parseCoords(latitudeValue, longitudeValue)
             if (coords) {
+              const startTimeMs = startTime ? getUTCDate(record[startTime]).getTime() : undefined
+              if (startTimeMs !== undefined && isNaN(startTimeMs)) {
+                hasDatesError = true
+              }
               const segmentProperties = {
                 ...(hasIdGroup && {
                   [lineId]: properties[lineId],
@@ -100,8 +73,7 @@ export const listToTrackSegments = ({
                   coordinateProperties: properties,
                   latitude: coords.latitude as number,
                   longitude: coords.longitude as number,
-                  ...(startTime &&
-                    record[startTime] && { timestamp: getUTCDate(record[startTime]).getTime() }),
+                  ...(startTimeMs && { timestamp: startTimeMs }),
                   id: recordId,
                 },
               ]
@@ -111,5 +83,5 @@ export const listToTrackSegments = ({
       })
       .filter((segment) => segment.length > 0)
   })
-  return lines
+  return { segments, metadata: { hasDatesError } }
 }

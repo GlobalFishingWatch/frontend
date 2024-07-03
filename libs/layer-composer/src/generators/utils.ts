@@ -71,15 +71,19 @@ export const getTimeFilterForUserContextLayer = (
     ]
   }
 
-  const filters: Array<any> = ['all']
-  // Show for every time range after the start
-  if (config?.startTimeFilterProperty) {
-    filters.push(['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs])
+  if (config.timeFilterType === 'dateRange') {
+    const filters: Array<any> = ['all']
+    // Show for every time range after the start
+    if (config?.startTimeFilterProperty) {
+      filters.push(['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs])
+    }
+    if (config?.endTimeFilterProperty) {
+      // Show for every time range before the end
+      filters.push(['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs])
+    }
+    return filters as FilterSpecification
   }
-  if (config?.endTimeFilterProperty) {
-    // Show for every time range before the end
-    filters.push(['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs])
-  }
+
   return undefined
 }
 
@@ -91,10 +95,10 @@ export const getFilterForUserPointsLayer = (
   const filters: Array<any> = ['all']
   if (config.timeFilterType === 'date') {
     filters.push(
-      ['>=', ['get', getFallbackFilterExpression(config.startTimeFilterProperty, 0)], startMs],
-      ['<=', ['get', getFallbackFilterExpression(config.startTimeFilterProperty, 0)], endMs]
+      ['>=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), startMs],
+      ['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs]
     )
-  } else {
+  } else if (config.timeFilterType === 'dateRange') {
     if (config?.startTimeFilterProperty) {
       // Show for every time range after the start
       filters.push(['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs])
