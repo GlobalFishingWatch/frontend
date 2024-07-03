@@ -71,8 +71,6 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const onCategoryClick = useCallback(() => {
     setViewState(DEFAULT_WORKSPACE_LIST_VIEWPORT)
     dispatchClickedEvent(null)
-    // TODO:deck:featureState review if this still needed
-    // cleanFeatureState('highlight')
   }, [setViewState, dispatchClickedEvent])
 
   const onSearchClick = useCallback(() => {

@@ -298,7 +298,6 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
               <ExpandedContainer
                 visible={filterOpen}
                 onClickOutside={closeExpandedContainer}
-                // TODO:deck show speed and elevation filters based on dataview fields config
                 component={<Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />}
               >
                 <div className={styles.filterButtonWrapper}>

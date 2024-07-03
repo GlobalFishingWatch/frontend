@@ -19,11 +19,7 @@ const MapAnnotationsControls = () => {
 
   const onToggleClick = useCallback(() => {
     toggleMapAnnotationEdit()
-    if (isMapAnnotating) {
-      // TODO:deck:featureState review if this still needed
-      // cleanFeatureState('click')
-    }
-  }, [isMapAnnotating, toggleMapAnnotationEdit])
+  }, [toggleMapAnnotationEdit])
 
   const onRemoveClick = useCallback(() => {
     resetMapAnnotation()

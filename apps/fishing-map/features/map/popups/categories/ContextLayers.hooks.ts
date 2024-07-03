@@ -65,8 +65,6 @@ export const useContextInteractions = () => {
         dispatch(setClickedEvent(null))
         dispatch(fetchAreaDetailThunk({ datasetId, areaId, areaName }))
       }
-      // TODO:deck:featureState review if this still needed
-      // cleanFeatureState('highlight')
     },
     [datasets, dataviews, dispatch]
   )
@@ -108,8 +106,7 @@ export const useContextInteractions = () => {
         console.warn('No areaId available in the feature to report', feature)
         return
       }
-      // TODO:deck check if we can remove source from the url
-      if (areaId?.toString() !== featureAreaId /*|| sourceId !== feature.source */) {
+      if (areaId?.toString() !== featureAreaId) {
         setReportArea(feature)
       }
     },

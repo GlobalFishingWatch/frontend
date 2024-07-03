@@ -74,7 +74,6 @@ function MapScreenshot() {
   if (!screenshotImage) return null
 
   // insert the image just below the canvas
-  // TODO:deck migrate this
   const canvasDomElement = document.getElementById(MAP_WRAPPER_ID)
   if (!canvasDomElement) return null
   const size = isPrintSupported

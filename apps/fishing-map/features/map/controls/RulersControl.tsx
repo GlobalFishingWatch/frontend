@@ -21,8 +21,6 @@ const Rulers = () => {
       if (editingRuler) {
         resetEditingRule()
       }
-      // TODO:deck:featureState review if this still needed
-      // cleanFeatureState('click')
     }
     toggleRulersEditing()
   }, [editingRuler, resetEditingRule, rulersEditing, toggleRulersEditing])

@@ -16,6 +16,7 @@ import { rhumbBearing } from '@turf/turf'
 import {
   ApiEvent,
   DataviewCategory,
+  DataviewType,
   EventTypes,
   EventVessel,
   TrackSegment,
@@ -101,6 +102,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       title: this.props.name,
       vesselId: this.props.id,
       category: DataviewCategory.Vessels,
+      subcategory: DataviewType.VesselEvents,
       color: deckToHexColor(this.props.color),
     }
     if (!info.object) {

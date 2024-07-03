@@ -32,6 +32,7 @@ import EnvironmentTooltipSection from 'features/map/popups/categories/Environmen
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
 import {
+  SliceExtendedClusterPickingObject,
   SliceExtendedFourwingsPickingObject,
   selectApiEventStatus,
   selectFishingInteractionStatus,
@@ -144,8 +145,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             return (
               <TileClusterTooltipRow
                 key={featureCategory}
-                // TODO:deck review typings here
-                features={features as any}
+                features={features as SliceExtendedClusterPickingObject[]}
                 showFeaturesDetails={type === 'click'}
               />
             )

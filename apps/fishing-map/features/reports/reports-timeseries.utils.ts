@@ -117,7 +117,6 @@ export const featuresToTimeseries = (
     // })
 
     // TODO:deck review if we can skip this step
-    // TODO:deck review typings
     const valuesContained = frameTimeseriesToDateTimeseries(
       valuesContainedRaw as any
       // compareDeltaMillis
