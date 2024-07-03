@@ -11,6 +11,7 @@ import {
   Anchorage,
   EventTypes,
   DataviewType,
+  TimeFilterType,
 } from '@globalfishingwatch/api-types'
 import { Group } from '..'
 import { Interval } from './heatmap/types'
@@ -158,6 +159,10 @@ export interface UserContextGeneratorConfig extends GeneratorConfig {
    */
   promoteId?: string
   /**
+   * Filter features by date or by dateRange
+   */
+  timeFilterType?: TimeFilterType
+  /**
    * Feature property to drive timestamps filtering
    */
   startTimeFilterProperty?: string
@@ -197,14 +202,6 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    */
   filters?: Record<string, any>
   /**
-   * Feature property to drive timestamps filtering
-   */
-  startTimeFilterProperty?: string
-  /**
-   * Feature property to drive timestamps filtering
-   */
-  endTimeFilterProperty?: string
-  /**
    * Feature property to drive circle radius
    */
   circleRadiusProperty?: string
@@ -238,6 +235,23 @@ export interface UserPointsGeneratorConfig extends GeneratorConfig {
    * Maximum zoom level for which tiles are available https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/#vector-maxzoom
    */
   maxzoom: number
+  /**
+   * Filter features by date or by dateRange
+   */
+  timeFilterType?: TimeFilterType
+  /**
+   * Include features that don't contain and endDate property
+   * filtering by dateRange assumes that the feature is still active
+   */
+  includeWithoutEndDate?: boolean
+  /**
+   * Feature property to drive timestamps filtering
+   */
+  startTimeFilterProperty?: string
+  /**
+   * Feature property to drive timestamps filtering
+   */
+  endTimeFilterProperty?: string
 }
 
 export type GlobalUserPointsGeneratorConfig = Required<

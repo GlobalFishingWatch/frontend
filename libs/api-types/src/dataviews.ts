@@ -130,6 +130,7 @@ export interface DataviewConfig<Type = DataviewType> {
   trackThinningZoomConfig?: Record<number, string>
   /** Fourwings layers merged, needed for Activity or Detections */
   sublayers?: DataviewSublayerConfig[]
+  includeWithoutEndDate?: boolean
 }
 
 export interface DataviewDatasetConfigParam {

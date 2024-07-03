@@ -50,8 +50,11 @@ const segmentsToFeatures = (segment: TrackSegment | TrackSegment[]): Feature<Lin
   return features
 }
 
-const segmentsToGeoJSON = (segments: TrackSegment[] | TrackSegment[][]) => {
-  const geoJSON: FeatureCollection<LineString> = {
+const segmentsToGeoJSON = (
+  segments: TrackSegment[] | TrackSegment[][],
+  metadata?: Record<string, any>
+) => {
+  const geoJSON: FeatureCollection<LineString> & { metadata?: Record<string, any> } = {
     type: 'FeatureCollection',
     features: [],
   }
@@ -59,6 +62,8 @@ const segmentsToGeoJSON = (segments: TrackSegment[] | TrackSegment[][]) => {
     if (!segment.length) return []
     return segmentsToFeatures(segment)
   })
+
+  geoJSON.metadata = metadata
 
   return geoJSON
 }

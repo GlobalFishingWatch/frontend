@@ -10,6 +10,8 @@ import {
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -28,6 +30,8 @@ import styles from './NewDataset.module.css'
 import { getDatasetParsed } from './datasets-parse.utils'
 import FileDropzone from './FileDropzone'
 
+type PolygonFeatureCollection = FeatureCollection<Polygon> & { metadata: Record<string, any> }
+
 function NewPolygonDataset({
   onConfirm,
   file,
@@ -37,16 +41,32 @@ function NewPolygonDataset({
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [timeFilterError, setTimeFilterError] = useState<string>('')
   const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const [geojson, setGeojson] = useState<FeatureCollection<Polygon> | undefined>()
+  const [geojson, setGeojson] = useState<PolygonFeatureCollection | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
   const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
   const fileType = getFileType(file)
+
+  const timeFilterType = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'timeFilterType',
+  })
+
+  const startTimeProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'startTime',
+  })
+
+  const endTimeProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'endTime',
+  })
 
   const handleRawData = useCallback(
     async (file: File) => {
@@ -60,7 +80,7 @@ function NewPolygonDataset({
           sourceFormat: fileType,
         })
         setDatasetMetadata(datasetMetadata)
-        setGeojson(data as FeatureCollection<Polygon>)
+        setGeojson(data as PolygonFeatureCollection)
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
@@ -78,6 +98,33 @@ function NewPolygonDataset({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataset, file])
+
+  useEffect(() => {
+    if (timeFilterType && (startTimeProperty || endTimeProperty)) {
+      const hasDateError = geojson?.features.some((feature) => {
+        const isValidStartDate = startTimeProperty
+          ? !isNaN(getUTCDate(feature.properties?.[startTimeProperty]).getTime())
+          : true
+        const isValidEndDate =
+          timeFilterType === 'dateRange' && endTimeProperty
+            ? !isNaN(getUTCDate(feature.properties?.[startTimeProperty]).getTime())
+            : true
+        return !isValidStartDate || !isValidEndDate
+      })
+      if (hasDateError) {
+        setTimeFilterError(
+          t('datasetUpload.errors.invalidDatesFeatures', {
+            defaultValue:
+              "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
+            featureType: t('common.polygons', 'polygons'),
+          })
+        )
+      }
+    } else {
+      setTimeFilterError('')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeFilterType, startTimeProperty, endTimeProperty])
 
   const onConfirmClick = useCallback(async () => {
     if (datasetMetadata && onConfirm) {
@@ -177,6 +224,7 @@ function NewPolygonDataset({
             disabled={loading}
           />
         </div>
+        <span className={styles.errorMsg}>{timeFilterError}</span>
         <MultiSelect
           className={styles.input}
           label={t('datasetUpload.polygons.filters', 'Polygon filters')}
