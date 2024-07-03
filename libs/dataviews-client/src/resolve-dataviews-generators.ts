@@ -434,6 +434,9 @@ export function getGeneratorConfig(
           generator.attribution = getDatasetAttribution(dataset)
         }
         const config = getDatasetConfiguration(dataset)
+        if (config?.includeWithoutEndDate !== undefined) {
+          generator.includeWithoutEndDate = config.includeWithoutEndDate
+        }
         if (config?.valueProperties) {
           generator.valueProperties = config.valueProperties
         }

@@ -5,13 +5,12 @@ export type LabellingProject = {
   bqQuery: string
   bqTable: string
   gcsThumbnails: string
+  scale: string
 }
 
 export type LabellingTask = {
   id: string
   labels: string[]
-  metadata: {
-    score: number
-  }
+  metadata: Record<string, any>
   thumbnails: string[]
 }

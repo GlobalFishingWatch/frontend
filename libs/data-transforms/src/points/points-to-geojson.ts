@@ -2,8 +2,7 @@ import { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojson'
 import { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
 import { PointColumns } from '../types'
 import { parseCoords } from '../coordinates'
-import { getUTCDate } from '../list-to-track-segments'
-import { normalizePropertiesKeys } from '../schema'
+import { getUTCDate, normalizePropertiesKeys } from '../schema'
 
 export const cleanProperties = (
   object: GeoJsonProperties,
@@ -30,20 +29,31 @@ export const pointsListToGeojson = (
   data: Record<string, any>[],
   { latitude, longitude, id, startTime, endTime, schema }: PointColumns
 ) => {
+  let hasDatesError = false
   const features: Feature<Point>[] = data.flatMap((point, index) => {
     const cleanedPoint = normalizePropertiesKeys(point)
     if (!cleanedPoint[latitude] || !cleanedPoint[longitude]) return []
     const coords = parseCoords(cleanedPoint[latitude] as number, cleanedPoint[longitude] as number)
     if (coords) {
       const cleanedProperties = cleanProperties(cleanedPoint, schema)
+      const startTimeMs = startTime
+        ? getUTCDate(cleanedPoint[startTime] as string).getTime()
+        : undefined
+      if (startTimeMs !== undefined && isNaN(startTimeMs)) {
+        hasDatesError = true
+      }
+      const endTimeMs = endTime ? getUTCDate(cleanedPoint[endTime] as string).getTime() : undefined
+      if (endTimeMs !== undefined && isNaN(endTimeMs)) {
+        hasDatesError = true
+      }
       return {
         type: 'Feature',
         properties: {
           ...cleanedProperties,
           ...(startTime && {
-            [startTime]: getUTCDate(cleanedPoint[startTime] as string).getTime(),
+            [startTime]: startTimeMs,
           }),
-          ...(endTime && { [endTime]: getUTCDate(cleanedPoint[endTime] as string).getTime() }),
+          ...(endTime && { [endTime]: endTimeMs }),
           id: id && cleanedPoint[id] ? cleanedPoint[id] : index,
         },
         geometry: {
@@ -58,6 +68,7 @@ export const pointsListToGeojson = (
   return {
     type: 'FeatureCollection',
     features,
+    metadata: { hasDatesError },
   } as FeatureCollection
 }
 

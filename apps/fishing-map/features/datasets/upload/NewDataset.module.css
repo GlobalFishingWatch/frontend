@@ -49,6 +49,7 @@
   flex: 1;
 }
 
+.errorMargin,
 .input {
   margin-bottom: var(--space-S);
 }

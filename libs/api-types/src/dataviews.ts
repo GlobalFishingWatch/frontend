@@ -26,6 +26,7 @@ export interface DataviewConfig<Type = any> {
   info?: string
   track?: string
   events?: string[]
+  includeWithoutEndDate?: boolean
   /*****************/
   [key: string]: any
 }
