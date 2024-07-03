@@ -97,6 +97,7 @@ export interface DatasetConfigurationUI {
   longitude?: string
   timestamp?: string
   sourceFormat?: DatasetConfigurationSourceFormat
+  includeWithoutEndDate?: boolean // used in infrastructure layer to render points that we consider are still there because don't have end date
   pointName?: string
   pointSize?: string
   maxPointSize?: number

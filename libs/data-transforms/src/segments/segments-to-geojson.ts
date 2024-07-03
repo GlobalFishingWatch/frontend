@@ -13,20 +13,17 @@ const segmentsToFeatures = (segment: Segment | Segment[]): Feature<LineString>[]
       return []
     }
     const times = segment.map((point) => point.timestamp)
-    const coordinateProperties = segment?.reduce(
-      (acc, point) => {
-        const properties = point.coordinateProperties || {}
-        Object.keys(properties).forEach((key) => {
-          if (key === 'timestamp') return
-          if (!acc[key]) {
-            acc[key] = []
-          }
-          acc[key].push(properties[key])
-        })
-        return acc
-      },
-      {} as Record<string, (string | number)[]>
-    )
+    const coordinateProperties = segment?.reduce((acc, point) => {
+      const properties = point.coordinateProperties || {}
+      Object.keys(properties).forEach((key) => {
+        if (key === 'timestamp') return
+        if (!acc[key]) {
+          acc[key] = []
+        }
+        acc[key].push(properties[key])
+      })
+      return acc
+    }, {} as Record<string, (string | number)[]>)
     const feature: Feature<LineString> = {
       type: 'Feature',
       geometry: {
@@ -49,8 +46,8 @@ const segmentsToFeatures = (segment: Segment | Segment[]): Feature<LineString>[]
   return features
 }
 
-const segmentsToGeoJSON = (segments: Segment[] | Segment[][]) => {
-  const geoJSON: FeatureCollection<LineString> = {
+const segmentsToGeoJSON = (segments: Segment[] | Segment[][], metadata?: Record<string, any>) => {
+  const geoJSON: FeatureCollection<LineString> & { metadata?: Record<string, any> } = {
     type: 'FeatureCollection',
     features: [],
   }
@@ -58,6 +55,8 @@ const segmentsToGeoJSON = (segments: Segment[] | Segment[][]) => {
     if (!segment.length) return []
     return segmentsToFeatures(segment)
   })
+
+  geoJSON.metadata = metadata
 
   return geoJSON
 }

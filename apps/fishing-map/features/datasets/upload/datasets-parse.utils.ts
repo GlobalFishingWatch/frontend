@@ -76,25 +76,33 @@ export const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) =>
 }
 
 export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
+  const timeFilterType = getDatasetConfigurationProperty({ dataset, property: 'timeFilterType' })
   const segments = listToTrackSegments({
     records: data,
     latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' }),
     longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' }),
-    startTime: getDatasetConfigurationProperty({ dataset, property: 'startTime' }),
-    endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
+    startTime: timeFilterType
+      ? getDatasetConfigurationProperty({ dataset, property: 'startTime' })
+      : undefined,
     segmentId: getDatasetConfigurationProperty({ dataset, property: 'segmentId' }),
     lineId: getDatasetConfigurationProperty({ dataset, property: 'lineId' }),
     lineColorBarOptions: LineColorBarOptions,
   })
-  return segmentsToGeoJSON(segments)
+  const geojson = segmentsToGeoJSON(segments.segments, segments.metadata)
+  return geojson
 }
 
 export const getGeojsonFromPointsList = (data: Record<string, any>[], dataset: DatasetMetadata) => {
+  const timeFilterType = getDatasetConfigurationProperty({ dataset, property: 'timeFilterType' })
   return pointsListToGeojson(data, {
     latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' }),
     longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' }),
-    startTime: getDatasetConfigurationProperty({ dataset, property: 'startTime' }),
-    endTime: getDatasetConfigurationProperty({ dataset, property: 'endTime' }),
+    startTime: timeFilterType
+      ? getDatasetConfigurationProperty({ dataset, property: 'startTime' })
+      : undefined,
+    endTime: timeFilterType
+      ? getDatasetConfigurationProperty({ dataset, property: 'endTime' })
+      : undefined,
     id: getDatasetConfigurationProperty({ dataset, property: 'idProperty' }),
     schema: dataset.schema,
   })

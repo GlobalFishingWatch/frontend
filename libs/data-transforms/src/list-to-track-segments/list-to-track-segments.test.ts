@@ -1,6 +1,7 @@
 import { parse } from 'papaparse'
 import { guessColumn } from '../schema/guess-columns'
-import { listToTrackSegments, getUTCDate } from './list-to-track-segments'
+import { getUTCDate } from '../schema'
+import { listToTrackSegments } from './list-to-track-segments'
 import { checkRecordValidity } from './check-record-validity'
 const fs = require('fs')
 const path = require('path')
@@ -93,7 +94,7 @@ describe('Basic raw csv to track', () => {
     id: 'individual-local-identifier',
   }
   const lineColorBarOptions = LINE_COLOR_BAR_OPTIONS
-  const segments = listToTrackSegments({
+  const { segments } = listToTrackSegments({
     records: data as Record<string, any>[],
     ...columns,
     lineColorBarOptions,
@@ -201,7 +202,7 @@ describe('Raw csv to track with UTC timestamps', () => {
     id: 'ssvid',
   }
   const lineColorBarOptions = LINE_COLOR_BAR_OPTIONS
-  const segments = listToTrackSegments({
+  const { segments } = listToTrackSegments({
     records: data as Record<string, any>[],
     ...columns,
     lineColorBarOptions,

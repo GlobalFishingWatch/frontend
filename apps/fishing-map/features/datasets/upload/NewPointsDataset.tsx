@@ -43,6 +43,8 @@ import {
 import FileDropzone from './FileDropzone'
 import { TimeFieldsGroup } from './TimeFieldsGroup'
 
+type PointsGeojson = FeatureCollection<Point> & { metadata?: { hasDatesError: boolean } }
+
 function NewPointDataset({
   onConfirm,
   file,
@@ -52,11 +54,12 @@ function NewPointDataset({
 }: NewDatasetProps): React.ReactElement {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
+  const [timeFilterError, setTimeFilterError] = useState<string>('')
   const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataParsed | undefined>()
-  const [geojson, setGeojson] = useState<FeatureCollection<Point> | undefined>()
+  const [geojson, setGeojson] = useState<PointsGeojson | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
@@ -73,6 +76,10 @@ function NewPointDataset({
   const longitudeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
     property: 'longitude',
+  })
+  const timeFilterType = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'timeFilterType',
   })
   const startTimeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -101,14 +108,25 @@ function NewPointDataset({
           const geojson = getGeojsonFromPointsList(
             data as DataList,
             datasetMetadata
-          ) as FeatureCollection<Point>
+          ) as PointsGeojson
           setGeojson(geojson)
+          if ((startTimeProperty || endTimeProperty) && geojson.metadata?.hasDatesError) {
+            setTimeFilterError(
+              t('datasetUpload.errors.invalidDatesFeatures', {
+                defaultValue:
+                  "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
+                featureType: t('common.points', 'points'),
+              })
+            )
+          } else {
+            setTimeFilterError('')
+          }
         } else {
-          setSourceData(data as FeatureCollection)
+          setSourceData(data as PointsGeojson)
           const geojson = getNormalizedGeojsonFromPointsGeojson(
-            data as FeatureCollection,
+            data as PointsGeojson,
             datasetMetadata
-          ) as FeatureCollection<Point>
+          ) as PointsGeojson
           setGeojson(geojson)
         }
         setProcessingData(false)
@@ -117,7 +135,7 @@ function NewPointDataset({
         onDatasetParseError(e, setDataParseError)
       }
     },
-    [setDatasetMetadata, setDataParseError, onDatasetParseError]
+    [setDatasetMetadata, startTimeProperty, endTimeProperty, t, onDatasetParseError]
   )
 
   useEffect(() => {
@@ -135,13 +153,24 @@ function NewPointDataset({
         const geojson = getGeojsonFromPointsList(
           sourceData as DataList,
           datasetMetadata
-        ) as FeatureCollection<Point>
+        ) as PointsGeojson
         setGeojson(geojson)
+        if ((startTimeProperty || endTimeProperty) && geojson.metadata?.hasDatesError) {
+          setTimeFilterError(
+            t('datasetUpload.errors.invalidDatesFeatures', {
+              defaultValue:
+                "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
+              featureType: t('common.points', 'points'),
+            })
+          )
+        } else {
+          setTimeFilterError('')
+        }
       } else {
         const geojson = getNormalizedGeojsonFromPointsGeojson(
           sourceData as FeatureCollection,
           datasetMetadata
-        ) as FeatureCollection<Point>
+        ) as PointsGeojson
         setGeojson(geojson)
       }
     }
@@ -151,6 +180,7 @@ function NewPointDataset({
     longitudeProperty,
     startTimeProperty,
     endTimeProperty,
+    timeFilterType,
     fileType,
     sourceData,
   ])
@@ -248,6 +278,7 @@ function NewPointDataset({
           disabled={loading}
         />
       </div>
+      <span className={styles.errorMsg}>{timeFilterError}</span>
       <Collapsable
         className={styles.optional}
         label={t('datasetUpload.optionalFields', 'Optional fields')}

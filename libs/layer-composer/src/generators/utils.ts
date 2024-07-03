@@ -1,4 +1,4 @@
-import { FilterSpecification } from '@globalfishingwatch/maplibre-gl'
+import { ExpressionSpecification, FilterSpecification } from '@globalfishingwatch/maplibre-gl'
 import {
   AnyGeneratorConfig,
   GlobalUserContextGeneratorConfig,
@@ -44,37 +44,47 @@ export const addURLSearchParams = (url: URL, key: string, values: any[]): URL =>
   return url
 }
 
-export const getTimeFilterForUserContextLayer = (
-  config: GlobalUserContextGeneratorConfig | GlobalUserPointsGeneratorConfig
-): FilterSpecification | undefined => {
-  if (!config?.startTimeFilterProperty && !config?.endTimeFilterProperty) return undefined
-  const startMs = new Date(config.start).getTime()
-  const endMs = new Date(config.end).getTime()
-  if (config?.startTimeFilterProperty && config?.endTimeFilterProperty) {
-    return [
-      'all',
-      ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs],
-      ['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs],
-    ]
-  }
-  // Show for every time range after the start
-  if (config?.startTimeFilterProperty) {
-    return ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs]
-  }
-  if (config?.endTimeFilterProperty) {
-    // Show for every time range before the end
-    return ['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs]
-  }
-  return undefined
-}
-
 const getFallbackFilterExpression = (property: string, fallback: number) => {
   return [
     'case',
     ['>', ['length', ['to-string', ['get', property]]], 0],
     ['to-number', ['get', property]],
     fallback,
-  ]
+  ] as ExpressionSpecification
+}
+
+export const getTimeFilterForUserContextLayer = (
+  config: GlobalUserContextGeneratorConfig | GlobalUserPointsGeneratorConfig
+): FilterSpecification | undefined => {
+  if (!config?.startTimeFilterProperty && !config?.endTimeFilterProperty) {
+    return undefined
+  }
+
+  const startMs = new Date(config.start).getTime()
+  const endMs = new Date(config.end).getTime()
+
+  if (config.timeFilterType === 'date') {
+    return [
+      'all',
+      ['>=', ['to-number', ['get', config.startTimeFilterProperty]], startMs],
+      ['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs],
+    ]
+  }
+
+  if (config.timeFilterType === 'dateRange') {
+    const filters: Array<any> = ['all']
+    // Show for every time range after the start
+    if (config?.startTimeFilterProperty) {
+      filters.push(['<=', ['to-number', ['get', config.startTimeFilterProperty]], endMs])
+    }
+    if (config?.endTimeFilterProperty) {
+      // Show for every time range before the end
+      filters.push(['>=', ['to-number', ['get', config.endTimeFilterProperty]], startMs])
+    }
+    return filters as FilterSpecification
+  }
+
+  return undefined
 }
 
 export const getFilterForUserPointsLayer = (
@@ -83,17 +93,27 @@ export const getFilterForUserPointsLayer = (
   const startMs = new Date(config.start).getTime()
   const endMs = new Date(config.end).getTime()
   const filters: Array<any> = ['all']
-  // Show for every time range after the start
-  if (config?.startTimeFilterProperty) {
-    filters.push(['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs])
-  }
-  if (config?.endTimeFilterProperty) {
-    // Show for every time range before the end
-    filters.push([
-      '>=',
-      getFallbackFilterExpression(config.endTimeFilterProperty, Number.MAX_SAFE_INTEGER),
-      startMs,
-    ])
+  if (config.timeFilterType === 'date') {
+    filters.push(
+      ['>=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), startMs],
+      ['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs]
+    )
+  } else if (config.timeFilterType === 'dateRange') {
+    if (config?.startTimeFilterProperty) {
+      // Show for every time range after the start
+      filters.push(['<=', getFallbackFilterExpression(config.startTimeFilterProperty, 0), endMs])
+    }
+    if (config?.endTimeFilterProperty) {
+      // Show for every time range before the end
+      filters.push([
+        '>=',
+        getFallbackFilterExpression(
+          config.endTimeFilterProperty,
+          config.includeWithoutEndDate ? Number.MAX_SAFE_INTEGER : 0
+        ),
+        startMs,
+      ])
+    }
   }
   if (config?.filters) {
     Object.entries(config.filters).forEach(([key, values]) => {

@@ -40,6 +40,10 @@ export const setGeneratorConfigTimeFilter = ({
   dataset: Dataset
   generator: GeneratorDataviewConfig
 }) => {
+  const timeFilterType = getDatasetConfigurationProperty({
+    dataset,
+    property: 'timeFilterType',
+  })
   const startTimeFilterProperty = getDatasetConfigurationProperty({
     dataset,
     property: 'startTime',
@@ -48,6 +52,9 @@ export const setGeneratorConfigTimeFilter = ({
     dataset,
     property: 'endTime',
   })
+  if (timeFilterType) {
+    generator.timeFilterType = timeFilterType
+  }
   if (startTimeFilterProperty) {
     generator.startTimeFilterProperty = startTimeFilterProperty
   }
