@@ -10,8 +10,8 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -243,7 +243,7 @@ export const getActivityDataviewInstanceFromDataview = (
 
 export const getBigQuery4WingsDataviewInstance = (
   datasetId: string,
-  { aggregationOperation = AggregationOperation.Sum } = {}
+  { aggregationOperation = FourwingsAggregationOperation.Sum } = {}
 ): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${BIG_QUERY_4WINGS_PREFIX}${Date.now()}`,
