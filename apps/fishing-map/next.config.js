@@ -119,6 +119,7 @@ const nextConfig = {
   output: 'standalone',
   outputFileTracing: true,
   experimental: {
+    reactCompiler: true,
     outputFileTracingRoot: join(__dirname, '../../'),
     esmExternals: true,
     optimizePackageImports: [
