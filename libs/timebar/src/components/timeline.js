@@ -6,7 +6,7 @@ import { scaleTime } from 'd3-scale'
 import dayjs from 'dayjs'
 import { throttle } from 'lodash'
 import ResizeObserver from 'resize-observer-polyfill'
-import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-layers'
+import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 import {
   getTime,
   clampToAbsoluteBoundaries,

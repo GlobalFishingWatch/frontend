@@ -7,8 +7,9 @@ import {
   DatasetGeometryType,
   EnviromentalDatasetConfiguration,
 } from '@globalfishingwatch/api-types'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/deck-layers'
 
+// Got from deck-layers colorRamps to avoid circular dependencies
+export const COLOR_RAMP_DEFAULT_NUM_STEPS = 10
 export type DataList = Record<string, any>[]
 
 export type DatasetSchemaGeneratorProps = {

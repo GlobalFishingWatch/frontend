@@ -7,6 +7,7 @@ import {
   CONFIG_BY_INTERVAL,
   FourwingsFeature,
   FourwingsInterval,
+  getFourwingsInterval,
   TileCell,
 } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '../../../utils'
@@ -17,7 +18,6 @@ import {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
   getChunkByInterval,
-  getFourwingsInterval,
 } from '../fourwings.config'
 import {
   AggregateCellParams,

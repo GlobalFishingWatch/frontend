@@ -11,11 +11,10 @@ import {
   DataviewType,
 } from '@globalfishingwatch/api-types'
 import {
-  FOURWINGS_INTERVALS_ORDER,
   FourwingsComparisonMode,
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
-import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FOURWINGS_INTERVALS_ORDER, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
   UrlDataviewInstance,
   getMergedDataviewId,

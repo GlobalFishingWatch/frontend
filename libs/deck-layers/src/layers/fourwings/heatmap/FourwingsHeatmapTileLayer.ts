@@ -15,6 +15,7 @@ import {
   FourwingsFeature,
   FourwingsInterval,
   FourwingsLoader,
+  getFourwingsInterval,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -30,7 +31,6 @@ import {
 import {
   HEATMAP_API_TILES_URL,
   FOURWINGS_MAX_ZOOM,
-  getFourwingsInterval,
   MAX_RAMP_VALUES,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   DYNAMIC_RAMP_CHANGE_THRESHOLD,

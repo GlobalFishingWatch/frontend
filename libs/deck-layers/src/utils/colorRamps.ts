@@ -4,7 +4,6 @@ import {
   hexToRgb,
   hexToRgbString,
   rgbToRgbString,
-  rgbaStringToComponents,
   rgbaStringToObject,
   rgbaToString,
 } from './colors'

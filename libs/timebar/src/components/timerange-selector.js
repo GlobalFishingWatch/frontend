@@ -6,7 +6,7 @@ import {
   LIMITS_BY_INTERVAL,
   getFourwingsInterval,
   FOURWINGS_INTERVALS_ORDER,
-} from '@globalfishingwatch/deck-layers'
+} from '@globalfishingwatch/deck-loaders'
 import { Select, Tooltip } from '@globalfishingwatch/ui-components'
 import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
