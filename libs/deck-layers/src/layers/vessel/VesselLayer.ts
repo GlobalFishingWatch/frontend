@@ -40,7 +40,7 @@ import {
 import { BaseLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
-import { getVesselResourceChunks } from './vessel.utils'
+import { getEvents, getVesselResourceChunks } from './vessel.utils'
 import {
   EVENTS_COLORS,
   EVENT_LAYER_TYPE,
@@ -409,17 +409,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselEventsData(types?: EventTypes[]) {
-    const events = this.getEventLayers()
-      .flatMap((layer: VesselEventsLayer): ApiEvent<EventVessel>[] => {
-        const events = types
-          ? types.includes(layer.props.type)
-            ? layer.props.data
-            : []
-          : layer.props.data || []
-        return events as ApiEvent[]
-      }, [])
-      .sort((a, b) => (a.start as number) - (b.start as number))
-    return events
+    return getEvents(this.getEventLayers(), types)
   }
 
   getVesselTrackData() {

@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
 import { memoize } from 'lodash'
+import { VesselEventsLayer } from 'libs/deck-layers/src/layers/vessel/VesselEventsLayer'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
-import { TrackSegment } from '@globalfishingwatch/api-types'
+import { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '../../utils'
 
 export const FIRST_YEAR_OF_DATA = 2012
@@ -84,4 +85,20 @@ export const getSegmentsFromData = memoize(
     })
     return segments
   }
+)
+
+export const getEvents = memoize(
+  (layers: VesselEventsLayer[], types?: EventTypes[]) => {
+    return layers
+      .flatMap((layer: VesselEventsLayer): ApiEvent<EventVessel>[] => {
+        const events = types
+          ? types.includes(layer.props.type)
+            ? layer.props.data
+            : []
+          : layer.props.data || []
+        return events as ApiEvent[]
+      }, [])
+      .sort((a, b) => (a.start as number) - (b.start as number))
+  },
+  (layers, types) => `${layers.map((layer) => layer.id).join(',')}-${types?.join(',')}`
 )
