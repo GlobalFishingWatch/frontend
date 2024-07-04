@@ -32,6 +32,8 @@ export const POSITIONS_VISUALIZATION_MAX_ZOOM = 9
 
 export const MAX_RAMP_VALUES = 10000
 
+export const DYNAMIC_RAMP_CHANGE_THRESHOLD = 50
+
 export const FOURWINGS_INTERVALS_ORDER: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
 export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']
 
