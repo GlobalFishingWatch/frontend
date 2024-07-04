@@ -112,7 +112,7 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
               return (
                 <Fragment key={key}>
                   <span>
-                    {key}: {value}
+                    {key}: {JSON.stringify(value)}
                   </span>
                   {index < Object.keys(task.metadata).length - 1 && <span> | </span>}
                 </Fragment>

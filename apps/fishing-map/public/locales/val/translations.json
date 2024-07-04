@@ -184,7 +184,9 @@
     "partnerSites": "crwdns59843:0crwdne59843:0",
     "password": "crwdns83226:0crwdne83226:0",
     "plus": "crwdns69308:0crwdne69308:0",
+    "points": "crwdns83416:0crwdne83416:0",
     "polygon": "crwdns70226:0crwdne70226:0",
+    "polygons": "crwdns83418:0crwdne83418:0",
     "presence": "crwdns59845:0crwdne59845:0",
     "previously": "crwdns69350:0crwdne69350:0",
     "report": "crwdns59847:0crwdne59847:0",
@@ -316,6 +318,7 @@
     "fieldMultiplePlaceholder": "crwdns82688:0crwdne82688:0",
     "fieldNumericPlaceholder": "crwdns82690:0crwdne82690:0",
     "fieldPlaceholder": "crwdns82686:0crwdne82686:0",
+    "invalidDatesFeatures": "crwdns83420:0{{featureType}}crwdne83420:0",
     "none": "crwdns82700:0crwdne82700:0",
     "optionalFields": "crwdns82692:0crwdne82692:0",
     "point": {
