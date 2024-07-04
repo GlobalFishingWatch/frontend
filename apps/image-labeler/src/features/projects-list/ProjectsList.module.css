@@ -65,3 +65,22 @@ label .secondary {
 .error {
   color: var(--color-danger-red);
 }
+
+.preview {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  padding-inline: var(--space-XS);
+  display: block;
+  width: 100%;
+}
+
+.oneLine {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bulletedList {
+  list-style: disc;
+  margin-left: var(--space-S);
+}
