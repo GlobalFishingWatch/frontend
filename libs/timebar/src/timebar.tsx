@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import cx from 'classnames'
 import dayjs from 'dayjs'
 import memoize from 'memoize-one'
@@ -59,7 +58,129 @@ const clampToMinAndMax = (start, end, minMs, maxMs, clampToEnd) => {
   return { clampedStart, clampedEnd }
 }
 
-class Timebar extends Component {
+type TimebarProps = {
+  labels?: {
+    playback?: {
+      playAnimation?: string
+      pauseAnimation?: string
+      toogleAnimationLooping?: string
+      moveBack?: string
+      moveForward?: string
+      changeAnimationSpeed?: string
+    }
+    timerange?: {
+      title?: string
+      start?: string
+      end?: string
+      last30days?: string
+      last3months?: string
+      last6months?: string
+      lastYear?: string
+      done?: string
+    }
+    bookmark?: {
+      goToBookmark?: string
+      deleteBookmark?: string
+    }
+    lastUpdate?: string
+    intervals?: {
+      hour?: string
+      day?: string
+      month?: string
+      year?: string
+    }
+    setBookmark?: string
+    zoomTo?: string
+    timeRange?: string
+  }
+  start: string
+  end: string
+  onChange: (...args: unknown[]) => unknown
+  children?: React.ReactNode
+  bookmarkStart?: string
+  bookmarkEnd?: string
+  bookmarkPlacement?: string
+  onMouseLeave?: (...args: unknown[]) => unknown
+  onMouseMove?: (...args: unknown[]) => unknown
+  onBookmarkChange?: (...args: unknown[]) => unknown
+  absoluteStart: string
+  absoluteEnd: string
+  latestAvailableDataDate?: string
+  enablePlayback?: boolean
+  onTogglePlay?: (...args: unknown[]) => unknown
+  minimumRange?: number
+  minimumRangeUnit?: string
+  maximumRange?: number
+  maximumRangeUnit?: string
+  stickToUnit?: (...args: unknown[]) => unknown
+  // val is used to live edit translations in crowdin
+  locale?: 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'
+  intervals?: unknown[]
+  getCurrentInterval?: (...args: unknown[]) => unknown
+  displayWarningWhenInFuture?: boolean
+}
+
+export class TimebarComponent extends Component<TimebarProps> {
+  static defaultProps = {
+    latestAvailableDataDate: DateTime.utc().toISO(),
+    labels: {
+      playback: {
+        playAnimation: 'Play animation',
+        pauseAnimation: 'Pause animation',
+        toogleAnimationLooping: 'Toggle animation looping',
+        moveBack: 'Move back',
+        moveForward: 'Move forward',
+        changeAnimationSpeed: 'Change animation speed',
+      },
+      timerange: {
+        title: 'Select a time range',
+        start: 'start',
+        end: 'end',
+        last30days: 'Last 30 days',
+        last3months: 'Last 3 months',
+        last6months: 'Last 6 months',
+        lastYear: 'Last year',
+        done: 'Done',
+      },
+      bookmark: {
+        goToBookmark: 'Go to your bookmarked time range',
+        deleteBookmark: 'Delete time range bookmark',
+      },
+      dragLabel: 'Drag to change the time range',
+      lastUpdate: 'Last update',
+      setBookmark: 'Bookmark current time range',
+      intervals: {
+        hour: 'hours',
+        day: 'days',
+        month: 'months',
+        year: 'years',
+      },
+    },
+    bookmarkStart: null,
+    bookmarkEnd: null,
+    enablePlayback: false,
+    onTogglePlay: () => {
+      // do nothing
+    },
+    children: null,
+    onMouseLeave: () => {
+      // do nothing
+    },
+    onMouseMove: () => {
+      // do nothing
+    },
+    bookmarkPlacement: 'top',
+    onBookmarkChange: () => {
+      // do nothing
+    },
+    minimumRange: null,
+    minimumRangeUnit: 'day',
+    maximumRange: null,
+    maximumRangeUnit: 'month',
+    locale: 'en',
+    displayWarningWhenInFuture: true,
+  }
+
   constructor() {
     super()
     this.interval = null
@@ -300,127 +421,3 @@ class Timebar extends Component {
     )
   }
 }
-
-Timebar.propTypes = {
-  labels: PropTypes.shape({
-    playback: PropTypes.shape({
-      playAnimation: PropTypes.string,
-      pauseAnimation: PropTypes.string,
-      toogleAnimationLooping: PropTypes.string,
-      moveBack: PropTypes.string,
-      moveForward: PropTypes.string,
-      changeAnimationSpeed: PropTypes.string,
-    }),
-    timerange: PropTypes.shape({
-      title: PropTypes.string,
-      start: PropTypes.string,
-      end: PropTypes.string,
-      last30days: PropTypes.string,
-      last3months: PropTypes.string,
-      last6months: PropTypes.string,
-      lastYear: PropTypes.string,
-      done: PropTypes.string,
-    }),
-    bookmark: PropTypes.shape({
-      goToBookmark: PropTypes.string,
-      deleteBookmark: PropTypes.string,
-    }),
-    lastUpdate: PropTypes.string,
-    intervals: PropTypes.shape({
-      hour: PropTypes.string,
-      day: PropTypes.string,
-      month: PropTypes.string,
-      year: PropTypes.string,
-    }),
-    setBookmark: PropTypes.string,
-    zoomTo: PropTypes.string,
-    timeRange: PropTypes.string,
-  }),
-  start: PropTypes.string.isRequired,
-  end: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  children: PropTypes.node,
-  bookmarkStart: PropTypes.string,
-  bookmarkEnd: PropTypes.string,
-  bookmarkPlacement: PropTypes.string,
-  onMouseLeave: PropTypes.func,
-  onMouseMove: PropTypes.func,
-  onBookmarkChange: PropTypes.func,
-  absoluteStart: PropTypes.string.isRequired,
-  absoluteEnd: PropTypes.string.isRequired,
-  latestAvailableDataDate: PropTypes.string,
-  enablePlayback: PropTypes.bool,
-  onTogglePlay: PropTypes.func,
-  minimumRange: PropTypes.number,
-  minimumRangeUnit: PropTypes.string,
-  maximumRange: PropTypes.number,
-  maximumRangeUnit: PropTypes.string,
-  stickToUnit: PropTypes.func,
-  // val is used to live edit translations in crowdin
-  locale: PropTypes.oneOf(['en', 'es', 'fr', 'id', 'pt', 'val']),
-  intervals: PropTypes.array,
-  getCurrentInterval: PropTypes.func,
-  displayWarningWhenInFuture: PropTypes.bool,
-}
-
-Timebar.defaultProps = {
-  latestAvailableDataDate: DateTime.utc().toISO(),
-  labels: {
-    playback: {
-      playAnimation: 'Play animation',
-      pauseAnimation: 'Pause animation',
-      toogleAnimationLooping: 'Toggle animation looping',
-      moveBack: 'Move back',
-      moveForward: 'Move forward',
-      changeAnimationSpeed: 'Change animation speed',
-    },
-    timerange: {
-      title: 'Select a time range',
-      start: 'start',
-      end: 'end',
-      last30days: 'Last 30 days',
-      last3months: 'Last 3 months',
-      last6months: 'Last 6 months',
-      lastYear: 'Last year',
-      done: 'Done',
-    },
-    bookmark: {
-      goToBookmark: 'Go to your bookmarked time range',
-      deleteBookmark: 'Delete time range bookmark',
-    },
-    dragLabel: 'Drag to change the time range',
-    lastUpdate: 'Last update',
-    setBookmark: 'Bookmark current time range',
-    intervals: {
-      hour: 'hours',
-      day: 'days',
-      month: 'months',
-      year: 'years',
-    },
-  },
-  bookmarkStart: null,
-  bookmarkEnd: null,
-  enablePlayback: false,
-  onTogglePlay: () => {
-    // do nothing
-  },
-  children: null,
-  onMouseLeave: () => {
-    // do nothing
-  },
-  onMouseMove: () => {
-    // do nothing
-  },
-  bookmarkPlacement: 'top',
-  onBookmarkChange: () => {
-    // do nothing
-  },
-  minimumRange: null,
-  minimumRangeUnit: 'day',
-  maximumRange: null,
-  maximumRangeUnit: 'month',
-  locale: 'en',
-  displayWarningWhenInFuture: true,
-}
-
-export default Timebar

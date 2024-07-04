@@ -2,8 +2,9 @@ import { Fragment, memo, useCallback, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
-  Timebar,
+  TimebarComponent,
   TimebarTracks,
   TimebarHighlighter,
   TimebarTracksEvents,
@@ -13,7 +14,6 @@ import {
   TrackGraphOrientation,
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
   useTimerangeConnect,
@@ -371,7 +371,7 @@ const TimebarWrapper = () => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <Timebar
+      <TimebarComponent
         enablePlayback={!vesselGroupsFiltering && !isReportLocation}
         labels={labels}
         start={start}
@@ -408,7 +408,7 @@ const TimebarWrapper = () => {
             />
           </Fragment>
         ) : null}
-      </Timebar>
+      </TimebarComponent>
       {!isSmallScreen && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />
     </div>

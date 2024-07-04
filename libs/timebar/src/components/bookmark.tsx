@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { getHumanizedDates } from '../utils'
 import { ReactComponent as IconBookmarkFilled } from '../icons/bookmarkFilled.svg'
@@ -11,9 +10,27 @@ const MIN_WIDTH = 32
 const MIN_WIDTH_WITH_OVERFLOW_ARROWS = 52
 const COMPACT_MAX_WIDTH = 240
 
+type BookmarkProps = {
+  labels?: {
+    goToBookmark?: string
+    deleteBookmark?: string
+  }
+  placement?: string
+  bookmarkStart: string
+  bookmarkEnd: string
+  scale: (...args: unknown[]) => unknown
+  minX: number
+  maxX: number
+  onSelect: (...args: unknown[]) => unknown
+  onDelete: (...args: unknown[]) => unknown
+}
+
 const Bookmark = ({
-  labels,
-  placement,
+  labels = {
+    goToBookmark: 'Go to your bookmarked time range',
+    deleteBookmark: 'Delete time range bookmark',
+  },
+  placement = 'top',
   scale,
   bookmarkStart,
   bookmarkEnd,
@@ -21,7 +38,7 @@ const Bookmark = ({
   maxX,
   onSelect,
   onDelete,
-}) => {
+}: BookmarkProps) => {
   const x = scale(new Date(bookmarkStart))
   const width = scale(new Date(bookmarkEnd)) - x
   const { humanizedStart, humanizedEnd } = getHumanizedDates(bookmarkStart, bookmarkEnd)
@@ -80,29 +97,6 @@ const Bookmark = ({
       )}
     </div>
   )
-}
-
-Bookmark.propTypes = {
-  labels: PropTypes.shape({
-    goToBookmark: PropTypes.string,
-    deleteBookmark: PropTypes.string,
-  }),
-  placement: PropTypes.string,
-  bookmarkStart: PropTypes.string.isRequired,
-  bookmarkEnd: PropTypes.string.isRequired,
-  scale: PropTypes.func.isRequired,
-  minX: PropTypes.number.isRequired,
-  maxX: PropTypes.number.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-}
-
-Bookmark.defaultProps = {
-  placement: 'top',
-  labels: {
-    goToBookmark: 'Go to your bookmarked time range',
-    deleteBookmark: 'Delete time range bookmark',
-  },
 }
 
 export default Bookmark

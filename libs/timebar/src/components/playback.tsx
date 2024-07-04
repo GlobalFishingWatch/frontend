@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import cx from 'classnames'
 import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
@@ -23,8 +22,43 @@ const MS_IN_INTERVAL = {
   year: 1000 * 60 * 60 * 24 * 365,
 }
 
-class Playback extends Component {
+type PlaybackProps = {
+  labels?: {
+    playAnimation?: string
+    pauseAnimation?: string
+    toogleAnimationLooping?: string
+    moveBack?: string
+    moveForward?: string
+    changeAnimationSpeed?: string
+  }
+  onTick: (...args: unknown[]) => unknown
+  start: string
+  end: string
+  absoluteStart: string
+  absoluteEnd: string
+  onTogglePlay?: (...args: unknown[]) => unknown
+  getCurrentInterval?: (...args: unknown[]) => unknown
+}
+
+class Playback extends Component<PlaybackProps> {
   lastUpdateMs = null
+
+  static defaultProps = {
+    labels: {
+      playAnimation: 'Play animation',
+      pauseAnimation: 'Pause animation',
+      toogleAnimationLooping: 'Toggle animation looping',
+      moveBack: 'Move back',
+      moveForward: 'Move forward',
+      changeAnimationSpeed: 'Change animation speed',
+    },
+    onTogglePlay: () => {
+      // do nothing
+    },
+    intervals: FOURWINGS_INTERVALS_ORDER,
+    getCurrentInterval: getFourwingsInterval,
+  }
+
   constructor() {
     super()
     this.state = {
@@ -221,40 +255,6 @@ class Playback extends Component {
       </div>
     )
   }
-}
-
-Playback.propTypes = {
-  labels: PropTypes.shape({
-    playAnimation: PropTypes.string,
-    pauseAnimation: PropTypes.string,
-    toogleAnimationLooping: PropTypes.string,
-    moveBack: PropTypes.string,
-    moveForward: PropTypes.string,
-    changeAnimationSpeed: PropTypes.string,
-  }),
-  onTick: PropTypes.func.isRequired,
-  start: PropTypes.string.isRequired,
-  end: PropTypes.string.isRequired,
-  absoluteStart: PropTypes.string.isRequired,
-  absoluteEnd: PropTypes.string.isRequired,
-  onTogglePlay: PropTypes.func,
-  getCurrentInterval: PropTypes.func,
-}
-
-Playback.defaultProps = {
-  labels: {
-    playAnimation: 'Play animation',
-    pauseAnimation: 'Pause animation',
-    toogleAnimationLooping: 'Toggle animation looping',
-    moveBack: 'Move back',
-    moveForward: 'Move forward',
-    changeAnimationSpeed: 'Change animation speed',
-  },
-  onTogglePlay: () => {
-    // do nothing
-  },
-  intervals: FOURWINGS_INTERVALS_ORDER,
-  getCurrentInterval: getFourwingsInterval,
 }
 
 export default Playback

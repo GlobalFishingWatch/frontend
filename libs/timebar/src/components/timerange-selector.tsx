@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
-import { string, func, shape } from 'prop-types'
 import dayjs from 'dayjs'
 import {
   LIMITS_BY_INTERVAL,
@@ -12,7 +11,39 @@ import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
 import styles from './timerange-selector.module.css'
 
-class TimeRangeSelector extends Component {
+type TimeRangeSelectorProps = {
+  onSubmit: unknown
+  start: unknown
+  end: unknown
+  absoluteStart: unknown
+  absoluteEnd: unknown
+  latestAvailableDataDate: unknown
+  onDiscard: unknown
+  labels?: unknown
+};
+
+class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
+
+  static defaultProps = {
+    labels: {
+      title: 'Select a time range',
+      start: 'start',
+      end: 'end',
+      year: 'year',
+      month: 'month',
+      day: 'day',
+      selectAValidDate: 'Please select a valid date',
+      endBeforeStart: 'The end needs to be after the start',
+      tooLongForMonths: 'Your timerange is too long to see individual months',
+      tooLongForDays: 'Your timerange is too long to see individual days',
+      last30days: 'Last 30 days',
+      last3months: 'Last 3 months',
+      last6months: 'Last 6 months',
+      lastYear: 'Last year',
+      done: 'done',
+    },
+  }
+
   constructor(props) {
     super(props)
     const { start, end, labels, absoluteStart, absoluteEnd } = props
@@ -433,52 +464,6 @@ class TimeRangeSelector extends Component {
       </div>
     )
   }
-}
-
-TimeRangeSelector.propTypes = {
-  onSubmit: func.isRequired,
-  start: string.isRequired,
-  end: string.isRequired,
-  absoluteStart: string.isRequired,
-  absoluteEnd: string.isRequired,
-  latestAvailableDataDate: string.isRequired,
-  onDiscard: func.isRequired,
-  labels: shape({
-    title: string,
-    start: string,
-    end: string,
-    year: string,
-    month: string,
-    day: string,
-    selectAValidDate: string,
-    endBeforeStart: string,
-    tooLongForMonths: string,
-    last30days: string,
-    last3months: string,
-    last6months: string,
-    lastYear: string,
-    done: string,
-  }),
-}
-
-TimeRangeSelector.defaultProps = {
-  labels: {
-    title: 'Select a time range',
-    start: 'start',
-    end: 'end',
-    year: 'year',
-    month: 'month',
-    day: 'day',
-    selectAValidDate: 'Please select a valid date',
-    endBeforeStart: 'The end needs to be after the start',
-    tooLongForMonths: 'Your timerange is too long to see individual months',
-    tooLongForDays: 'Your timerange is too long to see individual days',
-    last30days: 'Last 30 days',
-    last3months: 'Last 3 months',
-    last6months: 'Last 6 months',
-    lastYear: 'Last year',
-    done: 'done',
-  },
 }
 
 export default TimeRangeSelector

@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import memoize from 'memoize-one'
 import cx from 'classnames'
 import { scaleTime } from 'd3-scale'
@@ -26,7 +25,59 @@ const DRAG_INNER = 'DRAG_INNER'
 const DRAG_START = 'DRAG_START'
 const DRAG_END = 'DRAG_END'
 
-class Timeline extends PureComponent {
+type TimelineProps = {
+  labels?: {
+    zoomTo?: string
+    dragLabel?: string
+    lastUpdate?: string
+    bookmark?: {
+      goToBookmark?: string
+      deleteBookmark?: string
+    }
+  }
+  onChange: (...args: unknown[]) => unknown
+  onMouseLeave?: (...args: unknown[]) => unknown
+  onMouseMove?: (...args: unknown[]) => unknown
+  children?: React.ReactNode
+  start: string
+  end: string
+  absoluteStart: string
+  absoluteEnd: string
+  latestAvailableDataDate: string
+  onBookmarkChange?: (...args: unknown[]) => unknown
+  bookmarkStart?: string
+  bookmarkEnd?: string
+  bookmarkPlacement?: string
+  stickToUnit?: (...args: unknown[]) => unknown
+  displayWarningWhenInFuture?: boolean
+}
+
+class Timeline extends PureComponent<TimelineProps> {
+  static defaultProps = {
+    labels: {
+      dragLabel: 'Drag to change the time range',
+      lastUpdate: 'Last update',
+      bookmark: {
+        goToBookmark: 'Go to your bookmarked time range',
+        deleteBookmark: 'Delete time range bookmark',
+      },
+    },
+    bookmarkStart: null,
+    bookmarkEnd: null,
+    bookmarkPlacement: 'top',
+    children: null,
+    displayWarningWhenInFuture: true,
+    onBookmarkChange: () => {
+      // do nothing
+    },
+    onMouseLeave: () => {
+      // do nothing
+    },
+    onMouseMove: () => {
+      // do nothing
+    },
+  }
+
   getOuterScale = memoize((outerStart, outerEnd, outerWidth) =>
     scaleTime()
       .domain([new Date(outerStart), new Date(outerEnd)])
@@ -503,58 +554,6 @@ class Timeline extends PureComponent {
       </TimelineContext.Provider>
     )
   }
-}
-
-Timeline.propTypes = {
-  labels: PropTypes.shape({
-    zoomTo: PropTypes.string,
-    dragLabel: PropTypes.string,
-    lastUpdate: PropTypes.string,
-    bookmark: PropTypes.shape({
-      goToBookmark: PropTypes.string,
-      deleteBookmark: PropTypes.string,
-    }),
-  }),
-  onChange: PropTypes.func.isRequired,
-  onMouseLeave: PropTypes.func,
-  onMouseMove: PropTypes.func,
-  children: PropTypes.node,
-  start: PropTypes.string.isRequired,
-  end: PropTypes.string.isRequired,
-  absoluteStart: PropTypes.string.isRequired,
-  absoluteEnd: PropTypes.string.isRequired,
-  latestAvailableDataDate: PropTypes.string.isRequired,
-  onBookmarkChange: PropTypes.func,
-  bookmarkStart: PropTypes.string,
-  bookmarkEnd: PropTypes.string,
-  bookmarkPlacement: PropTypes.string,
-  stickToUnit: PropTypes.func,
-  displayWarningWhenInFuture: PropTypes.bool,
-}
-
-Timeline.defaultProps = {
-  labels: {
-    dragLabel: 'Drag to change the time range',
-    lastUpdate: 'Last update',
-    bookmark: {
-      goToBookmark: 'Go to your bookmarked time range',
-      deleteBookmark: 'Delete time range bookmark',
-    },
-  },
-  bookmarkStart: null,
-  bookmarkEnd: null,
-  bookmarkPlacement: 'top',
-  children: null,
-  displayWarningWhenInFuture: true,
-  onBookmarkChange: () => {
-    // do nothing
-  },
-  onMouseLeave: () => {
-    // do nothing
-  },
-  onMouseMove: () => {
-    // do nothing
-  },
 }
 
 export default Timeline
