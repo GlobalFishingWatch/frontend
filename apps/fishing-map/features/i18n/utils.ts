@@ -34,7 +34,7 @@ export const getPlaceholderBySelections = ({
   return getDatasetLabel(placeholder?.props.dataset)
 }
 
-export const getDateFormatString = ({ locale = i18n.language, upper = false } = {}) => {
+const getDateFormatString = ({ locale = i18n.language, upper = false } = {}) => {
   const formatObj = new Intl.DateTimeFormat(locale).formatToParts(new Date())
 
   return formatObj

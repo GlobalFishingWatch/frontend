@@ -16,8 +16,6 @@ type HintProps = {
   className?: string
 }
 
-export const DISMISSED = 'dismissed'
-
 function Hint({ id, className }: HintProps) {
   const { t, ready } = useTranslation(['translations', 'help-hints'])
   const { placement, imageUrl, pulse, openedByDefault } = hintsConfig[id]

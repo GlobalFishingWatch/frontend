@@ -11,22 +11,22 @@ import {
 import { RootState } from 'store'
 import { sortFields } from 'utils/shared'
 
-export type RegionId = string | number
-export interface Region {
+type RegionId = string | number
+interface Region {
   id: RegionId
   label: string
 }
-export interface Regions {
+interface Regions {
   id: RegionType
   data: Region[]
 }
-export type RegionsState = AsyncReducer<Regions>
+type RegionsState = AsyncReducer<Regions>
 
 const initialState: RegionsState = {
   ...asyncInitialState,
 }
 
-export type FetchRegionsThunkParams = Record<RegionType, string>
+type FetchRegionsThunkParams = Record<RegionType, string>
 export const fetchRegionsThunk = createAsyncThunk(
   'regions/fetch',
   async (regionIds: Partial<FetchRegionsThunkParams>, { rejectWithValue }) => {
@@ -92,7 +92,7 @@ const { slice: regionsSlice, entityAdapter } = createAsyncSlice<RegionsState, Re
 
 const { selectById } = entityAdapter.getSelectors<RegionsState>((regions) => regions)
 
-export const selectRegions = (state: RootState) => {
+const selectRegions = (state: RootState) => {
   return state.regions
 }
 
@@ -107,43 +107,5 @@ export const selectEEZs = selectRegionsById(RegionType.eez)
 export const selectMPAs = selectRegionsById(RegionType.mpa)
 export const selectRFMOs = selectRegionsById(RegionType.rfmo)
 export const selectFAOs = selectRegionsById(RegionType.fao)
-
-export const selectRegionsStatus = (state: RootState) => state.regions.status
-
-export const selectEezById = memoize((id: RegionId) =>
-  createSelector([selectEEZs], (eezs) => {
-    if (!id || !eezs) {
-      return null
-    }
-    return eezs.find((eez) => eez.id.toString() === id.toString())
-  })
-)
-
-export const selectMPAById = memoize((id: RegionId) =>
-  createSelector([selectMPAs], (mpas) => {
-    if (!id || !mpas) {
-      return null
-    }
-    return mpas.find((eez) => eez.id.toString() === id.toString())
-  })
-)
-
-export const selectRfmoById = memoize((id: RegionId) =>
-  createSelector([selectRFMOs], (rfmos) => {
-    if (!id || !rfmos) {
-      return null
-    }
-    return rfmos.find((rfmo) => rfmo.id.toString() === id.toString())
-  })
-)
-
-export const selectFAOById = memoize((id: RegionId) =>
-  createSelector([selectFAOs], (faos) => {
-    if (!id || !faos) {
-      return null
-    }
-    return faos.find((fao) => fao.id.toString() === id.toString())
-  })
-)
 
 export default regionsSlice.reducer

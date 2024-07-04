@@ -9,7 +9,7 @@ import { getDatasetsExtent, type UrlDataviewInstance } from '@globalfishingwatch
 import { StatField, StatFields, StatType, StatsParams } from '@globalfishingwatch/api-types'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 
-export type FetchDataviewStatsParams = {
+type FetchDataviewStatsParams = {
   timerange: TimeRange
   dataview: UrlDataviewInstance
   fields?: StatField[]
@@ -27,7 +27,7 @@ const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ que
   ].join('-')
 }
 
-export const DEFAULT_STATS_FIELDS: StatsParams[] = ['VESSEL-IDS', 'FLAGS']
+const DEFAULT_STATS_FIELDS: StatsParams[] = ['VESSEL-IDS', 'FLAGS']
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',

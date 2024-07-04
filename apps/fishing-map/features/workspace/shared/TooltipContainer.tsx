@@ -13,14 +13,6 @@ interface TooltipContainerProps {
   onClickOutside?: () => void
 }
 
-export function TooltipListContainer({
-  children,
-}: {
-  children: React.ReactElement | React.ReactElement[] | undefined | null
-}) {
-  return <ul className={styles.listContainer}>{children}</ul>
-}
-
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const onClickOutSideFallback = () => {}
 

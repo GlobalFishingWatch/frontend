@@ -5,8 +5,8 @@ import { RefObject, useEffect } from 'react'
 import { Deck } from '@deck.gl/core'
 
 const mapInstanceAtom = atom<DeckGLRef | undefined>(undefined)
-export const mapInstanceAtomSelector = (map: Deck | undefined) => map
-export const selectMapInstance = selectAtom(mapInstanceAtom, mapInstanceAtomSelector as any)
+const mapInstanceAtomSelector = (map: Deck | undefined) => map
+const selectMapInstance = selectAtom(mapInstanceAtom, mapInstanceAtomSelector as any)
 
 export function useSetMapInstance(mapRef: RefObject<DeckGLRef> | undefined) {
   const setMapInstance = useSetAtom(mapInstanceAtom)

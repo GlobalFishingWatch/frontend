@@ -26,7 +26,7 @@ import {
 } from 'features/reports/reports.selectors'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
-import { useSetViewState, useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useSetViewState, useViewState } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
@@ -67,7 +67,7 @@ export const useHighlightReportArea = () => {
   )
 }
 
-export function useReportAreaCenter(bounds?: Bbox) {
+function useReportAreaCenter(bounds?: Bbox) {
   const map = useDeckMap()
   return useMemo(() => {
     if (!bounds || !map) return null
@@ -79,7 +79,7 @@ export function useReportAreaCenter(bounds?: Bbox) {
 }
 
 export function useReportAreaInViewport() {
-  const { viewState } = useViewStateAtom()
+  const viewState = useViewState()
   const area = useSelector(selectReportArea)
   const bbox = area?.geometry?.bbox || area!?.bounds
   const areaCenter = useReportAreaCenter(bbox as Bbox)
@@ -106,10 +106,10 @@ export function useFitAreaInViewport() {
 // 0 - 20MB No simplifyTrack
 // 20 - 200MG SIMPLIFY FINE_SIMPLIFY_TOLERANCE
 // > 200 SIMPLIFY COARSE
-export const COARSE_SIMPLIFY_TOLERANCE = 0.1
-export const FINE_SIMPLIFY_TOLERANCE = 0.001
+const COARSE_SIMPLIFY_TOLERANCE = 0.1
+const FINE_SIMPLIFY_TOLERANCE = 0.001
 
-export function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
+function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
   return dataview?.slug === RFMO_DATAVIEW_SLUG ? COARSE_SIMPLIFY_TOLERANCE : FINE_SIMPLIFY_TOLERANCE
 }
 

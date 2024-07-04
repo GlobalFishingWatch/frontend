@@ -25,9 +25,8 @@ import { getDrawDatasetDefinition, getFileWithFeatures } from './draw.utils'
 import styles from './DrawDialog.module.css'
 import { useDrawLayerInstance } from './draw.hooks'
 
-export type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
-export type DrawPointPosition = [number, number]
-export const MIN_DATASET_NAME_LENGTH = 3
+type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>
+const MIN_DATASET_NAME_LENGTH = 3
 
 function MapDraw() {
   const { t } = useTranslation()

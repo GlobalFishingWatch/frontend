@@ -8,7 +8,7 @@ import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import { useMapViewport, useSetViewState } from 'features/map/map-viewport.hooks'
 
-export const boundsAtom = atom<MiniglobeBounds>({
+const boundsAtom = atom<MiniglobeBounds>({
   north: 90,
   south: -90,
   west: -180,
@@ -33,16 +33,6 @@ export const useMapBounds = (): { bounds: MiniglobeBounds } => {
   }, [setBounds, viewport])
 
   return { bounds }
-}
-
-export function checkEqualBounds(bounds1?: MiniglobeBounds, bounds2?: MiniglobeBounds) {
-  if (!bounds1 || !bounds2) return false
-  return (
-    bounds1.north === bounds2.north &&
-    bounds1.south === bounds2.south &&
-    bounds1.west === bounds2.west &&
-    bounds1.east === bounds2.east
-  )
 }
 
 type FitBoundsParams = {
@@ -72,9 +62,7 @@ export const getMapCoordinatesFromBounds = (
   return { latitude, longitude, zoom }
 }
 
-export function convertToTupleBoundingBox(
-  flatBoundingBox: Bbox
-): [[number, number], [number, number]] {
+function convertToTupleBoundingBox(flatBoundingBox: Bbox): [[number, number], [number, number]] {
   if (flatBoundingBox.length !== 4) {
     throw new Error('Invalid flat bounding box')
   }

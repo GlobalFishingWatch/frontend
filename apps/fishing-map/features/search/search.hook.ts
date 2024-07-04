@@ -43,7 +43,7 @@ const FIRST_FETCH_FILTERS_TO_IGNORE = [
   'sources',
 ]
 
-export const hasFiltersActive = (filters: VesselSearchState): boolean => {
+const hasFiltersActive = (filters: VesselSearchState): boolean => {
   return (
     Object.entries(filters).filter(([key]) => {
       return (
@@ -119,7 +119,7 @@ export const useSearchFiltersConnect = () => {
   }
 }
 
-export type FetchSearchResultsParams = {
+type FetchSearchResultsParams = {
   query: string
   filters: VesselSearchState
   datasets?: Dataset[]

@@ -22,7 +22,7 @@ export type DateRange = {
   end: string
 }
 
-export interface DownloadActivityState {
+interface DownloadActivityState {
   areaKey: AreaKeys | undefined
   areaDataview: Dataview | UrlDataviewInstance | undefined
   error: string
@@ -134,9 +134,6 @@ const downloadActivitySlice = createSlice({
     setDownloadActivityAreaKey: (state, action: PayloadAction<AreaKeys>) => {
       state.areaKey = action.payload
     },
-    resetDownloadActivityStatus: (state) => {
-      state.status = AsyncReducerStatus.Idle
-    },
     resetDownloadActivityState: (state) => {
       state.areaKey = undefined
       state.status = AsyncReducerStatus.Idle
@@ -160,15 +157,11 @@ const downloadActivitySlice = createSlice({
   },
 })
 
-export const {
-  setDownloadActiveTab,
-  setDownloadActivityAreaKey,
-  resetDownloadActivityStatus,
-  resetDownloadActivityState,
-} = downloadActivitySlice.actions
+export const { setDownloadActiveTab, setDownloadActivityAreaKey, resetDownloadActivityState } =
+  downloadActivitySlice.actions
 
-export const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
-export const selectDownloadActivityErrorMsg = (state: RootState) => state.downloadActivity.error
+const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
+const selectDownloadActivityErrorMsg = (state: RootState) => state.downloadActivity.error
 export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey
 export const selectDownloadActiveTabId = (state: RootState) => state.downloadActivity.activeTabId
 

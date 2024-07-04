@@ -74,7 +74,7 @@ const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
 
-export type FeaturesOnScreen = { total: number; closest: ContextPickingObject[] }
+type FeaturesOnScreen = { total: number; closest: ContextPickingObject[] }
 function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()

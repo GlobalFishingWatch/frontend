@@ -19,7 +19,7 @@ import {
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { useVesselProfileTrack } from './vessel-track.hooks'
 
-export type UseVesselBoundsType = 'events' | 'track'
+type UseVesselBoundsType = 'events' | 'track'
 export const useVesselBounds = (type?: UseVesselBoundsType) => {
   const fitBounds = useMapFitBounds()
   const vesselId = useSelector(selectVesselId)
@@ -48,7 +48,7 @@ export const useVesselBounds = (type?: UseVesselBoundsType) => {
   return useMemo(() => ({ vesselBounds, setVesselBounds }), [vesselBounds, setVesselBounds])
 }
 
-export const useVesselFitBoundsOnLoad = () => {
+const useVesselFitBoundsOnLoad = () => {
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
   const { vesselBounds, setVesselBounds } = useVesselBounds('track')
@@ -62,7 +62,7 @@ export const useVesselFitBoundsOnLoad = () => {
   }, [dispatch, fitBounds, isVesselFitBoundsOnLoad, setVesselBounds, vesselBounds])
 }
 
-export const useVesselFitTranmissionsBounds = () => {
+const useVesselFitTranmissionsBounds = () => {
   const isVesselLocation = useSelector(selectIsVesselLocation)
   const fitBounds = useMapFitBounds()
   const segments = useVesselProfileTrack()

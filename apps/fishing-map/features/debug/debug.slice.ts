@@ -8,7 +8,7 @@ export enum DebugOption {
   Thinning = 'thinning',
 }
 
-export type DebugOptions = Record<DebugOption, boolean>
+type DebugOptions = Record<DebugOption, boolean>
 
 interface DebugState {
   active: boolean

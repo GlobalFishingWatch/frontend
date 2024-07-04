@@ -170,12 +170,6 @@ export const selectDataviewsResources = createSelector(
   }
 )
 
-export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
-  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
-    return dataviews?.filter((dataview) => dataview.category === category)
-  })
-}
-
 export const selectDataviewInstancesByIds = (ids: string[]) => {
   return createDeepEqualSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => ids.includes(dataview.id))

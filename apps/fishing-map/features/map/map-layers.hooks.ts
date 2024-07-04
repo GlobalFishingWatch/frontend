@@ -19,7 +19,7 @@ import {
 } from './map.selectors'
 import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
 
-export const useMapDataviewsLayers = () => {
+const useMapDataviewsLayers = () => {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceDataviews = useSelector(selectDataviewInstancesResolvedVisible)
   const bufferDataviews = useSelector(selectMapReportBufferDataviews)
@@ -61,7 +61,7 @@ export const useMapDataviewsLayers = () => {
   return layers
 }
 
-export const useMapOverlayLayers = () => {
+const useMapOverlayLayers = () => {
   const drawLayerInstance = useDrawLayerInstance()
   const rulerLayerInstance = useMapRulerInstance()
   return useMemo(() => {
@@ -75,7 +75,8 @@ export const useMapLayers = () => {
   return useMemo(() => [...dataviewsLayers, ...overlays], [dataviewsLayers, overlays])
 }
 
-export const useMapLayersLoaded = () => {
+// TODO:deck review if this needed
+const useMapLayersLoaded = () => {
   const layerStatus = useDeckLayerLoadedState()
   return Object.values(layerStatus).every((l) => l.loaded)
 }

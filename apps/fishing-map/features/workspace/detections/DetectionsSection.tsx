@@ -5,10 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import {
-  selectDetectionsDataviews,
-  selectActivityDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -18,6 +14,10 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { VisualisationChoice } from 'features/workspace/common/VisualisationChoice'
+import {
+  selectActivityDataviews,
+  selectDetectionsDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from '../activity/ActivityLayerPanel'
 import activityStyles from '../activity/ActivitySection.module.css'

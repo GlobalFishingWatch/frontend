@@ -5,6 +5,7 @@ import {
   getAdvancedSearchQuery,
   ADVANCED_SEARCH_QUERY_FIELDS,
   parseAPIError,
+  AdvancedSearchQueryFieldKey,
 } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import {
@@ -50,7 +51,7 @@ const initialState: SearchState = {
   suggestionClicked: false,
 }
 
-export type VesselSearchThunk = {
+type VesselSearchThunk = {
   query: string
   since: string
   filters: VesselSearchState
@@ -58,7 +59,7 @@ export type VesselSearchThunk = {
   gfwUser?: boolean
 }
 
-export function checkAdvanceSearchFiltersEnabled(filters: VesselSearchState): boolean {
+function checkAdvanceSearchFiltersEnabled(filters: VesselSearchState): boolean {
   const { sources, ...rest } = filters
   return Object.values(rest).filter((f) => f !== undefined).length > 0
 }
@@ -99,7 +100,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             if (field === 'owner' && value?.includes(', ')) {
               value = (value as string).split(', ')
             }
-            return { key: field, value }
+            return { key: field as AdvancedSearchQueryFieldKey, value }
           }
           return []
         })
@@ -258,9 +259,10 @@ export const selectSearchSuggestion = (state: SearchSliceState) => state.search.
 export const selectSearchSuggestionClicked = (state: SearchSliceState) =>
   state.search.suggestionClicked
 export const selectSearchPagination = (state: SearchSliceState) => state.search.pagination
-export const selectSelectedVesselsIds = (state: SearchSliceState) => state.search.selectedVessels
+export const selectSearchSelectedVesselsIds = (state: SearchSliceState) =>
+  state.search.selectedVessels
 export const selectSelectedVessels = createSelector(
-  [selectSearchResults, selectSelectedVesselsIds],
+  [selectSearchResults, selectSearchSelectedVesselsIds],
   (searchResults, vesselsSelectedIds) => {
     return searchResults.filter((vessel) => vesselsSelectedIds.includes(vessel.id))
   }

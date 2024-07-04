@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
 import { DatasetGeometryType, DataviewCategory } from '@globalfishingwatch/api-types'
 
-export type ModalId =
+type ModalId =
   | 'feedback'
   | 'screenshot'
   | 'layerLibrary'
@@ -10,7 +10,7 @@ export type ModalId =
   | 'editWorkspace'
   | 'createWorkspace'
 
-export type LayerLibraryMode = DataviewCategory | false
+type LayerLibraryMode = DataviewCategory | false
 export type DatasetUploadStyle = 'default' | 'transparent'
 export type DatasetUploadConfig = {
   id?: string
@@ -20,7 +20,7 @@ export type DatasetUploadConfig = {
   fileRejected?: boolean
 }
 
-export type ModalsOpenState = {
+type ModalsOpenState = {
   feedback: boolean
   screenshot: boolean
   layerLibrary: LayerLibraryMode

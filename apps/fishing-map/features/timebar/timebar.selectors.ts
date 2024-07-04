@@ -20,7 +20,7 @@ import {
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 
-export const selectDatasetsExtent = createSelector(
+const selectDatasetsExtent = createSelector(
   [selectDataviewInstancesResolved, selectAllDatasets],
   (dataviews, datasets) => {
     const activeDataviewDatasets = getDatasetsInDataviews(dataviews)

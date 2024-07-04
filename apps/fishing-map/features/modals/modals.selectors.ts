@@ -1,12 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
-import { selectBigQueryActive } from 'features/bigquery/bigquery.slice'
-import { selectDebugActive } from 'features/debug/debug.slice'
 import {
   selectDownloadActivityModalOpen,
   selectDownloadTrackModalOpen,
 } from 'features/download/download.selectors'
-import { selectEditorActive } from 'features/editor/editor.slice'
 import {
   selectDatasetUploadModalOpen,
   selectFeedbackModalOpen,
@@ -21,17 +18,7 @@ import {
   selectIsStandaloneSearchLocation,
 } from 'routes/routes.selectors'
 
-export const selectSecretModals = createSelector(
-  [selectDebugActive, selectEditorActive, selectBigQueryActive],
-  (debugModalOpen, editorModalOpen, bigQueryModalOpen) => {
-    return {
-      debug: debugModalOpen,
-      editor: editorModalOpen,
-      bigQuery: bigQueryModalOpen,
-    }
-  }
-)
-export const selectAppModals = createSelector(
+const selectAppModals = createSelector(
   [
     selectFeedbackModalOpen,
     selectLayerLibraryModalOpen,

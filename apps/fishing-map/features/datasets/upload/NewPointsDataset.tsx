@@ -39,8 +39,8 @@ import {
 import FileDropzone from './FileDropzone'
 import { TimeFieldsGroup } from './TimeFieldsGroup'
 
-export const MIN_POINT_SIZE = 1
-export const MAX_POINT_SIZE = 50
+const MIN_POINT_SIZE = 1
+const MAX_POINT_SIZE = 50
 type PointsGeojson = FeatureCollection<Point> & { metadata?: { hasDatesError: boolean } }
 
 function NewPointDataset({

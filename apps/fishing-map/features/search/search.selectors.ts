@@ -15,7 +15,7 @@ import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/ad
 
 const EMPTY_ARRAY: [] = []
 
-export const selectSearchDatasetsInWorkspace = createSelector(
+const selectSearchDatasetsInWorkspace = createSelector(
   [selectAllDataviewsInWorkspace, selectVesselsDatasets, selectAllDatasets],
   (dataviews, vesselsDatasets, allDatasets) => {
     const datasetsIds = getDatasetsInDataviews(dataviews)
@@ -27,7 +27,7 @@ export const selectSearchDatasetsInWorkspace = createSelector(
   }
 )
 
-export const filterDatasetByPermissions = (
+const filterDatasetByPermissions = (
   datasets: Dataset[],
   type: SearchType,
   userData: UserData,
@@ -41,7 +41,7 @@ export const filterDatasetByPermissions = (
   return filterDatasetsByUserType(datasetsWithPermissions, isGuest)
 }
 
-export function selectSearchDatasetsInWorkspaceByType(type: SearchType) {
+function selectSearchDatasetsInWorkspaceByType(type: SearchType) {
   return createSelector(
     [selectSearchDatasetsInWorkspace, selectUserData, selectIsGuestUser],
     (datasets, userData, guestUser): Dataset[] => {
@@ -72,7 +72,7 @@ export const isAdvancedSearchAllowed = createSelector(
   }
 )
 
-export const selectSearchDatasetsNotGuestAllowed = createSelector(
+const selectSearchDatasetsNotGuestAllowed = createSelector(
   [selectSearchDatasetsInWorkspace, selectBasicSearchDatasets],
   (searchDatasets = [], basicSearchDatasets = []) => {
     const basicSearchDatasetIds = basicSearchDatasets.map((d) => d.id)

@@ -6,7 +6,7 @@ import { getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
 
 type SearchIncludes = 'MATCH_CRITERIA' | 'OWNERSHIP'
 
-export type SearchOwnerParams = {
+type SearchOwnerParams = {
   owner: string | string[]
   datasets: string[]
   includes?: SearchIncludes[]

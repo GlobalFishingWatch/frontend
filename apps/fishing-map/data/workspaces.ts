@@ -2,7 +2,7 @@ import { DataviewType, DataviewInstance } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { PUBLIC_SUFIX } from './config'
 
-export type WorkspaceEnv = 'development' | 'production'
+type WorkspaceEnv = 'development' | 'production'
 export const WORKSPACE_ENV =
   (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
   (process.env.NODE_ENV as WorkspaceEnv) ||
@@ -19,7 +19,7 @@ export enum WorkspaceCategory {
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
 
-export const DEFAULT_WORKSPACE_KEY = 'default'
+const DEFAULT_WORKSPACE_KEY = 'default'
 export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${PUBLIC_SUFIX}`
 export const DEFAULT_WORKSPACE_CATEGORY = WorkspaceCategory.FishingActivity
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap'
@@ -56,12 +56,12 @@ export const TEMPLATE_USER_TRACK_SLUG = 'user-track'
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3'
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer'
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer'
-export const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer'
 export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = 'gfw-environmental-layer'
 export const TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG = 'heatmap-environmental-layer'
 export const TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG = 'heatmap-static-layer'
 export const TEMPLATE_ACTIVITY_DATAVIEW_SLUG = 'activity-template'
 export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-events'
+const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer'
 
 export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_USER_TRACK_SLUG,
@@ -76,7 +76,7 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 ]
 
-export const PRESENCE_DATAVIEWS = [
+const PRESENCE_DATAVIEWS = [
   VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
   SAR_DATAVIEW_SLUG, // TODO include once ready to release
@@ -100,7 +100,7 @@ export const GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG = 'global-sea-surface-temper
 export const GLOBAL_SALINITY_DATAVIEW_SLUG = 'global-water-salinity'
 export const GLOBAL_CHLOROPHYL_DATAVIEW_SLUG = 'global-chlorophyll'
 
-export const ENVIRONMENT_DATAVIEWS = [
+const ENVIRONMENT_DATAVIEWS = [
   GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG,
   GLOBAL_SALINITY_DATAVIEW_SLUG,
   GLOBAL_CHLOROPHYL_DATAVIEW_SLUG,

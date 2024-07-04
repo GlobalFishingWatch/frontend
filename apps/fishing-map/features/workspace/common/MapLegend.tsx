@@ -13,7 +13,7 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { t } from 'features/i18n/i18n'
 import styles from './MapLegend.module.css'
 
-export const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
+const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
   if (!legend) {
     return {} as DeckLegendAtom
   }

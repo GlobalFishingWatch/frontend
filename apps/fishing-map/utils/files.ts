@@ -1,4 +1,4 @@
-import type { Feature, FeatureCollection } from 'geojson'
+import type { FeatureCollection } from 'geojson'
 import { capitalize, lowerCase } from 'lodash'
 import {
   DatasetConfigurationSourceFormat,
@@ -27,7 +27,7 @@ export type MimeExtention =
   | '.KML'
   | '.kmz'
   | '.KMZ'
-export type MimeType =
+type MimeType =
   | 'application/json'
   | 'application/geo+json'
   | 'application/zip'
@@ -37,7 +37,7 @@ export type MimeType =
   | 'text/tab-separated-values'
   | 'application/vnd.google-earth.kml+xml'
   | 'application/vnd.google-earth.kmz'
-export const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType[]> = {
+const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType[]> = {
   '.json': ['application/json'],
   '.JSON': ['application/json'],
   '.geojson': ['application/geo+json'],
@@ -59,7 +59,7 @@ export type DatasetGeometryTypesSupported = Extract<
   'polygons' | 'tracks' | 'points'
 >
 
-export const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
+const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
   polygons: ['GeoJSON', 'KML', 'Shapefile'],
   tracks: ['CSV', 'GeoJSON', 'KML', 'Shapefile'],
   points: ['CSV', 'GeoJSON', 'KML', 'Shapefile'],
@@ -95,20 +95,17 @@ export function getFilesAcceptedByMime(fileTypes: FileType[]) {
   const filesAcceptedExtensions = fileTypesConfigs.flatMap(
     (config) => config?.files as MimeExtention[]
   )
-  const fileAcceptedByMime = filesAcceptedExtensions.reduce(
-    (acc, extension) => {
-      const mime = MIME_TYPES_BY_EXTENSION[extension]
-      mime?.forEach((m) => {
-        if (!acc[m]) {
-          acc[m] = [extension]
-        } else {
-          acc[m].push(extension)
-        }
-      })
-      return acc
-    },
-    {} as Record<MimeType, MimeExtention[]>
-  )
+  const fileAcceptedByMime = filesAcceptedExtensions.reduce((acc, extension) => {
+    const mime = MIME_TYPES_BY_EXTENSION[extension]
+    mime?.forEach((m) => {
+      if (!acc[m]) {
+        acc[m] = [extension]
+      } else {
+        acc[m].push(extension)
+      }
+    })
+    return acc
+  }, {} as Record<MimeType, MimeExtention[]>)
   return fileAcceptedByMime
 }
 

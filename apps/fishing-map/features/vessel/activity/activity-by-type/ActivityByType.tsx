@@ -31,7 +31,7 @@ export const EVENTS_ORDER = [
   // EventTypes.Gap,
 ]
 
-export function ActivityByType() {
+function ActivityByType() {
   const { t } = useTranslation()
   const isSmallScreen = useSmallScreen()
   const activityGroups = useSelector(selectEventsGroupedByType)

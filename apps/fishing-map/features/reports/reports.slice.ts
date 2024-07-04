@@ -11,7 +11,7 @@ import {
 import { AsyncError, AsyncReducer, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 
-export const fetchReportByIdThunk = createAsyncThunk(
+const fetchReportByIdThunk = createAsyncThunk(
   'reports/fetchById',
   async (id: number, { rejectWithValue }) => {
     try {
@@ -133,7 +133,7 @@ export const deleteReportThunk = createAsyncThunk<
   }
 )
 
-export type ReportState = AsyncReducer<Report>
+type ReportState = AsyncReducer<Report>
 type ReportsSliceState = { reports: ReportState }
 
 const { slice: reportsSlice, entityAdapter } = createAsyncSlice<ReportState, Report>({

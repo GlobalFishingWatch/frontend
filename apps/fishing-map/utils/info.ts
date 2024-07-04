@@ -1,4 +1,4 @@
-import { get, uniq } from 'lodash'
+import { uniq } from 'lodash'
 import { TFunction } from 'i18next'
 import {
   API_LOGIN_REQUIRED,
@@ -9,7 +9,6 @@ import {
   VesselType,
 } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
-import { VesselRenderField } from 'features/vessel/vessel.config'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getLatestIdentityPrioritised } from 'features/vessel/vessel.utils'
 import { VesselDataIdentity } from 'features/vessel/vessel.slice'
@@ -58,15 +57,6 @@ export const formatInfoField = (
     return formatI18nNumber(fieldValue)
   }
   return fieldValue || EMPTY_FIELD_PLACEHOLDER
-}
-
-export const formatAdvancedInfoField = (
-  vessel: IdentityVessel,
-  field: VesselRenderField,
-  translationFn = t
-) => {
-  const key = field.key.includes('.') ? field.key.split('.')[1] : field.key
-  return formatInfoField(get(vessel, field.key), key, translationFn)
 }
 
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {

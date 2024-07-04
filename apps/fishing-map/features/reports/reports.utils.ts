@@ -31,52 +31,6 @@ import { ReportVesselWithDatasets } from './reports.selectors'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
 
-const arrayToStringTransform = (array: string[]) =>
-  `(${array?.map((v: string) => `'${v}'`).join(', ')})`
-
-export const transformFilters = (filters: Record<string, any>): string => {
-  const queryFiltersFields = [
-    {
-      value: filters.flag,
-      field: 'flag',
-      operator: 'IN',
-      transformation: arrayToStringTransform,
-    },
-    {
-      value: filters.fleet,
-      field: 'fleet',
-      operator: 'IN',
-      transformation: arrayToStringTransform,
-    },
-    {
-      value: filters.origin,
-      field: 'origin',
-      operator: 'IN',
-      transformation: arrayToStringTransform,
-    },
-    {
-      value: filters.geartype,
-      field: 'geartype',
-      operator: 'IN',
-      transformation: arrayToStringTransform,
-    },
-    {
-      value: filters.vessel_type,
-      field: 'vessel_type',
-      operator: 'IN',
-      transformation: arrayToStringTransform,
-    },
-  ]
-
-  return queryFiltersFields
-    .filter(({ value }) => value && value !== undefined)
-    .map(
-      ({ field, operator, transformation, value }) =>
-        `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
-    )
-    .join(' AND ')
-}
-
 export const tickFormatter = (tick: number) => {
   const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
   return format(formatter)(tick)

@@ -66,10 +66,7 @@ const slice = createSlice({
 
 export const { setMapControlValue, setMapControlEditing, resetMapControlValue } = slice.actions
 
-export const selectMapControls = (state: RootState) => state.mapControls
-export const selectMapControlRuler = (state: RootState) =>
-  state.mapControls.rulers.value as RulerData
-
+const selectMapControls = (state: RootState) => state.mapControls
 export const selectMapControlEditing = (control: MapControl) =>
   createSelector([selectMapControls], (mapControls) => {
     return mapControls[control].isEditing

@@ -3,9 +3,9 @@ import { RootState } from 'reducers'
 import { HINTS } from 'data/config'
 import { HintId } from './hints.content'
 
-export type HintsDismissed = Record<HintId, boolean>
+type HintsDismissed = Record<HintId, boolean>
 
-export interface HintsState {
+interface HintsState {
   hintsDismissed?: HintsDismissed
 }
 

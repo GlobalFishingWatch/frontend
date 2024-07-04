@@ -24,8 +24,8 @@ import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/help/hints.slice'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
-import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 import { isRulerLayerPoint, isTilesClusterLayer } from './map-interaction.utils'
 import {
@@ -41,7 +41,7 @@ import {
 } from './map.slice'
 import { useSetViewState } from './map-viewport.hooks'
 
-export const useMapClusterTilesLoading = () => {
+const useMapClusterTilesLoading = () => {
   const eventsDataviews = useSelector(selectEventsDataviews)
   const eventsDeckLayers = useGetDeckLayers(eventsDataviews?.map((d) => d.id))
   if (!eventsDeckLayers?.length) {
@@ -148,7 +148,7 @@ export const useClickedEventConnect = () => {
       (f) => f.category === DataviewCategory.Events && f.subcategory === DataviewType.TileCluster
     ) as SliceExtendedClusterPickingObject
     if (tileClusterFeature) {
-      const bqPocQuery = tileClusterFeature.layerId !== ENCOUNTER_EVENTS_SOURCE_ID
+      const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
       const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
       eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
     }
@@ -163,7 +163,7 @@ export const useClickedEventConnect = () => {
   }
 }
 
-export const useGetPickingInteraction = () => {
+const useGetPickingInteraction = () => {
   const map = useDeckMap()
 
   const getPickingInteraction = useCallback(

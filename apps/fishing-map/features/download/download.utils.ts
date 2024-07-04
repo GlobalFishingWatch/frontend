@@ -50,8 +50,8 @@ export function getSupportedGroupByOptions(
   })
 }
 
-export const FALLBACK_HEATMAP_INTERVALS: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
-export const FALLBACK_ENVIRONMENT_INTERVALS: FourwingsInterval[] = ['DAY', 'MONTH']
+const FALLBACK_HEATMAP_INTERVALS: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
+const FALLBACK_ENVIRONMENT_INTERVALS: FourwingsInterval[] = ['DAY', 'MONTH']
 
 function hasDataviewWithIntervalSupported(
   dataviews: UrlDataviewInstance[],

@@ -8,7 +8,7 @@ import { searchOceanAreas, OceanAreaLocale, OceanArea } from '@globalfishingwatc
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 import { Dataview } from '@globalfishingwatch/api-types'
 import { t as trans } from 'features/i18n/i18n'
-import { useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useViewState } from 'features/map/map-viewport.hooks'
 import {
   MARINE_MANAGER_DATAVIEWS,
   MARINE_MANAGER_DATAVIEWS_INSTANCES,
@@ -48,7 +48,7 @@ function WorkspaceWizard() {
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
   const map = useDeckMap()
-  const { viewState } = useViewStateAtom()
+  const viewState = useViewState()
   const dataviews = useSelector(selectAllDataviews)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])

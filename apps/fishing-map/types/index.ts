@@ -24,12 +24,12 @@ import { SearchType } from 'features/search/search.config'
 import { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
 export { Locale } from '@globalfishingwatch/api-types'
 
-export type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
-export type WorkspaceTimeRangeParam = 'start' | 'end'
+type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
+type WorkspaceTimeRangeParam = 'start' | 'end'
 export type BufferUnit = 'nauticalmiles' | 'kilometers'
 export type BufferOperation = 'dissolve' | 'difference'
 
-export type ReportStateProperty =
+type ReportStateProperty =
   | 'reportActivityGraph'
   | 'reportAreaBounds'
   | 'reportCategory'
@@ -43,9 +43,9 @@ export type ReportStateProperty =
   | 'reportBufferOperation'
 
 export type WorkspaceStateProperty = keyof WorkspaceState
-export type AppStateProperty = keyof AppState
+type AppStateProperty = keyof AppState
 
-export type AnyStateProperty = WorkspaceStateProperty | ReportStateProperty | AppStateProperty
+type AnyStateProperty = WorkspaceStateProperty | ReportStateProperty | AppStateProperty
 
 export type WorkspaceParam =
   | WorkspaceViewportParam
@@ -55,9 +55,9 @@ export type WorkspaceParam =
   | VesselSearchStateProperty
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
-export type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
+type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
 
-export type BivariateDataviews = [string, string]
+type BivariateDataviews = [string, string]
 export type ReportActivityGraph =
   | typeof REPORT_ACTIVITY_GRAPH_EVOLUTION
   | typeof REPORT_ACTIVITY_GRAPH_BEFORE_AFTER
@@ -81,8 +81,6 @@ export type ReportVesselGraph =
   | typeof REPORT_VESSELS_GRAPH_GEARTYPE
   | typeof REPORT_VESSELS_GRAPH_VESSELTYPE
   | typeof REPORT_VESSELS_GRAPH_FLAG
-
-export type WorkspaceActivityCategory = 'fishing' | 'presence'
 
 export interface WorkspaceState extends BaseUrlWorkspace {
   activityVisualizationMode?: FourwingsVisualizationMode
@@ -154,7 +152,7 @@ export type VesselProfileState = {
 
 export type VesselProfileStateProperty = keyof VesselProfileState
 
-export type RedirectParam = {
+type RedirectParam = {
   'access-token'?: string
 }
 
@@ -187,7 +185,7 @@ export enum TimebarVisualisations {
   Environment = 'environment',
 }
 
-export type VisibleEvents = EventType[] | 'all' | 'none'
+type VisibleEvents = EventType[] | 'all' | 'none'
 
 export enum TimebarGraphs {
   Speed = 'speed',
@@ -198,18 +196,9 @@ export enum TimebarGraphs {
 // minX, minY, maxX, maxY
 export type Bbox = [number, number, number, number]
 
-export type CoordinatePosition = {
-  latitude: number
-  longitude: number
-}
-
 export type MapCoordinates = {
   latitude: number
   longitude: number
   zoom: number
   transitionDuration?: number
-}
-
-export interface TrackPosition extends CoordinatePosition {
-  timestamp: number
 }

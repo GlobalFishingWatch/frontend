@@ -26,7 +26,7 @@ import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { MAX_TOOLTIP_LIST, ExtendedFeatureVessel, selectClickedEvent } from './map.slice'
-import { useViewStateAtom } from './map-viewport.hooks'
+import { useViewState } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
@@ -44,7 +44,7 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
   const highlightedTime = useSelector(selectHighlightedTime)
-  const { viewState } = useViewStateAtom()
+  const viewState = useViewState()
   const { dispatchQueryParams } = useLocationConnect()
   const { t } = useTranslation()
   const showTimeComparison = useSelector(selectShowTimeComparison)

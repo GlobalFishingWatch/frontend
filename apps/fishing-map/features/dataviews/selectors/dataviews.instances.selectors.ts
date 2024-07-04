@@ -15,7 +15,6 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -25,12 +24,7 @@ import {
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
-import {
-  infoDatasetConfigsCallback,
-  // trackDatasetConfigsCallback,
-  // eventsDatasetConfigsCallback,
-  // infoDatasetConfigsCallback,
-} from 'features/resources/resources.utils'
+import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
@@ -47,7 +41,6 @@ import {
   selectIsVesselLocation,
   selectVesselId,
   selectUrlDataviewInstancesOrder,
-  selectIsMarineManagerLocation,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { createDeepEqualSelector } from 'utils/selectors'
@@ -190,8 +183,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
       datasets
     )
     const callbacks: GetDatasetConfigsCallbacks = {
-      // track: trackDatasetConfigsCallback(thinningConfig),
-      // events: eventsDatasetConfigsCallback,
       info: infoDatasetConfigsCallback(guestUser),
     }
     const dataviewInstancesResolvedExtended = extendDataviewDatasetConfig(
@@ -201,20 +192,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
     return dataviewInstancesResolvedExtended
   }
 )
-
-export const selectMarineManagerDataviewInstanceResolved = createSelector(
-  [selectIsMarineManagerLocation, selectAllDataviews, selectAllDatasets],
-  (isMarineManagerLocation, dataviews, datasets): UrlDataviewInstance[] | undefined => {
-    if (!isMarineManagerLocation || !dataviews.length || !datasets.length) return EMPTY_ARRAY
-    const dataviewInstancesResolved = resolveDataviews(
-      MARINE_MANAGER_DATAVIEWS,
-      dataviews,
-      datasets
-    )
-    return dataviewInstancesResolved
-  }
-)
-
 /**
  * Calls getResources to prepare track dataviews' datasetConfigs.
  * Injects app-specific logic by using getResources's callback
@@ -241,18 +218,7 @@ export const selectActiveDataviewInstancesResolved = createSelector(
   }
 )
 
-export const selectCurrentDataviewInstancesResolved = createSelector(
-  [
-    selectDataviewInstancesResolved,
-    selectIsMarineManagerLocation,
-    selectMarineManagerDataviewInstanceResolved,
-  ],
-  (dataviewsInstances = [], isMarineManagerLocation, marineManagerDataviewInstances = []) => {
-    return isMarineManagerLocation ? marineManagerDataviewInstances : dataviewsInstances
-  }
-)
-
-export const selectDataviewInstancesByType = (type: DataviewType) => {
+const selectDataviewInstancesByType = (type: DataviewType) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
   })

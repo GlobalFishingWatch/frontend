@@ -4,7 +4,7 @@ import { selectVesselId } from 'routes/routes.selectors'
 import { RootState } from 'store'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 
-export const selectVessel = (state: RootState) => {
+const selectVessel = (state: RootState) => {
   const vesselId = selectVesselId(state)
   // TODO:deck review why the vessel info is no longer saved in state.vessel.data
   //   return state.vessel.data?.[vesselId]

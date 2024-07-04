@@ -1,4 +1,4 @@
-import { Feature, Position } from 'geojson'
+import { Feature } from 'geojson'
 import {
   DRAW_DATASET_SOURCE,
   Dataset,
@@ -7,10 +7,6 @@ import {
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
-
-export const getCoordinatePrecisionRounded = (coordinate: Position): Position => {
-  return coordinate.map((points) => Math.round(points * 100000) / 100000)
-}
 
 export const getDrawDatasetDefinition = (
   name: string,

@@ -10,17 +10,17 @@ import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.s
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getBufferedAreaBbox } from 'features/reports/reports.utils'
+import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setClickedEvent } from '../../map.slice'
 
-export const getFeatureBounds = (feature: ContextPickingObject) => {
-  if (feature.geometry) {
-    const geometry = getGeometryDissolved(feature.geometry)
-    const bounds = getBufferedAreaBbox({ area: { geometry } } as any)
-    return bounds
-  }
-}
+// const getFeatureBounds = (feature: ContextPickingObject) => {
+//   if (feature.geometry) {
+//     const geometry = getGeometryDissolved(feature.geometry)
+//     const bounds = getBufferedAreaBbox({ area: { geometry } } as any)
+//     return bounds
+//   }
+// }
 
 export const getAreaIdFromFeature = (
   feature: ContextPickingObject | UserLayerPickingObject
@@ -72,6 +72,7 @@ export const useContextInteractions = () => {
   const setReportArea = useCallback(
     (feature: ContextPickingObject | UserLayerPickingObject) => {
       const { title, value } = feature
+      // TODO:deck review this
       // const areaId = getAreaIdFromFeature(feature) as string
       // Report already does it on page reload but to avoid waiting
       // this moves the map to the same position

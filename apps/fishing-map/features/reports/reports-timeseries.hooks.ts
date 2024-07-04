@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import memoizeOne from 'memoize-one'
-import { Polygon, MultiPolygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { atom, useAtom, useAtomValue } from 'jotai'
 import { mean, min, max } from 'simple-statistics'
@@ -36,13 +35,13 @@ import { ReportActivityGraph, ReportCategory } from 'types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
-export interface EvolutionGraphData {
+interface EvolutionGraphData {
   date: string
   min: number[]
   max: number[]
 }
 
-export interface ReportSublayerGraph {
+interface ReportSublayerGraph {
   id: string
   legend: {
     color?: string
@@ -65,26 +64,10 @@ export interface ReportGraphProps {
   mode?: ReportGraphMode
 }
 
-export const mapTimeseriesAtom = atom([] as ReportGraphProps[] | undefined)
+const mapTimeseriesAtom = atom([] as ReportGraphProps[] | undefined)
 if (process.env.NODE_ENV !== 'production') {
   mapTimeseriesAtom.debugLabel = 'mapTimeseries'
 }
-
-export const mapReportFeaturesAtom = atom<FourwingsFeature[] | undefined>(undefined)
-if (process.env.NODE_ENV !== 'production') {
-  mapTimeseriesAtom.debugLabel = 'mapReportFeatures'
-}
-
-export const hasMapTimeseriesAtom = atom((get) => {
-  const timeseries = get(mapTimeseriesAtom)
-  return timeseries && timeseries.length > 0
-})
-
-export type DateTimeSeries = {
-  date: string
-  values: number[]
-}[]
-
 export function useSetTimeseries() {
   return useAtom(mapTimeseriesAtom)[1]
 }
@@ -97,7 +80,7 @@ export const useReportFeaturesLoading = () => {
   return areaInViewport && !reportLayerInstanceLoaded
 }
 
-export const useReportFeaturesError = () => {
+const useReportFeaturesError = () => {
   // TODO:deck handle errors in layer instances
   const reportLayerInstanceLoaded = useReportInstances()?.every((layer) => layer.loaded)
   return false

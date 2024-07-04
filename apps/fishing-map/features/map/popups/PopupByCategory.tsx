@@ -187,9 +187,11 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             //   (feature) => feature.source === WORKSPACE_GENERATOR_ID
             // )
             // Workaround to show user context features in the context section
+
             const userContextFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.UserContext
             )
+            // TODO:deck add AnnotationTooltip
             return (
               <Fragment key={featureCategory}>
                 <UserPointsTooltipSection

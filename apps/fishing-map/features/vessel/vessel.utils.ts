@@ -76,7 +76,7 @@ export function getLatestIdentityPrioritised(vessel: IdentityVessel | IdentityVe
   return { ...identity, geartypes, shiptypes }
 }
 
-export function getMatchCriteriaPrioritised(matchCriteria: IdentityVessel['matchCriteria']) {
+function getMatchCriteriaPrioritised(matchCriteria: IdentityVessel['matchCriteria']) {
   const registryMatchCriteria = matchCriteria?.find(
     (m) => m.source === VesselIdentitySourceEnum.Registry
   )
@@ -119,14 +119,14 @@ export function getVesselId(vessel: IdentityVessel | IdentityVesselData | null) 
   return selfReportedId || identityId
 }
 
-export function getVesselCombinedSource(
+function getVesselCombinedSource(
   vessel: IdentityVessel | IdentityVesselData | null,
   { vesselId } = {} as { vesselId: string }
 ) {
   return vessel?.combinedSourcesInfo?.find((i) => i.vesselId === vesselId)
 }
 
-export function getVesselCombinedSourceProperty(
+function getVesselCombinedSourceProperty(
   vessel: IdentityVessel | IdentityVesselData | null,
   { vesselId, property } = {} as {
     vesselId: string
@@ -182,20 +182,6 @@ export function getVesselProperty<P extends VesselIdentityProperty>(
   }
   return get<VesselProperty<P>>(identity, property as any)
 }
-
-export function getVesselIdentityProperties<P = string>(
-  vessel: IdentityVessel | IdentityVesselData,
-  property: VesselIdentityProperty,
-  { identitySource } = {} as GetVesselIdentityParams
-): P[] {
-  if (!vessel) return [] as P[]
-  if (property === 'owner') {
-    return uniq(vessel.registryOwners?.map(({ name }) => name)) as P[]
-  }
-  const identities = getVesselIdentities(vessel, { identitySource })
-  return uniq(identities.flatMap((i: any) => i[property] || [])) as P[]
-}
-
 export function getRelatedIdentityVesselIds(vessel: IdentityVessel | IdentityVesselData): string[] {
   if (!vessel) return [] as string[]
   const identities = getVesselIdentities(vessel, {

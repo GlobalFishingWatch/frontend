@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
-export const useI18nFlag = (iso: string) => {
+const useI18nFlag = (iso: string) => {
   const { t } = useTranslation('flags')
   return t(iso as any)
 }

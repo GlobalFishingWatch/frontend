@@ -31,7 +31,7 @@ export const hasTracksWithNoData = (tracks = [] as VesselTrackAtom) => {
   )
 }
 
-export const useTimebarVesselsLayers = () => {
+const useTimebarVesselsLayers = () => {
   const dataviews = useSelector(selectActiveVesselsDataviews)
   const ids = useMemo(() => {
     return dataviews.map((d) => d.id)
@@ -44,8 +44,8 @@ export const useTimebarVesselTracksData = () => {
   return useAtomValue(vesselTracksAtom)
 }
 
-export type VesselTrackAtom = TimebarChartData<any>
-export const vesselTracksAtom = atom<VesselTrackAtom | undefined>(undefined)
+type VesselTrackAtom = TimebarChartData<any>
+const vesselTracksAtom = atom<VesselTrackAtom | undefined>(undefined)
 export const useTimebarVesselTracks = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
@@ -121,8 +121,7 @@ export const useTimebarVesselTracks = () => {
   return tracks
 }
 
-export type VesselTracksGraphAtom = TimebarChartData<any>
-export const vesselTracksGraphAtom = atom<VesselTrackAtom | undefined>(undefined)
+const vesselTracksGraphAtom = atom<VesselTrackAtom | undefined>(undefined)
 
 const getTrackGraphSpeedHighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
   value ? `${value.value?.toFixed(2)} knots` : ''

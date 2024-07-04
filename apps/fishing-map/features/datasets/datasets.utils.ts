@@ -47,7 +47,7 @@ export type VesselInstanceDatasets = {
   relatedVesselIds?: string[]
 }
 
-export const VESSEL_INSTANCE_DATASETS = [
+const VESSEL_INSTANCE_DATASETS = [
   'track' as keyof VesselInstanceDatasets,
   'info' as keyof VesselInstanceDatasets,
   'events' as keyof VesselInstanceDatasets,
@@ -59,7 +59,7 @@ export type SupportedDatasetSchema =
   | SupportedContextDatasetSchema
   | SupportedEventsDatasetSchema
 
-export type SupportedActivityDatasetSchema =
+type SupportedActivityDatasetSchema =
   | 'mmsi'
   | 'flag'
   | 'geartype'
@@ -103,17 +103,17 @@ export type SupportedEnvDatasetSchema =
   | 'genus' // species-mm
   | 'period' // species-mm
   | 'scenario' // species-mm
-export type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
-export type SupportedEventsDatasetSchema = 'duration'
+type SupportedContextDatasetSchema = 'removal_of' | 'vessel_id'
+type SupportedEventsDatasetSchema = 'duration'
 
 const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
 const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups', 'period', 'scenario']
 
-export type SchemaCompatibilityOperation = 'every' | 'some'
-export type SchemaOriginParam =
+type SchemaCompatibilityOperation = 'every' | 'some'
+type SchemaOriginParam =
   | keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'>
   | 'all'
-export type GetSchemaInDataviewParams = {
+type GetSchemaInDataviewParams = {
   fieldsToInclude?: SupportedDatasetSchema[]
   vesselGroups?: MultiSelectOption[]
   compatibilityOperation?: SchemaCompatibilityOperation
@@ -267,7 +267,7 @@ export const getDatasetsInDataviews = (
   return uniq(datasets)
 }
 
-export type RelatedDatasetByTypeParams = {
+type RelatedDatasetByTypeParams = {
   fullDatasetAllowed?: boolean
   vesselType?: VesselType
 }
@@ -334,7 +334,7 @@ export const checkDatasetReportPermission = (datasetId: string, permissions: Use
   const permission = { type: 'dataset', value: datasetId, action: 'report' }
   return checkExistPermissionInList(permissions, permission)
 }
-export const checkDatasetDownloadTrackPermission = (
+const checkDatasetDownloadTrackPermission = (
   datasetId: string,
   permissions: UserPermission[]
 ) => {
@@ -449,7 +449,7 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
   return allowedDatasets
 }
 
-export const isDataviewSchemaSupported = (
+const isDataviewSchemaSupported = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
@@ -542,7 +542,7 @@ export const getDatasetSchemaItem = (
   return null
 }
 
-export const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
+const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema) => {
   if (schema === 'vessel-groups') {
     // returning true as the schema fields enum comes from the dynamic fetch list passed as props
     return true
@@ -586,11 +586,11 @@ export const isFieldInFieldsAllowed = ({
   })
 }
 
-export const datasetHasFieldsAllowed = (dataset: Dataset, schema: SupportedDatasetSchema) => {
+const datasetHasFieldsAllowed = (dataset: Dataset, schema: SupportedDatasetSchema) => {
   return isFieldInFieldsAllowed({ field: schema, fieldsAllowed: dataset.fieldsAllowed })
 }
 
-export const getSupportedSchemaFieldsDatasets = (
+const getSupportedSchemaFieldsDatasets = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
@@ -602,7 +602,7 @@ export const getSupportedSchemaFieldsDatasets = (
   return datasetsWithSchemaFieldsSupport
 }
 
-export const getNotSupportedSchemaFieldsDatasets = (
+const getNotSupportedSchemaFieldsDatasets = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
@@ -650,7 +650,7 @@ const getCommonSchemaTypeInDataview = (
   return datasetSchemas?.[0]
 }
 
-export type SchemaFieldSelection = {
+type SchemaFieldSelection = {
   id: string
   label: any
 }
@@ -734,7 +734,7 @@ export const getCommonSchemaFieldsInDataview = (
   return commonSchemaFields.sort(sortFields)
 }
 
-export const getSchemaOptionsSelectedInDataview = (
+const getSchemaOptionsSelectedInDataview = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema,
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>

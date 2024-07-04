@@ -23,13 +23,13 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { toFixed } from 'utils/shared'
 import styles from './ReportActivityEvolution.module.css'
 
-export interface ComparisonGraphData {
+interface ComparisonGraphData {
   date: string
   min: number[]
   max: number[]
 }
 
-export interface ComparisonGraphProps {
+interface ComparisonGraphProps {
   timeseries: ComparisonGraphData[]
   sublayers: {
     id: string
