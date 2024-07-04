@@ -184,7 +184,9 @@
     "partnerSites": "Situs mitra",
     "password": "password",
     "plus": "plus",
+    "points": "points",
     "polygon": "Poligon",
+    "polygons": "polygons",
     "presence": "Kehadiran",
     "previously": "Sebelumnya",
     "report": "Laporan",
@@ -316,6 +318,7 @@
     "fieldMultiplePlaceholder": "Pilih satu atau beberapa bidang dari dataset Anda",
     "fieldNumericPlaceholder": "Pilih bidang numerik dari dataset Anda",
     "fieldPlaceholder": "Pilih bidang dari dataset Anda",
+    "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
     "none": "Tidak ada",
     "optionalFields": "Bidang opsional",
     "point": {

@@ -10,6 +10,7 @@ import {
   getActiveDatasetsInActivityDataviews,
   getDatasetsInDataviews,
 } from 'features/datasets/datasets.utils'
+import { LAST_DATA_UPDATE } from 'data/config'
 
 type OutOfTimerangeDisclaimerValidate = 'start' | 'end' | 'both'
 type OutOfTimerangeDisclaimerProps = {
@@ -33,7 +34,7 @@ const OutOfTimerangeDisclaimer = ({
       : getActiveDatasetsInActivityDataviews([dataview])
 
   const activeDatasets = dataview.datasets?.filter((d) => activeDatasetIds.includes(d.id))
-  const { extentStart, extentEnd } = getDatasetsExtent(activeDatasets, {
+  const { extentStart, extentEnd = LAST_DATA_UPDATE } = getDatasetsExtent(activeDatasets, {
     format: 'isoString',
   })
 
@@ -69,7 +70,7 @@ const OutOfTimerangeDisclaimer = ({
     )
   }
 
-  if (!extentStart && !extentEnd) {
+  if (!extentStart || !extentEnd) {
     return null
   }
 

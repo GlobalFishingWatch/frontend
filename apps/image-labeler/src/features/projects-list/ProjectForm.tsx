@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import cx from 'classnames'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { LabellingProject } from '../../types'
@@ -8,11 +9,9 @@ import styles from './ProjectsList.module.css'
 export function ProjectForm({
   project,
   mode,
-  closeModal,
 }: {
   project: LabellingProject
   mode: 'edit' | 'create'
-  closeModal: () => void
 }) {
   const [error, setError] = useState('')
   const [projectInfo, setProjectInfo] = useState(project)
@@ -44,19 +43,23 @@ export function ProjectForm({
   const confirmDisabled =
     !projectInfo.name || !projectInfo.labels.length || !projectInfo.bqQuery || !projectInfo.bqTable
 
+  const { name, labels, bqQuery, bqTable, gcsThumbnails, scale } = projectInfo
+
   return (
     <div className={styles.projectEdit}>
       <div className={styles.projectEditProperty}>
         <label>Name</label>
         <InputText
-          value={projectInfo.name}
+          value={name}
           onChange={(e) => handleChange({ value: e.target.value, field: 'name' })}
         />
       </div>
       <div className={styles.projectEditProperty}>
-        <label>Labels (comma separated)</label>
+        <label>
+          Labels <span className={styles.secondary}>(comma separated)</span>
+        </label>
         <InputText
-          value={projectInfo.labels.join(', ')}
+          value={labels.join(', ')}
           onChange={(e) =>
             handleChange({
               value: e.target.value.split(', ').map((l) => l.trim()),
@@ -66,30 +69,39 @@ export function ProjectForm({
         />
       </div>
       <div className={styles.projectEditProperty}>
-        <label>GCS Thumbnails</label>
+        <label>GCS Thumbnails folder</label>
         <InputText
-          value={projectInfo.gcsThumbnails}
+          value={gcsThumbnails}
           onChange={(e) => handleChange({ value: e.target.value, field: 'gcsThumbnails' })}
+          placeholder="gs://route-to-folder"
         />
+        <span className={cx(styles.preview, styles.oneLine)}>
+          Final url:{' '}
+          {`${gcsThumbnails !== 'gs://' ? gcsThumbnails : 'gs://route-to-folder'}/YYYYMMDD/ID*`}
+        </span>
       </div>
       <div className={styles.projectEditProperty}>
-        <label>
-          BQ Query{' '}
-          <span className={styles.secondary}>
-            (Should return an id field matching the thumbnail file names, other fields will appear
-            as metadata)
-          </span>
-        </label>
+        <label>BQ Query </label>
         <textarea
           className={styles.textArea}
           name="Text1"
           cols={73}
           rows={7}
-          value={projectInfo.bqQuery}
+          value={bqQuery}
           onChange={(e) => handleChange({ value: e.target.value, field: 'bqQuery' })}
         >
-          {projectInfo.bqQuery}
+          {bqQuery}
         </textarea>
+        <span className={styles.preview}>
+          <ul className={styles.bulletedList}>
+            <li>Should return an 'id' field matching the thumbnail file names.</li>
+            <li>
+              The tool will show a link to the detection location if 'lat' and 'lon' fields are
+              present.
+            </li>
+            <li>Other fields will appear as metadata (e.g. score).</li>
+          </ul>
+        </span>
       </div>
       <div className={styles.projectEditProperty}>
         <label>
@@ -97,14 +109,16 @@ export function ProjectForm({
           <span className={styles.secondary}>(Should not exist already)</span>
         </label>
         <InputText
-          value={projectInfo.bqTable}
+          value={bqTable}
           onChange={(e) => handleChange({ value: e.target.value, field: 'bqTable' })}
         />
       </div>
       <div className={styles.projectEditProperty}>
-        <label>Scale (in meters per pixel)</label>
+        <label>
+          Scale <span className={styles.secondary}>(in meters per pixel)</span>
+        </label>
         <InputText
-          value={projectInfo.scale}
+          value={scale}
           onChange={(e) => handleChange({ value: e.target.value, field: 'scale' })}
         />
       </div>

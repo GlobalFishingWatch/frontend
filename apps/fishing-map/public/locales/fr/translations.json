@@ -184,7 +184,9 @@
     "partnerSites": "Sites partenaires",
     "password": "password",
     "plus": "plus",
+    "points": "points",
     "polygon": "Polygone",
+    "polygons": "polygons",
     "presence": "Présence",
     "previously": "Précédemment",
     "report": "Rapporter",
@@ -316,6 +318,7 @@
     "fieldMultiplePlaceholder": "Sélectionnez un ou plusieurs champs de votre jeu de données",
     "fieldNumericPlaceholder": "Sélectionnez un champ numérique dans votre jeu de données",
     "fieldPlaceholder": "Sélectionnez un champ dans votre jeu de données",
+    "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
     "none": "None",
     "optionalFields": "Options de champs supplémentaires",
     "point": {

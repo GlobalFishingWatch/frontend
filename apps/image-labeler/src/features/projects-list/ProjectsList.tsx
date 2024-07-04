@@ -12,7 +12,7 @@ import ProjectItem from './ProjectItem'
 const EMPTY_PROJECT: Omit<LabellingProject, 'id'> = {
   name: '',
   labels: [],
-  gcsThumbnails: '',
+  gcsThumbnails: 'gs://',
   bqQuery: '',
   bqTable: '',
   scale: '',
@@ -48,7 +48,7 @@ export function ProjectsList() {
         shouldCloseOnEsc
         onClose={closeModal}
       >
-        <ProjectForm mode="create" project={EMPTY_PROJECT} closeModal={closeModal} />
+        <ProjectForm mode="create" project={EMPTY_PROJECT} />
       </Modal>
     </div>
   )

@@ -40,7 +40,7 @@ export function ProjectItem({ project }: { project: LabellingProject }) {
         shouldCloseOnEsc
         onClose={closeModal}
       >
-        <ProjectForm mode="edit" project={project} closeModal={closeModal} />
+        <ProjectForm mode="edit" project={project} />
       </Modal>
     </Fragment>
   )
