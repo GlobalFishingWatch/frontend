@@ -8,13 +8,14 @@ import {
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { parse } from '@loaders.gl/core'
-import { debounce } from 'lodash'
+import { debounce, sum } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
 import {
   FourwingsFeature,
   FourwingsInterval,
   FourwingsLoader,
+  getFourwingsInterval,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -30,9 +31,9 @@ import {
 import {
   HEATMAP_API_TILES_URL,
   FOURWINGS_MAX_ZOOM,
-  getInterval,
   MAX_RAMP_VALUES,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
+  DYNAMIC_RAMP_CHANGE_THRESHOLD,
 } from '../fourwings.config'
 import {
   FourwingsColorObject,
@@ -76,6 +77,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   static layerName = 'FourwingsHeatmapTileLayer'
   static defaultProps = defaultProps
   initialBinsLoad = false
+  state!: FourwingsTileLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -234,10 +236,38 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   updateColorDomain = debounce(() => {
     requestAnimationFrame(() => {
-      const colorDomain = this._calculateColorDomain()
-      const colorRanges = this._getColorRanges()
-      const scales = this._getColorScales(colorDomain, colorRanges)
-      this.setState({ colorDomain, scales, rampDirty: false })
+      const { comparisonMode } = this.props
+      const { colorDomain: oldColorDomain } = this.state
+      const newColorDomain = this._calculateColorDomain()
+      let avgChange = Infinity
+      let change: number[] = []
+      if (oldColorDomain.length) {
+        if (comparisonMode === FourwingsComparisonMode.Bivariate) {
+          change = (oldColorDomain as number[][])
+            .map((oldColorDomainAxis, oldColorDomainAxisIndex) => {
+              return oldColorDomainAxis.map((oldValue, i) => {
+                const newValue = (newColorDomain as number[][])[oldColorDomainAxisIndex][i]
+                return (Math.abs(newValue - oldValue) / oldValue) * 100 || 0
+              })
+            })
+            .flat()
+        } else if (comparisonMode === FourwingsComparisonMode.Compare) {
+          change = (oldColorDomain as number[]).map((oldValue, i) => {
+            const newValue = newColorDomain[i] as number
+            return (Math.abs(newValue - oldValue) / oldValue) * 100 || 0
+          })
+        }
+        if (change.length) {
+          avgChange = sum(change) / change.length
+        }
+      }
+      if (avgChange > DYNAMIC_RAMP_CHANGE_THRESHOLD) {
+        const colorRanges = this._getColorRanges()
+        const scales = this._getColorScales(newColorDomain, colorRanges)
+        this.setState({ colorDomain: newColorDomain, scales, rampDirty: false })
+      } else {
+        this.setState({ rampDirty: false })
+      }
     })
   }, 500)
 
@@ -273,7 +303,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
-    const interval = getInterval(startTime, endTime, availableIntervals)
+    const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     if (!interval) {
       throw new Error('Missing valid interval in time compare mode')
     }
@@ -324,7 +354,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
-    const interval = getInterval(startTime, endTime, availableIntervals)
+    const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     if (!interval) {
       throw new Error('Invalid interval')
     }
@@ -406,14 +436,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       tilesUrl,
       comparisonMode,
     } = this.props
-    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
+    const { colorDomain, colorRanges } = this.state
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     let cols: number = 0
     let rows: number = 0
     let scale: number = 0
     let offset: number = 0
     let noDataValue: number = 0
-    const interval = getInterval(startTime, endTime, availableIntervals)
+    const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
     this.setState({ rampDirty: true })
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
@@ -503,7 +533,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     compareStart?: number
     compareEnd?: number
   }): FourwingsHeatmapTilesCache => {
-    const interval = getInterval(startTime, endTime, availableIntervals)
+    const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
     return { start, end, bufferedStart, interval, compareStart, compareEnd }
   }
@@ -527,7 +557,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       minVisibleValue,
       maxVisibleValue,
     } = props
-    const { tilesCache, colorRanges, colorDomain } = this.state as FourwingsTileLayerState
+    const { tilesCache, colorRanges, colorDomain } = this.state
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = colorRanges.join() !== newSublayerColorRanges.join()
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
@@ -563,7 +593,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       isCompareStartOutRange ||
       isEndOutRange ||
       isCompareEndOutRange ||
-      getInterval(startTime, endTime, availableIntervals) !== tilesCache.interval
+      getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval
     if (needsCacheKeyUpdate) {
       this.setState({
         tilesCache: this._getTileDataCache({
@@ -579,7 +609,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   renderLayers(): Layer<{}> | LayersList {
     const { resolution, comparisonMode } = this.props
-    const { colorDomain, colorRanges, tilesCache, scales } = this.state as FourwingsTileLayerState
+    const { colorDomain, colorRanges, tilesCache, scales } = this.state
     const cacheKey = this._getTileDataCacheKey()
 
     return new TileLayer(
@@ -690,7 +720,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   getInterval = () => {
     const { startTime, endTime, availableIntervals } = this.props
-    return getInterval(startTime, endTime, availableIntervals)
+    return getFourwingsInterval(startTime, endTime, availableIntervals)
   }
 
   getChunk = () => {
@@ -699,11 +729,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getColorDomain = () => {
-    return (this.state as FourwingsTileLayerState).colorDomain
+    return this.state.colorDomain
   }
 
   getColorRange = () => {
-    return (this.state as FourwingsTileLayerState).colorRanges
+    return this.state.colorRanges
   }
 
   getColorScale = () => {

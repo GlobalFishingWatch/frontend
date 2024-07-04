@@ -9,9 +9,8 @@ import {
   JAC_GROUP_ID,
 } from 'features/user/user.config'
 
-export const selectUserSlice = (state: RootState) => state.user
 export const selectUserData = (state: RootState) => state.user.data
-export const selectUserStatus = (state: RootState) => state.user.status
+const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const selectUserSettings = (state: RootState) => state.user.settings
 

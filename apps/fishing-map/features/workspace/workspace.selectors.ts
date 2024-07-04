@@ -51,12 +51,9 @@ export const selectWorkspaceDataviewInstances = createSelector([selectWorkspace]
 })
 
 const EMPTY_OBJECT: {} = {}
-export const selectWorkspaceState = createSelector(
-  [selectWorkspace],
-  (workspace): WorkspaceState => {
-    return workspace?.state || (EMPTY_OBJECT as WorkspaceState)
-  }
-)
+const selectWorkspaceState = createSelector([selectWorkspace], (workspace): WorkspaceState => {
+  return workspace?.state || (EMPTY_OBJECT as WorkspaceState)
+})
 
 type WorkspaceProperty<P extends WorkspaceStateProperty> = Required<WorkspaceState>[P]
 

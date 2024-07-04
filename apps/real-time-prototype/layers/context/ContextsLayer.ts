@@ -1,5 +1,5 @@
-import { CompositeLayer, PickingInfo } from '@deck.gl/core/typed'
-import { MVTLayerProps, TileLayerProps } from '@deck.gl/geo-layers/typed'
+import { CompositeLayer, PickingInfo } from '@deck.gl/core'
+import { MVTLayerProps, TileLayerProps } from '@deck.gl/geo-layers'
 import { ContextLayer } from './ContextLayer'
 
 export type ContextsLayerProps = TileLayerProps &

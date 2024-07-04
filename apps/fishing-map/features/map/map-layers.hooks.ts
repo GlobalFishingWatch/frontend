@@ -5,7 +5,6 @@ import {
   useDeckLayerComposer,
   useDeckLayerLoadedState,
 } from '@globalfishingwatch/deck-layer-composer'
-import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import { useGlobalConfigConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsWorkspaceIndexLocation, selectIsUserLocation } from 'routes/routes.selectors'
@@ -18,9 +17,9 @@ import {
   selectShowWorkspaceDetail,
   selectWorkspacesListDataview,
 } from './map.selectors'
-import useRulers, { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
+import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
 
-export const useMapDataviewsLayers = () => {
+const useMapDataviewsLayers = () => {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceDataviews = useSelector(selectDataviewInstancesResolvedVisible)
   const bufferDataviews = useSelector(selectMapReportBufferDataviews)
@@ -62,7 +61,7 @@ export const useMapDataviewsLayers = () => {
   return layers
 }
 
-export const useMapOverlayLayers = () => {
+const useMapOverlayLayers = () => {
   const drawLayerInstance = useDrawLayerInstance()
   const rulerLayerInstance = useMapRulerInstance()
   return useMemo(() => {
@@ -76,7 +75,8 @@ export const useMapLayers = () => {
   return useMemo(() => [...dataviewsLayers, ...overlays], [dataviewsLayers, overlays])
 }
 
-export const useMapLayersLoaded = () => {
+// TODO:deck review if this needed
+const useMapLayersLoaded = () => {
   const layerStatus = useDeckLayerLoadedState()
   return Object.values(layerStatus).every((l) => l.loaded)
 }

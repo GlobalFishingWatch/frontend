@@ -18,6 +18,41 @@ import {
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
 
+export function isActivityDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Activity &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
+export function isDetectionsDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Detections &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
+export function isTrackDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Vessels && dataview.config?.type === DataviewType.Track
+  )
+}
+
+export function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
+  return isActivityDataview(dataview) || isDetectionsDataview(dataview)
+}
+
+export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
+  return dataview?.config?.type === DataviewType.HeatmapStatic
+}
+
+export function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Environment &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
 export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
   if (!dataviews.length) {
     console.warn('Trying to merge empty dataviews')

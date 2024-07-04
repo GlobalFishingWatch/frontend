@@ -15,7 +15,7 @@ import styles from './NewDataset.module.css'
 type TimeFilterTypeOption = TimeFilterType | 'none'
 const TIME_FILTER_OPTIONS: TimeFilterTypeOption[] = ['none', 'date', 'dateRange']
 
-export const getTimeFilterOptions = (
+const getTimeFilterOptions = (
   filterOptions = TIME_FILTER_OPTIONS
 ): SelectOption<TimeFilterTypeOption>[] => {
   return filterOptions.map((id) => ({ id, label: t(`datasetUpload.${id}`, id as string) }))

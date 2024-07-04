@@ -33,7 +33,7 @@ import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
 import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
 import Filters from '../common/LayerFilters'
-import { isActivityDataview, isDetectionsDataview } from './activity.utils'
+import { isDefaultActivityDataview, isDefaultDetectionsDataview } from './activity.utils'
 import activityStyles from './ActivitySection.module.css'
 
 type LayerPanelProps = {
@@ -145,7 +145,7 @@ function ActivityLayerPanel({
   const hasDatasetAvailable =
     getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
 
-  const showFilters = isActivityDataview(dataview) || isDetectionsDataview(dataview)
+  const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
   const TitleComponent = (
     <Title
       title={datasetTitle}

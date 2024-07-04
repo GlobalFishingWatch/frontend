@@ -4,12 +4,34 @@ import { useSelector } from 'react-redux'
 import { LegendType, MapLegend, Tooltip, UILegend } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
+import { DeckLegendAtom, useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
 import {
   selectActivityMergedDataviewId,
   selectDetectionsMergedDataviewId,
 } from 'features/dataviews/selectors/dataviews.selectors'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { t } from 'features/i18n/i18n'
 import styles from './MapLegend.module.css'
+
+const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
+  if (!legend) {
+    return {} as DeckLegendAtom
+  }
+  let label = legend.label
+  const isSquareKm = (legend.gridArea as number) > 50000
+  const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+  const gridAreaFormatted = gridArea
+    ? formatI18nNumber(gridArea, {
+        style: 'unit',
+        unit: isSquareKm ? 'kilometer' : 'meter',
+        unitDisplay: 'short',
+      })
+    : ''
+  if (legend.unit === 'hours') {
+    label = `${tFn('common.hour_other', 'hours')} / ${gridAreaFormatted}²`
+  }
+  return { ...legend, label } as DeckLegendAtom
+}
 
 const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
   const { t } = useTranslation()
@@ -22,13 +44,13 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
       : dataview.category === DataviewCategory.Detections
       ? detectionsMergedDataviewId
       : activityMergedDataviewId
-  const deckLegend = useGetDeckLayerLegend(dataviewId)
+  const deckLegend = getLegendLabelTranslated(useGetDeckLayerLegend(dataviewId))
   const isBivariate = deckLegend?.type === LegendType.Bivariate
 
   if (!deckLegend) {
     return null
   }
-  const legendSublayerIndex = deckLegend?.sublayers.findIndex(
+  const legendSublayerIndex = deckLegend?.sublayers?.findIndex(
     (sublayer) => sublayer.id === dataview.id
   )
   if (legendSublayerIndex < 0 || (isBivariate && legendSublayerIndex !== 0) || !deckLegend.ranges) {

@@ -1,6 +1,5 @@
-import { DateTime, DateTimeUnit, Duration, DurationLikeObject } from 'luxon'
-import { intersection } from 'lodash'
-import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { DateTime, DateTimeUnit, Duration } from 'luxon'
+import { FourwingsInterval, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import { getUTCDateTime } from '../../utils/dates'
 import { FourwingsChunk } from './fourwings.types'
@@ -32,7 +31,8 @@ export const POSITIONS_VISUALIZATION_MAX_ZOOM = 9
 
 export const MAX_RAMP_VALUES = 10000
 
-export const FOURWINGS_INTERVALS_ORDER: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
+export const DYNAMIC_RAMP_CHANGE_THRESHOLD = 50
+
 export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']
 
 export const CHUNKS_BY_INTERVAL: Record<
@@ -49,55 +49,6 @@ export const CHUNKS_BY_INTERVAL: Record<
   },
   MONTH: undefined,
   YEAR: undefined,
-}
-
-export const LIMITS_BY_INTERVAL: Record<
-  FourwingsInterval,
-  { unit: keyof DurationLikeObject; value: number; buffer: number } | undefined
-> = {
-  HOUR: {
-    unit: 'days',
-    value: 3,
-    buffer: 1,
-  },
-  DAY: {
-    unit: 'months',
-    value: 3,
-    buffer: 1,
-  },
-  MONTH: {
-    unit: 'year',
-    value: 3,
-    buffer: 1,
-  },
-  YEAR: undefined,
-}
-
-// TODO: ensure this is not missing any funciontality from the original
-// layer-composer/src/generators/heatmap/util/get-time-chunks-interval.ts
-export const getInterval = (
-  start: number | string,
-  end: number | string,
-  availableIntervals = FOURWINGS_INTERVALS_ORDER
-): FourwingsInterval => {
-  const startMillis = typeof start === 'string' ? DateTime.fromISO(start).toMillis() : start
-  const endMillis = typeof end === 'string' ? DateTime.fromISO(end).toMillis() : end
-  const duration = Duration.fromMillis(endMillis - startMillis)
-  const validIntervals = Object.entries(LIMITS_BY_INTERVAL).flatMap(([interval, limits]) => {
-    if (!availableIntervals.includes(interval as FourwingsInterval)) return []
-    if (!limits) return interval as FourwingsInterval
-    return Math.round(duration.as(limits.unit)) <= limits.value
-      ? (interval as FourwingsInterval)
-      : []
-  })
-  if (validIntervals.length) {
-    return validIntervals[0]
-  }
-  const sortedIntervals = intersection(
-    FOURWINGS_INTERVALS_ORDER,
-    availableIntervals
-  ) as FourwingsInterval[]
-  return sortedIntervals[sortedIntervals.length - 1]
 }
 
 export const getDateInIntervalResolution = (date: number, interval: FourwingsInterval): number => {

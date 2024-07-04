@@ -1,4 +1,6 @@
 import {
+  DeckLayerCategory,
+  DeckLayerSubcategory,
   FourwingsDeckSublayer,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
@@ -24,6 +26,8 @@ export enum LegendType {
 
 export type DeckLegend = {
   id: string
+  category: DeckLayerCategory
+  subcategory?: DeckLayerSubcategory
   type: LegendType
   label?: string
   unit?: string

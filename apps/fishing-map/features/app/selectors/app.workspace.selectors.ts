@@ -37,7 +37,7 @@ import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selecto
 import { selectDaysFromLatest, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 
-export const selectWorkspaceReportState = createSelector(
+const selectWorkspaceReportState = createSelector(
   [
     selectReportActivityGraph,
     selectReportAreaBounds,
@@ -78,7 +78,7 @@ export const selectWorkspaceReportState = createSelector(
   })
 )
 
-export const selectWorkspaceAppState = createSelector(
+const selectWorkspaceAppState = createSelector(
   [
     selectActivityCategory,
     selectBivariateDataviews,

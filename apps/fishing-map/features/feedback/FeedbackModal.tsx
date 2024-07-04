@@ -46,7 +46,7 @@ type FeedbackData = {
 const FEEDBACK_SHEET_TITLE = 'new feedback'
 const FEEDBACK_SPREADSHEET_ID = process.env.NEXT_PUBLIC_FEEDBACK_SPREADSHEET_ID || ''
 
-export const FEEDBACK_ROLE_IDS = [
+const FEEDBACK_ROLE_IDS = [
   'analyst',
   'fisheries',
   'general',
@@ -60,7 +60,7 @@ export const FEEDBACK_ROLE_IDS = [
   'other',
 ]
 
-export const FEEDBACK_FEATURE_IDS = [
+const FEEDBACK_FEATURE_IDS = [
   'activityLayers',
   'vesselTracks',
   'vesselSearch',

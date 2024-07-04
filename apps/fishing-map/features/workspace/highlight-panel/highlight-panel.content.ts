@@ -38,7 +38,7 @@ const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
  * }
  *
  */
-const NEXT_YEAR = Date.now() + 1000 * 60 * 60 * 24 * 365
+// const NEXT_YEAR = Date.now() + 1000 * 60 * 60 * 24 * 365
 const BASE_HIGHLIGHT_CONFIG = {
   localStorageKey: HIGHLIGHT_POPUP_KEY,
   delayed: 1000,
@@ -157,10 +157,4 @@ const HIGHLIGHT_CONFIG = DISPLAY_LATEST_POPUP ? HIGHLIGHT_CONFIG_LATEST : HIGHLI
 
 export const HIGHLIGHT_DATAVIEW_INSTANCE_ID = HIGHLIGHT_CONFIG?.dataviewInstanceId
 
-export const getDataviewInstanceReleaseDate = (instanceId: string) => {
-  return (
-    HIGHLIGHT_CONFIGS.find((c) => c.dataviewInstanceId === instanceId)?.releaseDateTimestamp ||
-    NEXT_YEAR
-  )
-}
 export default HIGHLIGHT_CONFIG

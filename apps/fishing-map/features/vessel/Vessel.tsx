@@ -164,8 +164,6 @@ const Vessel = () => {
   }, [datasetId, dispatch, vesselId, urlWorkspaceId])
 
   useEffect(() => {
-    // TODO:deck:featureState review if this still needed
-    // cleanFeatureState('click')
     dispatchClickedEvent(null)
     cancelPendingInteractionRequests()
     // eslint-disable-next-line react-hooks/exhaustive-deps

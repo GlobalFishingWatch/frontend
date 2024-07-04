@@ -35,7 +35,7 @@ const defaultMiddlewareOptions: any = {
   },
 }
 
-export const makeStore = () => {
+const makeStore = () => {
   return configureStore({
     devTools: {
       stateSanitizer: (state: any) => {

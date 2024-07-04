@@ -8,7 +8,7 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import WELCOME_POPUP_CONTENT, { WelcomeContentKey } from './welcome.content'
 import styles from './Welcome.module.css'
 
-export const DISABLE_WELCOME_POPUP_DICT: Record<WelcomeContentKey, string> = {
+const DISABLE_WELCOME_POPUP_DICT: Record<WelcomeContentKey, string> = {
   'fishing-activity': 'WelcomePopup',
   'marine-manager': 'MarineManagerPopup',
   'vessel-profile': 'VesselProfilePopup',

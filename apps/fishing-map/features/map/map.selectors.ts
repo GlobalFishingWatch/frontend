@@ -24,7 +24,7 @@ import {
 
 const EMPTY_ARRAY: [] = []
 
-export const selectWorkspacesListFeatures = createSelector(
+const selectWorkspacesListFeatures = createSelector(
   [selectCurrentWorkspacesList],
   (workspaces) => {
     if (!workspaces?.length) return []

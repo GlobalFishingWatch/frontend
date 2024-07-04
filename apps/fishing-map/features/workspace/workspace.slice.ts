@@ -91,7 +91,7 @@ export const getDefaultWorkspace = () => {
   return workspace as Promise<AppWorkspace>
 }
 
-export type FetchWorkspacesThunkParams = {
+type FetchWorkspacesThunkParams = {
   workspaceId: string
   password?: string
 }
@@ -278,7 +278,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   }
 )
 
-export type SaveWorkspaceThunkProperties = {
+type SaveWorkspaceThunkProperties = {
   name: string
   description?: string
   password?: string

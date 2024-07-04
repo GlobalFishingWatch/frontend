@@ -7,6 +7,7 @@ import {
   CONFIG_BY_INTERVAL,
   FourwingsFeature,
   FourwingsInterval,
+  getFourwingsInterval,
   TileCell,
 } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from '../../../utils'
@@ -17,7 +18,6 @@ import {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
   getChunkByInterval,
-  getInterval,
 } from '../fourwings.config'
 import {
   AggregateCellParams,
@@ -295,7 +295,7 @@ export function getFourwingsChunk(
   maxDate: number,
   availableIntervals?: FourwingsInterval[]
 ) {
-  const interval = getInterval(minDate, maxDate, availableIntervals)
+  const interval = getFourwingsInterval(minDate, maxDate, availableIntervals)
   return getChunkByInterval(minDate, maxDate, interval)
 }
 
@@ -310,7 +310,7 @@ export function getIntervalFrames({
   availableIntervals?: FourwingsInterval[]
   bufferedStart: number
 }) {
-  const interval = getInterval(startTime, endTime, availableIntervals)
+  const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
   const tileStartFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStart))
   const startFrame = Math.ceil(
     CONFIG_BY_INTERVAL[interval].getIntervalFrame(startTime) - tileStartFrame

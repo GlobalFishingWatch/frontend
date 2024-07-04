@@ -10,14 +10,11 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
-  TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
-  FISHING_DATAVIEW_SLUG,
-  // TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
@@ -27,13 +24,12 @@ import { VesselInstanceDatasets, isPrivateDataset } from 'features/datasets/data
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
-export const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
-export const FISHING_LAYER_PREFIX = 'fishing-'
+const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
 export const BIG_QUERY_PREFIX = 'bq-'
-export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
-export const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
+const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
+const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 export const VESSEL_LAYER_PREFIX = 'vessel-'
-export const CONTEXT_LAYER_PREFIX = 'context-'
+const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
 export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -103,7 +99,7 @@ const vesselDataviewInstanceTemplate = (
     },
   }
 }
-export const getVesselDataviewInstanceId = (vesselId: string) =>
+const getVesselDataviewInstanceId = (vesselId: string) =>
   `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
 
 export const getVesselDataviewInstance = (
@@ -115,16 +111,6 @@ export const getVesselDataviewInstance = (
     ...vesselDataviewInstanceTemplate(TEMPLATE_VESSEL_DATAVIEW_SLUG, datasets),
   }
   return vesselDataviewInstance
-}
-
-export const getFishingDataviewInstance = (): DataviewInstance<DataviewType> => {
-  return {
-    id: `${FISHING_LAYER_PREFIX}${Date.now()}`,
-    config: {
-      colorCyclingType: 'fill' as ColorCyclingType,
-    },
-    dataviewId: FISHING_DATAVIEW_SLUG,
-  }
 }
 
 export const getUserPolygonsDataviewInstance = (
@@ -229,22 +215,9 @@ export const getDataviewInstanceFromDataview = (dataview: Dataview) => {
   }
 }
 
-export const getActivityDataviewInstanceFromDataview = (
-  dataview?: Dataview
-): DataviewInstance<DataviewType> | undefined => {
-  if (!dataview) return
-  const instance = getDataviewInstanceFromDataview(dataview)
-  return {
-    ...instance,
-    config: {
-      colorCyclingType: 'fill' as ColorCyclingType,
-    },
-  }
-}
-
 export const getBigQuery4WingsDataviewInstance = (
   datasetId: string,
-  { aggregationOperation = AggregationOperation.Sum } = {}
+  { aggregationOperation = FourwingsAggregationOperation.Sum } = {}
 ): DataviewInstance<DataviewType> => {
   const contextDataviewInstance = {
     id: `${BIG_QUERY_4WINGS_PREFIX}${Date.now()}`,

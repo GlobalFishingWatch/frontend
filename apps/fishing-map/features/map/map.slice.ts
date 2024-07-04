@@ -30,18 +30,16 @@ import {
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch } from 'store'
-import {
-  selectEventsDataviews,
-  selectActiveTemporalgridDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 
 export const MAX_TOOLTIP_LIST = 5
 
-export type ExtendedFeatureVesselDatasets = IdentityVessel & {
+type ExtendedFeatureVesselDatasets = IdentityVessel & {
   id: string
   dataset: Dataset
   infoDataset?: Dataset
@@ -72,7 +70,7 @@ export type SliceExtendedClusterPickingObject = ClusterPickingObject & {
   event: ExtendedFeatureEvent
 }
 
-export type SliceExtendedFeature =
+type SliceExtendedFeature =
   | SliceExtendedFourwingsPickingObject
   | SliceExtendedClusterPickingObject
   | FourwingsPositionsPickingObject
@@ -167,7 +165,7 @@ const getInteractionEndpointDatasetConfig = (
   return { featuresDataviews, fourWingsDataset, datasetConfig }
 }
 
-export const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) => {
+const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) => {
   if (!vesselDatasets || !vesselDatasets.length || !vesselIds || !vesselIds.length) {
     return null
   }
@@ -193,11 +191,7 @@ export const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: stri
   return resolveEndpoint(vesselDatasets[0], datasetConfig)
 }
 
-export const fetchVesselInfo = async (
-  datasets: Dataset[],
-  vesselIds: string[],
-  signal: AbortSignal
-) => {
+const fetchVesselInfo = async (datasets: Dataset[], vesselIds: string[], signal: AbortSignal) => {
   const vesselsInfoUrl = getVesselInfoEndpoint(datasets, vesselIds)
   if (!vesselsInfoUrl) {
     console.warn('No vessel info url found for dataset', datasets)

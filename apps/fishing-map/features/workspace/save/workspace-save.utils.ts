@@ -21,7 +21,7 @@ export function isValidDaysFromLatest(daysFromLatest: number | undefined) {
   )
 }
 
-export const formatTimerangeBoundary = (
+const formatTimerangeBoundary = (
   boundary: string | undefined,
   dateFormat: Intl.DateTimeFormatOptions
 ) => {
@@ -64,7 +64,7 @@ export function getTimeRangeOptions(
   ]
 }
 
-export function getEditAccessOptions(): SelectOption<WorkspaceEditAccessType>[] {
+function getEditAccessOptions(): SelectOption<WorkspaceEditAccessType>[] {
   return [
     { id: WORKSPACE_PRIVATE_ACCESS, label: t('common.onlyMe', 'Only me') },
     {
@@ -83,7 +83,7 @@ export function getEditAccessOptionsByViewAccess(
   return getEditAccessOptions()
 }
 
-export const getStaticWorkspaceName = ({
+const getStaticWorkspaceName = ({
   timerange,
 }: {
   timerange: { start: string; end: string }
@@ -99,7 +99,7 @@ export const getStaticWorkspaceName = ({
   return ''
 }
 
-export const getDynamicWorkspaceName = ({ daysFromLatest }: { daysFromLatest: number }) => {
+const getDynamicWorkspaceName = ({ daysFromLatest }: { daysFromLatest: number }) => {
   return t('common.latestDays', {
     defaultValue: 'Latest {{count}} days',
     count: daysFromLatest || 0,

@@ -1,13 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { orderBy, uniqBy } from 'lodash'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { RootState } from 'reducers'
 import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import {
-  selectContextAreasDataviews,
-  selectEnvironmentalDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, PRIVATE_SUFIX, USER_SUFIX } from 'data/config'
 import {
@@ -19,17 +14,11 @@ import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.se
 import { DEFAULT_GROUP_ID, PRIVATE_SUPPORTED_GROUPS } from 'features/user/user.config'
 import { USER_GROUP_WORKSPACE, UserGroup } from '../user.slice'
 
-export const hasUserPermission = (permission: UserPermission) =>
+const hasUserPermission = (permission: UserPermission) =>
   createSelector([selectUserData], (userData): boolean => {
     if (!userData?.permissions) return false
     return checkExistPermissionInList(userData.permissions, permission)
   })
-
-export const selectUserWorkspaceEditPermissions = hasUserPermission({
-  type: 'entity',
-  value: 'workspace',
-  action: 'create-all',
-})
 
 export const selectUserDataviewEditPermissions = hasUserPermission({
   type: 'entity',
@@ -47,7 +36,7 @@ export const selectUserId = createSelector([selectUserData], (userData) => {
   return userData?.id
 })
 
-export const selectUserGroups = createSelector([selectUserData], (userData) => {
+const selectUserGroups = createSelector([selectUserData], (userData) => {
   return userData?.groups
 })
 
@@ -81,7 +70,7 @@ export const selectUserReports = createSelector(
   }
 )
 
-export const selectPrivateUserGroups = createSelector(
+const selectPrivateUserGroups = createSelector(
   [selectUserGroups, selectIsGFWUser],
   (userGroups = [], gfwUser) => {
     const groupsWithAccess = gfwUser
@@ -119,7 +108,7 @@ export const selectUserDatasets = createSelector(
       .reverse()
 )
 
-export const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
+const selectUserDatasetsByCategory = (datasetCategory: DatasetCategory) =>
   createSelector([selectUserDatasets], (datasets) =>
     datasets?.filter((d) => d.category === datasetCategory)
   )
@@ -128,25 +117,6 @@ export const selectUserContextDatasets = selectUserDatasetsByCategory(DatasetCat
 export const selectUserEnvironmentDatasets = selectUserDatasetsByCategory(
   DatasetCategory.Environment
 )
-
-export const selectUserDatasetsNotUsed = (datasetCategory: DatasetCategory) => {
-  const dataviewsSelector =
-    datasetCategory === DatasetCategory.Context
-      ? selectContextAreasDataviews
-      : selectEnvironmentalDataviews
-  return createSelector(
-    [selectUserDatasetsByCategory(datasetCategory), dataviewsSelector],
-    (datasets, dataviews) => {
-      const dataviewDatasets = dataviews?.flatMap(
-        (dataview) => dataview.datasets?.flatMap(({ id }) => id || []) || []
-      )
-      return datasets.filter(
-        ({ id, status }) => !dataviewDatasets?.includes(id) && status !== DatasetStatus.Error
-      )
-    }
-  )
-}
-
 export const selectUserVesselGroups = createSelector(
   [selectAllVesselGroups, selectUserId],
   (vesselGroups, userId) => {

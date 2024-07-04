@@ -44,7 +44,7 @@ export const selectReportAreaId = createSelector(
   }
 )
 
-export const selectReportCategorySelector = selectWorkspaceStateProperty('reportCategory')
+const selectReportCategorySelector = selectWorkspaceStateProperty('reportCategory')
 export const selectReportCategory = createSelector(
   [selectReportCategorySelector, selectReportActiveCategories],
   (reportCategory, activeCategories): ReportCategory => {
@@ -80,7 +80,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
 )
 
 export const selectReportActivityGraph = selectWorkspaceStateProperty('reportActivityGraph')
-export const selectReportVesselGraphSelector = selectWorkspaceStateProperty('reportVesselGraph')
+const selectReportVesselGraphSelector = selectWorkspaceStateProperty('reportVesselGraph')
 
 export const selectReportVesselGraph = createSelector(
   [selectReportVesselGraphSelector, selectReportCategory],
@@ -97,7 +97,7 @@ export const selectReportVesselPage = selectWorkspaceStateProperty('reportVessel
 export const selectReportResultsPerPage = selectWorkspaceStateProperty('reportResultsPerPage')
 export const selectReportTimeComparison = selectWorkspaceStateProperty('reportTimeComparison')
 
-export const selectReportBufferValueSelector = selectWorkspaceStateProperty('reportBufferValue')
+const selectReportBufferValueSelector = selectWorkspaceStateProperty('reportBufferValue')
 export const selectReportBufferValue = createSelector(
   [selectReportBufferValueSelector, selectUrlBufferValueQuery],
   (workspaceBufferValue, urlBufferValue): number => {
@@ -105,7 +105,7 @@ export const selectReportBufferValue = createSelector(
   }
 )
 
-export const selectReportBufferUnitSelector = selectWorkspaceStateProperty('reportBufferUnit')
+const selectReportBufferUnitSelector = selectWorkspaceStateProperty('reportBufferUnit')
 export const selectReportBufferUnit = createSelector(
   [selectReportBufferUnitSelector, selectUrlBufferUnitQuery],
   (workspaceBufferUnit, urlBufferUnit): BufferUnit => {
@@ -113,7 +113,7 @@ export const selectReportBufferUnit = createSelector(
   }
 )
 
-export const selectReportBufferOperationSelector =
+const selectReportBufferOperationSelector =
   selectWorkspaceStateProperty('reportBufferOperation')
 export const selectReportBufferOperation = createSelector(
   [selectReportBufferOperationSelector, selectUrlBufferOperationQuery],

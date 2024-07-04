@@ -8,6 +8,7 @@ import {
   useSetMapHoverInteraction,
   InteractionEvent,
   InteractionEventType,
+  useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import {
   ClusterPickingObject,
@@ -23,9 +24,10 @@ import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/help/hints.slice'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import { isRulerLayerPoint } from './map-interaction.utils'
+import { isRulerLayerPoint, isTilesClusterLayer } from './map-interaction.utils'
 import {
   SliceExtendedClusterPickingObject,
   SliceInteractionEvent,
@@ -39,6 +41,15 @@ import {
 } from './map.slice'
 import { useSetViewState } from './map-viewport.hooks'
 
+const useMapClusterTilesLoading = () => {
+  const eventsDataviews = useSelector(selectEventsDataviews)
+  const eventsDeckLayers = useGetDeckLayers(eventsDataviews?.map((d) => d.id))
+  if (!eventsDeckLayers?.length) {
+    return false
+  }
+  return eventsDeckLayers.some((layer) => !layer.instance.isLoaded)
+}
+
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
   const clickedEvent = useSelector(selectClickedEvent)
@@ -48,8 +59,7 @@ export const useClickedEventConnect = () => {
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { rulersEditing, onRulerMapClick } = useRulers()
-  // TODO:deck tilesClusterLoaded from Layer instance
-  const tilesClusterLoaded = true
+  const areTilesClusterLoading = useMapClusterTilesLoading()
   const fishingPromiseRef = useRef<any>()
   const presencePromiseRef = useRef<any>()
   const eventsPromiseRef = useRef<any>()
@@ -88,7 +98,7 @@ export const useClickedEventConnect = () => {
     if (clusterFeature?.properties?.expansionZoom) {
       const { count, expansionZoom, lat, lon } = clusterFeature.properties
       if (count > 1) {
-        if (tilesClusterLoaded && lat && lon) {
+        if (!areTilesClusterLoading && lat && lon) {
           setViewState({
             latitude: lat,
             longitude: lon,
@@ -108,29 +118,6 @@ export const useClickedEventConnect = () => {
       }
       return
     }
-
-    // When hovering in a vessel event we don't want to have clicked events
-    // TODO:deck fix this
-    // const vesselEventFeatures = event.features.filter(
-    //   (f) =>
-    //     f.generatorType === GeneratorType.VesselEvents ||
-    //     f.generatorType === GeneratorType.VesselEventsShapes
-    // )
-    // if (vesselEventFeatures?.length) {
-    //   vesselEventFeatures.forEach((feature) => {
-    //     if (feature.properties) {
-    //       trackEvent({
-    //         category: TrackCategory.Tracks,
-    //         action: `click_${feature.properties.type}_event_from_track`,
-    //         label: feature.properties.vesselId,
-    //       })
-    //     }
-    //   })
-    //   const areAllFeaturesVesselEvents = vesselEventFeatures.length === event.features.length
-    //   if (areAllFeaturesVesselEvents) {
-    //     return
-    //   }
-    // }
 
     dispatch(setClickedEvent(event as SliceInteractionEvent))
 
@@ -161,7 +148,7 @@ export const useClickedEventConnect = () => {
       (f) => f.category === DataviewCategory.Events && f.subcategory === DataviewType.TileCluster
     ) as SliceExtendedClusterPickingObject
     if (tileClusterFeature) {
-      const bqPocQuery = tileClusterFeature.layerId !== ENCOUNTER_EVENTS_SOURCE_ID
+      const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
       const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
       eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
     }
@@ -176,7 +163,7 @@ export const useClickedEventConnect = () => {
   }
 }
 
-export const useGetPickingInteraction = () => {
+const useGetPickingInteraction = () => {
   const map = useDeckMap()
 
   const getPickingInteraction = useCallback(
@@ -228,17 +215,6 @@ export const useMapMouseHover = () => {
   const { onRulerMapHover, rulersEditing } = useRulers()
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
-  // const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
-  //   null
-  // )
-
-  // const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
-  // const onMapHover = useMapHover(
-  //   setHoveredEvent as InteractionEventCallback,
-  //   setHoveredDebouncedEvent as InteractionEventCallback,
-  //   map,
-  //   style?.metadata
-  // )
 
   const onMouseMove: DeckProps['onHover'] = useCallback(
     (info: PickingInfo, event: MjolnirPointerEvent) => {
@@ -314,8 +290,7 @@ export const useMapMouseClick = () => {
 }
 
 export const useMapCursor = () => {
-  const { isMapDrawing } = useMapDrawConnect()
-  // const { getDrawCursor } = useDrawLayer()
+  const areClusterTilesLoading = useMapClusterTilesLoading()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing } = useRulers()
@@ -325,6 +300,14 @@ export const useMapCursor = () => {
     ({ isDragging }: { isDragging: boolean }) => {
       if (hoverFeatures?.some(isRulerLayerPoint)) {
         return 'move'
+      }
+      if (hoverFeatures?.some(isTilesClusterLayer)) {
+        if (areClusterTilesLoading) {
+          return 'wait'
+        }
+        return (hoverFeatures as ClusterPickingObject[]).some((f) => f.properties?.count > 1)
+          ? 'zoom-in'
+          : 'pointer'
       }
       if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
         return 'crosshair'
@@ -337,7 +320,13 @@ export const useMapCursor = () => {
       }
       return 'grab'
     },
-    [rulersEditing, isMapAnnotating, isErrorNotificationEditing, hoverFeatures]
+    [
+      hoverFeatures,
+      rulersEditing,
+      isMapAnnotating,
+      areClusterTilesLoading,
+      isErrorNotificationEditing,
+    ]
   )
 
   return getCursor

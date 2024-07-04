@@ -34,7 +34,7 @@ export interface ComparisonGraphData {
   max: number[]
 }
 
-export interface ComparisonGraphProps {
+interface ComparisonGraphProps {
   timeseries: ComparisonGraphData[]
   sublayers: {
     id: string

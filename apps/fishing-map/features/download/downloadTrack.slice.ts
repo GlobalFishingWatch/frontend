@@ -16,7 +16,7 @@ type VesselParams = {
   datasets: string
 }
 
-export interface DownloadTrackState {
+interface DownloadTrackState {
   name: string
   ids: string[]
   datasets: string
@@ -151,7 +151,6 @@ export const selectDownloadTrackIds = (state: RootState) => state.downloadTrack.
 export const selectDownloadTrackName = (state: RootState) => state.downloadTrack.name
 export const selectDownloadTrackDataset = (state: RootState) => state.downloadTrack.datasets
 export const selectDownloadTrackStatus = (state: RootState) => state.downloadTrack.status
-export const selectDownloadTrackError = (state: RootState) => state.downloadTrack.error
 export const selectDownloadTrackRateLimit = (state: RootState) => state.downloadTrack.rateLimit
 
 export default downloadTrackSlice.reducer

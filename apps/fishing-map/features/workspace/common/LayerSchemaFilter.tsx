@@ -30,9 +30,9 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
-export type TransformationUnit = 'minutes'
+type TransformationUnit = 'minutes'
 
-export const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
+const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
 
 type Transformation = {
   in: (v: any) => number
@@ -40,7 +40,7 @@ type Transformation = {
   label: string
 }
 
-export const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
+const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
   minutes: {
     in: (v) => v / 60,
     out: (v) => v * 60,
@@ -48,7 +48,7 @@ export const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transform
   },
 }
 
-export const getValueByUnit = (
+const getValueByUnit = (
   value: string | number,
   { unit, transformDirection = 'in' } = {} as { unit?: string; transformDirection?: 'in' | 'out' }
 ): number => {
@@ -71,14 +71,14 @@ export const getValueLabelByUnit = (
   return formatI18nNumber(getValueByUnit(value, { unit })) as string
 }
 
-export const getLabelWithUnit = (label: string, unit?: string): string => {
+const getLabelWithUnit = (label: string, unit?: string): string => {
   if (unit) {
     return `${label} (${VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label})`
   }
   return label
 }
 
-export const getFilterOperatorOptions = () => {
+const getFilterOperatorOptions = () => {
   return [
     {
       id: INCLUDE_FILTER_ID,

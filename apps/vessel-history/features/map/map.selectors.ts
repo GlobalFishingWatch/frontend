@@ -2,10 +2,8 @@ import { createSelector } from '@reduxjs/toolkit'
 import { GFWApiClient } from 'http-client/http-client'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import { SymbolLayerSpecification } from '@globalfishingwatch/maplibre-gl'
-import {
-  getDataviewsGeneratorConfigs,
-  UrlDataviewInstance,
-} from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDataviewsGeneratorConfigs } from '@globalfishingwatch/dataviews-client/resolve-dataviews-generators'
 import { GeneratorType, GlGeneratorConfig } from '@globalfishingwatch/layer-composer'
 import {
   selectDataviewsForResourceQuerying,

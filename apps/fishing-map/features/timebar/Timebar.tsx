@@ -14,7 +14,7 @@ import {
   HighlightedChunks,
 } from '@globalfishingwatch/timebar'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { FOURWINGS_INTERVALS_ORDER, getInterval } from '@globalfishingwatch/deck-layers'
+import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -47,7 +47,7 @@ import {
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
 import { useRootElement } from 'hooks/dom.hooks'
-import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
+import { setHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
   selectAvailableStart,
@@ -71,7 +71,7 @@ const TimebarHighlighterWrapper = ({
   const highlightedTime = useSelector(selectHighlightedTime)
   const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
   const { start, end } = useTimerangeConnect()
-  const interval = getInterval(start, end)
+  const interval = getFourwingsInterval(start, end)
 
   const onHighlightChunks = useCallback(
     (chunks?: HighlightedChunks) => {
@@ -390,7 +390,7 @@ const TimebarWrapper = () => {
         // TODO: set this by current active activity dataviews
         // minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
         intervals={FOURWINGS_INTERVALS_ORDER}
-        getCurrentInterval={getInterval}
+        getCurrentInterval={getFourwingsInterval}
         trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language}
       >

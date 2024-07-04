@@ -15,7 +15,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useSetMapCoordinates, useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates, useViewState } from 'features/map/map-viewport.hooks'
 import {
   selectIsAnyVesselLocation,
   selectIsAnyReportLocation,
@@ -87,7 +87,7 @@ const MapControls = ({
   } = useDownloadDomElementAsImage(rootElement, false)
 
   const setMapCoordinates = useSetMapCoordinates()
-  const { viewState } = useViewStateAtom()
+  const viewState = useViewState()
   const { latitude, longitude, zoom } = viewState
 
   const { bounds } = useMapBounds()

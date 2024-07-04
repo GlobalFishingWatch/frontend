@@ -14,15 +14,15 @@ import { RootState } from 'store'
 import { listAsSentence } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 
-export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
+type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
 
-export interface DatasetArea {
+interface DatasetArea {
   id: string
   label: string
   bbox?: Bbox
 }
 
-export interface DatasetAreaList {
+interface DatasetAreaList {
   status: AsyncReducerStatus
   data: DrawnDatasetGeometry | DatasetArea[]
 }
@@ -41,17 +41,17 @@ export interface DatasetAreaDetail {
   data: Area
 }
 
-export type DatasetAreas = {
+type DatasetAreas = {
   list: DatasetAreaList
   detail: Record<string, DatasetAreaDetail>
 }
-export type AreasState = Record<string, DatasetAreas>
+type AreasState = Record<string, DatasetAreas>
 
 const initialState: AreasState = {}
 
 export type AreaKeyId = string | number
 export type AreaKeys = { datasetId: string; areaId: AreaKeyId; areaName: string | undefined }
-export type FetchAreaDetailThunkParam = {
+type FetchAreaDetailThunkParam = {
   datasetId: string
   areaId: AreaKeyId
   areaName?: string
@@ -179,7 +179,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
   }
 )
 
-export type FetchDatasetAreasThunkParam = { datasetId: string; include?: string[] }
+type FetchDatasetAreasThunkParam = { datasetId: string; include?: string[] }
 export const fetchDatasetAreasThunk = createAsyncThunk(
   'areas/datasetFetch',
   async (
@@ -303,7 +303,7 @@ const areasSlice = createSlice({
 export const { resetAreaList, resetAreaDetail } = areasSlice.actions
 
 export const selectAreas = (state: { areas: AreasState }) => state.areas
-export const selectDatasetAreaById = memoize((id: string) =>
+const selectDatasetAreaById = memoize((id: string) =>
   createSelector([selectAreas], (areas) => areas?.[id])
 )
 

@@ -3,13 +3,13 @@ import { DatasetTypes, DataviewCategory, DataviewInstance } from '@globalfishing
 import {
   resolveDataviews,
   UrlDataviewInstance,
-  getGeneratorConfig,
   mergeWorkspaceUrlDataviewInstances,
   GetDatasetConfigsCallbacks,
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
   _getLegacyResources,
 } from '@globalfishingwatch/dataviews-client'
+import { getGeneratorConfig } from '@globalfishingwatch/dataviews-client/resolve-dataviews-generators'
 import {
   BasemapGeneratorConfig,
   BasemapType,
@@ -169,12 +169,6 @@ export const selectDataviewsResources = createSelector(
     return _getLegacyResources(dataviewInstances || [], callbacks)
   }
 )
-
-export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
-  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
-    return dataviews?.filter((dataview) => dataview.category === category)
-  })
-}
 
 export const selectDataviewInstancesByIds = (ids: string[]) => {
   return createDeepEqualSelector([selectDataviewInstancesResolved], (dataviews) => {

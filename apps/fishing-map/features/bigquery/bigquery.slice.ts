@@ -7,12 +7,12 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type BigQueryVisualisation = '4wings' | 'events'
 
-export type RunCostResponse = {
+type RunCostResponse = {
   totalBytes: number
   totalBytesPretty: string
 }
 
-export type CreateBigQueryDataset = {
+type CreateBigQueryDataset = {
   query: string
   visualisationMode: BigQueryVisualisation | null
   name: string
@@ -47,7 +47,7 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
   }
 )
 
-export type CreateBigQueryDatasetResponse = {
+type CreateBigQueryDatasetResponse = {
   id: string
   startDate: string
   endDate: string

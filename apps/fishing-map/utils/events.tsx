@@ -9,7 +9,7 @@ import { formatInfoField } from 'utils/info'
 import VesselPin from 'features/vessel/VesselPin'
 import { SupportedDateType, getUTCDateTime } from './dates'
 
-export const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
+const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
   const colorKey = type
   // TODO not supporting authorization status yet
   // if (event.type === 'encounter' && showAuthorizationStatus) {
@@ -27,7 +27,7 @@ type TimeLabels = {
   start: string
   duration: string
 }
-export const getTimeLabels = ({
+const getTimeLabels = ({
   start,
   end,
 }: {
@@ -40,14 +40,14 @@ export const getTimeLabels = ({
 
   const startLabel = formatI18nDate(start, { format: DateTime.DATETIME_MED, showUTCLabel: true })
 
-  const durationLabel = getDurationLabel({ durationRaw })
+  const durationLabel = getEventDurationLabel({ durationRaw })
   return {
     start: startLabel,
     duration: durationLabel,
   }
 }
 
-const getDurationLabel = ({ durationRaw }: { durationRaw: Duration }): string => {
+const getEventDurationLabel = ({ durationRaw }: { durationRaw: Duration }): string => {
   const duration = durationRaw.toObject()
   return [
     duration.days && duration.days > 0

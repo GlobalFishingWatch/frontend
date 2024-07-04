@@ -25,7 +25,7 @@ import { getVesselIdentityId } from 'features/vessel/vessel.utils'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 
-export type VesselLinkProps = {
+type VesselLinkProps = {
   datasetId?: string
   vesselId?: string
   identity?: VesselDataIdentity

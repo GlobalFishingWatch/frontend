@@ -7,6 +7,7 @@ import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 import { Bbox, getBboxFromPoints } from '@globalfishingwatch/data-transforms'
 import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
+import { getSegmentsFromData } from './vessel.utils'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -254,55 +255,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
   getSegments(
     { includeMiddlePoints = false } = {} as { includeMiddlePoints: boolean }
   ): TrackSegment[] {
-    const data = this.props.data as VesselTrackData
-    const segmentsIndexes = data.startIndices
-    const positions = data.attributes?.getPath?.value
-    const timestamps = data.attributes?.getTimestamp?.value
-    const speeds = data.attributes?.getSpeed?.value
-    const elevations = data.attributes?.getElevation?.value
-
-    if (!positions?.length || !timestamps.length) {
-      return []
-    }
-    const timestampSize = data.attributes.getTimestamp!?.size
-    const speedSize = data.attributes.getSpeed!?.size
-    const elevationSize = data.attributes.getElevation!?.size
-
-    const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
-      const points = [] as TrackSegment
-      points.push({
-        // longitude: positions[segmentIndex * pathSize],
-        // latitude: positions[segmentIndex * pathSize + 1],
-        timestamp: timestamps[segmentIndex / timestampSize],
-        speed: speeds?.[segmentIndex / speedSize],
-        elevation: elevations?.[segmentIndex / elevationSize],
-      })
-      const nextSegmentIndex = segmentsIndexes[i + 1] || timestamps.length - 1
-      if (includeMiddlePoints && segmentIndex + 1 < nextSegmentIndex) {
-        for (let index = segmentIndex + 1; index < nextSegmentIndex; index++) {
-          points.push({
-            timestamp: timestamps[index / timestampSize],
-            speed: speeds?.[index / speedSize],
-            elevation: elevations?.[index / elevationSize],
-          })
-        }
-      }
-      if (i === segmentsIndexes.length - 1) {
-        points.push({
-          timestamp: timestamps[timestamps.length - 1],
-          speed: speeds?.[speeds.length - 1],
-          elevation: elevations?.[elevations.length - 1],
-        })
-      } else {
-        points.push({
-          timestamp: timestamps[nextSegmentIndex / timestampSize - 1],
-          speed: speeds?.[nextSegmentIndex / speedSize - 1],
-          elevation: elevations?.[nextSegmentIndex / elevationSize - 1],
-        })
-      }
-      return points
-    })
-    return segments
+    return getSegmentsFromData(this.props.data as VesselTrackData, includeMiddlePoints)
   }
 
   getBbox() {

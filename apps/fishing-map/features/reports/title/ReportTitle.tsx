@@ -147,8 +147,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       reportBufferUnit: previewBuffer.unit!,
       reportBufferOperation: previewBuffer.operation!,
     })
-    // TODO:deck:featureState review if this still needed
-    // cleanFeatureState('highlight')
     dispatch(resetReportData())
     trackEvent({
       category: TrackCategory.Analysis,

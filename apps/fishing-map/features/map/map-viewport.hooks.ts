@@ -9,7 +9,7 @@ import { getUrlViewstateNumericParam } from 'utils/url'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 
-export const viewStateAtom = atom<MapCoordinates>({
+const viewStateAtom = atom<MapCoordinates>({
   longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
   latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
   zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
@@ -57,7 +57,7 @@ export function useSetMapCoordinates() {
   )
 }
 
-export const MAP_VIEW_ID = 'mapViewport'
+const MAP_VIEW_ID = 'mapViewport'
 export const MAP_VIEW = new MapView({
   id: MAP_VIEW_ID,
   repeat: true,

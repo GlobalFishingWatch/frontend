@@ -1,5 +1,3 @@
-// TODO: REMOVE THIS
-
 import { uniq } from 'lodash'
 import {
   Resource,
@@ -14,7 +12,6 @@ import {
   TrackResourceData,
   DRAW_DATASET_SOURCE,
   DataviewType,
-  DataviewConfig,
 } from '@globalfishingwatch/api-types'
 import {
   DEFAULT_HEATMAP_INTERVALS,
@@ -34,8 +31,12 @@ import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getDatasetRangeSteps,
+  getDatasetsExtent,
 } from '@globalfishingwatch/datasets-client'
 import {
+  isActivityDataview,
+  isDetectionsDataview,
+  isTrackDataview,
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
   UrlDataviewInstance,
@@ -47,9 +48,9 @@ import {
   setGeneratorConfigTimeFilter,
 } from './dataviews.config'
 
-export const MULTILAYER_SEPARATOR = '__'
-export const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedActivityHeatmap'
-export const MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedDetectionsHeatmap'
+const MULTILAYER_SEPARATOR = '__'
+const MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedActivityHeatmap'
+const MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID = 'mergedDetectionsHeatmap'
 
 export function isMergedAnimatedGenerator(generatorId: string) {
   return (
@@ -66,7 +67,7 @@ const getDatasetAvailableIntervals = (dataset?: Dataset) =>
 const getDatasetAttribution = (dataset?: Dataset) =>
   dataset?.source && dataset?.source !== 'user' ? dataset?.source : undefined
 
-export const getDataviewAvailableIntervals = (
+const getDataviewAvailableIntervals = (
   dataview: UrlDataviewInstance,
   defaultIntervals = DEFAULT_HEATMAP_INTERVALS
 ): Interval[] => {
@@ -99,41 +100,6 @@ export type DataviewsGeneratorConfigsParams = {
 }
 
 type DataviewsGeneratorResource = Record<string, Resource>
-
-const getUTCDate = (timestamp: number) => {
-  const date = new Date(timestamp)
-  return new Date(
-    Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes()
-    )
-  )
-}
-
-export const getDatasetsExtent = (
-  datasets: Dataset[] | undefined,
-  { format }: { format: 'isoString' | 'timestamp' } = { format: 'isoString' }
-) => {
-  const startRanges = datasets?.flatMap((d) =>
-    d?.startDate ? new Date(d.startDate).getTime() : []
-  )
-  const endRanges = datasets?.flatMap((d) => (d?.endDate ? new Date(d.endDate).getTime() : []))
-  const extentStartDate = startRanges?.length ? getUTCDate(Math.min(...startRanges)) : undefined
-  let extentStart
-  if (extentStartDate) {
-    extentStart = format === 'isoString' ? extentStartDate.toISOString() : extentStartDate.getTime()
-  }
-  const extentEndDate = endRanges?.length ? getUTCDate(Math.max(...endRanges)) : undefined
-  let extentEnd
-  if (extentEndDate) {
-    extentEnd = format === 'isoString' ? extentEndDate.toISOString() : extentEndDate.getTime()
-  }
-
-  return { extentStart: extentStart as string | number, extentEnd: extentEnd as string | number }
-}
 
 export function getGeneratorConfig(
   dataview: UrlDataviewInstance,
@@ -479,35 +445,7 @@ export function getGeneratorConfig(
   }
 }
 
-export function isActivityDataview(dataview: UrlDataviewInstance) {
-  return (
-    dataview.category === DataviewCategory.Activity &&
-    dataview.config?.type === DataviewType.HeatmapAnimated
-  )
-}
-
-export function isDetectionsDataview(dataview: UrlDataviewInstance) {
-  return (
-    dataview.category === DataviewCategory.Detections &&
-    dataview.config?.type === DataviewType.HeatmapAnimated
-  )
-}
-
-export function isTrackDataview(dataview: UrlDataviewInstance) {
-  return (
-    dataview.category === DataviewCategory.Vessels && dataview.config?.type === DataviewType.Track
-  )
-}
-
-export function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
-  return isActivityDataview(dataview) || isDetectionsDataview(dataview)
-}
-
-export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
-  return dataview?.config?.type === DataviewType.HeatmapStatic
-}
-
-export function getMergedHeatmapAnimatedDataview(
+function getMergedHeatmapAnimatedDataview(
   heatmapAnimatedDataviews: UrlDataviewInstance[],
   params: DataviewsGeneratorConfigsParams & { mergedHeatmapGeneratorId: string }
 ) {

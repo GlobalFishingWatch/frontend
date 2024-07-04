@@ -117,6 +117,7 @@ export type FourwingsTileLayerState = {
   colorRanges: FourwingsTileLayerColorRange
   comparisonMode?: FourwingsComparisonMode
   scales?: FourwinsTileLayerScale[]
+  rampDirty?: boolean
 }
 
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {

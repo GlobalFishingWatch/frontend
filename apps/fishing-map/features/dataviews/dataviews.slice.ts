@@ -11,7 +11,7 @@ import {
 import { AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 
-export const fetchDataviewByIdThunk = createAsyncThunk(
+const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
   async (id: Dataview['id'] | Dataview['slug'], { rejectWithValue }) => {
     try {
@@ -122,8 +122,8 @@ export const updateDataviewThunk = createAsyncThunk<
   }
 )
 
-export type DataviewsState = AsyncReducer<Dataview>
-export type DataviewsSliceState = { dataviews: DataviewsState }
+type DataviewsState = AsyncReducer<Dataview>
+type DataviewsSliceState = { dataviews: DataviewsState }
 
 const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState, Dataview>({
   name: 'dataview',
@@ -153,7 +153,5 @@ export function selectDataviewBySlug(slug: string) {
     return dataviews?.find((d) => d.slug === slug)
   })
 }
-
-export const selectDataviewsStatus = (state: DataviewsSliceState) => state.dataviews.status
 
 export default dataviewsSlice.reducer

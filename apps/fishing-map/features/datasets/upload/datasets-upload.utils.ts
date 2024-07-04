@@ -23,7 +23,7 @@ import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getUTCDateTime } from 'utils/dates'
 import { FileType } from 'utils/files'
 
-export type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
+type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
 
 export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
   return {
@@ -39,7 +39,7 @@ export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
   }
 }
 
-export const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
+const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const schema = getDatasetSchema(data, { includeEnum: true })
   return {
     name,

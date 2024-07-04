@@ -66,10 +66,3 @@ export const selectMapRulersVisible = createSelector(
     return areMapRulersVisible ? rulers : []
   }
 )
-
-export const selectMapAnnotationsVisible = createSelector(
-  [selectMapAnnotations, selectAreMapAnnotationsVisible],
-  (mapAnnotations, areMapAnnotationsVisible): MapAnnotation[] => {
-    return areMapAnnotationsVisible ? mapAnnotations : []
-  }
-)

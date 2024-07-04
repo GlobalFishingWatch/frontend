@@ -17,7 +17,7 @@ type formatI18DateParams = {
   showUTCLabel?: boolean
 }
 
-export const UTC_SUFFIX = 'UTC'
+const UTC_SUFFIX = 'UTC'
 
 export const formatI18nDate = (
   date: SupportedDateType,

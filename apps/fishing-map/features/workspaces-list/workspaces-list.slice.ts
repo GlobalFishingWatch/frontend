@@ -64,7 +64,7 @@ export const fetchWorkspacesThunk = createAsyncThunk<
   }
 )
 
-export const fetchDefaultWorkspaceThunk = createAsyncThunk<Workspace>(
+const fetchDefaultWorkspaceThunk = createAsyncThunk<Workspace>(
   'workspaces/fetchDefault',
   async () => {
     const defaultWorkspace = await getDefaultWorkspace()
@@ -101,7 +101,7 @@ export type HighlightedWorkspace = {
   visible?: 'visible' | 'hidden'
 }
 
-export type HighlightedWorkspaces = {
+type HighlightedWorkspaces = {
   title: string
   workspaces: HighlightedWorkspace[]
 }
@@ -199,7 +199,7 @@ export const deleteWorkspaceThunk = createAsyncThunk<
   }
 })
 
-export interface WorkspacesState extends AsyncReducer<AppWorkspace> {
+interface WorkspacesState extends AsyncReducer<AppWorkspace> {
   highlighted: {
     status: AsyncReducerStatus
     data: { title: string; workspaces: HighlightedWorkspace[] }[] | undefined
@@ -254,7 +254,7 @@ export const selectHighlightedWorkspaces = (state: WorkspaceSliceState) =>
 export const selectHighlightedWorkspacesStatus = (state: WorkspaceSliceState) =>
   state.workspaces.highlighted.status
 
-export const selectWorkspaceById = memoize((id: string) =>
+const selectWorkspaceById = memoize((id: string) =>
   createSelector([(state: WorkspaceSliceState) => state], (state) => selectById(state, id))
 )
 

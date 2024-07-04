@@ -15,7 +15,7 @@ import { DeckLegend, LegendType } from '../types'
 import { deckHoverInteractionAtom } from '../interactions'
 import { deckLayersAtom } from './deck-layers.hooks'
 
-type DeckLegendAtom = Omit<DeckLegend, 'ranges'> & { ranges: string[] | string[][] }
+export type DeckLegendAtom = Omit<DeckLegend, 'ranges'> & { ranges: string[] | string[][] }
 
 export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
   const deckLayers = get(deckLayersAtom)
@@ -29,7 +29,9 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
     )
     const { colorDomain, colorRange } = layer.instance.getColorScale() || {}
     const visualizationMode = layer.instance.getVisualizationMode()
+    const unit = layer.instance.props.sublayers?.[0]?.unit
     let label = layer.instance.props.sublayers?.[0]?.unit || ''
+    let gridAreaM: number | undefined
     if (label === 'hours' && visualizationMode !== POSITIONS_ID) {
       const gridZoom = Math.round(
         Math.min(
@@ -39,7 +41,7 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
           HEATMAP_DEFAULT_MAX_ZOOM
         )
       )
-      const gridAreaM = GRID_AREA_BY_ZOOM_LEVEL[gridZoom]
+      gridAreaM = GRID_AREA_BY_ZOOM_LEVEL[gridZoom]
       const isSquareKm = (gridAreaM as number) > 50000
       const gridArea = isSquareKm ? (gridAreaM as number) / 1000000 : gridAreaM
       const gridAreaFormatted = gridArea ? `${gridArea}${isSquareKm ? 'km' : 'm'}` : ''
@@ -48,6 +50,10 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
 
     return {
       id: layer.id,
+      category: layer.instance.props.category,
+      subcategory: layer.instance.props.subcategory,
+      unit,
+      gridArea: gridAreaM,
       type:
         layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
           ? LegendType.Bivariate
