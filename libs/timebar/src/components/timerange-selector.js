@@ -4,7 +4,7 @@ import { string, func, shape } from 'prop-types'
 import dayjs from 'dayjs'
 import {
   LIMITS_BY_INTERVAL,
-  getInterval,
+  getFourwingsInterval,
   FOURWINGS_INTERVALS_ORDER,
 } from '@globalfishingwatch/deck-layers'
 import { Select, Tooltip } from '@globalfishingwatch/ui-components'
@@ -101,7 +101,7 @@ class TimeRangeSelector extends Component {
   onLastXSelect = (option) => {
     const { latestAvailableDataDate } = this.props
     const { start, end } = getLastX(option.num, option.unit, latestAvailableDataDate)
-    const interval = getInterval(start, end, FOURWINGS_INTERVALS_ORDER)
+    const interval = getFourwingsInterval(start, end, FOURWINGS_INTERVALS_ORDER)
     this.submit(
       dayjs.utc(start).endOf(interval.toLowerCase()).add(1, 'millisecond'),
       dayjs.utc(end).endOf(interval.toLowerCase()).add(1, 'millisecond')

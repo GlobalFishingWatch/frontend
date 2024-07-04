@@ -75,9 +75,7 @@ export const LIMITS_BY_INTERVAL: Record<
   YEAR: undefined,
 }
 
-// TODO: ensure this is not missing any funciontality from the original
-// layer-composer/src/generators/heatmap/util/get-time-chunks-interval.ts
-export const getInterval = (
+export const getFourwingsInterval = (
   start: number | string,
   end: number | string,
   availableIntervals = FOURWINGS_INTERVALS_ORDER

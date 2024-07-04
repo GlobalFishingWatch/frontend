@@ -30,7 +30,7 @@ import {
 import {
   HEATMAP_API_TILES_URL,
   FOURWINGS_MAX_ZOOM,
-  getInterval,
+  getFourwingsInterval,
   MAX_RAMP_VALUES,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
@@ -303,7 +303,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
-    const interval = getInterval(startTime, endTime, availableIntervals)
+    const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     if (!interval) {
       throw new Error('Missing valid interval in time compare mode')
     }
@@ -354,7 +354,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
-    const interval = getInterval(startTime, endTime, availableIntervals)
+    const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     if (!interval) {
       throw new Error('Invalid interval')
     }
@@ -443,7 +443,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     let scale: number = 0
     let offset: number = 0
     let noDataValue: number = 0
-    const interval = getInterval(startTime, endTime, availableIntervals)
+    const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
     this.setState({ rampDirty: true })
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
@@ -533,7 +533,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     compareStart?: number
     compareEnd?: number
   }): FourwingsHeatmapTilesCache => {
-    const interval = getInterval(startTime, endTime, availableIntervals)
+    const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
     return { start, end, bufferedStart, interval, compareStart, compareEnd }
   }
@@ -593,7 +593,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       isCompareStartOutRange ||
       isEndOutRange ||
       isCompareEndOutRange ||
-      getInterval(startTime, endTime, availableIntervals) !== tilesCache.interval
+      getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval
     if (needsCacheKeyUpdate) {
       this.setState({
         tilesCache: this._getTileDataCache({
@@ -720,7 +720,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   getInterval = () => {
     const { startTime, endTime, availableIntervals } = this.props
-    return getInterval(startTime, endTime, availableIntervals)
+    return getFourwingsInterval(startTime, endTime, availableIntervals)
   }
 
   getChunk = () => {

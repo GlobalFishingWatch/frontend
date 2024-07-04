@@ -4,7 +4,7 @@ import htmlParse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
-import { getInterval } from '@globalfishingwatch/deck-layers'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-layers'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
 import {
@@ -25,7 +25,7 @@ function ReportEnvironment() {
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
-  const interval = getInterval(timerange.start, timerange.end, [
+  const interval = getFourwingsInterval(timerange.start, timerange.end, [
     'MONTH',
     'DAY',
   ] as FourwingsInterval[])

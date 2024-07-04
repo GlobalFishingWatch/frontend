@@ -4,7 +4,7 @@ import cx from 'classnames'
 import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
 import dayjs from 'dayjs'
-import { getInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-layers'
+import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-layers'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
 import { ReactComponent as IconLoop } from '../icons/loop.svg'
 import { ReactComponent as IconBack } from '../icons/back.svg'
@@ -254,7 +254,7 @@ Playback.defaultProps = {
     // do nothing
   },
   intervals: FOURWINGS_INTERVALS_ORDER,
-  getCurrentInterval: getInterval,
+  getCurrentInterval: getFourwingsInterval,
 }
 
 export default Playback

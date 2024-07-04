@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { getInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-layers'
+import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-layers'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import styles from './interval-selector.module.css'
 
@@ -20,7 +20,7 @@ const defaultProps: IntervalSelectorProps = {
   start: '',
   end: '',
   intervals: FOURWINGS_INTERVALS_ORDER,
-  getCurrentInterval: getInterval,
+  getCurrentInterval: getFourwingsInterval,
   onIntervalClick: () => {},
   labels: {
     hour: 'hours',
