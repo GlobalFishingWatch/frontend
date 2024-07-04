@@ -11,7 +11,7 @@ import {
   PolygonsGeneratorConfig,
   StyleTransformation,
 } from '@globalfishingwatch/layer-composer'
-import { useLayerComposer } from '@globalfishingwatch/react-hooks'
+import { useLayerComposer } from '@globalfishingwatch/react-hooks/use-layer-composer'
 import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { DatasetLayer, FourwingsLayerConfig, useDatasetLayers } from 'features/layers/layers.hooks'
 import { useViewport } from 'features/map/map-viewport.hooks'

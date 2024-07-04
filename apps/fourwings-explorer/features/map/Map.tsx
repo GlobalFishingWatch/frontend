@@ -2,12 +2,9 @@ import { Map, MapboxStyle } from 'react-map-gl'
 import { useCallback, useState } from 'react'
 import maplibregl, { RequestParameters } from '@globalfishingwatch/maplibre-gl'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import {
-  useDebounce,
-  useMapHover,
-  useMapLegend,
-  useMemoCompare,
-} from '@globalfishingwatch/react-hooks'
+import { useDebounce, useMemoCompare } from '@globalfishingwatch/react-hooks'
+import { useMapHover } from '@globalfishingwatch/react-hooks/use-map-interaction'
+import { useMapLegend } from '@globalfishingwatch/react-hooks/use-map-legend'
 import MapControls from 'features/map/MapControls'
 import MapInfo from 'features/map/MapInfo'
 import { useMapLayers } from 'features/map/map-layers.hooks'

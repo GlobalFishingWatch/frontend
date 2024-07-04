@@ -215,17 +215,6 @@ export const useMapMouseHover = () => {
   const { onRulerMapHover, rulersEditing } = useRulers()
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
-  // const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
-  //   null
-  // )
-
-  // const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
-  // const onMapHover = useMapHover(
-  //   setHoveredEvent as InteractionEventCallback,
-  //   setHoveredDebouncedEvent as InteractionEventCallback,
-  //   map,
-  //   style?.metadata
-  // )
 
   const onMouseMove: DeckProps['onHover'] = useCallback(
     (info: PickingInfo, event: MjolnirPointerEvent) => {

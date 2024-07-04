@@ -1,5 +1,5 @@
-import { CompositeLayer } from '@deck.gl/core/typed'
-import { LineLayerProps } from '@deck.gl/layers/typed'
+import { CompositeLayer } from '@deck.gl/core'
+import { LineLayerProps } from '@deck.gl/layers'
 import { TrackSublayer } from 'layers/tracks/tracks.hooks'
 import { GFWLayerProps } from 'features/map/Map'
 import { TrackLayer } from './TrackLayer'

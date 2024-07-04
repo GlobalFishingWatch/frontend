@@ -13,8 +13,6 @@
     "serve": "serve -s build",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
-  "dependencies": {},
-  "devDependencies": {},
   "browserslist": [
     ">0.1%",
     "not dead",

@@ -1,9 +1,7 @@
-import { Color, CompositeLayer, LayersList } from '@deck.gl/core/typed'
-import { TripsLayer } from '@deck.gl/geo-layers/typed'
-import { TripsLayerProps } from '@deck.gl/geo-layers/typed/trips-layer/trips-layer'
+import { Color, CompositeLayer, LayersList } from '@deck.gl/core'
+import { TripsLayer, TripsLayerProps } from '@deck.gl/geo-layers'
 import { ScatterplotLayer } from '@deck.gl/layers'
-import { ScatterplotLayerProps } from '@deck.gl/layers/typed'
-import { RGBAColor } from '@deck.gl/core'
+import { ScatterplotLayerProps } from '@deck.gl/layers'
 import { TrackPoint } from 'layers/tracks/tracks.hooks'
 import { hexToComponents } from '@globalfishingwatch/layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -42,7 +40,7 @@ export class TrackLayer extends CompositeLayer<TrackLayerProps> {
     return [
       ...hexToComponents(this.props.color),
       255 - ((latestTime - d.timestamp) / maxTimeDifference) * 255,
-    ] as RGBAColor
+    ] as any
   }
 
   renderLayers() {

@@ -3,13 +3,13 @@ import { DatasetTypes, DataviewCategory, DataviewInstance } from '@globalfishing
 import {
   resolveDataviews,
   UrlDataviewInstance,
-  getGeneratorConfig,
   mergeWorkspaceUrlDataviewInstances,
   GetDatasetConfigsCallbacks,
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
   _getLegacyResources,
 } from '@globalfishingwatch/dataviews-client'
+import { getGeneratorConfig } from '@globalfishingwatch/dataviews-client/resolve-dataviews-generators'
 import {
   BasemapGeneratorConfig,
   BasemapType,

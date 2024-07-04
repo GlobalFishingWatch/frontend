@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon'
 import { memoize } from 'lodash'
-import { VesselEventsLayer } from 'libs/deck-layers/src/layers/vessel/VesselEventsLayer'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 import { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '../../utils'
+import { VesselEventsLayer } from './VesselEventsLayer'
 
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = DateTime.now().year
