@@ -3,10 +3,6 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useAtom } from 'jotai'
 import { debounce } from 'lodash'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
-import {
-  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-  MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
-} from '@globalfishingwatch/dataviews-client'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectTimebarGraph,
@@ -22,7 +18,6 @@ import {
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 import { DEFAULT_TIME_RANGE } from 'data/config'

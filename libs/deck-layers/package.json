@@ -16,7 +16,6 @@
     "@globalfishingwatch/api-types": "^8.x",
     "@globalfishingwatch/deck-loaders": "^0.x",
     "@globalfishingwatch/dataviews-client": "^16.x",
-    "@globalfishingwatch/layer-composer": "^12.x",
     "@loaders.gl/core": "4.x",
     "@loaders.gl/mvt": "4.x",
     "@loaders.gl/loader-utils": "4.x",

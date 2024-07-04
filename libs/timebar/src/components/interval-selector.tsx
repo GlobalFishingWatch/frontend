@@ -1,20 +1,25 @@
 import cx from 'classnames'
-import { getInterval, Interval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { getInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-layers'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import styles from './interval-selector.module.css'
 
 type IntervalSelectorProps = {
   start: string
   end: string
   labels?: any
-  intervals: Interval[]
-  getCurrentInterval: (start: string, end: string, intervals: Interval[][]) => Interval
-  onIntervalClick: (interval: Interval) => void
+  intervals: FourwingsInterval[]
+  getCurrentInterval: (
+    start: string,
+    end: string,
+    intervals?: FourwingsInterval[]
+  ) => FourwingsInterval
+  onIntervalClick: (interval: FourwingsInterval) => void
 }
 
 const defaultProps: IntervalSelectorProps = {
   start: '',
   end: '',
-  intervals: INTERVAL_ORDER,
+  intervals: FOURWINGS_INTERVALS_ORDER,
   getCurrentInterval: getInterval,
   onIntervalClick: () => {},
   labels: {
@@ -33,7 +38,7 @@ function IntervalSelector({
   labels,
   onIntervalClick,
 }: IntervalSelectorProps) {
-  const currentInterval = getCurrentInterval(start, end, [intervals])
+  const currentInterval = getCurrentInterval(start, end, intervals)
   const intervalsSorted = [...intervals].reverse()
   return (
     <ul className={styles.intervalContainer}>

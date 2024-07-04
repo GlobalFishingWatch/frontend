@@ -16,7 +16,15 @@ import {
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
+import {
+  UrlDataviewInstance,
+  getMergedDataviewId,
+  isActivityDataview,
+  isDetectionsDataview,
+  isEnvironmentalDataview,
+  isHeatmapStaticDataview,
+  isTrackDataview,
+} from '@globalfishingwatch/dataviews-client'
 
 export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
 
@@ -52,37 +60,6 @@ const getDatasetAttribution = (dataset?: Dataset) =>
   dataset?.source && dataset?.source !== 'user' ? dataset?.source : undefined
 
 export type TimeRange = { start: string; end: string }
-
-function isActivityDataview(dataview: UrlDataviewInstance) {
-  return (
-    dataview.category === DataviewCategory.Activity &&
-    dataview.config?.type === DataviewType.HeatmapAnimated
-  )
-}
-
-function isDetectionsDataview(dataview: UrlDataviewInstance) {
-  return (
-    dataview.category === DataviewCategory.Detections &&
-    dataview.config?.type === DataviewType.HeatmapAnimated
-  )
-}
-
-function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
-  return (
-    dataview.category === DataviewCategory.Environment &&
-    dataview.config?.type === DataviewType.HeatmapAnimated
-  )
-}
-
-function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
-  return dataview.config?.type === DataviewType.HeatmapStatic
-}
-
-function isTrackDataview(dataview: UrlDataviewInstance) {
-  return (
-    dataview.category === DataviewCategory.Vessels && dataview.config?.type === DataviewType.Track
-  )
-}
 
 type GetMergedHeatmapAnimatedDataviewParams = {
   visualizationMode?: FourwingsVisualizationMode

@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { getDatasetsExtent } from '@globalfishingwatch/dataviews-client'
+import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { TimebarVisualisations } from 'types'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'

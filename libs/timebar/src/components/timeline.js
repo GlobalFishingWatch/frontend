@@ -6,7 +6,7 @@ import { scaleTime } from 'd3-scale'
 import dayjs from 'dayjs'
 import { throttle } from 'lodash'
 import ResizeObserver from 'resize-observer-polyfill'
-import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { getInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-layers'
 import {
   getTime,
   clampToAbsoluteBoundaries,
@@ -289,7 +289,7 @@ class Timeline extends PureComponent {
     // on release, "stick" to day/hour
     const stickUnit = stickToUnit
       ? stickToUnit(newStart, newEnd)
-      : getInterval(start, end, [INTERVAL_ORDER])
+      : getInterval(start, end, FOURWINGS_INTERVALS_ORDER)
     newStart = stickToClosestUnit(newStart, stickUnit)
     newEnd = stickToClosestUnit(newEnd, stickUnit)
     if (newStart === newEnd) {

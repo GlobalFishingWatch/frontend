@@ -5,7 +5,8 @@ import type { SerializeQueryArgs } from '@reduxjs/toolkit/dist/query/defaultSeri
 import { gfwBaseQuery } from 'queries/base'
 import { uniq } from 'lodash'
 import { DateTime } from 'luxon'
-import { getDatasetsExtent, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import { StatField, StatFields, StatType, StatsParams } from '@globalfishingwatch/api-types'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 

@@ -1,9 +1,5 @@
 import React from 'react'
 import cx from 'classnames'
-// import type {
-//   LayerMetadataLegend,
-//   LayerMetadataLegendBivariate,
-// } from '@globalfishingwatch/layer-composer'
 import { SolidLegend } from './Solid'
 import { ColorRampLegend } from './ColorRamp'
 import { BivariateLegend } from './Bivariate'
