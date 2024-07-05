@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import cx from 'classnames'
 import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
-import dayjs from 'dayjs'
+import { DateTime } from 'luxon'
 import {
   getFourwingsInterval,
   FOURWINGS_INTERVALS_ORDER,
@@ -100,11 +100,11 @@ class Playback extends Component<PlaybackProps> {
       const interval = getCurrentInterval(start, end, intervals)
       const intervalStartMs =
         interval === 'MONTH'
-          ? dayjs(start).utc().daysInMonth() * MS_IN_INTERVAL.DAY
+          ? DateTime.fromISO(start, { zone: 'utc' })?.daysInMonth! * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       const intervalEndMs =
         interval === 'MONTH'
-          ? dayjs(end).utc().daysInMonth() * MS_IN_INTERVAL.DAY
+          ? DateTime.fromISO(end, { zone: 'utc' })?.daysInMonth! * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       newStartMs = new Date(start).getTime() + intervalStartMs * deltaMultiplicator
       newEndMs = new Date(end).getTime() + intervalEndMs * deltaMultiplicator

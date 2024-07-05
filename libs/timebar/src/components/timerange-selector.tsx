@@ -1,6 +1,6 @@
-import React, { ChangeEvent, Component, MouseEventHandler } from 'react'
+import { ChangeEvent, Component, MouseEventHandler } from 'react'
 import classNames from 'classnames'
-import dayjs, { Dayjs, ManipulateType, OpUnitType } from 'dayjs'
+import { DateTime, DateTimeUnit } from 'luxon'
 import {
   LIMITS_BY_INTERVAL,
   getFourwingsInterval,
@@ -8,7 +8,6 @@ import {
   FourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
 import { Select, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
-import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
 import styles from './timerange-selector.module.css'
 
@@ -40,8 +39,8 @@ type TimeRangeSelectorProps = {
 }
 
 type TimeRangeSelectorState = {
-  startDate: Dayjs
-  endDate: Dayjs
+  startDate: DateTime
+  endDate: DateTime
   startInputValues: Record<string, number>
   endInputValues: Record<string, number>
   startInputValids: Record<string, boolean>
@@ -49,7 +48,7 @@ type TimeRangeSelectorState = {
   currentLastXSelectedOption: any
 }
 
-type LastXOption = SelectOption & { num: number; unit: ManipulateType }
+type LastXOption = SelectOption & { num: number; unit: DateTimeUnit }
 
 class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
   bounds = {
@@ -83,11 +82,11 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
   constructor(props: TimeRangeSelectorProps) {
     super(props)
     const { start, end, labels, absoluteStart, absoluteEnd } = props
-    const startDate = dayjs.utc(start)
-    const endDate = dayjs.utc(end)
+    const startDate = DateTime.fromISO(start, { zone: 'utc' })
+    const endDate = DateTime.fromISO(end, { zone: 'utc' })
     this.bounds = {
-      min: dayjs.utc(getTime(absoluteStart)).toISOString().slice(0, 10),
-      max: dayjs.utc(getTime(absoluteEnd)).toISOString().slice(0, 10),
+      min: DateTime.fromISO(absoluteStart, { zone: 'utc' }).toISO()?.slice(0, 10) || '',
+      max: DateTime.fromISO(absoluteEnd, { zone: 'utc' }).toISO()?.slice(0, 10) || '',
     }
     this.lastXOptions = [
       {
@@ -116,77 +115,90 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
       },
     ]
     this.state = {
-      startDate: dayjs.utc(start),
-      endDate: dayjs.utc(end),
+      startDate: DateTime.fromISO(start, { zone: 'utc' }),
+      endDate: DateTime.fromISO(end, { zone: 'utc' }),
       startInputValues: {
-        year: startDate.year(),
-        month: startDate.month() + 1,
-        date: startDate.date(),
+        year: startDate.year,
+        month: startDate.month,
+        day: startDate.day,
       },
       endInputValues: {
-        year: endDate.year(),
-        month: endDate.month() + 1,
-        date: endDate.date(),
+        year: endDate.year,
+        month: endDate.month,
+        day: endDate.day,
       },
       startInputValids: {
         year: true,
         month: true,
-        date: true,
+        day: true,
       },
       endInputValids: {
         year: true,
         month: true,
-        date: true,
+        day: true,
       },
       currentLastXSelectedOption: this.lastXOptions[0],
     }
   }
 
-  submit(start: Dayjs, end: Dayjs) {
+  submit(start: DateTime, end: DateTime) {
     const { onSubmit } = this.props
     const disabledFields = this.getDisabledFields(start, end)
     // on release, "stick" to day/hour
-    const newStart = dayjs
-      .utc({
-        year: start.year(),
-        month: disabledFields['MONTH'] ? 0 : start.month(),
-        date: disabledFields['DAY'] ? 0 : start.date(),
-      })
+    const newStart = DateTime.fromObject(
+      {
+        year: start.year,
+        month: disabledFields['MONTH'] ? 1 : start.month,
+        day: disabledFields['DAY'] ? 1 : start.day,
+      },
+      { zone: 'utc' }
+    ).toISO()
+    const newEnd = DateTime.fromObject(
+      {
+        year: end.year,
+        month: disabledFields['MONTH'] ? 1 : end.month,
+        day: disabledFields['DAY'] ? 1 : end.day,
+      },
+      { zone: 'utc' }
+    )
       .startOf('day')
-      .toISOString()
-    const newEnd = dayjs
-      .utc({
-        year: end.year(),
-        month: disabledFields['MONTH'] ? 0 : end.month(),
-        date: disabledFields['DAY'] ? 0 : end.date(),
-      })
-      .startOf('day')
-      .toISOString()
-    onSubmit(newStart, newEnd)
+      .toISO()
+
+    if (newStart && newEnd) {
+      onSubmit(newStart, newEnd)
+    }
   }
 
   onLastXSelect = (option: LastXOption) => {
     const { latestAvailableDataDate } = this.props
     const { start, end } = getLastX(option.num, option.unit, latestAvailableDataDate)
-    const interval = getFourwingsInterval(start, end, FOURWINGS_INTERVALS_ORDER)
+    if (!start || !end) {
+      return
+    }
+    const startDateTime = DateTime.fromISO(start, { zone: 'utc' })
+    const endDateTime = DateTime.fromISO(end, { zone: 'utc' })
+    const interval = getFourwingsInterval(
+      startDateTime.toMillis(),
+      endDateTime.toMillis(),
+      FOURWINGS_INTERVALS_ORDER
+    )
     this.submit(
-      dayjs
-        .utc(start)
-        .endOf(interval.toLowerCase() as OpUnitType)
-        .add(1, 'millisecond'),
-      dayjs
-        .utc(end)
-        .endOf(interval.toLowerCase() as OpUnitType)
-        .add(1, 'millisecond')
+      startDateTime.endOf(interval.toLowerCase() as DateTimeUnit).plus({
+        millisecond: 1,
+      }),
+      endDateTime.endOf(interval.toLowerCase() as DateTimeUnit).plus({
+        millisecond: 1,
+      })
     )
   }
 
-  getDisabledFields = (startDate: Dayjs, endDate: Dayjs) => {
+  getDisabledFields = (startDate: DateTime, endDate: DateTime) => {
     const intervalsToCheck: FourwingsInterval[] = ['MONTH', 'DAY']
     return intervalsToCheck.reduce((acc, limit) => {
       const limitConfig = LIMITS_BY_INTERVAL[limit]
       if (limitConfig) {
-        const duration = endDate.diff(startDate, limitConfig.unit)
+        const unit = limitConfig.unit === 'year' ? 'years' : limitConfig.unit
+        const duration = endDate.diff(startDate, [unit])?.[unit]
         return {
           ...acc,
           [limit]: Math.floor(duration) > limitConfig.value,
@@ -197,22 +209,23 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
   }
 
   onStartChange = (e: ChangeEvent<HTMLInputElement>, property: string) => {
-    const startDate = dayjs.utc(this.state.startInputValues)
-    const endDate = dayjs.utc(this.state.endInputValues)
+    const startDate = DateTime.fromObject(this.state.startInputValues, { zone: 'utc' })
+    const endDate = DateTime.fromObject(this.state.endInputValues, { zone: 'utc' })
     const disabledFields = this.getDisabledFields(startDate, endDate)
-    const currentMonthDays = dayjs
-      .utc({
-        year: property === 'year' ? e.target.value : startDate.year(),
-        month: property === 'month' ? e.target.value : startDate.month(),
-      })
-      .daysInMonth()
-    const dateHigherThanDaysInMonth = startDate.date() > currentMonthDays
+    const currentMonthDays = DateTime.fromObject(
+      {
+        year: property === 'year' ? parseInt(e.target.value) : startDate.year,
+        month: property === 'month' ? parseInt(e.target.value) : startDate.month,
+      },
+      { zone: 'utc' }
+    ).daysInMonth
+
+    const dateHigherThanDaysInMonth = startDate.day > currentMonthDays!
     this.setState((state: TimeRangeSelectorState) => ({
       startInputValues: {
         ...state.startInputValues,
-        date: dateHigherThanDaysInMonth ? currentMonthDays : startDate.date(),
-        // [property]: property.month && disabledFields['MONTH'] ? 0 : e.target.value,
-        [property]: disabledFields['MONTH'] ? 0 : e.target.value,
+        day: dateHigherThanDaysInMonth ? currentMonthDays : startDate.day,
+        [property]: disabledFields['MONTH'] ? 1 : parseInt(e.target.value),
       },
       startInputValids: {
         ...state.startInputValids,
@@ -237,19 +250,20 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
   }
 
   onEndChange = (e: ChangeEvent<HTMLInputElement>, property: string) => {
-    const endDate = dayjs.utc(this.state.endInputValues)
-    const currentMonthDays = dayjs
-      .utc({
-        year: property === 'year' ? e.target.value : endDate.year(),
-        month: property === 'month' ? e.target.value : endDate.month(),
-      })
-      .daysInMonth()
-    const dateHigherThanDaysInMonth = endDate.date() > currentMonthDays
+    const endDate = DateTime.fromObject(this.state.endInputValues, { zone: 'utc' })
+    const currentMonthDays = DateTime.fromObject(
+      {
+        year: property === 'year' ? parseInt(e.target.value) : endDate.year,
+        month: property === 'month' ? parseInt(e.target.value) : endDate.month,
+      },
+      { zone: 'utc' }
+    ).daysInMonth
+    const dateHigherThanDaysInMonth = endDate.day > currentMonthDays!
     this.setState((state: TimeRangeSelectorState) => ({
       endInputValues: {
         ...state.endInputValues,
-        date: dateHigherThanDaysInMonth ? currentMonthDays : endDate.date(),
-        [property]: e.target.value,
+        day: dateHigherThanDaysInMonth ? currentMonthDays : endDate.day,
+        [property]: parseInt(e.target.value),
       },
       endInputValids: {
         ...state.endInputValids,
@@ -283,32 +297,25 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
     } = this.state
     const { labels } = this.props
 
-    const startDate = dayjs.utc({
-      ...startInputValues,
-      month: startInputValues.month - 1,
-    })
+    const startDate = DateTime.fromObject(startInputValues, { zone: 'utc' })
     const startValid =
       Object.values(startInputValids).every((valid) => valid) &&
       Object.values(startInputValues).every((value) => !!value) &&
-      startDate.isValid()
-    const endDate = dayjs.utc({
-      ...endInputValues,
-      month: endInputValues.month - 1,
-    })
+      startDate.isValid
+    const endDate = DateTime.fromObject(endInputValues, { zone: 'utc' })
     const endValid =
       Object.values(endInputValids).every((valid) => valid) &&
       Object.values(endInputValues).every((value) => !!value) &&
-      endDate.isValid()
-    const startBeforeEnd =
-      startValid && endValid ? startDate.toISOString() < endDate.toISOString() : false
+      endDate.isValid
+    const startBeforeEnd = startValid && endValid ? startDate.toISO() < endDate.toISO() : false
 
     let errorMessage = ''
     if (!startValid || !endValid) {
       errorMessage = `${labels.selectAValidDate}: ${this.bounds.min.slice(0, 4)} - ${(
         parseInt(this.bounds.max.slice(0, 4)) + 1
       ).toString()}`
-    } else if (!startBeforeEnd && labels.endBeforeStart) {
-      errorMessage = labels.endBeforeStart
+    } else if (!startBeforeEnd) {
+      errorMessage = labels.endBeforeStart || ''
     }
 
     const disabledFields = this.getDisabledFields(startDate, endDate)
@@ -385,10 +392,10 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
                         name="start day"
                         type="number"
                         min={'1'}
-                        max={startDate.daysInMonth()}
-                        value={disabledFields['DAY'] ? 1 : startInputValues.date}
-                        onChange={(e) => this.onStartChange(e, 'date')}
-                        onBlur={(e) => this.onStartBlur(e, 'date')}
+                        max={startDate.daysInMonth}
+                        value={disabledFields['DAY'] ? 1 : startInputValues.day}
+                        onChange={(e) => this.onStartChange(e, 'day')}
+                        onBlur={(e) => this.onStartBlur(e, 'day')}
                         step={'1'}
                         disabled={disabledFields['DAY']}
                         className={classNames(styles.input, {
@@ -459,10 +466,10 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
                         name="end day"
                         type="number"
                         min={'1'}
-                        max={endDate.daysInMonth()}
-                        value={disabledFields['DAY'] ? 1 : endInputValues.date}
-                        onChange={(e) => this.onEndChange(e, 'date')}
-                        onBlur={(e) => this.onEndBlur(e, 'date')}
+                        max={endDate.daysInMonth}
+                        value={disabledFields['DAY'] ? 1 : endInputValues.day}
+                        onChange={(e) => this.onEndChange(e, 'day')}
+                        onBlur={(e) => this.onEndBlur(e, 'day')}
                         step={'1'}
                         disabled={disabledFields['DAY']}
                         className={classNames(styles.input, {

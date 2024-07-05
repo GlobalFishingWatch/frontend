@@ -1,66 +1,69 @@
-import dayjs, { Dayjs } from 'dayjs'
+import { DateTime } from 'luxon'
 import { TimelineScale } from '../timelineContext'
 import { getTime } from '../utils/internal-utils'
 
 const getUnitLabel = (
-  mUnit: Dayjs,
+  mUnit: DateTime,
   baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour',
-  availableWidth: number
+  availableWidth: number,
+  locale: string
 ) => {
   /* eslint key-spacing: 0, no-multi-spaces: 0 */
 
-  const getWeekFmt = (mUnit: Dayjs, isFirst = false) => {
-    const mWeekEnd = mUnit.add(6, 'day')
-    return `${mUnit.format('MMM')} ${mUnit.format('D')}-${mWeekEnd.format('D')} ${
-      isFirst ? mUnit.format('YYYY') : ''
+  // TODO: localise
+
+  const getWeekFmt = (mUnit: DateTime, isFirst = false) => {
+    const mWeekEnd = mUnit.plus({ days: 6 })
+    return `${mUnit.toFormat('MMM')} ${mUnit.toFormat('d')}-${mWeekEnd.toFormat('d')} ${
+      isFirst ? mUnit.toFormat('yyyy') : ''
     }`
   }
 
   const FORMATS: {
     [key: string]: {
-      isFirst: (fm: Dayjs) => boolean
-      formats: (number | string | ((mUnit: Dayjs) => string))[][]
+      isFirst: (fm: DateTime) => boolean
+      formats: (number | string | ((mUnit: DateTime) => string))[][]
     }
   } = {
-    year: { isFirst: () => false, formats: [[0, 'YYYY']] },
+    year: { isFirst: () => false, formats: [[0, 'yyyy']] },
     month: {
-      isFirst: (fm: Dayjs) => fm.month() === 0,
+      isFirst: (fm: DateTime) => fm.month === 1,
       formats: [
-        [200, 'MMMM YYYY'],
-        [100, 'MMMM', 'MMM YYYY'],
-        [0, 'MMM', 'MMM YY'],
+        [200, 'MMMM yyyy'],
+        [100, 'MMMM', 'MMM yyyy'],
+        [0, 'MMM', 'MMM yy'],
       ],
     },
     week: {
-      isFirst: (fm: Dayjs) => {
-        return fm.date() === 1
+      isFirst: (fm: DateTime) => {
+        return fm.day === 1
       },
       formats: [
         [
           0,
-          (mUnit: Dayjs) => {
+          (mUnit: DateTime) => {
             return getWeekFmt(mUnit)
           },
-          (mUnit: Dayjs) => {
+          (mUnit: DateTime) => {
             return getWeekFmt(mUnit, true)
           },
         ],
       ],
     },
     day: {
-      isFirst: (fm: Dayjs) => fm.date() === 1,
+      isFirst: (fm: DateTime) => fm.day === 1,
       formats: [
-        [999, 'ddd D MMMM YYYY'],
-        [200, 'ddd D MMMM'],
-        [70, 'ddd D', 'MMM 1'],
-        [0, 'D', 'MMM'],
+        [999, 'EEE d MMMM yyyy'],
+        [200, 'EEE d MMMM'],
+        [70, 'EEE d', 'MMM 1'],
+        [0, 'd', 'MMM'],
       ],
     },
     hour: {
-      isFirst: (fm: Dayjs) => fm.hour() === 0,
+      isFirst: (fm: DateTime) => fm.hour === 0,
       formats: [
-        [999, 'ddd D MMMM YYYY H[H]'],
-        [0, 'H[H]', 'ddd D'],
+        [999, 'EEE d MMMM yyyy H'],
+        [0, 'H', 'd MMM'],
       ],
     },
   }
@@ -75,13 +78,13 @@ const getUnitLabel = (
   }
 
   if (!format) {
-    return mUnit.format()
+    return mUnit.toISO()
   }
   const isFirst = unitFormat.isFirst(mUnit)
   const finalFormat = isFirst && format[2] ? format[2] : format[1]
   return typeof finalFormat === 'function'
     ? finalFormat(mUnit)
-    : mUnit.format(finalFormat as string)
+    : mUnit.setLocale(locale).toFormat(finalFormat as string)
 }
 
 export const getUnitsPositions = (
@@ -91,48 +94,43 @@ export const getUnitsPositions = (
   absoluteStart: string,
   absoluteEnd: string,
   baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour',
-  labels: Record<string, any> = { zoomTo: 'Zoom to' }
+  labels: Record<string, any> = { zoomTo: 'Zoom to' },
+  locale: string
 ) => {
   const startMs = Math.max(getTime(outerStart), getTime(absoluteStart))
   const endMs = Math.min(getTime(outerEnd), getTime(absoluteEnd))
 
   // BUFFER ??
-  const mOuterStart = dayjs(startMs).utc().startOf(baseUnit)
-  const mOuterEnd = dayjs(endMs).utc().endOf(baseUnit)
+  const mOuterStart = DateTime.fromMillis(startMs, { zone: 'utc' }).startOf(baseUnit)
+  const mOuterEnd = DateTime.fromMillis(endMs, { zone: 'utc' }).endOf(baseUnit)
 
   const units = []
   const numUnitsOffset = getTime(outerEnd) > getTime(absoluteEnd) ? 0 : 1
-  const numUnits = mOuterEnd.diff(mOuterStart, baseUnit) + numUnitsOffset
+  const durationUnit = `${baseUnit}s` as 'years' | 'months' | 'weeks' | 'days' | 'hours'
+  const numUnits = mOuterEnd.diff(mOuterStart, durationUnit)?.[durationUnit] + numUnitsOffset
 
   let mUnit = mOuterStart
-  if (mUnit.isValid()) {
-    let x = outerScale(mUnit.toDate())
+  if (mUnit.isValid) {
+    let x = outerScale(mUnit.toJSDate())
 
     for (let ui = 0; ui <= numUnits; ui += 1) {
-      const mUnitNext = mUnit.add(1, baseUnit)
-      const xNext = outerScale(mUnitNext.toDate())
+      const mUnitNext: DateTime = mUnit.plus({ [durationUnit]: 1 })
 
-      const id = mUnit.format(
-        {
-          year: 'YYYY',
-          month: 'YYYY-MM',
-          week: 'YYYY-MM-DD',
-          day: 'YYYY-MM-DD',
-          hour: 'YYYY-MM-DD-HH',
-        }[baseUnit]
-      )
+      const xNext = outerScale(mUnitNext.toJSDate())
+
+      const id = mUnit.toISO()
 
       const width = xNext - x
       const unit = {
         id,
         x,
         width,
-        label: getUnitLabel(mUnit, baseUnit, width),
-        hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity)} - ${labels.zoomTo} ${
+        label: getUnitLabel(mUnit, baseUnit, width, locale),
+        hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity, locale)} - ${labels.zoomTo} ${
           labels.intervals?.[baseUnit] as string
         }`,
-        start: mUnit.toISOString(),
-        end: mUnitNext.toISOString(),
+        start: mUnit.toISO(),
+        end: mUnitNext.toISO(),
       }
       units.push(unit)
       mUnit = mUnitNext
