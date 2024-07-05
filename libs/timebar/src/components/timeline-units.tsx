@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import React, { PureComponent } from 'react'
 import { getUnitsPositions } from '../layouts'
 import { clampToAbsoluteBoundaries, getDeltaMs, getDeltaDays } from '../utils/internal-utils'

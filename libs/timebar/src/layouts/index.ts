@@ -1,4 +1,3 @@
-// @ts-nocheck
 import dayjs from 'dayjs'
 import { getTime } from '../utils/internal-utils'
 

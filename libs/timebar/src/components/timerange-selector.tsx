@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
