@@ -148,7 +148,6 @@ const TimebarHighlighterWrapper = ({
 }
 
 const TimebarWrapper = () => {
-  console.log('TimebarWrapper')
   useTimebarVisualisation()
 
   const [isMouseInside, setMouseInside] = useState(false)

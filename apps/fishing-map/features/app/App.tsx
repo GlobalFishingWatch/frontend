@@ -63,10 +63,9 @@ import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
 import styles from './App.module.css'
 import 'react-toastify/dist/ReactToastify.min.css'
-import Timebar from 'features/timebar/Timebar'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
-// const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
 
 declare global {
   interface Window {
