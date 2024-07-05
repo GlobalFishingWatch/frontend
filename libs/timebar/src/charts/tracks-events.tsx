@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import cx from 'classnames'
-import { useSetRecoilState } from 'recoil'
+import { useSetAtom } from 'jotai'
 import TimelineContext, { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import EncounterIcon from '../icons/events-shapes/encounter.svg'
 import LoiteringIcon from '../icons/events-shapes/loitering.svg'
@@ -84,7 +84,7 @@ const TracksEvents = ({
     trackGraphOrientation,
   ]) as TimebarChartData<TrackEventChunkProps>
 
-  const updateHoveredEvent = useSetRecoilState(hoveredEventState)
+  const updateHoveredEvent = useSetAtom(hoveredEventState)
 
   const trackEvents = useMemo(() => {
     return tracksEventsWithCoords.map((trackEvents, index) => (

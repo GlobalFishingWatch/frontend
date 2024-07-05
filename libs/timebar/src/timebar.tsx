@@ -10,7 +10,6 @@ import 'dayjs/locale/en'
 import 'dayjs/locale/es'
 import 'dayjs/locale/fr'
 import 'dayjs/locale/id'
-import { RecoilRoot } from 'recoil'
 import { DateTime } from 'luxon'
 import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import { getTime } from './utils/internal-utils'
@@ -336,89 +335,87 @@ export class TimebarComponent extends Component<TimebarProps> {
       getTime(bookmarkEnd) === getTime(end)
 
     return (
-      <RecoilRoot override={false}>
-        <div className={styles.Timebar}>
-          {enablePlayback && (
-            <Playback
-              labels={labels.playback}
+      <div className={styles.Timebar}>
+        {enablePlayback && (
+          <Playback
+            labels={labels.playback}
+            start={start}
+            end={end}
+            absoluteStart={absoluteStart}
+            absoluteEnd={absoluteEnd}
+            onTick={this.onPlaybackTick}
+            onTogglePlay={this.onTogglePlay}
+            intervals={intervals}
+            getCurrentInterval={getCurrentInterval}
+          />
+        )}
+
+        <div className={cx('print-hidden', styles.timeActions)}>
+          {showTimeRangeSelector && (
+            <TimeRangeSelector
+              labels={labels.timerange}
               start={start}
               end={end}
               absoluteStart={absoluteStart}
               absoluteEnd={absoluteEnd}
-              onTick={this.onPlaybackTick}
-              onTogglePlay={this.onTogglePlay}
-              intervals={intervals}
-              getCurrentInterval={getCurrentInterval}
+              onSubmit={this.onTimeRangeSelectorSubmit}
+              onDiscard={this.toggleTimeRangeSelector}
+              latestAvailableDataDate={this.props.latestAvailableDataDate}
             />
           )}
-
-          <div className={cx('print-hidden', styles.timeActions)}>
-            {showTimeRangeSelector && (
-              <TimeRangeSelector
-                labels={labels.timerange}
+          <button
+            type="button"
+            title={labels.timerange?.title}
+            className={cx(styles.uiButton)}
+            onClick={this.toggleTimeRangeSelector}
+          >
+            <IconTimeRange />
+          </button>
+          <button
+            type="button"
+            title={labels.setBookmark}
+            className={cx('print-hidden', styles.uiButton, styles.bookmark)}
+            onClick={this.setBookmark}
+            disabled={bookmarkDisabled === true}
+          >
+            {hasBookmark ? <IconBookmarkFilled /> : <IconBookmark />}
+          </button>
+        </div>
+        <div className={cx('print-hidden', styles.timeActions)}>
+          {
+            intervals && getCurrentInterval ? (
+              <IntervalSelector
+                intervals={intervals}
+                getCurrentInterval={getCurrentInterval}
+                labels={labels.intervals}
                 start={start}
                 end={end}
-                absoluteStart={absoluteStart}
-                absoluteEnd={absoluteEnd}
-                onSubmit={this.onTimeRangeSelectorSubmit}
-                onDiscard={this.toggleTimeRangeSelector}
-                latestAvailableDataDate={this.props.latestAvailableDataDate}
+                onIntervalClick={this.onIntervalClick}
               />
-            )}
-            <button
-              type="button"
-              title={labels.timerange?.title}
-              className={cx(styles.uiButton)}
-              onClick={this.toggleTimeRangeSelector}
-            >
-              <IconTimeRange />
-            </button>
-            <button
-              type="button"
-              title={labels.setBookmark}
-              className={cx('print-hidden', styles.uiButton, styles.bookmark)}
-              onClick={this.setBookmark}
-              disabled={bookmarkDisabled === true}
-            >
-              {hasBookmark ? <IconBookmarkFilled /> : <IconBookmark />}
-            </button>
-          </div>
-          <div className={cx('print-hidden', styles.timeActions)}>
-            {
-              intervals && getCurrentInterval ? (
-                <IntervalSelector
-                  intervals={intervals}
-                  getCurrentInterval={getCurrentInterval}
-                  labels={labels.intervals}
-                  start={start}
-                  end={end}
-                  onIntervalClick={this.onIntervalClick}
-                />
-              ) : null // TODO restore + and - buttons as fallback
-            }
-          </div>
-
-          <Timeline
-            children={this.props.children}
-            start={start}
-            end={end}
-            labels={labels}
-            onChange={this.notifyChange}
-            onMouseLeave={this.props.onMouseLeave}
-            onMouseMove={this.props.onMouseMove}
-            absoluteStart={absoluteStart}
-            absoluteEnd={absoluteEnd}
-            onBookmarkChange={this.props.onBookmarkChange}
-            bookmarkStart={bookmarkStart}
-            bookmarkEnd={bookmarkEnd}
-            bookmarkPlacement={bookmarkPlacement}
-            latestAvailableDataDate={this.props.latestAvailableDataDate}
-            trackGraphOrientation={this.props.trackGraphOrientation}
-            stickToUnit={stickToUnit}
-            displayWarningWhenInFuture={displayWarningWhenInFuture}
-          />
+            ) : null // TODO restore + and - buttons as fallback
+          }
         </div>
-      </RecoilRoot>
+
+        <Timeline
+          children={this.props.children}
+          start={start}
+          end={end}
+          labels={labels}
+          onChange={this.notifyChange}
+          onMouseLeave={this.props.onMouseLeave}
+          onMouseMove={this.props.onMouseMove}
+          absoluteStart={absoluteStart}
+          absoluteEnd={absoluteEnd}
+          onBookmarkChange={this.props.onBookmarkChange}
+          bookmarkStart={bookmarkStart}
+          bookmarkEnd={bookmarkEnd}
+          bookmarkPlacement={bookmarkPlacement}
+          latestAvailableDataDate={this.props.latestAvailableDataDate}
+          trackGraphOrientation={this.props.trackGraphOrientation}
+          stickToUnit={stickToUnit}
+          displayWarningWhenInFuture={displayWarningWhenInFuture}
+        />
+      </div>
     )
   }
 }
