@@ -366,8 +366,6 @@ const TimebarWrapper = () => {
     )
   }
 
-  console.log('latestAvailableDataDate', latestAvailableDataDate)
-
   return (
     <div
       className={styles.timebarWrapper}
