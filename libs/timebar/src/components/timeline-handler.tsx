@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { ReactEventHandler } from 'react'
 import cx from 'classnames'
 import { ReactComponent as IconDrag } from '../icons/drag.svg'
 import styles from './timeline-handler.module.css'
 
 type HandlerProps = {
   dragLabel?: string
-  onMouseDown: (...args: unknown[]) => unknown
+  onMouseDown: ReactEventHandler
   dragging: boolean
   x: number
   mouseX?: number

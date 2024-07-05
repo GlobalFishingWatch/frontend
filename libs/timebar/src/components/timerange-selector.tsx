@@ -1,29 +1,66 @@
-import React, { Component } from 'react'
+import React, { ChangeEvent, Component, MouseEventHandler } from 'react'
 import classNames from 'classnames'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs, ManipulateType, OpUnitType } from 'dayjs'
 import {
   LIMITS_BY_INTERVAL,
   getFourwingsInterval,
   FOURWINGS_INTERVALS_ORDER,
+  FourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
-import { Select, Tooltip } from '@globalfishingwatch/ui-components'
+import { Select, SelectOption, Tooltip } from '@globalfishingwatch/ui-components'
 import { getTime } from '../utils/internal-utils'
 import { getLastX } from '../utils'
 import styles from './timerange-selector.module.css'
 
 type TimeRangeSelectorProps = {
-  onSubmit: unknown
-  start: unknown
-  end: unknown
-  absoluteStart: unknown
-  absoluteEnd: unknown
-  latestAvailableDataDate: unknown
-  onDiscard: unknown
-  labels?: unknown
+  onSubmit: (start: string, end: string) => void
+  start: string
+  end: string
+  absoluteStart: string
+  absoluteEnd: string
+  latestAvailableDataDate?: string
+  onDiscard: MouseEventHandler<HTMLDivElement> | undefined
+  labels: {
+    title?: string
+    start?: string
+    end?: string
+    year?: string
+    month?: string
+    day?: string
+    selectAValidDate?: string
+    endBeforeStart?: string
+    tooLongForMonths?: string
+    tooLongForDays?: string
+    last30days?: string
+    last3months?: string
+    last6months?: string
+    lastYear?: string
+    done?: string
+  }
 }
 
+type TimeRangeSelectorState = {
+  startDate: Dayjs
+  endDate: Dayjs
+  startInputValues: Record<string, number>
+  endInputValues: Record<string, number>
+  startInputValids: Record<string, boolean>
+  endInputValids: Record<string, boolean>
+  currentLastXSelectedOption: any
+}
+
+type LastXOption = SelectOption & { num: number; unit: ManipulateType }
+
 class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
+  bounds = {
+    min: '',
+    max: '',
+  }
+  lastXOptions: LastXOption[] = []
+  state: TimeRangeSelectorState
+
   static defaultProps = {
+    latestAvailableDataDate: '',
     labels: {
       title: 'Select a time range',
       start: 'start',
@@ -43,7 +80,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
     },
   }
 
-  constructor(props) {
+  constructor(props: TimeRangeSelectorProps) {
     super(props)
     const { start, end, labels, absoluteStart, absoluteEnd } = props
     const startDate = dayjs.utc(start)
@@ -105,7 +142,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
     }
   }
 
-  submit(start, end) {
+  submit(start: Dayjs, end: Dayjs) {
     const { onSubmit } = this.props
     const disabledFields = this.getDisabledFields(start, end)
     // on release, "stick" to day/hour
@@ -128,19 +165,24 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
     onSubmit(newStart, newEnd)
   }
 
-  onLastXSelect = (option) => {
+  onLastXSelect = (option: LastXOption) => {
     const { latestAvailableDataDate } = this.props
     const { start, end } = getLastX(option.num, option.unit, latestAvailableDataDate)
     const interval = getFourwingsInterval(start, end, FOURWINGS_INTERVALS_ORDER)
     this.submit(
-      dayjs.utc(start).endOf(interval.toLowerCase()).add(1, 'millisecond'),
-      dayjs.utc(end).endOf(interval.toLowerCase()).add(1, 'millisecond')
+      dayjs
+        .utc(start)
+        .endOf(interval.toLowerCase() as OpUnitType)
+        .add(1, 'millisecond'),
+      dayjs
+        .utc(end)
+        .endOf(interval.toLowerCase() as OpUnitType)
+        .add(1, 'millisecond')
     )
   }
 
-  getDisabledFields = (startDate, endDate) => {
-    /** @type {Interval[]} */
-    const intervalsToCheck = ['MONTH', 'DAY']
+  getDisabledFields = (startDate: Dayjs, endDate: Dayjs) => {
+    const intervalsToCheck: FourwingsInterval[] = ['MONTH', 'DAY']
     return intervalsToCheck.reduce((acc, limit) => {
       const limitConfig = LIMITS_BY_INTERVAL[limit]
       if (limitConfig) {
@@ -150,10 +192,11 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
           [limit]: Math.floor(duration) > limitConfig.value,
         }
       }
-    }, {})
+      return acc
+    }, {} as Record<FourwingsInterval, boolean>)
   }
 
-  onStartChange = (e, property) => {
+  onStartChange = (e: ChangeEvent<HTMLInputElement>, property: string) => {
     const startDate = dayjs.utc(this.state.startInputValues)
     const endDate = dayjs.utc(this.state.endInputValues)
     const disabledFields = this.getDisabledFields(startDate, endDate)
@@ -164,11 +207,12 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
       })
       .daysInMonth()
     const dateHigherThanDaysInMonth = startDate.date() > currentMonthDays
-    this.setState((state) => ({
+    this.setState((state: TimeRangeSelectorState) => ({
       startInputValues: {
         ...state.startInputValues,
         date: dateHigherThanDaysInMonth ? currentMonthDays : startDate.date(),
-        [property]: property.month && disabledFields['MONTH'] ? 0 : e.target.value,
+        // [property]: property.month && disabledFields['MONTH'] ? 0 : e.target.value,
+        [property]: disabledFields['MONTH'] ? 0 : e.target.value,
       },
       startInputValids: {
         ...state.startInputValids,
@@ -177,9 +221,9 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
     }))
   }
 
-  onStartBlur = (e, property) => {
+  onStartBlur = (e: ChangeEvent<HTMLInputElement>, property: string) => {
     if (e.target.value === '') {
-      this.setState((state) => ({
+      this.setState((state: TimeRangeSelectorState) => ({
         startInputValues: {
           ...state.startInputValues,
           [property]: property === 'year' ? this.bounds.min.slice(0, 4) : 1,
@@ -192,7 +236,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
     }
   }
 
-  onEndChange = (e, property) => {
+  onEndChange = (e: ChangeEvent<HTMLInputElement>, property: string) => {
     const endDate = dayjs.utc(this.state.endInputValues)
     const currentMonthDays = dayjs
       .utc({
@@ -201,7 +245,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
       })
       .daysInMonth()
     const dateHigherThanDaysInMonth = endDate.date() > currentMonthDays
-    this.setState((state) => ({
+    this.setState((state: TimeRangeSelectorState) => ({
       endInputValues: {
         ...state.endInputValues,
         date: dateHigherThanDaysInMonth ? currentMonthDays : endDate.date(),
@@ -214,9 +258,9 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
     }))
   }
 
-  onEndBlur = (e, property) => {
+  onEndBlur = (e: ChangeEvent<HTMLInputElement>, property: string) => {
     if (e.target.value === '') {
-      this.setState((state) => ({
+      this.setState((state: TimeRangeSelectorState) => ({
         endInputValues: {
           ...state.endInputValues,
           [property]: property === 'year' ? parseInt(this.bounds.max.slice(0, 4)) + 1 : 1,
@@ -227,10 +271,6 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
         },
       }))
     }
-  }
-
-  onResolutionChange = (option) => {
-    this.setState({ resolution: option.id })
   }
 
   render() {
@@ -267,7 +307,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
       errorMessage = `${labels.selectAValidDate}: ${this.bounds.min.slice(0, 4)} - ${(
         parseInt(this.bounds.max.slice(0, 4)) + 1
       ).toString()}`
-    } else if (!startBeforeEnd) {
+    } else if (!startBeforeEnd && labels.endBeforeStart) {
       errorMessage = labels.endBeforeStart
     }
 
@@ -281,7 +321,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
             onSubmit={(e) => {
               e.preventDefault()
               if (startValid && endValid) {
-                this.submit(startDate.toISOString(), endDate.toISOString())
+                this.submit(startDate, endDate)
               }
             }}
           >
@@ -398,7 +438,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
                         step={'1'}
                         disabled={
                           disabledFields['MONTH'] ||
-                          endInputValues.year > this.bounds.max.slice(0, 4)
+                          endInputValues.year > parseInt(this.bounds.max.slice(0, 4))
                         }
                         className={classNames(styles.input, {
                           [styles.error]: !endValid || !startBeforeEnd,
@@ -442,7 +482,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
                 options={this.lastXOptions}
                 selectedOption={currentLastXSelectedOption}
                 onSelect={(selected) => {
-                  this.onLastXSelect(selected)
+                  this.onLastXSelect(selected as LastXOption)
                 }}
               />
               <button

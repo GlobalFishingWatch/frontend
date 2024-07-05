@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
-  TimebarComponent,
+  Timebar,
   TimebarTracks,
   TimebarHighlighter,
   TimebarTracksEvents,
@@ -13,6 +13,7 @@ import {
   TrackEventChunkProps,
   TrackGraphOrientation,
   HighlightedChunks,
+  TimebarProps,
 } from '@globalfishingwatch/timebar'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
@@ -147,7 +148,9 @@ const TimebarHighlighterWrapper = ({
 }
 
 const TimebarWrapper = () => {
+  console.log('TimebarWrapper')
   useTimebarVisualisation()
+
   const [isMouseInside, setMouseInside] = useState(false)
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
@@ -196,11 +199,12 @@ const TimebarWrapper = () => {
   const isSmallScreen = useSmallScreen()
 
   const onMouseMove = useCallback(
-    (clientX: number, scale: (arg: number) => Date) => {
+    (clientX: number | null, scale: ((arg: number) => Date) | null, isDay?: boolean) => {
       if (clientX === null || clientX === undefined || isNaN(clientX)) {
         dispatchDisableHighlightedTime()
       } else {
         try {
+          if (!scale) return
           const start = scale(clientX - 10).toISOString()
           const end = scale(clientX + 10).toISOString()
           const startDateTime = getUTCDateTime(start)
@@ -223,8 +227,8 @@ const TimebarWrapper = () => {
     [dispatch, dispatchDisableHighlightedTime]
   )
 
-  const onChange = useCallback(
-    (e: any) => {
+  const onChange: TimebarProps['onChange'] = useCallback(
+    (e) => {
       const gaActions: Record<string, string> = {
         TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
         ZOOM_IN_BUTTON: 'Zoom In timerange',
@@ -234,7 +238,7 @@ const TimebarWrapper = () => {
         MONTH_INTERVAL_BUTTON: 'Use month preset',
         YEAR_INTERVAL_BUTTON: 'Use year preset',
       }
-      if (gaActions[e.source]) {
+      if (e.source && gaActions[e.source]) {
         trackEvent({
           category: TrackCategory.Timebar,
           action: gaActions[e.source],
@@ -363,6 +367,8 @@ const TimebarWrapper = () => {
     )
   }
 
+  console.log('latestAvailableDataDate', latestAvailableDataDate)
+
   return (
     <div
       className={styles.timebarWrapper}
@@ -371,7 +377,7 @@ const TimebarWrapper = () => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <TimebarComponent
+      <Timebar
         enablePlayback={!vesselGroupsFiltering && !isReportLocation}
         labels={labels}
         start={start}
@@ -392,7 +398,7 @@ const TimebarWrapper = () => {
         intervals={FOURWINGS_INTERVALS_ORDER}
         getCurrentInterval={getFourwingsInterval}
         trackGraphOrientation={trackGraphOrientation}
-        locale={i18n.language}
+        locale={i18n.language as 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'}
       >
         {!isSmallScreen ? (
           <Fragment>
@@ -408,7 +414,7 @@ const TimebarWrapper = () => {
             />
           </Fragment>
         ) : null}
-      </TimebarComponent>
+      </Timebar>
       {!isSmallScreen && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />
     </div>

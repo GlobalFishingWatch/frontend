@@ -15,6 +15,7 @@ export type TimelineContextProps = {
   innerStartPx: number
   innerEndPx: number
   overallScale: TimelineScale
+  outerScale: TimelineScale
   svgTransform: string
   tooltipContainer: Element
   trackGraphOrientation: TrackGraphOrientation

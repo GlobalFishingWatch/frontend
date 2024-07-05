@@ -3,7 +3,11 @@ import cx from 'classnames'
 import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
 import dayjs from 'dayjs'
-import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
+import {
+  getFourwingsInterval,
+  FOURWINGS_INTERVALS_ORDER,
+  FourwingsInterval,
+} from '@globalfishingwatch/deck-loaders'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
 import { ReactComponent as IconLoop } from '../icons/loop.svg'
 import { ReactComponent as IconBack } from '../icons/back.svg'
@@ -17,13 +21,13 @@ const BASE_STEP = 0.001
 const SPEED_STEPS = [1, 2, 3, 5, 10]
 
 const MS_IN_INTERVAL = {
-  hour: 1000 * 60 * 60,
-  day: 1000 * 60 * 60 * 24,
-  year: 1000 * 60 * 60 * 24 * 365,
+  HOUR: 1000 * 60 * 60,
+  DAY: 1000 * 60 * 60 * 24,
+  YEAR: 1000 * 60 * 60 * 24 * 365,
 }
 
 type PlaybackProps = {
-  labels?: {
+  labels: {
     playAnimation?: string
     pauseAnimation?: string
     toogleAnimationLooping?: string
@@ -31,17 +35,26 @@ type PlaybackProps = {
     moveForward?: string
     changeAnimationSpeed?: string
   }
-  onTick: (...args: unknown[]) => unknown
+  onTick: (newStart: string, newEnd: string) => void
   start: string
   end: string
   absoluteStart: string
   absoluteEnd: string
-  onTogglePlay?: (...args: unknown[]) => unknown
-  getCurrentInterval?: (...args: unknown[]) => unknown
+  intervals?: FourwingsInterval[]
+  onTogglePlay?: (isPlaying: boolean) => void
+  getCurrentInterval: typeof getFourwingsInterval
+}
+
+type PlaybackState = {
+  playing: boolean
+  speedStep: number
+  loop: boolean
 }
 
 class Playback extends Component<PlaybackProps> {
-  lastUpdateMs = null
+  lastUpdateMs: number | null = null
+  requestAnimationFrame: number | null = null
+  state: PlaybackState
 
   static defaultProps = {
     labels: {
@@ -59,8 +72,8 @@ class Playback extends Component<PlaybackProps> {
     getCurrentInterval: getFourwingsInterval,
   }
 
-  constructor() {
-    super()
+  constructor(props: PlaybackProps) {
+    super(props)
     this.state = {
       playing: false,
       speedStep: 0,
@@ -78,20 +91,20 @@ class Playback extends Component<PlaybackProps> {
     return step
   })
 
-  update = (deltaMultiplicator, { byIntervals = false } = {}) => {
+  update = (deltaMultiplicator: number, { byIntervals = false } = {}) => {
     const { onTick, start, end, absoluteStart, intervals, getCurrentInterval } = this.props
     const { speedStep, loop } = this.state
     let newStartMs
     let newEndMs
-    if (byIntervals) {
-      const interval = getCurrentInterval(start, end, [intervals])
+    if (byIntervals && getCurrentInterval) {
+      const interval = getCurrentInterval(start, end, intervals)
       const intervalStartMs =
         interval === 'MONTH'
-          ? dayjs(start).utc().daysInMonth() * MS_IN_INTERVAL.day
+          ? dayjs(start).utc().daysInMonth() * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       const intervalEndMs =
         interval === 'MONTH'
-          ? dayjs(end).utc().daysInMonth() * MS_IN_INTERVAL.day
+          ? dayjs(end).utc().daysInMonth() * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       newStartMs = new Date(start).getTime() + intervalStartMs * deltaMultiplicator
       newEndMs = new Date(end).getTime() + intervalEndMs * deltaMultiplicator
@@ -128,7 +141,7 @@ class Playback extends Component<PlaybackProps> {
     }
   }
 
-  tick = (elapsedMs) => {
+  tick = (elapsedMs: number) => {
     if (this.lastUpdateMs === null) {
       this.lastUpdateMs = elapsedMs
     }
@@ -144,7 +157,7 @@ class Playback extends Component<PlaybackProps> {
     }
   }
 
-  togglePlay = (force) => {
+  togglePlay = (force?: boolean) => {
     const { playing } = this.state
     const { onTogglePlay } = this.props
 
@@ -159,18 +172,22 @@ class Playback extends Component<PlaybackProps> {
     } else {
       // TODO:timebar store playing state in its place instead of using inmmediate
       // this.context.toggleImmediate(false)
-      window.cancelAnimationFrame(this.requestAnimationFrame)
+      if (this.requestAnimationFrame) {
+        window.cancelAnimationFrame(this.requestAnimationFrame)
+      }
     }
 
     this.setState({
       playing: playingNext,
     })
 
-    onTogglePlay(playingNext)
+    onTogglePlay && onTogglePlay(playingNext)
   }
 
   componentWillUnmount() {
-    window.cancelAnimationFrame(this.requestAnimationFrame)
+    if (this.requestAnimationFrame) {
+      window.cancelAnimationFrame(this.requestAnimationFrame)
+    }
   }
 
   onPlayToggleClick = () => {
@@ -178,7 +195,7 @@ class Playback extends Component<PlaybackProps> {
   }
 
   toggleLoop = () => {
-    this.setState((prevState) => ({
+    this.setState((prevState: PlaybackState) => ({
       loop: !prevState.loop,
     }))
   }

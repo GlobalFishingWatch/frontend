@@ -1,7 +1,7 @@
-import dayjs from 'dayjs'
+import dayjs, { ManipulateType } from 'dayjs'
 import { getDefaultFormat } from './internal-utils'
 
-export const getHumanizedDates = (start, end) => {
+export const getHumanizedDates = (start: string, end: string) => {
   const format = getDefaultFormat(start, end)
   const mStart = dayjs(start).utc()
   const mEnd = dayjs(end).utc()
@@ -11,55 +11,7 @@ export const getHumanizedDates = (start, end) => {
   return { humanizedStart, humanizedEnd, interval }
 }
 
-const getTimebarRangeAuto = (auto) => {
-  const ONE_DAY = 24 * 60 * 60 * 1000
-  const daysEndInnerOuterFromToday = auto.daysEndInnerOuterFromToday || 4
-  const daysInnerExtent = auto.daysInnerExtent || 30
-  // today - n days
-  const now = new Date()
-  // Minus the timezone offset to normalize dates
-  const end = now.getTime() - now.getTimezoneOffset() * 60000 - daysEndInnerOuterFromToday * ONE_DAY
-  // inner should be 30 days long
-  const start = end - daysInnerExtent * ONE_DAY
-  // start outer at beginning of year
-  return { start, end }
-}
-
-const getTimebarRangeDefault = (range) => {
-  return {
-    start: range.innerExtent[0],
-    end: range.innerExtent[1],
-  }
-}
-
-export const getTimebarRangeByWorkspace = (timeline) => {
-  return timeline.auto !== undefined
-    ? getTimebarRangeAuto(timeline.auto)
-    : getTimebarRangeDefault(timeline)
-}
-
-export const geoJSONTrackToTimebarFeatureSegments = ({ features = [] } = {}) => {
-  const graph = features
-    .filter((feature) => feature.properties.type === 'track')
-    .map((feature) => {
-      const coordProps = feature.properties.coordinateProperties
-      const featureKeys = Object.keys(coordProps)
-      const segment = []
-      coordProps.times.forEach((time, i) => {
-        const point = {
-          date: time,
-        }
-        featureKeys.forEach((key) => {
-          point[key] = coordProps[key][i]
-        })
-        segment.push(point)
-      })
-      return segment
-    })
-  return graph
-}
-
-export const getLastX = (num, unit, latestAvailableDataDate) => {
+export const getLastX = (num: number, unit: ManipulateType, latestAvailableDataDate?: string) => {
   const latestAvailableDataDateUTC = dayjs(
     latestAvailableDataDate ? new Date(latestAvailableDataDate) : new Date()
   ).utc()
@@ -69,6 +21,6 @@ export const getLastX = (num, unit, latestAvailableDataDate) => {
   }
 }
 
-export const getLast30Days = (latestAvailableDataDate) => {
+export const getLast30Days = (latestAvailableDataDate: string) => {
   return getLastX(30, 'day', latestAvailableDataDate)
 }

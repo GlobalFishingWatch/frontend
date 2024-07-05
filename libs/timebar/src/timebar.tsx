@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
-import dayjs from 'dayjs'
+import dayjs, { ManipulateType } from 'dayjs'
 import memoize from 'memoize-one'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import objectSupport from 'dayjs/plugin/objectSupport'
@@ -9,8 +9,14 @@ import 'dayjs/locale/en'
 import 'dayjs/locale/es'
 import 'dayjs/locale/fr'
 import 'dayjs/locale/id'
-import { DateTime } from 'luxon'
-import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
+import { DateTime, DateTimeUnit } from 'luxon'
+import { NumberValue } from 'd3-scale'
+import {
+  CONFIG_BY_INTERVAL,
+  FourwingsInterval,
+  getFourwingsInterval,
+  LIMITS_BY_INTERVAL,
+} from '@globalfishingwatch/deck-loaders'
 import { getTime } from './utils/internal-utils'
 // import './timebar-settings.css'
 import styles from './timebar.module.css'
@@ -22,6 +28,7 @@ import { ReactComponent as IconTimeRange } from './icons/timeRange.svg'
 import { ReactComponent as IconBookmark } from './icons/bookmark.svg'
 import { ReactComponent as IconBookmarkFilled } from './icons/bookmarkFilled.svg'
 import { EVENT_SOURCE, EVENT_INTERVAL_SOURCE } from './constants'
+import { TrackGraphOrientation } from './timelineContext'
 
 dayjs.extend(relativeTime)
 dayjs.extend(objectSupport)
@@ -31,13 +38,19 @@ const ONE_DAY_MS = 1000 * 60 * 60 * 24
 const ONE_HOUR_MS = 1000 * 60 * 60
 const MINIMUM_RANGE = ONE_HOUR_MS
 
-const getRangeMs = (range, unit) => {
+const getRangeMs = (range: number, unit: ManipulateType) => {
   const start = dayjs(new Date())
   const end = start.add(range, unit)
   return end.diff(start)
 }
 
-const clampToMinAndMax = (start, end, minMs, maxMs, clampToEnd) => {
+const clampToMinAndMax = (
+  start: string,
+  end: string,
+  minMs: number,
+  maxMs: number,
+  clampToEnd: boolean
+) => {
   const delta = new Date(end).getTime() - new Date(start).getTime()
   let clampedEnd = end
   let clampedStart = start
@@ -57,7 +70,7 @@ const clampToMinAndMax = (start, end, minMs, maxMs, clampToEnd) => {
   return { clampedStart, clampedEnd }
 }
 
-type TimebarProps = {
+export type TimebarProps = {
   labels?: {
     playback?: {
       playAnimation?: string
@@ -94,32 +107,47 @@ type TimebarProps = {
   }
   start: string
   end: string
-  onChange: (...args: unknown[]) => unknown
+  onChange: (event: { start: string; end: string; source?: string; clampToEnd?: boolean }) => void
   children?: React.ReactNode
   bookmarkStart?: string
   bookmarkEnd?: string
   bookmarkPlacement?: string
   onMouseLeave?: (...args: unknown[]) => unknown
-  onMouseMove?: (...args: unknown[]) => unknown
-  onBookmarkChange?: (...args: unknown[]) => unknown
+  onMouseMove?: (
+    clientX: number | null,
+    scale: ((arg: NumberValue) => Date) | null,
+    isDay?: boolean
+  ) => void
+  onBookmarkChange?: (start: string, end: string) => void
   absoluteStart: string
   absoluteEnd: string
   latestAvailableDataDate?: string
   enablePlayback?: boolean
-  onTogglePlay?: (...args: unknown[]) => unknown
+  onTogglePlay?: (isPlaying: boolean) => void
   minimumRange?: number
   minimumRangeUnit?: string
   maximumRange?: number
   maximumRangeUnit?: string
-  stickToUnit?: (...args: unknown[]) => unknown
+  stickToUnit?: (start: string, end: string) => 'day' | 'hour' | 'month' | 'year'
   // val is used to live edit translations in crowdin
   locale?: 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'
-  intervals?: unknown[]
-  getCurrentInterval?: (...args: unknown[]) => unknown
+  intervals?: FourwingsInterval[]
+  getCurrentInterval: typeof getFourwingsInterval
   displayWarningWhenInFuture?: boolean
+  trackGraphOrientation: TrackGraphOrientation
 }
 
-export class TimebarComponent extends Component<TimebarProps> {
+type TimebarState = {
+  showTimeRangeSelector: boolean
+  absoluteEnd: string | null
+}
+
+export class Timebar extends Component<TimebarProps> {
+  interval: FourwingsInterval | null = null
+  maximumRangeMs: number = Infinity
+  minimumRangeMs: number = -Infinity
+  state: TimebarState
+
   static defaultProps = {
     latestAvailableDataDate: DateTime.utc().toISO(),
     labels: {
@@ -180,8 +208,8 @@ export class TimebarComponent extends Component<TimebarProps> {
     displayWarningWhenInFuture: true,
   }
 
-  constructor() {
-    super()
+  constructor(props: TimebarProps) {
+    super(props)
     this.interval = null
     this.state = {
       showTimeRangeSelector: false,
@@ -210,7 +238,7 @@ export class TimebarComponent extends Component<TimebarProps> {
     this.notifyChange(start, end, EVENT_SOURCE.MOUNT)
   }
 
-  static getDerivedStateFromProps(props) {
+  static getDerivedStateFromProps(props: TimebarProps) {
     // let absolute end run through the end of the day
     const absoluteEnd = dayjs(props.absoluteEnd).utc().endOf('day').toISOString()
     return {
@@ -219,26 +247,26 @@ export class TimebarComponent extends Component<TimebarProps> {
   }
 
   toggleTimeRangeSelector = () => {
-    this.setState((prevState) => ({
+    this.setState((prevState: TimebarState) => ({
       showTimeRangeSelector: !prevState.showTimeRangeSelector,
     }))
   }
 
   setBookmark = () => {
     const { start, end, onBookmarkChange } = this.props
-    onBookmarkChange !== null && onBookmarkChange(start, end)
+    onBookmarkChange && onBookmarkChange(start, end)
   }
 
   setLocale = memoize((locale) => dayjs.locale(locale))
 
-  onTimeRangeSelectorSubmit = (start, end) => {
+  onTimeRangeSelectorSubmit = (start: string, end: string) => {
     this.notifyChange(start, end, EVENT_SOURCE.TIME_RANGE_SELECTOR)
     this.setState({
       showTimeRangeSelector: false,
     })
   }
 
-  onIntervalClick = (interval) => {
+  onIntervalClick = (interval: FourwingsInterval) => {
     const { start, end, absoluteStart, absoluteEnd, latestAvailableDataDate } = this.props
     const intervalConfig = CONFIG_BY_INTERVAL[interval]
     if (intervalConfig) {
@@ -248,28 +276,33 @@ export class TimebarComponent extends Component<TimebarProps> {
         let newStart
         let newEnd
         if (
+          latestAvailableDataDate &&
           latestAvailableDataDate.slice(0, start.length) >= start &&
           latestAvailableDataDate.slice(0, start.length) <= end
         ) {
           newEnd = DateTime.fromISO(latestAvailableDataDate, { zone: 'utc' })
-            .endOf(interval)
+            .endOf(interval as DateTimeUnit)
             .plus({ millisecond: 1 })
           newStart = newEnd.minus({ [intervalLimit.unit]: 1 })
         } else {
           // if present day is out of range we choose the middle point in the timebar
           newStart = DateTime.fromMillis(getTime(start) + (getTime(end) - getTime(start)) / 2, {
             zone: 'utc',
-          }).startOf(intervalLimit.unit)
+          }).startOf(intervalLimit.unit as DateTimeUnit)
           newEnd = newStart.plus({ [intervalLimit.unit]: 1 })
         }
-        this.notifyChange(newStart.toISO(), newEnd.toISO(), EVENT_INTERVAL_SOURCE[interval])
+        this.notifyChange(
+          newStart.toISO() as string,
+          newEnd.toISO() as string,
+          EVENT_INTERVAL_SOURCE[interval] as string
+        )
       } else {
-        this.notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval])
+        this.notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval] as string)
       }
     }
   }
 
-  notifyChange = (start, end, source, clampToEnd = false) => {
+  notifyChange = (start: string, end: string, source?: string, clampToEnd = false) => {
     const { clampedStart, clampedEnd } = clampToMinAndMax(
       start,
       end,
@@ -286,13 +319,13 @@ export class TimebarComponent extends Component<TimebarProps> {
     onChange(event)
   }
 
-  onPlaybackTick = (newStart, newEnd) => {
+  onPlaybackTick = (newStart: string, newEnd: string) => {
     this.notifyChange(newStart, newEnd, EVENT_SOURCE.PLAYBACK_FRAME)
   }
 
-  onTogglePlay = (isPlaying) => {
+  onTogglePlay = (isPlaying: boolean) => {
     const { onTogglePlay } = this.props
-    onTogglePlay(isPlaying)
+    onTogglePlay && onTogglePlay(isPlaying)
   }
 
   render() {
@@ -314,7 +347,7 @@ export class TimebarComponent extends Component<TimebarProps> {
       displayWarningWhenInFuture,
       intervals,
       getCurrentInterval,
-    } = this.props
+    } = this.props as TimebarProps
 
     this.setLocale(locale)
     // state.absoluteEnd overrides the value set in props.absoluteEnd - see getDerivedStateFromProps
@@ -341,7 +374,7 @@ export class TimebarComponent extends Component<TimebarProps> {
             start={start}
             end={end}
             absoluteStart={absoluteStart}
-            absoluteEnd={absoluteEnd}
+            absoluteEnd={absoluteEnd as string}
             onTick={this.onPlaybackTick}
             onTogglePlay={this.onTogglePlay}
             intervals={intervals}
@@ -356,7 +389,7 @@ export class TimebarComponent extends Component<TimebarProps> {
               start={start}
               end={end}
               absoluteStart={absoluteStart}
-              absoluteEnd={absoluteEnd}
+              absoluteEnd={absoluteEnd as string}
               onSubmit={this.onTimeRangeSelectorSubmit}
               onDiscard={this.toggleTimeRangeSelector}
               latestAvailableDataDate={this.props.latestAvailableDataDate}
@@ -404,13 +437,13 @@ export class TimebarComponent extends Component<TimebarProps> {
           onMouseLeave={this.props.onMouseLeave}
           onMouseMove={this.props.onMouseMove}
           absoluteStart={absoluteStart}
-          absoluteEnd={absoluteEnd}
+          absoluteEnd={absoluteEnd as string}
           onBookmarkChange={this.props.onBookmarkChange}
           bookmarkStart={bookmarkStart}
           bookmarkEnd={bookmarkEnd}
           bookmarkPlacement={bookmarkPlacement}
-          latestAvailableDataDate={this.props.latestAvailableDataDate}
-          trackGraphOrientation={this.props.trackGraphOrientation}
+          latestAvailableDataDate={this.props.latestAvailableDataDate as string}
+          trackGraphOrientation={this.props.trackGraphOrientation as TrackGraphOrientation}
           stickToUnit={stickToUnit}
           displayWarningWhenInFuture={displayWarningWhenInFuture}
         />

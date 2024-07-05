@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react'
+import { ManipulateType } from 'dayjs'
 import { getUnitsPositions } from '../layouts'
 import { clampToAbsoluteBoundaries, getDeltaMs, getDeltaDays } from '../utils/internal-utils'
+import { TimelineScale } from '../timelineContext'
 import styles from './timeline-units.module.css'
 
 type TimelineUnitsProps = {
@@ -11,14 +13,14 @@ type TimelineUnitsProps = {
     month?: string
     hour?: string
   }
-  onChange: (...args: unknown[]) => unknown
+  onChange: (start: string, end: string, source?: string, clampToEnd?: boolean) => void
   start: string
   end: string
   absoluteStart: string
   absoluteEnd: string
   outerStart: string
   outerEnd: string
-  outerScale: (...args: unknown[]) => unknown
+  outerScale: TimelineScale
 }
 
 class TimelineUnits extends PureComponent<TimelineUnitsProps> {
@@ -32,7 +34,7 @@ class TimelineUnits extends PureComponent<TimelineUnitsProps> {
     },
   }
 
-  zoomToUnit({ start, end }) {
+  zoomToUnit({ start, end }: { start: string; end: string }) {
     const { absoluteStart, absoluteEnd } = this.props
     const { newStartClamped, newEndClamped } = clampToAbsoluteBoundaries(
       start,
@@ -58,7 +60,7 @@ class TimelineUnits extends PureComponent<TimelineUnitsProps> {
 
     const innerDays = getDeltaDays(start, end)
 
-    let baseUnit = 'day'
+    let baseUnit: ManipulateType = 'day'
     if (innerDays > 366) baseUnit = 'year'
     else if (innerDays > 31) baseUnit = 'month'
     else if (innerDays <= 1) baseUnit = 'hour'

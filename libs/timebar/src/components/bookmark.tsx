@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
 import classNames from 'classnames'
+import { ScaleTime } from 'd3-scale'
 import { getHumanizedDates } from '../utils'
 import { ReactComponent as IconBookmarkFilled } from '../icons/bookmarkFilled.svg'
 import { ReactComponent as IconDelete } from '../icons/delete.svg'
@@ -18,7 +18,7 @@ type BookmarkProps = {
   placement?: string
   bookmarkStart: string
   bookmarkEnd: string
-  scale: (...args: unknown[]) => unknown
+  scale: ScaleTime<number, number, never>
   minX: number
   maxX: number
   onSelect: (...args: unknown[]) => unknown
