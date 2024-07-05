@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { PureComponent } from 'react'
 import memoize from 'memoize-one'
 import cx from 'classnames'

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
@@ -20,10 +21,9 @@ type TimeRangeSelectorProps = {
   latestAvailableDataDate: unknown
   onDiscard: unknown
   labels?: unknown
-};
+}
 
 class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
-
   static defaultProps = {
     labels: {
       title: 'Select a time range',

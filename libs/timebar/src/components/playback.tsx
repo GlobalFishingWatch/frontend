@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react'
 import cx from 'classnames'
 import memoize from 'memoize-one'

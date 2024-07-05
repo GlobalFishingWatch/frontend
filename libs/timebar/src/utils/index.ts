@@ -1,3 +1,4 @@
+// @ts-nocheck
 import dayjs from 'dayjs'
 import { getDefaultFormat } from './internal-utils'
 

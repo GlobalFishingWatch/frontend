@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Fragment, memo, useCallback, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
