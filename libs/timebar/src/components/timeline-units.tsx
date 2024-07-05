@@ -1,11 +1,40 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+import { ManipulateType } from 'dayjs'
 import { getUnitsPositions } from '../layouts'
 import { clampToAbsoluteBoundaries, getDeltaMs, getDeltaDays } from '../utils/internal-utils'
+import { TimelineScale } from '../timelineContext'
 import styles from './timeline-units.module.css'
 
-class TimelineUnits extends PureComponent {
-  zoomToUnit({ start, end }) {
+type TimelineUnitsProps = {
+  labels?: {
+    zoomTo?: string
+    day?: string
+    year?: string
+    month?: string
+    hour?: string
+  }
+  onChange: (start: string, end: string, source?: string, clampToEnd?: boolean) => void
+  start: string
+  end: string
+  absoluteStart: string
+  absoluteEnd: string
+  outerStart: string
+  outerEnd: string
+  outerScale: TimelineScale
+}
+
+class TimelineUnits extends PureComponent<TimelineUnitsProps> {
+  static defaultProps = {
+    labels: {
+      zoomTo: 'Zoom to',
+      day: 'day',
+      year: 'year',
+      month: 'month',
+      hour: 'hour',
+    },
+  }
+
+  zoomToUnit({ start, end }: { start: string; end: string }) {
     const { absoluteStart, absoluteEnd } = this.props
     const { newStartClamped, newEndClamped } = clampToAbsoluteBoundaries(
       start,
@@ -31,7 +60,7 @@ class TimelineUnits extends PureComponent {
 
     const innerDays = getDeltaDays(start, end)
 
-    let baseUnit = 'day'
+    let baseUnit: ManipulateType = 'day'
     if (innerDays > 366) baseUnit = 'year'
     else if (innerDays > 31) baseUnit = 'month'
     else if (innerDays <= 1) baseUnit = 'hour'
@@ -79,34 +108,6 @@ class TimelineUnits extends PureComponent {
       </div>
     )
   }
-}
-
-TimelineUnits.propTypes = {
-  labels: PropTypes.shape({
-    zoomTo: PropTypes.string,
-    day: PropTypes.string,
-    year: PropTypes.string,
-    month: PropTypes.string,
-    hour: PropTypes.string,
-  }),
-  onChange: PropTypes.func.isRequired,
-  start: PropTypes.string.isRequired,
-  end: PropTypes.string.isRequired,
-  absoluteStart: PropTypes.string.isRequired,
-  absoluteEnd: PropTypes.string.isRequired,
-  outerStart: PropTypes.string.isRequired,
-  outerEnd: PropTypes.string.isRequired,
-  outerScale: PropTypes.func.isRequired,
-}
-
-TimelineUnits.defaultProps = {
-  labels: {
-    zoomTo: 'Zoom to',
-    day: 'day',
-    year: 'year',
-    month: 'month',
-    hour: 'hour',
-  },
 }
 
 export default TimelineUnits

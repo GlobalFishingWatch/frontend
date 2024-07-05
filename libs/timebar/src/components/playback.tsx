@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import cx from 'classnames'
 import memoize from 'memoize-one'
 import { scaleLinear } from 'd3-scale'
 import dayjs from 'dayjs'
-import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
+import {
+  getFourwingsInterval,
+  FOURWINGS_INTERVALS_ORDER,
+  FourwingsInterval,
+} from '@globalfishingwatch/deck-loaders'
 import { clampToAbsoluteBoundaries } from '../utils/internal-utils'
 import { ReactComponent as IconLoop } from '../icons/loop.svg'
 import { ReactComponent as IconBack } from '../icons/back.svg'
@@ -18,15 +21,59 @@ const BASE_STEP = 0.001
 const SPEED_STEPS = [1, 2, 3, 5, 10]
 
 const MS_IN_INTERVAL = {
-  hour: 1000 * 60 * 60,
-  day: 1000 * 60 * 60 * 24,
-  year: 1000 * 60 * 60 * 24 * 365,
+  HOUR: 1000 * 60 * 60,
+  DAY: 1000 * 60 * 60 * 24,
+  YEAR: 1000 * 60 * 60 * 24 * 365,
 }
 
-class Playback extends Component {
-  lastUpdateMs = null
-  constructor() {
-    super()
+type PlaybackProps = {
+  labels: {
+    playAnimation?: string
+    pauseAnimation?: string
+    toogleAnimationLooping?: string
+    moveBack?: string
+    moveForward?: string
+    changeAnimationSpeed?: string
+  }
+  onTick: (newStart: string, newEnd: string) => void
+  start: string
+  end: string
+  absoluteStart: string
+  absoluteEnd: string
+  intervals?: FourwingsInterval[]
+  onTogglePlay?: (isPlaying: boolean) => void
+  getCurrentInterval: typeof getFourwingsInterval
+}
+
+type PlaybackState = {
+  playing: boolean
+  speedStep: number
+  loop: boolean
+}
+
+class Playback extends Component<PlaybackProps> {
+  lastUpdateMs: number | null = null
+  requestAnimationFrame: number | null = null
+  state: PlaybackState
+
+  static defaultProps = {
+    labels: {
+      playAnimation: 'Play animation',
+      pauseAnimation: 'Pause animation',
+      toogleAnimationLooping: 'Toggle animation looping',
+      moveBack: 'Move back',
+      moveForward: 'Move forward',
+      changeAnimationSpeed: 'Change animation speed',
+    },
+    onTogglePlay: () => {
+      // do nothing
+    },
+    intervals: FOURWINGS_INTERVALS_ORDER,
+    getCurrentInterval: getFourwingsInterval,
+  }
+
+  constructor(props: PlaybackProps) {
+    super(props)
     this.state = {
       playing: false,
       speedStep: 0,
@@ -44,20 +91,20 @@ class Playback extends Component {
     return step
   })
 
-  update = (deltaMultiplicator, { byIntervals = false } = {}) => {
+  update = (deltaMultiplicator: number, { byIntervals = false } = {}) => {
     const { onTick, start, end, absoluteStart, intervals, getCurrentInterval } = this.props
     const { speedStep, loop } = this.state
     let newStartMs
     let newEndMs
-    if (byIntervals) {
-      const interval = getCurrentInterval(start, end, [intervals])
+    if (byIntervals && getCurrentInterval) {
+      const interval = getCurrentInterval(start, end, intervals)
       const intervalStartMs =
         interval === 'MONTH'
-          ? dayjs(start).utc().daysInMonth() * MS_IN_INTERVAL.day
+          ? dayjs(start).utc().daysInMonth() * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       const intervalEndMs =
         interval === 'MONTH'
-          ? dayjs(end).utc().daysInMonth() * MS_IN_INTERVAL.day
+          ? dayjs(end).utc().daysInMonth() * MS_IN_INTERVAL.DAY
           : MS_IN_INTERVAL[interval]
       newStartMs = new Date(start).getTime() + intervalStartMs * deltaMultiplicator
       newEndMs = new Date(end).getTime() + intervalEndMs * deltaMultiplicator
@@ -94,7 +141,7 @@ class Playback extends Component {
     }
   }
 
-  tick = (elapsedMs) => {
+  tick = (elapsedMs: number) => {
     if (this.lastUpdateMs === null) {
       this.lastUpdateMs = elapsedMs
     }
@@ -110,7 +157,7 @@ class Playback extends Component {
     }
   }
 
-  togglePlay = (force) => {
+  togglePlay = (force?: boolean) => {
     const { playing } = this.state
     const { onTogglePlay } = this.props
 
@@ -125,18 +172,22 @@ class Playback extends Component {
     } else {
       // TODO:timebar store playing state in its place instead of using inmmediate
       // this.context.toggleImmediate(false)
-      window.cancelAnimationFrame(this.requestAnimationFrame)
+      if (this.requestAnimationFrame) {
+        window.cancelAnimationFrame(this.requestAnimationFrame)
+      }
     }
 
     this.setState({
       playing: playingNext,
     })
 
-    onTogglePlay(playingNext)
+    onTogglePlay && onTogglePlay(playingNext)
   }
 
   componentWillUnmount() {
-    window.cancelAnimationFrame(this.requestAnimationFrame)
+    if (this.requestAnimationFrame) {
+      window.cancelAnimationFrame(this.requestAnimationFrame)
+    }
   }
 
   onPlayToggleClick = () => {
@@ -144,7 +195,7 @@ class Playback extends Component {
   }
 
   toggleLoop = () => {
-    this.setState((prevState) => ({
+    this.setState((prevState: PlaybackState) => ({
       loop: !prevState.loop,
     }))
   }
@@ -221,40 +272,6 @@ class Playback extends Component {
       </div>
     )
   }
-}
-
-Playback.propTypes = {
-  labels: PropTypes.shape({
-    playAnimation: PropTypes.string,
-    pauseAnimation: PropTypes.string,
-    toogleAnimationLooping: PropTypes.string,
-    moveBack: PropTypes.string,
-    moveForward: PropTypes.string,
-    changeAnimationSpeed: PropTypes.string,
-  }),
-  onTick: PropTypes.func.isRequired,
-  start: PropTypes.string.isRequired,
-  end: PropTypes.string.isRequired,
-  absoluteStart: PropTypes.string.isRequired,
-  absoluteEnd: PropTypes.string.isRequired,
-  onTogglePlay: PropTypes.func,
-  getCurrentInterval: PropTypes.func,
-}
-
-Playback.defaultProps = {
-  labels: {
-    playAnimation: 'Play animation',
-    pauseAnimation: 'Pause animation',
-    toogleAnimationLooping: 'Toggle animation looping',
-    moveBack: 'Move back',
-    moveForward: 'Move forward',
-    changeAnimationSpeed: 'Change animation speed',
-  },
-  onTogglePlay: () => {
-    // do nothing
-  },
-  intervals: FOURWINGS_INTERVALS_ORDER,
-  getCurrentInterval: getFourwingsInterval,
 }
 
 export default Playback

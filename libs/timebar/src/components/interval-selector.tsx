@@ -16,26 +16,17 @@ type IntervalSelectorProps = {
   onIntervalClick: (interval: FourwingsInterval) => void
 }
 
-const defaultProps: IntervalSelectorProps = {
-  start: '',
-  end: '',
-  intervals: FOURWINGS_INTERVALS_ORDER,
-  getCurrentInterval: getFourwingsInterval,
-  onIntervalClick: () => {},
-  labels: {
+function IntervalSelector({
+  start = '',
+  end = '',
+  getCurrentInterval = getFourwingsInterval,
+  intervals = FOURWINGS_INTERVALS_ORDER,
+  labels = {
     hour: 'hours',
     day: 'days',
     month: 'months',
     year: 'years',
   },
-}
-
-function IntervalSelector({
-  start,
-  end,
-  getCurrentInterval,
-  intervals,
-  labels,
   onIntervalClick,
 }: IntervalSelectorProps) {
   const currentInterval = getCurrentInterval(start, end, intervals)
@@ -61,7 +52,5 @@ function IntervalSelector({
     </ul>
   )
 }
-
-IntervalSelector.defaultProps = defaultProps
 
 export default IntervalSelector

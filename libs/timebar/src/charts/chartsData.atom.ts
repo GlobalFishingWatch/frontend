@@ -1,16 +1,13 @@
-import { atom, useSetRecoilState } from 'recoil'
+import { atom, useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 import { ChartType, TimebarChartData, TimebarChartsData } from '.'
 
-const chartsDataState = atom({
-  key: 'charts-data',
-  default: {} as TimebarChartsData,
-})
+const chartsDataState = atom({} as TimebarChartsData)
 
 export default chartsDataState
 
 export const useUpdateChartsData = (key: ChartType, data: TimebarChartData<void>) => {
-  const updateChartsData = useSetRecoilState(chartsDataState)
+  const updateChartsData = useSetAtom(chartsDataState)
 
   const setChartDataKeyActive = useCallback(
     ({ key, data, active = true }: { key: ChartType; data: TimebarChartData; active: boolean }) => {
@@ -35,7 +32,4 @@ export const useUpdateChartsData = (key: ChartType, data: TimebarChartData<void>
   }, [data, key, setChartDataKeyActive])
 }
 
-export const hoveredEventState = atom({
-  key: 'hovered-event',
-  default: undefined as string | undefined,
-})
+export const hoveredEventState = atom(undefined as string | undefined)

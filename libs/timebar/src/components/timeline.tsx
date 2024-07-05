@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import memoize from 'memoize-one'
 import cx from 'classnames'
-import { scaleTime } from 'd3-scale'
-import dayjs from 'dayjs'
+import { NumberValue, ScaleTime, scaleTime } from 'd3-scale'
+import dayjs, { ManipulateType } from 'dayjs'
 import { throttle } from 'lodash'
 import ResizeObserver from 'resize-observer-polyfill'
 import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
@@ -16,7 +15,8 @@ import {
 } from '../utils/internal-utils'
 import { EVENT_SOURCE } from '../constants'
 import { getLast30Days } from '../utils'
-import TimelineContext from '../timelineContext'
+import TimelineContext, { TrackGraphOrientation } from '../timelineContext'
+import { TimebarProps } from '../timebar'
 import Bookmark from './bookmark'
 import TimelineUnits from './timeline-units'
 import Handler from './timeline-handler'
@@ -26,7 +26,108 @@ const DRAG_INNER = 'DRAG_INNER'
 const DRAG_START = 'DRAG_START'
 const DRAG_END = 'DRAG_END'
 
-class Timeline extends PureComponent {
+type TimelineProps = {
+  labels: {
+    zoomTo?: string
+    dragLabel?: string
+    lastUpdate?: string
+    bookmark?: {
+      goToBookmark?: string
+      deleteBookmark?: string
+    }
+    timerange?: {
+      title?: string
+      start?: string
+      end?: string
+      last30days?: string
+      last3months?: string
+      last6months?: string
+      lastYear?: string
+      done?: string
+    }
+  }
+  onChange: (start: string, end: string, source?: string, clampToEnd?: boolean) => void
+  onMouseLeave?: TimebarProps['onMouseLeave']
+  onMouseMove?: TimebarProps['onMouseMove']
+  children?: React.ReactNode
+  start: string
+  end: string
+  absoluteStart: string
+  absoluteEnd: string
+  latestAvailableDataDate: string
+  onBookmarkChange?: (start: string, end: string) => void
+  bookmarkStart?: string
+  bookmarkEnd?: string
+  bookmarkPlacement?: string
+  stickToUnit?: (start: string, end: string) => 'day' | 'hour' | 'month' | 'year'
+  displayWarningWhenInFuture?: boolean
+  trackGraphOrientation: TrackGraphOrientation
+}
+
+type Dragging = 'DRAG_START' | 'DRAG_END' | 'DRAG_INNER'
+
+type TimelineState = {
+  innerStartPx: number
+  innerEndPx: number
+  innerWidth: number
+  outerWidth: number
+  outerHeight: number
+  dragging: null
+  isMovingInside: boolean
+  outerDrag: boolean
+  outerX: number
+  handlerMouseX: number
+  relativeOffsetX: number
+}
+
+class Timeline extends PureComponent<TimelineProps> {
+  graphContainer: HTMLDivElement | null = null
+  requestAnimationFrame: number | null = null
+  resizeObserver: ResizeObserver | null = null
+  node: any
+  outerScale: ScaleTime<number, number, never> = scaleTime()
+  innerScale: ScaleTime<number, number, never> = scaleTime()
+  tooltipContainer: Element | null = null
+  frameTimestamp: number = 0
+  lastX: number = 0
+
+  state: TimelineState
+
+  static defaultProps = {
+    labels: {
+      dragLabel: 'Drag to change the time range',
+      lastUpdate: 'Last update',
+      bookmark: {
+        goToBookmark: 'Go to your bookmarked time range',
+        deleteBookmark: 'Delete time range bookmark',
+      },
+      timerange: {
+        title: 'Select a time range',
+        start: 'start',
+        end: 'end',
+        last30days: 'Last 30 days',
+        last3months: 'Last 3 months',
+        last6months: 'Last 6 months',
+        lastYear: 'Last year',
+        done: 'Done',
+      },
+    },
+    bookmarkStart: null,
+    bookmarkEnd: null,
+    bookmarkPlacement: 'top',
+    children: null,
+    displayWarningWhenInFuture: true,
+    onBookmarkChange: () => {
+      // do nothing
+    },
+    onMouseLeave: () => {
+      // do nothing
+    },
+    onMouseMove: () => {
+      // do nothing
+    },
+  }
+
   getOuterScale = memoize((outerStart, outerEnd, outerWidth) =>
     scaleTime()
       .domain([new Date(outerStart), new Date(outerEnd)])
@@ -49,8 +150,8 @@ class Timeline extends PureComponent {
     return t
   })
 
-  constructor() {
-    super()
+  constructor(props: TimelineProps) {
+    super(props)
     this.state = {
       innerStartPx: 0,
       innerEndPx: 0,
@@ -59,6 +160,10 @@ class Timeline extends PureComponent {
       outerHeight: 50,
       dragging: null,
       isMovingInside: false,
+      outerDrag: false,
+      outerX: 0,
+      handlerMouseX: 0,
+      relativeOffsetX: 0,
     }
     this.graphContainer = null
   }
@@ -86,9 +191,11 @@ class Timeline extends PureComponent {
     window.removeEventListener('touchmove', this.onMouseMove)
     window.removeEventListener('mouseup', this.onMouseUp)
     window.removeEventListener('touchend', this.onMouseUp)
-    window.cancelAnimationFrame(this.requestAnimationFrame)
+    if (this.requestAnimationFrame) {
+      window.cancelAnimationFrame(this.requestAnimationFrame)
+    }
 
-    if (this.resizeObserver) {
+    if (this.resizeObserver && this.node) {
       this.resizeObserver.unobserve(this.node)
     }
   }
@@ -96,7 +203,7 @@ class Timeline extends PureComponent {
   onWindowResize = () => {
     if (this.graphContainer !== null && typeof window !== 'undefined') {
       const graphStyle = window.getComputedStyle(this.graphContainer)
-      const outerX = parseFloat(this.graphContainer.getBoundingClientRect().left)
+      const outerX = this.graphContainer.getBoundingClientRect().left
       const relativeOffsetX = -this.node?.offsetLeft
       const outerWidth = parseFloat(graphStyle.width)
       const outerHeight = parseFloat(graphStyle.height)
@@ -115,7 +222,7 @@ class Timeline extends PureComponent {
     }
   }
 
-  isHandlerZoomInValid(x) {
+  isHandlerZoomInValid(x: number) {
     const { dragging, innerStartPx, innerEndPx } = this.state
     const isZoomIn =
       (dragging === DRAG_START && x > innerStartPx) || (dragging === DRAG_END && x < innerEndPx)
@@ -130,7 +237,7 @@ class Timeline extends PureComponent {
     return { isZoomIn, isValid, clampedX }
   }
 
-  isHandlerZoomOutValid(x) {
+  isHandlerZoomOutValid(x: number) {
     const { dragging, innerStartPx, innerEndPx, outerWidth } = this.state
     return (
       (dragging === DRAG_START && x < innerStartPx && x > 0) ||
@@ -138,7 +245,7 @@ class Timeline extends PureComponent {
     )
   }
 
-  onEnterFrame = (timestamp) => {
+  onEnterFrame = (timestamp: number) => {
     if (this.frameTimestamp === undefined) {
       this.frameTimestamp = timestamp
     }
@@ -180,9 +287,10 @@ class Timeline extends PureComponent {
     this.requestAnimationFrame = window.requestAnimationFrame(this.onEnterFrame)
   }
 
-  onMouseDown = (event, dragging) => {
+  onMouseDown = (event: React.SyntheticEvent<Element, Event>, dragging: Dragging) => {
     const { outerX } = this.state
-    const clientX = event.clientX || event.changedTouches[0].clientX
+    const clientX =
+      (event as React.MouseEvent).clientX || (event as React.TouchEvent).changedTouches[0].clientX
     this.lastX = clientX
     const x = clientX - outerX
 
@@ -192,27 +300,35 @@ class Timeline extends PureComponent {
     })
   }
 
-  throttledMouseMove = throttle((clientX, scale, isDay) => {
-    this.props.onMouseMove(clientX, scale, isDay)
-  }, 16)
+  throttledMouseMove = throttle(
+    (clientX: number | null, scale: ((arg: NumberValue) => Date) | null, isDay?: boolean) => {
+      const { onMouseMove } = this.props
+      if (onMouseMove) {
+        onMouseMove(clientX, scale, isDay)
+      }
+    },
+    16
+  )
 
   notifyMouseLeave = () => {
     if (this.state.isMovingInside) {
       this.setState({ isMovingInside: false })
-      this.throttledMouseMove(null, null, null)
+      this.throttledMouseMove(null, null, undefined)
     }
   }
 
-  onMouseMove = (event) => {
+  onMouseMove = (event: MouseEvent | TouchEvent) => {
     const { start, end, absoluteStart, absoluteEnd, onChange } = this.props
     const { dragging, outerX, innerStartPx, innerEndPx } = this.state
-    const clientX = event.clientX || (event.changedTouches && event.changedTouches[0].clientX)
+    const clientX =
+      (event as MouseEvent).clientX ||
+      ((event as TouchEvent).changedTouches && (event as TouchEvent).changedTouches[0].clientX)
     if (clientX === undefined) {
       return
     }
     const x = clientX - outerX
     const isMovingInside = this.node?.contains(event.target) && x > innerStartPx && x < innerEndPx
-    const isNodeInside = event.target.contains(this.node)
+    const isNodeInside = (event.target as any).contains(this.node) // TODO: fix this
 
     const isDraggingInner = dragging === DRAG_INNER
     const isDraggingZoomIn = this.isHandlerZoomInValid(x).isValid === true
@@ -237,7 +353,7 @@ class Timeline extends PureComponent {
       const currentDeltaMs = getDeltaMs(start, end)
       // Calculates x movement from last event since TouchEvent doesn't have the movementX property
       const movementX = clientX - this.lastX
-      this.lastX = event.clientX || event.changedTouches[0].clientX
+      this.lastX = (event as MouseEvent).clientX || (event as TouchEvent).changedTouches[0].clientX
       const newStart = this.innerScale.invert(-movementX)
       const newEnd = new Date(newStart.getTime() + currentDeltaMs)
       const { newStartClamped, newEndClamped } = clampToAbsoluteBoundaries(
@@ -261,15 +377,17 @@ class Timeline extends PureComponent {
     }
   }
 
-  onMouseUp = (event) => {
+  onMouseUp = (event: MouseEvent | TouchEvent) => {
     const { start, end, onChange, stickToUnit } = this.props
     const { dragging, outerX, innerStartPx, outerDrag } = this.state
 
     if (dragging === null) {
       return
     }
-
-    const clientX = event.clientX || (event.changedTouches && event.changedTouches[0].clientX) || 0
+    const clientX =
+      (event as MouseEvent).clientX ||
+      ((event as TouchEvent).changedTouches && (event as TouchEvent).changedTouches[0].clientX) ||
+      0
     const x = clientX - outerX
 
     const isHandlerZoomInValid = this.isHandlerZoomInValid(x)
@@ -289,7 +407,11 @@ class Timeline extends PureComponent {
     // on release, "stick" to day/hour
     const stickUnit = stickToUnit
       ? stickToUnit(newStart, newEnd)
-      : getFourwingsInterval(start, end, FOURWINGS_INTERVALS_ORDER)
+      : (getFourwingsInterval(
+          start,
+          end,
+          FOURWINGS_INTERVALS_ORDER
+        ).toLowerCase() as ManipulateType)
     newStart = stickToClosestUnit(newStart, stickUnit)
     newEnd = stickToClosestUnit(newEnd, stickUnit)
     if (newStart === newEnd) {
@@ -324,7 +446,7 @@ class Timeline extends PureComponent {
 
   render() {
     const {
-      labels = {},
+      labels,
       start,
       end,
       absoluteStart,
@@ -378,8 +500,8 @@ class Timeline extends PureComponent {
           start,
           end,
           outerScale: this.outerScale,
-          outerStart,
-          outerEnd,
+          outerStart: outerStart as string,
+          outerEnd: outerEnd as string,
           outerWidth,
           outerHeight,
           graphHeight: outerHeight,
@@ -388,12 +510,12 @@ class Timeline extends PureComponent {
           innerEndPx,
           overallScale,
           svgTransform,
-          tooltipContainer: this.tooltipContainer,
+          tooltipContainer: this.tooltipContainer as Element,
           trackGraphOrientation,
         }}
       >
-        <div ref={(node) => (this.node = node)} className={cx(styles.Timeline)}>
-          {bookmarkStart !== undefined && bookmarkStart !== null && bookmarkStart !== '' && (
+        <div ref={(node: any) => (this.node = node)} className={cx(styles.Timeline)}>
+          {bookmarkStart && bookmarkEnd && (
             <Bookmark
               labels={labels.bookmark}
               scale={this.outerScale}
@@ -403,7 +525,7 @@ class Timeline extends PureComponent {
               minX={relativeOffsetX}
               maxX={outerWidth}
               onDelete={() => {
-                onBookmarkChange(null, null)
+                onBookmarkChange && onBookmarkChange('', '')
               }}
               onSelect={() => {
                 onChange(bookmarkStart, bookmarkEnd)
@@ -434,8 +556,8 @@ class Timeline extends PureComponent {
                 absoluteStart={absoluteStart}
                 absoluteEnd={absoluteEnd}
                 outerScale={this.outerScale}
-                outerStart={outerStart}
-                outerEnd={outerEnd}
+                outerStart={outerStart as string}
+                outerEnd={outerEnd as string}
                 onChange={onChange}
               />
               {this.props.children}
@@ -460,9 +582,6 @@ class Timeline extends PureComponent {
             onMouseDown={(event) => {
               this.onMouseDown(event, DRAG_START)
             }}
-            onTouchStart={(event) => {
-              this.onMouseDown(event, DRAG_START)
-            }}
             dragging={this.state.dragging === DRAG_START}
             x={innerStartPx}
             mouseX={this.state.handlerMouseX}
@@ -470,9 +589,6 @@ class Timeline extends PureComponent {
           <Handler
             dragLabel={labels.dragLabel}
             onMouseDown={(event) => {
-              this.onMouseDown(event, DRAG_END)
-            }}
-            onTouchStart={(event) => {
               this.onMouseDown(event, DRAG_END)
             }}
             dragging={this.state.dragging === DRAG_END}
@@ -495,7 +611,7 @@ class Timeline extends PureComponent {
                   this.onLast30DaysClick()
                 }}
               >
-                ↩︎ {labels.timerange.last30days}
+                ↩︎ {labels.timerange?.last30days}
               </button>
             </div>
           )}
@@ -503,58 +619,6 @@ class Timeline extends PureComponent {
       </TimelineContext.Provider>
     )
   }
-}
-
-Timeline.propTypes = {
-  labels: PropTypes.shape({
-    zoomTo: PropTypes.string,
-    dragLabel: PropTypes.string,
-    lastUpdate: PropTypes.string,
-    bookmark: PropTypes.shape({
-      goToBookmark: PropTypes.string,
-      deleteBookmark: PropTypes.string,
-    }),
-  }),
-  onChange: PropTypes.func.isRequired,
-  onMouseLeave: PropTypes.func,
-  onMouseMove: PropTypes.func,
-  children: PropTypes.node,
-  start: PropTypes.string.isRequired,
-  end: PropTypes.string.isRequired,
-  absoluteStart: PropTypes.string.isRequired,
-  absoluteEnd: PropTypes.string.isRequired,
-  latestAvailableDataDate: PropTypes.string.isRequired,
-  onBookmarkChange: PropTypes.func,
-  bookmarkStart: PropTypes.string,
-  bookmarkEnd: PropTypes.string,
-  bookmarkPlacement: PropTypes.string,
-  stickToUnit: PropTypes.func,
-  displayWarningWhenInFuture: PropTypes.bool,
-}
-
-Timeline.defaultProps = {
-  labels: {
-    dragLabel: 'Drag to change the time range',
-    lastUpdate: 'Last update',
-    bookmark: {
-      goToBookmark: 'Go to your bookmarked time range',
-      deleteBookmark: 'Delete time range bookmark',
-    },
-  },
-  bookmarkStart: null,
-  bookmarkEnd: null,
-  bookmarkPlacement: 'top',
-  children: null,
-  displayWarningWhenInFuture: true,
-  onBookmarkChange: () => {
-    // do nothing
-  },
-  onMouseLeave: () => {
-    // do nothing
-  },
-  onMouseMove: () => {
-    // do nothing
-  },
 }
 
 export default Timeline

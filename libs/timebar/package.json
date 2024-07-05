@@ -24,7 +24,7 @@
     "react": "18.x",
     "simple-statistics": "7.x",
     "use-debounce": "10.x",
-    "recoil": "0.x",
+    "jotai": "2.x",
     "resize-observer-polyfill": "1.x"
   }
 }

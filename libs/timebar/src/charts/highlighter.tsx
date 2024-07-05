@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import cx from 'classnames'
-import { useRecoilValue } from 'recoil'
+import { useAtomValue } from 'jotai'
 import { Icon, IconType } from '@globalfishingwatch/ui-components'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
@@ -209,8 +209,8 @@ const Highlighter = ({
   )
 
   // TODO Filter active with selector
-  const chartsData = useRecoilValue(chartsDataState)
-  const hoveredEventId = useRecoilValue(hoveredEventState)
+  const chartsData = useAtomValue(chartsDataState)
+  const hoveredEventId = useAtomValue(hoveredEventState)
 
   const minHighlightChunkDuration = useMemo(() => {
     return +outerScale.invert(15) - +outerScale.invert(0)

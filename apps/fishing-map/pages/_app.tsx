@@ -3,7 +3,6 @@ import React from 'react'
 // import { ClickToComponent } from 'click-to-react-component'
 import { AppProps } from 'next/app'
 import { Provider } from 'react-redux'
-import { RecoilRoot } from 'recoil'
 // import dynamic from 'next/dynamic'
 // import { useEffect, useState } from 'react'
 import Head from 'next/head'
@@ -23,12 +22,10 @@ function CustomApp({ Component, ...rest }: AppProps) {
         <title>GFW | Map</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
-      <RecoilRoot>
-        <Provider store={store}>
-          {/* <ClickToComponent /> */}
-          <Component {...props.pageProps} />
-        </Provider>
-      </RecoilRoot>
+      <Provider store={store}>
+        {/* <ClickToComponent /> */}
+        <Component {...props.pageProps} />
+      </Provider>
     </React.StrictMode>
   )
 }
