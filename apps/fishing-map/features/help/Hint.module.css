@@ -88,10 +88,6 @@ div.HintPanel {
   width: 24rem;
 }
 
-.arrow::before {
-  display: none;
-}
-
 .img {
   background: var(--color-map-background);
   border-radius: 0.3rem 0.3rem 0 0;

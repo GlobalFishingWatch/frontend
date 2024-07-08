@@ -102,7 +102,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getViewportData() {
-    return this.getLayer()?.getViewportData()
+    return this.getLayer()?.getViewportData?.()
   }
 
   getMode() {
