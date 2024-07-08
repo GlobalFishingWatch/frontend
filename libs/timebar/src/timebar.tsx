@@ -1,14 +1,6 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
-import dayjs, { ManipulateType } from 'dayjs'
 import memoize from 'memoize-one'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import objectSupport from 'dayjs/plugin/objectSupport'
-import utc from 'dayjs/plugin/utc'
-import 'dayjs/locale/en'
-import 'dayjs/locale/es'
-import 'dayjs/locale/fr'
-import 'dayjs/locale/id'
 import { DateTime, DateTimeUnit } from 'luxon'
 import { NumberValue } from 'd3-scale'
 import {
@@ -18,7 +10,6 @@ import {
   LIMITS_BY_INTERVAL,
 } from '@globalfishingwatch/deck-loaders'
 import { getTime } from './utils/internal-utils'
-// import './timebar-settings.css'
 import styles from './timebar.module.css'
 import TimeRangeSelector from './components/timerange-selector'
 import IntervalSelector from './components/interval-selector'
@@ -30,18 +21,13 @@ import { ReactComponent as IconBookmarkFilled } from './icons/bookmarkFilled.svg
 import { EVENT_SOURCE, EVENT_INTERVAL_SOURCE } from './constants'
 import { TrackGraphOrientation } from './timelineContext'
 
-dayjs.extend(relativeTime)
-dayjs.extend(objectSupport)
-dayjs.extend(utc)
-
-const ONE_DAY_MS = 1000 * 60 * 60 * 24
 const ONE_HOUR_MS = 1000 * 60 * 60
 const MINIMUM_RANGE = ONE_HOUR_MS
 
-const getRangeMs = (range: number, unit: ManipulateType) => {
-  const start = dayjs(new Date())
-  const end = start.add(range, unit)
-  return end.diff(start)
+const getRangeMs = (range: number, unit: DateTimeUnit) => {
+  const start = DateTime.now()
+  const end = start.plus({ [unit]: range })
+  return end.diff(start).milliseconds
 }
 
 const clampToMinAndMax = (
@@ -130,7 +116,7 @@ export type TimebarProps = {
   maximumRangeUnit?: string
   stickToUnit?: (start: string, end: string) => 'day' | 'hour' | 'month' | 'year'
   // val is used to live edit translations in crowdin
-  locale?: 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'
+  locale: 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'
   intervals?: FourwingsInterval[]
   getCurrentInterval: typeof getFourwingsInterval
   displayWarningWhenInFuture?: boolean
@@ -149,7 +135,7 @@ export class Timebar extends Component<TimebarProps> {
   state: TimebarState
 
   static defaultProps = {
-    latestAvailableDataDate: DateTime.utc().toISO(),
+    latestAvailableDataDate: '',
     labels: {
       playback: {
         playAnimation: 'Play animation',
@@ -240,7 +226,7 @@ export class Timebar extends Component<TimebarProps> {
 
   static getDerivedStateFromProps(props: TimebarProps) {
     // let absolute end run through the end of the day
-    const absoluteEnd = dayjs(props.absoluteEnd).utc().endOf('day').toISOString()
+    const absoluteEnd = DateTime.fromISO(props.absoluteEnd, { zone: 'utc' }).endOf('day').toISO()
     return {
       absoluteEnd,
     }
@@ -257,7 +243,7 @@ export class Timebar extends Component<TimebarProps> {
     onBookmarkChange && onBookmarkChange(start, end)
   }
 
-  setLocale = memoize((locale) => dayjs.locale(locale))
+  // setLocale = memoize((locale) => //TODO set DateTime.locale)
 
   onTimeRangeSelectorSubmit = (start: string, end: string) => {
     this.notifyChange(start, end, EVENT_SOURCE.TIME_RANGE_SELECTOR)
@@ -349,7 +335,8 @@ export class Timebar extends Component<TimebarProps> {
       getCurrentInterval,
     } = this.props as TimebarProps
 
-    this.setLocale(locale)
+    // this.setLocale(locale)
+
     // state.absoluteEnd overrides the value set in props.absoluteEnd - see getDerivedStateFromProps
     const { showTimeRangeSelector, absoluteEnd } = this.state
 
@@ -446,6 +433,7 @@ export class Timebar extends Component<TimebarProps> {
           trackGraphOrientation={this.props.trackGraphOrientation as TrackGraphOrientation}
           stickToUnit={stickToUnit}
           displayWarningWhenInFuture={displayWarningWhenInFuture}
+          locale={locale}
         />
       </div>
     )

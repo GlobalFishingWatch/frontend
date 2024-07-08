@@ -23,6 +23,7 @@ type BookmarkProps = {
   maxX: number
   onSelect: (...args: unknown[]) => unknown
   onDelete: (...args: unknown[]) => unknown
+  locale?: string
 }
 
 const Bookmark = ({
@@ -38,10 +39,11 @@ const Bookmark = ({
   maxX,
   onSelect,
   onDelete,
+  locale = 'en',
 }: BookmarkProps) => {
   const x = scale(new Date(bookmarkStart))
   const width = scale(new Date(bookmarkEnd)) - x
-  const { humanizedStart, humanizedEnd } = getHumanizedDates(bookmarkStart, bookmarkEnd)
+  const { humanizedStart, humanizedEnd } = getHumanizedDates(bookmarkStart, bookmarkEnd, locale)
   const label = [humanizedStart, humanizedEnd].join(' - ')
 
   let overflowing

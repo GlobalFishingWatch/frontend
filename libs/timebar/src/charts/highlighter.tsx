@@ -1,9 +1,8 @@
 import { Fragment, useContext, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import cx from 'classnames'
 import { useAtomValue } from 'jotai'
+import { DateTime } from 'luxon'
 import { Icon, IconType } from '@globalfishingwatch/ui-components'
 import TimelineContext, { TimelineScale } from '../timelineContext'
 import { getDefaultFormat } from '../utils/internal-utils'
@@ -18,8 +17,6 @@ import {
 } from './common/types'
 import chartsDataState, { hoveredEventState } from './chartsData.atom'
 import { useOuterScale } from './common/hooks'
-
-dayjs.extend(utc)
 
 const getCoords = (
   hoverStart: string,
@@ -42,7 +39,7 @@ const getCoords = (
   if (dateCallback) dateLabel = dateCallback(centerMs)
   else {
     const format = getDefaultFormat(hoverStart, hoverEnd)
-    dateLabel = dayjs(centerDate).utc().format(format)
+    dateLabel = DateTime.fromJSDate(centerDate, { zone: 'utc' }).toFormat(format)
   }
   return {
     left,

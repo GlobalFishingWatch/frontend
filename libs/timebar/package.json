@@ -15,7 +15,6 @@
     "d3-array": "3.x",
     "d3-scale": "4.x",
     "d3-shape": "3.x",
-    "dayjs": "1.x",
     "lodash": "4.x",
     "luxon": "3.x",
     "memoize-one": "6.x",
