@@ -17,20 +17,19 @@ import { UserLayerPickingObject } from './layers/user'
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
 export type DeckLayerSubcategory = `${DataviewType}` | 'draw-polygons' | 'draw-points'
 
-// TODO:deck move this type to a generic like DeckLayerProps<SpecificLayerProps>
-export type BaseLayerProps = {
+export type DeckLayerProps<G> = {
   category: DeckLayerCategory
   subcategory?: DeckLayerSubcategory
-}
+} & G
 
 // TODO:deck move this type to a generic like DeckPickingInfo<SpecificLayerInfo>
-export type BasePickingObject = {
+export type DeckPickingObject<G> = {
   id: string
   title?: string
   layerId: string
   category: DeckLayerCategory
   subcategory?: DeckLayerSubcategory
-}
+} & G
 
 export type AnyDeckLayer<D extends {} = {}> =
   | Layer<D>

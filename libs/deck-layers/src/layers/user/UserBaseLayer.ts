@@ -5,7 +5,7 @@ import { DataFilterExtension } from '@deck.gl/extensions'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import { ContextFeature } from '../context'
 import { getContextId } from '../context/context.utils'
-import { BaseLayerProps } from '../../types'
+import { DeckLayerProps } from '../../types'
 import {
   UserPointsLayerProps,
   UserLayerPickingInfo,
@@ -41,7 +41,7 @@ export type UserBaseLayerState = {
   highlightedFeatures?: UserLayerPickingObject[]
 }
 
-type UserBaseLayerProps = BaseLayerProps & BaseUserLayerProps
+type UserBaseLayerProps = DeckLayerProps<BaseUserLayerProps>
 export abstract class UserBaseLayer<
   PropsT extends UserBaseLayerProps
 > extends CompositeLayer<PropsT> {

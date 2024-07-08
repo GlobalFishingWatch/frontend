@@ -1,7 +1,7 @@
 import { PickingInfo } from '@deck.gl/core'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
-import { BasePickingObject } from '../../../types'
+import { DeckPickingObject } from '../../../types'
 import {
   BaseFourwingsLayerProps,
   FourwingsDeckSublayer,
@@ -21,11 +21,11 @@ export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps
   Partial<TileLayerProps>
 
 export type FourwingsPositionsPickingObject = FourwingsPositionFeature &
-  BasePickingObject & {
+  DeckPickingObject<{
     title: string
     startTime: number
     endTime: number
     sublayers?: FourwingsDeckSublayer[]
     visualizationMode?: FourwingsVisualizationMode
-  }
+  }>
 export type FourwingsPositionsPickingInfo = PickingInfo<FourwingsPositionsPickingObject>

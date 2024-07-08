@@ -1,7 +1,7 @@
 import { PickingInfo } from '@deck.gl/core'
 import { Feature, Polygon, MultiPolygon } from 'geojson'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { BaseLayerProps, BasePickingObject } from '../../types'
+import { DeckPickingObject, DeckLayerProps } from '../../types'
 
 export enum ContextLayerId {
   EEZ = 'eez-areas',
@@ -24,14 +24,14 @@ export type ContextLayerConfig<Id = ContextLayerId> = {
   filters?: Record<string, any>
 }
 
-export type ContextLayerProps = BaseLayerProps & {
+export type ContextLayerProps = DeckLayerProps<{
   id: string
   layers: ContextLayerConfig[]
   color: string
   idProperty?: string
   valueProperties?: string[]
   highlightedFeatures?: ContextPickingObject[]
-}
+}>
 
 export type ContextFeatureProperties = {
   id: string
@@ -45,6 +45,6 @@ export type ContextFeatureProperties = {
 
 export type ContextFeature = Feature<Polygon | MultiPolygon, Record<string, any>>
 
-export type ContextPickingObject = BasePickingObject & ContextFeature & ContextFeatureProperties
+export type ContextPickingObject = DeckPickingObject<ContextFeature & ContextFeatureProperties>
 
 export type ContextPickingInfo = PickingInfo<ContextPickingObject, { tile?: Tile2DHeader }>

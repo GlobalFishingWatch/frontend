@@ -1,5 +1,5 @@
 import { Locale } from '@globalfishingwatch/api-types'
-import { BaseLayerProps } from '../../types'
+import { DeckLayerProps } from '../../types'
 
 export enum BasemapType {
   Satellite = 'satellite',
@@ -7,5 +7,5 @@ export enum BasemapType {
   Labels = 'basemap_labels',
 }
 
-export type _BasemapLayerProps = BaseLayerProps & { basemap: BasemapType }
-export type _BasemapLabelsLayerProps = BaseLayerProps & { locale?: Locale }
+export type _BasemapLayerProps = DeckLayerProps<{ basemap: BasemapType }>
+export type _BasemapLabelsLayerProps = DeckLayerProps<{ locale?: Locale }>

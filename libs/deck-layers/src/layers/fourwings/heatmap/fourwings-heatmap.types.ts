@@ -9,7 +9,7 @@ import {
   FourwingsInterval,
   Cell,
 } from '@globalfishingwatch/deck-loaders'
-import { BasePickingObject } from '../../../types'
+import { DeckPickingObject } from '../../../types'
 import {
   BaseFourwingsLayerProps,
   FourwingsColorObject,
@@ -46,14 +46,15 @@ export type ColorDomain = number[] | number[][]
 export type ColorRange = FourwingsColorObject[]
 export type SublayerColorRanges = ColorRange[]
 
-export type FourwingsHeatmapStaticPickingObject = BasePickingObject &
+export type FourwingsHeatmapStaticPickingObject = DeckPickingObject<
   FourwingsStaticFeature & {
     sublayers: FourwingsDeckSublayer[]
   }
+>
 export type FourwingsHeatmapStaticPickingInfo = PickingInfo<FourwingsHeatmapStaticPickingObject>
 
 export type FourwingsHeatmapPickingObject = FourwingsFeature<FourwingsFeatureProperties> &
-  BasePickingObject & {
+  DeckPickingObject & {
     title: string
     color?: string
     tile: { x: number; y: number; z: number }

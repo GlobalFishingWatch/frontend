@@ -37,7 +37,7 @@ import {
   LayerGroup,
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../utils'
-import { BaseLayerProps } from '../../types'
+import { DeckLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 import { getEvents, getVesselResourceChunks } from './vessel.utils'
@@ -62,10 +62,9 @@ export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
   events: VesselDeckLayersEvent[]
 }
 
-export type VesselLayerProps = BaseLayerProps &
-  _VesselTrackLayerProps &
-  VesselEventsLayerProps &
-  _VesselLayerProps
+export type VesselLayerProps = DeckLayerProps<
+  _VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
+>
 
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
