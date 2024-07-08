@@ -107,7 +107,7 @@ export const selectReportId = createSelector(
 
 export const selectVesselId = createSelector(
   [selectLocationPayload],
-  (payload) => payload?.vesselId
+  (payload) => payload?.vesselId as string
 )
 
 export const selectLocationCategory = createSelector(

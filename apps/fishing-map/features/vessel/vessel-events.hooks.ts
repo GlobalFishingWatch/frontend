@@ -4,6 +4,7 @@ import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectVesselId } from 'routes/routes.selectors'
 import { setVesselEvents } from './vessel.slice'
 
 const useVesselEvents = (dataviewId: string) => {
@@ -38,10 +39,11 @@ export const useVesselProfileEventsError = () => {
 
 export const useSetVesselProfileEvents = () => {
   const events = useVesselProfileEvents()
+  const vesselId = useSelector(selectVesselId)
   const dispatch = useAppDispatch()
   useEffect(() => {
-    if (events) {
-      dispatch(setVesselEvents(events))
+    if (vesselId && events) {
+      dispatch(setVesselEvents({ vesselId, events }))
     }
-  }, [dispatch, events])
+  }, [dispatch, events, vesselId])
 }
