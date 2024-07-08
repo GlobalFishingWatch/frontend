@@ -2,11 +2,10 @@ import { useState, useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { Button, Icon, Popover, PopoverProps } from '@globalfishingwatch/ui-components'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import TooltipContainer from '../workspace/shared/TooltipContainer'
 import hintsConfig, { HintId } from './hints.content'
 import styles from './Hint.module.css'
 import { selectHintsDismissed, setHintDismissed } from './hints.slice'
@@ -54,21 +53,22 @@ function Hint({ id, className }: HintProps) {
       label: id,
     })
   }, [id])
-  const hideHint = useCallback(() => {
-    setVisible(false)
-  }, [])
+
+  const onOpenChange: PopoverProps['onOpenChange'] = (nextOpen: boolean) => {
+    setVisible(nextOpen)
+  }
 
   if (hintsDismissed?.[id] === true || isReadOnly || !ready) return null
 
   return (
-    <TooltipContainer
-      visible={visible}
+    <Popover
+      open={visible}
       className={styles.HintPanel}
-      arrowClass={styles.arrow}
+      showArrow={false}
       placement={placement}
       key={`${id}-tooltip`}
-      onClickOutside={hideHint}
-      component={
+      onOpenChange={onOpenChange}
+      content={
         <div className={styles.container}>
           {imageUrl && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -104,7 +104,7 @@ function Hint({ id, className }: HintProps) {
           <Icon icon="help" className={styles.icon} />
         </div>
       </div>
-    </TooltipContainer>
+    </Popover>
   )
 }
 

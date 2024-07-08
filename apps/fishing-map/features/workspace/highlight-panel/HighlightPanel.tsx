@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import type { Placement } from 'tippy.js'
-import { Button } from '@globalfishingwatch/ui-components'
+import type { Placement } from '@floating-ui/react'
+import { Button, Popover } from '@globalfishingwatch/ui-components'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
-import TooltipContainer from '../shared/TooltipContainer'
 import HIGHLIGHT_CONFIG, { HighlightPanelConfig } from './highlight-panel.content'
 import styles from './HighlightPanel.module.css'
 
@@ -69,11 +68,11 @@ const HighlightPanel = ({
   const learnMoreUrl = highlightContent.learnMoreUrl || config.learnMoreUrl
 
   return (
-    <TooltipContainer
-      visible={visible}
+    <Popover
+      open={visible}
       className={styles.highlightPanel}
-      placement={placement || 'auto'}
-      component={
+      placement={placement || 'right'}
+      content={
         <div className={styles.container}>
           {config.imageUrl && (
             <img className={styles.img} src={config.imageUrl} alt="highlight dataview" />
@@ -105,8 +104,8 @@ const HighlightPanel = ({
         </div>
       }
     >
-      <div className={styles.highlightRef} ref={ref}></div>
-    </TooltipContainer>
+      <div id="highlight-ref" className={styles.highlightRef} ref={ref}></div>
+    </Popover>
   )
 }
 

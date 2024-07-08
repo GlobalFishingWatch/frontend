@@ -19,16 +19,17 @@ import {
 import React from 'react'
 import styles from './Popover.module.css'
 
-type PopoverProps = {
+export type PopoverProps = {
   children: React.ReactNode
   content: React.ReactNode
-  placement: Placement
+  placement?: Placement
   ariaLabel?: string
+  showArrow?: boolean
   className?: string
   open?: boolean
   initialOpen?: boolean
   strategy?: UseFloatingOptions['strategy']
-  onOpenChange?: (open: boolean) => void
+  onOpenChange?: (open: boolean, event?: MouseEvent, reason?: string) => void
 }
 
 export function Popover({
@@ -36,6 +37,7 @@ export function Popover({
   content,
   ariaLabel,
   className = '',
+  showArrow = true,
   initialOpen,
   placement,
   strategy = 'fixed',
@@ -87,7 +89,7 @@ export function Popover({
             })}
             {...getFloatingProps()}
           >
-            <FloatingArrow fill="white" ref={arrowRef} context={context} />
+            {showArrow && <FloatingArrow fill="white" ref={arrowRef} context={context} />}
             {React.isValidElement(content) && content}
           </div>
         </FloatingFocusManager>
