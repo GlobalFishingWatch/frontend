@@ -71,18 +71,6 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
   const features = uniqBy(resource.data?.features, (f) => {
     return f.properties?.[lineIdProperty]
   })
-  const handleHoverLine = (feature: any) => {
-    const id = feature.properties?.[lineIdProperty]
-    const source = `user-track-${dataset.id}`
-    if (source && id) {
-      const featureState = {
-        source,
-        id,
-      }
-      // TODO:deck:featureState review if this still needed
-      // updateFeatureState([featureState], 'highlight')
-    }
-  }
 
   return (
     <Fragment>
@@ -102,9 +90,6 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
                 '--color': feature.properties?.color || dataview.config?.color,
               } as React.CSSProperties
             }
-            onMouseEnter={() => handleHoverLine(feature)}
-            // TODO:deck:featureState review if this still needed
-            // onMouseLeave={() => cleanFeatureState('highlight')}
           >
             {feature.properties?.[lineIdProperty]}
           </div>

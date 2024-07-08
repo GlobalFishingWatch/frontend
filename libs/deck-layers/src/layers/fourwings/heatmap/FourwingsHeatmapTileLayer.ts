@@ -300,7 +300,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   _getTimeCompareSublayers = () => {
     const { startTime, endTime, availableIntervals, compareStart, compareEnd } = this.props
     if (!compareStart || !compareEnd) {
-      // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
@@ -351,7 +350,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       compareEnd,
     } = this.props
     if (!compareStart || !compareEnd) {
-      // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)

@@ -54,7 +54,7 @@ export type FourwingsHeatmapStaticPickingObject = DeckPickingObject<
 export type FourwingsHeatmapStaticPickingInfo = PickingInfo<FourwingsHeatmapStaticPickingObject>
 
 export type FourwingsHeatmapPickingObject = FourwingsFeature<FourwingsFeatureProperties> &
-  DeckPickingObject & {
+  DeckPickingObject<{
     title: string
     color?: string
     tile: { x: number; y: number; z: number }
@@ -65,7 +65,7 @@ export type FourwingsHeatmapPickingObject = FourwingsFeature<FourwingsFeaturePro
     sublayers: FourwingsDeckSublayer[]
     visualizationMode?: FourwingsVisualizationMode
     comparisonMode?: FourwingsComparisonMode
-  }
+  }>
 export type FourwingsHeatmapPickingInfo = PickingInfo<FourwingsHeatmapPickingObject>
 
 export type AggregateCellParams = {

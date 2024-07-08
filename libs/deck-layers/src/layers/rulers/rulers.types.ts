@@ -9,7 +9,6 @@ export type RulerPointProperties = {
   order: 'start' | 'center' | 'end'
   bearing?: number
   text?: string
-  // TODO:deck review if we still need this legacy from layer-composer
   lengthLabel?: string
 }
 

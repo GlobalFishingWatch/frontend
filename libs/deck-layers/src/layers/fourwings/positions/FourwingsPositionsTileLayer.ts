@@ -68,7 +68,6 @@ const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
 
 const MAX_LABEL_LENGTH = 20
 
-// TODO:deck migrate this to an abstract layer to ensure methods like .getViewportData are implemented
 export class FourwingsPositionsTileLayer extends CompositeLayer<
   FourwingsPositionsTileLayerProps & MVTLayerProps
 > {

@@ -80,12 +80,6 @@ const MapWrapper = () => {
     dispatch(setMapLoaded(true))
   }, [dispatch])
 
-  const resetHoverState = useCallback(() => {
-    // TODO:deck
-    // setHoveredEvent(null)
-    // setHoveredDebouncedEvent(null)
-    // cleanFeatureState('hover')
-  }, [])
   const mapLoading = useIsDeckLayersLoading()
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
@@ -128,8 +122,7 @@ const MapWrapper = () => {
       <ErrorNotificationDialog />
       <MapAnnotationsDialog />
       <CoordinateEditOverlay />
-      {/* TODO in deck.gl to get the mapLoading state */}
-      <MapControls onMouseEnter={resetHoverState} mapLoading={mapLoading} />
+      <MapControls mapLoading={mapLoading} />
       {isWorkspace && !reportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}

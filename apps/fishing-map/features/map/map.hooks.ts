@@ -94,7 +94,6 @@ export const useGlobalConfigConnect = () => {
       highlightedTime: highlightedTime || {},
       visibleEvents,
       highlightedFeatures,
-      // TODO:deck should this be in another param like callbacks ?
       onPositionsMaxPointsError,
     }
     if (showTimeComparison && timeComparisonValues) {

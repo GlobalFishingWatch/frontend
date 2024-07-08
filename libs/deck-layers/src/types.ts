@@ -22,7 +22,6 @@ export type DeckLayerProps<G> = {
   subcategory?: DeckLayerSubcategory
 } & G
 
-// TODO:deck move this type to a generic like DeckPickingInfo<SpecificLayerInfo>
 export type DeckPickingObject<G> = {
   id: string
   title?: string
