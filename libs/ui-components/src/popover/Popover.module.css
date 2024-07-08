@@ -1,0 +1,4 @@
+.contentContainer {
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+}
