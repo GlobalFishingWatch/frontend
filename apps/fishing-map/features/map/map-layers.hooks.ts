@@ -74,9 +74,3 @@ export const useMapLayers = () => {
   const overlays = useMapOverlayLayers()
   return useMemo(() => [...dataviewsLayers, ...overlays], [dataviewsLayers, overlays])
 }
-
-// TODO:deck review if this needed
-const useMapLayersLoaded = () => {
-  const layerStatus = useDeckLayerLoadedState()
-  return Object.values(layerStatus).every((l) => l.loaded)
-}

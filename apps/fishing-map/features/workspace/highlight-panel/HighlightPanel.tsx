@@ -2,9 +2,11 @@ import { useState, useRef, useEffect } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import type { Placement } from 'tippy.js'
+import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Locale } from 'types'
+import { selectIsMapLoaded } from 'features/map/map.slice'
 import TooltipContainer from '../shared/TooltipContainer'
 import HIGHLIGHT_CONFIG, { HighlightPanelConfig } from './highlight-panel.content'
 import styles from './HighlightPanel.module.css'
@@ -21,9 +23,7 @@ const HighlightPanel = ({
   config = HIGHLIGHT_CONFIG,
 }: HighlightPanelProps) => {
   const { t, i18n } = useTranslation()
-  // const mapReady = useMapReady()
-  // TODO:deck create hook to check if map is ready, probaly using useIsDeckLayersLoading
-  const mapReady = true
+  const mapReady = useSelector(selectIsMapLoaded)
   const ref = useRef<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(false)
   const [dataviewIdDismissed, setDataviewIdDismissed] = useLocalStorage(config.localStorageKey, '')
