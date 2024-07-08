@@ -564,15 +564,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const newVisibleValueLimits =
       (oldProps.minVisibleValue && minVisibleValue !== oldProps.minVisibleValue) ||
       (oldProps.maxVisibleValue && maxVisibleValue !== oldProps.maxVisibleValue)
-    if (newMode) {
-      this.setState({
-        colorRanges: [],
-        colorDomain: [],
-        scales: [],
-      })
-    } else if (sublayersHaveNewColors || newVisibleValueLimits) {
+    if (newMode || sublayersHaveNewColors || newVisibleValueLimits) {
       this.setState({ rampDirty: true, colorDomain: [], colorRanges: [], scales: [] })
-      const newColorDomain = newVisibleValueLimits ? this._calculateColorDomain() : colorDomain
+      const newColorDomain =
+        newMode || newVisibleValueLimits ? this._calculateColorDomain() : colorDomain
       const scales = this._getColorScales(newColorDomain, newSublayerColorRanges)
       requestAnimationFrame(() => {
         this.setState({
