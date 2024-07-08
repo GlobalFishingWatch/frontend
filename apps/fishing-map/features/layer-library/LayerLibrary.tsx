@@ -105,9 +105,15 @@ const LayerLibrary: FC = () => {
     [filteredLayers, uniqCategories]
   )
 
-  const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }, [])
+  const onInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value)
+      categoryElements[0]?.scrollIntoView({
+        behavior: 'smooth',
+      })
+    },
+    [categoryElements]
+  )
 
   const onLayerListScroll = useCallback(
     (e: React.UIEvent<HTMLElement>) => {
@@ -148,6 +154,7 @@ const LayerLibrary: FC = () => {
             value={searchQuery || ''}
             className={styles.input}
             type="search"
+            autoFocus
             placeholder={t('translations:search.title', 'Search')}
           />
         </div>
