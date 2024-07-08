@@ -178,9 +178,10 @@ export function BivariateLegend({
                   </g>
                   <g transform="translate(81, 62) scale(1, -1) rotate(45) translate(-81, -62) translate(41, 22)">
                     <rect fill="#0f2e5f" stroke="none" x={0} y={40} width={40} height={40}></rect>
-                    {layer.colors?.map((color: string, i: number) => (
-                      <BivariateRect color={color} i={i} key={color + i} />
-                    ))}
+                    {Array.isArray(layer.colors) &&
+                      layer.colors?.map((color: string, i: number) => (
+                        <BivariateRect color={color} i={i} key={color + i} />
+                      ))}
                     {bivariateBucketIndex && bivariateBucketIndex > 0 && (
                       <BivariateRect
                         i={bivariateBucketIndex}
