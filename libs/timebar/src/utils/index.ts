@@ -1,10 +1,10 @@
 import { DateTime, DateTimeUnit } from 'luxon'
 import { getDefaultFormat } from './internal-utils'
 
-export const getHumanizedDates = (start: string, end: string) => {
+export const getHumanizedDates = (start: string, end: string, locale: string) => {
   const format = getDefaultFormat(start, end)
-  const mStart = DateTime.fromISO(start, { zone: 'utc' })
-  const mEnd = DateTime.fromISO(end, { zone: 'utc' })
+  const mStart = DateTime.fromISO(start, { zone: 'utc' }).setLocale(locale)
+  const mEnd = DateTime.fromISO(end, { zone: 'utc' }).setLocale(locale)
   const humanizedStart = mStart.toFormat(format)
   const humanizedEnd = mEnd.toFormat(format)
   const interval = mEnd.diff(mStart, 'day').days

@@ -522,6 +522,7 @@ class Timeline extends PureComponent<TimelineProps> {
               placement={bookmarkPlacement}
               minX={relativeOffsetX}
               maxX={outerWidth}
+              locale={locale}
               onDelete={() => {
                 onBookmarkChange && onBookmarkChange('', '')
               }}
