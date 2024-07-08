@@ -95,7 +95,7 @@ const MapWrapper = () => {
         }}
         style={mapStyles}
         getCursor={getCursor}
-        layerFilter={({ renderPass, layer }) => {
+        layerFilter={({ renderPass }) => {
           // This avoids performing the default picking
           // since we are handling it through pickMultipleObjects
           // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
