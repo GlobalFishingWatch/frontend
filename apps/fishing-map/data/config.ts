@@ -62,7 +62,7 @@ export const LAST_DATA_UPDATE = DateTime.fromObject(
   .toISO() as string
 
 export const DEFAULT_VIEWPORT = {
-  zoom: 1.5,
+  zoom: 1.49,
   latitude: 19,
   longitude: 26,
 }
