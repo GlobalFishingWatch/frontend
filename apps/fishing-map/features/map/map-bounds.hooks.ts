@@ -39,6 +39,7 @@ type FitBoundsParams = {
   mapWidth?: number
   mapHeight?: number
   padding?: number
+  fitZoom?: boolean
 }
 
 export const getMapCoordinatesFromBounds = (
@@ -80,7 +81,11 @@ export function useMapFitBounds() {
     (bounds: Bbox, params: FitBoundsParams = {}) => {
       if (viewport) {
         const newViewport = viewport.fitBounds(convertToTupleBoundingBox(bounds), params)
-        setMapCoordinates({ latitude: newViewport.latitude, longitude: newViewport.longitude })
+        setMapCoordinates({
+          latitude: newViewport.latitude,
+          longitude: newViewport.longitude,
+          zoom: params.fitZoom ? newViewport.zoom : viewport.zoom,
+        })
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

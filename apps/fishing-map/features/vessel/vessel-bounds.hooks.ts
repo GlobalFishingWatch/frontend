@@ -42,7 +42,7 @@ export const useVesselProfileBounds = () => {
     if (isTrackLoaded) {
       const bounds = vesselLayer?.instance.getVesselTrackBounds()
       if (bounds) {
-        fitBounds(bounds, { padding: 60 })
+        fitBounds(bounds, { padding: 60, fitZoom: true })
       } else if (canFitDates) {
         if (
           window.confirm(
