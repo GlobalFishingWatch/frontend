@@ -109,7 +109,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                   />
                 )
               }
-              return feature.sublayers.map((sublayer, j) => {
+              return feature.sublayers?.map((sublayer, j) => {
                 const dataview = dataviews.find((d) => d.id === sublayer.id)
                 return feature.comparisonMode === FourwingsComparisonMode.TimeCompare ? (
                   <ComparisonRow
