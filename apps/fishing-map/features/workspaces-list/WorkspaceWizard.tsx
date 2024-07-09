@@ -175,10 +175,6 @@ function WorkspaceWizard() {
     if (!datasetId) {
       return null
     }
-    // TODO:deck remove this as it is only needed for mapbox
-    const reportAreaSource = selectedItem?.properties?.type.includes('mpa')
-      ? 'context-layer-mpa__mpa'
-      : 'context-layer-eez__eez-areas'
     return {
       ...linkToArea,
       type: WORKSPACE_REPORT,
@@ -189,7 +185,6 @@ function WorkspaceWizard() {
       },
       query: {
         ...linkToArea.query,
-        reportAreaSource,
       },
     }
   }, [selectedItem, dataviews, linkToArea])

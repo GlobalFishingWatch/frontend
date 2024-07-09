@@ -39,7 +39,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   }
 
   return (
-    <li className={styles.layer}>
+    <li className={styles.layer} key={id}>
       <div className={styles.container}>
         <div className={styles.image} style={{ backgroundImage: `url(${previewImageUrl})` }} />
         <div className={styles.content}>

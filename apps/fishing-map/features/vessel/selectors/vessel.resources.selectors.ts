@@ -31,7 +31,7 @@ const selectVesselVisibleEventsData = createSelector(
 
 export const selectVesselEventsDataWithVoyages = createSelector(
   [selectVesselVisibleEventsData],
-  (events): ActivityEvent[] => {
+  (events = []): ActivityEvent[] | undefined => {
     let voyage = 1
     return events?.map((event) => {
       const currentVoyage = voyage

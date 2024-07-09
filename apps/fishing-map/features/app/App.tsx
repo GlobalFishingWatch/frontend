@@ -52,7 +52,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import AppModals from 'features/modals/Modals'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useSetViewState } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import { selectReportAreaBounds } from 'features/app/selectors/app.reports.selector'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
@@ -144,7 +144,7 @@ function App() {
   }, [])
 
   const fitMapBounds = useMapFitBounds()
-  const setViewState = useSetViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const { setTimerange } = useTimerangeConnect()
 
   const locationType = useSelector(selectLocationType)
@@ -175,7 +175,7 @@ function App() {
         const workspace = resolvedAction.payload as Workspace
         const viewport = urlViewport || workspace?.viewport
         if (viewport && !isReportLocation) {
-          setViewState(viewport)
+          setMapCoordinates(viewport)
         }
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
@@ -208,7 +208,7 @@ function App() {
       if (reportAreaBounds) {
         fitMapBounds(reportAreaBounds, { padding: FIT_BOUNDS_REPORT_PADDING })
       } else {
-        setViewState({ latitude: 0, longitude: 0, zoom: 0 })
+        setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

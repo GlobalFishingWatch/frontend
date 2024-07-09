@@ -24,7 +24,6 @@ export const useSetDeckLayerLoadedState = () => {
           layers.forEach((layer) => {
             newLoadedState[layer.id] = { loaded: layer.isLoaded }
           })
-          // TODO:deck make this more effective to avoid re-renders
           if (
             Object.keys(newLoadedState).length !== Object.keys(loadedState).length ||
             Object.keys(newLoadedState).some(

@@ -22,6 +22,7 @@ import ErrorNotificationDialog from 'features/map/overlays/error-notification/Er
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
@@ -31,6 +32,7 @@ import MapInfo from './controls/MapInfo'
 import { MAP_CANVAS_ID } from './map.config'
 import TimeComparisonLegend from './TimeComparisonLegend'
 import { CoordinateEditOverlay } from './overlays/draw/CoordinateEditOverlay'
+import { setMapLoaded } from './map.slice'
 
 const DrawDialog = dynamic(
   () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
@@ -46,6 +48,7 @@ const mapStyles = {
 const MapWrapper = () => {
   const deckRef = useRef<DeckGLRef>(null)
   useSetMapInstance(deckRef)
+  const dispatch = useAppDispatch()
   const { viewState, setViewState } = useViewStateAtom()
   const onViewStateChange = useCallback(
     (params: any) => {
@@ -73,12 +76,10 @@ const MapWrapper = () => {
   const reportLocation = useSelector(selectIsAnyReportLocation)
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
 
-  const resetHoverState = useCallback(() => {
-    // TODO in deck.gl
-    // setHoveredEvent(null)
-    // setHoveredDebouncedEvent(null)
-    // cleanFeatureState('hover')
-  }, [])
+  const onMapLoad = useCallback(() => {
+    dispatch(setMapLoaded(true))
+  }, [dispatch])
+
   const mapLoading = useIsDeckLayersLoading()
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
@@ -95,7 +96,7 @@ const MapWrapper = () => {
         }}
         style={mapStyles}
         getCursor={getCursor}
-        layerFilter={({ renderPass, layer }) => {
+        layerFilter={({ renderPass }) => {
           // This avoids performing the default picking
           // since we are handling it through pickMultipleObjects
           // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
@@ -112,6 +113,7 @@ const MapWrapper = () => {
         onDragStart={onMapDragStart}
         onDrag={onMapDrag}
         onDragEnd={onMapDragEnd}
+        onLoad={onMapLoad}
       >
         <MapAnnotations />
       </DeckGL>
@@ -120,8 +122,7 @@ const MapWrapper = () => {
       <ErrorNotificationDialog />
       <MapAnnotationsDialog />
       <CoordinateEditOverlay />
-      {/* TODO in deck.gl to get the mapLoading state */}
-      <MapControls onMouseEnter={resetHoverState} mapLoading={mapLoading} />
+      <MapControls mapLoading={mapLoading} />
       {isWorkspace && !reportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}

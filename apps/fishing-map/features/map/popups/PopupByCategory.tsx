@@ -150,25 +150,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               />
             )
           }
-          // TODO: deck restore this popup
           case DataviewCategory.Environment: {
-            // TODO:deck review if this is needed
-            //   const contextEnvironmentalFeatures = features.filter(
-            //     (feature) =>
-            //       feature.type === DataviewType.Context ||
-            //       feature.type === DataviewType.UserContext
-            //   )
-            // const environmentalFeatures = features.filter(
-            //   (feature) =>
-            //     feature.type !== DataviewType.Context &&
-            //     feature.type !== DataviewType.UserContext
-            // )
             return (
               <Fragment key={featureCategory}>
-                {/* <ContextTooltipSection
-                features={contextEnvironmentalFeatures}
-                showFeaturesDetails={type === 'click'}
-              /> */}
                 <EnvironmentTooltipSection
                   features={features as SliceExtendedFourwingsPickingObject[]}
                   showFeaturesDetails={type === 'click'}
@@ -183,15 +167,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const pointFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.UserPoints
             )
-            // const workspacePointsFeatures = features.filter(
-            //   (feature) => feature.source === WORKSPACE_GENERATOR_ID
-            // )
             // Workaround to show user context features in the context section
-
             const userContextFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.UserContext
             )
-            // TODO:deck add AnnotationTooltip
             return (
               <Fragment key={featureCategory}>
                 <UserPointsTooltipSection

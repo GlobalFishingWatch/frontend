@@ -3,7 +3,7 @@ import { Feature, Geometry } from 'geojson'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { TimeFilterType } from '@globalfishingwatch/api-types'
 import { ContextLayerConfig } from '../context'
-import { BaseLayerProps, BasePickingObject } from '../../types'
+import { DeckLayerProps, DeckPickingObject } from '../../types'
 
 export type BaseUserLayerProps = {
   id: string
@@ -38,7 +38,7 @@ export type BaseUserLayerProps = {
   timeFilterType?: TimeFilterType
 }
 
-export type UserPolygonsLayerProps = BaseLayerProps &
+export type UserPolygonsLayerProps = DeckLayerProps<
   BaseUserLayerProps & {
     /**
      * Custom color ramp for filled layers
@@ -50,8 +50,9 @@ export type UserPolygonsLayerProps = BaseLayerProps &
      */
     stepsPickValue?: string
   }
+>
 
-export type UserPointsLayerProps = BaseLayerProps &
+export type UserPointsLayerProps = DeckLayerProps<
   BaseUserLayerProps & {
     /**
      * Fixed point radius for all points, used in drawn layers
@@ -75,14 +76,16 @@ export type UserPointsLayerProps = BaseLayerProps &
      */
     maxPointSize?: number
   }
+>
 
-export type UserTrackLayerProps = BaseLayerProps &
+export type UserTrackLayerProps = DeckLayerProps<
   BaseUserLayerProps & {
     highlightStartTime?: number
     highlightEndTime?: number
     timestampProperty?: string
     getTimestamp?: Accessor<any, number>
   }
+>
 
 export type UserLayerFeatureProperties = {
   id: string
@@ -95,8 +98,8 @@ export type UserLayerFeatureProperties = {
 
 export type UserLayerFeature = Feature<Geometry, Record<string, any>>
 
-export type UserLayerPickingObject = BasePickingObject &
-  UserLayerFeature &
-  UserLayerFeatureProperties
+export type UserLayerPickingObject = DeckPickingObject<
+  UserLayerFeature & UserLayerFeatureProperties
+>
 
 export type UserLayerPickingInfo = PickingInfo<UserLayerPickingObject, { tile?: Tile2DHeader }>

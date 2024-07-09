@@ -8,8 +8,7 @@ import {
   MultiLineString,
 } from 'geojson'
 
-// TODO:deck this comes duplicated from data-transforms libs to avoid circular dependencies
-
+// Originally duplicated from data-transforms libs to avoid circular dependencies
 // TODO define types for this filter so we can avoid the buggy isNumeric approach
 // to extract when using min or max or the list of values
 export type TrackCoordinatesPropertyFilter = {

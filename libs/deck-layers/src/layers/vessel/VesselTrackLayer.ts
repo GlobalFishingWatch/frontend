@@ -1,10 +1,9 @@
 import type { NumericArray } from '@math.gl/core'
 import { AccessorFunction, ChangeFlags, DefaultProps, UpdateParameters } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
-import { point } from '@turf/helpers'
 import { TrackSegment } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
-import { Bbox, getBboxFromPoints } from '@globalfishingwatch/data-transforms'
+import { Bbox, wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
 import { getSegmentsFromData } from './vessel.utils'
@@ -264,19 +263,20 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     const positionsSize = data.attributes?.getPath?.size
     const timestamps = data.attributes?.getTimestamp?.value
     if (!timestamps?.length) return null
-    const pointsArray = Array.from(timestamps)
+
     const firstPointIndex = timestamps.findIndex((t) => t > this.props.startTime)
     const lastPointIndex = timestamps.findLastIndex((t) => t < this.props.endTime)
-    const filteredPointsArray = pointsArray.slice(firstPointIndex, lastPointIndex + 1)
-    const points = filteredPointsArray?.flatMap((_, index) =>
-      positions[(firstPointIndex + index) * positionsSize + 1]
-        ? point([
-            positions[(firstPointIndex + index) * positionsSize],
-            positions[(firstPointIndex + index) * positionsSize + 1],
-          ])
-        : []
-    )
-    if (!points?.length) return null
-    return getBboxFromPoints(points) as Bbox
+    if (firstPointIndex === -1 || lastPointIndex === -1) return null
+
+    const bounds = [Infinity, Infinity, -Infinity, -Infinity] as Bbox
+    for (let index = firstPointIndex; index <= lastPointIndex; index++) {
+      const longitude = positions[index * positionsSize]
+      const latitude = positions[index * positionsSize + 1]
+      if (longitude < bounds[0]) bounds[0] = longitude
+      if (longitude > bounds[2]) bounds[2] = longitude
+      if (latitude < bounds[1]) bounds[1] = latitude
+      if (latitude > bounds[3]) bounds[3] = latitude
+    }
+    return wrapBBoxLongitudes(bounds)
   }
 }

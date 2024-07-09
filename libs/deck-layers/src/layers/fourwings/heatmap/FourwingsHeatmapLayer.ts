@@ -62,7 +62,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       ...(info.object || ({} as FourwingsFeature)),
       layerId: this.root.id,
       id: id,
-      title: id, // TODO:deck get the proper title
+      title: id,
       tile: tile.index,
       category,
       subcategory,

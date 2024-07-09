@@ -107,20 +107,7 @@ export const featuresToTimeseries = (
       maxVisibleValue,
     })
 
-    // const { values: valuesContainedRaw } = getTimeSeries({
-    //   features: (filteredFeature.contained as any) || ([] as any),
-    //   numSublayers: sourceNumSublayers,
-    //   quantizeOffset: sourceQuantizeOffset,
-    //   aggregationOperation: sourceMetadata.aggregationOperation,
-    //   minVisibleValue: sourceMetadata.minVisibleValue,
-    //   maxVisibleValue: sourceMetadata.maxVisibleValue,
-    // })
-
-    // TODO:deck review if we can skip this step
-    const valuesContained = frameTimeseriesToDateTimeseries(
-      valuesContainedRaw as any
-      // compareDeltaMillis
-    )
+    const valuesContained = frameTimeseriesToDateTimeseries(valuesContainedRaw as any)
 
     const featuresContainedAndOverlapping =
       overlapping.length > 0 ? [...(contained || []), ...(overlapping || [])] : []

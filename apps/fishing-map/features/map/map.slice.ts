@@ -85,6 +85,7 @@ export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
 }
 
 type MapState = {
+  loaded: boolean
   clicked: SliceInteractionEvent | null
   hovered: SliceInteractionEvent | null
   fishingStatus: AsyncReducerStatus
@@ -93,6 +94,7 @@ type MapState = {
 }
 
 const initialState: MapState = {
+  loaded: false,
   clicked: null,
   hovered: null,
   fishingStatus: AsyncReducerStatus.Idle,
@@ -485,6 +487,9 @@ const slice = createSlice({
   name: 'map',
   initialState,
   reducers: {
+    setMapLoaded: (state, action: PayloadAction<boolean>) => {
+      state.loaded = action.payload
+    },
     setClickedEvent: (state, action: PayloadAction<SliceInteractionEvent | null>) => {
       if (action.payload === null) {
         state.clicked = null
@@ -566,9 +571,10 @@ const slice = createSlice({
   },
 })
 
+export const selectIsMapLoaded = (state: { map: MapState }) => state.map.loaded
 export const selectClickedEvent = (state: { map: MapState }) => state.map.clicked
 export const selectFishingInteractionStatus = (state: { map: MapState }) => state.map.fishingStatus
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 
-export const { setClickedEvent } = slice.actions
+export const { setMapLoaded, setClickedEvent } = slice.actions
 export default slice.reducer

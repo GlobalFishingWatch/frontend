@@ -1,11 +1,11 @@
 import { Feature, LineString } from 'geojson'
-import { BaseLayerProps } from '../../types'
+import { DeckLayerProps } from '../../types'
 
 export type GraticuleLineGroup = 1 | 5 | 10 | 30 | 90
 
-export type GraticulesLayerProps = BaseLayerProps & {
+export type GraticulesLayerProps = DeckLayerProps<{
   color: string
-}
+}>
 
 export type ViewportSize = {
   width: number

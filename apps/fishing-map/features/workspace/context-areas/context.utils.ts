@@ -33,8 +33,6 @@ export const parseContextFeatures = (features: any[], dataset: Dataset) => {
     return {
       ...feature,
       promoteId: idProperty,
-      datasetId: dataset.id,
-      source: feature.source,
       properties: {
         ...feature.properties,
         gfw_id: feature.properties[idProperty],

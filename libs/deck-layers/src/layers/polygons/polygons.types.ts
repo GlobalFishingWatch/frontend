@@ -1,6 +1,6 @@
 import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { PickingInfo } from '@deck.gl/core'
-import { BaseLayerProps, BasePickingObject } from '../../types'
+import { DeckLayerProps, DeckPickingObject } from '../../types'
 import { LayerGroup } from '../../utils'
 
 export type PolygonFeature = Feature<
@@ -8,14 +8,14 @@ export type PolygonFeature = Feature<
   Record<string, any> & { highlighted: boolean }
 >
 
-export type PolygonPickingObject = BasePickingObject & PolygonFeature
+export type PolygonPickingObject = DeckPickingObject<PolygonFeature>
 
 export type PolygonPickingInfo = PickingInfo<PolygonPickingObject>
 
-export type PolygonsLayerProps = BaseLayerProps & {
+export type PolygonsLayerProps = DeckLayerProps<{
   id: string
   color: string
   data: string | FeatureCollection
   group?: LayerGroup
   highlightedFeatures: PolygonPickingObject[]
-}
+}>

@@ -112,7 +112,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         })
         setFeaturesOnScreen({
           total: features.length,
-          // TODO:deck double check this is not needed anymore as the features are already parsed in the deck getPickingInfo
           closest: parseContextFeatures(filteredFeatures, dataset as Dataset),
         })
       }

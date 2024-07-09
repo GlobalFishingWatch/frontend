@@ -6,7 +6,7 @@ import { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { Bbox } from 'types'
 import { FOOTER_HEIGHT } from 'features/footer/Footer'
 import { TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
-import { useMapViewport, useSetViewState } from 'features/map/map-viewport.hooks'
+import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 
 const boundsAtom = atom<MiniglobeBounds>({
   north: 90,
@@ -39,6 +39,7 @@ type FitBoundsParams = {
   mapWidth?: number
   mapHeight?: number
   padding?: number
+  fitZoom?: boolean
 }
 
 export const getMapCoordinatesFromBounds = (
@@ -75,15 +76,15 @@ function convertToTupleBoundingBox(flatBoundingBox: Bbox): [[number, number], [n
 
 export function useMapFitBounds() {
   const viewport = useMapViewport()
-  const setViewState = useSetViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const fitBounds = useCallback(
     (bounds: Bbox, params: FitBoundsParams = {}) => {
       if (viewport) {
         const newViewport = viewport.fitBounds(convertToTupleBoundingBox(bounds), params)
-        setViewState({
+        setMapCoordinates({
           latitude: newViewport.latitude,
           longitude: newViewport.longitude,
-          zoom: newViewport.zoom,
+          zoom: params.fitZoom ? newViewport.zoom : viewport.zoom,
         })
       }
     },

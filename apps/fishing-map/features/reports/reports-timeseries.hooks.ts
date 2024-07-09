@@ -72,20 +72,6 @@ export function useSetTimeseries() {
   return useAtom(mapTimeseriesAtom)[1]
 }
 
-const emptyArray: UrlDataviewInstance[] = []
-
-export const useReportFeaturesLoading = () => {
-  const reportLayerInstanceLoaded = useReportInstances()?.every((layer) => layer.loaded)
-  const areaInViewport = useReportAreaInViewport()
-  return areaInViewport && !reportLayerInstanceLoaded
-}
-
-const useReportFeaturesError = () => {
-  // TODO:deck handle errors in layer instances
-  const reportLayerInstanceLoaded = useReportInstances()?.every((layer) => layer.loaded)
-  return false
-}
-
 const useReportInstances = () => {
   const currentCategory = useSelector(selectReportCategory)
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
@@ -99,6 +85,12 @@ const useReportInstances = () => {
   }
   const reportLayerInstances = useGetDeckLayers<FourwingsLayer>(ids)
   return reportLayerInstances
+}
+
+export const useReportFeaturesLoading = () => {
+  const reportLayerInstanceLoaded = useReportInstances()?.every((layer) => layer.loaded)
+  const areaInViewport = useReportAreaInViewport()
+  return areaInViewport && !reportLayerInstanceLoaded
 }
 
 const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {

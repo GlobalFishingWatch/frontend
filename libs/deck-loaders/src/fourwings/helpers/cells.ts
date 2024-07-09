@@ -3,7 +3,6 @@ import { Position } from 'geojson'
 export type BBox = [number, number, number, number]
 
 export const getCellProperties = (tileBBox: BBox, cellIndex: number, numCols: number) => {
-  // TODO:deck review calculation here because interaction is returning a wrong col
   const col = cellIndex % numCols
   const row = Math.floor(cellIndex / numCols)
   const [minX, minY, maxX, maxY] = tileBBox

@@ -128,7 +128,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
     findDatasetByType(dataview.datasets, DatasetTypes.UserTracks) ||
     findDatasetByType(dataview.datasets, DatasetTypes.Context) // Needed for fixed-infrastructure
 
-  if (!dataset) {
+  if (!dataset || dataset?.status !== 'done') {
     return { ...baseLayerProps, layers: [] }
   }
 

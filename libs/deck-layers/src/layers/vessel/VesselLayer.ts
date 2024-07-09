@@ -14,11 +14,9 @@ import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
 import { BBox, Position } from 'geojson'
 import { rhumbBearing } from '@turf/turf'
 import {
-  ApiEvent,
   DataviewCategory,
   DataviewType,
   EventTypes,
-  EventVessel,
   TrackSegment,
 } from '@globalfishingwatch/api-types'
 import {
@@ -37,7 +35,7 @@ import {
   LayerGroup,
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../utils'
-import { BaseLayerProps } from '../../types'
+import { DeckLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
 import { getEvents, getVesselResourceChunks } from './vessel.utils'
@@ -62,10 +60,9 @@ export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
   events: VesselDeckLayersEvent[]
 }
 
-export type VesselLayerProps = BaseLayerProps &
-  _VesselTrackLayerProps &
-  VesselEventsLayerProps &
-  _VesselLayerProps
+export type VesselLayerProps = DeckLayerProps<
+  _VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
+>
 
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
@@ -81,7 +78,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    // TODO:deck try to reemove this workaround because we cannot find
+    // TODO:deck try to remove this workaround because we cannot find
     // why useTimebarVesselTracks is not updating on color change
     if (oldProps.color?.join('') !== props.color.join('')) {
       this.setState({ colorDirty: true })
@@ -169,6 +166,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       minElevationFilter,
       maxElevationFilter,
     } = this.props
+
     if (!trackUrl || !visible) {
       if (!trackUrl) console.warn('trackUrl needed for vessel layer')
       return []
@@ -184,7 +182,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         this.getSubLayerProps({
           id: chunkId,
           visible,
-          data: this._getTracksUrl({ start, end, trackUrl, zoom, trackThinningZoomConfig }),
+          data: this._getTracksUrl({
+            start,
+            end,
+            trackUrl,
+            zoom,
+            trackThinningZoomConfig,
+          }),
           loadOptions: {
             ...getFetchLoadOptions(),
           },
@@ -391,9 +395,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getEventLayers() {
-    return this.getSubLayers().filter(
-      (l) => !l.id.includes(TRACK_LAYER_TYPE)
-    ) as VesselEventsLayer[]
+    return this.getSubLayers().filter((l) => l.id.includes(EVENT_LAYER_TYPE)) as VesselEventsLayer[]
   }
 
   getVesselName() {

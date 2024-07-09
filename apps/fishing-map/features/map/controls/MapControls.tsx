@@ -56,7 +56,7 @@ const MapControls = ({
   onMouseEnter,
 }: {
   mapLoading?: boolean
-  onMouseEnter: () => void
+  onMouseEnter?: () => void
 }): React.ReactElement => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()

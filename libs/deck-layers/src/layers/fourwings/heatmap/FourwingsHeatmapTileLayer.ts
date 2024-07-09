@@ -300,7 +300,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   _getTimeCompareSublayers = () => {
     const { startTime, endTime, availableIntervals, compareStart, compareEnd } = this.props
     if (!compareStart || !compareEnd) {
-      // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
@@ -351,7 +350,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       compareEnd,
     } = this.props
     if (!compareStart || !compareEnd) {
-      // TODO:deck handle this
       throw new Error('Missing compare start or end')
     }
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
@@ -564,15 +562,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const newVisibleValueLimits =
       (oldProps.minVisibleValue && minVisibleValue !== oldProps.minVisibleValue) ||
       (oldProps.maxVisibleValue && maxVisibleValue !== oldProps.maxVisibleValue)
-    if (newMode) {
-      this.setState({
-        colorRanges: [],
-        colorDomain: [],
-        scales: [],
-      })
-    } else if (sublayersHaveNewColors || newVisibleValueLimits) {
+    if (newMode || sublayersHaveNewColors || newVisibleValueLimits) {
       this.setState({ rampDirty: true, colorDomain: [], colorRanges: [], scales: [] })
-      const newColorDomain = newVisibleValueLimits ? this._calculateColorDomain() : colorDomain
+      const newColorDomain =
+        newMode || newVisibleValueLimits ? this._calculateColorDomain() : colorDomain
       const scales = this._getColorScales(newColorDomain, newSublayerColorRanges)
       requestAnimationFrame(() => {
         this.setState({
