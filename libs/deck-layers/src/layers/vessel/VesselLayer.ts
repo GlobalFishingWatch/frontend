@@ -195,7 +195,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           loaders: [VesselTrackLoader],
           _pathType: 'open',
           widthUnits: 'pixels',
-          getWidth: 1,
+          getWidth: 1.5,
           widthScale: 1,
           wrapLongitude: true,
           jointRounded: true,
