@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
-import { atom, useAtom, useSetAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { debounce } from 'lodash'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
@@ -71,22 +71,10 @@ timerangeState.onMount = (setAtom) => {
 
 export const useSetTimerange = () => {
   const setAtomTimerange = useSetAtom(timerangeState)
-  const setTimerange = useCallback(
-    (timerange: TimeRange) => {
-      setAtomTimerange(timerange)
-    },
-    [setAtomTimerange]
-  )
-  return setTimerange
-}
-
-export const useTimerangeConnect = () => {
-  const [timerangeAtom, setAtomTimerange] = useAtom(timerangeState)
   const dispatch = useAppDispatch()
   const hintsDismissed = useSelector(selectHintsDismissed)
-  const reportLocation = useSelector(selectIsAnyReportLocation)
-  const fitAreaInViewport = useFitAreaInViewport()
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateUrlTimerangeDebounced = useCallback(
     debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
     []
@@ -108,6 +96,15 @@ export const useTimerangeConnect = () => {
     [dispatch, hintsDismissed?.changingTheTimeRange, setAtomTimerange, updateUrlTimerangeDebounced]
   )
 
+  return setTimerange
+}
+
+export const useTimerangeConnect = () => {
+  const timerangeAtom = useAtomValue(timerangeState)
+  const setTimerange = useSetTimerange()
+  const reportLocation = useSelector(selectIsAnyReportLocation)
+  const fitAreaInViewport = useFitAreaInViewport()
+
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
       setTimerange({ start, end })
@@ -117,6 +114,7 @@ export const useTimerangeConnect = () => {
     },
     [fitAreaInViewport, reportLocation, setTimerange]
   )
+
   return useMemo(() => {
     return {
       start: timerangeAtom?.start as string,
