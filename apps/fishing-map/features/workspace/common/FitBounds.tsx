@@ -7,6 +7,8 @@ import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { Bbox } from 'types'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { getUTCDateTime } from 'utils/dates'
 
 type FitBoundsProps = {
   hasError: boolean
@@ -26,13 +28,10 @@ const FitBounds = ({ className, vesselLayer, hasError, infoResource }: FitBounds
       if (bbox) {
         fitBounds(bbox, { padding: 60 })
       } else {
-        if (
-          infoResource &&
-          // TODO not used selfReportedInfo?.[0] but get the current vessel identity
-          (!infoResource.data?.selfReportedInfo?.[0]?.transmissionDateFrom ||
-            !infoResource.data?.selfReportedInfo?.[0]?.transmissionDateTo)
-        ) {
-          console.warn('transmissionDates not available, cant fit time', infoResource)
+        const transmissionDateFrom = getVesselProperty(infoResource?.data!, 'transmissionDateFrom')
+        const transmissionDateTo = getVesselProperty(infoResource?.data!, 'transmissionDateTo')
+        if (infoResource && (!transmissionDateFrom || !transmissionDateTo)) {
+          console.warn("transmissionDates not available, can't fit time", infoResource)
           return
         }
         if (
@@ -45,12 +44,8 @@ const FitBounds = ({ className, vesselLayer, hasError, infoResource }: FitBounds
         ) {
           if (infoResource) {
             setTimerange({
-              start: new Date(
-                infoResource.data!?.selfReportedInfo?.[0]?.transmissionDateFrom
-              ).toISOString(),
-              end: new Date(
-                infoResource.data!?.selfReportedInfo?.[0]?.transmissionDateTo
-              ).toISOString(),
+              start: getUTCDateTime(transmissionDateTo).toISO()!,
+              end: getUTCDateTime(transmissionDateTo).toISO()!,
             })
           } else {
             const segments = vesselLayer.getVesselTrackSegments()

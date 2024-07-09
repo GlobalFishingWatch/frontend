@@ -14,11 +14,9 @@ import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
 import { BBox, Position } from 'geojson'
 import { rhumbBearing } from '@turf/turf'
 import {
-  ApiEvent,
   DataviewCategory,
   DataviewType,
   EventTypes,
-  EventVessel,
   TrackSegment,
 } from '@globalfishingwatch/api-types'
 import {
@@ -168,6 +166,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       minElevationFilter,
       maxElevationFilter,
     } = this.props
+
     if (!trackUrl || !visible) {
       if (!trackUrl) console.warn('trackUrl needed for vessel layer')
       return []
@@ -183,7 +182,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         this.getSubLayerProps({
           id: chunkId,
           visible,
-          data: this._getTracksUrl({ start, end, trackUrl, zoom, trackThinningZoomConfig }),
+          data: this._getTracksUrl({
+            start,
+            end,
+            trackUrl,
+            zoom,
+            trackThinningZoomConfig,
+          }),
           loadOptions: {
             ...getFetchLoadOptions(),
           },
