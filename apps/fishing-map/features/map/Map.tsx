@@ -11,7 +11,11 @@ import {
 import { useSetMapInstance } from 'features/map/map-context.hooks'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
 import MapControls from 'features/map/controls/MapControls'
-import { selectIsAnyReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
+import {
+  selectIsAnyReportLocation,
+  selectIsAnyVesselLocation,
+  selectIsWorkspaceLocation,
+} from 'routes/routes.selectors'
 import {
   useMapCursor,
   useMapDrag,
@@ -73,8 +77,9 @@ const MapWrapper = () => {
     }
   }, [setDeckLayers])
 
-  const reportLocation = useSelector(selectIsAnyReportLocation)
-  const isWorkspace = useSelector(selectIsWorkspaceLocation)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isVesselLocation = useSelector(selectIsAnyVesselLocation)
 
   const onMapLoad = useCallback(() => {
     dispatch(setMapLoaded(true))
@@ -123,13 +128,13 @@ const MapWrapper = () => {
       <MapAnnotationsDialog />
       <CoordinateEditOverlay />
       <MapControls mapLoading={mapLoading} />
-      {isWorkspace && !reportLocation && (
+      {isWorkspaceLocation && !isReportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}
-      {isWorkspace && !reportLocation && (
+      {isWorkspaceLocation && !isReportLocation && (
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
-      {isWorkspace && (
+      {(isWorkspaceLocation || isReportLocation || isVesselLocation) && (
         <MapInfo
           center={hoveredCoordinates && { x: hoveredCoordinates[0], y: hoveredCoordinates[1] }}
         />
