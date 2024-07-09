@@ -59,7 +59,6 @@ const workspace: Workspace<WorkspaceState> = {
       config: {
         color: '#FFAA0D',
         colorRamp: 'orange',
-        visible: false,
         datasets: [
           'public-belize-fishing-effort:v20220304',
           'public-bra-onyxsat-fishing-effort:v20211126',
