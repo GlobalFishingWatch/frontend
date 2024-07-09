@@ -25,6 +25,7 @@ import {
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsWorkspaceLocation } from 'routes/routes.selectors'
 import { MAX_TOOLTIP_LIST, ExtendedFeatureVessel, selectClickedEvent } from './map.slice'
 import { useViewState } from './map-viewport.hooks'
 
@@ -47,6 +48,7 @@ export const useGlobalConfigConnect = () => {
   const viewState = useViewState()
   const { dispatchQueryParams } = useLocationConnect()
   const { t } = useTranslation()
+  const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
@@ -69,16 +71,18 @@ export const useGlobalConfigConnect = () => {
       ) {
         const categoryQueryParam = `${layer.props.category}VisualizationMode`
         dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
-        toast(
-          t(
-            'toasts.maxPointsVisualizationExceeded',
-            'Max points visualization exceeded, swithing to heatmap mode.'
-          ),
-          { toastId: 'maxPointsVisualizationExceeded' }
-        )
+        if (isWorkspace) {
+          toast(
+            t(
+              'toasts.maxPointsVisualizationExceeded',
+              'Max points visualization exceeded, swithing to heatmap mode.'
+            ),
+            { toastId: 'maxPointsVisualizationExceeded' }
+          )
+        }
       }
     },
-    [dispatchQueryParams, t]
+    [dispatchQueryParams, isWorkspace, t]
   )
 
   return useMemo(() => {
