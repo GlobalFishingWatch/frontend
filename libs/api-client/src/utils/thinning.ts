@@ -7,6 +7,7 @@ export enum ThinningLevels {
   Aggressive = 'Aggressive',
   Medium = 'Medium',
   Default = 'Default',
+  None = 'None',
 }
 
 export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {
@@ -70,4 +71,5 @@ export const THINNING_LEVELS: Record<ThinningLevels, ThinningConfig> = {
     'change-speed-transit': 200,
     'min-accuracy-transit': 30,
   },
+  [ThinningLevels.None]: {},
 }
