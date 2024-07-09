@@ -49,7 +49,9 @@ export const useVisualizationsOptions = (
     (visualizationMode: FourwingsVisualizationMode) => {
       const categoryQueryParam = `${category}VisualizationMode`
       dispatchQueryParams({ [categoryQueryParam]: visualizationMode })
-      dispatch(setUserSetting({ [PREFERRED_FOURWINGS_VISUALISATION_MODE]: visualizationMode }))
+      if (visualizationMode !== 'positions') {
+        dispatch(setUserSetting({ [PREFERRED_FOURWINGS_VISUALISATION_MODE]: visualizationMode }))
+      }
     },
     [category, dispatch, dispatchQueryParams]
   )
