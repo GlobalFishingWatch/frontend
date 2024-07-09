@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react'
 import memoize from 'memoize-one'
 import cx from 'classnames'
 import { NumberValue, ScaleTime, scaleTime } from 'd3-scale'
-import dayjs, { ManipulateType } from 'dayjs'
 import { throttle } from 'lodash'
 import ResizeObserver from 'resize-observer-polyfill'
+import { DateTime, DateTimeUnit } from 'luxon'
 import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 import {
   getTime,
@@ -62,6 +62,7 @@ type TimelineProps = {
   stickToUnit?: (start: string, end: string) => 'day' | 'hour' | 'month' | 'year'
   displayWarningWhenInFuture?: boolean
   trackGraphOrientation: TrackGraphOrientation
+  locale: string
 }
 
 type Dragging = 'DRAG_START' | 'DRAG_END' | 'DRAG_INNER'
@@ -392,8 +393,8 @@ class Timeline extends PureComponent<TimelineProps> {
 
     const isHandlerZoomInValid = this.isHandlerZoomInValid(x)
 
-    let newStart = start
-    let newEnd = end
+    let newStart: string | null = start
+    let newEnd: string | null = end
 
     if (isHandlerZoomInValid.isZoomIn) {
       if (dragging === DRAG_START) {
@@ -407,17 +408,13 @@ class Timeline extends PureComponent<TimelineProps> {
     // on release, "stick" to day/hour
     const stickUnit = stickToUnit
       ? stickToUnit(newStart, newEnd)
-      : (getFourwingsInterval(
-          start,
-          end,
-          FOURWINGS_INTERVALS_ORDER
-        ).toLowerCase() as ManipulateType)
+      : (getFourwingsInterval(start, end, FOURWINGS_INTERVALS_ORDER).toLowerCase() as DateTimeUnit)
     newStart = stickToClosestUnit(newStart, stickUnit)
     newEnd = stickToClosestUnit(newEnd, stickUnit)
-    if (newStart === newEnd) {
-      const mDate = dayjs(newStart).utc()
-      const mEndOf = mDate.add(1, stickUnit)
-      newEnd = mEndOf.toISOString()
+    if (newStart && newEnd && newStart === newEnd) {
+      const mDate = DateTime.fromISO(newStart, { zone: 'utc' })
+      const mEndOf = mDate.plus({ [stickUnit]: 1 })
+      newEnd = mEndOf.toISO()
     }
 
     let source
@@ -429,8 +426,7 @@ class Timeline extends PureComponent<TimelineProps> {
       source = EVENT_SOURCE.ZOOM_IN_RELEASE
     }
 
-    onChange(newStart, newEnd, source)
-
+    onChange(newStart!, newEnd!, source)
     this.setState({
       dragging: null,
       handlerMouseX: null,
@@ -441,7 +437,9 @@ class Timeline extends PureComponent<TimelineProps> {
   onLast30DaysClick() {
     const { onChange, latestAvailableDataDate } = this.props
     const { start, end } = getLast30Days(latestAvailableDataDate)
-    onChange(start, end)
+    if (start && end) {
+      onChange(start, end)
+    }
   }
 
   render() {
@@ -459,6 +457,7 @@ class Timeline extends PureComponent<TimelineProps> {
       trackGraphOrientation,
       latestAvailableDataDate,
       displayWarningWhenInFuture,
+      locale,
     } = this.props
     const {
       dragging,
@@ -490,7 +489,6 @@ class Timeline extends PureComponent<TimelineProps> {
     const overallScale = this.getOverallScale(absoluteStart, absoluteEnd, innerWidth)
     const svgTransform = this.getSvgTransform(overallScale, start, end, innerWidth, innerStartPx)
 
-    const lastUpdatePosition = this.outerScale(new Date(absoluteEnd))
     const isInTheFuture =
       displayWarningWhenInFuture && new Date(start) > new Date(latestAvailableDataDate)
 
@@ -524,6 +522,7 @@ class Timeline extends PureComponent<TimelineProps> {
               placement={bookmarkPlacement}
               minX={relativeOffsetX}
               maxX={outerWidth}
+              locale={locale}
               onDelete={() => {
                 onBookmarkChange && onBookmarkChange('', '')
               }}
@@ -559,6 +558,7 @@ class Timeline extends PureComponent<TimelineProps> {
                 outerStart={outerStart as string}
                 outerEnd={outerEnd as string}
                 onChange={onChange}
+                locale={locale}
               />
               {this.props.children}
             </div>

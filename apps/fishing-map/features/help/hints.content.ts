@@ -1,4 +1,4 @@
-import type { Placement } from 'tippy.js'
+import type { Placement } from '@floating-ui/react'
 import fishingEffortHeatmapImg from 'assets/images/hints/fishingEffortHeatmap.png'
 import howToFilterActivityLayersImg from 'assets/images/hints/howToFilterActivityLayers.png'
 import clickingOnAGridCellToShowVesselsImg from 'assets/images/hints/clickingOnAGridCellToShowVessels.png'

@@ -69,10 +69,6 @@
   cursor: not-allowed;
 }
 
-.arrow {
-  display: none;
-}
-
 @media print {
   .logo {
     margin-left: 0;

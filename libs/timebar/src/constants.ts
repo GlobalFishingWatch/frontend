@@ -1,8 +1,8 @@
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 export const DEFAULT_CSS_TRANSITION = '.35s'
-export const DEFAULT_DATE_FORMAT = 'MMM D YYYY'
-export const DEFAULT_FULL_DATE_FORMAT = 'MMM D YYYY HH:mm'
+export const DEFAULT_DATE_FORMAT = 'MMM d yyyy'
+export const DEFAULT_FULL_DATE_FORMAT = 'MMM d yyyy HH:mm'
 
 export const EVENT_SOURCE = {
   SEEK_MOVE: 'SEEK_MOVE',

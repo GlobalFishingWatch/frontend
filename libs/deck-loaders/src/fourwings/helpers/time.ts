@@ -1,4 +1,4 @@
-import { DateTime, Duration, DurationLikeObject } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import intersection from 'lodash/intersection'
 import { FourwingsInterval } from '../lib/types'
 
@@ -7,7 +7,7 @@ export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MO
 
 export const LIMITS_BY_INTERVAL: Record<
   FourwingsInterval,
-  { unit: keyof DurationLikeObject; value: number; buffer: number } | undefined
+  { unit: 'days' | 'months' | 'year'; value: number; buffer: number } | undefined
 > = {
   HOUR: {
     unit: 'days',

@@ -10,6 +10,7 @@ import {
   ChoiceOption,
   IconButton,
   Logo,
+  Popover,
   SubBrands,
   Tooltip,
 } from '@globalfishingwatch/ui-components'
@@ -63,7 +64,6 @@ import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
-import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import { useHighlightReportArea } from 'features/reports/reports.hooks'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
@@ -169,10 +169,12 @@ function SaveWorkspaceButton() {
     setSaveWorkspaceTooltipOpen(false)
   }
 
-  const onClickOutside = () => {
-    setSaveWorkspaceTooltipOpen(false)
-    dispatch(setModalOpen({ id: 'editWorkspace', open: false }))
-    dispatch(setModalOpen({ id: 'createWorkspace', open: false }))
+  const onOpenChange = (open: boolean) => {
+    setSaveWorkspaceTooltipOpen(open)
+    if (!open) {
+      dispatch(setModalOpen({ id: 'editWorkspace', open: false }))
+      dispatch(setModalOpen({ id: 'createWorkspace', open: false }))
+    }
   }
 
   if (
@@ -200,12 +202,12 @@ function SaveWorkspaceButton() {
 
   return (
     <Fragment>
-      <TooltipContainer
-        visible={saveWorkspaceTooltipOpen}
-        onClickOutside={onClickOutside}
+      <Popover
+        open={saveWorkspaceTooltipOpen}
+        onOpenChange={onOpenChange}
         placement="bottom"
-        arrowClass={styles.arrow}
-        component={
+        showArrow={false}
+        content={
           <ul>
             <Tooltip
               content={
@@ -240,7 +242,7 @@ function SaveWorkspaceButton() {
             />
           </LoginButtonWrapper>
         </div>
-      </TooltipContainer>
+      </Popover>
     </Fragment>
   )
 
