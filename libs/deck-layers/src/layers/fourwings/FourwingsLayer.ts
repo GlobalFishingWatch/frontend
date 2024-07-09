@@ -75,7 +75,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   getIsPositionsAvailable() {
     if (this.props.visualizationMode?.includes(HEATMAP_ID)) {
       const heatmapLayer = this.getLayer() as FourwingsHeatmapTileLayer
-      if (!heatmapLayer.isLoaded) {
+      if (!heatmapLayer?.isLoaded) {
         return false
       }
       return heatmapLayer?.getIsPositionsAvailable()

@@ -36,8 +36,8 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
       const gridZoom = Math.round(
         Math.min(
           visualizationMode === HEATMAP_HIGH_RES_ID
-            ? layer.instance.context.viewport.zoom + 1
-            : layer.instance.context.viewport.zoom,
+            ? layer.instance.context?.viewport?.zoom + 1
+            : layer.instance.context?.viewport?.zoom,
           HEATMAP_DEFAULT_MAX_ZOOM
         )
       )
