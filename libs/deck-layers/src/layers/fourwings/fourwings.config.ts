@@ -58,7 +58,7 @@ export const getDateInIntervalResolution = (date: number, interval: FourwingsInt
     .toMillis()
 }
 
-export const CHUNKS_BUFFER = 0
+export const CHUNKS_BUFFER = 1
 // TODO: validate if worth to make this dynamic for the playback
 export const getChunkByInterval = (
   start: number,
@@ -72,12 +72,12 @@ export const getChunkByInterval = (
   const startDate = getUTCDateTime(start)
     .startOf(intervalUnit as any)
     .minus({ [intervalUnit]: CHUNKS_BUFFER })
-  const bufferedStartDate = startDate.minus({ [intervalUnit]: 1 })
+  const bufferedStartDate = startDate.minus({ [intervalUnit]: CHUNKS_BUFFER })
   const now = DateTime.now().toUTC().startOf('day')
   const endDate = getUTCDateTime(end)
     .endOf(intervalUnit as any)
     .plus({ [intervalUnit]: CHUNKS_BUFFER, millisecond: 1 })
-  const bufferedEndDate = endDate.plus({ [intervalUnit]: 1 })
+  const bufferedEndDate = endDate.plus({ [intervalUnit]: CHUNKS_BUFFER })
   return {
     id: `${intervalUnit}-chunk`,
     interval,
