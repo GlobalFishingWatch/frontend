@@ -169,14 +169,17 @@ const Vessel = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const changeTab = (tab: Tab<VesselSection>) => {
-    dispatchQueryParams({ vesselSection: tab.id })
-    updateAreaLayersVisibility(tab.id === 'areas' ? vesselArea : undefined)
-    trackEvent({
-      category: TrackCategory.VesselProfile,
-      action: `click_${tab.id}_tab`,
-    })
-  }
+  const changeTab = useCallback(
+    (tab: Tab<VesselSection>) => {
+      dispatchQueryParams({ vesselSection: tab.id })
+      updateAreaLayersVisibility(tab.id === 'areas' ? vesselArea : undefined)
+      trackEvent({
+        category: TrackCategory.VesselProfile,
+        action: `click_${tab.id}_tab`,
+      })
+    },
+    [dispatchQueryParams, updateAreaLayersVisibility, vesselArea]
+  )
 
   if (infoStatus === AsyncReducerStatus.Loading) {
     return <Spinner />

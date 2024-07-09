@@ -395,9 +395,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getEventLayers() {
-    return this.getSubLayers().filter(
-      (l) => !l.id.includes(TRACK_LAYER_TYPE)
-    ) as VesselEventsLayer[]
+    return this.getSubLayers().filter((l) => l.id.includes(EVENT_LAYER_TYPE)) as VesselEventsLayer[]
   }
 
   getVesselName() {
