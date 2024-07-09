@@ -33,3 +33,7 @@ export const DEFAULT_FISHING_EVENT_COLOR = [255, 255, 255] as Color
 export const DEFAULT_HIGHLIGHT_COLOR_VEC = [1.0, 1.0, 1.0, 1.0]
 
 export const TRACK_DEFAULT_THINNING = ThinningLevels.Aggressive
+export const TRACK_DEFAULT_THINNING_CONFIG = {
+  0: ThinningLevels.Insane,
+  4: ThinningLevels.Aggressive,
+}

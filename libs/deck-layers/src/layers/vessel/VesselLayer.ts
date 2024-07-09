@@ -44,6 +44,7 @@ import {
   EVENT_LAYER_TYPE,
   DEFAULT_FISHING_EVENT_COLOR,
   TRACK_LAYER_TYPE,
+  TRACK_DEFAULT_THINNING_CONFIG,
   TRACK_DEFAULT_THINNING,
 } from './vessel.config'
 import {
@@ -121,7 +122,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     end,
     trackUrl,
     zoom,
-    trackThinningZoomConfig,
+    trackThinningZoomConfig = TRACK_DEFAULT_THINNING_CONFIG,
   }: {
     start: string
     end: string
@@ -132,16 +133,14 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     const trackUrlObject = new URL(trackUrl)
     trackUrlObject.searchParams.append('start-date', start)
     trackUrlObject.searchParams.append('end-date', end)
-    if (trackThinningZoomConfig) {
-      const thinningLevel =
-        Object.entries(trackThinningZoomConfig)
-          .sort(([zoomLevelA], [zoomLevelB]) => parseInt(zoomLevelA) - parseInt(zoomLevelB))
-          .findLast(([zoomLevel]) => zoom >= parseInt(zoomLevel))?.[1] || TRACK_DEFAULT_THINNING
+    const thinningLevel =
+      Object.entries(trackThinningZoomConfig)
+        .sort(([zoomLevelA], [zoomLevelB]) => parseInt(zoomLevelA) - parseInt(zoomLevelB))
+        .findLast(([zoomLevel]) => zoom >= parseInt(zoomLevel))?.[1] || TRACK_DEFAULT_THINNING
 
-      Object.entries(THINNING_LEVELS[thinningLevel]).forEach(([key, value]) => {
-        trackUrlObject.searchParams.set(key, value)
-      })
-    }
+    Object.entries(THINNING_LEVELS[thinningLevel]).forEach(([key, value]) => {
+      trackUrlObject.searchParams.set(key, value)
+    })
     const format = trackUrlObject.searchParams.get('format') || 'DECKGL'
     if (format !== 'DECKGL' && !warnLogged) {
       console.warn(`only DECKGL format is supported, the current format (${format}) was replaced`)
@@ -196,7 +195,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           loaders: [VesselTrackLoader],
           _pathType: 'open',
           widthUnits: 'pixels',
-          getWidth: 1,
+          getWidth: 1.5,
           widthScale: 1,
           wrapLongitude: true,
           jointRounded: true,
