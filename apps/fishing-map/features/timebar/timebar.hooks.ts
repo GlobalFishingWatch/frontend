@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
-import { atom, useAtom } from 'jotai'
+import { atom, useAtom, useSetAtom } from 'jotai'
 import { debounce } from 'lodash'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
@@ -67,6 +67,17 @@ timerangeState.onMount = (setAtom) => {
       console.warn(e)
     }
   }
+}
+
+export const useSetTimerange = () => {
+  const setAtomTimerange = useSetAtom(timerangeState)
+  const setTimerange = useCallback(
+    (timerange: TimeRange) => {
+      setAtomTimerange(timerange)
+    },
+    [setAtomTimerange]
+  )
+  return setTimerange
 }
 
 export const useTimerangeConnect = () => {

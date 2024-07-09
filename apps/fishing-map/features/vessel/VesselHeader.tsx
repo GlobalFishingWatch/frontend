@@ -19,7 +19,7 @@ import {
 } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useVesselBounds } from 'features/vessel/vessel-bounds.hooks'
+import { useVesselProfileBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -31,8 +31,6 @@ import {
   selectVesselInfoData,
   selectVesselPrintMode,
 } from 'features/vessel/selectors/vessel.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { getUTCDateTime } from 'utils/dates'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -48,8 +46,7 @@ const VesselHeader = () => {
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
-  const { vesselBounds, setVesselBounds } = useVesselBounds()
-  const { setTimerange } = useTimerangeConnect()
+  const { boundsReady, setVesselBounds } = useVesselProfileBounds()
 
   const vesselPrintCallback = useCallback(() => {
     window.print()
@@ -99,32 +96,11 @@ const VesselHeader = () => {
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
-  const transmissionDateFrom = getVesselProperty(vessel, 'transmissionDateFrom')
-  const transmissionDateTo = getVesselProperty(vessel, 'transmissionDateTo')
-  const canFitDates = transmissionDateFrom && transmissionDateTo
 
   const onVesselFitBoundsClick = () => {
-    if (vesselBounds) {
-      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
-      setVesselBounds(vesselBounds)
-      trackAction('center_map')
-    } else {
-      if (canFitDates) {
-        if (
-          window.confirm(
-            t(
-              'layer.vessel_fit_bounds_out_of_timerange',
-              'The track has no activity in your selected timerange. Change timerange to fit this track?'
-            ) as string
-          )
-        ) {
-          setTimerange({
-            start: getUTCDateTime(transmissionDateFrom).toISO()!,
-            end: getUTCDateTime(transmissionDateTo).toISO()!,
-          })
-        }
-      }
-    }
+    if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+    setVesselBounds()
+    trackAction('center_map')
   }
 
   const onPrintClick = () => {
@@ -191,7 +167,7 @@ const VesselHeader = () => {
             tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
             tooltipPlacement="bottom"
             size="small"
-            disabled={!vesselBounds && !canFitDates}
+            disabled={!boundsReady}
             onClick={onVesselFitBoundsClick}
           />
           <Button

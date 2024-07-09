@@ -1,14 +1,14 @@
 import { useMemo, useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Bbox, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { useTranslation } from 'react-i18next'
+import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
+import { useSetTimerange, useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
-import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
+import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsVesselLocation, selectUrlTimeRange, selectVesselId } from 'routes/routes.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
@@ -17,49 +17,77 @@ import {
   selectVesselInfoData,
 } from 'features/vessel/selectors/vessel.selectors'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
+import { getUTCDateTime } from 'utils/dates'
 import { useVesselProfileTrack } from './vessel-track.hooks'
 
-type UseVesselBoundsType = 'events' | 'track'
-export const useVesselBounds = (type?: UseVesselBoundsType) => {
-  const fitBounds = useMapFitBounds()
+export const useVesselProfileLayer = () => {
   const vesselId = useSelector(selectVesselId)
   const vesselLayer = useGetDeckLayer<VesselLayer>(`${VESSEL_LAYER_PREFIX}${vesselId}`)
-  const events = useSelector(selectVesselEventsFilteredByTimerange)
+  return vesselLayer
+}
 
-  const vesselBounds = useMemo(() => {
-    let bounds: Bbox | undefined
-    if (vesselLayer?.instance.isLoaded && (!type || type === 'track')) {
-      bounds = vesselLayer?.instance.getVesselTrackBounds() || undefined
-    } else if (events?.length && (!type || type === 'events')) {
-      bounds = vesselLayer?.instance.getVesselEventsBounds() || undefined
-    }
-    return bounds
-  }, [events, type, vesselLayer?.instance])
+export const useVesselProfileBounds = () => {
+  const { t } = useTranslation()
+  const fitBounds = useMapFitBounds()
+  const setTimerange = useSetTimerange()
+  const vessel = useSelector(selectVesselInfoData)
+  const vesselLayer = useVesselProfileLayer()
+  // const events = useSelector(selectVesselEventsFilteredByTimerange)
+  const transmissionDateFrom = getVesselProperty(vessel, 'transmissionDateFrom')
+  const transmissionDateTo = getVesselProperty(vessel, 'transmissionDateTo')
+  const canFitDates = transmissionDateFrom && transmissionDateTo
+  const isTrackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
 
-  const setVesselBounds = useCallback(
-    (bounds: Bbox) => {
+  const setVesselBounds = useCallback(() => {
+    if (isTrackLoaded) {
+      const bounds = vesselLayer?.instance.getVesselTrackBounds()
       if (bounds) {
         fitBounds(bounds, { padding: 60 })
+      } else if (canFitDates) {
+        if (
+          window.confirm(
+            t(
+              'layer.vessel_fit_bounds_out_of_timerange',
+              'The track has no activity in your selected timerange. Change timerange to fit this track?'
+            ) as string
+          )
+        ) {
+          setTimerange({
+            start: getUTCDateTime(transmissionDateFrom).toISO()!,
+            end: getUTCDateTime(transmissionDateTo).toISO()!,
+          })
+        }
       }
-    },
-    [fitBounds]
-  )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isTrackLoaded,
+    canFitDates,
+    fitBounds,
+    t,
+    setTimerange,
+    transmissionDateFrom,
+    transmissionDateTo,
+  ])
 
-  return useMemo(() => ({ vesselBounds, setVesselBounds }), [vesselBounds, setVesselBounds])
+  return useMemo(
+    () => ({ setVesselBounds, boundsReady: isTrackLoaded }),
+    [setVesselBounds, isTrackLoaded]
+  )
 }
 
 const useVesselFitBoundsOnLoad = () => {
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
-  const { vesselBounds, setVesselBounds } = useVesselBounds('track')
+  const { setVesselBounds } = useVesselProfileBounds()
   const isVesselFitBoundsOnLoad = useSelector(selectVesselFitBoundsOnLoad)
 
   useEffect(() => {
-    if (vesselBounds && isVesselFitBoundsOnLoad) {
-      setVesselBounds(vesselBounds)
+    if (isVesselFitBoundsOnLoad) {
+      setVesselBounds()
       dispatch(setVesselFitBoundsOnLoad(false))
     }
-  }, [dispatch, fitBounds, isVesselFitBoundsOnLoad, setVesselBounds, vesselBounds])
+  }, [dispatch, fitBounds, isVesselFitBoundsOnLoad, setVesselBounds])
 }
 
 const useVesselFitTranmissionsBounds = () => {
