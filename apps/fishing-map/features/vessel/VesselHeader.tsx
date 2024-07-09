@@ -31,6 +31,8 @@ import {
   selectVesselInfoData,
   selectVesselPrintMode,
 } from 'features/vessel/selectors/vessel.selectors'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { getUTCDateTime } from 'utils/dates'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -47,6 +49,7 @@ const VesselHeader = () => {
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
   const { vesselBounds, setVesselBounds } = useVesselBounds()
+  const { setTimerange } = useTimerangeConnect()
 
   const vesselPrintCallback = useCallback(() => {
     window.print()
@@ -96,12 +99,31 @@ const VesselHeader = () => {
   const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
   const nShipname = getVesselProperty(vessel, 'nShipname', { identityId, identitySource })
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
+  const transmissionDateFrom = getVesselProperty(vessel, 'transmissionDateFrom')
+  const transmissionDateTo = getVesselProperty(vessel, 'transmissionDateTo')
+  const canFitDates = transmissionDateFrom && transmissionDateTo
 
   const onVesselFitBoundsClick = () => {
     if (vesselBounds) {
       if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
       setVesselBounds(vesselBounds)
       trackAction('center_map')
+    } else {
+      if (canFitDates) {
+        if (
+          window.confirm(
+            t(
+              'layer.vessel_fit_bounds_out_of_timerange',
+              'The track has no activity in your selected timerange. Change timerange to fit this track?'
+            ) as string
+          )
+        ) {
+          setTimerange({
+            start: getUTCDateTime(transmissionDateFrom).toISO()!,
+            end: getUTCDateTime(transmissionDateTo).toISO()!,
+          })
+        }
+      }
     }
   }
 
@@ -169,7 +191,7 @@ const VesselHeader = () => {
             tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
             tooltipPlacement="bottom"
             size="small"
-            disabled={!vesselBounds}
+            disabled={!vesselBounds && !canFitDates}
             onClick={onVesselFitBoundsClick}
           />
           <Button
