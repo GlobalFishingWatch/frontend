@@ -167,7 +167,6 @@ export const getDataUrlBySublayer = ({
     ? sublayer.vesselGroups[0]
     : sublayer.vesselGroups
   const params = {
-    proxy: true,
     format: '4WINGS',
     interval: chunk.interval,
     'temporal-aggregation': false,
