@@ -117,7 +117,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
           return rejectWithValue({ message: 'Error resolving endpoint' })
         }
 
-        const vessel = resources[url]
+        const vessel = resources[url]?.data
           ? (resources[url].data as IdentityVessel)
           : await GFWAPI.fetch<IdentityVessel>(url)
 
@@ -143,9 +143,9 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         return {
           id: getVesselProperty(vessel, 'id'),
           dataset: dataset,
-          combinedSourcesInfo: vessel.combinedSourcesInfo,
-          registryOwners: vessel.registryOwners,
-          registryPublicAuthorizations: vessel.registryPublicAuthorizations,
+          combinedSourcesInfo: vessel?.combinedSourcesInfo,
+          registryOwners: vessel?.registryOwners,
+          registryPublicAuthorizations: vessel?.registryPublicAuthorizations,
           info: datasetId,
           track: trackDatasetId,
           events: eventsDatasetsId,
@@ -175,8 +175,10 @@ const vesselSlice = createSlice({
       state.fitBoundsOnLoad = action.payload
     },
     setVesselEvents: (state, action: PayloadAction<{ vesselId: string; events: ApiEvent[] }>) => {
-      const { vesselId, events } = action.payload
-      state.data[vesselId].events = events
+      const { vesselId, events } = action.payload || {}
+      if (state.data[vesselId]) {
+        state.data[vesselId].events = events
+      }
     },
     setVesselPrintMode: (state, action: PayloadAction<boolean>) => {
       state.printMode = action.payload

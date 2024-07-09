@@ -264,7 +264,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                     .map(([key, value]) => {
                       if (key === 'total' || key === 'region') return ''
                       return (
-                        <p>
+                        <p key={key}>
                           {t(`event.${key}`, { defaultValue: key, count: value as number })}:{' '}
                           <I18nNumber number={value} />
                         </p>
