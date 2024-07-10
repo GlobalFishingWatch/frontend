@@ -232,7 +232,7 @@ export function getDataviewsSorted(
   dataviews: (UrlDataviewInstance | DataviewInstance)[],
   order = DATAVIEWS_LAYER_ORDER
 ) {
-  return dataviews.toSorted((a, b) => {
+  return [...(dataviews || [])].sort((a, b) => {
     const aType = a.config?.type as DataviewType
     const bType = b.config?.type as DataviewType
     const aPos = order.indexOf(aType)

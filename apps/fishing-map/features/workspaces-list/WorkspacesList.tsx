@@ -56,7 +56,7 @@ function WorkspacesList() {
   }
   const highlightedWorkspacesSorted =
     locationCategory === WorkspaceCategory.MarineManager
-      ? highlightedWorkspaces?.toSorted((a, b) =>
+      ? [...(highlightedWorkspaces || [])].sort((a, b) =>
           geti18nProperty(a, 'name', i18n.language as Locale) >
           geti18nProperty(b, 'name', i18n.language as Locale)
             ? 1
