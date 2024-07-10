@@ -18,7 +18,7 @@ const sortRecordsByTimestamp = ({
   recordsArray: Record<string, any>[]
   timestampProperty: string | number
 }) => {
-  return recordsArray.toSorted((a: Record<string, any>, b: Record<string, any>) =>
+  return [...(recordsArray || [])].sort((a: Record<string, any>, b: Record<string, any>) =>
     a[timestampProperty] && b[timestampProperty]
       ? getUTCDate(a[timestampProperty]).getTime() - getUTCDate(b[timestampProperty]).getTime()
       : 1
