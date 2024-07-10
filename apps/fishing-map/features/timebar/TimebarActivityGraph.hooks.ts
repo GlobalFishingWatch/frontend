@@ -66,7 +66,6 @@ export const useHeatmapActivityGraph = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     loaded,
-    instance,
     visualizationMode,
     debouncedViewportChangeHash,
     instance?.props.minVisibleValue,
