@@ -19,7 +19,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-groups.slice'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import styles from './Workspace.module.css'
-import { fetchWorkspaceThunk, setWorkspacePassword } from './workspace.slice'
+import { fetchWorkspaceThunk, setWorkspacePassword, VALID_PASSWORD } from './workspace.slice'
 import { MIN_WORKSPACE_PASSWORD_LENGTH, isPrivateWorkspaceNotAllowed } from './workspace.utils'
 
 export function ErrorPlaceHolder({
@@ -155,8 +155,9 @@ export function WorkspacePassword(): React.ReactElement {
       const action = await dispatch(fetchWorkspaceThunk({ workspaceId, password }))
       if (fetchWorkspaceThunk.fulfilled.match(action)) {
         const workspace = action.payload as Workspace
+        // When password is valid dataviewInstances are sent
         if (workspace?.dataviewInstances?.length) {
-          dispatch(setWorkspacePassword(''))
+          dispatch(setWorkspacePassword(VALID_PASSWORD))
         }
       }
       setLoading(false)
