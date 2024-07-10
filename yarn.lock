@@ -3010,7 +3010,7 @@ __metadata:
     intersection-observer: "npm:0.12.2"
     jest: "npm:^29.4.1"
     jest-environment-jsdom: "npm:^29.4.1"
-    jotai: "npm:^2.7.0"
+    jotai: "npm:^2.9.0"
     jotai-effect: "npm:^0.6.0"
     jsdom: "npm:~22.1.0"
     json2csv: "npm:^6.0.0-alpha.2"
@@ -19097,9 +19097,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jotai@npm:^2.7.0":
-  version: 2.8.4
-  resolution: "jotai@npm:2.8.4"
+"jotai@npm:^2.9.0":
+  version: 2.9.0
+  resolution: "jotai@npm:2.9.0"
   peerDependencies:
     "@types/react": ">=17.0.0"
     react: ">=17.0.0"
@@ -19108,7 +19108,7 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 10/b0931bdb6b38c1f5285b6ffd6b9ec84286fc3233b15d20cc7723b6b1e1e0d2c153ceb8aa5615c34d4d7fd16cbb060fedea5b97de5b33369b45b9268eacaf2748
+  checksum: 10/376b4b0ab927189b402cd4c832a85dfdc9de6d610b81d366d5aab065ea387b3e38f1a932942425bc600b1b33ae340f0fd1bad67dcd5078ae212aa28cd732ef4f
   languageName: node
   linkType: hard
 
