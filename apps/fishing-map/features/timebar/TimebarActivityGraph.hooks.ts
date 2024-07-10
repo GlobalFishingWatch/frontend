@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { FourwingsLayer, getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
@@ -13,14 +13,14 @@ import {
   selectTimebarSelectedDataviews,
   selectTimebarSelectedVisualizationMode,
 } from 'features/timebar/timebar.selectors'
-import {
-  getGraphDataFromFourwingsHeatmap,
-  getGraphDataFromFourwingsPositions,
-} from './timebar.utils'
+import { getGraphDataFromFourwingsPositions } from './timebar.utils'
+import { useHeatmapGraphWorker } from './timebar.workers.hooks'
 
 const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
 
 export const useHeatmapActivityGraph = () => {
+  const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
+  const heatmapTimebarWorker = useHeatmapGraphWorker()
   const viewport = useMapViewport()
   const viewportChangeHash = useMemo(() => {
     if (!viewport) return ''
@@ -37,32 +37,53 @@ export const useHeatmapActivityGraph = () => {
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
 
-  const heatmapActivity = useMemo(() => {
-    if (loaded) {
-      const viewportData = instance?.getViewportData()
-      if (visualizationMode === 'positions') {
-        return (
-          getGraphDataFromFourwingsPositions(viewportData as FourwingsPositionFeature[], {
-            start: chunk.bufferedStart,
-            end: chunk.bufferedEnd,
-            interval: chunk.interval,
-            sublayers: instance.props.sublayers,
-          }) || EMPTY_ACTIVITY_DATA
-        )
-      }
-      return (
-        getGraphDataFromFourwingsHeatmap(viewportData as FourwingsFeature[], {
+  const setFourwingsPositionsData = useCallback(
+    async (viewportData: FourwingsPositionFeature[]) => {
+      const data =
+        getGraphDataFromFourwingsPositions(viewportData, {
           start: chunk.bufferedStart,
           end: chunk.bufferedEnd,
           interval: chunk.interval,
           sublayers: instance.props.sublayers,
-          aggregationOperation: instance.props.aggregationOperation,
-          minVisibleValue: instance.props.minVisibleValue,
-          maxVisibleValue: instance.props.maxVisibleValue,
         }) || EMPTY_ACTIVITY_DATA
-      )
+      setData(data)
+    },
+    [chunk, instance]
+  )
+
+  const setFourwingsHeatmapData = useCallback(
+    async (data: FourwingsFeature[]) => {
+      if (data?.length && heatmapTimebarWorker) {
+        heatmapTimebarWorker?.postMessage({
+          data,
+          params: {
+            start: chunk.bufferedStart,
+            end: chunk.bufferedEnd,
+            interval: chunk.interval,
+            sublayers: instance.props.sublayers,
+            aggregationOperation: instance.props.aggregationOperation,
+            minVisibleValue: instance.props.minVisibleValue,
+            maxVisibleValue: instance.props.maxVisibleValue,
+          },
+        })
+        heatmapTimebarWorker.onmessage = ({ data }: MessageEvent<ActivityTimeseriesFrame[]>) => {
+          setData(data || EMPTY_ACTIVITY_DATA)
+        }
+      } else {
+        setData(EMPTY_ACTIVITY_DATA)
+      }
+    },
+    [chunk, instance, heatmapTimebarWorker]
+  )
+
+  useEffect(() => {
+    if (loaded) {
+      const viewportData = instance?.getViewportData()
+      if (visualizationMode === 'positions') {
+        setFourwingsPositionsData(viewportData as FourwingsPositionFeature[])
+      }
+      setFourwingsHeatmapData(viewportData as FourwingsFeature[])
     }
-    return EMPTY_ACTIVITY_DATA
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     loaded,
@@ -72,5 +93,5 @@ export const useHeatmapActivityGraph = () => {
     instance?.props.maxVisibleValue,
   ])
 
-  return useMemo(() => ({ loading: !loaded, heatmapActivity }), [heatmapActivity, loaded])
+  return useMemo(() => ({ loading: !loaded, heatmapActivity: data }), [data, loaded])
 }
