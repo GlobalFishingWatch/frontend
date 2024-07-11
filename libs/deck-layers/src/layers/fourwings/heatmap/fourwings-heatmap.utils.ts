@@ -31,12 +31,16 @@ export function aggregateSublayerValues(
   values: number[],
   aggregationOperation = FourwingsAggregationOperation.Sum
 ) {
-  let nonEmptyValuesLength = 0
-  return values.reduce((acc: number, value = 0, index) => {
-    if (value) nonEmptyValuesLength++
-    if (index === values.length - 1 && aggregationOperation === FourwingsAggregationOperation.Avg) {
-      return nonEmptyValuesLength ? (acc + value) / nonEmptyValuesLength : 0
-    }
+  if (aggregationOperation === FourwingsAggregationOperation.Avg) {
+    let nonEmptyValuesLength = 0
+    return (
+      (values.reduce((acc: number, value = 0) => {
+        if (value) nonEmptyValuesLength++
+        return acc + value
+      }, 0) || 1) / nonEmptyValuesLength
+    )
+  }
+  return values.reduce((acc: number, value = 0) => {
     return acc + value
   }, 0)
 }
@@ -49,13 +53,15 @@ export const aggregateCell = ({
   aggregationOperation = FourwingsAggregationOperation.Sum,
 }: AggregateCellParams): number[] => {
   return cellValues.map((sublayerValues, sublayerIndex) => {
+    if (!sublayerValues || !cellStartOffsets) {
+      return 0
+    }
+    const startOffset = cellStartOffsets[sublayerIndex]
     if (
-      !sublayerValues ||
-      !cellStartOffsets ||
       // all values are before time range
-      endFrame - cellStartOffsets[sublayerIndex] < 0 ||
+      endFrame - startOffset < 0 ||
       // all values are after time range
-      startFrame - cellStartOffsets[sublayerIndex] >= sublayerValues.length
+      startFrame - startOffset >= sublayerValues.length
     ) {
       return 0
     }
@@ -64,7 +70,7 @@ export const aggregateCell = ({
         values: sublayerValues,
         startFrame,
         endFrame,
-        startOffset: cellStartOffsets[sublayerIndex],
+        startOffset,
       }),
       aggregationOperation
     )

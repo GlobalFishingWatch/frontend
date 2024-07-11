@@ -1,10 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useMemo } from 'react'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
-import {
-  useDeckLayerComposer,
-  useDeckLayerLoadedState,
-} from '@globalfishingwatch/deck-layer-composer'
+import { useDeckLayerComposer } from '@globalfishingwatch/deck-layer-composer'
 import { useGlobalConfigConnect } from 'features/map/map.hooks'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsWorkspaceIndexLocation, selectIsUserLocation } from 'routes/routes.selectors'
