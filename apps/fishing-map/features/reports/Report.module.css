@@ -41,6 +41,11 @@
   font-weight: 500;
 }
 
+.top {
+  justify-content: unset;
+  padding-top: 12rem;
+}
+
 @media print {
   .tabContainer {
     display: none;
