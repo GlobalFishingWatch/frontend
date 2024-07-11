@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { uniq } from 'lodash'
+import {
+  getDataviewAvailableIntervals,
+  useGetDeckLayer,
+} from '@globalfishingwatch/deck-layer-composer'
 import { FourwingsLayer, getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
@@ -33,8 +37,11 @@ export const useHeatmapActivityGraph = () => {
   const timerange = useTimerangeConnect()
   const start = getUTCDate(timerange.start).getTime()
   const end = getUTCDate(timerange.end).getTime()
-  const chunk = getFourwingsChunk(start, end)
   const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
+  const allAvailableIntervals = uniq(
+    dataviews.flatMap((dataview) => getDataviewAvailableIntervals(dataview))
+  )
+  const chunk = getFourwingsChunk(start, end, allAvailableIntervals)
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
 
