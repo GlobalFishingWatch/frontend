@@ -107,7 +107,7 @@ const MapControls = ({
   }, [setMapCoordinates, zoom])
 
   const onZoomOutClick = useCallback(() => {
-    setMapCoordinates({ zoom: zoom - 1 })
+    setMapCoordinates({ zoom: Math.max(zoom - 1, 0) })
   }, [setMapCoordinates, zoom])
 
   const onScreenshotClick = useCallback(() => {
