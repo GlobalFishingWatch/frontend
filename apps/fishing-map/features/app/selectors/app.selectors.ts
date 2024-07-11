@@ -60,6 +60,13 @@ export const selectDetectionsVisualizationMode = createSelector(
   }
 )
 
+export const selectEnvironmentVisualizationMode = createSelector(
+  [selectWorkspaceStateProperty('environmentVisualizationMode')],
+  (environmentVisualizationMode) => {
+    return environmentVisualizationMode || 'heatmap-low-res'
+  }
+)
+
 export const selectMapRulersVisible = createSelector(
   [selectMapRulers, selectAreMapRulersVisible],
   (rulers, areMapRulersVisible): RulerData[] => {

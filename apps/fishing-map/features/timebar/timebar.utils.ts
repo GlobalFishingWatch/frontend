@@ -126,7 +126,7 @@ export function getGraphDataFromFourwingsHeatmap(
   features.forEach((feature) => {
     for (let sublayerIndex = 0; sublayerIndex < feature.length; sublayerIndex++) {
       const sublayer = feature[sublayerIndex]
-      const [values, dates] = sublayer
+      const [values, dates] = sublayer || []
       if (dates) {
         if (hasMinVisibleValue || hasMaxVisibleValue) {
           for (let dateIndex = 0; dateIndex < dates.length; dateIndex++) {
