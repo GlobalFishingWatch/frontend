@@ -25,7 +25,7 @@ export const useHeatmapActivityGraph = () => {
   const viewport = useMapViewport()
   const viewportChangeHash = useMemo(() => {
     if (!viewport) return ''
-    return [viewport.zoom, viewport.latitude, viewport.longitude].map((v) => v.toFixed(5)).join(',')
+    return [viewport.zoom, viewport.latitude, viewport.longitude].map((v) => v.toFixed(2)).join(',')
   }, [viewport])
   const debouncedViewportChangeHash = useDebounce(viewportChangeHash, 400)
   const dataviews = useSelector(selectTimebarSelectedDataviews)
