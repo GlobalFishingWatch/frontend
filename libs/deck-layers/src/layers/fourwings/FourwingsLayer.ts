@@ -101,8 +101,13 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return {} as FourwingsChunk
   }
 
-  getViewportData() {
-    return this.getLayer()?.getViewportData?.()
+  getViewportData(
+    { onlyValuesAndDates, sampleData } = {} as {
+      onlyValuesAndDates?: boolean
+      sampleData?: boolean
+    }
+  ) {
+    return this.getLayer()?.getViewportData?.({ onlyValuesAndDates, sampleData })
   }
 
   getMode() {

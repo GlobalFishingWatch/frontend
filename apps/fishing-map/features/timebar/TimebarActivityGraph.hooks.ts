@@ -6,21 +6,22 @@ import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { FourwingsFeature, FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectTimebarSelectedDataviews,
   selectTimebarSelectedVisualizationMode,
 } from 'features/timebar/timebar.selectors'
-import { getGraphDataFromFourwingsPositions } from './timebar.utils'
-import { useHeatmapGraphWorker } from './timebar.workers.hooks'
+import {
+  getGraphDataFromFourwingsHeatmap,
+  getGraphDataFromFourwingsPositions,
+} from './timebar.utils'
 
 const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
 
 export const useHeatmapActivityGraph = () => {
   const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
-  const heatmapTimebarWorker = useHeatmapGraphWorker()
   const viewport = useMapViewport()
   const viewportChangeHash = useMemo(() => {
     if (!viewport) return ''
@@ -52,45 +53,37 @@ export const useHeatmapActivityGraph = () => {
   )
 
   const setFourwingsHeatmapData = useCallback(
-    async (data: FourwingsFeature[]) => {
-      if (data?.length && heatmapTimebarWorker) {
-        setData(EMPTY_ACTIVITY_DATA)
-        setTimeout(() => {
-          heatmapTimebarWorker?.postMessage({
-            data,
-            params: {
-              start: chunk.bufferedStart,
-              end: chunk.bufferedEnd,
-              interval: chunk.interval,
-              sublayers: instance.props.sublayers,
-              aggregationOperation: instance.props.aggregationOperation,
-              minVisibleValue: instance.props.minVisibleValue,
-              maxVisibleValue: instance.props.maxVisibleValue,
-            },
+    (data: [number[], number[]][][]) => {
+      if (data?.length) {
+        setData(
+          getGraphDataFromFourwingsHeatmap(data, {
+            start: chunk.bufferedStart,
+            end: chunk.bufferedEnd,
+            interval: chunk.interval,
+            sublayers: instance.props.sublayers,
+            aggregationOperation: instance.props.aggregationOperation,
+            minVisibleValue: instance.props.minVisibleValue,
+            maxVisibleValue: instance.props.maxVisibleValue,
           })
-        }, 100)
-        heatmapTimebarWorker.onmessage = ({ data }: MessageEvent<ActivityTimeseriesFrame[]>) => {
-          setData(data || EMPTY_ACTIVITY_DATA)
-        }
+        )
       } else {
         setData(EMPTY_ACTIVITY_DATA)
       }
     },
-    [chunk, instance, heatmapTimebarWorker]
+    [chunk, instance]
   )
 
   useEffect(() => {
     if (loaded) {
-      const viewportData = instance?.getViewportData()
-      const cleanData = viewportData?.map((d) => {
-        return d.properties.values.map((sublayerValues: number[], sublayerIndex: number) => {
-          return [sublayerValues, d.properties.dates[sublayerIndex]]
-        }) as [number[], number[]]
-      })
       if (visualizationMode === 'positions') {
+        const viewportData = instance?.getViewportData()
         setFourwingsPositionsData(viewportData as FourwingsPositionFeature[])
       }
-      setFourwingsHeatmapData(cleanData as any)
+      const viewportData = instance?.getViewportData({
+        onlyValuesAndDates: true,
+        sampleData: instance.props.aggregationOperation === 'avg',
+      })
+      setFourwingsHeatmapData(viewportData as [number[], number[]][][])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

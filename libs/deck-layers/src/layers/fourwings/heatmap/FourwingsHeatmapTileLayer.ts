@@ -681,14 +681,24 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     )
   }
 
-  getViewportData() {
+  getViewportData(
+    { onlyValuesAndDates, sampleData } = {} as {
+      onlyValuesAndDates?: boolean
+      sampleData?: boolean
+    }
+  ) {
     const data = this.getData()
     const { viewport } = this.context
     const [west, north] = viewport.unproject([0, 0])
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
     if (data?.length) {
-      const dataFiltered = filterFeaturesByBounds(data, { north, south, west, east })
-      return dataFiltered as FourwingsFeature[]
+      const dataFiltered = filterFeaturesByBounds({
+        features: data,
+        bounds: { north, south, west, east },
+        onlyValuesAndDates,
+        sampleData,
+      })
+      return dataFiltered as FourwingsFeature[] | [number[], number[]][][]
     }
     return []
   }

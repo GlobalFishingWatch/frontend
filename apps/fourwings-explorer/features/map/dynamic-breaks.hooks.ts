@@ -32,7 +32,7 @@ export const useDynamicBreaksUpdate = () => {
         const { features } = chunksFeatures?.[0] || ({} as ChunkFeature)
         if (features && features.length) {
           const config = layers.find(({ id }) => id === layerId)?.config as FourwingsLayerConfig
-          const filteredFeatures = filterFeaturesByBounds(features, bounds) as any
+          const filteredFeatures = filterFeaturesByBounds({ features, bounds }) as any
           const rawData = aggregateFeatures(filteredFeatures, metadata)
           const data = rawData.filter((d) => {
             const matchesMin =

@@ -256,7 +256,10 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     const [west, north] = viewport.unproject([0, 0])
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
     if (data?.length) {
-      const dataFiltered = filterFeaturesByBounds(data, { north, south, west, east })
+      const dataFiltered = filterFeaturesByBounds({
+        features: data,
+        bounds: { north, south, west, east },
+      })
       return dataFiltered as FourwingsFeature[]
     }
     return []

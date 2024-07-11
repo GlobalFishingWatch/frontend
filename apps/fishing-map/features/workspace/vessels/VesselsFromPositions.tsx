@@ -58,7 +58,10 @@ function VesselsFromPositions() {
     fourwingsLayers.length && fourwingsLayers.every((l) => l?.instance?.isLoaded)
 
   useEffect(() => {
-    if (fourwingsLayersLoaded) {
+    if (
+      fourwingsLayersLoaded &&
+      fourwingsActivityLayer?.instance?.props.visualizationMode === 'positions'
+    ) {
       const positions = [
         ...((fourwingsActivityLayer?.instance.getViewportData() as FourwingsPositionFeature[]) ||
           []),
