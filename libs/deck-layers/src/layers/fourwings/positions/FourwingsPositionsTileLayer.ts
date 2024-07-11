@@ -36,7 +36,7 @@ import {
   POSITIONS_VISUALIZATION_MAX_ZOOM,
   SUPPORTED_POSITION_PROPERTIES,
 } from '../fourwings.config'
-import { getRoundedDateFromTS } from '../heatmap/fourwings-heatmap.utils'
+import { getISODateFromTS } from '../heatmap/fourwings-heatmap.utils'
 import { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
 import { PATH_BASENAME } from '../../layers.config'
@@ -338,31 +338,40 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     )
   }
 
+  _getDataUrl() {
+    const { startTime, endTime, sublayers, extentStart, extentEnd } = this.props
+    const supportedPositionProperties = this._getPositionProperties()
+    const start = extentStart && extentStart > startTime ? extentStart : startTime
+    const end = extentEnd && extentEnd < endTime ? extentEnd : endTime
+
+    const params = {
+      datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
+      filters: sublayers.map((sublayer) => sublayer.filter),
+      format: 'MVT',
+      'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
+      ...(supportedPositionProperties?.length && {
+        properties: supportedPositionProperties.map((sublayerProperties) =>
+          sublayerProperties.join(',')
+        ),
+      }),
+      // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
+      'date-range': `${getISODateFromTS(start)},${getISODateFromTS(end)}`,
+    }
+
+    const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
+    return `${baseUrl}?${stringify(params)}`
+  }
+
   renderLayers(): Layer<{}> | LayersList | null {
     if (this.state.fontLoaded) {
-      const { startTime, endTime, sublayers } = this.props
+      const { sublayers } = this.props
       const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
-      const supportedPositionProperties = this._getPositionProperties()
       const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
-      const params = {
-        datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
-        filters: sublayers.map((sublayer) => sublayer.filter),
-        format: 'MVT',
-        'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
-        ...(supportedPositionProperties?.length && {
-          properties: supportedPositionProperties.map((sublayerProperties) =>
-            sublayerProperties.join(',')
-          ),
-        }),
-        // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
-        'date-range': `${getRoundedDateFromTS(startTime)},${getRoundedDateFromTS(endTime)}`,
-      }
 
-      const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
       return [
         new MVTLayer(this.props, {
           id: `${this.props.id}-tiles`,
-          data: `${baseUrl}?${stringify(params)}`,
+          data: this._getDataUrl(),
           maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
           binary: false,
           loaders: [GFWMVTLoader],

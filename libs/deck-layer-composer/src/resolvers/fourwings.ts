@@ -16,7 +16,7 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import { ColorRampId } from '@globalfishingwatch/deck-layers'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { getDataviewAvailableIntervals } from './dataviews'
 import { DeckResolverFunction } from './types'
 
@@ -85,6 +85,13 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
   const datasets = dataview.config?.sublayers?.map((sublayer) =>
     sublayer.datasets.find((dataset) => dataset.type === DatasetTypes.Fourwings)
   )
+  const allVisibleDatasets = (dataview.config?.sublayers || []).flatMap((sublayer) =>
+    sublayer.visible
+      ? sublayer.datasets.filter((dataset) => dataset.type === DatasetTypes.Fourwings)
+      : []
+  )
+  const { extentStart, extentEnd } = getDatasetsExtent(allVisibleDatasets)
+
   const dataset = datasets?.[0]
 
   const tilesUrl = dataset
@@ -153,6 +160,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     ...(tilesUrl && { tilesUrl }),
     ...(compareStart && { compareStart: getUTCDateTime(compareStart).toMillis() }),
     ...(compareEnd && { compareEnd: getUTCDateTime(compareEnd).toMillis() }),
+    ...(extentStart && { extentStart: getUTCDateTime(extentStart).toMillis() }),
+    ...(extentEnd && { extentEnd: getUTCDateTime(extentEnd).toMillis() }),
     // if any of the activity dataviews has a max zoom level defined
     // apply the minimum max zoom level (the most restrictive approach)
     ...(maxZoomLevels &&

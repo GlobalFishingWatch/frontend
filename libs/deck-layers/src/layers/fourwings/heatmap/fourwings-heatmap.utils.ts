@@ -161,6 +161,8 @@ type GetDataUrlByChunk = {
   filter?: string
   vesselGroups?: string[]
   tilesUrl?: string
+  extentStart?: number
+  extentEnd?: number
 }
 
 export const getDataUrlBySublayer = ({
@@ -168,10 +170,14 @@ export const getDataUrlBySublayer = ({
   chunk,
   sublayer,
   tilesUrl = HEATMAP_API_TILES_URL,
+  extentStart,
+  extentEnd,
 }: GetDataUrlByChunk) => {
   const vesselGroup = Array.isArray(sublayer.vesselGroups)
     ? sublayer.vesselGroups[0]
     : sublayer.vesselGroups
+  const start = extentStart && extentStart > chunk.start ? extentStart : chunk.bufferedStart
+  const end = extentEnd && extentEnd < chunk.end ? extentEnd : chunk.bufferedEnd
   const params = {
     format: '4WINGS',
     interval: chunk.interval,
@@ -180,10 +186,7 @@ export const getDataUrlBySublayer = ({
     ...(sublayer.filter && { filters: [sublayer.filter] }),
     ...(vesselGroup && { 'vessel-groups': [vesselGroup] }),
     ...(chunk.interval !== 'YEAR' && {
-      'date-range': [
-        DateTime.fromMillis(chunk.bufferedStart).toISODate(),
-        DateTime.fromMillis(chunk.bufferedEnd).toISODate(),
-      ].join(','),
+      'date-range': [getISODateFromTS(start), getISODateFromTS(end)].join(','),
     }),
   }
   const url = `${tilesUrl}?${stringify(params, {
@@ -200,7 +203,7 @@ export interface Bounds {
   east: number
 }
 
-export function getRoundedDateFromTS(ts: number) {
+export function getISODateFromTS(ts: number) {
   return getUTCDateTime(ts).toISODate()
 }
 
