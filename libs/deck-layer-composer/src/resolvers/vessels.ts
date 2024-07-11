@@ -13,7 +13,10 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
 ): VesselLayerProps => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
   const { start, end, highlightedFeatures, visibleEvents, highlightedTime } = globalConfig
-
+  const highlightEventIds = [
+    ...(globalConfig.highlightEventIds || []),
+    ...(highlightedFeatures || [])?.map((feature) => feature.id),
+  ]
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
@@ -35,7 +38,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
       }
     }),
     visibleEvents: visibleEvents,
-    highlightEventIds: highlightedFeatures?.map((feature) => feature.id),
+    highlightEventIds,
     ...(dataview.config?.filters?.['speed']?.length && {
       minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
       maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),

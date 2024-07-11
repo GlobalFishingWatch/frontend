@@ -2,6 +2,7 @@ import { atom, useAtom, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 import { AnyDeckLayer, TilesBoundariesLayer } from '@globalfishingwatch/deck-layers'
 import { DataviewInstance } from '@globalfishingwatch/api-types'
+import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { getDataviewsResolved, getDataviewsSorted } from '../resolvers'
 import { dataviewToDeckLayer, ResolverGlobalConfig } from '../resolvers'
 
@@ -16,24 +17,29 @@ export function useDeckLayerComposer({
   globalConfig: ResolverGlobalConfig
 }) {
   const [deckLayers, setDeckLayers] = useAtom(deckLayerInstancesAtom)
+  const memoDataviews = useMemoCompare(dataviews)
+  const memoGlobalConfig = useMemoCompare(globalConfig)
 
   const layerInstances = useMemo(() => {
-    const dataviewsMerged = getDataviewsResolved(dataviews, globalConfig) as DataviewInstance[]
+    const dataviewsMerged = getDataviewsResolved(
+      memoDataviews,
+      memoGlobalConfig
+    ) as DataviewInstance[]
     const dataviewsMergedSorted = getDataviewsSorted(dataviewsMerged)
     const deckLayers = dataviewsMergedSorted?.flatMap((dataview) => {
       // TODO research if we can use atoms here
       try {
-        return dataviewToDeckLayer(dataview, globalConfig)
+        return dataviewToDeckLayer(dataview, memoGlobalConfig)
       } catch (e) {
         console.warn(e)
         return []
       }
     })
-    if (globalConfig.debug) {
+    if (memoGlobalConfig.debug) {
       return [...deckLayers, new TilesBoundariesLayer()]
     }
     return deckLayers
-  }, [dataviews, globalConfig])
+  }, [memoDataviews, memoGlobalConfig])
 
   useEffect(() => {
     setDeckLayers(layerInstances)

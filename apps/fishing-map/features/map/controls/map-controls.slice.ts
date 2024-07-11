@@ -30,7 +30,7 @@ const initialState: MapControlsSlice = {
 }
 
 const slice = createSlice({
-  name: 'mapAnnotations',
+  name: 'mapControls',
   initialState,
   reducers: {
     setMapControlValue: (

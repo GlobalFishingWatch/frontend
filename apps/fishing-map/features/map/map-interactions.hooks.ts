@@ -73,23 +73,33 @@ export const useClickedEventConnect = () => {
     })
   }, [])
 
-  const dispatchClickedEvent = (event: InteractionEvent | null) => {
-    if (event === null) {
+  const dispatchClickedEvent = (deckEvent: InteractionEvent | null) => {
+    if (deckEvent === null) {
       dispatch(setClickedEvent(null))
       return
     }
     if (isMapAnnotating) {
-      addMapAnnotation([event.longitude, event.latitude])
+      addMapAnnotation([deckEvent.longitude, deckEvent.latitude])
       return
     }
     if (isErrorNotificationEditing) {
-      addErrorNotification([event.longitude, event.latitude])
+      addErrorNotification([deckEvent.longitude, deckEvent.latitude])
       return
     }
     if (rulersEditing) {
-      onRulerMapClick([event.longitude, event.latitude])
+      onRulerMapClick([deckEvent.longitude, deckEvent.latitude])
       return
     }
+
+    const event = {
+      features: deckEvent.features?.map((feature) => {
+        const { geometry, ...rest } = feature as any
+        return rest
+      }),
+      latitude: deckEvent.latitude,
+      longitude: deckEvent.longitude,
+      point: { x: deckEvent.point.x, y: deckEvent.point.y },
+    } as SliceInteractionEvent
 
     const clusterFeature = event?.features?.find(
       (f) => (f as ClusterPickingObject).category === DataviewCategory.Events
@@ -119,7 +129,7 @@ export const useClickedEventConnect = () => {
       return
     }
 
-    dispatch(setClickedEvent(event as SliceInteractionEvent))
+    dispatch(setClickedEvent(event))
 
     // get temporal grid clicked features and order them by sublayerindex
     const fishingActivityFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
