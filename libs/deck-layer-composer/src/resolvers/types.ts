@@ -25,6 +25,7 @@ export type ResolverGlobalConfig = {
   compareStart?: string
   compareEnd?: string
   highlightedTime?: Partial<TimeRange>
+  highlightEventIds?: string[]
   visibleEvents: EventTypes[]
   highlightedFeatures?: DeckLayerPickingObject[]
 }

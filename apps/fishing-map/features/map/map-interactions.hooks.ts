@@ -122,7 +122,6 @@ export const useClickedEventConnect = () => {
     // Cancel all pending promises
     cancelPendingInteractionRequests()
 
-    console.log('🚀 ~ dispatchClickedEvent ~ event:', event)
     if (!event || !event.features) {
       if (clickedEvent) {
         dispatch(setClickedEvent(null))

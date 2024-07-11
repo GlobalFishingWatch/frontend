@@ -12,7 +12,11 @@ import {
 import { FourwingsLayer, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectHighlightedTime, setHighlightedEvents } from 'features/timebar/timebar.slice'
+import {
+  selectHighlightedEvents,
+  selectHighlightedTime,
+  setHighlightedEvents,
+} from 'features/timebar/timebar.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectShowTimeComparison,
@@ -48,6 +52,7 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
   const timebarHighlightedTime = useSelector(selectHighlightedTime)
+  const highlightEventIds = useSelector(selectHighlightedEvents)
   const viewState = useViewState()
   const { dispatchQueryParams } = useLocationConnect()
   const { t } = useTranslation()
@@ -116,6 +121,7 @@ export const useGlobalConfigConnect = () => {
       activityVisualizationMode,
       detectionsVisualizationMode,
       environmentVisualizationMode,
+      highlightEventIds,
       highlightedTime,
       visibleEvents,
       highlightedFeatures,
@@ -140,6 +146,7 @@ export const useGlobalConfigConnect = () => {
     highlightedTime,
     visibleEvents,
     highlightedFeatures,
+    highlightEventIds,
     onPositionsMaxPointsError,
     showTimeComparison,
     timeComparisonValues,

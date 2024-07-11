@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { debounce } from 'lodash'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
+import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectTimebarGraph,
@@ -147,6 +148,7 @@ export const useDisableHighlightTimeConnect = () => {
 
 export const useHighlightedEventsConnect = () => {
   const highlightedEvents = useSelector(selectHighlightedEvents)
+  const hoverEvent = useAtomValue(deckHoverInteractionAtom)
   const dispatch = useAppDispatch()
 
   const dispatchHighlightedEvents = useCallback(
@@ -156,15 +158,19 @@ export const useHighlightedEventsConnect = () => {
     [dispatch]
   )
 
-  const serializedHighlightedEvents = highlightedEvents?.join('')
+  const highlightedEventIds = [
+    ...(highlightedEvents || []),
+    ...(hoverEvent.features || []).map((f) => f.id),
+  ]
+  const serializedHighlightedEventIds = highlightedEventIds.join('')
 
   return useMemo(() => {
     return {
-      highlightedEvents,
+      highlightedEventIds,
       dispatchHighlightedEvents,
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serializedHighlightedEvents, dispatchHighlightedEvents])
+  }, [serializedHighlightedEventIds, dispatchHighlightedEvents])
 }
 
 export const useTimebarVisualisationConnect = () => {

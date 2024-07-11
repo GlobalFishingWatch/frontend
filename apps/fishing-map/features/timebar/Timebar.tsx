@@ -1,4 +1,4 @@
-import { Fragment, memo, useCallback, useState, useMemo } from 'react'
+import { Fragment, memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
@@ -60,14 +60,8 @@ import styles from './Timebar.module.css'
 
 export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = ({
-  dispatchHighlightedEvents,
-  showTooltip,
-}: {
-  dispatchHighlightedEvents: any
-  showTooltip: boolean
-}) => {
-  // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
+const TimebarHighlighterWrapper = ({ showTooltip }: { showTooltip: boolean }) => {
+  const { highlightedEventIds, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
   const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
@@ -78,12 +72,12 @@ const TimebarHighlighterWrapper = ({
     (chunks?: HighlightedChunks) => {
       if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
         dispatchHighlightedEvents(chunks.tracksEvents)
-      } else {
+      } else if (highlightedEventIds) {
         // TODO review this as it is triggered on every timebar change
         dispatchHighlightedEvents(undefined)
       }
     },
-    [dispatchHighlightedEvents]
+    [dispatchHighlightedEvents, highlightedEventIds]
   )
 
   // Return precise chunk frame extent
@@ -154,8 +148,8 @@ const TimebarWrapper = () => {
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  const { highlightedEvents, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
+  const { highlightedEventIds, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const { setViewState, viewState } = useViewStateAtom()
   const availableStart = useSelector(selectAvailableStart)
@@ -257,6 +251,14 @@ const TimebarWrapper = () => {
     setMouseInside(false)
   }, [])
 
+  useEffect(() => {
+    if (!isMouseInside) {
+      requestAnimationFrame(() => {
+        dispatchHighlightedEvents(undefined)
+      })
+    }
+  }, [dispatchHighlightedEvents, isMouseInside])
+
   const onMouseDown = useCallback(() => {
     rootElement?.classList.add('dragging')
   }, [rootElement?.classList])
@@ -357,7 +359,7 @@ const TimebarWrapper = () => {
           <Fragment>
             <TimebarTracksEvents
               data={events}
-              highlightedEventsIds={highlightedEvents}
+              highlightedEventsIds={highlightedEventIds}
               onEventClick={onEventClick}
             />
           </Fragment>
@@ -405,10 +407,7 @@ const TimebarWrapper = () => {
               <TimebarActivityGraph visualisation={timebarVisualisation} />
             )}
             {timebarVisualisation === TimebarVisualisations.Vessel && getTracksComponents()}
-            <TimebarHighlighterWrapper
-              dispatchHighlightedEvents={dispatchHighlightedEvents}
-              showTooltip={isMouseInside}
-            />
+            <TimebarHighlighterWrapper showTooltip={isMouseInside} />
           </Fragment>
         ) : null}
       </Timebar>
