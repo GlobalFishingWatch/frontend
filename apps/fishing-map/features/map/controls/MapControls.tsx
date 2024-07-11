@@ -100,7 +100,7 @@ const MapControls = ({
     [latitude, longitude]
   )
   const options = useMemo(() => ({ bounds, center }), [bounds, center])
-  const debouncedOptions = useDebounce(options, 16)
+  const debouncedOptions = useDebounce(options, 60)
 
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ zoom: zoom + 1 })

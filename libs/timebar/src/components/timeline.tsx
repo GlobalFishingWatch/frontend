@@ -308,7 +308,7 @@ class Timeline extends PureComponent<TimelineProps> {
         onMouseMove(clientX, scale, isDay)
       }
     },
-    16
+    60
   )
 
   notifyMouseLeave = () => {
