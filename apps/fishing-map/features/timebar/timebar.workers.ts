@@ -66,7 +66,7 @@ function getDatesPopulated({
 }
 
 export function getGraphDataFromFourwingsHeatmap(
-  features: any[],
+  features: [number[], number[]][][],
   {
     start,
     end,
@@ -77,7 +77,7 @@ export function getGraphDataFromFourwingsHeatmap(
     aggregationOperation,
     minVisibleValue,
     maxVisibleValue,
-  }: any
+  } = {} as any
 ): any[] {
   if (!features?.length || !start || !end) {
     return []
@@ -91,26 +91,40 @@ export function getGraphDataFromFourwingsHeatmap(
         ...getDatesPopulated({ start: compareStart, end: compareEnd, interval, sublayerLength }),
       }),
   }
-
+  const hasMinVisibleValue = minVisibleValue !== undefined
+  const hasMaxVisibleValue = maxVisibleValue !== undefined
   features.forEach((feature) => {
-    const { dates, values } = feature.properties
-    if (dates) {
-      dates.forEach((sublayerDates, sublayerIndex) => {
-        const valueArray = values[sublayerIndex]
-        sublayerDates.forEach((sublayerDate, dateIndex) => {
-          const sublayerDateData = data[sublayerDate]
-          if (
-            sublayerDateData &&
-            (!minVisibleValue || valueArray[dateIndex] >= minVisibleValue) &&
-            (!maxVisibleValue || valueArray[dateIndex] <= maxVisibleValue)
-          ) {
-            sublayerDateData[sublayerIndex] += valueArray[dateIndex]
-            sublayerDateData.count![sublayerIndex]++
+    for (let sublayerIndex = 0; sublayerIndex < feature.length; sublayerIndex++) {
+      const sublayer = feature[sublayerIndex]
+      const [values, dates] = sublayer
+      if (dates) {
+        if (hasMinVisibleValue || hasMaxVisibleValue) {
+          for (let dateIndex = 0; dateIndex < dates.length; dateIndex++) {
+            const sublayerDate = dates[dateIndex]
+            const sublayerDateData = data[sublayerDate]
+            if (
+              sublayerDateData &&
+              values[dateIndex] >= minVisibleValue &&
+              values[dateIndex] <= maxVisibleValue
+            ) {
+              sublayerDateData[sublayerIndex] += values[dateIndex]
+              sublayerDateData.count![sublayerIndex]++
+            }
           }
-        })
-      })
+        } else {
+          for (let dateIndex = 0; dateIndex < dates.length; dateIndex++) {
+            const sublayerDate = dates[dateIndex]
+            const sublayerDateData = data[sublayerDate]
+            if (sublayerDateData) {
+              sublayerDateData[sublayerIndex] += values[dateIndex]
+              sublayerDateData.count![sublayerIndex]++
+            }
+          }
+        }
+      }
     }
   })
+
   return Object.values(data).map(({ date, count, ...rest }: any) => {
     Object.keys(rest).forEach((key) => {
       if (aggregationOperation === 'avg') {

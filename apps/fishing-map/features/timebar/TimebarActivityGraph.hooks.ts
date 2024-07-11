@@ -54,18 +54,21 @@ export const useHeatmapActivityGraph = () => {
   const setFourwingsHeatmapData = useCallback(
     async (data: FourwingsFeature[]) => {
       if (data?.length && heatmapTimebarWorker) {
-        heatmapTimebarWorker?.postMessage({
-          data,
-          params: {
-            start: chunk.bufferedStart,
-            end: chunk.bufferedEnd,
-            interval: chunk.interval,
-            sublayers: instance.props.sublayers,
-            aggregationOperation: instance.props.aggregationOperation,
-            minVisibleValue: instance.props.minVisibleValue,
-            maxVisibleValue: instance.props.maxVisibleValue,
-          },
-        })
+        setData(EMPTY_ACTIVITY_DATA)
+        setTimeout(() => {
+          heatmapTimebarWorker?.postMessage({
+            data,
+            params: {
+              start: chunk.bufferedStart,
+              end: chunk.bufferedEnd,
+              interval: chunk.interval,
+              sublayers: instance.props.sublayers,
+              aggregationOperation: instance.props.aggregationOperation,
+              minVisibleValue: instance.props.minVisibleValue,
+              maxVisibleValue: instance.props.maxVisibleValue,
+            },
+          })
+        }, 100)
         heatmapTimebarWorker.onmessage = ({ data }: MessageEvent<ActivityTimeseriesFrame[]>) => {
           setData(data || EMPTY_ACTIVITY_DATA)
         }
@@ -79,10 +82,15 @@ export const useHeatmapActivityGraph = () => {
   useEffect(() => {
     if (loaded) {
       const viewportData = instance?.getViewportData()
+      const cleanData = viewportData?.map((d) => {
+        return d.properties.values.map((sublayerValues: number[], sublayerIndex: number) => {
+          return [sublayerValues, d.properties.dates[sublayerIndex]]
+        }) as [number[], number[]]
+      })
       if (visualizationMode === 'positions') {
         setFourwingsPositionsData(viewportData as FourwingsPositionFeature[])
       }
-      setFourwingsHeatmapData(viewportData as FourwingsFeature[])
+      setFourwingsHeatmapData(cleanData as any)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
