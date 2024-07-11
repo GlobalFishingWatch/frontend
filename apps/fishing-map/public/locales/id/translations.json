@@ -37,7 +37,7 @@
     "kilometers": "kilometer",
     "linkToReport": "Periksa laporan dinamis di sini",
     "nauticalmiles": "mil laut",
-    "newTimeRange": "Click the button to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "newTimeRange": "Klik tombol untuk melihat kapal yang aktif di area ini antara <strong>{{start}}</strong> dan <strong>{{end}}</strong>",
     "noDataByArea": "Data tidak tersedia untuk area yang dipilih",
     "noTimeComparisonAllowed": "Mode perbandingan waktu tidak tersedia saat lapisan memiliki filter yang berbeda",
     "noVesselDataFiltered": "Tidak ada kapal yang cocok dengan filter Anda",
