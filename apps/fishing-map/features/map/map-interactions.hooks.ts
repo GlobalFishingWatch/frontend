@@ -92,10 +92,11 @@ export const useClickedEventConnect = () => {
     }
 
     const event = {
-      features: deckEvent.features?.map((feature) => {
-        const { geometry, ...rest } = feature as any
-        return rest
-      }),
+      features: deckEvent.features,
+      //   .map((feature) => {
+      //   const { geometry, ...rest } = feature as any
+      //   return rest
+      // }),
       latitude: deckEvent.latitude,
       longitude: deckEvent.longitude,
       point: { x: deckEvent.point.x, y: deckEvent.point.y },
