@@ -260,7 +260,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
     ) {
       return (
         <ReportVesselsPlaceholder>
-          <div className={cx(styles.cover, styles.center)}>
+          <div className={cx(styles.cover, styles.center, styles.top)}>
             <p
               dangerouslySetInnerHTML={{
                 __html: t('analysis.newTimeRange', {
