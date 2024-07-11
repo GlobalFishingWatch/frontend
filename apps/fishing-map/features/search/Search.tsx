@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Dataset } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { trackEvent, useDebounce } from '@globalfishingwatch/react-hooks'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
@@ -42,7 +42,7 @@ import {
   isAdvancedSearchAllowed,
 } from 'features/search/search.selectors'
 import { VesselSearchState } from 'types'
-import { TrackCategory } from 'features/app/analytics.hooks'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Search.module.css'
 
 function Search() {

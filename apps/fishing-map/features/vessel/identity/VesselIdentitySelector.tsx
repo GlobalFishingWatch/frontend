@@ -53,7 +53,7 @@ const VesselIdentitySelector = () => {
     trackEvent({
       category: TrackCategory.VesselProfile,
       action: `change_timeperiod_${identitySource}_tab`,
-      label: `${identityIndex} | ${start} - ${end}`,
+      label: `${identityIndex + 1} | ${start} - ${end}`,
     })
   }
 
