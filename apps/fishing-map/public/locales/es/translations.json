@@ -37,7 +37,7 @@
     "kilometers": "kilometers",
     "linkToReport": "Verifica el informe dinámico aquí",
     "nauticalmiles": "nautical miles",
-    "newTimeRange": "Click the button to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "newTimeRange": "Haga clic en el boton para ver las embarcaciones activas en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "noDataByArea": "no hay datos disponibles para el area seleccionada",
     "noTimeComparisonAllowed": "Modos de comparación de tiempo no están disponibles cuando las capas tienen diferentes filtros",
     "noVesselDataFiltered": "No hay embarcaciones que coincidan con su filtro",
