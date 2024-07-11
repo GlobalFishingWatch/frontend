@@ -12,6 +12,7 @@ import { debounce, isEqual, sum } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
 import {
+  FourwingsValuesAndDatesFeature,
   FourwingsFeature,
   FourwingsInterval,
   FourwingsLoader,
@@ -41,6 +42,7 @@ import {
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
+  GetViewportDataParams,
 } from '../fourwings.types'
 import { getSteps, hexToRgb, removeOutliers } from '../../../utils'
 import {
@@ -681,12 +683,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     )
   }
 
-  getViewportData(
-    { onlyValuesAndDates, sampleData } = {} as {
-      onlyValuesAndDates?: boolean
-      sampleData?: boolean
-    }
-  ) {
+  getViewportData(params = {} as GetViewportDataParams) {
     const data = this.getData()
     const { viewport } = this.context
     const [west, north] = viewport.unproject([0, 0])
@@ -695,10 +692,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       const dataFiltered = filterFeaturesByBounds({
         features: data,
         bounds: { north, south, west, east },
-        onlyValuesAndDates,
-        sampleData,
+        ...params,
       })
-      return dataFiltered as FourwingsFeature[] | [number[], number[]][][]
+      return dataFiltered as FourwingsFeature[] | FourwingsValuesAndDatesFeature[]
     }
     return []
   }

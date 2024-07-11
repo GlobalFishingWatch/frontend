@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
-import { useLocalStorage } from 'usehooks-ts'
-import { Placement } from '@floating-ui/react'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import {

@@ -66,5 +66,6 @@ export type FourwingsStaticFeatureProperties = {
 }
 
 export type FourwingsFeature<Properties = FourwingsFeatureProperties> = Feature<Polygon, Properties>
+export type FourwingsValuesAndDatesFeature = [number[], number[]][] // values in first place, dates in second
 export type FourwingsStaticFeature = FourwingsFeature<FourwingsStaticFeatureProperties>
 export type FourwingsPositionFeature = Feature<Point, FourwingsPositionFeatureProperties>

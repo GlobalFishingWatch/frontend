@@ -54,18 +54,18 @@ export const filterFeaturesByBounds = ({
     const rightOffset = rightWorldCopy && !leftWorldCopy && featureInRightCopy ? 360 : 0
     const isInBounds =
       lon + leftOffset + rightOffset > west && lon + leftOffset + rightOffset < east
-    if (!onlyValuesAndDates) {
-      return isInBounds ? [f] : []
+    if (onlyValuesAndDates) {
+      return isInBounds
+        ? [
+            f.properties.values.map((sublayerValues: number[], sublayerIndex: number) => {
+              return [
+                sublayerValues,
+                (f.properties as FourwingsFeatureProperties).dates?.[sublayerIndex],
+              ]
+            }),
+          ]
+        : []
     }
-    return isInBounds
-      ? [
-          f.properties.values.map((sublayerValues: number[], sublayerIndex: number) => {
-            return [
-              sublayerValues,
-              (f.properties as FourwingsFeatureProperties).dates?.[sublayerIndex],
-            ]
-          }),
-        ]
-      : []
+    return isInBounds ? f : []
   })
 }

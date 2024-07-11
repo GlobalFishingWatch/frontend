@@ -2,14 +2,12 @@ import { DateTime } from 'luxon'
 import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import {
   CONFIG_BY_INTERVAL,
+  FourwingsValuesAndDatesFeature,
   FourwingsFeature,
   FourwingsInterval,
   FourwingsPositionFeature,
 } from '@globalfishingwatch/deck-loaders'
-import {
-  FourwingsAggregationOperation,
-  getDateInIntervalResolution,
-} from '@globalfishingwatch/deck-layers'
+import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime } from 'utils/dates'
 import { FeaturesToTimeseriesParams } from 'features/reports/reports-timeseries.utils'
 
@@ -96,7 +94,7 @@ export function getGraphDataFromFourwingsPositions(
 }
 
 export function getGraphDataFromFourwingsHeatmap(
-  features: [number[], number[]][][],
+  features: FourwingsFeature[] | FourwingsValuesAndDatesFeature[],
   {
     start,
     end,
@@ -121,39 +119,77 @@ export function getGraphDataFromFourwingsHeatmap(
         ...getDatesPopulated({ start: compareStart, end: compareEnd, interval, sublayerLength }),
       }),
   }
+
   const hasMinVisibleValue = minVisibleValue !== undefined
   const hasMaxVisibleValue = maxVisibleValue !== undefined
-  features.forEach((feature) => {
-    for (let sublayerIndex = 0; sublayerIndex < feature.length; sublayerIndex++) {
-      const sublayer = feature[sublayerIndex]
-      const [values, dates] = sublayer || []
+
+  const areFourwingsFeatures = (features as FourwingsFeature[]).some(
+    (f) => f.properties !== undefined
+  )
+
+  if (areFourwingsFeatures) {
+    ;(features as FourwingsFeature[]).forEach((feature) => {
+      const { dates, values } = feature.properties
       if (dates) {
-        if (hasMinVisibleValue || hasMaxVisibleValue) {
-          for (let dateIndex = 0; dateIndex < dates.length; dateIndex++) {
-            const sublayerDate = dates[dateIndex]
-            const sublayerDateData = data[sublayerDate]
-            if (
-              sublayerDateData &&
-              (!hasMinVisibleValue || values[dateIndex] >= minVisibleValue) &&
-              (!hasMaxVisibleValue || values[dateIndex] <= maxVisibleValue)
-            ) {
-              sublayerDateData[sublayerIndex] += values[dateIndex]
-              sublayerDateData.count![sublayerIndex]++
-            }
+        dates.forEach((sublayerDates, sublayerIndex) => {
+          const valueArray = values[sublayerIndex]
+          if (hasMinVisibleValue || hasMaxVisibleValue) {
+            sublayerDates.forEach((sublayerDate, dateIndex) => {
+              const sublayerDateData = data[sublayerDate]
+              if (
+                sublayerDateData &&
+                (!minVisibleValue || valueArray[dateIndex] >= minVisibleValue) &&
+                (!maxVisibleValue || valueArray[dateIndex] <= maxVisibleValue)
+              ) {
+                sublayerDateData[sublayerIndex] += valueArray[dateIndex]
+                sublayerDateData.count![sublayerIndex]++
+              }
+            })
+          } else {
+            sublayerDates.forEach((sublayerDate, dateIndex) => {
+              const sublayerDateData = data[sublayerDate]
+              if (sublayerDateData) {
+                sublayerDateData[sublayerIndex] += valueArray[dateIndex]
+                sublayerDateData.count![sublayerIndex]++
+              }
+            })
           }
-        } else {
-          for (let dateIndex = 0; dateIndex < dates.length; dateIndex++) {
-            const sublayerDate = dates[dateIndex]
-            const sublayerDateData = data[sublayerDate]
-            if (sublayerDateData) {
-              sublayerDateData[sublayerIndex] += values[dateIndex]
-              sublayerDateData.count![sublayerIndex]++
+        })
+      }
+    })
+  } else {
+    ;(features as FourwingsValuesAndDatesFeature[]).forEach((feature) => {
+      for (let sublayerIndex = 0; sublayerIndex < feature.length; sublayerIndex++) {
+        const sublayer = feature[sublayerIndex]
+        const [values, dates] = sublayer || []
+        if (dates) {
+          if (hasMinVisibleValue || hasMaxVisibleValue) {
+            for (let dateIndex = 0; dateIndex < dates.length; dateIndex++) {
+              const sublayerDate = dates[dateIndex]
+              const sublayerDateData = data[sublayerDate]
+              if (
+                sublayerDateData &&
+                (!hasMinVisibleValue || values[dateIndex] >= minVisibleValue) &&
+                (!hasMaxVisibleValue || values[dateIndex] <= maxVisibleValue)
+              ) {
+                sublayerDateData[sublayerIndex] += values[dateIndex]
+                sublayerDateData.count![sublayerIndex]++
+              }
+            }
+          } else {
+            for (let dateIndex = 0; dateIndex < dates.length; dateIndex++) {
+              const sublayerDate = dates[dateIndex]
+              const sublayerDateData = data[sublayerDate]
+              if (sublayerDateData) {
+                sublayerDateData[sublayerIndex] += values[dateIndex]
+                sublayerDateData.count![sublayerIndex]++
+              }
             }
           }
         }
       }
-    }
-  })
+    })
+  }
 
   return Object.values(data).map(({ date, count, ...rest }: any) => {
     Object.keys(rest).forEach((key) => {
