@@ -10,6 +10,8 @@ import {
 import {
   DrawFeatureType,
   FourwingsVisualizationMode,
+  HEATMAP_ID,
+  HEATMAP_LOW_RES_ID,
   RulerData,
 } from '@globalfishingwatch/deck-layers'
 import {
@@ -85,6 +87,7 @@ export type ReportVesselGraph =
 export interface WorkspaceState extends BaseUrlWorkspace {
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
+  environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
   dataviewInstances?: UrlDataviewInstance[]
   bivariateDataviews?: BivariateDataviews
   mapAnnotations?: MapAnnotation[]

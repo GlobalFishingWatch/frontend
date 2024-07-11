@@ -5,6 +5,8 @@ import {
   DeckLayerPickingObject,
   FourwingsLayer,
   FourwingsVisualizationMode,
+  HEATMAP_ID,
+  HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers'
 import { TimeRange } from './dataviews'
 
@@ -17,6 +19,7 @@ export type ResolverGlobalConfig = {
   bivariateDataviews?: [string, string]
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
+  environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
   onPositionsMaxPointsError?: (layer: FourwingsLayer, maxPoints: number) => void
   // TODO review if we can move this to each own dataview
   compareStart?: string

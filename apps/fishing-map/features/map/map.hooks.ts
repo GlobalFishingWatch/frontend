@@ -21,6 +21,7 @@ import {
   selectActivityVisualizationMode,
   selectBivariateDataviews,
   selectDetectionsVisualizationMode,
+  selectEnvironmentVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
@@ -54,6 +55,7 @@ export const useGlobalConfigConnect = () => {
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
+  const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const clickedFeatures = useSelector(selectClickedEvent)
   const hoverFeatures = useMapHoverInteraction()?.features
@@ -95,6 +97,7 @@ export const useGlobalConfigConnect = () => {
       bivariateDataviews,
       activityVisualizationMode,
       detectionsVisualizationMode,
+      environmentVisualizationMode,
       highlightedTime: highlightedTime || {},
       visibleEvents,
       highlightedFeatures,
@@ -115,6 +118,7 @@ export const useGlobalConfigConnect = () => {
     bivariateDataviews,
     activityVisualizationMode,
     detectionsVisualizationMode,
+    environmentVisualizationMode,
     highlightedTime,
     visibleEvents,
     highlightedFeatures,

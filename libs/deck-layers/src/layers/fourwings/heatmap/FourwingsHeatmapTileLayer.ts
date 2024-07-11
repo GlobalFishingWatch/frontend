@@ -8,10 +8,11 @@ import {
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { parse } from '@loaders.gl/core'
-import { debounce, sum } from 'lodash'
+import { debounce, isEqual, sum } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
 import {
+  FourwingsValuesAndDatesFeature,
   FourwingsFeature,
   FourwingsInterval,
   FourwingsLoader,
@@ -41,6 +42,7 @@ import {
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
+  GetViewportDataParams,
 } from '../fourwings.types'
 import { getSteps, hexToRgb, removeOutliers } from '../../../utils'
 import {
@@ -264,7 +266,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       if (avgChange > DYNAMIC_RAMP_CHANGE_THRESHOLD) {
         const colorRanges = this._getColorRanges()
         const scales = this._getColorScales(newColorDomain, colorRanges)
-        this.setState({ colorDomain: newColorDomain, scales, rampDirty: false })
+        this.setState({ colorDomain: newColorDomain, colorRanges, scales, rampDirty: false })
       } else {
         this.setState({ rampDirty: false })
       }
@@ -557,7 +559,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     } = props
     const { tilesCache, colorRanges, colorDomain } = this.state
     const newSublayerColorRanges = this._getColorRanges()
-    const sublayersHaveNewColors = colorRanges.join() !== newSublayerColorRanges.join()
+    const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
     const newVisibleValueLimits =
       (oldProps.minVisibleValue && minVisibleValue !== oldProps.minVisibleValue) ||
@@ -681,14 +683,18 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     )
   }
 
-  getViewportData() {
+  getViewportData(params = {} as GetViewportDataParams) {
     const data = this.getData()
     const { viewport } = this.context
     const [west, north] = viewport.unproject([0, 0])
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
     if (data?.length) {
-      const dataFiltered = filterFeaturesByBounds(data, { north, south, west, east })
-      return dataFiltered as FourwingsFeature[]
+      const dataFiltered = filterFeaturesByBounds({
+        features: data,
+        bounds: { north, south, west, east },
+        ...params,
+      })
+      return dataFiltered as FourwingsFeature[] | FourwingsValuesAndDatesFeature[]
     }
     return []
   }

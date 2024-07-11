@@ -13,6 +13,8 @@ import {
 import {
   FourwingsComparisonMode,
   FourwingsVisualizationMode,
+  HEATMAP_ID,
+  HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers'
 import { FOURWINGS_INTERVALS_ORDER, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import {
@@ -195,6 +197,7 @@ type ResolverGlobalConfig = {
   bivariateDataviews?: [string, string]
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
+  environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
@@ -320,6 +323,7 @@ export function getDataviewsResolved(
       getFourwingsDataviewsResolved(d, {
         colorRampWhiteEnd:
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
+        visualizationMode: params.environmentVisualizationMode,
       }) || []
   )
   const staticDataviewsParsed = staticDataviews.flatMap(

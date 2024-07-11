@@ -1,5 +1,10 @@
+import { sample } from 'simple-statistics'
 import type { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
-import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
+import type {
+  FourwingsFeature,
+  FourwingsFeatureProperties,
+  FourwingsStaticFeature,
+} from '@globalfishingwatch/deck-loaders'
 
 export interface Bounds {
   north: number
@@ -8,23 +13,37 @@ export interface Bounds {
   east: number
 }
 
-export const filterFeaturesByBounds = (
-  features: GeoJSONFeature[] | FourwingsFeature[] | FourwingsStaticFeature[],
+const MAX_FEATURES_TO_CHECK = 5000
+
+export const filterFeaturesByBounds = ({
+  features,
+  bounds,
+  onlyValuesAndDates = false,
+  sampleData = false,
+}: {
+  features: GeoJSONFeature[] | FourwingsFeature[] | FourwingsStaticFeature[]
   bounds: Bounds
-) => {
+  onlyValuesAndDates?: boolean
+  sampleData?: boolean
+}) => {
   if (!bounds) {
     return []
   }
   const { north, east, south, west } = bounds
   const rightWorldCopy = east >= 180
   const leftWorldCopy = west <= -180
-  return features.filter((f) => {
+
+  const featuresToCheck = sampleData
+    ? sample(features as any[], Math.min(features.length, MAX_FEATURES_TO_CHECK), Math.random)
+    : features
+
+  return featuresToCheck.flatMap((f) => {
     const lon =
       (f.geometry as any)?.coordinates?.[0]?.[0]?.[0] || (f as GeoJSONFeature).properties?.lon
     const lat =
       (f.geometry as any)?.coordinates?.[0]?.[0]?.[1] || (f as GeoJSONFeature).properties?.lat
     if (lat < south || lat > north) {
-      return false
+      return []
     }
     // This tries to translate features longitude for a proper comparison against the viewport
     // when they fall in a left or right copy of the world but not in the center one
@@ -33,6 +52,20 @@ export const filterFeaturesByBounds = (
     const featureInRightCopy = lon < 0 && lon + 360 <= east
     const leftOffset = leftWorldCopy && !rightWorldCopy && featureInLeftCopy ? -360 : 0
     const rightOffset = rightWorldCopy && !leftWorldCopy && featureInRightCopy ? 360 : 0
-    return lon + leftOffset + rightOffset > west && lon + leftOffset + rightOffset < east
+    const isInBounds =
+      lon + leftOffset + rightOffset > west && lon + leftOffset + rightOffset < east
+    if (onlyValuesAndDates) {
+      return isInBounds
+        ? [
+            f.properties.values.map((sublayerValues: number[], sublayerIndex: number) => {
+              return [
+                sublayerValues,
+                (f.properties as FourwingsFeatureProperties).dates?.[sublayerIndex],
+              ]
+            }),
+          ]
+        : []
+    }
+    return isInBounds ? f : []
   })
 }

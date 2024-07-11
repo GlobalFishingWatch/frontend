@@ -5,7 +5,11 @@ import { FourwingsHeatmapTileLayer } from './heatmap/FourwingsHeatmapTileLayer'
 import { FourwingsHeatmapStaticLayer } from './heatmap/FourwingsHeatmapStaticLayer'
 import { FourwingsPositionsTileLayer } from './positions/FourwingsPositionsTileLayer'
 import { HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
-import { FourwingsPickingObject, FourwingsVisualizationMode } from './fourwings.types'
+import {
+  FourwingsPickingObject,
+  FourwingsVisualizationMode,
+  GetViewportDataParams,
+} from './fourwings.types'
 import { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
 import {
   FourwingsChunk,
@@ -101,8 +105,8 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return {} as FourwingsChunk
   }
 
-  getViewportData() {
-    return this.getLayer()?.getViewportData?.()
+  getViewportData(params = {} as GetViewportDataParams) {
+    return this.getLayer()?.getViewportData?.(params)
   }
 
   getMode() {

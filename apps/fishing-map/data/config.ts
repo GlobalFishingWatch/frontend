@@ -100,6 +100,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   mapRulersVisible: true,
   activityVisualizationMode: 'heatmap',
   detectionsVisualizationMode: 'heatmap',
+  environmentVisualizationMode: 'heatmap-low-res',
   dataviewInstances: undefined,
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   visibleEvents: 'all',

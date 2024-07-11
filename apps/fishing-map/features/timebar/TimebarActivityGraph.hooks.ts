@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux'
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { FourwingsLayer, getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { FourwingsFeature, FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
@@ -21,10 +21,11 @@ import {
 const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
 
 export const useHeatmapActivityGraph = () => {
+  const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
   const viewport = useMapViewport()
   const viewportChangeHash = useMemo(() => {
     if (!viewport) return ''
-    return [viewport.zoom, viewport.latitude, viewport.longitude].map((v) => v.toFixed(5)).join(',')
+    return [viewport.zoom, viewport.latitude, viewport.longitude].map((v) => v.toFixed(2)).join(',')
   }, [viewport])
   const debouncedViewportChangeHash = useDebounce(viewportChangeHash, 400)
   const dataviews = useSelector(selectTimebarSelectedDataviews)
@@ -37,32 +38,53 @@ export const useHeatmapActivityGraph = () => {
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
 
-  const heatmapActivity = useMemo(() => {
-    if (loaded) {
-      const viewportData = instance?.getViewportData()
-      if (visualizationMode === 'positions') {
-        return (
-          getGraphDataFromFourwingsPositions(viewportData as FourwingsPositionFeature[], {
-            start: chunk.bufferedStart,
-            end: chunk.bufferedEnd,
-            interval: chunk.interval,
-            sublayers: instance.props.sublayers,
-          }) || EMPTY_ACTIVITY_DATA
-        )
-      }
-      return (
-        getGraphDataFromFourwingsHeatmap(viewportData as FourwingsFeature[], {
+  const setFourwingsPositionsData = useCallback(
+    async (viewportData: FourwingsPositionFeature[]) => {
+      const data =
+        getGraphDataFromFourwingsPositions(viewportData, {
           start: chunk.bufferedStart,
           end: chunk.bufferedEnd,
           interval: chunk.interval,
           sublayers: instance.props.sublayers,
-          aggregationOperation: instance.props.aggregationOperation,
-          minVisibleValue: instance.props.minVisibleValue,
-          maxVisibleValue: instance.props.maxVisibleValue,
         }) || EMPTY_ACTIVITY_DATA
-      )
+      setData(data)
+    },
+    [chunk, instance]
+  )
+
+  const setFourwingsHeatmapData = useCallback(
+    (data: [number[], number[]][][]) => {
+      if (data?.length) {
+        setData(
+          getGraphDataFromFourwingsHeatmap(data, {
+            start: chunk.bufferedStart,
+            end: chunk.bufferedEnd,
+            interval: chunk.interval,
+            sublayers: instance.props.sublayers,
+            aggregationOperation: instance.props.aggregationOperation,
+            minVisibleValue: instance.props.minVisibleValue,
+            maxVisibleValue: instance.props.maxVisibleValue,
+          })
+        )
+      } else {
+        setData(EMPTY_ACTIVITY_DATA)
+      }
+    },
+    [chunk, instance]
+  )
+
+  useEffect(() => {
+    if (loaded) {
+      if (visualizationMode === 'positions') {
+        const viewportData = instance?.getViewportData()
+        setFourwingsPositionsData(viewportData as FourwingsPositionFeature[])
+      }
+      const viewportData = instance?.getViewportData({
+        onlyValuesAndDates: true,
+        sampleData: instance.props.aggregationOperation === 'avg',
+      })
+      setFourwingsHeatmapData(viewportData as [number[], number[]][][])
     }
-    return EMPTY_ACTIVITY_DATA
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     loaded,
@@ -72,5 +94,5 @@ export const useHeatmapActivityGraph = () => {
     instance?.props.maxVisibleValue,
   ])
 
-  return useMemo(() => ({ loading: !loaded, heatmapActivity }), [heatmapActivity, loaded])
+  return useMemo(() => ({ loading: !loaded, heatmapActivity: data }), [data, loaded])
 }

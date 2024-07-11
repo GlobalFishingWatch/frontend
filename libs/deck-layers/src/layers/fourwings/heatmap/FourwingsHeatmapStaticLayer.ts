@@ -36,6 +36,7 @@ import {
   HEATMAP_STATIC_PROPERTY_ID,
   MAX_RAMP_VALUES,
 } from '../fourwings.config'
+import { GetViewportDataParams } from '../fourwings.types'
 import { EMPTY_CELL_COLOR, filterCells, getZoomOffsetByResolution } from './fourwings-heatmap.utils'
 import {
   FourwingsAggregationOperation,
@@ -250,13 +251,17 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     return [] as FourwingsStaticFeature[]
   }
 
-  getViewportData() {
+  getViewportData(params = {} as GetViewportDataParams) {
     const data = this.getData()
     const { viewport } = this.context
     const [west, north] = viewport.unproject([0, 0])
     const [east, south] = viewport.unproject([viewport.width, viewport.height])
     if (data?.length) {
-      const dataFiltered = filterFeaturesByBounds(data, { north, south, west, east })
+      const dataFiltered = filterFeaturesByBounds({
+        features: data,
+        bounds: { north, south, west, east },
+        ...params,
+      })
       return dataFiltered as FourwingsFeature[]
     }
     return []
