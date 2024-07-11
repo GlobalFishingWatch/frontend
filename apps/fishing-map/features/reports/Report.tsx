@@ -115,21 +115,21 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const isSameWorkspaceReport =
     concurrentReportError && window?.location.href === lastReport?.workspaceUrl
 
-  const isTimeoutError =
-    statusError?.message &&
-    crossBrowserTypeErrorMessages.some((error) => error.includes(statusError.message as string))
-  useEffect(() => {
-    if (isSameWorkspaceReport || isTimeoutError) {
-      dispatchTimeoutRef.current = setTimeout(() => {
-        dispatchFetchReport()
-      }, 1000 * 30) // retrying each 30 secs
-    }
-    return () => {
-      if (dispatchTimeoutRef.current) {
-        clearTimeout(dispatchTimeoutRef.current)
-      }
-    }
-  }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
+  // const isTimeoutError =
+  //   statusError?.message &&
+  //   crossBrowserTypeErrorMessages.some((error) => error.includes(statusError.message as string))
+  // useEffect(() => {
+  //   if (isSameWorkspaceReport || isTimeoutError) {
+  //     dispatchTimeoutRef.current = setTimeout(() => {
+  //       dispatchFetchReport()
+  //     }, 1000 * 30) // retrying each 30 secs
+  //   }
+  //   return () => {
+  //     if (dispatchTimeoutRef.current) {
+  //       clearTimeout(dispatchTimeoutRef.current)
+  //     }
+  //   }
+  // }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {
@@ -248,7 +248,16 @@ function ActivityReport({ reportName }: { reportName: string }) {
         </ReportVesselsPlaceholder>
       )
     }
-    if (reportOutdated && !reportLoading && !hasAuthError) {
+
+    if (reportError || (!reportLoading && !reportDataviews?.length)) {
+      return ReportVesselError
+    }
+
+    if (
+      (reportOutdated || reportStatus === AsyncReducerStatus.Idle) &&
+      !reportLoading &&
+      !hasAuthError
+    ) {
       return (
         <ReportVesselsPlaceholder>
           <div className={cx(styles.cover, styles.center)}>
@@ -256,14 +265,19 @@ function ActivityReport({ reportName }: { reportName: string }) {
               dangerouslySetInnerHTML={{
                 __html: t('analysis.newTimeRange', {
                   defaultValue:
-                    'Click Update to see the vessels active in the area<br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+                    'Click the button to see the vessels active in the area<br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
                   start: formatI18nDate(timerange?.start),
                   end: formatI18nDate(timerange?.end),
                 }),
               }}
             />
-            <Button onClick={() => dispatch(setDateRangeHash(''))}>
-              {t('common.update', 'Update')}
+            <Button
+              onClick={() => {
+                dispatch(setDateRangeHash(''))
+                dispatchFetchReport()
+              }}
+            >
+              {t('analysis.seeVessels', 'See vessels')}
             </Button>
           </div>
         </ReportVesselsPlaceholder>
@@ -295,15 +309,13 @@ function ActivityReport({ reportName }: { reportName: string }) {
         </div>
       )
     }
-    if (reportError || (!reportLoading && !reportDataviews?.length)) {
-      return ReportVesselError
-    }
 
     return <ReportVesselsPlaceholder />
   }, [
     workspaceStatus,
     timerangeTooLong,
     reportOutdated,
+    reportStatus,
     reportLoading,
     hasAuthError,
     reportLoaded,
@@ -313,6 +325,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
     timerange?.start,
     timerange?.end,
     dispatch,
+    dispatchFetchReport,
     hasVessels,
     activityUnit,
     reportName,
