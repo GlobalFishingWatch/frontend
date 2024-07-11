@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   ResolverGlobalConfig,
+  TimeRange,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import { FourwingsLayer, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
@@ -23,6 +24,7 @@ import {
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
 } from 'features/app/selectors/app.selectors'
+import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -45,7 +47,7 @@ export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
 
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
-  const highlightedTime = useSelector(selectHighlightedTime)
+  const timebarHighlightedTime = useSelector(selectHighlightedTime)
   const viewState = useViewState()
   const { dispatchQueryParams } = useLocationConnect()
   const { t } = useTranslation()
@@ -53,6 +55,7 @@ export const useGlobalConfigConnect = () => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+  const vesselDataviews = useSelector(selectActiveVesselsDataviews)
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
@@ -60,6 +63,21 @@ export const useGlobalConfigConnect = () => {
   const clickedFeatures = useSelector(selectClickedEvent)
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
+
+  const highlightedTime = useMemo(() => {
+    if (
+      activityVisualizationMode === 'positions' ||
+      detectionsVisualizationMode === 'positions' ||
+      vesselDataviews?.length
+    ) {
+      return timebarHighlightedTime as Partial<TimeRange>
+    }
+  }, [
+    activityVisualizationMode,
+    detectionsVisualizationMode,
+    timebarHighlightedTime,
+    vesselDataviews?.length,
+  ])
 
   const highlightedFeatures = useMemo(() => {
     return [...(clickedFeatures?.features || []), ...(hoverFeatures || [])]
@@ -98,7 +116,7 @@ export const useGlobalConfigConnect = () => {
       activityVisualizationMode,
       detectionsVisualizationMode,
       environmentVisualizationMode,
-      highlightedTime: highlightedTime || {},
+      highlightedTime,
       visibleEvents,
       highlightedFeatures,
       onPositionsMaxPointsError,

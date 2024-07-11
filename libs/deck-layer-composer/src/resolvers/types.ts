@@ -24,7 +24,7 @@ export type ResolverGlobalConfig = {
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
-  highlightedTime: Partial<TimeRange>
+  highlightedTime?: Partial<TimeRange>
   visibleEvents: EventTypes[]
   highlightedFeatures?: DeckLayerPickingObject[]
 }
