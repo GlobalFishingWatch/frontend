@@ -8,7 +8,7 @@ import {
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { parse } from '@loaders.gl/core'
-import { debounce, sum } from 'lodash'
+import { debounce, isEqual, sum } from 'lodash'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
 import {
@@ -264,7 +264,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       if (avgChange > DYNAMIC_RAMP_CHANGE_THRESHOLD) {
         const colorRanges = this._getColorRanges()
         const scales = this._getColorScales(newColorDomain, colorRanges)
-        this.setState({ colorDomain: newColorDomain, scales, rampDirty: false })
+        this.setState({ colorDomain: newColorDomain, colorRanges, scales, rampDirty: false })
       } else {
         this.setState({ rampDirty: false })
       }
@@ -557,7 +557,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     } = props
     const { tilesCache, colorRanges, colorDomain } = this.state
     const newSublayerColorRanges = this._getColorRanges()
-    const sublayersHaveNewColors = colorRanges.join() !== newSublayerColorRanges.join()
+    const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
     const newVisibleValueLimits =
       (oldProps.minVisibleValue && minVisibleValue !== oldProps.minVisibleValue) ||
