@@ -49,10 +49,10 @@ export const getDataviewAvailableIntervals = (
 
   if (dataviewInterval) {
     availableIntervals = [dataviewInterval as FourwingsInterval]
-  } else if (dataviewIntervals && dataviewIntervals.length > 0) {
-    availableIntervals = dataviewIntervals as FourwingsInterval[]
   } else if (datasetIntervals && datasetIntervals.length > 0) {
     availableIntervals = datasetIntervals
+  } else if (dataviewIntervals && dataviewIntervals.length > 0) {
+    availableIntervals = dataviewIntervals as FourwingsInterval[]
   }
   return availableIntervals
 }
