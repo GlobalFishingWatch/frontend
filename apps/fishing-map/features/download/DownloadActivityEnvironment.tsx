@@ -126,7 +126,9 @@ function DownloadActivityGridded() {
         action: `Download GeoTIFF file`,
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+          downloadType: 'environment',
           spatialResolution,
+          temporalResolution,
           sourceNames: dataviews.flatMap((dataview) =>
             getSourcesSelectedInDataview(dataview).map((source) => source.label)
           ),
@@ -138,6 +140,7 @@ function DownloadActivityGridded() {
         action: `Download ${format} file`,
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+          downloadType: 'environment',
           spatialResolution,
           temporalResolution,
           sourceNames: dataviews.flatMap((dataview) =>

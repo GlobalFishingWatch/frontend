@@ -117,6 +117,7 @@ function DownloadActivityByVessel() {
       action: `Download ${format.toUpperCase()} file`,
       label: JSON.stringify({
         regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+        downloadType: 'active vessels',
         temporalResolution,
         groupBy,
         sourceNames: dataviews.flatMap((dataview) =>
