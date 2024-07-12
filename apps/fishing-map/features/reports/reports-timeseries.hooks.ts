@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import memoizeOne from 'memoize-one'
 import { useSelector } from 'react-redux'
 import { atom, useAtom, useAtomValue } from 'jotai'
 import { mean, min, max } from 'simple-statistics'
 import { DateTime } from 'luxon'
-import { UrlDataviewInstance, getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
+import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { DeckLayerAtom, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import {
   FourwingsLayer,
@@ -19,7 +19,7 @@ import {
   selectReportCategory,
   selectReportTimeComparison,
 } from 'features/app/selectors/app.reports.selector'
-import { FilteredPolygons, filterByPolygon } from 'features/reports/reports-geo.utils'
+import { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import {
   FeaturesToTimeseriesParams,
   featuresToTimeseries,
@@ -34,6 +34,8 @@ import {
 import { ReportActivityGraph, ReportCategory } from 'types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { AreaGeometry } from 'features/areas/areas.slice'
+import { useFilterCellsByPolygonWorker } from 'features/reports/reports-geo.utils.workers.hooks'
 
 interface EvolutionGraphData {
   date: string
@@ -95,6 +97,8 @@ export const useReportFeaturesLoading = () => {
 
 const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const [timeseries, setTimeseries] = useAtom(mapTimeseriesAtom)
+  const [featuresFiltered, setFeaturesFiltered] = useState<FilteredPolygons[][]>([])
+  const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
   const areaInViewport = useReportAreaInViewport()
   const reportGraph = useSelector(selectReportActivityGraph)
@@ -107,19 +111,33 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const instances = reportLayers.map((l) => l.instance)
   const layersLoaded = reportLayers.every((l) => l.loaded)
 
-  const featuresFiltered = useMemo(() => {
-    if (!area?.geometry || !layersLoaded) {
-      return []
-    }
-    return instances.map((instance) => {
-      const features = instance.getData() as FourwingsFeature[]
-      const filteredFeatures = filterByPolygon(
-        [features],
-        area.geometry!,
+  const updateFeaturesFiltered = useCallback(
+    async (instances: FourwingsLayer[], polygon: AreaGeometry, mode?: 'point' | 'cell') => {
+      const filteredFeaturesPromise = instances.map((instance) => {
+        const features = instance.getData() as FourwingsFeature[]
+        const filteredFeatures = filterCellsByPolygon({
+          layersCells: [features],
+          polygon,
+          mode,
+        })
+        return filteredFeatures
+      })
+      const filteredFeatures = await Promise.all(filteredFeaturesPromise)
+      setFeaturesFiltered(filteredFeatures)
+    },
+    [filterCellsByPolygon]
+  )
+
+  useEffect(() => {
+    if (area?.geometry && layersLoaded && instances.length) {
+      updateFeaturesFiltered(
+        instances,
+        area.geometry,
         reportCategory === 'environment' ? 'point' : 'cell'
       )
-      return filteredFeatures
-    })
+    } else {
+      setFeaturesFiltered([])
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [area?.geometry, reportCategory, layersLoaded])

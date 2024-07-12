@@ -1,6 +1,6 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
-import { Polygon, MultiPolygon } from 'geojson'
-import { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
+import type { Polygon, MultiPolygon } from 'geojson'
+import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 
 export type FilteredPolygons = {
   contained: FourwingsFeature[]
@@ -13,11 +13,16 @@ function isCellInPolygon(cellGeometry: Polygon, polygon: Polygon) {
   )
 }
 
-export function filterByPolygon(
-  layersCells: FourwingsFeature[][],
-  polygon: Polygon | MultiPolygon,
-  mode: 'cell' | 'point' = 'cell'
-): FilteredPolygons[] {
+export type FilterByPolygomParams = {
+  layersCells: FourwingsFeature[][]
+  polygon: Polygon | MultiPolygon
+  mode?: 'cell' | 'point'
+}
+export function filterByPolygon({
+  layersCells,
+  polygon,
+  mode = 'cell',
+}: FilterByPolygomParams): FilteredPolygons[] {
   const filtered = layersCells.map((layerCells) => {
     return layerCells.reduce(
       (acc, cell) => {
