@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import memoizeOne from 'memoize-one'
 import { useSelector } from 'react-redux'
-import { atom, useAtom, useAtomValue } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { mean, min, max } from 'simple-statistics'
 import { DateTime } from 'luxon'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
@@ -71,7 +71,7 @@ if (process.env.NODE_ENV !== 'production') {
   mapTimeseriesAtom.debugLabel = 'mapTimeseries'
 }
 export function useSetTimeseries() {
-  return useAtom(mapTimeseriesAtom)[1]
+  return useSetAtom(mapTimeseriesAtom)
 }
 
 const useReportInstances = () => {
@@ -113,16 +113,16 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   const updateFeaturesFiltered = useCallback(
     async (instances: FourwingsLayer[], polygon: AreaGeometry, mode?: 'point' | 'cell') => {
-      const filteredFeaturesPromise = instances.map((instance) => {
+      const filteredFeatures = [] as FilteredPolygons[][]
+      for (const instance of instances) {
         const features = instance.getData() as FourwingsFeature[]
-        const filteredFeatures = filterCellsByPolygon({
+        const filteredInstanceFeatures = await filterCellsByPolygon({
           layersCells: [features],
           polygon,
           mode,
         })
-        return filteredFeatures
-      })
-      const filteredFeatures = await Promise.all(filteredFeaturesPromise)
+        filteredFeatures.push(filteredInstanceFeatures)
+      }
       setFeaturesFiltered(filteredFeatures)
     },
     [filterCellsByPolygon]
