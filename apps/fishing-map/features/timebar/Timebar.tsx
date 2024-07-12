@@ -230,8 +230,8 @@ const TimebarWrapper = () => {
     (e) => {
       const gaActions: Record<string, string> = {
         TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
-        ZOOM_IN_BUTTON: 'Zoom In timerange',
-        ZOOM_OUT_BUTTON: 'Zoom Out timerange',
+        ZOOM_IN_RELEASE: 'Zoom In timerange',
+        ZOOM_OUT_RELEASE: 'Zoom Out timerange',
         HOUR_INTERVAL_BUTTON: 'Use hour preset',
         DAY_INTERVAL_BUTTON: 'Use day preset',
         MONTH_INTERVAL_BUTTON: 'Use month preset',
