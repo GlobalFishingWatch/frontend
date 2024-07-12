@@ -27,7 +27,7 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
         ...getFetchLoadOptions(),
       },
       minZoom: 0,
-      maxZoom: 9,
+      maxZoom: 22,
       maxRequests: 100,
       debounceTime: 200,
       tileSize: 256,
