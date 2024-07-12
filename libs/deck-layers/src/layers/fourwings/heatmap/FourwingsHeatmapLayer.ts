@@ -148,10 +148,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       })
     let chosenValueIndex = 0
     let chosenValue: number | undefined
-    try {
+    if (feature.properties) {
       feature.properties.aggregatedValues = aggregatedCellValues
-    } catch (e: any) {
-      console.warn(e.message)
     }
     aggregatedCellValues.forEach((value, index) => {
       if (value && (!chosenValue || value > chosenValue)) {
