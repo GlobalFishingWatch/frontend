@@ -39,6 +39,7 @@ function ReportEnvironment() {
         const { min, mean, max } = timeseriesStats[dataview.id] || {}
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
+        const isLoading = loading || layersTimeseriesFiltered!?.[index]?.mode === 'loading'
         const unit = dataset?.unit
         return (
           <div key={dataview.id} className={styles.container}>
@@ -53,7 +54,7 @@ function ReportEnvironment() {
               )}
             </p>
             {isDynamic ? (
-              loading ? (
+              isLoading || !layersTimeseriesFiltered!?.[index] ? (
                 <ReportActivityPlaceholder showHeader={false} />
               ) : (
                 <ReportActivityEvolution
@@ -63,7 +64,7 @@ function ReportEnvironment() {
                 />
               )
             ) : null}
-            {!loading && min && mean && max && (
+            {!isLoading && min && mean && max && (
               <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
                 {isDynamic
                   ? t('analysis.statsDisclaimerDynamic', {

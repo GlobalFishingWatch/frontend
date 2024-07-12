@@ -51,7 +51,7 @@ interface ReportSublayerGraph {
   }
 }
 
-export type ReportGraphMode = 'evolution' | 'time'
+export type ReportGraphMode = 'evolution' | 'time' | 'loading'
 
 export function getReportGraphMode(reportActivityGraph: ReportActivityGraph): ReportGraphMode {
   return reportActivityGraph === 'beforeAfter' || reportActivityGraph === 'periodComparison'
@@ -129,7 +129,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   const updateFeaturesFiltered = useCallback(
     async (instances: FourwingsLayer[], polygon: AreaGeometry, mode?: 'point' | 'cell') => {
-      const filteredFeatures = [] as FilteredPolygons[][]
+      setFeaturesFiltered([])
       for (const instance of instances) {
         const features = instance.getData() as FourwingsFeature[]
         const filteredInstanceFeatures = await filterCellsByPolygon({
@@ -137,9 +137,8 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
           polygon,
           mode,
         })
-        filteredFeatures.push(filteredInstanceFeatures)
+        setFeaturesFiltered((prev) => [...prev, filteredInstanceFeatures])
       }
-      setFeaturesFiltered(filteredFeatures)
     },
     [filterCellsByPolygon]
   )
@@ -164,55 +163,66 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       filteredFeatures: FilteredPolygons[][],
       graphMode: ReportGraphMode
     ) => {
-      const timeseries: ReportGraphProps[] = []
+      const newTimeseries: ReportGraphProps[] = []
       const timeseriesStats = {} as ReportGraphStats
       instances.forEach((instance, index) => {
         const features = filteredFeatures[index]
-        if (reportCategory === 'environment' && features[0].contained.length > 0) {
-          const dataview = dataviews.find((dv) => dv.id === instance.id)
-          const chunk = instance.getChunk()
-          const { startFrame, endFrame } = getIntervalFrames({
-            startTime: DateTime.fromISO(timerange.start).toUTC().toMillis(),
-            endTime: DateTime.fromISO(timerange.end).toUTC().toMillis(),
-            availableIntervals: [chunk.interval],
-            bufferedStart: chunk.bufferedStart,
-          })
-          const allValues = features[0].contained.flatMap((f) => {
-            const values = sliceCellValues({
-              values: f.properties.values[0],
-              startFrame,
-              endFrame,
-              startOffset: f.properties.startOffsets[0],
+        if (features && (!timeseries?.[index] || timeseries?.[index].mode === 'loading')) {
+          if (reportCategory === 'environment' && features[0]?.contained?.length > 0) {
+            const dataview = dataviews.find((dv) => dv.id === instance.id)
+            const chunk = instance.getChunk()
+            const { startFrame, endFrame } = getIntervalFrames({
+              startTime: DateTime.fromISO(timerange.start).toUTC().toMillis(),
+              endTime: DateTime.fromISO(timerange.end).toUTC().toMillis(),
+              availableIntervals: [chunk.interval],
+              bufferedStart: chunk.bufferedStart,
             })
-            return values || []
-          })
-          if (dataview?.config && allValues.length > 0) {
-            timeseriesStats[dataview.id] = {
-              min: min(allValues),
-              max: max(allValues),
-              mean: mean(allValues),
+            const allValues = features[0].contained.flatMap((f) => {
+              const values = sliceCellValues({
+                values: f.properties.values[0],
+                startFrame,
+                endFrame,
+                startOffset: f.properties.startOffsets[0],
+              })
+              return values || []
+            })
+            if (dataview?.config && allValues.length > 0) {
+              timeseriesStats[dataview.id] = {
+                min: min(allValues),
+                max: max(allValues),
+                mean: mean(allValues),
+              }
             }
           }
+          const props = instance.props as FourwingsLayerProps
+          const chunk = instance.getChunk()
+          const sublayers = instance.getFourwingsLayers()
+          const params: FeaturesToTimeseriesParams = {
+            staticHeatmap: props.static,
+            interval: instance.getInterval(),
+            start: timeComparison ? props.startTime : chunk.bufferedStart,
+            end: timeComparison ? props.endTime : chunk.bufferedEnd,
+            compareStart: props.compareStart,
+            compareEnd: props.compareEnd,
+            aggregationOperation: props.aggregationOperation,
+            minVisibleValue: props.minVisibleValue,
+            maxVisibleValue: props.maxVisibleValue,
+            sublayers,
+            graphMode,
+          }
+          newTimeseries.push(featuresToTimeseries(features, params)[0])
+        } else if (timeseries?.[index]) {
+          newTimeseries.push(timeseries[index])
+        } else {
+          newTimeseries.push({
+            timeseries: [],
+            mode: 'loading',
+            interval: 'MONTH',
+            sublayers: [],
+          } as ReportGraphProps)
         }
-        const props = instance.props as FourwingsLayerProps
-        const chunk = instance.getChunk()
-        const sublayers = instance.getFourwingsLayers()
-        const params: FeaturesToTimeseriesParams = {
-          staticHeatmap: props.static,
-          interval: instance.getInterval(),
-          start: timeComparison ? props.startTime : chunk.bufferedStart,
-          end: timeComparison ? props.endTime : chunk.bufferedEnd,
-          compareStart: props.compareStart,
-          compareEnd: props.compareEnd,
-          aggregationOperation: props.aggregationOperation,
-          minVisibleValue: props.minVisibleValue,
-          maxVisibleValue: props.maxVisibleValue,
-          sublayers,
-          graphMode,
-        }
-        timeseries.push(featuresToTimeseries(features, params)[0])
       })
-      setTimeseries(timeseries)
+      setTimeseries(newTimeseries)
       setTimeseriesStats(timeseriesStats)
     },
     [
@@ -223,6 +233,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       timeComparison,
       timerange.end,
       timerange.start,
+      timeseries,
     ]
   )
 
