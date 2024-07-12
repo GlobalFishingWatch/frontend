@@ -137,6 +137,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     ?.map((instance) => instance.getChunk()?.interval)
     .join(',')
   const reportGraphMode = getReportGraphMode(reportGraph)
+
   // We need to re calculate the timeseries when any of this params changes
   useEffect(() => {
     setTimeseries([])

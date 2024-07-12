@@ -19,6 +19,8 @@ import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
+import { selectReportCategory } from 'features/app/selectors/app.reports.selector'
+import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
 
 const selectDatasetsExtent = createSelector(
   [selectDataviewInstancesResolved, selectAllDatasets],
@@ -54,21 +56,24 @@ export const selectTimebarSelectedDataviews = createSelector(
     selectActiveDetectionsDataviews,
     selectActiveActivityDataviews,
     selectActiveEnvironmentalDataviews,
+    selectReportCategory,
   ],
   (
     timebarVisualisation,
     timebarSelectedEnvId,
     detectionsDataviews,
     activityDataviews,
-    environmentalDataviews
+    environmentalDataviews,
+    reportCategory
   ) => {
     if (!timebarVisualisation) return []
     if (timebarVisualisation === TimebarVisualisations.Environment) {
       return environmentalDataviews.filter((d) => d.id === timebarSelectedEnvId)
     }
-    return timebarVisualisation === TimebarVisualisations.HeatmapDetections
-      ? detectionsDataviews
-      : activityDataviews
+    if (timebarVisualisation === TimebarVisualisations.HeatmapDetections) {
+      return detectionsDataviews
+    }
+    return activityDataviews.filter((d) => getReportCategoryFromDataview(d) === reportCategory)
   }
 )
 
