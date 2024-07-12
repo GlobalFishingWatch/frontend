@@ -27,6 +27,7 @@ import { useMapLayers } from 'features/map/map-layers.hooks'
 import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useHasReportTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
 import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
@@ -78,6 +79,7 @@ const MapWrapper = () => {
   }, [setDeckLayers])
 
   const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const hasReportTimeseries = useHasReportTimeseries()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
 
@@ -112,7 +114,8 @@ const MapWrapper = () => {
           return true
         }}
         viewState={viewState}
-        onViewStateChange={onViewStateChange}
+        // Needs to lock the ui to avoid loading other tiles until report timeseries are loaded
+        onViewStateChange={isReportLocation && !hasReportTimeseries ? undefined : onViewStateChange}
         onClick={onMapClick}
         onHover={onMouseMove}
         onDragStart={onMapDragStart}
