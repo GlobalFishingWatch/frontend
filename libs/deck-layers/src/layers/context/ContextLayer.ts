@@ -16,6 +16,7 @@ import {
   getMVTSublayerProps,
   getFeatureInFilter,
   getFetchLoadOptions,
+  DEFAULT_BACKGROUND_COLOR,
 } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import { EEZ_SETTLED_BOUNDARIES } from './context.config'
@@ -56,7 +57,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
     return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
   }
 
-  getHighlightLineWidth(d: ContextFeature, filters?: Record<string, any>): number {
+  getHighlightLineWidth(d: ContextFeature, filters?: Record<string, any>, lineWidth = 2): number {
     if (!getFeatureInFilter(d, filters)) return 0
     const { idProperty, layers } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
@@ -64,7 +65,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
       idProperty,
       datasetId: layers?.[0]?.datasetId,
     })
-      ? 1.5
+      ? lineWidth
       : 0
   }
 
@@ -229,14 +230,34 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
                 ]
               : []),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-highlight-lines`,
+              id: `${props.id}-highlight-lines-bg`,
               lineWidthMinPixels: 0,
               lineWidthUnits: 'pixels',
               filled: false,
+              lineJointRounded: true,
+              lineCapRounded: true,
               visible: highlightedFeatures && highlightedFeatures?.length > 0,
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-              getLineWidth: (d) => this.getHighlightLineWidth(d as ContextFeature, layer.filters),
+              getLineWidth: (d) =>
+                this.getHighlightLineWidth(d as ContextFeature, layer.filters, 4),
+              getLineColor: DEFAULT_BACKGROUND_COLOR,
+              updateTriggers: {
+                getLineWidth: [highlightedFeatures],
+              },
+            }),
+            new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
+              id: `${props.id}-highlight-lines-fg`,
+              lineWidthMinPixels: 0,
+              lineWidthUnits: 'pixels',
+              filled: false,
+              lineJointRounded: true,
+              lineCapRounded: true,
+              visible: highlightedFeatures && highlightedFeatures?.length > 0,
+              getPolygonOffset: (params) =>
+                getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+              getLineWidth: (d) =>
+                this.getHighlightLineWidth(d as ContextFeature, layer.filters, 2),
               getLineColor: COLOR_HIGHLIGHT_LINE,
               updateTriggers: {
                 getLineWidth: [highlightedFeatures],

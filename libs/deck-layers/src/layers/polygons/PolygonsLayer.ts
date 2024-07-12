@@ -1,4 +1,3 @@
-import { buffer } from 'stream/consumers'
 import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import { GeoJsonProperties } from 'geojson'
@@ -11,6 +10,7 @@ import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_TRANSPARENT,
   COLOR_HIGHLIGHT_LINE,
+  DEFAULT_BACKGROUND_COLOR,
 } from '../../utils'
 import { PolygonFeature, PolygonPickingInfo, PolygonPickingObject } from './polygons.types'
 
@@ -41,10 +41,10 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
       : COLOR_TRANSPARENT
   }
 
-  getHighlightLineWidth(d: PolygonFeature): number {
+  getHighlightLineWidth(d: PolygonFeature, lineWidth = 2): number {
     return d.properties?.highlighted ||
       getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
-      ? 1
+      ? lineWidth
       : 0
   }
 
@@ -82,15 +82,34 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
         getLineColor: hexToDeckColor(color),
       }),
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({
-        id: `${id}-highlight-lines`,
+        id: `${id}-highlight-lines-bg`,
         data,
         lineWidthMinPixels: 0,
         lineWidthUnits: 'pixels',
         filled: false,
+        lineJointRounded: true,
+        lineCapRounded: true,
         visible: highlightedFeatures && highlightedFeatures?.length > 0,
         getPolygonOffset: (params) =>
           getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-        getLineWidth: (d) => this.getHighlightLineWidth(d as PolygonFeature),
+        getLineWidth: (d) => this.getHighlightLineWidth(d as PolygonFeature, 4),
+        getLineColor: DEFAULT_BACKGROUND_COLOR,
+        updateTriggers: {
+          getLineWidth: [highlightedFeatures],
+        },
+      }),
+      new GeoJsonLayer<GeoJsonProperties, { data: any }>({
+        id: `${id}-highlight-lines-fg`,
+        data,
+        lineWidthMinPixels: 0,
+        lineWidthUnits: 'pixels',
+        filled: false,
+        lineJointRounded: true,
+        lineCapRounded: true,
+        visible: highlightedFeatures && highlightedFeatures?.length > 0,
+        getPolygonOffset: (params) =>
+          getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+        getLineWidth: (d) => this.getHighlightLineWidth(d as PolygonFeature, 2),
         getLineColor: COLOR_HIGHLIGHT_LINE,
         updateTriggers: {
           getLineWidth: [highlightedFeatures],

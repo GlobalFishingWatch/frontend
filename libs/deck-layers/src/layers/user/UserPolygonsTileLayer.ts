@@ -22,6 +22,7 @@ import {
   rgbaStringToComponents,
   getColorRampByOpacitySteps,
   getFetchLoadOptions,
+  DEFAULT_BACKGROUND_COLOR,
 } from '../../utils'
 import { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
 import { UserBaseLayer, UserBaseLayerState } from './UserBaseLayer'
@@ -72,14 +73,14 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
     }
   }
 
-  _getHighlightLineWidth: AccessorFunction<Feature<Geometry, GeoJsonProperties>, number> = (d) => {
+  _getHighlightLineWidth = (d: Feature<Geometry, GeoJsonProperties>, lineWidth = 2) => {
     const { idProperty, layers } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
       idProperty,
       datasetId: layers?.[0].datasetId,
     })
-      ? 1
+      ? lineWidth
       : 0
   }
 
@@ -155,14 +156,32 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
               getLineColor: hexToDeckColor(color),
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-highlight-lines`,
+              id: `${props.id}-highlight-lines-bg`,
               lineWidthMinPixels: 0,
               lineWidthUnits: 'pixels',
               filled: false,
+              lineJointRounded: true,
+              lineCapRounded: true,
               visible: highlightedFeatures && highlightedFeatures?.length > 0,
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-              getLineWidth: this._getHighlightLineWidth,
+              getLineWidth: (d) => this._getHighlightLineWidth(d, 4),
+              getLineColor: DEFAULT_BACKGROUND_COLOR,
+              updateTriggers: {
+                getLineWidth: [highlightedFeatures],
+              },
+            }),
+            new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
+              id: `${props.id}-highlight-lines-fg`,
+              lineWidthMinPixels: 0,
+              lineWidthUnits: 'pixels',
+              filled: false,
+              lineJointRounded: true,
+              lineCapRounded: true,
+              visible: highlightedFeatures && highlightedFeatures?.length > 0,
+              getPolygonOffset: (params) =>
+                getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+              getLineWidth: (d) => this._getHighlightLineWidth(d, 2),
               getLineColor: COLOR_HIGHLIGHT_LINE,
               updateTriggers: {
                 getLineWidth: [highlightedFeatures],
