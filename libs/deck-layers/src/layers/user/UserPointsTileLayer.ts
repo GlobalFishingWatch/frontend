@@ -26,14 +26,14 @@ import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
 
-export const DEFAULT_POINT_RADIUS = 4
+export const DEFAULT_POINT_RADIUS = 6
 const defaultProps: DefaultProps<_UserPointsLayerProps> = {
   idProperty: 'gfw_id',
   pickable: true,
   valueProperties: [],
   maxRequests: 100,
   debounceTime: 500,
-  minPointSize: 3,
+  minPointSize: 6,
   maxPointSize: 15,
   maxZoom: DEFAULT_USER_TILES_MAX_ZOOM,
 }
