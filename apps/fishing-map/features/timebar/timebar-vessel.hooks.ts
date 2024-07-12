@@ -217,7 +217,8 @@ export const useTimebarVesselTracksGraph = () => {
 export const useTimebarVesselEvents = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
-  const [events, setVesselEvents] = useState<TimebarChartData<TrackEventChunkProps> | null>(null)
+  const [timebarVesselEvents, setTimebarVesselEvents] =
+    useState<TimebarChartData<TrackEventChunkProps> | null>(null)
   const vessels = useTimebarVesselsLayers()
   const eventsLoaded = useMemo(
     () => vessels.flatMap((v) => (v.instance.getVesselEventsLayersLoaded() ? v.id : [])).join(','),
@@ -245,15 +246,15 @@ export const useTimebarVesselEvents = () => {
             getHighlighterIcon: 'vessel',
           } as TimebarChartItem<any>
         })
-        setVesselEvents(vesselEvents)
+        setTimebarVesselEvents(vesselEvents)
       } else {
-        setVesselEvents(null)
+        setTimebarVesselEvents(null)
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventsLoaded, timebarGraph, visibleEvents, eventsColor])
 
-  return events
+  return timebarVesselEvents
 }
 
 const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs): string => {

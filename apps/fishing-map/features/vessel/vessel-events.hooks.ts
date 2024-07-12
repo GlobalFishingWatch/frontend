@@ -7,33 +7,30 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselId } from 'routes/routes.selectors'
 import { setVesselEvents } from './vessel.slice'
 
-const useVesselEvents = (dataviewId: string) => {
-  const vesselInstance = useGetDeckLayer<VesselLayer>(dataviewId)
-  const dataLoaded = vesselInstance?.instance?.getAllSublayersLoaded()
+const useVesselProfileLayer = () => {
+  const vesselDataview = useSelector(selectVesselProfileDataview)
+  return useGetDeckLayer<VesselLayer>(vesselDataview?.id as string)
+}
+
+const useVesselProfileEvents = () => {
+  const vesselLayer = useVesselProfileLayer()
+  const dataLoaded = vesselLayer?.instance?.isLoaded
   return useMemo(() => {
     if (dataLoaded) {
-      const data = vesselInstance?.instance?.getVesselEventsData()
-      return data
+      return vesselLayer?.instance?.getVesselEventsData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataLoaded])
 }
 
-const useVesselProfileEvents = () => {
-  const vesselDataview = useSelector(selectVesselProfileDataview)
-  return useVesselEvents(vesselDataview?.id || '')
-}
-
 export const useVesselProfileEventsLoading = () => {
-  const vesselDataview = useSelector(selectVesselProfileDataview)
-  const vesselInstance = useGetDeckLayer<VesselLayer>(vesselDataview?.id as string)
+  const vesselInstance = useVesselProfileLayer()
   // TODO:deck review this and try to avoid intermediate loading states while toggled on events load
   return vesselInstance?.instance && !vesselInstance?.instance?.getVesselEventsLayersLoaded()
 }
 
 export const useVesselProfileEventsError = () => {
-  const vesselDataview = useSelector(selectVesselProfileDataview)
-  const vesselInstance = useGetDeckLayer<VesselLayer>(vesselDataview?.id as string)
+  const vesselInstance = useVesselProfileLayer()
   return vesselInstance?.instance?.getErrorMessage() || ''
 }
 

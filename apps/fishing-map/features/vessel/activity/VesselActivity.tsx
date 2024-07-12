@@ -12,6 +12,7 @@ import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useVesselProfileEventsError, useVesselProfileEventsLoading } from '../vessel-events.hooks'
+import { useVesselProfileLayer } from '../vessel-bounds.hooks'
 import styles from './VesselActivity.module.css'
 
 const VesselActivity = () => {
@@ -22,6 +23,7 @@ const VesselActivity = () => {
   const eventsLoading = useVesselProfileEventsLoading()
   const eventsError = useVesselProfileEventsError()
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
+  const vesselLayer = useVesselProfileLayer()
   const hasVesselEvents =
     vesselProfileDataview?.config?.events && vesselProfileDataview?.config?.events?.length > 0
 
@@ -47,7 +49,7 @@ const VesselActivity = () => {
     [t]
   )
 
-  if (hasVesselEvents && eventsLoading) {
+  if (hasVesselEvents && (!vesselLayer?.instance || eventsLoading)) {
     return (
       <div className={styles.placeholder}>
         <Spinner />
