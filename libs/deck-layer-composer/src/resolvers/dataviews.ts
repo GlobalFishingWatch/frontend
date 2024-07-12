@@ -32,6 +32,10 @@ export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
 const getDatasetsAvailableIntervals = (datasets: Dataset[]) =>
   uniq((datasets || [])?.flatMap((d) => (d?.configuration?.intervals as FourwingsInterval[]) || []))
 
+export const getAvailableIntervalsInDataviews = (dataviews: UrlDataviewInstance[]) => {
+  return uniq(dataviews.flatMap((dataview) => getDataviewAvailableIntervals(dataview)))
+}
+
 export const getDataviewAvailableIntervals = (
   dataview: UrlDataviewInstance,
   defaultIntervals = FOURWINGS_INTERVALS_ORDER
