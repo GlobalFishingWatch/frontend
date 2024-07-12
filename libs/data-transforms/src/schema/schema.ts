@@ -1,4 +1,8 @@
-import { max, min, snakeCase, toNumber, uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
+import snakeCase from 'lodash/snakeCase'
+import toNumber from 'lodash/toNumber'
+import max from 'lodash/max'
+import min from 'lodash/min'
 import { FeatureCollection } from 'geojson'
 import { DateTime, DateTimeOptions } from 'luxon'
 import {

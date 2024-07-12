@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { debounce } from 'lodash'
+import { debounce } from 'es-toolkit'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { MapView, MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapCoordinates } from 'types'

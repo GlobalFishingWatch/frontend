@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from './datasets.slice'
 
@@ -17,7 +17,7 @@ const selectDatasetsByType = (type: DatasetTypes) => {
         const relatedDataset = datasets.find((dataset) => dataset.id === relatedDatasetId)
         return relatedDataset || []
       }),
-      'id'
+      (d) => d.id
     )
   })
 }

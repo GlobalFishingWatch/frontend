@@ -1,6 +1,6 @@
 import { Fragment, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import {
   getVesselIdFromDatasetConfig,
   UrlDataviewInstance,

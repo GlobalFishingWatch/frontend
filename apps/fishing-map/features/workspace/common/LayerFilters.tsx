@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { debounce } from 'lodash'
+import { debounce } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import {
   Button,

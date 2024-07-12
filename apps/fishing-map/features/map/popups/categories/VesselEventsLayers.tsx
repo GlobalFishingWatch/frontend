@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { groupBy } from 'lodash'
+import { groupBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { IdentityVessel, SelfReportedInfo } from '@globalfishingwatch/api-types'
@@ -25,7 +25,7 @@ function VesselEventsTooltipSection({
   const overflows = features?.length > MAX_TOOLTIP_LIST
   const featuresByType = useMemo(() => {
     const maxFeatures = overflows ? features.slice(0, MAX_TOOLTIP_LIST) : features
-    return groupBy(maxFeatures, 'properties.vesselId')
+    return groupBy(maxFeatures, (f) => f.vesselId)
   }, [overflows, features])
 
   const resources = useSelector(selectVisibleResources)

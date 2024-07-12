@@ -2980,6 +2980,7 @@ __metadata:
     decompress: "npm:^4.2.1"
     dexie: "npm:3.2.5"
     downshift: "npm:^8.3.1"
+    es-toolkit: "npm:^1.9.0"
     esbuild: "npm:^0.20.2"
     eslint: "npm:8.57.0"
     eslint-config-next: "npm:^14.1.0"
@@ -14648,6 +14649,13 @@ __metadata:
     is-date-object: "npm:^1.0.1"
     is-symbol: "npm:^1.0.2"
   checksum: 10/74aeeefe2714cf99bb40cab7ce3012d74e1e2c1bd60d0a913b467b269edde6e176ca644b5ba03a5b865fb044a29bca05671cd445c85ca2cdc2de155d7fc8fe9b
+  languageName: node
+  linkType: hard
+
+"es-toolkit@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "es-toolkit@npm:1.9.0"
+  checksum: 10/d6adee691be63e6b4da7e68f62dd7d47178039afa73314396b0ee88ecea7989c5f0798aa46f958feee72ad5deb19001a9e576f7ca337145cbf5fe09a2130efc1
   languageName: node
   linkType: hard
 

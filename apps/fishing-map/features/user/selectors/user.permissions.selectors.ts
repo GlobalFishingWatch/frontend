@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { orderBy, uniqBy } from 'lodash'
+import { orderBy, uniqBy } from 'es-toolkit'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { DatasetStatus, DatasetCategory, UserPermission } from '@globalfishingwatch/api-types'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -53,8 +53,8 @@ export const selectUserWorkspaces = createSelector(
           workspace.ownerId === userData?.id &&
           !workspace.id.startsWith(AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX)
       ),
-      'createdAt',
-      'desc'
+      ['createdAt'],
+      ['desc']
     )
   }
 )
@@ -64,8 +64,8 @@ export const selectUserReports = createSelector(
   (userData, reports) => {
     return orderBy(
       reports?.filter((report) => report.ownerId === userData?.id),
-      'createdAt',
-      'desc'
+      ['createdAt'],
+      ['desc']
     )
   }
 )
@@ -94,7 +94,7 @@ export const selectUserWorkspacesPrivate = createSelector(
             (USER_GROUP_WORKSPACE[g] && workspace.id.includes(USER_GROUP_WORKSPACE[g]))
         )
     )
-    return orderBy(privateWorkspaces, 'createdAt', 'desc')
+    return orderBy(privateWorkspaces, ['createdAt'], ['desc'])
   }
 )
 
@@ -127,6 +127,6 @@ export const selectUserVesselGroups = createSelector(
 export const selectAllVisibleVesselGroups = createSelector(
   [selectUserVesselGroups, selectWorkspaceVesselGroups],
   (vesselGroups = [], workspaceVesselGroups = []) => {
-    return uniqBy([...vesselGroups, ...(workspaceVesselGroups || [])], 'id')
+    return uniqBy([...vesselGroups, ...(workspaceVesselGroups || [])], (v) => v.id)
   }
 )

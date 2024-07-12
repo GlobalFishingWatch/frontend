@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { memoize, uniqBy, without, kebabCase, uniq } from 'lodash'
+import memoize from 'lodash/memoize'
+import kebabCase from 'lodash/kebabCase'
+import { uniqBy, without, uniq } from 'es-toolkit'
 import { stringify } from 'qs'
 import {
   AnyDatasetConfiguration,
@@ -127,7 +129,7 @@ const fetchDatasetsFromApi = async (
     IS_DEVELOPMENT_ENV || process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
       ? await import('./datasets.mock')
       : { default: [] }
-  let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], 'id')
+  let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)
 
   const relatedDatasetsIds = uniq(
     datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
@@ -141,7 +143,7 @@ const fetchDatasetsFromApi = async (
       signal,
       maxDepth: maxDepth - 1,
     })
-    datasets = uniqBy([...datasets, ...relatedDatasets], 'id')
+    datasets = uniqBy([...datasets, ...relatedDatasets], (d) => d.id)
   }
 
   return datasets

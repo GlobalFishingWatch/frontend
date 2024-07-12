@@ -9,7 +9,8 @@ import {
   ComposedChart,
   Area,
 } from 'recharts'
-import { max, min } from 'lodash'
+import min from 'lodash/min'
+import max from 'lodash/max'
 import { DateTime } from 'luxon'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import i18n from 'features/i18n/i18n'

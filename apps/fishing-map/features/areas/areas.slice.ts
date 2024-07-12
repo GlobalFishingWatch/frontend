@@ -1,5 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { kebabCase, memoize, uniqBy } from 'lodash'
+import memoize from 'lodash/memoize'
+import kebabCase from 'lodash/kebabCase'
+import { uniqBy } from 'es-toolkit'
 import { Polygon, MultiPolygon, FeatureCollection } from 'geojson'
 import union from '@turf/union'
 import { featureCollection } from '@turf/helpers'
@@ -202,7 +204,7 @@ export const fetchDatasetAreasThunk = createAsyncThunk(
       ...area,
       slug: kebabCase(area.label),
     }))
-    return uniqBy(areasWithSlug, 'slug')
+    return uniqBy(areasWithSlug, (a) => a.slug)
   },
   {
     condition: ({ datasetId }: FetchDatasetAreasThunkParam, { getState }) => {

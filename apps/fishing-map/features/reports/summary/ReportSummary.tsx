@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { sum } from 'lodash'
+import { sum } from 'es-toolkit'
 import { Fragment, useMemo } from 'react'
 import Sticky from 'react-sticky-el'
 import { Locale } from '@globalfishingwatch/api-types'

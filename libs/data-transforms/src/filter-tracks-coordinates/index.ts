@@ -7,7 +7,7 @@ import {
   Position,
   MultiLineString,
 } from 'geojson'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
 import { isNumeric } from './utils'
 
 export { isNumeric }

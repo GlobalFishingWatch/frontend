@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import {
   DataviewCategory,
   Dataset,

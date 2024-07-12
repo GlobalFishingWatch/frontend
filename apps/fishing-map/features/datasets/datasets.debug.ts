@@ -1,4 +1,4 @@
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import { Dataset, Dataview } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
@@ -30,8 +30,8 @@ export const debugRelatedDatasets = (datasets: Dataset[], datasetId: string) => 
       datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
     )
     if (relatedDatasetsIds.some((d) => d.includes(datasetId))) {
-      const originalDataset = datasets.find(
-        (d) => d.relatedDatasets?.some((d) => d.id.includes(datasetId))
+      const originalDataset = datasets.find((d) =>
+        d.relatedDatasets?.some((d) => d.id.includes(datasetId))
       )
       if (originalDataset) {
         console.log(

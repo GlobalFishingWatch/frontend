@@ -1,5 +1,6 @@
 import type { FeatureCollection } from 'geojson'
-import { capitalize, lowerCase } from 'lodash'
+import capitalize from 'lodash/capitalize'
+import lowerCase from 'lodash/lowerCase'
 import {
   DatasetConfigurationSourceFormat,
   DatasetGeometryType,

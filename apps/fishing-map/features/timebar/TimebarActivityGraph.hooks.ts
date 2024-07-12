@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import {
   getDataviewAvailableIntervals,
   useGetDeckLayer,

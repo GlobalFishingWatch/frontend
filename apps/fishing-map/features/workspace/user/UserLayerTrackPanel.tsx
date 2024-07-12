@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { FeatureCollection } from 'geojson'
 import { useTranslation } from 'react-i18next'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import { NO_RECORD_ID } from '@globalfishingwatch/data-transforms'
 import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
 import {
@@ -68,9 +68,7 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
   }) as string
   const filterValues = dataview.config?.filters?.[lineIdProperty] || []
 
-  const features = uniqBy(resource.data?.features, (f) => {
-    return f.properties?.[lineIdProperty]
-  })
+  const features = uniqBy(resource.data?.features, (f) => f.properties?.[lineIdProperty])
 
   return (
     <Fragment>

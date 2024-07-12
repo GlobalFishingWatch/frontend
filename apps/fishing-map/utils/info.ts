@@ -1,4 +1,4 @@
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import { TFunction } from 'i18next'
 import {
   API_LOGIN_REQUIRED,

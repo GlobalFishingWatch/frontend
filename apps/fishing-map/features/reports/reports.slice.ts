@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { memoize } from 'lodash'
+import memoize from 'lodash/memoize'
 import { stringify } from 'qs'
 import { APIPagination, Report } from '@globalfishingwatch/api-types'
 import {

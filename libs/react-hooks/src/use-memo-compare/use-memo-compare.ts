@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
 
 // https://usehooks.com/useMemoCompare/
 export function useMemoCompare<N = unknown>(next: N, compare = isEqual): N {

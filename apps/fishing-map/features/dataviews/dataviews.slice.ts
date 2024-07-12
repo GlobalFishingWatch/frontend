@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
-import { uniqBy, kebabCase } from 'lodash'
+import { uniqBy } from 'es-toolkit'
+import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
 import { Dataview, APIPagination } from '@globalfishingwatch/api-types'
 import {
@@ -63,7 +64,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
           ...d,
           slug: d.slug || kebabCase(d.name),
         })),
-        'slug'
+        (d) => d.slug
       )
     } catch (e: any) {
       console.warn(e)

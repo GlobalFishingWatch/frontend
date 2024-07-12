@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
-import { current } from 'immer'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
@@ -282,7 +281,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
       const topActivityVesselsDatasets = uniqBy(
         topActivityVessels.map(({ dataset }) => dataset),
-        'id'
+        (d) => d.id
       )
       // Grab related dataset to fetch info from and prepare tracks
       const allInfoDatasets = await Promise.all(

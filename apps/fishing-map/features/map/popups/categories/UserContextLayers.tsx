@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { groupBy } from 'lodash'
+import { groupBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { UserLayerPickingObject, ContextPickingObject } from '@globalfishingwatch/deck-layers'
@@ -51,7 +51,7 @@ type UserContextLayersProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: UserContextLayersProps) {
   const dataviews = useSelector(selectCustomUserDataviews) as UrlDataviewInstance[]
   const { onReportClick, onDownloadClick } = useContextInteractions()
-  const featuresByType = groupBy(features, 'layerId')
+  const featuresByType = groupBy(features, (f) => f.layerId)
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => {

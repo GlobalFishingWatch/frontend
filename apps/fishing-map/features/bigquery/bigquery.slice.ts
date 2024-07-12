@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { kebabCase } from 'lodash'
+import kebabCase from 'lodash/kebabCase'
 import { RootState } from 'reducers'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'

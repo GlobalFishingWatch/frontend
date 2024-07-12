@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react'
-import { debounce } from 'lodash'
+import { debounce } from 'es-toolkit'
 
-export function useDebounce<T>(
-  value: T,
-  delay: number,
-  options?: { leading?: boolean; maxWait?: number; trailing?: boolean }
-): T {
+export function useDebounce<T>(value: T, delay: number, options?: { signal: AbortSignal }): T {
   // State and setters for debounced value
   const [debouncedValue, setDebouncedValue] = useState(value)
 

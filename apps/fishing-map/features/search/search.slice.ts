@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import {
   GFWAPI,
   getAdvancedSearchQuery,
@@ -143,7 +143,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
         const uniqSearchResults = gfwUser
           ? searchResults.entries
-          : uniqBy(searchResults.entries, 'selfReportedInfo[0].id')
+          : uniqBy(searchResults.entries, (r) => r.selfReportedInfo[0].id)
 
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
           if (!vessel) return []

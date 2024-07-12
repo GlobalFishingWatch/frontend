@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { memoize, kebabCase } from 'lodash'
+import memoize from 'lodash/memoize'
+import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
 import { APIPagination, WORKSPACE_PUBLIC_ACCESS, Workspace } from '@globalfishingwatch/api-types'
 import {

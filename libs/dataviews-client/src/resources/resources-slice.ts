@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { memoize } from 'lodash'
+import memoize from 'lodash/memoize'
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection, LineString } from 'geojson'
 import {

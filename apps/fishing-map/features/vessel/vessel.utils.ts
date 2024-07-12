@@ -1,4 +1,5 @@
-import { get, uniq, uniqBy } from 'lodash'
+import { uniq, uniqBy } from 'es-toolkit'
+import get from 'lodash/get'
 import {
   GearType,
   IdentityVessel,
@@ -161,7 +162,7 @@ export function getVesselProperty<P extends VesselIdentityProperty>(
   if (property === 'owner') {
     const ssvid = getVesselProperty(vessel, 'ssvid', { identityId, identitySource })
     return uniq(
-      vessel.registryOwners?.filter((owner) => owner.ssvid === ssvid)?.map(({ name }) => name)
+      vessel.registryOwners?.filter((owner) => owner.ssvid === ssvid)?.map(({ name }) => name) || []
     ).join(', ') as VesselProperty<P>
   }
   if (
@@ -279,7 +280,7 @@ export const getOtherVesselNames = (
   currentName?: string
 ) => {
   const currentNShipname = currentName || getSearchIdentityResolved(vessel)?.nShipname
-  const uniqIdentitiesByNormalisedName = uniqBy(getVesselIdentities(vessel), 'nShipname')
+  const uniqIdentitiesByNormalisedName = uniqBy(getVesselIdentities(vessel), (i) => i.nShipname)
   const otherIdentities = uniqIdentitiesByNormalisedName.filter(
     (i) => i.nShipname !== currentNShipname
   )

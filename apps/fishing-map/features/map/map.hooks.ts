@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useMemo } from 'react'
-import { debounce } from 'lodash'
+import { debounce } from 'es-toolkit'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 import { GFWAPI } from '@globalfishingwatch/api-client'
