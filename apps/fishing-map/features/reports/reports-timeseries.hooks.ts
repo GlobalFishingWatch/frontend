@@ -66,12 +66,27 @@ export interface ReportGraphProps {
   mode?: ReportGraphMode
 }
 
+export type ReportGraphStats = Record<
+  string,
+  {
+    min: number
+    max: number
+    mean: number
+  }
+>
+
 const mapTimeseriesAtom = atom([] as ReportGraphProps[] | undefined)
+const mapTimeseriesStatsAtom = atom({} as ReportGraphStats)
+
 if (process.env.NODE_ENV !== 'production') {
   mapTimeseriesAtom.debugLabel = 'mapTimeseries'
 }
 export function useSetTimeseries() {
   return useSetAtom(mapTimeseriesAtom)
+}
+
+export function useTimeseriesStats() {
+  return useAtomValue(mapTimeseriesStatsAtom)
 }
 
 const useReportInstances = () => {
@@ -97,6 +112,7 @@ export const useReportFeaturesLoading = () => {
 
 const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const [timeseries, setTimeseries] = useAtom(mapTimeseriesAtom)
+  const setTimeseriesStats = useSetAtom(mapTimeseriesStatsAtom)
   const [featuresFiltered, setFeaturesFiltered] = useState<FilteredPolygons[][]>([])
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
@@ -149,6 +165,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       graphMode: ReportGraphMode
     ) => {
       const timeseries: ReportGraphProps[] = []
+      const timeseriesStats = {} as ReportGraphStats
       instances.forEach((instance, index) => {
         const features = filteredFeatures[index]
         if (reportCategory === 'environment' && features[0].contained.length > 0) {
@@ -170,7 +187,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
             return values || []
           })
           if (dataview?.config && allValues.length > 0) {
-            dataview.config.stats = {
+            timeseriesStats[dataview.id] = {
               min: min(allValues),
               max: max(allValues),
               mean: mean(allValues),
@@ -196,8 +213,17 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         timeseries.push(featuresToTimeseries(features, params)[0])
       })
       setTimeseries(timeseries)
+      setTimeseriesStats(timeseriesStats)
     },
-    [dataviews, reportCategory, setTimeseries, timeComparison, timerange.end, timerange.start]
+    [
+      dataviews,
+      reportCategory,
+      setTimeseries,
+      setTimeseriesStats,
+      timeComparison,
+      timerange.end,
+      timerange.start,
+    ]
   )
 
   // We need to re calculate the timeseries when area or timerange changes

@@ -9,6 +9,7 @@ import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.
 import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
+  useTimeseriesStats,
 } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
@@ -23,6 +24,7 @@ function ReportEnvironment() {
   const timerange = useSelector(selectTimeRange)
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
+  const timeseriesStats = useTimeseriesStats()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
   const interval = getFourwingsInterval(timerange.start, timerange.end, [
     'MONTH',
@@ -35,7 +37,7 @@ function ReportEnvironment() {
     <Fragment>
       {environmentalDataviews.map((dataview, index) => {
         const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
-        const { min, mean, max } = dataview.config?.stats || {}
+        const { min, mean, max } = timeseriesStats[dataview.id] || {}
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
         const unit = dataset?.unit
