@@ -132,6 +132,18 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const instances = reportLayers.map((l) => l.instance)
   const layersLoaded = reportLayers?.length ? reportLayers?.every((l) => l.loaded) : false
 
+  const timeComparisonHash = timeComparison ? JSON.stringify(timeComparison) : undefined
+  const instancesIntervalHash = instances
+    ?.map((instance) => instance.getChunk()?.interval)
+    .join(',')
+  const reportGraphMode = getReportGraphMode(reportGraph)
+  // We need to re calculate the timeseries when any of this params changes
+  useEffect(() => {
+    setTimeseries([])
+    setFeaturesFiltered([])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportCategory, timeComparisonHash, instancesIntervalHash, reportGraphMode, area?.id])
+
   const updateFeaturesFiltered = useCallback(
     async (instances: FourwingsLayer[], polygon: AreaGeometry, mode?: 'point' | 'cell') => {
       setFeaturesFiltered([])
@@ -147,11 +159,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     },
     [filterCellsByPolygon]
   )
-
-  useEffect(() => {
-    setFeaturesFiltered([])
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportCategory])
 
   useEffect(() => {
     if (area?.geometry && layersLoaded && !featuresFiltered?.length && instances.length) {
@@ -206,7 +213,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
           const sublayers = instance.getFourwingsLayers()
           const params: FeaturesToTimeseriesParams = {
             staticHeatmap: props.static,
-            interval: instance.getInterval(),
+            interval: chunk.interval,
             start: timeComparison ? props.startTime : chunk.bufferedStart,
             end: timeComparison ? props.endTime : chunk.bufferedEnd,
             compareStart: props.compareStart,
@@ -244,21 +251,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     ]
   )
 
-  // We need to re calculate the timeseries when area or timerange changes
-  useLayoutEffect(() => {
-    setTimeseries(undefined)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.id])
-
-  const reportGraphMode = getReportGraphMode(reportGraph)
-  useLayoutEffect(() => {
-    if (timeseries!?.length > 0) {
-      setTimeseries([])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportGraphMode])
-
-  const timeComparisonHash = timeComparison ? JSON.stringify(timeComparison) : undefined
   useEffect(() => {
     if (layersLoaded && featuresFiltered?.length && areaInViewport) {
       computeTimeseries(instances, featuresFiltered, reportGraphMode)
@@ -272,6 +264,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     reportBufferHash,
     reportGraphMode,
     timeComparisonHash,
+    instancesIntervalHash,
   ])
 
   return timeseries
