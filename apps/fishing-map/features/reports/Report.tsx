@@ -435,6 +435,7 @@ export default function Report() {
       setTimeseries([])
       dispatch(resetReportData())
       dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+      fitAreaInViewport()
       trackEvent({
         category: TrackCategory.Analysis,
         action: `Click on ${option.id} report`,

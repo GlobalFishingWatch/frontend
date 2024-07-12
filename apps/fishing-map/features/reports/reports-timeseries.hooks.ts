@@ -85,6 +85,11 @@ export function useSetTimeseries() {
   return useSetAtom(mapTimeseriesAtom)
 }
 
+export function useHasReportTimeseries() {
+  const timeseries = useAtomValue(mapTimeseriesAtom)
+  return timeseries && timeseries.length > 0
+}
+
 export function useTimeseriesStats() {
   return useAtomValue(mapTimeseriesStatsAtom)
 }
@@ -125,7 +130,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const timerange = useTimerangeConnect()
 
   const instances = reportLayers.map((l) => l.instance)
-  const layersLoaded = reportLayers.every((l) => l.loaded)
+  const layersLoaded = reportLayers?.length ? reportLayers?.every((l) => l.loaded) : false
 
   const updateFeaturesFiltered = useCallback(
     async (instances: FourwingsLayer[], polygon: AreaGeometry, mode?: 'point' | 'cell') => {
@@ -144,16 +149,18 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   )
 
   useEffect(() => {
-    if (area?.geometry && layersLoaded && instances.length) {
+    setFeaturesFiltered([])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportCategory])
+
+  useEffect(() => {
+    if (area?.geometry && layersLoaded && !featuresFiltered?.length && instances.length) {
       updateFeaturesFiltered(
         instances,
         area.geometry,
         reportCategory === 'environment' ? 'point' : 'cell'
       )
-    } else {
-      setFeaturesFiltered([])
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [area?.geometry, reportCategory, layersLoaded])
 
