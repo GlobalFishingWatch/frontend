@@ -8,7 +8,8 @@ import {
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { parse } from '@loaders.gl/core'
-import { debounce, isEqual, sum } from 'lodash'
+import { debounce, sum } from 'es-toolkit'
+import isEqual from 'lodash/isEqual'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { scaleLinear } from 'd3-scale'
 import {

@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import eezData from '../data/source/eezs.json'
 import eezGFW from '../data/source/eezs-gfw.json'
 // EEZs manual prepared data that doesn't match names between GFW and Natural Earth
@@ -22,7 +22,7 @@ async function start() {
           },
         }
       }),
-      'properties.name'
+      (f) => f.properties.name
     )
     const allEezData = [...eezManual, ...eezs]
     const eezsAreasString = `

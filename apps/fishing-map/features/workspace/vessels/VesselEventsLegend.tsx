@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -29,7 +29,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
   const tracks = useSelector(selectActiveVesselsDataviews)
   const eventDatasets = uniqBy(
     dataviews.flatMap((dataview) => getEventsDatasetsInDataview(dataview)),
-    'id'
+    (d) => d.id
   )
 
   const showLegend =

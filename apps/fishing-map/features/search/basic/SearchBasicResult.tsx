@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { GetItemPropsOptions } from 'downshift'
 import { FeatureCollection } from 'geojson'
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import { API_LOGIN_REQUIRED, Locale } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {

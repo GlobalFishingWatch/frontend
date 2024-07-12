@@ -43,6 +43,7 @@ export type FourwingsLoaderOptions = LoaderOptions & {
 }
 
 export type FourwingsFeatureProperties = {
+  id?: string
   initialValues: Record<string, number[]>
   startOffsets: number[]
   dates: number[][]

@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { throttle } from 'lodash'
+import { throttle } from 'es-toolkit'
 import type { PickingInfo } from '@deck.gl/core'
 import type {
   RulerData,

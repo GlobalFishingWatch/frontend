@@ -60,11 +60,8 @@ export const selectDetectionsVisualizationMode = createSelector(
   }
 )
 
-export const selectEnvironmentVisualizationMode = createSelector(
-  [selectWorkspaceStateProperty('environmentVisualizationMode')],
-  (environmentVisualizationMode) => {
-    return environmentVisualizationMode
-  }
+export const selectEnvironmentVisualizationMode = selectWorkspaceStateProperty(
+  'environmentVisualizationMode'
 )
 
 export const selectMapRulersVisible = createSelector(

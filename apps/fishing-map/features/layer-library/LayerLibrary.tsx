@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { ChangeEvent, FC, Fragment, useCallback, useLayoutEffect, useMemo, useState } from 'react'
-import { uniq } from 'lodash'
+import { ChangeEvent, FC, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { uniq } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
@@ -67,7 +67,7 @@ const LayerLibrary: FC = () => {
     []
   )
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const categoryElements = uniqCategoriesPlusUser.flatMap((category) => {
       const element = document.getElementById(category)
       return element || []

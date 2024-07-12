@@ -1,4 +1,4 @@
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import {
   Dataset,
   DatasetSchema,
@@ -432,11 +432,11 @@ export function resolveDataviews(
                 ...instanceDatasetConfig,
                 query: uniqBy(
                   [...(instanceDatasetConfig.query || []), ...(datasetConfig.query || [])],
-                  'id'
+                  (q) => q.id
                 ),
                 params: uniqBy(
                   [...(instanceDatasetConfig.params || []), ...(datasetConfig.params || [])],
-                  'id'
+                  (p) => p.id
                 ),
               }
             })

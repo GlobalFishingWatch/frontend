@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import {
   Workspace,
   Dataview,

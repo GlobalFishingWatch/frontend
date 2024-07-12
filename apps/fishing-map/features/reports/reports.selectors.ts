@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
+import { groupBy, sum, uniq, uniqBy } from 'es-toolkit'
+import sumBy from 'lodash/sumBy'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
 import { FeatureCollection, MultiPolygon } from 'geojson'
@@ -151,7 +152,7 @@ export const selectReportVesselsNumber = createSelector(
   (vessels) => {
     if (!vessels?.length) return null
 
-    return uniqBy(vessels, 'vesselId').length
+    return uniqBy(vessels, (v) => v.vesselId).length
   }
 )
 
@@ -164,7 +165,7 @@ export const selectReportVesselsList = createSelector(
   [selectReportActivityFlatten, selectAllDatasets, selectReportCategory],
   (vessels, datasets, reportCategory) => {
     if (!vessels?.length) return null
-    return Object.values(groupBy(vessels, 'vesselId'))
+    return Object.values(groupBy(vessels, (v) => v.vesselId))
       .flatMap((vesselActivity) => {
         if (vesselActivity[0]?.category !== reportCategory) return EMPTY_ARRAY
         const activityDataset = datasets.find((d) => vesselActivity[0].activityDatasetId === d.id)
@@ -215,7 +216,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
   (vessels) => {
     if (!vessels?.length) return null
 
-    return Object.values(groupBy(vessels, 'vesselId'))
+    return Object.values(groupBy(vessels, (v) => v.vesselId))
       .map((vesselActivity) => {
         return {
           ...vesselActivity[0],
@@ -382,13 +383,13 @@ const selectReportVesselsGraphData = createSelector(
   (reportGraph, vesselsFiltered, dataviews) => {
     if (!vesselsFiltered?.length) return null
 
-    const reportData = groupBy(vesselsFiltered, 'dataviewId')
+    const reportData = groupBy(vesselsFiltered, (v) => v.dataviewId || '')
 
     const dataByDataview = dataviews.map((dataview) => {
       const dataviewData = reportData[dataview.id]
         ? Object.values(reportData[dataview.id]).flatMap((v) => v || [])
         : []
-      const dataByKey = groupBy(dataviewData, reportGraph)
+      const dataByKey = groupBy(dataviewData, (d) => d[reportGraph] || '')
       return { id: dataview.id, data: dataByKey }
     })
 

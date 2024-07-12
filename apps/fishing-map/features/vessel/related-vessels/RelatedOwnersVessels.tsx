@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useSearchByOwnerQuery } from 'queries/search-api'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
@@ -71,7 +71,7 @@ const RelatedOwnerVessels = () => {
     vesselData?.registryOwners || [],
     timerange
   ) as VesselRegistryOwner[]
-  const uniqOwners = uniqBy(filteredOwners, 'name')
+  const uniqOwners = uniqBy(filteredOwners, (o) => o.name)
   const vesselId = getVesselProperty(vesselData, 'id')
 
   return (

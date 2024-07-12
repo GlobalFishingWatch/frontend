@@ -12,7 +12,7 @@ import {
 import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers'
 import { IconLayer, TextLayer } from '@deck.gl/layers'
 import { sample, mean, standardDeviation } from 'simple-statistics'
-import { groupBy, orderBy } from 'lodash'
+import { groupBy, orderBy } from 'es-toolkit'
 import { stringify } from 'qs'
 import { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
@@ -259,7 +259,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getLatestVesselPositions = (positions: FourwingsPositionFeature[]) => {
-    const positionsByVessel = groupBy(positions, 'properties.id')
+    const positionsByVessel = groupBy(positions, (p) => p.properties.id)
     const lastPositions: FourwingsPositionFeature[] = []
     Object.keys(positionsByVessel)
       .filter((p) => p !== 'undefined')
@@ -278,7 +278,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           )
         : []
     })
-    const positions = orderBy(data, 'properties.htime').filter(Boolean)
+    const positions = orderBy(data, ['properties.htime'], ['asc']).filter(Boolean)
 
     const positionsInViewport = filteredPositionsByViewport(positions, this.context.viewport)
     const lastPositions = this._getLatestVesselPositions(positionsInViewport)

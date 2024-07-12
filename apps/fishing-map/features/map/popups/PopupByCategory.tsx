@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { groupBy, uniqBy } from 'lodash'
+import { groupBy, uniqBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
@@ -70,7 +70,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           POPUP_CATEGORY_ORDER.indexOf(a?.category as DataviewCategory) -
           POPUP_CATEGORY_ORDER.indexOf(b?.category as DataviewCategory)
       ),
-    'category'
+    (f) => f.category
   )
 
   return (
@@ -91,7 +91,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const positionFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
               (feature) => feature.visualizationMode === 'positions'
             )
-            const uniqPositionFeatures = uniqBy(positionFeatures, 'properties.id')
+            const uniqPositionFeatures = uniqBy(positionFeatures, (f) => f.properties.id)
             const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
               (feature) => feature.visualizationMode !== 'positions'
             )

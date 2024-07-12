@@ -1,5 +1,5 @@
 import { Fragment, useCallback } from 'react'
-import { groupBy } from 'lodash'
+import { groupBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
@@ -18,7 +18,7 @@ type ContextTooltipRowProps = {
 
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const { onReportClick, onDownloadClick } = useContextInteractions()
-  const featuresByType = groupBy(features, 'layerId')
+  const featuresByType = groupBy(features, (f) => f.layerId)
   const dataviews = useSelector(selectContextAreasDataviews) as UrlDataviewInstance[]
 
   const trackOnDownloadClick = useCallback(

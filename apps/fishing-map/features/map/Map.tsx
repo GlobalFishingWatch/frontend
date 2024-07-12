@@ -135,9 +135,7 @@ const MapWrapper = () => {
         <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
       )}
       {(isWorkspaceLocation || isReportLocation || isVesselLocation) && (
-        <MapInfo
-          center={hoveredCoordinates && { x: hoveredCoordinates[0], y: hoveredCoordinates[1] }}
-        />
+        <MapInfo center={hoveredCoordinates} />
       )}
 
       <TimeComparisonLegend />

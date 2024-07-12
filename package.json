@@ -83,6 +83,7 @@
     "d3-shape": "^3.2.0",
     "dexie": "3.2.5",
     "downshift": "^8.3.1",
+    "es-toolkit": "^1.9.0",
     "file-loader": "^6.2.0",
     "file-saver": "^2.0.5",
     "formatcoords": "1.1.3",

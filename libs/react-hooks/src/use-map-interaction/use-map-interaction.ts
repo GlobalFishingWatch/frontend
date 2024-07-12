@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import { debounce } from 'lodash'
+import { debounce } from 'es-toolkit'
 import {
   Interval,
   ExtendedStyleMeta,
@@ -8,11 +8,7 @@ import {
   ExtendedLayer,
   Group,
 } from '@globalfishingwatch/layer-composer'
-import {
-  aggregateCell,
-  SublayerCombinationMode,
-  VALUE_MULTIPLIER,
-} from '@globalfishingwatch/fourwings-aggregate'
+import { aggregateCell, SublayerCombinationMode } from '@globalfishingwatch/fourwings-aggregate'
 import type { Map, GeoJSONFeature, MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { ExtendedFeature, InteractionEventCallback, InteractionEvent } from '.'

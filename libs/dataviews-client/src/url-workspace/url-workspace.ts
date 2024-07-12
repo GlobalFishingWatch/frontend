@@ -1,4 +1,7 @@
-import { invert, isObject, isString, transform } from 'lodash'
+import { invert } from 'es-toolkit'
+import isObject from 'lodash/isObject'
+import isString from 'lodash/isString'
+import transform from 'lodash/transform'
 import { stringify, parse } from 'qs'
 import { UrlDataviewInstance } from '..'
 import {

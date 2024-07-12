@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { groupBy } from 'lodash'
+import { groupBy } from 'es-toolkit'
 import { Icon } from '@globalfishingwatch/ui-components'
 import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -18,7 +18,7 @@ function UserPointsTooltipSection({
   showFeaturesDetails = false,
 }: UserPointsLayersProps) {
   const { onReportClick } = useContextInteractions()
-  const featuresByType = groupBy(features, 'layerId')
+  const featuresByType = groupBy(features, (f) => f.layerId)
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => {

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { debounce } from 'lodash'
+import { debounce } from 'es-toolkit'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
 import { TimebarGraphs, TimebarVisualisations } from 'types'

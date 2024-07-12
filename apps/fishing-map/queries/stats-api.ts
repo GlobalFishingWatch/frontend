@@ -3,7 +3,7 @@ import { stringify } from 'qs'
 import type { BaseQueryArg, BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import type { SerializeQueryArgs } from '@reduxjs/toolkit/dist/query/defaultSerializeQueryArgs'
 import { gfwBaseQuery } from 'queries/base'
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import { DateTime } from 'luxon'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
@@ -64,7 +64,7 @@ export const dataviewStatsApi = createApi({
         }
       },
       transformResponse: (response: StatFields[], meta, args) => {
-        const units = uniq(args?.dataview?.datasets?.flatMap((d) => d.unit || []))
+        const units = uniq(args?.dataview?.datasets?.flatMap((d) => d.unit || []) || [])
         if (units.length > 1) {
           console.warn('Incompatible datasets stats unit, using the first type', units[0])
         }

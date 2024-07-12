@@ -2,7 +2,7 @@ import { Fragment, ReactNode, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { groupBy } from 'lodash'
+import { groupBy } from 'es-toolkit'
 import {
   DatasetTypes,
   ResourceStatus,
@@ -56,7 +56,7 @@ export const getVesselIdentityTooltipSummary = (
   if (!vessel || !vessel.selfReportedInfo?.length) {
     return ['']
   }
-  const identitiesByNormalizedShipname = groupBy(vessel?.selfReportedInfo, 'nShipname')
+  const identitiesByNormalizedShipname = groupBy(vessel?.selfReportedInfo, (i) => i.nShipname)
   const identities = Object.entries(identitiesByNormalizedShipname).flatMap(
     ([_, selfReportedInfo], index) => {
       const firstTransmissionDateFrom = selfReportedInfo.reduce((acc, curr) => {

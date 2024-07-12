@@ -123,12 +123,15 @@ const TimebarHighlighterWrapper = ({ showTooltip }: { showTooltip: boolean }) =>
     [interval]
   )
 
-  const formatDate =
-    timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
-    timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
-    visualizationMode !== 'positions'
-      ? activityDateCallback
-      : undefined
+  const formatDate = useMemo(
+    () =>
+      timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
+      timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
+      visualizationMode !== 'positions'
+        ? activityDateCallback
+        : undefined,
+    [timebarVisualisation, visualizationMode, activityDateCallback]
+  )
 
   return highlightedTime ? (
     <TimebarHighlighter

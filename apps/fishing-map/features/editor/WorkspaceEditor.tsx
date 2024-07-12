@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { groupBy } from 'lodash'
+import { groupBy } from 'es-toolkit'
 import { Dataview, DataviewCategory } from '@globalfishingwatch/api-types'
 import { Spinner, IconButton } from '@globalfishingwatch/ui-components'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
@@ -90,7 +90,7 @@ const WorkspaceEditor = ({ onEditClick }: WorkspaceEditorProps) => {
     }
   }
 
-  const groupedDataviews = groupBy(editorDataviews, 'category')
+  const groupedDataviews = groupBy(editorDataviews, (d) => d.category || '')
   return (
     <div className={styles.content}>
       <ul className={styles.dataviewsList}>

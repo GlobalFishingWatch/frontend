@@ -43,24 +43,18 @@ export const TimelineDatesRange = () => {
   )
 }
 
-const MapInfo = ({
-  center,
-}: {
-  center?: {
-    x: number
-    y: number
-  }
-}) => {
+const MapInfo = ({ center }: { center?: number[] }) => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const [x, y] = center || []
   return (
     <div className={styles.info}>
       <div className={styles.flex}>
         <MapScaleControl />
-        {center && (
+        {x && y && (
           <div className={cx('print-hidden', styles.mouseCoordinates)}>
-            {toFixed(center.y, 4)} {toFixed(center.x, 4)}
+            {toFixed(y, 4)} {toFixed(x, 4)}
             <br />
-            {formatcoords(center.y, center.x).format('DDMMssX', {
+            {formatcoords(y, x).format('DDMMssX', {
               latLonSeparator: ' ',
               decimalPlaces: 2,
             })}

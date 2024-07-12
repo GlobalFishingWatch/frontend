@@ -1,4 +1,6 @@
-import { intersection, lowerCase, uniq } from 'lodash'
+import lowerCase from 'lodash/lowerCase'
+import { uniq } from 'es-toolkit'
+import intersection from 'lodash/intersection'
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import {
   Dataset,
@@ -110,9 +112,7 @@ const CONTEXT_DATASETS_SCHEMAS: SupportedContextDatasetSchema[] = ['removal_of']
 const SINGLE_SELECTION_SCHEMAS: SupportedDatasetSchema[] = ['vessel-groups', 'period', 'scenario']
 
 type SchemaCompatibilityOperation = 'every' | 'some'
-type SchemaOriginParam =
-  | keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'>
-  | 'all'
+type SchemaOriginParam = keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'> | 'all'
 type GetSchemaInDataviewParams = {
   fieldsToInclude?: SupportedDatasetSchema[]
   vesselGroups?: MultiSelectOption[]
@@ -334,10 +334,7 @@ export const checkDatasetReportPermission = (datasetId: string, permissions: Use
   const permission = { type: 'dataset', value: datasetId, action: 'report' }
   return checkExistPermissionInList(permissions, permission)
 }
-const checkDatasetDownloadTrackPermission = (
-  datasetId: string,
-  permissions: UserPermission[]
-) => {
+const checkDatasetDownloadTrackPermission = (datasetId: string, permissions: UserPermission[]) => {
   // TODO make this number dynamic using wildcards like -*
   const downloadPermissions = [
     { type: 'dataset', value: datasetId, action: 'download-track' },
@@ -707,6 +704,7 @@ export const getCommonSchemaFieldsInDataview = (
       schemaFields = [[schemaConfig?.min?.toString(), schemaConfig?.max?.toString()]]
     }
   }
+
   const cleanSchemaFields =
     compatibilityOperation === 'every' ? intersection(...schemaFields) : uniq(schemaFields.flat())
   const datasetId = removeDatasetVersion(activeDatasets!?.[0]?.id)
@@ -876,7 +874,7 @@ export const getSchemaFiltersInDataview = (
   { vesselGroups, fieldsToInclude } = {} as GetSchemaInDataviewParams
 ): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
   let fieldsIds = uniq(
-    dataview.datasets?.flatMap((d) => d.fieldsAllowed || [])
+    dataview.datasets?.flatMap((d) => d.fieldsAllowed || []) || []
   ) as SupportedDatasetSchema[]
   if (fieldsToInclude?.length) {
     fieldsIds = fieldsIds.filter((f) => fieldsToInclude.includes(f))
