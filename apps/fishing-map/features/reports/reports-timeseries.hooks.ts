@@ -133,8 +133,8 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const layersLoaded = reportLayers?.length ? reportLayers?.every((l) => l.loaded) : false
 
   const timeComparisonHash = timeComparison ? JSON.stringify(timeComparison) : undefined
-  const instancesIntervalHash = instances
-    ?.map((instance) => instance.getChunk()?.interval)
+  const instancesChunkHash = instances
+    ?.map((instance) => JSON.stringify(instance.getChunk()))
     .join(',')
   const reportGraphMode = getReportGraphMode(reportGraph)
 
@@ -143,7 +143,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     setTimeseries([])
     setFeaturesFiltered([])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportCategory, timeComparisonHash, instancesIntervalHash, reportGraphMode, area?.id])
+  }, [reportCategory, timeComparisonHash, instancesChunkHash, reportGraphMode, area?.id])
 
   const updateFeaturesFiltered = useCallback(
     async (instances: FourwingsLayer[], polygon: AreaGeometry, mode?: 'point' | 'cell') => {
@@ -265,7 +265,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     reportBufferHash,
     reportGraphMode,
     timeComparisonHash,
-    instancesIntervalHash,
+    instancesChunkHash,
   ])
 
   return timeseries
