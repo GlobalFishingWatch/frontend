@@ -96,7 +96,6 @@ function VesselPin({
     let vesselWithIdentity = vessel ? ({ ...vessel } as IdentityVessel) : undefined
     let infoDatasetIdResolved = infoDatasetId
     let infoDatasetResolved = infoDataset ? ({ ...infoDataset } as Dataset) : undefined
-
     if (vesselInWorkspace) {
       deleteDataviewInstance(vesselInWorkspace.id)
     } else {
