@@ -103,7 +103,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               if (feature.visualizationMode === 'positions') {
                 return (
                   <PositionsRow
-                    key={feature.id}
+                    key={`${feature.id}-${i}`}
                     feature={feature as any as FourwingsPositionsPickingObject}
                     showFeaturesDetails={type === 'click'}
                   />
