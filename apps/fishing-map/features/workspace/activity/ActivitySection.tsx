@@ -99,12 +99,10 @@ function ActivitySection(): React.ReactElement {
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}>
-      <div className={styles.header}>
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>
-          {t('common.activity', 'Activity')}
-        </h2>
+      <div className={cx(styles.header, 'print-hidden')}>
+        <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
         {!readOnly && (
-          <div className={cx('print-hidden', styles.sectionButtons)}>
+          <div className={cx(styles.sectionButtons)}>
             <VisualisationChoice
               options={visualizationOptions}
               testId="activity-visualizations-change"

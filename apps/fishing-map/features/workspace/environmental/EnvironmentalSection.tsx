@@ -66,12 +66,10 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}>
-      <div className={styles.header}>
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>
-          {t('common.environment', 'Environment')}
-        </h2>
+      <div className={cx(styles.header, 'print-hidden')}>
+        <h2 className={styles.sectionTitle}>{t('common.environment', 'Environment')}</h2>
         {!readOnly && (
-          <div className={cx('print-hidden', styles.sectionButtons)}>
+          <div className={styles.sectionButtons}>
             <VisualisationChoice
               options={visualizationOptions}
               testId="activity-visualizations-change"
@@ -85,7 +83,6 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
               size="medium"
               tooltip={t('dataset.addEnvironmental', 'Add environmental dataset')}
               tooltipPlacement="top"
-              className="print-hidden"
               onClick={onAddClick}
             />
           </div>

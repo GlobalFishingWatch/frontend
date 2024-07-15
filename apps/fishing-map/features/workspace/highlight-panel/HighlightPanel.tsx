@@ -70,7 +70,7 @@ const HighlightPanel = ({
   return (
     <Popover
       open={visible}
-      className={styles.highlightPanel}
+      className={cx(styles.highlightPanel, 'print-hidden')}
       placement={placement || 'right'}
       content={
         <div className={styles.container}>

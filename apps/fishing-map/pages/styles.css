@@ -11,6 +11,15 @@
   --switch-height: 4.4rem;
 }
 
+html:has(.printing) {
+  font-size: 10px !important;
+}
+
+body:has(.printing) {
+  font: var(--font-M);
+  color: var(--color-primary-blue);
+}
+
 .printing * {
   transition: none !important;
 }

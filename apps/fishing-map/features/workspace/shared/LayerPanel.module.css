@@ -59,6 +59,7 @@
   cursor: pointer;
   line-height: 2.8rem;
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -303,6 +304,10 @@
   display: none !important;
 }
 
+:global(.printing) .LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+  display: none;
+}
+
 .faded,
 .secondary {
   color: var(--color-secondary-blue);
@@ -316,4 +321,10 @@
 .LayerPanel .areasOnScreen summary > span,
 .LayerPanel .areasOnScreen summary > svg {
   background: none;
+}
+
+@media print {
+  .LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+    display: none;
+  }
 }

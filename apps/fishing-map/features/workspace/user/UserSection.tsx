@@ -107,10 +107,8 @@ function UserSection(): React.ReactElement {
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={styles.header}>
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>
-          {t('user.datasets', 'User datasets')}
-        </h2>
+      <div className={cx(styles.header, 'print-hidden')}>
+        <h2 className={styles.sectionTitle}>{t('user.datasets', 'User datasets')}</h2>
         {!readOnly && (
           <Fragment>
             {!isSmallScreen && (
@@ -120,7 +118,6 @@ function UserSection(): React.ReactElement {
                   icon="upload"
                   type="border"
                   size="medium"
-                  className="print-hidden"
                   onClick={onUploadClick}
                   tooltip={t('dataset.upload', 'Upload dataset')}
                   tooltipPlacement="top"
@@ -137,7 +134,6 @@ function UserSection(): React.ReactElement {
               size="medium"
               tooltip={t('layer.drawPolygon', 'Draw a layer')}
               tooltipPlacement="top"
-              className="print-hidden"
               onClick={() => onDrawClick('polygons')}
               loginTooltip={t(
                 'download.eventsDownloadLogin',
@@ -150,7 +146,6 @@ function UserSection(): React.ReactElement {
               size="medium"
               tooltip={t('layer.drawPoints', 'Draw points')}
               tooltipPlacement="top"
-              className="print-hidden"
               onClick={() => onDrawClick('points')}
               loginTooltip={t(
                 'download.eventsDownloadLogin',
@@ -163,7 +158,6 @@ function UserSection(): React.ReactElement {
               size="medium"
               tooltip={t('dataset.addUser', 'Add an uploaded dataset')}
               tooltipPlacement="top"
-              className="print-hidden"
               onClick={onAddClick}
             />
           </Fragment>

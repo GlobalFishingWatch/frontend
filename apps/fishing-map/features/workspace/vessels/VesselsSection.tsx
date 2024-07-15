@@ -85,7 +85,6 @@ function VesselsSection(): React.ReactElement {
             size="medium"
             tooltip={t('vessel.removeAllVessels', 'Remove all vessels')}
             tooltipPlacement="top"
-            className="print-hidden"
             onClick={onDeleteAllClick}
           />
         )}
@@ -101,7 +100,6 @@ function VesselsSection(): React.ReactElement {
               : t('search.notAllowed', 'Search not allowed')
           }
           tooltipPlacement="top"
-          className="print-hidden"
           onClick={onSearchClick}
         />
       </div>

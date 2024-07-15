@@ -102,7 +102,7 @@ function VesselsFromPositions() {
     <Collapsable
       label={t('vessel.onScreen', 'Vessels on screen')}
       open
-      className={cx(styles.header, styles.vesselsOnScreen)}
+      className={cx(styles.header, styles.vesselsOnScreen, 'print-hidden')}
     >
       <ul>
         {(vessels.length > MAX_VESSLES_TO_DISPLAY

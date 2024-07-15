@@ -20,17 +20,6 @@
   .screenshot {
     display: block;
   }
-
-  .legend .currentValue {
-    display: none;
-  }
-}
-
-.legendLabel {
-  font: var(--font-S);
-  opacity: var(--opacity-secondary);
-  cursor: help;
-  width: max-content;
 }
 
 .helpHintLeft {
