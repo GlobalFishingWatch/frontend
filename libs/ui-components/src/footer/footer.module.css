@@ -1,0 +1,50 @@
+.footer {
+  width: 100%;
+  background-color: var(--color-primary-blue);
+  padding: 3rem 0;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.socialIconsContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 0;
+}
+
+.socialIconWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.socialIcon {
+  width: 27px;
+  height: 27px;
+  fill: #fff;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+}
+
+.footerLinksContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  font: var(--font-S);
+}
+
+.footerText {
+  font: var(--font-S);
+  color: #ccc;
+}
