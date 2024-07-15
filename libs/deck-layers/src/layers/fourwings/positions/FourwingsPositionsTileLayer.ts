@@ -434,6 +434,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                 outlineColor: hexToDeckColor(BLEND_BACKGROUND),
                 getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
                 fontFamily: 'Roboto',
+                characterSet:
+                  'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ',
                 outlineWidth: 200,
                 fontSettings: { sdf: true, smoothing: 0.2 },
                 sizeUnits: 'pixels',
