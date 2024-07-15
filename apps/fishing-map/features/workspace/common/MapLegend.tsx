@@ -17,18 +17,24 @@ const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
   if (!legend) {
     return {} as DeckLegendAtom
   }
-  let label = legend.label
-  const isSquareKm = (legend.gridArea as number) > 50000
-  const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
-  const gridAreaFormatted = gridArea
-    ? formatI18nNumber(gridArea, {
-        style: 'unit',
-        unit: isSquareKm ? 'kilometer' : 'meter',
-        unitDisplay: 'short',
-      })
-    : ''
-  if (legend.unit === 'hours') {
-    label = `${tFn('common.hour_other', 'hours')} / ${gridAreaFormatted}²`
+  let label =
+    legend.unit === 'hours'
+      ? tFn('common.hour_other', 'hours').toLowerCase()
+      : legend.unit === 'detections'
+      ? tFn('common.detections', 'detections').toLowerCase()
+      : legend.label
+
+  if (legend.label?.includes('²')) {
+    const isSquareKm = (legend.gridArea as number) > 50000
+    const gridArea = isSquareKm ? (legend.gridArea as number) / 1000000 : legend.gridArea
+    const gridAreaFormatted = gridArea
+      ? formatI18nNumber(gridArea, {
+          style: 'unit',
+          unit: isSquareKm ? 'kilometer' : 'meter',
+          unitDisplay: 'short',
+        })
+      : ''
+    label = `${label} / ${gridAreaFormatted}²`
   }
   return { ...legend, label } as DeckLegendAtom
 }

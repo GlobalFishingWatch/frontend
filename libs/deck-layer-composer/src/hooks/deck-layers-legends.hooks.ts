@@ -32,7 +32,7 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
     const unit = layer.instance.props.sublayers?.[0]?.unit
     let label = layer.instance.props.sublayers?.[0]?.unit || ''
     let gridAreaM: number | undefined
-    if (label === 'hours' && visualizationMode !== POSITIONS_ID) {
+    if ((label === 'hours' || label === 'detections') && visualizationMode !== POSITIONS_ID) {
       const gridZoom = Math.round(
         Math.min(
           visualizationMode === HEATMAP_HIGH_RES_ID
@@ -45,7 +45,7 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
       const isSquareKm = (gridAreaM as number) > 50000
       const gridArea = isSquareKm ? (gridAreaM as number) / 1000000 : gridAreaM
       const gridAreaFormatted = gridArea ? `${gridArea}${isSquareKm ? 'km' : 'm'}` : ''
-      label = `hours / ${gridAreaFormatted}²`
+      label = `${label} / ${gridAreaFormatted}²`
     }
 
     return {
