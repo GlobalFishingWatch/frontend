@@ -54,6 +54,7 @@ import {
 type FourwingsPositionsTileLayerState = {
   fontLoaded: boolean
   viewportDirty: boolean
+  viewportLoaded: boolean
   lastViewport: string
   positions: FourwingsPositionFeature[]
   lastPositions: FourwingsPositionFeature[]
@@ -77,7 +78,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   viewportDirtyTimeout!: NodeJS.Timeout
 
   get isLoaded(): boolean {
-    return super.isLoaded && this.state.fontLoaded && !this.state.viewportDirty
+    return (
+      super.isLoaded &&
+      this.state.fontLoaded &&
+      !this.state.viewportDirty &&
+      this.state.viewportLoaded
+    )
   }
 
   initializeState(context: LayerContext) {
@@ -101,6 +107,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     this.state = {
       fontLoaded,
       viewportDirty: false,
+      viewportLoaded: false,
       lastViewport: '',
       positions: [],
       lastPositions: [],
@@ -290,7 +297,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         positions,
         lastPositions,
         colorScale,
-      })
+      } as FourwingsPositionsTileLayerState)
     })
     if (this.props.onViewportLoad) {
       return this.props.onViewportLoad(tiles)
