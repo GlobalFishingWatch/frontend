@@ -551,9 +551,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   _getTileDataCacheKey = (): string => {
     const dataCache = Object.values(this.state.tilesCache || {}).join(',')
     const sublayersIds = this.props.sublayers?.map((s) => s.id).join(',')
-    const sublayersFilter = this.props.sublayers?.flatMap((s) => s.filter || []).join(',')
+    const sublayersDatasets = this.props.sublayers?.flatMap((s) => s.datasets || []).join(',')
+    const sublayersFilters = this.props.sublayers?.flatMap((s) => s.filter || []).join(',')
     const sublayersVesselGroups = this.props.sublayers?.map((s) => s.vesselGroups || []).join(',')
-    return [dataCache, sublayersIds, sublayersFilter, sublayersVesselGroups].join('-')
+    return [
+      dataCache,
+      sublayersIds,
+      sublayersDatasets,
+      sublayersFilters,
+      sublayersVesselGroups,
+    ].join('-')
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
