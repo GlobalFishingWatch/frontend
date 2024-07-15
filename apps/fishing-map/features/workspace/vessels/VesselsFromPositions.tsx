@@ -87,8 +87,7 @@ function VesselsFromPositions() {
       } else {
         setVessels([])
       }
-    }
-    if (!fourwingsLayers.length) {
+    } else {
       setVessels([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
