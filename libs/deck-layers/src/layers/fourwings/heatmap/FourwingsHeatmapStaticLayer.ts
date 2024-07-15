@@ -101,7 +101,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   _updateColorDomain = () => {
     const colorDomain = this._calculateColorDomain() as number[]
     const colorRanges = this._getColorRanges()[0]
-    this.setState({ colorDomain, scales: [scaleLinear(colorDomain, colorRanges)] })
+    if (colorDomain?.length && colorRanges?.length) {
+      this.setState({ colorDomain, scales: [scaleLinear(colorDomain, colorRanges)] })
+    }
   }
 
   debouncedUpdateColorDomain = debounce(() => {
@@ -160,7 +162,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       return EMPTY_CELL_COLOR
     }
 
-    return [color.r, color.g, color.b, color.a] as Color
+    return [color.r, color.g, color.b, color.a * 255] as Color
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -178,8 +180,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   renderLayers(): Layer<{}> | LayersList {
     const { tilesUrl, sublayers, resolution, minVisibleValue, maxVisibleValue, maxZoom } =
       this.props
-    const { colorDomain, colorRanges, scales } = this.state as FourwingsTileLayerState
-    const scale = scales?.[0]
+    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',
@@ -199,7 +200,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
         getFillColor: this.getFillColor,
         updateTriggers: {
-          getFillColor: [colorDomain, colorRanges, scale, minVisibleValue, maxVisibleValue],
+          getFillColor: [colorDomain, colorRanges, minVisibleValue, maxVisibleValue],
         },
       }),
     ]
