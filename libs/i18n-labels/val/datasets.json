@@ -618,6 +618,13 @@
       "bearing": "crwdns83330:0crwdne83330:0"
     }
   },
+  "proto-global-encounters-events-30min": {
+    "name": "crwdns83426:0crwdne83426:0",
+    "description": "crwdns83428:0crwdne83428:0",
+    "schema": {
+      "duration": "crwdns83430:0crwdne83430:0"
+    }
+  },
   "proto-global-encounters-events": {
     "name": "crwdns65467:0crwdne65467:0",
     "description": "crwdns65469:0crwdne65469:0"
@@ -1113,20 +1120,17 @@
   },
   "public-global-encounters-events": {
     "name": "crwdns66233:0crwdne66233:0",
-    "description": "crwdns69914:0crwdne69914:0",
+    "description": "crwdns83432:0crwdne83432:0",
     "schema": {
-      "duration": {
-        "keyword": "crwdns70220:0crwdne70220:0",
-        "enum": {
-          "120": "crwdns70222:0crwdne70222:0",
-          "4320": "crwdns70224:0crwdne70224:0"
-        }
-      }
+      "duration": "crwdns83434:0crwdne83434:0"
     }
   },
   "public-global-fishing-effort": {
     "name": "crwdns66257:0crwdne66257:0",
-    "description": "crwdns66259:0crwdne66259:0"
+    "description": "crwdns66259:0crwdne66259:0",
+    "schema": {
+      "bearing": "crwdns83436:0crwdne83436:0"
+    }
   },
   "public-global-fishing-vessels": {
     "name": "crwdns66305:0crwdne66305:0",
@@ -1172,7 +1176,10 @@
   },
   "public-global-presence": {
     "name": "crwdns66453:0crwdne66453:0",
-    "description": "crwdns66455:0crwdne66455:0"
+    "description": "crwdns66455:0crwdne66455:0",
+    "schema": {
+      "bearing": "crwdns83438:0crwdne83438:0"
+    }
   },
   "public-global-salinity": {
     "name": "crwdns83024:0crwdne83024:0",
@@ -1184,7 +1191,7 @@
   },
   "public-global-sar-presence": {
     "name": "crwdns69930:0crwdne69930:0",
-    "description": "crwdns70350:0crwdne70350:0",
+    "description": "crwdns83440:0crwdne83440:0",
     "schema": {
       "bearing": "crwdns83336:0crwdne83336:0",
       "matched": {
@@ -1254,6 +1261,10 @@
     "name": "crwdns83030:0crwdne83030:0",
     "description": "crwdns83032:0crwdne83032:0"
   },
+  "public-global-tracks": {
+    "name": "crwdns83442:0crwdne83442:0",
+    "description": "crwdns83444:0crwdne83444:0"
+  },
   "public-global-vessel-identity": {
     "name": "crwdns70132:0crwdne70132:0",
     "description": "crwdns70134:0crwdne70134:0"
@@ -1263,14 +1274,31 @@
     "description": "crwdns66549:0crwdne66549:0"
   },
   "public-global-viirs-presence": {
-    "name": "crwdns66563:0crwdne66563:0",
+    "name": "crwdns83446:0crwdne83446:0",
     "description": "crwdns66565:0crwdne66565:0",
     "schema": {
+      "bearing": "crwdns83448:0crwdne83448:0",
+      "matched": {
+        "keyword": "crwdns83450:0crwdne83450:0",
+        "enum": {
+          "true": "crwdns83452:0crwdne83452:0",
+          "false": "crwdns83454:0crwdne83454:0"
+        }
+      },
       "radiance": {
         "keyword": "crwdns66577:0crwdne66577:0",
         "enum": {
-          "1": "crwdns66579:0crwdne66579:0",
-          "1000": "crwdns66581:0crwdne66581:0"
+          "0": "crwdns83456:0crwdne83456:0",
+          "10000": "crwdns83458:0crwdne83458:0"
+        }
+      },
+      "shiptype": {
+        "keyword": "crwdns83460:0crwdne83460:0",
+        "enum": {
+          "unknown": "crwdns83462:0crwdne83462:0",
+          "fishing": "crwdns83464:0crwdne83464:0",
+          "carrier": "crwdns83466:0crwdne83466:0",
+          "support": "crwdns83468:0crwdne83468:0"
         }
       },
       "qf_detect": {
