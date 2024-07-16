@@ -1,6 +1,6 @@
 import { Color, CompositeLayer, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
-import { GeoJsonProperties } from 'geojson'
+import { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 import { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
 import {
   hexToDeckColor,
@@ -35,6 +35,7 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
   }
 
   getFillColor(d: PolygonFeature): Color {
+    console.log('getFillColor d:', d)
     return d.properties?.highlighted ||
       getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
       ? COLOR_HIGHLIGHT_FILL
@@ -42,6 +43,13 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
   }
 
   getHighlightLineWidth(d: PolygonFeature, lineWidth = 2): number {
+    console.log(
+      'getHighlightLineWidth d:',
+      d,
+      d.properties?.highlighted || getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
+        ? lineWidth
+        : 0
+    )
     return d.properties?.highlighted ||
       getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
       ? lineWidth
@@ -56,6 +64,12 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
       group = LayerGroup.OutlinePolygonsBackground,
       highlightedFeatures = [],
     } = this.props
+
+    const showHighlight =
+      (data as FeatureCollection<Geometry, GeoJsonProperties>).features?.some(
+        (d) => d.properties?.highlighted
+      ) ||
+      (highlightedFeatures && highlightedFeatures?.length > 0)
 
     return [
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({
@@ -89,7 +103,7 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
         filled: false,
         lineJointRounded: true,
         lineCapRounded: true,
-        visible: highlightedFeatures && highlightedFeatures?.length > 0,
+        visible: showHighlight,
         getPolygonOffset: (params) =>
           getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
         getLineWidth: (d) => this.getHighlightLineWidth(d as PolygonFeature, 4),
@@ -106,7 +120,7 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
         filled: false,
         lineJointRounded: true,
         lineCapRounded: true,
-        visible: highlightedFeatures && highlightedFeatures?.length > 0,
+        visible: showHighlight,
         getPolygonOffset: (params) =>
           getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
         getLineWidth: (d) => this.getHighlightLineWidth(d as PolygonFeature, 2),

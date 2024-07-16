@@ -111,7 +111,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       cellValues: feature.properties.values,
       aggregationOperation,
     })
-    if (Object.getOwnPropertyDescriptor(feature, 'properties')?.writable) {
+    if (Object.getOwnPropertyDescriptor(feature.properties, 'aggregatedValues')?.writable) {
       feature.properties.aggregatedValues = aggregatedCellValues
     }
     const chosenValue = aggregatedCellValues[0]
@@ -150,7 +150,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       })
     let chosenValueIndex = 0
     let chosenValue: number | undefined
-    if (Object.getOwnPropertyDescriptor(feature, 'properties')?.writable) {
+    if (Object.getOwnPropertyDescriptor(feature.properties, 'aggregatedValues')?.writable) {
       feature.properties.aggregatedValues = aggregatedCellValues
     }
     aggregatedCellValues.forEach((value, index) => {
@@ -202,7 +202,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         aggregationOperation,
         cellStartOffsets: feature.properties.startOffsets,
       })
-    if (Object.getOwnPropertyDescriptor(feature, 'properties')?.writable) {
+    if (Object.getOwnPropertyDescriptor(feature.properties, 'aggregatedValues')?.writable) {
       feature.properties.aggregatedValues = aggregatedCellValues
     }
     if (!scales.length) {
