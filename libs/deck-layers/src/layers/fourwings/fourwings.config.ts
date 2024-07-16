@@ -26,8 +26,8 @@ export const SUPPORTED_POSITION_PROPERTIES = ['speed', 'bearing', 'shipname']
 
 export const FOURWINGS_MAX_ZOOM = 12
 // TODO:deck validate this is a good number
-export const MAX_POSITIONS_PER_TILE_SUPPORTED = 10000
-export const POSITIONS_VISUALIZATION_MAX_ZOOM = 9
+export const MAX_POSITIONS_PER_TILE_SUPPORTED = 5000
+export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12
 
 export const MAX_RAMP_VALUES = 10000
 
