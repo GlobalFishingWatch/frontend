@@ -92,7 +92,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     if (typeof document !== 'undefined') {
       fontLoaded = false
       const font = new FontFace(
-        'Roboto',
+        'Roboto Deck',
         "url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2')"
       )
       font
@@ -433,9 +433,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                 getSize: 14,
                 outlineColor: hexToDeckColor(BLEND_BACKGROUND),
                 getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
-                fontFamily: 'Roboto',
+                fontFamily: 'Roboto Deck',
                 characterSet:
-                  'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -',
+                  'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789áàâãåäçèéêëìíîïñòóôöõøùúûüýÿÁÀÂÃÅÄÇÈÉÊËÌÍÎÏÑÒÓÔÖÕØÙÚÛÜÝŸÑæÆ -./|',
                 outlineWidth: 200,
                 fontSettings: { sdf: true, smoothing: 0.2 },
                 sizeUnits: 'pixels',
