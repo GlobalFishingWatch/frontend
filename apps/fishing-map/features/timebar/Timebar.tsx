@@ -16,6 +16,7 @@ import {
   TimebarProps,
 } from '@globalfishingwatch/timebar'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { Locale } from 'types'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
@@ -400,7 +401,7 @@ const TimebarWrapper = () => {
         intervals={FOURWINGS_INTERVALS_ORDER}
         getCurrentInterval={getFourwingsInterval}
         trackGraphOrientation={trackGraphOrientation}
-        locale={i18n.language as 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'}
+        locale={i18n.language as Locale}
       >
         {!isSmallScreen ? (
           <Fragment>
