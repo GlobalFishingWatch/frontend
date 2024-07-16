@@ -82,12 +82,13 @@ export const useHeatmapActivityGraph = () => {
       if (visualizationMode === 'positions') {
         const viewportData = instance?.getViewportData()
         setFourwingsPositionsData(viewportData as FourwingsPositionFeature[])
+      } else {
+        const viewportData = instance?.getViewportData({
+          onlyValuesAndDates: true,
+          sampleData: instance.props.aggregationOperation === 'avg',
+        })
+        setFourwingsHeatmapData(viewportData as [number[], number[]][][])
       }
-      const viewportData = instance?.getViewportData({
-        onlyValuesAndDates: true,
-        sampleData: instance.props.aggregationOperation === 'avg',
-      })
-      setFourwingsHeatmapData(viewportData as [number[], number[]][][])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
