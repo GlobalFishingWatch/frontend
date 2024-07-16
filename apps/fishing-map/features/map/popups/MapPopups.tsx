@@ -13,7 +13,6 @@ function MapPopups() {
   const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
 
   const closePopup = useCallback(() => {
-    // cleanFeatureState('click')
     dispatchClickedEvent(null)
     cancelPendingInteractionRequests()
   }, [cancelPendingInteractionRequests, dispatchClickedEvent])

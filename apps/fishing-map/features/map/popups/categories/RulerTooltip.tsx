@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { RulerPickingObject } from '@globalfishingwatch/deck-layers'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { setClickedEvent } from 'features/map/map.slice'
+import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import styles from '../Popup.module.css'
 
 type RulerTooltipProps = {
@@ -14,8 +13,8 @@ type RulerTooltipProps = {
 
 function RulerTooltip({ features, showFeaturesDetails }: RulerTooltipProps) {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { deleteMapRuler } = useRulers()
+  const { dispatchClickedEvent } = useClickedEventConnect()
 
   const feature = features?.[0]
   if (!feature) {
@@ -27,7 +26,7 @@ function RulerTooltip({ features, showFeaturesDetails }: RulerTooltipProps) {
     if (id) {
       deleteMapRuler(id)
     }
-    dispatch(setClickedEvent(null))
+    dispatchClickedEvent(null)
   }
 
   return (

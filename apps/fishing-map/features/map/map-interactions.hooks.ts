@@ -1,7 +1,9 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
+import { atom, useAtom, useSetAtom } from 'jotai'
+import { ThunkDispatch } from '@reduxjs/toolkit'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
   useMapHoverInteraction,
@@ -50,8 +52,35 @@ const useMapClusterTilesLoading = () => {
   return eventsDeckLayers.some((layer) => !layer.instance.isLoaded)
 }
 
+type InteractionPromise = ThunkDispatch<Promise<any>, any, any> & { abort: any }
+const initialInteractionPromises = {
+  activity: undefined,
+  events: undefined,
+}
+const interactionPromisesAtom = atom<{
+  activity: InteractionPromise | undefined
+  events: InteractionPromise | undefined
+}>(initialInteractionPromises)
+
+export const useCancelInteractionPromises = () => {
+  const [interactionPromises, setInteractionPromises] = useAtom(interactionPromisesAtom)
+
+  const cancelPendingInteractionRequests = useCallback(() => {
+    const promisesRef = [interactionPromises.activity, interactionPromises.events]
+    promisesRef.forEach((p) => {
+      if (p) {
+        p.abort()
+      }
+    })
+    setInteractionPromises(initialInteractionPromises)
+  }, [interactionPromises.events, interactionPromises.activity, setInteractionPromises])
+
+  return cancelPendingInteractionRequests
+}
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
+  const setInteractionPromises = useSetAtom(interactionPromisesAtom)
+  const cancelPendingInteractionRequests = useCancelInteractionPromises()
   const clickedEvent = useSelector(selectClickedEvent)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
@@ -60,20 +89,13 @@ export const useClickedEventConnect = () => {
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { rulersEditing, onRulerMapClick } = useRulers()
   const areTilesClusterLoading = useMapClusterTilesLoading()
-  const fishingPromiseRef = useRef<any>()
-  const presencePromiseRef = useRef<any>()
-  const eventsPromiseRef = useRef<any>()
-
-  const cancelPendingInteractionRequests = useCallback(() => {
-    const promisesRef = [fishingPromiseRef, presencePromiseRef, eventsPromiseRef]
-    promisesRef.forEach((ref) => {
-      if (ref.current) {
-        ref.current.abort()
-      }
-    })
-  }, [])
+  // const fishingPromiseRef = useRef<any>()
+  // const eventsPromiseRef = useRef<any>()
 
   const dispatchClickedEvent = (deckEvent: InteractionEvent | null) => {
+    // Cancel all pending promises
+    cancelPendingInteractionRequests()
+
     if (deckEvent === null) {
       dispatch(setClickedEvent(null))
       return
@@ -120,9 +142,6 @@ export const useClickedEventConnect = () => {
       }
     }
 
-    // Cancel all pending promises
-    cancelPendingInteractionRequests()
-
     if (!event || !event.features) {
       if (clickedEvent) {
         dispatch(setClickedEvent(null))
@@ -150,9 +169,10 @@ export const useClickedEventConnect = () => {
       const activityProperties = fishingActivityFeatures.map((feature) =>
         feature.category === 'detections' ? 'detections' : 'hours'
       )
-      fishingPromiseRef.current = dispatch(
+      const activityPromise = dispatch(
         fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
       )
+      setInteractionPromises((prev) => ({ ...prev, activity: activityPromise as any }))
     }
 
     const tileClusterFeature = event.features.find(
@@ -161,7 +181,9 @@ export const useClickedEventConnect = () => {
     if (tileClusterFeature) {
       const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
       const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
-      eventsPromiseRef.current = dispatch(fetchFn(tileClusterFeature))
+
+      const eventsPromise = dispatch(fetchFn(tileClusterFeature))
+      setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
     }
   }
 

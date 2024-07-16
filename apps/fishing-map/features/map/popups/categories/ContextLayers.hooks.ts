@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { getEventLabel } from 'utils/analytics'
@@ -10,17 +9,8 @@ import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.s
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { getBufferedAreaBbox } from 'features/reports/reports.utils'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { setClickedEvent } from '../../map.slice'
-
-// const getFeatureBounds = (feature: ContextPickingObject) => {
-//   if (feature.geometry) {
-//     const geometry = getGeometryDissolved(feature.geometry)
-//     const bounds = getBufferedAreaBbox({ area: { geometry } } as any)
-//     return bounds
-//   }
-// }
+import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 
 export const getAreaIdFromFeature = (
   feature: ContextPickingObject | UserLayerPickingObject
@@ -38,6 +28,7 @@ export const useContextInteractions = () => {
   const areaId = useSelector(selectLocationAreaId)
   const datasets = useSelector(selectAllDatasets)
   const dataviews = useSelector(selectContextAreasDataviews)
+  const { dispatchClickedEvent } = useClickedEventConnect()
   // const fitMapBounds = useMapFitBounds()
 
   const onDownloadClick = useCallback(
@@ -62,11 +53,11 @@ export const useContextInteractions = () => {
             ? dataview?.datasets?.[0]?.name
             : feature.value.toString() || feature.title
         dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
-        dispatch(setClickedEvent(null))
         dispatch(fetchAreaDetailThunk({ datasetId, areaId, areaName }))
+        dispatchClickedEvent(null)
       }
     },
-    [datasets, dataviews, dispatch]
+    [datasets, dataviews, dispatch, dispatchClickedEvent]
   )
 
   const setReportArea = useCallback(
@@ -86,7 +77,7 @@ export const useContextInteractions = () => {
       //   fitMapBounds(bounds, boundsParams)
       // }
 
-      dispatch(setClickedEvent(null))
+      dispatchClickedEvent(null)
 
       trackEvent({
         category: TrackCategory.Analysis,
@@ -94,7 +85,7 @@ export const useContextInteractions = () => {
         label: getEventLabel([title ?? '', value.toString()]),
       })
     },
-    [dispatch]
+    [dispatchClickedEvent]
   )
 
   const onReportClick = useCallback(
