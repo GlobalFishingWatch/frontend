@@ -34,10 +34,10 @@ export function aggregateSublayerValues(
   if (aggregationOperation === FourwingsAggregationOperation.Avg) {
     let nonEmptyValuesLength = 0
     return (
-      (values.reduce((acc: number, value = 0) => {
+      values.reduce((acc: number, value = 0) => {
         if (value) nonEmptyValuesLength++
         return acc + value
-      }, 0) || 1) / nonEmptyValuesLength
+      }, 0) / nonEmptyValuesLength || 1
     )
   }
   return values.reduce((acc: number, value = 0) => {
