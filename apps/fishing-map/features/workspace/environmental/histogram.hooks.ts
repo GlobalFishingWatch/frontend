@@ -22,7 +22,7 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
   const updateHistogram = useCallback(
     (features: FourwingsFeature[]) => {
       if (features && features.length) {
-        const rawData = features.flatMap((f) => f.properties.aggregatedValues || [])
+        const rawData = features.flatMap((f) => f.aggregatedValues || [])
         const layerRange = getEnvironmentalDatasetRange(dataset)
         const data = rawData.filter((d) => {
           const matchesMin = layerRange.min !== undefined ? d >= layerRange.min : true

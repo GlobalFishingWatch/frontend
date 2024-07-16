@@ -48,7 +48,6 @@ export type FourwingsFeatureProperties = {
   startOffsets: number[]
   dates: number[][]
   values: number[][]
-  aggregatedValues?: number[]
   cellId: number
   cellNum: number
   col: number
@@ -66,7 +65,12 @@ export type FourwingsStaticFeatureProperties = {
   values: number[][]
 }
 
-export type FourwingsFeature<Properties = FourwingsFeatureProperties> = Feature<Polygon, Properties>
+export type FourwingsFeature<Properties = FourwingsFeatureProperties> = Feature<
+  Polygon,
+  Properties
+> & {
+  aggregatedValues?: number[]
+}
 export type FourwingsValuesAndDatesFeature = [number[], number[]][] // values in first place, dates in second
 export type FourwingsStaticFeature = FourwingsFeature<FourwingsStaticFeatureProperties>
 export type FourwingsPositionFeature = Feature<Point, FourwingsPositionFeatureProperties>
