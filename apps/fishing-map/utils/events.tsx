@@ -7,6 +7,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { EVENTS_COLORS } from 'data/config'
 import { formatInfoField } from 'utils/info'
 import VesselPin from 'features/vessel/VesselPin'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { SupportedDateType, getUTCDateTime } from './dates'
 
 const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
@@ -166,7 +167,12 @@ export const getEventDescriptionComponent = (event: ApiEvent, className = '') =>
             ...time,
           }}
           components={{
-            pin: <VesselPin vesselToResolve={{ id: encounterVesselId }} size="tiny" />,
+            pin: (
+              <VesselPin
+                vesselToResolve={{ id: encounterVesselId, datasetId: DEFAULT_VESSEL_IDENTITY_ID }}
+                size="tiny"
+              />
+            ),
           }}
         ></Trans>
       </p>

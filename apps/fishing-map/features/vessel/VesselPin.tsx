@@ -30,7 +30,12 @@ import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
-export type VesselToResolve = { id: string; name?: string; flag?: string; datasetId?: string }
+export type VesselToResolve = {
+  id: string
+  name?: string
+  flag?: string
+  datasetId: string
+}
 export type VesselToSearch = { id: string; name?: string; flag?: string; datasets?: string[] }
 
 // Supports both options:

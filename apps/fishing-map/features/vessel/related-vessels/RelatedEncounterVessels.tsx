@@ -10,6 +10,7 @@ import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
+import { DEFAULT_VESSEL_IDENTITY_ID } from '../vessel.config'
 import styles from './RelatedVessels.module.css'
 
 const VesselTick = ({ y, index }: any) => {
@@ -17,7 +18,9 @@ const VesselTick = ({ y, index }: any) => {
   const vessel = encountersByVessel[index]
   return (
     <foreignObject x={0} y={y - 20} className={styles.vesselContainer}>
-      <RelatedVessel vesselToResolve={vessel} />
+      <RelatedVessel
+        vesselToResolve={{ ...vessel, datasetId: vessel.dataset || DEFAULT_VESSEL_IDENTITY_ID }}
+      />
     </foreignObject>
   )
 }

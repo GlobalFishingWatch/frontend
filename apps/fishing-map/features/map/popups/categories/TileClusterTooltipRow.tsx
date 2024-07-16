@@ -110,7 +110,9 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                           </VesselLink>
                         </span>
                         {(event.vessel as ExtendedEventVessel).dataset && (
-                          <VesselPin vesselToResolve={event.vessel} />
+                          <VesselPin
+                            vesselToResolve={{ ...event.vessel, datasetId: event.vessel.dataset }}
+                          />
                         )}
                       </div>
                     </div>
@@ -129,7 +131,9 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
                             </VesselLink>
                           </span>
                           {(event.encounter?.vessel as ExtendedEventVessel).dataset && (
-                            <VesselPin vesselToResolve={event.encounter.vessel} />
+                            <VesselPin
+                              vesselToResolve={{ ...event.vessel, datasetId: event.vessel.dataset }}
+                            />
                           )}
                         </div>
                       </div>
