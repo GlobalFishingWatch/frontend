@@ -234,7 +234,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const dataFiltered = removeOutliers({ allValues, aggregationOperation })
-    console.log('dataFiltered:', dataFiltered)
     return getSteps(dataFiltered)
   }
 
