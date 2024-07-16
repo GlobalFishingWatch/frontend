@@ -229,8 +229,6 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       compareStart,
       compareEnd,
     } = this.props
-    console.log('maxVisibleValue:', maxVisibleValue)
-    console.log('minVisibleValue:', minVisibleValue)
 
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
