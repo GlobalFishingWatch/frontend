@@ -356,7 +356,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
         )}
       </div>
       {hasSchemaFilterSelection && (
-        <div className={styles.properties}>
+        <div className={styles.propertiesNoPaddingBlock}>
           <div className={styles.filters}>
             <div className={styles.filters}>
               {filtersAllowed.map(({ id, label }) => (

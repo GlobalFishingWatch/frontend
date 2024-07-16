@@ -112,6 +112,10 @@
   padding: 0 var(--space-S) var(--space-S);
 }
 
+.propertiesNoPaddingBlock {
+  padding: 0 var(--space-S);
+}
+
 .dataWarning {
   opacity: var(--opacity-secondary);
   font: var(--font-S);

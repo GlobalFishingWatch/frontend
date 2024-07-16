@@ -227,15 +227,15 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               )}
             </div>
           </div>
-        </div>
-      )}
-      {layerActive && hasLegend && (
-        <div
-          className={cx(styles.properties, styles.drag, {
-            [styles.dragging]: isSorting && activeIndex > -1,
-          })}
-        >
-          <MapLegend dataview={dataview} />
+          {layerActive && hasLegend && (
+            <div
+              className={cx(styles.drag, {
+                [styles.dragging]: isSorting && activeIndex > -1,
+              })}
+            >
+              <MapLegend dataview={dataview} />
+            </div>
+          )}
         </div>
       )}
     </div>
