@@ -82,8 +82,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         !object.sublayers?.filter(
           ({ value }) =>
             value &&
-            (!minVisibleValue || value >= minVisibleValue) &&
-            (!maxVisibleValue || value <= maxVisibleValue)
+            (minVisibleValue === undefined || value >= minVisibleValue) &&
+            (maxVisibleValue === undefined || value <= maxVisibleValue)
         ).length
       ) {
         return { ...info, object: undefined }
@@ -157,8 +157,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     })
     if (
       !chosenValue ||
-      (minVisibleValue && chosenValue < minVisibleValue) ||
-      (maxVisibleValue && chosenValue > maxVisibleValue)
+      (minVisibleValue !== undefined && chosenValue < minVisibleValue) ||
+      (maxVisibleValue !== undefined && chosenValue > maxVisibleValue)
     ) {
       target = EMPTY_CELL_COLOR
       return target
@@ -229,6 +229,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       compareStart,
       compareEnd,
     } = this.props
+    console.log('maxVisibleValue:', maxVisibleValue)
+    console.log('minVisibleValue:', minVisibleValue)
 
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []

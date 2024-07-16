@@ -219,8 +219,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
           sublayerValues.map(
             (value) =>
               value &&
-              (!minVisibleValue || value >= minVisibleValue) &&
-              (!maxVisibleValue || value <= maxVisibleValue)
+              (minVisibleValue === undefined || value >= minVisibleValue) &&
+              (maxVisibleValue === undefined || value <= maxVisibleValue)
           )
         ),
         aggregationOperation,
@@ -234,6 +234,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const dataFiltered = removeOutliers({ allValues, aggregationOperation })
+    console.log('dataFiltered:', dataFiltered)
     return getSteps(dataFiltered)
   }
 
@@ -579,8 +580,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
     const newVisibleValueLimits =
-      (oldProps.minVisibleValue && minVisibleValue !== oldProps.minVisibleValue) ||
-      (oldProps.maxVisibleValue && maxVisibleValue !== oldProps.maxVisibleValue)
+      minVisibleValue !== oldProps.minVisibleValue || maxVisibleValue !== oldProps.maxVisibleValue
     if (newMode || sublayersHaveNewColors || newVisibleValueLimits) {
       this.setState({ rampDirty: true, colorDomain: [], colorRanges: [], scales: [] })
       const newColorDomain =

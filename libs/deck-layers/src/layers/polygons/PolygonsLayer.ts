@@ -35,7 +35,6 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
   }
 
   getFillColor(d: PolygonFeature): Color {
-    console.log('getFillColor d:', d)
     return d.properties?.highlighted ||
       getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
       ? COLOR_HIGHLIGHT_FILL
@@ -43,13 +42,6 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
   }
 
   getHighlightLineWidth(d: PolygonFeature, lineWidth = 2): number {
-    console.log(
-      'getHighlightLineWidth d:',
-      d,
-      d.properties?.highlighted || getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
-        ? lineWidth
-        : 0
-    )
     return d.properties?.highlighted ||
       getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
       ? lineWidth
