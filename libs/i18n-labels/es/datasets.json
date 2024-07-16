@@ -618,6 +618,13 @@
       "bearing": "bearing"
     }
   },
+  "proto-global-encounters-events-30min": {
+    "name": "PROTOTYPE - Encounter Events of 30min. (AIS)",
+    "description": "The dataset contains encounter events of 30min for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]",
+    "schema": {
+      "duration": "duration"
+    }
+  },
   "proto-global-encounters-events": {
     "name": "Encounter Events. (AIS)",
     "description": "The dataset contains encounter events with authorizations for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]"
@@ -1113,20 +1120,17 @@
   },
   "public-global-encounters-events": {
     "name": "Encounter Events. (AIS)",
-    "description": "Identificado de los datos AIS como lugares donde dos buques, un transportador y uno pesquero; estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media de &lt;2 nudos, y a menos de 10 km de la costa.",
+    "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
     "schema": {
-      "duration": {
-        "keyword": "duración",
-        "enum": {
-          "120": "120",
-          "4320": "4320"
-        }
-      }
+      "duration": "duration"
     }
   },
   "public-global-fishing-effort": {
     "name": "AIS",
-    "description": "Global Fishing Watch utiliza datos sobre la identidad, el tipo, la ubicación, la velocidad, y otros datos que son emitidos a través del Sistema de Identificación Automática (AIS) y recolectados a través de satélites y receptores terrestres. El AIS fue desarrollado para la prevención de colisión/esquivación. Global Fishing Watch analiza los datos AIS recopilados de los buques que nuestra investigación ha identificado como conocidos o posibles buques pesqueros comerciales, y aplica un algoritmo de detección de pesca para determinar una “aparente actividad pesquera” basado en cambios en la velocidad y dirección de los buques. El algoritmo clasifica cada punto de datos para estos buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. Los datos AIS pueden variar en integridad, precisión y calidad. Además, la recolección de datos por parte de receptores satelitales o terrestres, puede introducir errores a través de datos faltantes o inexactos. El algoritmo de detección de pesca de Global Fishing Watch representa un esfuerzo matemático para identificar una “aparente actividad pesquera”. Como resultado, es posible que algunas actividades pesqueras no sean identificadas como tales por Global Fishing Watch. Por el contrario, Global Fishing Watch puede mostrar una actividad pesquera aparente en la que la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica “actividad pesquera”,“pesca” o “esfuerzo pesquero” como “aparente”, en lugar de brindar certeza sobre la actividad. En todo o en parte, la información de Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Global Fishing Watch está tomando medidas para asegurar que la identificación del comportamiento de la actividad pesquera sea lo más exacta posible. Los algoritmos de detección de pesca de Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de buques que dan lugar a la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y técnicas de clasificación automatizadas."
+    "description": "Global Fishing Watch utiliza datos sobre la identidad, el tipo, la ubicación, la velocidad, y otros datos que son emitidos a través del Sistema de Identificación Automática (AIS) y recolectados a través de satélites y receptores terrestres. El AIS fue desarrollado para la prevención de colisión/esquivación. Global Fishing Watch analiza los datos AIS recopilados de los buques que nuestra investigación ha identificado como conocidos o posibles buques pesqueros comerciales, y aplica un algoritmo de detección de pesca para determinar una “aparente actividad pesquera” basado en cambios en la velocidad y dirección de los buques. El algoritmo clasifica cada punto de datos para estos buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. Los datos AIS pueden variar en integridad, precisión y calidad. Además, la recolección de datos por parte de receptores satelitales o terrestres, puede introducir errores a través de datos faltantes o inexactos. El algoritmo de detección de pesca de Global Fishing Watch representa un esfuerzo matemático para identificar una “aparente actividad pesquera”. Como resultado, es posible que algunas actividades pesqueras no sean identificadas como tales por Global Fishing Watch. Por el contrario, Global Fishing Watch puede mostrar una actividad pesquera aparente en la que la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica “actividad pesquera”,“pesca” o “esfuerzo pesquero” como “aparente”, en lugar de brindar certeza sobre la actividad. En todo o en parte, la información de Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Global Fishing Watch está tomando medidas para asegurar que la identificación del comportamiento de la actividad pesquera sea lo más exacta posible. Los algoritmos de detección de pesca de Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de buques que dan lugar a la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y técnicas de clasificación automatizadas.",
+    "schema": {
+      "bearing": "bearing"
+    }
   },
   "public-global-fishing-vessels": {
     "name": "AIS (Buques de pesca)",
@@ -1172,7 +1176,10 @@
   },
   "public-global-presence": {
     "name": "AIS",
-    "description": "Global Fishing Watch utiliza datos sobre la identidad, el tipo, la ubicación, la velocidad, y otros datos que son emitidos a través del Sistema de Identificación Automática (AIS) y recolectados a través de satélites y receptores terrestres. El AIS fue desarrollado para la prevención de colisión/esquivación. La capa de actividad muestra un mapa de calor de la presencia de buques. La presencia se determina tomando una posición al hora por buque a partir de las posiciones transmitidas por el AIS de la buque."
+    "description": "Global Fishing Watch utiliza datos sobre la identidad, el tipo, la ubicación, la velocidad, y otros datos que son emitidos a través del Sistema de Identificación Automática (AIS) y recolectados a través de satélites y receptores terrestres. El AIS fue desarrollado para la prevención de colisión/esquivación. La capa de actividad muestra un mapa de calor de la presencia de buques. La presencia se determina tomando una posición al hora por buque a partir de las posiciones transmitidas por el AIS de la buque.",
+    "schema": {
+      "bearing": "bearing"
+    }
   },
   "public-global-salinity": {
     "name": "Salinidad",
@@ -1254,6 +1261,10 @@
     "name": "Altura de ola",
     "description": "<h2>Resumen</h2>\n<ul>\n<li>La altura de ola es la distancia vertical desde el valle (abajo) hasta la cresta (arriba) de una ola sobre la superficie del mar. Este conjunto de datos utiliza la altura de ola significante, la cual es el promedio del tercio más alto de todas las alturas de ola durante un período de muestra determinado.</li>\n<ul>\n<h2>Fuente</h2>\n<ul>\n <a href='https://www.pacioos.hawaii.edu/metadata/ww3_global.html'>Cheung, K.F. 2010, updated 2021. WaveWatch III (WW3) Global Wave Model. Distributed by the Pacific Islands Ocean Observing System (PacIOOS), which is a part of the U.S. Integrated Ocean Observing System (IOOS®), funded in part by National Oceanic and Atmospheric Administration (NOAA) Awards #NA16NOS0120024 and #NA21NOS0120091.</a></li>"
   },
+  "public-global-tracks": {
+    "name": "Tracks",
+    "description": "The dataset contains the tracks from all vessels (AIS) - Version 3.0"
+  },
   "public-global-vessel-identity": {
     "name": "AIS (all vessel types)",
     "description": "Vessel Identity (all shiptypes)"
@@ -1263,14 +1274,31 @@
     "description": "Vessel Insights from AIS"
   },
   "public-global-viirs-presence": {
-    "name": "Detecciones de luz nocturna (VIIRS)",
+    "name": "Night light detections (VIIRS)",
     "description": "La capa de detección nocturna de barcos, conocida como conjunto de radiómetros de imágenes infrarrojas visibles (VIIRS, por sus siglas en ingles), muestra las embarcaciones en el mar que los satélites han detectado por la luz que emiten durante la noche. Aunque no se asocia exclusivamente con embarcaciones pesqueras, es probable que esta capa de actividad muestre embarcaciones asociadas con actividades como la pesca de calamar, que utilizan luces brillantes y pescan de noche.<br/>\n<br/>\nBasado en el satélite Suomi NPP, el sensor VIIRS pasa por todo el planeta al menos una vez cada noche, detectando luces para proporcionar al menos una observación diaria a nivel mundial. Debido al diseño de la órbita de los satélites de órbita polar, las regiones más cercanas a los polos tendrán más sobrepasos por día, mientras que las regiones ecuatoriales solo tienen un sobrepaso por día.<br/>\n<br/>\nDebido a que las embarcaciones se detectan únicamente en función a la emisión de luz, podemos detectar embarcaciones individuales e incluso flotas pesqueras completas que pueden no transmitir información de su identidad y, por lo tanto, pueden no estar representadas en otra parte del mapa de Global Fishing Watch. Global Fishing Watch incluye las detecciones de embarcaciones procesadas a partir de datos de las imágenes satelitales nocturnas recopilados por la Administración Nacional Oceánica y Atmosférica de los EE. UU. (NOAA por sus siglas en inglés) VIIRS. Las detecciones de embarcaciones son procesadas casi en tiempo real por el <a href='https://eogdata.mines.edu/products/vbd/' target='_blank' rel=noopener'>Earth Observation Group</a> en la Colorado School of Mines. Los datos, conocidos como detecciones de embarcaciones VIIRS, detectan la presencia de embarcaciones, incluidas aquellas que pescan con luces para atraer a su recurso objetivo o para realizar operaciones nocturnas. Se excluyen las luces de las infraestructuras fijas en el mar y otras fuentes ajenas a las embarcaciones. Obtenga más información sobre las detecciones nocturnas de embarcaciones VIIRS y descargue los <a href='https://eogdata.mines.edu/products/vbd/' target='_blank' rel=noopener'>datos</a>.<br/>\n<br/>\nGlobal Fishing Watch ha desarrollado un sistema sofisticado para hacer coincidir los datos disponibles del sistema de identificación automática (AIS, por sus siglas en inglés) con las respectivas detecciones nocturnas de embarcaciones. Esta coincidencia se realiza mediante un modelo probabilístico que determina los mensajes AIS/detección VIIRS que coinciden en función de todos los registros AIS disponibles justo antes y después de la hora en que se tomó la imagen satelital VIIRS, así como la probabilidad de emparejar un mensaje específico de AIS para cualquiera de las embarcaciones que aparecen en esa imagen satelital. Con esta información, Global Fishing Watch agregó la capacidad de filtrar las detecciones según el tipo de embarcación y el tipo de arte de pesca dentro de la capa de actividad VIIRS.<br/>\n<br/>\nMás del 85% de las detecciones son de embarcaciones que carecen de transpondedores AIS o del sistema de monitoreo de embarcaciones (VMS, por sus siglas en inglés). La adición global de la capa VIIRS le permite rápidamente filtrar las detecciones nocturnas que coincidieron o no con AIS, donde la identificación de la embarcación está disponible.<br/>\n<br/>\nEl resplandor indica el brillo de la fuente de luz recibida por el sensor VIIRS. El resplandor se ve afectado por la luna, las nubes y el ángulo de la embarcación identificada desde el satélite. Dos embarcaciones con el mismo brillo o intensidad de luz pueden tener diferentes niveles de resplandor dependiendo de las condiciones. En general, las embarcaciones que no están pescando activamente con luz pueden tener niveles de resplandor más bajos. Deben considerarse excepciones cuando los barcos se acercan a la costa. Para explorar más a fondo cómo las luces de las embarcaciones emiten diferentes niveles de resplandor durante la noche, la capa de actividad VIIRS puede ser filtrada por rangos específicos de interés asociados con diferentes comportamientos humanos.<br/>\n<br/>\nAquellos que utilizan datos de detecciones nocturnas deben considerar la Anomalía del Atlántico Sur (SAA, siglas en inglés), un área donde el cinturón interno de resplandor de Van Allen de la Tierra se encuentra en su altitud más baja, lo que permite que penetren más partículas energéticas del espacio. Cuando tales partículas golpean los sensores en un satélite, esto puede crear una señal falsa que podría hacer que el algoritmo lo reconozca como una detección de embarcación. Se ha aplicado un algoritmo de filtración, pero aún puede haber algún error de identificación ",
     "schema": {
+      "bearing": "bearing",
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": "true",
+          "false": "false"
+        }
+      },
       "radiance": {
         "keyword": "Resplandor",
         "enum": {
-          "1": "1",
-          "1000": "1000"
+          "0": "0",
+          "10000": "10000"
+        }
+      },
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "unknown": "unknown",
+          "fishing": "fishing",
+          "carrier": "carrier",
+          "support": "support"
         }
       },
       "qf_detect": {
