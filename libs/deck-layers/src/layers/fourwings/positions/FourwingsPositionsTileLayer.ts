@@ -43,7 +43,7 @@ import { PATH_BASENAME } from '../../layers.config'
 import {
   cleanVesselShipname,
   filteredPositionsByViewport,
-  isPositionMatched,
+  getIsPositionMatched,
 } from './fourwings-positions.utils'
 import {
   FourwingsPositionsPickingInfo,
@@ -391,7 +391,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: (d: any) => (isPositionMatched(d) ? 'vessel' : 'circle'),
+          getIcon: (d: any) => (getIsPositionMatched(d) ? 'vessel' : 'circle'),
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getFillColor,
           getSize: this._getIconSize,
@@ -409,7 +409,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: (d: any) => (isPositionMatched(d) ? 'vesselHighlight' : 'circle'),
+          getIcon: (d: any) => (getIsPositionMatched(d) ? 'vesselHighlight' : 'circle'),
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getHighlightColor,
           getSize: this._getIconSize,

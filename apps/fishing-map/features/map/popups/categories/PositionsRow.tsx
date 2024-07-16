@@ -5,7 +5,10 @@ import { DateTime } from 'luxon'
 import { uniq } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
-import { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
+import {
+  FourwingsPositionsPickingObject,
+  getIsPositionMatched,
+} from '@globalfishingwatch/deck-layers'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { formatInfoField } from 'utils/info'
 import VesselPin from 'features/vessel/VesselPin'
@@ -24,7 +27,8 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
   const allDatasets = useSelector(selectAllDatasets)
   // TODO get the value based on the sublayer
   const color = feature.sublayers?.[0]?.color
-  const shipname = feature.properties.shipname
+  const isPositionMatched = getIsPositionMatched(feature)
+  const shipname = isPositionMatched
     ? (formatInfoField(feature.properties.shipname, 'shipname') as string)
     : ''
   const activityDatasets = uniq(
@@ -45,10 +49,10 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
         <div className={popupStyles.popupSectionContent}>
           <div className={popupStyles.row}>
             <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
-              {showFeaturesDetails && shipname && (
+              {showFeaturesDetails && isPositionMatched && (
                 <VesselPin
                   vesselToSearch={{
-                    id: feature.properties.id,
+                    id: feature.properties.vessel_id || feature.properties.id,
                     name: feature.properties.shipname,
                     datasets: searchDatasets,
                   }}
