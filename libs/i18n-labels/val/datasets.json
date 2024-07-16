@@ -1120,7 +1120,7 @@
   },
   "public-global-encounters-events": {
     "name": "crwdns66233:0crwdne66233:0",
-    "description": "crwdns83432:0crwdne83432:0",
+    "description": "crwdns83472:0crwdne83472:0",
     "schema": {
       "duration": "crwdns83434:0crwdne83434:0"
     }
@@ -1274,7 +1274,7 @@
     "description": "crwdns66549:0crwdne66549:0"
   },
   "public-global-viirs-presence": {
-    "name": "crwdns83446:0crwdne83446:0",
+    "name": "crwdns83474:0crwdne83474:0",
     "description": "crwdns66565:0crwdne66565:0",
     "schema": {
       "bearing": "crwdns83448:0crwdne83448:0",
