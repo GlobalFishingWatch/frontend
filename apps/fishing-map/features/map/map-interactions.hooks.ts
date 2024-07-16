@@ -335,12 +335,13 @@ export const useMapCursor = () => {
         return 'move'
       }
       if (hoverFeatures?.some(isTilesClusterLayer)) {
-        if (areClusterTilesLoading) {
-          return 'wait'
+        const isCluster = (hoverFeatures as ClusterPickingObject[]).some(
+          (f) => f.properties?.count > 1
+        )
+        if (!isCluster) {
+          return 'pointer'
         }
-        return (hoverFeatures as ClusterPickingObject[]).some((f) => f.properties?.count > 1)
-          ? 'zoom-in'
-          : 'pointer'
+        return areClusterTilesLoading ? 'wait' : 'zoom-in'
       }
       if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
         return 'crosshair'
