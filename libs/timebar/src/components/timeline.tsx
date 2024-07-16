@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import memoize from 'memoize-one'
 import cx from 'classnames'
 import { NumberValue, ScaleTime, scaleTime } from 'd3-scale'
-import { throttle } from 'es-toolkit'
+import throttle from 'lodash/throttle'
 import ResizeObserver from 'resize-observer-polyfill'
 import { DateTime, DateTimeUnit } from 'luxon'
 import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
@@ -347,6 +347,7 @@ class Timeline extends PureComponent<TimelineProps> {
       const isDay = !isMoreThanADay(start, end)
       this.throttledMouseMove(x, this.outerScale.invert, isDay)
     } else {
+      this.throttledMouseMove.cancel()
       this.notifyMouseLeave()
     }
 
