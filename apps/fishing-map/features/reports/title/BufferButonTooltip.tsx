@@ -106,26 +106,30 @@ export const BufferButtonTooltip = ({
               </div>
             </div>
           )}
-          renderThumb={({ props, index }) => (
-            <div
-              {...props}
-              style={{
-                ...props.style,
-                height: index === 1 ? '30px' : '8px',
-                width: index === 1 ? '30px' : '3px',
-                borderRadius: '50px',
-                backgroundColor: index === 1 ? '#FFF' : '#ccc',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                fontSize: '14px',
-                boxShadow: index === 1 ? '0px 2px 6px #AAA' : 'none',
-                pointerEvents: index === 1 ? 'auto' : 'none',
-              }}
-            >
-              {index === 1 ? Math.round(values[index]) : null}
-            </div>
-          )}
+          renderThumb={({ props, index }) => {
+            const { key, ...rest } = props
+            return (
+              <div
+                key={key}
+                {...rest}
+                style={{
+                  ...props.style,
+                  height: index === 1 ? '30px' : '8px',
+                  width: index === 1 ? '30px' : '3px',
+                  borderRadius: '50px',
+                  backgroundColor: index === 1 ? '#FFF' : '#ccc',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  fontSize: '14px',
+                  boxShadow: index === 1 ? '0px 2px 6px #AAA' : 'none',
+                  pointerEvents: index === 1 ? 'auto' : 'none',
+                }}
+              >
+                {index === 1 ? Math.round(values[index]) : null}
+              </div>
+            )
+          }}
         />
       </div>
       <div className={styles.actionContainer}>
