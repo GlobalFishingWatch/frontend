@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import memoizeOne from 'memoize-one'
 import { useSelector } from 'react-redux'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -33,9 +33,9 @@ import {
 } from 'features/reports/reports.selectors'
 import { ReportActivityGraph, ReportCategory } from 'types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { AreaGeometry } from 'features/areas/areas.slice'
 import { useFilterCellsByPolygonWorker } from 'features/reports/reports-geo.utils.workers.hooks'
+import { TimeRange } from 'features/timebar/timebar.slice'
 
 interface EvolutionGraphData {
   date: string
@@ -127,7 +127,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const timeComparison = useSelector(selectReportTimeComparison)
   const reportBufferHash = useSelector(selectReportBufferHash)
   const dataviews = useSelector(selectActiveReportDataviews)
-  const timerange = useTimerangeConnect()
+  const timerange = useSelector(selectTimeRange)
 
   const instances = reportLayers.map((l) => l.instance)
   const layersLoaded = reportLayers?.length ? reportLayers?.every((l) => l.loaded) : false
@@ -136,6 +136,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const instancesChunkHash = instances
     ?.map((instance) => JSON.stringify(instance.getChunk()))
     .join(',')
+  const timerangeHash = timerange ? JSON.stringify(timerange) : ''
   const reportGraphMode = getReportGraphMode(reportGraph)
 
   // We need to re calculate the timeseries when any of this params changes
@@ -179,36 +180,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       graphMode: ReportGraphMode
     ) => {
       const newTimeseries: ReportGraphProps[] = []
-      const timeseriesStats = {} as ReportGraphStats
       instances.forEach((instance, index) => {
         const features = filteredFeatures[index]
         if (features && (!timeseries?.[index] || timeseries?.[index].mode === 'loading')) {
-          if (reportCategory === 'environment' && features[0]?.contained?.length > 0) {
-            const dataview = dataviews.find((dv) => dv.id === instance.id)
-            const chunk = instance.getChunk()
-            const { startFrame, endFrame } = getIntervalFrames({
-              startTime: DateTime.fromISO(timerange.start).toUTC().toMillis(),
-              endTime: DateTime.fromISO(timerange.end).toUTC().toMillis(),
-              availableIntervals: [chunk.interval],
-              bufferedStart: chunk.bufferedStart,
-            })
-            const allValues = features[0].contained.flatMap((f) => {
-              const values = sliceCellValues({
-                values: f.properties.values[0],
-                startFrame,
-                endFrame,
-                startOffset: f.properties.startOffsets[0],
-              })
-              return values || []
-            })
-            if (dataview?.config && allValues.length > 0) {
-              timeseriesStats[dataview.id] = {
-                min: min(allValues),
-                max: max(allValues),
-                mean: mean(allValues),
-              }
-            }
-          }
           const props = instance.props as FourwingsLayerProps
           const chunk = instance.getChunk()
           const sublayers = instance.getFourwingsLayers()
@@ -238,18 +212,49 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         }
       })
       setTimeseries(newTimeseries)
+    },
+    [setTimeseries, timeComparison, timeseries]
+  )
+
+  const computeTimeseriesStats = useCallback(
+    (
+      instances: FourwingsLayer[],
+      filteredFeatures: FilteredPolygons[][],
+      { start, end }: TimeRange
+    ) => {
+      const timeseriesStats = {} as ReportGraphStats
+      instances.forEach((instance, index) => {
+        const features = filteredFeatures[index]
+        if (features?.[0]?.contained?.length > 0) {
+          const dataview = dataviews.find((dv) => dv.id === instance.id)
+          const chunk = instance.getChunk()
+          const { startFrame, endFrame } = getIntervalFrames({
+            startTime: DateTime.fromISO(start).toUTC().toMillis(),
+            endTime: DateTime.fromISO(end).toUTC().toMillis(),
+            availableIntervals: [chunk.interval],
+            bufferedStart: chunk.bufferedStart,
+          })
+          const allValues = features[0].contained.flatMap((f) => {
+            const values = sliceCellValues({
+              values: f.properties.values[0],
+              startFrame,
+              endFrame,
+              startOffset: f.properties.startOffsets[0],
+            })
+            return values || []
+          })
+          if (dataview?.config && allValues.length > 0) {
+            timeseriesStats[dataview.id] = {
+              min: min(allValues),
+              max: max(allValues),
+              mean: mean(allValues),
+            }
+          }
+        }
+      })
       setTimeseriesStats(timeseriesStats)
     },
-    [
-      dataviews,
-      reportCategory,
-      setTimeseries,
-      setTimeseriesStats,
-      timeComparison,
-      timerange.end,
-      timerange.start,
-      timeseries,
-    ]
+    [dataviews, setTimeseriesStats]
   )
 
   useEffect(() => {
@@ -266,6 +271,29 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     reportGraphMode,
     timeComparisonHash,
     instancesChunkHash,
+  ])
+
+  useEffect(() => {
+    if (
+      layersLoaded &&
+      featuresFiltered?.length &&
+      areaInViewport &&
+      timerange &&
+      reportCategory === 'environment'
+    ) {
+      computeTimeseriesStats(instances, featuresFiltered, timerange)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    layersLoaded,
+    featuresFiltered,
+    areaInViewport,
+    reportCategory,
+    reportBufferHash,
+    reportGraphMode,
+    timeComparisonHash,
+    instancesChunkHash,
+    timerangeHash,
   ])
 
   return timeseries
