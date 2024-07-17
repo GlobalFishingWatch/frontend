@@ -5,7 +5,7 @@ import { Icon } from '@globalfishingwatch/ui-components'
 import { UserLayerPickingObject, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -55,20 +55,15 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: UserCo
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => {
-        const dataview = dataviews.find((d) => d.id === featureByType[0].title)
+        const { color, datasetId, title } = featureByType[0]
+        const dataview = dataviews.find((d) => d.id === title)
+        const dataset = dataview?.datasets?.find((d) => d.id === datasetId)
+        const rowTitle = dataset ? getDatasetLabel(dataset) : title
         return (
           <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
-            <Icon
-              icon="polygons"
-              className={styles.layerIcon}
-              style={{ color: featureByType[0].color }}
-            />
+            <Icon icon="polygons" className={styles.layerIcon} style={{ color }} />
             <div className={styles.popupSectionContent}>
-              {showFeaturesDetails && (
-                <h3 className={styles.popupSectionTitle}>
-                  {dataview ? getDatasetTitleByDataview(dataview) : featureByType[0].title}
-                </h3>
-              )}
+              {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>}
               {featureByType.map((feature, index) => {
                 const id = getContextLayerId(feature)
                 const label = getContextLayerLabel(feature)

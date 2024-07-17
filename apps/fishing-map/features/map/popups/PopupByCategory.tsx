@@ -173,12 +173,12 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
             return (
               <Fragment key={featureCategory}>
-                <UserPointsTooltipSection
-                  features={pointFeatures}
-                  showFeaturesDetails={type === 'click'}
-                />
                 <ContextTooltipSection
                   features={contextFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
+                <UserPointsTooltipSection
+                  features={pointFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
                 <UserContextTooltipSection
