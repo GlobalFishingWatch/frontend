@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import memoizeOne from 'memoize-one'
 import { useSelector } from 'react-redux'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -119,6 +119,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const [timeseries, setTimeseries] = useAtom(mapTimeseriesAtom)
   const setTimeseriesStats = useSetAtom(mapTimeseriesStatsAtom)
   const [featuresFiltered, setFeaturesFiltered] = useState<FilteredPolygons[][]>([])
+  const featuresFilteredDirtyRef = useRef<boolean>(true)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
   const areaInViewport = useReportAreaInViewport()
@@ -143,6 +144,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   useEffect(() => {
     setTimeseries([])
     setFeaturesFiltered([])
+    featuresFilteredDirtyRef.current = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportCategory, timeComparisonHash, instancesChunkHash, reportGraphMode, area?.id])
 
@@ -163,12 +165,13 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   )
 
   useEffect(() => {
-    if (area?.geometry && layersLoaded && !featuresFiltered?.length && instances.length) {
+    if (area?.geometry && layersLoaded && featuresFilteredDirtyRef.current && instances.length) {
       updateFeaturesFiltered(
         instances,
         area.geometry,
         reportCategory === 'environment' ? 'point' : 'cell'
       )
+      featuresFilteredDirtyRef.current = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [area?.geometry, reportCategory, layersLoaded])
