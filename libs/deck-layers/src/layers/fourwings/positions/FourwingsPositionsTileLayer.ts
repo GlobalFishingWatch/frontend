@@ -362,7 +362,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         ),
       }),
       // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
-      'date-range': `${getISODateFromTS(start)},${getISODateFromTS(end)}`,
+      'date-range': `${getISODateFromTS(start < end ? start : end)},${getISODateFromTS(end)}`,
     }
 
     const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })

@@ -186,7 +186,7 @@ export const getDataUrlBySublayer = ({
     ...(sublayer.filter && { filters: [sublayer.filter] }),
     ...(vesselGroup && { 'vessel-groups': [vesselGroup] }),
     ...(chunk.interval !== 'YEAR' && {
-      'date-range': [getISODateFromTS(start), getISODateFromTS(end)].join(','),
+      'date-range': [getISODateFromTS(start < end ? start : end), getISODateFromTS(end)].join(','),
     }),
   }
   const url = `${tilesUrl}?${stringify(params, {
