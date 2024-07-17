@@ -127,6 +127,7 @@ export interface DataviewConfig<Type = DataviewType> {
   events?: string[]
   relatedVesselIds?: string[]
 
+  pickable?: boolean
   trackThinningZoomConfig?: Record<number, string>
   /** Fourwings layers merged, needed for Activity or Detections */
   sublayers?: DataviewSublayerConfig[]

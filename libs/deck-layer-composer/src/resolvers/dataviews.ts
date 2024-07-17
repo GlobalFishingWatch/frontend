@@ -172,6 +172,7 @@ export function getFourwingsDataviewsResolved(
           color: dataview.config?.color,
           visible: auxiliarLayerActive,
           type: DataviewType.Polygons,
+          pickable: false,
         },
       }
       return auxiliarDataview

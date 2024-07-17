@@ -14,7 +14,9 @@ import {
 } from '../../utils'
 import { PolygonFeature, PolygonPickingInfo, PolygonPickingObject } from './polygons.types'
 
-const defaultProps: DefaultProps<PolygonsLayerProps> = {}
+const defaultProps: DefaultProps<PolygonsLayerProps> = {
+  pickable: true,
+}
 
 export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProps & PropsT> {
   static layerName = 'PolygonsLayer'
@@ -68,7 +70,7 @@ export class PolygonsLayer<PropsT = {}> extends CompositeLayer<PolygonsLayerProp
         id: `${id}-highlight-fills`,
         stroked: false,
         data,
-        pickable: true,
+        pickable: this.props.pickable,
         getPolygonOffset: (params) => getLayerGroupOffset(group, params),
         getFillColor: (d) => this.getFillColor(d as PolygonFeature),
         updateTriggers: {

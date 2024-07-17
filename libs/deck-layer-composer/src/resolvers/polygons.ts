@@ -40,6 +40,7 @@ export const resolveDeckPolygonsLayerProps: DeckResolverFunction<PolygonsLayerPr
   return {
     id: dataview.id,
     data: resolvePolygonsData(dataview, globalConfig),
+    pickable: dataview.config?.pickable ?? true,
     category: dataview.category!,
     subcategory: dataview.config?.type!,
     color: dataview.config?.color!,
