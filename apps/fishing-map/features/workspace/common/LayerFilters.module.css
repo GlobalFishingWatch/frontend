@@ -103,6 +103,7 @@
 
 .footer {
   margin-top: var(--space-S);
+  gap: var(--space-S);
   display: flex;
   justify-content: flex-end;
 }

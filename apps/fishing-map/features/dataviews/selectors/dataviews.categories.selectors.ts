@@ -3,7 +3,7 @@ import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
-const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
+export const selectDataviewInstancesByCategory = (category?: DataviewCategory) => {
   return createSelector(
     [selectDataviewInstancesResolved],
     (dataviews): UrlDataviewInstance<DataviewType>[] => {

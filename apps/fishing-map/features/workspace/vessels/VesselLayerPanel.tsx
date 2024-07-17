@@ -298,7 +298,13 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
               <ExpandedContainer
                 visible={filterOpen}
                 onClickOutside={closeExpandedContainer}
-                component={<Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />}
+                component={
+                  <Filters
+                    dataview={dataview}
+                    onConfirmCallback={onToggleFilterOpen}
+                    showApplyToAll
+                  />
+                }
               >
                 <div className={styles.filterButtonWrapper}>
                   <IconButton
