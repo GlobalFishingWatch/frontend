@@ -67,6 +67,7 @@ export type VesselLayerProps = DeckLayerProps<
 
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
+  static layerName = 'VesselLayer'
   initializeState() {
     super.initializeState(this.context)
     this.state = {

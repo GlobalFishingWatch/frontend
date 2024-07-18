@@ -619,6 +619,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   renderLayers(): Layer<{}> | LayersList {
+    const { zoom } = this.context.viewport
     const { resolution, comparisonMode } = this.props
     const { colorDomain, colorRanges, tilesCache, scales } = this.state
     const cacheKey = this._getTileDataCacheKey()
@@ -635,7 +636,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         scales,
         minZoom: 0,
         maxZoom: FOURWINGS_MAX_ZOOM,
-        zoomOffset: getZoomOffsetByResolution(resolution),
+        zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
         opacity: 1,
         maxRequests: this.props.maxRequests,
         debounceTime: this.props.debounceTime,
@@ -659,8 +660,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   getTilesData({ aggregated } = {} as { aggregated?: boolean }) {
     const layer = this.getLayerInstance()
     if (layer) {
-      const zoom = Math.round(this.context.viewport.zoom)
-      const offset = getZoomOffsetByResolution(this.props.resolution)
+      const offset = getZoomOffsetByResolution(this.props.resolution!, this.context.viewport.zoom)
+      const roudedZoom = Math.round(this.context.viewport.zoom)
       return layer
         .getSubLayers()
         .map((l: any) => {
@@ -670,7 +671,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
           if (l.props.tile.zoom === l.props.maxZoom) {
             return l.getData({ aggregated })
           }
-          return l.props.tile.zoom === zoom + offset ? l.getData({ aggregated }) : []
+          return l.props.tile.zoom === roudedZoom + offset ? l.getData({ aggregated }) : []
         })
         .filter((t) => t.length > 0) as FourwingsFeature[][]
     }

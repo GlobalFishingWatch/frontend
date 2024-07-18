@@ -181,6 +181,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     const { tilesUrl, sublayers, resolution, minVisibleValue, maxVisibleValue, maxZoom } =
       this.props
     const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
+    const { zoom } = this.context.viewport
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',
@@ -195,7 +196,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         binary: false,
         pickable: true,
         loaders: [GFWMVTLoader],
-        zoomOffset: getZoomOffsetByResolution(resolution),
+        zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
         onViewportLoad: this._onViewportLoad,
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
         getFillColor: this.getFillColor,
@@ -240,13 +241,13 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   getData() {
     const layer = this.getLayerInstance()
     if (layer) {
-      const zoom = Math.round(this.context.viewport.zoom)
-      const offset = getZoomOffsetByResolution(this.props.resolution)
+      const offset = getZoomOffsetByResolution(this.props.resolution!, this.context.viewport.zoom)
+      const roundedZoom = Math.round(this.context.viewport.zoom)
       return layer.getSubLayers().flatMap((l: any) => {
         if (l.props.tile.zoom === l.props.maxZoom) {
           return l.props.data
         }
-        return l.props.tile.zoom === zoom + offset ? l.props.data : []
+        return l.props.tile.zoom === roundedZoom + offset ? l.props.data : []
       }) as FourwingsStaticFeature[]
     }
     return [] as FourwingsStaticFeature[]

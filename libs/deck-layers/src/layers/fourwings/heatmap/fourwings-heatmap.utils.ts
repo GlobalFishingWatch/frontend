@@ -356,11 +356,11 @@ export const getVisualizationModeByResolution = (resolution?: FourwingsHeatmapRe
   return HEATMAP_ID
 }
 
-export const getZoomOffsetByResolution = (resolution?: FourwingsHeatmapResolution) => {
+export const getZoomOffsetByResolution = (resolution: FourwingsHeatmapResolution, zoom: number) => {
   if (resolution === 'high') {
     return 1
   } else if (resolution === 'low') {
-    return -1
+    return zoom > 0.5 ? -1 : 0
   }
   return 0
 }
