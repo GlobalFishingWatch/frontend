@@ -430,7 +430,7 @@ function LayerFilters({
       })}
       <div className={styles.footer}>
         {showApplyToAll && (
-          <Button onClick={() => onConfirmFilters({ applyToAll: true })}>
+          <Button type="secondary" onClick={() => onConfirmFilters({ applyToAll: true })}>
             {t('common.applyToAll', 'Apply to all')}
           </Button>
         )}
