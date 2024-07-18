@@ -707,15 +707,13 @@ export const getCommonSchemaFieldsInDataview = (
             ? field
             : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field!?.toString())
         if (label === field) {
-          if (dataview.category !== DataviewCategory.Context && schema !== 'vessel_id') {
-            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
-          }
-          if (schema === 'geartypes') {
+          if (schema === 'geartypes' || schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
             label = getVesselGearType({ geartypes: field as string })
-          }
-          if (schema === 'vessel_type') {
+          } else if (schema === 'vessel_type') {
             label = getVesselShipType({ shiptypes: field as string })
+          } else if (dataview.category !== DataviewCategory.Context && schema !== 'vessel_id') {
+            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
           }
         }
         return { id: field!?.toString(), label: label as string }

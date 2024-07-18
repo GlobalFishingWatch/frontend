@@ -46,8 +46,8 @@ import {
   HeatmapDownloadFormat,
   GroupBy,
   TemporalResolution,
-  VESSEL_GROUP_BY_OPTIONS,
   VESSEL_FORMAT_OPTIONS,
+  getVesselGroupOptions,
 } from './downloadActivity.config'
 import {
   getDownloadReportSupported,
@@ -80,7 +80,7 @@ function DownloadActivityByVessel() {
   const bufferOperation = useSelector(selectUrlBufferOperationQuery)
 
   const filteredGroupByOptions = useMemo(
-    () => getSupportedGroupByOptions(VESSEL_GROUP_BY_OPTIONS, vesselDatasets),
+    () => getSupportedGroupByOptions(getVesselGroupOptions(), vesselDatasets),
     [vesselDatasets]
   )
   const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0]?.id)

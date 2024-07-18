@@ -30,6 +30,9 @@ export const useLegendsTranslated = (legends: AnyLegend[], portalled = true) => 
           if (legend.unit === 'hours') {
             label = `${t('common.hour_other', 'hours')} / ${gridAreaFormatted}²`
           }
+          if (legend.unit === 'detections') {
+            label = `${t('common.detections', 'detections').toLowerCase()} / ${gridAreaFormatted}²`
+          }
         }
         return { ...legend, label }
       })
