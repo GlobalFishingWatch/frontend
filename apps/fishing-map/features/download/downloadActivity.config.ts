@@ -81,38 +81,40 @@ export const ENVIRONMENT_FORMAT_OPTIONS: ChoiceOption<HeatmapDownloadFormat>[] =
   },
 ]
 
-const BASE_GROUP_BY_OPTIONS: ChoiceOption<GroupBy>[] = [
-  {
-    id: GroupBy.MMSI,
-    label: t('vessel.mmsi', 'MMSI'),
-  },
-  {
-    id: GroupBy.Flag,
-    label: t('vessel.flag', 'Flag'),
-  },
-  {
-    id: GroupBy.GearType,
-    label: t('vessel.geartype', 'Gear Type'),
-  },
-  {
-    id: GroupBy.FlagAndGearType,
-    label: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
-  },
-]
-export const VESSEL_GROUP_BY_OPTIONS: ChoiceOption<GroupBy>[] = [
+export const getBaseGroupByOptions = (): ChoiceOption<GroupBy>[] => {
+  return [
+    {
+      id: GroupBy.MMSI,
+      label: t('vessel.mmsi', 'MMSI'),
+    },
+    {
+      id: GroupBy.Flag,
+      label: t('vessel.flag', 'Flag'),
+    },
+    {
+      id: GroupBy.GearType,
+      label: t('vessel.geartype', 'Gear Type'),
+    },
+    {
+      id: GroupBy.FlagAndGearType,
+      label: `${t('vessel.flag', 'Flag')} + ${t('vessel.geartype', 'Gear Type')}`,
+    },
+  ]
+}
+export const getVesselGroupOptions = (): ChoiceOption<GroupBy>[] => [
   {
     id: GroupBy.Vessel,
     label: t('common.none', 'None'),
   },
-  ...BASE_GROUP_BY_OPTIONS,
+  ...getBaseGroupByOptions(),
 ]
 
-export const GRIDDED_GROUP_BY_OPTIONS: ChoiceOption<GroupBy>[] = [
+export const getGriddedGroupOptions = (): ChoiceOption<GroupBy>[] => [
   {
     id: GroupBy.None,
     label: t('common.none', 'None'),
   },
-  ...BASE_GROUP_BY_OPTIONS,
+  ...getBaseGroupByOptions(),
 ]
 
 export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption<SpatialResolution>[] = [
@@ -133,7 +135,7 @@ export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption<SpatialResolution>[] = [
   },
 ]
 
-export const TEMPORAL_RESOLUTION_OPTIONS: ChoiceOption<TemporalResolution>[] = [
+export const getTemporalResolutionOptions = (): ChoiceOption<TemporalResolution>[] => [
   {
     id: TemporalResolution.Full,
     label: t('download.fullTimeRange', 'Selected time range'),

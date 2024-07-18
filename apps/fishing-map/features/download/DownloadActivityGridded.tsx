@@ -52,8 +52,8 @@ import {
   SPATIAL_RESOLUTION_OPTIONS,
   GRIDDED_FORMAT_OPTIONS,
   TemporalResolution,
-  GRIDDED_GROUP_BY_OPTIONS,
   GroupBy,
+  getGriddedGroupOptions,
 } from './downloadActivity.config'
 import {
   getDownloadReportSupported,
@@ -97,7 +97,7 @@ function DownloadActivityGridded() {
   }, [downloadAreaGeometry])
 
   const filteredGroupByOptions: ChoiceOption<GroupBy>[] = useMemo(
-    () => getSupportedGroupByOptions(GRIDDED_GROUP_BY_OPTIONS, vesselDatasets),
+    () => getSupportedGroupByOptions(getGriddedGroupOptions(), vesselDatasets),
     [vesselDatasets]
   )
   const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0].id)

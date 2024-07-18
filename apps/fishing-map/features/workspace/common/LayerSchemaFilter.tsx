@@ -72,10 +72,13 @@ export const getValueLabelByUnit = (
 }
 
 export const getLabelWithUnit = (label: string, unit?: string): string => {
+  const translatedLabel = t(`layer.${label}`, label)
   if (unit) {
-    return `${label} (${VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label})`
+    return `${translatedLabel} (${
+      VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label
+    })`
   }
-  return label
+  return translatedLabel
 }
 
 export const getFilterOperatorOptions = () => {

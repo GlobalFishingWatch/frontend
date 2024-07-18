@@ -14,7 +14,7 @@ import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
 import styles from './LayerLibrary.module.css'
 
 const LayerLibrary: FC = () => {
-  const { t } = useTranslation(['layer-library'])
+  const { t } = useTranslation(['translations', 'layer-library'])
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
   const initialCategory = useSelector(selectLayerLibraryModal)
@@ -95,18 +95,13 @@ const LayerLibrary: FC = () => {
 
   const layersByCategory = useMemo(
     () =>
-      filteredLayers.reduce(
-        (acc, layer) => {
-          if (!acc[layer.category]) {
-            acc[layer.category] = []
-          }
-          acc[layer.category].push(layer)
-          return acc
-        },
-        Object.fromEntries(
-          uniqCategories.map((category) => [category, []] as [DataviewCategory, LibraryLayer[]])
-        )
-      ),
+      filteredLayers.reduce((acc, layer) => {
+        if (!acc[layer.category]) {
+          acc[layer.category] = []
+        }
+        acc[layer.category].push(layer)
+        return acc
+      }, Object.fromEntries(uniqCategories.map((category) => [category, []] as [DataviewCategory, LibraryLayer[]]))),
     [filteredLayers, uniqCategories]
   )
 
