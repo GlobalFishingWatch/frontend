@@ -156,7 +156,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
   const loading = trackLayerVisible && (infoLoading || !trackLoaded)
 
   const infoError = infoResource?.status === ResourceStatus.Error
-  const trackError: any = vesselLayer?.instance.getErrorMessage()
+  const trackError = vesselLayer?.instance.getVesselLayersError('track')
 
   const vesselData = infoResource?.data
   const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
@@ -223,32 +223,25 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
           {getVesselTitle()}
         </VesselLink>
       </span>
-      {(infoError || trackError) && (
-        <IconButton
-          size="small"
-          icon="warning"
-          type="warning"
-          disabled
-          className={styles.errorIcon}
-        />
-      )}
     </Fragment>
   )
 
-  const TrackIconComponent = !trackLoaded ? (
-    <IconButton
-      loading
-      className={styles.loadingIcon}
-      size="small"
-      tooltip={t('vessel.loading', 'Loading vessel track')}
-    />
-  ) : (
-    <FitBounds
-      hasError={trackError}
-      vesselLayer={vesselLayer?.instance}
-      infoResource={infoResource}
-    />
-  )
+  const TrackIconComponent =
+    !trackError && !trackLoaded ? (
+      // TODO handle error here
+      <IconButton
+        loading
+        className={styles.loadingIcon}
+        size="small"
+        tooltip={t('vessel.loading', 'Loading vessel track')}
+      />
+    ) : (
+      <FitBounds
+        hasError={trackError}
+        vesselLayer={vesselLayer?.instance}
+        infoResource={infoResource}
+      />
+    )
 
   return (
     <div
@@ -346,8 +339,10 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
           )}
         </div>
         <IconButton
-          icon={'more'}
-          loading={loading}
+          icon={infoError || trackError ? 'warning' : 'more'}
+          type={infoError || trackError ? 'warning' : 'default'}
+          disabled={infoError || trackError}
+          loading={loading && !trackError && !infoError}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />

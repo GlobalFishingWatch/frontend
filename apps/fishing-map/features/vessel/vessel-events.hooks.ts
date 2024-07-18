@@ -31,7 +31,7 @@ export const useVesselProfileEventsLoading = () => {
 
 export const useVesselProfileEventsError = () => {
   const vesselInstance = useVesselProfileLayer()
-  return vesselInstance?.instance?.getErrorMessage() || ''
+  return vesselInstance?.instance?.getVesselLayersError('events') ?? false
 }
 
 export const useSetVesselProfileEvents = () => {

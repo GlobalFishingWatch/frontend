@@ -220,8 +220,8 @@ export const useTimebarVesselEvents = () => {
   const [timebarVesselEvents, setTimebarVesselEvents] =
     useState<TimebarChartData<TrackEventChunkProps> | null>(null)
   const vessels = useTimebarVesselsLayers()
-  const eventsLoaded = useMemo(
-    () => vessels.flatMap((v) => (v.instance.getVesselEventsLayersLoaded() ? v.id : [])).join(','),
+  const vesselsWithEventsLoaded = useMemo(
+    () => vessels.flatMap((v) => (v.loaded ? v.id : [])).join(','),
     [vessels]
   )
   const eventsColor = useMemo(
@@ -231,7 +231,7 @@ export const useTimebarVesselEvents = () => {
 
   useEffect(() => {
     requestAnimationFrame(() => {
-      if (vessels?.length) {
+      if (vessels?.length && vesselsWithEventsLoaded.length) {
         const vesselEvents: TimebarChartData<any> = vessels.map(({ instance }) => {
           const status = instance.getVesselTracksLayersLoaded()
             ? ResourceStatus.Finished
@@ -252,7 +252,7 @@ export const useTimebarVesselEvents = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventsLoaded, timebarGraph, visibleEvents, eventsColor])
+  }, [vesselsWithEventsLoaded, timebarGraph, visibleEvents, eventsColor])
 
   return timebarVesselEvents
 }

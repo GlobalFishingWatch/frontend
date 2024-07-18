@@ -65,18 +65,26 @@ export type VesselLayerProps = DeckLayerProps<
   _VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
 >
 
+type VesselLayerState = {
+  colorDirty: boolean
+  errors: {
+    [key in EventTypes | 'track']?: string
+  }
+}
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   static layerName = 'VesselLayer'
+  state!: VesselLayerState
   initializeState() {
     super.initializeState(this.context)
     this.state = {
       colorDirty: false,
+      errors: {},
     }
   }
 
   get isLoaded(): boolean {
-    return super.isLoaded && this.getAllSublayersLoaded() && !this.state.colorDirty
+    return this.getAllSublayersLoaded() && this.state ? !this.state.colorDirty : false
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -113,9 +121,12 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return { ...info, object }
   }
 
-  onSublayerError = (error: any) => {
+  onSublayerError = (type: EventTypes | 'track', error: any) => {
     console.warn(error)
-    this.setState({ error })
+    this.setState({
+      errors: { ...this.state.errors, [type]: error },
+    })
+    return true
   }
 
   _getTracksUrl({
@@ -211,8 +222,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           minElevationFilter,
           maxElevationFilter,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
-          onError: this.onSublayerError,
-        })
+          onError: (e: any) => this.onSublayerError('track', e),
+        } as _VesselTrackLayerProps)
       )
     })
   }
@@ -254,7 +265,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             },
             visible,
             type,
-            onError: this.onSublayerError,
+            onError: (e: any) => this.onSublayerError(type, e),
             loaders: [VesselEventsLoader],
             pickable: true,
             highlightStartTime,
@@ -411,7 +422,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselEventsData(types?: EventTypes[]) {
-    return getEvents(this.getEventLayers(), types)
+    return getEvents(this.getEventLayers(), {
+      types,
+      startTime: this.props.startTime,
+      endTime: this.props.endTime,
+    })
   }
 
   getVesselTrackData() {
@@ -445,18 +460,28 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselEventsLayersLoaded() {
-    return this.getEventLayers().every((l) => l.isLoaded)
+    const eventLayers = this.getEventLayers()
+    if (!eventLayers.length) return true
+    return eventLayers.every((l) => {
+      return l.isLoaded || this.getVesselLayersError(l.props.type)
+    })
   }
 
   getVesselTracksLayersLoaded() {
-    return this.getTrackLayers().every((l) => l.isLoaded)
+    return this.getTrackLayers().every((l) => l.isLoaded) || this.getVesselLayersError('track')
+  }
+
+  getVesselLayersError(type: `${EventTypes}` | 'track' | 'events') {
+    if (!this.state) {
+      return false
+    }
+    if (type === 'events') {
+      return Object.entries(this.state.errors).some(([key, value]) => key !== 'track' && value)
+    }
+    return this.state.errors?.[type] !== undefined
   }
 
   getAllSublayersLoaded() {
     return this.getVesselEventsLayersLoaded() && this.getVesselTracksLayersLoaded()
-  }
-
-  getErrorMessage() {
-    return this.state.error
   }
 }

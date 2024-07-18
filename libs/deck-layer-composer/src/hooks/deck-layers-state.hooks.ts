@@ -1,9 +1,6 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
-import type {
-  AnyDeckLayer,
-  LayerWithIndependentSublayersLoadState,
-} from '@globalfishingwatch/deck-layers'
+import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 
 // Atom used to have all the layer instances loading state available
 type DeckLayerLoaded = { loaded: boolean }
