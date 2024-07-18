@@ -54,13 +54,21 @@ const LayerLibrary: FC = () => {
   )
 
   const scrollToCategory = useCallback(
-    (categoryElements: HTMLElement[], category: DataviewCategory) => {
+    ({
+      categoryElements,
+      category,
+      smooth = true,
+    }: {
+      categoryElements: HTMLElement[]
+      category: DataviewCategory
+      smooth?: boolean
+    }) => {
       const targetElement = categoryElements.find((categoryElement) => {
         return categoryElement.id === category
       })
       if (targetElement) {
         targetElement.scrollIntoView({
-          behavior: 'smooth',
+          behavior: smooth ? 'smooth' : 'instant',
         })
       }
     },
@@ -74,7 +82,7 @@ const LayerLibrary: FC = () => {
     })
     setCategoryElements(categoryElements)
     if (currentCategory) {
-      scrollToCategory(categoryElements, currentCategory)
+      scrollToCategory({ categoryElements, category: currentCategory, smooth: false })
     }
     // Running only when categoryElements changes as listening to currentCategory blocks the scroll
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -117,6 +125,7 @@ const LayerLibrary: FC = () => {
 
   const onLayerListScroll = useCallback(
     (e: React.UIEvent<HTMLElement>) => {
+      if (!categoryElements.length) return
       let current = currentCategory
       const target = e.target as HTMLElement
       const lastElement = categoryElements[categoryElements.length - 1]
@@ -140,7 +149,10 @@ const LayerLibrary: FC = () => {
 
   const onCategoryClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      scrollToCategory(categoryElements, (e.target as any).dataset.category as DataviewCategory)
+      scrollToCategory({
+        categoryElements,
+        category: (e.target as any).dataset.category as DataviewCategory,
+      })
     },
     [categoryElements, scrollToCategory]
   )
