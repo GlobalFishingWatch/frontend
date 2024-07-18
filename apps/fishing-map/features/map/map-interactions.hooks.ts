@@ -18,6 +18,7 @@ import {
   DeckLayerPickingObject,
   FourwingsHeatmapPickingObject,
 } from '@globalfishingwatch/deck-layers'
+import { trackEvent } from 'features/app/analytics.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map.hooks'
@@ -29,7 +30,7 @@ import { setHintDismissed } from 'features/help/hints.slice'
 import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import { isRulerLayerPoint, isTilesClusterLayer } from './map-interaction.utils'
+import { getAnalyticsEvent, isRulerLayerPoint, isTilesClusterLayer } from './map-interaction.utils'
 import {
   SliceExtendedClusterPickingObject,
   SliceInteractionEvent,
@@ -124,6 +125,10 @@ export const useClickedEventConnect = () => {
       point: { x: deckEvent.point.x, y: deckEvent.point.y },
     } as SliceInteractionEvent
 
+    event?.features?.forEach((feature) => {
+      const analyticsEvent = getAnalyticsEvent(feature)
+      trackEvent(analyticsEvent)
+    })
     const clusterFeature = event?.features?.find(
       (f) => (f as ClusterPickingObject).category === DataviewCategory.Events
     ) as ClusterPickingObject
