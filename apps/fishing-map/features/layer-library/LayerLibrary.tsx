@@ -14,7 +14,7 @@ import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
 import styles from './LayerLibrary.module.css'
 
 const LayerLibrary: FC = () => {
-  const { t } = useTranslation(['layer-library'])
+  const { t } = useTranslation(['translations', 'layer-library'])
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
   const initialCategory = useSelector(selectLayerLibraryModal)

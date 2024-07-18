@@ -35,6 +35,8 @@ function IntervalSelector({
     <ul className={styles.intervalContainer}>
       {intervalsSorted.map((interval) => {
         const active = currentInterval === interval
+        const intervalLabel = labels?.[interval.toLowerCase()]
+        const titleLabel = labels?.[`${interval.toLowerCase()}Tooltip`]
         return (
           <li key={interval}>
             <button
@@ -42,9 +44,9 @@ function IntervalSelector({
                 [styles.intervalBtnActive]: active,
               })}
               onClick={() => onIntervalClick(interval)}
-              title={labels?.[`${interval}Tooltip`]}
+              title={titleLabel || interval}
             >
-              {labels?.[interval] ? labels[interval] : interval}
+              {intervalLabel || interval}
             </button>
           </li>
         )

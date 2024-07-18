@@ -11,7 +11,11 @@ import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from 'utils/dates'
 import { REPORT_DAYS_LIMIT } from 'data/config'
 import { getActiveDatasetsInDataview, getDatasetSchemaItem } from 'features/datasets/datasets.utils'
-import { GroupBy, TemporalResolution, TEMPORAL_RESOLUTION_OPTIONS } from './downloadActivity.config'
+import {
+  GroupBy,
+  TemporalResolution,
+  getTemporalResolutionOptions,
+} from './downloadActivity.config'
 
 export function getDownloadReportSupported(start: string, end: string) {
   if (!start || !end) {
@@ -89,7 +93,7 @@ export function getSupportedTemporalResolutions(
     days: endDateTime.diff(startDateTime, ['days']).days,
   }
 
-  return TEMPORAL_RESOLUTION_OPTIONS.flatMap((option) => {
+  return getTemporalResolutionOptions().flatMap((option) => {
     if (option.id === TemporalResolution.Full) {
       return option
     }

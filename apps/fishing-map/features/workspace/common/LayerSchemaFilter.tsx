@@ -71,11 +71,14 @@ export const getValueLabelByUnit = (
   return formatI18nNumber(getValueByUnit(value, { unit })) as string
 }
 
-const getLabelWithUnit = (label: string, unit?: string): string => {
+export const getLabelWithUnit = (label: string, unit?: string): string => {
+  const translatedLabel = t(`layer.${label}`, label)
   if (unit) {
-    return `${label} (${VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label})`
+    return `${translatedLabel} (${
+      VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label
+    })`
   }
-  return label
+  return translatedLabel
 }
 
 const getFilterOperatorOptions = () => {
