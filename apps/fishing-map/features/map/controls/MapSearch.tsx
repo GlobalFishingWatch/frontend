@@ -39,7 +39,7 @@ const MapSearch = () => {
       })
     }
     if (bounds) {
-      fitBounds(bounds)
+      fitBounds(bounds, { fitZoom: true })
     }
   }
 
