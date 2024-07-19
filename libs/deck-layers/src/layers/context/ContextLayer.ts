@@ -161,6 +161,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
           id: `${this.id}-boundaries-layer`,
           data: layer.tilesUrl,
           loaders: [GFWMVTLoader],
+          maxZoom: 8,
           renderSubLayers: (props: any) => {
             const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
             return [
@@ -193,6 +194,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
         loadOptions: {
           ...getFetchLoadOptions(),
         },
+        maxZoom: 8,
         onViewportLoad: this.props.onViewportLoad,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
