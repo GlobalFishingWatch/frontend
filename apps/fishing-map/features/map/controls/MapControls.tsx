@@ -181,7 +181,7 @@ const MapControls = ({
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
-          {showExtendedControls && <MapSearch />}
+          {(isWorkspaceLocation || isVesselLocation) && !isMapDrawing && <MapSearch />}
           <IconButton
             icon="plus"
             type="map-tool"
