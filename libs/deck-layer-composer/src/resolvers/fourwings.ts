@@ -39,6 +39,9 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
   const visibleSublayers = dataview.config?.sublayers?.filter((sublayer) => sublayer?.visible)
   const sublayers: FourwingsDeckSublayer[] = (visibleSublayers || []).map((sublayer) => {
     const units = uniq(sublayer.datasets?.map((dataset) => dataset.unit))
+    const positionProperties = uniq(
+      sublayer?.datasets.flatMap((dataset) => Object.keys(dataset?.schema || {}))
+    )
 
     if (units.length > 0 && units.length !== 1) {
       console.warn('Shouldnt have distinct units for the same heatmap layer')
@@ -49,6 +52,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
       visible: sublayer?.visible ?? true,
       datasets: sublayer?.datasets.map((dataset) => dataset.id),
       color: (sublayer?.color || dataview.config?.color) as string,
+      positionProperties,
       colorRamp: sublayer?.colorRamp as ColorRampId,
       label: sublayer?.datasets?.[0]?.name!,
       unit: units[0]!,
@@ -141,7 +145,6 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     visualizationMode,
     aggregationOperation,
     availableIntervals,
-    positionProperties: allVisibleDatasets?.map((dataset) => Object.keys(dataset?.schema || {})),
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     ...(highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),

@@ -345,9 +345,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getPositionProperties() {
-    return this.props.positionProperties?.map((sublayerProperties) =>
-      sublayerProperties.filter((p) => SUPPORTED_POSITION_PROPERTIES.includes(p))
-    )
+    return this.props.sublayers.map((s) => {
+      return s.positionProperties?.filter((p) => SUPPORTED_POSITION_PROPERTIES.includes(p))
+    })
   }
 
   _getDataUrl() {
@@ -363,7 +363,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
       ...(supportedPositionProperties?.length && {
         properties: supportedPositionProperties.map((sublayerProperties) =>
-          sublayerProperties.join(',')
+          sublayerProperties?.join(',')
         ),
       }),
       // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
