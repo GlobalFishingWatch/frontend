@@ -44,7 +44,8 @@ import { PATH_BASENAME } from '../../layers.config'
 import {
   cleanVesselShipname,
   filteredPositionsByViewport,
-  getIsPositionMatched,
+  getIsActivityPositionMatched,
+  getIsDetectionsPositionMatched,
 } from './fourwings-positions.utils'
 import {
   FourwingsPositionsPickingInfo,
@@ -116,6 +117,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       highlightedFeatureIds: new Set<string>(),
       highlightedVesselIds: new Set<string>(),
     }
+  }
+
+  getIsPositionMatched = (f: FourwingsPositionFeature) => {
+    return this.props.category === 'activity'
+      ? getIsActivityPositionMatched(f)
+      : getIsDetectionsPositionMatched(f)
   }
 
   updateViewportDirty() {
@@ -251,7 +258,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getIconSize = (d: FourwingsPositionFeature): number => {
-    if (getIsPositionMatched(d)) {
+    if (this.getIsPositionMatched(d)) {
       return this._getIsHighlightedVessel(d) ? 22 : 15
     } else {
       if (this.hideUnmatchedPositions) {
@@ -399,7 +406,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: (d: any) => (getIsPositionMatched(d) ? 'vessel' : 'circle'),
+          getIcon: (d: any) => (this.getIsPositionMatched(d) ? 'vessel' : 'circle'),
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getFillColor,
           getSize: this._getIconSize,
@@ -417,7 +424,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           data: positions,
           iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: (d: any) => (getIsPositionMatched(d) ? 'vesselHighlight' : 'circle'),
+          getIcon: (d: any) => (this.getIsPositionMatched(d) ? 'vesselHighlight' : 'circle'),
           getPosition: (d: any) => d.geometry.coordinates,
           getColor: this._getHighlightColor,
           getSize: this._getIconSize,

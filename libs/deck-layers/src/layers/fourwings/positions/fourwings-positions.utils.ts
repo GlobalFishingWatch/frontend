@@ -11,7 +11,13 @@ export function cleanVesselShipname(name: string) {
   return name?.replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b/g, upperFirst) || ''
 }
 
-export function getIsPositionMatched(feature: FourwingsPositionFeature) {
+export function getIsActivityPositionMatched(feature: FourwingsPositionFeature) {
+  return (
+    (feature.properties.shipname && feature.properties.shipname.length > 0) ||
+    (feature.properties.id && feature.properties.id.length > 0)
+  )
+}
+export function getIsDetectionsPositionMatched(feature: FourwingsPositionFeature) {
   return (
     (feature.properties.shipname && feature.properties.shipname.length > 0) ||
     (feature.properties.vessel_id && feature.properties.vessel_id.length > 0)

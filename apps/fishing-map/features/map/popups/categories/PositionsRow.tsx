@@ -7,7 +7,8 @@ import { useSelector } from 'react-redux'
 import { Icon } from '@globalfishingwatch/ui-components'
 import {
   FourwingsPositionsPickingObject,
-  getIsPositionMatched,
+  getIsActivityPositionMatched,
+  getIsDetectionsPositionMatched,
 } from '@globalfishingwatch/deck-layers'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { formatInfoField } from 'utils/info'
@@ -27,7 +28,10 @@ function PositionsRow({ feature, showFeaturesDetails }: PositionsRowProps) {
   const allDatasets = useSelector(selectAllDatasets)
   // TODO get the value based on the sublayer
   const color = feature.sublayers?.[0]?.color
-  const isPositionMatched = getIsPositionMatched(feature)
+  const isPositionMatched =
+    feature.category === 'activity'
+      ? getIsActivityPositionMatched(feature)
+      : getIsDetectionsPositionMatched(feature)
   const shipname = isPositionMatched
     ? (formatInfoField(feature.properties.shipname, 'shipname') as string)
     : ''
