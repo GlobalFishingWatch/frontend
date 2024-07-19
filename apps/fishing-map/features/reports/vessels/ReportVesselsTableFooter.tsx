@@ -25,6 +25,7 @@ import {
   selectReportVesselsPagination,
   getVesselsFiltered,
   ReportVesselWithDatasets,
+  selectReportAreaName,
 } from '../reports.selectors'
 import { parseReportVesselsToIdentity } from '../reports.utils'
 import styles from './ReportVesselsTableFooter.module.css'
@@ -41,6 +42,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const allVessels = useSelector(selectReportVesselsList)
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
+  const reportAreaName = useSelector(selectReportAreaName)
   const pagination = useSelector(selectReportVesselsPagination)
   const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const { start, end } = useSelector(selectTimeRange)
@@ -57,15 +59,15 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
           return rest
         }
       ) as ReportVesselWithDatasets[]
+      trackEvent({
+        category: TrackCategory.Analysis,
+        action: `Click 'Download CSV'`,
+        label: `region name: ${reportAreaName} | timerange: ${start} - ${end} | filters: ${reportVesselFilter}`,
+      })
       const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
       saveAs(blob, `${reportName}-${start}-${end}.csv`)
     }
-
-    trackEvent({
-      category: TrackCategory.Analysis,
-      action: `Download CSV`,
-    })
   }
 
   const onPrevPageClick = () => {
