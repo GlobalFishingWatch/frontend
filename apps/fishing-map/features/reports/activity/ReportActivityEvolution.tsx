@@ -46,7 +46,7 @@ const formatTooltipValue = (value: number, payload: any, unit: string) => {
   const difference = range ? range[1] - value : 0
   const imprecision = value > 0 && (difference / value) * 100
   // TODO review why abs is needed and why we have negative imprecision
-  const imprecisionFormatted = imprecision ? toFixed(Math.abs(imprecision), 0) : '0'
+  const imprecisionFormatted = imprecision ? Math.round(Math.abs(imprecision)).toString() : '0'
   const valueFormatted = formatI18nNumber(value, { maximumFractionDigits: 2 })
   const valueLabel = `${valueFormatted} ${unit ? unit : ''}`
   const imprecisionLabel =
