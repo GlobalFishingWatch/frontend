@@ -155,6 +155,14 @@ function MapDraw() {
     [createDataset, layerName]
   )
 
+  const onAddPolygonClick = useCallback(() => {
+    drawLayer?.setMode('draw')
+    trackEvent({
+      category: TrackCategory.ReferenceLayer,
+      action: `Draw a custom reference layer - Click + icon`,
+    })
+  }, [drawLayer])
+
   const hasFeaturesDrawn = drawFeatures?.features && drawFeatures?.features?.length > 0
   const layerNameMinLength = layerName.length >= MIN_DATASET_NAME_LENGTH
   let saveTooltip = ''
@@ -202,7 +210,7 @@ function MapDraw() {
       />
       <IconButton
         icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
-        onClick={() => drawLayer?.setMode('draw')}
+        onClick={onAddPolygonClick}
       />
       <IconButton
         type="warning"

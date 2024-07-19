@@ -25,6 +25,7 @@ export enum TrackCategory {
   VesselGroups = 'vessel_groups',
   VesselProfile = 'vessel_profile',
   WorkspaceManagement = 'workspace_management',
+  MapInteraction = 'map_interaction',
 }
 
 export const trackEvent = trackEventBase<TrackCategory>
