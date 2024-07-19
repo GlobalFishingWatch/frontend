@@ -247,7 +247,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       : report?.description || ''
 
   const reportAreaSpace = reportArea?.geometry
-    ? geojsonArea.geometry(reportArea?.geometry) / 1000000
+    ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
     : null
 
   if (!reportTitle) {
