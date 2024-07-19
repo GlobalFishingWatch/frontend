@@ -130,7 +130,9 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
           : `<strong>${t(`common.${activityUnit}`, {
               defaultValue: 'hours',
               count: Math.floor(reportHours),
-            })}</strong> ± ${timeseriesImprecision.toFixed(2)}% ${t('common.of', 'of')}`
+            })}</strong> ${
+              timeseriesImprecision ? `± ${timeseriesImprecision.toFixed(2)}% ` : ''
+            }${t('common.of', 'of')}`
 
       return t('analysis.summaryNoVessels', {
         defaultValue:

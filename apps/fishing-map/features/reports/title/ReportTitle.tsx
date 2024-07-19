@@ -191,7 +191,10 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
     let areaName = report?.name
     if (!areaName) {
-      if (areaDataview?.config?.type === DataviewType.UserContext) {
+      if (
+        areaDataview?.config?.type === DataviewType.Context ||
+        areaDataview?.config?.type === DataviewType.UserContext
+      ) {
         if (reportAreaStatus === AsyncReducerStatus.Finished) {
           areaName =
             reportArea?.properties?.[propertyToInclude] ||
