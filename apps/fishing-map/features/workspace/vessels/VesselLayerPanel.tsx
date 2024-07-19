@@ -47,6 +47,7 @@ import FitBounds from '../common/FitBounds'
 
 export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
+  showApplyToAll?: boolean
 }
 
 export const getVesselIdentityTooltipSummary = (
@@ -101,7 +102,7 @@ export const getVesselIdentityTooltipSummary = (
   return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
 }
 
-function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactElement {
+function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -295,7 +296,7 @@ function VesselLayerPanel({ dataview }: VesselLayerPanelProps): React.ReactEleme
                   <Filters
                     dataview={dataview}
                     onConfirmCallback={onToggleFilterOpen}
-                    showApplyToAll
+                    showApplyToAll={showApplyToAll}
                   />
                 }
               >

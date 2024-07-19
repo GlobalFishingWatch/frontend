@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'es-toolkit'
 import { useSelector } from 'react-redux'
@@ -428,7 +429,7 @@ function LayerFilters({
           />
         )
       })}
-      <div className={styles.footer}>
+      <div className={cx(styles.footer, { [styles.spaceBetween]: showApplyToAll })}>
         {showApplyToAll && (
           <Button type="secondary" onClick={() => onConfirmFilters({ applyToAll: true })}>
             {t('common.applyToAll', 'Apply to all')}

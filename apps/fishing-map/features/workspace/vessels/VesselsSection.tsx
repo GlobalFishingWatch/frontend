@@ -105,7 +105,13 @@ function VesselsSection(): React.ReactElement {
       </div>
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
-          dataviews?.map((dataview) => <VesselLayerPanel key={dataview.id} dataview={dataview} />)
+          dataviews?.map((dataview) => (
+            <VesselLayerPanel
+              key={dataview.id}
+              dataview={dataview}
+              showApplyToAll={dataviews.length > 1}
+            />
+          ))
         ) : (
           <div className={styles.emptyState}>
             {t(
