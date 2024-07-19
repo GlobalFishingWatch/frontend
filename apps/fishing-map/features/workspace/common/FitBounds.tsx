@@ -26,7 +26,7 @@ const FitBounds = ({ className, vesselLayer, hasError, infoResource }: FitBounds
     if (vesselLayer && start && end) {
       const bbox = vesselLayer.getVesselTrackBounds()
       if (bbox) {
-        fitBounds(bbox, { padding: 60 })
+        fitBounds(bbox, { padding: 60, fitZoom: true })
       } else {
         const transmissionDateFrom = getVesselProperty(infoResource?.data!, 'transmissionDateFrom')
         const transmissionDateTo = getVesselProperty(infoResource?.data!, 'transmissionDateTo')
