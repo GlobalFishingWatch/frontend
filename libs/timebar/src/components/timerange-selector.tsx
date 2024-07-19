@@ -50,6 +50,8 @@ type TimeRangeSelectorState = {
 
 type LastXOption = SelectOption & { num: number; unit: DateTimeUnit }
 
+type DateProperty = 'year' | 'month' | 'day'
+
 class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
   bounds = {
     min: '',
@@ -201,21 +203,22 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
         const duration = endDate.diff(startDate, [unit])?.[unit]
         return {
           ...acc,
-          [limit]: Math.floor(duration) > limitConfig.value,
+          [limit]: Math.ceil(duration) > limitConfig.value,
         }
       }
       return acc
     }, {} as Record<FourwingsInterval, boolean>)
   }
 
-  onStartChange = (e: ChangeEvent<HTMLInputElement>, property: string) => {
+  onStartChange = (e: ChangeEvent<HTMLInputElement>, property: DateProperty) => {
     const startDate = DateTime.fromObject(this.state.startInputValues, { zone: 'utc' })
-    const endDate = DateTime.fromObject(this.state.endInputValues, { zone: 'utc' })
-    const disabledFields = this.getDisabledFields(startDate, endDate)
+    const eventValue =
+      parseInt(e.target.value) || (property === 'year' ? parseInt(this.bounds.min.slice(0, 4)) : 1)
+
     const currentMonthDays = DateTime.fromObject(
       {
-        year: property === 'year' ? parseInt(e.target.value) : startDate.year,
-        month: property === 'month' ? parseInt(e.target.value) : startDate.month,
+        year: property === 'year' ? eventValue : startDate.year,
+        month: property === 'month' ? eventValue : startDate.month,
       },
       { zone: 'utc' }
     ).daysInMonth
@@ -225,7 +228,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
       startInputValues: {
         ...state.startInputValues,
         day: dateHigherThanDaysInMonth ? currentMonthDays : startDate.day,
-        [property]: disabledFields['MONTH'] ? 1 : parseInt(e.target.value),
+        [property]: eventValue,
       },
       startInputValids: {
         ...state.startInputValids,
@@ -234,7 +237,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
     }))
   }
 
-  onStartBlur = (e: ChangeEvent<HTMLInputElement>, property: string) => {
+  onStartBlur = (e: ChangeEvent<HTMLInputElement>, property: DateProperty) => {
     if (e.target.value === '') {
       this.setState((state: TimeRangeSelectorState) => ({
         startInputValues: {
@@ -249,12 +252,14 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
     }
   }
 
-  onEndChange = (e: ChangeEvent<HTMLInputElement>, property: string) => {
+  onEndChange = (e: ChangeEvent<HTMLInputElement>, property: DateProperty) => {
     const endDate = DateTime.fromObject(this.state.endInputValues, { zone: 'utc' })
+    const eventValue =
+      parseInt(e.target.value) || (property === 'year' ? parseInt(this.bounds.max.slice(0, 4)) : 1)
     const currentMonthDays = DateTime.fromObject(
       {
-        year: property === 'year' ? parseInt(e.target.value) : endDate.year,
-        month: property === 'month' ? parseInt(e.target.value) : endDate.month,
+        year: property === 'year' ? eventValue : endDate.year,
+        month: property === 'month' ? eventValue : endDate.month,
       },
       { zone: 'utc' }
     ).daysInMonth
@@ -263,7 +268,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
       endInputValues: {
         ...state.endInputValues,
         day: dateHigherThanDaysInMonth ? currentMonthDays : endDate.day,
-        [property]: parseInt(e.target.value),
+        [property]: eventValue,
       },
       endInputValids: {
         ...state.endInputValids,
@@ -272,7 +277,7 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
     }))
   }
 
-  onEndBlur = (e: ChangeEvent<HTMLInputElement>, property: string) => {
+  onEndBlur = (e: ChangeEvent<HTMLInputElement>, property: DateProperty) => {
     if (e.target.value === '') {
       this.setState((state: TimeRangeSelectorState) => ({
         endInputValues: {
