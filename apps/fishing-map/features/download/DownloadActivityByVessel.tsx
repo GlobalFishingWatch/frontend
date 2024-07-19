@@ -4,6 +4,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Icon, Button, Choice, Tag } from '@globalfishingwatch/ui-components'
+import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import {
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
@@ -41,6 +42,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { AreaKeyId } from 'features/areas/areas.slice'
 import { selectIsDownloadActivityAreaLoading } from 'features/download/download.selectors'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
 import styles from './DownloadModal.module.css'
 import {
   HeatmapDownloadFormat,
@@ -73,6 +75,7 @@ function DownloadActivityByVessel() {
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
+  const downloadAreaDataset = useSelector(selectDatasetById(downloadAreaKey?.datasetId as string))
   const isDownloadAreaLoading = useSelector(selectIsDownloadActivityAreaLoading)
 
   const bufferUnit = useSelector(selectUrlBufferUnitQuery)
@@ -92,7 +95,10 @@ function DownloadActivityByVessel() {
   const [temporalResolution, setTemporalResolution] = useState(
     filteredTemporalResolutionOptions[0].id
   )
-  const downloadAreaName = downloadAreaKey?.areaName
+  const downloadAreaName =
+    downloadAreaDataset?.source === DRAW_DATASET_SOURCE
+      ? downloadAreaDataset.name
+      : downloadAreaKey?.areaName
 
   const onDownloadClick = async () => {
     const downloadDataviews = dataviews

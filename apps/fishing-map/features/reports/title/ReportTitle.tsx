@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import { DataviewType } from '@globalfishingwatch/api-types'
+import { DataviewType, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
@@ -196,11 +196,15 @@ export default function ReportTitle({ area }: ReportTitleProps) {
         areaDataview?.config?.type === DataviewType.UserContext
       ) {
         if (reportAreaStatus === AsyncReducerStatus.Finished) {
-          areaName =
-            reportArea?.properties?.[propertyToInclude] ||
-            reportArea?.properties?.[valueProperty] ||
-            reportArea?.name ||
-            dataset?.name
+          if (dataset?.source === DRAW_DATASET_SOURCE) {
+            areaName = dataset.name
+          } else {
+            areaName =
+              reportArea?.properties?.[propertyToInclude] ||
+              reportArea?.properties?.[valueProperty] ||
+              reportArea?.name ||
+              dataset?.name
+          }
         }
       } else {
         areaName = area?.name
