@@ -253,7 +253,7 @@ export const selectActiveHeatmapEnvironmentalDataviewsWithoutStatic = createSele
   [selectActiveHeatmapEnvironmentalDataviews],
   (dataviews) => {
     return dataviews.filter(
-      (dv) => !isBathymetryDataview(dv) && dv.config?.type !== DataviewType.HeatmapStatic
+      (dv) => !isBathymetryDataview(dv) && dv.config?.type === DataviewType.HeatmapAnimated
     )
   }
 )

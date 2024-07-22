@@ -24,11 +24,11 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
 import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {

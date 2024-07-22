@@ -29,9 +29,7 @@ const FitBounds = ({ className, vesselLayer, hasError, infoResource }: FitBounds
         fitBounds(bbox, { padding: 60, fitZoom: true })
       } else {
         const transmissionDateFrom = getVesselProperty(infoResource?.data!, 'transmissionDateFrom')
-        console.log('🚀 ~ onFitBoundsClick ~ transmissionDateFrom:', transmissionDateFrom)
         const transmissionDateTo = getVesselProperty(infoResource?.data!, 'transmissionDateTo')
-        console.log('🚀 ~ onFitBoundsClick ~ transmissionDateTo:', transmissionDateTo)
         if (infoResource && (!transmissionDateFrom || !transmissionDateTo)) {
           console.warn("transmissionDates not available, can't fit time", infoResource)
           return

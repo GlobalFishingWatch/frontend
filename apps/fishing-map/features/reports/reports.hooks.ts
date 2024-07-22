@@ -26,7 +26,7 @@ import {
 } from 'features/reports/reports.selectors'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
-import { useSetViewState, useViewState } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
@@ -79,7 +79,7 @@ function useReportAreaCenter(bounds?: Bbox) {
 }
 
 export function useReportAreaInViewport() {
-  const viewState = useViewState()
+  const viewState = useMapViewState()
   const area = useSelector(selectReportArea)
   const bbox = area?.geometry?.bbox || area!?.bounds
   const areaCenter = useReportAreaCenter(bbox as Bbox)
@@ -91,16 +91,16 @@ export function useReportAreaInViewport() {
 }
 
 export function useFitAreaInViewport() {
-  const setViewState = useSetViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const area = useSelector(selectReportArea)
   const bbox = area?.geometry?.bbox || area!?.bounds
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
-      setViewState(areaCenter)
+      setMapCoordinates(areaCenter)
     }
-  }, [areaCenter, areaInViewport, setViewState])
+  }, [areaCenter, areaInViewport, setMapCoordinates])
 }
 
 // 0 - 20MB No simplifyTrack

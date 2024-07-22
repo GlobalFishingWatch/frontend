@@ -19,7 +19,7 @@ import {
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { useSetViewState } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import WhatsNew from 'features/sidebar/WhatsNew'
@@ -53,7 +53,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const dispatch = useAppDispatch()
   const { dispatchClickedEvent } = useClickedEventConnect()
   const locationType = useSelector(selectLocationType)
-  const setViewState = useSetViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectLocationCategory)
@@ -69,9 +69,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   }, [dispatch, userData])
 
   const onCategoryClick = useCallback(() => {
-    setViewState(DEFAULT_WORKSPACE_LIST_VIEWPORT)
+    setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
     dispatchClickedEvent(null)
-  }, [setViewState, dispatchClickedEvent])
+  }, [setMapCoordinates, dispatchClickedEvent])
 
   const onSearchClick = useCallback(() => {
     trackEvent({

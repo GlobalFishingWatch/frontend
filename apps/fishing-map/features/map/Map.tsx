@@ -28,7 +28,12 @@ import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useHasReportTimeseries } from 'features/reports/reports-timeseries.hooks'
-import { MAP_VIEW, useViewStateAtom, useUpdateViewStateUrlParams } from './map-viewport.hooks'
+import {
+  MAP_VIEW,
+  useMapSetViewState,
+  useUpdateViewStateUrlParams,
+  useMapViewState,
+} from './map-viewport.hooks'
 import styles from './Map.module.css'
 import MapAnnotations from './overlays/annotations/Annotations'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
@@ -54,7 +59,8 @@ const MapWrapper = () => {
   const deckRef = useRef<DeckGLRef>(null)
   useSetMapInstance(deckRef)
   const dispatch = useAppDispatch()
-  const { viewState, setViewState } = useViewStateAtom()
+  const viewState = useMapViewState()
+  const setViewState = useMapSetViewState()
   const onViewStateChange = useCallback(
     (params: any) => {
       // add transitionDuration: 0 to avoid unresponsive zoom

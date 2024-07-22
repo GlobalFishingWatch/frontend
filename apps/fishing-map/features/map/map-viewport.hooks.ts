@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { debounce } from 'es-toolkit'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { MapView, MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
@@ -15,8 +15,8 @@ const viewStateAtom = atom<MapCoordinates>({
   zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
 })
 
-export const useViewState = () => useAtomValue(viewStateAtom)
-export const useSetViewState = () => {
+export const useMapViewState = () => useAtomValue(viewStateAtom)
+export const useMapSetViewState = () => {
   const setViewState = useSetAtom(viewStateAtom)
   return useCallback(
     (coordinates: Partial<MapCoordinates>) => {
@@ -26,46 +26,22 @@ export const useSetViewState = () => {
   )
 }
 
-export function useViewStateAtom() {
-  const [viewState, setViewState] = useAtom(viewStateAtom)
-  return { viewState, setViewState }
-}
-
-export function useMapViewport() {
-  const deckMap = useDeckMap()
-  try {
-    return (deckMap as any)
-      ?.getViewports?.()
-      .find((v: any) => v.id === MAP_VIEW_ID) as WebMercatorViewport
-  } catch (e) {
-    return undefined
-  }
-}
-
+// Hook to set only the map coordinates (longitude, latitude and zoom)
+// this doesn't update any of the deckgl view state properties
 export function useSetMapCoordinates() {
-  const { viewState, setViewState } = useViewStateAtom()
+  const setMapViewState = useMapSetViewState()
   const deckMap = useDeckMap()
   return useCallback(
     (coordinates: Partial<MapCoordinates>) => {
+      setMapViewState(coordinates)
       if (deckMap) {
-        const newViewState = { ...viewState, ...coordinates }
-        deckMap.setProps({ viewState: newViewState })
-        setViewState(newViewState)
+        // Can't find why this is needed to properly update the view state
+        deckMap.setProps({ viewState: coordinates as any })
       }
     },
-    [deckMap, setViewState, viewState]
+    [deckMap, setMapViewState]
   )
 }
-
-const MAP_VIEW_ID = 'mapViewport'
-export const MAP_VIEW = new MapView({
-  id: MAP_VIEW_ID,
-  repeat: true,
-  controller: true,
-  bearing: 0,
-  pitch: 0,
-} as MapViewProps)
-const URL_VIEWPORT_DEBOUNCED_TIME = 1000
 
 export const useUpdateViewStateUrlParams = () => {
   const viewState = useAtomValue(viewStateAtom)
@@ -84,4 +60,25 @@ export const useUpdateViewStateUrlParams = () => {
       updateUrlViewportDebounced.cancel()
     }
   }, [viewState, updateUrlViewportDebounced])
+}
+
+const MAP_VIEW_ID = 'mapViewport'
+export const MAP_VIEW = new MapView({
+  id: MAP_VIEW_ID,
+  repeat: true,
+  controller: true,
+  bearing: 0,
+  pitch: 0,
+} as MapViewProps)
+const URL_VIEWPORT_DEBOUNCED_TIME = 1000
+
+export function useMapViewport() {
+  const deckMap = useDeckMap()
+  try {
+    return (deckMap as any)
+      ?.getViewports?.()
+      .find((v: any) => v.id === MAP_VIEW_ID) as WebMercatorViewport
+  } catch (e) {
+    return undefined
+  }
 }

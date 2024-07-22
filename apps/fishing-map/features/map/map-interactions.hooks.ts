@@ -4,6 +4,7 @@ import { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
 import { atom, useAtom, useSetAtom } from 'jotai'
 import { ThunkDispatch } from '@reduxjs/toolkit'
+import { debounce } from 'es-toolkit'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
   useMapHoverInteraction,
@@ -21,7 +22,6 @@ import {
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
-import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map.hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
@@ -29,6 +29,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 import { getAnalyticsEvent, isRulerLayerPoint, isTilesClusterLayer } from './map-interaction.utils'
 import {
@@ -42,7 +43,9 @@ import {
   selectFishingInteractionStatus,
   setClickedEvent,
 } from './map.slice'
-import { useSetViewState } from './map-viewport.hooks'
+import { useSetMapCoordinates } from './map-viewport.hooks'
+
+export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
 const useMapClusterTilesLoading = () => {
   const eventsDataviews = useSelector(selectEventsDataviews)
@@ -85,7 +88,7 @@ export const useClickedEventConnect = () => {
   const clickedEvent = useSelector(selectClickedEvent)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
-  const setViewState = useSetViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { rulersEditing, onRulerMapClick } = useRulers()
@@ -137,7 +140,7 @@ export const useClickedEventConnect = () => {
       const { count, expansionZoom, lat, lon } = clusterFeature.properties
       if (count > 1) {
         if (!areTilesClusterLoading && lat && lon) {
-          setViewState({
+          setMapCoordinates({
             latitude: lat,
             longitude: lon,
             zoom: expansionZoom,
@@ -409,4 +412,19 @@ export const useMapDrag = () => {
     [onRulerDragEnd]
   )
   return { onMapDrag, onMapDragStart, onMapDragEnd }
+}
+
+export const useDebouncedDispatchHighlightedEvent = () => {
+  const dispatch = useAppDispatch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useCallback(
+    debounce((eventIds?: string | string[]) => {
+      let ids: string[] | undefined
+      if (eventIds) {
+        ids = Array.isArray(eventIds) ? eventIds : [eventIds]
+      }
+      dispatch(setHighlightedEvents(ids))
+    }, 100),
+    []
+  )
 }

@@ -3012,7 +3012,6 @@ __metadata:
     jest: "npm:^29.4.1"
     jest-environment-jsdom: "npm:^29.4.1"
     jotai: "npm:^2.9.0"
-    jotai-effect: "npm:^0.6.0"
     jsdom: "npm:~22.1.0"
     json2csv: "npm:^6.0.0-alpha.2"
     jszip: "npm:^3.10.1"
@@ -19093,15 +19092,6 @@ __metadata:
   bin:
     jiti: bin/jiti.js
   checksum: 10/289b124cea411c130a14ffe88e3d38376ab44b6695616dfa0a1f32176a8f20ec90cdd6d2b9d81450fc6467cfa4d865f04f49b98452bff0f812bc400fd0ae78d6
-  languageName: node
-  linkType: hard
-
-"jotai-effect@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "jotai-effect@npm:0.6.0"
-  peerDependencies:
-    jotai: ">=2.5.0"
-  checksum: 10/d7e8ecf9acc6bcdcaaad2f80f51fc3064078c4ffd557076e434dcf058d7e3b98537560460e58b3ab3ae075449703e5791f0c4feced7392767285d71b8ec311e1
   languageName: node
   linkType: hard
 
