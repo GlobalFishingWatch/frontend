@@ -13,7 +13,7 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { useViewState } from '../../map-viewport.hooks'
+import { useMapViewState } from '../../map-viewport.hooks'
 import {
   ExtendedEventVessel,
   ExtendedFeatureEvent,
@@ -47,7 +47,7 @@ type EncountersLayerProps = {
 function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerProps) {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
-  const viewState = useViewState()
+  const viewState = useMapViewState()
   const { carrierLatest, carrierLatestStatus, dispatchFetchLatestCarrier } =
     useCarrierLatestConnect()
 

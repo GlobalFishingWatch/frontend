@@ -12,7 +12,7 @@ import {
   selectWorkspaceListStatusId,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { useSetViewState } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import EditWorkspace from 'features/workspace/save/WorkspaceEdit'
@@ -23,7 +23,7 @@ import { selectUserWorkspaces } from './selectors/user.permissions.selectors'
 function UserWorkspaces() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const setViewState = useSetViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const [editWorkspace, setEditWorkspace] = useState<AppWorkspace | undefined>()
   const workspaces = useSelector(selectUserWorkspaces)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
@@ -38,10 +38,10 @@ function UserWorkspaces() {
   const onWorkspaceClick = useCallback(
     (workspace: AppWorkspace) => {
       if (workspace.viewport) {
-        setViewState(workspace.viewport)
+        setMapCoordinates(workspace.viewport)
       }
     },
-    [setViewState]
+    [setMapCoordinates]
   )
 
   const onDeleteClick = useCallback(

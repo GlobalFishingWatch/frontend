@@ -43,7 +43,7 @@ import {
   selectFishingInteractionStatus,
   setClickedEvent,
 } from './map.slice'
-import { useSetViewState } from './map-viewport.hooks'
+import { useSetMapCoordinates } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
@@ -88,7 +88,7 @@ export const useClickedEventConnect = () => {
   const clickedEvent = useSelector(selectClickedEvent)
   const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
-  const setViewState = useSetViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { rulersEditing, onRulerMapClick } = useRulers()
@@ -140,7 +140,7 @@ export const useClickedEventConnect = () => {
       const { count, expansionZoom, lat, lon } = clusterFeature.properties
       if (count > 1) {
         if (!areTilesClusterLoading && lat && lon) {
-          setViewState({
+          setMapCoordinates({
             latitude: lat,
             longitude: lon,
             zoom: expansionZoom,

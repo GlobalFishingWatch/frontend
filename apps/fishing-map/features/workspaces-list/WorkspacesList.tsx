@@ -8,7 +8,7 @@ import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.s
 import { HOME, WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
-import { useSetViewState } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { Locale } from 'types'
 import styles from './WorkspacesList.module.css'
 import {
@@ -28,7 +28,7 @@ const geti18nProperty = (
 
 function WorkspacesList() {
   const { t, i18n } = useTranslation()
-  const setViewState = useSetViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const locationCategory = useSelector(selectLocationCategory)
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
@@ -37,10 +37,10 @@ function WorkspacesList() {
   const onWorkspaceClick = useCallback(
     (workspace: HighlightedWorkspaceMerged) => {
       if (workspace.viewport) {
-        setViewState(workspace.viewport)
+        setMapCoordinates(workspace.viewport)
       }
     },
-    [setViewState]
+    [setMapCoordinates]
   )
 
   if (highlightedWorkspacesStatus === AsyncReducerStatus.Finished && !validCategory) {
@@ -103,7 +103,7 @@ function WorkspacesList() {
                   category: locationCategory,
                   workspaceId: highlightedWorkspace.id,
                 },
-                query: {},
+                query: { ...(highlightedWorkspace.viewport || {}) },
                 replaceQuery: true,
               }
             }

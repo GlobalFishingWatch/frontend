@@ -5,7 +5,7 @@ import { WorkspacesPickingObject } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
-import { useSetViewState } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { MapCoordinates } from 'types'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import styles from '../Popup.module.css'
@@ -19,17 +19,17 @@ function WorkspacePointsTooltipSection({
   features,
   showFeaturesDetails,
 }: WorkspacePointsLayersProps) {
-  const setViewState = useSetViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const { dispatchClickedEvent } = useClickedEventConnect()
 
   const onWorkspaceClick = useCallback(
     (viewport: MapCoordinates) => {
       if (viewport) {
-        setViewState(viewport)
+        setMapCoordinates(viewport)
         dispatchClickedEvent(null)
       }
     },
-    [dispatchClickedEvent, setViewState]
+    [dispatchClickedEvent, setMapCoordinates]
   )
 
   const WorkspaceLabel = ({

@@ -45,14 +45,14 @@ import {
   selectWorkspacesListDataview,
 } from './map.selectors'
 import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
-import { useViewState } from './map-viewport.hooks'
+import { useMapViewState } from './map-viewport.hooks'
 import { selectClickedEvent } from './map.slice'
 
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
   const timebarHighlightedTime = useSelector(selectHighlightedTime)
   const highlightEventIds = useSelector(selectHighlightedEvents)
-  const viewState = useViewState()
+  const viewState = useMapViewState()
   const { dispatchQueryParams } = useLocationConnect()
   const { t } = useTranslation()
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
