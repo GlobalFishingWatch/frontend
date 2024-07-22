@@ -20,6 +20,7 @@ export const useSetViewState = () => {
   const setViewState = useSetAtom(viewStateAtom)
   return useCallback(
     (coordinates: Partial<MapCoordinates>) => {
+      console.log('🚀 ~ useSetViewState ~ coordinates:', coordinates)
       setViewState((prev) => ({ ...prev, ...coordinates }))
     },
     [setViewState]
@@ -47,6 +48,7 @@ export function useSetMapCoordinates() {
   const deckMap = useDeckMap()
   return useCallback(
     (coordinates: Partial<MapCoordinates>) => {
+      console.log('🚀 ~ useSetMapCoordinates ~ coordinates:', coordinates)
       if (deckMap) {
         const newViewState = { ...viewState, ...coordinates }
         deckMap.setProps({ viewState: newViewState })

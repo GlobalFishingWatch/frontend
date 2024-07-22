@@ -57,6 +57,7 @@ const MapWrapper = () => {
   const { viewState, setViewState } = useViewStateAtom()
   const onViewStateChange = useCallback(
     (params: any) => {
+      console.log('🚀 ~ params:', params)
       // add transitionDuration: 0 to avoid unresponsive zoom
       // https://github.com/visgl/deck.gl/issues/7158#issuecomment-1329722960
       setViewState({ ...(params.viewState as MapCoordinates), transitionDuration: 0 })
