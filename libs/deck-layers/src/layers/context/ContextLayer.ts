@@ -188,7 +188,7 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
       }
 
       return new TileLayer<TileLayerProps<ContextFeature>>({
-        id: `${layer.id}-base-layer`,
+        id: `${this.id}-base-layer`,
         data: layer.tilesUrl,
         loaders: [GFWMVTLoader],
         loadOptions: {
