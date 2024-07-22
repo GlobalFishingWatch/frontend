@@ -9,7 +9,7 @@ type FilterFeaturesByCenterDistanceParams = {
   viewport: MapCoordinates
   limit?: number
 }
-export const filterFeaturesByDistance = async (
+export const filterFeaturesByDistance = (
   features: ContextFeature[],
   {
     viewport,
@@ -23,7 +23,7 @@ export const filterFeaturesByDistance = async (
     type: 'FeatureCollection' as const,
     features,
   }
-  const closerAreas = await getAreasByDistance(featureCollection, viewport)
+  const closerAreas = getAreasByDistance(featureCollection, viewport)
   return closerAreas.slice(0, limit)
 }
 

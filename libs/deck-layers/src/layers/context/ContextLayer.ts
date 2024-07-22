@@ -126,8 +126,14 @@ export class ContextLayer<PropsT = {}> extends CompositeLayer<_ContextLayerProps
     const height = viewport.height
     const x = viewport.x
     const y = viewport.y
-    const layerIds = this.props.layers.map((l) => l.id)
-    const features = deck!.pickObjects({ x, y, width, height, layerIds, maxObjects })
+    const features = deck!.pickObjects({
+      x,
+      y,
+      width,
+      height,
+      layerIds: [this.id],
+      maxObjects,
+    })
     return features.filter((f) => f.object)
   }
 

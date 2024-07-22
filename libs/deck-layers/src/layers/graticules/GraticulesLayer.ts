@@ -10,7 +10,13 @@ import {
 import { PathLayer, TextLayer } from '@deck.gl/layers'
 import { GeoJsonProperties } from 'geojson'
 import { PathGeometry } from '@deck.gl/layers/dist/path-layer/path'
-import { hexToDeckColor, LayerGroup, getLayerGroupOffset, BLEND_BACKGROUND } from '../../utils'
+import {
+  hexToDeckColor,
+  LayerGroup,
+  getLayerGroupOffset,
+  BLEND_BACKGROUND,
+  getViewportHash,
+} from '../../utils'
 import { GraticulesFeature, GraticulesLayerProps, GraticulesLayerState } from './graticules.types'
 import { generateGraticulesFeatures } from './graticules.data'
 import { checkScaleRankByViewport } from './graticules.utils'
@@ -24,25 +30,22 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
   static defaultProps = defaultProps
   state!: GraticulesLayerState
 
-  _getViewportHash = (context: LayerContext) =>
-    [...context.viewport.getBounds().map((n) => Math.round(n * 1000) / 1000)].join(',')
-
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
-      viewportHash: this._getViewportHash(context),
+      viewportHash: getViewportHash({ viewport: context.viewport }),
       data: generateGraticulesFeatures(),
     }
   }
 
   shouldUpdateState({ context }: UpdateParameters<this>) {
-    const viewportHash = this._getViewportHash(context)
+    const viewportHash = getViewportHash({ viewport: context.viewport })
     return this.state.viewportHash !== viewportHash
   }
 
   updateState({ context }: UpdateParameters<this>) {
     this.setState({
-      viewportHash: this._getViewportHash(context),
+      viewportHash: getViewportHash({ viewport: context.viewport }),
     })
   }
 

@@ -1,4 +1,4 @@
-import { useState, useCallback, Fragment, useEffect } from 'react'
+import { useState, useCallback, Fragment, useEffect, use } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ import {
   Modal,
   IconButton,
   Collapsable,
+  Spinner,
 } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
@@ -107,7 +108,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     const updateFeaturesOnScreen = async () => {
       const features = contextLayer?.instance?.getRenderedFeatures()
       if (features?.length) {
-        const filteredFeatures = await filterFeaturesByDistance(features, {
+        const filteredFeatures = filterFeaturesByDistance(features, {
           viewport,
         })
         setFeaturesOnScreen({
@@ -344,15 +345,24 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           )}
         </div>
       )}
-      {layerActive && isContextAreaDataview && layerLoaded && (
+      {layerActive && isContextAreaDataview && (
         <div
           className={cx(styles.closestAreas, styles.properties, 'print-hidden')}
           style={{ maxHeight: closestAreasHeight }}
         >
           <Collapsable
-            label={`${t('layer.areasOnScreen', 'Areas on screen')} ${
-              areasOnScreenOpen ? `(${featuresOnScreen?.total})` : ''
-            }`}
+            label={
+              layerLoaded ? (
+                `${t('layer.areasOnScreen', 'Areas on screen')} ${
+                  areasOnScreenOpen ? `(${featuresOnScreen?.total})` : ''
+                }`
+              ) : (
+                <span>
+                  {`${t('layer.areasOnScreen', 'Areas on screen')}`}
+                  <Spinner className={styles.inline} size="tiny" />
+                </span>
+              )
+            }
             open={areasOnScreenOpen}
             onToggle={onToggleAreasOnScreenOpen}
             className={styles.areasOnScreen}

@@ -227,6 +227,12 @@
   overflow: hidden;
 }
 
+.inline {
+  display: inline-block;
+  margin-inline: var(--space-XS);
+  transform: scale(0.7) translateY(0.2rem);
+}
+
 .area {
   cursor: default;
   font: var(--font-S);
