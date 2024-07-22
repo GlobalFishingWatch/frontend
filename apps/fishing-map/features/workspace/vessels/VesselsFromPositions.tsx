@@ -99,8 +99,9 @@ function VesselsFromPositions() {
           }
           return acc
         }, {} as Record<string, VesselFromPosition>)
-        const vesselsArray = Object.values(vesselsByValue).sort((a, b) => b.value - a.value)
-        setVessels(vesselsArray || [])
+        const vessels = Object.values(vesselsByValue).sort((a, b) => b.value - a.value)
+        const vesselsNotAlreadyPinned = vessels.filter((vessel) => !vesselIds.includes(vessel.id))
+        setVessels(vesselsNotAlreadyPinned || [])
       } else {
         setVessels([])
       }
