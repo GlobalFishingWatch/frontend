@@ -24,7 +24,7 @@ import {
   useDisableHighlightTimeConnect,
   useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
-import { useViewStateAtom } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -155,7 +155,8 @@ const TimebarWrapper = () => {
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
   const { highlightedEventIds, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
-  const { setViewState, viewState } = useViewStateAtom()
+  const viewState = useMapViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const availableStart = useSelector(selectAvailableStart)
   const availableEnd = useSelector(selectAvailableEnd)
   const timebarGraph = useSelector(selectTimebarGraph)
@@ -286,7 +287,7 @@ const TimebarWrapper = () => {
   const onEventClick = useCallback(
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
       if (event?.coordinates) {
-        setViewState({
+        setMapCoordinates({
           ...viewState,
           latitude: event?.coordinates?.[1],
           longitude: event.coordinates?.[0],
@@ -294,7 +295,7 @@ const TimebarWrapper = () => {
         })
       }
     },
-    [viewState, setViewState, zoom]
+    [viewState, setMapCoordinates, zoom]
   )
 
   const showGraph = useMemo(() => {

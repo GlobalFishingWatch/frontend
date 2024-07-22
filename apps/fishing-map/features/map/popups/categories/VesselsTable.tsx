@@ -35,11 +35,19 @@ import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.u
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
-import {
-  SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION,
-  getVesselsInfoConfig,
-} from '../../map.hooks'
+import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map-interactions.hooks'
 import styles from './VesselsTable.module.css'
+
+export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
+  if (!vessels?.length) return {}
+  return {
+    numVessels: vessels.length,
+    overflow: vessels.length > MAX_TOOLTIP_LIST,
+    overflowNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
+    overflowLoad: vessels.length > MAX_TOOLTIP_LIST,
+    overflowLoadNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
+  }
+}
 
 export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {
   const { setTimerange } = useTimerangeConnect()

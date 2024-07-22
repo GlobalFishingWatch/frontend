@@ -21,11 +21,11 @@ import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileColor } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
 import styles from './VesselAreas.module.css'
 

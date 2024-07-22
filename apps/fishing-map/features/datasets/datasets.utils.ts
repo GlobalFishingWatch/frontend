@@ -31,13 +31,14 @@ import {
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getEnvironmentalDatasetRange,
+  removeDatasetVersion,
 } from '@globalfishingwatch/datasets-client'
 import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearType, getVesselShipType } from 'utils/info'
-import { getDatasetNameTranslated, removeDatasetVersion } from 'features/i18n/utils.datasets'
+import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 

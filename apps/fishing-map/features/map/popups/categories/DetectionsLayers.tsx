@@ -4,10 +4,10 @@ import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselsTable, {
+  getVesselsInfoConfig,
   VesselDetectionTimestamps,
 } from 'features/map/popups/categories/VesselsTable'
 import { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
-import { getVesselsInfoConfig } from '../../map.hooks'
 import styles from '../Popup.module.css'
 
 type ViirsMatchTooltipRowProps = {
