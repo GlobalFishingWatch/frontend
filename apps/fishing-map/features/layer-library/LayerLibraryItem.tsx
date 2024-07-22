@@ -49,6 +49,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       ? FillColorBarOptions
       : LineColorBarOptions
     const usedColors = dataviews.flatMap((dataview) => dataview.config?.color || [])
+    const isDefaultColorUnused = !usedColors.includes(config?.color as string)
     const firstUnusedcolor = palette.find((c) => !usedColors.includes(c.value))
     upsertDataviewInstance({
       id: `${id}-${Date.now()}`,
@@ -56,8 +57,8 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       datasetsConfig,
       config: {
         ...config,
-        color: firstUnusedcolor?.value || dataview.config?.color,
-        colorRamp: firstUnusedcolor?.id || dataview.config?.colorRamp,
+        color: isDefaultColorUnused ? config?.color : firstUnusedcolor?.value,
+        colorRamp: isDefaultColorUnused ? config?.colorRamp : firstUnusedcolor?.id,
       },
     })
     dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
