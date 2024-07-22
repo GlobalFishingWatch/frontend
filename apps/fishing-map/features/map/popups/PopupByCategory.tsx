@@ -169,7 +169,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
             // Workaround to show user context features in the context section
             const userContextFeatures = (features as UserLayerPickingObject[]).filter(
-              (feature) => feature.subcategory === DataviewType.UserContext
+              (feature) =>
+                feature.subcategory === DataviewType.UserContext &&
+                !contextFeatures.includes(feature as ContextPickingObject)
             )
             return (
               <Fragment key={featureCategory}>
