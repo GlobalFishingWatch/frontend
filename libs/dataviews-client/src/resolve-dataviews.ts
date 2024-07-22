@@ -15,7 +15,7 @@ import {
   INCLUDE_FILTER_ID,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
 
 export function isActivityDataview(dataview: UrlDataviewInstance) {
@@ -413,17 +413,41 @@ export function resolveDataviews(
               const instanceDatasetConfig = dataviewInstance.datasetsConfig?.find(
                 (instanceDatasetConfig) => {
                   if (datasetConfig.endpoint === EndpointId.Events) {
-                    return (
-                      datasetConfig.endpoint === instanceDatasetConfig.endpoint &&
-                      // As the events could have multiple datasets we also have to validate this
-                      // which also enforces to set the datasetConfig in the dataviewInstance used
+                    // As the events could have multiple datasets we also have to validate this
+                    // which also enforces to set the datasetConfig in the dataviewInstance used
+                    const hasEndpointMatch =
+                      datasetConfig.endpoint === instanceDatasetConfig.endpoint
+                    const hasExactDatasetMatch =
                       datasetConfig.datasetId === instanceDatasetConfig.datasetId
+                    // needs support for lecacy pinned vessels
+                    const hasDifferentDatasetVersionMatch =
+                      removeDatasetVersion(datasetConfig.datasetId) ===
+                      removeDatasetVersion(instanceDatasetConfig.datasetId)
+                    return (
+                      hasEndpointMatch && (hasExactDatasetMatch || hasDifferentDatasetVersionMatch)
                     )
                   }
                   return datasetConfig.endpoint === instanceDatasetConfig.endpoint
                 }
               )
-              if (!instanceDatasetConfig) return datasetConfig
+              if (!instanceDatasetConfig) {
+                return {
+                  ...datasetConfig,
+                  query:
+                    datasetConfig.endpoint === EndpointId.Events
+                      ? [...(datasetConfig.query || [])].map((query) => {
+                          // Makes the trick to fix pinned vessels with a dataset version that doesn't match the same name
+                          // eg: public-global-port-visits-c2 => public-global-port-visits-events:v3.0
+                          if (query.id === 'vessels' && !query.value) {
+                            const vesselId = dataviewInstance.id.split('vessel-')[1]
+                            const value = [vesselId, ...(dataview.config.relatedVesselIds || [])]
+                            return { ...query, value }
+                          }
+                          return query
+                        })
+                      : datasetConfig.query,
+                }
+              }
               // using the instance query and params first as the uniqBy from lodash doc says:
               // the order of result values is determined by the order they occur in the array
               // so the result will be overriding the default dataview config
