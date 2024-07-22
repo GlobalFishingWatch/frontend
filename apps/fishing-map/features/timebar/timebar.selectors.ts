@@ -13,7 +13,7 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
-  selectActiveEnvironmentalDataviews,
+  selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectActivityVisualizationMode,
@@ -56,7 +56,7 @@ export const selectTimebarSelectedDataviews = createSelector(
     selectTimebarSelectedEnvId,
     selectActiveDetectionsDataviews,
     selectActiveActivityDataviews,
-    selectActiveEnvironmentalDataviews,
+    selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
     selectReportCategory,
     selectIsAnyReportLocation,
   ],
