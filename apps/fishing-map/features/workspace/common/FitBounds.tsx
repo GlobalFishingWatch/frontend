@@ -15,9 +15,16 @@ type FitBoundsProps = {
   vesselLayer: VesselLayer
   infoResource?: Resource<IdentityVessel>
   className?: string
+  disabled?: boolean
 }
 
-const FitBounds = ({ className, vesselLayer, hasError, infoResource }: FitBoundsProps) => {
+const FitBounds = ({
+  className,
+  vesselLayer,
+  hasError,
+  infoResource,
+  disabled,
+}: FitBoundsProps) => {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
   const { setTimerange, start, end } = useTimerangeConnect()
@@ -76,7 +83,7 @@ const FitBounds = ({ className, vesselLayer, hasError, infoResource }: FitBounds
   return (
     <IconButton
       size="small"
-      disabled={hasError}
+      disabled={hasError || disabled}
       icon={hasError ? 'warning' : 'target'}
       type={hasError ? 'warning' : 'default'}
       className={className}

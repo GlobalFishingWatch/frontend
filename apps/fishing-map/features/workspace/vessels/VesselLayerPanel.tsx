@@ -154,10 +154,9 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
   const trackLoaded = vesselLayer?.instance.getVesselTracksLayersLoaded()
   const trackLayerVisible = vesselLayer?.instance.props.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
-  const loading = trackLayerVisible && (infoLoading || !trackLoaded)
-
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = vesselLayer?.instance.getVesselLayersError('track')
+  const trackLoading = trackLayerVisible && !trackLoaded && !trackError
 
   const vesselData = infoResource?.data
   const vesselLabel = vesselData ? getVesselLabel(vesselData) : ''
@@ -227,23 +226,6 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
     </Fragment>
   )
 
-  const TrackIconComponent =
-    !trackError && !trackLoaded ? (
-      // TODO handle error here
-      <IconButton
-        loading
-        className={styles.loadingIcon}
-        size="small"
-        tooltip={t('vessel.loading', 'Loading vessel track')}
-      />
-    ) : (
-      <FitBounds
-        hasError={trackError}
-        vesselLayer={vesselLayer?.instance}
-        infoResource={infoResource}
-      />
-    )
-
   return (
     <div
       className={cx(
@@ -287,7 +269,14 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
             />
-            {layerActive && !infoLoading && TrackIconComponent}
+            {layerActive && !infoLoading && !trackError && (
+              <FitBounds
+                hasError={trackError}
+                vesselLayer={vesselLayer?.instance}
+                infoResource={infoResource}
+                disabled={trackLoading}
+              />
+            )}
             {layerActive && (
               <ExpandedContainer
                 visible={filterOpen}
@@ -343,7 +332,7 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
           icon={infoError || trackError ? 'warning' : 'more'}
           type={infoError || trackError ? 'warning' : 'default'}
           disabled={infoError || trackError}
-          loading={loading && !trackError && !infoError}
+          loading={trackLoading}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
