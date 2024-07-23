@@ -227,7 +227,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           size="small"
         />
       </div>
-      {layerActive && showVisibleFilterValues && (
+      {layerActive && (
         <div className={styles.properties}>
           <div className={styles.filters}>
             <div className={styles.filters}>

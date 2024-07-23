@@ -11,6 +11,7 @@ import {
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { t } from 'features/i18n/i18n'
+import MapLegendPlaceholder from 'features/workspace/common/MapLegendPlaceholder'
 import styles from './MapLegend.module.css'
 
 const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
@@ -60,7 +61,7 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
     (sublayer) => sublayer.id === dataview.id
   )
   if (legendSublayerIndex < 0 || (isBivariate && legendSublayerIndex !== 0) || !deckLegend.ranges) {
-    return null
+    return <MapLegendPlaceholder />
   }
 
   const colors = isBivariate
