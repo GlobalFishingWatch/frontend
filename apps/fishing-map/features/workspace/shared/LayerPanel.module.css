@@ -81,6 +81,12 @@
   margin-right: calc(0px - var(--space-XS));
 }
 
+.LayerPanel:not(.expandedContainerOpen, :hover) .hideUntilHovered > * {
+  overflow: hidden;
+  width: 0;
+  opacity: 0;
+}
+
 .active {
   opacity: 1;
 }
