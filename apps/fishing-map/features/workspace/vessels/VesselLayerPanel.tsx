@@ -331,9 +331,8 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
           )}
         </div>
         <IconButton
-          icon={infoError || trackError ? 'warning' : 'more'}
+          icon={layerActive ? (infoError || trackError ? 'warning' : 'more') : undefined}
           type={infoError || trackError ? 'warning' : 'default'}
-          disabled={infoError || trackError}
           loading={trackLoading}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"

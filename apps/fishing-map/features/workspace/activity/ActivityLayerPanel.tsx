@@ -8,6 +8,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -60,6 +61,11 @@ function ActivityLayerPanel({
   const hintsDismissed = useSelector(selectHintsDismissed)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
+  const layerLoadedState = useDeckLayerLoadedState()
+  const layerLoaded = Object.entries(layerLoadedState).some(
+    ([id, state]) => id.split(',').includes(dataview.id) && state.loaded
+  )
+
   // TODO remove when final decission on stats display is taken
   // const urlTimeRange = useSelector(selectUrlTimeRange)
   // const guestUser = useSelector(selectIsGuestUser)
@@ -198,7 +204,14 @@ function ActivityLayerPanel({
             ) : (
               TitleComponent
             )}
-            <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+            <div
+              className={cx(
+                'print-hidden',
+                styles.actions,
+                { [styles.active]: layerActive },
+                styles.hideUntilHovered
+              )}
+            >
               {layerActive && (
                 <Color
                   dataview={dataview}
@@ -242,6 +255,13 @@ function ActivityLayerPanel({
               />
               {!readOnly && <Remove onClick={onRemoveLayerClick} />}
             </div>
+            <IconButton
+              icon={layerActive ? 'more' : undefined}
+              type="default"
+              loading={layerActive && !layerLoaded}
+              className={cx('print-hidden', styles.shownUntilHovered)}
+              size="small"
+            />
           </div>
           {layerActive && (
             <div className={styles.properties}>

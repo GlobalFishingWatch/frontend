@@ -16,6 +16,8 @@ import {
   getUserDataviewDataset,
 } from '@globalfishingwatch/datasets-client'
 import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -66,6 +68,8 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(selectIsGuestUser)
   const layerActive = dataview?.config?.visible ?? true
+  const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
+  const layerLoadedDebounced = useDebounce(layerLoaded, 300)
   const dataset = getUserDataviewDataset(dataview)
   const datasetGeometryType = getDatasetGeometryType(dataset)
   const { resource, featuresColoredByField } = useUserLayerTrackResource(dataview)
@@ -189,7 +193,14 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
         ) : (
           TitleComponent
         )}
-        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+        <div
+          className={cx(
+            'print-hidden',
+            styles.actions,
+            { [styles.active]: layerActive },
+            styles.hideUntilHovered
+          )}
+        >
           {layerActive && isUserLayer && (
             <IconButton
               icon="edit"
@@ -255,6 +266,13 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
             />
           )}
         </div>
+        <IconButton
+          icon={layerActive ? 'more' : undefined}
+          type="default"
+          loading={layerActive && !layerLoadedDebounced}
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
       {layerActive && hasLayerProperties && (
         <div

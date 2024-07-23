@@ -5,7 +5,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { Spinner, Switch, Tooltip } from '@globalfishingwatch/ui-components'
-import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { AUXILIAR_DATAVIEW_SUFIX, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
@@ -21,7 +21,7 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const auxiliarLayerActive = dataview?.config?.auxiliarLayerActive ?? true
   const { dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.TemporalContext)
-  const layer = useGetDeckLayer<AnyDeckLayer>(dataview.id)
+  const layer = useGetDeckLayer<AnyDeckLayer>(`${dataview.id}-${AUXILIAR_DATAVIEW_SUFIX}`)
   const isLayerLoaded = layer?.loaded
 
   if (!dataset) {

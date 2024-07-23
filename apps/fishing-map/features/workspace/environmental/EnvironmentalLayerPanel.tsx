@@ -5,6 +5,7 @@ import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
+import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
@@ -68,6 +69,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   )
 
   const layerActive = dataview?.config?.visible ?? true
+  const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
 
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
@@ -161,7 +163,14 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
         ) : (
           TitleComponent
         )}
-        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+        <div
+          className={cx(
+            'print-hidden',
+            styles.actions,
+            { [styles.active]: layerActive },
+            styles.hideUntilHovered
+          )}
+        >
           {layerActive && showFilters && (
             <ExpandedContainer
               visible={filterOpen}
@@ -208,6 +217,13 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             />
           )}
         </div>
+        <IconButton
+          icon={layerActive ? 'more' : undefined}
+          type="default"
+          loading={layerActive && !layerLoaded}
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
       {layerActive && showVisibleFilterValues && (
         <div className={styles.properties}>

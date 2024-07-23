@@ -15,6 +15,7 @@ import {
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
@@ -104,6 +105,8 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
   )
 
   const layerLoaded = contextLayer?.loaded
+  const layerLoadedDebounced = useDebounce(layerLoaded, 300)
+
   useEffect(() => {
     const updateFeaturesOnScreen = async () => {
       const features = contextLayer?.instance?.getRenderedFeatures()
@@ -242,7 +245,14 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         ) : (
           TitleComponent
         )}
-        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+        <div
+          className={cx(
+            'print-hidden',
+            styles.actions,
+            { [styles.active]: layerActive },
+            styles.hideUntilHovered
+          )}
+        >
           {layerActive && !isBasemapLabelsDataview && (
             <Color
               dataview={dataview}
@@ -287,6 +297,13 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
             />
           )}
         </div>
+        <IconButton
+          icon={layerActive ? 'more' : undefined}
+          type="default"
+          loading={layerActive && !layerLoadedDebounced}
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
       {layerActive && dataview.id.includes(OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID) && (
         <OutOfTimerangeDisclaimer
@@ -352,7 +369,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
         >
           <Collapsable
             label={
-              layerLoaded ? (
+              layerLoadedDebounced ? (
                 `${t('layer.areasOnScreen', 'Areas on screen')} ${
                   areasOnScreenOpen ? `(${featuresOnScreen?.total})` : ''
                 }`

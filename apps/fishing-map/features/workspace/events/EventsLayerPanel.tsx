@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel, getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -25,6 +26,7 @@ type EventsLayerPanelProps = {
 function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const layerActive = dataview?.config?.visible ?? true
+  const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
   const [filterOpen, setFiltersOpen] = useState(false)
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
   const showSchemaFilters = filtersAllowed.length > 0
@@ -76,7 +78,14 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
         ) : (
           TitleComponent
         )}
-        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+        <div
+          className={cx(
+            'print-hidden',
+            styles.actions,
+            { [styles.active]: layerActive },
+            styles.hideUntilHovered
+          )}
+        >
           {layerActive && showSchemaFilters && (
             <ExpandedContainer
               visible={filterOpen}
@@ -110,6 +119,14 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
             />
           )}
         </div>
+
+        <IconButton
+          icon={layerActive ? 'more' : undefined}
+          type="default"
+          loading={layerActive && !layerLoaded}
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
       {layerActive && hasSchemaFilterSelection && (
         <div className={styles.properties}>
