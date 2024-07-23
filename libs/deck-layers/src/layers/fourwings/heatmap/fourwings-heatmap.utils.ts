@@ -37,7 +37,7 @@ export function aggregateSublayerValues(
       values.reduce((acc: number, value = 0) => {
         if (value) nonEmptyValuesLength++
         return acc + value
-      }, 0) / nonEmptyValuesLength || 1
+      }, 0) / (nonEmptyValuesLength || 1)
     )
   }
   return values.reduce((acc: number, value = 0) => {
