@@ -4,7 +4,7 @@ import { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
 import { atom, useAtom, useSetAtom } from 'jotai'
 import { ThunkDispatch } from '@reduxjs/toolkit'
-import { debounce } from 'es-toolkit'
+import { debounce, throttle } from 'es-toolkit'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
   useMapHoverInteraction,
@@ -258,7 +258,7 @@ export const useMapMouseHover = () => {
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
 
   const onMouseMove: DeckProps['onHover'] = useCallback(
-    (info: PickingInfo, event: MjolnirPointerEvent) => {
+    throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
       setHoveredCoordinates(info.coordinate)
       if (
         event.type === 'pointerleave' ||
@@ -287,7 +287,7 @@ export const useMapMouseHover = () => {
         }
         setMapHoverFeatures(hoverInteraction)
       }
-    },
+    }, 50),
     [
       getPickingInteraction,
       isErrorNotificationEditing,
