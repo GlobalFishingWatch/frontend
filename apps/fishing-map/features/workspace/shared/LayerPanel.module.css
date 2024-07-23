@@ -71,7 +71,13 @@
   align-items: center;
 }
 
-.actions > * {
+.shownUntilHovered,
+.hideUntilHovered,
+.hideUntilHovered > * {
+  transition: var(--transition);
+}
+
+.actions > *:not(:last-child) {
   margin-right: calc(0px - var(--space-XS));
 }
 
@@ -85,18 +91,6 @@
 
 .LayerPanel:hover .errorIcon {
   display: none;
-}
-
-.shownUntilHovered,
-.hideUntilHovered,
-.hideUntilHovered > * {
-  transition: var(--transition);
-}
-
-.LayerPanel:not(.expandedContainerOpen, :hover) .hideUntilHovered > * {
-  overflow: hidden;
-  width: 0;
-  opacity: 0;
 }
 
 .LayerPanel.expandedContainerOpen .shownUntilHovered,

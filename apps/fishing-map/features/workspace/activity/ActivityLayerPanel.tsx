@@ -253,7 +253,9 @@ function ActivityLayerPanel({
                 // Workaround to always show the auxiliar dataset too
                 showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
               />
-              {!readOnly && <Remove onClick={onRemoveLayerClick} />}
+              {!readOnly && (
+                <Remove onClick={onRemoveLayerClick} loading={layerActive && !layerLoaded} />
+              )}
             </div>
             <IconButton
               icon={layerActive ? 'more' : undefined}

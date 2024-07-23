@@ -35,10 +35,9 @@ import {
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import FitBounds from 'features/workspace/common/FitBounds'
 import { COLOR_SECONDARY_BLUE } from 'features/app/app.config'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
-import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -64,7 +63,6 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { dispatchSetMapDrawing, dispatchSetMapDrawEditDataset } = useMapDrawConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
-  const gfwUser = useSelector(selectIsGFWUser)
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(selectIsGuestUser)
   const layerActive = dataview?.config?.visible ?? true
@@ -255,7 +253,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
               </ExpandedContainer>
             )}
           {<InfoModal dataview={dataview} />}
-          {(isUserLayer || gfwUser) && <Remove dataview={dataview} />}
+          <Remove dataview={dataview} loading={layerActive && !layerLoaded} />
           {items.length > 1 && (
             <IconButton
               size="small"

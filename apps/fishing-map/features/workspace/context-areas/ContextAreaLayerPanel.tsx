@@ -18,10 +18,9 @@ import { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-lay
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAddDataset } from 'features/datasets/datasets.hook'
-import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import GFWOnly from 'features/user/GFWOnly'
@@ -90,8 +89,6 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
 
   const contextLayer = useGetDeckLayer<ContextLayer>(dataview.id)
   const [colorOpen, setColorOpen] = useState(false)
-  const gfwUser = useSelector(selectIsGFWUser)
-  const userId = useSelector(selectUserId)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
@@ -176,7 +173,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     setColorOpen(false)
   }
 
-  const isUserLayer = !guestUser && dataset?.ownerId === userId
+  const showSortHandler = items.length > 1
 
   const basemapLabelsDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
   if (!dataset && dataview.id !== basemapLabelsDataviewInstance.id) {
@@ -286,12 +283,13 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               </ExpandedContainer>
             )}
           {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
-          {(isUserLayer || gfwUser) && <Remove dataview={dataview} />}
-          {items.length > 1 && (
+          <Remove dataview={dataview} loading={!showSortHandler && layerActive && !layerLoaded} />
+          {showSortHandler && (
             <IconButton
               size="small"
               ref={setActivatorNodeRef}
               {...listeners}
+              loading={layerActive && !layerLoaded}
               icon="drag"
               className={styles.dragger}
             />

@@ -1,5 +1,4 @@
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -10,7 +9,6 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel, getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import Remove from 'features/workspace/common/Remove'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetNotFound from '../shared/DatasetNotFound'
@@ -33,7 +31,6 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
-  const gfwUser = useSelector(selectIsGFWUser)
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
 
@@ -108,7 +105,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />
-          {gfwUser && <Remove dataview={dataview} />}
+          <Remove dataview={dataview} loading={layerActive && !layerLoaded} />
           {items.length > 1 && (
             <IconButton
               size="small"

@@ -139,6 +139,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       : false
   const hasFilters = dataview.config?.filters && Object.keys(dataview.config?.filters).length > 0
   const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter || hasFilters
+  const showSortHandler = items.length > 1
 
   return (
     <div
@@ -206,13 +207,14 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             />
           )}
           <InfoModal dataview={dataview} />
-          <Remove dataview={dataview} />
-          {items.length > 1 && (
+          <Remove dataview={dataview} loading={!showSortHandler && layerActive && !layerLoaded} />
+          {showSortHandler && (
             <IconButton
               size="small"
               ref={setActivatorNodeRef}
               {...listeners}
               icon="drag"
+              loading={layerActive && !layerLoaded}
               className={styles.dragger}
             />
           )}
