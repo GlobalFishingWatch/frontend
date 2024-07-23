@@ -19,6 +19,7 @@ import {
   FourwingsLoader,
   getFourwingsInterval,
   ParseFourwingsOptions,
+  getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
@@ -146,6 +147,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         })?.bufferedStart || 0,
     })
 
+    const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
+
     const dataSample =
       currentZoomData.length > MAX_RAMP_VALUES
         ? currentZoomData.filter((d, i) => filterCells(d, i))
@@ -155,13 +158,15 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       let allValues: [number[], number[]] = [[], []]
       dataSample.forEach((feature) => {
         feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
-          const sublayerAggregation = aggregateCell({
-            cellValues: [sublayerValues.filter(Boolean)],
-            aggregationOperation,
-            startFrame,
-            endFrame,
-            cellStartOffsets: feature.properties.startOffsets,
-          })
+          const sublayerAggregation =
+            feature.properties.initialValues[timeRangeKey] ||
+            aggregateCell({
+              cellValues: [sublayerValues.filter(Boolean)],
+              aggregationOperation,
+              startFrame,
+              endFrame,
+              cellStartOffsets: feature.properties.startOffsets,
+            })
           allValues[sublayerIndex].push(...sublayerAggregation)
         })
       })
@@ -213,21 +218,23 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return [...negativeSteps, 0, ...positiveSteps]
     }
 
-    const allValues = dataSample.flatMap((feature) =>
-      aggregateCell({
-        cellValues: feature.properties.values.filter((sublayerValues) =>
-          sublayerValues.map(
-            (value) =>
-              value &&
-              (minVisibleValue === undefined || value >= minVisibleValue) &&
-              (maxVisibleValue === undefined || value <= maxVisibleValue)
-          )
-        ),
-        aggregationOperation,
-        startFrame,
-        endFrame,
-        cellStartOffsets: feature.properties.startOffsets,
-      })
+    const allValues = dataSample.flatMap(
+      (feature) =>
+        feature.properties.initialValues[timeRangeKey] ||
+        aggregateCell({
+          cellValues: feature.properties.values.filter((sublayerValues) =>
+            sublayerValues.map(
+              (value) =>
+                value &&
+                (minVisibleValue === undefined || value >= minVisibleValue) &&
+                (maxVisibleValue === undefined || value <= maxVisibleValue)
+            )
+          ),
+          aggregationOperation,
+          startFrame,
+          endFrame,
+          cellStartOffsets: feature.properties.startOffsets,
+        })
     )
     if (!allValues.length) {
       return this.getColorDomain()
