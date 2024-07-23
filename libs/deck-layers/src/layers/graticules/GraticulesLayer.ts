@@ -38,9 +38,9 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
     }
   }
 
-  shouldUpdateState({ context }: UpdateParameters<this>) {
+  shouldUpdateState({ context, oldProps, props }: UpdateParameters<this>) {
     const viewportHash = getViewportHash({ viewport: context.viewport })
-    return this.state.viewportHash !== viewportHash
+    return this.state.viewportHash !== viewportHash || oldProps.color !== props.color
   }
 
   updateState({ context }: UpdateParameters<this>) {
@@ -84,26 +84,28 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
   }
 
   renderLayers() {
+    const { color } = this.props
+    const { viewportHash, data } = this.state
     return [
       new PathLayer<GraticulesFeature>({
         id: `${this.props.id}-lines`,
-        data: this.state.data,
+        data: data,
         widthUnits: 'pixels',
         getPath: (d) => d.geometry.coordinates as PathGeometry,
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Overlay, params),
         getWidth: this._getLineWidth,
-        getColor: hexToDeckColor(this.props.color, 0.3),
+        getColor: hexToDeckColor(color, 0.3),
         updateTriggers: {
-          getWidth: [this.state.viewportHash],
-          getColor: [this.props.color],
+          getWidth: [viewportHash],
+          getColor: [color],
         },
       }),
       new TextLayer<GraticulesFeature>({
         id: `${this.props.id}-labels`,
-        data: this.state.data,
+        data: data,
         getText: this._getLabel,
         getPosition: this._getLabelPosition,
-        getColor: hexToDeckColor(this.props.color, 0.5),
+        getColor: hexToDeckColor(color, 0.5),
         outlineColor: hexToDeckColor(BLEND_BACKGROUND),
         fontFamily: 'Roboto',
         outlineWidth: 200,
@@ -115,9 +117,9 @@ export class GraticulesLayer<PropsT = {}> extends CompositeLayer<GraticulesLayer
         getAlignmentBaseline: this._getAlignmentBaseline,
         getPixelOffset: this._getPixelOffset,
         updateTriggers: {
-          getText: [this.state.viewportHash],
-          getPosition: [this.state.viewportHash],
-          getColor: [this.props.color],
+          getText: [viewportHash],
+          getPosition: [viewportHash],
+          getColor: [color],
         },
       }),
     ]
