@@ -246,14 +246,19 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       let change: number[] = []
       if (oldColorDomain.length) {
         if (comparisonMode === FourwingsComparisonMode.Bivariate) {
-          change = (oldColorDomain as number[][])
-            .map((oldColorDomainAxis, oldColorDomainAxisIndex) => {
-              return oldColorDomainAxis.map((oldValue, i) => {
-                const newValue = (newColorDomain as number[][])[oldColorDomainAxisIndex][i]
-                return (Math.abs(newValue - oldValue) / oldValue) * 100 || 0
-              })
-            })
-            .flat()
+          change = (oldColorDomain as number[][]).flatMap(
+            (oldColorDomainAxis, oldColorDomainAxisIndex) => {
+              return (
+                oldColorDomainAxis?.flatMap((oldValue, i) => {
+                  const newValue = (newColorDomain as number[][])[oldColorDomainAxisIndex]?.[i]
+                  if (!newValue) {
+                    return []
+                  }
+                  return (Math.abs(newValue - oldValue) / oldValue) * 100 || []
+                }) || []
+              )
+            }
+          )
         } else if (comparisonMode === FourwingsComparisonMode.Compare) {
           change = (oldColorDomain as number[]).map((oldValue, i) => {
             const newValue = newColorDomain[i] as number

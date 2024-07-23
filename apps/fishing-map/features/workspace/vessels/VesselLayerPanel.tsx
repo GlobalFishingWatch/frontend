@@ -262,13 +262,15 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
                 datasetId={trackDatasetId}
               />
             )}
-            <Color
-              dataview={dataview}
-              open={colorOpen}
-              onColorClick={changeTrackColor}
-              onToggleClick={onToggleColorOpen}
-              onClickOutside={closeExpandedContainer}
-            />
+            {layerActive && (
+              <Color
+                dataview={dataview}
+                open={colorOpen}
+                onColorClick={changeTrackColor}
+                onToggleClick={onToggleColorOpen}
+                onClickOutside={closeExpandedContainer}
+              />
+            )}
             {layerActive && !infoLoading && !trackError && (
               <FitBounds
                 hasError={trackError}
