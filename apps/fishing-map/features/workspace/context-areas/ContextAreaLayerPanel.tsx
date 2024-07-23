@@ -359,7 +359,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
               ) : (
                 <span>
                   {`${t('layer.areasOnScreen', 'Areas on screen')}`}
-                  <Spinner className={styles.inline} size="tiny" />
+                  {areasOnScreenOpen && <Spinner className={styles.inline} size="tiny" />}
                 </span>
               )
             }
