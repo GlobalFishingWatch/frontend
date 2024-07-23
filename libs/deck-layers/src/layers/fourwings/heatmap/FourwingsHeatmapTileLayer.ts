@@ -158,15 +158,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       let allValues: [number[], number[]] = [[], []]
       dataSample.forEach((feature) => {
         feature.properties?.values.forEach((sublayerValues, sublayerIndex) => {
-          const sublayerAggregation =
-            feature.properties.initialValues[timeRangeKey] ||
-            aggregateCell({
-              cellValues: [sublayerValues.filter(Boolean)],
-              aggregationOperation,
-              startFrame,
-              endFrame,
-              cellStartOffsets: feature.properties.startOffsets,
-            })
+          const sublayerAggregation = aggregateCell({
+            cellValues: [sublayerValues.filter(Boolean)],
+            aggregationOperation,
+            startFrame,
+            endFrame,
+            cellStartOffsets: feature.properties.startOffsets,
+          })
           allValues[sublayerIndex].push(...sublayerAggregation)
         })
       })
