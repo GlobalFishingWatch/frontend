@@ -51,16 +51,12 @@ export const parseUserTrack = (
     return {} as UserTrackData
   }
 
-  const coordinatesFilter = timestampProperty
-    ? { ...params.filters, [timestampProperty]: [-Infinity, Infinity] }
-    : params.filters
   const data = filterTrackByCoordinateProperties(rawData, {
     filters: getCoordinatesFilter(params.filters),
     includeNonTemporalFeatures: true,
     includeCoordinateProperties: [timestampProperty],
   })
 
-  console.log('🚀 ~ data:', data)
   const length = data.features.reduce((acc, feature) => {
     if (feature.geometry.type === 'MultiLineString') {
       return acc + feature.geometry.coordinates.length

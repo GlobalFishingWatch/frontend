@@ -163,7 +163,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   renderLayers() {
-    const { layers, color, filters } = this.props
+    const { layers, color, filters, startTime, endTime } = this.props
     return layers.map((layer) => {
       const tilesUrl = new URL(layer.tilesUrl)
       tilesUrl.searchParams.set('filters', Object.values(filters || {}).join(','))
@@ -174,9 +174,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         fetch: this._fetch,
         widthUnits: 'pixels',
         widthScale: 1,
-        // updateTriggers: {
-        //   getColor: [color],
-        // },
+        startTime,
+        endTime,
         onError: this._onLayerError,
         wrapLongitude: true,
         jointRounded: true,
