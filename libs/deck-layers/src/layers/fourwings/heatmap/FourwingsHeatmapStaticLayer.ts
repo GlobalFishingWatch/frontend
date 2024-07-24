@@ -66,7 +66,12 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       colorDomain: [],
       colorRanges: this._getColorRanges(),
       scales: [],
+      rampDirty: false,
     }
+  }
+
+  get isLoaded(): boolean {
+    return super.isLoaded && !this.state.rampDirty
   }
 
   _getState() {
@@ -102,7 +107,11 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     const colorDomain = this._calculateColorDomain() as number[]
     const colorRanges = this._getColorRanges()[0]
     if (colorDomain?.length && colorRanges?.length) {
-      this.setState({ colorDomain, scales: [scaleLinear(colorDomain, colorRanges)] })
+      this.setState({
+        colorDomain,
+        scales: [scaleLinear(colorDomain, colorRanges)],
+        rampDirty: false,
+      })
     }
   }
 
@@ -115,6 +124,10 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
     }
+  }
+
+  _onTileLoad = () => {
+    this.setState({ rampDirty: true })
   }
 
   getPickingInfo = ({
@@ -197,6 +210,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         pickable: true,
         loaders: [GFWMVTLoader],
         zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
+        onTileLoad: this._onTileLoad,
         onViewportLoad: this._onViewportLoad,
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
         getFillColor: this.getFillColor,
