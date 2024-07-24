@@ -7,6 +7,7 @@ import {
   Position,
   MultiLineString,
 } from 'geojson'
+import { UserTrackRawData } from './types'
 
 // Originally duplicated from data-transforms libs to avoid circular dependencies
 // TODO define types for this filter so we can avoid the buggy isNumeric approach
@@ -29,7 +30,7 @@ type FilterTrackByCoordinatePropertiesArgs = Parameters<
 
 type FilterTrackByCoordinatePropertiesFn = (
   ...args: FilterTrackByCoordinatePropertiesArgs
-) => FilteredTrackData
+) => UserTrackRawData
 
 type LineCoordinateProperties = Record<string, (string | number)[]>
 type MultiLineCoordinateProperties = Record<string, [(string | number)[]]>
@@ -193,7 +194,6 @@ const getFilteredLines = (
   return lines.filter((l) => l.coordinates.length)
 }
 
-type FilteredTrackData = FeatureCollection<LineString | MultiLineString>
 export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertiesFn = (
   geojson,
   {

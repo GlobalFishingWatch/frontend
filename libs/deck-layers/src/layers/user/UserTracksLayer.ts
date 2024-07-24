@@ -1,7 +1,7 @@
 import { CompositeLayer, DefaultProps, Layer, LayerProps } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
-import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
+import { UserTrackLoader, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import { hexToDeckColor } from '../../utils'
@@ -25,7 +25,7 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
   DataT,
   _UserTrackLayerProps<DataT> & ExtraProps
 > {
-  static layerName = 'UserTracksLayer'
+  static layerName = 'UserTracksPathLayer'
   static defaultProps = defaultProps
 
   getShaders() {
@@ -104,9 +104,19 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
   }
 }
 
+type UserTracksLayerState = {
+  error: string
+}
+
 export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerProps> {
   static layerName = 'UserTracksLayer'
   static defaultProps = defaultProps
+  rawData!: UserTrackRawData
+  state!: UserTracksLayerState
+
+  get isLoaded(): boolean {
+    return !this.state?.error && super.isLoaded
+  }
 
   _fetch = async (
     url: string,
@@ -133,7 +143,23 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         filters: this.props.filters,
       },
     }
-    return await parse(response, UserTrackLoader, userTracksLoadOptions)
+    const { data, binary } = await parse(response, UserTrackLoader, userTracksLoadOptions)
+    this.rawData = data
+    return binary
+  }
+
+  _onLayerError = (error: Error) => {
+    console.warn(error.message)
+    this.setState({ error: error.message })
+    return true
+  }
+
+  getError() {
+    return this.state.error
+  }
+
+  getData() {
+    return this.rawData
   }
 
   renderLayers() {
@@ -142,18 +168,21 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       const tilesUrl = new URL(layer.tilesUrl)
       tilesUrl.searchParams.set('filters', Object.values(filters || {}).join(','))
       return new UserTracksPathLayer<any>({
-        ...(this.props as any),
         id: layer.id,
         data: tilesUrl.toString(),
         _pathType: 'open',
         fetch: this._fetch,
         widthUnits: 'pixels',
         widthScale: 1,
+        // updateTriggers: {
+        //   getColor: [color],
+        // },
+        onError: this._onLayerError,
         wrapLongitude: true,
         jointRounded: true,
         capRounded: true,
         widthMinPixels: 1,
-        width: 1,
+        getWidth: 1,
         getColor: hexToDeckColor(color),
       })
     })
