@@ -45,7 +45,7 @@ const MapLegendWrapper = ({
   showPlaceholder = true,
 }: {
   dataview: UrlDataviewInstance
-  showPlaceholder: boolean
+  showPlaceholder?: boolean
 }) => {
   const { t } = useTranslation()
   // TODO: restore useTimeCompareTimeDescription and delete the component in the map folder
