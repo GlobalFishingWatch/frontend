@@ -137,8 +137,12 @@ function ActivitySection(): React.ReactElement {
                 onToggle={onToggleLayer(dataview)}
               />
             </LayerPanelContainer>
-            {showBivariateIcon && (
-              <div className={cx(activityStyles.bivariateToggleContainer, 'print-hidden')}>
+            {index < dataviews.length - 1 && (
+              <div
+                className={cx(activityStyles.bivariateToggleContainer, 'print-hidden', {
+                  [activityStyles.hidden]: !showBivariateIcon,
+                })}
+              >
                 <IconButton
                   icon={bivariateDataviews ? 'split' : 'compare'}
                   type="border"

@@ -283,8 +283,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
 
   getColorScale = () => {
     return {
-      range: this.getColorRange(),
-      domain: this.getColorDomain(),
+      colorRange: this.getColorRange(),
+      colorDomain: this.getColorDomain(),
     }
   }
 }

@@ -348,7 +348,10 @@ function ActivityLayerPanel({
               </div>
               <div className={activityStyles.legendContainer}>
                 <div className={activityStyles.legend}>
-                  <MapLegend dataview={dataview} />
+                  <MapLegend
+                    dataview={dataview}
+                    showPlaceholder={!bivariateDataviews?.includes(dataview.id)}
+                  />
                 </div>
                 {bivariateDataviews?.[0] === dataview.id && (
                   <IconButton

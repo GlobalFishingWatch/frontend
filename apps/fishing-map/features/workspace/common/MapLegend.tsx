@@ -40,7 +40,13 @@ const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
   return { ...legend, label } as DeckLegendAtom
 }
 
-const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
+const MapLegendWrapper = ({
+  dataview,
+  showPlaceholder = true,
+}: {
+  dataview: UrlDataviewInstance
+  showPlaceholder: boolean
+}) => {
   const { t } = useTranslation()
   // TODO: restore useTimeCompareTimeDescription and delete the component in the map folder
   const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
@@ -53,15 +59,17 @@ const MapLegendWrapper = ({ dataview }: { dataview: UrlDataviewInstance }) => {
       : activityMergedDataviewId
   const deckLegend = getLegendLabelTranslated(useGetDeckLayerLegend(dataviewId))
   const isBivariate = deckLegend?.type === LegendType.Bivariate
-
-  if (!deckLegend) {
-    return null
-  }
   const legendSublayerIndex = deckLegend?.sublayers?.findIndex(
     (sublayer) => sublayer.id === dataview.id
   )
-  if (legendSublayerIndex < 0 || (isBivariate && legendSublayerIndex !== 0) || !deckLegend.ranges) {
-    return <MapLegendPlaceholder />
+  if (!deckLegend) {
+    return null
+  }
+  if (isBivariate && legendSublayerIndex !== 0) {
+    return null
+  }
+  if (legendSublayerIndex < 0 || !deckLegend.ranges || !deckLegend.domain) {
+    return showPlaceholder ? <MapLegendPlaceholder /> : null
   }
 
   const colors = isBivariate

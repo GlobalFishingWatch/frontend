@@ -8,7 +8,7 @@
   min-height: var(--size-M);
 }
 
-.LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+.LayerPanelContainer:not(:last-child) .LayerPanel::after {
   content: '';
   position: absolute;
   left: var(--space-S);
@@ -16,7 +16,13 @@
   height: 0.1rem;
   width: calc(100% - var(--space-S));
   background-color: var(--color-border);
+  opacity: 0;
   z-index: -1;
+  transition: var(--transition);
+}
+
+.LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+  opacity: 1;
 }
 
 .expandedContainerOpen {
