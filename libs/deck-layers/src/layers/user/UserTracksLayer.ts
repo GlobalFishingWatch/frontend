@@ -3,6 +3,7 @@ import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
 import { UserTrackLoader, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { LINE_COLOR_BAR_OPTIONS } from '@globalfishingwatch/ui-components'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import { UserTrackLayerProps } from './user.types'
@@ -84,13 +85,7 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
   }
 
   draw(params: any) {
-    const {
-      startTime,
-      endTime,
-      highlightStartTime = 0,
-      highlightEndTime = 0,
-      highlightColor,
-    } = this.props
+    const { startTime, endTime, highlightStartTime = 0, highlightEndTime = 0 } = this.props
 
     params.uniforms = {
       ...params.uniforms,
@@ -98,7 +93,6 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
       endTime,
       highlightStartTime,
       highlightEndTime,
-      highlightColor,
     }
     super.draw(params)
   }
@@ -106,17 +100,13 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
 
 type UserTracksLayerState = {
   error: string
+  rawData?: UserTrackRawData
 }
 
 export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerProps> {
   static layerName = 'UserTracksLayer'
   static defaultProps = defaultProps
-  rawData!: UserTrackRawData
   state!: UserTracksLayerState
-
-  get isLoaded(): boolean {
-    return !this.state?.error && super.isLoaded
-  }
 
   _fetch = async (
     url: string,
@@ -144,7 +134,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       },
     }
     const { data, binary } = await parse(response, UserTrackLoader, userTracksLoadOptions)
-    this.rawData = data
+    this.setState({ rawData: data })
     return binary
   }
 
@@ -159,12 +149,27 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getData() {
-    return this.rawData
+    return this.state.rawData
+  }
+
+  _getColor(index: number) {
+    const { lineIdProperty, color } = this.props
+    if (lineIdProperty) {
+      return hexToDeckColor(LINE_COLOR_BAR_OPTIONS[index % LINE_COLOR_BAR_OPTIONS.length].value)
+    }
+    return hexToDeckColor(color)
   }
 
   renderLayers() {
-    const { layers, color, filters, startTime, endTime, highlightStartTime, highlightEndTime } =
-      this.props
+    const {
+      layers,
+      filters,
+      startTime,
+      endTime,
+      highlightStartTime,
+      highlightEndTime,
+      singleTrack,
+    } = this.props
     return layers.map((layer) => {
       const tilesUrl = new URL(layer.tilesUrl)
       tilesUrl.searchParams.set('filters', Object.values(filters || {}).join(','))
@@ -185,8 +190,11 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         capRounded: true,
         widthMinPixels: 1,
         getWidth: 1,
-        getColor: hexToDeckColor(color),
+        getColor: (_, { index }) => this._getColor(index),
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
+        updateTriggers: {
+          getColor: [singleTrack],
+        },
       })
     })
   }
