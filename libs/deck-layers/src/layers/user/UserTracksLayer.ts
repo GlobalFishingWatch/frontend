@@ -4,7 +4,7 @@ import { parse } from '@loaders.gl/core'
 import { UserTrackLoader, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
-import { hexToDeckColor } from '../../utils'
+import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import { UserTrackLayerProps } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
@@ -163,7 +163,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   renderLayers() {
-    const { layers, color, filters, startTime, endTime } = this.props
+    const { layers, color, filters, startTime, endTime, highlightStartTime, highlightEndTime } =
+      this.props
     return layers.map((layer) => {
       const tilesUrl = new URL(layer.tilesUrl)
       tilesUrl.searchParams.set('filters', Object.values(filters || {}).join(','))
@@ -176,6 +177,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         widthScale: 1,
         startTime,
         endTime,
+        highlightStartTime,
+        highlightEndTime,
         onError: this._onLayerError,
         wrapLongitude: true,
         jointRounded: true,
@@ -183,6 +186,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         widthMinPixels: 1,
         getWidth: 1,
         getColor: hexToDeckColor(color),
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
       })
     })
   }

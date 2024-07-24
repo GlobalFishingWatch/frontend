@@ -29,7 +29,7 @@ import {
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
 } from 'features/app/selectors/app.selectors'
-import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectShowTimeComparison,
@@ -59,7 +59,7 @@ export const useGlobalConfigConnect = () => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
-  const vesselDataviews = useSelector(selectActiveVesselsDataviews)
+  const trackDataviews = useSelector(selectTrackDataviews)
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
@@ -72,7 +72,7 @@ export const useGlobalConfigConnect = () => {
     if (
       activityVisualizationMode === 'positions' ||
       detectionsVisualizationMode === 'positions' ||
-      vesselDataviews?.length
+      trackDataviews?.length
     ) {
       return timebarHighlightedTime as Partial<TimeRange>
     }
@@ -80,7 +80,7 @@ export const useGlobalConfigConnect = () => {
     activityVisualizationMode,
     detectionsVisualizationMode,
     timebarHighlightedTime,
-    vesselDataviews?.length,
+    trackDataviews?.length,
   ])
 
   const highlightedFeatures = useMemo(() => {
