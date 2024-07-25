@@ -5,6 +5,7 @@ import { UserTrackLoader, UserTrackRawData } from '@globalfishingwatch/deck-load
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
+import { MAX_FILTER_VALUE } from '../layers.config'
 import { UserTrackLayerProps } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
@@ -88,8 +89,8 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
 
     params.uniforms = {
       ...params.uniforms,
-      startTime,
-      endTime,
+      startTime: startTime || -MAX_FILTER_VALUE,
+      endTime: endTime || MAX_FILTER_VALUE,
       highlightStartTime,
       highlightEndTime,
     }
@@ -97,9 +98,11 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
   }
 }
 
+type RawDataIndex = { index: number; length: number }
 type UserTracksLayerState = {
   error: string
   rawData?: UserTrackRawData
+  rawDataIndexes: RawDataIndex[]
 }
 
 export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerProps> {
@@ -133,7 +136,14 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       },
     }
     const { data, binary } = await parse(response, UserTrackLoader, userTracksLoadOptions)
-    this.setState({ rawData: data })
+    let totalCoordinatesLength = 0
+    const rawDataIndexes = data.features.reduce((acc, feature: any, index: number) => {
+      totalCoordinatesLength +=
+        feature.geometry.type === 'MultiLineString' ? feature.geometry.coordinates.length : 1
+      acc.push({ index, length: totalCoordinatesLength })
+      return acc
+    }, [] as RawDataIndex[])
+    this.setState({ rawData: data, rawDataIndexes })
     return binary
   }
 
@@ -152,7 +162,10 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   _getColorByLineIndex = (_: any, { index }: { index: number }) => {
-    return hexToDeckColor(this.state.rawData?.features?.[index]?.properties?.color)
+    const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)?.index!
+    return hexToDeckColor(
+      this.state.rawData?.features?.[featureIndex]?.properties?.color || this.props.color
+    )
   }
 
   renderLayers() {

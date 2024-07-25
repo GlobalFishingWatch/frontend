@@ -5,6 +5,7 @@ import { TrackSegment } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 import { Bbox, wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { ThinningLevels } from '@globalfishingwatch/api-client'
+import { MAX_FILTER_VALUE } from '../layers.config'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
 import { getSegmentsFromData } from './vessel.utils'
 
@@ -82,7 +83,6 @@ export type _VesselTrackLayerProps<DataT = any> = {
 // not needed anymore as the highlighted color is fixed
 // const DEFAULT_HIGHLIGHT_COLOR_RGBA = [255, 255, 255, 255] as Color
 
-const MAX_FILTER_VALUE = 999999999999999
 const defaultProps: DefaultProps<VesselTrackLayerProps> = {
   _pathType: 'open',
   endTime: { type: 'number', value: 0, min: 0 },
