@@ -164,6 +164,7 @@ const getFilteredCoordinates = ({
         })
       } else if (filteredCoordinates.coordinates[coordinatesIndex]?.length) {
         filteredCoordinates.coordinates.push([])
+        leadingPoint = true
       }
 
       return filteredCoordinates
