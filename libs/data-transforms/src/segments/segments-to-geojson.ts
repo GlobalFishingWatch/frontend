@@ -2,6 +2,8 @@ import type { FeatureCollection, LineString, Feature, Position, MultiLineString 
 import { lineString } from '@turf/helpers'
 import { TrackSegment, TrackPoint } from '@globalfishingwatch/api-types'
 
+export const COORDINATE_PROPERTY_TIMESTAMP = 'times'
+
 const segmentsToFeatures = (segment: TrackSegment | TrackSegment[]): Feature<LineString>[] => {
   // This checks converts always to bi-dimensional array
   const arraySegment: TrackSegment[] = Array.isArray(segment?.[0])
@@ -38,7 +40,7 @@ const segmentsToFeatures = (segment: TrackSegment | TrackSegment[]): Feature<Lin
         id: segment[0]?.id,
         ...(segment[0].properties && { ...segment[0].properties }),
         coordinateProperties: {
-          times: times.some((time) => !!time) ? times : undefined,
+          [COORDINATE_PROPERTY_TIMESTAMP]: times.some((time) => !!time) ? times : undefined,
           speed: speeds.some((speed) => !!speed) ? speeds : undefined,
           elevation: elevations.some((elevation) => !!elevation) ? elevations : undefined,
           ...coordinateProperties,

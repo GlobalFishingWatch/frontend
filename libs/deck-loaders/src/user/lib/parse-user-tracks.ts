@@ -40,7 +40,7 @@ export type ParseUserTrackParams = {
   workerUrl?: string
 }
 
-const timestampProperty = 'times'
+const COORDINATE_PROPERTY_TIMESTAMP = 'times'
 
 export const parseUserTrack = (
   arrayBuffer: ArrayBuffer,
@@ -54,7 +54,7 @@ export const parseUserTrack = (
   const data = filterTrackByCoordinateProperties(rawData, {
     filters: getCoordinatesFilter(params.filters),
     includeNonTemporalFeatures: true,
-    includeCoordinateProperties: [timestampProperty],
+    includeCoordinateProperties: [COORDINATE_PROPERTY_TIMESTAMP],
   })
 
   const length = data.features.reduce((acc, feature) => {
@@ -101,8 +101,8 @@ export const parseUserTrack = (
                   }, 0)
                 : f.geometry.coordinates.length
             return f.geometry.type === 'MultiLineString'
-              ? f.properties?.coordinateProperties?.[timestampProperty]?.flat()
-              : f.properties?.coordinateProperties?.[timestampProperty] ||
+              ? f.properties?.coordinateProperties?.[COORDINATE_PROPERTY_TIMESTAMP]?.flat()
+              : f.properties?.coordinateProperties?.[COORDINATE_PROPERTY_TIMESTAMP] ||
                   Array(timestampsLength).fill(0)
           })
         ),
