@@ -9,6 +9,12 @@
   min-height: calc(100vh - 24rem);
 }
 
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .categoryLabel {
   flex: 1;
   padding-top: var(--space-M);
