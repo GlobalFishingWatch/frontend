@@ -15,8 +15,8 @@ export type UserTrackBinaryData = {
 }
 
 export type UserTrackFeatureProperties = {
-  id: string
-  coordinateProperties: Record<string, number[]>
+  id?: string
+  coordinateProperties: Record<string, any>
 } & Record<string, any>
 export type UserTrackFeature = Feature<LineString | MultiLineString, UserTrackFeatureProperties>
 export type UserTrackRawData = FeatureCollection<

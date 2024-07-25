@@ -1,13 +1,5 @@
-import {
-  FeatureCollection,
-  Feature,
-  Geometry,
-  GeoJsonProperties,
-  LineString,
-  Position,
-  MultiLineString,
-} from 'geojson'
-import { UserTrackRawData } from './types'
+import { FeatureCollection, LineString, Position, MultiLineString } from 'geojson'
+import { UserTrackFeature, UserTrackFeatureProperties, UserTrackRawData } from './types'
 
 // Originally duplicated from data-transforms libs to avoid circular dependencies
 // TODO define types for this filter so we can avoid the buggy isNumeric approach
@@ -175,7 +167,7 @@ const getFilteredCoordinates = ({
 }
 
 const getFilteredLines = (
-  feature: Feature<Geometry, GeoJsonProperties>,
+  feature: UserTrackFeature,
   filters: TrackCoordinatesPropertyFilter[],
   includeCoordinateProperties: string[] = []
 ) => {
@@ -217,53 +209,56 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
     }
   }
 
-  const featuresFiltered: Feature<LineString | MultiLineString, GeoJsonProperties>[] =
-    geojson.features.reduce(
-      (filteredFeatures: Feature<LineString | MultiLineString, GeoJsonProperties>[], feature) => {
-        // TODO review if this check of other properties really works
-        const hasValues = filters
-          .map((p) => p.id)
-          .some((id) => feature?.properties?.coordinateProperties?.[id]?.length > 0)
-        if (hasValues) {
-          const filteredLines = getFilteredLines(feature, filters, includeCoordinateProperties)
+  const featuresFiltered: UserTrackFeature[] = geojson.features.reduce(
+    (filteredFeatures: UserTrackFeature[], feature) => {
+      // TODO review if this check of other properties really works
+      const hasValues = filters
+        .map((p) => p.id)
+        .some((id) => feature?.properties?.coordinateProperties?.[id]?.length > 0)
+      if (hasValues) {
+        const filteredLines = getFilteredLines(
+          feature as UserTrackFeature,
+          filters,
+          includeCoordinateProperties
+        )
 
-          if (!filteredLines.length) {
-            return filteredFeatures
-          }
-
-          const coordinateProperties = [
-            ...filters.map(({ id }) => id),
-            ...includeCoordinateProperties,
-          ].reduce((acc, property) => {
-            acc[property] = filteredLines.flatMap(
-              (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[property]
-            )
-            return acc
-          }, {} as Record<string, (string | number)[][]>)
-
-          filteredFeatures.push({
-            type: 'Feature',
-            geometry: {
-              type: 'MultiLineString',
-              coordinates: filteredLines.flatMap((line) => {
-                if (!line.coordinates) {
-                  return []
-                }
-                return line.coordinates.filter((c) => c.length > 1)
-              }),
-            } as MultiLineString,
-            properties: {
-              ...feature.properties,
-              coordinateProperties,
-            } as GeoJsonProperties,
-          })
-        } else if (includeNonTemporalFeatures) {
-          filteredFeatures.push(feature as Feature<LineString | MultiLineString, GeoJsonProperties>)
+        if (!filteredLines.length) {
+          return filteredFeatures
         }
-        return filteredFeatures
-      },
-      []
-    )
+
+        const coordinateProperties = [
+          ...filters.map(({ id }) => id),
+          ...includeCoordinateProperties,
+        ].reduce((acc, property) => {
+          acc[property] = filteredLines.flatMap(
+            (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[property]
+          )
+          return acc
+        }, {} as Record<string, (string | number)[][]>)
+
+        filteredFeatures.push({
+          type: 'Feature',
+          geometry: {
+            type: 'MultiLineString',
+            coordinates: filteredLines.flatMap((line) => {
+              if (!line.coordinates) {
+                return []
+              }
+              return line.coordinates.filter((c) => c.length > 1)
+            }),
+          } as MultiLineString,
+          properties: {
+            ...feature.properties,
+            coordinateProperties,
+          } as UserTrackFeatureProperties,
+        })
+      } else if (includeNonTemporalFeatures) {
+        filteredFeatures.push(feature as UserTrackFeature)
+      }
+      return filteredFeatures
+    },
+    []
+  )
   const geojsonFiltered = {
     ...geojson,
     features: featuresFiltered,
