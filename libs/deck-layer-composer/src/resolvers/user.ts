@@ -1,4 +1,3 @@
-import { sin } from '@math.gl/core'
 import { DRAW_DATASET_SOURCE, Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   BaseUserLayerProps,
@@ -149,11 +148,6 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
     baseLayerProps.subcategory = `draw-${geometryType}` as DeckLayerSubcategory
   }
 
-  const lineIdProperty = getDatasetConfigurationProperty({
-    dataset,
-    property: 'lineId',
-  }) as string
-
   const datasetConfig = dataview.datasetsConfig?.find(
     (datasetConfig) => datasetConfig.datasetId === dataset.id
   )
@@ -184,7 +178,6 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
     ...(filter && { filter }),
     ...(filters && { filters }),
     ...(idProperty && { idProperty }),
-    ...(lineIdProperty && dataview.config?.singleTrack && { lineIdProperty }),
     ...(valueProperties?.length && { valueProperties }),
     ...(dataview.config?.maxZoom && { maxZoom: dataview.config.maxZoom }),
     ...timeFilters,

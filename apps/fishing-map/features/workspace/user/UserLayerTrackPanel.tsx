@@ -70,8 +70,9 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
   }) as string
   const filterValues = dataview.config?.filters?.[lineIdProperty] || []
 
-  const features = uniqBy(data?.features, (f) => f.properties?.[lineIdProperty])
-
+  const features = uniqBy(data?.features, (f) => {
+    return f.properties?.[lineIdProperty]
+  })
   return (
     <Fragment>
       {features.slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH).map((feature, index) => {

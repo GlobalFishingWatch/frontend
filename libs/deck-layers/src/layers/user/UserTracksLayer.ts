@@ -3,7 +3,6 @@ import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
 import { UserTrackLoader, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { LINE_COLOR_BAR_OPTIONS } from '@globalfishingwatch/ui-components'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import { UserTrackLayerProps } from './user.types'
@@ -152,16 +151,13 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     return this.state.rawData
   }
 
-  _getColor(index: number) {
-    const { lineIdProperty, color } = this.props
-    if (lineIdProperty) {
-      return hexToDeckColor(LINE_COLOR_BAR_OPTIONS[index % LINE_COLOR_BAR_OPTIONS.length].value)
-    }
-    return hexToDeckColor(color)
+  _getColorByLineIndex = (_: any, { index }: { index: number }) => {
+    return hexToDeckColor(this.state.rawData?.features?.[index]?.properties?.color)
   }
 
   renderLayers() {
     const {
+      color,
       layers,
       filters,
       startTime,
@@ -190,7 +186,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         capRounded: true,
         widthMinPixels: 1,
         getWidth: 1,
-        getColor: (_, { index }) => this._getColor(index),
+        getColor: singleTrack ? this._getColorByLineIndex : hexToDeckColor(color),
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
         updateTriggers: {
           getColor: [singleTrack],
