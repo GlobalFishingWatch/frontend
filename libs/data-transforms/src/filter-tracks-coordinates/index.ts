@@ -24,6 +24,7 @@ export type TrackCoordinatesPropertyFilter = {
 export type FilterTrackByCoordinatePropertiesParams = {
   filters: TrackCoordinatesPropertyFilter[]
   includeNonTemporalFeatures?: boolean
+  includeCoordinateProperties?: string[]
 }
 
 type FilterTrackByCoordinatePropertiesArgs = Parameters<

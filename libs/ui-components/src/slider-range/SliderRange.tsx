@@ -4,6 +4,7 @@ import { Range, getTrackBackground } from 'react-range'
 import { InputText } from '../input-text'
 import { SliderThumbsSize, formatSliderNumber } from '../slider'
 import styles from '../slider/slider.module.css'
+import { IconButton } from '../icon-button'
 
 export type SliderRangeValues = number[]
 type SliderRangeConfig = {
@@ -18,6 +19,7 @@ interface SliderRangeProps {
   range?: SliderRangeValues
   config: SliderRangeConfig
   onChange: (range: SliderRangeValues) => void
+  onCleanClick?: (e: React.MouseEvent) => void
   className?: string
   //static for now for the VIIRS release
   histogram?: boolean
@@ -62,6 +64,7 @@ export function SliderRange(props: SliderRangeProps) {
     label,
     config = {},
     onChange,
+    onCleanClick,
     className,
     histogram,
     thumbsSize = 'default',
@@ -127,9 +130,17 @@ export function SliderRange(props: SliderRangeProps) {
     [internalValues, max, min]
   )
 
+  const areDefaultValues = internalValues[0] === min && internalValues[1] === max
   return (
     <div className={className}>
-      <label>{label}</label>
+      {label && (
+        <label className={styles.label}>
+          {label}
+          {onCleanClick && !areDefaultValues && (
+            <IconButton size="small" icon="delete" onClick={onCleanClick} />
+          )}
+        </label>
+      )}
       <div className={styles.container}>
         {histogram && (
           <svg

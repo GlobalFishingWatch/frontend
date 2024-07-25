@@ -84,6 +84,7 @@ export type UserTrackLayerProps = DeckLayerProps<
     highlightEndTime?: number
     timestampProperty?: string
     getTimestamp?: Accessor<any, number>
+    singleTrack?: boolean
   }
 >
 

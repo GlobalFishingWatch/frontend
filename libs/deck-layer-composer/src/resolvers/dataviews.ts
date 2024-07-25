@@ -25,6 +25,7 @@ import {
   isEnvironmentalDataview,
   isHeatmapStaticDataview,
   isTrackDataview,
+  isUserTrackDataview,
 } from '@globalfishingwatch/dataviews-client'
 
 export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
@@ -271,7 +272,8 @@ export function getDataviewsResolved(
     detectionDataviews,
     environmentalDataviews,
     staticDataviews,
-    trackDataviews,
+    vesselTrackDataviews,
+    userTrackDataviews,
     otherDataviews,
   } = dataviews.reduce(
     (acc, dataview) => {
@@ -284,7 +286,9 @@ export function getDataviewsResolved(
       } else if (isHeatmapStaticDataview(dataview)) {
         acc.staticDataviews.push(dataview)
       } else if (isTrackDataview(dataview)) {
-        acc.trackDataviews.push(dataview)
+        acc.vesselTrackDataviews.push(dataview)
+      } else if (isUserTrackDataview(dataview)) {
+        acc.userTrackDataviews.push(dataview)
       } else {
         acc.otherDataviews.push(dataview)
       }
@@ -295,7 +299,8 @@ export function getDataviewsResolved(
       detectionDataviews: [] as UrlDataviewInstance[],
       environmentalDataviews: [] as UrlDataviewInstance[],
       staticDataviews: [] as UrlDataviewInstance[],
-      trackDataviews: [] as UrlDataviewInstance[],
+      vesselTrackDataviews: [] as UrlDataviewInstance[],
+      userTrackDataviews: [] as UrlDataviewInstance[],
       otherDataviews: [] as UrlDataviewInstance[],
     }
   )
@@ -338,11 +343,18 @@ export function getDataviewsResolved(
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
-  const trackDataviewsParsed = trackDataviews.flatMap((d) => ({
+  const vesselTrackDataviewsParsed = vesselTrackDataviews.flatMap((d) => ({
     ...d,
     config: {
       ...d.config,
-      singleTrack: trackDataviews.length === 1,
+      singleTrack: vesselTrackDataviews.length === 1,
+    },
+  }))
+  const userTrackDataviewsParsed = userTrackDataviews.flatMap((d) => ({
+    ...d,
+    config: {
+      ...d.config,
+      singleTrack: userTrackDataviews.length === 1,
     },
   }))
   const dataviewsMerged = [
@@ -351,7 +363,8 @@ export function getDataviewsResolved(
     ...environmentalDataviewsParsed,
     ...mergedDetectionsDataview,
     ...mergedActivityDataview,
-    ...trackDataviewsParsed,
+    ...vesselTrackDataviewsParsed,
+    ...userTrackDataviewsParsed,
   ]
   return dataviewsMerged
 }

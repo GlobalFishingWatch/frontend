@@ -1,4 +1,6 @@
-export type UserTrackData = {
+import { FeatureCollection, LineString, MultiLineString } from 'geojson'
+
+export type UserTrackBinaryData = {
   // Number of geometries
   length: number
   // Indices into positions where each path starts
@@ -10,4 +12,11 @@ export type UserTrackData = {
     getPath: { value: Float32Array; size: number }
     getTimestamp: { value: Float32Array; size: number }
   }
+}
+
+export type UserTrackRawData = FeatureCollection<LineString | MultiLineString>
+
+export type UserTrackData = {
+  data: UserTrackRawData
+  binary: UserTrackBinaryData
 }

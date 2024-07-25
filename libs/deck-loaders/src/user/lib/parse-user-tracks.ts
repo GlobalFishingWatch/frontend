@@ -1,6 +1,6 @@
 import { UserTrack } from '@globalfishingwatch/api-types'
 import { TrackCoordinatesPropertyFilter, filterTrackByCoordinateProperties } from './utils'
-import { UserTrackData } from './types'
+import { UserTrackBinaryData, UserTrackData } from './types'
 
 function isNumeric(str: string | number) {
   if (!str) return false
@@ -46,24 +46,25 @@ export const parseUserTrack = (
   arrayBuffer: ArrayBuffer,
   params = {} as ParseUserTrackParams
 ): UserTrackData => {
-  const data = arrayBufferToJson(arrayBuffer)
-  if (!data) {
+  const rawData = arrayBufferToJson(arrayBuffer)
+  if (!rawData) {
     return {} as UserTrackData
   }
 
-  const filteredTrack = filterTrackByCoordinateProperties(data, {
+  const data = filterTrackByCoordinateProperties(rawData, {
     filters: getCoordinatesFilter(params.filters),
     includeNonTemporalFeatures: true,
+    includeCoordinateProperties: [timestampProperty],
   })
 
-  const length = filteredTrack.features.reduce((acc, feature) => {
+  const length = data.features.reduce((acc, feature) => {
     if (feature.geometry.type === 'MultiLineString') {
       return acc + feature.geometry.coordinates.length
     }
     return acc + 1
   }, 0)
 
-  const startIndices = filteredTrack.features.reduce(
+  const startIndices = data.features.reduce(
     (acc, feature) => {
       const lastIndex = acc[acc.length - 1]
       if (feature.geometry.type === 'MultiLineString') {
@@ -80,28 +81,35 @@ export const parseUserTrack = (
     [0]
   )
 
-  const track = {
+  const binary = {
     length,
     startIndices,
     attributes: {
       getPath: {
         value: new Float32Array(
-          filteredTrack.features.flatMap((f) => f.geometry.coordinates.flatMap((l) => l.flat()))
+          data.features.flatMap((f) => f.geometry.coordinates.flatMap((l) => l.flat()))
         ),
         size: 2,
       },
       getTimestamp: {
         value: new Float32Array(
-          filteredTrack.features.flatMap(
-            (f) =>
-              f.properties?.coordinateProperties?.[timestampProperty] ||
-              Array(f.geometry.coordinates.length).fill(0)
-          )
+          data.features.flatMap((f) => {
+            const timestampsLength =
+              f.geometry.type === 'MultiLineString'
+                ? f.geometry.coordinates.reduce((acc, next) => {
+                    return acc + next.length
+                  }, 0)
+                : f.geometry.coordinates.length
+            return f.geometry.type === 'MultiLineString'
+              ? f.properties?.coordinateProperties?.[timestampProperty]?.flat()
+              : f.properties?.coordinateProperties?.[timestampProperty] ||
+                  Array(timestampsLength).fill(0)
+          })
         ),
         size: 1,
       },
     },
-  } as UserTrackData
+  } as UserTrackBinaryData
 
-  return track
+  return { data, binary }
 }

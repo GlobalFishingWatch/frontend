@@ -2,12 +2,7 @@ import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import {
-  DatasetStatus,
-  DatasetGeometryType,
-  ResourceStatus,
-  Dataset,
-} from '@globalfishingwatch/api-types'
+import { DatasetStatus, DatasetGeometryType, Dataset } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
@@ -16,7 +11,6 @@ import {
   getUserDataviewDataset,
 } from '@globalfishingwatch/datasets-client'
 import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
-import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -48,7 +42,7 @@ import InfoModal from '../common/InfoModal'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import { showSchemaFilter } from '../common/LayerSchemaFilter'
-import UserLayerTrackPanel, { useUserLayerTrackResource } from './UserLayerTrackPanel'
+import UserLayerTrackPanel, { useUserLayerTrackMetadata } from './UserLayerTrackPanel'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance
@@ -66,12 +60,12 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(selectIsGuestUser)
   const layerActive = dataview?.config?.visible ?? true
-  const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
-  const layerLoadedDebounced = useDebounce(layerLoaded, 300)
   const dataset = getUserDataviewDataset(dataview)
   const datasetGeometryType = getDatasetGeometryType(dataset)
-  const { resource, featuresColoredByField } = useUserLayerTrackResource(dataview)
-  const trackError = resource?.status === ResourceStatus.Error
+  const { loaded, hasFeaturesColoredByField, error } = useUserLayerTrackMetadata(dataview)
+  const layerLoaded = loaded && !error
+  const layerLoadedDebounced = useDebounce(layerLoaded, 300)
+  const layerLoading = layerActive && !layerLoadedDebounced && !error
 
   useAutoRefreshImportingDataset(layerActive ? dataset : ({} as Dataset), 5000)
 
@@ -180,7 +174,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
-          color={featuresColoredByField ? COLOR_SECONDARY_BLUE : undefined}
+          color={hasFeaturesColoredByField ? COLOR_SECONDARY_BLUE : undefined}
           testId={`context-layer-${dataview.id}`}
         />
         {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
@@ -218,7 +212,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
               <Color
                 dataview={dataview}
                 open={colorOpen}
-                disabled={featuresColoredByField}
+                disabled={hasFeaturesColoredByField}
                 onColorClick={changeColor}
                 onToggleClick={onToggleColorOpen}
                 onClickOutside={closeExpandedContainer}
@@ -253,21 +247,23 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
               </ExpandedContainer>
             )}
           {<InfoModal dataview={dataview} />}
-          <Remove dataview={dataview} loading={layerActive && !layerLoaded} />
+          <Remove dataview={dataview} loading={layerLoading} />
           {items.length > 1 && (
             <IconButton
               size="small"
               ref={setActivatorNodeRef}
               {...listeners}
-              icon="drag"
+              icon={error ? 'warning' : 'drag'}
+              type={error ? 'warning' : 'default'}
+              tooltip={error ? error : ''}
               className={styles.dragger}
             />
           )}
         </div>
         <IconButton
-          icon={layerActive ? 'more' : undefined}
-          type="default"
-          loading={layerActive && !layerLoadedDebounced}
+          icon={layerActive ? (error ? 'warning' : 'more') : undefined}
+          type={error ? 'warning' : 'default'}
+          loading={layerLoading}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />

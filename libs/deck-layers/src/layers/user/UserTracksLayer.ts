@@ -1,10 +1,11 @@
 import { CompositeLayer, DefaultProps, Layer, LayerProps } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
-import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
+import { UserTrackLoader, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
-import { hexToDeckColor } from '../../utils'
+import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
+import { MAX_FILTER_VALUE } from '../layers.config'
 import { UserTrackLayerProps } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
@@ -25,7 +26,7 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
   DataT,
   _UserTrackLayerProps<DataT> & ExtraProps
 > {
-  static layerName = 'UserTracksLayer'
+  static layerName = 'UserTracksPathLayer'
   static defaultProps = defaultProps
 
   getShaders() {
@@ -84,29 +85,30 @@ export class UserTracksPathLayer<DataT = any, ExtraProps = {}> extends PathLayer
   }
 
   draw(params: any) {
-    const {
-      startTime,
-      endTime,
-      highlightStartTime = 0,
-      highlightEndTime = 0,
-      highlightColor,
-    } = this.props
+    const { startTime, endTime, highlightStartTime = 0, highlightEndTime = 0 } = this.props
 
     params.uniforms = {
       ...params.uniforms,
-      startTime,
-      endTime,
+      startTime: startTime || -MAX_FILTER_VALUE,
+      endTime: endTime || MAX_FILTER_VALUE,
       highlightStartTime,
       highlightEndTime,
-      highlightColor,
     }
     super.draw(params)
   }
 }
 
+type RawDataIndex = { index: number; length: number }
+type UserTracksLayerState = {
+  error: string
+  rawData?: UserTrackRawData
+  rawDataIndexes: RawDataIndex[]
+}
+
 export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerProps> {
   static layerName = 'UserTracksLayer'
   static defaultProps = defaultProps
+  state!: UserTracksLayerState
 
   _fetch = async (
     url: string,
@@ -133,28 +135,75 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         filters: this.props.filters,
       },
     }
-    return await parse(response, UserTrackLoader, userTracksLoadOptions)
+    const { data, binary } = await parse(response, UserTrackLoader, userTracksLoadOptions)
+    let totalCoordinatesLength = 0
+    const rawDataIndexes = data.features.reduce((acc, feature: any, index: number) => {
+      totalCoordinatesLength +=
+        feature.geometry.type === 'MultiLineString' ? feature.geometry.coordinates.length : 1
+      acc.push({ index, length: totalCoordinatesLength })
+      return acc
+    }, [] as RawDataIndex[])
+    this.setState({ rawData: data, rawDataIndexes })
+    return binary
+  }
+
+  _onLayerError = (error: Error) => {
+    console.warn(error.message)
+    this.setState({ error: error.message })
+    return true
+  }
+
+  getError() {
+    return this.state.error
+  }
+
+  getData() {
+    return this.state.rawData
+  }
+
+  _getColorByLineIndex = (_: any, { index }: { index: number }) => {
+    const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)?.index!
+    return hexToDeckColor(
+      this.state.rawData?.features?.[featureIndex]?.properties?.color || this.props.color
+    )
   }
 
   renderLayers() {
-    const { layers, color, filters } = this.props
+    const {
+      color,
+      layers,
+      filters,
+      startTime,
+      endTime,
+      highlightStartTime,
+      highlightEndTime,
+      singleTrack,
+    } = this.props
     return layers.map((layer) => {
       const tilesUrl = new URL(layer.tilesUrl)
       tilesUrl.searchParams.set('filters', Object.values(filters || {}).join(','))
       return new UserTracksPathLayer<any>({
-        ...(this.props as any),
         id: layer.id,
         data: tilesUrl.toString(),
         _pathType: 'open',
         fetch: this._fetch,
         widthUnits: 'pixels',
         widthScale: 1,
+        startTime,
+        endTime,
+        highlightStartTime,
+        highlightEndTime,
+        onError: this._onLayerError,
         wrapLongitude: true,
         jointRounded: true,
         capRounded: true,
         widthMinPixels: 1,
-        width: 1,
-        getColor: hexToDeckColor(color),
+        getWidth: 1,
+        getColor: singleTrack ? this._getColorByLineIndex : hexToDeckColor(color),
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
+        updateTriggers: {
+          getColor: [singleTrack],
+        },
       })
     })
   }

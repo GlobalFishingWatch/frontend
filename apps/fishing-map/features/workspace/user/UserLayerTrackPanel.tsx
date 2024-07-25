@@ -1,20 +1,16 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { FeatureCollection } from 'geojson'
 import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'es-toolkit'
 import { NO_RECORD_ID } from '@globalfishingwatch/data-transforms'
-import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
-import {
-  UrlDataviewInstance,
-  resolveDataviewDatasetResource,
-  selectResourceByUrl,
-} from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getUserDataviewDataset,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { UserTracksLayer } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 
@@ -24,13 +20,13 @@ type UserPanelProps = {
 
 const SEE_MORE_LENGTH = 5
 
-export function useUserLayerTrackResource(dataview: UrlDataviewInstance) {
+export function useUserLayerTrackMetadata(dataview: UrlDataviewInstance) {
   const dataset = getUserDataviewDataset(dataview)
   const allTracksActive = useSelector(selectActiveTrackDataviews)
-  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserTracks)
-  const resource: Resource<FeatureCollection> = useSelector(
-    selectResourceByUrl<FeatureCollection>(trackUrl)
-  )
+  const trackLayer = useGetDeckLayer<UserTracksLayer>(dataview?.id)
+  const data = useMemo(() => {
+    return trackLayer?.instance?.getData()
+  }, [trackLayer])
 
   const idProperty = getDatasetConfigurationProperty({
     dataset,
@@ -38,26 +34,32 @@ export function useUserLayerTrackResource(dataview: UrlDataviewInstance) {
   }) as string
 
   const hasRecordIds = idProperty
-    ? resource?.data?.features?.some((f) => f.properties?.id !== NO_RECORD_ID)
+    ? data?.features?.some((f) => f.properties?.id !== NO_RECORD_ID)
     : false
 
   const singleTrack = allTracksActive.length === 1
-  const featuresColoredByField = singleTrack && resource?.data && hasRecordIds
+  const hasFeaturesColoredByField = singleTrack && data && hasRecordIds
 
-  return { resource, featuresColoredByField, hasRecordIds }
+  return {
+    data,
+    hasRecordIds,
+    hasFeaturesColoredByField,
+    error: trackLayer?.instance?.getError(),
+    loaded: trackLayer?.loaded,
+  }
 }
 
 function UserLayerTrackPanel({ dataview }: UserPanelProps) {
   const { t } = useTranslation()
   const [seeMoreOpen, setSeeMoreOpen] = useState(false)
 
-  const { resource, featuresColoredByField } = useUserLayerTrackResource(dataview)
+  const { data, hasFeaturesColoredByField } = useUserLayerTrackMetadata(dataview)
 
   const onSeeMoreClick = useCallback(() => {
     setSeeMoreOpen(!seeMoreOpen)
   }, [seeMoreOpen])
 
-  if (!featuresColoredByField || !resource?.data?.features) {
+  if (!hasFeaturesColoredByField || !data?.features) {
     return null
   }
 
@@ -68,8 +70,9 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
   }) as string
   const filterValues = dataview.config?.filters?.[lineIdProperty] || []
 
-  const features = uniqBy(resource.data?.features, (f) => f.properties?.[lineIdProperty])
-
+  const features = uniqBy(data?.features, (f) => {
+    return f.properties?.[lineIdProperty]
+  })
   return (
     <Fragment>
       {features.slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH).map((feature, index) => {

@@ -7,6 +7,7 @@ import {
   Position,
   MultiLineString,
 } from 'geojson'
+import { UserTrackRawData } from './types'
 
 // Originally duplicated from data-transforms libs to avoid circular dependencies
 // TODO define types for this filter so we can avoid the buggy isNumeric approach
@@ -21,6 +22,7 @@ export type TrackCoordinatesPropertyFilter = {
 export type FilterTrackByCoordinatePropertiesParams = {
   filters: TrackCoordinatesPropertyFilter[]
   includeNonTemporalFeatures?: boolean
+  includeCoordinateProperties?: string[]
 }
 
 type FilterTrackByCoordinatePropertiesArgs = Parameters<
@@ -29,7 +31,7 @@ type FilterTrackByCoordinatePropertiesArgs = Parameters<
 
 type FilterTrackByCoordinatePropertiesFn = (
   ...args: FilterTrackByCoordinatePropertiesArgs
-) => FilteredTrackData
+) => UserTrackRawData
 
 type LineCoordinateProperties = Record<string, (string | number)[]>
 type MultiLineCoordinateProperties = Record<string, [(string | number)[]]>
@@ -86,12 +88,14 @@ type GetFilteredCoordinatesParams = {
   filters: TrackCoordinatesPropertyFilter[]
   coordinateProperties: CoordinateProperties
   multiLineStringIndex?: number
+  includeCoordinateProperties?: string[]
 }
 const getFilteredCoordinates = ({
   coordinates,
   filters,
   coordinateProperties,
   multiLineStringIndex,
+  includeCoordinateProperties = [],
 }: GetFilteredCoordinatesParams) => {
   let leadingPoint = true
   const filteredLines = coordinates.reduce(
@@ -116,6 +120,7 @@ const getFilteredCoordinates = ({
         ? filteredCoordinates.coordinates.length - 1
         : 0
       if (matchesPropertyFilters) {
+        const properties = [...filters.map(({ id }) => id), ...includeCoordinateProperties]
         if (leadingPoint && index > 0) {
           leadingPoint = false
           const leadingIndex = index - 1
@@ -124,15 +129,15 @@ const getFilteredCoordinates = ({
             filteredCoordinates.coordinates[coordinatesIndex] = []
           }
           filteredCoordinates.coordinates[coordinatesIndex].push(leadingCoordinatePoint)
-          filters.forEach(({ id }) => {
+          properties.forEach((property) => {
             const leadingCoordinateValue = getCoordinatePropertyValue({
-              id,
+              id: property,
               coordinateProperties,
               coordinateIndex: leadingIndex,
               multiLineStringIndex,
             })
             addCoordinatePropertyToCoordinate({
-              id,
+              id: property,
               coordinates: filteredCoordinates,
               coordinateIndex: coordinatesIndex,
               coordinateValue: leadingCoordinateValue,
@@ -143,15 +148,15 @@ const getFilteredCoordinates = ({
           filteredCoordinates.coordinates[coordinatesIndex] = []
         }
         filteredCoordinates.coordinates[coordinatesIndex].push(coordinate)
-        filters.forEach(({ id }) => {
+        properties.forEach((property) => {
           const coordinateValue = getCoordinatePropertyValue({
-            id,
+            id: property,
             coordinateProperties,
             coordinateIndex: index,
             multiLineStringIndex,
           })
           addCoordinatePropertyToCoordinate({
-            id,
+            id: property,
             coordinates: filteredCoordinates,
             coordinateIndex: coordinatesIndex,
             coordinateValue,
@@ -159,6 +164,7 @@ const getFilteredCoordinates = ({
         })
       } else if (filteredCoordinates.coordinates[coordinatesIndex]?.length) {
         filteredCoordinates.coordinates.push([])
+        leadingPoint = true
       }
 
       return filteredCoordinates
@@ -170,7 +176,8 @@ const getFilteredCoordinates = ({
 
 const getFilteredLines = (
   feature: Feature<Geometry, GeoJsonProperties>,
-  filters: TrackCoordinatesPropertyFilter[]
+  filters: TrackCoordinatesPropertyFilter[],
+  includeCoordinateProperties: string[] = []
 ) => {
   const isMultiLineString = feature.geometry.type === 'MultiLineString'
   const coordinateProperties = feature.properties?.coordinateProperties
@@ -181,6 +188,7 @@ const getFilteredLines = (
           filters,
           coordinateProperties,
           multiLineStringIndex,
+          includeCoordinateProperties,
         })
       )
     : [
@@ -188,17 +196,18 @@ const getFilteredLines = (
           coordinates: (feature.geometry as LineString).coordinates,
           filters,
           coordinateProperties,
+          includeCoordinateProperties,
         }),
       ]
   return lines.filter((l) => l.coordinates.length)
 }
 
-type FilteredTrackData = FeatureCollection<LineString | MultiLineString>
 export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertiesFn = (
   geojson,
   {
     filters = [],
     includeNonTemporalFeatures = false,
+    includeCoordinateProperties = [],
   } = {} as FilterTrackByCoordinatePropertiesParams
 ) => {
   if (!geojson || !geojson.features) {
@@ -216,17 +225,19 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
           .map((p) => p.id)
           .some((id) => feature?.properties?.coordinateProperties?.[id]?.length > 0)
         if (hasValues) {
-          const filteredLines = getFilteredLines(feature, filters)
+          const filteredLines = getFilteredLines(feature, filters, includeCoordinateProperties)
 
           if (!filteredLines.length) {
             return filteredFeatures
           }
 
-          const coordinateProperties = filters.reduce((acc, { id }) => {
-            const properties = filteredLines.flatMap(
-              (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[id]
+          const coordinateProperties = [
+            ...filters.map(({ id }) => id),
+            ...includeCoordinateProperties,
+          ].reduce((acc, property) => {
+            acc[property] = filteredLines.flatMap(
+              (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[property]
             )
-            acc[id] = properties
             return acc
           }, {} as Record<string, (string | number)[][]>)
 
