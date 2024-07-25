@@ -7,7 +7,7 @@ import { Bbox, wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import { ThinningLevels } from '@globalfishingwatch/api-client'
 import { MAX_FILTER_VALUE } from '../layers.config'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
-import { getSegmentsFromData } from './vessel.utils'
+import { getSegmentsFromData, GetSegmentsFromDataParams } from './vessel.utils'
 
 /** Properties added by VesselTrackLayer. */
 export type _VesselTrackLayerProps<DataT = any> = {
@@ -251,10 +251,8 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     return this.props.data as VesselTrackData
   }
 
-  getSegments(
-    { includeMiddlePoints = false } = {} as { includeMiddlePoints: boolean }
-  ): TrackSegment[] {
-    return getSegmentsFromData(this.props.data as VesselTrackData, includeMiddlePoints)
+  getSegments(param = {} as GetSegmentsFromDataParams): TrackSegment[] {
+    return getSegmentsFromData(this.props.data as VesselTrackData, param)
   }
 
   getBbox() {

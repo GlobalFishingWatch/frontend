@@ -1,11 +1,17 @@
 import { CompositeLayer, DefaultProps, Layer, LayerProps } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
-import { UserTrackLoader, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
+import {
+  UserTrackBinaryData,
+  UserTrackLoader,
+  UserTrackRawData,
+} from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { TrackSegment } from '@globalfishingwatch/api-types'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import { MAX_FILTER_VALUE } from '../layers.config'
+import { getSegmentsFromData, GetSegmentsFromDataParams } from '../vessel/vessel.utils'
 import { UserTrackLayerProps } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
@@ -103,6 +109,7 @@ type UserTracksLayerState = {
   error: string
   rawData?: UserTrackRawData
   rawDataIndexes: RawDataIndex[]
+  binaryData: UserTrackBinaryData
 }
 
 export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerProps> {
@@ -143,7 +150,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       acc.push({ index, length: totalCoordinatesLength })
       return acc
     }, [] as RawDataIndex[])
-    this.setState({ rawData: data, rawDataIndexes })
+    this.setState({ rawData: data, binaryData: binary, rawDataIndexes })
     return binary
   }
 
@@ -159,6 +166,21 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
 
   getData() {
     return this.state.rawData
+  }
+
+  getColor() {
+    return this.props.color
+  }
+
+  getSegments(
+    { includeMiddlePoints = false } = {} as Omit<GetSegmentsFromDataParams, 'properties'>
+  ): TrackSegment[] {
+    if (!this.state.binaryData) return []
+    const segments = getSegmentsFromData(this.state.binaryData as UserTrackBinaryData, {
+      includeMiddlePoints,
+      properties: [],
+    })
+    return segments
   }
 
   _getColorByLineIndex = (_: any, { index }: { index: number }) => {
