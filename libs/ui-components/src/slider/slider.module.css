@@ -5,6 +5,13 @@
   position: relative;
 }
 
+.label {
+  min-height: 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .histogram {
   position: absolute;
   bottom: 50%;

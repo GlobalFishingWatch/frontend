@@ -156,7 +156,11 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
   const minValue = rangeValues[0] < min ? min : rangeValues[0]
   const maxValue =
     rangeValues[rangeValues.length - 1] > max ? max : rangeValues[rangeValues.length - 1]
-  return [minValue, maxValue]
+  const supportsRounding = Math.abs(maxValue - minValue) > 1
+  return [
+    supportsRounding ? getSchemaValueRounded(minValue) : minValue,
+    supportsRounding ? getSchemaValueRounded(maxValue) : maxValue,
+  ]
 }
 
 function LayerSchemaFilter({
@@ -218,6 +222,7 @@ function LayerSchemaFilter({
           className={cx(styles.multiSelect, styles.range)}
           initialRange={values}
           histogram={id === 'radiance'}
+          onCleanClick={() => onClean(id)}
           label={getLabelWithUnit(label, unit)}
           config={getSliderConfigBySchema(schemaFilter)}
           onChange={onSliderChange}
