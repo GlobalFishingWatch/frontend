@@ -1,4 +1,4 @@
-import { FeatureCollection, LineString, MultiLineString } from 'geojson'
+import { Feature, FeatureCollection, LineString, MultiLineString } from 'geojson'
 
 export type UserTrackBinaryData = {
   // Number of geometries
@@ -14,7 +14,15 @@ export type UserTrackBinaryData = {
   }
 }
 
-export type UserTrackRawData = FeatureCollection<LineString | MultiLineString>
+export type UserTrackFeatureProperties = {
+  id: string
+  coordinateProperties: Record<string, number[]>
+} & Record<string, any>
+export type UserTrackFeature = Feature<LineString | MultiLineString, UserTrackFeatureProperties>
+export type UserTrackRawData = FeatureCollection<
+  UserTrackFeature['geometry'],
+  UserTrackFeatureProperties
+>
 
 export type UserTrackData = {
   data: UserTrackRawData

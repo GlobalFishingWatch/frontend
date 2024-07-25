@@ -8,6 +8,7 @@ import {
   MultiLineString,
 } from 'geojson'
 import isEqual from 'lodash/isEqual'
+import { COORDINATE_PROPERTY_TIMESTAMP } from '../segments/segments-to-geojson'
 import { isNumeric } from './utils'
 
 export { isNumeric }
@@ -292,7 +293,7 @@ export const getTimeFilter = (start?: string, end?: string): TrackCoordinatesPro
   }
   return [
     {
-      id: 'times',
+      id: COORDINATE_PROPERTY_TIMESTAMP,
       min: new Date(start).getTime(),
       max: new Date(end).getTime(),
     },

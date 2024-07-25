@@ -3,7 +3,11 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'es-toolkit'
-import { NO_RECORD_ID } from '@globalfishingwatch/data-transforms'
+import {
+  COORDINATE_PROPERTY_TIMESTAMP,
+  getUTCDate,
+  NO_RECORD_ID,
+} from '@globalfishingwatch/data-transforms'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getUserDataviewDataset,
@@ -11,8 +15,12 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { UserTracksLayer } from '@globalfishingwatch/deck-layers'
+import { UserTrackFeature } from '@globalfishingwatch/deck-loaders'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setHighlightedTime } from 'features/timebar/timebar.slice'
+import { useDisableHighlightTimeConnect } from 'features/timebar/timebar.hooks'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance
@@ -49,30 +57,70 @@ export function useUserLayerTrackMetadata(dataview: UrlDataviewInstance) {
   }
 }
 
+const getFeatureTimeExtent = (
+  feature: UserTrackFeature,
+  timestampProperty = COORDINATE_PROPERTY_TIMESTAMP
+) => {
+  const times = feature.properties.coordinateProperties[timestampProperty]
+  if (!times || !times.length) {
+    return null
+  }
+  const min = Array.isArray(times[0]) ? times[0][0] : times[0]
+  const latestValue = times[times.length - 1]
+  const max = Array.isArray(latestValue)
+    ? (latestValue as number[])[latestValue.length - 1]
+    : latestValue
+  if (!min || !max) {
+    return null
+  }
+  return { start: getUTCDate(min).toISOString(), end: getUTCDate(max).toISOString() }
+}
+
 function UserLayerTrackPanel({ dataview }: UserPanelProps) {
   const { t } = useTranslation()
   const [seeMoreOpen, setSeeMoreOpen] = useState(false)
+  const dispatch = useAppDispatch()
+  const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
 
   const { data, hasFeaturesColoredByField } = useUserLayerTrackMetadata(dataview)
+  const dataset = getUserDataviewDataset(dataview)
 
   const onSeeMoreClick = useCallback(() => {
     setSeeMoreOpen(!seeMoreOpen)
   }, [seeMoreOpen])
 
+  const onFeatureMouseEnter = useCallback(
+    (feature: UserTrackFeature) => {
+      const extent = getFeatureTimeExtent(feature)
+      if (extent) {
+        dispatch(setHighlightedTime(extent))
+      }
+    },
+    [dispatch]
+  )
+
+  const onFeatureMouseLeave = useCallback(
+    (feature: UserTrackFeature) => {
+      dispatchDisableHighlightedTime()
+    },
+    [dispatchDisableHighlightedTime]
+  )
+
   if (!hasFeaturesColoredByField || !data?.features) {
     return null
   }
 
-  const dataset = getUserDataviewDataset(dataview)
   const lineIdProperty = getDatasetConfigurationProperty({
     dataset,
     property: 'lineId',
   }) as string
+
   const filterValues = dataview.config?.filters?.[lineIdProperty] || []
 
   const features = uniqBy(data?.features, (f) => {
     return f.properties?.[lineIdProperty]
   })
+
   return (
     <Fragment>
       {features.slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH).map((feature, index) => {
@@ -86,6 +134,8 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
           <div
             key={index}
             className={styles.trackColor}
+            onMouseEnter={() => onFeatureMouseEnter(feature)}
+            onMouseLeave={() => onFeatureMouseLeave(feature)}
             style={
               {
                 '--color': feature.properties?.color || dataview.config?.color,
