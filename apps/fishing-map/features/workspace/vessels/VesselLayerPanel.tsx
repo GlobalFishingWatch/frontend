@@ -347,7 +347,7 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
           />
         )}
       </div>
-      {hasSchemaFilterSelection && (
+      {hasSchemaFilterSelection && layerActive && (
         <div className={styles.propertiesNoPaddingBlock}>
           <div className={styles.filters}>
             <div className={styles.filters}>
