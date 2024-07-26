@@ -353,13 +353,22 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   _getPositionProperties() {
     return this.props.sublayers.map((s) => {
-      return s.positionProperties?.filter((p) => SUPPORTED_POSITION_PROPERTIES.includes(p))
+      return s.positionProperties?.filter((p) => {
+        return SUPPORTED_POSITION_PROPERTIES.includes(p)
+      })
     })
   }
 
   _getDataUrl() {
     const { startTime, endTime, sublayers, extentStart, extentEnd } = this.props
     const supportedPositionProperties = this._getPositionProperties()
+
+    const vesselGroups = sublayers.flatMap((sublayer) => {
+      if (!sublayer.vesselGroups) {
+        return []
+      }
+      return Array.isArray(sublayer.vesselGroups) ? sublayer.vesselGroups[0] : sublayer.vesselGroups
+    })
     const start = extentStart && extentStart > startTime ? extentStart : startTime
     const end = extentEnd && extentEnd < endTime ? extentEnd : endTime
 
@@ -367,6 +376,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
       filters: sublayers.map((sublayer) => sublayer.filter),
       format: 'MVT',
+      ...(vesselGroups?.length && { 'vessel-groups': vesselGroups }),
       'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
       ...(supportedPositionProperties?.length && {
         properties: supportedPositionProperties.map((sublayerProperties) =>
