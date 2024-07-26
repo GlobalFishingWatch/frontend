@@ -226,6 +226,24 @@ const selectDataviewInstancesByType = (type: DataviewType) => {
 
 export const selectTrackDataviews = selectDataviewInstancesByType(DataviewType.Track)
 
+export const selectAllActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
+  dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectUserTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
+  return dataviews?.filter(
+    (dataview) =>
+      !dataview.datasets ||
+      (dataview.datasets?.[0]?.type === DatasetTypes.UserTracks &&
+        dataview.category === DataviewCategory.User)
+  )
+})
+
+export const selectActiveUserTrackDataviews = createSelector(
+  [selectUserTrackDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
 export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
     (dataview) =>

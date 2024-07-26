@@ -413,7 +413,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return this.props.name
   }
 
-  getVesselColor() {
+  getColor() {
     return deckToHexColor(this.props.color)
   }
 

@@ -10,8 +10,8 @@ import {
   TrackEventChunkProps,
 } from '@globalfishingwatch/timebar'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import { VesselLayer } from '@globalfishingwatch/deck-layers'
-import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
+import { selectAllActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getEventDescription } from 'utils/events'
 import { t } from 'features/i18n/i18n'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
@@ -31,12 +31,12 @@ export const hasTracksWithNoData = (tracks = [] as VesselTrackAtom) => {
   )
 }
 
-const useTimebarVesselsLayers = () => {
-  const dataviews = useSelector(selectActiveVesselsDataviews)
+const useTimebarTracksLayers = () => {
+  const dataviews = useSelector(selectAllActiveTrackDataviews)
   const ids = useMemo(() => {
     return dataviews.map((d) => d.id)
   }, [dataviews])
-  const vessels = useGetDeckLayers<VesselLayer>(ids)
+  const vessels = useGetDeckLayers<VesselLayer | UserTracksLayer>(ids)
   return vessels
 }
 
@@ -49,19 +49,28 @@ const vesselTracksAtom = atom<VesselTrackAtom | undefined>(undefined)
 export const useTimebarVesselTracks = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
-  const vessels = useTimebarVesselsLayers()
+  const trackLayers = useTimebarTracksLayers()
 
   const tracksLoaded = useMemo(
-    () => vessels.flatMap((v) => (v.instance.getVesselTracksLayersLoaded() ? v.id : [])).join(','),
-    [vessels]
+    () =>
+      trackLayers
+        .flatMap((v) => {
+          const loaded =
+            v.instance instanceof VesselLayer
+              ? v.instance.getVesselTracksLayersLoaded()
+              : v.instance.isLoaded
+          return loaded ? v.id : []
+        })
+        .join(','),
+    [trackLayers]
   )
   const tracksColor = useMemo(
-    () => vessels.flatMap((v) => v.instance.props.color.join('-')).join(','),
-    [vessels]
+    () => trackLayers.flatMap((v) => v.instance.getColor()).join(','),
+    [trackLayers]
   )
 
   useEffect(() => {
-    if (!vessels?.length) {
+    if (!trackLayers?.length) {
       return
     }
     setVesselTracks((tracks) => {
@@ -69,12 +78,12 @@ export const useTimebarVesselTracks = () => {
         return tracks
       }
       return tracks.map((track, index) => {
-        if (!vessels[index]) {
+        if (!trackLayers[index]) {
           return track
         }
         return {
           ...track,
-          color: vessels[index]?.instance?.getVesselColor(),
+          color: trackLayers[index]?.instance?.getColor(),
         }
       })
     })
@@ -83,27 +92,35 @@ export const useTimebarVesselTracks = () => {
 
   useEffect(() => {
     requestAnimationFrame(() => {
-      if (vessels?.length) {
-        const vesselTracks = vessels.flatMap(({ instance }) => {
-          const status = instance.getVesselTracksLayersLoaded()
-            ? ResourceStatus.Finished
-            : ResourceStatus.Loading
+      if (trackLayers?.length) {
+        const vesselTracks = trackLayers.flatMap(({ instance }) => {
+          const loaded =
+            instance instanceof VesselLayer
+              ? instance.getVesselTracksLayersLoaded()
+              : instance.isLoaded
+          const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
           const trackGraphData: TimebarChartItem<{ color: string }> = {
-            color: instance.getVesselColor(),
+            color: instance.getColor(),
             chunks: [] as TimebarChartChunk<{ color: string }>[],
             status,
+            props: { segmentsOffsetY: instance instanceof UserTracksLayer },
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
           }
-          const segments = instance.getVesselTrackSegments()
+          const segments =
+            instance instanceof VesselLayer
+              ? instance.getVesselTrackSegments()
+              : instance.getSegments()
+
           if (segments?.length && status === ResourceStatus.Finished) {
             trackGraphData.chunks = segments?.map((segment) => {
               const start = segment[0]?.timestamp
+              const color = segment[0]?.color || instance.getColor()
               const end = segment[segment.length - 1]?.timestamp
               return {
                 start,
                 end,
-                props: { color: instance.getVesselColor() },
+                props: { color },
                 values: segment,
               } as TimebarChartChunk<{ color: string }>
             })
@@ -131,19 +148,28 @@ const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnA
 export const useTimebarVesselTracksGraph = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const [tracksGraph, setVesselTracksGraph] = useAtom(vesselTracksGraphAtom)
-  const vessels = useTimebarVesselsLayers()
+  const trackLayers = useTimebarTracksLayers()
 
   const tracksLoaded = useMemo(
-    () => vessels.flatMap((v) => (v.instance.getVesselTracksLayersLoaded() ? v.id : [])).join(','),
-    [vessels]
+    () =>
+      trackLayers
+        .flatMap((v) => {
+          return v.instance instanceof VesselLayer
+            ? v.instance.getVesselTracksLayersLoaded()
+            : v.instance.isLoaded
+            ? v.id
+            : []
+        })
+        .join(','),
+    [trackLayers]
   )
   const tracksColor = useMemo(
-    () => vessels.flatMap((v) => v.instance.props.color.join('-')).join(','),
-    [vessels]
+    () => trackLayers.flatMap((v) => v.instance.getColor()).join(','),
+    [trackLayers]
   )
 
   useEffect(() => {
-    if (!vessels?.length) {
+    if (!trackLayers?.length) {
       return
     }
     setVesselTracksGraph((tracks) => {
@@ -151,12 +177,12 @@ export const useTimebarVesselTracksGraph = () => {
         return tracks
       }
       return tracks.map((track, index) => {
-        if (!vessels[index]) {
+        if (!trackLayers[index]) {
           return track
         }
         return {
           ...track,
-          color: vessels[index]?.instance?.getVesselColor(),
+          color: trackLayers[index]?.instance?.getColor(),
         }
       })
     })
@@ -166,13 +192,15 @@ export const useTimebarVesselTracksGraph = () => {
   useEffect(() => {
     requestAnimationFrame(() => {
       const showGraph = timebarGraph === TimebarGraphs.Speed || timebarGraph === TimebarGraphs.Depth
-      if (showGraph && vessels?.length) {
-        const vesselTracks = vessels.flatMap(({ instance }) => {
-          const status = instance.getVesselTracksLayersLoaded()
-            ? ResourceStatus.Finished
-            : ResourceStatus.Loading
+      if (showGraph && trackLayers?.length) {
+        const vesselTracks = trackLayers.flatMap(({ instance }) => {
+          const loaded =
+            instance instanceof VesselLayer
+              ? instance.getVesselTracksLayersLoaded()
+              : instance.isLoaded
+          const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
           const trackGraphData: TimebarChartItem = {
-            color: instance.getVesselColor(),
+            color: instance.getColor(),
             chunks: [] as TimebarChartChunk[],
             status,
             getHighlighterLabel:
@@ -181,7 +209,11 @@ export const useTimebarVesselTracksGraph = () => {
                 : getTrackGraphElevationighlighterLabel,
             getHighlighterIcon: 'vessel',
           }
-          const segments = instance.getVesselTrackSegments({ includeMiddlePoints: true })
+
+          const segments =
+            instance instanceof VesselLayer
+              ? instance.getVesselTrackSegments({ includeMiddlePoints: true })
+              : instance.getSegments()
           if (segments?.length && status === ResourceStatus.Finished) {
             trackGraphData.chunks = segments?.flatMap((segment) => {
               if (!segment) {
@@ -209,7 +241,7 @@ export const useTimebarVesselTracksGraph = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksLoaded, timebarGraph, vessels])
+  }, [tracksLoaded, timebarGraph, trackLayers])
 
   return tracksGraph
 }
@@ -219,29 +251,33 @@ export const useTimebarVesselEvents = () => {
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const [timebarVesselEvents, setTimebarVesselEvents] =
     useState<TimebarChartData<TrackEventChunkProps> | null>(null)
-  const vessels = useTimebarVesselsLayers()
+  const vessels = useTimebarTracksLayers()
   const vesselsWithEventsLoaded = useMemo(
     () => vessels.flatMap((v) => (v.loaded ? v.id : [])).join(','),
     [vessels]
   )
   const eventsColor = useMemo(
-    () => vessels.flatMap((v) => v.instance.props.color.join('-')).join(','),
+    () => vessels.flatMap((v) => v.instance.getColor()).join(','),
     [vessels]
   )
 
   useEffect(() => {
     requestAnimationFrame(() => {
-      if (vessels?.length && vesselsWithEventsLoaded.length) {
+      if (vessels?.length && vesselsWithEventsLoaded.length && visibleEvents?.length) {
         const vesselEvents: TimebarChartData<any> = vessels.map(({ instance }) => {
-          const status = instance.getVesselTracksLayersLoaded()
-            ? ResourceStatus.Finished
-            : ResourceStatus.Loading
+          const isVesselLayer = instance instanceof VesselLayer
+          const loaded = isVesselLayer ? instance.getVesselTracksLayersLoaded() : instance.isLoaded
+          const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
           return {
-            color: instance.getVesselColor(),
+            color: instance.getColor(),
             chunks:
-              status === ResourceStatus.Finished ? instance.getVesselEventsData(visibleEvents) : [],
+              status === ResourceStatus.Finished
+                ? isVesselLayer
+                  ? instance.getVesselEventsData(visibleEvents)
+                  : []
+                : [],
             status,
-            defaultLabel: instance.getVesselName(),
+            defaultLabel: isVesselLayer ? instance.getVesselName() : '',
             getHighlighterLabel: getTrackEventHighlighterLabel,
             getHighlighterIcon: 'vessel',
           } as TimebarChartItem<any>

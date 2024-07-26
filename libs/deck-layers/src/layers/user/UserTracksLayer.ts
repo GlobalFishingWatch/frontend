@@ -1,11 +1,18 @@
 import { CompositeLayer, DefaultProps, Layer, LayerProps } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
-import { UserTrackLoader, UserTrackRawData } from '@globalfishingwatch/deck-loaders'
+import {
+  UserTrackBinaryData,
+  UserTrackLoader,
+  UserTrackRawData,
+} from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { TrackSegment } from '@globalfishingwatch/api-types'
+import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import { MAX_FILTER_VALUE } from '../layers.config'
+import { GetSegmentsFromDataParams } from '../vessel/vessel.utils'
 import { UserTrackLayerProps } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
@@ -103,6 +110,7 @@ type UserTracksLayerState = {
   error: string
   rawData?: UserTrackRawData
   rawDataIndexes: RawDataIndex[]
+  binaryData: UserTrackBinaryData
 }
 
 export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerProps> {
@@ -143,7 +151,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       acc.push({ index, length: totalCoordinatesLength })
       return acc
     }, [] as RawDataIndex[])
-    this.setState({ rawData: data, rawDataIndexes })
+    this.setState({ rawData: data, binaryData: binary, rawDataIndexes })
     return binary
   }
 
@@ -159,6 +167,33 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
 
   getData() {
     return this.state.rawData
+  }
+
+  getColor() {
+    return this.props.color
+  }
+
+  getSegments(
+    { includeMiddlePoints = false } = {} as Omit<GetSegmentsFromDataParams, 'properties'>
+  ): TrackSegment[] {
+    if (!this.state.rawData) return []
+
+    const segmentsGeo = geoJSONToSegments(this.state.rawData, {
+      onlyExtents: !includeMiddlePoints,
+    })
+    return segmentsGeo
+
+    // TODO:deck fix why there is a segment at the end with undefined timestamps
+    // TODO:deck research if we can use the binary data to get the segments
+    // const segments = getSegmentsFromData(this.state.binaryData as UserTrackBinaryData, {
+    //   includeMiddlePoints,
+    // })
+    // return segments.map((segment, index) => {
+    //   const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)?.index!
+    //   const color =
+    //     this.state.rawData?.features?.[featureIndex]?.properties?.color || this.props.color
+    //   return segment.map((s) => ({ ...s, color }))
+    // })
   }
 
   _getColorByLineIndex = (_: any, { index }: { index: number }) => {
@@ -179,6 +214,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       highlightEndTime,
       singleTrack,
     } = this.props
+
     return layers.map((layer) => {
       const tilesUrl = new URL(layer.tilesUrl)
       tilesUrl.searchParams.set('filters', Object.values(filters || {}).join(','))

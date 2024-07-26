@@ -51,6 +51,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       onDataLoad: this.props.onDataLoad,
       getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.BasemapFill, params),
       getFillColor: [39, 70, 119],
+      getLineWidth: 0,
       data: 'https://storage.googleapis.com/public-tiles/basemap/default/{z}/{x}/{y}.pbf',
     })
   }
