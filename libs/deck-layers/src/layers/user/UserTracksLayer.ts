@@ -8,10 +8,11 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { TrackSegment } from '@globalfishingwatch/api-types'
+import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import { MAX_FILTER_VALUE } from '../layers.config'
-import { getSegmentsFromData, GetSegmentsFromDataParams } from '../vessel/vessel.utils'
+import { GetSegmentsFromDataParams } from '../vessel/vessel.utils'
 import { UserTrackLayerProps } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
@@ -176,16 +177,23 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     { includeMiddlePoints = false } = {} as Omit<GetSegmentsFromDataParams, 'properties'>
   ): TrackSegment[] {
     if (!this.state.rawData) return []
+
+    const segmentsGeo = geoJSONToSegments(this.state.rawData, {
+      onlyExtents: !includeMiddlePoints,
+    })
+    return segmentsGeo
+
     // TODO:deck fix why there is a segment at the end with undefined timestamps
-    const segments = getSegmentsFromData(this.state.binaryData as UserTrackBinaryData, {
-      includeMiddlePoints,
-    })
-    return segments.map((segment, index) => {
-      const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)?.index!
-      const color =
-        this.state.rawData?.features?.[featureIndex]?.properties?.color || this.props.color
-      return segment.map((s) => ({ ...s, color }))
-    })
+    // TODO:deck research if we can use the binary data to get the segments
+    // const segments = getSegmentsFromData(this.state.binaryData as UserTrackBinaryData, {
+    //   includeMiddlePoints,
+    // })
+    // return segments.map((segment, index) => {
+    //   const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)?.index!
+    //   const color =
+    //     this.state.rawData?.features?.[featureIndex]?.properties?.color || this.props.color
+    //   return segment.map((s) => ({ ...s, color }))
+    // })
   }
 
   _getColorByLineIndex = (_: any, { index }: { index: number }) => {
