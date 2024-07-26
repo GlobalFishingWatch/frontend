@@ -263,7 +263,7 @@ export const useTimebarVesselEvents = () => {
 
   useEffect(() => {
     requestAnimationFrame(() => {
-      if (vessels?.length && vesselsWithEventsLoaded.length) {
+      if (vessels?.length && vesselsWithEventsLoaded.length && visibleEvents?.length) {
         const vesselEvents: TimebarChartData<any> = vessels.map(({ instance }) => {
           const isVesselLayer = instance instanceof VesselLayer
           const loaded = isVesselLayer ? instance.getVesselTracksLayersLoaded() : instance.isLoaded
