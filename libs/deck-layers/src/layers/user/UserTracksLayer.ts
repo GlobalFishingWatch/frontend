@@ -179,7 +179,6 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     // TODO:deck fix why there is a segment at the end with undefined timestamps
     const segments = getSegmentsFromData(this.state.binaryData as UserTrackBinaryData, {
       includeMiddlePoints,
-      properties: [],
     })
     return segments.map((segment, index) => {
       const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)?.index!

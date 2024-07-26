@@ -36,23 +36,17 @@ export const getVesselResourceChunks = (start: number, end: number) => {
 
 export type GetSegmentsFromDataParams = {
   includeMiddlePoints?: boolean
-  properties?: ['speed' | 'elevation']
 }
 export const getSegmentsFromData = memoize(
   (
     data: VesselTrackData | UserTrackBinaryData,
-    {
-      includeMiddlePoints = false,
-      properties = ['speed', 'elevation'],
-    } = {} as GetSegmentsFromDataParams
+    { includeMiddlePoints = false } = {} as GetSegmentsFromDataParams
   ): TrackSegment[] => {
     const segmentsIndexes = data.startIndices
     const positions = data.attributes?.getPath?.value
     const timestamps = data.attributes?.getTimestamp?.value
     const speeds = (data as VesselTrackData).attributes?.getSpeed?.value
     const elevations = (data as VesselTrackData).attributes?.getElevation?.value
-    const includeSpeed = properties.includes('speed')
-    const includeElevation = properties.includes('elevation')
 
     if (!positions?.length || !timestamps.length) {
       return []
@@ -68,10 +62,10 @@ export const getSegmentsFromData = memoize(
         // longitude: positions[segmentIndex * pathSize],
         // latitude: positions[segmentIndex * pathSize + 1],
         timestamp: timestamps[segmentIndex / timestampSize],
-        ...(includeSpeed && {
+        ...(speedSize && {
           speed: speeds?.[segmentIndex / speedSize],
         }),
-        ...(includeElevation && {
+        ...(elevationSize && {
           elevation: elevations?.[segmentIndex / elevationSize],
         }),
       })
@@ -80,10 +74,10 @@ export const getSegmentsFromData = memoize(
         for (let index = segmentIndex + 1; index < nextSegmentIndex; index++) {
           points.push({
             timestamp: timestamps[index / timestampSize],
-            ...(includeSpeed && {
+            ...(speedSize && {
               speed: speeds?.[index / speedSize],
             }),
-            ...(includeElevation && {
+            ...(elevationSize && {
               elevation: elevations?.[index / elevationSize],
             }),
           })
@@ -92,14 +86,14 @@ export const getSegmentsFromData = memoize(
       if (i === segmentsIndexes.length - 1) {
         points.push({
           timestamp: timestamps[timestamps.length - 1],
-          ...(includeSpeed && { speed: speeds?.[speeds.length - 1] }),
-          ...(includeSpeed && { elevation: elevations?.[elevations.length - 1] }),
+          ...(speedSize && { speed: speeds?.[speeds.length - 1] }),
+          ...(elevationSize && { elevation: elevations?.[elevations.length - 1] }),
         })
       } else {
         points.push({
           timestamp: timestamps[nextSegmentIndex / timestampSize - 1],
-          ...(includeSpeed && { speed: speeds?.[nextSegmentIndex / speedSize - 1] }),
-          ...(includeSpeed && { elevation: elevations?.[nextSegmentIndex / elevationSize - 1] }),
+          ...(speedSize && { speed: speeds?.[nextSegmentIndex / speedSize - 1] }),
+          ...(elevationSize && { elevation: elevations?.[nextSegmentIndex / elevationSize - 1] }),
         })
       }
       return points
