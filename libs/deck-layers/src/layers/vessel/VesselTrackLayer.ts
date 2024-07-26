@@ -1,5 +1,5 @@
 import type { NumericArray } from '@math.gl/core'
-import { AccessorFunction, ChangeFlags, DefaultProps, UpdateParameters } from '@deck.gl/core'
+import { AccessorFunction, ChangeFlags, Color, DefaultProps, UpdateParameters } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { TrackSegment } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
@@ -128,7 +128,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         out float vTime;
         out float vSpeed;
         out float vElevation;
-        // out vec4 vHighlightColor;
       `,
       // Timestamp of the vertex
       'vs:#main-end': `
@@ -138,7 +137,6 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         if(vTime > highlightStartTime && vTime < highlightEndTime) {
           gl_Position.z = 1.0;
         }
-        // vHighlightColor = vec4(instanceHighlightColor.rgb, instanceHighlightColor.a);
       `,
       'fs:#decl': `
         uniform float startTime;
@@ -149,27 +147,25 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
         uniform float maxSpeedFilter;
         uniform float minElevationFilter;
         uniform float maxElevationFilter;
-        // in vec4 vHighlightColor;
+        uniform vec4 fadedColor;
         in float vTime;
         in float vSpeed;
         in float vElevation;
       `,
       // Drop the segments outside of the time window
       'fs:#main-start': `
-        if(
-          vTime < startTime ||
-          vTime > endTime ||
-          vSpeed < minSpeedFilter ||
-          vSpeed > maxSpeedFilter ||
-          vElevation < minElevationFilter ||
-          vElevation > maxElevationFilter
-        ) {
+        if (vTime < startTime || vTime > endTime) {
           discard;
         }
       `,
       'fs:DECKGL_FILTER_COLOR': `
+        if (vSpeed < minSpeedFilter ||
+            vSpeed > maxSpeedFilter ||
+            vElevation < minElevationFilter ||
+            vElevation > maxElevationFilter) {
+            color = fadedColor;
+          }
         if (vTime > highlightStartTime && vTime < highlightEndTime) {
-          // color = vHighlightColor;
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
         }
       `,
@@ -225,13 +221,14 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       endTime,
       highlightStartTime = 0,
       highlightEndTime = 0,
-      highlightColor,
+      getColor,
       minSpeedFilter = -MAX_FILTER_VALUE,
       maxSpeedFilter = MAX_FILTER_VALUE,
       minElevationFilter = -MAX_FILTER_VALUE,
       maxElevationFilter = MAX_FILTER_VALUE,
     } = this.props
 
+    const color = getColor as Color
     params.uniforms = {
       ...params.uniforms,
       startTime,
@@ -242,7 +239,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
       maxSpeedFilter,
       minElevationFilter,
       maxElevationFilter,
-      highlightColor,
+      fadedColor: [color[0] / 255, color[1] / 255, color[2] / 255, 0.25],
     }
     super.draw(params)
   }
