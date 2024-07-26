@@ -230,6 +230,20 @@ export const selectAllActiveTrackDataviews = createSelector([selectTrackDataview
   dataviews?.filter((d) => d.config?.visible)
 )
 
+export const selectUserTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
+  return dataviews?.filter(
+    (dataview) =>
+      !dataview.datasets ||
+      (dataview.datasets?.[0]?.type === DatasetTypes.UserTracks &&
+        dataview.category === DataviewCategory.User)
+  )
+})
+
+export const selectActiveUserTrackDataviews = createSelector(
+  [selectUserTrackDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
+
 export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
     (dataview) =>
@@ -255,7 +269,7 @@ export const selectVesselProfileColor = createSelector(
 )
 
 export const selectActiveTrackDataviews = createDeepEqualSelector(
-  [selectVesselsDataviews, selectIsAnyVesselLocation, selectViewOnlyVessel, selectVesselId],
+  [selectTrackDataviews, selectIsAnyVesselLocation, selectViewOnlyVessel, selectVesselId],
   (dataviews, isVesselLocation, viewOnlyVessel, vesselId) => {
     return dataviews?.filter(({ config, id }) => {
       if (isVesselLocation && viewOnlyVessel) {

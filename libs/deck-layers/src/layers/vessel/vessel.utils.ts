@@ -61,7 +61,7 @@ export const getSegmentsFromData = memoize(
     const timestampSize = data.attributes.getTimestamp!?.size
     const speedSize = (data as VesselTrackData).attributes.getSpeed!?.size
     const elevationSize = (data as VesselTrackData).attributes.getElevation!?.size
-    debugger
+
     const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
       const points = [] as TrackSegment
       points.push({

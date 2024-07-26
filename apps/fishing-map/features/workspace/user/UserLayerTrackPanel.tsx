@@ -17,7 +17,7 @@ import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import { UserTracksLayer } from '@globalfishingwatch/deck-layers'
 import { UserTrackFeature } from '@globalfishingwatch/deck-loaders'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectActiveUserTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHighlightedTime } from 'features/timebar/timebar.slice'
 import { useDisableHighlightTimeConnect } from 'features/timebar/timebar.hooks'
@@ -30,7 +30,7 @@ const SEE_MORE_LENGTH = 5
 
 export function useUserLayerTrackMetadata(dataview: UrlDataviewInstance) {
   const dataset = getUserDataviewDataset(dataview)
-  const allTracksActive = useSelector(selectActiveTrackDataviews)
+  const allTracksActive = useSelector(selectActiveUserTrackDataviews)
   const trackLayer = useGetDeckLayer<UserTracksLayer>(dataview?.id)
   const data = useMemo(() => {
     return trackLayer?.instance?.getData()
