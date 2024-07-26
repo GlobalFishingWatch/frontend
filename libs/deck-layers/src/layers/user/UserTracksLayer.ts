@@ -175,12 +175,18 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   getSegments(
     { includeMiddlePoints = false } = {} as Omit<GetSegmentsFromDataParams, 'properties'>
   ): TrackSegment[] {
-    if (!this.state.binaryData) return []
+    if (!this.state.rawData) return []
+    // TODO:deck fix why there is a segment at the end with undefined timestamps
     const segments = getSegmentsFromData(this.state.binaryData as UserTrackBinaryData, {
       includeMiddlePoints,
       properties: [],
     })
-    return segments
+    return segments.map((segment, index) => {
+      const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)?.index!
+      const color =
+        this.state.rawData?.features?.[featureIndex]?.properties?.color || this.props.color
+      return segment.map((s) => ({ ...s, color }))
+    })
   }
 
   _getColorByLineIndex = (_: any, { index }: { index: number }) => {
@@ -201,6 +207,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       highlightEndTime,
       singleTrack,
     } = this.props
+
     return layers.map((layer) => {
       const tilesUrl = new URL(layer.tilesUrl)
       tilesUrl.searchParams.set('filters', Object.values(filters || {}).join(','))

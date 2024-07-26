@@ -32,7 +32,7 @@ export type TimebarChartChunkCluster = {
   numChunks: number
 }
 
-export type TimebarChartChunk<T = void> = {
+export type TimebarChartChunk<T = any> = {
   start: number
   end?: number
   id?: string | number

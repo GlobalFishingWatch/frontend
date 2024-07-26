@@ -103,6 +103,7 @@ export const useTimebarVesselTracks = () => {
             color: instance.getColor(),
             chunks: [] as TimebarChartChunk<{ color: string }>[],
             status,
+            props: { segmentsOffsetY: instance instanceof UserTracksLayer },
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
           }
@@ -110,14 +111,16 @@ export const useTimebarVesselTracks = () => {
             instance instanceof VesselLayer
               ? instance.getVesselTrackSegments()
               : instance.getSegments()
+
           if (segments?.length && status === ResourceStatus.Finished) {
             trackGraphData.chunks = segments?.map((segment) => {
               const start = segment[0]?.timestamp
+              const color = segment[0]?.color || instance.getColor()
               const end = segment[segment.length - 1]?.timestamp
               return {
                 start,
                 end,
-                props: { color: instance.getColor() },
+                props: { color },
                 values: segment,
               } as TimebarChartChunk<{ color: string }>
             })
