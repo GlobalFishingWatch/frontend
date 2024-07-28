@@ -197,7 +197,7 @@ export const useTimeseriesToChartData = (
         getHighlighterLabel: highlighterCallback,
         getHighlighterIcon: highlighterIconCallback,
         props: {
-          unit: dataview.datasets?.[0].unit || '',
+          unit: dataview.datasets?.[0]?.unit || '',
           dataviewId: dataview.id,
         },
       }

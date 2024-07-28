@@ -14,7 +14,8 @@ import {
   selectDeprecatedDataviewInstances,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
-import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 const createDataviewsInstances = (
@@ -167,9 +168,10 @@ export const useDataviewInstancesConnect = () => {
 export const useMigrateWorkspace = () => {
   const deprecatedDataviewInstances = useSelector(selectDeprecatedDataviewInstances)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
-  const migrateDataviewInstances = useCallback(() => {
+  const migrateDataviewInstances = useCallback(async () => {
     const dataviewInstancesToMigrate = (deprecatedDataviewInstances || []).flatMap(
       (dataviewInstance) => {
         const latestDataviewId = LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.dataviewId!]
@@ -187,13 +189,11 @@ export const useMigrateWorkspace = () => {
         }
       }
     )
-    console.log(dataviewInstancesToMigrate)
-    // if (dataviewInstancesToMigrate.length) {
-    //   upsertDataviewInstance(
-    //     dataviewInstancesToMigrate)
-    //   )
-    // }
-  }, [deprecatedDataviewInstances, upsertDataviewInstance])
+    if (dataviewInstancesToMigrate.length) {
+      upsertDataviewInstance(dataviewInstancesToMigrate)
+    }
+    await dispatch(fetchDatasetsByIdsThunk({ ids: Object.values(deprecatedDatasets) }))
+  }, [deprecatedDatasets, deprecatedDataviewInstances, dispatch, upsertDataviewInstance])
 
   return migrateDataviewInstances
 }
