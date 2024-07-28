@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
+import { toast } from 'react-toastify'
 import { Spinner, Button, Modal, InputText } from '@globalfishingwatch/ui-components'
 import { WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -32,13 +33,17 @@ import WorkspaceError, { WorkspacePassword } from 'features/workspace/WorkspaceE
 import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import { setWorkspaceProperty, VALID_PASSWORD } from 'features/workspace/workspace.slice'
 import UserSection from 'features/workspace/user/UserSection'
-import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectDataviewInstancesMergedOrdered,
+  selectHasDeprecatedDataviewInstances,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import ActivitySection from './activity/ActivitySection'
 import VesselsSection from './vessels/VesselsSection'
 import EventsSection from './events/EventsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
+import { useMigrateWorkspace } from './workspace.hook'
 
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
@@ -52,6 +57,7 @@ function Workspace() {
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const locationCategory = useSelector(selectLocationCategory)
   const workspaceVesselGroupsIds = useSelector(selectWorkspaceVessselGroupsIds)
+  const hasDeprecatedDatasets = useSelector(selectHasDeprecatedDataviewInstances)
   const isUserWorkspace =
     workspace?.id?.endsWith(`-${USER_SUFIX}`) ||
     workspace?.id?.endsWith(`-${USER_SUFIX}-${PUBLIC_SUFIX}`)
@@ -60,6 +66,21 @@ function Workspace() {
   const [workspaceEditDescription, setWorkspaceEditDescription] = useState(workspace?.description)
   const [workspaceEditModalOpen, setWorkspaceEditModalOpen] = useState(false)
   const [editWorkspaceLoading, setEditWorkspaceLoading] = useState(false)
+  const migrateWorkspace = useMigrateWorkspace()
+  const toastId = useRef<any>()
+
+  const closeToast = () => {
+    toast.dismiss(toastId.current)
+  }
+  const dissmissToast = useCallback(() => {
+    // TODO:deck decide if store the dismiss on the localStorage
+    closeToast()
+  }, [])
+
+  const updateWorkspace = useCallback(() => {
+    migrateWorkspace()
+    closeToast()
+  }, [migrateWorkspace])
 
   useEffect(() => {
     if (workspace) {
@@ -67,6 +88,26 @@ function Workspace() {
       setWorkspaceEditDescription(workspace.description)
     }
   }, [workspace])
+
+  useEffect(() => {
+    if (hasDeprecatedDatasets) {
+      toastId.current = toast(
+        <div>
+          {t(
+            'workspace.deprecatedDatasets',
+            'Some of the datasets in this workspace are deprecated'
+          )}
+          <Button onClick={dissmissToast} type="secondary" className={styles.updateBtn}>
+            {t('common.dismiss', 'Dismiss')}
+          </Button>
+          <Button onClick={updateWorkspace} className={styles.updateBtn}>
+            {t('common.update', 'Update')}
+          </Button>
+        </div>,
+        { toastId: 'deprecatedWorkspace', autoClose: false }
+      )
+    }
+  }, [dissmissToast, hasDeprecatedDatasets, t, updateWorkspace])
 
   useFetchDataviewResources()
 

@@ -83,3 +83,7 @@
   margin-top: var(--space-S);
   min-width: 15rem;
 }
+
+.updateBtn {
+  margin-left: var(--space-S);
+}

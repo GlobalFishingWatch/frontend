@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ColorCyclingType } from '@globalfishingwatch/api-types'
+import { ColorCyclingType, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import {
   FillColorBarOptions,
   LineColorBarOptions,
@@ -9,7 +9,12 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectDataviewInstancesResolved,
+  selectDeprecatedDataviewInstances,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
+import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 const createDataviewsInstances = (
@@ -157,4 +162,38 @@ export const useDataviewInstancesConnect = () => {
     deleteDataviewInstance,
     addNewDataviewInstances,
   }
+}
+
+export const useMigrateWorkspace = () => {
+  const deprecatedDataviewInstances = useSelector(selectDeprecatedDataviewInstances)
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+
+  const migrateDataviewInstances = useCallback(() => {
+    const dataviewInstancesToMigrate = (deprecatedDataviewInstances || []).flatMap(
+      (dataviewInstance) => {
+        const latestDataviewId = LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.dataviewId!]
+        const datasetsConfig = dataviewInstance.datasetsConfig?.flatMap(
+          (datasetConfig): DataviewDatasetConfig | [] => {
+            const latestDatasetId = deprecatedDatasets[datasetConfig.datasetId!]
+            if (!latestDatasetId) return []
+            return { ...datasetConfig, datasetId: latestDatasetId }
+          }
+        )
+        return {
+          id: dataviewInstance.id,
+          dataviewId: latestDataviewId || dataviewInstance.dataviewId,
+          datasetsConfig,
+        }
+      }
+    )
+    console.log(dataviewInstancesToMigrate)
+    // if (dataviewInstancesToMigrate.length) {
+    //   upsertDataviewInstance(
+    //     dataviewInstancesToMigrate)
+    //   )
+    // }
+  }, [deprecatedDataviewInstances, upsertDataviewInstance])
+
+  return migrateDataviewInstances
 }
