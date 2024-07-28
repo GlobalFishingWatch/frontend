@@ -414,7 +414,7 @@ export function resolveDataviews(
       const datasetsConfig =
         dataview.datasetsConfig && dataview.datasetsConfig.length > 0
           ? dataview.datasetsConfig?.map((datasetConfig) => {
-              const instanceDatasetConfig = dataviewInstance.datasetsConfig?.find(
+              const instanceDatasetsConfig = dataviewInstance.datasetsConfig?.filter(
                 (instanceDatasetConfig) => {
                   if (datasetConfig.endpoint === EndpointId.Events) {
                     // As the events could have multiple datasets we also have to validate this
@@ -434,6 +434,10 @@ export function resolveDataviews(
                   return datasetConfig.endpoint === instanceDatasetConfig.endpoint
                 }
               )
+              const instanceDatasetConfig =
+                instanceDatasetsConfig && instanceDatasetsConfig?.length > 1
+                  ? instanceDatasetsConfig?.find((idc) => idc.latest) // Use the latest configured in
+                  : instanceDatasetsConfig?.[0]
               if (!instanceDatasetConfig) {
                 return {
                   ...datasetConfig,

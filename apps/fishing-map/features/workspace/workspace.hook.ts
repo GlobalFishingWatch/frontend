@@ -177,7 +177,7 @@ export const useMigrateWorkspace = () => {
           (datasetConfig): DataviewDatasetConfig | [] => {
             const latestDatasetId = deprecatedDatasets[datasetConfig.datasetId!]
             if (!latestDatasetId) return []
-            return { ...datasetConfig, datasetId: latestDatasetId }
+            return { ...datasetConfig, datasetId: latestDatasetId, latest: true }
           }
         )
         return {

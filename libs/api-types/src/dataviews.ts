@@ -140,6 +140,7 @@ export interface DataviewDatasetConfigParam {
 }
 
 export interface DataviewDatasetConfig {
+  latest?: boolean
   datasetId: string
   endpoint: string
   params: DataviewDatasetConfigParam[]
