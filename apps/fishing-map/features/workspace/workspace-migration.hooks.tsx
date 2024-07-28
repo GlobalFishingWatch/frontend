@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
-import { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import { DataviewDatasetConfig, DataviewType } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components'
 import {
   selectDeprecatedDataviewInstances,
@@ -11,34 +11,50 @@ import {
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
 import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { useDataviewInstancesConnect } from './workspace.hook'
 import styles from './Workspace.module.css'
 
 export const useMigrateWorkspace = () => {
   const deprecatedDataviewInstances = useSelector(selectDeprecatedDataviewInstances)
+  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const migrateDataviewInstances = useCallback(async () => {
-    const dataviewInstancesToMigrate = (deprecatedDataviewInstances || []).flatMap(
-      (dataviewInstance) => {
-        const latestDataviewId = LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.dataviewId!]
-        const datasetsConfig = dataviewInstance.datasetsConfig?.flatMap(
-          (datasetConfig): DataviewDatasetConfig | [] => {
-            const latestDatasetId = deprecatedDatasets[datasetConfig.datasetId!]
-            if (!latestDatasetId) return []
-            return { ...datasetConfig, datasetId: latestDatasetId, latest: true }
-          }
-        )
-        return {
-          id: dataviewInstance.id,
-          dataviewId: latestDataviewId || dataviewInstance.dataviewId,
-          datasetsConfig,
-        }
-      }
-    )
     try {
+      const dataviewInstancesToMigrate = (deprecatedDataviewInstances || []).flatMap(
+        (dataviewInstance) => {
+          const latestDataviewId = LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.dataviewId!]
+          const heatmapSelectedDatasets =
+            dataviewInstance.config?.type === DataviewType.HeatmapAnimated &&
+            dataviewInstance.config?.datasets
+              ? dataviewInstance.config?.datasets?.map((d) => deprecatedDatasets[d] || d)
+              : []
+          const datasetsConfig = dataviewInstance.datasetsConfig?.flatMap(
+            (datasetConfig): DataviewDatasetConfig | [] => {
+              const latestDatasetId = deprecatedDatasets[datasetConfig.datasetId!]
+              if (!latestDatasetId) return []
+              return { ...datasetConfig, datasetId: latestDatasetId, latest: true }
+            }
+          )
+          const urlDataviewInstance = urlDataviewInstances?.find(
+            (dvi) => dvi.id === dataviewInstance.id
+          )
+          return {
+            id: dataviewInstance.id,
+            ...(heatmapSelectedDatasets?.length && {
+              config: {
+                ...(urlDataviewInstance && { ...urlDataviewInstance.config }),
+                datasets: heatmapSelectedDatasets,
+              },
+            }),
+            dataviewId: latestDataviewId || dataviewInstance.dataviewId,
+            datasetsConfig,
+          }
+        }
+      )
       await dispatch(fetchDatasetsByIdsThunk({ ids: Object.values(deprecatedDatasets) }))
       if (dataviewInstancesToMigrate.length) {
         upsertDataviewInstance(dataviewInstancesToMigrate)
@@ -48,7 +64,13 @@ export const useMigrateWorkspace = () => {
       console.error('Error migrating workspace', e)
       return { migrated: false, error: e.message }
     }
-  }, [deprecatedDatasets, deprecatedDataviewInstances, dispatch, upsertDataviewInstance])
+  }, [
+    deprecatedDatasets,
+    deprecatedDataviewInstances,
+    dispatch,
+    upsertDataviewInstance,
+    urlDataviewInstances,
+  ])
 
   return migrateDataviewInstances
 }
