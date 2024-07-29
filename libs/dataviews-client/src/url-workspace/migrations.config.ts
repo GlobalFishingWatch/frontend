@@ -28,6 +28,13 @@ export const AIS_LEGACY_VESSELS_DATASETS_DICT = {
   'public-global-fishing-vessels:v20201001': 'public-global-vessel-identity:v20231026',
   'public-global-support-vessels:v20201001': 'public-global-vessel-identity:v20231026',
   'private-global-other-vessels:v20201001': 'public-global-vessel-identity:v20231026',
+  'public-global-carriers-tracks:v20201001': 'public-global-all-tracks:v20231026',
+  'public-global-fishing-longliner-tracks:v20201001': 'public-global-all-tracks:v20231026',
+  'public-global-support-tracks:v20201001': 'public-global-all-tracks:v20231026',
+  'public-global-fishing-tracks:v20201001': 'public-global-all-tracks:v20231026',
+  'public-global-presence-tracks:v20201001': 'public-global-all-tracks:v20231026',
+  'public-global-all-tracks:v20201001': 'public-global-all-tracks:v20231026',
+  'private-global-presence-tracks:v20201001': 'public-global-all-tracks:v20231026',
 }
 
 export const VMS_LEGACY_VESSELS_DATASETS_DICT = {
