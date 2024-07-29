@@ -7,6 +7,7 @@ import {
   AnyDatasetConfiguration,
   APIPagination,
   Dataset,
+  DatasetsMigration,
   EndpointId,
   EndpointParam,
   UploadResponse,
@@ -35,7 +36,6 @@ import {
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
 
-type DeprecatedDatasets = Record<string, string>
 type POCDatasetTemplate = Record<
   string,
   Partial<Record<EndpointId, { pathTemplate?: string; query?: Partial<EndpointParam>[] }>>
@@ -135,7 +135,7 @@ const fetchDatasetsFromApi = async (
       const [newId, oldId] = id.split('=')
       acc[newId] = oldId
       return acc
-    }, {} as DeprecatedDatasets)
+    }, {} as DatasetsMigration)
   }
 
   const mockedDatasets =
@@ -333,7 +333,7 @@ export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
 })
 
 export interface DatasetsState extends AsyncReducer<Dataset> {
-  deprecatedDatasets: DeprecatedDatasets
+  deprecatedDatasets: DatasetsMigration
   carrierLatest: {
     status: AsyncReducerStatus
     dataset: Dataset | undefined
@@ -353,7 +353,7 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
   name: 'datasets',
   initialState,
   reducers: {
-    setDeprecatedDatasets: (state, action: PayloadAction<DeprecatedDatasets>) => {
+    setDeprecatedDatasets: (state, action: PayloadAction<DatasetsMigration>) => {
       state.deprecatedDatasets = action.payload
     },
   },

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
-import { DataviewDatasetConfig, DataviewType } from '@globalfishingwatch/api-types'
+import { DatasetsMigration, DataviewType } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components'
 import {
   selectDeprecatedDataviewInstances,
@@ -32,12 +32,16 @@ export const useMigrateWorkspace = () => {
             dataviewInstance.config?.datasets
               ? dataviewInstance.config?.datasets?.map((d) => deprecatedDatasets[d] || d)
               : []
-          const datasetsConfig = dataviewInstance.datasetsConfig?.flatMap(
-            (datasetConfig): DataviewDatasetConfig | [] => {
+
+          const datasetsConfigMigration = dataviewInstance.datasetsConfig?.reduce(
+            (acc, datasetConfig) => {
               const latestDatasetId = deprecatedDatasets[datasetConfig.datasetId!]
-              if (!latestDatasetId) return []
-              return { ...datasetConfig, datasetId: latestDatasetId, latest: true }
-            }
+              if (latestDatasetId) {
+                acc[datasetConfig.datasetId] = latestDatasetId
+              }
+              return acc
+            },
+            {} as DatasetsMigration
           )
           const urlDataviewInstance = urlDataviewInstances?.find(
             (dvi) => dvi.id === dataviewInstance.id
@@ -51,7 +55,7 @@ export const useMigrateWorkspace = () => {
               },
             }),
             dataviewId: latestDataviewId || dataviewInstance.dataviewId,
-            datasetsConfig,
+            datasetsConfigMigration,
           }
         }
       )
@@ -127,7 +131,10 @@ export const useMigrateWorkspaceToast = () => {
 
   useEffect(() => {
     if (hasDeprecatedDataviews) {
-      toastId.current = toast(<ToastContent loading={false} />, { autoClose: false })
+      toastId.current = toast(<ToastContent loading={false} />, {
+        toastId: 'migrateWorkspace',
+        autoClose: false,
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasDeprecatedDataviews])

@@ -76,6 +76,7 @@ export const selectDataviewInstancesMerged = createSelector(
         workspaceDataviewInstances as DataviewInstance<any>[],
         urlDataviewInstances
       ) || []
+
     if (isAnyVesselLocation) {
       const existingDataviewInstance = mergedDataviewInstances?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
@@ -283,17 +284,8 @@ export const selectActiveTrackDataviews = createDeepEqualSelector(
 export const selectDeprecatedDataviewInstances = createSelector(
   [selectAllDataviewInstancesResolved, selectDeprecatedDatasets],
   (dataviews, deprecatedDatasets = {}) => {
-    return dataviews?.filter(({ datasetsConfig }) => {
-      const deprecatedDatasetConfig = datasetsConfig?.find(
-        (dsc) => deprecatedDatasets[dsc.datasetId] !== undefined
-      )
-      if (!deprecatedDatasetConfig) {
-        return false
-      }
-      const isAlreadyMigrated = datasetsConfig?.some(
-        (dsc) => dsc.latest && deprecatedDatasets[dsc.datasetId] === dsc.datasetId
-      )
-      return !isAlreadyMigrated
+    return dataviews?.filter(({ datasets }) => {
+      return datasets?.some((dataset) => deprecatedDatasets[dataset.id]) || false
     })
   }
 )

@@ -414,7 +414,7 @@ export function resolveDataviews(
       const datasetsConfig =
         dataview.datasetsConfig && dataview.datasetsConfig.length > 0
           ? dataview.datasetsConfig?.map((datasetConfig) => {
-              const instanceDatasetsConfig = dataviewInstance.datasetsConfig?.filter(
+              const instanceDatasetConfig = dataviewInstance.datasetsConfig?.find(
                 (instanceDatasetConfig) => {
                   if (datasetConfig.endpoint === EndpointId.Events) {
                     // As the events could have multiple datasets we also have to validate this
@@ -434,13 +434,15 @@ export function resolveDataviews(
                   return datasetConfig.endpoint === instanceDatasetConfig.endpoint
                 }
               )
-              const instanceDatasetConfig =
-                instanceDatasetsConfig && instanceDatasetsConfig?.length > 1
-                  ? instanceDatasetsConfig?.find((idc) => idc.latest) // Use the latest configured in
-                  : instanceDatasetsConfig?.[0]
+
               if (!instanceDatasetConfig) {
+                const deprecatedDatasetConfigMigrationId =
+                  dataviewInstance.datasetsConfigMigration?.[datasetConfig?.datasetId!]
                 return {
                   ...datasetConfig,
+                  ...(deprecatedDatasetConfigMigrationId && {
+                    datasetId: deprecatedDatasetConfigMigrationId,
+                  }),
                   query:
                     datasetConfig.endpoint === EndpointId.Events
                       ? [...(datasetConfig.query || [])].map((query) => {
@@ -459,9 +461,15 @@ export function resolveDataviews(
               // using the instance query and params first as the uniqBy from lodash doc says:
               // the order of result values is determined by the order they occur in the array
               // so the result will be overriding the default dataview config
+
+              const deprecatedDatasetConfigMigrationId =
+                dataviewInstance.datasetsConfigMigration?.[instanceDatasetConfig?.datasetId!]
               return {
                 ...datasetConfig,
                 ...instanceDatasetConfig,
+                ...(deprecatedDatasetConfigMigrationId && {
+                  datasetId: deprecatedDatasetConfigMigrationId,
+                }),
                 query: uniqBy(
                   [...(instanceDatasetConfig.query || []), ...(datasetConfig.query || [])],
                   (q) => q.id
