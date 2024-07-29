@@ -18,6 +18,7 @@ import {
   selectActivityDataviews,
   selectDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { getIsPositionSupportedInDataview } from 'features/dataviews/dataviews.utils'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from '../activity/ActivityLayerPanel'
 import activityStyles from '../activity/ActivitySection.module.css'
@@ -33,6 +34,10 @@ function DetectionsSection(): React.ReactElement {
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
     useVisualizationsOptions(DataviewCategory.Detections)
+
+  const positionsSupported = dataviews.every((dataview) =>
+    getIsPositionSupportedInDataview(dataview)
+  )
 
   const dispatch = useAppDispatch()
   const onAddLayerClick = useCallback(() => {
@@ -101,13 +106,15 @@ function DetectionsSection(): React.ReactElement {
         <h2 className={styles.sectionTitle}>{t('common.detections', 'Detections')}</h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons)}>
-            <VisualisationChoice
-              options={visualizationOptions}
-              testId="activity-visualizations-change"
-              activeOption={activeVisualizationOption}
-              onSelect={(option) => onVisualizationModeChange(option.id)}
-              className={cx({ [styles.hidden]: !hasVisibleDataviews })}
-            />
+            {positionsSupported && (
+              <VisualisationChoice
+                options={visualizationOptions}
+                testId="activity-visualizations-change"
+                activeOption={activeVisualizationOption}
+                onSelect={(option) => onVisualizationModeChange(option.id)}
+                className={cx({ [styles.hidden]: !hasVisibleDataviews })}
+              />
+            )}
             <IconButton
               icon="plus"
               type="border"

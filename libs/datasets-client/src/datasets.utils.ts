@@ -6,6 +6,10 @@ export const removeDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[0] : ''
 }
 
+export const getDatasetVersion = (datasetId: string) => {
+  return datasetId ? datasetId?.split(':')[1] : ''
+}
+
 export function findDatasetByType(datasets = [] as Dataset[], type: DatasetTypes) {
   return type ? datasets?.find((d) => d.type === type) : undefined
 }

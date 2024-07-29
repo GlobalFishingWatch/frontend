@@ -20,7 +20,11 @@ import {
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { VesselInstanceDatasets, isPrivateDataset } from 'features/datasets/datasets.utils'
+import {
+  VesselInstanceDatasets,
+  getActiveDatasetsInDataview,
+  isPrivateDataset,
+} from 'features/datasets/datasets.utils'
 
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
@@ -280,4 +284,11 @@ export const getVesselInWorkspace = (vessels: UrlDataviewInstance[], vesselId: s
 
 export const isBathymetryDataview = (dataview: UrlDataviewInstance) => {
   return dataview.id.includes('bathymetry')
+}
+
+export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) => {
+  const datasets = getActiveDatasetsInDataview(dataview)
+  return datasets?.some(({ schema }) => {
+    return schema?.['bearing'] !== undefined
+  })
 }
