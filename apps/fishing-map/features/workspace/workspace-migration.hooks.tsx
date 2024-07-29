@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import parse from 'html-react-parser'
 import { DatasetsMigration, DataviewType } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectDeprecatedDataviewInstances,
   selectHasDeprecatedDataviewInstances,
@@ -121,10 +122,18 @@ export const useMigrateWorkspaceToast = () => {
     toast.dismiss(toastId.current)
   }
   const dissmissToast = () => {
+    trackEvent({
+      category: TrackCategory.WorkspaceManagement,
+      action: 'Skip workspace migration',
+    })
     closeToast()
   }
 
   const updateWorkspace = async () => {
+    trackEvent({
+      category: TrackCategory.WorkspaceManagement,
+      action: 'Migrate workspace',
+    })
     toast.update(toastId.current, {
       render: <ToastContent loading={true} />,
     })
