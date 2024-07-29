@@ -128,11 +128,18 @@ const useVesselFitTranmissionsBounds = () => {
     if (isVesselLocation && segments?.length && timerangeBoundsUpdated && !trackBoundsUpdated) {
       const bbox = segments?.length ? segmentsToBbox(segments) : undefined
       if (bbox) {
-        fitBounds(bbox)
+        fitBounds(bbox, { fitZoom: true })
         setTrackBoundsUpdated(true)
       }
     }
-  }, [isVesselLocation, fitBounds, segments, timerangeBoundsUpdated, trackBoundsUpdated])
+  }, [
+    isVesselLocation,
+    fitBounds,
+    segments,
+    timerangeBoundsUpdated,
+    trackBoundsUpdated,
+    needsTimerangeUpdate,
+  ])
 }
 
 export const useVesselFitBounds = () => {

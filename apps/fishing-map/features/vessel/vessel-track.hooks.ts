@@ -9,7 +9,7 @@ export const useVesselProfileTrack = () => {
   const vesselLayer = useGetDeckLayer<VesselLayer>(vesselDataview?.id as string)
   const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
   return useMemo(() => {
-    return vesselLayer?.instance?.getVesselTrackSegments()
+    return vesselLayer?.instance?.getVesselTrackSegments({ includeCoordinates: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackLoaded])
 }
