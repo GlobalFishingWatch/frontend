@@ -219,6 +219,7 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
             vesselSelfReportedId: vesselId,
           }}
           testId="vessel-layer-vessel-name"
+          dataviewId={dataview.id}
         >
           {getVesselTitle()}
         </VesselLink>

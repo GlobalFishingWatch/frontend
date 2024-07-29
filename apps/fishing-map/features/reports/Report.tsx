@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import isEqual from 'lodash/isEqual'
 import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
-import { isAuthError } from '@globalfishingwatch/api-client'
+import { crossBrowserTypeErrorMessages, isAuthError } from '@globalfishingwatch/api-client'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -94,7 +94,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
   )
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
   const { status: reportStatus, error: statusError, dispatchFetchReport } = useFetchReportVessel()
-  // const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
+  const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
   const hasVessels = useSelector(selectHasReportVessels)
 
   // TODO get this from datasets config
@@ -119,21 +119,21 @@ function ActivityReport({ reportName }: { reportName: string }) {
   const isSameWorkspaceReport =
     concurrentReportError && window?.location.href === lastReport?.workspaceUrl
 
-  // const isTimeoutError =
-  //   statusError?.message &&
-  //   crossBrowserTypeErrorMessages.some((error) => error.includes(statusError.message as string))
-  // useEffect(() => {
-  //   if (isSameWorkspaceReport || isTimeoutError) {
-  //     dispatchTimeoutRef.current = setTimeout(() => {
-  //       dispatchFetchReport()
-  //     }, 1000 * 30) // retrying each 30 secs
-  //   }
-  //   return () => {
-  //     if (dispatchTimeoutRef.current) {
-  //       clearTimeout(dispatchTimeoutRef.current)
-  //     }
-  //   }
-  // }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
+  const isTimeoutError =
+    statusError?.message &&
+    crossBrowserTypeErrorMessages.some((error) => error.includes(statusError.message as string))
+  useEffect(() => {
+    if (isTimeoutError) {
+      dispatchTimeoutRef.current = setTimeout(() => {
+        dispatchFetchReport()
+      }, 1000 * 30) // retrying each 30 secs
+    }
+    return () => {
+      if (dispatchTimeoutRef.current) {
+        clearTimeout(dispatchTimeoutRef.current)
+      }
+    }
+  }, [dispatchFetchReport, isTimeoutError])
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {
@@ -195,6 +195,17 @@ function ActivityReport({ reportName }: { reportName: string }) {
           </ReportVesselsPlaceholder>
         )
       }
+      if (isTimeoutError) {
+        return (
+          <ReportVesselsPlaceholder>
+            <div className={styles.cover}>
+              <p className={cx(styles.center, styles.top)}>
+                {t('analysis.timeoutError', 'This is taking more than expected, please wait')}
+              </p>
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
       return (
         <ReportVesselsPlaceholder>
           <div className={styles.cover}>
@@ -203,6 +214,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
         </ReportVesselsPlaceholder>
       )
     }
+
     if (!reportDataviews?.length) {
       return (
         <p className={styles.error}>
@@ -228,6 +240,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
     guestUser,
     hasAuthError,
     isSameWorkspaceReport,
+    isTimeoutError,
     lastReport,
     reportDataviews?.length,
     statusError,

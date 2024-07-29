@@ -1085,7 +1085,7 @@
   },
   "public-global-all-tracks": {
     "name": "Lintasan",
-    "description": "The dataset contains the tracks from all vessels (AIS) - Version 20231026"
+    "description": "The dataset contains the tracks from all vessels (AIS) - Version 3.0"
   },
   "public-global-all-vessels": {
     "name": "AIS (All Vessels)",

@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/i18n-labels",
-  "version": "1.2.197",
+  "version": "1.2.198",
   "main": "./index.js",
   "module": "./index.mjs",
   "typings": "./index.d.ts",

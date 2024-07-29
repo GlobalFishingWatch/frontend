@@ -64,6 +64,7 @@
     "summary": "<strong>{{vessels}} embarcaciones{{sources}} </strong> tuvieron <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
+    "timeoutError": "This is taking more than expected, please wait",
     "title": "Análisis",
     "unknown": "Desconocido"
   },
@@ -1012,6 +1013,10 @@
     "emptyStateEnvironment": "Suba conjuntos de datos personalizados (polígonos, pistas o puntos) arrastrando y soltando sus archivos en el mapa.",
     "emptyStateUser": "Upload custom datasets clicking on the plus icon.",
     "emptyStateVessels": "Las embarcaciones seleccionadas en la búsqueda o haciendo clic en el mapa de calor aparecerán aquí.",
+    "migrationDisclaimer": "Update your workspace to view the latest data and features.",
+    "migrationDisclaimerNote": "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>",
+    "migrationSkip": "Skip",
+    "migrationUpdate": "Update",
     "nameInput": "Nombre del espacio de trabajo",
     "nameRequired": "Workspace name is required",
     "new": "Nuevo espacio de trabajo",
