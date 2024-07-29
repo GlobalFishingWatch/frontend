@@ -111,7 +111,7 @@ const VesselLink = ({
               : { vesselRegistryId: getVesselIdentityId(identity) }),
           }),
           ...(query || {}),
-          dataviewInstances: locationQuery.dataviewInstances.map((instance: DataviewInstance) => {
+          dataviewInstances: locationQuery.dataviewInstances?.map((instance: DataviewInstance) => {
             if (instance.id === dataviewId) {
               return {
                 ...instance,
