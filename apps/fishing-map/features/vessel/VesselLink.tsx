@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { DataviewInstance, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import {
   selectCurrentWorkspaceCategory,
@@ -27,6 +27,7 @@ import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 
 type VesselLinkProps = {
   datasetId?: string
+  dataviewId?: string
   vesselId?: string
   identity?: VesselDataIdentity
   children: any
@@ -40,6 +41,7 @@ type VesselLinkProps = {
 const VesselLink = ({
   vesselId: vesselIdProp,
   datasetId,
+  dataviewId,
   identity,
   children,
   onClick,
@@ -109,6 +111,18 @@ const VesselLink = ({
               : { vesselRegistryId: getVesselIdentityId(identity) }),
           }),
           ...(query || {}),
+          dataviewInstances: locationQuery.dataviewInstances.map((instance: DataviewInstance) => {
+            if (instance.id === dataviewId) {
+              return {
+                ...instance,
+                config: {
+                  ...instance.config,
+                  visible: true,
+                },
+              }
+            }
+            return instance
+          }),
         },
       }}
       onClick={onLinkClick}

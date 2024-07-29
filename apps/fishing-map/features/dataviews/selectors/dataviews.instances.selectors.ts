@@ -260,7 +260,7 @@ export const selectActiveVesselsDataviews = createDeepEqualSelector(
 )
 
 export const selectVesselProfileDataview = createDeepEqualSelector(
-  [selectActiveVesselsDataviews, selectVesselId],
+  [selectVesselsDataviews, selectVesselId],
   (dataviews, vesselId) => dataviews.find(({ id }) => vesselId && id.includes(vesselId))
 )
 
