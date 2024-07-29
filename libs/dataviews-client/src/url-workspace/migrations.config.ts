@@ -21,6 +21,10 @@ export const FULL_VMS_VESSELS_DATASETS = [
   'full-peru-fishing-vessels',
 ]
 
+export const AIS_LEGACY_FISHING_EFFORT_DATASETS_DICT = {
+  'public-global-fishing-effort:v20201001': 'public-global-fishing-effort:v20231026',
+}
+
 export const AIS_LEGACY_VESSELS_DATASETS_DICT = {
   'public-global-other-vessels:v20201001': 'public-global-vessel-identity:v20231026',
   'public-global-carrier-vessels:v20201001': 'public-global-vessel-identity:v20231026',
@@ -99,6 +103,7 @@ export const EVENTS_LEGACY_VESSELS_DATASETS_DICT = {
 // Release: Vessel Profile
 // Changelog: v2 datasets are not compatible with v3 format responses
 export const ALL_LEGACY_VESSELS_DATASETS_DICT: Record<string, string> = {
+  ...AIS_LEGACY_FISHING_EFFORT_DATASETS_DICT,
   ...AIS_LEGACY_VESSELS_DATASETS_DICT,
   ...VMS_LEGACY_VESSELS_DATASETS_DICT,
 }

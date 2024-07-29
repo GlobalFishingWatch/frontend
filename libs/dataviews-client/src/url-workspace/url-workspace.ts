@@ -3,6 +3,7 @@ import isObject from 'lodash/isObject'
 import isString from 'lodash/isString'
 import transform from 'lodash/transform'
 import { stringify, parse } from 'qs'
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '..'
 import {
   removeLegacyEndpointPrefix,
@@ -168,12 +169,15 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
 }
 
 export const parseLegacyDataviewInstanceConfig = (
-  dataviewInstance: UrlDataviewInstance
+  dataviewInstance: UrlDataviewInstance | DataviewInstance
 ): UrlDataviewInstance => {
   return {
     ...dataviewInstance,
     config: {
       ...dataviewInstance.config,
+      ...(dataviewInstance?.config?.datasets?.length && {
+        datasets: dataviewInstance.config.datasets.map(runDatasetMigrations),
+      }),
       ...(dataviewInstance?.config?.info && {
         info: runDatasetMigrations(dataviewInstance?.config?.info),
       }),
