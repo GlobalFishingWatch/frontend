@@ -258,8 +258,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         daysFromLatest !== undefined
           ? endAt.minus({ days: daysFromLatest })
           : getUTCDateTime(workspace?.startAt || DEFAULT_TIME_RANGE.start)
-
-      return { ...workspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
+      const migratedWorkspace = {
+        ...workspace,
+        dataviewInstances: workspace?.dataviewInstances.map(parseLegacyDataviewInstanceConfig),
+      }
+      return { ...migratedWorkspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue({ error: parseAPIError(e) })
