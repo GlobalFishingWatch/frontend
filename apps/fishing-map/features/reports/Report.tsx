@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import isEqual from 'lodash/isEqual'
 import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
-import { isAuthError } from '@globalfishingwatch/api-client'
+import { crossBrowserTypeErrorMessages, isAuthError } from '@globalfishingwatch/api-client'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -94,7 +94,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
   )
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
   const { status: reportStatus, error: statusError, dispatchFetchReport } = useFetchReportVessel()
-  // const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
+  const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
   const hasVessels = useSelector(selectHasReportVessels)
 
   // TODO get this from datasets config
