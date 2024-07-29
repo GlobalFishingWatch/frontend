@@ -25,7 +25,6 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       maxZoom: 9,
       onDataLoad: this.props.onDataLoad,
       getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Basemap, params),
-      tileSize: 512,
       maxRequests: 100,
       debounceTime: 200,
       renderSubLayers: (props: any) => {
@@ -61,12 +60,10 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       id: 'basemap-satellite',
       data: 'https://gateway.api.dev.globalfishingwatch.org/v3/tileset/sat/tile?x={x}&y={y}&z={z}',
       minZoom: 0,
-      // maxZoom: 18,
       maxRequests: 100,
-      debounceTime: 200,
+      debounceTime: 800,
       onDataLoad: this.props.onDataLoad,
       getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Basemap, params),
-      tileSize: 256,
       renderSubLayers: (props: any) => {
         const {
           bbox: { west, south, east, north },
