@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { InputText, Switch } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { selectLocationQuery } from 'routes/routes.selectors'
-import { useMapStyle } from 'features/map/map-style.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
@@ -16,8 +15,6 @@ const DebugMenu: React.FC = () => {
   const debugOptions = useSelector(selectDebugOptions)
   const locationQuery = useSelector(selectLocationQuery)
   const [datasetId, setDatasetId] = useState<string>('')
-  // Not sure why, but it seems this hook returns an outdated style
-  const style = useMapStyle()
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const datasets = useSelector(selectAllDatasets)
 
@@ -34,25 +31,13 @@ const DebugMenu: React.FC = () => {
       <section className={styles.section}>
         <div className={styles.header}>
           <Switch
-            id="option_blob"
-            active={debugOptions.blob}
-            onClick={() => dispatch(toggleOption(DebugOption.Blob))}
+            id="option_map_stats"
+            active={debugOptions.mapStats}
+            onClick={() => dispatch(toggleOption(DebugOption.MapStats))}
           />
-          <label htmlFor="option_blob">[experimental] Smooth heatmap style</label>
+          <label htmlFor="option_map_stats">Map stats</label>
         </div>
-        <p>
-          Render fishing layer with a smoother rendering style. Only works when a single fishing
-          layer is shown. Will disable interaction on this layer.
-        </p>
-        <div className={styles.header}>
-          <Switch
-            id="option_extruded"
-            active={debugOptions.extruded}
-            onClick={() => dispatch(toggleOption(DebugOption.Extruded))}
-          />
-          <label htmlFor="option_extruded">[experimental] Stacked 3D bars</label>
-        </div>
-        <p>Renders fishing activity as stacked 3D bars. Will disable interaction on this layer.</p>
+        <p>Show fps and memory stats</p>
         <div className={styles.header}>
           <Switch
             id="option_debug"
@@ -101,13 +86,6 @@ const DebugMenu: React.FC = () => {
           className={styles.editor}
           defaultValue={JSON.stringify(locationQuery, undefined, 2)}
         />
-      </section>
-      <hr className={styles.separation} />
-      <section>
-        <div className={styles.header}>
-          <label>Current map GL style</label>
-        </div>
-        <textarea className={styles.editor} defaultValue={JSON.stringify(style, undefined, 2)} />
       </section>
     </div>
   )

@@ -5,6 +5,7 @@ import { Icon } from '@globalfishingwatch/ui-components'
 import { getDatasetTypeIcon } from 'features/datasets/datasets.utils'
 import { CONTEXT_LAYERS_DATAVIEWS } from 'data/workspaces'
 import { useDataviewInstancesConnect } from '../workspace.hook'
+import styles from './Title.module.css'
 
 type TitleProps = {
   dataview: UrlDataviewInstance
@@ -49,11 +50,11 @@ const Title = (props: TitleProps, ref: Ref<HTMLHeadingElement>) => {
       className={cx(className, { [classNameActive]: layerActive })}
       onClick={onToggleLayerActive}
     >
-      <span>
+      <span className={styles.titleSpan}>
         {showIcon &&
           datasetIcon &&
           !CONTEXT_LAYERS_DATAVIEWS.includes(dataview.dataviewId as string) && (
-            <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
+            <Icon icon={datasetIcon} />
           )}
         {title}
       </span>

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { GroupedVirtuoso } from 'react-virtuoso'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import useViewport from 'features/map/map-viewport.hooks'
+import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import VoyageGroup from 'features/vessel/activity/activity-by-voyage/VoyageGroup'
@@ -15,7 +15,6 @@ import {
   selectEventsGroupedByVoyages,
 } from 'features/vessel/activity/vessels-activity.selectors'
 import useExpandedVoyages from 'features/vessel/activity/activity-by-voyage/activity-by-voyage.hook'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import {
   disableHighlightedTime,
   setHighlightedEvents,
@@ -25,10 +24,11 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { selectVesselPrintMode } from 'features/vessel/vessel.slice'
-import { useDebouncedDispatchHighlightedEvent } from 'features/map/map.hooks'
 import { ZOOM_LEVEL_TO_FOCUS_EVENT } from 'features/timebar/Timebar'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
@@ -48,7 +48,8 @@ const ActivityByVoyage = () => {
     setSelectedEvent((state) => (state?.id === event.id ? undefined : event))
   }, [])
 
-  const { viewport, setMapCoordinates } = useViewport()
+  const viewport = useMapViewport()
+  const setMapCoordinates = useSetMapCoordinates()
 
   const selectVoyageOnMap = useCallback(
     (voyageId: ActivityEvent['voyage']) => {
@@ -96,15 +97,17 @@ const ActivityByVoyage = () => {
 
   const selectEventOnMap = useCallback(
     (event: ActivityEvent) => {
-      const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
-      setMapCoordinates({
-        latitude: event.position.lat,
-        longitude: event.position.lon,
-        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
-      })
-      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+      if (viewport?.zoom) {
+        const zoom = viewport.zoom ?? DEFAULT_VIEWPORT.zoom
+        setMapCoordinates({
+          latitude: event.coordinates?.[1],
+          longitude: event.coordinates?.[0],
+          zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
+        })
+        if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+      }
     },
-    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport.zoom]
+    [dispatchQueryParams, isSmallScreen, setMapCoordinates, viewport?.zoom]
   )
 
   const { events, groupCounts, groups } = useMemo(() => {

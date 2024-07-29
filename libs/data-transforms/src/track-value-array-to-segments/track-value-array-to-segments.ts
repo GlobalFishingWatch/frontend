@@ -1,6 +1,6 @@
-import { Field, Segment, Point } from '@globalfishingwatch/api-types'
+import { TrackField, TrackSegment, TrackPoint } from '@globalfishingwatch/api-types'
 
-export const TRACK_FIELDS = [Field.lonlat, Field.timestamp, Field.speed]
+export const TRACK_FIELDS = [TrackField.lonlat, TrackField.timestamp, TrackField.speed]
 export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)
 
 /**
@@ -11,42 +11,42 @@ export const DEFAULT_NULL_VALUE = -Math.pow(2, 31)
  * property of every field defined in:
  *  https://github.com/GlobalFishingWatch/api-vessels-service/blob/develop/src/modules/api/v1/vessels/modules/tracks/services/feature.service.ts
  */
-const transformerByField: Partial<Record<Field, (value: number) => number>> = {
-  [Field.course]: (value: number) => value / Math.pow(10, 6),
-  [Field.distanceFromPort]: (value: number) => value,
+const transformerByField: Partial<Record<TrackField, (value: number) => number>> = {
+  [TrackField.course]: (value: number) => value / Math.pow(10, 6),
+  [TrackField.distanceFromPort]: (value: number) => value,
   // Uncomment when added to new package version
   // [Field.distanceFromShore]: (value: number) => value,
-  [Field.elevation]: (value: number) => value,
+  [TrackField.elevation]: (value: number) => value,
   // Uncomment when added to new package version
   // [Field.encounter]: (value: number) => value,
-  [Field.latitude]: (value: number) => value / Math.pow(10, 6),
-  [Field.longitude]: (value: number) => value / Math.pow(10, 6),
-  [Field.fishing]: (value: number) => value,
-  [Field.night]: (value: number) => value,
-  [Field.speed]: (value: number) => value / Math.pow(10, 6),
-  [Field.timestamp]: (value: number) => value * Math.pow(10, 3),
+  [TrackField.latitude]: (value: number) => value / Math.pow(10, 6),
+  [TrackField.longitude]: (value: number) => value / Math.pow(10, 6),
+  [TrackField.fishing]: (value: number) => value,
+  [TrackField.night]: (value: number) => value,
+  [TrackField.speed]: (value: number) => value / Math.pow(10, 6),
+  [TrackField.timestamp]: (value: number) => value * Math.pow(10, 3),
 }
 
-export const trackValueArrayToSegments = (valueArray: number[], fields_: Field[]) => {
+export const trackValueArrayToSegments = (valueArray: number[], fields_: TrackField[]) => {
   if (!fields_.length) {
     throw new Error()
   }
 
-  const fields: Field[] = [...fields_].map((f) => f.toLowerCase() as Field)
-  if (fields.includes(Field.lonlat)) {
-    const llIndex = fields.indexOf(Field.lonlat)
-    fields.splice(llIndex, 1, Field.longitude, Field.latitude)
+  const fields: TrackField[] = [...fields_].map((f) => f.toLowerCase() as TrackField)
+  if (fields.includes(TrackField.lonlat)) {
+    const llIndex = fields.indexOf(TrackField.lonlat)
+    fields.splice(llIndex, 1, TrackField.longitude, TrackField.latitude)
   }
 
   const numFields = fields.length
 
   let numSegments: number
   const segmentIndices: number[] = []
-  const segments: Point[][] = []
+  const segments: TrackPoint[][] = []
 
   let nullValue = DEFAULT_NULL_VALUE
-  let currentSegment: Point[] = []
-  let currentPoint: Point = {}
+  let currentSegment: TrackPoint[] = []
+  let currentPoint: TrackPoint = {}
   let pointsFieldIndex = 0
   let currentPointFieldIndex = 0
   let currentSegmentIndex = 0
@@ -87,9 +87,9 @@ export const trackValueArrayToSegments = (valueArray: number[], fields_: Field[]
         currentPoint = {}
       }
 
-      const field: Field = fields[currentPointFieldIndex]
+      const field: TrackField = fields[currentPointFieldIndex]
       const transformer =
-        transformerByField[field] || transformerByField[field.toLowerCase() as Field]
+        transformerByField[field] || transformerByField[field.toLowerCase() as TrackField]
 
       if (value === nullValue || transformer === undefined) {
         currentPoint[field] = null
@@ -110,5 +110,5 @@ export const trackValueArrayToSegments = (valueArray: number[], fields_: Field[]
     segments.push(currentSegment)
   }
 
-  return segments as Segment[]
+  return segments as TrackSegment[]
 }

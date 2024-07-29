@@ -2,20 +2,20 @@ import { createSelector } from '@reduxjs/toolkit'
 import {
   DatasetTypes,
   DataviewCategory,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
 import {
+  extendDataviewDatasetConfig,
   GetDatasetConfigsCallbacks,
   getResources,
   mergeWorkspaceUrlDataviewInstances,
   resolveDataviews,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { MARINE_MANAGER_DATAVIEWS } from 'data/default-workspaces/marine-manager'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
@@ -23,18 +23,11 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   VESSEL_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import {
-  selectTrackThinningConfig,
-  selectTrackChunksConfig,
-} from 'features/resources/resources.selectors.thinning'
-import {
-  trackDatasetConfigsCallback,
-  eventsDatasetConfigsCallback,
-  infoDatasetConfigsCallback,
-} from 'features/resources/resources.utils'
+import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
+import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import {
   selectWorkspaceDataviewInstances,
@@ -48,7 +41,6 @@ import {
   selectIsVesselLocation,
   selectVesselId,
   selectUrlDataviewInstancesOrder,
-  selectIsMarineManagerLocation,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { createDeepEqualSelector } from 'utils/selectors'
@@ -84,6 +76,7 @@ export const selectDataviewInstancesMerged = createSelector(
         workspaceDataviewInstances as DataviewInstance<any>[],
         urlDataviewInstances
       ) || []
+
     if (isAnyVesselLocation) {
       const existingDataviewInstance = mergedDataviewInstances?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
@@ -130,9 +123,25 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
   }
 )
 
+export const selectTimebarGraphSelector = selectWorkspaceStateProperty('timebarGraph')
+
 export const selectAllDataviewInstancesResolved = createSelector(
-  [selectDataviewInstancesMergedOrdered, selectAllDataviews, selectAllDatasets, selectUserLogged],
-  (dataviewInstances, dataviews, datasets, loggedUser): UrlDataviewInstance[] | undefined => {
+  [
+    selectDataviewInstancesMergedOrdered,
+    selectAllDataviews,
+    selectAllDatasets,
+    selectUserLogged,
+    selectTrackThinningConfig,
+    selectIsGuestUser,
+  ],
+  (
+    dataviewInstances,
+    dataviews,
+    datasets,
+    loggedUser,
+    trackThinningZoomConfig,
+    guestUser
+  ): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
       return EMPTY_ARRAY
     }
@@ -160,6 +169,10 @@ export const selectAllDataviewInstancesResolved = createSelector(
         )
         return {
           ...dataviewInstance,
+          config: {
+            ...dataviewInstance.config,
+            trackThinningZoomConfig,
+          },
           datasetsConfig,
         }
       }
@@ -170,43 +183,24 @@ export const selectAllDataviewInstancesResolved = createSelector(
       dataviews,
       datasets
     )
-    return dataviewInstancesResolved
-  }
-)
-
-export const selectMarineManagerDataviewInstanceResolved = createSelector(
-  [selectIsMarineManagerLocation, selectAllDataviews, selectAllDatasets],
-  (isMarineManagerLocation, dataviews, datasets): UrlDataviewInstance[] | undefined => {
-    if (!isMarineManagerLocation || !dataviews.length || !datasets.length) return EMPTY_ARRAY
-    const dataviewInstancesResolved = resolveDataviews(
-      MARINE_MANAGER_DATAVIEWS,
-      dataviews,
-      datasets
+    const callbacks: GetDatasetConfigsCallbacks = {
+      info: infoDatasetConfigsCallback(guestUser),
+    }
+    const dataviewInstancesResolvedExtended = extendDataviewDatasetConfig(
+      dataviewInstancesResolved,
+      callbacks
     )
-    return dataviewInstancesResolved
+    return dataviewInstancesResolvedExtended
   }
 )
-
-export const selectTimebarGraphSelector = selectWorkspaceStateProperty('timebarGraph')
 /**
  * Calls getResources to prepare track dataviews' datasetConfigs.
  * Injects app-specific logic by using getResources's callback
  */
 export const selectDataviewsResources = createSelector(
-  [
-    selectAllDataviewInstancesResolved,
-    selectTrackThinningConfig,
-    selectTrackChunksConfig,
-    selectTimebarGraphSelector,
-    selectIsGuestUser,
-  ],
-  (dataviewInstances, thinningConfig, chunks, timebarGraph, guestUser) => {
-    const callbacks: GetDatasetConfigsCallbacks = {
-      track: trackDatasetConfigsCallback(thinningConfig, chunks, timebarGraph),
-      events: eventsDatasetConfigsCallback,
-      info: infoDatasetConfigsCallback(guestUser),
-    }
-    return getResources(dataviewInstances || [], callbacks)
+  [selectAllDataviewInstancesResolved],
+  (dataviewInstances) => {
+    return getResources(dataviewInstances || [])
   }
 )
 
@@ -225,24 +219,31 @@ export const selectActiveDataviewInstancesResolved = createSelector(
   }
 )
 
-export const selectCurrentDataviewInstancesResolved = createSelector(
-  [
-    selectDataviewInstancesResolved,
-    selectIsMarineManagerLocation,
-    selectMarineManagerDataviewInstanceResolved,
-  ],
-  (dataviewsInstances = [], isMarineManagerLocation, marineManagerDataviewInstances = []) => {
-    return isMarineManagerLocation ? marineManagerDataviewInstances : dataviewsInstances
-  }
-)
-
-export const selectDataviewInstancesByType = (type: GeneratorType) => {
+const selectDataviewInstancesByType = (type: DataviewType) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
   })
 }
 
-export const selectTrackDataviews = selectDataviewInstancesByType(GeneratorType.Track)
+export const selectTrackDataviews = selectDataviewInstancesByType(DataviewType.Track)
+
+export const selectAllActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) =>
+  dataviews?.filter((d) => d.config?.visible)
+)
+
+export const selectUserTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
+  return dataviews?.filter(
+    (dataview) =>
+      !dataview.datasets ||
+      (dataview.datasets?.[0]?.type === DatasetTypes.UserTracks &&
+        dataview.category === DataviewCategory.User)
+  )
+})
+
+export const selectActiveUserTrackDataviews = createSelector(
+  [selectUserTrackDataviews],
+  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+)
 
 export const selectVesselsDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
@@ -277,5 +278,27 @@ export const selectActiveTrackDataviews = createDeepEqualSelector(
       }
       return config?.visible
     })
+  }
+)
+
+export const selectDeprecatedDataviewInstances = createSelector(
+  [selectAllDataviewInstancesResolved, selectDeprecatedDatasets],
+  (dataviews, deprecatedDatasets = {}) => {
+    return dataviews?.filter(({ datasetsConfig, config }) => {
+      const hasDatasetsDeprecated =
+        datasetsConfig?.some((datasetConfig) => deprecatedDatasets[datasetConfig.datasetId]) ||
+        false
+      const hasConfigDeprecated = config?.datasets
+        ? config.datasets.some((d) => deprecatedDatasets[d])
+        : false
+      return hasDatasetsDeprecated || hasConfigDeprecated
+    })
+  }
+)
+
+export const selectHasDeprecatedDataviewInstances = createSelector(
+  [selectDeprecatedDataviewInstances],
+  (deprecatedDataviews) => {
+    return deprecatedDataviews && deprecatedDataviews.length > 0
   }
 )

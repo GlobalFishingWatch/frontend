@@ -4,8 +4,8 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Button, InputText, Select, SwitchRow, Tooltip } from '@globalfishingwatch/ui-components'
 import { Dataset } from '@globalfishingwatch/api-types'
-import { AggregationOperation } from '@globalfishingwatch/fourwings-aggregate'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   getBigQuery4WingsDataviewInstance,
@@ -34,9 +34,8 @@ const BigQueryMenu: React.FC = () => {
   const [unit, setUnit] = useState('')
   const [error, setError] = useState('')
   const [visualisationMode, setVisualisationMode] = useState<BigQueryVisualisation | null>(null)
-  const [aggregationOperation, setAggregationOperation] = useState<AggregationOperation | null>(
-    null
-  )
+  const [aggregationOperation, setAggregationOperation] =
+    useState<FourwingsAggregationOperation | null>(null)
   const [runCostChecked, setRunCostChecked] = useState(false)
   const [createAsPublic, setCreateAsPublic] = useState(true)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
@@ -63,11 +62,11 @@ const BigQueryMenu: React.FC = () => {
 
   const AggregationOptions = [
     {
-      id: AggregationOperation.Avg,
+      id: FourwingsAggregationOperation.Avg,
       label: t('bigQuery.aggregateAvg', 'Average'),
     },
     {
-      id: AggregationOperation.Sum,
+      id: FourwingsAggregationOperation.Sum,
       label: t('bigQuery.aggregateSum', 'Sum'),
     },
   ]
@@ -100,7 +99,7 @@ const BigQueryMenu: React.FC = () => {
       const dataviewInstance =
         visualisationMode === '4wings'
           ? getBigQuery4WingsDataviewInstance(dataset.id, {
-              aggregationOperation: aggregationOperation as AggregationOperation,
+              aggregationOperation: aggregationOperation as FourwingsAggregationOperation,
             })
           : getBigQueryEventsDataviewInstance(dataset.id)
       addNewDataviewInstances([dataviewInstance])

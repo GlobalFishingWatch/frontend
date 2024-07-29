@@ -9,13 +9,12 @@
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.0",
     "@globalfishingwatch/dataviews-client": "^16.0.0",
-    "@globalfishingwatch/layer-composer": "^12.0.0",
+    "@globalfishingwatch/deck-loaders": "^0.0.1",
     "@globalfishingwatch/ui-components": "14.0.0",
     "classnames": "2.x",
     "d3-array": "3.x",
     "d3-scale": "4.x",
     "d3-shape": "3.x",
-    "dayjs": "1.x",
     "lodash": "4.x",
     "luxon": "3.x",
     "memoize-one": "6.x",
@@ -24,8 +23,7 @@
     "react": "18.x",
     "simple-statistics": "7.x",
     "use-debounce": "10.x",
-    "recoil": "0.x",
-    "react-spring": "9.x",
+    "jotai": "2.x",
     "resize-observer-polyfill": "1.x"
   }
 }

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { get } from 'lodash'
+import get from 'lodash/get'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { EventType, EventTypes } from '@globalfishingwatch/api-types'

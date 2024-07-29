@@ -3,12 +3,14 @@ import cx from 'classnames'
 import htmlParse from 'html-react-parser'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { GeneratorType, Interval, getInterval } from '@globalfishingwatch/layer-composer'
+import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
 import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
+  useTimeseriesStats,
 } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
@@ -23,18 +25,21 @@ function ReportEnvironment() {
   const timerange = useSelector(selectTimeRange)
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
+  const timeseriesStats = useTimeseriesStats()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
-  const interval = getInterval(timerange.start, timerange.end, [['MONTH', 'DAY']] as Interval[][])
+  const allAvailableIntervals = getAvailableIntervalsInDataviews(environmentalDataviews)
+  const interval = getFourwingsInterval(timerange.start, timerange.end, allAvailableIntervals)
 
   if (!environmentalDataviews?.length) return null
 
   return (
     <Fragment>
       {environmentalDataviews.map((dataview, index) => {
-        const isDynamic = dataview.config?.type === GeneratorType.HeatmapAnimated
-        const { min, mean, max } = dataview.config?.stats || {}
+        const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
+        const { min, mean, max } = timeseriesStats[dataview.id] || {}
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
+        const isLoading = loading || layersTimeseriesFiltered!?.[index]?.mode === 'loading'
         const unit = dataset?.unit
         return (
           <div key={dataview.id} className={styles.container}>
@@ -49,7 +54,7 @@ function ReportEnvironment() {
               )}
             </p>
             {isDynamic ? (
-              loading ? (
+              isLoading || !layersTimeseriesFiltered!?.[index] ? (
                 <ReportActivityPlaceholder showHeader={false} />
               ) : (
                 <ReportActivityEvolution
@@ -59,7 +64,7 @@ function ReportEnvironment() {
                 />
               )
             ) : null}
-            {!loading && min && mean && max && (
+            {!isLoading && min && mean && max && (
               <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
                 {isDynamic
                   ? t('analysis.statsDisclaimerDynamic', {

@@ -1,227 +1,430 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { DeckProps, PickingInfo } from '@deck.gl/core'
+import type { MjolnirPointerEvent } from 'mjolnir.js'
+import { atom, useAtom, useSetAtom } from 'jotai'
+import { ThunkDispatch } from '@reduxjs/toolkit'
+import { debounce, throttle } from 'es-toolkit'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
-  InteractionEventCallback,
-  useFeatureState,
-  useMapClick,
-  useMapHover,
-  useSimpleMapHover,
-} from '@globalfishingwatch/react-hooks'
-import { ExtendedStyle, ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { MapLayerMouseEvent } from '@globalfishingwatch/maplibre-gl'
+  useMapHoverInteraction,
+  useSetMapHoverInteraction,
+  InteractionEvent,
+  InteractionEventType,
+  useGetDeckLayers,
+} from '@globalfishingwatch/deck-layer-composer'
+import {
+  ClusterPickingObject,
+  DeckLayerInteractionPickingInfo,
+  DeckLayerPickingObject,
+  FourwingsHeatmapPickingObject,
+} from '@globalfishingwatch/deck-layers'
+import { trackEvent } from 'features/app/analytics.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { useMapAnnotation } from 'features/map/annotations/annotations.hooks'
+import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
+import useRulers from 'features/map/overlays/rulers/rulers.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
+import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setHintDismissed } from 'features/help/hints.slice'
+import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { setHighlightedEvents } from 'features/timebar/timebar.slice'
+import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
+import { getAnalyticsEvent, isRulerLayerPoint, isTilesClusterLayer } from './map-interaction.utils'
 import {
-  TooltipEventFeature,
-  parseMapTooltipEvent,
-  useClickedEventConnect,
-  useMapHighlightedEvent,
-} from 'features/map/map.hooks'
-import useRulers from 'features/map/rulers/rulers.hooks'
-import useMapInstance from 'features/map/map-context.hooks'
-import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { selectIsMarineManagerLocation } from 'routes/routes.selectors'
-import { useMapClusterTilesLoaded } from 'features/map/map-sources.hooks'
-import {
-  ANNOTATIONS_GENERATOR_ID,
-  RULERS_LAYER_ID,
-  WORKSPACES_POINTS_TYPE,
-} from 'features/map/map.config'
-import { useMapErrorNotification } from 'features/map/error-notification/error-notification.hooks'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { selectCurrentDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { SliceInteractionEvent } from './map.slice'
+  SliceExtendedClusterPickingObject,
+  SliceInteractionEvent,
+  fetchBQEventThunk,
+  fetchEncounterEventThunk,
+  fetchFishingActivityInteractionThunk,
+  selectApiEventStatus,
+  selectClickedEvent,
+  selectFishingInteractionStatus,
+  setClickedEvent,
+} from './map.slice'
+import { useSetMapCoordinates } from './map-viewport.hooks'
 
-export const useMapMouseHover = (style?: ExtendedStyle) => {
-  const map = useMapInstance()
-  const { isMapDrawing } = useMapDrawConnect()
-  const { isMapAnnotating } = useMapAnnotation()
-  const { onRulerMapHover, rulersEditing } = useRulers()
-  const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const { cleanFeatureState } = useFeatureState(map)
+export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
-  const [hoveredEvent, setHoveredEvent] = useState<SliceInteractionEvent | null>(null)
-  const [hoveredDebouncedEvent, setHoveredDebouncedEvent] = useState<SliceInteractionEvent | null>(
-    null
-  )
+const useMapClusterTilesLoading = () => {
+  const eventsDataviews = useSelector(selectEventsDataviews)
+  const eventsDeckLayers = useGetDeckLayers(eventsDataviews?.map((d) => d.id))
+  if (!eventsDeckLayers?.length) {
+    return false
+  }
+  return eventsDeckLayers.some((layer) => !layer.instance.isLoaded)
+}
 
-  const onSimpleMapHover = useSimpleMapHover(setHoveredEvent as InteractionEventCallback)
-  const onMapHover = useMapHover(
-    setHoveredEvent as InteractionEventCallback,
-    setHoveredDebouncedEvent as InteractionEventCallback,
-    map,
-    style?.metadata
-  )
+type InteractionPromise = ThunkDispatch<Promise<any>, any, any> & { abort: any }
+const initialInteractionPromises = {
+  activity: undefined,
+  events: undefined,
+}
+const interactionPromisesAtom = atom<{
+  activity: InteractionPromise | undefined
+  events: InteractionPromise | undefined
+}>(initialInteractionPromises)
 
-  const onMouseMove: any = useCallback(
-    (event: MapLayerMouseEvent) => {
-      if (isMapDrawing || isMapAnnotating) {
-        return onSimpleMapHover(event)
+export const useCancelInteractionPromises = () => {
+  const [interactionPromises, setInteractionPromises] = useAtom(interactionPromisesAtom)
+
+  const cancelPendingInteractionRequests = useCallback(() => {
+    const promisesRef = [interactionPromises.activity, interactionPromises.events]
+    promisesRef.forEach((p) => {
+      if (p) {
+        p.abort()
       }
-      if (rulersEditing) {
-        return onMapHover(onRulerMapHover(event))
+    })
+    setInteractionPromises(initialInteractionPromises)
+  }, [interactionPromises.events, interactionPromises.activity, setInteractionPromises])
+
+  return cancelPendingInteractionRequests
+}
+export const useClickedEventConnect = () => {
+  const dispatch = useAppDispatch()
+  const setInteractionPromises = useSetAtom(interactionPromisesAtom)
+  const cancelPendingInteractionRequests = useCancelInteractionPromises()
+  const clickedEvent = useSelector(selectClickedEvent)
+  const fishingInteractionStatus = useSelector(selectFishingInteractionStatus)
+  const apiEventStatus = useSelector(selectApiEventStatus)
+  const setMapCoordinates = useSetMapCoordinates()
+  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
+  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
+  const { rulersEditing, onRulerMapClick } = useRulers()
+  const areTilesClusterLoading = useMapClusterTilesLoading()
+  // const fishingPromiseRef = useRef<any>()
+  // const eventsPromiseRef = useRef<any>()
+
+  const dispatchClickedEvent = (deckEvent: InteractionEvent | null) => {
+    // Cancel all pending promises
+    cancelPendingInteractionRequests()
+
+    if (deckEvent === null) {
+      dispatch(setClickedEvent(null))
+      return
+    }
+    if (isMapAnnotating) {
+      addMapAnnotation([deckEvent.longitude, deckEvent.latitude])
+      return
+    }
+    if (isErrorNotificationEditing) {
+      addErrorNotification([deckEvent.longitude, deckEvent.latitude])
+      return
+    }
+    if (rulersEditing) {
+      onRulerMapClick([deckEvent.longitude, deckEvent.latitude])
+      return
+    }
+
+    const event = {
+      features: deckEvent.features,
+      //   .map((feature) => {
+      //   const { geometry, ...rest } = feature as any
+      //   return rest
+      // }),
+      latitude: deckEvent.latitude,
+      longitude: deckEvent.longitude,
+      point: { x: deckEvent.point.x, y: deckEvent.point.y },
+    } as SliceInteractionEvent
+
+    event?.features?.forEach((feature) => {
+      const analyticsEvent = getAnalyticsEvent(feature)
+      trackEvent(analyticsEvent)
+    })
+    const clusterFeature = event?.features?.find(
+      (f) => (f as ClusterPickingObject).category === DataviewCategory.Events
+    ) as ClusterPickingObject
+
+    if (clusterFeature?.properties?.expansionZoom) {
+      const { count, expansionZoom, lat, lon } = clusterFeature.properties
+      if (count > 1) {
+        if (!areTilesClusterLoading && lat && lon) {
+          setMapCoordinates({
+            latitude: lat,
+            longitude: lon,
+            zoom: expansionZoom,
+          })
+        }
+        return
       }
-      return onMapHover(event)
-    },
-    [isMapAnnotating, isMapDrawing, onMapHover, onRulerMapHover, onSimpleMapHover, rulersEditing]
-  )
+    }
 
-  const hoveredTooltipEvent = parseMapTooltipEvent(hoveredEvent, dataviews, temporalgridDataviews)
-  useMapHighlightedEvent(hoveredTooltipEvent?.features)
+    if (!event || !event.features) {
+      if (clickedEvent) {
+        dispatch(setClickedEvent(null))
+      }
+      return
+    }
 
-  const resetHoverState = useCallback(() => {
-    setHoveredEvent(null)
-    setHoveredDebouncedEvent(null)
-    cleanFeatureState('hover')
-  }, [cleanFeatureState])
+    dispatch(setClickedEvent(event))
+
+    // get temporal grid clicked features and order them by sublayerindex
+    const fishingActivityFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
+      (feature) => {
+        if (
+          feature?.sublayers?.every((sublayer) => !sublayer.visible) ||
+          feature.visualizationMode === 'positions'
+        ) {
+          return false
+        }
+        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(feature.category)
+      }
+    )
+
+    if (fishingActivityFeatures?.length) {
+      dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
+      const activityProperties = fishingActivityFeatures.map((feature) =>
+        feature.category === 'detections' ? 'detections' : 'hours'
+      )
+      const activityPromise = dispatch(
+        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
+      )
+      setInteractionPromises((prev) => ({ ...prev, activity: activityPromise as any }))
+    }
+
+    const tileClusterFeature = event.features.find(
+      (f) => f.category === DataviewCategory.Events && f.subcategory === DataviewType.TileCluster
+    ) as SliceExtendedClusterPickingObject
+    if (tileClusterFeature) {
+      const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
+      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
+
+      const eventsPromise = dispatch(fetchFn(tileClusterFeature))
+      setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
+    }
+  }
 
   return {
-    onMouseMove,
-    resetHoverState,
-    hoveredEvent,
-    hoveredDebouncedEvent,
-    hoveredTooltipEvent,
+    clickedEvent,
+    fishingInteractionStatus,
+    apiEventStatus,
+    dispatchClickedEvent,
+    cancelPendingInteractionRequests,
   }
 }
 
-export const useMapMouseClick = (style?: ExtendedStyle) => {
-  const map = useMapInstance()
-  const { isMapDrawing } = useMapDrawConnect()
-  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
-  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
-  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
-  const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
-  const temporalgridDataviews = useSelector(selectActiveTemporalgridDataviews)
-  const { onRulerMapClick, rulersEditing } = useRulers()
-  const { clickedEvent, dispatchClickedEvent } = useClickedEventConnect()
+const useGetPickingInteraction = () => {
+  const map = useDeckMap()
 
-  const onClick = useMapClick(dispatchClickedEvent, style?.metadata as ExtendedStyleMeta, map)
-
-  const clickedTooltipEvent = parseMapTooltipEvent(clickedEvent, dataviews, temporalgridDataviews)
-
-  const onMapClick = useCallback(
-    (event: MapLayerMouseEvent) => {
-      const hasWorkspacesFeatures =
-        event?.features?.find(
-          (feature: any) => feature.properties.type === WORKSPACES_POINTS_TYPE
-        ) !== undefined
-      if (isMapDrawing || (isMarineManagerLocation && !hasWorkspacesFeatures)) {
-        return undefined
+  const getPickingInteraction = useCallback(
+    (info: PickingInfo, type: InteractionEventType): InteractionEvent | undefined => {
+      if (!map || !info?.coordinate) {
+        return
       }
-
-      const hasRulerFeature =
-        event.features?.find((f) => f.source === RULERS_LAYER_ID) !== undefined
-      if (rulersEditing && !hasRulerFeature) {
-        return onRulerMapClick(event)
+      let pickingInfo = [] as DeckLayerInteractionPickingInfo[]
+      try {
+        pickingInfo = map?.pickMultipleObjects({
+          x: info.x,
+          y: info.y,
+          radius: 0,
+        }) as DeckLayerInteractionPickingInfo[]
+      } catch (e) {
+        console.warn(e)
       }
-      const hasAnnotationFeature =
-        event.features?.find((f) => f.source === ANNOTATIONS_GENERATOR_ID) !== undefined
-      if (isMapAnnotating && !hasAnnotationFeature) {
-        return addMapAnnotation(event)
+      const uniqFeatureIds = [] as string[]
+      const features = pickingInfo.flatMap((f) => {
+        if (f.object?.id) {
+          if (!uniqFeatureIds.includes(f.object.id as string)) {
+            uniqFeatureIds.push(f.object.id as string)
+            return f.object
+          }
+          return []
+        }
+        return f.object || []
+      })
+      return {
+        ...info,
+        type,
+        longitude: info.coordinate[0],
+        latitude: info.coordinate[1],
+        point: { x: info.x, y: info.y },
+        features,
       }
-      if (isErrorNotificationEditing) {
-        return addErrorNotification(event)
-      }
-      onClick(event)
     },
-    [
-      isMapDrawing,
-      isMarineManagerLocation,
-      rulersEditing,
-      isMapAnnotating,
-      isErrorNotificationEditing,
-      onClick,
-      onRulerMapClick,
-      addMapAnnotation,
-      addErrorNotification,
-    ]
-    // this stops complaining between typings in mapbox-gl and maplibre-gl
-  ) as (e: any) => void
-
-  return { onMapClick, clickedTooltipEvent }
-}
-
-const hasTooltipEventFeature = (
-  hoveredTooltipEvent: ReturnType<typeof parseMapTooltipEvent>,
-  type: GeneratorType
-) => {
-  return hoveredTooltipEvent?.features.find((f) => f.type === type) !== undefined
-}
-
-const hasToolFeature = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
-  if (!hoveredTooltipEvent) return false
-  return (
-    hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Annotation) ||
-    hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Rulers)
+    [map]
   )
+  return getPickingInteraction
 }
 
-export const useMapCursor = (hoveredTooltipEvent?: ReturnType<typeof parseMapTooltipEvent>) => {
-  const map = useMapInstance()
+export const useMapMouseHover = () => {
+  const getPickingInteraction = useGetPickingInteraction()
+  const setMapHoverFeatures = useSetMapHoverInteraction()
+  const { isMapDrawing } = useMapDrawConnect()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
-  const { isMapDrawing } = useMapDrawConnect()
-  const { rulersEditing } = useRulers()
-  const gfwUser = useSelector(selectIsGFWUser)
-  const isMarineManagerLocation = useSelector(selectIsMarineManagerLocation)
-  const dataviews = useSelector(selectCurrentDataviewInstancesResolved)
-  const tilesClusterLoaded = useMapClusterTilesLoaded()
+  const { onRulerMapHover, rulersEditing } = useRulers()
 
-  const getCursor = useCallback(() => {
-    if (hoveredTooltipEvent && hasToolFeature(hoveredTooltipEvent)) {
-      if (hasTooltipEventFeature(hoveredTooltipEvent, GeneratorType.Annotation) && !gfwUser) {
-        return 'grab'
+  const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
+
+  const onMouseMove: DeckProps['onHover'] = useCallback(
+    throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
+      setHoveredCoordinates(info.coordinate)
+      if (
+        event.type === 'pointerleave' ||
+        isMapAnnotating ||
+        isMapDrawing ||
+        isErrorNotificationEditing
+      ) {
+        setMapHoverFeatures({} as InteractionEvent)
+        return
       }
-      return 'all-scroll'
-    } else if (isMapAnnotating || rulersEditing || isErrorNotificationEditing) {
-      return 'crosshair'
-    } else if (isMapDrawing || isMarineManagerLocation) {
-      // updating cursor using css at style.css as the library sets classes depending on the state
-      return undefined
-    } else if (hoveredTooltipEvent) {
-      // Workaround to fix cluster events duplicated, only working for encounters and needs
-      // TODO if wanted to scale it to other layers
-      const clusterConfig = dataviews.find((d) => d.config?.type === GeneratorType.TileCluster)
-      const eventsCount = clusterConfig?.config?.duplicatedEventsWorkaround ? 2 : 1
-
-      const clusterFeature = hoveredTooltipEvent.features.find(
-        (f) => f.type === GeneratorType.TileCluster && parseInt(f.properties.count) > eventsCount
-      )
-
-      if (clusterFeature) {
-        if (!tilesClusterLoaded) {
-          return 'progress'
+      if (rulersEditing) {
+        onRulerMapHover(info)
+        return
+      }
+      const hoverInteraction = getPickingInteraction(info, 'hover')
+      if (hoverInteraction) {
+        const eventsInteraction = {
+          ...hoverInteraction,
+          features: hoverInteraction.features?.filter(
+            (f) => f.category === DataviewCategory.Events
+          ),
         }
-        const { expansionZoom, lat, lng, lon } = clusterFeature.properties
-        const longitude = lng || lon
-        return expansionZoom && lat && longitude ? 'zoom-in' : 'grab'
+        if (eventsInteraction.features?.length) {
+          setMapHoverFeatures(eventsInteraction)
+          return
+        }
+        setMapHoverFeatures(hoverInteraction)
       }
-      const vesselFeatureEvents = hoveredTooltipEvent.features.filter(
-        (f) => f.category === DataviewCategory.Vessels
-      )
-      if (vesselFeatureEvents.length > 1) {
-        return 'grab'
-      }
-      return 'pointer'
-    } else if (map?.isMoving()) {
-      return 'grabbing'
-    }
-    return 'grab'
-  }, [
-    hoveredTooltipEvent,
-    isMapAnnotating,
-    rulersEditing,
-    isErrorNotificationEditing,
-    isMapDrawing,
-    isMarineManagerLocation,
-    map,
-    gfwUser,
-    dataviews,
-    tilesClusterLoaded,
-  ])
+    }, 50),
+    [
+      getPickingInteraction,
+      isErrorNotificationEditing,
+      isMapAnnotating,
+      isMapDrawing,
+      onRulerMapHover,
+      rulersEditing,
+      setMapHoverFeatures,
+    ]
+  )
 
-  return getCursor()
+  return {
+    onMouseMove,
+    // resetHoverState,
+    hoveredCoordinates,
+    // hoveredDebouncedEvent,
+    // hoveredTooltipEvent,
+  }
+}
+
+export const useMapMouseClick = () => {
+  const getPickingInteraction = useGetPickingInteraction()
+  const { dispatchClickedEvent } = useClickedEventConnect()
+
+  const onMapClick: DeckProps['onClick'] = useCallback(
+    (info: PickingInfo, event: any) => {
+      if (!info.coordinate) return
+      if (event.srcEvent.defaultPrevented) {
+        // this is needed to allow interacting with overlay elements content
+        return true
+      }
+      const clickInteraction = getPickingInteraction(info, 'click')
+      if (clickInteraction) {
+        dispatchClickedEvent(clickInteraction)
+      }
+    },
+    [getPickingInteraction, dispatchClickedEvent]
+  )
+
+  return onMapClick
+}
+
+export const useMapCursor = () => {
+  const areClusterTilesLoading = useMapClusterTilesLoading()
+  const { isMapAnnotating } = useMapAnnotation()
+  const { isErrorNotificationEditing } = useMapErrorNotification()
+  const { rulersEditing } = useRulers()
+  const hoverFeatures = useMapHoverInteraction()?.features
+
+  const getCursor = useCallback(
+    ({ isDragging }: { isDragging: boolean }) => {
+      if (hoverFeatures?.some(isRulerLayerPoint)) {
+        return 'move'
+      }
+      if (hoverFeatures?.some(isTilesClusterLayer)) {
+        const isCluster = (hoverFeatures as ClusterPickingObject[]).some(
+          (f) => f.properties?.count > 1
+        )
+        if (!isCluster) {
+          return 'pointer'
+        }
+        return areClusterTilesLoading ? 'wait' : 'zoom-in'
+      }
+      if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
+        return 'crosshair'
+      }
+      if (isDragging) {
+        return 'grabbing'
+      }
+      if (hoverFeatures?.length) {
+        return 'pointer'
+      }
+      return 'grab'
+    },
+    [
+      hoverFeatures,
+      rulersEditing,
+      isMapAnnotating,
+      areClusterTilesLoading,
+      isErrorNotificationEditing,
+    ]
+  )
+
+  return getCursor
+}
+
+export const useMapDrag = () => {
+  const { onRulerDrag, onRulerDragStart, onRulerDragEnd } = useMapRulersDrag()
+
+  const onMapDragStart = useCallback(
+    (info: PickingInfo, event: any) => {
+      if (!info.coordinate || !info.object) return
+      const isRulerPoint = isRulerLayerPoint(info.object)
+      if (isRulerPoint) {
+        onRulerDragStart(info)
+        event.stopPropagation()
+      }
+    },
+    [onRulerDragStart]
+  )
+
+  const onMapDrag = useCallback(
+    (info: PickingInfo<DeckLayerPickingObject>, event: any) => {
+      if (!info.coordinate || !info.object) return
+      const isRulerPoint = isRulerLayerPoint(info.object)
+      if (isRulerPoint) {
+        onRulerDrag(info)
+        event.stopPropagation()
+      }
+    },
+    [onRulerDrag]
+  )
+
+  const onMapDragEnd = useCallback(
+    (info: PickingInfo, event: any) => {
+      if (!info.coordinate || !info.object) return
+      const isRulerPoint = isRulerLayerPoint(info.object)
+      if (isRulerPoint) {
+        onRulerDragEnd()
+      }
+    },
+    [onRulerDragEnd]
+  )
+  return { onMapDrag, onMapDragStart, onMapDragEnd }
+}
+
+export const useDebouncedDispatchHighlightedEvent = () => {
+  const dispatch = useAppDispatch()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useCallback(
+    debounce((eventIds?: string | string[]) => {
+      let ids: string[] | undefined
+      if (eventIds) {
+        ids = Array.isArray(eventIds) ? eventIds : [eventIds]
+      }
+      dispatch(setHighlightedEvents(ids))
+    }, 100),
+    []
+  )
 }

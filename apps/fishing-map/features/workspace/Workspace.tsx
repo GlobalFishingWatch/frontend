@@ -39,9 +39,11 @@ import EventsSection from './events/EventsSection'
 import EnvironmentalSection from './environmental/EnvironmentalSection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
 import styles from './Workspace.module.css'
+import { useMigrateWorkspaceToast } from './workspace-migration.hooks'
 
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
+  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)

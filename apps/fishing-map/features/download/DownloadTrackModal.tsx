@@ -50,7 +50,7 @@ function DownloadTrackModal() {
       dateRange: timerange as DateRange,
       dataset: downloadTrackDataset,
       format,
-      ...(gFWUser ? {} : { thinning: THINNING_LEVELS[ThinningLevels.Default] }),
+      ...(gFWUser ? {} : { thinning: THINNING_LEVELS[ThinningLevels.Medium] }),
     }
 
     try {
@@ -121,11 +121,11 @@ function DownloadTrackModal() {
                   limit: rateLimit?.limit,
                 }) as string)
               : rateLimit?.remaining
-                ? (t('download.trackRemaining', {
-                    defaultValue: 'You can download {{count}} more tracks today',
-                    count: rateLimit?.remaining as number,
-                  }) as string)
-                : null}
+              ? (t('download.trackRemaining', {
+                  defaultValue: 'You can download {{count}} more tracks today',
+                  count: rateLimit?.remaining as number,
+                }) as string)
+              : null}
           </p>
           <Button
             className={styles.downloadBtn}

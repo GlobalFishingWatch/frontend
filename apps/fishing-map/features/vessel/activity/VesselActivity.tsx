@@ -2,20 +2,17 @@ import { useTranslation } from 'react-i18next'
 import { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Choice, ChoiceOption, Spinner } from '@globalfishingwatch/ui-components'
-import { ResourceStatus } from '@globalfishingwatch/api-types'
-import { ActivityByType } from 'features/vessel/activity/activity-by-type/ActivityByType'
+import ActivityByType from 'features/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
 import { VesselProfileActivityMode } from 'types'
-import {
-  selectVesselEventsResources,
-  selectVesselEventsResourcesLoading,
-  selectVesselHasEventsDatasets,
-} from 'features/vessel/vessel.selectors'
+import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { useVesselProfileEventsError, useVesselProfileEventsLoading } from '../vessel-events.hooks'
+import { useVesselProfileLayer } from '../vessel-bounds.hooks'
 import styles from './VesselActivity.module.css'
 
 const VesselActivity = () => {
@@ -23,9 +20,10 @@ const VesselActivity = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const activityMode = useSelector(selectVesselActivityMode)
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
-  const eventsLoading = useSelector(selectVesselEventsResourcesLoading)
-  const eventsResources = useSelector(selectVesselEventsResources)
+  const eventsLoading = useVesselProfileEventsLoading()
+  const eventsError = useVesselProfileEventsError()
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
+  const vesselLayer = useVesselProfileLayer()
   const hasVesselEvents =
     vesselProfileDataview?.config?.events && vesselProfileDataview?.config?.events?.length > 0
 
@@ -51,7 +49,7 @@ const VesselActivity = () => {
     [t]
   )
 
-  if (hasVesselEvents && eventsLoading) {
+  if (hasVesselEvents && (!vesselLayer?.instance || eventsLoading)) {
     return (
       <div className={styles.placeholder}>
         <Spinner />
@@ -67,7 +65,6 @@ const VesselActivity = () => {
     )
   }
 
-  const eventsError = eventsResources.some((resource) => resource.status === ResourceStatus.Error)
   if (eventsError) {
     return (
       <div className={styles.emptyState}>

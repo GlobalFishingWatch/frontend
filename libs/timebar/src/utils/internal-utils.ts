@@ -1,4 +1,4 @@
-import dayjs, { OpUnitType } from 'dayjs'
+import { DateTime, DateTimeUnit } from 'luxon'
 import { DEFAULT_DATE_FORMAT, DEFAULT_FULL_DATE_FORMAT } from '../constants'
 
 export const getTime = (dateISO: string) => new Date(dateISO).getTime()
@@ -39,12 +39,12 @@ export const isMoreThanADay = (start: string, end: string) => getDeltaDays(start
 export const getDefaultFormat = (start: string, end: string) =>
   isMoreThanADay(start, end) ? DEFAULT_DATE_FORMAT : DEFAULT_FULL_DATE_FORMAT
 
-export const stickToClosestUnit = (date: string, unit: OpUnitType) => {
-  const mDate = dayjs(date).utc()
+export const stickToClosestUnit = (date: string, unit: DateTimeUnit) => {
+  const mDate = DateTime.fromISO(date, { zone: 'utc' })
   const mStartOf = mDate.startOf(unit)
-  const mEndOf = mDate.endOf(unit).add(1, 'millisecond')
+  const mEndOf = mDate.endOf(unit).plus({ millisecond: 1 })
   const startDeltaMs = getTime(date) - mStartOf.valueOf()
   const endDeltaMs = mEndOf.valueOf() - getTime(date)
   const mClosest = startDeltaMs > endDeltaMs ? mEndOf : mStartOf
-  return mClosest.toISOString()
+  return mClosest.toISO()
 }

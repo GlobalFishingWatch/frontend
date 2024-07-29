@@ -25,7 +25,7 @@ export type AsyncError<Metadata = Record<string, any>> = {
   metadata?: Metadata
 }
 
-export type AsyncReducerId = any
+type AsyncReducerId = any
 export type AsyncReducer<T = any> = {
   ids: AsyncReducerId[]
   entities: Record<AsyncReducerId, T>

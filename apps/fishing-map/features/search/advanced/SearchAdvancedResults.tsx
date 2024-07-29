@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
@@ -471,8 +471,8 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             cell.column.id === 'shipname'
               ? 'var(--color-white)'
               : vesselSelectedIds.includes(getVesselProperty(row.original, 'id'))
-                ? 'var(--color-terthiary-blue)'
-                : 'transparent',
+              ? 'var(--color-terthiary-blue)'
+              : 'transparent',
           textAlign: cell.column.id === 'mrt-row-select' ? 'center' : 'left',
           borderRight: 'var(--border)',
           borderBottom: 'var(--border)',

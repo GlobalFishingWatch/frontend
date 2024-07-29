@@ -1,13 +1,12 @@
 import { Fragment, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import {
   getVesselIdFromDatasetConfig,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { Tabs, Tab, Modal, IconButton } from '@globalfishingwatch/ui-components'
-import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { DatasetStatus, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import InfoModalContent from 'features/workspace/common/InfoModalContent'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
@@ -36,7 +35,7 @@ const InfoModal = ({
   const tabs = useMemo(() => {
     const uniqDatasets = dataview.datasets ? uniqBy(dataview.datasets, (dataset) => dataset.id) : []
     return uniqDatasets.flatMap((dataset) => {
-      if (dataview.config?.type === GeneratorType.Track) {
+      if (dataview.config?.type === DataviewType.Track) {
         const datasetConfig = dataview.datasetsConfig?.find(
           (datasetConfig) => datasetConfig.datasetId === dataset.id
         )
@@ -86,10 +85,9 @@ const InfoModal = ({
     tooltip = t('dataset.importing', 'Dataset is being imported')
   }
   if (datasetError) {
-    tooltip = `${t(
-      'errors.uploadError',
-      'There was an error uploading your dataset'
-    )} - ${dataset?.importLogs}`
+    tooltip = `${t('errors.uploadError', 'There was an error uploading your dataset')} - ${
+      dataset?.importLogs
+    }`
   }
 
   if (dataset?.configuration?.geometryType === 'draw') {

@@ -1,7 +1,7 @@
-import { DateTime, Duration, DurationUnits } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import { TFunction } from 'i18next'
-import { Interval } from '@globalfishingwatch/layer-composer'
 import { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
 export type SupportedDateType = string | number
@@ -24,18 +24,7 @@ export const getUTCDateTime = (d: SupportedDateType) => {
   return DateTime.fromMillis(d, { zone: 'utc' })
 }
 
-export const getTimeRangeDuration = (
-  timeRange: { start: string; end: string },
-  unit: DurationUnits = 'years'
-) => {
-  if (timeRange && timeRange.start && timeRange.start) {
-    const startDateTime = getUTCDateTime(timeRange.start)
-    const endDateTime = getUTCDateTime(timeRange.end)
-    return endDateTime.diff(startDateTime, unit)
-  }
-}
-
-export const formatDateForInterval = (date: DateTime, timeChunkInterval: Interval) => {
+export const formatDateForInterval = (date: DateTime, timeChunkInterval: FourwingsInterval) => {
   let formattedTick = ''
   switch (timeChunkInterval) {
     case 'YEAR':

@@ -6,6 +6,7 @@ import {
   Dataview,
   DataviewCategory,
   DataviewConfig,
+  DataviewType,
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import {
@@ -19,11 +20,8 @@ import {
   MultiSelect,
   ChoiceOption,
 } from '@globalfishingwatch/ui-components'
-import {
-  GeneratorType,
-  COLOR_RAMP_DEFAULT_NUM_STEPS,
-  Interval,
-} from '@globalfishingwatch/layer-composer'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/deck-layers'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { createDataviewThunk, updateDataviewThunk } from 'features/dataviews/dataviews.slice'
 import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'
@@ -49,7 +47,7 @@ const dynamicHeatmapOption: ChoiceOption = { id: 'dynamic', label: 'Dynamic' }
 const staticHeatmapOption: ChoiceOption = { id: 'static', label: 'Static' }
 const heatmapTypesOptions = [dynamicHeatmapOption, staticHeatmapOption]
 
-type temporalResolutionOption = { id: Interval; label: string }
+type temporalResolutionOption = { id: FourwingsInterval; label: string }
 const temporalResolutionOptions: temporalResolutionOption[] = [
   { id: 'MONTH', label: 'Month' },
   { id: 'DAY', label: 'Day' },
@@ -114,7 +112,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       app: APP_NAME as ApiAppName,
       config: {
         ...dataview.config,
-        type: dataview.config?.static ? GeneratorType.Heatmap : GeneratorType.HeatmapAnimated,
+        type: dataview.config?.static ? DataviewType.Heatmap : DataviewType.HeatmapAnimated,
         ...(dataview.category !== DataviewCategory.Environment && {
           datasets: dataviewDatasetsIds,
         }),
@@ -169,7 +167,8 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
     dataview.category !== undefined &&
     dataview.category !== UNKNOWN_CATEGORY &&
     dataview.config?.color !== undefined &&
-    (dataview.category !== DataviewCategory.Environment || dataview.config.breaks?.length > 0) &&
+    (dataview.category !== DataviewCategory.Environment ||
+      (dataview.config.breaks && dataview.config.breaks?.length > 0)) &&
     (isEditingDataview || dataviewDatasets.length > 0)
 
   return (
@@ -300,8 +299,8 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
                   options={temporalResolutionOptions}
                   containerClassName={styles.input2Columns}
                   direction="top"
-                  selectedOption={temporalResolutionOptions.find(
-                    ({ id }) => dataview.config?.intervals?.includes(id)
+                  selectedOption={temporalResolutionOptions.find(({ id }) =>
+                    dataview.config?.intervals?.includes(id)
                   )}
                   onSelect={(selected) => {
                     onDataviewConfigChange({ interval: selected.id })

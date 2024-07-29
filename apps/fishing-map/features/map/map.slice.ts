@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
-import { uniqBy } from 'lodash'
-import { InteractionEvent, ExtendedFeature } from '@globalfishingwatch/react-hooks'
+import { uniqBy } from 'es-toolkit'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { resolveEndpoint, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import {
   DataviewDatasetConfig,
   Dataset,
@@ -15,20 +15,30 @@ import {
   APIPagination,
 } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
+import {
+  ClusterPickingObject,
+  ContextPickingObject,
+  FourwingsDeckSublayer,
+  FourwingsHeatmapPickingObject,
+  FourwingsPickingObject,
+  FourwingsPositionsPickingObject,
+  UserLayerPickingObject,
+  VesselEventPickingObject,
+} from '@globalfishingwatch/deck-layers'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch } from 'store'
-import {
-  selectEventsDataviews,
-  selectActiveTemporalgridDataviews,
-} from 'features/dataviews/selectors/dataviews.selectors'
+import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 
 export const MAX_TOOLTIP_LIST = 5
 
-export type ExtendedFeatureVesselDatasets = IdentityVessel & {
+type ExtendedFeatureVesselDatasets = IdentityVessel & {
   id: string
   dataset: Dataset
   infoDataset?: Dataset
@@ -45,10 +55,28 @@ export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
 export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
 
-export type SliceExtendedFeature = ExtendedFeature & {
-  event?: ExtendedFeatureEvent
-  vessels?: ExtendedFeatureVessel[]
+export type SliceExtendedFourwingsDeckSublayer = FourwingsDeckSublayer & {
+  vessels: ExtendedFeatureVessel[]
 }
+export type SliceExtendedFourwingsPickingObject = Omit<
+  FourwingsHeatmapPickingObject,
+  'sublayers'
+> & {
+  sublayers: SliceExtendedFourwingsDeckSublayer[]
+}
+
+export type SliceExtendedClusterPickingObject = ClusterPickingObject & {
+  event: ExtendedFeatureEvent
+}
+
+type SliceExtendedFeature =
+  | SliceExtendedFourwingsPickingObject
+  | SliceExtendedClusterPickingObject
+  | FourwingsPositionsPickingObject
+  | ContextPickingObject
+  | UserLayerPickingObject
+  | ClusterPickingObject
+  | VesselEventPickingObject
 
 // Extends the default extendedEvent including event and vessels information from API
 export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
@@ -56,6 +84,7 @@ export type SliceInteractionEvent = Omit<InteractionEvent, 'features'> & {
 }
 
 type MapState = {
+  loaded: boolean
   clicked: SliceInteractionEvent | null
   hovered: SliceInteractionEvent | null
   fishingStatus: AsyncReducerStatus
@@ -64,6 +93,7 @@ type MapState = {
 }
 
 const initialState: MapState = {
+  loaded: false,
   clicked: null,
   hovered: null,
   fishingStatus: AsyncReducerStatus.Idle,
@@ -77,23 +107,22 @@ type SublayerVessels = {
 }
 
 const getInteractionEndpointDatasetConfig = (
-  features: ExtendedFeature[],
+  features: FourwingsHeatmapPickingObject[],
   temporalgridDataviews: UrlDataviewInstance[] = []
 ) => {
   // use the first feature/dv for common parameters
   const mainFeature = features[0]
   // Currently only one timerange is supported, which is OK since we only need interaction on the activity heatmaps and all
   // activity heatmaps use the same time intervals, This will need to be revised in case we support interactivity on environment layers
-  const start = mainFeature.temporalgrid?.visibleStartDate
-  const end = mainFeature.temporalgrid?.visibleEndDate
+  const start = getUTCDate(mainFeature?.startTime).toISOString()
+  const end = getUTCDate(mainFeature?.endTime).toISOString()
 
   // get corresponding dataviews
   const featuresDataviews = features.flatMap((feature) => {
-    return feature.temporalgrid
-      ? temporalgridDataviews.find(
-          (dataview) => dataview.id === feature?.temporalgrid?.sublayerId
-        ) || []
-      : []
+    if (!feature.sublayers?.length) return []
+    return feature.sublayers.flatMap((sublayer) => {
+      return temporalgridDataviews.find((dataview) => dataview.id === sublayer.id) || []
+    })
   })
   const fourWingsDataset = featuresDataviews[0]?.datasets?.find(
     (d) => d.type === DatasetTypes.Fourwings
@@ -105,14 +134,14 @@ const getInteractionEndpointDatasetConfig = (
   })
 
   const datasetConfig: DataviewDatasetConfig = {
-    datasetId: fourWingsDataset.id,
+    datasetId: fourWingsDataset?.id,
     endpoint: EndpointId.FourwingsInteraction,
     params: [
       { id: 'z', value: mainFeature.tile?.z },
       { id: 'x', value: mainFeature.tile?.x },
       { id: 'y', value: mainFeature.tile?.y },
-      { id: 'rows', value: mainFeature.temporalgrid?.row as number },
-      { id: 'cols', value: mainFeature.temporalgrid?.col as number },
+      { id: 'rows', value: mainFeature.properties?.row as number },
+      { id: 'cols', value: mainFeature.properties?.col as number },
     ],
     query: [
       { id: 'date-range', value: [start, end].join(',') },
@@ -123,14 +152,12 @@ const getInteractionEndpointDatasetConfig = (
     ],
   }
 
-  const filters = featuresDataviews.map((dv) => dv.config?.filter || [])
+  const filters = featuresDataviews.map((dv) => dv.config?.filter || '')
   if (filters.length) {
     datasetConfig.query?.push({ id: 'filters', value: filters })
   }
 
-  const vesselGroups = featuresDataviews
-    .map((dv) => dv.config?.['vessel-groups'] || [])
-    .filter((vg) => vg.length)
+  const vesselGroups = featuresDataviews.flatMap((dv) => dv.config?.['vessel-groups'] || [])
 
   if (vesselGroups.length) {
     datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
@@ -139,7 +166,7 @@ const getInteractionEndpointDatasetConfig = (
   return { featuresDataviews, fourWingsDataset, datasetConfig }
 }
 
-export const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) => {
+const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) => {
   if (!vesselDatasets || !vesselDatasets.length || !vesselIds || !vesselIds.length) {
     return null
   }
@@ -165,11 +192,7 @@ export const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: stri
   return resolveEndpoint(vesselDatasets[0], datasetConfig)
 }
 
-export const fetchVesselInfo = async (
-  datasets: Dataset[],
-  vesselIds: string[],
-  signal: AbortSignal
-) => {
+const fetchVesselInfo = async (datasets: Dataset[], vesselIds: string[], signal: AbortSignal) => {
   const vesselsInfoUrl = getVesselInfoEndpoint(datasets, vesselIds)
   if (!vesselsInfoUrl) {
     console.warn('No vessel info url found for dataset', datasets)
@@ -194,7 +217,10 @@ export const fetchVesselInfo = async (
 export type ActivityProperty = 'hours' | 'detections'
 export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
-  { fishingActivityFeatures: ExtendedFeature[]; activityProperties?: ActivityProperty[] },
+  {
+    fishingActivityFeatures: FourwingsHeatmapPickingObject[]
+    activityProperties?: ActivityProperty[]
+  },
   {
     dispatch: AppDispatch
   }
@@ -208,6 +234,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
       console.warn('fetchInteraction not possible, 0 features')
       return
     }
+
     const { featuresDataviews, fourWingsDataset, datasetConfig } =
       getInteractionEndpointDatasetConfig(fishingActivityFeatures, temporalgridDataviews)
 
@@ -228,7 +255,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
       let startingIndex = 0
       const vesselsBySource: ExtendedFeatureVessel[][][] = featuresDataviews.map((dataview) => {
-        const datasets: string[] = dataview.config?.datasets
+        const datasets: string[] = dataview.config?.datasets || []
         const newStartingIndex = startingIndex + datasets.length
         const dataviewVesselsIds = sublayersVesselsIds.slice(startingIndex, newStartingIndex)
         startingIndex = newStartingIndex
@@ -254,7 +281,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
       const topActivityVesselsDatasets = uniqBy(
         topActivityVessels.map(({ dataset }) => dataset),
-        'id'
+        (d) => d.id
       )
       // Grab related dataset to fetch info from and prepare tracks
       const allInfoDatasets = await Promise.all(
@@ -284,8 +311,8 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
       const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
-      const sublayersIds = fishingActivityFeatures.map(
-        (feature) => feature.temporalgrid?.sublayerId || ''
+      const sublayersIds = fishingActivityFeatures.flatMap(
+        (feature) => feature.sublayers?.map((sublayer) => sublayer.id) || ''
       )
 
       const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
@@ -330,14 +357,14 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
 export const fetchEncounterEventThunk = createAsyncThunk<
   ExtendedFeatureEvent | undefined,
-  ExtendedFeature,
+  ClusterPickingObject,
   {
     dispatch: AppDispatch
   }
 >('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
   const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
-  const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)
+  const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
 
   if (dataset) {
@@ -428,7 +455,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
 type BQClusterEvent = Record<string, any>
 export const fetchBQEventThunk = createAsyncThunk<
   BQClusterEvent | undefined,
-  ExtendedFeature,
+  any, // TODO: deck fix this type once the layer is implemented in deck
   {
     dispatch: AppDispatch
   }
@@ -459,6 +486,9 @@ const slice = createSlice({
   name: 'map',
   initialState,
   reducers: {
+    setMapLoaded: (state, action: PayloadAction<boolean>) => {
+      state.loaded = action.payload
+    },
     setClickedEvent: (state, action: PayloadAction<SliceInteractionEvent | null>) => {
       if (action.payload === null) {
         state.clicked = null
@@ -476,16 +506,16 @@ const slice = createSlice({
     builder.addCase(fetchFishingActivityInteractionThunk.fulfilled, (state, action) => {
       state.fishingStatus = AsyncReducerStatus.Finished
       state.currentFishingRequestId = ''
-      if (!state.clicked || !state.clicked.features || !action.payload) return
-
-      action.payload.vessels.forEach((sublayerVessels) => {
-        const sublayer = state.clicked?.features?.find(
-          (feature) =>
-            feature.temporalgrid && feature.temporalgrid.sublayerId === sublayerVessels.sublayerId
-        )
-        if (!sublayer) return
-        sublayer.vessels = sublayerVessels.vessels
-      })
+      if (state?.clicked?.features?.length && action.payload?.vessels?.length) {
+        state.clicked.features = state.clicked.features.map((feature: any) => {
+          const sublayers = (feature as FourwingsPickingObject).sublayers?.map((sublayer) => {
+            const vessels =
+              action.payload?.vessels.find((v) => v.sublayerId === sublayer.id)?.vessels || []
+            return { ...sublayer, vessels }
+          })
+          return { ...feature, sublayers }
+        })
+      }
     })
     builder.addCase(fetchFishingActivityInteractionThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
@@ -503,7 +533,9 @@ const slice = createSlice({
     builder.addCase(fetchEncounterEventThunk.fulfilled, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
-      const feature = state.clicked?.features?.find((feature) => feature.id && action.meta.arg.id)
+      const feature = state.clicked?.features?.find(
+        (feature) => feature.id && action.meta.arg.id
+      ) as any
       if (feature) {
         feature.event = action.payload
       }
@@ -521,7 +553,9 @@ const slice = createSlice({
     builder.addCase(fetchBQEventThunk.fulfilled, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
-      const feature = state.clicked?.features?.find((feature) => feature.id && action.meta.arg.id)
+      const feature = state.clicked?.features?.find(
+        (feature) => feature.id && action.meta.arg.id
+      ) as any
       if (feature && action.payload) {
         feature.properties = { ...feature.properties, ...action.payload }
       }
@@ -536,9 +570,10 @@ const slice = createSlice({
   },
 })
 
+export const selectIsMapLoaded = (state: { map: MapState }) => state.map.loaded
 export const selectClickedEvent = (state: { map: MapState }) => state.map.clicked
 export const selectFishingInteractionStatus = (state: { map: MapState }) => state.map.fishingStatus
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 
-export const { setClickedEvent } = slice.actions
+export const { setMapLoaded, setClickedEvent } = slice.actions
 export default slice.reducer

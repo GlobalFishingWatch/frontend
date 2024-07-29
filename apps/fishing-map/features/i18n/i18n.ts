@@ -17,11 +17,11 @@ export const LocaleLabels = [
 ]
 
 const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
-export const SHARED_LABELS_PATH = IS_DEVELOPMENT_ENV
+const SHARED_LABELS_PATH = IS_DEVELOPMENT_ENV
   ? 'http://localhost:8000'
   : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@${NPM_SCOPE}`
 
-export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
+const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 
 // eslint-disable-next-line import/no-named-as-default-member
 i18n

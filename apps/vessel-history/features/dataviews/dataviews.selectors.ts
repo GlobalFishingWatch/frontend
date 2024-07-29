@@ -3,13 +3,13 @@ import { DatasetTypes, DataviewCategory, DataviewInstance } from '@globalfishing
 import {
   resolveDataviews,
   UrlDataviewInstance,
-  getGeneratorConfig,
   mergeWorkspaceUrlDataviewInstances,
   GetDatasetConfigsCallbacks,
-  getResources,
   getDatasetConfigByDatasetType,
   getDatasetConfigsByDatasetType,
+  _getLegacyResources,
 } from '@globalfishingwatch/dataviews-client'
+import { getGeneratorConfig } from '@globalfishingwatch/dataviews-client/resolve-dataviews-generators'
 import {
   BasemapGeneratorConfig,
   BasemapType,
@@ -166,15 +166,9 @@ export const selectDataviewsResources = createSelector(
       track: trackDatasetConfigsCallback,
     }
 
-    return getResources(dataviewInstances || [], callbacks)
+    return _getLegacyResources(dataviewInstances || [], callbacks)
   }
 )
-
-export const selectDataviewInstancesByCategory = (category: DataviewCategory) => {
-  return createSelector([selectDataviewInstancesResolved], (dataviews) => {
-    return dataviews?.filter((dataview) => dataview.category === category)
-  })
-}
 
 export const selectDataviewInstancesByIds = (ids: string[]) => {
   return createDeepEqualSelector([selectDataviewInstancesResolved], (dataviews) => {
@@ -199,9 +193,8 @@ export const selectVesselsDataviews = createSelector([selectTrackDataviews], (da
   )
 })
 
-export const selectActiveVesselsDataviews = createSelector(
-  [selectVesselsDataviews],
-  (dataviews) => dataviews?.filter((d) => d.config?.visible)
+export const selectActiveVesselsDataviews = createSelector([selectVesselsDataviews], (dataviews) =>
+  dataviews?.filter((d) => d.config?.visible)
 )
 
 export const selectActiveTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {

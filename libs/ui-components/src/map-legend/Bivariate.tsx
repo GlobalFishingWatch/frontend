@@ -1,13 +1,13 @@
 import React from 'react'
 import cx from 'classnames'
+import { UILegendBivariate } from './types'
 import styles from './Bivariate.module.css'
 import legendStyles from './MapLegend.module.css'
 import BivariateArrows from './Bivariate-arrows'
 import { roundLegendNumber, formatLegendValue } from './map-legend.utils'
-import { LegendLayerBivariate } from './MapLegend'
 
 type BivariateLegendProps = {
-  layer: LegendLayerBivariate
+  layer: UILegendBivariate
   roundValues?: boolean
   className?: string
   labelComponent?: React.ReactNode
@@ -122,10 +122,10 @@ export function BivariateLegend({
   labelComponent,
   roundValues = true,
 }: BivariateLegendProps) {
-  if (!layer || !layer.bivariateRamp || !layer.sublayersBreaks) return null
+  if (!layer || !layer.values) return null
   const bivariateBucketIndex = getBivariateValue(
-    [layer.currentValues?.[0] || 0, layer.currentValues?.[1] || 0],
-    layer.sublayersBreaks
+    [layer.currentValue?.[0] || 0, layer.currentValue?.[1] || 0],
+    layer.values
   )
   return (
     <div className={styles.container}>
@@ -161,7 +161,7 @@ export function BivariateLegend({
                             </text>
                           )
                         }
-                        const value = layer.sublayersBreaks?.[xIndex]?.[yIndex]
+                        const value = layer.values?.[xIndex]?.[yIndex]
                         if (value === undefined) {
                           return null
                         }
@@ -178,9 +178,10 @@ export function BivariateLegend({
                   </g>
                   <g transform="translate(81, 62) scale(1, -1) rotate(45) translate(-81, -62) translate(41, 22)">
                     <rect fill="#0f2e5f" stroke="none" x={0} y={40} width={40} height={40}></rect>
-                    {layer.bivariateRamp.map((color: string, i: number) => (
-                      <BivariateRect color={color} i={i} key={color + i} />
-                    ))}
+                    {Array.isArray(layer.colors) &&
+                      layer.colors?.map((color: string, i: number) => (
+                        <BivariateRect color={color} i={i} key={color + i} />
+                      ))}
                     {bivariateBucketIndex && bivariateBucketIndex > 0 && (
                       <BivariateRect
                         i={bivariateBucketIndex}

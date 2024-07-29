@@ -9,9 +9,10 @@ import {
   ComposedChart,
   Area,
 } from 'recharts'
-import { max, min } from 'lodash'
+import min from 'lodash/min'
+import max from 'lodash/max'
 import { DateTime } from 'luxon'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import i18n from 'features/i18n/i18n'
 import { formatDateForInterval, getUTCDateTime } from 'utils/dates'
 import { toFixed } from 'utils/shared'
@@ -33,7 +34,7 @@ type ReportGraphTooltipProps = {
     unit: string
   }[]
   label: number
-  timeChunkInterval: Interval
+  timeChunkInterval: FourwingsInterval
 }
 
 const formatTooltipValue = (value: number, payload: any, unit: string) => {
@@ -45,7 +46,7 @@ const formatTooltipValue = (value: number, payload: any, unit: string) => {
   const difference = range ? range[1] - value : 0
   const imprecision = value > 0 && (difference / value) * 100
   // TODO review why abs is needed and why we have negative imprecision
-  const imprecisionFormatted = imprecision ? toFixed(Math.abs(imprecision), 0) : '0'
+  const imprecisionFormatted = imprecision ? Math.round(Math.abs(imprecision)).toString() : '0'
   const valueFormatted = formatI18nNumber(value, { maximumFractionDigits: 2 })
   const valueLabel = `${valueFormatted} ${unit ? unit : ''}`
   const imprecisionLabel =
@@ -84,7 +85,7 @@ const ReportGraphTooltip = (props: any) => {
   return null
 }
 
-const formatDateTicks = (tick: string, timeChunkInterval: Interval) => {
+const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
   const date = getUTCDateTime(tick).setLocale(i18n.language)
   return formatDateForInterval(date, timeChunkInterval)
 }
@@ -152,10 +153,10 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
               name="line"
               type="monotone"
               dataKey={(data) => data.avg?.[index]}
-              unit={legend.unit}
+              unit={legend?.unit}
               dot={false}
               isAnimationActive={false}
-              stroke={legend.color}
+              stroke={legend?.color}
               strokeWidth={2}
             />
           ))}
@@ -166,7 +167,7 @@ export default function ReportActivityGraph({ start, end, data }: ReportActivity
               type="monotone"
               dataKey={(data) => data.range?.[index]}
               activeDot={false}
-              fill={legend.color}
+              fill={legend?.color}
               stroke="none"
               fillOpacity={0.2}
               isAnimationActive={false}

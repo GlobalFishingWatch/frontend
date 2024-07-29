@@ -2,10 +2,12 @@ import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { isEqual, uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
+import isEqual from 'lodash/isEqual'
 import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
-import { crossBrowserTypeErrorMessages, isAuthError } from '@globalfishingwatch/api-client'
+import { isAuthError } from '@globalfishingwatch/api-client'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -17,7 +19,6 @@ import {
   selectHasReportBuffer,
   selectHasReportVessels,
   selectReportArea,
-  selectReportBufferHash,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
@@ -41,7 +42,6 @@ import {
   isActivityReport,
   selectActiveReportDataviews,
   selectReportAreaId,
-  selectReportAreaSource,
   selectReportCategory,
   selectReportDatasetId,
 } from 'features/app/selectors/app.reports.selector'
@@ -54,11 +54,15 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
-import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
-import { useHighlightArea } from 'features/map/popups/ContextLayers.hooks'
+// import { REPORT_BUFFER_GENERATOR_ID } from 'features/map/map.config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
-import { useFetchReportArea, useFetchReportVessel, useFitAreaInViewport } from './reports.hooks'
+import {
+  useFetchReportArea,
+  useFetchReportVessel,
+  useFitAreaInViewport,
+  useHighlightReportArea,
+} from './reports.hooks'
 import ReportSummary from './summary/ReportSummary'
 import ReportTitle from './title/ReportTitle'
 import ReportActivity from './activity/ReportActivity'
@@ -90,7 +94,7 @@ function ActivityReport({ reportName }: { reportName: string }) {
   )
   const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
   const { status: reportStatus, error: statusError, dispatchFetchReport } = useFetchReportVessel()
-  const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
+  // const dispatchTimeoutRef = useRef<NodeJS.Timeout>()
   const hasVessels = useSelector(selectHasReportVessels)
 
   // TODO get this from datasets config
@@ -347,7 +351,7 @@ export default function Report() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const setTimeseries = useSetTimeseries()
-  const highlightArea = useHighlightArea()
+  const highlightArea = useHighlightReportArea()
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveTemporalgridDataviews)
@@ -385,10 +389,8 @@ export default function Report() {
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
-  const areaSourceId = useSelector(selectReportAreaSource)
-  const hasReportBuffer = useSelector(selectHasReportBuffer)
   const reportArea = useSelector(selectReportArea)
-  const reportBufferHash = useSelector(selectReportBufferHash)
+  const hasReportBuffer = useSelector(selectHasReportBuffer)
 
   const fitAreaInViewport = useFitAreaInViewport()
 
@@ -402,14 +404,10 @@ export default function Report() {
   }, [status, reportArea])
 
   useEffect(() => {
-    if (status === AsyncReducerStatus.Finished && reportArea?.id) {
-      highlightArea({
-        areaId: reportArea.id,
-        sourceId: hasReportBuffer ? REPORT_BUFFER_GENERATOR_ID : areaSourceId,
-        sourceLayer: hasReportBuffer ? '' : undefined,
-      })
+    if (reportArea && !hasReportBuffer) {
+      highlightArea(reportArea as ContextFeature)
     }
-  }, [status, reportBufferHash, highlightArea, reportArea, areaSourceId, hasReportBuffer])
+  }, [highlightArea, reportArea, hasReportBuffer])
 
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {
@@ -437,6 +435,7 @@ export default function Report() {
       setTimeseries([])
       dispatch(resetReportData())
       dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+      fitAreaInViewport()
       trackEvent({
         category: TrackCategory.Analysis,
         action: `Click on ${option.id} report`,

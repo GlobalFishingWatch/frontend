@@ -1,7 +1,8 @@
-import { Fragment, memo, useCallback, useState, useMemo } from 'react'
+import { Fragment, memo, useCallback, useState, useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   Timebar,
   TimebarTracks,
@@ -12,20 +13,19 @@ import {
   TrackEventChunkProps,
   TrackGraphOrientation,
   HighlightedChunks,
+  TimebarProps,
 } from '@globalfishingwatch/timebar'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { ResourceStatus } from '@globalfishingwatch/api-types'
-import { getInterval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { Locale } from 'types'
 import {
   useTimerangeConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
   useDisableHighlightTimeConnect,
-  useActivityMetadata,
   useHighlightedEventsConnect,
 } from 'features/timebar/timebar.hooks'
+import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
-import useViewport from 'features/map/map-viewport.hooks'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { upperFirst } from 'utils/info'
@@ -40,39 +40,46 @@ import { getUTCDateTime } from 'utils/dates'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
+  useTimebarVesselEvents,
+  useTimebarVesselTracks,
+  useTimebarVesselTracksGraph,
+} from 'features/timebar/timebar-vessel.hooks'
+import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import { setHighlightedTime, selectHighlightedTime, TimeRange } from './timebar.slice'
+import { useRootElement } from 'hooks/dom.hooks'
+import { setHighlightedTime, selectHighlightedTime } from './timebar.slice'
 import TimebarSettings from './TimebarSettings'
 import {
-  selectTracksData,
-  selectTracksGraphData,
-  selectTracksEvents,
   selectAvailableStart,
   selectAvailableEnd,
+  selectTimebarSelectedVisualizationMode,
 } from './timebar.selectors'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import styles from './Timebar.module.css'
 
 export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: any) => {
-  // const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
+const TimebarHighlighterWrapper = ({ showTooltip }: { showTooltip: boolean }) => {
+  const { highlightedEventIds, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
+  const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
+  const { start, end } = useTimerangeConnect()
+  const interval = getFourwingsInterval(start, end)
+
   const onHighlightChunks = useCallback(
     (chunks?: HighlightedChunks) => {
       if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
         dispatchHighlightedEvents(chunks.tracksEvents)
-      } else {
+      } else if (highlightedEventIds) {
         // TODO review this as it is triggered on every timebar change
         dispatchHighlightedEvents(undefined)
       }
     },
-    [dispatchHighlightedEvents]
+    [dispatchHighlightedEvents, highlightedEventIds]
   )
-  const metadata = useActivityMetadata()
 
   // Return precise chunk frame extent
   const activityDateCallback = useCallback(
@@ -81,8 +88,7 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: a
         format: DateTime.DATETIME_MED,
         showUTCLabel: true,
       })
-      if (metadata) {
-        const interval = metadata.timeChunks.interval
+      if (interval) {
         if (interval === 'HOUR') {
           const HOUR_FORMAT = {
             year: 'numeric',
@@ -115,13 +121,18 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: a
       }
       return dateLabel
     },
-    [metadata]
+    [interval]
   )
-  const formatDate =
-    timebarVisualisation !== TimebarVisualisations.HeatmapActivity &&
-    timebarVisualisation !== TimebarVisualisations.HeatmapDetections
-      ? undefined
-      : activityDateCallback
+
+  const formatDate = useMemo(
+    () =>
+      timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
+      timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
+      visualizationMode !== 'positions'
+        ? activityDateCallback
+        : undefined,
+    [timebarVisualisation, visualizationMode, activityDateCallback]
+  )
 
   return highlightedTime ? (
     <TimebarHighlighter
@@ -136,26 +147,30 @@ const TimebarHighlighterWrapper = ({ dispatchHighlightedEvents, showTooltip }: a
 
 const TimebarWrapper = () => {
   useTimebarVisualisation()
+
   const [isMouseInside, setMouseInside] = useState(false)
   const { t, ready, i18n } = useTranslation()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
-  const { highlightedEvents, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
+  const { highlightedEventIds, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
-  const { setMapCoordinates, viewport } = useViewport()
+  const viewState = useMapViewState()
+  const setMapCoordinates = useSetMapCoordinates()
   const availableStart = useSelector(selectAvailableStart)
   const availableEnd = useSelector(selectAvailableEnd)
   const timebarGraph = useSelector(selectTimebarGraph)
-  const tracks = useSelector(selectTracksData)
-  const tracksGraphsData = useSelector(selectTracksGraphData)
-  const tracksEvents = useSelector(selectTracksEvents)
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const dispatch = useAppDispatch()
+  // const [isPending, startTransition] = useTransition()
+  const tracks = useTimebarVesselTracks()
+  const tracksGraphsData = useTimebarVesselTracksGraph()
+  const events = useTimebarVesselEvents()
+  const rootElement = useRootElement()
 
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
@@ -182,11 +197,12 @@ const TimebarWrapper = () => {
   const isSmallScreen = useSmallScreen()
 
   const onMouseMove = useCallback(
-    (clientX: number, scale: (arg: number) => Date) => {
+    (clientX: number | null, scale: ((arg: number) => Date) | null, isDay?: boolean) => {
       if (clientX === null || clientX === undefined || isNaN(clientX)) {
         dispatchDisableHighlightedTime()
       } else {
         try {
+          if (!scale) return
           const start = scale(clientX - 10).toISOString()
           const end = scale(clientX + 10).toISOString()
           const startDateTime = getUTCDateTime(start)
@@ -209,29 +225,27 @@ const TimebarWrapper = () => {
     [dispatch, dispatchDisableHighlightedTime]
   )
 
-  const [internalRange, setInternalRange] = useState<TimeRange | null>(null)
-  const onChange = useCallback(
-    (e: any) => {
+  const onChange: TimebarProps['onChange'] = useCallback(
+    (e) => {
       const gaActions: Record<string, string> = {
         TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
-        ZOOM_IN_BUTTON: 'Zoom In timerange',
-        ZOOM_OUT_BUTTON: 'Zoom Out timerange',
+        ZOOM_IN_RELEASE: 'Zoom In timerange',
+        ZOOM_OUT_RELEASE: 'Zoom Out timerange',
         HOUR_INTERVAL_BUTTON: 'Use hour preset',
         DAY_INTERVAL_BUTTON: 'Use day preset',
         MONTH_INTERVAL_BUTTON: 'Use month preset',
         YEAR_INTERVAL_BUTTON: 'Use year preset',
       }
-      if (gaActions[e.source]) {
+      if (e.source && gaActions[e.source]) {
         trackEvent({
           category: TrackCategory.Timebar,
           action: gaActions[e.source],
           label: getEventLabel([e.start, e.end]),
         })
       }
-      setInternalRange(null)
       onTimebarChange(e.start, e.end)
     },
-    [setInternalRange, onTimebarChange]
+    [onTimebarChange]
   )
 
   const onMouseEnter = useCallback(() => {
@@ -241,6 +255,22 @@ const TimebarWrapper = () => {
   const onMouseLeave = useCallback(() => {
     setMouseInside(false)
   }, [])
+
+  useEffect(() => {
+    if (!isMouseInside) {
+      requestAnimationFrame(() => {
+        dispatchHighlightedEvents(undefined)
+      })
+    }
+  }, [dispatchHighlightedEvents, isMouseInside])
+
+  const onMouseDown = useCallback(() => {
+    rootElement?.classList.add('dragging')
+  }, [rootElement?.classList])
+
+  const onMouseUp = useCallback(() => {
+    rootElement?.classList.remove('dragging')
+  }, [rootElement?.classList])
 
   const onTogglePlay = useCallback(
     (isPlaying: boolean) => {
@@ -253,16 +283,19 @@ const TimebarWrapper = () => {
     [start, end]
   )
 
-  const { zoom } = viewport
+  const { zoom } = viewState
   const onEventClick = useCallback(
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
-      setMapCoordinates({
-        latitude: event.props!?.latitude,
-        longitude: event.props!?.longitude,
-        zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
-      })
+      if (event?.coordinates) {
+        setMapCoordinates({
+          ...viewState,
+          latitude: event?.coordinates?.[1],
+          longitude: event.coordinates?.[0],
+          zoom: zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : zoom,
+        })
+      }
     },
-    [setMapCoordinates, zoom]
+    [viewState, setMapCoordinates, zoom]
   )
 
   const showGraph = useMemo(() => {
@@ -285,18 +318,18 @@ const TimebarWrapper = () => {
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
-  const loading =
-    tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
-    tracksGraphsData?.some(
-      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
-    ) ||
-    tracksEvents?.some(
-      ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
-    )
+  const loading = false
+  // tracks?.some(({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading) ||
+  // tracksGraphsData?.some(
+  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+  // ) ||
+  // tracksEvents?.some(
+  //   ({ chunks, status }) => chunks?.length > 0 && status === ResourceStatus.Loading
+  // )
 
-  const hasTrackError =
-    tracks?.some(({ status }) => status === ResourceStatus.Error) ||
-    tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
+  const hasTrackError = false
+  // tracks?.some(({ status }) => status === ResourceStatus.Error) ||
+  // tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
 
   const getTracksComponents = () => {
     if (hasTrackError) {
@@ -308,7 +341,9 @@ const TimebarWrapper = () => {
           )}
         </div>
       )
-    } else if (!tracks || tracks?.length > MAX_TIMEBAR_VESSELS) {
+    } else if (!tracks) {
+      return null
+    } else if (tracks?.length > MAX_TIMEBAR_VESSELS) {
       return (
         <div className={styles.disclaimer}>
           <label className={styles.disclaimerLabel}>
@@ -325,11 +360,11 @@ const TimebarWrapper = () => {
         {showGraph && tracksGraphsData && (
           <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} />
         )}
-        {tracksEvents && (
+        {events && (
           <Fragment>
             <TimebarTracksEvents
-              data={tracksEvents}
-              highlightedEventsIds={highlightedEvents}
+              data={events}
+              highlightedEventsIds={highlightedEventIds}
               onEventClick={onEventClick}
             />
           </Fragment>
@@ -337,18 +372,24 @@ const TimebarWrapper = () => {
       </Fragment>
     )
   }
+
   return (
-    <div className={styles.timebarWrapper} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    <div
+      className={styles.timebarWrapper}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <Timebar
         enablePlayback={!vesselGroupsFiltering && !isReportLocation}
         labels={labels}
-        start={internalRange ? internalRange.start : start}
-        end={internalRange ? internalRange.end : end}
+        start={start}
+        end={end}
         absoluteStart={availableStart}
         absoluteEnd={availableEnd}
         latestAvailableDataDate={latestAvailableDataDate}
         onChange={onChange}
-        showLastUpdate={false}
         onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
         onTogglePlay={onTogglePlay}
@@ -358,10 +399,10 @@ const TimebarWrapper = () => {
         minimumRange={1}
         // TODO: set this by current active activity dataviews
         // minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
-        intervals={INTERVAL_ORDER}
-        getCurrentInterval={getInterval}
+        intervals={FOURWINGS_INTERVALS_ORDER}
+        getCurrentInterval={getFourwingsInterval}
         trackGraphOrientation={trackGraphOrientation}
-        locale={i18n.language}
+        locale={i18n.language as Locale}
       >
         {!isSmallScreen ? (
           <Fragment>
@@ -371,10 +412,7 @@ const TimebarWrapper = () => {
               <TimebarActivityGraph visualisation={timebarVisualisation} />
             )}
             {timebarVisualisation === TimebarVisualisations.Vessel && getTracksComponents()}
-            <TimebarHighlighterWrapper
-              dispatchHighlightedEvents={dispatchHighlightedEvents}
-              showTooltip={isMouseInside}
-            />
+            <TimebarHighlighterWrapper showTooltip={isMouseInside} />
           </Fragment>
         ) : null}
       </Timebar>

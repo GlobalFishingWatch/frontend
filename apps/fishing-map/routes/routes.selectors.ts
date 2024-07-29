@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { memoize } from 'lodash'
-import { Query, RouteObject } from 'redux-first-router'
+import { Query } from 'redux-first-router'
 import { RootState } from 'reducers'
 import { WorkspaceParam, QueryParams } from 'types'
 import { WorkspaceCategory } from 'data/workspaces'
@@ -18,11 +17,6 @@ import {
 } from './routes'
 
 const selectLocation = (state: RootState) => state.location
-
-export const selectCurrentLocation = createSelector([selectLocation], ({ type, routesMap }) => {
-  const routeMap = routesMap[type] as RouteObject
-  return { type: type as ROUTE_TYPES, ...routeMap }
-})
 
 export const selectLocationType = createSelector(
   [selectLocation],
@@ -48,11 +42,11 @@ export const selectIsAnyVesselLocation = createSelector(
   (isVesselLocation, isWorkspaceVesselLocation) => isVesselLocation || isWorkspaceVesselLocation
 )
 
-export const selectIsReportLocation = createSelector(
+const selectIsReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT
 )
-export const selectIsWorkspaceReportLocation = createSelector(
+const selectIsWorkspaceReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === WORKSPACE_REPORT
 )
@@ -77,7 +71,7 @@ export const selectIsStandaloneSearchLocation = createSelector(
   (locationType) => locationType === SEARCH
 )
 
-export const selectIsWorkspaceSearchLocation = createSelector(
+const selectIsWorkspaceSearchLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === WORKSPACE_SEARCH
 )
@@ -90,11 +84,6 @@ export const selectIsAnySearchLocation = createSelector(
 export const selectLocationQuery = createSelector(
   [selectLocation],
   (location) => location.query as Query
-)
-
-export const selectLocationSearch = createSelector(
-  [selectLocation],
-  (location) => location.search as string
 )
 
 type QueryParamProperty<P extends WorkspaceParam> = Required<QueryParams>[P]
@@ -118,7 +107,7 @@ export const selectReportId = createSelector(
 
 export const selectVesselId = createSelector(
   [selectLocationPayload],
-  (payload) => payload?.vesselId
+  (payload) => payload?.vesselId as string
 )
 
 export const selectLocationCategory = createSelector(
@@ -126,19 +115,12 @@ export const selectLocationCategory = createSelector(
   (payload) => payload?.category as WorkspaceCategory
 )
 
-export const selectLocationDatasetId = createSelector(
-  [selectLocationPayload],
-  (payload) => payload?.datasetId as string
+export const selectLocationDatasetId = createSelector([selectLocationPayload], (payload) =>
+  payload?.datasetId ? decodeURIComponent(payload?.datasetId) : ''
 )
 
-export const selectLocationAreaId = createSelector(
-  [selectLocationPayload],
-  (payload) => payload?.areaId as number
-)
-
-export const selectLocationVesselId = createSelector(
-  [selectLocationPayload],
-  (payload) => payload?.vesselId as string
+export const selectLocationAreaId = createSelector([selectLocationPayload], (payload) =>
+  payload?.areaId ? decodeURIComponent(payload?.areaId) : ''
 )
 
 export const isValidLocationCategory = createSelector(
@@ -153,10 +135,24 @@ export const selectIsMarineManagerLocation = createSelector(
   }
 )
 
+const selectIsFishingIndexLocation = createSelector(
+  [selectLocationCategory, selectWorkspaceId],
+  (category, workspaceId) => {
+    return category === WorkspaceCategory.FishingActivity && !workspaceId
+  }
+)
+
+export const selectIsWorkspaceIndexLocation = createSelector(
+  [selectIsMarineManagerLocation, selectIsFishingIndexLocation],
+  (isMarineManagerLocation, isFishingIndexLocation) => {
+    return isMarineManagerLocation || isFishingIndexLocation
+  }
+)
+
 export const selectUserTab = selectQueryParam('userTab')
 export const selectUrlMapZoomQuery = selectQueryParam('zoom')
-export const selectUrlMapLatitudeQuery = selectQueryParam('latitude')
-export const selectUrlMapLongitudeQuery = selectQueryParam('longitude')
+const selectUrlMapLatitudeQuery = selectQueryParam('latitude')
+const selectUrlMapLongitudeQuery = selectQueryParam('longitude')
 export const selectUrlStartQuery = selectQueryParam('start')
 export const selectUrlEndQuery = selectQueryParam('end')
 export const selectUrlBufferValueQuery = selectQueryParam('reportBufferValue')
@@ -166,8 +162,12 @@ export const selectUrlDataviewInstances = selectQueryParam('dataviewInstances')
 
 export const selectUrlDataviewInstancesOrder = selectQueryParam('dataviewInstancesOrder')
 
-export const selectIsMapDrawing = selectQueryParam('mapDrawing')
+export const selectMapDrawingMode = selectQueryParam('mapDrawing')
 export const selectMapDrawingEditId = selectQueryParam('mapDrawingEditId')
+
+export const selectIsMapDrawing = createSelector([selectMapDrawingMode], (mapDrawingMode) => {
+  return mapDrawingMode === 'polygons' || mapDrawingMode === 'points'
+})
 
 export const selectUrlViewport = createSelector(
   [selectUrlMapZoomQuery, selectUrlMapLatitudeQuery, selectUrlMapLongitudeQuery],
@@ -183,12 +183,4 @@ export const selectUrlTimeRange = createSelector(
     if (!start || !end) return null
     return { start, end }
   }
-)
-
-export const selectUrlDataviewInstancesById = memoize((id: string) =>
-  createSelector(
-    [selectUrlDataviewInstances],
-    (urlDataviewInstances) =>
-      urlDataviewInstances?.find((dataviewInstance) => dataviewInstance?.id === id)
-  )
 )

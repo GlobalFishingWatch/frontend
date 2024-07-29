@@ -1,10 +1,11 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { unparse as unparseCSV } from 'papaparse'
-import saveAs from 'file-saver'
+import { saveAs } from 'file-saver'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { formatInfoField, getVesselGearType, getVesselShipType } from 'utils/info'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectSearchResults, selectSelectedVessels } from './search.slice'
 
 function SearchDownload() {
@@ -32,6 +33,28 @@ function SearchDownload() {
           dataset: vessel.dataset.id,
         }
       })
+
+      trackEvent({
+        category: TrackCategory.DataDownloads,
+        action: 'Download CSV list of vessels from advanced search',
+        label: JSON.stringify(
+          vesselsParsed.map((vessel) => ({
+            name: vessel.name,
+            mmsi: vessel.ssvid,
+            imo: vessel.imo,
+            callsign: vessel['call sign'],
+            owner: vessel.owner,
+            flag: vessel.flag,
+            'vessel type': vessel['vessel type'],
+            'gear type': vessel['gear type'],
+            transmissions: vessel.transmissions,
+            activeAfter: vessel['transmissions start'],
+            activeBefore: vessel['transmissions end'],
+            sources: vessel.dataset,
+          }))
+        ),
+      })
+
       const csv = unparseCSV(vesselsParsed)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
       saveAs(blob, `gfw-search-results-selection.csv`)

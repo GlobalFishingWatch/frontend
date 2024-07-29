@@ -1,4 +1,4 @@
-import { PickingInfo } from '@deck.gl/core/typed'
+import { PickingInfo } from '@deck.gl/core'
 
 export function zIndexSortedArray(layersArray) {
   return layersArray

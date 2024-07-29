@@ -4,11 +4,11 @@ import { featureCollection, multiPolygon } from '@turf/helpers'
 import { difference, dissolve } from '@turf/turf'
 import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { parse } from 'qs'
-import { Interval } from '@globalfishingwatch/layer-composer'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { API_VERSION } from '@globalfishingwatch/api-client'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { sortStrings } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
@@ -31,58 +31,12 @@ import { ReportVesselWithDatasets } from './reports.selectors'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
 
-const arrayToStringTransform = (array: string[]) =>
-  `(${array?.map((v: string) => `'${v}'`).join(', ')})`
-
-export const transformFilters = (filters: Record<string, any>): string => {
-  const queryFiltersFields = [
-    {
-      value: filters.flag,
-      field: 'flag',
-      operator: 'IN',
-      transformation: arrayToStringTransform,
-    },
-    {
-      value: filters.fleet,
-      field: 'fleet',
-      operator: 'IN',
-      transformation: arrayToStringTransform,
-    },
-    {
-      value: filters.origin,
-      field: 'origin',
-      operator: 'IN',
-      transformation: arrayToStringTransform,
-    },
-    {
-      value: filters.geartype,
-      field: 'geartype',
-      operator: 'IN',
-      transformation: arrayToStringTransform,
-    },
-    {
-      value: filters.vessel_type,
-      field: 'vessel_type',
-      operator: 'IN',
-      transformation: arrayToStringTransform,
-    },
-  ]
-
-  return queryFiltersFields
-    .filter(({ value }) => value && value !== undefined)
-    .map(
-      ({ field, operator, transformation, value }) =>
-        `${field} ${operator} ${transformation ? transformation(value) : `'${value}'`}`
-    )
-    .join(' AND ')
-}
-
 export const tickFormatter = (tick: number) => {
   const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
   return format(formatter)(tick)
 }
 
-export const formatDate = (date: DateTime, timeChunkInterval: Interval | string) => {
+export const formatDate = (date: DateTime, timeChunkInterval: FourwingsInterval | string) => {
   let formattedLabel = ''
   switch (timeChunkInterval) {
     case 'month':
@@ -222,6 +176,7 @@ type BufferedAreaParams = {
   value: number
   unit: BufferUnit
   operation?: BufferOperation
+  properties?: Record<string, any>
 }
 // Area is needed to generate all report results
 export const getBufferedArea = ({
@@ -258,13 +213,15 @@ export const getBufferedFeature = ({
   value,
   unit,
   operation,
+  properties = {},
 }: BufferedAreaParams): Feature | null => {
   if (!area?.geometry) return null
   const bufferedFeatures = getFeatureBuffer(area.geometry.features, { unit, value })
 
   if (!bufferedFeatures.length) return null
 
-  const properties = {
+  const featureProperties = {
+    ...properties,
     id: REPORT_BUFFER_FEATURE_ID,
     value: 'buffer',
     label: t('analysis.bufferedArea', {
@@ -275,18 +232,18 @@ export const getBufferedFeature = ({
   }
   const dissolvedBufferedPolygonsFeatures = multiPolygon(
     dissolve(featureCollection(bufferedFeatures)).features.map((f) => f.geometry.coordinates),
-    properties
+    featureProperties
   )
 
   if (operation === DIFFERENCE) {
     const multi = multiPolygon(
       area.geometry.features.map((f) => (f as Feature<Polygon>).geometry.coordinates)
     )
-    const diff = difference(dissolvedBufferedPolygonsFeatures, multi)
+    const diff = difference(featureCollection([dissolvedBufferedPolygonsFeatures, multi]))
     if (diff) {
       diff.properties = {
         ...diff.properties,
-        ...properties,
+        ...featureProperties,
       }
     }
     return diff

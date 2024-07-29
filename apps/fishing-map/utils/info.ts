@@ -1,4 +1,4 @@
-import { get, uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import { TFunction } from 'i18next'
 import {
   API_LOGIN_REQUIRED,
@@ -9,7 +9,6 @@ import {
   VesselType,
 } from '@globalfishingwatch/api-types'
 import { ExtendedFeatureVessel } from 'features/map/map.slice'
-import { VesselRenderField } from 'features/vessel/vessel.config'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getLatestIdentityPrioritised } from 'features/vessel/vessel.utils'
 import { VesselDataIdentity } from 'features/vessel/vessel.slice'
@@ -22,55 +21,42 @@ export const upperFirst = (text: string) => {
 }
 
 export const formatInfoField = (
-  fieldValue: string | string[] | number,
+  fieldValue: string | string[] | number | undefined,
   type: string,
   translationFn = t
 ) => {
-  if (fieldValue) {
-    if (typeof fieldValue === 'string') {
-      if (type === 'flag' || type === 'ownerFlag') {
-        return translationFn(`flags:${fieldValue}` as any, fieldValue)
-      }
-      if (type === 'shiptypes' || type === 'vesselType') {
-        return getVesselShipType({ shiptypes: fieldValue }, { translationFn })
-      }
-      if (type === 'geartypes') {
-        return getVesselGearType({ geartypes: fieldValue }, { translationFn })
-      }
-      if (!fieldValue && (type === 'name' || type === 'shipname')) {
-        return translationFn('common.unknownVessel', 'Unknown Vessel')
-      }
-      if (type === 'name' || type === 'shipname' || type === 'owner' || type === 'port') {
-        return fieldValue.replace(
-          /\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b/g,
-          upperFirst
-        )
-      }
-      if (type === 'fleet') {
-        const fleetClean = fieldValue.replaceAll('_', ' ')
-        return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
-      }
-    } else if (Array.isArray(fieldValue)) {
-      if (type === 'geartypes') {
-        return getVesselGearType({ geartypes: fieldValue as GearType[] }, { translationFn })
-      } else if (type === 'shiptypes') {
-        return getVesselShipType({ shiptypes: fieldValue as VesselType[] }, { translationFn })
-      }
-    } else {
-      return formatI18nNumber(fieldValue)
-    }
-    return fieldValue
+  if (!fieldValue && (type === 'name' || type === 'shipname')) {
+    return translationFn('common.unknownVessel', 'Unknown Vessel')
   }
-  return EMPTY_FIELD_PLACEHOLDER
-}
-
-export const formatAdvancedInfoField = (
-  vessel: IdentityVessel,
-  field: VesselRenderField,
-  translationFn = t
-) => {
-  const key = field.key.includes('.') ? field.key.split('.')[1] : field.key
-  return formatInfoField(get(vessel, field.key), key, translationFn)
+  if (typeof fieldValue === 'string') {
+    if (type === 'flag' || type === 'ownerFlag') {
+      return translationFn(`flags:${fieldValue}` as any, fieldValue)
+    }
+    if (type === 'shiptypes' || type === 'vesselType') {
+      return getVesselShipType({ shiptypes: fieldValue }, { translationFn })
+    }
+    if (type === 'geartypes') {
+      return getVesselGearType({ geartypes: fieldValue }, { translationFn })
+    }
+    if (type === 'name' || type === 'shipname' || type === 'owner' || type === 'port') {
+      return fieldValue
+        .replace('_', ' ')
+        .replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ,0-9]+)\b/g, upperFirst)
+    }
+    if (type === 'fleet') {
+      const fleetClean = fieldValue.replaceAll('_', ' ')
+      return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
+    }
+  } else if (Array.isArray(fieldValue)) {
+    if (type === 'geartypes') {
+      return getVesselGearType({ geartypes: fieldValue as GearType[] }, { translationFn })
+    } else if (type === 'shiptypes') {
+      return getVesselShipType({ shiptypes: fieldValue as VesselType[] }, { translationFn })
+    }
+  } else if (fieldValue) {
+    return formatI18nNumber(fieldValue)
+  }
+  return fieldValue || EMPTY_FIELD_PLACEHOLDER
 }
 
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {

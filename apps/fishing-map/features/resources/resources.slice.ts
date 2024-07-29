@@ -1,7 +1,4 @@
-import {
-  resourcesReducer,
-  ResourcesState as CommonResourcesState,
-} from '@globalfishingwatch/dataviews-client'
+import { resourcesReducer } from '@globalfishingwatch/dataviews-client'
 
 export {
   setResource,
@@ -10,5 +7,4 @@ export {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 
-export type ResourcesState = CommonResourcesState
 export default resourcesReducer

@@ -1,13 +1,10 @@
+import { log } from 'console'
 import { RootState } from 'reducers'
 import { TimeRange } from 'features/timebar/timebar.slice'
 import { AppDispatch } from 'store'
 import { QueryParams, WorkspaceViewport } from 'types'
 import { ROUTE_TYPES } from './routes'
-import {
-  selectCurrentLocation,
-  selectLocationPayload,
-  selectLocationQuery,
-} from './routes.selectors'
+import { selectLocationPayload, selectLocationQuery, selectLocationType } from './routes.selectors'
 
 export interface UpdateQueryParamsAction {
   type: ROUTE_TYPES
@@ -43,20 +40,18 @@ export function updateLocation(
 export function updateQueryParam(query: QueryParams = {}) {
   return (dispatch: AppDispatch, getState: () => unknown) => {
     const state = getState() as RootState
-    const location = selectCurrentLocation(state)
+    const locationType = selectLocationType(state)
     const payload = selectLocationPayload(state)
-    return dispatch(updateLocation(location.type, { query, payload, replaceQuery: false }))
+    return dispatch(updateLocation(locationType, { query, payload, replaceQuery: false }))
   }
 }
 
 const cleanQueryLocation = () => {
   return (dispatch: AppDispatch, getState: () => unknown) => {
     const state = getState() as RootState
-    const location = selectCurrentLocation(state)
+    const locationType = selectLocationType(state)
     const payload = selectLocationPayload(state)
-    return dispatch(
-      updateLocation(location.type, { query: undefined, payload, replaceQuery: true })
-    )
+    return dispatch(updateLocation(locationType, { query: undefined, payload, replaceQuery: true }))
   }
 }
 
@@ -64,19 +59,19 @@ const cleanQueryLocation = () => {
 const updateUrlViewport: any = (dispatch: AppDispatch, getState: () => RootState) => {
   return (viewport: WorkspaceViewport) => {
     const state = getState()
-    const location = selectCurrentLocation(state)
+    const locationType = selectLocationType(state)
     const payload = selectLocationPayload(state)
-    dispatch(updateLocation(location.type, { query: { ...viewport }, payload }))
+    dispatch(updateLocation(locationType, { query: { ...viewport }, payload }))
   }
 }
 
 const updateUrlTimerange: any = (dispatch: AppDispatch, getState: () => RootState) => {
   return (timerange: TimeRange) => {
     const state = getState()
-    const location = selectCurrentLocation(state)
+    const locationType = selectLocationType(state)
     const payload = selectLocationPayload(state)
     const query = selectLocationQuery(state)
-    dispatch(updateLocation(location.type, { query: { ...query, ...timerange }, payload }))
+    dispatch(updateLocation(locationType, { query: { ...query, ...timerange }, payload }))
   }
 }
 

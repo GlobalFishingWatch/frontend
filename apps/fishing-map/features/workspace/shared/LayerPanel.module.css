@@ -8,7 +8,7 @@
   min-height: var(--size-M);
 }
 
-.LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+.LayerPanelContainer:not(:last-child) .LayerPanel::after {
   content: '';
   position: absolute;
   left: var(--space-S);
@@ -16,7 +16,13 @@
   height: 0.1rem;
   width: calc(100% - var(--space-S));
   background-color: var(--color-border);
+  opacity: 0;
   z-index: -1;
+  transition: var(--transition);
+}
+
+.LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+  opacity: 1;
 }
 
 .expandedContainerOpen {
@@ -40,6 +46,7 @@
   box-shadow: none;
 }
 
+.expandedContainerOpen .dragger,
 .LayerPanel:hover .dragger {
   width: var(--size-S);
 }
@@ -58,6 +65,7 @@
   cursor: pointer;
   line-height: 2.8rem;
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -69,8 +77,20 @@
   align-items: center;
 }
 
-.actions > * {
+.shownUntilHovered,
+.hideUntilHovered,
+.hideUntilHovered > * {
+  transition: var(--transition);
+}
+
+.actions > *:not(:last-child) {
   margin-right: calc(0px - var(--space-XS));
+}
+
+.LayerPanel:not(.expandedContainerOpen, :hover) .hideUntilHovered > * {
+  overflow: hidden;
+  width: 0;
+  opacity: 0;
 }
 
 .active {
@@ -85,18 +105,6 @@
   display: none;
 }
 
-.shownUntilHovered,
-.hideUntilHovered,
-.hideUntilHovered > * {
-  transition: var(--transition);
-}
-
-.LayerPanel:not(.expandedContainerOpen, :hover) .hideUntilHovered > * {
-  overflow: hidden;
-  width: 0;
-  opacity: 0;
-}
-
 .LayerPanel.expandedContainerOpen .shownUntilHovered,
 .LayerPanel:hover .shownUntilHovered {
   display: none;
@@ -108,6 +116,10 @@
 
 .properties {
   padding: 0 var(--space-S) var(--space-S);
+}
+
+.propertiesNoPaddingBlock {
+  padding: 0 var(--space-S);
 }
 
 .dataWarning {
@@ -221,6 +233,12 @@
   overflow: hidden;
 }
 
+.inline {
+  display: inline-block;
+  margin-inline: var(--space-XS);
+  transform: scale(0.7) translateY(0.2rem);
+}
+
 .area {
   cursor: default;
   font: var(--font-S);
@@ -302,6 +320,10 @@
   display: none !important;
 }
 
+:global(.printing) .LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+  display: none;
+}
+
 .faded,
 .secondary {
   color: var(--color-secondary-blue);
@@ -309,4 +331,16 @@
 
 .gfwIcon {
   margin-left: var(--space-XS);
+}
+
+.LayerPanel .areasOnScreen summary,
+.LayerPanel .areasOnScreen summary > span,
+.LayerPanel .areasOnScreen summary > svg {
+  background: none;
+}
+
+@media print {
+  .LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+    display: none;
+  }
 }

@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next'
 import { InsightGapsResponse, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
 import Event from '../activity/event/Event'
+import { selectVesselInfoData } from '../selectors/vessel.selectors'
 import styles from './Insights.module.css'
 
 const InsightGapsDetails = ({

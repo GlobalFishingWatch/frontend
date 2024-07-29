@@ -1,4 +1,4 @@
-import { ExtendedFeature } from '@globalfishingwatch/react-hooks'
+import { ExtendedFeature } from '@globalfishingwatch/react-hooks/use-map-interaction'
 import { useDatasetLayers } from 'features/layers/layers.hooks'
 import { ContextApiDatasetConfig } from 'features/datasets/datasets.types'
 import styles from './Popup.module.css'

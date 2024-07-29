@@ -5,12 +5,6 @@ export enum Format {
   GeoJson = 'GEOJSON',
 }
 
-export type FormatExtension = Record<Format, string>
-export const FORMAT_EXTENSION: FormatExtension = {
-  [Format.Csv]: 'csv',
-  [Format.GeoJson]: 'geo.json',
-}
-
 export const FORMAT_OPTIONS: ChoiceOption[] = [
   {
     id: Format.Csv,

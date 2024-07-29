@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { gfwBaseQuery } from 'queries/base'
 import { InsightResponse } from '@globalfishingwatch/api-types'
 
-export type VesselInsightParams = {
+type VesselInsightParams = {
   vessels: { vesselId: string; datasetId: string }[]
   includes: string[]
   startDate: string

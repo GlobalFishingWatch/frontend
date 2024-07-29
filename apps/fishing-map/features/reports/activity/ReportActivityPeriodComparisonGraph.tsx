@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import { Interval as TimeInterval } from 'luxon'
 import { useSelector } from 'react-redux'
-import { Interval } from '@globalfishingwatch/layer-composer'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import { selectReportTimeComparison } from 'features/app/selectors/app.reports.selector'
 import i18n, { t } from 'features/i18n/i18n'
@@ -34,7 +34,7 @@ export interface ComparisonGraphData {
   max: number[]
 }
 
-export interface ComparisonGraphProps {
+interface ComparisonGraphProps {
   timeseries: ComparisonGraphData[]
   sublayers: {
     id: string
@@ -43,10 +43,10 @@ export interface ComparisonGraphProps {
       unit?: string
     }
   }[]
-  interval: Interval
+  interval: FourwingsInterval
 }
 
-const formatDateTicks = (tick: number, start: string, timeChunkInterval: Interval) => {
+const formatDateTicks = (tick: number, start: string, timeChunkInterval: FourwingsInterval) => {
   if (!tick || !start) {
     return ''
   }
@@ -76,7 +76,7 @@ type PeriodComparisonGraphTooltipProps = {
     unit: string
   }[]
   label: number
-  timeChunkInterval: Interval
+  timeChunkInterval: FourwingsInterval
   offsetedLastDataUpdate: number
 }
 const PeriodComparisonGraphTooltip = (props: any) => {
@@ -153,50 +153,55 @@ const ReportActivityPeriodComparisonGraph: React.FC<{
     }
   }, [dtLastDataUpdate, timeComparison])
 
+  const comparisonStartIndex = timeseries.findIndex((t) => t.date === timeComparison.compareStart)
+  const baselineTimeseries = timeseries.slice(0, comparisonStartIndex).map((t) => ({
+    d: t.date,
+    date: getUTCDateTime(t.date)?.toMillis(),
+    min: t.min[0],
+    max: t.max[0],
+  }))
+  const comparisonTimeseries = timeseries.slice(comparisonStartIndex).map((t) => ({
+    d: t.date,
+    date: getUTCDateTime(t.date)?.toMillis(),
+    min: t.min[1],
+    max: t.max[1],
+  }))
+
   const baseline = useMemo(() => {
-    if (!timeseries || !timeseries.length) return []
-    return timeseries.map(({ date }) => ({
-      date: getUTCDateTime(date)?.toMillis(),
-      zero: 0,
-    }))
-  }, [timeseries])
+    if (!baselineTimeseries || !baselineTimeseries.length) return []
+    return baselineTimeseries.map(({ date }) => ({ date, zero: 0 }))
+  }, [baselineTimeseries])
 
   const difference = useMemo(() => {
-    return timeseries?.map(({ date, compareDate, min, max }) => {
-      const avgBaseline = min[0] + max[0] / 2
-      const avgCompare = min[1] + max[1] / 2
+    return comparisonTimeseries?.map(({ date, min, max }, index) => {
+      const baselineDate = baselineTimeseries[index]?.date
+      const avgBaseline = baselineTimeseries[index]?.min + baselineTimeseries[index]?.max / 2
+      const avgCompare = min + max / 2
       const difference = avgCompare - avgBaseline
       return {
-        date: getUTCDateTime(date)?.toMillis(),
-        ...{
-          compareDate: compareDate ? getUTCDateTime(compareDate)?.toMillis() : {},
-        },
+        date: baselineDate,
+        compareDate: date,
         baseline: avgBaseline,
         difference,
       }
     })
-  }, [timeseries])
+  }, [baselineTimeseries, comparisonTimeseries])
 
   const range = useMemo(() => {
-    return timeseries?.map(({ date, compareDate, min, max }) => {
-      const baseAvg = min[0] + max[0] / 2
-      const avgCompare = min[1] + max[1] / 2
-      const difference = avgCompare - baseAvg
-      const dtStart = getUTCDateTime(date)
-      const dtCompareStart = getUTCDateTime(compareDate as string)
+    return difference?.map(({ date, compareDate, difference }, index) => {
       const data = {
-        date: dtStart.toMillis(),
-        ...{ compareDate: compareDate ? dtCompareStart.toMillis() : {} },
+        date,
+        compareDate,
         rangeDecrease: [] as number[],
         rangeIncrease: [] as number[],
       }
-      if (offsetedLastDataUpdate && dtStart.toMillis() < offsetedLastDataUpdate) {
+      if (offsetedLastDataUpdate && date < offsetedLastDataUpdate) {
         data.rangeDecrease = difference <= 0 ? [0, difference] : [0, 0]
         data.rangeIncrease = difference > 0 ? [0, difference] : [0, 0]
       }
       return data
     })
-  }, [offsetedLastDataUpdate, timeseries])
+  }, [difference, offsetedLastDataUpdate])
 
   const lastDate = useMemo(() => {
     return range?.[range?.length - 1]?.date

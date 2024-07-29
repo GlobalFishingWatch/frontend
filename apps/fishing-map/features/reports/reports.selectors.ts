@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
+import { groupBy, sum, uniq, uniqBy } from 'es-toolkit'
+import sumBy from 'lodash/sumBy'
 import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
 import { FeatureCollection, MultiPolygon } from 'geojson'
@@ -49,7 +50,7 @@ import { selectReportVesselsData, selectReportPreviewBuffer } from './report.sli
 
 const EMPTY_ARRAY: [] = []
 
-export type ReportVesselWithMeta = ReportVessel & {
+type ReportVesselWithMeta = ReportVessel & {
   // Merging detections or hours depending on the activity unit into the same property
   value: number
   sourceColor: string
@@ -82,7 +83,7 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
         return {
           ...dataview,
           datasets: dataview.datasets?.filter((d) => supportedDatasets.includes(d.id)) as Dataset[],
-          filter: dataview.config?.filter || [],
+          filter: dataview.config?.filter || '',
           ...(dataview.config?.['vessel-groups']?.length && {
             vesselGroups: dataview.config?.['vessel-groups'],
           }),
@@ -92,11 +93,16 @@ export const selectReportDataviewsWithPermissions = createDeepEqualSelector(
   }
 )
 
-export const selectReportAreaDataview = createSelector(
+export const selectReportAreaDataviews = createSelector(
   [selectDataviewInstancesResolved, selectReportDatasetId],
   (dataviewsInstances, datasetId) => {
-    const areaDataview = dataviewsInstances?.find((dataview) => {
-      return dataview.datasets?.some((dataset) => dataset.id === datasetId)
+    const datasetIds = datasetId?.split(',')
+    const areaDataview = datasetIds?.flatMap((datasetId) => {
+      return (
+        dataviewsInstances?.find((dataview) => {
+          return dataview.datasets?.some((dataset) => datasetId === dataset.id)
+        }) || []
+      )
     })
     return areaDataview
   }
@@ -109,7 +115,7 @@ export const selectReportAreaIds = createSelector(
   }
 )
 
-export const selectReportActivityFlatten = createSelector(
+const selectReportActivityFlatten = createSelector(
   [selectReportVesselsData, selectAllDatasets, selectReportDataviewsWithPermissions],
   (reportDatasets, datasets, dataviews) => {
     if (!dataviews?.length || !reportDatasets?.length) return null
@@ -146,7 +152,7 @@ export const selectReportVesselsNumber = createSelector(
   (vessels) => {
     if (!vessels?.length) return null
 
-    return uniqBy(vessels, 'vesselId').length
+    return uniqBy(vessels, (v) => v.vesselId).length
   }
 )
 
@@ -159,7 +165,7 @@ export const selectReportVesselsList = createSelector(
   [selectReportActivityFlatten, selectAllDatasets, selectReportCategory],
   (vessels, datasets, reportCategory) => {
     if (!vessels?.length) return null
-    return Object.values(groupBy(vessels, 'vesselId'))
+    return Object.values(groupBy(vessels, (v) => v.vesselId))
       .flatMap((vesselActivity) => {
         if (vesselActivity[0]?.category !== reportCategory) return EMPTY_ARRAY
         const activityDataset = datasets.find((d) => vesselActivity[0].activityDatasetId === d.id)
@@ -210,7 +216,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
   (vessels) => {
     if (!vessels?.length) return null
 
-    return Object.values(groupBy(vessels, 'vesselId'))
+    return Object.values(groupBy(vessels, (v) => v.vesselId))
       .map((vesselActivity) => {
         return {
           ...vesselActivity[0],
@@ -234,7 +240,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
 )
 
 type CleanVesselOrGearTypeParams = { value: string; property: 'geartype' | 'vesselType' }
-export function cleanVesselOrGearType({ value, property }: CleanVesselOrGearTypeParams) {
+function cleanVesselOrGearType({ value, property }: CleanVesselOrGearTypeParams) {
   const valuesClean = value ? value?.split(',').filter(Boolean) : [EMPTY_FIELD_PLACEHOLDER]
   const valuesCleanTranslated = valuesClean
     .map((value) => {
@@ -344,19 +350,6 @@ export const selectReportVesselsPagination = createSelector(
   }
 )
 
-export const selectIsReportAllowed = createSelector(
-  [selectWorkspaceStatus, selectReportDataviewsWithPermissions],
-  (workspaceStatus, reportDataviewsWithPermissions) => {
-    if (workspaceStatus !== AsyncReducerStatus.Finished) {
-      return false
-    }
-    const datasetsReportAllowed = uniq(
-      reportDataviewsWithPermissions.flatMap((dv) => dv.datasets?.flatMap((ds: any) => ds.id))
-    )
-    return datasetsReportAllowed?.length > 0
-  }
-)
-
 export const selectShowTimeComparison = createSelector(
   [selectReportActivityGraph],
   (reportActivityGraph) => {
@@ -385,18 +378,18 @@ export const selectTimeComparisonValues = createSelector(
   }
 )
 
-export const selectReportVesselsGraphData = createSelector(
+const selectReportVesselsGraphData = createSelector(
   [selectReportVesselGraph, selectReportVesselsFiltered, selectReportDataviewsWithPermissions],
   (reportGraph, vesselsFiltered, dataviews) => {
     if (!vesselsFiltered?.length) return null
 
-    const reportData = groupBy(vesselsFiltered, 'dataviewId')
+    const reportData = groupBy(vesselsFiltered, (v) => v.dataviewId || '')
 
     const dataByDataview = dataviews.map((dataview) => {
       const dataviewData = reportData[dataview.id]
         ? Object.values(reportData[dataview.id]).flatMap((v) => v || [])
         : []
-      const dataByKey = groupBy(dataviewData, reportGraph)
+      const dataByKey = groupBy(dataviewData, (d) => d[reportGraph] || '')
       return { id: dataview.id, data: dataByKey }
     })
 
@@ -470,7 +463,7 @@ const selectCurrentReportArea = createSelector(
   }
 )
 
-export const selectReportAreaData = createSelector([selectCurrentReportArea], (reportArea) => {
+const selectReportAreaData = createSelector([selectCurrentReportArea], (reportArea) => {
   return reportArea?.data
 })
 
@@ -494,7 +487,7 @@ export const selectReportAreaName = createSelector(
   }
 )
 
-export const selectReportAreaDissolved = createSelector([selectReportAreaData], (area) => {
+const selectReportAreaDissolved = createSelector([selectReportAreaData], (area) => {
   if (!area) {
     return null
   }
@@ -517,7 +510,7 @@ export const selectReportPreviewBufferFeature = createSelector(
   }
 )
 
-export const selectReportBufferArea = createSelector(
+const selectReportBufferArea = createSelector(
   [
     selectReportAreaDissolved,
     selectReportBufferUnit,
@@ -553,7 +546,7 @@ export const selectReportBufferFeature = createSelector(
   ],
   (area, unit, value, operation) => {
     if (!area || !unit || !value || !operation) return null
-    return getBufferedFeature({ area, value, unit, operation })
+    return getBufferedFeature({ area, value, unit, operation, properties: { highlighted: true } })
   }
 )
 

@@ -1,34 +1,17 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { Workspace, WorkspaceViewport } from '@globalfishingwatch/api-types'
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { WorkspaceViewport } from '@globalfishingwatch/api-types'
+import { WorkspaceCategory } from 'data/workspaces'
 import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
 import { USER } from 'routes/routes'
-import { selectUserWorkspaces } from 'features/user/selectors/user.permissions.selectors'
+import {
+  selectUserWorkspaces,
+  selectUserWorkspacesPrivate,
+} from 'features/user/selectors/user.permissions.selectors'
 import {
   HighlightedWorkspace,
   selectHighlightedWorkspaces,
   selectWorkspaces,
 } from './workspaces-list.slice'
-
-export const selectDefaultWorkspace = createSelector([selectWorkspaces], (workspaces) => {
-  return workspaces?.find(
-    // To ensure this is the local workspace and not overlaps with a new one on the api with the same id
-    (w) => w.id === DEFAULT_WORKSPACE_ID && w.description === DEFAULT_WORKSPACE_ID
-  )
-})
-
-export const selectWorkspaceByCategory = (category: WorkspaceCategory) => {
-  return createSelector([selectWorkspaces], (workspaces) => {
-    return workspaces.filter((workspace) => workspace.app === category)
-  })
-}
-
-export const selectCurrentWorkspaces = createSelector(
-  [selectLocationCategory, (state) => state],
-  (category, state): Workspace[] => {
-    return selectWorkspaceByCategory(category)(state)
-  }
-)
 
 export const selectAvailableWorkspacesCategories = createSelector(
   [selectHighlightedWorkspaces],
@@ -72,13 +55,24 @@ type HighlightedMapWorkspace = {
   name: string
   viewport?: WorkspaceViewport
   category?: WorkspaceCategory
+  viewAccess?: 'public' | 'private' | 'password'
 }
 
 export const selectCurrentWorkspacesList = createSelector(
-  [selectLocationType, selectCurrentHighlightedWorkspaces, selectUserWorkspaces],
-  (locationType, highlightedWorkspaces, userWorkspaces): HighlightedMapWorkspace[] | undefined => {
+  [
+    selectLocationType,
+    selectCurrentHighlightedWorkspaces,
+    selectUserWorkspaces,
+    selectUserWorkspacesPrivate,
+  ],
+  (
+    locationType,
+    highlightedWorkspaces,
+    userWorkspaces,
+    userWorkspacesPrivate
+  ): HighlightedMapWorkspace[] | undefined => {
     if (locationType === USER) {
-      return userWorkspaces
+      return [...userWorkspaces, ...userWorkspacesPrivate]
     }
     return highlightedWorkspaces?.map((workspace) => ({
       id: workspace.id,
@@ -86,18 +80,5 @@ export const selectCurrentWorkspacesList = createSelector(
       viewport: workspace.viewport,
       category: workspace.category,
     }))
-  }
-)
-
-export const selectWorkspacesByUserGroup = createSelector(
-  [selectHighlightedWorkspaces],
-  (highlightedWorkspace) => {
-    if (!highlightedWorkspace?.length) return
-    const workspaces = highlightedWorkspace.flatMap(({ workspaces }) => workspaces)
-    const groups = workspaces
-      .flatMap((w) => w)
-      ?.filter(({ userGroup }) => userGroup !== undefined)
-      .map(({ id, userGroup }) => [userGroup, id])
-    return Object.fromEntries(groups)
   }
 )

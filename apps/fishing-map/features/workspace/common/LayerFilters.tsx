@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { debounce } from 'lodash'
+import { debounce } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import {
   Button,
@@ -37,6 +38,7 @@ import {
 import { trackEvent, TrackCategory } from 'features/app/analytics.hooks'
 import { listAsSentence } from 'utils/shared'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { selectDataviewInstancesByCategory } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   areAllSourcesSelectedInDataview,
   getSourcesOptionsInDataview,
@@ -46,6 +48,7 @@ import styles from './LayerFilters.module.css'
 
 type LayerFiltersProps = {
   dataview: UrlDataviewInstance
+  showApplyToAll?: boolean
   onConfirmCallback?: () => void
 }
 
@@ -104,10 +107,12 @@ export type OnSelectFilterArgs = {
 }
 
 function LayerFilters({
+  showApplyToAll,
   dataview: baseDataview,
   onConfirmCallback,
 }: LayerFiltersProps): React.ReactElement {
   const { t } = useTranslation()
+  const categoryDataviews = useSelector(selectDataviewInstancesByCategory(baseDataview?.category))
 
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
     UrlDataviewInstance | undefined
@@ -233,7 +238,7 @@ function LayerFilters({
 
   const onRemoveSourceClick: MultiSelectOnChange = (source) => {
     const datasets =
-      dataview.config?.datasets?.filter((datasetId: string) => datasetId !== source.id) || null
+      dataview.config?.datasets?.filter((datasetId: string) => datasetId !== source.id) || undefined
     onDataviewFilterChange({
       id: dataview.id,
       config: { datasets },
@@ -356,9 +361,15 @@ function LayerFilters({
     })
   }
 
-  const onConfirmFilters = () => {
+  const onConfirmFilters = ({ applyToAll } = {} as { applyToAll: boolean }) => {
     if (newDataviewInstanceConfig) {
-      upsertDataviewInstance(newDataviewInstanceConfig)
+      const newDataviewInstancesConfig = applyToAll
+        ? categoryDataviews.map((d) => ({
+            ...newDataviewInstanceConfig,
+            id: d.id,
+          }))
+        : newDataviewInstanceConfig
+      upsertDataviewInstance(newDataviewInstancesConfig)
       newDataviewInstanceConfigRef.current = undefined
     }
     if (onConfirmCallback) {
@@ -418,8 +429,13 @@ function LayerFilters({
           />
         )
       })}
-      <div className={styles.footer}>
-        <Button onClick={onConfirmFilters}>{t('common.confirm', 'confirm')}</Button>
+      <div className={cx(styles.footer, { [styles.spaceBetween]: showApplyToAll })}>
+        {showApplyToAll && (
+          <Button type="secondary" onClick={() => onConfirmFilters({ applyToAll: true })}>
+            {t('common.applyToAll', 'Apply to all')}
+          </Button>
+        )}
+        <Button onClick={() => onConfirmFilters()}>{t('common.confirm', 'confirm')}</Button>
       </div>
       {filtersDisabled.length >= 1 && (
         <p className={styles.filtersDisabled}>

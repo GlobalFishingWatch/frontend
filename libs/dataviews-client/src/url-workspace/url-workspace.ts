@@ -1,5 +1,9 @@
-import { invert, isObject, isString, transform } from 'lodash'
+import { invert } from 'es-toolkit'
+import isObject from 'lodash/isObject'
+import isString from 'lodash/isString'
+import transform from 'lodash/transform'
 import { stringify, parse } from 'qs'
+import { DataviewInstance } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '..'
 import {
   removeLegacyEndpointPrefix,
@@ -52,6 +56,19 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),
   vesselIdentityIndex: (index) => parseInt(index),
+  reportTimeComparison: (reportTimeComparison = {}) => ({
+    ...reportTimeComparison,
+    duration: parseInt(reportTimeComparison.duration),
+  }),
+  mapRulers: (rulers: { id: string }[]) => {
+    return rulers?.map((ruler) => ({ ...ruler, id: parseInt(ruler.id) }))
+  },
+  mapDrawing: (drawing: boolean | string) => {
+    if (drawing === true || drawing === 'true') {
+      return 'polygons'
+    }
+    return drawing
+  },
   dataviewInstances: (dataviewInstances: UrlDataviewInstance[]) => {
     return dataviewInstances.map(parseDataviewInstance)
   },
@@ -64,16 +81,20 @@ const deepReplaceKeys = (obj: Dictionary<any>, keysMap: Dictionary<string>) => {
   })
 }
 
+const getObjectTokens = (obj: Dictionary<any>) => {
+  const tokens: string[] = []
+  Object.entries(obj).forEach(([key, value]) => {
+    if (key !== 'start' && key !== 'end') {
+      if (isObject(value)) tokens.push(...getObjectTokens(value))
+      else if (isString(value)) tokens.push(value as string)
+    }
+  })
+  return tokens
+}
+
 // Replace repeated values
 const deepTokenizeValues = (obj: Dictionary<any>) => {
-  const tokens: string[] = []
-  const collectTokens = (obj: Dictionary<any>) => {
-    Object.values(obj).forEach((value) => {
-      if (isObject(value)) collectTokens(value)
-      else if (isString(value)) tokens.push(value as string)
-    })
-  }
-  collectTokens(obj)
+  const tokens = getObjectTokens(obj)
 
   const tokensCount: Dictionary<number> = {}
   tokens.forEach((token) => {
@@ -148,12 +169,15 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
 }
 
 export const parseLegacyDataviewInstanceConfig = (
-  dataviewInstance: UrlDataviewInstance
+  dataviewInstance: UrlDataviewInstance | DataviewInstance
 ): UrlDataviewInstance => {
   return {
     ...dataviewInstance,
     config: {
       ...dataviewInstance.config,
+      ...(dataviewInstance?.config?.datasets?.length && {
+        datasets: dataviewInstance.config.datasets.map(runDatasetMigrations),
+      }),
       ...(dataviewInstance?.config?.info && {
         info: runDatasetMigrations(dataviewInstance?.config?.info),
       }),
@@ -173,7 +197,7 @@ export const parseLegacyDataviewInstanceConfig = (
 
 const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   const dataviewId = dataview.dataviewId?.toString()
-  const breaks = dataview.config?.breaks?.map((b: string) => parseFloat(b))
+  const breaks = dataview.config?.breaks?.map((b: any) => parseFloat(b))
   const vesselGroups = dataview.config?.filters?.['vessel-groups'] as string | string[] | undefined
   // Legacy workspaces supported multiple vessel groups but this is not supported anymore so we pick the first one
   const vesselGroup = Array.isArray(vesselGroups) ? vesselGroups[0] : vesselGroups
@@ -182,10 +206,10 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
     config.breaks = breaks
   }
   if (dataview.config?.maxVisibleValue !== undefined) {
-    config.maxVisibleValue = parseFloat(dataview.config?.maxVisibleValue)
+    config.maxVisibleValue = parseFloat(dataview.config?.maxVisibleValue as any)
   }
   if (dataview.config?.minVisibleValue !== undefined) {
-    config.minVisibleValue = parseFloat(dataview.config?.minVisibleValue)
+    config.minVisibleValue = parseFloat(dataview.config?.minVisibleValue as any)
   }
   if (vesselGroup) {
     if (!config.filters) {

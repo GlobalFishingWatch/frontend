@@ -1,13 +1,10 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
-import useRulers from 'features/map/rulers/rulers.hooks'
+import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import MapControlGroup from 'features/map/controls/MapControlGroup'
-import useMapInstance from '../map-context.hooks'
 
 const Rulers = () => {
   const { t } = useTranslation()
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
   const {
     rulers,
     editingRuler,
@@ -24,10 +21,9 @@ const Rulers = () => {
       if (editingRuler) {
         resetEditingRule()
       }
-      cleanFeatureState('click')
     }
     toggleRulersEditing()
-  }, [cleanFeatureState, editingRuler, resetEditingRule, rulersEditing, toggleRulersEditing])
+  }, [editingRuler, resetEditingRule, rulersEditing, toggleRulersEditing])
 
   return (
     <MapControlGroup

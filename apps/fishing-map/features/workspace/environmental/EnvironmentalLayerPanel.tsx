@@ -5,6 +5,7 @@ import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
+import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
@@ -20,6 +21,7 @@ import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { showSchemaFilter } from 'features/workspace/common/LayerSchemaFilter'
+import MapLegend from 'features/workspace/common/MapLegend'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -67,6 +69,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   )
 
   const layerActive = dataview?.config?.visible ?? true
+  const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
 
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
@@ -136,6 +139,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       : false
   const hasFilters = dataview.config?.filters && Object.keys(dataview.config?.filters).length > 0
   const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter || hasFilters
+  const showSortHandler = items.length > 1
 
   return (
     <div
@@ -160,7 +164,14 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
         ) : (
           TitleComponent
         )}
-        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+        <div
+          className={cx(
+            'print-hidden',
+            styles.actions,
+            { [styles.active]: layerActive },
+            styles.hideUntilHovered
+          )}
+        >
           {layerActive && showFilters && (
             <ExpandedContainer
               visible={filterOpen}
@@ -196,19 +207,27 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
             />
           )}
           <InfoModal dataview={dataview} />
-          <Remove dataview={dataview} />
-          {items.length > 1 && (
+          <Remove dataview={dataview} loading={!showSortHandler && layerActive && !layerLoaded} />
+          {showSortHandler && (
             <IconButton
               size="small"
               ref={setActivatorNodeRef}
               {...listeners}
               icon="drag"
+              loading={layerActive && !layerLoaded}
               className={styles.dragger}
             />
           )}
         </div>
+        <IconButton
+          icon={layerActive ? 'more' : undefined}
+          type="default"
+          loading={layerActive && !layerLoaded}
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
-      {layerActive && showVisibleFilterValues && (
+      {layerActive && (
         <div className={styles.properties}>
           <div className={styles.filters}>
             <div className={styles.filters}>
@@ -226,15 +245,15 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               )}
             </div>
           </div>
-        </div>
-      )}
-      {layerActive && hasLegend && (
-        <div
-          className={cx(styles.properties, styles.drag, {
-            [styles.dragging]: isSorting && activeIndex > -1,
-          })}
-        >
-          <div id={`legend_${dataview.id}`}></div>
+          {layerActive && hasLegend && (
+            <div
+              className={cx(styles.drag, {
+                [styles.dragging]: isSorting && activeIndex > -1,
+              })}
+            >
+              <MapLegend dataview={dataview} />
+            </div>
+          )}
         </div>
       )}
     </div>

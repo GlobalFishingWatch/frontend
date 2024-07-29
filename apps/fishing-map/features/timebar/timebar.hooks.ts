@@ -1,14 +1,10 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useMemo } from 'react'
-import { atom, useAtom } from 'jotai'
-import { debounce } from 'lodash'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { debounce } from 'es-toolkit'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
-import {
-  MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID,
-  MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID,
-} from '@globalfishingwatch/dataviews-client'
+import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
-import { useMapStyle } from 'features/map/map-style.hooks'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
@@ -23,8 +19,6 @@ import {
 import { updateUrlTimerange } from 'routes/routes.actions'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import useMapInstance from 'features/map/map-context.hooks'
-import { BIG_QUERY_PREFIX } from 'features/dataviews/dataviews.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 import { DEFAULT_TIME_RANGE } from 'data/config'
@@ -76,13 +70,12 @@ timerangeState.onMount = (setAtom) => {
   }
 }
 
-export const useTimerangeConnect = () => {
-  const [timerangeAtom, setAtomTimerange] = useAtom(timerangeState)
+export const useSetTimerange = () => {
+  const setAtomTimerange = useSetAtom(timerangeState)
   const dispatch = useAppDispatch()
   const hintsDismissed = useSelector(selectHintsDismissed)
-  const reportLocation = useSelector(selectIsAnyReportLocation)
-  const fitAreaInViewport = useFitAreaInViewport()
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateUrlTimerangeDebounced = useCallback(
     debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
     []
@@ -90,35 +83,39 @@ export const useTimerangeConnect = () => {
 
   const setTimerange = useCallback(
     (timerange: TimeRange) => {
-      setAtomTimerange(timerange)
+      setAtomTimerange((timerangeAtom) => {
+        if (
+          (timerange.start !== timerangeAtom?.start || timerange.end !== timerangeAtom.end) &&
+          !hintsDismissed?.changingTheTimeRange
+        ) {
+          dispatch(setHintDismissed('changingTheTimeRange'))
+        }
+        return timerange
+      })
       updateUrlTimerangeDebounced(timerange)
     },
-    [setAtomTimerange, updateUrlTimerangeDebounced]
+    [dispatch, hintsDismissed?.changingTheTimeRange, setAtomTimerange, updateUrlTimerangeDebounced]
   )
+
+  return setTimerange
+}
+
+export const useTimerangeConnect = () => {
+  const timerangeAtom = useAtomValue(timerangeState)
+  const setTimerange = useSetTimerange()
+  const reportLocation = useSelector(selectIsAnyReportLocation)
+  const fitAreaInViewport = useFitAreaInViewport()
 
   const onTimebarChange = useCallback(
     (start: string, end: string) => {
-      if (
-        (start !== timerangeAtom?.start || end !== timerangeAtom.end) &&
-        !hintsDismissed?.changingTheTimeRange
-      ) {
-        dispatch(setHintDismissed('changingTheTimeRange'))
-      }
       setTimerange({ start, end })
       if (reportLocation) {
         fitAreaInViewport()
       }
     },
-    [
-      dispatch,
-      fitAreaInViewport,
-      hintsDismissed?.changingTheTimeRange,
-      reportLocation,
-      setTimerange,
-      timerangeAtom?.end,
-      timerangeAtom?.start,
-    ]
+    [fitAreaInViewport, reportLocation, setTimerange]
   )
+
   return useMemo(() => {
     return {
       start: timerangeAtom?.start as string,
@@ -151,24 +148,29 @@ export const useDisableHighlightTimeConnect = () => {
 
 export const useHighlightedEventsConnect = () => {
   const highlightedEvents = useSelector(selectHighlightedEvents)
+  const hoverEvent = useAtomValue(deckHoverInteractionAtom)
   const dispatch = useAppDispatch()
 
   const dispatchHighlightedEvents = useCallback(
-    (eventIds: string[]) => {
+    (eventIds: string[] | undefined) => {
       dispatch(setHighlightedEvents(eventIds))
     },
     [dispatch]
   )
 
-  const serializedHighlightedEvents = highlightedEvents?.join('')
+  const highlightedEventIds = [
+    ...(highlightedEvents || []),
+    ...(hoverEvent.features || []).map((f) => f.id),
+  ]
+  const serializedHighlightedEventIds = highlightedEventIds.join('')
 
   return useMemo(() => {
     return {
-      highlightedEvents,
+      highlightedEventIds,
       dispatchHighlightedEvents,
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serializedHighlightedEvents, dispatchHighlightedEvents])
+  }, [serializedHighlightedEventIds, dispatchHighlightedEvents])
 }
 
 export const useTimebarVisualisationConnect = () => {
@@ -276,7 +278,7 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
       } else if (activeDetectionsDataviews.length === 1 && prevActiveDetectionsDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
-      } else if (activeTrackDataviews.length === 1 && prevActiveTrackDataviewsNum === 0) {
+      } else if (activeTrackDataviews.length >= 1 && prevActiveTrackDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews.length === 1 && prevactiveEnvDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
@@ -291,36 +293,4 @@ export const useTimebarVisualisation = () => {
     hasChangedSettingsOnce,
   ])
   return { timebarVisualisation, dispatchTimebarVisualisation }
-}
-
-export const useActivityMetadata = () => {
-  const map = useMapInstance()
-  const style = useMapStyle()
-  const { timebarVisualisation } = useTimebarVisualisationConnect()
-
-  if (!map) return null
-
-  const animatedMergedId =
-    timebarVisualisation === TimebarVisualisations.HeatmapDetections
-      ? MERGED_DETECTIONS_ANIMATED_HEATMAP_GENERATOR_ID
-      : MERGED_ACTIVITY_ANIMATED_HEATMAP_GENERATOR_ID
-
-  const generatorsMetadata = style?.metadata?.generatorsMetadata
-  if (!generatorsMetadata) return null
-
-  const mergedHeatmapMetadata = generatorsMetadata[animatedMergedId]
-  if (mergedHeatmapMetadata?.timeChunks) {
-    return mergedHeatmapMetadata
-  }
-  const environmentalMetadata = Object.entries(generatorsMetadata).filter(
-    ([id, metadata]) => (metadata as any).temporalgrid === true
-  )
-  const bqEnvironmentalMetadata = environmentalMetadata.filter(([id]) =>
-    id.includes(BIG_QUERY_PREFIX)
-  )
-  if (environmentalMetadata?.length === 1 && bqEnvironmentalMetadata?.length === 1) {
-    return bqEnvironmentalMetadata[0][1]
-  }
-
-  return null
 }

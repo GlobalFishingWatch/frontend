@@ -5,7 +5,6 @@ import React, { useContext, useMemo } from 'react'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CSS_TRANSITION } from '../constants'
 import TimelineContext, { TimelineScale } from '../timelineContext'
-import ImmediateContext from '../immediateContext'
 import { Timeseries, HighlighterCallback } from './common/types'
 import { useTimeseriesToChartData } from './common/hooks'
 import { useUpdateChartsData } from './chartsData.atom'
@@ -13,13 +12,16 @@ import { useUpdateChartsData } from './chartsData.atom'
 const MARGIN_BOTTOM = 20
 const MARGIN_TOP = 5
 
+const getSubLayers = (timeseries: Timeseries) =>
+  Object.keys(timeseries?.[0]).filter((k) => k !== 'date')
+
 const getPathContainers = (
   timeseries: Timeseries,
+  subLayers: string[],
   graphHeight: number,
   overallScale: TimelineScale
 ) => {
   if (!timeseries) return []
-  const subLayers = Object.keys(timeseries?.[0]).filter((k) => k !== 'frame' && k !== 'date')
   const numSubLayers = subLayers.length
   if (!numSubLayers) return []
 
@@ -63,7 +65,6 @@ const StackedActivity = ({
   highlighterCallback?: HighlighterCallback
   highlighterIconCallback?: HighlighterCallback
 }) => {
-  const { immediate } = useContext(ImmediateContext)
   // todo replace with outerScale hook
   const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
   const dataAsTimebarChartData = useTimeseriesToChartData(
@@ -73,31 +74,30 @@ const StackedActivity = ({
     highlighterIconCallback
   )
   useUpdateChartsData('activity', dataAsTimebarChartData)
-  const hasDataviews = dataviews?.length > 0
-
+  const subLayers = useMemo(() => getSubLayers(timeseries), [timeseries])
+  const hasSublayers = subLayers?.length > 0
   const pathContainers = useMemo(() => {
-    const pathContainers = getPathContainers(timeseries, graphHeight, overallScale)
+    const pathContainers = getPathContainers(timeseries, subLayers, graphHeight, overallScale)
     return pathContainers
-  }, [timeseries, graphHeight, overallScale])
+  }, [timeseries, graphHeight, overallScale, subLayers])
 
   const middleY = graphHeight / 2 - MARGIN_BOTTOM / 2
-
   return (
     <svg width={outerWidth} height={graphHeight}>
       <g
         transform={svgTransform}
         style={{
-          transition: immediate ? 'none' : `transform ${DEFAULT_CSS_TRANSITION}`,
+          transition: 'none',
         }}
       >
-        {hasDataviews &&
+        {hasSublayers &&
           pathContainers &&
           pathContainers.map((pathContainer, sublayerIndex) => {
             return dataviews[sublayerIndex] ? (
               <g key={sublayerIndex} transform={`translate(0, ${middleY})`}>
                 <path
                   d={pathContainer.path || ''}
-                  fill={dataviews[sublayerIndex].config?.color || '#ffffff'}
+                  fill={dataviews[sublayerIndex]?.config?.color || '#ffffff'}
                 />
               </g>
             ) : null

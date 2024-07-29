@@ -1,19 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'lodash'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataset, DatasetTypes } from '@globalfishingwatch/api-types'
 import { FULL_SUFIX } from 'data/config'
 import { selectDatasets } from './datasets.slice'
-
-export const getDatasetsByDataview = (dataview: UrlDataviewInstance) =>
-  Object.entries(dataview.datasetsConfig || {}).flatMap(([id, value]) => {
-    const dataset = dataview.datasets?.find((dataset) => dataset.id === id)
-    if (!dataset) return []
-    return {
-      id,
-      label: dataset.name,
-    }
-  })
 
 export const selectDatasetsByType = (type: DatasetTypes) => {
   return createSelector([selectDatasets], (datasets) => {

@@ -8,6 +8,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -23,6 +24,7 @@ import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import Color from 'features/workspace/common/Color'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import MapLegend from 'features/workspace/common/MapLegend'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -32,7 +34,7 @@ import Title from '../common/Title'
 import InfoModal from '../common/InfoModal'
 import OutOfTimerangeDisclaimer from '../common/OutOfBoundsDisclaimer'
 import Filters from '../common/LayerFilters'
-import { isActivityDataview, isDetectionsDataview } from './activity.utils'
+import { isDefaultActivityDataview, isDefaultDetectionsDataview } from './activity.utils'
 import activityStyles from './ActivitySection.module.css'
 
 type LayerPanelProps = {
@@ -59,6 +61,11 @@ function ActivityLayerPanel({
   const hintsDismissed = useSelector(selectHintsDismissed)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
+  const layerLoadedState = useDeckLayerLoadedState()
+  const layerLoaded = Object.entries(layerLoadedState).some(
+    ([id, state]) => id.split(',').includes(dataview.id) && state.loaded
+  )
+
   // TODO remove when final decission on stats display is taken
   // const urlTimeRange = useSelector(selectUrlTimeRange)
   // const guestUser = useSelector(selectIsGuestUser)
@@ -144,7 +151,7 @@ function ActivityLayerPanel({
   const hasDatasetAvailable =
     getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
 
-  const showFilters = isActivityDataview(dataview) || isDetectionsDataview(dataview)
+  const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
   const TitleComponent = (
     <Title
       title={datasetTitle}
@@ -197,7 +204,14 @@ function ActivityLayerPanel({
             ) : (
               TitleComponent
             )}
-            <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+            <div
+              className={cx(
+                'print-hidden',
+                styles.actions,
+                { [styles.active]: layerActive },
+                styles.hideUntilHovered
+              )}
+            >
               {layerActive && (
                 <Color
                   dataview={dataview}
@@ -239,8 +253,17 @@ function ActivityLayerPanel({
                 // Workaround to always show the auxiliar dataset too
                 showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
               />
-              {!readOnly && <Remove onClick={onRemoveLayerClick} />}
+              {!readOnly && (
+                <Remove onClick={onRemoveLayerClick} loading={layerActive && !layerLoaded} />
+              )}
             </div>
+            <IconButton
+              icon={layerActive ? 'more' : undefined}
+              type="default"
+              loading={layerActive && !layerLoaded}
+              className={cx('print-hidden', styles.shownUntilHovered)}
+              size="small"
+            />
           </div>
           {layerActive && (
             <div className={styles.properties}>
@@ -324,7 +347,12 @@ function ActivityLayerPanel({
                 </div>
               </div>
               <div className={activityStyles.legendContainer}>
-                <div className={activityStyles.legend} id={`legend_${dataview.id}`}></div>
+                <div className={activityStyles.legend}>
+                  <MapLegend
+                    dataview={dataview}
+                    showPlaceholder={!bivariateDataviews?.includes(dataview.id)}
+                  />
+                </div>
                 {bivariateDataviews?.[0] === dataview.id && (
                   <IconButton
                     size="small"

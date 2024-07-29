@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { saveAs } from 'file-saver'
 import { Fragment, useEffect, useMemo } from 'react'
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import { IconButton, Tab, Tabs, TabsProps, Tooltip } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner, VesselRegistryProperty } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -14,7 +14,7 @@ import {
   REGISTRY_FIELD_GROUPS,
 } from 'features/vessel/vessel.config'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,

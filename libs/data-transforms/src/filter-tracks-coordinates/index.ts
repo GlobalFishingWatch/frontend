@@ -7,7 +7,8 @@ import {
   Position,
   MultiLineString,
 } from 'geojson'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
+import { COORDINATE_PROPERTY_TIMESTAMP } from '../segments/segments-to-geojson'
 import { isNumeric } from './utils'
 
 export { isNumeric }
@@ -24,6 +25,7 @@ export type TrackCoordinatesPropertyFilter = {
 export type FilterTrackByCoordinatePropertiesParams = {
   filters: TrackCoordinatesPropertyFilter[]
   includeNonTemporalFeatures?: boolean
+  includeCoordinateProperties?: string[]
 }
 
 type FilterTrackByCoordinatePropertiesArgs = Parameters<
@@ -32,7 +34,7 @@ type FilterTrackByCoordinatePropertiesArgs = Parameters<
 
 type FilterTrackByCoordinatePropertiesFn = (
   ...args: FilterTrackByCoordinatePropertiesArgs
-) => FeatureCollection
+) => FilteredTrackData
 
 type LineCoordinateProperties = Record<string, (string | number)[]>
 type MultiLineCoordinateProperties = Record<string, [(string | number)[]]>
@@ -196,13 +198,14 @@ const getFilteredLines = (
   return lines.filter((l) => l.coordinates.length)
 }
 
+type FilteredTrackData = FeatureCollection<LineString | MultiLineString>
 export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertiesFn = (
   geojson,
   {
     filters = [],
     includeNonTemporalFeatures = false,
   } = {} as FilterTrackByCoordinatePropertiesParams
-): FeatureCollection => {
+) => {
   if (!geojson || !geojson.features) {
     return {
       type: 'FeatureCollection',
@@ -210,46 +213,47 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
     }
   }
 
-  const featuresFiltered: Feature<Geometry, GeoJsonProperties>[] = geojson.features.reduce(
-    (filteredFeatures: Feature<Geometry, GeoJsonProperties>[], feature) => {
-      // TODO review if this check of other properties really works
-      const hasValues = filters
-        .map((p) => p.id)
-        .some((id) => feature?.properties?.coordinateProperties?.[id]?.length > 0)
-      if (hasValues) {
-        const filteredLines = getFilteredLines(feature, filters)
+  const featuresFiltered: Feature<LineString | MultiLineString, GeoJsonProperties>[] =
+    geojson.features.reduce(
+      (filteredFeatures: Feature<LineString | MultiLineString, GeoJsonProperties>[], feature) => {
+        // TODO review if this check of other properties really works
+        const hasValues = filters
+          .map((p) => p.id)
+          .some((id) => feature?.properties?.coordinateProperties?.[id]?.length > 0)
+        if (hasValues) {
+          const filteredLines = getFilteredLines(feature, filters)
 
-        if (!filteredLines.length) {
-          return filteredFeatures
+          if (!filteredLines.length) {
+            return filteredFeatures
+          }
+
+          const coordinateProperties = filters.reduce((acc, { id }) => {
+            const properties = filteredLines.flatMap(
+              (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[id]
+            )
+            acc[id] = properties
+            return acc
+          }, {} as Record<string, (string | number)[][]>)
+
+          filteredFeatures.push({
+            type: 'Feature',
+            geometry: {
+              type: 'MultiLineString',
+              coordinates: filteredLines.flatMap((line) => line.coordinates),
+            } as MultiLineString,
+            properties: {
+              ...feature.properties,
+              coordinateProperties,
+            } as GeoJsonProperties,
+          })
+        } else if (includeNonTemporalFeatures) {
+          filteredFeatures.push(feature as Feature<LineString | MultiLineString, GeoJsonProperties>)
         }
-
-        const coordinateProperties = filters.reduce((acc, { id }) => {
-          const properties = filteredLines.flatMap(
-            (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[id]
-          )
-          acc[id] = properties
-          return acc
-        }, {} as Record<string, (string | number)[][]>)
-
-        filteredFeatures.push({
-          type: 'Feature',
-          geometry: {
-            type: 'MultiLineString',
-            coordinates: filteredLines.flatMap((line) => line.coordinates),
-          } as MultiLineString,
-          properties: {
-            ...feature.properties,
-            coordinateProperties,
-          } as GeoJsonProperties,
-        })
-      } else if (includeNonTemporalFeatures) {
-        filteredFeatures.push(feature)
-      }
-      return filteredFeatures
-    },
-    []
-  )
-  const geojsonFiltered: FeatureCollection = {
+        return filteredFeatures
+      },
+      []
+    )
+  const geojsonFiltered = {
     ...geojson,
     features: featuresFiltered,
   }
@@ -289,7 +293,7 @@ export const getTimeFilter = (start?: string, end?: string): TrackCoordinatesPro
   }
   return [
     {
-      id: 'times',
+      id: COORDINATE_PROPERTY_TIMESTAMP,
       min: new Date(start).getTime(),
       max: new Date(end).getTime(),
     },

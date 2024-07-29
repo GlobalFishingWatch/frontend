@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectUserEnvironmentDatasets } from 'features/user/selectors/user.permissions.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventLabel } from 'utils/analytics'
@@ -17,6 +17,8 @@ import { WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
+import { useVisualizationsOptions } from 'features/workspace/activity/activity.hooks'
+import { VisualisationChoice } from 'features/workspace/common/VisualisationChoice'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 
@@ -29,6 +31,8 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   const userDatasets = useSelector(selectUserEnvironmentDatasets)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const locationCategory = useSelector(selectLocationCategory)
+  const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
+    useVisualizationsOptions(DataviewCategory.Environment)
 
   const dispatch = useAppDispatch()
 
@@ -61,21 +65,27 @@ function EnvironmentalLayerSection(): React.ReactElement | null {
   }
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={styles.header}>
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>
-          {t('common.environment', 'Environment')}
-        </h2>
+    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}>
+      <div className={cx(styles.header, 'print-hidden')}>
+        <h2 className={styles.sectionTitle}>{t('common.environment', 'Environment')}</h2>
         {!readOnly && (
-          <IconButton
-            icon="plus"
-            type="border"
-            size="medium"
-            tooltip={t('dataset.addEnvironmental', 'Add environmental dataset')}
-            tooltipPlacement="top"
-            className="print-hidden"
-            onClick={onAddClick}
-          />
+          <div className={styles.sectionButtons}>
+            <VisualisationChoice
+              options={visualizationOptions}
+              testId="activity-visualizations-change"
+              activeOption={activeVisualizationOption}
+              onSelect={(option) => onVisualizationModeChange(option.id)}
+              className={cx({ [styles.hidden]: !hasVisibleDataviews })}
+            />
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('dataset.addEnvironmental', 'Add environmental dataset')}
+              tooltipPlacement="top"
+              onClick={onAddClick}
+            />
+          </div>
         )}
       </div>
       <SortableContext items={dataviewsMinusBathymetry}>

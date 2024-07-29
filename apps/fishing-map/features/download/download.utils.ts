@@ -7,10 +7,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import {
-  DEFAULT_ENVIRONMENT_INTERVALS,
-  DEFAULT_HEATMAP_INTERVALS,
-} from '@globalfishingwatch/layer-composer'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getUTCDateTime } from 'utils/dates'
 import { REPORT_DAYS_LIMIT } from 'data/config'
 import { getActiveDatasetsInDataview, getDatasetSchemaItem } from 'features/datasets/datasets.utils'
@@ -57,6 +54,9 @@ export function getSupportedGroupByOptions(
   })
 }
 
+const FALLBACK_HEATMAP_INTERVALS: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
+const FALLBACK_ENVIRONMENT_INTERVALS: FourwingsInterval[] = ['DAY', 'MONTH']
+
 function hasDataviewWithIntervalSupported(
   dataviews: UrlDataviewInstance[],
   interval: DatasetConfigurationInterval
@@ -71,8 +71,8 @@ function hasDataviewWithIntervalSupported(
       const intervals = datasetIntervalsConfig?.length
         ? datasetIntervalsConfig
         : dataview.category === DataviewCategory.Environment
-        ? DEFAULT_ENVIRONMENT_INTERVALS
-        : DEFAULT_HEATMAP_INTERVALS
+        ? FALLBACK_HEATMAP_INTERVALS
+        : FALLBACK_ENVIRONMENT_INTERVALS
       return intervals.includes(interval) || intervals.includes(interval.toLowerCase() as any)
     })
   })

@@ -4,6 +4,7 @@ import { Range, getTrackBackground } from 'react-range'
 import { InputText } from '../input-text'
 import { SliderThumbsSize, formatSliderNumber } from '../slider'
 import styles from '../slider/slider.module.css'
+import { IconButton } from '../icon-button'
 
 export type SliderRangeValues = number[]
 type SliderRangeConfig = {
@@ -18,6 +19,7 @@ interface SliderRangeProps {
   range?: SliderRangeValues
   config: SliderRangeConfig
   onChange: (range: SliderRangeValues) => void
+  onCleanClick?: (e: React.MouseEvent) => void
   className?: string
   //static for now for the VIIRS release
   histogram?: boolean
@@ -62,6 +64,7 @@ export function SliderRange(props: SliderRangeProps) {
     label,
     config = {},
     onChange,
+    onCleanClick,
     className,
     histogram,
     thumbsSize = 'default',
@@ -127,9 +130,17 @@ export function SliderRange(props: SliderRangeProps) {
     [internalValues, max, min]
   )
 
+  const areDefaultValues = internalValues[0] === min && internalValues[1] === max
   return (
     <div className={className}>
-      <label>{label}</label>
+      {label && (
+        <label className={styles.label}>
+          {label}
+          {onCleanClick && !areDefaultValues && (
+            <IconButton size="small" icon="delete" onClick={onCleanClick} />
+          )}
+        </label>
+      )}
       <div className={styles.container}>
         {histogram && (
           <svg
@@ -138,7 +149,7 @@ export function SliderRange(props: SliderRangeProps) {
             width="262"
             height="25"
           >
-            <g fill="#163F89" fill-rule="evenodd" opacity=".2">
+            <g fill="#163F89" fillRule="evenodd" opacity=".2">
               <path d="M0 24h7.4v1H0zM9.51 24h7.4v1h-7.4zM19.01 24h7.4v1h-7.4zM28.52 23.95h7.4v1h-7.4zM38.02 17.96h7.4v6.99h-7.4zM47.53 6.99h7.4v17.96h-7.4zM57.03 2.99h7.4v21.96h-7.4zM66.54 1h7.4v23.95h-7.4zM76.04 0h7.4v24.95h-7.4zM85.55 0h7.4v24.95h-7.4zM95.05 1h7.4v23.95h-7.4zM104.56 2.99h7.4v21.96h-7.4zM114.06 3.99h7.4v20.96h-7.4zM123.57 5.99h7.4v18.96h-7.4zM133.07 9.98h7.4v14.97h-7.4zM142.58 12.97h7.4v11.98h-7.4zM152.08 16.97h7.4v7.98h-7.4zM161.59 19.96h7.4v4.99h-7.4zM171.09 20.96h7.4v3.99h-7.4zM180.6 21.96h7.4v2.99h-7.4zM190.1 21.96h7.4v2.99h-7.4zM199.61 22.95h7.4v2h-7.4zM209.11 22.95h7.4v2h-7.4zM218.62 23.95h7.4v1h-7.4zM228.12 24h7.4v1h-7.4zM237.63 24h7.4v1h-7.4zM247.13 24h7.4v1h-7.4zM256.64 24h7.4v1h-7.4z" />
             </g>
           </svg>
@@ -168,6 +179,7 @@ export function SliderRange(props: SliderRangeProps) {
             return (
               <div
                 {...props}
+                key={props.key}
                 className={cx(styles.sliderThumb, styles[`${thumbsSize}Size`])}
                 style={{
                   ...props.style,

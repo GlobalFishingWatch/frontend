@@ -27,56 +27,59 @@ export const useSetReportTimeComparison = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
 
-  const setReportTimecomparison = useCallback((activityType: ReportActivityGraph) => {
-    if (timeComparison) {
-      if (activityType === 'beforeAfter') {
-        // make sure start is properly recalculated again in beforeAfter mode when coming from another mode
-        const newStart = getUTCDateTime(timeComparison.compareStart)
-          .minus({ [durationType]: duration })
-          .toISO() as string
-        dispatchQueryParams({
-          reportTimeComparison: {
-            ...timeComparison,
-            start: newStart,
-          },
-        })
+  const setReportTimecomparison = useCallback(
+    (activityType: ReportActivityGraph) => {
+      if (timeComparison) {
+        if (activityType === 'beforeAfter') {
+          // make sure start is properly recalculated again in beforeAfter mode when coming from another mode
+          const newStart = getUTCDateTime(timeComparison.compareStart)
+            .minus({ [durationType]: duration })
+            .toISO() as string
+          dispatchQueryParams({
+            start: timebarStart,
+            end: timebarEnd,
+            reportTimeComparison: {
+              ...timeComparison,
+              start: newStart,
+            },
+          })
+        }
+        return
       }
-      return
-    }
-    const baseStart = timebarStart || AVAILABLE_START
-    const baseEnd = timebarEnd || AVAILABLE_END
-    const initialDuration = getUTCDateTime(baseEnd).diff(getUTCDateTime(baseStart), [
-      'days',
-      'months',
-    ])
-    const initialDurationType = initialDuration.as('days') >= 30 ? 'months' : 'days'
-    const initialDurationValue =
-      initialDurationType === 'days'
-        ? Math.max(1, Math.round(initialDuration.days))
-        : Math.min(MAX_MONTHS_TO_COMPARE, Math.round(initialDuration.months))
+      const baseStart = timebarStart || AVAILABLE_START
+      const baseEnd = timebarEnd || AVAILABLE_END
+      const initialDuration = getUTCDateTime(baseEnd).diff(getUTCDateTime(baseStart), [
+        'days',
+        'months',
+      ])
+      const initialDurationType = initialDuration.as('days') >= 30 ? 'months' : 'days'
+      const initialDurationValue =
+        initialDurationType === 'days'
+          ? Math.max(1, Math.round(initialDuration.days))
+          : Math.min(MAX_MONTHS_TO_COMPARE, Math.round(initialDuration.months))
 
-    const baseStartMinusOffset =
-      activityType === 'periodComparison'
-        ? { years: 1 }
-        : { [initialDurationType]: initialDurationValue }
-    const initialStart = getUTCDateTime(baseStart).minus(baseStartMinusOffset).toISO() as string
-    const initialCompareStart = baseStart
+      const baseStartMinusOffset =
+        activityType === 'periodComparison'
+          ? { years: 1 }
+          : { [initialDurationType]: initialDurationValue }
+      const initialStart = getUTCDateTime(baseStart).minus(baseStartMinusOffset).toISO() as string
+      const initialCompareStart = baseStart
 
-    dispatchQueryParams({
-      reportTimeComparison: {
-        start: initialStart,
-        compareStart: initialCompareStart,
-        duration: initialDurationValue,
-        durationType: initialDurationType,
-      },
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+      dispatchQueryParams({
+        reportTimeComparison: {
+          start: initialStart,
+          compareStart: initialCompareStart,
+          duration: initialDurationValue,
+          durationType: initialDurationType,
+        },
+      })
+    },
+    [dispatchQueryParams, duration, durationType, timeComparison, timebarEnd, timebarStart]
+  )
 
   const resetReportTimecomparison = useCallback(() => {
-    dispatchQueryParams({ reportTimeComparison: undefined })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    dispatchQueryParams({ start: timebarStart, end: timebarEnd, reportTimeComparison: undefined })
+  }, [dispatchQueryParams, timebarEnd, timebarStart])
 
   return { setReportTimecomparison, resetReportTimecomparison }
 }

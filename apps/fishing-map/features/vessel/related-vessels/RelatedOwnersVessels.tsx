@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useSearchByOwnerQuery } from 'queries/search-api'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
@@ -12,7 +12,7 @@ import {
   getVesselId,
 } from 'features/vessel/vessel.utils'
 import { formatInfoField } from 'utils/info'
-import { selectVesselInfoData } from 'features/vessel/vessel.slice'
+import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -68,10 +68,10 @@ const RelatedOwnerVessels = () => {
   const dataset = useSelector(selectVesselDatasetId)
   const { timerange } = useTimerangeConnect()
   const filteredOwners = filterRegistryInfoByDateAndSSVID(
-    vesselData.registryOwners || [],
+    vesselData?.registryOwners || [],
     timerange
   ) as VesselRegistryOwner[]
-  const uniqOwners = uniqBy(filteredOwners, 'name')
+  const uniqOwners = uniqBy(filteredOwners, (o) => o.name)
   const vesselId = getVesselProperty(vesselData, 'id')
 
   return (

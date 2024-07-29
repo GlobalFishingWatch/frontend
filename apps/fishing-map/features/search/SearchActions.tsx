@@ -23,6 +23,7 @@ import { TimebarVisualisations } from 'types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { cleanVesselSearchResults, selectSelectedVessels } from './search.slice'
 import styles from './Search.module.css'
+import { selectSearchOption } from './search.config.selectors'
 
 function SearchActions() {
   const { t } = useTranslation()
@@ -32,6 +33,7 @@ function SearchActions() {
   const { dispatchQueryParams, dispatchLocation } = useLocationConnect()
   const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const vesselsSelected = useSelector(selectSelectedVessels)
+  const activeSearchOption = useSelector(selectSearchOption)
 
   const onSeeVesselsInMapClick = () => {
     const instances = vesselsSelected.map((vessel) => {
@@ -52,6 +54,11 @@ function SearchActions() {
     addNewDataviewInstances(instances)
     dispatch(cleanVesselSearchResults())
     dispatchQueryParams(EMPTY_FILTERS)
+    trackEvent({
+      category: TrackCategory.SearchVessel,
+      action: 'Click view on map',
+      label: `${activeSearchOption} search`,
+    })
     if (workspaceId) {
       dispatchLocation(WORKSPACE, {
         payload: { workspaceId },
@@ -71,9 +78,9 @@ function SearchActions() {
       dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
     }
     trackEvent({
-      category: TrackCategory.VesselGroups,
-      action: 'add_to_vessel_group',
-      label: 'search',
+      category: TrackCategory.SearchVessel,
+      action: 'Click add to vessel group',
+      label: `${activeSearchOption} search`,
     })
   }
 

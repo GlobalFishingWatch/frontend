@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import mpasData from '../data/source/mpas-top1000.json'
 import mpasGFW from '../data/source/mpas-gfw.json'
 import manualUpdates from '../data/source/mpas-manual.json'
@@ -23,7 +23,7 @@ async function start() {
           },
         }
       }),
-      'properties.name'
+      (f) => f.properties.name
     )
 
     const mpasAreasString = `

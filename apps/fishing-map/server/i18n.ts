@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import get from 'lodash/get'
 import appEnglish from '../public/locales/en/translations.json'
 import appSource from '../public/locales/source/translations.json'
 import flagsEnglish from '../../../libs/i18n-labels/en/flags.json'

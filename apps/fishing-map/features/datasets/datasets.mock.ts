@@ -1,5 +1,10 @@
-import { Dataset } from '@globalfishingwatch/api-types'
+import {
+  Dataset,
+  DatasetCategory,
+  DatasetStatus,
+  DatasetTypes,
+} from '@globalfishingwatch/api-types'
 
-export const datasets: Dataset[] = []
+const datasets: Dataset[] = []
 
 export default datasets

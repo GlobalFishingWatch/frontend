@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { ChangeEvent, FC, Fragment, useCallback, useLayoutEffect, useMemo, useState } from 'react'
-import { uniq } from 'lodash'
+import { ChangeEvent, FC, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { uniq } from 'es-toolkit'
 import { useSelector } from 'react-redux'
 import { InputText } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
@@ -54,27 +54,35 @@ const LayerLibrary: FC = () => {
   )
 
   const scrollToCategory = useCallback(
-    (categoryElements: HTMLElement[], category: DataviewCategory) => {
+    ({
+      categoryElements,
+      category,
+      smooth = true,
+    }: {
+      categoryElements: HTMLElement[]
+      category: DataviewCategory
+      smooth?: boolean
+    }) => {
       const targetElement = categoryElements.find((categoryElement) => {
         return categoryElement.id === category
       })
       if (targetElement) {
         targetElement.scrollIntoView({
-          behavior: 'smooth',
+          behavior: smooth ? 'smooth' : 'instant',
         })
       }
     },
     []
   )
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const categoryElements = uniqCategoriesPlusUser.flatMap((category) => {
       const element = document.getElementById(category)
       return element || []
     })
     setCategoryElements(categoryElements)
     if (currentCategory) {
-      scrollToCategory(categoryElements, currentCategory)
+      scrollToCategory({ categoryElements, category: currentCategory, smooth: false })
     }
     // Running only when categoryElements changes as listening to currentCategory blocks the scroll
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -105,12 +113,19 @@ const LayerLibrary: FC = () => {
     [filteredLayers, uniqCategories]
   )
 
-  const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }, [])
+  const onInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value)
+      categoryElements[0]?.scrollIntoView({
+        behavior: 'smooth',
+      })
+    },
+    [categoryElements]
+  )
 
   const onLayerListScroll = useCallback(
     (e: React.UIEvent<HTMLElement>) => {
+      if (!categoryElements.length) return
       let current = currentCategory
       const target = e.target as HTMLElement
       const lastElement = categoryElements[categoryElements.length - 1]
@@ -134,7 +149,10 @@ const LayerLibrary: FC = () => {
 
   const onCategoryClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      scrollToCategory(categoryElements, (e.target as any).dataset.category as DataviewCategory)
+      scrollToCategory({
+        categoryElements,
+        category: (e.target as any).dataset.category as DataviewCategory,
+      })
     },
     [categoryElements, scrollToCategory]
   )
@@ -148,6 +166,7 @@ const LayerLibrary: FC = () => {
             value={searchQuery || ''}
             className={styles.input}
             type="search"
+            autoFocus
             placeholder={t('translations:search.title', 'Search')}
           />
         </div>

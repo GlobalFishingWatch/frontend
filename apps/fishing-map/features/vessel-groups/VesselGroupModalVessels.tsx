@@ -1,7 +1,7 @@
 import { Fragment, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { groupBy } from 'lodash'
+import { groupBy } from 'es-toolkit'
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 import { IdentityVessel, Locale, VesselRegistryInfo } from '@globalfishingwatch/api-types'
@@ -95,7 +95,7 @@ function groupSearchVesselsIdentityBy(vessels: IdentityVessel[] | null, groupByK
           ...getLatestIdentityPrioritised(v),
         } as VesselGroupDataIdentity)
     ),
-    groupByKey
+    (v) => (v as any)[groupByKey]
   )
 }
 

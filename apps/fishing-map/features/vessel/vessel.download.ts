@@ -1,10 +1,10 @@
-import { get } from 'lodash'
+import get from 'lodash/get'
 import { VesselRegistryAuthorization, VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { getUTCDateTime } from 'utils/dates'
 import { VesselLastIdentity } from 'features/search/search.slice'
 
-export type CsvConfig = {
+type CsvConfig = {
   label: string
   accessor: string
   transform?: (value: any) => any
@@ -32,7 +32,7 @@ const parseRegistryAuthorizations = (authorizations: VesselRegistryAuthorization
   )
 }
 
-export const objectArrayToCSV = (
+const objectArrayToCSV = (
   data: unknown[],
   csvConfig: CsvConfig[],
   getter = get as (any: any, path: string) => any
@@ -50,7 +50,7 @@ export const objectArrayToCSV = (
   return [keys, values.join('\n')].join('\n')
 }
 
-export const VESSEL_CSV_CONFIG: CsvConfig[] = [
+const VESSEL_CSV_CONFIG: CsvConfig[] = [
   // TODO translate labels
   { label: 'id', accessor: 'id' },
   { label: 'flag', accessor: 'flag' },
@@ -82,7 +82,7 @@ export const parseVesselToCSV = (vessel: IdentityVesselCSVDownload) => {
   return objectArrayToCSV([vessel], VESSEL_CSV_CONFIG)
 }
 
-export const EVENTS_CSV_CONFIG: CsvConfig[] = [
+const EVENTS_CSV_CONFIG: CsvConfig[] = [
   { label: 'type', accessor: 'type' },
   {
     label: 'start',

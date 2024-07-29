@@ -3,14 +3,12 @@ import type {
   LayerSpecification,
   StyleSpecification,
 } from '@globalfishingwatch/maplibre-gl'
-import { DataviewConfig } from '@globalfishingwatch/api-types'
 import {
   AggregationOperation,
   SublayerCombinationMode,
 } from '@globalfishingwatch/fourwings-aggregate'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import {
-  GeneratorType,
-  ColorRampsIds,
   GeneratorLegend,
   HeatmapAnimatedGeneratorSublayer,
   GeneratorConfig,
@@ -19,12 +17,6 @@ import {
 } from '../generators/types'
 import { TimeChunks } from '../generators/heatmap/util/time-chunks'
 import { GeneratorsRecord } from '../generators'
-
-export interface GeneratorDataviewConfig<T = GeneratorType> extends DataviewConfig<T> {
-  colorRamp?: ColorRampsIds
-  basemap?: string
-  sublayers?: HeatmapAnimatedGeneratorSublayer[]
-}
 
 export interface Dictionary<T> {
   [key: string]: T
@@ -100,7 +92,7 @@ export interface LayerMetadataLegendBivariate extends LayerMetadataLegend {
 export interface ExtendedLayerMeta {
   datasetId?: string
   generatorId?: string
-  generatorType?: GeneratorType
+  generatorType?: DataviewType
   promoteId?: string
   valueProperties?: string[]
   interactive?: boolean

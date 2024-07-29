@@ -1,7 +1,7 @@
-import { BitmapLayer } from '@deck.gl/layers/typed'
-import { CompositeLayer, LayersList } from '@deck.gl/core/typed'
-import { TileLayer } from '@deck.gl/geo-layers'
-import { MVTLayer, TileLayerProps, MVTLayerProps } from '@deck.gl/geo-layers/typed'
+import { BitmapLayer } from '@deck.gl/layers'
+import { CompositeLayer, LayersList } from '@deck.gl/core'
+import { GeoBoundingBox, TileLayer } from '@deck.gl/geo-layers'
+import { MVTLayer, TileLayerProps, MVTLayerProps } from '@deck.gl/geo-layers'
 import { Group, GROUP_ORDER } from '@globalfishingwatch/layer-composer'
 
 export type BaseMapLayerProps = TileLayerProps & MVTLayerProps & { onDataLoad: () => void }
@@ -20,11 +20,10 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
       renderSubLayers: (props): any => {
         const {
           data,
-          tile: {
-            bbox: { west, south, east, north },
-          },
+          tile: { bbox },
           ...rest
         } = props
+        const { west, south, east, north } = bbox as GeoBoundingBox
         return new BitmapLayer({
           ...rest,
           image: data,

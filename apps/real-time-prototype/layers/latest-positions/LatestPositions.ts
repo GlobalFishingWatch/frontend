@@ -1,6 +1,6 @@
-import { IconLayer } from '@deck.gl/layers/typed'
-import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers/typed'
-import { Color, CompositeLayer } from '@deck.gl/core/typed'
+import { IconLayer } from '@deck.gl/layers'
+import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers'
+import { Color, CompositeLayer } from '@deck.gl/core'
 import { ckmeans, mean, sample, standardDeviation } from 'simple-statistics'
 import { TrackSublayer } from 'layers/tracks/tracks.hooks'
 import {
@@ -52,7 +52,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
     const layer = this.getSubLayers()[0]
     if (layer) {
       const zoom = Math.round(this.context.viewport.zoom)
-      return layer.state.tileset.tiles.flatMap((l) => {
+      return (layer.state.tileset as any).tiles?.flatMap((l) => {
         return l.zoom === zoom ? l.content : []
       })
     }
@@ -92,7 +92,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
     if (!colorDomain || !colorRange) {
       return [0, 0, 0, 0]
     }
-    const colorIndex = colorDomain.findIndex((d, i) => {
+    const colorIndex = (colorDomain as any).findIndex((d, i) => {
       if (colorDomain[i + 1]) {
         return count >= d && count <= colorDomain[i + 1]
       }
@@ -113,7 +113,7 @@ export class LatestPositions extends CompositeLayer<LatestPositionsLayerProps> {
         binary: false,
         visible: this.props.showLatestPositions,
         pickable: true,
-        getFillColor: (cell) => this._getFillColor(cell),
+        getFillColor: (cell) => this._getFillColor(cell) as any,
         onViewportLoad: this._onViewportLoad,
         updateTriggers: {
           getFillColor: [this.state.colorDomain],

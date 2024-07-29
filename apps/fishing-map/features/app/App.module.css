@@ -23,6 +23,19 @@
   );
 }
 
+.toastContainer {
+  max-width: 60%;
+
+  --toastify-toast-width: auto;
+  --toastify-color-light: var(--color-help-yellow);
+  --toastify-text-color-light: var(--color-secondary-blue);
+  --toastify-color-progress-light: linear-gradient(
+    90deg,
+    var(--color-help-yellow),
+    var(--color-secondary-blue)
+  );
+}
+
 @page {
   size: 21cm 29.7cm;
   margin: 1cm;

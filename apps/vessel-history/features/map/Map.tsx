@@ -2,11 +2,16 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Map, MapboxStyle } from 'react-map-gl'
 import maplibregl from '@globalfishingwatch/maplibre-gl'
-import { useLayerComposer, useMapClick, useMemoCompare } from '@globalfishingwatch/react-hooks'
+import { useMemoCompare } from '@globalfishingwatch/react-hooks'
+import { useMapClick } from '@globalfishingwatch/react-hooks/use-map-interaction'
+import { useLayerComposer } from '@globalfishingwatch/react-hooks/use-layer-composer'
 import { ExtendedStyleMeta, GeneratorType } from '@globalfishingwatch/layer-composer'
 import { DatasetCategory, DatasetSubCategory } from '@globalfishingwatch/api-types'
 import { selectResourcesLoading } from 'features/resources/resources.slice'
-import { selectActiveVesselsDataviews, selectDataviewInstancesByType } from 'features/dataviews/dataviews.selectors'
+import {
+  selectActiveVesselsDataviews,
+  selectDataviewInstancesByType,
+} from 'features/dataviews/dataviews.selectors'
 import { selectVesselById } from 'features/vessels/vessels.slice'
 import Info from 'features/map/info/Info'
 import { RenderedEvent } from 'features/vessels/activity/vessels-activity.selectors'
@@ -130,20 +135,16 @@ const MapWrapper: React.FC = (): React.ReactElement => {
               pitch: 0,
               bearing: 0,
             })
-            setTimeout(
-              () => {
-                setMapCoordinates({
-                  latitude: map.getCenter().lat,
-                  longitude: map.getCenter().lng,
-                  zoom: map.getZoom(),
+            setTimeout(() => {
+              setMapCoordinates({
+                latitude: map.getCenter().lat,
+                longitude: map.getCenter().lng,
+                zoom: map.getZoom(),
 
-                  pitch: 0,
-                  bearing: 0,
-                })
-              },
-              1002 +
-                (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500)
-            )
+                pitch: 0,
+                bearing: 0,
+              })
+            }, 1002 + (ENABLE_FLYTO === FLY_EFFECTS.fly ? currentPitch * 10 + currentBearing * 10 : -500))
           }, 1)
           map.fire('flyend')
         }
@@ -199,14 +200,21 @@ const MapWrapper: React.FC = (): React.ReactElement => {
           .toISO()
       : ''
 
-    const [mainVessel, ...otherVessels] = vessel.id.split('|').map((id) => parseVesselProfileId(id)).filter((x) => x.id)
+    const [mainVessel, ...otherVessels] = vessel.id
+      .split('|')
+      .map((id) => parseVesselProfileId(id))
+      .filter((x) => x.id)
 
     let i = 0
     let eventsCount = 0
     const datasets = Array.from(new Set(vesselDataview.datasets.map(({ id }) => id)))
       .map((id) => {
         const d = vesselDataview.datasets.find((d) => d.id === id)
-        if ([DatasetSubCategory.Info, DatasetSubCategory.Track].includes(d.subcategory as DatasetSubCategory))
+        if (
+          [DatasetSubCategory.Info, DatasetSubCategory.Track].includes(
+            d.subcategory as DatasetSubCategory
+          )
+        )
           return `dvIn[${i}][cfg][${d.subcategory}]=${id}`
 
         if ([DatasetCategory.Event].includes(d.category))
@@ -226,26 +234,25 @@ const MapWrapper: React.FC = (): React.ReactElement => {
         fishingMapVesselDataview.push(`dvIn[${i}][cfg][relatedVesselIds][${index}]=${vessel.id}`)
       })
     }
-    const contextLayersDataviews = contextLayers.filter(x => x?.config?.visible).map(layer => {
-      i++
-      return [
-        `dvIn[${i}][id]=${layer.id}`,
-        `dvIn[${i}][cfg][vis]=true`,
-      ]
-    }).flat()
+    const contextLayersDataviews = contextLayers
+      .filter((x) => x?.config?.visible)
+      .map((layer) => {
+        i++
+        return [`dvIn[${i}][id]=${layer.id}`, `dvIn[${i}][cfg][vis]=true`]
+      })
+      .flat()
 
     const fishingEffortLayersHidden = [
       'fishing-ais',
       // Update this dataviewId when a the vms layer dataview id is changed in
       // https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/fishing-map/features/workspace/highlight-panel/highlight-panel.content.ts#L43
-      'vms-with-png'
-    ].map(layer => {
-      i++
-      return [
-        `dvIn[${i}][id]=${layer}`,
-        `dvIn[${i}][cfg][vis]=false`,
-      ]
-    }).flat()
+      'vms-with-png',
+    ]
+      .map((layer) => {
+        i++
+        return [`dvIn[${i}][id]=${layer}`, `dvIn[${i}][cfg][vis]=false`]
+      })
+      .flat()
 
     const urlSegments = [
       `https://globalfishingwatch.org/map/index?`,

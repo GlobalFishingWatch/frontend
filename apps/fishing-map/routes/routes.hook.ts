@@ -1,15 +1,11 @@
 import { useSelector } from 'react-redux'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { parse } from 'qs'
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CALLBACK_URL_PARAM, useLoginRedirect } from '@globalfishingwatch/react-hooks'
 import { QueryParams } from 'types'
-import {
-  selectCurrentLocation,
-  selectLocationPayload,
-  selectLocationType,
-} from 'routes/routes.selectors'
+import { selectLocationPayload, selectLocationType } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { ROUTE_TYPES } from './routes'
 import { updateLocation } from './routes.actions'
@@ -50,7 +46,7 @@ export const useReplaceLoginUrl = () => {
 
 export const useLocationConnect = () => {
   const dispatch = useAppDispatch()
-  const location = useSelector(selectCurrentLocation)
+  const locationType = useSelector(selectLocationType)
   const payload = useSelector(selectLocationPayload)
 
   const dispatchLocation = useCallback(
@@ -74,10 +70,13 @@ export const useLocationConnect = () => {
 
   const dispatchQueryParams = useCallback(
     (query: QueryParams, replaceQuery = false) => {
-      dispatch(updateLocation(location.type, { query, payload, replaceQuery }))
+      dispatch(updateLocation(locationType, { query, payload, replaceQuery }))
     },
-    [dispatch, location.type, payload]
+    [dispatch, locationType, payload]
   )
 
-  return { location, payload, dispatchLocation, dispatchQueryParams }
+  return useMemo(
+    () => ({ location: locationType, payload, dispatchLocation, dispatchQueryParams }),
+    [dispatchLocation, dispatchQueryParams, locationType, payload]
+  )
 }

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import {
   selectIsAnyReportLocation,
@@ -16,7 +17,9 @@ import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/work
 import { selectUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -46,6 +49,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const dataviewsResources = useSelector(selectDataviewsResources)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const userLogged = useSelector(selectIsUserLogged)
   const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
@@ -56,6 +60,24 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       dispatch(fetchUserVesselGroupsThunk())
     }
   }, [dispatch, hasUserGroupsPermissions])
+
+  useEffect(() => {
+    if (dataviewsResources?.resources?.length) {
+      const infoResources = dataviewsResources?.resources.filter(
+        (r) => r.dataset.type === DatasetTypes.Vessels
+      )
+      infoResources.forEach((resource) => {
+        dispatch(
+          fetchResourceThunk({
+            resource,
+            resourceKey: resource.key,
+            // parseEventCb: parseTrackEventChunkProps,
+            // parseUserTrackCb: parseUserTrackCallback,
+          })
+        )
+      })
+    }
+  }, [dispatch, dataviewsResources])
 
   const sidebarComponent = useMemo(() => {
     if (!userLogged) {

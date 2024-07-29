@@ -1,4 +1,4 @@
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import {
   Dataset,
   DatasetSchema,
@@ -6,6 +6,7 @@ import {
   DatasetTypes,
   Dataview,
   DataviewCategory,
+  DataviewType,
   DataviewDatasetConfig,
   DataviewInstance,
   EndpointId,
@@ -14,11 +15,57 @@ import {
   INCLUDE_FILTER_ID,
   Resource,
 } from '@globalfishingwatch/api-types'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
+import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
-import { resolveEndpoint } from './resolve-endpoint'
 
-export type UrlDataviewInstance<T = GeneratorType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
+export function isActivityDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Activity &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
+export function isDetectionsDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Detections &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
+export function isTrackDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Vessels && dataview.config?.type === DataviewType.Track
+  )
+}
+
+export function isUserTrackDataview(dataview: UrlDataviewInstance) {
+  return dataview.category === DataviewCategory.User && dataview.config?.type === DataviewType.Track
+}
+
+export function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
+  return isActivityDataview(dataview) || isDetectionsDataview(dataview)
+}
+
+export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
+  return dataview?.config?.type === DataviewType.HeatmapStatic
+}
+
+export function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Environment &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
+export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
+  if (!dataviews.length) {
+    console.warn('Trying to merge empty dataviews')
+    return 'EMPTY_DATAVIEW'
+  }
+  return dataviews.map((d) => d.id).join(',')
+}
+
+export type UrlDataviewInstance<T = DataviewType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
   dataviewId?: Dataview['id'] | Dataview['slug'] // making this optional as sometimes we just need to reference the id
   deleted?: boolean // needed when you want to override from url an existing workspace config
 }
@@ -28,12 +75,12 @@ export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
   [EXCLUDE_FILTER_ID]: 'NOT IN',
 }
 
-export const FILTERABLE_GENERATORS: GeneratorType[] = [
-  GeneratorType.HeatmapAnimated,
-  GeneratorType.HeatmapStatic,
-  GeneratorType.TileCluster,
-  GeneratorType.UserContext,
-  GeneratorType.UserPoints,
+export const FILTERABLE_GENERATORS: DataviewType[] = [
+  DataviewType.HeatmapAnimated,
+  DataviewType.HeatmapStatic,
+  DataviewType.TileCluster,
+  DataviewType.UserContext,
+  DataviewType.UserPoints,
 ]
 
 function getDatasetSchemaItem(dataset: Dataset, schema: string) {
@@ -152,7 +199,7 @@ const getTrackDataviewDatasetConfigs = (
 }
 
 export type DatasetConfigsTransforms = Partial<
-  Record<GeneratorType, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
+  Record<DataviewType, (datasetConfigs: DataviewDatasetConfig[]) => DataviewDatasetConfig[]>
 >
 
 /**
@@ -171,10 +218,10 @@ export const getDataviewsForResourceQuerying = (
   const preparedDataviewsInstances = dataviewInstances.map((dataviewInstance) => {
     let preparedDatasetConfigs
     switch (dataviewInstance.config?.type) {
-      case GeneratorType.Track:
+      case DataviewType.Track:
         preparedDatasetConfigs = getTrackDataviewDatasetConfigs(dataviewInstance)
         preparedDatasetConfigs =
-          datasetConfigsTransform?.[GeneratorType.Track]?.(preparedDatasetConfigs)
+          datasetConfigsTransform?.[DataviewType.Track]?.(preparedDatasetConfigs)
         break
 
       default:
@@ -197,7 +244,7 @@ export const resolveResourcesFromDatasetConfigs = (
   dataviews: UrlDataviewInstance[]
 ): Resource[] => {
   return dataviews
-    .filter((dataview) => dataview.config?.type === GeneratorType.Track)
+    .filter((dataview) => dataview.config?.type === DataviewType.Track)
     .flatMap((dataview) => {
       if (!dataview.datasetsConfig) return []
       return dataview.datasetsConfig.flatMap((datasetConfig) => {
@@ -370,30 +417,66 @@ export function resolveDataviews(
               const instanceDatasetConfig = dataviewInstance.datasetsConfig?.find(
                 (instanceDatasetConfig) => {
                   if (datasetConfig.endpoint === EndpointId.Events) {
-                    return (
-                      datasetConfig.endpoint === instanceDatasetConfig.endpoint &&
-                      // As the events could have multiple datasets we also have to validate this
-                      // which also enforces to set the datasetConfig in the dataviewInstance used
+                    // As the events could have multiple datasets we also have to validate this
+                    // which also enforces to set the datasetConfig in the dataviewInstance used
+                    const hasEndpointMatch =
+                      datasetConfig.endpoint === instanceDatasetConfig.endpoint
+                    const hasExactDatasetMatch =
                       datasetConfig.datasetId === instanceDatasetConfig.datasetId
+                    // needs support for lecacy pinned vessels
+                    const hasDifferentDatasetVersionMatch =
+                      removeDatasetVersion(datasetConfig.datasetId) ===
+                      removeDatasetVersion(instanceDatasetConfig.datasetId)
+                    return (
+                      hasEndpointMatch && (hasExactDatasetMatch || hasDifferentDatasetVersionMatch)
                     )
                   }
                   return datasetConfig.endpoint === instanceDatasetConfig.endpoint
                 }
               )
-              if (!instanceDatasetConfig) return datasetConfig
+
+              if (!instanceDatasetConfig) {
+                const deprecatedDatasetConfigMigrationId =
+                  dataviewInstance.datasetsConfigMigration?.[datasetConfig?.datasetId!]
+                return {
+                  ...datasetConfig,
+                  ...(deprecatedDatasetConfigMigrationId && {
+                    datasetId: deprecatedDatasetConfigMigrationId,
+                  }),
+                  query:
+                    datasetConfig.endpoint === EndpointId.Events
+                      ? [...(datasetConfig.query || [])].map((query) => {
+                          // Makes the trick to fix pinned vessels with a dataset version that doesn't match the same name
+                          // eg: public-global-port-visits-c2 => public-global-port-visits-events:v3.0
+                          if (query.id === 'vessels' && !query.value) {
+                            const vesselId = dataviewInstance.id.split('vessel-')[1]
+                            const value = [vesselId, ...(dataview.config.relatedVesselIds || [])]
+                            return { ...query, value }
+                          }
+                          return query
+                        })
+                      : datasetConfig.query,
+                }
+              }
               // using the instance query and params first as the uniqBy from lodash doc says:
               // the order of result values is determined by the order they occur in the array
               // so the result will be overriding the default dataview config
+
+              const deprecatedDatasetConfigMigrationId =
+                dataviewInstance.datasetsConfigMigration?.[instanceDatasetConfig?.datasetId!]
               return {
                 ...datasetConfig,
                 ...instanceDatasetConfig,
+                ...(deprecatedDatasetConfigMigrationId && {
+                  datasetId: deprecatedDatasetConfigMigrationId,
+                }),
                 query: uniqBy(
                   [...(instanceDatasetConfig.query || []), ...(datasetConfig.query || [])],
-                  'id'
+                  (q) => q.id
                 ),
                 params: uniqBy(
                   [...(instanceDatasetConfig.params || []), ...(datasetConfig.params || [])],
-                  'id'
+                  (p) => p.id
                 ),
               }
             })

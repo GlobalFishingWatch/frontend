@@ -1,10 +1,11 @@
 import { Fragment, memo, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 // import { getParser } from 'bowser'
-import type { Map } from '@globalfishingwatch/maplibre-gl'
+import { Deck } from '@deck.gl/core'
 import { getCSSVarValue } from 'utils/dom'
-import useMapInstance from 'features/map/map-context.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import styles from './Map.module.css'
+import { MAP_WRAPPER_ID } from './map.config'
 
 type PrintSize = {
   px: number
@@ -21,18 +22,17 @@ export const MAP_IMAGE_DEBOUNCE = 800
 //   edge: '>79',
 // })
 
-export const getMapImage = (map: Map): Promise<string> => {
+const getMapImage = (map: Deck): Promise<string> => {
   return new Promise((resolve, reject) => {
     if (!map) {
       reject('No map instance found')
     }
-    map.once('render', () => {
-      const canvas = map.getCanvas()
+    const canvas = map.getCanvas()
+    if (canvas) {
+      map.redraw('screenshot')
       resolve(canvas.toDataURL())
-    })
-    const renderFn = (map as any)._render
-    if (renderFn) {
-      renderFn()
+    } else {
+      reject('No map canvas found')
     }
   })
 }
@@ -40,7 +40,7 @@ export const getMapImage = (map: Map): Promise<string> => {
 // Component to render an invisible image with the canvas data so ideally
 // when printing with crtl + p the image is there but it is too heavy
 function MapScreenshot() {
-  const map = useMapInstance()
+  const map = useDeckMap()
   const [screenshotImage, setScreenshotImage] = useState<string | null>(null)
   const printSize = useRef<{ width: PrintSize; height: PrintSize } | undefined>()
 
@@ -64,7 +64,9 @@ function MapScreenshot() {
   useEffect(() => {
     if (map) {
       getMapImage(map).then((image) => {
-        setScreenshotImage(image)
+        if (image) {
+          setScreenshotImage(image)
+        }
       })
     }
   }, [map])
@@ -72,7 +74,7 @@ function MapScreenshot() {
   if (!screenshotImage) return null
 
   // insert the image just below the canvas
-  const canvasDomElement = document.querySelector('.maplibregl-canvas-container')
+  const canvasDomElement = document.getElementById(MAP_WRAPPER_ID)
   if (!canvasDomElement) return null
   const size = isPrintSupported
     ? `${printSize.current?.width.in} ${printSize.current?.height.in}`
@@ -80,7 +82,12 @@ function MapScreenshot() {
   return createPortal(
     <Fragment>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className={styles.screenshot} src={screenshotImage} alt="map screenshot" />
+      <img
+        id="screenshot-img"
+        className={styles.screenshot}
+        src={screenshotImage}
+        alt="map screenshot"
+      />
       <style>
         {`@page {
           size: ${size};

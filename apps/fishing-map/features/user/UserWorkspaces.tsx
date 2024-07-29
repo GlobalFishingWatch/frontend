@@ -3,7 +3,6 @@ import Link from 'redux-first-router-link'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Spinner, IconButton, Modal } from '@globalfishingwatch/ui-components'
-// import TooltipContainer, { TooltipListContainer } from 'features/workspace/shared/TooltipContainer'
 import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import {
@@ -13,7 +12,7 @@ import {
   selectWorkspaceListStatusId,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import useViewport from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import EditWorkspace from 'features/workspace/save/WorkspaceEdit'
@@ -24,7 +23,7 @@ import { selectUserWorkspaces } from './selectors/user.permissions.selectors'
 function UserWorkspaces() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { setMapCoordinates } = useViewport()
+  const setMapCoordinates = useSetMapCoordinates()
   const [editWorkspace, setEditWorkspace] = useState<AppWorkspace | undefined>()
   const workspaces = useSelector(selectUserWorkspaces)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)

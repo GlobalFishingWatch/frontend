@@ -1,56 +1,44 @@
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
-import { FeatureCollection } from 'geojson'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import {
-  segmentsToBbox,
-  filterSegmentsByTimerange,
-  geoJSONToSegments,
-} from '@globalfishingwatch/data-transforms'
-import { IdentityVessel, Resource, Segment } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
+import { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { useMapFitBounds } from 'features/map/map-viewport.hooks'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { Bbox } from 'types'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { getUTCDateTime } from 'utils/dates'
 
 type FitBoundsProps = {
   hasError: boolean
-  trackResource: Resource<Segment[] | FeatureCollection>
+  vesselLayer: VesselLayer
   infoResource?: Resource<IdentityVessel>
   className?: string
+  disabled?: boolean
 }
 
-const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoundsProps) => {
+const FitBounds = ({
+  className,
+  vesselLayer,
+  hasError,
+  infoResource,
+  disabled,
+}: FitBoundsProps) => {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
   const { setTimerange, start, end } = useTimerangeConnect()
 
   const onFitBoundsClick = useCallback(() => {
-    if (trackResource?.data && start && end) {
-      const sourceFormat = getDatasetConfigurationProperty({
-        dataset: trackResource?.dataset,
-        property: 'sourceFormat',
-      })
-      const segments = (trackResource.data as FeatureCollection).features
-        ? geoJSONToSegments(trackResource.data as FeatureCollection)
-        : (trackResource?.data as Segment[])
-      const filteredSegments = filterSegmentsByTimerange(segments, {
-        start,
-        end,
-        // Datasets uploaded as shapefile, geojson or kml are not temporal
-        includeNonTemporalSegments: sourceFormat ? sourceFormat !== 'CSV' : false,
-      })
-      const bbox = filteredSegments?.length ? segmentsToBbox(filteredSegments) : undefined
+    if (vesselLayer && start && end) {
+      const bbox = vesselLayer.getVesselTrackBounds()
       if (bbox) {
-        fitBounds(bbox)
+        fitBounds(bbox, { padding: 60, fitZoom: true })
       } else {
-        if (
-          infoResource &&
-          // TODO not used selfReportedInfo?.[0] but get the current vessel identity
-          (!infoResource.data?.selfReportedInfo?.[0]?.transmissionDateFrom ||
-            !infoResource.data?.selfReportedInfo?.[0]?.transmissionDateTo)
-        ) {
-          console.warn('transmissionDates not available, cant fit time', infoResource)
+        const transmissionDateFrom = getVesselProperty(infoResource?.data!, 'transmissionDateFrom')
+        const transmissionDateTo = getVesselProperty(infoResource?.data!, 'transmissionDateTo')
+        if (infoResource && (!transmissionDateFrom || !transmissionDateTo)) {
+          console.warn("transmissionDates not available, can't fit time", infoResource)
           return
         }
         if (
@@ -63,14 +51,11 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
         ) {
           if (infoResource) {
             setTimerange({
-              start: new Date(
-                infoResource.data!?.selfReportedInfo?.[0]?.transmissionDateFrom
-              ).toISOString(),
-              end: new Date(
-                infoResource.data!?.selfReportedInfo?.[0]?.transmissionDateTo
-              ).toISOString(),
+              start: getUTCDateTime(transmissionDateFrom).toISO()!,
+              end: getUTCDateTime(transmissionDateTo).toISO()!,
             })
           } else {
+            const segments = vesselLayer.getVesselTrackSegments()
             let minTimestamp = Number.POSITIVE_INFINITY
             let maxTimestamp = Number.NEGATIVE_INFINITY
             segments.forEach((seg) => {
@@ -93,21 +78,12 @@ const FitBounds = ({ className, trackResource, hasError, infoResource }: FitBoun
         }
       }
     }
-  }, [
-    trackResource?.data,
-    trackResource?.dataset,
-    start,
-    end,
-    fitBounds,
-    infoResource,
-    t,
-    setTimerange,
-  ])
+  }, [vesselLayer, start, end, fitBounds, infoResource, t, setTimerange])
 
   return (
     <IconButton
       size="small"
-      disabled={hasError}
+      disabled={hasError || disabled}
       icon={hasError ? 'warning' : 'target'}
       type={hasError ? 'warning' : 'default'}
       className={className}

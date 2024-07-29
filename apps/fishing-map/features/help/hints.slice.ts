@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'reducers'
+import { HINTS } from 'data/config'
 import { HintId } from './hints.content'
 
-export type HintsDismissed = Record<HintId, boolean>
+type HintsDismissed = Record<HintId, boolean>
 
-export interface HintsState {
+interface HintsState {
   hintsDismissed?: HintsDismissed
 }
 
@@ -14,26 +15,26 @@ const initialState: HintsState = {
 
 const hintsSlice = createSlice({
   name: 'hints',
-  initialState,
+  initialState: () => {
+    if (typeof window === 'undefined') return initialState
+    const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
+    return { ...initialState, hintsDismissed }
+  },
   reducers: {
     resetHints: (state) => {
       state.hintsDismissed = undefined
-      localStorage.setItem('hints', '{}')
-    },
-    initializeHints: (state) => {
-      const currentHintsDismissed = JSON.parse(localStorage.getItem('hints') || '{}')
-      state.hintsDismissed = currentHintsDismissed
+      localStorage.setItem(HINTS, '{}')
     },
     setHintDismissed: (state, action: PayloadAction<HintId>) => {
-      const currentHintsDismissed = JSON.parse(localStorage.getItem('hints') || '{}')
+      const currentHintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
       const allHintsDismissed = { ...currentHintsDismissed, ...{ [action.payload]: true } }
       state.hintsDismissed = allHintsDismissed
-      localStorage.setItem('hints', JSON.stringify(allHintsDismissed))
+      localStorage.setItem(HINTS, JSON.stringify(allHintsDismissed))
     },
   },
 })
 
-export const { resetHints, initializeHints, setHintDismissed } = hintsSlice.actions
+export const { resetHints, setHintDismissed } = hintsSlice.actions
 
 export const selectHintsDismissed = (state: RootState) => state.hints.hintsDismissed
 
