@@ -20,6 +20,7 @@ import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
   selectIsDefaultWorkspace,
+  selectIsWorkspaceOwner,
   selectLastVisitedWorkspace,
   selectWorkspace,
   selectWorkspaceStatus,
@@ -62,7 +63,6 @@ import UserButton from 'features/user/UserButton'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
-import { selectUserData } from 'features/user/selectors/user.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { useHighlightReportArea } from 'features/reports/reports.hooks'
 import { useClipboardNotification } from './sidebar.hooks'
@@ -145,12 +145,11 @@ function SaveWorkspaceButton() {
   const { t } = useTranslation()
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const userData = useSelector(selectUserData)
   const isDefaultWorkspace = useSelector(selectIsDefaultWorkspace)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
 
-  const isOwnerWorkspace = workspace?.ownerId === userData?.id
   const isPassWordEditAccess = workspace?.editAccess === WORKSPACE_PASSWORD_ACCESS
-  const canEditWorkspace = isOwnerWorkspace || isPassWordEditAccess
+  const canEditWorkspace = isWorkspaceOwner || isPassWordEditAccess
 
   const dispatch = useAppDispatch()
   const [saveWorkspaceTooltipOpen, setSaveWorkspaceTooltipOpen] = useState(false)

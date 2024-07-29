@@ -9,7 +9,7 @@ import {
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
-import { selectUserSettings } from 'features/user/selectors/user.selectors'
+import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import { UserSettings } from 'features/user/user.slice'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
@@ -34,6 +34,13 @@ export const selectIsGFWWorkspace = createSelector([selectWorkspace], (workspace
 export const selectIsDefaultWorkspace = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id === DEFAULT_WORKSPACE_ID
 })
+
+export const selectIsWorkspaceOwner = createSelector(
+  [selectWorkspace, selectUserData],
+  (workspace, userData) => {
+    return workspace?.ownerId === userData?.id
+  }
+)
 
 export const selectWorkspaceViewport = createSelector([selectWorkspace], (workspace) => {
   return workspace?.viewport

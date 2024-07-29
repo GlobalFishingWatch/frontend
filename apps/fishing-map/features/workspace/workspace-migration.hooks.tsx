@@ -13,12 +13,17 @@ import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
 import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
+import { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { useDataviewInstancesConnect } from './workspace.hook'
 import styles from './Workspace.module.css'
+import { selectIsWorkspaceOwner } from './workspace.selectors'
+import { updatedCurrentWorkspaceThunk } from './workspace.slice'
 
 export const useMigrateWorkspace = () => {
   const deprecatedDataviewInstances = useSelector(selectDeprecatedDataviewInstances)
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+  const workspace = useSelector(selectWorkspaceWithCurrentState)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -49,12 +54,12 @@ export const useMigrateWorkspace = () => {
           )
           return {
             id: dataviewInstance.id,
-            ...(heatmapSelectedDatasets?.length && {
-              config: {
-                ...(urlDataviewInstance && { ...urlDataviewInstance.config }),
+            config: {
+              ...(urlDataviewInstance && { ...urlDataviewInstance.config }),
+              ...(heatmapSelectedDatasets?.length && {
                 datasets: heatmapSelectedDatasets,
-              },
-            }),
+              }),
+            },
             dataviewId: latestDataviewId || dataviewInstance.dataviewId,
             datasetsConfigMigration,
           }
@@ -64,7 +69,30 @@ export const useMigrateWorkspace = () => {
       if (dataviewInstancesToMigrate.length) {
         upsertDataviewInstance(dataviewInstancesToMigrate)
       }
-      return { migrated: true, error: '' }
+      const migratedWorkspace = {
+        ...workspace,
+        // This is needed to get the latest workspace state without waiting to resolve dataviewInstances
+        dataviewInstances: workspace.dataviewInstances.map((dvi) => {
+          const migratedDataviewInstance = dataviewInstancesToMigrate.find((d) => d.id === dvi.id)
+          if (migratedDataviewInstance) {
+            const { datasetsConfigMigration, ...rest } = migratedDataviewInstance
+            return {
+              ...dvi,
+              ...rest,
+              config: {
+                ...dvi.config,
+                ...rest?.config,
+              },
+              datasetsConfig: dvi.datasetsConfig?.map((dc) => {
+                const datasetId = datasetsConfigMigration?.[dc?.datasetId!] || dc?.datasetId
+                return { ...dc, datasetId }
+              }),
+            }
+          }
+          return dvi
+        }),
+      } as AppWorkspace
+      return { migrated: true, error: '', workspace: migratedWorkspace }
     } catch (e: any) {
       console.error('Error migrating workspace', e)
       return { migrated: false, error: e.message }
@@ -75,6 +103,7 @@ export const useMigrateWorkspace = () => {
     dispatch,
     upsertDataviewInstance,
     urlDataviewInstances,
+    workspace,
   ])
 
   return migrateDataviewInstances
@@ -82,7 +111,9 @@ export const useMigrateWorkspace = () => {
 
 export const useMigrateWorkspaceToast = () => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const hasDeprecatedDataviews = useSelector(selectHasDeprecatedDataviewInstances)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
   const migrateWorkspace = useMigrateWorkspace()
   const toastId = useRef<any>()
 
@@ -97,9 +128,10 @@ export const useMigrateWorkspaceToast = () => {
     toast.update(toastId.current, {
       render: <ToastContent loading={true} />,
     })
-    await migrateWorkspace()
-    // TODO:PATCH current workspace with latest config only for owner user
-    // ideally we also remove the datasetsConfigMigration property
+    const { workspace } = await migrateWorkspace()
+    if (workspace && isWorkspaceOwner) {
+      await dispatch(updatedCurrentWorkspaceThunk(workspace))
+    }
     closeToast()
   }
 
