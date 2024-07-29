@@ -6,7 +6,6 @@ import { useTranslation, Trans } from 'react-i18next'
 import { IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import styles from 'features/workspace/shared/Sections.module.css'
-import { selectHasTracksWithNoData } from 'features/timebar/timebar.selectors'
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -16,8 +15,13 @@ import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import {
+  hasTracksWithNoData,
+  useTimebarVesselTracksData,
+} from 'features/timebar/timebar-vessel.hooks'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
+import VesselsFromPositions from './VesselsFromPositions'
 
 function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
@@ -26,7 +30,8 @@ function VesselsSection(): React.ReactElement {
   const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(selectIsGuestUser)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const hasVesselsWithNoTrack = useSelector(selectHasTracksWithNoData)
+  const vesselTracksData = useTimebarVesselTracksData()
+  const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const searchAllowed = useSelector(isBasicSearchAllowed)
   const someVesselsVisible = dataviews.some((d) => d.config?.visible)
@@ -61,25 +66,25 @@ function VesselsSection(): React.ReactElement {
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={styles.header}>
+      <div className={cx('print-hidden', styles.header)}>
         {dataviews.length > 1 && (
           <Switch
             active={someVesselsVisible}
             onClick={onToggleAllVessels}
-            tooltip={t('layer.toggleAllVisibility', 'Toggle all layers visibility')}
+            tooltip={t('vessel.toggleAllVessels', 'Toggle all vessels visibility')}
             tooltipPlacement="top"
           />
         )}
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>
+        <h2 className={styles.sectionTitle}>
           {t('common.vessel_other', 'Vessels')}
+          {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
         </h2>
         {dataviews.length > 0 && (
           <IconButton
             icon="delete"
             size="medium"
-            tooltip={t('layer.removeAllLayers', 'Remove all layers')}
+            tooltip={t('vessel.removeAllVessels', 'Remove all vessels')}
             tooltipPlacement="top"
-            className="print-hidden"
             onClick={onDeleteAllClick}
           />
         )}
@@ -95,13 +100,18 @@ function VesselsSection(): React.ReactElement {
               : t('search.notAllowed', 'Search not allowed')
           }
           tooltipPlacement="top"
-          className="print-hidden"
           onClick={onSearchClick}
         />
       </div>
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
-          dataviews?.map((dataview) => <VesselLayerPanel key={dataview.id} dataview={dataview} />)
+          dataviews?.map((dataview) => (
+            <VesselLayerPanel
+              key={dataview.id}
+              dataview={dataview}
+              showApplyToAll={dataviews.length > 1}
+            />
+          ))
         ) : (
           <div className={styles.emptyState}>
             {t(
@@ -121,6 +131,7 @@ function VesselsSection(): React.ReactElement {
         </p>
       )}
       <VesselEventsLegend dataviews={dataviews} />
+      <VesselsFromPositions />
     </div>
   )
 }

@@ -1,0 +1,14 @@
+{
+  "name": "@globalfishingwatch/deck-loaders",
+  "version": "0.0.1",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "dependencies": {
+    "@globalfishingwatch/api-types": "^8.x",
+    "@loaders.gl/loader-utils": "^4.x",
+    "apache-arrow": "15.x",
+    "luxon": "3.x",
+    "parquet-wasm": "x",
+    "pbf": "3.x"
+  }
+}

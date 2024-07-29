@@ -5,11 +5,11 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { Spinner, Switch, Tooltip } from '@globalfishingwatch/ui-components'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
+import { AUXILIAR_DATAVIEW_SUFIX, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import Title from 'features/workspace/common/Title'
-import { useMapSourceTilesLoaded } from 'features/map/map-sources.hooks'
 import styles from './ActivityAuxiliaryLayer.module.css'
 
 type LayerPanelProps = {
@@ -21,8 +21,8 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const auxiliarLayerActive = dataview?.config?.auxiliarLayerActive ?? true
   const { dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.TemporalContext)
-  const layerLoaded = useMapSourceTilesLoaded(dataview.id)
-  const isLayerLoadedDebounced = useDebounce(layerLoaded, 200)
+  const layer = useGetDeckLayer<AnyDeckLayer>(`${dataview.id}-${AUXILIAR_DATAVIEW_SUFIX}`)
+  const isLayerLoaded = layer?.loaded
 
   if (!dataset) {
     return null
@@ -65,7 +65,7 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
         ) : (
           TitleComponent
         )}
-        {auxiliarLayerActive && !isLayerLoadedDebounced && <Spinner size="tiny" />}
+        {auxiliarLayerActive && !isLayerLoaded && <Spinner size="tiny" />}
       </div>
     </div>
   )

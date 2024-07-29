@@ -1,4 +1,10 @@
-import { EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import {
+  EncounterEvent,
+  EventTypes,
+  PortEvent,
+  ResourceStatus,
+  Vessel,
+} from '@globalfishingwatch/api-types'
 
 export type TrackChunkProps = {
   id?: string
@@ -26,16 +32,19 @@ export type TimebarChartChunkCluster = {
   numChunks: number
 }
 
-export type TimebarChartChunk<T = void> = {
+export type TimebarChartChunk<T = any> = {
   start: number
   end?: number
   id?: string | number
   type?: EventTypes
   values?: TimebarChartValue[]
+  coordinates?: [number, number]
   x?: number
   width?: number
   height?: number
   cluster?: TimebarChartChunkCluster
+  encounter?: EncounterEvent<Vessel>
+  port?: PortEvent
   props?: T
 }
 
@@ -72,3 +81,5 @@ export type TimebarChartsData = Record<ChartType, { data: TimebarChartData<void>
 export type HighlightedChunks = Partial<Record<ChartType, string[]>>
 
 export type Timeseries = { frame?: number; date: number; [key: number]: number }[]
+
+export type ActivityTimeseriesFrame = { date: number; [key: number]: number }

@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { memoize } from 'lodash'
+import memoize from 'lodash/memoize'
 import { DateTime } from 'luxon'
 import { Feature, FeatureCollection, LineString } from 'geojson'
 import {
@@ -15,7 +15,7 @@ import {
   ApiEvent,
   ApiEvents,
   DataviewDatasetConfig,
-  Field,
+  TrackField,
 } from '@globalfishingwatch/api-types'
 
 export type ResourcesState = Record<any, Resource>
@@ -72,7 +72,7 @@ export const fetchResourceThunk = createAsyncThunk(
       .then((data: any) => {
         if (isTrackResource && isTrackBinary) {
           const fields = resource.datasetConfig.query?.find((q) => q.id === 'fields')
-            ?.value as Field[]
+            ?.value as TrackField[]
 
           const segments = trackValueArrayToSegments(data as any, fields)
           return segments

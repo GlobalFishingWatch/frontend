@@ -10,7 +10,7 @@ import { setHintDismissed } from 'features/help/hints.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
-import { useMapFitBounds } from '../map-viewport.hooks'
+import { useMapFitBounds } from '../map-bounds.hooks'
 import styles from './MapSearch.module.css'
 
 const MapSearch = () => {
@@ -39,7 +39,7 @@ const MapSearch = () => {
       })
     }
     if (bounds) {
-      fitBounds(bounds)
+      fitBounds(bounds, { fitZoom: true })
     }
   }
 

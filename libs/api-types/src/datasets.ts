@@ -137,6 +137,7 @@ export interface DatasetConfiguration {
    */
   valueProperties?: string[]
   propertyToInclude?: string
+  maxZoom?: number
   min?: number
   max?: number
   intervals?: DatasetConfigurationInterval[]
@@ -152,6 +153,7 @@ export interface EnviromentalDatasetConfiguration extends DatasetConfiguration {
   scale: number
   propertyToInclude: string
   propertyToIncludeRange: { min: number; max: number }
+  maxZoom?: number
 }
 
 export type AnyDatasetConfiguration = DatasetConfiguration | EnviromentalDatasetConfiguration
@@ -174,6 +176,7 @@ export type DatasetSchemaItemEnum = (string | number | boolean)[]
 export type DatasetSchemaItem = {
   type: DatasetSchemaType
   enum?: DatasetSchemaItemEnum
+  format?: string
   maxLength?: number
   minLength?: number
   min?: number

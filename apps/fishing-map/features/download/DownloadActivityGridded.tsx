@@ -52,8 +52,8 @@ import {
   SPATIAL_RESOLUTION_OPTIONS,
   GRIDDED_FORMAT_OPTIONS,
   TemporalResolution,
-  GRIDDED_GROUP_BY_OPTIONS,
   GroupBy,
+  getGriddedGroupOptions,
 } from './downloadActivity.config'
 import {
   getDownloadReportSupported,
@@ -97,7 +97,7 @@ function DownloadActivityGridded() {
   }, [downloadAreaGeometry])
 
   const filteredGroupByOptions: ChoiceOption<GroupBy>[] = useMemo(
-    () => getSupportedGroupByOptions(GRIDDED_GROUP_BY_OPTIONS, vesselDatasets),
+    () => getSupportedGroupByOptions(getGriddedGroupOptions(), vesselDatasets),
     [vesselDatasets]
   )
   const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0].id)
@@ -131,7 +131,7 @@ function DownloadActivityGridded() {
           return id ? checkDatasetReportPermission(id, userData!.permissions) : false
         })
         return {
-          filter: dataview.config?.filter || [],
+          filter: dataview.config?.filter || '',
           filters: dataview.config?.filters || {},
           ...(dataview.config?.['vessel-groups']?.length && {
             'vessel-groups': dataview.config?.['vessel-groups'],
@@ -147,6 +147,9 @@ function DownloadActivityGridded() {
         action: `Download GeoTIFF file`,
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+          downloadType: 'gridded activity',
+          groupBy,
+          temporalResolution,
           spatialResolution,
           sourceNames: dataviews.flatMap((dataview) =>
             getSourcesSelectedInDataview(dataview).map((source) => source.label)
@@ -159,6 +162,7 @@ function DownloadActivityGridded() {
         action: `Download ${format} file`,
         label: JSON.stringify({
           regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+          downloadType: 'gridded activity',
           spatialResolution,
           groupBy,
           temporalResolution,
@@ -190,7 +194,7 @@ function DownloadActivityGridded() {
       category: TrackCategory.DataDownloads,
       action: `Activity download`,
       label: getEventLabel([
-        downloadAreaName,
+        downloadParams.areaName,
         ...downloadDataviews
           .map(({ datasets, filters }) => [datasets.join(','), ...getActivityFilters(filters)])
           .flat(),

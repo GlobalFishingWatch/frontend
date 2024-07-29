@@ -1,0 +1,4 @@
+# folder used to auto generate the workers used in deck-loaders
+# see prepare-loaders script in fishing-map project.json
+*
+!.gitignore

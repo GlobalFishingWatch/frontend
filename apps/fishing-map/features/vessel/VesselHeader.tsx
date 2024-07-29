@@ -6,11 +6,7 @@ import { useCallback, useEffect } from 'react'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import {
-  selectVesselInfoData,
-  selectVesselPrintMode,
-  setVesselPrintMode,
-} from 'features/vessel/vessel.slice'
+import { setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
@@ -23,7 +19,7 @@ import {
 } from 'features/vessel/vessel.config.selectors'
 import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useVesselBounds } from 'features/vessel/vessel-bounds.hooks'
+import { useVesselProfileBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -31,6 +27,10 @@ import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectVesselInfoData,
+  selectVesselPrintMode,
+} from 'features/vessel/selectors/vessel.selectors'
 import styles from './VesselHeader.module.css'
 
 const VesselHeader = () => {
@@ -46,7 +46,7 @@ const VesselHeader = () => {
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
-  const { vesselBounds, setVesselBounds } = useVesselBounds()
+  const { boundsReady, setVesselBounds } = useVesselProfileBounds()
 
   const vesselPrintCallback = useCallback(() => {
     window.print()
@@ -98,11 +98,9 @@ const VesselHeader = () => {
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
 
   const onVesselFitBoundsClick = () => {
-    if (vesselBounds) {
-      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
-      setVesselBounds(vesselBounds)
-      trackAction('center_map')
-    }
+    if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+    setVesselBounds()
+    trackAction('center_map')
   }
 
   const onPrintClick = () => {
@@ -169,7 +167,7 @@ const VesselHeader = () => {
             tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
             tooltipPlacement="bottom"
             size="small"
-            disabled={!vesselBounds}
+            disabled={!boundsReady}
             onClick={onVesselFitBoundsClick}
           />
           <Button

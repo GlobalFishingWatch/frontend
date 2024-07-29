@@ -27,7 +27,7 @@ const STRICT_PROPERTY_SELECTION_TYPES: Partial<
   pointSize: ['range'],
 }
 
-export function NewDatasetField({
+function NewDatasetField({
   datasetMetadata,
   property,
   editable = true,

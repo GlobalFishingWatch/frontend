@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { Icon, IconButton, IconType, Tooltip } from '@globalfishingwatch/ui-components'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import {
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
@@ -18,10 +17,9 @@ import {
   selectLocationType,
 } from 'routes/routes.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import { useClickedEventConnect } from 'features/map/map.hooks'
-import useMapInstance from 'features/map/map-context.hooks'
+import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import useViewport from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 // import HelpModal from 'features/help/HelpModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import WhatsNew from 'features/sidebar/WhatsNew'
@@ -53,10 +51,9 @@ function getLinkToCategory(category: WorkspaceCategory) {
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
   const { dispatchClickedEvent } = useClickedEventConnect()
   const locationType = useSelector(selectLocationType)
-  const { setMapCoordinates } = useViewport()
+  const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectLocationCategory)
@@ -74,8 +71,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const onCategoryClick = useCallback(() => {
     setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
     dispatchClickedEvent(null)
-    cleanFeatureState('highlight')
-  }, [setMapCoordinates, cleanFeatureState, dispatchClickedEvent])
+  }, [setMapCoordinates, dispatchClickedEvent])
 
   const onSearchClick = useCallback(() => {
     trackEvent({

@@ -1,10 +1,13 @@
-import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { memoize, uniqBy, without, kebabCase, uniq } from 'lodash'
+import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
+import memoize from 'lodash/memoize'
+import kebabCase from 'lodash/kebabCase'
+import { uniqBy, without, uniq } from 'es-toolkit'
 import { stringify } from 'qs'
 import {
   AnyDatasetConfiguration,
   APIPagination,
   Dataset,
+  DatasetsMigration,
   EndpointId,
   EndpointParam,
   UploadResponse,
@@ -31,6 +34,7 @@ import {
 } from 'data/config'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
+export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
 
 type POCDatasetTemplate = Record<
   string,
@@ -118,16 +122,27 @@ const fetchDatasetsFromApi = async (
     cache: false,
     ...DEFAULT_PAGINATION_PARAMS,
   }
-  const initialDatasets = await GFWAPI.fetch<APIPagination<Dataset>>(
+  const initialDatasetsResponse = await GFWAPI.fetch<Response>(
     `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}`,
-    { signal }
+    { signal, responseType: 'default' }
   )
+
+  const initialDatasets = (await initialDatasetsResponse.json()) as APIPagination<Dataset>
+  let datasetsDeprecatedDict = {}
+  const deprecatedDatasetsHeader = initialDatasetsResponse.headers.get(DEPRECATED_DATASETS_HEADER)
+  if (deprecatedDatasetsHeader) {
+    datasetsDeprecatedDict = deprecatedDatasetsHeader.split(',').reduce((acc, id) => {
+      const [newId, oldId] = id.split('=')
+      acc[newId] = oldId
+      return acc
+    }, {} as DatasetsMigration)
+  }
 
   const mockedDatasets =
     IS_DEVELOPMENT_ENV || process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
       ? await import('./datasets.mock')
       : { default: [] }
-  let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], 'id')
+  let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)
 
   const relatedDatasetsIds = uniq(
     datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
@@ -135,16 +150,17 @@ const fetchDatasetsFromApi = async (
   const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
   const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...currentIds)
   if (uniqRelatedDatasetsIds.length > 1 && maxDepth > 0) {
-    const relatedDatasets = await fetchDatasetsFromApi({
+    const { datasetsDeprecated, datasets: relatedDatasets } = await fetchDatasetsFromApi({
       ids: uniqRelatedDatasetsIds,
       existingIds: currentIds,
       signal,
       maxDepth: maxDepth - 1,
     })
-    datasets = uniqBy([...datasets, ...relatedDatasets], 'id')
+    datasets = uniqBy([...datasets, ...relatedDatasets], (d) => d.id)
+    datasetsDeprecatedDict = { ...datasetsDeprecatedDict, ...datasetsDeprecated }
   }
 
-  return datasets
+  return { datasetsDeprecated: datasetsDeprecatedDict, datasets }
 }
 
 export const fetchDatasetsByIdsThunk = createAsyncThunk<
@@ -155,12 +171,20 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
   }
 >(
   'datasets/fetch',
-  async ({ ids, onlyUserDatasets = true }, { signal, rejectWithValue, getState }) => {
+  async ({ ids, onlyUserDatasets = true }, { signal, rejectWithValue, getState, dispatch }) => {
     const state = getState() as DatasetsSliceState
     const existingIds = selectIds(state) as string[]
 
     try {
-      const datasets = await fetchDatasetsFromApi({ ids, existingIds, signal, onlyUserDatasets })
+      const { datasetsDeprecated, datasets } = await fetchDatasetsFromApi({
+        ids,
+        existingIds,
+        signal,
+        onlyUserDatasets,
+      })
+      if (Object.keys(datasetsDeprecated).length) {
+        dispatch(setDeprecatedDatasets(datasetsDeprecated))
+      }
       return datasets.map(parsePOCsDatasets)
     } catch (e: any) {
       console.warn(e)
@@ -309,6 +333,7 @@ export const fetchLastestCarrierDatasetThunk = createAsyncThunk<
 })
 
 export interface DatasetsState extends AsyncReducer<Dataset> {
+  deprecatedDatasets: DatasetsMigration
   carrierLatest: {
     status: AsyncReducerStatus
     dataset: Dataset | undefined
@@ -317,6 +342,7 @@ export interface DatasetsState extends AsyncReducer<Dataset> {
 
 const initialState: DatasetsState = {
   ...asyncInitialState,
+  deprecatedDatasets: {},
   carrierLatest: {
     status: AsyncReducerStatus.Idle,
     dataset: undefined,
@@ -326,7 +352,11 @@ const initialState: DatasetsState = {
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
   name: 'datasets',
   initialState,
-  reducers: {},
+  reducers: {
+    setDeprecatedDatasets: (state, action: PayloadAction<DatasetsMigration>) => {
+      state.deprecatedDatasets = { ...state.deprecatedDatasets, ...(action.payload || {}) }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchLastestCarrierDatasetThunk.pending, (state) => {
       state.carrierLatest.status = AsyncReducerStatus.Loading
@@ -350,6 +380,8 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
   },
 })
 
+export const { setDeprecatedDatasets } = datasetSlice.actions
+
 export type DatasetsSliceState = { datasets: DatasetsState }
 export const {
   selectAll: selectAllDatasets,
@@ -368,5 +400,7 @@ export const selectCarrierLatestDataset = (state: DatasetsSliceState) =>
   state.datasets.carrierLatest.dataset
 export const selectCarrierLatestDatasetStatus = (state: DatasetsSliceState) =>
   state.datasets.carrierLatest.status
+export const selectDeprecatedDatasets = (state: DatasetsSliceState) =>
+  state.datasets.deprecatedDatasets
 
 export default datasetSlice.reducer

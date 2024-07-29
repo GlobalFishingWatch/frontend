@@ -64,9 +64,7 @@
   transform: scale(0);
   height: 0;
   pointer-events: none;
-  transition:
-    transform 0.3s 0.5s,
-    border 0.3s 0s;
+  transition: transform 0.3s 0.5s, border 0.3s 0s;
   margin-bottom: 0;
   border: none;
 }

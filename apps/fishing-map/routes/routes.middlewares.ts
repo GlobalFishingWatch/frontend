@@ -61,7 +61,7 @@ export const routerWorkspaceMiddleware: Middleware =
     if (isRouterAction) {
       const state = getState() as RootState
       const { prev } = state.location
-      const { lastVisited } = state.workspace
+      const { lastVisited } = state.workspace || {}
       const routesToSaveWorkspace = Object.keys(routesMap).filter(
         (key) => !WORKSPACE_ROUTES.includes(key)
       )

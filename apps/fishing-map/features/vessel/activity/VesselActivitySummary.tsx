@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useCallback, useMemo } from 'react'
 import { Icon, IconType, Switch, SwitchEvent, Tooltip } from '@globalfishingwatch/ui-components'
 import { EventType, EventTypes } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS } from '@globalfishingwatch/layer-composer'
+import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   selectActivitySummary,
@@ -15,10 +15,10 @@ import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import { formatInfoField } from 'utils/info'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { selectVesselEventsFilteredByTimerange } from 'features/vessel/vessel.selectors'
+import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { EVENTS_ORDER } from 'features/vessel/activity/activity-by-type/ActivityByType'
-import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
+import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -32,7 +32,7 @@ export const VesselActivitySummary = () => {
   const voyages = useSelector(selectVoyagesNumber)
   const timerange = useSelector(selectTimeRange)
   const visibleEvents = useSelector(selectVisibleEvents)
-  const { setVesselEventVisibility } = useVesselEvents()
+  const { setVesselEventVisibility } = useVisibleVesselEvents()
   const eventsByType = useSelector(selectEventsGroupedByType)
   const { getRegionNamesByType } = useRegionNamesByType()
   const { activityRegions, mostVisitedPortCountries, fishingHours } =

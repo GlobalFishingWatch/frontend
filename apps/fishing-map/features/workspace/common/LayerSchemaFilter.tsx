@@ -30,9 +30,9 @@ export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
-export type TransformationUnit = 'minutes'
+type TransformationUnit = 'minutes'
 
-export const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
+const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
 
 type Transformation = {
   in: (v: any) => number
@@ -40,7 +40,7 @@ type Transformation = {
   label: string
 }
 
-export const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
+const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
   minutes: {
     in: (v) => v / 60,
     out: (v) => v * 60,
@@ -48,7 +48,7 @@ export const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transform
   },
 }
 
-export const getValueByUnit = (
+const getValueByUnit = (
   value: string | number,
   { unit, transformDirection = 'in' } = {} as { unit?: string; transformDirection?: 'in' | 'out' }
 ): number => {
@@ -72,13 +72,16 @@ export const getValueLabelByUnit = (
 }
 
 export const getLabelWithUnit = (label: string, unit?: string): string => {
+  const translatedLabel = t(`layer.${label}`, label)
   if (unit) {
-    return `${label} (${VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label})`
+    return `${translatedLabel} (${
+      VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label
+    })`
   }
-  return label
+  return translatedLabel
 }
 
-export const getFilterOperatorOptions = () => {
+const getFilterOperatorOptions = () => {
   return [
     {
       id: INCLUDE_FILTER_ID,
@@ -91,6 +94,10 @@ export const getFilterOperatorOptions = () => {
   ] as ChoiceOption[]
 }
 
+export const getSchemaValueRounded = (value: number, decimals = 2): number => {
+  return parseFloat(value.toFixed(decimals))
+}
+
 const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
   if (schemaFilter?.id === 'radiance') {
     return {
@@ -99,8 +106,11 @@ const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
       max: 10000,
     }
   }
-  const min = getValueByUnit(schemaFilter.options?.[0]?.id, { unit: schemaFilter.unit }) || 0
-  const max = getValueByUnit(schemaFilter.options?.[1]?.id, { unit: schemaFilter.unit }) || 1
+  const schemaMin = getValueByUnit(schemaFilter.options?.[0]?.id, { unit: schemaFilter.unit }) ?? 0
+  const schemaMax = getValueByUnit(schemaFilter.options?.[1]?.id, { unit: schemaFilter.unit }) ?? 1
+  const supportsRounding = Math.abs(schemaMax - schemaMin) > 1
+  const min = supportsRounding ? getSchemaValueRounded(schemaMin) : schemaMin
+  const max = supportsRounding ? getSchemaValueRounded(schemaMax) : schemaMax
   return {
     steps: [min, max],
     min,
@@ -110,16 +120,26 @@ const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
 
 const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
   const { options } = schemaFilter
-  const optionValues = options.map(({ id }) => parseInt(id)).sort((a, b) => a - b)
-  return optionValues.length === 1
-    ? optionValues
-    : [optionValues[0], optionValues[optionValues.length - 1]]
+  const optionValues = options.map(({ id }) => parseFloat(id)).sort((a, b) => a - b)
+
+  if (optionValues.length === 1) {
+    return optionValues
+  }
+
+  const min = optionValues[0]
+  const max = optionValues[optionValues.length - 1]
+  const supportsRounding = Math.abs(max - min) > 1
+
+  return [
+    supportsRounding ? getSchemaValueRounded(min) : min,
+    supportsRounding ? getSchemaValueRounded(max) : max,
+  ]
 }
 
 const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
   const { options, optionsSelected, unit } = schemaFilter
   const optionValues = options.map(({ id }) => getValueByUnit(id, { unit })).sort((a, b) => a - b)
-
+  const { min, max } = getSliderConfigBySchema(schemaFilter)
   const rangeValues =
     optionsSelected?.length > 0
       ? optionsSelected
@@ -130,9 +150,17 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
           .sort((a, b) => a - b)
       : optionValues
 
-  return optionValues.length === 1
-    ? rangeValues
-    : [rangeValues[0], rangeValues[rangeValues.length - 1]]
+  if (optionValues.length === 1) {
+    return rangeValues
+  }
+  const minValue = rangeValues[0] < min ? min : rangeValues[0]
+  const maxValue =
+    rangeValues[rangeValues.length - 1] > max ? max : rangeValues[rangeValues.length - 1]
+  const supportsRounding = Math.abs(maxValue - minValue) > 1
+  return [
+    supportsRounding ? getSchemaValueRounded(minValue) : minValue,
+    supportsRounding ? getSchemaValueRounded(maxValue) : maxValue,
+  ]
 }
 
 function LayerSchemaFilter({
@@ -194,6 +222,7 @@ function LayerSchemaFilter({
           className={cx(styles.multiSelect, styles.range)}
           initialRange={values}
           histogram={id === 'radiance'}
+          onCleanClick={() => onClean(id)}
           label={getLabelWithUnit(label, unit)}
           config={getSliderConfigBySchema(schemaFilter)}
           onChange={onSliderChange}

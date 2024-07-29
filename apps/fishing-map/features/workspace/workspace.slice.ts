@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import {
   Workspace,
   Dataview,
@@ -19,7 +19,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
-import { WorkspaceState } from 'types'
+import { QueryParams, WorkspaceState } from 'types'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import {
@@ -92,7 +92,7 @@ export const getDefaultWorkspace = () => {
   return workspace as Promise<AppWorkspace>
 }
 
-export type FetchWorkspacesThunkParams = {
+type FetchWorkspacesThunkParams = {
   workspaceId: string
   password?: string
 }
@@ -258,8 +258,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         daysFromLatest !== undefined
           ? endAt.minus({ days: daysFromLatest })
           : getUTCDateTime(workspace?.startAt || DEFAULT_TIME_RANGE.start)
-
-      return { ...workspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
+      const migratedWorkspace = {
+        ...workspace,
+        dataviewInstances: workspace?.dataviewInstances.map(parseLegacyDataviewInstanceConfig),
+      }
+      return { ...migratedWorkspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue({ error: parseAPIError(e) })
@@ -279,7 +282,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   }
 )
 
-export type SaveWorkspaceThunkProperties = {
+type SaveWorkspaceThunkProperties = {
   name: string
   description?: string
   password?: string
@@ -395,6 +398,23 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk<
   }
 })
 
+export function cleanReportQuery(query: QueryParams) {
+  return {
+    ...query,
+    reportActivityGraph: undefined,
+    reportAreaBounds: undefined,
+    reportCategory: undefined,
+    reportResultsPerPage: undefined,
+    reportTimeComparison: undefined,
+    reportVesselFilter: undefined,
+    reportVesselGraph: undefined,
+    reportVesselPage: undefined,
+    reportBufferUnit: undefined,
+    reportBufferValue: undefined,
+    reportBufferOperation: undefined,
+  }
+}
+
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
@@ -420,6 +440,11 @@ const workspaceSlice = createSlice({
     },
     cleanCurrentWorkspaceData: (state) => {
       state.data = null
+    },
+    cleanCurrentWorkspaceReportState: (state) => {
+      if (state.data?.state) {
+        state.data.state = cleanReportQuery(state.data.state)
+      }
     },
     cleanCurrentWorkspaceStateBufferParams: (state) => {
       if (state.data?.state) {
@@ -499,6 +524,7 @@ export const {
   setLastWorkspaceVisited,
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
+  cleanCurrentWorkspaceReportState,
   cleanCurrentWorkspaceStateBufferParams,
 } = workspaceSlice.actions
 

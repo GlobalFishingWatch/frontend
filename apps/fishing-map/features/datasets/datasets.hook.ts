@@ -30,7 +30,7 @@ import {
   updateDatasetThunk,
 } from './datasets.slice'
 
-export interface NewDatasetProps {
+interface NewDatasetProps {
   onSelect?: (dataset?: Dataset) => void
 }
 

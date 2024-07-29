@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
-import { Field } from '@globalfishingwatch/api-types'
+import { TrackField } from '@globalfishingwatch/api-types'
 import { useOnScreen, useScreenDPI } from 'hooks/screen.hooks'
 import styles from './TrackFootprint.module.css'
 
@@ -85,7 +85,10 @@ function TrackFootprint({
         return
       }
 
-      const segments = trackValueArrayToSegments(vesselData, [Field.lonlat, Field.timestamp])
+      const segments = trackValueArrayToSegments(vesselData, [
+        TrackField.lonlat,
+        TrackField.timestamp,
+      ])
       const geoJson = segmentsToGeoJSON(segments)
       setTrackData(geoJson)
       if (onDataLoad) onDataLoad(geoJson)

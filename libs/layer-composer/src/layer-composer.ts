@@ -1,4 +1,5 @@
 import { SourceSpecification, LayerSpecification } from '@globalfishingwatch/maplibre-gl'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import Generators, { EVENTS_COLORS, GeneratorsRecord } from './generators'
 import { flatObjectArrays, layersDictToArray } from './utils'
 import {
@@ -14,7 +15,6 @@ import {
 import {
   GlobalGeneratorConfig,
   AnyGeneratorConfig,
-  GeneratorType,
   GlobalGeneratorConfigExtended,
 } from './generators/types'
 import { isConfigVisible } from './generators/utils'
@@ -92,7 +92,7 @@ export class LayerComposer {
       newLayer.metadata = {
         ...newLayer.metadata,
         generatorId: generatorConfig.id,
-        generatorType: generatorConfig.type as GeneratorType,
+        generatorType: generatorConfig.type as DataviewType,
       }
       if (generatorConfig.opacity !== undefined && generatorConfig.opacity !== null) {
         // Can't really handle global opacity on symbol layers as we don't know whether it applies to icon or text
@@ -169,17 +169,17 @@ export class LayerComposer {
     const extendedGlobalGeneratorConfig = {
       ...globalGeneratorConfig,
       totalHeatmapAnimatedGenerators: layers.filter(
-        (l) => l.type === GeneratorType.HeatmapAnimated || l.type === GeneratorType.HeatmapStatic
+        (l) => l.type === DataviewType.HeatmapAnimated || l.type === DataviewType.HeatmapStatic
       )?.length,
     }
     let layersPromises: GeneratorPromise[] = []
     const singleTrackLayersVisible =
-      layers.filter(({ type, visible }) => type === GeneratorType.Track && visible).length === 1
+      layers.filter(({ type, visible }) => type === DataviewType.Track && visible).length === 1
     // Temporal workaound to avoid crashes when graticules layer is present
     const layersWithoutGraticules = layers.filter((layer) => layer.type !== ('GRATICULES' as any))
     const layersGenerated = layersWithoutGraticules.map((layer) => {
       // Paint fishing events white if only one vessel is shown
-      if (layer.type === GeneratorType.VesselEventsShapes && singleTrackLayersVisible) {
+      if (layer.type === DataviewType.VesselEventsShapes && singleTrackLayersVisible) {
         layer.color = EVENTS_COLORS.fishing
       }
       const { promise, promises, ...rest } = this._getGeneratorStyles(

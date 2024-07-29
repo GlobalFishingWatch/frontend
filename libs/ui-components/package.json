@@ -16,7 +16,6 @@
   "module": "./index.js",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.0",
-    "@globalfishingwatch/layer-composer": "^12.0.0",
     "countryflag": "5.x",
     "d3-format": "3.x",
     "d3-geo": "3.x",

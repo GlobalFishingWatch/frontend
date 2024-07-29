@@ -3,12 +3,11 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import parse from 'html-react-parser'
 import { useSelector } from 'react-redux'
-import { Fragment } from 'react'
 import geojsonArea from '@mapbox/geojson-area'
 import { Button, ChoiceOption, Icon } from '@globalfishingwatch/ui-components'
-import { GeneratorType } from '@globalfishingwatch/layer-composer'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import { DataviewType, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { Area } from 'features/areas/areas.slice'
 import {
@@ -23,7 +22,7 @@ import {
 } from 'features/reports/report.slice'
 import {
   selectReportArea,
-  selectReportAreaDataview,
+  selectReportAreaDataviews,
   selectReportAreaStatus,
 } from 'features/reports/reports.selectors'
 import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
@@ -36,10 +35,11 @@ import {
 } from 'features/app/selectors/app.reports.selector'
 import { useLocationConnect } from 'routes/routes.hook'
 import { BufferOperation, BufferUnit } from 'types'
-import useMapInstance from 'features/map/map-context.hooks'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
+import { useHighlightReportArea } from '../reports.hooks'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
 
@@ -53,7 +53,9 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
-  const areaDataview = useSelector(selectReportAreaDataview)
+  const loading = useReportFeaturesLoading()
+  const highlightArea = useHighlightReportArea()
+  const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
@@ -61,7 +63,6 @@ export default function ReportTitle({ area }: ReportTitleProps) {
   const urlBufferValue = useSelector(selectReportBufferValue)
   const urlBufferUnit = useSelector(selectReportBufferUnit)
   const urlBufferOperation = useSelector(selectReportBufferOperation)
-  const { cleanFeatureState } = useFeatureState(useMapInstance())
 
   const [tooltipInstance, setTooltipInstance] = useState<any>(null)
 
@@ -140,22 +141,33 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
   const handleConfirmBuffer = useCallback(() => {
     tooltipInstance!.hide()
+    highlightArea(undefined)
     dispatchQueryParams({
       reportBufferValue: previewBuffer.value!,
       reportBufferUnit: previewBuffer.unit!,
       reportBufferOperation: previewBuffer.operation!,
     })
-    cleanFeatureState('highlight')
     dispatch(resetReportData())
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Confirm area buffer`,
       label: `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}`,
     })
-  }, [tooltipInstance, previewBuffer, dispatchQueryParams, cleanFeatureState, dispatch])
+  }, [
+    tooltipInstance,
+    highlightArea,
+    dispatchQueryParams,
+    previewBuffer.value,
+    previewBuffer.unit,
+    previewBuffer.operation,
+    dispatch,
+  ])
 
   const handleRemoveBuffer = useCallback(() => {
     tooltipInstance!.hide()
+    if (reportArea) {
+      highlightArea(reportArea as ContextFeature)
+    }
     dispatchQueryParams({
       reportBufferValue: undefined,
       reportBufferUnit: undefined,
@@ -163,7 +175,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     })
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceStateBufferParams())
-  }, [dispatch, dispatchQueryParams, tooltipInstance])
+  }, [dispatch, dispatchQueryParams, highlightArea, reportArea, tooltipInstance])
 
   const dataset = areaDataview?.datasets?.[0]
   const reportTitle = useMemo(() => {
@@ -179,13 +191,20 @@ export default function ReportTitle({ area }: ReportTitleProps) {
 
     let areaName = report?.name
     if (!areaName) {
-      if (areaDataview?.config?.type === GeneratorType.UserContext) {
+      if (
+        areaDataview?.config?.type === DataviewType.Context ||
+        areaDataview?.config?.type === DataviewType.UserContext
+      ) {
         if (reportAreaStatus === AsyncReducerStatus.Finished) {
-          areaName =
-            reportArea?.properties?.[propertyToInclude] ||
-            reportArea?.properties?.[valueProperty] ||
-            reportArea?.name ||
-            dataset?.name
+          if (dataset?.source === DRAW_DATASET_SOURCE) {
+            areaName = dataset.name
+          } else {
+            areaName =
+              reportArea?.properties?.[propertyToInclude] ||
+              reportArea?.properties?.[valueProperty] ||
+              reportArea?.name ||
+              dataset?.name
+          }
         }
       } else {
         areaName = area?.name
@@ -222,7 +241,8 @@ export default function ReportTitle({ area }: ReportTitleProps) {
     urlBufferOperation,
     areaDataview?.config?.type,
     reportAreaStatus,
-    reportArea,
+    reportArea?.properties,
+    reportArea?.name,
     area?.name,
     t,
     urlBufferUnit,
@@ -234,7 +254,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
       : report?.description || ''
 
   const reportAreaSpace = reportArea?.geometry
-    ? geojsonArea.geometry(reportArea?.geometry) / 1000000
+    ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
     : null
 
   if (!reportTitle) {
@@ -299,6 +319,7 @@ export default function ReportTitle({ area }: ReportTitleProps) {
             size="small"
             className={styles.actionButton}
             onClick={onPrintClick}
+            disabled={loading}
           >
             <p>{t('analysis.print ', 'print')}</p>
             <Icon icon="print" type="default" />

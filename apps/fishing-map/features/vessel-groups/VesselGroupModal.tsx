@@ -61,8 +61,6 @@ import {
 } from './vessel-groups.slice'
 import styles from './VesselGroupModal.module.css'
 
-export type CSV = Record<string, any>[]
-
 function VesselGroupModal(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -301,8 +299,8 @@ function VesselGroupModal(): React.ReactElement {
         defaultValue: 'Maximum number of vessels is {{count}}',
       })
     : hasVesselGroupsVessels && groupName === ''
-      ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
-      : ''
+    ? t('vesselGroup.missingName', 'Vessel group name is mandatory')
+    : ''
 
   return (
     <Modal

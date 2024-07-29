@@ -8,7 +8,7 @@
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "entryFile": "libs/timebar/src/index.js",
+        "entryFile": "libs/timebar/src/index.ts",
         "assets": [
           {
             "glob": "libs/timebar/types",
@@ -22,7 +22,7 @@
           }
         ],
         "format": ["esm", "cjs"],
-        "main": "libs/timebar/src/index.js",
+        "main": "libs/timebar/src/index.ts",
         "outputPath": "dist/libs/timebar",
         "project": "libs/timebar/package.json",
         "rollupConfig": "libs/ui-components/rollup.config.js",

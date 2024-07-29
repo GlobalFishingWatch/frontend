@@ -4,4 +4,5 @@ export {
   default as segmentsToGeoJSON,
   geoJSONToSegments,
   getSegmentExtents,
+  COORDINATE_PROPERTY_TIMESTAMP,
 } from './segments-to-geojson'

@@ -1,6 +1,7 @@
 import { uniq } from 'lodash'
 import {
   Dataview,
+  DataviewConfig,
   DataviewDatasetConfig,
   DataviewDatasetConfigParam,
   DataviewInstance,
@@ -69,7 +70,7 @@ export const getVesselDataviewInstanceFactory =
         })
       })
     }
-    const vesselDataviewInstance = {
+    const vesselDataviewInstance: DataviewInstance = {
       id: getVesselDataviewInstanceId(vessel.id),
       dataviewId: defaultVesselDataviewId,
       config: {
@@ -84,7 +85,7 @@ export const getVesselDataviewInstanceFactory =
           inactiveIconsSize: 2,
         },
         showIcons: true,
-      },
+      } as DataviewConfig,
       datasetsConfig,
     }
     return vesselDataviewInstance

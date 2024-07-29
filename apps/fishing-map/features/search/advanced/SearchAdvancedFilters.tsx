@@ -179,7 +179,7 @@ function SearchAdvancedFilters() {
   return (
     <div className={styles.filters}>
       {ADVANCED_SEARCH_FIELDS.map((field) => (
-        <AdvancedFilterInputField field={field} onChange={onInputChange} />
+        <AdvancedFilterInputField key={field} field={field} onChange={onInputChange} />
       ))}
       <Select
         label={t('vessel.infoSource')}

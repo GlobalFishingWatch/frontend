@@ -4,7 +4,7 @@ import { DEFAULT_SEARCH_STATE } from 'features/search/search.config'
 import { VesselSearchState, VesselSearchStateProperty } from 'types'
 
 type VesselSearchProperty<P extends VesselSearchStateProperty> = Required<VesselSearchState>[P]
-export function selectVesselSearchStateProperty<P extends VesselSearchStateProperty>(property: P) {
+function selectVesselSearchStateProperty<P extends VesselSearchStateProperty>(property: P) {
   return createSelector([selectLocationQuery], (locationQuery): VesselSearchProperty<P> => {
     const urlProperty = locationQuery?.[property]
     if (urlProperty !== undefined) return urlProperty

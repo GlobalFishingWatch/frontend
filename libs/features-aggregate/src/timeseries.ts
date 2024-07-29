@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import {
   AggregationOperation,
@@ -141,7 +141,7 @@ export const getChunksTimeseries = ({
 }
 
 export const getTimeseriesFromFeatures = (layerFeatures: LayerFeature[]) => {
-  const uniqLayerFeatures = uniqBy(layerFeatures, 'sourceId')
+  const uniqLayerFeatures = uniqBy(layerFeatures, (f) => f.sourceId)
   const dataviewsTimeseries = uniqLayerFeatures.map(({ chunksFeatures, metadata, state }) => {
     if (!state.loaded || state.error || !chunksFeatures || !metadata) {
       // TODO return loading or null depending on state

@@ -2,9 +2,8 @@ import { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
+import { Button, ButtonType, ButtonSize, Popover } from '@globalfishingwatch/ui-components'
 import { VesselLastIdentity } from 'features/search/search.slice'
-import TooltipContainer from 'features/workspace/shared/TooltipContainer'
 import {
   setVesselGroupEditId,
   setNewVesselGroupSearchVessels,
@@ -70,10 +69,10 @@ function VesselGroupAddButton({
   )
   return (
     hasUserGroupsPermissions && (
-      <TooltipContainer
-        visible={vesselGroupsOpen}
-        onClickOutside={toggleVesselGroupsOpen}
-        component={
+      <Popover
+        open={vesselGroupsOpen}
+        onOpenChange={toggleVesselGroupsOpen}
+        content={
           <ul className={styles.groupOptions}>
             <li
               className={cx(styles.groupOption, styles.groupOptionNew)}
@@ -115,7 +114,7 @@ function VesselGroupAddButton({
             {showCount ? ` (${vessels.length})` : ''}
           </Button>
         </div>
-      </TooltipContainer>
+      </Popover>
     )
   )
 }

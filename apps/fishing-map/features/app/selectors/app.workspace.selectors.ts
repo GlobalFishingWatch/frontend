@@ -14,7 +14,6 @@ import {
 import {
   selectReportActivityGraph,
   selectReportAreaBounds,
-  selectReportAreaSource,
   selectReportCategory,
   selectReportResultsPerPage,
   selectReportTimeComparison,
@@ -38,11 +37,10 @@ import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selecto
 import { selectDaysFromLatest, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 
-export const selectWorkspaceReportState = createSelector(
+const selectWorkspaceReportState = createSelector(
   [
     selectReportActivityGraph,
     selectReportAreaBounds,
-    selectReportAreaSource,
     selectReportCategory,
     selectReportResultsPerPage,
     selectReportTimeComparison,
@@ -56,7 +54,6 @@ export const selectWorkspaceReportState = createSelector(
   (
     reportActivityGraph,
     reportAreaBounds,
-    reportAreaSource,
     reportCategory,
     reportResultsPerPage,
     reportTimeComparison,
@@ -69,7 +66,6 @@ export const selectWorkspaceReportState = createSelector(
   ) => ({
     ...(reportActivityGraph && { reportActivityGraph }),
     ...(reportAreaBounds && { reportAreaBounds }),
-    ...(reportAreaSource && { reportAreaSource }),
     ...(reportCategory && { reportCategory }),
     ...(reportResultsPerPage && { reportResultsPerPage }),
     ...(reportTimeComparison && { reportTimeComparison }),
@@ -82,7 +78,7 @@ export const selectWorkspaceReportState = createSelector(
   })
 )
 
-export const selectWorkspaceAppState = createSelector(
+const selectWorkspaceAppState = createSelector(
   [
     selectActivityCategory,
     selectBivariateDataviews,
@@ -149,7 +145,12 @@ export const selectWorkspaceWithCurrentState = createSelector(
       startAt: timerange.start,
       endAt: timerange.end,
       state,
-      dataviewInstances: dataviewInstances.filter((d) => !d.deleted) as DataviewInstance<any>[],
+      dataviewInstances: dataviewInstances
+        .filter((d) => !d.deleted)
+        .map((dvI) => {
+          const { datasetsConfigMigration, ...rest } = dvI
+          return rest
+        }) as DataviewInstance<any>[],
     }
   }
 )

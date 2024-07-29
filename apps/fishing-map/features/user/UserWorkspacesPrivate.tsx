@@ -8,7 +8,7 @@ import { WORKSPACE } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import useViewport from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { sortByCreationDate } from 'utils/dates'
 import { selectUserWorkspacesPrivate } from './selectors/user.permissions.selectors'
@@ -16,10 +16,10 @@ import styles from './User.module.css'
 
 function UserWorkspacesPrivate() {
   const { t } = useTranslation()
-  const { setMapCoordinates } = useViewport()
   const workspaces = useSelector(selectUserWorkspacesPrivate)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
 
+  const setMapCoordinates = useSetMapCoordinates()
   const onWorkspaceClick = useCallback(
     (workspace: Workspace) => {
       if (workspace.viewport) {

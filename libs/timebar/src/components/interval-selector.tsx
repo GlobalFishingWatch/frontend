@@ -1,44 +1,42 @@
 import cx from 'classnames'
-import { getInterval, Interval, INTERVAL_ORDER } from '@globalfishingwatch/layer-composer'
+import { getFourwingsInterval, FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
+import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import styles from './interval-selector.module.css'
 
 type IntervalSelectorProps = {
   start: string
   end: string
   labels?: any
-  intervals: Interval[]
-  getCurrentInterval: (start: string, end: string, intervals: Interval[][]) => Interval
-  onIntervalClick: (interval: Interval) => void
+  intervals: FourwingsInterval[]
+  getCurrentInterval: (
+    start: string,
+    end: string,
+    intervals?: FourwingsInterval[]
+  ) => FourwingsInterval
+  onIntervalClick: (interval: FourwingsInterval) => void
 }
 
-const defaultProps: IntervalSelectorProps = {
-  start: '',
-  end: '',
-  intervals: INTERVAL_ORDER,
-  getCurrentInterval: getInterval,
-  onIntervalClick: () => {},
-  labels: {
+function IntervalSelector({
+  start = '',
+  end = '',
+  getCurrentInterval = getFourwingsInterval,
+  intervals = FOURWINGS_INTERVALS_ORDER,
+  labels = {
     hour: 'hours',
     day: 'days',
     month: 'months',
     year: 'years',
   },
-}
-
-function IntervalSelector({
-  start,
-  end,
-  getCurrentInterval,
-  intervals,
-  labels,
   onIntervalClick,
 }: IntervalSelectorProps) {
-  const currentInterval = getCurrentInterval(start, end, [intervals])
+  const currentInterval = getCurrentInterval(start, end, intervals)
   const intervalsSorted = [...intervals].reverse()
   return (
     <ul className={styles.intervalContainer}>
       {intervalsSorted.map((interval) => {
         const active = currentInterval === interval
+        const intervalLabel = labels?.[interval.toLowerCase()]
+        const titleLabel = labels?.[`${interval.toLowerCase()}Tooltip`]
         return (
           <li key={interval}>
             <button
@@ -46,9 +44,9 @@ function IntervalSelector({
                 [styles.intervalBtnActive]: active,
               })}
               onClick={() => onIntervalClick(interval)}
-              title={labels?.[`${interval}Tooltip`]}
+              title={titleLabel || interval}
             >
-              {labels?.[interval] ? labels[interval] : interval}
+              {intervalLabel || interval}
             </button>
           </li>
         )
@@ -56,7 +54,5 @@ function IntervalSelector({
     </ul>
   )
 }
-
-IntervalSelector.defaultProps = defaultProps
 
 export default IntervalSelector

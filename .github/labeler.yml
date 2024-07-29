@@ -19,6 +19,8 @@ data-transforms:
   - libs/data-transforms/**/*
 dataviews-client:
   - libs/dataviews-client/**/*
+deck-layer-composer:
+  - libs/deck-layer-composer/**/*
 deck-layers:
   - libs/deck-layers/**/*
 deck-loaders:

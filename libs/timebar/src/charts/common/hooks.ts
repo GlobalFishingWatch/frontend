@@ -7,7 +7,7 @@ import TimelineContext, { TimelineScale } from '../../timelineContext'
 import {
   TimebarChartData,
   TimebarChartChunk,
-  Timeseries,
+  ActivityTimeseriesFrame,
   TimebarChartItem,
   TimebarChartValue,
   HighlighterCallback,
@@ -172,34 +172,36 @@ export const useSortedChartData = (data: TimebarChartData<any>, type?: 'byType' 
 }
 
 export const useTimeseriesToChartData = (
-  data: Timeseries,
+  data: ActivityTimeseriesFrame[],
   dataviews: UrlDataviewInstance[],
   highlighterCallback?: HighlighterCallback,
   highlighterIconCallback?: HighlighterCallback
 ): TimebarChartData => {
-  if (!data || !data.length || !dataviews?.length) return []
-  return dataviews.map((dataview, i) => {
-    const values: TimebarChartValue[] = data.map((frame) => {
-      return {
-        timestamp: frame.date,
-        value: frame[i],
+  return useMemo(() => {
+    if (!data || !data.length || !dataviews?.length) return []
+    return dataviews?.map((dataview, dataviewIndex) => {
+      const values: TimebarChartValue[] = data.map((frame) => {
+        return {
+          timestamp: frame.date,
+          value: frame[dataviewIndex],
+        }
+      })
+      const chunk: TimebarChartChunk = {
+        start: data[0].date,
+        end: data[data.length - 1].date,
+        values,
       }
+      const item: TimebarChartItem = {
+        chunks: [chunk],
+        color: dataview.config?.color,
+        getHighlighterLabel: highlighterCallback,
+        getHighlighterIcon: highlighterIconCallback,
+        props: {
+          unit: dataview.datasets?.[0]?.unit || '',
+          dataviewId: dataview.id,
+        },
+      }
+      return item
     })
-    const chunk: TimebarChartChunk = {
-      start: data[0].date,
-      end: data[data.length - 1].date,
-      values,
-    }
-    const item: TimebarChartItem = {
-      chunks: [chunk],
-      color: dataview.config?.color,
-      getHighlighterLabel: highlighterCallback,
-      getHighlighterIcon: highlighterIconCallback,
-      props: {
-        unit: '',
-        dataviewId: dataview.id,
-      },
-    }
-    return item
-  })
+  }, [data, dataviews, highlighterCallback, highlighterIconCallback])
 }

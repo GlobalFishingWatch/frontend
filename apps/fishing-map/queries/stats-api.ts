@@ -3,13 +3,14 @@ import { stringify } from 'qs'
 import type { BaseQueryArg, BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import type { SerializeQueryArgs } from '@reduxjs/toolkit/dist/query/defaultSerializeQueryArgs'
 import { gfwBaseQuery } from 'queries/base'
-import { uniq } from 'lodash'
+import { uniq } from 'es-toolkit'
 import { DateTime } from 'luxon'
-import { getDatasetsExtent, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import { StatField, StatFields, StatType, StatsParams } from '@globalfishingwatch/api-types'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 
-export type FetchDataviewStatsParams = {
+type FetchDataviewStatsParams = {
   timerange: TimeRange
   dataview: UrlDataviewInstance
   fields?: StatField[]
@@ -27,7 +28,7 @@ const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ que
   ].join('-')
 }
 
-export const DEFAULT_STATS_FIELDS: StatsParams[] = ['VESSEL-IDS', 'FLAGS']
+const DEFAULT_STATS_FIELDS: StatsParams[] = ['VESSEL-IDS', 'FLAGS']
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
@@ -38,8 +39,8 @@ export const dataviewStatsApi = createApi({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
       serializeQueryArgs: serializeStatsDataviewKey,
       query: ({ dataview, timerange, fields = DEFAULT_STATS_FIELDS }) => {
-        const datasets = dataview.datasets?.filter(
-          (dataset) => dataview.config?.datasets.includes(dataset.id)
+        const datasets = dataview.datasets?.filter((dataset) =>
+          dataview.config?.datasets?.includes(dataset.id)
         )
         const { extentStart, extentEnd = new Date().toISOString() } = getDatasetsExtent(datasets)
         const laterStartDate = DateTime.max(
@@ -63,7 +64,7 @@ export const dataviewStatsApi = createApi({
         }
       },
       transformResponse: (response: StatFields[], meta, args) => {
-        const units = uniq(args?.dataview?.datasets?.flatMap((d) => d.unit || []))
+        const units = uniq(args?.dataview?.datasets?.flatMap((d) => d.unit || []) || [])
         if (units.length > 1) {
           console.warn('Incompatible datasets stats unit, using the first type', units[0])
         }

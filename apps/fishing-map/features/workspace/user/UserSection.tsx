@@ -8,6 +8,7 @@ import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventLabel } from 'utils/analytics'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -19,9 +20,9 @@ import { setModalOpen } from 'features/modals/modals.slice'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
 import Hint from 'features/help/Hint'
+import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './UserLayerPanel'
 
@@ -56,13 +57,16 @@ function UserSection(): React.ReactElement {
 
   const onAddNewClick = useAddDataset({})
 
-  const onDrawClick = useCallback(() => {
-    dispatchSetMapDrawing(true)
-    trackEvent({
-      category: TrackCategory.ReferenceLayer,
-      action: `Draw a custom reference layer - Start`,
-    })
-  }, [dispatchSetMapDrawing])
+  const onDrawClick = useCallback(
+    (drawFeatureType: DrawFeatureType) => {
+      dispatchSetMapDrawing(drawFeatureType)
+      trackEvent({
+        category: TrackCategory.ReferenceLayer,
+        action: `Draw a custom reference layer - Start`,
+      })
+    },
+    [dispatchSetMapDrawing]
+  )
 
   const userDatasets = useSelector(selectUserContextDatasets)
 
@@ -103,10 +107,8 @@ function UserSection(): React.ReactElement {
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={styles.header}>
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>
-          {t('user.datasets', 'User datasets')}
-        </h2>
+      <div className={cx(styles.header, 'print-hidden')}>
+        <h2 className={styles.sectionTitle}>{t('user.datasets', 'User datasets')}</h2>
         {!readOnly && (
           <Fragment>
             {!isSmallScreen && (
@@ -116,7 +118,6 @@ function UserSection(): React.ReactElement {
                   icon="upload"
                   type="border"
                   size="medium"
-                  className="print-hidden"
                   onClick={onUploadClick}
                   tooltip={t('dataset.upload', 'Upload dataset')}
                   tooltipPlacement="top"
@@ -133,8 +134,19 @@ function UserSection(): React.ReactElement {
               size="medium"
               tooltip={t('layer.drawPolygon', 'Draw a layer')}
               tooltipPlacement="top"
-              className="print-hidden"
-              onClick={onDrawClick}
+              onClick={() => onDrawClick('polygons')}
+              loginTooltip={t(
+                'download.eventsDownloadLogin',
+                'Register and login to download vessel events (free, 2 minutes)'
+              )}
+            />
+            <UserLoggedIconButton
+              icon="draw-points"
+              type="border"
+              size="medium"
+              tooltip={t('layer.drawPoints', 'Draw points')}
+              tooltipPlacement="top"
+              onClick={() => onDrawClick('points')}
               loginTooltip={t(
                 'download.eventsDownloadLogin',
                 'Register and login to download vessel events (free, 2 minutes)'
@@ -146,7 +158,6 @@ function UserSection(): React.ReactElement {
               size="medium"
               tooltip={t('dataset.addUser', 'Add an uploaded dataset')}
               tooltipPlacement="top"
-              className="print-hidden"
               onClick={onAddClick}
             />
           </Fragment>

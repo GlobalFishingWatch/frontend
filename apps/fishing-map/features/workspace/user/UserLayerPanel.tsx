@@ -2,12 +2,7 @@ import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import {
-  DatasetStatus,
-  DatasetGeometryType,
-  ResourceStatus,
-  Dataset,
-} from '@globalfishingwatch/api-types'
+import { DatasetStatus, DatasetGeometryType, Dataset } from '@globalfishingwatch/api-types'
 import { Tooltip, ColorBarOption, IconButton } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
@@ -15,6 +10,8 @@ import {
   getDatasetGeometryType,
   getUserDataviewDataset,
 } from '@globalfishingwatch/datasets-client'
+import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -32,10 +29,9 @@ import {
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import FitBounds from 'features/workspace/common/FitBounds'
 import { COLOR_SECONDARY_BLUE } from 'features/app/app.config'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
-import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -46,7 +42,7 @@ import InfoModal from '../common/InfoModal'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import { showSchemaFilter } from '../common/LayerSchemaFilter'
-import UserLayerTrackPanel, { useUserLayerTrackResource } from './UserLayerTrackPanel'
+import UserLayerTrackPanel, { useUserLayerTrackMetadata } from './UserLayerTrackPanel'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance
@@ -61,14 +57,15 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const { dispatchSetMapDrawing, dispatchSetMapDrawEditDataset } = useMapDrawConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
-  const gfwUser = useSelector(selectIsGFWUser)
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(selectIsGuestUser)
   const layerActive = dataview?.config?.visible ?? true
   const dataset = getUserDataviewDataset(dataview)
   const datasetGeometryType = getDatasetGeometryType(dataset)
-  const { resource, featuresColoredByField } = useUserLayerTrackResource(dataview)
-  const trackError = resource?.status === ResourceStatus.Error
+  const { loaded, hasFeaturesColoredByField, error } = useUserLayerTrackMetadata(dataview)
+  const layerLoaded = loaded && !error
+  const layerLoadedDebounced = useDebounce(layerLoaded, 300)
+  const layerLoading = layerActive && !layerLoadedDebounced && !error
 
   useAutoRefreshImportingDataset(layerActive ? dataset : ({} as Dataset), 5000)
 
@@ -104,7 +101,8 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const onEditClick = () => {
     if (datasetGeometryType === 'draw') {
       dispatchSetMapDrawEditDataset(dataset?.id)
-      dispatchSetMapDrawing(true)
+      const geometryType = getDatasetConfigurationProperty({ dataset, property: 'geometryType' })
+      dispatchSetMapDrawing(geometryType as DrawFeatureType)
     } else {
       dispatchDatasetModalOpen(true)
       dispatchDatasetModalConfig({
@@ -176,7 +174,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
-          color={featuresColoredByField ? COLOR_SECONDARY_BLUE : undefined}
+          color={hasFeaturesColoredByField ? COLOR_SECONDARY_BLUE : undefined}
           testId={`context-layer-${dataview.id}`}
         />
         {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
@@ -187,7 +185,14 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
         ) : (
           TitleComponent
         )}
-        <div className={cx('print-hidden', styles.actions, { [styles.active]: layerActive })}>
+        <div
+          className={cx(
+            'print-hidden',
+            styles.actions,
+            { [styles.active]: layerActive },
+            styles.hideUntilHovered
+          )}
+        >
           {layerActive && isUserLayer && (
             <IconButton
               icon="edit"
@@ -207,14 +212,15 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
               <Color
                 dataview={dataview}
                 open={colorOpen}
-                disabled={featuresColoredByField}
+                disabled={hasFeaturesColoredByField}
                 onColorClick={changeColor}
                 onToggleClick={onToggleColorOpen}
                 onClickOutside={closeExpandedContainer}
               />
-              {datasetGeometryType === 'tracks' && (
-                <FitBounds hasError={trackError} trackResource={resource} />
-              )}
+              {/* {datasetGeometryType === 'tracks' && (
+                // TODO:deck
+                // <FitBounds hasError={trackError} trackResource={resource} />
+              )} */}
             </Fragment>
           )}
           {layerActive &&
@@ -241,17 +247,26 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
               </ExpandedContainer>
             )}
           {<InfoModal dataview={dataview} />}
-          {(isUserLayer || gfwUser) && <Remove dataview={dataview} />}
+          <Remove dataview={dataview} loading={layerLoading} />
           {items.length > 1 && (
             <IconButton
               size="small"
               ref={setActivatorNodeRef}
               {...listeners}
-              icon="drag"
+              icon={error ? 'warning' : 'drag'}
+              type={error ? 'warning' : 'default'}
+              tooltip={error ? error : ''}
               className={styles.dragger}
             />
           )}
         </div>
+        <IconButton
+          icon={layerActive ? (error ? 'warning' : 'more') : undefined}
+          type={error ? 'warning' : 'default'}
+          loading={layerLoading}
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
       </div>
       {layerActive && hasLayerProperties && (
         <div

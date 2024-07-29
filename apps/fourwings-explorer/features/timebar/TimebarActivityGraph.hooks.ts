@@ -33,7 +33,9 @@ export const useStackedActivity = (layers: DatasetLayer | DatasetLayer[]) => {
           chunksFeatures: dataview.chunksFeatures?.map((chunk) => {
             return {
               ...chunk,
-              features: chunk.features ? filterFeaturesByBounds(chunk.features, bounds) : [],
+              features: chunk.features
+                ? filterFeaturesByBounds({ features: chunk.features, bounds })
+                : [],
             }
           }),
         }

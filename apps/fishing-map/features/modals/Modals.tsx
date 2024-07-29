@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { replace } from 'redux-first-router'
 import { useTranslation } from 'react-i18next'
 import { Modal } from '@globalfishingwatch/ui-components'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
 import { selectEditorActive, toggleEditorMenu } from 'features/editor/editor.slice'
@@ -85,6 +85,7 @@ const AppModals = () => {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const gfwUser = useSelector(selectIsGFWUser)
+  const jacUser = useSelector(selectIsJACUser)
   const dispatch = useAppDispatch()
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
@@ -132,7 +133,7 @@ const AppModals = () => {
           <EditorMenu />
         </Modal>
       )}
-      {gfwUser && (
+      {(gfwUser || jacUser) && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
           title={

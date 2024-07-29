@@ -1,6 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Button, Icon, Tooltip } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  FillColorBarOptions,
+  Icon,
+  LineColorBarOptions,
+  Tooltip,
+} from '@globalfishingwatch/ui-components'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
@@ -8,9 +15,12 @@ import { getDatasetSourceIcon, getDatasetTypeIcon } from 'features/datasets/data
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getHighlightedText } from 'features/layer-library/layer-library.utils'
 import { LibraryLayer } from 'data/layer-library'
+import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './LayerLibraryItem.module.css'
 
 type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
+
+const FILL_DATAVIEWS = [DataviewType.Heatmap, DataviewType.HeatmapAnimated]
 
 const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const { layer, highlightedText = '' } = props
@@ -25,6 +35,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
     moreInfoLink,
     datasetsConfig,
   } = layer
+  const dataviews = useSelector(selectActiveDataviewInstancesResolved)
   const datasetId = dataview.datasetsConfig?.[0].datasetId || ''
   const dataset = useSelector(selectDatasetById(datasetId))
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -34,12 +45,27 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const datasetSourceIcon = getDatasetSourceIcon(dataset)
 
   const onAddToWorkspaceClick = async () => {
-    upsertDataviewInstance({ id: `${id}-${Date.now()}`, dataviewId, config, datasetsConfig })
+    const palette = FILL_DATAVIEWS.includes(dataview.config?.type)
+      ? FillColorBarOptions
+      : LineColorBarOptions
+    const usedColors = dataviews.flatMap((dataview) => dataview.config?.color || [])
+    const isDefaultColorUnused = !usedColors.includes(config?.color as string)
+    const firstUnusedcolor = palette.find((c) => !usedColors.includes(c.value))
+    upsertDataviewInstance({
+      id: `${id}-${Date.now()}`,
+      dataviewId,
+      datasetsConfig,
+      config: {
+        ...config,
+        color: isDefaultColorUnused ? config?.color : firstUnusedcolor?.value,
+        colorRamp: isDefaultColorUnused ? config?.colorRamp : firstUnusedcolor?.id,
+      },
+    })
     dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
   }
 
   return (
-    <li className={styles.layer}>
+    <li className={styles.layer} key={id}>
       <div className={styles.container}>
         <div className={styles.image} style={{ backgroundImage: `url(${previewImageUrl})` }} />
         <div className={styles.content}>

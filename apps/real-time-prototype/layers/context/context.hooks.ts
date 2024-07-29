@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { PickingInfo } from '@deck.gl/core/typed'
+import { PickingInfo } from '@deck.gl/core'
 import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { ContextsLayer } from 'layers/context/ContextsLayer'
 import { useAtomValue } from 'jotai'

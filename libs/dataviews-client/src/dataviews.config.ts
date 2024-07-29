@@ -3,14 +3,13 @@ import {
   getDatasetConfigurationProperty,
   getDatasetRangeSteps,
 } from '@globalfishingwatch/datasets-client'
-import { GeneratorDataviewConfig } from '@globalfishingwatch/layer-composer'
 
 export const setGeneratorConfigCircleRadius = ({
   dataset,
   generator,
 }: {
   dataset: Dataset
-  generator: GeneratorDataviewConfig
+  generator: any
 }) => {
   const circleRadiusProperty = getDatasetConfigurationProperty({
     dataset,
@@ -38,7 +37,7 @@ export const setGeneratorConfigTimeFilter = ({
   generator,
 }: {
   dataset: Dataset
-  generator: GeneratorDataviewConfig
+  generator: any
 }) => {
   const timeFilterType = getDatasetConfigurationProperty({
     dataset,
@@ -68,7 +67,7 @@ export const setGeneratorConfigPolygonColor = ({
   generator,
 }: {
   dataset: Dataset
-  generator: GeneratorDataviewConfig
+  generator: any
 }) => {
   const polygonColor = getDatasetConfigurationProperty({
     dataset,

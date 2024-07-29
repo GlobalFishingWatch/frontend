@@ -11,14 +11,10 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 import {
-  MAX_POINT_SIZE,
-  MIN_POINT_SIZE,
-  POINT_SIZES_DEFAULT_RANGE,
-} from '@globalfishingwatch/layer-composer'
-import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
+import { POINT_SIZES_DEFAULT_RANGE } from '@globalfishingwatch/deck-layers'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import { FileType, getFileFromGeojson, getFileName, getFileType } from 'utils/files'
@@ -43,6 +39,8 @@ import {
 import FileDropzone from './FileDropzone'
 import { TimeFieldsGroup } from './TimeFieldsGroup'
 
+const MIN_POINT_SIZE = 1
+const MAX_POINT_SIZE = 50
 type PointsGeojson = FeatureCollection<Point> & { metadata?: { hasDatesError: boolean } }
 
 function NewPointDataset({

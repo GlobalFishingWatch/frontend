@@ -2,7 +2,7 @@ import cx from 'classnames'
 import { createPortal } from 'react-dom'
 import { Fragment } from 'react'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
-import { LegendLayer, LegendLayerBivariate } from '@globalfishingwatch/react-hooks'
+import { LegendLayer, LegendLayerBivariate } from '@globalfishingwatch/react-hooks/use-map-legend'
 import styles from './MapLegends.module.css'
 
 export type AnyLegend = LegendLayer | LegendLayerBivariate

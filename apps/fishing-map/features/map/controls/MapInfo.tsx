@@ -3,13 +3,12 @@ import { useSelector } from 'react-redux'
 import formatcoords from 'formatcoords'
 import cx from 'classnames'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
-import { ScaleControl } from 'react-map-gl'
-import { InteractionEvent } from '@globalfishingwatch/react-hooks'
 import { toFixed } from 'utils/shared'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import styles from './MapInfo.module.css'
+import MapScaleControl from './MapScaleControl'
 
 export const pickDateFormatByRange = (start: string, end: string): DateTimeFormatOptions => {
   const A_DAY = 1000 * 60 * 60 * 24
@@ -44,17 +43,18 @@ export const TimelineDatesRange = () => {
   )
 }
 
-const MapInfo = ({ center }: { center: InteractionEvent | null }) => {
+const MapInfo = ({ center }: { center?: number[] }) => {
   const showTimeComparison = useSelector(selectShowTimeComparison)
+  const [x, y] = center || []
   return (
     <div className={styles.info}>
       <div className={styles.flex}>
-        <ScaleControl maxWidth={100} unit="nautical" />
-        {center && (
+        <MapScaleControl />
+        {x && y && (
           <div className={cx('print-hidden', styles.mouseCoordinates)}>
-            {toFixed(center.latitude, 4)} {toFixed(center.longitude, 4)}
+            {toFixed(y, 4)} {toFixed(x, 4)}
             <br />
-            {formatcoords(center.latitude, center.longitude).format('DDMMssX', {
+            {formatcoords(y, x).format('DDMMssX', {
               latLonSeparator: ' ',
               decimalPlaces: 2,
             })}

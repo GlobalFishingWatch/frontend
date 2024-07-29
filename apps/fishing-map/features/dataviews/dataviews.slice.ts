@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector, PayloadAction } from '@reduxjs/toolkit'
-import { uniqBy, kebabCase } from 'lodash'
+import { uniqBy } from 'es-toolkit'
+import kebabCase from 'lodash/kebabCase'
 import { stringify } from 'qs'
 import { Dataview, APIPagination } from '@globalfishingwatch/api-types'
 import {
@@ -11,7 +12,7 @@ import {
 import { AsyncError, AsyncReducer, createAsyncSlice } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 
-export const fetchDataviewByIdThunk = createAsyncThunk(
+const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
   async (id: Dataview['id'] | Dataview['slug'], { rejectWithValue }) => {
     try {
@@ -63,7 +64,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
           ...d,
           slug: d.slug || kebabCase(d.name),
         })),
-        'slug'
+        (d) => d.slug
       )
     } catch (e: any) {
       console.warn(e)
@@ -122,8 +123,8 @@ export const updateDataviewThunk = createAsyncThunk<
   }
 )
 
-export type DataviewsState = AsyncReducer<Dataview>
-export type DataviewsSliceState = { dataviews: DataviewsState }
+type DataviewsState = AsyncReducer<Dataview>
+type DataviewsSliceState = { dataviews: DataviewsState }
 
 const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState, Dataview>({
   name: 'dataview',
@@ -153,7 +154,5 @@ export function selectDataviewBySlug(slug: string) {
     return dataviews?.find((d) => d.slug === slug)
   })
 }
-
-export const selectDataviewsStatus = (state: DataviewsSliceState) => state.dataviews.status
 
 export default dataviewsSlice.reducer

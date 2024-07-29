@@ -6,7 +6,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 
 const ALL_EVENT_TYPES: EventType[] = ['fishing', 'loitering', 'encounter', 'port_visit']
 
-export const useVesselEvents = () => {
+export const useVisibleVesselEvents = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const currentVisibleEvents = useSelector(selectVisibleEvents)
 

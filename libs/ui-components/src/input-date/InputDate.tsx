@@ -48,7 +48,6 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
   const isInvalid = props.invalid === true || inputRef.current?.validity.valid === false
 
   const inputProps = {
-    key: label || defaultKey,
     id: id ?? label,
     name: id ?? label,
     ...(max && { max }),
@@ -65,6 +64,7 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
         className={cx(styles.input, { [styles.invalid]: isInvalid })}
         ref={inputRef}
         {...inputProps}
+        key={label || defaultKey}
       />
       <div className={styles.actionsContainer}>
         {onRemove && value && (

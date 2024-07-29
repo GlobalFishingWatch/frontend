@@ -3,6 +3,9 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
+import MemoryStatsComponent from 'next-react-memory-stats'
+import { ToastContainer } from 'react-toastify'
+import { FpsView } from 'react-fps'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 import { Workspace } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -29,7 +32,6 @@ import {
 import { fetchUserThunk } from 'features/user/user.slice'
 import { fetchHighlightWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import useViewport, { useMapFitBounds } from 'features/map/map-viewport.hooks'
 import { selectShowTimeComparison } from 'features/reports/reports.selectors'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import {
@@ -48,17 +50,19 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
-import { initializeHints } from 'features/help/hints.slice'
 import AppModals from 'features/modals/Modals'
-import useMapInstance from 'features/map/map-context.hooks'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import { selectReportAreaBounds } from 'features/app/selectors/app.reports.selector'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import ErrorBoundary from 'features/app/ErrorBoundary'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
-import styles from './App.module.css'
 import { useAnalytics } from './analytics.hooks'
+import styles from './App.module.css'
+import 'react-toastify/dist/ReactToastify.min.css'
 
 const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
 const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
@@ -101,6 +105,7 @@ const Main = () => {
         </div>
       )}
       {showTimebar && <Timebar />}
+
       <Footer />
     </Fragment>
   )
@@ -115,7 +120,6 @@ function App() {
   useAnalytics()
   useDatasetDrag()
   useReplaceLoginUrl()
-  const map = useMapInstance()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
@@ -127,29 +131,11 @@ function App() {
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const reportAreaBounds = useSelector(selectReportAreaBounds)
-  const isTimeComparisonReport = useSelector(selectShowTimeComparison)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
-  const showTimebar = workspaceLocation && workspaceStatus === AsyncReducerStatus.Finished
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
   }, [])
-
-  useEffect(() => {
-    dispatch(initializeHints())
-  }, [dispatch])
-
-  useEffect(() => {
-    try {
-      if (map && map?.resize) {
-        map.resize()
-      }
-    } catch (e) {
-      console.warn(e)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReportLocation, isAnySearchLocation, sidebarOpen, showTimebar, isTimeComparisonReport])
 
   useEffect(() => {
     setMobileSafeVH()
@@ -158,7 +144,7 @@ function App() {
   }, [])
 
   const fitMapBounds = useMapFitBounds()
-  const { setMapCoordinates } = useViewport()
+  const setMapCoordinates = useSetMapCoordinates()
   const { setTimerange } = useTimerangeConnect()
 
   const locationType = useSelector(selectLocationType)
@@ -189,9 +175,7 @@ function App() {
         const workspace = resolvedAction.payload as Workspace
         const viewport = urlViewport || workspace?.viewport
         if (viewport && !isReportLocation) {
-          setTimeout(() => {
-            setMapCoordinates(viewport)
-          }, 100)
+          setMapCoordinates(viewport)
         }
         if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
           setTimerange({
@@ -242,6 +226,11 @@ function App() {
     dispatchQueryParams({ sidebarOpen: !sidebarOpen })
   }, [dispatchQueryParams, sidebarOpen])
 
+  const debugOptions = useSelector(selectDebugOptions)
+  const [isReady, setReady] = useState(false)
+  useEffect(() => setReady(true), [])
+  const showStats = isReady && debugOptions.mapStats === true
+
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t('user.title', 'User')
     if (locationType === WORKSPACES_LIST) return t('workspace.title_other', 'Workspaces')
@@ -271,7 +260,10 @@ function App() {
       <a href="https://globalfishingwatch.org" className="print-only">
         <Logo className={styles.logo} />
       </a>
-
+      <div style={{ position: 'fixed', zIndex: 1 }}>
+        {showStats && <FpsView top="0" right="8rem" bottom="auto" left="auto" />}
+        {showStats && <MemoryStatsComponent corner="topRight" />}
+      </div>
       <ErrorBoundary>
         <SplitView
           isOpen={sidebarOpen && !isMapDrawing}
@@ -296,6 +288,11 @@ function App() {
           />
         )}
         <AppModals />
+        <ToastContainer
+          position="top-center"
+          className={styles.toastContainer}
+          closeButton={false}
+        />
       </ErrorBoundary>
     </Fragment>
   )

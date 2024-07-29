@@ -37,13 +37,13 @@ const initialState: ReportState = {
 }
 type ReportRegion = {
   dataset: string
-  id: number
+  id: string | number
 }
 
 type FetchReportVesselsThunkParams = {
   region: ReportRegion
   datasets: string[]
-  filters: Record<string, any>[]
+  filters: string[]
   vesselGroups: string[]
   dateRange: DateRange
   temporalResolution?: TemporalResolution
@@ -173,7 +173,6 @@ const reportSlice = createSlice({
 
 export const { resetReportData, setDateRangeHash, setPreviewBuffer } = reportSlice.actions
 
-export const selectReportSummary = (state: ReportSliceState) => state.report
 export const selectReportVesselsStatus = (state: ReportSliceState) => state.report.status
 export const selectReportVesselsError = (state: ReportSliceState) => state.report.error
 export const selectReportVesselsData = (state: ReportSliceState) => state.report.data

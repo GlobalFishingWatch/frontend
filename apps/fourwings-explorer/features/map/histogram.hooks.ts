@@ -27,7 +27,7 @@ export const useLayerHistogram = (
     (layerFeature: LayerFeature, bounds: MiniglobeBounds) => {
       const { features } = layerFeature.chunksFeatures?.[0] || ({} as ChunkFeature)
       if (features && features.length) {
-        const filteredFeatures = filterFeaturesByBounds(features, bounds)
+        const filteredFeatures = filterFeaturesByBounds({ features, bounds }) as any
         const rawData = aggregateFeatures(filteredFeatures, layerFeature.metadata)
         const layerRange = getLayerDatasetRange(layer)
         const data = rawData.filter((d) => {

@@ -1,5 +1,6 @@
 .container {
   height: 100%;
+  position: relative;
 }
 
 .screenshot {
@@ -19,39 +20,6 @@
   .screenshot {
     display: block;
   }
-
-  .legend .currentValue {
-    display: none;
-  }
-
-  .container :global(.maplibregl-canvas-container) {
-    /* background-color: var(--color-map-background); */
-    height: 100% !important;
-  }
-
-  .container :global(.maplibregl-canvas) {
-    width: auto !important;
-    height: auto !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    object-fit: contain;
-  }
-
-  .container :global(.maplibregl-ctrl-attrib-button) {
-    display: none;
-  }
-
-  .container :global(.maplibregl-ctrl-bottom-left) {
-    top: 2rem;
-    left: 7rem;
-  }
-}
-
-.legendLabel {
-  font: var(--font-S);
-  opacity: var(--opacity-secondary);
-  cursor: help;
-  width: max-content;
 }
 
 .helpHintLeft {

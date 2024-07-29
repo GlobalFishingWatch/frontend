@@ -1,6 +1,7 @@
 .container {
   padding-top: var(--space-XS);
   padding-bottom: var(--space-S);
+  position: relative;
 }
 
 .container ~ .container {
@@ -23,6 +24,20 @@
   padding: var(--space-XS) var(--space-S);
 }
 
+.row {
+  display: flex;
+  align-items: center;
+  color: var(--color-secondary-blue);
+}
+
+.row:hover {
+  color: var(--color-primary-blue);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
 .relative {
   position: relative;
 }
@@ -33,6 +48,11 @@
   margin: 0;
   text-transform: uppercase;
   flex: 1;
+}
+
+.sectionButtons {
+  display: flex;
+  align-items: center;
 }
 
 .sectionButtons > *:not(:last-child) {
@@ -72,4 +92,39 @@
 .surveyLink {
   padding: var(--space-M) var(--space-S);
   color: var(--color-secondary-blue);
+}
+
+.visualizationsSwitch {
+  transition: var(--transition);
+}
+
+.visualizationsSwitch > ul {
+  min-width: unset;
+  gap: 0;
+}
+
+.vesselsOnScreen summary {
+  justify-content: left;
+}
+
+.vesselsOnScreen summary::before {
+  content: unset;
+}
+
+.vesselsOnScreen summary span {
+  padding: 0;
+}
+
+.vesselOnScreen {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.moreVesselsOnScreen {
+  color: var(--color-secondary-blue);
+}
+
+.hidden {
+  display: none;
 }

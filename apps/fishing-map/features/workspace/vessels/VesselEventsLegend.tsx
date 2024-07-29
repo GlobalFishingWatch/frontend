@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import cx from 'classnames'
-import { uniqBy } from 'lodash'
+import { uniqBy } from 'es-toolkit'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -11,7 +11,7 @@ import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { upperFirst } from 'utils/info'
-import { useVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
+import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import EncounterIcon from '../../../assets/icons/event-encounter.svg'
 import LoiteringIcon from '../../../assets/icons/event-loitering.svg'
@@ -25,11 +25,11 @@ type VesselEventsLegendProps = {
 function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.ReactElement | null {
   const { t } = useTranslation()
   const currentVisibleEvents = useSelector(selectVisibleEvents)
-  const { setVesselEventVisibility } = useVesselEvents()
+  const { setVesselEventVisibility } = useVisibleVesselEvents()
   const tracks = useSelector(selectActiveVesselsDataviews)
   const eventDatasets = uniqBy(
     dataviews.flatMap((dataview) => getEventsDatasetsInDataview(dataview)),
-    'id'
+    (d) => d.id
   )
 
   const showLegend =

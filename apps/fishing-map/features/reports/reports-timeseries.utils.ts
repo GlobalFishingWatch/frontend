@@ -1,31 +1,16 @@
+import { TimeSeries, TimeSeriesFrame } from '@globalfishingwatch/fourwings-aggregate'
 import {
-  getRealValues,
-  getTimeSeries,
-  TimeSeries,
-  TimeSeriesFrame,
-} from '@globalfishingwatch/fourwings-aggregate'
-import {
-  Interval,
-  pickActiveTimeChunk,
-  quantizeOffsetToDate,
-} from '@globalfishingwatch/layer-composer'
+  FourwingsAggregationOperation,
+  FourwingsDeckSublayer,
+} from '@globalfishingwatch/deck-layers'
+import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { ReportGraphMode, ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import { DateTimeSeries } from 'features/reports/reports.hooks'
-import { DataviewFeature } from 'features/map/map-sources.hooks'
 import { getUTCDateTime } from 'utils/dates'
 import { ComparisonGraphData } from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
-
-export const removeTimeseriesPadding = (timeseries?: ReportGraphProps[]) => {
-  return timeseries?.map((timeserie) => {
-    return {
-      ...timeserie,
-      timeseries: timeserie.timeseries?.filter(
-        (time) => time.min[0] !== 0 || time.min[1] !== 0 || time.max[0] !== 0 || time.max[1] !== 0
-      ),
-    }
-  })
-}
+import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
 
 export const filterTimeseriesByTimerange = (
   timeseries: ReportGraphProps[],
@@ -49,115 +34,120 @@ export const filterTimeseriesByTimerange = (
   })
 }
 
-const frameTimeseriesToDateTimeseries = (
-  frameTimeseries: TimeSeriesFrame[],
-  sourceInterval: Interval,
-  compareDeltaMillis?: number
-): DateTimeSeries => {
+const frameTimeseriesToDateTimeseries = (frameTimeseries: TimeSeriesFrame[]): DateTimeSeries => {
   const dateFrameseries = frameTimeseries.map((frameValues) => {
-    const { frame, ...rest } = frameValues
-    const date = quantizeOffsetToDate(frame, sourceInterval)
-    const compareDate = compareDeltaMillis
-      ? new Date(date.getTime() + compareDeltaMillis).toISOString()
-      : undefined
+    const { frame, count, date, ...rest } = frameValues
+    const dateTime = getUTCDate(date)
     return {
       values: Object.values(rest) as number[],
-      date: date.toISOString(),
-      compareDate,
+      date: dateTime.toISOString(),
     }
   })
   return dateFrameseries
 }
 
+export type FeaturesToTimeseriesParams = {
+  start: number
+  end: number
+  compareStart?: number
+  compareEnd?: number
+  interval: FourwingsInterval
+  staticHeatmap?: boolean
+  aggregationOperation?: FourwingsAggregationOperation
+  minVisibleValue?: number
+  maxVisibleValue?: number
+  sublayers: FourwingsDeckSublayer[]
+  graphMode?: ReportGraphMode
+}
+
 export const featuresToTimeseries = (
   filteredFeatures: FilteredPolygons[],
   {
-    layersWithFeatures,
-    showTimeComparison,
-    compareDeltaMillis,
+    start,
+    end,
+    staticHeatmap,
+    interval,
+    aggregationOperation,
+    minVisibleValue,
+    maxVisibleValue,
+    sublayers,
+    compareStart,
+    compareEnd,
     graphMode = 'evolution',
-  }: {
-    layersWithFeatures: DataviewFeature[]
-    showTimeComparison: boolean
-    compareDeltaMillis: number
-    graphMode?: ReportGraphMode
-  }
+  }: FeaturesToTimeseriesParams
 ): ReportGraphProps[] => {
-  return filteredFeatures.map((filteredFeature, sourceIndex) => {
+  return filteredFeatures.map(({ contained, overlapping }, sourceIndex) => {
     const featureToTimeseries: ReportGraphProps = {
-      interval: '' as Interval,
+      interval,
       mode: graphMode,
-      sublayers: [],
+      sublayers: sublayers.map((sublayer) => ({
+        id: sublayer.id,
+        legend: {
+          color: sublayer.color,
+          unit: sublayer.unit,
+        },
+      })),
       timeseries: [],
     }
-    const sourceMetadata = layersWithFeatures[sourceIndex]?.metadata
-    if (!sourceMetadata || sourceMetadata?.static === true) {
+    // const sourceMetadata = layersWithFeatures[sourceIndex]?.metadata
+    if (staticHeatmap === true) {
       return featureToTimeseries
     }
-    // TODO handle multiple timechunks
-    const sourceActiveTimeChunk = pickActiveTimeChunk(sourceMetadata.timeChunks)
-    if (!sourceActiveTimeChunk) {
-      return featureToTimeseries
-    }
-    const sourceNumSublayers = showTimeComparison ? 2 : sourceMetadata.numSublayers
-    const sourceQuantizeOffset = sourceActiveTimeChunk.quantizeOffset
-    const sourceInterval = sourceMetadata.timeChunks.interval
 
-    const { values: valuesContainedRaw } = getTimeSeries({
-      features: (filteredFeature.contained as any) || ([] as any),
-      numSublayers: sourceNumSublayers,
-      quantizeOffset: sourceQuantizeOffset,
-      aggregationOperation: sourceMetadata.aggregationOperation,
-      minVisibleValue: sourceMetadata.minVisibleValue,
-      maxVisibleValue: sourceMetadata.maxVisibleValue,
+    // const sourceInterval = sourceMetadata.timeChunks.interval
+    const valuesContainedRaw = getGraphDataFromFourwingsHeatmap(contained as FourwingsFeature[], {
+      sublayers,
+      interval,
+      start,
+      end,
+      compareStart,
+      compareEnd,
+      aggregationOperation,
+      minVisibleValue,
+      maxVisibleValue,
     })
 
-    const valuesContained = frameTimeseriesToDateTimeseries(
-      valuesContainedRaw,
-      sourceInterval,
-      compareDeltaMillis
-    )
+    const valuesContained = frameTimeseriesToDateTimeseries(valuesContainedRaw as any)
 
     const featuresContainedAndOverlapping =
-      filteredFeature.overlapping.length > 0
-        ? [...(filteredFeature.contained || []), ...(filteredFeature.overlapping || [])]
-        : []
+      overlapping.length > 0 ? [...(contained || []), ...(overlapping || [])] : []
 
     let valuesContainedAndOverlappingRaw: TimeSeries['values'] = []
     if (featuresContainedAndOverlapping.length > 0) {
-      valuesContainedAndOverlappingRaw = getTimeSeries({
-        features: featuresContainedAndOverlapping as any,
-        numSublayers: sourceNumSublayers,
-        quantizeOffset: sourceQuantizeOffset,
-        aggregationOperation: sourceMetadata.aggregationOperation,
-        minVisibleValue: sourceMetadata.minVisibleValue,
-        maxVisibleValue: sourceMetadata.maxVisibleValue,
-      }).values
+      valuesContainedAndOverlappingRaw = getGraphDataFromFourwingsHeatmap(
+        featuresContainedAndOverlapping as FourwingsFeature[],
+        {
+          sublayers,
+          interval,
+          start,
+          end,
+          compareStart,
+          compareEnd,
+          aggregationOperation,
+          minVisibleValue,
+          maxVisibleValue,
+        }
+      ) as any
     }
 
     const valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(
-      valuesContainedAndOverlappingRaw,
-      sourceInterval,
-      compareDeltaMillis
+      valuesContainedAndOverlappingRaw
     )
 
-    featureToTimeseries.interval = sourceInterval
-    featureToTimeseries.sublayers = sourceMetadata.sublayers as any
-    featureToTimeseries.timeseries = valuesContained.map(({ values, date, compareDate }) => {
+    featureToTimeseries.timeseries = valuesContained.map(({ values, date }) => {
       const maxValues = valuesContainedAndOverlapping.find(
         (overlap) => overlap.date === date
       )?.values
-      const minValues = getRealValues(values)
+      // const minValues = values
       return {
         date,
-        compareDate,
         // TODO take into account multiplier when calling getRealValue
-        min: minValues,
+        min: values,
         max: maxValues
-          ? getRealValues(maxValues)
+          ? maxValues
           : valuesContainedAndOverlapping.length > 0
           ? new Array(values.length).fill(0)
-          : minValues,
+          : values,
       } as ComparisonGraphData
     })
     return featureToTimeseries

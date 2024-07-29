@@ -42,6 +42,7 @@ import {
   isAdvancedSearchAllowed,
 } from 'features/search/search.selectors'
 import { VesselSearchState } from 'types'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './Search.module.css'
 
 function Search() {
@@ -146,6 +147,11 @@ function Search() {
       }
     ) => {
       if (!hasSearchFiltersErrors) {
+        trackEvent({
+          category: TrackCategory.SearchVessel,
+          action: 'Add filters to refine Advanced Search',
+          label: `name: ${query} | MMSI: ${filters.ssvid} | IMO: ${filters.imo} | Call Sign: ${filters.callsign} | Owner: ${filters.owner} | Info source: ${filters.infoSource} | Sources: ${filters.sources} | Flag: ${filters.flag} | Active After: ${filters.transmissionDateFrom} | Active Before: ${filters.transmissionDateTo}`,
+        })
         dispatch(cleanVesselSearchResults())
         fetchResults({
           query,

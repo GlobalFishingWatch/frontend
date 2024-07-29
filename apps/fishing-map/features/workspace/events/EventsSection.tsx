@@ -2,8 +2,8 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { SortableContext } from '@dnd-kit/sortable'
-import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import styles from 'features/workspace/shared/Sections.module.css'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './EventsLayerPanel'
 
@@ -18,8 +18,8 @@ function EventsLayerSection(): React.ReactElement | null {
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={styles.header}>
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>{t('common.events', 'Events')}</h2>
+      <div className={cx(styles.header, 'print-hidden')}>
+        <h2 className={styles.sectionTitle}>{t('common.events', 'Events')}</h2>
       </div>
 
       <SortableContext items={dataviews}>

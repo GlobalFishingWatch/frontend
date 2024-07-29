@@ -1,21 +1,18 @@
-import { uniqBy } from 'lodash'
-import { GeoJSONFeature } from '@globalfishingwatch/maplibre-gl'
 import { getAreasByDistance } from '@globalfishingwatch/ocean-areas'
 import { Dataset } from '@globalfishingwatch/api-types'
+import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { MapCoordinates } from 'types'
 
 export const CONTEXT_FEATURES_LIMIT = 5
 
 type FilterFeaturesByCenterDistanceParams = {
   viewport: MapCoordinates
-  uniqKey?: string
   limit?: number
 }
-export const filterFeaturesByDistance = async (
-  features: GeoJSONFeature[],
+export const filterFeaturesByDistance = (
+  features: ContextFeature[],
   {
     viewport,
-    uniqKey = 'properties.id',
     limit = CONTEXT_FEATURES_LIMIT,
   }: FilterFeaturesByCenterDistanceParams = {} as FilterFeaturesByCenterDistanceParams
 ) => {
@@ -26,8 +23,8 @@ export const filterFeaturesByDistance = async (
     type: 'FeatureCollection' as const,
     features,
   }
-  const closerAreas = await getAreasByDistance(featureCollection, viewport)
-  return uniqBy(closerAreas, uniqKey).slice(0, limit)
+  const closerAreas = getAreasByDistance(featureCollection, viewport)
+  return closerAreas.slice(0, limit)
 }
 
 export const parseContextFeatures = (features: any[], dataset: Dataset) => {
@@ -36,8 +33,6 @@ export const parseContextFeatures = (features: any[], dataset: Dataset) => {
     return {
       ...feature,
       promoteId: idProperty,
-      datasetId: dataset.id,
-      source: feature.source,
       properties: {
         ...feature.properties,
         gfw_id: feature.properties[idProperty],

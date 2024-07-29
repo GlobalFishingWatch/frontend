@@ -11,8 +11,21 @@
   --switch-height: 4.4rem;
 }
 
+html:has(.printing) {
+  font-size: 10px !important;
+}
+
+body:has(.printing) {
+  font: var(--font-M);
+  color: var(--color-primary-blue);
+}
+
 .printing * {
   transition: none !important;
+}
+
+.dragging * {
+  user-select: none !important;
 }
 
 .print-only {
@@ -47,8 +60,7 @@
 
 .scrollContainer {
   height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
   width: 100%;
 }
 
@@ -71,148 +83,4 @@
 
 .recharts-cartesian-grid-horizontal line {
   stroke: var(--color-terthiary-blue);
-}
-
-.maplibregl-control-container .maplibregl-ctrl.maplibregl-ctrl-attrib {
-  padding-right: var(--space-XS);
-  padding-bottom: var(--space-XS);
-  font: var(--font-XS);
-  background: none;
-  color: var(--color-white);
-  opacity: var(--opacity-secondary);
-}
-
-.maplibregl-control-container .maplibregl-ctrl.maplibregl-ctrl-attrib a {
-  color: var(--color-white);
-  opacity: var(--opacity-secondary);
-}
-
-.maplibregl-popup .maplibregl-popup-content {
-  padding: 0;
-  box-shadow: none;
-  border: none;
-  width: fit-content;
-}
-
-.printing .maplibregl-popup {
-  display: none !important;
-}
-
-@media print {
-  .maplibregl-popup {
-    display: none !important;
-  }
-}
-
-.hover.maplibregl-popup .maplibregl-popup-content {
-  pointer-events: none;
-}
-
-.maplibregl-popup .maplibregl-popup-close-button {
-  width: var(--size-S);
-  height: var(--size-S);
-  border-radius: 50%;
-  font: var(--font-L);
-  line-height: 1;
-  margin: var(--space-XS);
-  transition:
-    opacity 150ms linear,
-    color 150ms linear;
-  z-index: 1;
-  top: -2rem;
-  right: -2rem;
-  background-color: var(--color-primary-blue);
-  color: rgba(var(--white-rgb), 0.8);
-  opacity: 1;
-  border: var(--border-white);
-}
-
-.maplibregl-popup .maplibregl-popup-close-button:hover {
-  opacity: 1;
-  color: rgba(var(--white-rgb), 1);
-  background-color: var(--color-primary-blue);
-}
-
-.maplibregl-popup.maplibregl-popup-anchor-top .maplibregl-popup-tip,
-.maplibregl-popup.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
-.maplibregl-popup.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
-  border-bottom-color: white;
-  transform: translateY(1px);
-}
-
-.maplibregl-popup.maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
-.maplibregl-popup.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
-.maplibregl-popup.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
-  border-top-color: white;
-  transform: translateY(-1px);
-}
-
-.maplibregl-popup.maplibregl-popup-anchor-left .maplibregl-popup-tip {
-  border-right-color: white;
-  transform: translateX(1px);
-}
-
-.maplibregl-popup.maplibregl-popup-anchor-right .maplibregl-popup-tip {
-  border-left-color: white;
-  transform: translateX(-1px);
-}
-
-.maplibregl-control-container .maplibregl-ctrl-bottom-left {
-  bottom: var(--space-M);
-  left: 0;
-}
-
-.maplibregl-control-container .maplibregl-ctrl-scale {
-  min-height: 1.5rem;
-  font: var(--font-XS);
-  background: none;
-  color: rgba(var(--white-rgb), 0.65);
-  border-left: none;
-  border-right: none;
-  border-color: rgba(var(--white-rgb), 0.65);
-  border-width: 1px;
-}
-
-.maplibregl-map.mouse-pointer
-  .maplibregl-canvas-container.maplibregl-interactive
-  .maplibregl-canvas {
-  cursor: pointer !important;
-}
-
-.maplibregl-map.mouse-move .maplibregl-canvas-container.maplibregl-interactive .maplibregl-canvas {
-  cursor: move !important;
-}
-
-.maplibregl-map.mouse-add .maplibregl-canvas-container.maplibregl-interactive .maplibregl-canvas {
-  cursor: crosshair !important;
-}
-
-.maplibregl-map.mouse-move.mode-direct_select
-  .maplibregl-canvas-container.maplibregl-interactive
-  .maplibregl-canvas {
-  cursor: grab !important;
-}
-
-.maplibregl-map.mode-static.mouse-pointer
-  .maplibregl-canvas-container.maplibregl-interactive
-  .maplibregl-canvas {
-  cursor: grab !important;
-}
-
-.maplibregl-map.mode-direct_select.feature-midpoint.mouse-pointer
-  .maplibregl-canvas-container.maplibregl-interactive
-  .maplibregl-canvas {
-  cursor: cell !important;
-}
-
-.maplibregl-map.mode-direct_select.feature-feature.mouse-move
-  .maplibregl-canvas-container.maplibregl-interactive
-  .maplibregl-canvas {
-  cursor: move !important;
-}
-
-.maplibregl-map.mode-direct_select.feature-vertex.mouse-move
-  .maplibregl-canvas-container.maplibregl-interactive
-  .maplibregl-canvas {
-  cursor: pointer !important;
 }

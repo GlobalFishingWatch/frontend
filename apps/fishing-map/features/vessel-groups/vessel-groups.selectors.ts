@@ -1,9 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { selectActivityDatasets } from 'features/datasets/datasets.selectors'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectAllDataviewsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
-import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import {
   MAX_VESSEL_GROUP_VESSELS,
@@ -12,8 +8,6 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { selectUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
-
-const EMPTY_ARRAY: [] = []
 
 export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
@@ -56,17 +50,5 @@ export const selectIsVessselGroupsFiltering = createSelector(
   [selectWorkspaceVessselGroupsIds],
   (workspaceVesselGroupIds = []) => {
     return workspaceVesselGroupIds.length > 0
-  }
-)
-
-export const selectActivityDatasetsInWorkspace = createSelector(
-  [selectAllDataviewsInWorkspace, selectActivityDatasets, selectAllDatasets],
-  (dataviews, vesselsDatasets, allDatasets) => {
-    const datasetsIds = getDatasetsInDataviews(dataviews)
-    const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
-      if (!datasetsIds.includes(id)) return EMPTY_ARRAY
-      return [id, ...(relatedDatasets || []).map((d) => d.id)]
-    })
-    return vesselsDatasets.filter((dataset) => datasets.includes(dataset.id))
   }
 )

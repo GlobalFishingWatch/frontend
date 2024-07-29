@@ -1,6 +1,7 @@
 // @ts-check
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { join } = require('path')
+const path = require('path')
 const withNx = require('@nx/next/plugins/with-nx')
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: true, //process.env.ANALYZE === 'true' || process.env.NODE_ENV === 'development',
@@ -15,6 +16,30 @@ const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'staging' ||
   process.env.NODE_ENV === 'production'
 
+/**
+ * @param {{ experiments: any; optimization: { moduleIds: string; }; module: { rules: { test: RegExp; type: string; }[]; }; output: { webassemblyModuleFilename: string; }; }} config
+ * @param {boolean} isServer
+ */
+function patchWasmModuleImport(config, isServer) {
+  config.experiments = Object.assign(config.experiments || {}, {
+    asyncWebAssembly: true,
+    // syncWebAssembly: true,
+  })
+
+  config.optimization.moduleIds = 'named'
+
+  config.module.rules.push({
+    test: /\.wasm$/,
+    type: 'webassembly/async',
+  })
+
+  // TODO: improve this function -> track https://github.com/vercel/next.js/issues/25852
+  if (isServer) {
+    config.output.webassemblyModuleFilename = './../static/wasm/[modulehash].wasm'
+  } else {
+    config.output.webassemblyModuleFilename = 'static/wasm/[modulehash].wasm'
+  }
+}
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
@@ -54,13 +79,19 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: true,
   },
-  webpack: function (config) {
+  webpack: function (config, options) {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       child_process: false,
       fs: false,
       net: false,
       tls: false,
+    }
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      // ...(!IS_PRODUCTION && {
+      //   jotai: path.resolve(__dirname, 'node_modules/jotai'),
+      // }),
     }
     config.externals = [...config.externals, 'mapbox-gl']
     // config.optimization.minimize = false
@@ -77,6 +108,7 @@ const nextConfig = {
         cwd: process.cwd(),
       })
     )
+    patchWasmModuleImport(config, options.isServer)
     return config
   },
   // productionBrowserSourceMaps: true,
@@ -88,12 +120,16 @@ const nextConfig = {
   outputFileTracing: true,
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
+    esmExternals: true,
     optimizePackageImports: [
       '@globalfishingwatch/api-client',
       '@globalfishingwatch/api-types',
       '@globalfishingwatch/data-transforms',
       '@globalfishingwatch/datasets-client',
       '@globalfishingwatch/dataviews-client',
+      '@globalfishingwatch/deck-layer-composer',
+      '@globalfishingwatch/deck-layers',
+      '@globalfishingwatch/deck-loaders',
       '@globalfishingwatch/ocean-areas',
       '@globalfishingwatch/pbf-decoders',
       '@globalfishingwatch/react-hooks',

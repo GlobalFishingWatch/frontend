@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ExtendedFeature, InteractionEvent } from '@globalfishingwatch/react-hooks'
+import {
+  ExtendedFeature,
+  InteractionEvent,
+} from '@globalfishingwatch/react-hooks/use-map-interaction'
 import { GeneratorType } from '@globalfishingwatch/layer-composer'
 import { ApiEvent } from '@globalfishingwatch/api-types'
 import {

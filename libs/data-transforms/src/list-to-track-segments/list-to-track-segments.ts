@@ -1,5 +1,5 @@
-import { groupBy } from 'lodash'
-import { Segment } from '@globalfishingwatch/api-types'
+import { groupBy } from 'es-toolkit'
+import { TrackSegment } from '@globalfishingwatch/api-types'
 import { SegmentColumns } from '../types'
 import { parseCoords } from '../coordinates'
 import { getUTCDate, normalizePropertiesKeys } from '../schema'
@@ -33,7 +33,7 @@ export const listToTrackSegments = ({
   segmentId,
   lineId,
   lineColorBarOptions,
-}: Args): { segments: Segment[][]; metadata: Record<string, any> } => {
+}: Args): { segments: TrackSegment[][]; metadata: Record<string, any> } => {
   let hasDatesError = false
   const hasIdGroup = lineId !== undefined && lineId !== ''
   const hasSegmentId = segmentId !== undefined && segmentId !== ''
@@ -41,10 +41,12 @@ export const listToTrackSegments = ({
   const sortedRecords = startTime
     ? sortRecordsByTimestamp({ recordsArray, timestampProperty: startTime })
     : recordsArray
-  const groupedLines = hasIdGroup ? groupBy(sortedRecords, lineId) : { no_id: sortedRecords }
+  const groupedLines = hasIdGroup
+    ? groupBy(sortedRecords, (r) => r[lineId])
+    : { no_id: sortedRecords }
   const segments = Object.values(groupedLines).map((line, index) => {
     const groupedSegments = hasSegmentId
-      ? groupBy(line, segmentId)
+      ? groupBy(line, (s) => s[segmentId])
       : { [Object.keys(groupedLines)[index]]: line }
     return Object.values(groupedSegments)
       .map((segment) => {

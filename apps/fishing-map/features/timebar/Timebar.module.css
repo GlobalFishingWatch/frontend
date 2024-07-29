@@ -1,5 +1,6 @@
 .timebarWrapper {
   position: relative;
+  z-index: 0;
 }
 
 .loading {
@@ -9,10 +10,7 @@
 
 .disclaimer {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 1rem;
-  left: 0;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,0 +1,30 @@
+{
+  "name": "@globalfishingwatch/deck-layers",
+  "version": "0.1",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "dependencies": {
+    "@deck.gl-community/editable-layers": "^9.0.0-alpha.1",
+    "@deck.gl/core": "^9.0.20",
+    "@deck.gl/extensions": "^9.0.20",
+    "@deck.gl/geo-layers": "^9.0.20",
+    "@deck.gl/layers": "^9.0.20",
+    "@deck.gl/mesh-layers": "^9.0.20",
+    "@deck.gl/react": "^9.0.20",
+    "@math.gl/core": "4.x",
+    "@globalfishingwatch/api-client": "^6.x",
+    "@globalfishingwatch/api-types": "^8.x",
+    "@globalfishingwatch/deck-loaders": "^0.x",
+    "@globalfishingwatch/dataviews-client": "^16.x",
+    "@loaders.gl/core": "4.x",
+    "@loaders.gl/mvt": "4.x",
+    "@loaders.gl/loader-utils": "4.x",
+    "@turf/bbox-polygon": "6.x",
+    "@turf/boolean-point-in-polygon": "6.x",
+    "geojson": "^0.5.0",
+    "lodash": "4.x",
+    "luxon": "3.x",
+    "qs": "6.x",
+    "simple-statistics": "7.x"
+  }
+}

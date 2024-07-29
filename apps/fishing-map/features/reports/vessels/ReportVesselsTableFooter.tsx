@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment, useMemo } from 'react'
 import { unparse as unparseCSV } from 'papaparse'
-import saveAs from 'file-saver'
+import { saveAs } from 'file-saver'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -25,6 +25,7 @@ import {
   selectReportVesselsPagination,
   getVesselsFiltered,
   ReportVesselWithDatasets,
+  selectReportAreaName,
 } from '../reports.selectors'
 import { parseReportVesselsToIdentity } from '../reports.utils'
 import styles from './ReportVesselsTableFooter.module.css'
@@ -41,6 +42,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   const allVessels = useSelector(selectReportVesselsList)
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
+  const reportAreaName = useSelector(selectReportAreaName)
   const pagination = useSelector(selectReportVesselsPagination)
   const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const { start, end } = useSelector(selectTimeRange)
@@ -57,15 +59,15 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
           return rest
         }
       ) as ReportVesselWithDatasets[]
+      trackEvent({
+        category: TrackCategory.Analysis,
+        action: `Click 'Download CSV'`,
+        label: `region name: ${reportAreaName} | timerange: ${start} - ${end} | filters: ${reportVesselFilter}`,
+      })
       const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
       saveAs(blob, `${reportName}-${start}-${end}.csv`)
     }
-
-    trackEvent({
-      category: TrackCategory.Analysis,
-      action: `Download CSV`,
-    })
   }
 
   const onPrevPageClick = () => {

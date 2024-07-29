@@ -1,24 +1,26 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { FeatureCollection } from 'geojson'
 import { useTranslation } from 'react-i18next'
-import { uniqBy } from 'lodash'
-import { NO_RECORD_ID } from '@globalfishingwatch/data-transforms'
-import { DatasetTypes, Resource } from '@globalfishingwatch/api-types'
+import { uniqBy } from 'es-toolkit'
 import {
-  UrlDataviewInstance,
-  resolveDataviewDatasetResource,
-  selectResourceByUrl,
-} from '@globalfishingwatch/dataviews-client'
+  COORDINATE_PROPERTY_TIMESTAMP,
+  getUTCDate,
+  NO_RECORD_ID,
+} from '@globalfishingwatch/data-transforms'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getUserDataviewDataset,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
-import { useFeatureState } from '@globalfishingwatch/react-hooks'
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { UserTracksLayer } from '@globalfishingwatch/deck-layers'
+import { UserTrackFeature } from '@globalfishingwatch/deck-loaders'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
-import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import useMapInstance from 'features/map/map-context.hooks'
+import { selectActiveUserTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setHighlightedTime } from 'features/timebar/timebar.slice'
+import { useDisableHighlightTimeConnect } from 'features/timebar/timebar.hooks'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance
@@ -26,13 +28,13 @@ type UserPanelProps = {
 
 const SEE_MORE_LENGTH = 5
 
-export function useUserLayerTrackResource(dataview: UrlDataviewInstance) {
+export function useUserLayerTrackMetadata(dataview: UrlDataviewInstance) {
   const dataset = getUserDataviewDataset(dataview)
-  const allTracksActive = useSelector(selectActiveTrackDataviews)
-  const { url: trackUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.UserTracks)
-  const resource: Resource<FeatureCollection> = useSelector(
-    selectResourceByUrl<FeatureCollection>(trackUrl)
-  )
+  const allTracksActive = useSelector(selectActiveUserTrackDataviews)
+  const trackLayer = useGetDeckLayer<UserTracksLayer>(dataview?.id)
+  const data = useMemo(() => {
+    return trackLayer?.instance?.getData?.()
+  }, [trackLayer])
 
   const idProperty = getDatasetConfigurationProperty({
     dataset,
@@ -40,51 +42,84 @@ export function useUserLayerTrackResource(dataview: UrlDataviewInstance) {
   }) as string
 
   const hasRecordIds = idProperty
-    ? resource?.data?.features?.some((f) => f.properties?.id !== NO_RECORD_ID)
+    ? data?.features?.some((f) => f.properties?.id !== NO_RECORD_ID)
     : false
 
   const singleTrack = allTracksActive.length === 1
-  const featuresColoredByField = singleTrack && resource?.data && hasRecordIds
+  const hasFeaturesColoredByField = singleTrack && data && hasRecordIds
 
-  return { resource, featuresColoredByField, hasRecordIds }
+  return {
+    data,
+    hasRecordIds,
+    hasFeaturesColoredByField,
+    error: trackLayer?.instance?.getError?.(),
+    loaded: trackLayer?.loaded,
+  }
+}
+
+const getFeatureTimeExtent = (
+  feature: UserTrackFeature,
+  timestampProperty = COORDINATE_PROPERTY_TIMESTAMP
+) => {
+  const times = feature.properties.coordinateProperties[timestampProperty]
+  if (!times || !times.length) {
+    return null
+  }
+  const min = Array.isArray(times[0]) ? times[0][0] : times[0]
+  const latestValue = times[times.length - 1]
+  const max = Array.isArray(latestValue)
+    ? (latestValue as number[])[latestValue.length - 1]
+    : latestValue
+  if (!min || !max) {
+    return null
+  }
+  return { start: getUTCDate(min).toISOString(), end: getUTCDate(max).toISOString() }
 }
 
 function UserLayerTrackPanel({ dataview }: UserPanelProps) {
   const { t } = useTranslation()
   const [seeMoreOpen, setSeeMoreOpen] = useState(false)
-  const { cleanFeatureState, updateFeatureState } = useFeatureState(useMapInstance())
+  const dispatch = useAppDispatch()
+  const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
 
-  const { resource, featuresColoredByField } = useUserLayerTrackResource(dataview)
+  const { data, hasFeaturesColoredByField } = useUserLayerTrackMetadata(dataview)
+  const dataset = getUserDataviewDataset(dataview)
 
   const onSeeMoreClick = useCallback(() => {
     setSeeMoreOpen(!seeMoreOpen)
   }, [seeMoreOpen])
 
-  if (!featuresColoredByField || !resource?.data?.features) {
+  const onFeatureMouseEnter = useCallback(
+    (feature: UserTrackFeature) => {
+      const extent = getFeatureTimeExtent(feature)
+      if (extent) {
+        dispatch(setHighlightedTime(extent))
+      }
+    },
+    [dispatch]
+  )
+
+  const onFeatureMouseLeave = useCallback(
+    (feature: UserTrackFeature) => {
+      dispatchDisableHighlightedTime()
+    },
+    [dispatchDisableHighlightedTime]
+  )
+
+  if (!hasFeaturesColoredByField || !data?.features) {
     return null
   }
 
-  const dataset = getUserDataviewDataset(dataview)
   const lineIdProperty = getDatasetConfigurationProperty({
     dataset,
     property: 'lineId',
   }) as string
+
   const filterValues = dataview.config?.filters?.[lineIdProperty] || []
 
-  const features = uniqBy(resource.data?.features, (f) => {
+  const features = uniqBy(data?.features, (f) => {
     return f.properties?.[lineIdProperty]
   })
-  const handleHoverLine = (feature: any) => {
-    const id = feature.properties?.[lineIdProperty]
-    const source = `user-track-${dataset.id}`
-    if (source && id) {
-      const featureState = {
-        source,
-        id,
-      }
-      updateFeatureState([featureState], 'highlight')
-    }
-  }
 
   return (
     <Fragment>
@@ -99,13 +134,13 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
           <div
             key={index}
             className={styles.trackColor}
+            onMouseEnter={() => onFeatureMouseEnter(feature)}
+            onMouseLeave={() => onFeatureMouseLeave(feature)}
             style={
               {
                 '--color': feature.properties?.color || dataview.config?.color,
               } as React.CSSProperties
             }
-            onMouseEnter={() => handleHoverLine(feature)}
-            onMouseLeave={() => cleanFeatureState('highlight')}
           >
             {feature.properties?.[lineIdProperty]}
           </div>
