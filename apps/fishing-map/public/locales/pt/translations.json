@@ -64,6 +64,7 @@
     "summary": "<strong>{{vessels}} embarcações{{sources}} </strong> tiveram <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> na área entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> na área entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
+    "timeoutError": "This is taking more than expected, please wait",
     "title": "Análise",
     "unknown": "Desconhecido"
   },
@@ -1012,6 +1013,10 @@
     "emptyStateEnvironment": "Carregue espaços de trabalho personalizados como telemetria animal clicando no ícone de 'mais'.",
     "emptyStateUser": "Upload custom datasets clicking on the plus icon.",
     "emptyStateVessels": "As embarcações selecionadas na busca ou clicando nas células grid de atividade aparecerão aqui.",
+    "migrationDisclaimer": "Update your workspace to view the latest data and features.",
+    "migrationDisclaimerNote": "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>",
+    "migrationSkip": "Skip",
+    "migrationUpdate": "Update",
     "nameInput": "Nome do espaço de trabalho",
     "nameRequired": "Workspace name is required",
     "new": "Novo espaço de trabalho",
