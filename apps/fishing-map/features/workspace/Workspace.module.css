@@ -8,6 +8,23 @@
   text-align: center;
 }
 
+.disclaimerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-S);
+  margin-top: var(--space-S);
+}
+
+.disclaimer a {
+  text-decoration: underline;
+}
+
+.secondary {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
 .header {
   padding: var(--space-S) var(--space-S) 0 var(--space-S);
 }
@@ -85,5 +102,5 @@
 }
 
 .updateBtn {
-  margin-left: var(--space-S);
+  min-width: 7.2rem;
 }

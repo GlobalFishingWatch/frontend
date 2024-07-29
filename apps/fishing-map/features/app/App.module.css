@@ -24,7 +24,9 @@
 }
 
 .toastContainer {
-  --toastify-toast-width: max-content;
+  max-width: 60%;
+
+  --toastify-toast-width: auto;
   --toastify-color-light: var(--color-help-yellow);
   --toastify-text-color-light: var(--color-secondary-blue);
   --toastify-color-progress-light: linear-gradient(

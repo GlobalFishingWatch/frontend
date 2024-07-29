@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { useCallback, useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
+import parse from 'html-react-parser'
 import { DatasetsMigration, DataviewType } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components'
 import {
@@ -89,7 +90,6 @@ export const useMigrateWorkspaceToast = () => {
     toast.dismiss(toastId.current)
   }
   const dissmissToast = () => {
-    // TODO:deck decide if store the dismiss on the localStorage
     closeToast()
   }
 
@@ -97,35 +97,36 @@ export const useMigrateWorkspaceToast = () => {
     toast.update(toastId.current, {
       render: <ToastContent loading={true} />,
     })
-    const { migrated, error } = await migrateWorkspace()
-    toast.update(toastId.current, {
-      render: <ToastContent loading={false} done={migrated} error={error} />,
-    })
+    await migrateWorkspace()
+    // TODO:PATCH current workspace with latest config only for owner user
+    // ideally we also remove the datasetsConfigMigration property
     closeToast()
   }
 
-  const ToastContent = ({
-    loading = false,
-    done = false,
-    error = '',
-  }: {
-    loading?: boolean
-    done?: boolean
-    error?: string
-  }) => (
-    <div>
-      {error
-        ? error
-        : t(
-            'workspace.deprecatedDatasets',
-            'Some of the datasets in this workspace are deprecated'
-          )}
-      <Button onClick={dissmissToast} type="secondary" className={styles.updateBtn}>
-        {t('common.dismiss', 'Dismiss')}
-      </Button>
-      <Button loading={loading} onClick={updateWorkspace} className={styles.updateBtn}>
-        {done ? t('common.done', 'Done') : t('common.update', 'Update')}
-      </Button>
+  const ToastContent = ({ loading = false }: { loading?: boolean }) => (
+    <div className={styles.disclaimer}>
+      <p>
+        {t(
+          'workspace.migrationDisclaimer',
+          'Update your workspace to view the latest AIS data and features.'
+        )}
+      </p>
+      <p className={styles.secondary}>
+        {parse(
+          t(
+            'workspace.migrationDisclaimerNote',
+            "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>"
+          )
+        )}
+      </p>
+      <div className={styles.disclaimerFooter}>
+        <Button onClick={dissmissToast} type="secondary" className={styles.updateBtn}>
+          {t('workspace.migrationMaintain', 'Skip')}
+        </Button>
+        <Button loading={loading} onClick={updateWorkspace} className={styles.updateBtn}>
+          {t('workspace.migrationUpdate', 'Update')}
+        </Button>
+      </div>
     </div>
   )
 
