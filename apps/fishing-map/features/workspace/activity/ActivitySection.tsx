@@ -18,6 +18,7 @@ import {
   selectActivityDataviews,
   selectDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { getIsPositionSupportedInDataview } from 'features/dataviews/dataviews.utils'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 import LayerPanel from './ActivityLayerPanel'
 import activityStyles from './ActivitySection.module.css'
@@ -31,6 +32,10 @@ function ActivitySection(): React.ReactElement {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
+
+  const positionsSupported = dataviews.every((dataview) =>
+    getIsPositionSupportedInDataview(dataview)
+  )
 
   const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
     useVisualizationsOptions(DataviewCategory.Activity)
@@ -103,13 +108,15 @@ function ActivitySection(): React.ReactElement {
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons)}>
-            <VisualisationChoice
-              options={visualizationOptions}
-              testId="activity-visualizations-change"
-              activeOption={activeVisualizationOption}
-              onSelect={(option) => onVisualizationModeChange(option.id)}
-              className={cx({ [styles.hidden]: !hasVisibleDataviews })}
-            />
+            {positionsSupported && (
+              <VisualisationChoice
+                options={visualizationOptions}
+                testId="activity-visualizations-change"
+                activeOption={activeVisualizationOption}
+                onSelect={(option) => onVisualizationModeChange(option.id)}
+                className={cx({ [styles.hidden]: !hasVisibleDataviews })}
+              />
+            )}
             <IconButton
               icon="plus"
               type="border"

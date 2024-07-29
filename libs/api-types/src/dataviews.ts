@@ -139,6 +139,7 @@ export interface DataviewDatasetConfigParam {
   value: string | number | boolean | string[] | number[]
 }
 
+export type DatasetsMigration = Record<string, string>
 export interface DataviewDatasetConfig {
   datasetId: string
   endpoint: string
@@ -220,4 +221,5 @@ export interface DataviewInstance<Type = any>
   dataviewId: Dataview['id'] | Dataview['slug']
   config?: DataviewConfig<Type>
   datasetsConfig?: DataviewDatasetConfig[]
+  datasetsConfigMigration?: DatasetsMigration
 }

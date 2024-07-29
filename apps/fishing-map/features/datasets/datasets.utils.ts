@@ -242,6 +242,10 @@ const getDatasetsInDataview = (
   let datasetIds: string[] = (dataview.datasetsConfig || []).flatMap(
     ({ datasetId }) => datasetId || []
   )
+  const datasetsConfigMigration = (dataview as DataviewInstance).datasetsConfigMigration || {}
+  if (Object.values(datasetsConfigMigration).length) {
+    datasetIds = [...datasetIds, ...Object.values(datasetsConfigMigration)]
+  }
   if (!datasetIds.length) {
     // Get the datasets from the vessel config shorcurt (to avoid large urls)
     datasetIds = VESSEL_INSTANCE_DATASETS.flatMap((d) => {

@@ -434,9 +434,15 @@ export function resolveDataviews(
                   return datasetConfig.endpoint === instanceDatasetConfig.endpoint
                 }
               )
+
               if (!instanceDatasetConfig) {
+                const deprecatedDatasetConfigMigrationId =
+                  dataviewInstance.datasetsConfigMigration?.[datasetConfig?.datasetId!]
                 return {
                   ...datasetConfig,
+                  ...(deprecatedDatasetConfigMigrationId && {
+                    datasetId: deprecatedDatasetConfigMigrationId,
+                  }),
                   query:
                     datasetConfig.endpoint === EndpointId.Events
                       ? [...(datasetConfig.query || [])].map((query) => {
@@ -455,9 +461,15 @@ export function resolveDataviews(
               // using the instance query and params first as the uniqBy from lodash doc says:
               // the order of result values is determined by the order they occur in the array
               // so the result will be overriding the default dataview config
+
+              const deprecatedDatasetConfigMigrationId =
+                dataviewInstance.datasetsConfigMigration?.[instanceDatasetConfig?.datasetId!]
               return {
                 ...datasetConfig,
                 ...instanceDatasetConfig,
+                ...(deprecatedDatasetConfigMigrationId && {
+                  datasetId: deprecatedDatasetConfigMigrationId,
+                }),
                 query: uniqBy(
                   [...(instanceDatasetConfig.query || []), ...(datasetConfig.query || [])],
                   (q) => q.id

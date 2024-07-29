@@ -145,7 +145,12 @@ export const selectWorkspaceWithCurrentState = createSelector(
       startAt: timerange.start,
       endAt: timerange.end,
       state,
-      dataviewInstances: dataviewInstances.filter((d) => !d.deleted) as DataviewInstance<any>[],
+      dataviewInstances: dataviewInstances
+        .filter((d) => !d.deleted)
+        .map((dvI) => {
+          const { datasetsConfigMigration, ...rest } = dvI
+          return rest
+        }) as DataviewInstance<any>[],
     }
   }
 )

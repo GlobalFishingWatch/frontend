@@ -15,7 +15,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
@@ -76,6 +76,7 @@ export const selectDataviewInstancesMerged = createSelector(
         workspaceDataviewInstances as DataviewInstance<any>[],
         urlDataviewInstances
       ) || []
+
     if (isAnyVesselLocation) {
       const existingDataviewInstance = mergedDataviewInstances?.find(
         ({ id }) => urlVesselId && id.includes(urlVesselId)
@@ -277,5 +278,27 @@ export const selectActiveTrackDataviews = createDeepEqualSelector(
       }
       return config?.visible
     })
+  }
+)
+
+export const selectDeprecatedDataviewInstances = createSelector(
+  [selectAllDataviewInstancesResolved, selectDeprecatedDatasets],
+  (dataviews, deprecatedDatasets = {}) => {
+    return dataviews?.filter(({ datasetsConfig, config }) => {
+      const hasDatasetsDeprecated =
+        datasetsConfig?.some((datasetConfig) => deprecatedDatasets[datasetConfig.datasetId]) ||
+        false
+      const hasConfigDeprecated = config?.datasets
+        ? config.datasets.some((d) => deprecatedDatasets[d])
+        : false
+      return hasDatasetsDeprecated || hasConfigDeprecated
+    })
+  }
+)
+
+export const selectHasDeprecatedDataviewInstances = createSelector(
+  [selectDeprecatedDataviewInstances],
+  (deprecatedDataviews) => {
+    return deprecatedDataviews && deprecatedDataviews.length > 0
   }
 )
