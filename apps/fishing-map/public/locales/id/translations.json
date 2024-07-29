@@ -64,6 +64,7 @@
     "summary": "<strong>{{vessels}} kapal{{sources}} </strong> selama <strong>{{activityQuantity}} {{activityUnit}}</strong> melakukan <strong>{{activityType}}</strong> di area ini antara <strong>{{start}}</strong> dan <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> di area ini antara <strong>{{start}}</strong> dan <strong>{{end}}</strong>",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
+    "timeoutError": "This is taking more than expected, please wait",
     "title": "Analisis",
     "unknown": "Tidak diketahui"
   },
@@ -1012,6 +1013,10 @@
     "emptyStateEnvironment": "Unggah dataset khusus seperti telemetri satwa dengan mengeklik ikon plus.",
     "emptyStateUser": "Upload custom datasets clicking on the plus icon.",
     "emptyStateVessels": "Kapal-kapal yang dipilih dalam pencarian atau dengan mengklik sel grid aktivitas akan muncul di sini.",
+    "migrationDisclaimer": "Update your workspace to view the latest data and features.",
+    "migrationDisclaimerNote": "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>",
+    "migrationSkip": "Skip",
+    "migrationUpdate": "Update",
     "nameInput": "Nama ruang kerja",
     "nameRequired": "Workspace name is required",
     "new": "Ruang kerja baru",
