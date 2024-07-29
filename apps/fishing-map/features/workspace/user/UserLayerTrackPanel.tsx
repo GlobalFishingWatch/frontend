@@ -33,7 +33,7 @@ export function useUserLayerTrackMetadata(dataview: UrlDataviewInstance) {
   const allTracksActive = useSelector(selectActiveUserTrackDataviews)
   const trackLayer = useGetDeckLayer<UserTracksLayer>(dataview?.id)
   const data = useMemo(() => {
-    return trackLayer?.instance?.getData()
+    return trackLayer?.instance?.getData?.()
   }, [trackLayer])
 
   const idProperty = getDatasetConfigurationProperty({
@@ -52,7 +52,7 @@ export function useUserLayerTrackMetadata(dataview: UrlDataviewInstance) {
     data,
     hasRecordIds,
     hasFeaturesColoredByField,
-    error: trackLayer?.instance?.getError(),
+    error: trackLayer?.instance?.getError?.(),
     loaded: trackLayer?.loaded,
   }
 }
