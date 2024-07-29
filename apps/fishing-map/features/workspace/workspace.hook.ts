@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ColorCyclingType, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import { ColorCyclingType } from '@globalfishingwatch/api-types'
 import {
   FillColorBarOptions,
   LineColorBarOptions,
@@ -9,13 +9,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
-  selectDataviewInstancesResolved,
-  selectDeprecatedDataviewInstances,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
-import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 
 const createDataviewsInstances = (
@@ -163,37 +157,4 @@ export const useDataviewInstancesConnect = () => {
     deleteDataviewInstance,
     addNewDataviewInstances,
   }
-}
-
-export const useMigrateWorkspace = () => {
-  const deprecatedDataviewInstances = useSelector(selectDeprecatedDataviewInstances)
-  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
-  const dispatch = useAppDispatch()
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
-
-  const migrateDataviewInstances = useCallback(async () => {
-    const dataviewInstancesToMigrate = (deprecatedDataviewInstances || []).flatMap(
-      (dataviewInstance) => {
-        const latestDataviewId = LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.dataviewId!]
-        const datasetsConfig = dataviewInstance.datasetsConfig?.flatMap(
-          (datasetConfig): DataviewDatasetConfig | [] => {
-            const latestDatasetId = deprecatedDatasets[datasetConfig.datasetId!]
-            if (!latestDatasetId) return []
-            return { ...datasetConfig, datasetId: latestDatasetId, latest: true }
-          }
-        )
-        return {
-          id: dataviewInstance.id,
-          dataviewId: latestDataviewId || dataviewInstance.dataviewId,
-          datasetsConfig,
-        }
-      }
-    )
-    if (dataviewInstancesToMigrate.length) {
-      upsertDataviewInstance(dataviewInstancesToMigrate)
-    }
-    await dispatch(fetchDatasetsByIdsThunk({ ids: Object.values(deprecatedDatasets) }))
-  }, [deprecatedDatasets, deprecatedDataviewInstances, dispatch, upsertDataviewInstance])
-
-  return migrateDataviewInstances
 }
