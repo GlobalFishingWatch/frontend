@@ -214,6 +214,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         onViewportLoad: this._onViewportLoad,
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
         getFillColor: this.getFillColor,
+        stroked: false,
         updateTriggers: {
           getFillColor: [colorDomain, colorRanges, minVisibleValue, maxVisibleValue],
         },

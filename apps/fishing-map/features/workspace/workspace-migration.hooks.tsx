@@ -40,7 +40,7 @@ export const useMigrateWorkspace = () => {
               ? dataviewInstance.config?.datasets?.map((d) => deprecatedDatasets[d] || d)
               : []
 
-          const datasetsConfigMigration = dataviewInstance.datasetsConfig?.reduce(
+          const datasetsConfigMigration = (dataviewInstance.datasetsConfig || [])?.reduce(
             (acc, datasetConfig) => {
               const latestDatasetId = deprecatedDatasets[datasetConfig.datasetId!]
               if (latestDatasetId) {
@@ -50,6 +50,22 @@ export const useMigrateWorkspace = () => {
             },
             {} as DatasetsMigration
           )
+          const vesselInfo = dataviewInstance.config?.info
+          if (vesselInfo && deprecatedDatasets[vesselInfo]) {
+            datasetsConfigMigration[vesselInfo] = deprecatedDatasets[vesselInfo]
+          }
+          const vesselTrack = dataviewInstance.config?.info
+          if (vesselTrack && deprecatedDatasets[vesselTrack]) {
+            datasetsConfigMigration[vesselTrack] = deprecatedDatasets[vesselTrack]
+          }
+          const vesselEvents = dataviewInstance.config?.events
+          if (vesselEvents?.length) {
+            vesselEvents.forEach((event) => {
+              if (deprecatedDatasets[event]) {
+                datasetsConfigMigration[event] = deprecatedDatasets[event]
+              }
+            })
+          }
           const urlDataviewInstance = urlDataviewInstances?.find(
             (dvi) => dvi.id === dataviewInstance.id
           )
@@ -77,12 +93,24 @@ export const useMigrateWorkspace = () => {
           const migratedDataviewInstance = dataviewInstancesToMigrate.find((d) => d.id === dvi.id)
           if (migratedDataviewInstance) {
             const { datasetsConfigMigration, ...rest } = migratedDataviewInstance
+            const vesselInfo = dvi.config?.info
+            const vesselTrack = dvi.config?.track
+            const vesselEvents = dvi.config?.events
             return {
               ...dvi,
               ...rest,
               config: {
                 ...dvi.config,
                 ...rest?.config,
+                ...(vesselInfo && {
+                  info: datasetsConfigMigration?.[vesselInfo] || vesselInfo,
+                }),
+                ...(vesselTrack && {
+                  track: datasetsConfigMigration?.[vesselTrack] || vesselTrack,
+                }),
+                ...(vesselEvents && {
+                  events: vesselEvents.map((d) => datasetsConfigMigration?.[d!] || d),
+                }),
               },
               datasetsConfig: dvi.datasetsConfig?.map((dc) => {
                 const datasetId = datasetsConfigMigration?.[dc?.datasetId!] || dc?.datasetId
