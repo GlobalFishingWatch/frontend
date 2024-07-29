@@ -1006,7 +1006,6 @@
     "confirmRemove": "Are you sure you want to permanently delete this workspace?",
     "create": "Create new workspace",
     "createNeeded": "Changing workspace visibility requires creating a new one",
-    "deprecatedDatasets": "Some of the datasets in this workspace are deprecated",
     "edit": "Edit workspace",
     "editAccess": "Edit access",
     "editName": "Edit workspace name",

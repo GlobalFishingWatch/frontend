@@ -1006,7 +1006,6 @@
     "confirmRemove": "Anda yakin ingin menghapus ruang kerja ini secara permanen?",
     "create": "Buat sebagai baru",
     "createNeeded": "Mengganti visibilitas ruang kerja membutuhkan pembuatan ruang kerja baru",
-    "deprecatedDatasets": "Some of the datasets in this workspace are deprecated",
     "edit": "Ubah ruang kerja",
     "editAccess": "Edit access",
     "editName": "Edit nama ruang kerja",

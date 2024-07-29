@@ -1006,7 +1006,6 @@
     "confirmRemove": "Êtes-vous sûr de vouloir supprimer définitivement cet espace de travail ?",
     "create": "Créer comme nouveau",
     "createNeeded": "Changer la visibilité de l'espace de travail nécessite d'en créer un nouveau",
-    "deprecatedDatasets": "Some of the datasets in this workspace are deprecated",
     "edit": "Modifier l'espace de travail",
     "editAccess": "Edit access",
     "editName": "Modifier le nom de la vue",
