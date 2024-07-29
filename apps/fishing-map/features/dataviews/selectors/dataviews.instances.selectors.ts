@@ -284,8 +284,14 @@ export const selectActiveTrackDataviews = createDeepEqualSelector(
 export const selectDeprecatedDataviewInstances = createSelector(
   [selectAllDataviewInstancesResolved, selectDeprecatedDatasets],
   (dataviews, deprecatedDatasets = {}) => {
-    return dataviews?.filter(({ datasets }) => {
-      return datasets?.some((dataset) => deprecatedDatasets[dataset.id]) || false
+    return dataviews?.filter(({ datasetsConfig, config }) => {
+      const hasDatasetsDeprecated =
+        datasetsConfig?.some((datasetConfig) => deprecatedDatasets[datasetConfig.datasetId]) ||
+        false
+      const hasConfigDeprecated = config?.datasets
+        ? config.datasets.some((d) => deprecatedDatasets[d])
+        : false
+      return hasDatasetsDeprecated || hasConfigDeprecated
     })
   }
 )
