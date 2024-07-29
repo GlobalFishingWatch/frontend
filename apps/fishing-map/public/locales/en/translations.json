@@ -64,6 +64,7 @@
     "summary": "<strong>{{vessels}} vessels{{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryNoVessels": "<strong>{{sources}} {{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeRangeTooLong": "Reports are only supported for time ranges up to one year.",
+    "timeoutError": "This is taking more than expected, please wait",
     "title": "Analysis",
     "unknown": "Other"
   },
@@ -1012,6 +1013,10 @@
     "emptyStateEnvironment": "Upload custom datasets (polygons, tracks or points) by dragging and dropping your files on the map.",
     "emptyStateUser": "Upload custom datasets clicking on the plus icon.",
     "emptyStateVessels": "Search for vessels or add them from the map.",
+    "migrationDisclaimer": "Update your workspace to view the latest data and features.",
+    "migrationDisclaimerNote": "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>",
+    "migrationSkip": "Skip",
+    "migrationUpdate": "Update",
     "nameInput": "Workspace name",
     "nameRequired": "Workspace name is required",
     "new": "New workspace",
