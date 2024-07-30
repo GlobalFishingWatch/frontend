@@ -69,7 +69,7 @@ export abstract class UserBaseLayer<
   }: {
     info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
   }): UserLayerPickingInfo => {
-    const { subcategory, valueProperties } = this.props
+    const { subcategory, idProperty, valueProperties } = this.props
     const object = {
       ...(info.tile && {
         ...transformTileCoordsToWGS84(
@@ -78,6 +78,7 @@ export abstract class UserBaseLayer<
           this.context.viewport
         ),
       }),
+      id: getContextId(info.object as ContextFeature, idProperty),
       value: info.object?.properties.value,
       title: this.props.id,
       color: this.props.color,
