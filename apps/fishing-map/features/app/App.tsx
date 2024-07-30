@@ -15,8 +15,6 @@ import {
   selectIsAnyReportLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
-  selectUrlTimeRange,
-  selectUrlViewport,
   selectWorkspaceId,
   selectIsMapDrawing,
 } from 'routes/routes.selectors'
@@ -26,6 +24,7 @@ import Sidebar from 'features/sidebar/Sidebar'
 import Footer from 'features/footer/Footer'
 import {
   selectCurrentWorkspaceId,
+  selectIsWorkspaceMapReady,
   selectWorkspaceCustomStatus,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
@@ -48,7 +47,6 @@ import {
 } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import AppModals from 'features/modals/Modals'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
@@ -58,6 +56,7 @@ import { selectReportAreaBounds } from 'features/app/selectors/app.reports.selec
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from './app.hooks'
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
@@ -74,7 +73,7 @@ declare global {
 }
 
 const Main = () => {
-  const workspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationType = useSelector(selectLocationType)
   const reportLocation = useSelector(selectIsAnyReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -84,9 +83,10 @@ const Main = () => {
   const isRouteWithTimebar = locationType === VESSEL
   const isRouteWithMap = locationType !== SEARCH
   const isWorkspacesRouteWithTimebar =
-    workspaceLocation ||
+    isWorkspaceLocation ||
     locationType === WORKSPACE_VESSEL ||
     (reportLocation && !isTimeComparisonReport)
+  const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
   const showTimebar =
     isRouteWithTimebar ||
     (isWorkspacesRouteWithTimebar && workspaceStatus === AsyncReducerStatus.Finished)
@@ -96,15 +96,15 @@ const Main = () => {
       {isRouteWithMap && (
         <div
           className={cx(styles.mapContainer, {
-            [styles.withTimebar]: showTimebar,
+            [styles.withTimebar]: showTimebar && isWorkspaceMapReady,
             [styles.withSmallScreenSwitch]: isSmallScreen,
             [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
           })}
         >
-          <Map />
+          {isWorkspaceMapReady && <Map />}
         </div>
       )}
-      {showTimebar && <Timebar />}
+      {showTimebar && isWorkspaceMapReady && <Timebar />}
 
       <Footer />
     </Fragment>
@@ -145,15 +145,13 @@ function App() {
 
   const fitMapBounds = useMapFitBounds()
   const setMapCoordinates = useSetMapCoordinates()
-  const { setTimerange } = useTimerangeConnect()
 
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const userLogged = useSelector(selectIsUserLogged)
-  const urlViewport = useSelector(selectUrlViewport)
-  const urlTimeRange = useSelector(selectUrlTimeRange)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
+  const fitWorkspaceBounds = useFitWorkspaceBounds()
 
   // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
   // probably better to fetch in both components just checking if the workspaceId is already fetched
@@ -173,16 +171,7 @@ function App() {
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
-        const viewport = urlViewport || workspace?.viewport
-        if (viewport && !isReportLocation) {
-          setMapCoordinates(viewport)
-        }
-        if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
-          setTimerange({
-            start: workspace?.startAt,
-            end: workspace?.endAt,
-          })
-        }
+        fitWorkspaceBounds(workspace)
       }
       actionResolved = true
     }
