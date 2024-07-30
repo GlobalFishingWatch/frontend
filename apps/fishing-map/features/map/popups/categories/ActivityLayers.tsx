@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
 import popupStyles from '../Popup.module.css'
@@ -11,9 +11,15 @@ type ActivityTooltipRowProps = {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory; title?: string }
   loading?: boolean
   showFeaturesDetails: boolean
+  activityType?: DatasetSubCategory
 }
 
-function ActivityTooltipRow({ feature, showFeaturesDetails, loading }: ActivityTooltipRowProps) {
+function ActivityTooltipRow({
+  feature,
+  showFeaturesDetails,
+  loading,
+  activityType,
+}: ActivityTooltipRowProps) {
   const { t } = useTranslation()
   // TODO get the value based on the sublayer
   const value = feature?.value as number
@@ -42,12 +48,7 @@ function ActivityTooltipRow({ feature, showFeaturesDetails, loading }: ActivityT
             </div>
           )}
           {!loading && showFeaturesDetails && (
-            <VesselsTable
-              feature={feature}
-              activityType={
-                feature.category === DataviewCategory.Detections ? 'fishing' : 'presence'
-              }
-            />
+            <VesselsTable feature={feature} activityType={activityType} />
           )}
         </div>
       </div>
