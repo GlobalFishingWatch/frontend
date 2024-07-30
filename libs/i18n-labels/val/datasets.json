@@ -53,6 +53,7 @@
     "name": "crwdns64029:0crwdne64029:0",
     "description": "crwdns64031:0crwdne64031:0",
     "schema": {
+      "speed": "crwdns83514:0crwdne83514:0",
       "bearing": "crwdns83308:0crwdne83308:0"
     }
   },
@@ -74,6 +75,7 @@
     "name": "crwdns64121:0crwdne64121:0",
     "description": "crwdns64123:0crwdne64123:0",
     "schema": {
+      "speed": "crwdns83516:0crwdne83516:0",
       "bearing": "crwdns83310:0crwdne83310:0"
     }
   },
@@ -286,6 +288,7 @@
           "costarica_vms_sardineros": "crwdns64555:0crwdne64555:0"
         }
       },
+      "speed": "crwdns83518:0crwdne83518:0",
       "bearing": "crwdns83314:0crwdne83314:0"
     }
   },
@@ -305,6 +308,7 @@
     "name": "crwdns64591:0crwdne64591:0",
     "description": "crwdns64593:0crwdne64593:0",
     "schema": {
+      "speed": "crwdns83520:0crwdne83520:0",
       "bearing": "crwdns83316:0crwdne83316:0",
       "shiptype": {
         "keyword": "crwdns64601:0crwdne64601:0",
@@ -328,7 +332,10 @@
   },
   "private-global-presence-tracks": {
     "name": "crwdns83148:0crwdne83148:0",
-    "description": "crwdns83150:0crwdne83150:0"
+    "description": "crwdns83150:0crwdne83150:0",
+    "schema": {
+      "speed": "crwdns83522:0crwdne83522:0"
+    }
   },
   "private-indonesia-aruna-fishing-effort": {
     "name": "crwdns64657:0crwdne64657:0",
@@ -338,6 +345,7 @@
     "name": "crwdns64683:0crwdne64683:0",
     "description": "crwdns64685:0crwdne64685:0",
     "schema": {
+      "speed": "crwdns83524:0crwdne83524:0",
       "bearing": "crwdns83318:0crwdne83318:0"
     }
   },
@@ -368,6 +376,7 @@
     "name": "crwdns64817:0crwdne64817:0",
     "description": "crwdns64819:0crwdne64819:0",
     "schema": {
+      "speed": "crwdns83526:0crwdne83526:0",
       "bearing": "crwdns83320:0crwdne83320:0"
     }
   },
@@ -435,6 +444,7 @@
     "name": "crwdns65011:0crwdne65011:0",
     "description": "crwdns65013:0crwdne65013:0",
     "schema": {
+      "speed": "crwdns83528:0crwdne83528:0",
       "bearing": "crwdns83322:0crwdne83322:0"
     }
   },
@@ -453,6 +463,7 @@
     "name": "crwdns65059:0crwdne65059:0",
     "description": "crwdns65061:0crwdne65061:0",
     "schema": {
+      "speed": "crwdns83530:0crwdne83530:0",
       "bearing": "crwdns83324:0crwdne83324:0"
     }
   },
@@ -493,6 +504,7 @@
     "name": "crwdns65195:0crwdne65195:0",
     "description": "crwdns65197:0crwdne65197:0",
     "schema": {
+      "speed": "crwdns83532:0crwdne83532:0",
       "bearing": "crwdns83326:0crwdne83326:0",
       "shiptype": {
         "keyword": "crwdns65201:0crwdne65201:0",
@@ -597,6 +609,7 @@
     "name": "crwdns65403:0crwdne65403:0",
     "description": "crwdns65405:0crwdne65405:0",
     "schema": {
+      "speed": "crwdns83534:0crwdne83534:0",
       "bearing": "crwdns83328:0crwdne83328:0"
     }
   },
@@ -615,6 +628,7 @@
     "name": "crwdns65447:0crwdne65447:0",
     "description": "crwdns65449:0crwdne65449:0",
     "schema": {
+      "speed": "crwdns83536:0crwdne83536:0",
       "bearing": "crwdns83330:0crwdne83330:0"
     }
   },
@@ -673,6 +687,7 @@
     "name": "crwdns69830:0crwdne69830:0",
     "description": "crwdns69832:0crwdne69832:0",
     "schema": {
+      "speed": "crwdns83538:0crwdne83538:0",
       "bearing": "crwdns83332:0crwdne83332:0",
       "matched": {
         "keyword": "crwdns69846:0crwdne69846:0",
@@ -718,6 +733,7 @@
     "name": "crwdns65553:0crwdne65553:0",
     "description": "crwdns65555:0crwdne65555:0",
     "schema": {
+      "speed": "crwdns83540:0crwdne83540:0",
       "bearing": "crwdns83312:0crwdne83312:0"
     }
   },
@@ -961,6 +977,7 @@
     "name": "crwdns66047:0crwdne66047:0",
     "description": "crwdns66049:0crwdne66049:0",
     "schema": {
+      "speed": "crwdns83542:0crwdne83542:0",
       "bearing": "crwdns83334:0crwdne83334:0",
       "shiptype": {
         "keyword": "crwdns66057:0crwdne66057:0",
@@ -1085,7 +1102,10 @@
   },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
-    "description": "crwdns83478:0crwdne83478:0"
+    "description": "crwdns83478:0crwdne83478:0",
+    "schema": {
+      "speed": "crwdns83544:0crwdne83544:0"
+    }
   },
   "public-global-all-vessels": {
     "name": "crwdns66115:0crwdne66115:0",
@@ -1129,6 +1149,7 @@
     "name": "crwdns66257:0crwdne66257:0",
     "description": "crwdns66259:0crwdne66259:0",
     "schema": {
+      "speed": "crwdns83546:0crwdne83546:0",
       "bearing": "crwdns83436:0crwdne83436:0"
     }
   },
@@ -1172,12 +1193,27 @@
   },
   "public-global-presence-tracks": {
     "name": "crwdns83152:0crwdne83152:0",
-    "description": "crwdns83154:0crwdne83154:0"
+    "description": "crwdns83154:0crwdne83154:0",
+    "schema": {
+      "speed": "crwdns83548:0crwdne83548:0"
+    }
   },
   "public-global-presence": {
     "name": "crwdns66453:0crwdne66453:0",
     "description": "crwdns66455:0crwdne66455:0",
     "schema": {
+      "speed": {
+        "keyword": "crwdns83550:0crwdne83550:0",
+        "enum": {
+          "<2": "crwdns83552:0crwdne83552:0",
+          "2-4": "crwdns83554:0crwdne83554:0",
+          "4-6": "crwdns83556:0crwdne83556:0",
+          "6-10": "crwdns83558:0crwdne83558:0",
+          "10-15": "crwdns83560:0crwdne83560:0",
+          "15-25": "crwdns83562:0crwdne83562:0",
+          ">25": "crwdns83564:0crwdne83564:0"
+        }
+      },
       "bearing": "crwdns83438:0crwdne83438:0"
     }
   },
@@ -1193,6 +1229,7 @@
     "name": "crwdns69930:0crwdne69930:0",
     "description": "crwdns83470:0crwdne83470:0",
     "schema": {
+      "speed": "crwdns83566:0crwdne83566:0",
       "bearing": "crwdns83336:0crwdne83336:0",
       "matched": {
         "keyword": "crwdns66503:0crwdne66503:0",
@@ -1263,7 +1300,10 @@
   },
   "public-global-tracks": {
     "name": "crwdns83442:0crwdne83442:0",
-    "description": "crwdns83444:0crwdne83444:0"
+    "description": "crwdns83444:0crwdne83444:0",
+    "schema": {
+      "speed": "crwdns83568:0crwdne83568:0"
+    }
   },
   "public-global-vessel-identity": {
     "name": "crwdns70132:0crwdne70132:0",
@@ -1277,6 +1317,7 @@
     "name": "crwdns83474:0crwdne83474:0",
     "description": "crwdns66565:0crwdne66565:0",
     "schema": {
+      "speed": "crwdns83570:0crwdne83570:0",
       "bearing": "crwdns83448:0crwdne83448:0",
       "matched": {
         "keyword": "crwdns83450:0crwdne83450:0",
@@ -1374,6 +1415,7 @@
     "name": "crwdns66741:0crwdne66741:0",
     "description": "crwdns66743:0crwdne66743:0",
     "schema": {
+      "speed": "crwdns83572:0crwdne83572:0",
       "bearing": "crwdns83338:0crwdne83338:0"
     }
   },
@@ -1416,6 +1458,7 @@
     "name": "crwdns66773:0crwdne66773:0",
     "description": "crwdns66775:0crwdne66775:0",
     "schema": {
+      "speed": "crwdns83574:0crwdne83574:0",
       "bearing": "crwdns83340:0crwdne83340:0",
       "shiptype": {
         "keyword": "crwdns66785:0crwdne66785:0",
@@ -1436,6 +1479,7 @@
     "name": "crwdns66819:0crwdne66819:0",
     "description": "crwdns66821:0crwdne66821:0",
     "schema": {
+      "speed": "crwdns83576:0crwdne83576:0",
       "bearing": "crwdns83342:0crwdne83342:0",
       "shiptype": {
         "keyword": "crwdns66829:0crwdne66829:0",
@@ -1478,6 +1522,7 @@
     "name": "crwdns66873:0crwdne66873:0",
     "description": "crwdns66875:0crwdne66875:0",
     "schema": {
+      "speed": "crwdns83578:0crwdne83578:0",
       "bearing": "crwdns83344:0crwdne83344:0"
     }
   },
@@ -1499,6 +1544,7 @@
     "name": "crwdns67011:0crwdne67011:0",
     "description": "crwdns67013:0crwdne67013:0",
     "schema": {
+      "speed": "crwdns83580:0crwdne83580:0",
       "bearing": "crwdns83346:0crwdne83346:0"
     }
   },
@@ -1592,6 +1638,7 @@
     "name": "crwdns67261:0crwdne67261:0",
     "description": "crwdns67263:0crwdne67263:0",
     "schema": {
+      "speed": "crwdns83582:0crwdne83582:0",
       "bearing": "crwdns83348:0crwdne83348:0"
     }
   },
@@ -1606,6 +1653,7 @@
     "name": "crwdns67305:0crwdne67305:0",
     "description": "crwdns67307:0crwdne67307:0",
     "schema": {
+      "speed": "crwdns83584:0crwdne83584:0",
       "bearing": "crwdns83350:0crwdne83350:0"
     }
   },
