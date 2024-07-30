@@ -125,6 +125,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     return this.state?.tentativeData || this.state?.data
   }
 
+  getMode = () => {
+    return this.state?.mode
+  }
+
   _setState(state: Partial<DrawLayerState>) {
     this.setState(state)
     if (this.props.onStateChange) {
@@ -154,19 +158,21 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   }
 
   getSelectedPointCoordinates = () => {
+    let currentPointCoordinates: Position | undefined
     const data = this.getData()
     const currentFeatureIndex = this?.getSelectedFeatureIndexes()?.[0]
     const currentPointIndexes = this?.getSelectedPositionIndexes()
-    let currentPointCoordinates: Position | undefined
-    if (
-      data?.features?.length &&
-      currentFeatureIndex !== undefined &&
-      currentPointIndexes !== undefined
-    ) {
-      if (data?.features[currentFeatureIndex]?.geometry.type === 'Point') {
-        currentPointCoordinates = (data?.features as Feature<Point>[])[currentFeatureIndex]
-          ?.geometry.coordinates
-      } else {
+    if (data?.features?.length && currentFeatureIndex !== undefined) {
+      const isFeatureCollection = data.type === 'FeatureCollection'
+      if (
+        isFeatureCollection
+          ? data?.features[currentFeatureIndex]?.geometry.type === 'Point'
+          : (data as any)?.[currentFeatureIndex]?.geometry.type === 'Point'
+      ) {
+        currentPointCoordinates = isFeatureCollection
+          ? (data?.features as Feature<Point>[])[currentFeatureIndex]?.geometry.coordinates
+          : (data as any)?.[currentFeatureIndex]?.geometry.coordinates
+      } else if (currentPointIndexes !== undefined) {
         const currentPointIndex = currentPointIndexes?.[currentPointIndexes.length - 1] || 0
         currentPointCoordinates = (data?.features as Feature<Polygon>[])[currentFeatureIndex]
           ?.geometry?.coordinates[0][currentPointIndex]
@@ -190,7 +196,9 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
 
   setCurrentPointCoordinates = (pointPosition: [number, number]) => {
     const data = this.getDataWithReplacedPosition(pointPosition)
-    this._setState({ data })
+    if (data) {
+      this._setState({ data })
+    }
   }
 
   setTentativeCurrentPointCoordinates = (pointPosition: [number, number]) => {
