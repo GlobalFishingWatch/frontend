@@ -131,7 +131,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
               defaultValue: 'hours',
               count: Math.floor(reportHours),
             })}</strong> ${
-              timeseriesImprecision ? `± ${Math.round(timeseriesImprecision)}% ` : ''
+              Math.round(timeseriesImprecision) ? `± ${Math.round(timeseriesImprecision)}% ` : ''
             }${t('common.of', 'of')}`
 
       return t('analysis.summaryNoVessels', {
