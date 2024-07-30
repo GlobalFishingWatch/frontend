@@ -15,7 +15,6 @@
 
 a.linkButton,
 .linkButton {
-  margin-top: var(--space-M);
   font: var(--font-S);
   display: inline-flex;
   justify-content: center;
@@ -97,4 +96,5 @@ a.linkButton,
   margin-top: auto;
   display: flex;
   gap: var(--space-M);
+  align-items: center;
 }
