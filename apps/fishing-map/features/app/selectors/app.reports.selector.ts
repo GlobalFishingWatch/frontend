@@ -113,8 +113,7 @@ export const selectReportBufferUnit = createSelector(
   }
 )
 
-const selectReportBufferOperationSelector =
-  selectWorkspaceStateProperty('reportBufferOperation')
+const selectReportBufferOperationSelector = selectWorkspaceStateProperty('reportBufferOperation')
 export const selectReportBufferOperation = createSelector(
   [selectReportBufferOperationSelector, selectUrlBufferOperationQuery],
   (workspaceBufferOperation, urlBufferOperation): BufferOperation => {

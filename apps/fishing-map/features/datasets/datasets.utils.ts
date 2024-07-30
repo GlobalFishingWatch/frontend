@@ -709,7 +709,6 @@ export const getCommonSchemaFieldsInDataview = (
       schemaFields = [[schemaConfig?.min?.toString(), schemaConfig?.max?.toString()]]
     }
   }
-
   const cleanSchemaFields =
     compatibilityOperation === 'every' ? intersection(...schemaFields) : uniq(schemaFields.flat())
   const datasetId = removeDatasetVersion(activeDatasets!?.[0]?.id)
@@ -725,7 +724,11 @@ export const getCommonSchemaFieldsInDataview = (
             label = getVesselGearType({ geartypes: field as string })
           } else if (schema === 'vessel_type') {
             label = getVesselShipType({ shiptypes: field as string })
-          } else if (dataview.category !== DataviewCategory.Context && schema !== 'vessel_id') {
+          } else if (
+            dataview.category !== DataviewCategory.Context &&
+            schema !== 'vessel_id' &&
+            schema !== 'speed'
+          ) {
             label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
           }
         }

@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { groupBy, uniqBy } from 'es-toolkit'
 import { useSelector } from 'react-redux'
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
@@ -129,6 +129,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                         : feature.title,
                     }}
                     showFeaturesDetails={type === 'click'}
+                    activityType={dataview?.datasets?.[0]?.subcategory as DatasetSubCategory}
                   />
                 )
               })

@@ -206,6 +206,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
               onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}
               className={styles.advancedName}
+              fitBounds={isSearchLocation}
             >
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS && label}>
                 <span>

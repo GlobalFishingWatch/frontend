@@ -148,7 +148,11 @@ export const getEventDescription = ({
   }
 }
 
-export const getEventDescriptionComponent = (event: ApiEvent, className = '') => {
+export const getEventDescriptionComponent = (
+  event: ApiEvent,
+  className = '',
+  onVesselPinClick?: () => void
+) => {
   const { start, end, type, encounter } = event
   const { color, colorLabels } = getEventColors({ type })
   let DescriptionComponent
@@ -171,6 +175,7 @@ export const getEventDescriptionComponent = (event: ApiEvent, className = '') =>
               <VesselPin
                 vesselToResolve={{ id: encounterVesselId, datasetId: DEFAULT_VESSEL_IDENTITY_ID }}
                 size="tiny"
+                onClick={onVesselPinClick}
               />
             ),
           }}

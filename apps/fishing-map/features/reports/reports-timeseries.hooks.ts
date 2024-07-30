@@ -10,9 +10,14 @@ import {
   FourwingsLayer,
   FourwingsLayerProps,
   getIntervalFrames,
+  HEATMAP_STATIC_PROPERTY_ID,
   sliceCellValues,
 } from '@globalfishingwatch/deck-layers'
-import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import {
+  FourwingsFeature,
+  FourwingsInterval,
+  FourwingsStaticFeature,
+} from '@globalfishingwatch/deck-loaders'
 import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
@@ -140,13 +145,20 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const timerangeHash = timerange ? JSON.stringify(timerange) : ''
   const reportGraphMode = getReportGraphMode(reportGraph)
 
-  // We need to re calculate the timeseries when any of this params changes
+  // We need to re calculate the timeseries and the filteredFeatures when any of this params changes
   useEffect(() => {
     setTimeseries([])
     setFeaturesFiltered([])
     featuresFilteredDirtyRef.current = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportCategory, timeComparisonHash, instancesChunkHash, reportGraphMode, area?.id])
+  }, [
+    area?.id,
+    reportCategory,
+    timeComparisonHash,
+    instancesChunkHash,
+    reportGraphMode,
+    reportBufferHash,
+  ])
 
   const updateFeaturesFiltered = useCallback(
     async (instances: FourwingsLayer[], polygon: AreaGeometry, mode?: 'point' | 'cell') => {
@@ -174,7 +186,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       featuresFilteredDirtyRef.current = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.geometry, reportCategory, layersLoaded])
+  }, [area?.geometry, reportCategory, layersLoaded, reportBufferHash])
 
   const computeTimeseries = useCallback(
     (
@@ -184,6 +196,15 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     ) => {
       const newTimeseries: ReportGraphProps[] = []
       instances.forEach((instance, index) => {
+        if (instance.props.static) {
+          // need to add empty timeseries because they are then used by their index
+          newTimeseries.push({
+            timeseries: [],
+            interval: 'MONTH',
+            sublayers: [],
+          })
+          return
+        }
         const features = filteredFeatures[index]
         if (features && (!timeseries?.[index] || timeseries?.[index].mode === 'loading')) {
           const props = instance.props as FourwingsLayerProps
@@ -230,6 +251,19 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         const features = filteredFeatures[index]
         if (features?.[0]?.contained?.length > 0) {
           const dataview = dataviews.find((dv) => dv.id === instance.id)
+          if (instance.props.static) {
+            const allValues = (features[0].contained as FourwingsStaticFeature[]).flatMap((f) => {
+              return f.properties?.[HEATMAP_STATIC_PROPERTY_ID] || []
+            })
+            if (dataview?.config && allValues.length > 0) {
+              timeseriesStats[dataview.id] = {
+                min: min(allValues),
+                max: max(allValues),
+                mean: mean(allValues),
+              }
+            }
+            return
+          }
           const chunk = instance.getChunk()
           const { startFrame, endFrame } = getIntervalFrames({
             startTime: DateTime.fromISO(start).toUTC().toMillis(),
@@ -237,7 +271,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
             availableIntervals: [chunk.interval],
             bufferedStart: chunk.bufferedStart,
           })
-          const allValues = features[0].contained.flatMap((f) => {
+          const allValues = (features[0].contained as FourwingsFeature[]).flatMap((f) => {
             const values = sliceCellValues({
               values: f.properties.values[0],
               startFrame,
@@ -270,7 +304,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     featuresFiltered,
     areaInViewport,
     reportCategory,
-    reportBufferHash,
     reportGraphMode,
     timeComparisonHash,
     instancesChunkHash,
@@ -292,7 +325,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     featuresFiltered,
     areaInViewport,
     reportCategory,
-    reportBufferHash,
     reportGraphMode,
     timeComparisonHash,
     instancesChunkHash,
@@ -305,8 +337,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 // Run only once in Report.tsx parent component
 export const useComputeReportTimeSeries = () => {
   const reportLayers = useReportInstances()
-  const heatmapAnimatedLayers = reportLayers?.filter((layer) => !layer.instance.props.static)
-  useReportTimeseries(heatmapAnimatedLayers)
+  useReportTimeseries(reportLayers)
 }
 
 const memoizedFilterTimeseriesByTimerange = memoizeOne(filterTimeseriesByTimerange)

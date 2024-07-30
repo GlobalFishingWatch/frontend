@@ -236,6 +236,11 @@ const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
   DataviewType.Rulers,
   DataviewType.Annotation,
 ]
+const HEATMAP_ANIMATED_CATEGORIES_ORDER: DataviewCategory[] = [
+  DataviewCategory.Environment,
+  DataviewCategory.Detections,
+  DataviewCategory.Activity,
+]
 
 export function getDataviewsSorted(
   dataviews: (UrlDataviewInstance | DataviewInstance)[],
@@ -246,6 +251,12 @@ export function getDataviewsSorted(
     const bType = b.config?.type as DataviewType
     const aPos = order.indexOf(aType)
     const bPos = order.indexOf(bType)
+    if (aType === DataviewType.HeatmapAnimated && bType === DataviewType.HeatmapAnimated) {
+      return (
+        HEATMAP_ANIMATED_CATEGORIES_ORDER.indexOf(a.category as DataviewCategory) -
+        HEATMAP_ANIMATED_CATEGORIES_ORDER.indexOf(b.category as DataviewCategory)
+      )
+    }
     return aPos - bPos
   }) as DataviewInstance[]
 }
