@@ -54,8 +54,11 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                 </h3>
               )}
               {featureByType.map((feature, index) => {
-                if (!feature.value) return null
-                let label = (feature.value as string) ?? feature.title
+                let label =
+                  (feature.value as string) ||
+                  getDatasetTitleByDataview(dataview as UrlDataviewInstance) ||
+                  feature.title
+                if (!label) return null
                 let linkHref = (feature as ContextPickingObject).link
                 return (
                   <ContextLayersRow

@@ -9,6 +9,8 @@ import { getEventDescriptionComponent } from 'utils/events'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { formatInfoField } from 'utils/info'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
 import { MAX_TOOLTIP_LIST } from '../../map.slice'
 import styles from '../Popup.module.css'
 
@@ -22,6 +24,8 @@ function VesselEventsTooltipSection({
   showFeaturesDetails,
 }: VesselEventsTooltipRowProps) {
   const { t } = useTranslation()
+  const { dispatchQueryParams } = useLocationConnect()
+  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const overflows = features?.length > MAX_TOOLTIP_LIST
   const featuresByType = useMemo(() => {
     const maxFeatures = overflows ? features.slice(0, MAX_TOOLTIP_LIST) : features
@@ -45,6 +49,12 @@ function VesselEventsTooltipSection({
     })
   }, [resources, featuresByType])
 
+  const onVesselPinClick = () => {
+    if (isAnyVesselLocation) {
+      dispatchQueryParams({ viewOnlyVessel: false })
+    }
+  }
+
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (
@@ -61,7 +71,11 @@ function VesselEventsTooltipSection({
               </h3>
             )}
             {featureByType.map((feature, index) => {
-              const { description, DescriptionComponent } = getEventDescriptionComponent(feature)
+              const { description, DescriptionComponent } = getEventDescriptionComponent(
+                feature,
+                '',
+                onVesselPinClick
+              )
               return (
                 <div key={index} className={styles.row}>
                   {showFeaturesDetails ? DescriptionComponent : description}

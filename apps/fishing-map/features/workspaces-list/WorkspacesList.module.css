@@ -15,7 +15,6 @@
 
 a.linkButton,
 .linkButton {
-  margin-top: var(--space-M);
   font: var(--font-S);
   display: inline-flex;
   justify-content: center;
@@ -42,6 +41,11 @@ a.linkButton,
   margin-top: var(--space-M);
 }
 
+.imageLink {
+  width: 18rem;
+  height: 15rem;
+}
+
 .disabled {
   opacity: 0.5;
   pointer-events: none;
@@ -53,7 +57,6 @@ a.linkButton,
   object-fit: cover;
   border-radius: var(--border-radius);
   background-color: var(--color-terthiary-blue);
-  flex: none;
 }
 
 .info {
@@ -70,8 +73,8 @@ a.linkButton,
 
 .description {
   display: flex;
-  /* stylelint-disable-next-line */
   display: -webkit-box;
+  line-clamp: 4;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -93,4 +96,5 @@ a.linkButton,
   margin-top: auto;
   display: flex;
   gap: var(--space-M);
+  align-items: center;
 }

@@ -114,7 +114,12 @@ function WorkspacesList() {
               >
                 {active ? (
                   isExternalLink ? (
-                    <a target="_blank" href={linkTo as string} rel="noreferrer">
+                    <a
+                      className={styles.imageLink}
+                      target="_blank"
+                      href={linkTo as string}
+                      rel="noreferrer"
+                    >
                       <img className={styles.image} alt={i18nName} src={img} />
                     </a>
                   ) : (
@@ -122,6 +127,7 @@ function WorkspacesList() {
                       to={linkTo}
                       target="_self"
                       onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                      className={styles.imageLink}
                     >
                       <img className={styles.image} alt={i18nName} src={img} />
                     </Link>
