@@ -182,7 +182,7 @@ export const VesselActivitySummary = () => {
                       defaultValue: eventType,
                       count: events?.length || 0,
                     })}{' '}
-                    {active && eventType === EventTypes.Fishing && (
+                    {active && eventType === EventTypes.Fishing && fishingHours !== 0 && (
                       <span>
                         (
                         <I18nNumber number={fishingHours} /> {t('common.hour_other', 'hours')})
