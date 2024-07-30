@@ -119,7 +119,6 @@ const useVesselFitTranmissionsBounds = () => {
 
   useEffect(() => {
     if (isVesselLocation && needsTimerangeUpdate) {
-      debugger
       // This is needed to update the url instantly instead of waiting for the debounced
       // update in setTimerange fn as the resouce needs to be generated asap
       dispatchQueryParams({ start: transmissionDateFrom, end: transmissionDateTo })
