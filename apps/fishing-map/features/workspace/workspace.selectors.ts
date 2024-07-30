@@ -1,9 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { RootState } from 'reducers'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import { EventTypes, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE, PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
-import { selectQueryParam } from 'routes/routes.selectors'
+import { selectIsWorkspaceLocation, selectQueryParam } from 'routes/routes.selectors'
 import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE,
   DEFAULT_WORKSPACE_CATEGORY,
@@ -11,6 +11,8 @@ import {
 } from 'data/workspaces'
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import { UserSettings } from 'features/user/user.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { VALID_PASSWORD } from 'data/config'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
 export const selectWorkspacePassword = (state: RootState) => state.workspace?.password
@@ -39,6 +41,27 @@ export const selectIsWorkspaceOwner = createSelector(
   [selectWorkspace, selectUserData],
   (workspace, userData) => {
     return workspace?.ownerId === userData?.id
+  }
+)
+
+export const selectIsWorkspacePasswordRequired = createSelector(
+  [selectWorkspace, selectWorkspacePassword],
+  (workspace, workspacePassword) => {
+    return (
+      workspace?.viewAccess === WORKSPACE_PASSWORD_ACCESS &&
+      workspacePassword !== VALID_PASSWORD &&
+      // When password required dataviewInstances are not sent
+      !workspace?.dataviewInstances.length
+    )
+  }
+)
+
+export const selectIsWorkspaceMapReady = createSelector(
+  [selectIsWorkspaceLocation, selectWorkspaceStatus, selectIsWorkspacePasswordRequired],
+  (isWorkspaceLocation, workspaceStatus, isWorkspacePasswordRequired) => {
+    return isWorkspaceLocation
+      ? workspaceStatus === AsyncReducerStatus.Finished && !isWorkspacePasswordRequired
+      : true
   }
 )
 

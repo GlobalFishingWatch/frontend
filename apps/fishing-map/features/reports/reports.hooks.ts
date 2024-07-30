@@ -31,12 +31,10 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
 import {
   fetchReportVesselsThunk,
-  getDateRangeHash,
   getReportQuery,
   selectReportVesselsData,
   selectReportVesselsDateRangeHash,

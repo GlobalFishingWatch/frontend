@@ -58,7 +58,6 @@ import {
 import { parseUpsertWorkspace } from './workspace.utils'
 
 type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
-export const VALID_PASSWORD = 'VALID_WORKSPACE_PASSWORD'
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus

@@ -23,6 +23,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useFitAreaInViewport } from 'features/reports/reports.hooks'
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
 import {
   changeSettings,
   setHighlightedEvents,
@@ -74,6 +75,7 @@ export const useSetTimerange = () => {
   const setAtomTimerange = useSetAtom(timerangeState)
   const dispatch = useAppDispatch()
   const hintsDismissed = useSelector(selectHintsDismissed)
+  const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateUrlTimerangeDebounced = useCallback(
@@ -92,9 +94,17 @@ export const useSetTimerange = () => {
         }
         return timerange
       })
-      updateUrlTimerangeDebounced(timerange)
+      if (isWorkspaceMapReady) {
+        updateUrlTimerangeDebounced(timerange)
+      }
     },
-    [dispatch, hintsDismissed?.changingTheTimeRange, setAtomTimerange, updateUrlTimerangeDebounced]
+    [
+      dispatch,
+      hintsDismissed?.changingTheTimeRange,
+      isWorkspaceMapReady,
+      setAtomTimerange,
+      updateUrlTimerangeDebounced,
+    ]
   )
 
   return setTimerange

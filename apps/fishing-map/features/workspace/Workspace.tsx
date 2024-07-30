@@ -5,13 +5,12 @@ import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 import { Spinner, Button, Modal, InputText } from '@globalfishingwatch/ui-components'
-import { WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import {
   selectWorkspaceStatus,
   selectWorkspace,
-  selectWorkspacePassword,
+  selectIsWorkspacePasswordRequired,
 } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
@@ -30,7 +29,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import WorkspaceError, { WorkspacePassword } from 'features/workspace/WorkspaceError'
 import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
-import { setWorkspaceProperty, VALID_PASSWORD } from 'features/workspace/workspace.slice'
+import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import UserSection from 'features/workspace/user/UserSection'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import ActivitySection from './activity/ActivitySection'
@@ -47,7 +46,7 @@ function Workspace() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
-  const workspacePassword = useSelector(selectWorkspacePassword)
+  const isWorkspacePasswordRequired = useSelector(selectIsWorkspacePasswordRequired)
   const workspace = useSelector(selectWorkspace)
   const dataviews = useSelector(selectDataviewInstancesMergedOrdered)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -127,12 +126,7 @@ function Workspace() {
     )
   }
 
-  if (
-    workspace?.viewAccess === WORKSPACE_PASSWORD_ACCESS &&
-    workspacePassword !== VALID_PASSWORD &&
-    // When password required dataviewInstances are not sent
-    !workspace?.dataviewInstances.length
-  ) {
+  if (isWorkspacePasswordRequired) {
     return <WorkspacePassword />
   }
 

@@ -1,16 +1,50 @@
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { ColorCyclingType } from '@globalfishingwatch/api-types'
+import { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
 import {
   FillColorBarOptions,
   LineColorBarOptions,
   ColorBarOption,
 } from '@globalfishingwatch/ui-components'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import {
+  selectIsAnyReportLocation,
+  selectUrlDataviewInstances,
+  selectUrlTimeRange,
+  selectUrlViewport,
+} from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
+
+export const useFitWorkspaceBounds = () => {
+  const urlViewport = useSelector(selectUrlViewport)
+  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const urlTimeRange = useSelector(selectUrlTimeRange)
+
+  const { setTimerange } = useTimerangeConnect()
+  const setMapCoordinates = useSetMapCoordinates()
+
+  const fitWorkspaceBounds = useCallback(
+    async (workspace: Workspace) => {
+      const viewport = urlViewport || workspace?.viewport
+      if (viewport && !isReportLocation) {
+        setMapCoordinates(viewport)
+      }
+      if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
+        setTimerange({
+          start: workspace?.startAt,
+          end: workspace?.endAt,
+        })
+      }
+    },
+    [isReportLocation, setMapCoordinates, setTimerange, urlTimeRange, urlViewport]
+  )
+
+  return fitWorkspaceBounds
+}
 
 const createDataviewsInstances = (
   newDataviewInstances: Partial<UrlDataviewInstance>[],

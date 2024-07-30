@@ -18,9 +18,11 @@ import { SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-groups.slice'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { VALID_PASSWORD } from 'data/config'
 import styles from './Workspace.module.css'
-import { fetchWorkspaceThunk, setWorkspacePassword, VALID_PASSWORD } from './workspace.slice'
+import { fetchWorkspaceThunk, setWorkspacePassword } from './workspace.slice'
 import { MIN_WORKSPACE_PASSWORD_LENGTH, isPrivateWorkspaceNotAllowed } from './workspace.utils'
+import { useFitWorkspaceBounds } from './workspace.hook'
 
 export function ErrorPlaceHolder({
   title,
@@ -142,6 +144,7 @@ export function WorkspacePassword(): React.ReactElement {
   const dispatch = useAppDispatch()
   const workspaceId = useSelector(selectWorkspaceId)
   const workspacePassword = useSelector(selectWorkspacePassword)
+  const fitWorkspaceBounds = useFitWorkspaceBounds()
 
   const handlePasswordChange = (event: any) => {
     setPassword(event.target.value)
@@ -155,6 +158,7 @@ export function WorkspacePassword(): React.ReactElement {
       const action = await dispatch(fetchWorkspaceThunk({ workspaceId, password }))
       if (fetchWorkspaceThunk.fulfilled.match(action)) {
         const workspace = action.payload as Workspace
+        fitWorkspaceBounds(workspace)
         // When password is valid dataviewInstances are sent
         if (workspace?.dataviewInstances?.length) {
           dispatch(setWorkspacePassword(VALID_PASSWORD))
