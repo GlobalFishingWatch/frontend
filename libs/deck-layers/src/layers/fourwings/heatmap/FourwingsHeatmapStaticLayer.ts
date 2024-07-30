@@ -9,7 +9,7 @@ import {
   PickingInfo,
 } from '@deck.gl/core'
 import { scaleLinear } from 'd3-scale'
-import { MVTLayer, TileLayer } from '@deck.gl/geo-layers'
+import { MVTLayer } from '@deck.gl/geo-layers'
 import { debounce } from 'es-toolkit'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { PathLayer } from '@deck.gl/layers'
@@ -249,8 +249,19 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   getLayerInstance() {
-    const layer = this.getSubLayers()[0] as TileLayer
+    const layer = this.getSubLayers()[0] as MVTLayer
     return layer
+  }
+
+  _getLayerDataInWGS84(layer: any) {
+    // needed to get access to the geometry coordinates
+    return layer.props.tile.dataInWGS84.map((f: FourwingsStaticFeature) => ({
+      ...f,
+      geometry: {
+        ...f.geometry,
+        coordinates: f.geometry.coordinates,
+      },
+    }))
   }
 
   getData() {
@@ -260,9 +271,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       const roundedZoom = Math.round(this.context.viewport.zoom)
       return layer.getSubLayers().flatMap((l: any) => {
         if (l.props.tile.zoom === l.props.maxZoom) {
-          return l.props.data
+          return this._getLayerDataInWGS84(l)
         }
-        return l.props.tile.zoom === roundedZoom + offset ? l.props.data : []
+        return l.props.tile.zoom === roundedZoom + offset ? this._getLayerDataInWGS84(l) : []
       }) as FourwingsStaticFeature[]
     }
     return [] as FourwingsStaticFeature[]

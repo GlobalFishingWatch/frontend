@@ -1,10 +1,10 @@
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import type { Polygon, MultiPolygon } from 'geojson'
-import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
 
 export type FilteredPolygons = {
-  contained: FourwingsFeature[]
-  overlapping: FourwingsFeature[]
+  contained: (FourwingsFeature | FourwingsStaticFeature)[]
+  overlapping: (FourwingsFeature | FourwingsStaticFeature)[]
 }
 
 function isCellInPolygon(cellGeometry: Polygon, polygon: Polygon) {

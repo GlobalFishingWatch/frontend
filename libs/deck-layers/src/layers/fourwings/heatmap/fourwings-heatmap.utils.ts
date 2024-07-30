@@ -1,5 +1,4 @@
 import { stringify } from 'qs'
-import { DateTime } from 'luxon'
 import type { Feature } from 'geojson'
 import { Color } from '@deck.gl/core'
 import { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
