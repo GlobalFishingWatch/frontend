@@ -5,6 +5,7 @@ import { uniqBy } from 'es-toolkit'
 import { Polygon, MultiPolygon, FeatureCollection } from 'geojson'
 import union from '@turf/union'
 import { featureCollection } from '@turf/helpers'
+import { circle } from '@turf/circle'
 import { TileContextAreaFeature, Dataset, EndpointId } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
@@ -143,23 +144,33 @@ export const fetchAreaDetailThunk = createAsyncThunk(
           })
         )
       )
-      const mergedFeature = union(featureCollection(areas.flatMap((area) => area || [])))
-      if (mergedFeature) {
-        const bounds = mergedFeature.bbox
-          ? wrapBBoxLongitudes(mergedFeature.bbox as Bbox)
-          : wrapGeometryBbox(mergedFeature.geometry)
-        const area = {
-          id: areaId.toString(),
-          name:
-            areaName ||
-            `${t('common.unionOf', 'Union of')} ${listAsSentence(
-              areas.flatMap((a) => a?.name || [])
-            )}`,
-          bounds: bounds,
-          geometry: mergedFeature.geometry as AreaGeometry,
-          properties: { areaIds, datasetIds },
+      try {
+        const areaFeatures = featureCollection(
+          areas.flatMap((area) => {
+            if (!area) return []
+            return (area?.geometry as any).type === 'Point' ? circle(area as any, 1) || [] : area
+          })
+        )
+        const mergedFeature = union(areaFeatures)
+        if (mergedFeature) {
+          const bounds = mergedFeature.bbox
+            ? wrapBBoxLongitudes(mergedFeature.bbox as Bbox)
+            : wrapGeometryBbox(mergedFeature.geometry)
+          const area = {
+            id: areaId.toString(),
+            name:
+              areaName ||
+              `${t('common.unionOf', 'Union of')} ${listAsSentence(
+                areas.flatMap((a) => a?.name || [])
+              )}`,
+            bounds: bounds,
+            geometry: mergedFeature.geometry as AreaGeometry,
+            properties: { areaIds, datasetIds },
+          }
+          return area
         }
-        return area
+      } catch (e) {
+        console.error('Error merging areas', e)
       }
     }
     const dataset = selectDatasetById(datasetId)(getState() as RootState)

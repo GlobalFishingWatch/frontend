@@ -101,6 +101,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                 category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
                 workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
               },
+              replaceQuery: !isWorkspaceLocation,
             }}
             onClick={onSearchClick}
           >

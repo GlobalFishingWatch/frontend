@@ -145,13 +145,20 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const timerangeHash = timerange ? JSON.stringify(timerange) : ''
   const reportGraphMode = getReportGraphMode(reportGraph)
 
-  // We need to re calculate the timeseries when any of this params changes
+  // We need to re calculate the timeseries and the filteredFeatures when any of this params changes
   useEffect(() => {
     setTimeseries([])
     setFeaturesFiltered([])
     featuresFilteredDirtyRef.current = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportCategory, timeComparisonHash, instancesChunkHash, reportGraphMode, area?.id])
+  }, [
+    area?.id,
+    reportCategory,
+    timeComparisonHash,
+    instancesChunkHash,
+    reportGraphMode,
+    reportBufferHash,
+  ])
 
   const updateFeaturesFiltered = useCallback(
     async (instances: FourwingsLayer[], polygon: AreaGeometry, mode?: 'point' | 'cell') => {
@@ -179,7 +186,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
       featuresFilteredDirtyRef.current = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [area?.geometry, reportCategory, layersLoaded])
+  }, [area?.geometry, reportCategory, layersLoaded, reportBufferHash])
 
   const computeTimeseries = useCallback(
     (
@@ -297,7 +304,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     featuresFiltered,
     areaInViewport,
     reportCategory,
-    reportBufferHash,
     reportGraphMode,
     timeComparisonHash,
     instancesChunkHash,
@@ -319,7 +325,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     featuresFiltered,
     areaInViewport,
     reportCategory,
-    reportBufferHash,
     reportGraphMode,
     timeComparisonHash,
     instancesChunkHash,

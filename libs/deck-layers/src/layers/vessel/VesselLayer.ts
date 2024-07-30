@@ -38,7 +38,7 @@ import {
 import { DeckLayerProps } from '../../types'
 import { VesselEventsLayer, _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselTrackLayer, _VesselTrackLayerProps } from './VesselTrackLayer'
-import { getEvents, getVesselResourceChunks } from './vessel.utils'
+import { getEvents, GetSegmentsFromDataParams, getVesselResourceChunks } from './vessel.utils'
 import {
   EVENTS_COLORS,
   EVENT_LAYER_TYPE,
@@ -433,7 +433,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return this.getTrackLayers()?.flatMap((l) => l.getData())
   }
 
-  getVesselTrackSegments(params = {} as { includeMiddlePoints: boolean }) {
+  getVesselTrackSegments(params = {} as GetSegmentsFromDataParams) {
     return this.getTrackLayers()?.flatMap((l) => l.getSegments(params))
   }
 
