@@ -18,7 +18,7 @@ import {
   parseLegacyDataviewInstanceConfig,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
+import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, VALID_PASSWORD } from 'data/config'
 import { QueryParams, WorkspaceState } from 'types'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
