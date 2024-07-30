@@ -119,11 +119,11 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
       const datasetConfig = {
         endpoint: EndpointId.VesselSearch,
-        datasetId: dataset.id,
+        datasetId: dataset?.id,
         params: [],
         query: [
           { id: 'includes', value: ['MATCH_CRITERIA', 'OWNERSHIP'] },
-          { id: 'datasets', value: datasets.map((d) => d.id) },
+          { id: 'datasets', value: datasets.map((d) => d?.id) },
           {
             id: advancedQuery ? 'where' : 'query',
             value: encodeURIComponent(advancedQuery || query || ''),
@@ -143,7 +143,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
         const uniqSearchResults = gfwUser
           ? searchResults.entries
-          : uniqBy(searchResults.entries, (r) => r.selfReportedInfo[0].id)
+          : uniqBy(searchResults.entries, (r) => r.selfReportedInfo[0]?.id)
 
         const vesselsWithDataset = uniqSearchResults.flatMap((vessel) => {
           if (!vessel) return []
