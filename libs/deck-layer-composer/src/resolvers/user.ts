@@ -169,14 +169,17 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
   const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
   const timeFilters = getUserContexTimeFilterProps({ dataset, start, end })
   const { filter, filters } = dataview.config || {}
-
+  const allFilters = {
+    ...Object.fromEntries((dataset.fieldsAllowed || []).map((f) => [f, undefined])),
+    ...filters,
+  }
   return {
     ...baseLayerProps,
     pickable: !dataset.configuration?.disableInteraction ?? true,
     layers: [layer],
     highlightedFeatures: highlightedFeatures as UserLayerPickingObject[],
     ...(filter && { filter }),
-    ...(filters && { filters }),
+    ...(Object.keys(allFilters).length && { filters: allFilters }),
     ...(idProperty && { idProperty }),
     ...(valueProperties?.length && { valueProperties }),
     ...(dataview.config?.maxZoom && { maxZoom: dataview.config.maxZoom }),

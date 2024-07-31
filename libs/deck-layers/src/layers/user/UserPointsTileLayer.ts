@@ -19,6 +19,7 @@ import {
   getMVTSublayerProps,
   DEFAULT_LINE_COLOR,
   getFetchLoadOptions,
+  getFeatureInFilter,
 } from '../../utils'
 import { UserPointsLayerProps, UserLayerFeature } from './user.types'
 import { UserBaseLayer, UserBaseLayerState } from './UserBaseLayer'
@@ -91,7 +92,10 @@ export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   _getPointRadius: Accessor<GeoJsonProperties, number> = (d) => {
-    const { staticPointRadius, circleRadiusProperty, circleRadiusRange } = this.props
+    const { staticPointRadius, circleRadiusProperty, circleRadiusRange, filters } = this.props
+    if (!getFeatureInFilter(d, filters)) {
+      return 0
+    }
     if (staticPointRadius) {
       return staticPointRadius
     }
@@ -107,7 +111,7 @@ export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   renderLayers() {
-    const { layers, color, pickable, maxPointSize, maxZoom } = this.props
+    const { layers, color, pickable, maxPointSize, maxZoom, filters } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     const filterProps = this._getTimeFilterProps()
     const renderLayers: Layer[] = layers.map((layer) => {
@@ -145,6 +149,7 @@ export class UserPointsTileLayer<PropsT = {}> extends UserBaseLayer<
               getFillColor: hexToDeckColor(this.props.color, 0.7),
               updateTriggers: {
                 getFillColor: [color],
+                getRadius: [filters],
               },
             }),
           ]

@@ -6,6 +6,7 @@ import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import { ContextFeature } from '../context'
 import { getContextId } from '../context/context.utils'
 import { DeckLayerProps } from '../../types'
+import { getFeatureInFilter } from '../../utils'
 import {
   UserPointsLayerProps,
   UserLayerPickingInfo,
@@ -69,7 +70,7 @@ export abstract class UserBaseLayer<
   }: {
     info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
   }): UserLayerPickingInfo => {
-    const { subcategory, idProperty, valueProperties } = this.props
+    const { subcategory, idProperty, valueProperties, filters } = this.props
     const object = {
       ...(info.tile && {
         ...transformTileCoordsToWGS84(
@@ -87,6 +88,11 @@ export abstract class UserBaseLayer<
       category: this.props.category,
       subcategory: this.props.subcategory,
     } as UserLayerPickingObject
+
+    if (!getFeatureInFilter(object, filters)) {
+      return { ...info, object: undefined }
+    }
+
     if (!subcategory?.includes('draw')) {
       const properties = { ...((info.object as UserLayerFeature)?.properties || {}) }
 
@@ -131,13 +137,10 @@ export abstract class UserBaseLayer<
   }
 
   _getTilesUrl(tilesUrl: string) {
-    const { filter, valueProperties, startTimeProperty, endTimeProperty } = this.props
+    const { valueProperties, startTimeProperty, endTimeProperty, filters } = this.props
     const stepsPickValue = (this.props as UserPolygonsLayerProps)?.stepsPickValue
     const circleRadiusProperty = (this.props as UserPointsLayerProps)?.circleRadiusProperty
     const tilesUrlObject = new URL(tilesUrl)
-    if (filter) {
-      tilesUrlObject.searchParams.set('filter', filter)
-    }
     // Needed for invalidate caches on user changes
     const properties = [
       ...(valueProperties || []),
@@ -145,6 +148,7 @@ export abstract class UserBaseLayer<
       endTimeProperty || '',
       stepsPickValue || '',
       circleRadiusProperty || '',
+      ...Object.keys(filters || {}),
     ].filter((p) => !!p)
     if (properties.length) {
       properties.forEach((property, index) => {

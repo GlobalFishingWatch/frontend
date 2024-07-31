@@ -2,7 +2,7 @@ import { UserTrack } from '@globalfishingwatch/api-types'
 import { TrackCoordinatesPropertyFilter, filterTrackByCoordinateProperties } from './utils'
 import { UserTrackBinaryData, UserTrackData } from './types'
 
-function isNumeric(str: string | number) {
+export function isNumeric(str: string | number) {
   if (!str) return false
   if (typeof str == 'number') return true
   return !isNaN(parseFloat(str))
@@ -11,7 +11,7 @@ function isNumeric(str: string | number) {
 function getCoordinatesFilter(filters = {} as Record<string, any>) {
   const coordinateFilters: TrackCoordinatesPropertyFilter[] = Object.entries(filters).map(
     ([id, values]) => {
-      if (isNumeric(values[0]) && isNumeric(values[1])) {
+      if (values.length === 2 && isNumeric(values[0]) && isNumeric(values[1])) {
         return {
           id,
           min: parseFloat(values[0] as string),
