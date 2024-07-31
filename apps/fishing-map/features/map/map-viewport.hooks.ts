@@ -2,12 +2,14 @@ import { useCallback, useEffect } from 'react'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { MapView, MapViewProps, WebMercatorViewport } from '@deck.gl/core'
+import { useSelector } from 'react-redux'
 import { MapCoordinates } from 'types'
 import { DEFAULT_VIEWPORT } from 'data/config'
 import { updateUrlViewport } from 'routes/routes.actions'
 import { getUrlViewstateNumericParam } from 'utils/url'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectIsWorkspaceMapReady } from 'features/workspace/workspace.selectors'
 
 const viewStateAtom = atom<MapCoordinates>({
   longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
@@ -45,6 +47,7 @@ export function useSetMapCoordinates() {
 
 export const useUpdateViewStateUrlParams = () => {
   const viewState = useAtomValue(viewStateAtom)
+  const isWorkspaceMapReady = useSelector(selectIsWorkspaceMapReady)
   const dispatch = useAppDispatch()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,12 +57,14 @@ export const useUpdateViewStateUrlParams = () => {
   )
 
   useEffect(() => {
-    const { longitude, latitude, zoom } = viewState
-    updateUrlViewportDebounced({ longitude, latitude, zoom })
+    if (isWorkspaceMapReady) {
+      const { longitude, latitude, zoom } = viewState
+      updateUrlViewportDebounced({ longitude, latitude, zoom })
+    }
     return () => {
       updateUrlViewportDebounced.cancel()
     }
-  }, [viewState, updateUrlViewportDebounced])
+  }, [viewState, updateUrlViewportDebounced, isWorkspaceMapReady])
 }
 
 const MAP_VIEW_ID = 'mapViewport'
