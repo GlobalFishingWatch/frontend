@@ -111,17 +111,21 @@ const VesselLink = ({
               : { vesselRegistryId: getVesselIdentityId(identity) }),
           }),
           ...(query || {}),
-          dataviewInstances: locationQuery.dataviewInstances?.map((instance: DataviewInstance) => {
-            if (instance.id === dataviewId) {
-              return {
-                ...instance,
-                config: {
-                  ...instance.config,
-                  visible: true,
-                },
+          ...(locationQuery?.dataviewInstances?.length && {
+            dataviewInstances: locationQuery?.dataviewInstances?.map(
+              (instance: DataviewInstance) => {
+                if (instance.id === dataviewId) {
+                  return {
+                    ...instance,
+                    config: {
+                      ...instance.config,
+                      visible: true,
+                    },
+                  }
+                }
+                return instance
               }
-            }
-            return instance
+            ),
           }),
         },
       }}
