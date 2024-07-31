@@ -163,15 +163,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     const currentFeatureIndex = this?.getSelectedFeatureIndexes()?.[0]
     const currentPointIndexes = this?.getSelectedPositionIndexes()
     if (data?.features?.length && currentFeatureIndex !== undefined) {
-      const isFeatureCollection = data.type === 'FeatureCollection'
-      if (
-        isFeatureCollection
-          ? data?.features[currentFeatureIndex]?.geometry.type === 'Point'
-          : (data as any)?.[currentFeatureIndex]?.geometry.type === 'Point'
-      ) {
-        currentPointCoordinates = isFeatureCollection
-          ? (data?.features as Feature<Point>[])[currentFeatureIndex]?.geometry.coordinates
-          : (data as any)?.[currentFeatureIndex]?.geometry.coordinates
+      const isPointFeature = data?.features[currentFeatureIndex]?.geometry.type === 'Point'
+      if (isPointFeature) {
+        currentPointCoordinates = (data?.features as Feature<Point>[])[currentFeatureIndex]
+          ?.geometry.coordinates
       } else if (currentPointIndexes !== undefined) {
         const currentPointIndex = currentPointIndexes?.[currentPointIndexes.length - 1] || 0
         currentPointCoordinates = (data?.features as Feature<Polygon>[])[currentFeatureIndex]
@@ -184,12 +179,12 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   getDataWithReplacedPosition = (pointPosition: [number, number]) => {
     const featureIndexes = this?.getSelectedFeatureIndexes()
     const coordinateIndex = this?.getSelectedPositionIndexes()
-    if (!featureIndexes || !coordinateIndex) {
+    if (!featureIndexes) {
       return
     }
     let data = new ImmutableFeatureCollection(this.getData())
     featureIndexes.forEach((featureIndex) => {
-      data = data.replacePosition(featureIndex, coordinateIndex, pointPosition)
+      data = data.replacePosition(featureIndex, coordinateIndex ?? [], pointPosition)
     })
     return getDrawDataParsed(data.getObject())
   }
@@ -203,7 +198,9 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
 
   setTentativeCurrentPointCoordinates = (pointPosition: [number, number]) => {
     const tentativeData = this.getDataWithReplacedPosition(pointPosition)
-    this._setState({ tentativeData })
+    if (tentativeData) {
+      this._setState({ tentativeData })
+    }
   }
 
   reset = () => {
