@@ -22,10 +22,11 @@ export function removeOutliers({
   /* FourwingsAggregationOperation */
   aggregationOperation?: 'avg' | 'sum'
 }) {
-  const meanValue = mean(allValues)
+  const allValuesCleaned = allValues.filter(Boolean)
+  const meanValue = mean(allValuesCleaned)
   const deviationScale = aggregationOperation === 'avg' ? 2 : 1
-  const standardDeviationValue = standardDeviation(allValues)
+  const standardDeviationValue = standardDeviation(allValuesCleaned)
   const upperCut = meanValue + standardDeviationValue * deviationScale
   const lowerCut = meanValue - standardDeviationValue * deviationScale
-  return allValues.filter((a) => a >= lowerCut && a <= upperCut)
+  return allValuesCleaned.filter((a) => a >= lowerCut && a <= upperCut)
 }
