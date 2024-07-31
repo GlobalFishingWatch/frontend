@@ -238,7 +238,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         getColor: singleTrack ? this._getColorByLineIndex : hexToDeckColor(color),
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
         updateTriggers: {
-          getColor: [singleTrack],
+          getColor: [singleTrack, color],
         },
       })
     })
