@@ -98,7 +98,3 @@ a.linkButton,
   gap: var(--space-M);
   align-items: center;
 }
-
-.link + .link {
-  margin-top: var(--space-XS);
-}
