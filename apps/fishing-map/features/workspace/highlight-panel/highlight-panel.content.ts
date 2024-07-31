@@ -49,6 +49,24 @@ const BASE_HIGHLIGHT_CONFIG = {
 const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
   {
     ...BASE_HIGHLIGHT_CONFIG,
+    dataviewInstanceId: 'fishing-ais-pipe-3',
+    releaseDateTimestamp: Date.parse('2024-08-01T00:00:00Z'),
+    imageUrl: `${PATH_BASENAME}/images/before-after@2x.gif`,
+    learnMoreUrl: 'https://globalfishingwatch.org/platform-updates/',
+    en: {
+      title: 'Updated AIS data and new features',
+      description:
+        'Global Fishing Watch has improved underlying AIS data accuracy and now supports high resolution map layers. Data improvements may affect fishing effort and activity calculations. Workspaces should be updated to reflect changes',
+    },
+    es: {
+      title: 'Datos de AIS actualizados y nuevas funcionalidades',
+      description:
+        'Global Fishing Watch ha mejorado la precisión de los datos AIS subyacentes y ahora admite visualizar las capas con mayor resolución. Las mejoras en los datos pueden afectar los cálculos de la actividad y el esfuerzo pesquero. Los espacios de trabajo deben actualizarse para reflejar los cambios',
+      learnMoreUrl: 'https://globalfishingwatch.org/es/faqs/marine-traffic-nueva-fuente-ais/',
+    },
+  },
+  {
+    ...BASE_HIGHLIGHT_CONFIG,
     dataviewInstanceId: 'fishing-ais',
     releaseDateTimestamp: Date.parse('2024-05-07T00:00:00Z'),
     imageUrl: `${PATH_BASENAME}/images/marine-traffic-ais.jpg`,

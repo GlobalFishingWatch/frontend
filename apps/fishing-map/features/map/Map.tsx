@@ -28,6 +28,8 @@ import MapPopups from 'features/map/popups/MapPopups'
 import { MapCoordinates } from 'types'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useHasReportTimeseries } from 'features/reports/reports-timeseries.hooks'
+import { selectReportAreaStatus } from 'features/reports/reports.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   MAP_VIEW,
   useMapSetViewState,
@@ -88,12 +90,14 @@ const MapWrapper = () => {
   const hasReportTimeseries = useHasReportTimeseries()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const reportAreaStatus = useSelector(selectReportAreaStatus)
 
   const onMapLoad = useCallback(() => {
     dispatch(setMapLoaded(true))
   }, [dispatch])
 
   const mapLoading = useIsDeckLayersLoading()
+  const isReportAreaLoading = isReportLocation && reportAreaStatus === AsyncReducerStatus.Loading
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
 
@@ -136,7 +140,7 @@ const MapWrapper = () => {
       <ErrorNotificationDialog />
       <MapAnnotationsDialog />
       <CoordinateEditOverlay />
-      <MapControls mapLoading={mapLoading} />
+      <MapControls mapLoading={mapLoading || isReportAreaLoading} />
       {isWorkspaceLocation && !isReportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}

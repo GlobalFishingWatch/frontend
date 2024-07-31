@@ -21,6 +21,9 @@
   height: 18rem;
   width: 100%;
   vertical-align: middle;
+  min-height: 18rem;
+  min-width: 32rem;
+  background-color: var(--color-terthiary-blue);
 }
 
 .content {
