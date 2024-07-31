@@ -244,7 +244,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   updateColorDomain = debounce(() => {
     requestAnimationFrame(() => {
-      const { comparisonMode, aggregationOperation } = this.props
+      const { comparisonMode } = this.props
       const { colorDomain: oldColorDomain } = this.state
       const newColorDomain = this._calculateColorDomain()
       let avgChange = Infinity
@@ -267,10 +267,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
               )
             }
           )
-        } else if (
-          comparisonMode === FourwingsComparisonMode.Compare &&
-          aggregationOperation === FourwingsAggregationOperation.Sum
-        ) {
+        } else if (comparisonMode === FourwingsComparisonMode.Compare) {
           change = (oldColorDomain as number[]).map((oldValue, i) => {
             const newValue = newColorDomain[i] as number
             return (Math.abs(newValue - oldValue) / oldValue) * 100 || 0
