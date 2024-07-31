@@ -3,6 +3,7 @@ import { ClipExtension } from '@deck.gl/extensions'
 import { TileLayerProps } from '@deck.gl/geo-layers'
 import { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { Matrix4 } from '@math.gl/core'
+import { isNumeric } from '@globalfishingwatch/deck-loaders'
 import { ContextPickingObject } from '../layers/context'
 import { UserLayerPickingObject } from '../layers/user'
 import { PolygonPickingObject } from '../layers/polygons'
@@ -32,9 +33,17 @@ export function getPickedFeatureToHighlight(
 
 export function getFeatureInFilter(feature: any, filters?: Record<string, any>) {
   if (!filters || !Object.keys(filters).length) return true
-  return Object.keys(filters).some((filter) =>
-    filters[filter]?.includes(feature?.properties?.[filter]?.toString())
-  )
+  return Object.entries(filters).every(([id, values]) => {
+    if (!values) return true
+    if (values.length === 2 && isNumeric(values[0]) && isNumeric(values[1])) {
+      const min = parseFloat(values[0] as string)
+      const max = parseFloat(values[1] as string)
+      const value = Number(feature?.properties?.[id])
+      return value && value >= min && value < max
+    } else {
+      return values.includes(feature?.properties?.[id])
+    }
+  })
 }
 
 export function getMVTSublayerProps({

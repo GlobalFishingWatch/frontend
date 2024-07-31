@@ -23,6 +23,7 @@ import {
   getColorRampByOpacitySteps,
   getFetchLoadOptions,
   DEFAULT_BACKGROUND_COLOR,
+  getFeatureInFilter,
 } from '../../utils'
 import { UserPolygonsLayerProps, UserLayerFeature } from './user.types'
 import { UserBaseLayer, UserBaseLayerState } from './UserBaseLayer'
@@ -84,8 +85,19 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
       : 0
   }
 
+  _getLineColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
+    const { color, filters } = this.props
+    if (!getFeatureInFilter(d, filters)) {
+      return COLOR_TRANSPARENT
+    }
+    return hexToDeckColor(color)
+  }
+
   _getFillColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { idProperty, layers } = this.props
+    const { idProperty, layers, filters } = this.props
+    if (!getFeatureInFilter(d, filters)) {
+      return COLOR_TRANSPARENT
+    }
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
       idProperty,
@@ -96,7 +108,10 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   _getFillStepsColor: AccessorFunction<Feature<Geometry, GeoJsonProperties>, Color> = (d) => {
-    const { idProperty, layers } = this.props
+    const { idProperty, layers, filters } = this.props
+    if (!getFeatureInFilter(d, filters)) {
+      return COLOR_TRANSPARENT
+    }
     const highlightedFeatures = this._getHighlightedFeatures()
     if (
       getPickedFeatureToHighlight(d, highlightedFeatures, {
@@ -117,7 +132,7 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   renderLayers() {
-    const { color, layers, steps, stepsPickValue } = this.props
+    const { layers, steps, stepsPickValue, filters } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const filterProps = this._getTimeFilterProps()
@@ -145,7 +160,7 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
               getFillColor: hasColorSteps ? this._getFillStepsColor : this._getFillColor,
               updateTriggers: {
-                getFillColor: [highlightedFeatures],
+                getFillColor: [highlightedFeatures, filters],
               },
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
@@ -153,7 +168,10 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
               lineWidthMinPixels: 1,
               filled: false,
               getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
-              getLineColor: hexToDeckColor(color),
+              getLineColor: this._getLineColor,
+              updateTriggers: {
+                getLineColor: [filters],
+              },
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
               id: `${props.id}-highlight-lines-bg`,
