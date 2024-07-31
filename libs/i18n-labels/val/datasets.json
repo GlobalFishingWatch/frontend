@@ -334,7 +334,13 @@
     "name": "crwdns83148:0crwdne83148:0",
     "description": "crwdns83150:0crwdne83150:0",
     "schema": {
-      "speed": "crwdns83522:0crwdne83522:0"
+      "speed": {
+        "keyword": "crwdns83586:0crwdne83586:0",
+        "enum": {
+          "0": "crwdns83588:0crwdne83588:0",
+          "20": "crwdns83590:0crwdne83590:0"
+        }
+      }
     }
   },
   "private-indonesia-aruna-fishing-effort": {
@@ -1104,7 +1110,13 @@
     "name": "crwdns69888:0crwdne69888:0",
     "description": "crwdns83478:0crwdne83478:0",
     "schema": {
-      "speed": "crwdns83544:0crwdne83544:0"
+      "speed": {
+        "keyword": "crwdns83592:0crwdne83592:0",
+        "enum": {
+          "0": "crwdns83594:0crwdne83594:0",
+          "20": "crwdns83596:0crwdne83596:0"
+        }
+      }
     }
   },
   "public-global-all-vessels": {
@@ -1195,7 +1207,13 @@
     "name": "crwdns83152:0crwdne83152:0",
     "description": "crwdns83154:0crwdne83154:0",
     "schema": {
-      "speed": "crwdns83548:0crwdne83548:0"
+      "speed": {
+        "keyword": "crwdns83598:0crwdne83598:0",
+        "enum": {
+          "0": "crwdns83600:0crwdne83600:0",
+          "20": "crwdns83602:0crwdne83602:0"
+        }
+      }
     }
   },
   "public-global-presence": {
@@ -1402,6 +1420,10 @@
   "public-indonesia-fishing-effort": {
     "name": "crwdns66629:0crwdne66629:0",
     "description": "crwdns66631:0crwdne66631:0"
+  },
+  "public-indonesia-fishing-vessels": {
+    "name": "crwdns83604:0crwdne83604:0",
+    "description": "crwdns83606:0crwdne83606:0"
   },
   "public-indonesia-pelagic-fishing-effort": {
     "name": "crwdns66689:0crwdne66689:0",
