@@ -152,10 +152,20 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
           }
           case DataviewCategory.Environment: {
+            const contextFeatures = (features as UserLayerPickingObject[]).filter(
+              (feature) => feature.subcategory === DataviewType.UserContext
+            )
+            const environmentalFeatures = (
+              features as SliceExtendedFourwingsPickingObject[]
+            ).filter((feature) => feature.subcategory !== DataviewType.UserContext)
             return (
               <Fragment key={featureCategory}>
+                <UserContextTooltipSection
+                  features={contextFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
                 <EnvironmentTooltipSection
-                  features={features as SliceExtendedFourwingsPickingObject[]}
+                  features={environmentalFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
               </Fragment>
