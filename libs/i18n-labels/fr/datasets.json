@@ -334,7 +334,13 @@
     "name": "Tracks",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 20201001",
     "schema": {
-      "speed": "speed"
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
     }
   },
   "private-indonesia-aruna-fishing-effort": {
@@ -1104,7 +1110,13 @@
     "name": "Trajectoires",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 3.0",
     "schema": {
-      "speed": "speed"
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
     }
   },
   "public-global-all-vessels": {
@@ -1195,7 +1207,13 @@
     "name": "Tracks",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 20201001",
     "schema": {
-      "speed": "speed"
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
     }
   },
   "public-global-presence": {
@@ -1402,6 +1420,10 @@
   "public-indonesia-fishing-effort": {
     "name": "Indonesia VMS",
     "description": "VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques."
+  },
+  "public-indonesia-fishing-vessels": {
+    "name": "Indonesia VMS (Fishing Vessels)",
+    "description": "Dataset for VMS Indonesia (Public)"
   },
   "public-indonesia-pelagic-fishing-effort": {
     "name": "Indonesia Pelagic (Pilot)",
