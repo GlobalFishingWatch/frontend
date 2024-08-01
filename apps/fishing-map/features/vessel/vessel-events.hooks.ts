@@ -17,8 +17,9 @@ const useVesselProfileEvents = () => {
   const dataLoaded = vesselLayer?.instance?.getVesselEventsLayersLoaded()
   return useMemo(() => {
     if (dataLoaded) {
-      console.log('getting vessel events!', vesselLayer)
-      return vesselLayer?.instance?.getVesselEventsData()
+      const events = vesselLayer?.instance?.getVesselEventsData()
+      console.log('etting vessel events', events)
+      return events
     } else {
       console.log('vessel events not loaded', vesselLayer)
     }

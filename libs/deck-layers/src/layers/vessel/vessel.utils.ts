@@ -122,28 +122,19 @@ export const getSegmentsFromData = memoize(
   }
 )
 
-export const getEvents = memoize(
-  (
-    layers: VesselEventsLayer[],
-    { types } = {} as { types?: EventTypes[]; startTime?: number; endTime?: number }
-  ) => {
-    return layers
-      .flatMap((layer: VesselEventsLayer): ApiEvent<EventVessel>[] => {
-        const events =
-          types && types.length
-            ? types.includes(layer.props.type)
-              ? layer.props.data
-              : []
-            : layer.props.data || []
-        return events as ApiEvent[]
-      }, [])
-      .sort((a, b) => (a.start as number) - (b.start as number))
-  },
-  (layers, { types, startTime, endTime }) => {
-    const typesHash = types?.join(',')
-    const layersHash = layers.map((layer, i) => `${i}-${layer.id}-${layer.isLoaded}`).join(', ')
-    const chunksHash = JSON.stringify(getVesselResourceChunks(startTime, endTime))
-    console.log('getEvents memo:', `${layersHash}-${typesHash}-${chunksHash}`)
-    return `${layersHash}-${typesHash}-${chunksHash}`
-  }
-)
+export const getEvents = (
+  layers: VesselEventsLayer[],
+  { types } = {} as { types?: EventTypes[]; startTime?: number; endTime?: number }
+) => {
+  return layers
+    .flatMap((layer: VesselEventsLayer): ApiEvent<EventVessel>[] => {
+      const events =
+        types && types.length
+          ? types.includes(layer.props.type)
+            ? layer.props.data
+            : []
+          : layer.props.data || []
+      return events as ApiEvent[]
+    }, [])
+    .sort((a, b) => (a.start as number) - (b.start as number))
+}
