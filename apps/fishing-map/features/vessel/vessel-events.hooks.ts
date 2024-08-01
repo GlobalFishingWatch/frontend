@@ -14,7 +14,7 @@ const useVesselProfileLayer = () => {
 
 const useVesselProfileEvents = () => {
   const vesselLayer = useVesselProfileLayer()
-  const dataLoaded = vesselLayer?.loaded
+  const dataLoaded = vesselLayer?.instance?.getVesselEventsLayersLoaded()
   return useMemo(() => {
     if (dataLoaded) {
       console.log('getting vessel events!', vesselLayer)
@@ -42,7 +42,7 @@ export const useSetVesselProfileEvents = () => {
   const vesselId = useSelector(selectVesselId)
   const dispatch = useAppDispatch()
   useEffect(() => {
-    if (vesselId && events) {
+    if (vesselId) {
       console.log('setting vessel events!', events)
       dispatch(setVesselEvents({ vesselId, events }))
     }

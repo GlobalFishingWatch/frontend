@@ -174,10 +174,10 @@ const vesselSlice = createSlice({
     setVesselFitBoundsOnLoad: (state, action: PayloadAction<boolean>) => {
       state.fitBoundsOnLoad = action.payload
     },
-    setVesselEvents: (state, action: PayloadAction<{ vesselId: string; events: ApiEvent[] }>) => {
+    setVesselEvents: (state, action: PayloadAction<{ vesselId: string; events?: ApiEvent[] }>) => {
       const { vesselId, events } = action.payload || {}
       if (state.data[vesselId]) {
-        state.data[vesselId].events = events
+        state.data[vesselId].events = events || []
       }
     },
     setVesselPrintMode: (state, action: PayloadAction<boolean>) => {

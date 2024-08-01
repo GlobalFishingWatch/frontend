@@ -207,13 +207,13 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     }
   }
 
-  updateState(params: UpdateParameters<any>) {
-    super.updateState(params)
-    const { dataChanged } = params.changeFlags
-    if (dataChanged !== false && this.props.onDataChange) {
-      this.props.onDataChange(dataChanged)
-    }
-  }
+  // updateState(params: UpdateParameters<any>) {
+  //   super.updateState(params)
+  //   const { dataChanged } = params.changeFlags
+  //   if (dataChanged !== false && this.props.onDataChange) {
+  //     this.props.onDataChange(dataChanged)
+  //   }
+  // }
 
   draw(params: any) {
     const {
