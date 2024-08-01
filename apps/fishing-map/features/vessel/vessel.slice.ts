@@ -177,7 +177,13 @@ const vesselSlice = createSlice({
     setVesselEvents: (state, action: PayloadAction<{ vesselId: string; events?: ApiEvent[] }>) => {
       const { vesselId, events } = action.payload || {}
       if (state.data[vesselId]) {
-        state.data[vesselId].events = events || []
+        state.data = {
+          ...state.data,
+          [vesselId]: {
+            ...state.data[vesselId],
+            events: events || [],
+          },
+        }
       }
     },
     setVesselPrintMode: (state, action: PayloadAction<boolean>) => {
