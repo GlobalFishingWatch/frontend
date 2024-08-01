@@ -42,6 +42,9 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     const positionProperties = uniq(
       sublayer?.datasets.flatMap((dataset) => Object.keys(dataset?.schema || {}))
     )
+    const { extentStart, extentEnd } = getDatasetsExtent(sublayer.datasets, {
+      format: 'timestamp',
+    })
 
     if (units.length > 0 && units.length !== 1) {
       console.warn('Shouldnt have distinct units for the same heatmap layer')
@@ -58,6 +61,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
       unit: units[0]!,
       filter: sublayer?.filter,
       vesselGroups: sublayer?.vesselGroups,
+      extentStart: extentStart as number,
+      extentEnd: extentEnd as number,
     }
   })
 

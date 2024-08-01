@@ -53,7 +53,7 @@ export const useHeatmapActivityGraph = () => {
         }) || EMPTY_ACTIVITY_DATA
       setData(data)
     },
-    [chunk, instance]
+    [chunk, instance?.props?.sublayers]
   )
 
   const setFourwingsHeatmapData = useCallback(
@@ -74,7 +74,13 @@ export const useHeatmapActivityGraph = () => {
         setData(EMPTY_ACTIVITY_DATA)
       }
     },
-    [chunk, instance]
+    [
+      chunk,
+      instance?.props?.aggregationOperation,
+      instance?.props?.maxVisibleValue,
+      instance?.props?.minVisibleValue,
+      instance?.props?.sublayers,
+    ]
   )
 
   useEffect(() => {

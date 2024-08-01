@@ -215,7 +215,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const { colorScale } = this.state
     const { colorDomain, colorRange } = colorScale as FourwingsTileLayerColorScale
     const { highlightStartTime, highlightEndTime } = this.props
-    const date = CONFIG_BY_INTERVAL['HOUR'].getTime(d.properties.htime)
+    const date = CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(d.properties.htime)
     if (
       highlightStartTime &&
       highlightEndTime &&

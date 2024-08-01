@@ -54,10 +54,13 @@ export const getFourwingsInterval = (
 
 export const CONFIG_BY_INTERVAL: Record<
   FourwingsInterval,
-  Record<'getTime' | 'getIntervalFrame', any>
+  {
+    getIntervalTimestamp: (frame: number) => number
+    getIntervalFrame: (timestamp: number) => number
+  }
 > = {
   HOUR: {
-    getTime: (frame: number) => {
+    getIntervalTimestamp: (frame: number) => {
       return frame * 1000 * 60 * 60
     },
     getIntervalFrame: (timestamp: number) => {
@@ -65,7 +68,7 @@ export const CONFIG_BY_INTERVAL: Record<
     },
   },
   DAY: {
-    getTime: (frame: number) => {
+    getIntervalTimestamp: (frame: number) => {
       return frame * 1000 * 60 * 60 * 24
     },
     getIntervalFrame: (timestamp: number) => {
@@ -73,7 +76,7 @@ export const CONFIG_BY_INTERVAL: Record<
     },
   },
   MONTH: {
-    getTime: (frame: number) => {
+    getIntervalTimestamp: (frame: number) => {
       const year = Math.floor(frame / 12)
       const month = frame % 12
       return Date.UTC(year, month)
@@ -84,7 +87,7 @@ export const CONFIG_BY_INTERVAL: Record<
     },
   },
   YEAR: {
-    getTime: (frame: number) => {
+    getIntervalTimestamp: (frame: number) => {
       return Date.UTC(frame)
     },
     getIntervalFrame: (timestamp: number) => {

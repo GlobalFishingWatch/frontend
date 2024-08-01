@@ -83,7 +83,10 @@ export function getGraphDataFromFourwingsPositions(
   features.forEach((feature) => {
     const { htime, value, layer } = feature.properties
     if (htime && value) {
-      const date = getDateInIntervalResolution(CONFIG_BY_INTERVAL['HOUR'].getTime(htime), interval)
+      const date = getDateInIntervalResolution(
+        CONFIG_BY_INTERVAL['HOUR'].getIntervalTimestamp(htime),
+        interval
+      )
       if (!data[date]) {
         data[date] = { date }
       }
@@ -191,7 +194,7 @@ export function getGraphDataFromFourwingsHeatmap(
     })
   }
 
-  return Object.values(data).map(({ date, count, ...rest }: any) => {
+  const timeseries = Object.values(data).map(({ date, count, ...rest }: any) => {
     Object.keys(rest).forEach((key) => {
       if (aggregationOperation === 'avg') {
         const indexKey = parseInt(key)
@@ -202,4 +205,53 @@ export function getGraphDataFromFourwingsHeatmap(
     })
     return { date, ...rest }
   })
+
+  // Inserts a middle point for every sublayer at the start and end of the dataset
+  const extentStarts = sublayers
+    .map((sublayer, index) => ({ extent: sublayer.extentStart, index }))
+    .sort((a, b) => a?.extent! - b?.extent!)
+  const extentEnds = sublayers
+    .map((sublayer, index) => ({ extent: sublayer.extentEnd, index }))
+    .sort((a, b) => a?.extent! - b?.extent!)
+
+  extentStarts.forEach(({ extent, index }) => {
+    if (extent) {
+      const firstSublayerValueIndex = timeseries.findIndex((v) => v.date >= extent!) - 1
+      if (firstSublayerValueIndex >= 0) {
+        // Use the initial date as a new element with all values 0
+        const initialStartDate = timeseries[firstSublayerValueIndex].date
+        const startData = {
+          ...timeseries[firstSublayerValueIndex],
+          date: initialStartDate,
+          [index]: 0,
+        }
+        timeseries.splice(firstSublayerValueIndex, 0, startData)
+        // And replace the original first element with the dataset start extent
+        timeseries[firstSublayerValueIndex + 1].date = extent
+      }
+    }
+  })
+
+  extentEnds.forEach(({ extent, index }) => {
+    if (extent) {
+      const lastSublayerValueIndex = timeseries.findLastIndex((frame) => frame[index] > 0)
+      if (lastSublayerValueIndex >= 0) {
+        const lastSublayerTime = timeseries[lastSublayerValueIndex]
+        const nextIntervalDate = DateTime.fromMillis(lastSublayerTime.date, {
+          zone: 'utc',
+        })
+          .plus({ [interval]: 1 })
+          .toMillis()
+        if (nextIntervalDate > extent) {
+          timeseries.splice(lastSublayerValueIndex + 1, 0, {
+            ...lastSublayerTime,
+            date: extent,
+            [index]: 0,
+          })
+        }
+      }
+    }
+  })
+
+  return timeseries
 }
