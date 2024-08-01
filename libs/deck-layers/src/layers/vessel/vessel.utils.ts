@@ -141,10 +141,9 @@ export const getEvents = memoize(
   },
   (layers, { types, startTime, endTime }) => {
     const typesHash = types?.join(',')
-    const layersLength = layers.length
-    const layersIdsHash = layers.map((layer) => layer.id).join(',')
-    const layersLoaded = layers.map((layer) => layer.isLoaded).join(',')
+    const layersHash = layers.map((layer, i) => `${i}-${layer.id}-${layer.isLoaded}`).join(', ')
     const chunksHash = JSON.stringify(getVesselResourceChunks(startTime, endTime))
-    return `${layersLength}-${layersLoaded}-${layersIdsHash}-${typesHash}-${chunksHash}`
+    console.log('getEvents memo:', `${layersHash}-${typesHash}-${chunksHash}`)
+    return `${layersHash}-${typesHash}-${chunksHash}`
   }
 )

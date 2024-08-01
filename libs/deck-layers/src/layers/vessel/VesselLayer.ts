@@ -422,6 +422,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselEventsData(types?: EventTypes[]) {
+    console.log('getVesselEventsData:', this.getEventLayers(), {
+      types,
+      startTime: this.props.startTime,
+      endTime: this.props.endTime,
+    })
     return getEvents(this.getEventLayers(), {
       types,
       startTime: this.props.startTime,
