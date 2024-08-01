@@ -38,9 +38,9 @@ export const getCellTimeseries = (
   // TODO ensure we use the UTC dates here to avoid the .ceil
   const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
   const timeRangeStartFrame =
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start) - tileStartFrame
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start!) - tileStartFrame
   const timeRangeEndFrame =
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.end) - tileStartFrame
+    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.end!) - tileStartFrame
 
   const timeRangeKey = getTimeRangeKey(timeRangeStartFrame, timeRangeEndFrame)
 
