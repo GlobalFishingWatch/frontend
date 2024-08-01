@@ -120,7 +120,7 @@ export const getCellTimeseries = (
               cellValue * scale - offset
             // add current date to the array of dates for this sublayer
             features[cellNum].properties.dates[subLayerIndex][Math.floor(j / sublayers)] =
-              CONFIG_BY_INTERVAL[interval].getTime(startFrame + tileStartFrame + j)
+              CONFIG_BY_INTERVAL[interval].getIntervalTimestamp(startFrame + tileStartFrame + j)
 
             // sum current value to the initialValue for this sublayer
             if (j + startFrame >= timeRangeStartFrame && j + startFrame < timeRangeEndFrame) {
