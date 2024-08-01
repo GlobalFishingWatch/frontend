@@ -214,6 +214,7 @@ export const useTimebarVesselTracksGraph = () => {
             instance instanceof VesselLayer
               ? instance.getVesselTrackSegments({ includeMiddlePoints: true })
               : instance.getSegments()
+
           if (segments?.length && status === ResourceStatus.Finished) {
             trackGraphData.chunks = segments?.flatMap((segment) => {
               if (!segment) {
@@ -241,7 +242,7 @@ export const useTimebarVesselTracksGraph = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksLoaded, timebarGraph, trackLayers])
+  }, [tracksLoaded, timebarGraph])
 
   return tracksGraph
 }

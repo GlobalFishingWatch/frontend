@@ -1,10 +1,4 @@
-import {
-  AccessorFunction,
-  ChangeFlags,
-  DefaultProps,
-  Position,
-  UpdateParameters,
-} from '@deck.gl/core'
+import { AccessorFunction, ChangeFlags, DefaultProps, Position } from '@deck.gl/core'
 import { ScatterplotLayer, ScatterplotLayerProps } from '@deck.gl/layers'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC, EVENT_SHAPES, SHAPES_ORDINALS } from './vessel.config'
@@ -145,13 +139,13 @@ export class VesselEventsLayer<DataT = any, ExtraProps = {}> extends Scatterplot
     }
   }
 
-  updateState(params: UpdateParameters<any>) {
-    super.updateState(params)
-    const { dataChanged } = params.changeFlags
-    if (dataChanged !== false && this.props.onDataChange) {
-      this.props.onDataChange(dataChanged)
-    }
-  }
+  // updateState(params: UpdateParameters<any>) {
+  //   super.updateState(params)
+  //   const { dataChanged } = params.changeFlags
+  //   if (dataChanged !== false && this.props.onDataChange) {
+  //     this.props.onDataChange(dataChanged)
+  //   }
+  // }
 
   draw(params: any) {
     const { highlightStartTime, highlightEndTime } = this.props

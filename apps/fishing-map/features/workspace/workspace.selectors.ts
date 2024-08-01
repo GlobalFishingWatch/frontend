@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { RootState } from 'reducers'
-import { EventTypes, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
+import { EventTypes, Workspace, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
 import { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { DEFAULT_WORKSPACE, PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { selectIsWorkspaceLocation, selectQueryParam } from 'routes/routes.selectors'
@@ -44,15 +44,21 @@ export const selectIsWorkspaceOwner = createSelector(
   }
 )
 
+export function isWorkspacePasswordProtected(workspace: Workspace<any> | null) {
+  if (!workspace) {
+    return false
+  }
+  return (
+    workspace?.viewAccess === WORKSPACE_PASSWORD_ACCESS &&
+    // When password required dataviewInstances are not sent
+    !workspace?.dataviewInstances?.length
+  )
+}
+
 export const selectIsWorkspacePasswordRequired = createSelector(
   [selectWorkspace, selectWorkspacePassword],
   (workspace, workspacePassword) => {
-    return (
-      workspace?.viewAccess === WORKSPACE_PASSWORD_ACCESS &&
-      workspacePassword !== VALID_PASSWORD &&
-      // When password required dataviewInstances are not sent
-      !workspace?.dataviewInstances.length
-    )
+    return isWorkspacePasswordProtected(workspace) && workspacePassword !== VALID_PASSWORD
   }
 )
 
