@@ -23,6 +23,7 @@ import { useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
 import Sidebar from 'features/sidebar/Sidebar'
 import Footer from 'features/footer/Footer'
 import {
+  isWorkspacePasswordProtected,
   selectCurrentWorkspaceId,
   selectIsWorkspaceMapReady,
   selectWorkspaceCustomStatus,
@@ -171,7 +172,9 @@ function App() {
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
-        fitWorkspaceBounds(workspace)
+        if (!isWorkspacePasswordProtected(workspace)) {
+          fitWorkspaceBounds(workspace)
+        }
       }
       actionResolved = true
     }

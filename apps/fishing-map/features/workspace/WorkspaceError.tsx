@@ -5,6 +5,7 @@ import { Button, InputText } from '@globalfishingwatch/ui-components'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { Workspace } from '@globalfishingwatch/api-types'
 import {
+  isWorkspacePasswordProtected,
   selectWorkspace,
   selectWorkspaceError,
   selectWorkspacePassword,
@@ -158,9 +159,8 @@ export function WorkspacePassword(): React.ReactElement {
       const action = await dispatch(fetchWorkspaceThunk({ workspaceId, password }))
       if (fetchWorkspaceThunk.fulfilled.match(action)) {
         const workspace = action.payload as Workspace
-        fitWorkspaceBounds(workspace)
-        // When password is valid dataviewInstances are sent
-        if (workspace?.dataviewInstances?.length) {
+        if (!isWorkspacePasswordProtected(workspace)) {
+          fitWorkspaceBounds(workspace)
           dispatch(setWorkspacePassword(VALID_PASSWORD))
         }
       }
