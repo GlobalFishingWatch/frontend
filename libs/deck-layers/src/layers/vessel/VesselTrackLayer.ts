@@ -1,5 +1,5 @@
 import type { NumericArray } from '@math.gl/core'
-import { AccessorFunction, ChangeFlags, Color, DefaultProps, UpdateParameters } from '@deck.gl/core'
+import { AccessorFunction, ChangeFlags, Color, DefaultProps } from '@deck.gl/core'
 import { PathLayer, PathLayerProps } from '@deck.gl/layers'
 import { TrackSegment } from '@globalfishingwatch/api-types'
 import { VesselTrackData } from '@globalfishingwatch/deck-loaders'
@@ -207,13 +207,13 @@ export class VesselTrackLayer<DataT = any, ExtraProps = {}> extends PathLayer<
     }
   }
 
-  updateState(params: UpdateParameters<any>) {
-    super.updateState(params)
-    const { dataChanged } = params.changeFlags
-    if (dataChanged !== false && this.props.onDataChange) {
-      this.props.onDataChange(dataChanged)
-    }
-  }
+  // updateState(params: UpdateParameters<any>) {
+  //   super.updateState(params)
+  //   const { dataChanged } = params.changeFlags
+  //   if (dataChanged !== false && this.props.onDataChange) {
+  //     this.props.onDataChange(dataChanged)
+  //   }
+  // }
 
   draw(params: any) {
     const {

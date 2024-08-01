@@ -14,7 +14,7 @@ const useVesselProfileLayer = () => {
 
 const useVesselProfileEvents = () => {
   const vesselLayer = useVesselProfileLayer()
-  const dataLoaded = vesselLayer?.instance?.isLoaded
+  const dataLoaded = vesselLayer?.instance?.getVesselEventsLayersLoaded()
   return useMemo(() => {
     if (dataLoaded) {
       return vesselLayer?.instance?.getVesselEventsData()
