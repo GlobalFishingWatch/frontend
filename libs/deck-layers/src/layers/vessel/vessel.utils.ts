@@ -122,19 +122,29 @@ export const getSegmentsFromData = memoize(
   }
 )
 
-export const getEvents = (
-  layers: VesselEventsLayer[],
-  { types } = {} as { types?: EventTypes[]; startTime?: number; endTime?: number }
-) => {
-  return layers
-    .flatMap((layer: VesselEventsLayer): ApiEvent<EventVessel>[] => {
-      const events =
-        types && types.length
-          ? types.includes(layer.props.type)
-            ? layer.props.data
-            : []
-          : layer.props.data || []
-      return events as ApiEvent[]
-    }, [])
-    .sort((a, b) => (a.start as number) - (b.start as number))
-}
+export const getEvents = memoize(
+  (
+    layers: VesselEventsLayer[],
+    { types } = {} as { types?: EventTypes[]; startTime?: number; endTime?: number }
+  ) => {
+    return layers
+      .flatMap((layer: VesselEventsLayer): ApiEvent<EventVessel>[] => {
+        const events =
+          types && types.length
+            ? types.includes(layer.props.type)
+              ? layer.props.data
+              : []
+            : layer.props.data || []
+        return events as ApiEvent[]
+      }, [])
+      .sort((a, b) => (a.start as number) - (b.start as number))
+  },
+  (layers, { types, startTime, endTime }) => {
+    const typesHash = types?.join(',')
+    const layersLength = layers.length
+    const layersIdsHash = layers.map((layer) => layer.id).join(',')
+    const layersLoaded = layers.map((layer) => layer.isLoaded).join(',')
+    const chunksHash = JSON.stringify(getVesselResourceChunks(startTime, endTime))
+    return `${layersLength}-${layersLoaded}-${layersIdsHash}-${typesHash}-${chunksHash}`
+  }
+)

@@ -17,11 +17,7 @@ const useVesselProfileEvents = () => {
   const dataLoaded = vesselLayer?.instance?.getVesselEventsLayersLoaded()
   return useMemo(() => {
     if (dataLoaded) {
-      const events = vesselLayer?.instance?.getVesselEventsData()
-      console.log('etting vessel events', events)
-      return events
-    } else {
-      console.log('vessel events not loaded', vesselLayer)
+      return vesselLayer?.instance?.getVesselEventsData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataLoaded])
@@ -43,8 +39,7 @@ export const useSetVesselProfileEvents = () => {
   const vesselId = useSelector(selectVesselId)
   const dispatch = useAppDispatch()
   useEffect(() => {
-    if (vesselId) {
-      console.log('setting vessel events!', events)
+    if (vesselId && events) {
       dispatch(setVesselEvents({ vesselId, events }))
     }
   }, [dispatch, events, vesselId])
