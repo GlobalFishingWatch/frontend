@@ -253,5 +253,5 @@ export function getGraphDataFromFourwingsHeatmap(
     }
   })
 
-  return timeseries
+  return timeseries.sort((a, b) => a.date - b.date)
 }
