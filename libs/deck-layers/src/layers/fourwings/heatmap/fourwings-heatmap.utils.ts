@@ -2,6 +2,7 @@ import { stringify } from 'qs'
 import type { Feature } from 'geojson'
 import { Color } from '@deck.gl/core'
 import { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
+import { DateTime } from 'luxon'
 import {
   CONFIG_BY_INTERVAL,
   FourwingsFeature,
@@ -161,7 +162,6 @@ type GetDataUrlByChunk = {
   vesselGroups?: string[]
   tilesUrl?: string
   extentStart?: number
-  extentEnd?: number
 }
 
 export const getDataUrlBySublayer = ({
@@ -170,13 +170,16 @@ export const getDataUrlBySublayer = ({
   sublayer,
   tilesUrl = HEATMAP_API_TILES_URL,
   extentStart,
-  extentEnd,
-}: GetDataUrlByChunk) => {
+}: // extentEnd,
+GetDataUrlByChunk) => {
   const vesselGroup = Array.isArray(sublayer.vesselGroups)
     ? sublayer.vesselGroups[0]
     : sublayer.vesselGroups
   const start = extentStart && extentStart > chunk.start ? extentStart : chunk.bufferedStart
-  const end = extentEnd && extentEnd < chunk.end ? extentEnd : chunk.bufferedEnd
+  const tomorrow = DateTime.now().toUTC().endOf('day').plus({ millisecond: 1 }).toMillis()
+  // const end = extentEnd && extentEnd < chunk.end ? extentEnd : chunk.bufferedEnd
+
+  const end = tomorrow && tomorrow < chunk.end ? tomorrow : chunk.bufferedEnd
   const params = {
     format: '4WINGS',
     interval: chunk.interval,

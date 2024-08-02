@@ -450,7 +450,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       tilesUrl,
       comparisonMode,
       extentStart,
-      extentEnd,
     } = this.props
     const { colorDomain, colorRanges } = this.state
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
@@ -469,7 +468,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         sublayer,
         tilesUrl,
         extentStart,
-        extentEnd,
       }) as string
       const response = await GFWAPI.fetch<Response>(url!, {
         signal: tile.signal,
