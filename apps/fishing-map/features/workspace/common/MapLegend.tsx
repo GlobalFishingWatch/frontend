@@ -68,7 +68,7 @@ const MapLegendWrapper = ({
   if (isBivariate && legendSublayerIndex !== 0) {
     return null
   }
-  if (legendSublayerIndex < 0 || !deckLegend.ranges || !deckLegend.domain) {
+  if (legendSublayerIndex < 0 || !deckLegend.ranges?.length || !deckLegend.domain?.length) {
     return showPlaceholder ? <MapLegendPlaceholder /> : null
   }
 
