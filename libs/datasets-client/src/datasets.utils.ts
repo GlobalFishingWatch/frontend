@@ -1,5 +1,5 @@
+import { DateTime } from 'luxon'
 import { Dataset, DatasetTypes, Dataview } from '@globalfishingwatch/api-types'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { UrlDataviewInstance } from './types'
 
 export const removeDatasetVersion = (datasetId: string) => {
@@ -30,18 +30,24 @@ export const getDatasetsExtent = (
   { format }: { format: 'isoString' | 'timestamp' } = { format: 'isoString' }
 ) => {
   const startRanges = datasets?.flatMap((d) =>
-    d?.startDate ? new Date(d.startDate).getTime() : []
+    d?.startDate ? DateTime.fromISO(d.startDate, { zone: 'utc' }).toMillis() : []
   )
-  const endRanges = datasets?.flatMap((d) => (d?.endDate ? new Date(d.endDate).getTime() : []))
-  const extentStartDate = startRanges?.length ? getUTCDate(Math.min(...startRanges)) : undefined
+  const endRanges = datasets?.flatMap((d) =>
+    d?.endDate ? DateTime.fromISO(d.endDate, { zone: 'utc' }).plus({ day: 1 }).toMillis() : []
+  )
+  const extentStartDate = startRanges?.length
+    ? DateTime.fromMillis(Math.min(...startRanges), { zone: 'utc' })
+    : undefined
   let extentStart
   if (extentStartDate) {
-    extentStart = format === 'isoString' ? extentStartDate.toISOString() : extentStartDate.getTime()
+    extentStart = format === 'isoString' ? extentStartDate.toISO() : extentStartDate.toMillis()
   }
-  const extentEndDate = endRanges?.length ? getUTCDate(Math.max(...endRanges)) : undefined
+  const extentEndDate = endRanges?.length
+    ? DateTime.fromMillis(Math.max(...endRanges), { zone: 'utc' })
+    : undefined
   let extentEnd
   if (extentEndDate) {
-    extentEnd = format === 'isoString' ? extentEndDate.toISOString() : extentEndDate.getTime()
+    extentEnd = format === 'isoString' ? extentEndDate.toISO() : extentEndDate.toMillis()
   }
 
   return { extentStart: extentStart as string | number, extentEnd: extentEnd as string | number }

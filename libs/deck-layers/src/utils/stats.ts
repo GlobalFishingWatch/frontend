@@ -23,6 +23,7 @@ export function removeOutliers({
   aggregationOperation?: 'avg' | 'sum'
 }) {
   const allValuesCleaned = allValues.filter(Boolean)
+  if (!allValuesCleaned.length) return []
   const meanValue = mean(allValuesCleaned)
   const deviationScale = aggregationOperation === 'avg' ? 2 : 1
   const standardDeviationValue = standardDeviation(allValuesCleaned)

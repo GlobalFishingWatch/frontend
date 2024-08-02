@@ -15,6 +15,7 @@ import { sample, mean, standardDeviation } from 'simple-statistics'
 import { groupBy, orderBy } from 'es-toolkit'
 import { stringify } from 'qs'
 import { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { DateTime } from 'luxon'
 import { GFWAPI, ParsedAPIError } from '@globalfishingwatch/api-client'
 import { CONFIG_BY_INTERVAL, FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
@@ -370,7 +371,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       return Array.isArray(sublayer.vesselGroups) ? sublayer.vesselGroups[0] : sublayer.vesselGroups
     })
     const start = extentStart && extentStart > startTime ? extentStart : startTime
-    const end = extentEnd && extentEnd < endTime ? extentEnd : endTime
+    const end =
+      extentEnd && extentEnd < endTime
+        ? DateTime.fromMillis(extentEnd).plus({ day: 1 }).toMillis()
+        : endTime
 
     const params = {
       datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
