@@ -17,7 +17,6 @@ export const getAreaIdFromFeature = (
 ): AreaKeyId => {
   return (
     feature.properties?.gfw_id ||
-    // TODO:deck check if promoteId is covered for every case in the getPickingInfo function
     feature.properties?.[(feature as any).promoteId as string] ||
     (feature.id as string)
   )
@@ -63,20 +62,6 @@ export const useContextInteractions = () => {
   const setReportArea = useCallback(
     (feature: ContextPickingObject | UserLayerPickingObject) => {
       const { title, value } = feature
-      // TODO:deck review this
-      // const areaId = getAreaIdFromFeature(feature) as string
-      // Report already does it on page reload but to avoid waiting
-      // this moves the map to the same position
-      // const bounds = getFeatureBounds(feature)
-      // if (bounds) {
-      //   const boundsParams = {
-      //     padding: FIT_BOUNDS_REPORT_PADDING,
-      //     mapWidth: window.innerWidth / 2,
-      //     mapHeight: window.innerHeight - TIMEBAR_HEIGHT - FOOTER_HEIGHT,
-      //   }
-      //   fitMapBounds(bounds, boundsParams)
-      // }
-
       dispatchClickedEvent(null)
 
       trackEvent({
