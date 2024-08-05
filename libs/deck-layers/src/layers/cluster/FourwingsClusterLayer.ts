@@ -17,7 +17,13 @@ import { ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import Supercluster, { ClusterFeature, PointFeature } from 'supercluster'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
-import { getLayerGroupOffset, GFWMVTLoader, LayerGroup } from '../../utils'
+import {
+  DEFAULT_BACKGROUND_COLOR,
+  getLayerGroupOffset,
+  GFWMVTLoader,
+  hexToDeckColor,
+  LayerGroup,
+} from '../../utils'
 import { BaseFourwingsLayerProps, getISODateFromTS } from '../fourwings'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import {
@@ -42,6 +48,13 @@ export class FourwingsClusterLayer extends CompositeLayer<
   static layerName = 'FourwingsPositionsTileLayer'
   static defaultProps = defaultProps
   state!: FourwingsClustersTileLayerState
+  clusterIndex = new Supercluster({
+    radius: 100,
+    maxZoom: 8,
+    reduce: (accumulated, props) => {
+      accumulated.count += props.count
+    },
+  })
 
   get isLoaded(): boolean {
     return super.isLoaded
@@ -57,12 +70,18 @@ export class FourwingsClusterLayer extends CompositeLayer<
   updateState({ props, oldProps, context }: UpdateParameters<this>) {}
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsPositionFeature> }) => {
+    if (info.object?.properties.cluster_id) {
+      const clusterExpansionZoom = this.clusterIndex.getClusterExpansionZoom(
+        info.object?.properties.cluster_id
+      )
+      console.log('getPickingInfo:', clusterExpansionZoom)
+    }
+
     return info
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
     const { zoom } = this.context.viewport
-    console.log('this.context.viewport:', this.context.viewport)
     const data = tiles.flatMap((tile) => {
       return tile.content
         ? tile.content.map((feature: any) =>
@@ -78,9 +97,8 @@ export class FourwingsClusterLayer extends CompositeLayer<
       },
       properties: feature.properties,
     })) as PointFeature<{}>[]
-    const index = new Supercluster({ radius: 100, maxZoom: 4 })
-    index.load(points)
-    const clusters = index.getClusters([-180, -85, 180, 85], Math.round(zoom))
+    this.clusterIndex.load(points)
+    const clusters = this.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
 
     requestAnimationFrame(() => {
       this.setState({
@@ -94,10 +112,8 @@ export class FourwingsClusterLayer extends CompositeLayer<
     url: string,
     {
       signal,
-      layer,
       loadOptions,
     }: {
-      layer: Layer
       signal?: AbortSignal
       loadOptions?: any
     }
@@ -138,11 +154,12 @@ export class FourwingsClusterLayer extends CompositeLayer<
     return `${baseUrl}?${stringify(params)}`
   }
 
-  _getRadius(d: ClusterFeature<{}>) {
-    return 8 + Math.sqrt(d.properties.point_count) * 2
+  _getRadius(d: ClusterFeature<{ count: number }>) {
+    return d.properties.cluster ? 8 + Math.round(Math.sqrt(d.properties.count) / 3) : 8
   }
 
   renderLayers(): Layer<{}> | LayersList | null {
+    const { sublayers } = this.props
     const { clusters } = this.state
     return [
       new MVTLayer(this.props, {
@@ -160,8 +177,8 @@ export class FourwingsClusterLayer extends CompositeLayer<
         data: clusters,
         getPosition: (d) => d.geometry.coordinates,
         getRadius: (d) => this._getRadius(d),
-        getFillColor: [255, 255, 255, 255],
-        radiusMinPixels: 8,
+        getFillColor: hexToDeckColor(sublayers[0].color),
+        radiusMinPixels: 2,
         radiusUnits: 'pixels',
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         getLineWidth: 1,
@@ -170,9 +187,9 @@ export class FourwingsClusterLayer extends CompositeLayer<
       new TextLayer({
         id: `${this.props.id}-counts`,
         data: clusters,
-        getText: (d) => d.properties.point_count?.toString(),
+        getText: (d) => (d.properties.cluster ? d.properties.count?.toFixed(0) : ''),
         getPosition: (d) => d.geometry.coordinates,
-        getColor: [22, 63, 137],
+        getColor: DEFAULT_BACKGROUND_COLOR,
         getSize: 14,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
         sizeUnits: 'pixels',
