@@ -105,8 +105,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   _getColorRanges = () => {
-    // TODO:deck research if we can use the context to get other layers so we can enable whiteEnd
-    // TODO:deck remove this and calculate values equal to Compare
     if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
       return getBivariateRamp(this.props.sublayers.map((s) => s?.colorRamp) as ColorRampId[])
     }
@@ -474,7 +472,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         responseType: 'default',
       })
       if (tile.signal?.aborted || response.status !== 200) {
-        // TODO:deck handle this error better
         throw new Error()
       }
       cols = parseInt(response.headers.get('X-columns') as string)

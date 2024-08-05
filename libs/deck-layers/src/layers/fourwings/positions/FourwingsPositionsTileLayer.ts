@@ -387,7 +387,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           sublayerProperties?.join(',')
         ),
       }),
-      // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
       'date-range': `${getISODateFromTS(start < end ? start : end)},${getISODateFromTS(end)}`,
     }
 

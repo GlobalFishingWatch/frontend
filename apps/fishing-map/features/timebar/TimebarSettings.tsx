@@ -70,8 +70,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const vesselIds = activeTrackDataviews.map((v) => v.id)
   const vesselLayers = useGetDeckLayers<VesselLayer>(vesselIds)
-  // TODO:deck better validation of the layer contains data
-  const hasTracksData = vesselLayers?.length > 0
+  const hasTracksData = vesselLayers?.some((layer) => layer?.instance.getVesselTracksLayersLoaded())
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
