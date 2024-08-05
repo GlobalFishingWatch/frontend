@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckGL, DeckGLRef } from '@deck.gl/react'
 import dynamic from 'next/dynamic'
@@ -135,11 +135,15 @@ const MapWrapper = () => {
       >
         <MapAnnotations />
       </DeckGL>
-      {isMapDrawing && <DrawDialog />}
+      {isMapDrawing && (
+        <Fragment>
+          <CoordinateEditOverlay />
+          <DrawDialog />
+        </Fragment>
+      )}
       <MapPopups />
       <ErrorNotificationDialog />
       <MapAnnotationsDialog />
-      <CoordinateEditOverlay />
       <MapControls mapLoading={mapLoading || isReportAreaLoading} />
       {isWorkspaceLocation && !isReportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />

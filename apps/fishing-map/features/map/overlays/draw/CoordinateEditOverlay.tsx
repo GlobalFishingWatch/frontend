@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Feature, Polygon } from 'geojson'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
@@ -24,6 +24,13 @@ export const CoordinateEditOverlay = () => {
     newPointLatitude !== null ? Number(newPointLatitude) : Number(currentPointCoordinates?.[1])
   const editingPointLongitude =
     newPointLongitude !== null ? Number(newPointLongitude) : Number(currentPointCoordinates?.[0])
+
+  useEffect(() => {
+    if (!currentPointCoordinates?.length) {
+      setNewPointLatitude(null)
+      setNewPointLongitude(null)
+    }
+  }, [currentPointCoordinates])
 
   const allowDeletePoint =
     drawingMode === 'polygons'
@@ -65,12 +72,6 @@ export const CoordinateEditOverlay = () => {
     [drawLayer, editingPointLatitude]
   )
 
-  const onDeletePoint = useCallback(() => {
-    if (allowDeletePoint) {
-      drawLayer?.deleteSelectedPosition()
-    }
-  }, [allowDeletePoint, drawLayer])
-
   const resetEditingPoint = useCallback(() => {
     // As this is triggered with clickOutside we need to wait to reset
     // in case before the deleteSelectedPosition is called
@@ -80,6 +81,13 @@ export const CoordinateEditOverlay = () => {
       drawLayer?.resetSelectedPoint()
     }, 1)
   }, [drawLayer])
+
+  const onDeletePoint = useCallback(() => {
+    if (allowDeletePoint) {
+      drawLayer?.deleteSelectedPosition()
+      resetEditingPoint()
+    }
+  }, [allowDeletePoint, drawLayer, resetEditingPoint])
 
   const onConfirm = useCallback(() => {
     drawLayer?.setCurrentPointCoordinates([editingPointLongitude, editingPointLatitude])
