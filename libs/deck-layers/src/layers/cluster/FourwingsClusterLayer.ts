@@ -13,10 +13,13 @@ import { stringify } from 'qs'
 import { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { DateTime } from 'luxon'
 import { Feature, Polygon } from 'geojson'
-import { ScatterplotLayer, TextLayer } from '@deck.gl/layers'
+import { IconLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import Supercluster, { ClusterFeature, PointFeature } from 'supercluster'
+import { ScalePower, scaleSqrt } from 'd3-scale'
+import { max } from 'simple-statistics'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import { PATH_BASENAME } from '../../layers/layers.config'
 import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
@@ -31,18 +34,31 @@ import {
   POSITIONS_API_TILES_URL,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
 } from '../../layers/fourwings/fourwings.config'
+import { ClusterEventType } from './cluster.types'
 
 type FourwingsClustersLayerProps = BaseFourwingsLayerProps & Partial<TileLayerProps>
 
 type FourwingsClusterFeature = ClusterFeature<{ count: number }>
+type FourwingsPointFeature = PointFeature<{}>
 
 type FourwingsClustersTileLayerState = {
   viewportLoaded: boolean
   clusters?: FourwingsClusterFeature[]
+  points?: FourwingsPointFeature[]
+  radiusScale?: ScalePower<number, number>
 }
 
 const defaultProps: DefaultProps<FourwingsClustersLayerProps> = {
   tilesUrl: POSITIONS_API_TILES_URL,
+}
+
+const ICON_SIZE = 16
+const MIN_CLUSTER_RADIUS = 10
+const MAX_CLUSTER_RADIUS = 30
+const ICON_MAPPING: Record<ClusterEventType, any> = {
+  encounter: { x: 0, y: 0, width: 36, height: 36, mask: true },
+  gap: { x: 40, y: 0, width: 36, height: 36, mask: true },
+  port_visit: { x: 80, y: 0, width: 36, height: 36, mask: true },
 }
 
 export class FourwingsClusterLayer extends CompositeLayer<
@@ -94,21 +110,35 @@ export class FourwingsClusterLayer extends CompositeLayer<
           )
         : []
     }) as Feature<Polygon>[]
-    const points = data.map((feature) => ({
+    const dataAsPoints = data.map((feature) => ({
       type: 'Feature',
       geometry: {
         type: 'Point',
         coordinates: feature.geometry.coordinates[0][0],
       },
       properties: feature.properties,
-    })) as PointFeature<{}>[]
-    this.clusterIndex.load(points)
-    const clusters = this.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
-
+    })) as FourwingsPointFeature[]
+    this.clusterIndex.load(dataAsPoints)
+    const allClusters = this.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
+    let clusters: FourwingsClusterFeature[] = []
+    let points: FourwingsPointFeature[] = []
+    if (allClusters.length) {
+      allClusters.forEach((f) => {
+        f.properties.cluster
+          ? clusters.push(f as FourwingsClusterFeature)
+          : points.push(f as FourwingsPointFeature)
+      })
+    }
+    const counts = clusters.map((cluster) => cluster.properties.count)
+    const radiusScale = scaleSqrt()
+      .domain([1, counts.length ? max(counts) : 1])
+      .range([MIN_CLUSTER_RADIUS, MAX_CLUSTER_RADIUS])
     requestAnimationFrame(() => {
       this.setState({
         viewportLoaded: true,
         clusters,
+        points,
+        radiusScale,
       } as FourwingsClustersTileLayerState)
     })
   }
@@ -159,21 +189,21 @@ export class FourwingsClusterLayer extends CompositeLayer<
     return `${baseUrl}?${stringify(params)}`
   }
 
-  _getPosition(d: FourwingsClusterFeature) {
+  _getPosition = (d: FourwingsClusterFeature) => {
     return d.geometry.coordinates as [number, number]
   }
 
-  _getRadius(d: FourwingsClusterFeature) {
-    return d.properties.cluster ? 8 + Math.round(Math.sqrt(d.properties.count) / 3) : 8
+  _getRadius = (d: FourwingsClusterFeature) => {
+    return this.state.radiusScale?.(d.properties.count) || MIN_CLUSTER_RADIUS
   }
 
-  _getClusterLabel(d: FourwingsClusterFeature) {
+  _getClusterLabel = (d: FourwingsClusterFeature) => {
     return d.properties.cluster ? d.properties.count?.toFixed(0) : ''
   }
 
   renderLayers(): Layer<{}> | LayersList | null {
     const { sublayers } = this.props
-    const { clusters } = this.state
+    const { clusters, points, radiusScale } = this.state
     return [
       new MVTLayer(this.props, {
         id: `${this.props.id}-tiles`,
@@ -191,12 +221,30 @@ export class FourwingsClusterLayer extends CompositeLayer<
         getPosition: this._getPosition,
         getRadius: this._getRadius,
         getFillColor: hexToDeckColor(sublayers[0].color),
-        radiusMinPixels: 2,
+        radiusMinPixels: MIN_CLUSTER_RADIUS,
         radiusUnits: 'pixels',
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         stroked: true,
         getLineColor: DEFAULT_LINE_COLOR,
         lineWidthMinPixels: 1,
+        pickable: true,
+        updateTriggers: {
+          getRadius: [radiusScale],
+        },
+      }),
+      new IconLayer({
+        id: `${this.props.id}-icons`,
+        data: points,
+        getPosition: this._getPosition,
+        getColor: hexToDeckColor(sublayers[0].color),
+        getSize: ICON_SIZE,
+        sizeUnits: 'pixels',
+        iconAtlas: `${PATH_BASENAME}/events-sprite.png`,
+        iconMapping: ICON_MAPPING,
+        //TODO remove fixed value
+        // getIcon: () => this.props.eventType
+        getIcon: () => 'encounter',
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
         pickable: true,
       }),
       new TextLayer({
