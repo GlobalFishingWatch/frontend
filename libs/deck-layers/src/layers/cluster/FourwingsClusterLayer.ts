@@ -19,6 +19,7 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import {
   DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_LINE_COLOR,
   getLayerGroupOffset,
   GFWMVTLoader,
   hexToDeckColor,
@@ -33,9 +34,11 @@ import {
 
 type FourwingsClustersLayerProps = BaseFourwingsLayerProps & Partial<TileLayerProps>
 
+type FourwingsClusterFeature = ClusterFeature<{ count: number }>
+
 type FourwingsClustersTileLayerState = {
   viewportLoaded: boolean
-  clusters?: ClusterFeature<{}>[]
+  clusters?: FourwingsClusterFeature[]
 }
 
 const defaultProps: DefaultProps<FourwingsClustersLayerProps> = {
@@ -57,7 +60,7 @@ export class FourwingsClusterLayer extends CompositeLayer<
   })
 
   get isLoaded(): boolean {
-    return super.isLoaded
+    return super.isLoaded && this.state.viewportLoaded
   }
 
   initializeState(context: LayerContext) {
@@ -70,11 +73,13 @@ export class FourwingsClusterLayer extends CompositeLayer<
   updateState({ props, oldProps, context }: UpdateParameters<this>) {}
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsPositionFeature> }) => {
-    if (info.object?.properties.cluster_id) {
+    if (info.object?.properties.cluster) {
       const clusterExpansionZoom = this.clusterIndex.getClusterExpansionZoom(
         info.object?.properties.cluster_id
       )
-      console.log('getPickingInfo:', clusterExpansionZoom)
+      console.log('getPickingInfo:', info.object, clusterExpansionZoom)
+    } else {
+      console.log('getPickingInfo:', info.object)
     }
 
     return info
@@ -154,8 +159,16 @@ export class FourwingsClusterLayer extends CompositeLayer<
     return `${baseUrl}?${stringify(params)}`
   }
 
-  _getRadius(d: ClusterFeature<{ count: number }>) {
+  _getPosition(d: FourwingsClusterFeature) {
+    return d.geometry.coordinates as [number, number]
+  }
+
+  _getRadius(d: FourwingsClusterFeature) {
     return d.properties.cluster ? 8 + Math.round(Math.sqrt(d.properties.count) / 3) : 8
+  }
+
+  _getClusterLabel(d: FourwingsClusterFeature) {
+    return d.properties.cluster ? d.properties.count?.toFixed(0) : ''
   }
 
   renderLayers(): Layer<{}> | LayersList | null {
@@ -175,20 +188,22 @@ export class FourwingsClusterLayer extends CompositeLayer<
       new ScatterplotLayer({
         id: `${this.props.id}-scatterplot`,
         data: clusters,
-        getPosition: (d) => d.geometry.coordinates,
-        getRadius: (d) => this._getRadius(d),
+        getPosition: this._getPosition,
+        getRadius: this._getRadius,
         getFillColor: hexToDeckColor(sublayers[0].color),
         radiusMinPixels: 2,
         radiusUnits: 'pixels',
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
-        getLineWidth: 1,
+        stroked: true,
+        getLineColor: DEFAULT_LINE_COLOR,
+        lineWidthMinPixels: 1,
         pickable: true,
       }),
       new TextLayer({
         id: `${this.props.id}-counts`,
         data: clusters,
-        getText: (d) => (d.properties.cluster ? d.properties.count?.toFixed(0) : ''),
-        getPosition: (d) => d.geometry.coordinates,
+        getText: this._getClusterLabel,
+        getPosition: this._getPosition,
         getColor: DEFAULT_BACKGROUND_COLOR,
         getSize: 14,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
