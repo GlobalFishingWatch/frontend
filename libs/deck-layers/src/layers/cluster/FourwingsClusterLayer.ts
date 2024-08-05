@@ -24,6 +24,7 @@ import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
   getLayerGroupOffset,
+  getUTCDateTime,
   GFWMVTLoader,
   hexToDeckColor,
   LayerGroup,
@@ -176,12 +177,16 @@ export class FourwingsClusterLayer extends CompositeLayer<
         ? DateTime.fromMillis(extentEnd).plus({ day: 1 }).toMillis()
         : endTime
 
+    const startIso = getUTCDateTime(start < end ? start : end)
+      .startOf('hour')
+      .toISO()
+    const endIso = getUTCDateTime(end).startOf('hour').toISO()
     const params = {
       datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
       filters: sublayers.map((sublayer) => sublayer.filter),
       format: 'MVT',
       'temporal-aggregation': true,
-      'date-range': `${getISODateFromTS(start < end ? start : end)},${getISODateFromTS(end)}`,
+      'date-range': `${startIso},${endIso}`,
     }
 
     const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
