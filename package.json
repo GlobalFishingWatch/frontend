@@ -143,6 +143,7 @@
     "shpjs": "^4.0.4",
     "simple-statistics": "^7.8.3",
     "skmeans": "^0.11.3",
+    "supercluster": "^8.0.1",
     "tippy.js": "^6.3.7",
     "tslib": "^2.3.0",
     "typescript": "^5.5.3",

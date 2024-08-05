@@ -5,6 +5,7 @@ import {
   BaseMapLayer,
   ClusterLayer,
   ContextLayer,
+  FourwingsClusterLayer,
   FourwingsLayer,
   GraticulesLayer,
   PolygonsLayer,
@@ -59,7 +60,8 @@ export const dataviewToDeckLayer = (
     dataview.config?.type === DataviewType.HeatmapStatic
   ) {
     const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, layerConfig)
-    const layer = new FourwingsLayer(deckLayerProps)
+    // const layer = new FourwingsLayer(deckLayerProps)
+    const layer = new FourwingsClusterLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Context) {
