@@ -8,7 +8,8 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -23,8 +24,10 @@ import { SAR_DATAVIEW_SLUG } from 'data/workspaces'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import Color from 'features/workspace/common/Color'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import MapLegend from 'features/workspace/common/MapLegend'
+import { useActivityDataviewId } from 'features/map/map-layers.hooks'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import DatasetFlagField from '../shared/DatasetFlagsField'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -57,14 +60,15 @@ function ActivityLayerPanel({
 
   const { deleteDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
+  const isGFWUser = useSelector(selectIsGFWUser)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const hintsDismissed = useSelector(selectHintsDismissed)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
-  const layerLoadedState = useDeckLayerLoadedState()
-  const layerLoaded = Object.entries(layerLoadedState).some(
-    ([id, state]) => id.split(',').includes(dataview.id) && state.loaded
-  )
+  const dataviewId = useActivityDataviewId(dataview)
+  const activityLayer = useGetDeckLayer<FourwingsLayer>(dataviewId)
+  const layerLoaded = activityLayer?.loaded
+  const layerError = activityLayer?.instance?.getError?.()
 
   // TODO remove when final decission on stats display is taken
   // const urlTimeRange = useSelector(selectUrlTimeRange)
@@ -256,10 +260,25 @@ function ActivityLayerPanel({
               {!readOnly && (
                 <Remove onClick={onRemoveLayerClick} loading={layerActive && !layerLoaded} />
               )}
+              {!readOnly && layerError && (
+                <IconButton
+                  icon={'warning'}
+                  type={'warning'}
+                  tooltip={
+                    isGFWUser
+                      ? `${t(
+                          'errors.layerLoading',
+                          'There was an error loading the layer'
+                        )} (${layerError})`
+                      : t('errors.layerLoading', 'There was an error loading the layer')
+                  }
+                  size="small"
+                />
+              )}
             </div>
             <IconButton
-              icon={layerActive ? 'more' : undefined}
-              type="default"
+              icon={layerError ? 'warning' : layerActive ? 'more' : undefined}
+              type={layerError ? 'warning' : 'default'}
               loading={layerActive && !layerLoaded}
               className={cx('print-hidden', styles.shownUntilHovered)}
               size="small"

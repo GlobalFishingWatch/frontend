@@ -217,10 +217,6 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
                 onToggleClick={onToggleColorOpen}
                 onClickOutside={closeExpandedContainer}
               />
-              {/* {datasetGeometryType === 'tracks' && (
-                // TODO:deck
-                // <FitBounds hasError={trackError} trackResource={resource} />
-              )} */}
             </Fragment>
           )}
           {layerActive &&

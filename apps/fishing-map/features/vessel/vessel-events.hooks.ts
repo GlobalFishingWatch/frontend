@@ -25,7 +25,6 @@ const useVesselProfileEvents = () => {
 
 export const useVesselProfileEventsLoading = () => {
   const vesselInstance = useVesselProfileLayer()
-  // TODO:deck review this and try to avoid intermediate loading states while toggled on events load
   return vesselInstance?.instance && !vesselInstance?.instance?.getVesselEventsLayersLoaded()
 }
 
