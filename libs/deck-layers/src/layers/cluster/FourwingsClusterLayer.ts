@@ -16,6 +16,7 @@ import { Feature, Polygon } from 'geojson'
 import { IconLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import Supercluster, { ClusterFeature, PointFeature } from 'supercluster'
 import { ScalePower, scaleSqrt } from 'd3-scale'
+import { format } from 'd3-format'
 import { max } from 'simple-statistics'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
@@ -53,7 +54,7 @@ const defaultProps: DefaultProps<FourwingsClustersLayerProps> = {
 }
 
 const ICON_SIZE = 16
-const MIN_CLUSTER_RADIUS = 10
+const MIN_CLUSTER_RADIUS = 12
 const MAX_CLUSTER_RADIUS = 30
 const ICON_MAPPING: Record<ClusterEventType, any> = {
   encounter: { x: 0, y: 0, width: 36, height: 36, mask: true },
@@ -90,10 +91,10 @@ export class FourwingsClusterLayer extends CompositeLayer<
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsPositionFeature> }) => {
     if (info.object?.properties.cluster) {
-      const clusterExpansionZoom = this.clusterIndex.getClusterExpansionZoom(
-        info.object?.properties.cluster_id
-      )
-      console.log('getPickingInfo:', info.object, clusterExpansionZoom)
+      // const clusterExpansionZoom = this.clusterIndex.getClusterExpansionZoom(
+      //   info.object?.properties.cluster_id
+      // )
+      console.log('getPickingInfo:', info.object)
     } else {
       console.log('getPickingInfo:', info.object)
     }
@@ -124,7 +125,7 @@ export class FourwingsClusterLayer extends CompositeLayer<
     let points: FourwingsPointFeature[] = []
     if (allClusters.length) {
       allClusters.forEach((f) => {
-        f.properties.cluster
+        f.properties.count > 1
           ? clusters.push(f as FourwingsClusterFeature)
           : points.push(f as FourwingsPointFeature)
       })
@@ -198,7 +199,13 @@ export class FourwingsClusterLayer extends CompositeLayer<
   }
 
   _getClusterLabel = (d: FourwingsClusterFeature) => {
-    return d.properties.cluster ? d.properties.count?.toFixed(0) : ''
+    if (d.properties.count > 10000) {
+      return `>${format('.2s')(d.properties.count)}`
+    }
+    if (d.properties.count > 1000) {
+      return `>${format('.1s')(d.properties.count)}`
+    }
+    return d.properties.count.toString()
   }
 
   renderLayers(): Layer<{}> | LayersList | null {
@@ -253,7 +260,7 @@ export class FourwingsClusterLayer extends CompositeLayer<
         getText: this._getClusterLabel,
         getPosition: this._getPosition,
         getColor: DEFAULT_BACKGROUND_COLOR,
-        getSize: 14,
+        getSize: 12,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
         sizeUnits: 'pixels',
         getTextAnchor: 'middle',
