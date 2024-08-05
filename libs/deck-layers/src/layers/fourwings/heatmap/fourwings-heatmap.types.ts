@@ -113,6 +113,7 @@ export type FourwingsHeatmapTilesCache = {
 
 export type FourwinsTileLayerScale = ScaleLinear<FourwingsColorObject, FourwingsColorObject, never>
 export type FourwingsTileLayerState = {
+  error: string
   tilesCache: FourwingsHeatmapTilesCache
   colorDomain: FourwingsTileLayerColorDomain
   colorRanges: FourwingsTileLayerColorRange

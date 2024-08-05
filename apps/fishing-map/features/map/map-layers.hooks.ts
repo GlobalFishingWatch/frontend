@@ -11,6 +11,7 @@ import {
 } from '@globalfishingwatch/deck-layer-composer'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { FourwingsLayer, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
   selectWorkspaceStatus,
@@ -22,7 +23,11 @@ import {
   selectIsUserLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
-import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  selectActivityMergedDataviewId,
+  selectDataviewInstancesResolvedVisible,
+  selectDetectionsMergedDataviewId,
+} from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectBivariateDataviews,
   selectActivityVisualizationMode,
@@ -47,6 +52,18 @@ import {
 import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
 import { useMapViewState } from './map-viewport.hooks'
 import { selectClickedEvent } from './map.slice'
+
+export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
+  const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
+  const detectionsMergedDataviewId = useSelector(selectDetectionsMergedDataviewId)
+  const dataviewId =
+    dataview.category === DataviewCategory.Environment
+      ? dataview.id
+      : dataview.category === DataviewCategory.Detections
+      ? detectionsMergedDataviewId
+      : activityMergedDataviewId
+  return dataviewId
+}
 
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()

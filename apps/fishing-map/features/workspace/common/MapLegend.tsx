@@ -1,17 +1,13 @@
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import { LegendType, MapLegend, Tooltip, UILegend } from '@globalfishingwatch/ui-components'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DeckLegendAtom, useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
-import {
-  selectActivityMergedDataviewId,
-  selectDetectionsMergedDataviewId,
-} from 'features/dataviews/selectors/dataviews.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { t } from 'features/i18n/i18n'
 import MapLegendPlaceholder from 'features/workspace/common/MapLegendPlaceholder'
+import { useActivityDataviewId } from 'features/map/map-layers.hooks'
 import styles from './MapLegend.module.css'
 
 const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
@@ -48,15 +44,7 @@ const MapLegendWrapper = ({
   showPlaceholder?: boolean
 }) => {
   const { t } = useTranslation()
-  // TODO: restore useTimeCompareTimeDescription and delete the component in the map folder
-  const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
-  const detectionsMergedDataviewId = useSelector(selectDetectionsMergedDataviewId)
-  const dataviewId =
-    dataview.category === DataviewCategory.Environment
-      ? dataview.id
-      : dataview.category === DataviewCategory.Detections
-      ? detectionsMergedDataviewId
-      : activityMergedDataviewId
+  const dataviewId = useActivityDataviewId(dataview)
   const deckLegend = getLegendLabelTranslated(useGetDeckLayerLegend(dataviewId))
   const isBivariate = deckLegend?.type === LegendType.Bivariate
   const legendSublayerIndex = deckLegend?.sublayers?.findIndex(

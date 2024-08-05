@@ -55,6 +55,7 @@ import {
 } from './fourwings-positions.types'
 
 type FourwingsPositionsTileLayerState = {
+  error: string
   fontLoaded: boolean
   viewportDirty: boolean
   viewportLoaded: boolean
@@ -90,6 +91,16 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     )
   }
 
+  getError(): string {
+    return this.state.error
+  }
+
+  _onLayerError = (error: Error) => {
+    console.warn(error.message)
+    this.setState({ error: error.message })
+    return true
+  }
+
   initializeState(context: LayerContext) {
     super.initializeState(context)
     let fontLoaded = true
@@ -109,6 +120,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         })
     }
     this.state = {
+      error: '',
       fontLoaded,
       viewportDirty: false,
       viewportLoaded: false,
@@ -416,6 +428,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           binary: false,
           loaders: [GFWMVTLoader],
           fetch: this._fetch,
+          onTileError: this._onLayerError,
           onViewportLoad: this._onViewportLoad,
           renderSubLayers: () => null,
         }),

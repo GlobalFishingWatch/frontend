@@ -86,6 +86,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
+      error: '',
       scales: [],
       tilesCache: this._getTileDataCache({
         startTime: this.props.startTime,
@@ -102,6 +103,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   get isLoaded(): boolean {
     return super.isLoaded && !this.state.rampDirty
+  }
+
+  getError(): string {
+    return this.state.error
+  }
+
+  _onLayerError = (error: Error) => {
+    console.warn(error.message)
+    this.setState({ error: error.message })
+    return true
   }
 
   _getColorRanges = () => {
@@ -391,8 +402,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         signal: tile.signal,
         responseType: 'default',
       })
-      if (tile.signal?.aborted || response.status !== 200) {
-        throw new Error()
+      if (tile.signal?.aborted) {
+        throw new Error('aborted')
+      }
+      if (response.status >= 400 && response.status !== 404) {
+        throw new Error(response.statusText)
       }
       cols = parseInt(response.headers.get('X-columns') as string)
       rows = parseInt(response.headers.get('X-rows') as string)
@@ -404,14 +418,15 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const promises = sublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
-    // TODO:deck decide what to do when a chunk load fails
     const settledPromises = await Promise.allSettled(promises)
+    const hasChunkError = settledPromises.some((p) => p.status === 'rejected')
+    if (hasChunkError) {
+      throw new Error('chunk load error')
+    }
+
     const arrayBuffers = settledPromises.flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
-    if (tile.signal?.aborted) {
-      throw new Error('tile aborted')
-    }
 
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
@@ -471,8 +486,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         signal: tile.signal,
         responseType: 'default',
       })
-      if (tile.signal?.aborted || response.status !== 200) {
-        throw new Error()
+      if (tile.signal?.aborted) {
+        throw new Error('aborted')
+      }
+      if (response.status >= 400 && response.status !== 404) {
+        throw new Error(response.statusText)
       }
       cols = parseInt(response.headers.get('X-columns') as string)
       rows = parseInt(response.headers.get('X-rows') as string)
@@ -496,14 +514,18 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const promises = visibleSublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
-    // TODO:deck decide what to do when a chunk load fails
     const settledPromises = await Promise.allSettled(promises)
+
+    const hasChunkError = settledPromises.some(
+      (p) => p.status === 'rejected' && p.reason.status !== 404
+    )
+    if (hasChunkError) {
+      throw new Error('chunk load error')
+    }
+
     const arrayBuffers = settledPromises.flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
-    if (tile.signal?.aborted) {
-      throw new Error('tile aborted')
-    }
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
       fourwings: {
@@ -643,6 +665,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         tilesCache,
         scales,
         minZoom: 0,
+        onTileError: this._onLayerError,
         maxZoom: FOURWINGS_MAX_ZOOM,
         zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
         opacity: 1,
