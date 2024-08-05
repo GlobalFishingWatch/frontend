@@ -158,9 +158,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       props.sublayers?.map(({ colorRamp }) => colorRamp).join(',') !==
       oldProps.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
     ) {
-      // TODO:deck split this in a separate method to avoid calculate the steps again
-      // as we only need to re-calculate the colors here
-      this.setState({ colorScale: this._getColorRamp(this.state.positions) })
+      if (this.state.colorScale?.colorDomain?.length) {
+        const colorRange = this.props.sublayers?.map((sublayer) =>
+          getColorRamp({ rampId: sublayer.colorRamp as any })
+        )
+        this.setState({ colorScale: { ...this.state.colorScale, colorRange } })
+      } else {
+        this.setState({ colorScale: this._getColorRamp(this.state.positions) })
+      }
     }
     const highlightedFeatureIds = new Set<string>()
     if (props.highlightedFeatures?.length) {
