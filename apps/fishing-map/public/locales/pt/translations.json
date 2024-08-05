@@ -440,6 +440,7 @@
     "generic": "Algo deu errado. Tente novamente ou entre em contato:",
     "genericShort": "Algo deu errado",
     "invalidRange": "O valor mínimo tem que ser menor que o valor máximo",
+    "layerLoading": "There was an error loading the layer",
     "latestCarrierNotFound": "Último conjunto de dados de cargueiros não encontrado",
     "missingLatLng": "Nenhum campo de latitude ou longitude encontrado",
     "pageNotFound": "Página não encontrada",
