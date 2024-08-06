@@ -89,6 +89,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }: {
     info: PickingInfo<FourwingsClusterFeature>
   }): FourwingsClusterPickingInfo => {
+    let expansionZoom: number | undefined
+    if ((this.clusterIndex as any)?.points.length && info.object?.properties.cluster_id) {
+      expansionZoom = this.clusterIndex.getClusterExpansionZoom(info.object?.properties.cluster_id)
+    }
     const object = {
       ...(info.object || ({} as FourwingsClusterFeature)),
       id: info.object?.properties.id || `${(info.object?.geometry?.coordinates || []).join('-')}`,
@@ -99,6 +103,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       subcategory: this.props.subcategory,
       startTime: this.props.startTime,
       endTime: this.props.endTime,
+      expansionZoom,
       // TODO:deck get this loader
       cols: 113,
       rows: 53,

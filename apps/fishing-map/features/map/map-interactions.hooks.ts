@@ -136,13 +136,12 @@ export const useClickedEventConnect = () => {
       (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
     ) as FourwingsClusterPickingObject
 
-    if (clusterFeature?.properties?.expansionZoom) {
-      const { count, expansionZoom, lat, lon } = clusterFeature.properties
+    if (clusterFeature?.properties?.count > 1) {
+      const { count } = clusterFeature.properties
+      const { expansionZoom } = clusterFeature
       if (count > 1) {
-        if (!areTilesClusterLoading && lat && lon) {
+        if (!areTilesClusterLoading && expansionZoom) {
           setMapCoordinates({
-            latitude: lat,
-            longitude: lon,
             zoom: expansionZoom,
           })
         }
