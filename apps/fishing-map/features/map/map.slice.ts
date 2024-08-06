@@ -30,7 +30,11 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch } from 'store'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
+import {
+  fetchDatasetByIdThunk,
+  selectAllDatasets,
+  selectDatasetById,
+} from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
@@ -364,25 +368,26 @@ export const fetchClusterEventThunk = createAsyncThunk<
 >('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
   const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
+  const allDatasets = selectAllDatasets(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
   const fourwingsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-  debugger
+  // const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  // TODO:deck remove this hardcoded dataset and get it from related
+  const eventsDataset = allDatasets?.find((d) => d.id === 'public-global-encounters-events:v3.0')
   let interactionId = eventFeature.id
   let eventId: string | undefined
   if (interactionId && fourwingsDataset) {
-    const [z, x, y, id] = eventFeature.id.split('/').map((c) => parseInt(c))
     const start = getUTCDate(eventFeature?.startTime).toISOString()
     const end = getUTCDate(eventFeature?.endTime).toISOString()
     const datasetConfig: DataviewDatasetConfig = {
       datasetId: fourwingsDataset?.id,
       endpoint: EndpointId.FourwingsInteraction,
       params: [
-        { id: 'z', value: z },
-        { id: 'x', value: x },
-        { id: 'y', value: y },
-        { id: 'rows', value: eventFeature.rows as number },
-        { id: 'cols', value: eventFeature.cols as number },
+        { id: 'z', value: eventFeature.properties.tile.z },
+        { id: 'x', value: eventFeature.properties.tile.x },
+        { id: 'y', value: eventFeature.properties.tile.y },
+        { id: 'rows', value: eventFeature.properties.row as number },
+        { id: 'cols', value: eventFeature.properties.col as number },
       ],
       query: [
         { id: 'date-range', value: [start, end].join(',') },
@@ -397,7 +402,8 @@ export const fetchClusterEventThunk = createAsyncThunk<
       const eventsIds = await GFWAPI.fetch<APIPagination<string>>(interactionUrl, {
         signal,
       })
-      eventId = eventsIds.entries[0]
+      // TODO:deck remove this hardcoded id once the api responds
+      eventId = eventsIds.entries[0][0] || 'a530d47f5f92b41c48c54b1d8c096570.1'
     }
   }
   // TODO:deck get the event dataset from related

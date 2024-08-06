@@ -26,17 +26,15 @@ export type FourwingsClustersLayerProps = DeckLayerProps<{
 export type FourwingsClusterProperties = {
   id: string
   count: number
-  expansionZoom: number
-  cols: number
-  rows: number
+  col: number
+  row: number
+  tile: Tile2DHeader['index']
 }
 export type FourwingsClusterFeature = ClusterFeature<FourwingsClusterProperties>
 
 export type FourwingsPointFeature = PointFeature<{}>
 export type FourwingsClusterPickingObject = FourwingsClusterFeature &
   DeckPickingObject<{
-    cols: number
-    rows: number
     startTime: number
     endTime: number
     expansionZoom?: number

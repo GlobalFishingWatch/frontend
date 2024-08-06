@@ -1,11 +1,16 @@
 import Pbf from 'pbf'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { BBox, getCellPointCoordinates } from '../helpers/cells'
+import {
+  BBox,
+  generateUniqueId,
+  getCellPointCoordinates,
+  getCellProperties,
+} from '../helpers/cells'
 import type {
   FourwingsLoaderOptions,
   FourwingsRawData,
   ParseFourwingsClustersOptions,
-  FourwingsClusterFeature,
+  FourwingsPointFeature,
 } from './types'
 
 const SCALE_VALUE = 1
@@ -16,7 +21,7 @@ const CELL_VALUE_INDEX = 1
 export const getPoints = (
   intArray: FourwingsRawData,
   options?: FourwingsLoaderOptions
-): FourwingsClusterFeature[] => {
+): FourwingsPointFeature[] => {
   const {
     scale = SCALE_VALUE,
     offset = OFFSET_VALUE,
@@ -31,19 +36,19 @@ export const getPoints = (
     (tile?.bbox as GeoBoundingBox).east,
     (tile?.bbox as GeoBoundingBox).north,
   ]
-  const features = {} as Record<number, FourwingsClusterFeature>
+  const features = [] as FourwingsPointFeature[]
 
   let cellNum = 0
   let indexInCell = 0
-  const subLayerIntArray = intArray
-  for (let i = 0; i < subLayerIntArray.length; i++) {
-    const value = subLayerIntArray[i]
+  for (let i = 0; i < intArray.length; i++) {
+    const value = intArray[i]
     if (indexInCell === CELL_NUM_INDEX) {
       // this number defines the cell number frame
       cellNum = value
     } else if (indexInCell === CELL_VALUE_INDEX) {
+      const { col, row } = getCellProperties(tileBBox, cellNum, cols)
       // this number defines the cell value frame
-      features[cellNum] = {
+      features.push({
         type: 'Feature',
         geometry: {
           type: 'Point',
@@ -55,19 +60,20 @@ export const getPoints = (
           }),
         },
         properties: {
+          // TODO:deck remove the round as won't be needed with real data
           count: Math.round(offset + value * scale),
-          id: `${tile!.index.z}/${tile!.index.x}/${tile!.index.y}/${cellNum}`,
-          cellNum,
-          cols,
-          rows,
+          id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
+          tile: tile?.index,
+          col,
+          row,
         },
-      }
+      })
       // resseting indexInCell to start with the new cell
       indexInCell = -1
     }
     indexInCell++
   }
-  return Object.values(features)
+  return features
 }
 
 function readData(_: any, data: any, pbf: any) {

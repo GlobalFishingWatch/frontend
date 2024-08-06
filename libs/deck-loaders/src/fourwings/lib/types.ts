@@ -69,8 +69,8 @@ export type FourwingsPositionFeatureProperties = {
   [key: string]: any
 }
 
-export type FourwingsClusterFeatureProperties = {
-  id: string
+export type FourwingsPointFeatureProperties = {
+  id: number
   count: number
   [key: string]: any
 }
@@ -90,4 +90,4 @@ export type FourwingsFeature<Properties = FourwingsFeatureProperties> = Feature<
 export type FourwingsValuesAndDatesFeature = [number[], number[]][] // values in first place, dates in second
 export type FourwingsStaticFeature = FourwingsFeature<FourwingsStaticFeatureProperties>
 export type FourwingsPositionFeature = Feature<Point, FourwingsPositionFeatureProperties>
-export type FourwingsClusterFeature = Feature<Point, FourwingsClusterFeatureProperties>
+export type FourwingsPointFeature = Feature<Point, FourwingsPointFeatureProperties>
