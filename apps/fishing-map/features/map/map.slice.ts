@@ -355,7 +355,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   }
 )
 
-export const fetchEncounterEventThunk = createAsyncThunk<
+export const fetchClusterEventThunk = createAsyncThunk<
   ExtendedFeatureEvent | undefined,
   ClusterPickingObject,
   {
@@ -366,8 +366,22 @@ export const fetchEncounterEventThunk = createAsyncThunk<
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
   const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-
-  if (dataset) {
+  debugger
+  let interactionId = eventFeature.id
+  let eventId: string | undefined
+  if (interactionId && dataset) {
+    const datasetConfig = {
+      // TODO:deck get the interactionId from the feature
+    }
+    const interactionUrl = resolveEndpoint(dataset, datasetConfig)
+    if (interactionUrl) {
+      const eventsIds = await GFWAPI.fetch<APIPagination<string>>(interactionUrl, {
+        signal,
+      })
+      eventId = eventsIds.entries[0]
+    }
+  }
+  if (dataset && interactionId) {
     const datasetConfig = {
       datasetId: dataset.id,
       endpoint: EndpointId.EventsDetail,
@@ -449,6 +463,7 @@ export const fetchEncounterEventThunk = createAsyncThunk<
       console.warn('Missing url for endpoints', dataset, datasetConfig)
     }
   }
+
   return
 })
 
@@ -527,10 +542,10 @@ const slice = createSlice({
         state.fishingStatus = AsyncReducerStatus.Error
       }
     })
-    builder.addCase(fetchEncounterEventThunk.pending, (state, action) => {
+    builder.addCase(fetchClusterEventThunk.pending, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Loading
     })
-    builder.addCase(fetchEncounterEventThunk.fulfilled, (state, action) => {
+    builder.addCase(fetchClusterEventThunk.fulfilled, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
       const feature = state.clicked?.features?.find(
@@ -540,7 +555,7 @@ const slice = createSlice({
         feature.event = action.payload
       }
     })
-    builder.addCase(fetchEncounterEventThunk.rejected, (state, action) => {
+    builder.addCase(fetchClusterEventThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
         state.apiEventStatus = AsyncReducerStatus.Idle
       } else {

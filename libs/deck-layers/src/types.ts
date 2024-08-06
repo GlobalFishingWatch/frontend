@@ -18,6 +18,7 @@ export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
 export type DeckLayerSubcategory = `${DataviewType}` | 'draw-polygons' | 'draw-points'
 
 export type DeckLayerProps<G> = {
+  id: string
   category: DeckLayerCategory
   subcategory?: DeckLayerSubcategory
 } & G
