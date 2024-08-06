@@ -38,6 +38,7 @@ import {
 } from './fourwings-clusters.types'
 
 type FourwingsClustersTileLayerState = {
+  clusterIndex: Supercluster
   viewportLoaded: boolean
   clusters?: FourwingsClusterFeature[]
   points?: FourwingsPointFeature[]
@@ -63,13 +64,6 @@ export class FourwingsClustersLayer extends CompositeLayer<
   static layerName = 'FourwingsClusterTileLayer'
   static defaultProps = defaultProps
   state!: FourwingsClustersTileLayerState
-  clusterIndex = new Supercluster({
-    radius: 100,
-    maxZoom: 8,
-    reduce: (accumulated, props) => {
-      accumulated.count += props.count
-    },
-  })
 
   get isLoaded(): boolean {
     return super.isLoaded && this.state.viewportLoaded
@@ -79,6 +73,13 @@ export class FourwingsClustersLayer extends CompositeLayer<
     super.initializeState(context)
     this.state = {
       viewportLoaded: false,
+      clusterIndex: new Supercluster({
+        radius: 100,
+        maxZoom: 8,
+        reduce: (accumulated, props) => {
+          accumulated.count += props.count
+        },
+      }),
     }
   }
 
@@ -90,8 +91,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
     info: PickingInfo<FourwingsClusterFeature>
   }): FourwingsClusterPickingInfo => {
     let expansionZoom: number | undefined
-    if ((this.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
-      expansionZoom = this.clusterIndex.getClusterExpansionZoom(info.object?.properties.cluster_id)
+    if ((this.state.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
+      expansionZoom = this.state.clusterIndex.getClusterExpansionZoom(
+        info.object?.properties.cluster_id
+      )
     }
     const object = {
       ...(info.object || ({} as FourwingsClusterFeature)),
@@ -113,8 +116,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
     const data = tiles.flatMap((tile) => {
       return tile.content || []
     }) as FourwingsPointFeature[]
-    this.clusterIndex.load(data)
-    const allClusters = this.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
+    this.state.clusterIndex.load(data)
+    const allClusters = this.state.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
     let clusters: FourwingsClusterFeature[] = []
     let points: FourwingsPointFeature[] = []
     if (allClusters.length) {
