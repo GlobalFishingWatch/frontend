@@ -97,6 +97,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
       datasetId: this.props.datasetId,
       category: this.props.category,
       subcategory: this.props.subcategory,
+      startTime: this.props.startTime,
+      endTime: this.props.endTime,
+      // TODO:deck get this loader
+      cols: 113,
+      rows: 53,
     }
     return { ...info, object }
   }
