@@ -19,12 +19,12 @@ import { ScalePower, scaleSqrt } from 'd3-scale'
 import { format } from 'd3-format'
 import { max } from 'simple-statistics'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { PATH_BASENAME } from '../../layers.config'
 import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
   getLayerGroupOffset,
+  getUTCDateTime,
   GFWMVTLoader,
   hexToDeckColor,
   LayerGroup,
@@ -178,13 +178,16 @@ export class FourwingsClustersLayer extends CompositeLayer<
       extentEnd && extentEnd < endTime
         ? DateTime.fromMillis(extentEnd).plus({ day: 1 }).toMillis()
         : endTime
-
+    const startIso = getUTCDateTime(start < end ? start : end)
+      .startOf('hour')
+      .toISO()
+    const endIso = getUTCDateTime(end).startOf('hour').toISO()
     const params = {
       datasets: [datasetId],
       ...(filters && { filters: [filters] }),
       format: 'MVT',
       'temporal-aggregation': true,
-      'date-range': `${getISODateFromTS(start < end ? start : end)},${getISODateFromTS(end)}`,
+      'date-range': `${startIso},${endIso}`,
     }
 
     const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
