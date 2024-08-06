@@ -1,6 +1,6 @@
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import {
-  ClusterFeature,
+  FourwingsClusterFeature,
   ContextPickingObject,
   DeckLayerPickingObject,
   FourwingsPositionsPickingObject,
@@ -37,7 +37,7 @@ export const getAnalyticsEvent = (feature: DeckLayerPickingObject) => {
       }`
       break
     case DataviewCategory.Events:
-      eventLabel = `event_id: ${(feature as ClusterFeature).properties.event_id}`
+      eventLabel = `event_id: ${(feature as FourwingsClusterFeature).properties.id}`
       break
     case DataviewCategory.Context:
     case DataviewCategory.User:

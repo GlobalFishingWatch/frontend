@@ -34,7 +34,9 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
 
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const dataset = dataview.datasets?.find(
+    (d) => d.type === DatasetTypes.Events || d.type === DatasetTypes.Fourwings
+  )
 
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
