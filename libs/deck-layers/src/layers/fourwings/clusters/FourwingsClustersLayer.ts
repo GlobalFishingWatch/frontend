@@ -16,7 +16,6 @@ import { Feature, Polygon } from 'geojson'
 import { IconLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import Supercluster from 'supercluster'
 import { ScalePower, scaleSqrt } from 'd3-scale'
-import { format } from 'd3-format'
 import { max } from 'simple-statistics'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { PATH_BASENAME } from '../../layers.config'
@@ -31,7 +30,6 @@ import {
 } from '../../../utils'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
 import { HEATMAP_API_TILES_URL, POSITIONS_VISUALIZATION_MAX_ZOOM } from '../fourwings.config'
-import { getISODateFromTS } from '../heatmap/fourwings-heatmap.utils'
 import {
   FourwingsClusterEventType,
   FourwingsClusterFeature,
@@ -204,11 +202,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   _getClusterLabel = (d: FourwingsClusterFeature) => {
-    if (d.properties.count > 10000) {
-      return `>${format('.2s')(d.properties.count)}`
+    if (d.properties.count > 1000000) {
+      return `>${Math.floor(d.properties.count / 1000000)}M`
     }
     if (d.properties.count > 1000) {
-      return `>${format('.1s')(d.properties.count)}`
+      return `>${Math.floor(d.properties.count / 1000)}k`
     }
     return d.properties.count.toString()
   }
