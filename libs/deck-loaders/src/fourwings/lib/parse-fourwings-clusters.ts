@@ -1,6 +1,6 @@
 import Pbf from 'pbf'
 import { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { BBox, generateUniqueId, getCellPointCoordinates } from '../helpers/cells'
+import { BBox, getCellPointCoordinates } from '../helpers/cells'
 import type {
   FourwingsLoaderOptions,
   FourwingsRawData,
@@ -13,7 +13,7 @@ const OFFSET_VALUE = 0
 const CELL_NUM_INDEX = 0
 const CELL_VALUE_INDEX = 1
 
-export const getClusters = (
+export const getPoints = (
   intArray: FourwingsRawData,
   options?: FourwingsLoaderOptions
 ): FourwingsClusterFeature[] => {
@@ -56,8 +56,10 @@ export const getClusters = (
         },
         properties: {
           count: Math.round(offset + value * scale),
-          id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
+          id: `${tile!.index.z}/${tile!.index.x}/${tile!.index.y}/${cellNum}`,
           cellNum,
+          cols,
+          rows,
         },
       }
       // resseting indexInCell to start with the new cell
@@ -73,5 +75,5 @@ function readData(_: any, data: any, pbf: any) {
 }
 
 export const parseFourwingsClusters = (buffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
-  return getClusters(new Pbf(buffer).readFields(readData, [])[0], options)
+  return getPoints(new Pbf(buffer).readFields(readData, [])[0], options)
 }

@@ -99,10 +99,16 @@ export class FourwingsClustersLayer extends CompositeLayer<
       subcategory: this.props.subcategory,
       startTime: this.props.startTime,
       endTime: this.props.endTime,
-      // TODO:deck get this loader
-      cols: 113,
-      rows: 53,
+      cols: info.object?.properties?.cols || 113,
+      rows: info.object?.properties?.rows || 53,
     }
+    try {
+      if (info.object?.properties?.cluster_id) {
+        object.properties.expansionZoom = this.clusterIndex.getClusterExpansionZoom(
+          info.object.properties.cluster_id
+        )
+      }
+    } catch (error) {}
     return { ...info, object }
   }
 

@@ -23,7 +23,13 @@ export type FourwingsClustersLayerProps = DeckLayerProps<{
   extentEnd?: number
 }>
 
-export type FourwingsClusterProperties = { id: string; count: number; expansionZoom: number }
+export type FourwingsClusterProperties = {
+  id: string
+  count: number
+  expansionZoom: number
+  cols: number
+  rows: number
+}
 export type FourwingsClusterFeature = ClusterFeature<FourwingsClusterProperties>
 
 export type FourwingsPointFeature = PointFeature<{}>
