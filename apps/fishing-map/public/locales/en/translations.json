@@ -440,6 +440,7 @@
     "generic": "Something went wrong. Please try again or contact:",
     "genericShort": "Something went wrong",
     "invalidRange": "Min has to be lower than max value.",
+    "layerLoading": "There was an error loading the layer",
     "latestCarrierNotFound": "Latest carrier dataset not found.",
     "missingLatLng": "No latitude or longitude fields found",
     "pageNotFound": "Page not found.",
