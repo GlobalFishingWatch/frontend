@@ -8,16 +8,16 @@ import {
   UpdateParameters,
   PickingInfo,
 } from '@deck.gl/core'
-import { MVTLayer, MVTLayerProps } from '@deck.gl/geo-layers'
+import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
 import { stringify } from 'qs'
-import { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { DateTime } from 'luxon'
-import { Feature, Polygon } from 'geojson'
 import { IconLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import Supercluster from 'supercluster'
 import { ScalePower, scaleSqrt } from 'd3-scale'
 import { max } from 'simple-statistics'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { FourwingsClustersLoader } from '@globalfishingwatch/deck-loaders'
 import { PATH_BASENAME } from '../../layers.config'
 import {
   DEFAULT_BACKGROUND_COLOR,
@@ -28,7 +28,6 @@ import {
   hexToDeckColor,
   LayerGroup,
 } from '../../../utils'
-import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
 import { HEATMAP_API_TILES_URL, POSITIONS_VISUALIZATION_MAX_ZOOM } from '../fourwings.config'
 import {
   FourwingsClusterEventType,
@@ -59,7 +58,7 @@ const ICON_MAPPING: Record<FourwingsClusterEventType, any> = {
 }
 
 export class FourwingsClustersLayer extends CompositeLayer<
-  FourwingsClustersLayerProps & MVTLayerProps
+  FourwingsClustersLayerProps & TileLayerProps
 > {
   static layerName = 'FourwingsClusterTileLayer'
   static defaultProps = defaultProps
@@ -105,21 +104,9 @@ export class FourwingsClustersLayer extends CompositeLayer<
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
     const { zoom } = this.context.viewport
     const data = tiles.flatMap((tile) => {
-      return tile.content
-        ? tile.content.map((feature: any) =>
-            transformTileCoordsToWGS84(feature, tile.bbox as GeoBoundingBox, this.context.viewport)
-          )
-        : []
-    }) as Feature<Polygon>[]
-    const dataAsPoints = data.map((feature) => ({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: feature.geometry.coordinates[0][0],
-      },
-      properties: feature.properties,
-    })) as FourwingsPointFeature[]
-    this.clusterIndex.load(dataAsPoints)
+      return tile.content || []
+    }) as FourwingsPointFeature[]
+    this.clusterIndex.load(data)
     const allClusters = this.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
     let clusters: FourwingsClusterFeature[] = []
     let points: FourwingsPointFeature[] = []
@@ -148,24 +135,51 @@ export class FourwingsClustersLayer extends CompositeLayer<
     url: string,
     {
       signal,
-      loadOptions,
+      tile,
     }: {
       signal?: AbortSignal
-      loadOptions?: any
+      tile?: TileLoadProps
     }
   ) => {
     this.setState({ viewportLoaded: false })
+    let cols: number = 0
+    let rows: number = 0
+    let scale: number = 0
+    let offset: number = 0
     try {
       const response = await GFWAPI.fetch<any>(url, {
         signal,
         method: 'GET',
-        responseType: 'arrayBuffer',
+        responseType: 'default',
       })
-
-      return await parse(response, GFWMVTLoader, loadOptions)
+      if (response.status >= 400 && response.status !== 404) {
+        throw new Error(response.statusText)
+      }
+      cols = parseInt(response.headers.get('X-columns') as string)
+      rows = parseInt(response.headers.get('X-rows') as string)
+      scale = parseFloat(response.headers.get('X-scale') as string)
+      offset = parseInt(response.headers.get('X-offset') as string)
+      return await parse(response.arrayBuffer(), FourwingsClustersLoader, {
+        worker: true,
+        fourwings: {
+          sublayers: 1,
+          cols,
+          rows,
+          scale,
+          offset,
+          tile,
+        },
+      })
     } catch (error: any) {
       throw error
     }
+  }
+
+  _getTileData: TileLayerProps['getTileData'] = (tile) => {
+    if (tile.signal?.aborted) {
+      return null
+    }
+    return this._fetch(tile.url!, { signal: tile.signal, tile })
   }
 
   _getDataUrl() {
@@ -183,7 +197,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     const params = {
       datasets: [datasetId],
       ...(filters && { filters: [filters] }),
-      format: 'MVT',
+      format: 'INTARRAY',
       'temporal-aggregation': true,
       'date-range': `${startIso},${endIso}`,
     }
@@ -215,15 +229,15 @@ export class FourwingsClustersLayer extends CompositeLayer<
     const { color } = this.props
     const { clusters, points, radiusScale } = this.state
     return [
-      new MVTLayer<FourwingsPointFeature, any>(this.props, {
+      new TileLayer<FourwingsPointFeature, any>(this.props, {
         id: `${this.props.id}-tiles`,
         data: this._getDataUrl(),
         maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
         binary: false,
         loaders: [GFWMVTLoader],
-        fetch: this._fetch,
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: () => null,
+        getTileData: this._getTileData,
       }),
       new ScatterplotLayer({
         id: `${this.props.id}-scatterplot`,
