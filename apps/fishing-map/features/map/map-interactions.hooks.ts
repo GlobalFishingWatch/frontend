@@ -142,6 +142,8 @@ export const useClickedEventConnect = () => {
       if (count > 1) {
         if (!areTilesClusterLoading && expansionZoom) {
           setMapCoordinates({
+            latitude: event.latitude,
+            longitude: event.longitude,
             zoom: expansionZoom,
           })
         }
