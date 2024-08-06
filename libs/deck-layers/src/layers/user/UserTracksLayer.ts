@@ -182,18 +182,6 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       onlyExtents: !includeMiddlePoints,
     })
     return segmentsGeo
-
-    // TODO:deck fix why there is a segment at the end with undefined timestamps
-    // TODO:deck research if we can use the binary data to get the segments
-    // const segments = getSegmentsFromData(this.state.binaryData as UserTrackBinaryData, {
-    //   includeMiddlePoints,
-    // })
-    // return segments.map((segment, index) => {
-    //   const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)?.index!
-    //   const color =
-    //     this.state.rawData?.features?.[featureIndex]?.properties?.color || this.props.color
-    //   return segment.map((s) => ({ ...s, color }))
-    // })
   }
 
   _getColorByLineIndex = (_: any, { index }: { index: number }) => {

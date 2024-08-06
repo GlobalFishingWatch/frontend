@@ -26,6 +26,7 @@ import {
   getColorRamp,
   getLayerGroupOffset,
   getSteps,
+  getUTCDateTime,
   GFWMVTLoader,
   hexToDeckColor,
   LayerGroup,
@@ -38,7 +39,6 @@ import {
   POSITIONS_VISUALIZATION_MAX_ZOOM,
   SUPPORTED_POSITION_PROPERTIES,
 } from '../fourwings.config'
-import { getISODateFromTS } from '../heatmap/fourwings-heatmap.utils'
 import { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
 import { PATH_BASENAME } from '../../layers.config'
@@ -55,6 +55,7 @@ import {
 } from './fourwings-positions.types'
 
 type FourwingsPositionsTileLayerState = {
+  error: string
   fontLoaded: boolean
   viewportDirty: boolean
   viewportLoaded: boolean
@@ -90,6 +91,16 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     )
   }
 
+  getError(): string {
+    return this.state.error
+  }
+
+  _onLayerError = (error: Error) => {
+    console.warn(error.message)
+    this.setState({ error: error.message })
+    return true
+  }
+
   initializeState(context: LayerContext) {
     super.initializeState(context)
     let fontLoaded = true
@@ -109,6 +120,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         })
     }
     this.state = {
+      error: '',
       fontLoaded,
       viewportDirty: false,
       viewportLoaded: false,
@@ -158,9 +170,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       props.sublayers?.map(({ colorRamp }) => colorRamp).join(',') !==
       oldProps.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
     ) {
-      // TODO:deck split this in a separate method to avoid calculate the steps again
-      // as we only need to re-calculate the colors here
-      this.setState({ colorScale: this._getColorRamp(this.state.positions) })
+      if (this.state.colorScale?.colorDomain?.length) {
+        const colorRange = this.props.sublayers?.map((sublayer) =>
+          getColorRamp({ rampId: sublayer.colorRamp as any })
+        )
+        this.setState({ colorScale: { ...this.state.colorScale, colorRange } })
+      } else {
+        this.setState({ colorScale: this._getColorRamp(this.state.positions) })
+      }
     }
     const highlightedFeatureIds = new Set<string>()
     if (props.highlightedFeatures?.length) {
@@ -375,7 +392,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       extentEnd && extentEnd < endTime
         ? DateTime.fromMillis(extentEnd).plus({ day: 1 }).toMillis()
         : endTime
-
+    const startIso = getUTCDateTime(start < end ? start : end)
+      .startOf('hour')
+      .toISO()
+    const endIso = getUTCDateTime(end).startOf('hour').toISO()
     const params = {
       datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
       filters: sublayers.map((sublayer) => sublayer.filter),
@@ -387,8 +407,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           sublayerProperties?.join(',')
         ),
       }),
-      // TODO:deck make chunks here to filter in the frontend instead of requesting on every change
-      'date-range': `${getISODateFromTS(start < end ? start : end)},${getISODateFromTS(end)}`,
+      'date-range': `${startIso},${endIso}`,
     }
 
     const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
@@ -412,6 +431,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           binary: false,
           loaders: [GFWMVTLoader],
           fetch: this._fetch,
+          onTileError: this._onLayerError,
           onViewportLoad: this._onViewportLoad,
           renderSubLayers: () => null,
         }),
