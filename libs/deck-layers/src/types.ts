@@ -6,9 +6,14 @@ import type { ContextLayer } from './layers/context/ContextLayer'
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
-import { ClusterPickingObject, ClusterPickingInfo, ClusterLayer } from './layers/cluster'
 import { ContextPickingObject, ContextPickingInfo } from './layers/context'
-import { FourwingsPickingObject, FourwingsPickingInfo } from './layers/fourwings'
+import {
+  FourwingsPickingObject,
+  FourwingsPickingInfo,
+  FourwingsClusterPickingObject,
+  FourwingsClustersLayer,
+  FourwingsClusterPickingInfo,
+} from './layers/fourwings'
 import { RulerPickingObject, RulerPickingInfo } from './layers/rulers'
 import { VesselEventPickingObject, VesselEventPickingInfo } from './layers/vessel'
 import { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
@@ -45,7 +50,7 @@ export type DeckLayerPickingObject =
   | FourwingsPickingObject
   | ContextPickingObject
   | UserLayerPickingObject
-  | ClusterPickingObject
+  | FourwingsClusterPickingObject
   | RulerPickingObject
   | VesselEventPickingObject
   | DrawPickingObject
@@ -54,7 +59,7 @@ export type DeckLayerPickingObject =
 export type DeckLayerInteractionPickingInfo =
   | (FourwingsPickingInfo & { layer: FourwingsLayer })
   | (ContextPickingInfo & { layer: ContextLayer })
-  | (ClusterPickingInfo & { layer: ClusterLayer })
+  | (FourwingsClusterPickingInfo & { layer: FourwingsClustersLayer })
   | (RulerPickingInfo & { layer: RulersLayer })
   | (VesselEventPickingInfo & { layer: VesselLayer })
   | (DrawPickingInfo & { layer: DrawLayer })

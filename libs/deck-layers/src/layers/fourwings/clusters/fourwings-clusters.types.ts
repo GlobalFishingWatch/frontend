@@ -23,12 +23,12 @@ export type FourwingsClustersLayerProps = DeckLayerProps<{
   extentEnd?: number
 }>
 
-export type FourwingsClusterProperties = { id: string; count: number }
+export type FourwingsClusterProperties = { id: string; count: number; expansionZoom: number }
 export type FourwingsClusterFeature = ClusterFeature<FourwingsClusterProperties>
 
 export type FourwingsPointFeature = PointFeature<{}>
 export type FourwingsClusterPickingObject = FourwingsClusterFeature &
-  DeckPickingObject<Record<string, any>>
+  DeckPickingObject<{ cols: number; rows: number; startTime: number; endTime: number }>
 
 export type FourwingsClusterPickingInfo = PickingInfo<
   FourwingsClusterPickingObject,

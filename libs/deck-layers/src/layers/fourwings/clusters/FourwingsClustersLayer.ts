@@ -98,6 +98,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
       datasetId: this.props.datasetId,
       category: this.props.category,
       subcategory: this.props.subcategory,
+      startTime: this.props.startTime,
+      endTime: this.props.endTime,
+      // TODO:deck get this loader
+      cols: 113,
+      rows: 53,
     }
     return { ...info, object }
   }
@@ -159,10 +164,13 @@ export class FourwingsClustersLayer extends CompositeLayer<
       const response = await GFWAPI.fetch<any>(url, {
         signal,
         method: 'GET',
-        responseType: 'arrayBuffer',
+        responseType: 'default',
       })
-
-      return await parse(response, GFWMVTLoader, loadOptions)
+      // TODO:deck get this from headers to loader
+      // this.cols = parseInt(response.headers.get('X-columns') as string)
+      // this.rows = parseInt(response.headers.get('X-rows') as string)
+      const arrayBuffer = await response.arrayBuffer()
+      return await parse(arrayBuffer, GFWMVTLoader, loadOptions)
     } catch (error: any) {
       throw error
     }

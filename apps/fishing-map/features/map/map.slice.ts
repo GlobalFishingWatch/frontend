@@ -17,8 +17,8 @@ import {
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
-  ClusterPickingObject,
   ContextPickingObject,
+  FourwingsClusterPickingObject,
   FourwingsDeckSublayer,
   FourwingsHeatmapPickingObject,
   FourwingsPickingObject,
@@ -65,7 +65,7 @@ export type SliceExtendedFourwingsPickingObject = Omit<
   sublayers: SliceExtendedFourwingsDeckSublayer[]
 }
 
-export type SliceExtendedClusterPickingObject = ClusterPickingObject & {
+export type SliceExtendedClusterPickingObject = FourwingsClusterPickingObject & {
   event: ExtendedFeatureEvent
 }
 
@@ -75,7 +75,7 @@ type SliceExtendedFeature =
   | FourwingsPositionsPickingObject
   | ContextPickingObject
   | UserLayerPickingObject
-  | ClusterPickingObject
+  | FourwingsClusterPickingObject
   | VesselEventPickingObject
 
 // Extends the default extendedEvent including event and vessels information from API
@@ -357,7 +357,7 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
 
 export const fetchClusterEventThunk = createAsyncThunk<
   ExtendedFeatureEvent | undefined,
-  ClusterPickingObject,
+  FourwingsClusterPickingObject,
   {
     dispatch: AppDispatch
   }
@@ -365,15 +365,34 @@ export const fetchClusterEventThunk = createAsyncThunk<
   const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
-  const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const fourwingsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+  const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   debugger
   let interactionId = eventFeature.id
   let eventId: string | undefined
-  if (interactionId && dataset) {
-    const datasetConfig = {
-      // TODO:deck get the interactionId from the feature
+  if (interactionId && fourwingsDataset) {
+    const [z, x, y, id] = eventFeature.id.split('/').map((c) => parseInt(c))
+    const start = getUTCDate(eventFeature?.startTime).toISOString()
+    const end = getUTCDate(eventFeature?.endTime).toISOString()
+    const datasetConfig: DataviewDatasetConfig = {
+      datasetId: fourwingsDataset?.id,
+      endpoint: EndpointId.FourwingsInteraction,
+      params: [
+        { id: 'z', value: z },
+        { id: 'x', value: x },
+        { id: 'y', value: y },
+        { id: 'rows', value: eventFeature.rows as number },
+        { id: 'cols', value: eventFeature.cols as number },
+      ],
+      query: [
+        { id: 'date-range', value: [start, end].join(',') },
+        {
+          id: 'datasets',
+          value: [fourwingsDataset.id],
+        },
+      ],
     }
-    const interactionUrl = resolveEndpoint(dataset, datasetConfig)
+    const interactionUrl = resolveEndpoint(fourwingsDataset, datasetConfig)
     if (interactionUrl) {
       const eventsIds = await GFWAPI.fetch<APIPagination<string>>(interactionUrl, {
         signal,
@@ -381,14 +400,15 @@ export const fetchClusterEventThunk = createAsyncThunk<
       eventId = eventsIds.entries[0]
     }
   }
-  if (dataset && interactionId) {
+  // TODO:deck get the event dataset from related
+  if (eventsDataset && eventId) {
     const datasetConfig = {
-      datasetId: dataset.id,
+      datasetId: eventsDataset.id,
       endpoint: EndpointId.EventsDetail,
-      params: [{ id: 'eventId', value: eventFeature.id }],
-      query: [{ id: 'dataset', value: dataset.id }],
+      params: [{ id: 'eventId', value: eventId }],
+      query: [{ id: 'dataset', value: eventsDataset.id }],
     }
-    const url = resolveEndpoint(dataset, datasetConfig)
+    const url = resolveEndpoint(eventsDataset, datasetConfig)
     if (url) {
       const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
 
@@ -456,11 +476,11 @@ export const fetchClusterEventThunk = createAsyncThunk<
               vessel: fishingExtendedVessel,
             },
           }),
-          dataset,
+          dataset: eventsDataset,
         }
       }
     } else {
-      console.warn('Missing url for endpoints', dataset, datasetConfig)
+      console.warn('Missing url for endpoints', eventsDataset, datasetConfig)
     }
   }
 
