@@ -19333,8 +19333,8 @@ __metadata:
   linkType: hard
 
 "jotai@npm:^2.9.1":
-  version: 2.9.1
-  resolution: "jotai@npm:2.9.1"
+  version: 2.9.2
+  resolution: "jotai@npm:2.9.2"
   peerDependencies:
     "@types/react": ">=17.0.0"
     react: ">=17.0.0"
@@ -19343,7 +19343,7 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 10/6cbf4cbebe5fd2630cf31aadb1f51dfac02cf1461daf3542ea09d4f8b9229d387c8790e26ae12fd63a42541c68ca29248fa776e5fe38326ffac6c33dbd65e1c5
+  checksum: 10/9f9a9f9cbe8200dbf47af78afd0230de4e9b6f0c628f7cb9d185439a94072d804cdf2a2ef0835f6647bcf34045c6abb61c73123fd422dd0e114f4e21560444ca
   languageName: node
   linkType: hard
 
@@ -26562,8 +26562,8 @@ __metadata:
   linkType: hard
 
 "terser@npm:^5.0.0, terser@npm:^5.26.0":
-  version: 5.31.3
-  resolution: "terser@npm:5.31.3"
+  version: 5.31.4
+  resolution: "terser@npm:5.31.4"
   dependencies:
     "@jridgewell/source-map": "npm:^0.3.3"
     acorn: "npm:^8.8.2"
@@ -26571,7 +26571,7 @@ __metadata:
     source-map-support: "npm:~0.5.20"
   bin:
     terser: bin/terser
-  checksum: 10/7f66d93a1157f66f5eda16515ed45e6eb485d3c4acbc46e78a5e62922f5b4643d9212abc586f791021fafc71563a93475a986c52f4270a5e0b3ee50a70507d9e
+  checksum: 10/54b8d1e4737b17feb87bbbfbbe73aa9ef8e01f1738f39d38f2f08d5f80be9770f620dc05bdd39c2fa29fc6dec9cacdae3e288fea500e770b0ac98086ea005918
   languageName: node
   linkType: hard
 
