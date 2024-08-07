@@ -1,7 +1,5 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
+import { createApi, FetchBaseQueryArgs, SerializeQueryArgs } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
-import type { BaseQueryArg, BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import type { SerializeQueryArgs } from '@reduxjs/toolkit/dist/query/defaultSerializeQueryArgs'
 import { gfwBaseQuery } from 'queries/base'
 import { uniq } from 'es-toolkit'
 import { DateTime } from 'luxon'
@@ -16,7 +14,7 @@ type FetchDataviewStatsParams = {
   fields?: StatField[]
 }
 
-interface CustomBaseQueryArg extends BaseQueryArg<BaseQueryFn> {
+interface CustomBaseQueryArg extends FetchBaseQueryArgs {
   dataview: UrlDataviewInstance
   timerange: TimeRange
 }

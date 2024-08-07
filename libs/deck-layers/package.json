@@ -4,7 +4,8 @@
   "main": "./index.cjs",
   "module": "./index.js",
   "dependencies": {
-    "@deck.gl-community/editable-layers": "^9.0.0-alpha.1",
+    "@deck.gl-community/editable-layers": "^9.0.2",
+    "@deck.gl-community/layers": "^9.0.2",
     "@deck.gl/core": "^9.0.20",
     "@deck.gl/extensions": "^9.0.20",
     "@deck.gl/geo-layers": "^9.0.20",

@@ -31,7 +31,7 @@ steps:
     waitFor: ['restore_cache']
     name: node:21
     script: |
-      yarn set version 4.3.1
+      yarn set version 4.4.0
       yarn -v
       yarn install --immutable
 

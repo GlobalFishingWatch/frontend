@@ -127,3 +127,4 @@ affected-apps
 # local parquet files
 *.parquet
 .nx/cache
+.nx/workspace-data

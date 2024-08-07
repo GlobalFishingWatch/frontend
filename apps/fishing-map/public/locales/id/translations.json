@@ -440,6 +440,7 @@
     "generic": "Ada yang tidak beres, Silahkan coba lagi atau hubungi:",
     "genericShort": "Ada yang salah",
     "invalidRange": "Min. harus lebih rendah dari nilai maks",
+    "layerLoading": "There was an error loading the layer",
     "latestCarrierNotFound": "Dataset operator terbaru tidak ditemukan",
     "missingLatLng": "Tidak ditemukan bidang lintang atau bujur",
     "pageNotFound": "Halaman tidak ditemukan",
