@@ -38,6 +38,7 @@ export type GetSegmentsFromDataParams = {
   includeMiddlePoints?: boolean
   includeCoordinates?: boolean
 }
+
 export const getSegmentsFromData = memoize(
   (
     data: VesselTrackData | UserTrackBinaryData,
@@ -67,10 +68,10 @@ export const getSegmentsFromData = memoize(
         }),
         timestamp: timestamps[segmentIndex / timestampSize],
         ...(speedSize && {
-          speed: speeds?.[segmentIndex / speedSize],
+          speed: speeds?.[segmentIndex / speedSize] || 0,
         }),
         ...(elevationSize && {
-          elevation: elevations?.[segmentIndex / elevationSize],
+          elevation: elevations?.[segmentIndex / elevationSize] || 0,
         }),
       })
       const nextSegmentIndex = segmentsIndexes[i + 1] || timestamps.length - 1
@@ -84,10 +85,10 @@ export const getSegmentsFromData = memoize(
 
             timestamp: timestamps[index / timestampSize],
             ...(speedSize && {
-              speed: speeds?.[index / speedSize],
+              speed: speeds?.[index / speedSize] || 0,
             }),
             ...(elevationSize && {
-              elevation: elevations?.[index / elevationSize],
+              elevation: elevations?.[index / elevationSize] || 0,
             }),
           })
         }
@@ -99,8 +100,8 @@ export const getSegmentsFromData = memoize(
             latitude: positions[positions.length - 1],
           }),
           timestamp: timestamps[timestamps.length - 1],
-          ...(speedSize && { speed: speeds?.[speeds.length - 1] }),
-          ...(elevationSize && { elevation: elevations?.[elevations.length - 1] }),
+          ...(speedSize && { speed: speeds?.[speeds.length - 1] || 0 }),
+          ...(elevationSize && { elevation: elevations?.[elevations.length - 1] || 0 }),
         })
       } else {
         points.push({
@@ -109,8 +110,10 @@ export const getSegmentsFromData = memoize(
             latitude: positions[nextSegmentIndex / timestampSize + 1],
           }),
           timestamp: timestamps[nextSegmentIndex / timestampSize - 1],
-          ...(speedSize && { speed: speeds?.[nextSegmentIndex / speedSize - 1] }),
-          ...(elevationSize && { elevation: elevations?.[nextSegmentIndex / elevationSize - 1] }),
+          ...(speedSize && { speed: speeds?.[nextSegmentIndex / speedSize - 1] || 0 }),
+          ...(elevationSize && {
+            elevation: elevations?.[nextSegmentIndex / elevationSize - 1] || 0,
+          }),
         })
       }
       return points
