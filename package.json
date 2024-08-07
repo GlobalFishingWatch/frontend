@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "@deck.gl-community/editable-layers": "^9.0.2",
+    "@deck.gl-community/layers": "^9.0.2",
     "@deck.gl/core": "^9.0.26",
     "@deck.gl/extensions": "^9.0.26",
     "@deck.gl/geo-layers": "^9.0.26",
@@ -254,6 +255,10 @@
     "@turf/buffer": "^7.0.0",
     "@types/react-dom": "18.3.0",
     "@types/react": "18.3.3",
+    "@luma.gl/constants": "^9.0.19",
+    "@luma.gl/core": "^9.0.19",
+    "@luma.gl/engine": "^9.0.19",
+    "@luma.gl/webgl": "^9.0.19",
     "eslint-plugin-react": "7.34.1",
     "gaxios@npm:^6.0.0": "patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch",
     "gaxios@npm:^6.1.1": "patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch",
