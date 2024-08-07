@@ -15,6 +15,8 @@ import TimebarActivityGraph from './TimebarActivityGraph'
 import TimebarSettings from './TimebarSettings'
 import styles from './Timebar.module.css'
 
+const TimebarComponent = Timebar as any
+
 const TimebarHighlighterWrapper = () => {
   const [highlightTimerange] = useHighlightTimerange()
   // const metadata = useMapInstanceStyle()?.metadata?.generatorsMetadata
@@ -89,7 +91,7 @@ const TimebarWrapper = () => {
   if (!timerange?.start || !timerange?.end) return null
   return (
     <div className={styles.timebarWrapper}>
-      <Timebar
+      <TimebarComponent
         enablePlayback={true}
         start={timerange?.start}
         end={timerange?.end}
@@ -101,7 +103,7 @@ const TimebarWrapper = () => {
       >
         <TimebarActivityGraph />
         <TimebarHighlighterWrapper />
-      </Timebar>
+      </TimebarComponent>
       <TimebarSettings />
     </div>
   )
