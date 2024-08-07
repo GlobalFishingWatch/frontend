@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { IconButton, Radio } from '@globalfishingwatch/ui-components'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 import useClickedOutside from 'hooks/use-clicked-outside'
@@ -69,8 +69,8 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const vesselIds = activeTrackDataviews.map((v) => v.id)
-  const vesselLayers = useGetDeckLayers<VesselLayer | UserTracksLayer>(vesselIds)
-  const hasTracksData = vesselLayers?.some((layer) =>
+  const trackLayers = useGetDeckLayers<VesselLayer | UserTracksLayer>(vesselIds)
+  const hasTracksData = trackLayers?.some((layer) =>
     layer.instance instanceof VesselLayer
       ? layer.instance?.getVesselTracksLayersLoaded()
       : layer.instance?.isLoaded
