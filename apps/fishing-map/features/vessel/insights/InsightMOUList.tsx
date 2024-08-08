@@ -42,7 +42,6 @@ const InsightMOUList = ({
       }
     }
   })
-  console.log('tokyoAppearences:', tokyoAppearences)
   let parisAppearences: Record<string, Record<string, ValueInPeriod>> = {
     BLACK: {},
     GREY: {},
@@ -62,7 +61,6 @@ const InsightMOUList = ({
       }
     }
   })
-  console.log('parisAppearences:', parisAppearences)
 
   const getMOUListAppearance = () => {
     const messages = []
