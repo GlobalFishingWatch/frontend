@@ -948,6 +948,8 @@
     "showOtherLayers": "Show other layers",
     "source": "Source",
     "source_short": "Source",
+    "sortAsc": "Sort vessels alphabetically (ascending)",
+    "sortDesc": "Sort vessels alphabetically (descending)",
     "ssvid": "Ssvid",
     "summary": "{{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>",
     "target_species": "Target species",
