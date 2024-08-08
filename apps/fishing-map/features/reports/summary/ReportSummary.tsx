@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { sum } from 'es-toolkit'
 import { Fragment, useMemo } from 'react'
+import parse from 'html-react-parser'
 import Sticky from 'react-sticky-el'
 import { Locale } from '@globalfishingwatch/api-types'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -28,6 +29,7 @@ import { listAsSentence } from 'utils/shared'
 import { ReportCategory } from 'types'
 import { getDateRangeHash, selectReportVesselsDateRangeHash } from 'features/reports/report.slice'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { useTimeCompareTimeDescription } from 'features/reports/reports-timecomparison.hooks'
 import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
 import styles from './ReportSummary.module.css'
 
@@ -50,6 +52,7 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
   const dataviews = useSelector(selectActiveReportDataviews)
   const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
   const reportOutdated = reportDateRangeHash !== getDateRangeHash(timerange)
+  const timeCompareTimeDescription = useTimeCompareTimeDescription()
 
   const commonProperties = useMemo(() => {
     return getCommonProperties(dataviews).filter(
@@ -60,6 +63,9 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
 
   const summary = useMemo(() => {
     if (!dataviews.length) return
+    if (timeCompareTimeDescription) {
+      return timeCompareTimeDescription
+    }
     const datasetTitles = dataviews?.map((dataview) =>
       getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
     )
@@ -164,13 +170,14 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
     timerange?.start,
     timerange?.end,
     commonProperties,
+    timeCompareTimeDescription,
   ])
 
   return (
     <Fragment>
       <div className={styles.summaryContainer}>
         {summary ? (
-          <p className={styles.summary} dangerouslySetInnerHTML={{ __html: summary }}></p>
+          <p className={styles.summary}>{parse(summary)}</p>
         ) : (
           <ReportSummaryPlaceholder />
         )}
