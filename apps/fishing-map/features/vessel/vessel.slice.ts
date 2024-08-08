@@ -70,7 +70,7 @@ type VesselState = {
 }
 
 const initialState: VesselState = {
-  fitBoundsOnLoad: false,
+  fitBoundsOnLoad: true,
   printMode: false,
   data: {},
 }

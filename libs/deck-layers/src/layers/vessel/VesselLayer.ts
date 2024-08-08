@@ -468,7 +468,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselTracksLayersLoaded() {
-    return this.getTrackLayers().every((l) => l.isLoaded) || this.getVesselLayersError('track')
+    return (
+      (this.getTrackLayers().length > 0 && this.getTrackLayers().every((l) => l.isLoaded)) ||
+      this.getVesselLayersError('track')
+    )
   }
 
   getVesselLayersError(type: `${EventTypes}` | 'track' | 'events') {

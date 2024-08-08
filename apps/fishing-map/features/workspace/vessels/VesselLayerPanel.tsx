@@ -275,7 +275,7 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
             {layerActive && !infoLoading && !trackError && (
               <FitBounds
                 hasError={trackError}
-                vesselLayer={vesselLayer?.instance}
+                layer={vesselLayer?.instance}
                 infoResource={infoResource}
                 disabled={trackLoading}
               />

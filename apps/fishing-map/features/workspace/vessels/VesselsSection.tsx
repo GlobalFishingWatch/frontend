@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
@@ -19,9 +19,21 @@ import {
   hasTracksWithNoData,
   useTimebarVesselTracksData,
 } from 'features/timebar/timebar-vessel.hooks'
+import { getVesselLabel } from 'utils/info'
+import { selectResources, ResourcesState } from 'features/resources/resources.slice'
+import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
+
+const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: string) => {
+  return resources[
+    Object.keys(resources).find((key) =>
+      key.includes(dataviewId.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, ''))
+    ) as string
+  ]
+}
 
 function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
@@ -35,6 +47,10 @@ function VesselsSection(): React.ReactElement {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const searchAllowed = useSelector(isBasicSearchAllowed)
   const someVesselsVisible = dataviews.some((d) => d.config?.visible)
+  const readOnly = useSelector(selectReadOnly)
+  const resources = useSelector(selectResources)
+  const { dispatchQueryParams } = useLocationConnect()
+  const sortOrder = useRef<'ASC' | 'DESC' | 'DEFAULT'>('DEFAULT')
 
   const onToggleAllVessels = useCallback(() => {
     upsertDataviewInstance(
@@ -50,6 +66,25 @@ function VesselsSection(): React.ReactElement {
   const onDeleteAllClick = useCallback(() => {
     deleteDataviewInstance(dataviews.map((d) => d.id))
   }, [dataviews, deleteDataviewInstance])
+
+  const onSetSortOrderClick = useCallback(() => {
+    sortOrder.current = sortOrder.current === 'ASC' ? 'DESC' : 'ASC'
+    const dataviewsSortedIds = dataviews
+      .sort((a, b) => {
+        const aResource = getVesselResourceByDataviewId(resources, a.id)
+        const bResource = getVesselResourceByDataviewId(resources, b.id)
+        const aVesselLabel = aResource ? getVesselLabel(aResource.data) : ''
+        const bVesselLabel = bResource ? getVesselLabel(bResource.data) : ''
+        if (!aVesselLabel || !bVesselLabel) return 0
+        if (sortOrder.current === 'ASC') {
+          return aVesselLabel < bVesselLabel ? -1 : 1
+        } else {
+          return aVesselLabel < bVesselLabel ? 1 : -1
+        }
+      })
+      .map((d) => d.id)
+    dispatchQueryParams({ dataviewInstancesOrder: dataviewsSortedIds })
+  }, [dataviews, dispatchQueryParams, resources])
 
   const onSearchClick = useCallback(() => {
     trackEvent({
@@ -79,14 +114,31 @@ function VesselsSection(): React.ReactElement {
           {t('common.vessel_other', 'Vessels')}
           {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
         </h2>
-        {dataviews.length > 0 && (
-          <IconButton
-            icon="delete"
-            size="medium"
-            tooltip={t('vessel.removeAllVessels', 'Remove all vessels')}
-            tooltipPlacement="top"
-            onClick={onDeleteAllClick}
-          />
+        {!readOnly && (
+          <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
+            {dataviews.length > 1 && (
+              <IconButton
+                icon={sortOrder.current === 'DESC' ? 'sort-asc' : 'sort-desc'}
+                size="medium"
+                tooltip={
+                  sortOrder.current === 'DESC'
+                    ? t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')
+                    : t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')
+                }
+                tooltipPlacement="top"
+                onClick={onSetSortOrderClick}
+              />
+            )}
+            {dataviews.length > 0 && (
+              <IconButton
+                icon="delete"
+                size="medium"
+                tooltip={t('vessel.removeAllVessels', 'Remove all vessels')}
+                tooltipPlacement="top"
+                onClick={onDeleteAllClick}
+              />
+            )}
+          </div>
         )}
         <IconButton
           icon="search"

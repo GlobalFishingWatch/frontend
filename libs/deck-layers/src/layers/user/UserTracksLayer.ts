@@ -8,7 +8,7 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { TrackSegment } from '@globalfishingwatch/api-types'
-import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
+import { Bbox, geoJSONToSegments } from '@globalfishingwatch/data-transforms'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import { MAX_FILTER_VALUE } from '../layers.config'
@@ -182,6 +182,21 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       onlyExtents: !includeMiddlePoints,
     })
     return segmentsGeo
+  }
+
+  getBbox() {
+    const bbox = this.getSegments({ includeMiddlePoints: true }).reduce(
+      (acc, segment) =>
+        segment.reduce((acc, point) => {
+          if (point.longitude! < acc[0]) acc[0] = point.longitude as number
+          if (point.longitude! > acc[2]) acc[2] = point.longitude as number
+          if (point.latitude! < acc[1]) acc[1] = point.latitude as number
+          if (point.latitude! > acc[3]) acc[3] = point.latitude as number
+          return acc
+        }, acc),
+      [Infinity, Infinity, -Infinity, -Infinity] as Bbox
+    )
+    return bbox
   }
 
   _getColorByLineIndex = (_: any, { index }: { index: number }) => {

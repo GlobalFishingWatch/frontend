@@ -53,10 +53,7 @@
 .sectionButtons {
   display: flex;
   align-items: center;
-}
-
-.sectionButtons > *:not(:last-child) {
-  margin-right: 1rem;
+  gap: var(--space-XS);
 }
 
 .sectionButtons > .lastBtn {
@@ -65,6 +62,15 @@
 
 .sectionButtons > *:not(:last-child).lastBtn {
   margin-right: 0;
+}
+
+.sectionButtonsSecondary {
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.container:hover .sectionButtonsSecondary {
+  opacity: 1;
 }
 
 .emptyState,

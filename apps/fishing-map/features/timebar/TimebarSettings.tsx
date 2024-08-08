@@ -69,8 +69,8 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const vesselIds = activeTrackDataviews.map((v) => v.id)
-  const vesselLayers = useGetDeckLayers<VesselLayer | UserTracksLayer>(vesselIds)
-  const hasTracksData = vesselLayers?.some((layer) =>
+  const trackLayers = useGetDeckLayers<VesselLayer | UserTracksLayer>(vesselIds)
+  const hasTracksData = trackLayers?.some((layer) =>
     layer.instance instanceof VesselLayer
       ? layer.instance?.getVesselTracksLayersLoaded()
       : layer.instance?.isLoaded

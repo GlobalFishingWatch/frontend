@@ -1,13 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { InsightMOUListResponse } from '@globalfishingwatch/api-types'
+import { InsightMOUListResponse, ValueInPeriod } from '@globalfishingwatch/api-types'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
-import { formatInfoField } from 'utils/info'
+import { formatInfoField, upperFirst } from 'utils/info'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import styles from './Insights.module.css'
 
 const InsightMOUList = ({
@@ -22,20 +23,88 @@ const InsightMOUList = ({
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const { mouList } = insightData?.vesselIdentity || {}
+  let tokyoAppearences: Record<string, Record<string, ValueInPeriod>> = {
+    BLACK: {},
+    GREY: {},
+  }
+  mouList?.tokyo.valuesInThePeriod.forEach((v) => {
+    if (!tokyoAppearences[v.value]?.[v.reference]) {
+      tokyoAppearences[v.value][v.reference] = { ...v, value: upperFirst(v.value) }
+    } else {
+      if (v.from < tokyoAppearences[v.value][v.reference].from) {
+        tokyoAppearences[v.value][v.reference].from = v.from
+      }
+      if (v.to > tokyoAppearences[v.value][v.reference].to) {
+        tokyoAppearences[v.value][v.reference].to = v.to
+      }
+      if (!tokyoAppearences[v.value][v.reference].value.includes(upperFirst(v.value))) {
+        tokyoAppearences[v.value][v.reference].value += `, ${upperFirst(v.value)}`
+      }
+    }
+  })
+  let parisAppearences: Record<string, Record<string, ValueInPeriod>> = {
+    BLACK: {},
+    GREY: {},
+  }
+  mouList?.paris.valuesInThePeriod.forEach((v) => {
+    if (!parisAppearences[v.value]?.[v.reference]) {
+      parisAppearences[v.value][v.reference] = { ...v, value: upperFirst(v.value) }
+    } else {
+      if (v.from < parisAppearences[v.value][v.reference].from) {
+        parisAppearences[v.value][v.reference].from = v.from
+      }
+      if (v.to > parisAppearences[v.value][v.reference].to) {
+        parisAppearences[v.value][v.reference].to = v.to
+      }
+      if (!parisAppearences[v.value][v.reference].value.includes(upperFirst(v.value))) {
+        parisAppearences[v.value][v.reference].value += `, ${upperFirst(v.value)}`
+      }
+    }
+  })
+
   const getMOUListAppearance = () => {
     const messages = []
-    if (mouList?.tokyo.valuesInThePeriod.length > 0) {
+    const hasTokyoBlackAppearences = Object.values(tokyoAppearences.BLACK).length > 0
+    const hasTokyoGreyAppearences = Object.values(tokyoAppearences.GREY).length > 0
+    if (hasTokyoBlackAppearences) {
       messages.push(
-        <p key="tokyoCount">
-          {t('vessel.insights.MOUTokyoListsCount', {
-            flags: mouList?.tokyo.valuesInThePeriod
-              .map((v) => formatInfoField(v.reference, 'flag'))
+        <p key="tokyoBlackCount">
+          {t('vessel.insights.MOUTokyoBlackListsCount', {
+            flags: Object.values(tokyoAppearences.BLACK)
+              .map(
+                (v) =>
+                  `${formatInfoField(v.reference, 'flag')} ${t('common.from')} ${formatI18nDate(
+                    v.from
+                  )} ${t('common.to')} ${formatI18nDate(v.to)}`
+              )
               .join(', '),
-            defaultValue: 'Flag present on the Tokyo MOU black or grey list ({{flags}})',
+            defaultValue: 'Flag present on the Tokyo MOU black list ({{flags}})',
           })}
         </p>
       )
-    } else if (mouList?.tokyo.totalTimesListed > 0) {
+    }
+    if (hasTokyoGreyAppearences) {
+      messages.push(
+        <p key="tokyoGreyCount">
+          {t('vessel.insights.MOUTokyoGreyListsCount', {
+            flags: Object.values(tokyoAppearences.GREY)
+              .map(
+                (v) =>
+                  `${formatInfoField(v.reference, 'flag')} ${t('common.from')} ${formatI18nDate(
+                    v.from
+                  )} ${t('common.to')} ${formatI18nDate(v.to)}`
+              )
+              .join(', '),
+            defaultValue: 'Flag present on the Tokyo MOU grey list ({{flags}})',
+          })}
+        </p>
+      )
+    }
+    if (
+      !hasTokyoBlackAppearences &&
+      !hasTokyoGreyAppearences &&
+      mouList?.tokyo.totalTimesListed > 0
+    ) {
       messages.push(
         <p key="tokyoEmpty">
           {t(
@@ -45,18 +114,50 @@ const InsightMOUList = ({
         </p>
       )
     }
-    if (mouList?.paris.valuesInThePeriod.length > 0) {
+
+    const hasParisBlackAppearences = Object.values(parisAppearences.BLACK).length > 0
+    const hasParisGreyAppearences = Object.values(parisAppearences.GREY).length > 0
+
+    if (hasParisBlackAppearences) {
       messages.push(
-        <p key="parisCount">
-          {t('vessel.insights.MOUParisListsCount', {
-            flags: mouList?.paris.valuesInThePeriod
-              .map((v) => formatInfoField(v.reference, 'flag'))
+        <p key="parisBlackCount">
+          {t('vessel.insights.MOUParisBlackListsCount', {
+            flags: Object.values(parisAppearences.BLACK)
+              .map(
+                (v) =>
+                  `${formatInfoField(v.reference, 'flag')} ${t('common.from')} ${formatI18nDate(
+                    v.from
+                  )} ${t('common.to')} ${formatI18nDate(v.to)}`
+              )
               .join(', '),
-            defaultValue: 'Flag present on the Paris MOU black or grey list ({{flags}})',
+            defaultValue: 'Flag present on the Paris MOU black list ({{flags}})',
           })}
         </p>
       )
-    } else if (mouList?.paris.totalTimesListed > 0) {
+    }
+    if (hasParisGreyAppearences) {
+      messages.push(
+        <p key="parisGreyCount">
+          {t('vessel.insights.MOUParisGreyListsCount', {
+            flags: Object.values(parisAppearences.GREY)
+              .map(
+                (v) =>
+                  `${formatInfoField(v.reference, 'flag')} ${t('common.from')} ${formatI18nDate(
+                    v.from
+                  )} ${t('common.to')} ${formatI18nDate(v.to)}`
+              )
+              .join(', '),
+            defaultValue: 'Flag present on the Paris MOU grey list ({{flags}})',
+          })}
+        </p>
+      )
+    }
+
+    if (
+      !hasParisBlackAppearences &&
+      !hasParisGreyAppearences &&
+      mouList?.paris.totalTimesListed > 0
+    ) {
       messages.push(
         <p key="parisEmpty">
           {t(

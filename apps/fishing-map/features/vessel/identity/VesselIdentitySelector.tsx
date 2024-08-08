@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
@@ -76,17 +77,19 @@ const VesselIdentitySelector = () => {
           const end = formatI18nDate(identity.transmissionDateTo)
           const identityId = getVesselIdentityId(identity)
           return (
-            <li
-              key={identityId}
-              className={cx(styles.icon, {
-                [styles.selected]: identityId === getVesselIdentityId(currentIdentity),
-              })}
-              onClick={() => setIdentityId(identityId)}
-            >
-              <span className={styles.dates}>
-                {start} - {end}
-              </span>
-            </li>
+            <Tooltip content={t('vessel.selectIdentity', 'See the identity for this dates')}>
+              <li
+                key={identityId}
+                className={cx(styles.icon, {
+                  [styles.selected]: identityId === getVesselIdentityId(currentIdentity),
+                })}
+                onClick={() => setIdentityId(identityId)}
+              >
+                <span className={styles.dates}>
+                  {start} - {end}
+                </span>
+              </li>
+            </Tooltip>
           )
         })}
       </ul>

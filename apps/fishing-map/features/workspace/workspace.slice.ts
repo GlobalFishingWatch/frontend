@@ -317,7 +317,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
       let workspaceUpdated
-      if (tries < 2) {
+      if (tries < 4) {
         try {
           const name = tries > 0 ? defaultName + `_${tries}` : defaultName
           workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces`, {
@@ -338,7 +338,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
           } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
         } catch (e: any) {
           // Means we already have a workspace with this name
-          if (e.status === 400) {
+          if (e.status === 422 && e.message.includes('duplicated')) {
             return await saveWorkspace(tries + 1)
           }
           console.warn('Error creating workspace', e)
