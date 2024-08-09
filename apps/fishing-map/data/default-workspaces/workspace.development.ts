@@ -108,6 +108,28 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
+      id: 'gaps-events',
+      dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+      config: {
+        visible: true,
+        color: '#FAE9A0',
+      },
+      datasetsConfig: [
+        {
+          datasetId: 'public-global-gaps-events:v3.0',
+          // datasetId: 'proto-global-gaps-events:v20201001',
+          endpoint: 'events-cluster-tiles',
+          params: [],
+          query: [
+            {
+              id: 'vessel-types',
+              value: ['FISHING'],
+            },
+          ],
+        },
+      ],
+    },
+    {
       id: 'context-layer-graticules',
       config: {
         visible: false,
