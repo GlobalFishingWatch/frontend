@@ -29,7 +29,7 @@
     "errorDuplicatedName": "Un rapport portant ce nom existe déjà",
     "errorMessage": "Quelque chose s'est mal passé",
     "errorPeriodComparisonDateRange": "Erreur de plage de date. Le début de la comparaison doit être après le début de la référence.",
-    "errorTooComplex": "Nous ne pouvons pas créer de rapport dynamique pour cette zone, car les informations relatives aux limites sont complexes. Veuillez simplifier votre zone d'intérêt - en téléchargeant une nouvelle couche ou en dessinant votre calque sur la carte - et essayez de créer le rapport à nouveau pour résoudre le problème.",
+    "errorTooComplex": "Nous ne pouvons pas créer de rapport dynamique pour cette zone, car les informations relatives aux limites sont complexes. Veuillez simplifier votre zone d'intérêt - en téléchargeant un nouveau calque ou en dessinant votre calque sur la carte - et essayez à nouveau de créer le rapport pour résoudre le problème.",
     "evolution": "Évolution",
     "groupByFlag": "par pavillon",
     "groupByGeartype": "par type d'engin",
@@ -289,7 +289,7 @@
     "typeTracksDescription": "Afficher le mouvement d'un ou de plusieurs animaux ou navires.",
     "upload": "Charger un jeu de données",
     "uploadLogin": "<0>Inscrivez-vous</0> et <2>connectez-vous</2> pour télécharger des jeux de données (gratuit, 2 minutes)",
-    "uploadNew": "Upload new dataset",
+    "uploadNew": "Charger un nouveau jeu de données",
     "uploadNewContext": "Ajouter de nouveux calques de référence",
     "uploadNewEnviroment": "Ajouter un nouveau jeu de données d'environnement",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir ce jeu de données lorsque vous partagez un espace de travail",
@@ -301,11 +301,11 @@
     "date": "Date",
     "dateRange": "Plage de temps",
     "errors": {
-      "default": "There was an error uploading your dataset",
+      "default": "Il y a eu une erreur lors du téléchargement de votre fichier.",
       "geoJSON": {
         "noValidFeatures": "Aucune donnée géospatiale valide trouvée dans le fichier geoJSON"
       },
-      "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
+      "invalidDatesFeatures": "Certains de vos {{featureType}} ne contiennent pas de date valide. Ils n'apparaîtront pas sur la carte, quel que soit le filtre horaire.",
       "kml": {
         "invalidData": "Aucun type de géométrie trouvé dans les données KML",
         "noLineData": "Aucune donnée de tracé trouvée dans le KML",
@@ -323,11 +323,11 @@
     "fieldMultiplePlaceholder": "Sélectionnez un ou plusieurs champs de votre jeu de données",
     "fieldNumericPlaceholder": "Sélectionnez un champ numérique dans votre jeu de données",
     "fieldPlaceholder": "Sélectionnez un champ dans votre jeu de données",
-    "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-    "none": "None",
+    "invalidDatesFeatures": "Certains de vos {{featureType}} ne contiennent pas de date valide. Ils n'apparaîtront pas sur la carte, quel que soit le filtre horaire.",
+    "none": "Aucun",
     "optionalFields": "Options de champs supplémentaires",
     "point": {
-      "coordinates": "Point coordinates"
+      "coordinates": "Coordonnées du point"
     },
     "points": {
       "coordinates": "Coordonnées du point",
@@ -343,7 +343,7 @@
     "polygons": {
       "color": "Couleur du polygone",
       "colorHelp": "Sélectionnez une propriété numérique pour déterminer la transparence de chaque polygone",
-      "coordinates": "Polygon coordinates",
+      "coordinates": "Coordonnées du polygone",
       "filters": "Filtres des polygones",
       "filtersHelp": "Sélectionnez les propriétés (ou champs) de ce jeu de données pour pouvoir filtrer dynamiquement les polygones dans la barre latérale",
       "name": "Libellé du polygone",
@@ -412,12 +412,12 @@
     "groupActivityBy": "Grouper l'activité par type de navire",
     "groupVesselsBy": "Grouper les navires par",
     "heatmapLayers": "Télécharger les calques visibles pour cette zone",
-    "heatmapLogin": "Register and login to download activity, detections or environment layer (free, 2 minutes)",
+    "heatmapLogin": "S'inscrire et se connecter pour télécharger les activités, les détections ou le calque d'environnement (gratuit, 2 minutes)",
     "highResNotAvailable": "Votre zone est trop grande",
     "mmsiNotSupported": "Les données sélectionnées ne prennent pas en charge le regroupement par MMSI",
     "monthly": "Mois",
     "monthlyNotAvailable": "Votre plage de temps est inférieure à 1 mois",
-    "noHeatmapLayers": "Turn on an activity, detections or environment layer to download its data for this area",
+    "noHeatmapLayers": "Activez un calque d'activité, de détection ou d'environnement pour télécharger les données correspondant à cette zone",
     "spatialResolution": "Résolution spatiale",
     "temporalResolution": "Grouper l'heure par",
     "timeRange": "Plage de temps",
