@@ -125,7 +125,11 @@ export function getFourwingsDataviewsResolved(
 
   const fourwingsDataviews = Array.isArray(fourwingsDataview)
     ? fourwingsDataview
-    : [fourwingsDataview]
+    : [fourwingsDataview].filter(Boolean)
+
+  if (!fourwingsDataviews.length) {
+    return []
+  }
 
   const mergedActivityDataview = {
     id: getMergedDataviewId(fourwingsDataviews),
@@ -360,6 +364,7 @@ export function getDataviewsResolved(
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
+
   const userHeatmapDataviewsParsed = getFourwingsDataviewsResolved(userHeatmapDataviews)
 
   const vesselTrackDataviewsParsed = vesselTrackDataviews.flatMap((d) => ({

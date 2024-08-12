@@ -23,7 +23,7 @@ function ViirsMatchTooltipRow({
   const { t } = useTranslation()
   // Avoid showing not matched detections
   const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])
-  const hasVesselsResolved = feature?.vessels?.length > 0
+  const hasVesselsResolved = feature?.vessels && feature?.vessels?.length > 0
   const matchedVessels: SliceExtendedFourwingsDeckSublayer['vessels'] = (
     feature?.vessels || []
   ).filter((v: any) => v.id !== null)
