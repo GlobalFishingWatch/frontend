@@ -38,12 +38,15 @@ export function isTrackDataview(dataview: UrlDataviewInstance) {
   )
 }
 
-export function isUserTrackDataview(dataview: UrlDataviewInstance) {
-  return dataview.category === DataviewCategory.User && dataview.config?.type === DataviewType.Track
+export function isUserHeatmapDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.User &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
 }
 
-export function isHeatmapAnimatedDataview(dataview: UrlDataviewInstance) {
-  return isActivityDataview(dataview) || isDetectionsDataview(dataview)
+export function isUserTrackDataview(dataview: UrlDataviewInstance) {
+  return dataview.category === DataviewCategory.User && dataview.config?.type === DataviewType.Track
 }
 
 export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
