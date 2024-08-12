@@ -7,7 +7,7 @@ import {
   selectVesselGroupSearchVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
-import { selectUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
+import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 
 export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
@@ -31,7 +31,7 @@ export const selectHasVesselGroupSearchVessels = createSelector(
 )
 
 export const selectVessselGroupsAllowed = createSelector(
-  [selectUserGroupsPermissions, isAdvancedSearchAllowed],
+  [selectHasUserGroupsPermissions, isAdvancedSearchAllowed],
   (hasUserGroupsPermissions, advancedSearchAllowed) => {
     return hasUserGroupsPermissions && advancedSearchAllowed
   }

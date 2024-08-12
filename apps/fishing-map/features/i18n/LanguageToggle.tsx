@@ -10,6 +10,7 @@ import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selector
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import styles from './LanguageToggle.module.css'
 
 type LanguageToggleProps = {
@@ -23,7 +24,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const gfwDeveloper = useSelector(selectIsGFWDeveloper)
+  const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
   const basemapDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
   const toggleLanguage = (lang: Locale) => {
     trackEvent({
@@ -59,7 +60,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
             </button>
           </li>
         ))}
-        {gfwDeveloper && (
+        {hasEditTranslationsPermissions && (
           <li>
             <button
               onClick={() => toggleLanguage(CROWDIN_IN_CONTEXT_LANG as Locale)}
