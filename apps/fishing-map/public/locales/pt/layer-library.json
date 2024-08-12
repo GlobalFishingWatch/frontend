@@ -64,6 +64,11 @@
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentração de nitrato (NO3)"
   },
+  "offshore-fixed-infrastructure": {
+    "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
+    "moreInfoLink": "",
+    "name": "Offshore Fixed Infrastructure (SAR, Optical)"
+  },
   "oxygen": {
     "description": "Oxigênio dissolvido é a quantidade de oxigênio presente na água e é fundamental para o crescimento e a sobrevivência dos organismos marinhos. O aquecimento das temperaturas dos oceanos pode levar a uma expansão de zonas com baixo teor de oxigénio, o que pode impactar a distribuição e a abundância da vida marinha. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o oxigênio dissolvido, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
@@ -148,10 +153,5 @@
     "description": "A camada de detecção de embarcações com luzes noturnas, conhecida como conjunto de radiômetros de imagens infravermelhas visíveis ou VIIRS, mostra as embarcações no mar que os satélites detectaram pela luz que elas emitem à noite. Embora não esteja exclusivamente associada a embarcações de pesca, essa camada de atividade provavelmente mostra embarcações associadas a atividades como a pesca de lula, que utiliza luzes fortes, e a pesca noturna.",
     "moreInfoLink": "",
     "name": "Detecção de luz noturna (VIIRS)"
-  },
-  "offshore-fixed-infrastructure": {
-    "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
-    "moreInfoLink": "",
-    "name": "Offshore Fixed Infrastructure (SAR, Optical)"
   }
 }
