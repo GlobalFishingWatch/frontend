@@ -211,7 +211,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 feature.subcategory === DataviewType.UserContext ||
                 feature.subcategory === DataviewType.HeatmapAnimated
             )
-            console.log(userBQHeatmapFeatures)
             return (
               <Fragment key={featureCategory}>
                 <UserPointsTooltipSection
