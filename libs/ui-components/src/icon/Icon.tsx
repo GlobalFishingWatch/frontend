@@ -10,9 +10,9 @@ const IconComponents = icons.reduce((acc, icon) => {
   acc[icon] = lazy(() =>
     import(
       /* webpackChunkName: "icon-[request]" */
-      `../assets/icons/${icon}.svg`
+      `../assets/icons/${icon}.svg?react`
     ).then((m) => ({
-      default: m.ReactComponent,
+      default: m.ReactComponent || m.default || m,
     }))
   )
   return acc
@@ -34,7 +34,7 @@ export function Icon(props: IconProps) {
   const { icon, tooltip, type = 'default', className = '', style = defaultStyle, testId } = props
   const Component = IconComponents[icon]
   if (!Component) {
-    console.warn(`Missing icon: ${icon} in ui-components Icon component. Rendering null`)
+    console.warn(`<Icon /> ui-component is missing "${icon}" icon. Rendering null`)
     return null
   }
   return (
