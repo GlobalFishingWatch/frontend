@@ -116,10 +116,8 @@ const workspace: Workspace<WorkspaceState> = {
       },
       datasetsConfig: [
         {
-          // datasetId: 'public-global-gaps-events:v3.0',
-          // endpoint: 'events-cluster-tiles',
+          endpoint: 'events-cluster-tiles',
           datasetId: 'proto-global-gaps-events:v20201001',
-          endpoint: '4wings-tiles',
           params: [],
           query: [
             {
