@@ -185,7 +185,10 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getBbox() {
-    const bbox = this.getSegments({ includeMiddlePoints: true }).reduce(
+    const segments = this.getSegments({ includeMiddlePoints: true })
+    if (!segments.length) return null
+
+    const bbox = segments.reduce(
       (acc, segment) =>
         segment.reduce((acc, point) => {
           if (point.longitude! < acc[0]) acc[0] = point.longitude as number

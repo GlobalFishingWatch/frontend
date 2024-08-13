@@ -40,10 +40,11 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
               if (pt.timestamp && pt.timestamp > maxTimestamp) maxTimestamp = pt.timestamp
             })
           })
-          setTimerange({
-            start: new Date(minTimestamp).toISOString(),
-            end: new Date(maxTimestamp).toISOString(),
-          })
+          if (maxTimestamp > minTimestamp)
+            setTimerange({
+              start: new Date(minTimestamp).toISOString(),
+              end: new Date(maxTimestamp).toISOString(),
+            })
         }
       } else {
         const bbox = layer.getVesselTrackBounds()
