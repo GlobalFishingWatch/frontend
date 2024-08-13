@@ -26,6 +26,7 @@ import GFWOnly from 'features/user/GFWOnly'
 import { ONLY_GFW_STAFF_DATAVIEW_SLUGS, HIDDEN_DATAVIEW_FILTERS } from 'data/workspaces'
 import {
   getDatasetLabel,
+  getIsBQEditorDataset,
   getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
@@ -131,6 +132,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   }
 
   const isUserLayer = !guestUser && dataset?.ownerId === userId
+  const isBQEditorLayer = getIsBQEditorDataset(dataset)
 
   if (!dataset) {
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
@@ -196,7 +198,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
             styles.hideUntilHovered
           )}
         >
-          {layerActive && isUserLayer && (
+          {layerActive && isUserLayer && !isBQEditorLayer && (
             <IconButton
               icon="edit"
               size="small"
