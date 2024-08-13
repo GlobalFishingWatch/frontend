@@ -434,6 +434,7 @@
     "yearlyNotAvailable": "Rentang waktu Anda lebih pendek dari 1 bulan"
   },
   "errors": {
+    "areaLoad": "There was an error loading the report area",
     "contactUs": "Harap <1> hubungi kami </1> untuk melaporkan masalah tersebut.",
     "datasetNotFound": "Dataset tidak ditemukan",
     "datasetNotValid": "Tampaknya ada yang salah dengan file Anda",
@@ -444,6 +445,7 @@
     "invalidRange": "Min. harus lebih rendah dari nilai maks",
     "latestCarrierNotFound": "Dataset operator terbaru tidak ditemukan",
     "layerLoading": "There was an error loading the layer",
+    "loadDefaultWorkspace": "Load default workspace",
     "missingLatLng": "Tidak ditemukan bidang lintang atau bujur",
     "pageNotFound": "Halaman tidak ditemukan",
     "privateProfile": "Akun Anda tidak memiliki izin untuk melihat kapal ini",
@@ -635,6 +637,7 @@
     },
     "toggleVisibility": "Alihkan visibilitas lapisan",
     "type": "Jenis",
+    "user_track_fit_bounds": "Change view and time range to see the entire track",
     "vessel_fit_bounds": "Fokuskan di trek kapal",
     "vessel_fit_bounds_out_of_timerange": "Trek tidak memiliki aktivitas dalam rentang waktu yang Anda pilih. Ubah rentang waktu agar sesuai dengan trek ini?"
   },
@@ -890,8 +893,12 @@
       "MOULists": "Tokyo and Paris MOU Lists",
       "MOUListsEmpty": "Flying under a flag/flags not present on the Tokio or Paris MOU black or grey lists",
       "MOUParisListsCount": "Flag present on the Paris MOU black or grey list ({{flags}})",
+      "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
+      "MOUParisGreyListsCount": "Flag present on the Paris MOU grey list ({{flags}})",
       "MOUParisListsPreviousAppearance": "Previously flew under another flag on the Paris MOU black or grey lists",
       "MOUTokyoListsCount": "Flag present on the Tokyo MOU black or grey list ({{flags}})",
+      "MOUTokyoBlackListsCount": "Flag present on the Tokyo MOU black list ({{flags}})",
+      "MOUTokyoGreyListsCount": "Flag present on the Tokyo MOU grey list ({{flags}})",
       "MOUTokyoListsPreviousAppearance": "Previously flew under another flag on the Tokyo MOU black or grey lists",
       "sectionTitle": "Vessel insights between {{start}} and {{end}}"
     },
@@ -929,6 +936,7 @@
     "registryGeartype": "Registry Gear Type",
     "registrySources": "sumber registri",
     "removeAllVessels": "Remove all vessels",
+    "selectIdentity": "See the identity for this dates",
     "sectionActivity": "Aktivitas",
     "sectionAreas": "Area",
     "sectionInsights": "Insights",
@@ -942,6 +950,8 @@
     "showOtherLayers": "Tampilkan lapisan lainnya",
     "source": "Sumber",
     "source_short": "Sumber",
+    "sortAsc": "Sort vessels alphabetically (ascending)",
+    "sortDesc": "Sort vessels alphabetically (descending)",
     "ssvid": "Ssvid",
     "summary": "{{events}} {{voyages}} antara <strong>{{timerangeStart}}</strong> dan <strong>{{timerangeEnd}}</strong>",
     "target_species": "Spesies target",
