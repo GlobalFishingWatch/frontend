@@ -255,7 +255,10 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
               </ExpandedContainer>
             )}
           {<InfoModal dataview={dataview} />}
-          <Remove dataview={dataview} loading={layerLoading} />
+          <Remove
+            dataview={dataview}
+            loading={layerLoading && dataset?.status !== DatasetStatus.Importing}
+          />
           {items.length > 1 && (
             <IconButton
               size="small"
