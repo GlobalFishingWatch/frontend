@@ -41,6 +41,7 @@ const RelatedVessel = ({
         vesselId={vesselIdentity?.id}
         datasetId={vesselDataset?.id}
         tooltip={tooltip}
+        fitBounds
       >
         {nameLabel}
       </VesselLink>{' '}
