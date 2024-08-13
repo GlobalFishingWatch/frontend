@@ -434,6 +434,7 @@
     "yearlyNotAvailable": "Seu intervalo de tempo é menor que 1 ano"
   },
   "errors": {
+    "areaLoad": "There was an error loading the report area",
     "contactUs": "Por favor <1>contact us</1> para reportar o problema.",
     "datasetNotFound": "Dataset não encontrado",
     "datasetNotValid": "Parece haver algo errado com o seu arquivo",
@@ -444,6 +445,7 @@
     "invalidRange": "O valor mínimo tem que ser menor que o valor máximo",
     "latestCarrierNotFound": "Último conjunto de dados de cargueiros não encontrado",
     "layerLoading": "There was an error loading the layer",
+    "loadDefaultWorkspace": "Load default workspace",
     "missingLatLng": "Nenhum campo de latitude ou longitude encontrado",
     "pageNotFound": "Página não encontrada",
     "privateProfile": "Sua conta não tem permissão para ver esta embarcação",
@@ -635,6 +637,7 @@
     },
     "toggleVisibility": "Alterar visibilidade de camada",
     "type": "Tipo",
+    "user_track_fit_bounds": "Change view and time range to see the entire track",
     "vessel_fit_bounds": "Centralizar visualização na rota da embarcação",
     "vessel_fit_bounds_out_of_timerange": "A rota não tem nenhuma atividade no intervalo de tempo selecionado. Mude o intervalo de tempo para se adequar a esta rota?"
   },
@@ -890,8 +893,12 @@
       "MOULists": "Listas de MOU de Tóquio e Paris",
       "MOUListsEmpty": "Embarcação com uma bandeira/bandeiras não presente nas listas negra ou cinza do MOU de Tóquio ou Paris",
       "MOUParisListsCount": "Bandeira presente na lista negra ou cinza do MOU de Paris ({{flags}})",
+      "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
+      "MOUParisGreyListsCount": "Flag present on the Paris MOU grey list ({{flags}})",
       "MOUParisListsPreviousAppearance": "Anteriormente, embarcação com outra bandeira nas listas negra ou cinza do MOU de Paris",
       "MOUTokyoListsCount": "Bandeira presente na lista negra ou cinza do MOU de Tóquio ({{flags}})",
+      "MOUTokyoBlackListsCount": "Flag present on the Tokyo MOU black list ({{flags}})",
+      "MOUTokyoGreyListsCount": "Flag present on the Tokyo MOU grey list ({{flags}})",
       "MOUTokyoListsPreviousAppearance": "Anteriormente, embarcação com outra bandeira nas listas negra ou cinza do MOU de Tóquio",
       "sectionTitle": "Indicadores da embarcação entre {{start}} e {{end}}"
     },
@@ -929,6 +936,7 @@
     "registryGeartype": "Registry Gear Type",
     "registrySources": "fontes de registro",
     "removeAllVessels": "Remove all vessels",
+    "selectIdentity": "See the identity for this dates",
     "sectionActivity": "Atividade",
     "sectionAreas": "Áreas",
     "sectionInsights": "Indicadores",
@@ -942,6 +950,8 @@
     "showOtherLayers": "Mostrar outras camadas",
     "source": "Fonte",
     "source_short": "Fonte",
+    "sortAsc": "Sort vessels alphabetically (ascending)",
+    "sortDesc": "Sort vessels alphabetically (descending)",
     "ssvid": "Ssvid",
     "summary": "{{events}} {{voyages}} entre <strong>{{timerangeStart}}</strong> e <strong>{{timerangeEnd}}</strong>",
     "target_species": "Espécie alvo",
