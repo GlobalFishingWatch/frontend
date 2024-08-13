@@ -35,13 +35,12 @@ export async function getDatasetParsed(file: File, type: DatasetGeometryType): P
       return shpToGeoJSON(fileData, type)
     } else if (fileType === 'CSV') {
       const fileText = await file.text()
-      // TODO: CHECK IF CSV CONTAINS HEADERS ?
       const { data } = parse(fileText, {
         download: false,
         dynamicTyping: true,
         header: true,
       })
-      return data.slice(1) as DataList
+      return data as DataList
     } else if (fileType === 'KML') {
       return kmlToGeoJSON(file, type)
     }
