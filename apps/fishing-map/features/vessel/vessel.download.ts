@@ -54,7 +54,8 @@ const VESSEL_CSV_CONFIG: CsvConfig[] = [
   // TODO translate labels
   { label: 'id', accessor: 'id' },
   { label: 'flag', accessor: 'flag' },
-  { label: 'ssvid', accessor: 'imo' },
+  { label: 'mmsi', accessor: 'ssvid' },
+  { label: 'imo', accessor: 'imo' },
   { label: 'shipname', accessor: 'nShipname' },
   { label: 'shiptypes', accessor: 'shiptypes' },
   { label: 'geartypes', accessor: 'geartypes' },

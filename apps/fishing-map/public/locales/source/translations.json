@@ -434,6 +434,7 @@
     "yearlyNotAvailable": "Your time range is shorter than 1 year"
   },
   "errors": {
+    "areaLoad": "There was an error loading the report area",
     "contactUs": "Please <1>contact us</1> to report the problem.",
     "datasetNotFound": "Dataset not found",
     "datasetNotValid": "It seems to be something wrong with your file",
@@ -444,6 +445,7 @@
     "invalidRange": "Min has to be lower than max value",
     "latestCarrierNotFound": "Latest carrier dataset not found",
     "layerLoading": "There was an error loading the layer",
+    "loadDefaultWorkspace": "Load default workspace",
     "missingLatLng": "No latitude or longitude fields found",
     "pageNotFound": "Page not found",
     "privateProfile": "Your account doesn't have permission to see this vessel",
@@ -635,6 +637,7 @@
     },
     "toggleVisibility": "Toggle layer visibility",
     "type": "Type",
+    "user_track_fit_bounds": "Change view and time range to see the entire track",
     "vessel_fit_bounds": "Center view on vessel track",
     "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected timerange. Change timerange to fit this track?"
   },
@@ -890,8 +893,12 @@
       "MOULists": "Tokyo and Paris MOU Lists",
       "MOUListsEmpty": "Flying under a flag/flags not present on the Tokio or Paris MOU black or grey lists",
       "MOUParisListsCount": "Flag present on the Paris MOU black or grey list ({{flags}})",
+      "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
+      "MOUParisGreyListsCount": "Flag present on the Paris MOU grey list ({{flags}})",
       "MOUParisListsPreviousAppearance": "Previously flew under another flag on the Paris MOU black or grey lists",
       "MOUTokyoListsCount": "Flag present on the Tokyo MOU black or grey list ({{flags}})",
+      "MOUTokyoBlackListsCount": "Flag present on the Tokyo MOU black list ({{flags}})",
+      "MOUTokyoGreyListsCount": "Flag present on the Tokyo MOU grey list ({{flags}})",
       "MOUTokyoListsPreviousAppearance": "Previously flew under another flag on the Tokyo MOU black or grey lists",
       "sectionTitle": "Vessel insights between {{start}} and {{end}}"
     },
@@ -929,6 +936,7 @@
     "registryGeartype": "Registry Gear Type",
     "registrySources": "registry sources",
     "removeAllVessels": "Remove all vessels",
+    "selectIdentity": "See the identity for this dates",
     "sectionActivity": "Activity",
     "sectionAreas": "Areas",
     "sectionInsights": "Insights",
@@ -942,6 +950,8 @@
     "showOtherLayers": "Show other layers",
     "source": "Source",
     "source_short": "Source",
+    "sortAsc": "Sort vessels alphabetically (ascending)",
+    "sortDesc": "Sort vessels alphabetically (descending)",
     "ssvid": "Ssvid",
     "summary": "{{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>",
     "target_species": "Target species",

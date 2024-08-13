@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import {
@@ -44,7 +44,7 @@ type SidebarProps = {
 function Sidebar({ onMenuClick }: SidebarProps) {
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
-  const isSmallScreen = useSmallScreen()
+  const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const isUserLocation = useSelector(selectIsUserLocation)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)

@@ -13,11 +13,11 @@ type InsightBase = {
   }
 }
 
-type ValueInPeriod = {
+export type ValueInPeriod = {
   from: string
   to: string
-  value: string
-  reference: string
+  value: string // BLACK | GREY
+  reference: string // Flag
 }
 
 export type InsightCoverageResponse = InsightBase & {

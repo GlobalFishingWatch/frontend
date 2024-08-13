@@ -1,13 +1,16 @@
 import { useSelector } from 'react-redux'
 import { useCallback, useEffect } from 'react'
-import { Dataset, DatasetStatus } from '@globalfishingwatch/api-types'
+import { Dataset, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
+import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
 import { AsyncError } from 'utils/async-slice'
 import {
   getContextDataviewInstance,
   getUserPolygonsDataviewInstance,
   getUserPointsDataviewInstance,
   getUserTrackDataviewInstance,
+  getBigQuery4WingsDataviewInstance,
+  getBigQueryEventsDataviewInstance,
 } from 'features/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -29,6 +32,7 @@ import {
   selectCarrierLatestDatasetStatus,
   updateDatasetThunk,
 } from './datasets.slice'
+import { getIsBQEditorDataset } from './datasets.utils'
 
 interface NewDatasetProps {
   onSelect?: (dataset?: Dataset) => void
@@ -37,6 +41,16 @@ interface NewDatasetProps {
 const DATASET_REFRESH_TIMEOUT = 10000
 
 export const getDataviewInstanceByDataset = (dataset: Dataset) => {
+  const isBQEditorLayer = getIsBQEditorDataset(dataset)
+  if (isBQEditorLayer) {
+    return dataset.category === DatasetCategory.Activity
+      ? getBigQuery4WingsDataviewInstance(dataset.id, {
+          aggregationOperation:
+            (dataset.configuration?.aggregationOperation as FourwingsAggregationOperation) ||
+            FourwingsAggregationOperation.Sum,
+        })
+      : getBigQueryEventsDataviewInstance(dataset.id)
+  }
   const config = getDatasetConfiguration(dataset)
   if (config?.geometryType === 'points') {
     return getUserPointsDataviewInstance(dataset)

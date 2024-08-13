@@ -14,7 +14,7 @@ import {
   SubBrands,
   Tooltip,
 } from '@globalfishingwatch/ui-components'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import {
   selectCurrentWorkspaceCategory,
@@ -450,7 +450,7 @@ function SidebarHeader() {
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
-  const isSmallScreen = useSmallScreen()
+  const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
   const { dispatchQueryParams } = useLocationConnect()
   const searchQuery = useSelector(selectSearchQuery)

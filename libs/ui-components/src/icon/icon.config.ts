@@ -96,6 +96,8 @@ const icons = [
   'settings',
   'share',
   'skip',
+  'sort-asc',
+  'sort-desc',
   'sparks',
   'split',
   'target',

@@ -427,7 +427,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const settledPromises = await Promise.allSettled(promises)
     const hasChunkError = settledPromises.some((p) => p.status === 'rejected')
     if (hasChunkError) {
-      throw new Error('chunk load error')
+      const error =
+        (settledPromises.find((p) => p.status === 'rejected' && p.reason.statusText) as any)?.reason
+          .statuxText || 'Error loading chunk'
+      throw new Error(error)
     }
 
     const arrayBuffers = settledPromises.flatMap((d) => {
@@ -537,7 +540,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       (p) => p.status === 'rejected' && p.reason.status !== 404
     )
     if (hasChunkError) {
-      throw new Error('chunk load error')
+      const error =
+        (settledPromises.find((p) => p.status === 'rejected' && p.reason.statusText) as any)?.reason
+          .statuxText || 'Error loading chunk'
+      throw new Error(error)
     }
 
     if (tile.signal?.aborted) {

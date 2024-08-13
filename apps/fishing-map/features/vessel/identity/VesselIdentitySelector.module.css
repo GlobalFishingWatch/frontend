@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: center;
   height: 3.2rem;
-  background-color: var(--color-terthiary-blue);
+  background-color: rgba(var(--primary-blue-rgb), 0.4);
   border-radius: 1.6rem;
   transition: all 250ms ease-out;
   cursor: pointer;
@@ -21,9 +21,10 @@
   grid-template-columns: 0fr;
 }
 
-.icon:hover {
-  border: 0.5rem solid white;
+.icon:hover,
+.icon.selected {
   grid-template-columns: 1fr;
+  border: 0.5rem solid white;
 }
 
 .icon:hover,
@@ -34,16 +35,10 @@
 .dates {
   font: var(--font-XS);
   color: var(--color-white);
-  opacity: 0;
   white-space: nowrap;
   width: 100%;
   overflow: hidden;
   transition: opacity 150ms ease-in;
-}
-
-.icon:hover .dates {
-  opacity: 1;
-  transition: opacity 150ms ease-in 200ms;
 }
 
 .error {

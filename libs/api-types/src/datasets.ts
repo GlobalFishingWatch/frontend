@@ -125,6 +125,8 @@ export interface DatasetConfiguration {
   srid?: number
   file?: string
   type?: EventTypes
+  source?: string
+  aggregationOperation?: 'avg' | 'sum'
   geometryType?: DatasetGeometryType
   format?: 'geojson'
   tableName?: string

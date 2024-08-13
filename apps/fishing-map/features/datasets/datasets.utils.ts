@@ -168,6 +168,17 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   return 'polygons'
 }
 
+export const getIsBQEditorDataset = (dataset: Dataset): boolean => {
+  if (!dataset) {
+    return false
+  }
+  // TODO use a custom category for BQ datasets but the API doesn't allow it yet
+  return (
+    (dataset.category === DatasetCategory.Activity || dataset.category === DatasetCategory.Event) &&
+    dataset.subcategory === 'user'
+  )
+}
+
 export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
   const source = dataset?.source
   if (!source) {

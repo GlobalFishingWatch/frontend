@@ -299,7 +299,18 @@ const VesselIdentity = () => {
                       )}
                     </div>
                     {allRegistryInfo?.length > 0 ? (
-                      <ul className={cx(styles.fieldGroup, styles.twoColumns)}>
+                      <ul
+                        className={cx(styles.fieldGroup, styles.twoColumns)}
+                        style={
+                          key === 'registryPublicAuthorizations'
+                            ? {
+                                gridTemplateRows: `repeat(${Math.ceil(
+                                  filteredRegistryInfo.length / 2
+                                )}, 1fr)`,
+                              }
+                            : undefined
+                        }
+                      >
                         {allRegistryInfo.map((registry, index) => {
                           const registryOverlapsTimeRange = filteredRegistryInfo.includes(registry)
                           const fieldType = key === 'registryOwners' ? 'owner' : 'authorization'

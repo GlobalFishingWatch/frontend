@@ -46,7 +46,7 @@ const VesselLink = ({
   children,
   onClick,
   tooltip,
-  fitBounds = true,
+  fitBounds = false,
   className = '',
   query,
   testId = 'link-vessel-profile',
@@ -69,10 +69,8 @@ const VesselLink = ({
         if (vesselId !== vesselInfoDataId) {
           dispatch(resetVesselState())
         }
-        if (fitBounds) {
-          // This needs to happen after dispatch resetVesselState so there is no override
-          dispatch(setVesselFitBoundsOnLoad(true))
-        }
+        // This needs to happen after dispatch resetVesselState so there is no override
+        dispatch(setVesselFitBoundsOnLoad(fitBounds))
       }
       if (onClick) {
         onClick(e)

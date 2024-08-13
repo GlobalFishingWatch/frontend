@@ -10,8 +10,9 @@ import {
   getDatasetGeometryType,
   getUserDataviewDataset,
 } from '@globalfishingwatch/datasets-client'
-import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import { DrawFeatureType, UserTracksLayer } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -25,6 +26,7 @@ import GFWOnly from 'features/user/GFWOnly'
 import { ONLY_GFW_STAFF_DATAVIEW_SLUGS, HIDDEN_DATAVIEW_FILTERS } from 'data/workspaces'
 import {
   getDatasetLabel,
+  getIsBQEditorDataset,
   getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
@@ -32,6 +34,7 @@ import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { COLOR_SECONDARY_BLUE } from 'features/app/app.config'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import FitBounds from 'features/workspace/common/FitBounds'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
@@ -66,6 +69,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   const layerLoaded = loaded && !error
   const layerLoadedDebounced = useDebounce(layerLoaded, 300)
   const layerLoading = layerActive && !layerLoadedDebounced && !error
+  const layer = useGetDeckLayer<UserTracksLayer>(dataview.id)
 
   useAutoRefreshImportingDataset(layerActive ? dataset : ({} as Dataset), 5000)
 
@@ -128,6 +132,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
   }
 
   const isUserLayer = !guestUser && dataset?.ownerId === userId
+  const isBQEditorLayer = getIsBQEditorDataset(dataset)
 
   if (!dataset) {
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
@@ -193,7 +198,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
             styles.hideUntilHovered
           )}
         >
-          {layerActive && isUserLayer && (
+          {layerActive && isUserLayer && !isBQEditorLayer && (
             <IconButton
               icon="edit"
               size="small"
@@ -219,6 +224,13 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
               />
             </Fragment>
           )}
+          {layerActive && datasetGeometryType === 'tracks' && (
+            <FitBounds
+              hasError={error !== undefined}
+              layer={layer?.instance}
+              disabled={layerLoading}
+            />
+          )}
           {layerActive &&
             hasSchemaFilters &&
             !HIDDEN_DATAVIEW_FILTERS.includes(dataview.dataviewId as string) && (
@@ -243,7 +255,10 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement {
               </ExpandedContainer>
             )}
           {<InfoModal dataview={dataview} />}
-          <Remove dataview={dataview} loading={layerLoading} />
+          <Remove
+            dataview={dataview}
+            loading={layerLoading && dataset?.status !== DatasetStatus.Importing}
+          />
           {items.length > 1 && (
             <IconButton
               size="small"
