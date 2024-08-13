@@ -63,6 +63,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
+      error: '',
       colorDomain: [],
       colorRanges: this._getColorRanges(),
       scales: [],
@@ -83,7 +84,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       getColorRamp({ rampId: colorRamp as ColorRampId })
     )
   }
-
+  getError(): string {
+    return (this.state as FourwingsTileLayerState).error
+  }
   _calculateColorDomain = () => {
     // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
     // NO_DATA_VALUE = 0
