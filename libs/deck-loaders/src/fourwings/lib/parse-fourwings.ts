@@ -34,8 +34,6 @@ export const getCellTimeseries = (
     cols,
     rows,
   } = options?.fourwings || ({} as ParseFourwingsOptions)
-
-  // TODO ensure we use the UTC dates here to avoid the .ceil
   const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
   const timeRangeStartFrame =
     CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start!) - tileStartFrame
