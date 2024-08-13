@@ -20,16 +20,22 @@ const hasUserPermission = (permission: UserPermission) =>
     return checkExistPermissionInList(userData.permissions, permission)
   })
 
-export const selectUserDataviewEditPermissions = hasUserPermission({
+export const selectHasDataviewEditPermissions = hasUserPermission({
   type: 'entity',
   value: 'dataview',
   action: 'create-all',
 })
 
-export const selectUserGroupsPermissions = hasUserPermission({
+export const selectHasUserGroupsPermissions = hasUserPermission({
   type: 'entity',
   value: 'vessel-group',
   action: 'create',
+})
+
+export const selectHasEditTranslationsPermissions = hasUserPermission({
+  type: 'application',
+  value: 'fishing-map',
+  action: 'edit-translations',
 })
 
 export const selectUserId = createSelector([selectUserData], (userData) => {

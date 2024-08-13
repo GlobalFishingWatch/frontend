@@ -25,6 +25,7 @@ import {
   isEnvironmentalDataview,
   isHeatmapStaticDataview,
   isTrackDataview,
+  isUserHeatmapDataview,
   isUserTrackDataview,
 } from '@globalfishingwatch/dataviews-client'
 
@@ -87,7 +88,8 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
   }
 
   const activeDatasets =
-    dataview.category === DataviewCategory.Environment
+    dataview.category === DataviewCategory.Environment ||
+    dataview.category === DataviewCategory.User
       ? dataview.datasets
       : dataview.datasets.filter((dataset) => dataview?.config?.datasets?.includes(dataset.id))
 
@@ -123,7 +125,11 @@ export function getFourwingsDataviewsResolved(
 
   const fourwingsDataviews = Array.isArray(fourwingsDataview)
     ? fourwingsDataview
-    : [fourwingsDataview]
+    : [fourwingsDataview].filter(Boolean)
+
+  if (!fourwingsDataviews.length) {
+    return []
+  }
 
   const mergedActivityDataview = {
     id: getMergedDataviewId(fourwingsDataviews),
@@ -285,6 +291,7 @@ export function getDataviewsResolved(
     staticDataviews,
     vesselTrackDataviews,
     userTrackDataviews,
+    userHeatmapDataviews,
     otherDataviews,
   } = dataviews.reduce(
     (acc, dataview) => {
@@ -296,6 +303,8 @@ export function getDataviewsResolved(
         acc.environmentalDataviews.push(dataview)
       } else if (isHeatmapStaticDataview(dataview)) {
         acc.staticDataviews.push(dataview)
+      } else if (isUserHeatmapDataview(dataview)) {
+        acc.userHeatmapDataviews.push(dataview)
       } else if (isTrackDataview(dataview)) {
         acc.vesselTrackDataviews.push(dataview)
       } else if (isUserTrackDataview(dataview)) {
@@ -311,6 +320,7 @@ export function getDataviewsResolved(
       environmentalDataviews: [] as UrlDataviewInstance[],
       staticDataviews: [] as UrlDataviewInstance[],
       vesselTrackDataviews: [] as UrlDataviewInstance[],
+      userHeatmapDataviews: [] as UrlDataviewInstance[],
       userTrackDataviews: [] as UrlDataviewInstance[],
       otherDataviews: [] as UrlDataviewInstance[],
     }
@@ -354,6 +364,9 @@ export function getDataviewsResolved(
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
+
+  const userHeatmapDataviewsParsed = getFourwingsDataviewsResolved(userHeatmapDataviews)
+
   const vesselTrackDataviewsParsed = vesselTrackDataviews.flatMap((d) => ({
     ...d,
     config: {
@@ -376,6 +389,7 @@ export function getDataviewsResolved(
     ...mergedActivityDataview,
     ...vesselTrackDataviewsParsed,
     ...userTrackDataviewsParsed,
+    ...userHeatmapDataviewsParsed,
   ]
   return dataviewsMerged
 }

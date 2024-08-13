@@ -64,6 +64,11 @@
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Konsentrasi nitrat (NO3)"
   },
+  "offshore-fixed-infrastructure": {
+    "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
+    "moreInfoLink": "",
+    "name": "Offshore Fixed Infrastructure (SAR, Optical)"
+  },
   "oxygen": {
     "description": "Oksigen terlarut adalah jumlah oksigen yang ada di air dan sangat penting untuk pertumbuhan dan kelangsungan hidup organisme laut. Pemanasan suhu laut dapat menyebabkan perluasan zona rendah oksigen, yang dapat berdampak pada distribusi dan kelimpahan kehidupan laut. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk oksigen terlarut, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
@@ -148,10 +153,5 @@
     "description": "Lapisan pendeteksi kapal lampu malam, yang dikenal sebagai suite radiometer pencitraan inframerah tampak atau VIIRS, menunjukkan kapal di laut yang telah dideteksi oleh satelit melalui cahaya yang dipancarkannya di malam hari. Meskipun tidak secara eksklusif dikaitkan dengan kapal penangkap ikan, lapisan aktivitas ini kemungkinan besar menampilkan kapal yang terkait dengan aktivitas seperti penangkapan cumi-cumi, yang menggunakan lampu terang dan menangkap ikan di malam hari.",
     "moreInfoLink": "",
     "name": "Deteksi cahaya malam (Night light detections/VIIRS)"
-  },
-  "offshore-fixed-infrastructure": {
-    "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
-    "moreInfoLink": "",
-    "name": "Offshore Fixed Infrastructure (SAR, Optical)"
   }
 }
