@@ -434,6 +434,7 @@
     "yearlyNotAvailable": "Votre plage de temps est inférieure à 1 an"
   },
   "errors": {
+    "areaLoad": "There was an error loading the report area",
     "contactUs": "Veuillez <1>nous contacter</1> pour signaler le problème.",
     "datasetNotFound": "Jeu de données introuvable",
     "datasetNotValid": "Il semble y avoir un problème avec votre fichier",
@@ -444,6 +445,7 @@
     "invalidRange": "Le minimum doit être inférieur au maximum",
     "latestCarrierNotFound": "Dernier jeu de données transporteur introuvable",
     "layerLoading": "Une erreur s’est produite lors du chargement du calque",
+    "loadDefaultWorkspace": "Load default workspace",
     "missingLatLng": "Aucun champ de latitude ou de longitude trouvé",
     "pageNotFound": "Page introuvable",
     "privateProfile": "Votre compte n'est pas autorisé pour visionner ce navire",
@@ -635,6 +637,7 @@
     },
     "toggleVisibility": "Afficher/cacher calque",
     "type": "Type",
+    "user_track_fit_bounds": "Change view and time range to see the entire track",
     "vessel_fit_bounds": "Centrer la carte sur la trajectoire du navire",
     "vessel_fit_bounds_out_of_timerange": "La piste n'a aucune activité dans la plage temporelle sélectionnée. Changer la plage temporelle pour l'ajuster à cette trajectoire ?"
   },
@@ -890,8 +893,12 @@
       "MOULists": "Listes des Mémorandums d'entente de Paris et de Tokyo",
       "MOUListsEmpty": "Battant un ou plusieurs pavillons ne figurant pas sur les listes noires ou grises du Mémorandum d'entente de Tokyo ou de Paris",
       "MOUParisListsCount": "Pavillon figurant sur la liste noire ou grise du Mémorandum d'entente de Paris ({{flags}})",
+      "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
+      "MOUParisGreyListsCount": "Flag present on the Paris MOU grey list ({{flags}})",
       "MOUParisListsPreviousAppearance": "Battait précédemment un autre pavillon figurant sur la liste noire ou grise du Mémorandum d'entente de Paris",
       "MOUTokyoListsCount": "Pavillon présent sur la liste noire ou grise du Mémorandum d'entente de Tokyo ({{flags}})",
+      "MOUTokyoBlackListsCount": "Flag present on the Tokyo MOU black list ({{flags}})",
+      "MOUTokyoGreyListsCount": "Flag present on the Tokyo MOU grey list ({{flags}})",
       "MOUTokyoListsPreviousAppearance": "Battait précédemment un autre pavillon figurant sur la liste noire ou grise du Mémorandum d'entente de Tokyo",
       "sectionTitle": "Indicateurs du navire entre {{start}} et {{end}}"
     },
@@ -929,6 +936,7 @@
     "registryGeartype": "Registry Gear Type",
     "registrySources": "sources de registres",
     "removeAllVessels": "Supprimer tous les navires",
+    "selectIdentity": "See the identity for this dates",
     "sectionActivity": "Activité",
     "sectionAreas": "Zones",
     "sectionInsights": "Indicateurs",
@@ -942,6 +950,8 @@
     "showOtherLayers": "Afficher les autres calques",
     "source": "Source",
     "source_short": "Source",
+    "sortAsc": "Sort vessels alphabetically (ascending)",
+    "sortDesc": "Sort vessels alphabetically (descending)",
     "ssvid": "Ssvid",
     "summary": "{{events}} {{voyages}} entre <strong>{{timerangeStart}}</strong> et <strong>{{timerangeEnd}}</strong>",
     "target_species": "Espèces pêchées",
