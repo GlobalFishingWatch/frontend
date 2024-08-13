@@ -156,7 +156,11 @@ export default function ReportVesselsTable({ activityUnit, reportName }: ReportV
                   {type}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
-                  <I18nNumber number={vessel.value} />
+                  {vessel.value !== undefined ? (
+                    <I18nNumber number={vessel.value} />
+                  ) : (
+                    EMPTY_FIELD_PLACEHOLDER
+                  )}
                 </div>
               </Fragment>
             )
