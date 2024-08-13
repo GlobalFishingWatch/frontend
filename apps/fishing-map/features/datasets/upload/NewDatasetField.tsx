@@ -49,6 +49,7 @@ function NewDatasetField({
     'startTime',
     'endTime',
     'segmentId',
+    'valueProperties',
     'lineId',
   ]
   const isNotEditableField = notEditableOptions.some((option) => option === property)
