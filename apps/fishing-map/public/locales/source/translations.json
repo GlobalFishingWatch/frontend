@@ -434,6 +434,7 @@
     "yearlyNotAvailable": "Your time range is shorter than 1 year"
   },
   "errors": {
+    "areaLoad": "There was an error loading the report area",
     "contactUs": "Please <1>contact us</1> to report the problem.",
     "datasetNotFound": "Dataset not found",
     "datasetNotValid": "It seems to be something wrong with your file",
@@ -444,6 +445,7 @@
     "invalidRange": "Min has to be lower than max value",
     "latestCarrierNotFound": "Latest carrier dataset not found",
     "layerLoading": "There was an error loading the layer",
+    "loadDefaultWorkspace": "Load default workspace",
     "missingLatLng": "No latitude or longitude fields found",
     "pageNotFound": "Page not found",
     "privateProfile": "Your account doesn't have permission to see this vessel",

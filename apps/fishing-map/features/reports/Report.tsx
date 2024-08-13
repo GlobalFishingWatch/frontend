@@ -12,13 +12,17 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import WorkspaceError, { WorkspaceLoginError } from 'features/workspace/WorkspaceError'
+import WorkspaceError, {
+  ErrorPlaceHolder,
+  WorkspaceLoginError,
+} from 'features/workspace/WorkspaceError'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import {
   selectHasReportBuffer,
   selectHasReportVessels,
   selectReportArea,
+  selectReportAreaStatus,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
 import ReportVesselsPlaceholder from 'features/reports/placeholders/ReportVesselsPlaceholder'
@@ -331,14 +335,15 @@ function ActivityReport({ reportName }: { reportName: string }) {
   }, [
     workspaceStatus,
     timerangeTooLong,
+    reportError,
+    reportLoading,
+    reportDataviews?.length,
     reportOutdated,
     reportStatus,
-    reportLoading,
     hasAuthError,
     reportLoaded,
-    reportError,
-    reportDataviews?.length,
     t,
+    ReportVesselError,
     timerange?.start,
     timerange?.end,
     dispatch,
@@ -347,7 +352,6 @@ function ActivityReport({ reportName }: { reportName: string }) {
     activityUnit,
     reportName,
     datasetsDownloadNotSupported,
-    ReportVesselError,
   ])
 
   return (
@@ -398,6 +402,7 @@ export default function Report() {
     }
   })
   const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const reportAreaError = useSelector(selectReportAreaStatus) === AsyncReducerStatus.Error
   const { status } = useFetchReportArea()
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
@@ -461,6 +466,14 @@ export default function Report() {
     workspaceVesselGroupsStatus === AsyncReducerStatus.Error
   ) {
     return <WorkspaceError />
+  }
+
+  if (reportAreaError) {
+    return (
+      <ErrorPlaceHolder
+        title={t('errors.areaLoad', 'There was an error loading the report area')}
+      ></ErrorPlaceHolder>
+    )
   }
 
   return (
