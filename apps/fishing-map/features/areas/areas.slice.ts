@@ -17,7 +17,7 @@ import { RootState } from 'store'
 import { listAsSentence } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 
-type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
+export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
 
 interface DatasetArea {
   id: string

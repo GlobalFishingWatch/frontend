@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
+import bbox from '@turf/bbox'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Feature, Polygon } from 'geojson'
 import { useSelector } from 'react-redux'
 import { Button, InputText, IconButton, SwitchRow } from '@globalfishingwatch/ui-components'
 import { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   useAddDataviewFromDatasetToWorkspace,
@@ -17,9 +19,11 @@ import {
   resetAreaList,
   fetchDatasetAreasThunk,
   selectDatasetAreasById,
+  DrawnDatasetGeometry,
 } from 'features/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectMapDrawingEditId, selectMapDrawingMode } from 'routes/routes.selectors'
+import { Bbox } from 'types'
 import { useMapDrawConnect } from '../../map-draw.hooks'
 import { getDrawDatasetDefinition, getFileWithFeatures } from './draw.utils'
 import styles from './DrawDialog.module.css'
@@ -31,6 +35,7 @@ const MIN_DATASET_NAME_LENGTH = 3
 function MapDraw() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const fitMapBounds = useMapFitBounds()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
@@ -48,12 +53,25 @@ function MapDraw() {
   const drawFeaturesIndexes = drawLayer?.getSelectedFeatureIndexes() || []
   const hasOverlappingFeatures = drawLayer?.getHasOverlappingFeatures()
 
+  const fetchDrawArea = useCallback(
+    async (datasetId: string) => {
+      const fetchDatasetAreasAction = await dispatch(fetchDatasetAreasThunk({ datasetId }))
+      if (fetchDatasetAreasThunk.fulfilled.match(fetchDatasetAreasAction)) {
+        const areaBbox = bbox(fetchDatasetAreasAction.payload as DrawnDatasetGeometry) as Bbox
+        if (areaBbox) {
+          fitMapBounds(areaBbox, { padding: 150, fitZoom: true })
+        }
+      }
+    },
+    [dispatch, fitMapBounds]
+  )
+
   useEffect(() => {
     if (mapDrawEditDataset) {
       setLayerName(mapDrawEditDataset.name)
-      dispatch(fetchDatasetAreasThunk({ datasetId: mapDrawEditDataset.id }))
+      fetchDrawArea(mapDrawEditDataset.id)
     }
-  }, [dispatch, mapDrawEditDataset])
+  }, [dispatch, fetchDrawArea, mapDrawEditDataset])
 
   useEffect(() => {
     if (
