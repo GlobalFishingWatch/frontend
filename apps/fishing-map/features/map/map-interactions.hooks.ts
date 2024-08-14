@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DeckProps, PickingInfo } from '@deck.gl/core'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
-import { atom, useAtom, useSetAtom } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { ThunkDispatch } from '@reduxjs/toolkit'
 import { debounce, throttle } from 'es-toolkit'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
@@ -44,6 +44,7 @@ import {
   setClickedEvent,
 } from './map.slice'
 import { useSetMapCoordinates } from './map-viewport.hooks'
+import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
 
@@ -257,6 +258,7 @@ export const useMapMouseHover = () => {
 
   const [hoveredCoordinates, setHoveredCoordinates] = useState<number[]>()
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onMouseMove: DeckProps['onHover'] = useCallback(
     throttle((info: PickingInfo, event: MjolnirPointerEvent) => {
       setHoveredCoordinates(info.coordinate)
@@ -331,6 +333,7 @@ export const useMapMouseClick = () => {
 }
 
 export const useMapCursor = () => {
+  const annotationsCursor = useAtomValue(annotationsCursorAtom)
   const areClusterTilesLoading = useMapClusterTilesLoading()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
@@ -339,6 +342,9 @@ export const useMapCursor = () => {
 
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
+      if (annotationsCursor) {
+        return annotationsCursor
+      }
       if (hoverFeatures?.some(isRulerLayerPoint)) {
         return 'move'
       }
@@ -363,11 +369,12 @@ export const useMapCursor = () => {
       return 'grab'
     },
     [
+      annotationsCursor,
       hoverFeatures,
-      rulersEditing,
       isMapAnnotating,
-      areClusterTilesLoading,
       isErrorNotificationEditing,
+      rulersEditing,
+      areClusterTilesLoading,
     ]
   )
 
