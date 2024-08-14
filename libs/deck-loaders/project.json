@@ -21,15 +21,46 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx fourwings:worker deck-loaders",
-          "nx tracks:worker deck-loaders",
-          "nx user-tracks:worker deck-loaders",
-          "nx events:worker deck-loaders",
+          "nx build:workers deck-loaders",
           "rm -rf dist/libs/deck-loaders/workers/package.json"
         ],
         "parallel": false
       }
     },
+    "build:workers": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx fourwings:worker deck-loaders",
+          "nx tracks:worker deck-loaders",
+          "nx user-tracks:worker deck-loaders",
+          "nx events:worker deck-loaders"
+        ],
+        "parallel": true
+      }
+    },
+    // TODO use this to build all workers at once
+    // "build:workers": {
+    //   "executor": "@nx/esbuild:esbuild",
+    //   "outputs": ["{options.outputPath}"],
+    //   "options": {
+    //     "main": "libs/deck-loaders/src/**/workers/**.ts",
+    //     "esbuildOptions": {
+    //       "outdir": "dist/libs/deck-loaders/workers"
+    //     },
+    //     "outputPath": "dist/libs/deck-loaders/workers",
+    //     "generateExportsField": true,
+    //     "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+    //     "watch": false,
+    //     "target": "esnext",
+    //     "platform": "browser",
+    //     "deleteOutputPath": false,
+    //     "bundle": true,
+    //     "thirdParty": true,
+    //     "generatePackageJson": false,
+    //     "minify": false
+    //   }
+    // },
     "fourwings:worker": {
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
