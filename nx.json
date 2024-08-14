@@ -93,6 +93,11 @@
         "file": false
       }
     },
+    "version": {
+      "generatorOptions": {
+        "currentVersionResolver": "git-tag"
+      }
+    },
     "git": {
       "commit": false,
       "tag": false
