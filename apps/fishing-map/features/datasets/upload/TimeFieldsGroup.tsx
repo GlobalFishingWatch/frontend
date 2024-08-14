@@ -37,21 +37,15 @@ export const TimeFieldsGroup = ({
   const { t } = useTranslation()
   const { fieldsOptions, getSelectedOption } = useDatasetMetadataOptions(datasetMetadata)
   const timeFilterOptions = getTimeFilterOptions(filterOptions)
-  const geometryType = datasetMetadata?.configuration?.configurationUI?.geometryType
-  const timeFilterType = getDatasetConfigurationProperty({
+  const datasetTimeFilterConfiguration = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
     property: 'timeFilterType',
-  }) as TimeFilterType
-  const activeOption = (
-    getSelectedOption(
-      getDatasetConfigurationProperty({
-        dataset: datasetMetadata,
-        property: 'timeFilterType',
-      }),
-      timeFilterOptions
-    ) as SelectOption
-  )?.id
-  const isDateFilter = timeFilterType === 'date'
+  })
+  const geometryType = datasetMetadata?.configuration?.configurationUI?.geometryType
+  const activeOption = datasetTimeFilterConfiguration
+    ? (getSelectedOption(datasetTimeFilterConfiguration, timeFilterOptions) as SelectOption)?.id
+    : timeFilterOptions[0]?.id
+  const isDateFilter = datasetTimeFilterConfiguration === 'date'
 
   const onTimeFilterTypeSelect = useCallback(
     (selected: SelectOption) => {
@@ -111,12 +105,12 @@ export const TimeFieldsGroup = ({
         size="medium"
         className={styles.input}
       />
-      {timeFilterType && (
+      {datasetTimeFilterConfiguration && (
         <Select
           placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
           label={
-            timeFilterType === 'date'
+            datasetTimeFilterConfiguration === 'date'
               ? t('datasetUpload.time', {
                   geometryType: translatedGeometryType,
                   defaultValue: `${translatedGeometryType} time`,
@@ -127,7 +121,7 @@ export const TimeFieldsGroup = ({
                 })
           }
           infoTooltip={
-            timeFilterType === 'date'
+            datasetTimeFilterConfiguration === 'date'
               ? t('datasetUpload.timestampHelp', {
                   geometryType: translatedGeometryType,
                   defaultValue: `Select the property that defines the date of each
@@ -159,7 +153,7 @@ export const TimeFieldsGroup = ({
           className={styles.input}
         />
       )}
-      {timeFilterType === 'dateRange' && (
+      {datasetTimeFilterConfiguration === 'dateRange' && (
         <Select
           placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
           options={fieldsOptions}
