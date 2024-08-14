@@ -95,7 +95,8 @@
     },
     "version": {
       "generatorOptions": {
-        "currentVersionResolver": "git-tag"
+        "currentVersionResolver": "git-tag",
+        "specifierSource": "conventional-commits"
       }
     },
     "git": {
