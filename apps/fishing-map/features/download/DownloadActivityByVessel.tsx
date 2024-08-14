@@ -18,7 +18,7 @@ import {
   selectIsDownloadActivityError,
   DateRange,
   selectDownloadActivityAreaKey,
-  selectIsDownloadAreaTooBig,
+  selectIsDownloadActivityTimeoutError,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -56,6 +56,7 @@ import {
   getSupportedGroupByOptions,
   getSupportedTemporalResolutions,
 } from './download.utils'
+import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
 
 function DownloadActivityByVessel() {
   const { t } = useTranslation()
@@ -71,7 +72,7 @@ function DownloadActivityByVessel() {
   const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
   const isDownloadError = useSelector(selectIsDownloadActivityError)
   const isDownloadFinished = useSelector(selectIsDownloadActivityFinished)
-  const isDownloadAreaTooBig = useSelector(selectIsDownloadAreaTooBig)
+  const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
@@ -146,7 +147,7 @@ function DownloadActivityByVessel() {
       bufferValue,
       bufferOperation,
     }
-    await dispatch(downloadActivityThunk(downloadParams))
+    const action = await dispatch(downloadActivityThunk(downloadParams))
 
     trackEvent({
       category: TrackCategory.DataDownloads,
@@ -158,9 +159,14 @@ function DownloadActivityByVessel() {
           .flat(),
       ]),
     })
+    return action
   }
+
+  useActivityDownloadTimeoutRefresh(onDownloadClick)
+
   const parsedLabel =
     typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName
+
   return (
     <Fragment>
       <div className={styles.container} data-test="download-activity-byvessel">
@@ -226,20 +232,11 @@ function DownloadActivityByVessel() {
               ))}
             </p>
           ) : null}
-          {isDownloadError && (
-            <p className={cx(styles.footerLabel, styles.error)}>
-              {isDownloadAreaTooBig
-                ? `${t(
-                    'analysis.errorTooComplex',
-                    'The geometry of the area is too complex to perform a report, try to simplify and upload again.'
-                  )}`
-                : `${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
-            </p>
-          )}
+          {isDownloadError && <ActivityDownloadError />}
           <Button
             testId="download-activity-vessel-button"
             onClick={onDownloadClick}
-            loading={isDownloadLoading}
+            loading={isDownloadLoading || isDownloadTimeoutError}
             className={styles.downloadBtn}
             disabled={!isDownloadReportSupported || isDownloadAreaLoading || isDownloadError}
           >
