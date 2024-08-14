@@ -102,6 +102,13 @@
     "git": {
       "commit": false,
       "tag": false
+    },
+    "conventionalCommits": {
+      "types": {
+        "i18n": {
+          "semverBump": "patch"
+        }
+      }
     }
   },
   "namedInputs": {
