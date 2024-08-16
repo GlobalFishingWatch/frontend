@@ -19,7 +19,6 @@ import {
   selectIsDownloadActivityFinished,
   selectIsDownloadActivityError,
   selectDownloadActivityAreaKey,
-  selectIsDownloadAreaTooBig,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -60,6 +59,7 @@ import {
   getSupportedGroupByOptions,
   getSupportedTemporalResolutions,
 } from './download.utils'
+import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
 
 function DownloadActivityGridded() {
   const { t } = useTranslation()
@@ -73,7 +73,6 @@ function DownloadActivityGridded() {
     userData?.permissions || []
   )
   const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
-  const isDownloadAreaTooBig = useSelector(selectIsDownloadAreaTooBig)
   const isDownloadError = useSelector(selectIsDownloadActivityError)
   const isDownloadFinished = useSelector(selectIsDownloadActivityFinished)
   const [format, setFormat] = useState(GRIDDED_FORMAT_OPTIONS[0].id)
@@ -188,7 +187,7 @@ function DownloadActivityGridded() {
       bufferValue,
       bufferOperation,
     }
-    await dispatch(downloadActivityThunk(downloadParams))
+    const action = await dispatch(downloadActivityThunk(downloadParams))
 
     trackEvent({
       category: TrackCategory.DataDownloads,
@@ -200,8 +199,9 @@ function DownloadActivityGridded() {
           .flat(),
       ]),
     })
+    return action
   }
-
+  useActivityDownloadTimeoutRefresh(onDownloadClick)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const parsedLabel =
     typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName
@@ -285,16 +285,7 @@ function DownloadActivityGridded() {
               ))}
             </p>
           ) : null}
-          {isDownloadError && (
-            <p className={cx(styles.footerLabel, styles.error)}>
-              {isDownloadAreaTooBig
-                ? `${t(
-                    'analysis.errorTooComplex',
-                    'The geometry of the area is too complex to perform a report, try to simplify and upload again.'
-                  )}`
-                : `${t('analysis.errorMessage', 'Something went wrong')} 🙈`}
-            </p>
-          )}
+          {isDownloadError && <ActivityDownloadError />}
           <Button
             testId="download-activity-gridded-button"
             onClick={onDownloadClick}

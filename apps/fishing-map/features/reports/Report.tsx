@@ -5,7 +5,11 @@ import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import isEqual from 'lodash/isEqual'
 import { Button, Tab, Tabs } from '@globalfishingwatch/ui-components'
-import { crossBrowserTypeErrorMessages, isAuthError } from '@globalfishingwatch/api-client'
+import {
+  getIsConcurrentError,
+  getIsTimeoutError,
+  isAuthError,
+} from '@globalfishingwatch/api-client'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -119,13 +123,11 @@ function ActivityReport({ reportName }: { reportName: string }) {
         return isEqual(currentReportParams, reportParams)
       })
     : undefined
-  const concurrentReportError = statusError?.status === 429
+  const concurrentReportError = getIsConcurrentError(statusError!)
   const isSameWorkspaceReport =
     concurrentReportError && window?.location.href === lastReport?.workspaceUrl
 
-  const isTimeoutError =
-    statusError?.message &&
-    crossBrowserTypeErrorMessages.some((error) => error.includes(statusError.message as string))
+  const isTimeoutError = getIsTimeoutError(statusError!)
   useEffect(() => {
     if (isTimeoutError) {
       dispatchTimeoutRef.current = setTimeout(() => {

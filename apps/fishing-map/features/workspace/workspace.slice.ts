@@ -72,7 +72,7 @@ interface WorkspaceSliceState {
 const initialState: WorkspaceSliceState = {
   status: AsyncReducerStatus.Idle,
   customStatus: AsyncReducerStatus.Idle,
-  error: {},
+  error: {} as AsyncError,
   data: null,
   password: '',
   lastVisited: undefined,

@@ -7,34 +7,18 @@ import {
   UserPermission,
 } from '@globalfishingwatch/api-types'
 import { isUrlAbsolute } from './utils/url'
-import { isAuthError, parseAPIError } from './utils/errors'
-
-export const API_GATEWAY =
-  process.env.API_GATEWAY ||
-  process.env.REACT_APP_API_GATEWAY ||
-  process.env.NEXT_PUBLIC_API_GATEWAY ||
-  'https://gateway.api.dev.globalfishingwatch.org'
-
-export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'
-export const USER_REFRESH_TOKEN_STORAGE_KEY = 'GFW_API_USER_REFRESH_TOKEN'
-export const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || 'v3'
-
-const DEBUG_API_REQUESTS: boolean = process.env.NEXT_PUBLIC_DEBUG_API_REQUESTS === 'true'
-const AUTH_PATH = 'auth'
-const REGISTER_PATH = 'registration'
-export const GUEST_USER_TYPE = 'guest'
-
-export type V2MetadataError = Record<string, any>
-export interface V2MessageError {
-  detail: string
-  title: string
-  metadata?: V2MetadataError
-}
-export interface ResponseError {
-  status: number
-  message: string
-  messages?: V2MessageError[]
-}
+import { getIsUnauthorizedError, isAuthError, parseAPIError } from './utils/errors'
+import {
+  API_GATEWAY,
+  API_VERSION,
+  AUTH_PATH,
+  DEBUG_API_REQUESTS,
+  GUEST_USER_TYPE,
+  REGISTER_PATH,
+  USER_REFRESH_TOKEN_STORAGE_KEY,
+  USER_TOKEN_STORAGE_KEY,
+} from './config'
+import { parseJSON, processStatus } from './utils/parse'
 
 interface UserTokens {
   token: string
@@ -61,51 +45,6 @@ interface LibConfig {
   debug?: boolean
   baseUrl?: string
 }
-
-const processStatus = (
-  response: Response,
-  requestStatus?: ResourceResponseType
-): Promise<Response> => {
-  return new Promise(async (resolve, reject) => {
-    const { status, statusText } = response
-    try {
-      if (response.status >= 200 && response.status < 400) {
-        return resolve(response)
-      }
-
-      if (requestStatus === 'default') {
-        return reject(response)
-      }
-      // Compatibility with v1 and v2 errors format
-      const errors = {
-        message: '',
-        messages: [],
-      }
-      if (response.status >= 400 && response.status < 500) {
-        await response.text().then((text) => {
-          try {
-            const res = JSON.parse(text)
-            errors.message = res.message
-            errors.messages = res.messages
-          } catch (e: any) {
-            errors.message = statusText
-          }
-        })
-      }
-      return reject({
-        status,
-        message: errors?.message || statusText,
-        messages: errors.messages,
-      })
-    } catch (e: any) {
-      return reject({ status, message: statusText })
-    }
-  })
-}
-
-const parseJSON = (response: Response) => response.json()
-const isUnauthorizedError = (error: ResponseError) =>
-  error && error.status > 400 && error.status < 403
 
 const isClientSide = typeof window !== 'undefined'
 
@@ -514,7 +453,7 @@ export class GFW_API_CLASS {
           }
         } catch (e: any) {
           if (!this.getToken() && !this.getRefreshToken()) {
-            const msg = isUnauthorizedError(e)
+            const msg = getIsUnauthorizedError(e)
               ? 'Invalid access token'
               : 'Error trying to generate tokens'
             if (this.debug) {
@@ -567,7 +506,7 @@ export class GFW_API_CLASS {
           this.status = 'idle'
           return user
         } catch (e: any) {
-          const msg = isUnauthorizedError(e)
+          const msg = getIsUnauthorizedError(e)
             ? 'Invalid refresh token'
             : 'Error trying to refreshing the token'
           console.warn(e)
