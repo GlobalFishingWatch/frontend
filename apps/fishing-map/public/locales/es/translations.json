@@ -404,6 +404,7 @@
     "descriptionReport": "Puede descargar una lista o un raster de la actividad para esta área en diferentes formatos",
     "downloadOptions": "Opciones de descarga",
     "doYouNeedAnAPI": "¿Su aplicación necesita datos continuos?",
+    "errorConcurrentReport": "Your account is currently loading an analysis report, please wait for the report to finish before downloading data",
     "eventsDownloadLogin": "Regístrese e inicie sesión para descargar eventos de la embarcación (es gratuito y toma 2 minutos)",
     "format": "Formato",
     "fullDataset": "¿Necesita los datos completos?",
