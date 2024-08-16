@@ -20,6 +20,8 @@ import {
 } from './config'
 import { parseJSON, processStatus } from './utils/parse'
 
+export { GUEST_USER_TYPE, API_VERSION, API_GATEWAY } from './config'
+
 interface UserTokens {
   token: string
   refreshToken: string
