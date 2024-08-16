@@ -252,10 +252,10 @@
     "emptyFilters": "No hay filtros disponibles",
     "emptyState": "Sus datos aparecerán aquí",
     "extent": "Rango de datos: {{extent}}",
-    "extentEnd": "Dataset end date: {{end}}",
-    "extentStart": "Dataset start date: {{start}}",
+    "extentEnd": "Fecha final del conjunto de datos: {{end}}",
+    "extentStart": "Fecha inicio del conjunto de datos: {{start}}",
     "featuresNameField": "Campo para nombrar cada área",
-    "fieldPlaceholder": "Select a field from your dataset",
+    "fieldPlaceholder": "Seleccione un campo de su conjunto de datos",
     "file": "Archivo",
     "formats": {
       "csv": "csv",
@@ -289,7 +289,7 @@
     "typeTracksDescription": "Mostrar el movimiento de uno o varios animales o embarcaciones.",
     "upload": "Cargar conjunto de datos",
     "uploadLogin": "<0>Registrar</0> o <2>iniciar sesión</2>para subir datos (gratis, 2 minutos)",
-    "uploadNew": "Upload new dataset",
+    "uploadNew": "Cargar un nuevo conjunto de datos",
     "uploadNewContext": "Subir nuevas capas de referencia",
     "uploadNewEnviroment": "Subir un nuevo dato ambiental",
     "uploadPublic": "Permitir a otros usuarios ver estos datos cuando comparta un espacio de trabajo",
@@ -305,7 +305,7 @@
       "geoJSON": {
         "noValidFeatures": "No se encontraron tipos de características válidos en el archivo geoJSON"
       },
-      "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
+      "invalidDatesFeatures": "Algunas de sus {{featureType}} no contienen una fecha válida. No aparecerán en el mapa independientemente del filtro de tiempo utilizado.",
       "kml": {
         "invalidData": "Los datos del KML no tienen un tipo de geometría válido",
         "noLineData": "No se encontraron datos de línea en el KML",
