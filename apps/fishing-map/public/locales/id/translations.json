@@ -404,6 +404,7 @@
     "descriptionReport": "Anda dapat mengunduh daftar aktivitas atau bitmap peta panas untuk area ini dalam berbagai format",
     "downloadOptions": "Opsi pengunduhan",
     "doYouNeedAnAPI": "Apakah aplikasi Anda memerlukan data yang berlanjut?",
+    "errorConcurrentReport": "Your account is currently loading an analysis report, please wait for the report to finish before downloading data",
     "eventsDownloadLogin": "Daftar dan masuk untuk mengunduh peristiwa kapal (gratis dan hanya membutuhkan waktu 2 menit)",
     "format": "Format",
     "fullDataset": "Apakah Anda memerlukan dataset yang lengkap?",
