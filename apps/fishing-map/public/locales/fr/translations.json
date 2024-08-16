@@ -404,6 +404,7 @@
     "descriptionReport": "Vous pouvez télécharger une liste de l'activité ou un bitmap de carte thermique pour cette zone dans différents formats",
     "downloadOptions": "Options de téléchargement",
     "doYouNeedAnAPI": "Est-ce que votre application a besoin de données continues ?",
+    "errorConcurrentReport": "Your account is currently loading an analysis report, please wait for the report to finish before downloading data",
     "eventsDownloadLogin": "S'inscrire et se connecter pour télécharger les événements du navire (c'est gratuit et ne prend que 2 minutes)",
     "format": "Format",
     "fullDataset": "Avez-vous besoin du jeu de données complet ?",

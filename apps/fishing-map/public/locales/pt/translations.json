@@ -404,6 +404,7 @@
     "descriptionReport": "Você pode baixar uma lista da atividade ou um bitmap de mapa de calor para essa área em diferentes formatos",
     "downloadOptions": "Opções de download",
     "doYouNeedAnAPI": "A sua aplicação precisa de dados contínuos?",
+    "errorConcurrentReport": "Your account is currently loading an analysis report, please wait for the report to finish before downloading data",
     "eventsDownloadLogin": "Registre-se e faça login para baixar os eventos da embarcação (é gratuito e leva 2 minutos)",
     "format": "Formato",
     "fullDataset": "Você precisa de todos os dados?",

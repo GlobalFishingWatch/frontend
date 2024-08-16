@@ -404,6 +404,7 @@
     "descriptionReport": "You can download a list of the activity or a heat map bitmap for this area in different formats",
     "downloadOptions": "Download options",
     "doYouNeedAnAPI": "Does your application need continuous data?",
+    "errorConcurrentReport": "Your account is currently loading an analysis report, please wait for the report to finish before downloading data",
     "eventsDownloadLogin": "Register and login to download vessel events (it is free and takes 2 minutes)",
     "format": "Format",
     "fullDataset": "Do you need the full dataset?",
