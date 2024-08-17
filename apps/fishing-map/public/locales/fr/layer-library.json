@@ -65,9 +65,9 @@
     "name": "Concentration d'azote (NO3)"
   },
   "offshore-fixed-infrastructure": {
-    "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
+    "description": "« Infrastructure fixe offshore » est un ensemble de données mondial qui utilise l’IA et l’apprentissage automatique pour détecter et classer les structures dans les océans du monde. Différentes classifications (pétrole, éolien et inconnu) sont fournies, associées à des niveaux de confiance (élevé, moyen ou faible) reflétant notre certitude dans la classification attribuée. Les détections peuvent être filtrées et colorées sur la carte en utilisant à la fois la classification et le niveau de confiance. Les données sont mises à jour mensuellement et de nouvelles détections classifiées sont ajoutées au début de chaque mois. Les changements peuvent être facilement visualisés à l’aide de la barre temporelle, et l’industrialisation rapide des océans du monde devient évidente.",
     "moreInfoLink": "",
-    "name": "Offshore Fixed Infrastructure (SAR, Optical)"
+    "name": "Infrastructure fixe offshore (SAR, optique)"
   },
   "oxygen": {
     "description": "L'oxygène dissous est la quantité d'oxygène présente dans l'eau, il est crucial pour la croissance et la survie des organismes marins. Le réchauffement des températures océaniques peut entraîner une expansion des zones à faible teneur en oxygène, ce qui peut avoir un impact sur la répartition et l'abondance de la vie marine. Ce jeu de données est composé de paramètres biogéochimiques, y compris l'oxygène dissous, affichés sur l'océan global avec une résolution horizontale de 1/4 degrés. ",
@@ -120,9 +120,9 @@
     "name": "Monts sous-marins"
   },
   "species": {
-    "description": "TODO",
+    "description": "À FAIRE",
     "moreInfoLink": "",
-    "name": "Species"
+    "name": "Espèce"
   },
   "sst": {
     "description": "La température à la surface de la mer est la température de l'eau à la surface ou près de la surface. Elle peut affecter les conditions météorologiques et les climats régionaux. Tout comme la salinité, elle sert de moteur à la circulation des océans et au mouvement à grande échelle des courants océaniques dans le monde. Ce jeu de données fournit la température à la surface de la mer à une résolution horizontale de 1/20 degré, en utilisant des données de terrain et par satellite provenant à la fois de radiomètres infrarouges et micro-ondes.",
