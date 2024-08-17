@@ -10,7 +10,7 @@
     "name": "Concentration en chloriphylle a"
   },
   "coral-reefs": {
-    "description": "Les récifs coralliens d'eau chaude se trouvent dans des eaux claires et peu profondes, ce sont des écosystèmes hautement dynamiques qui soutiennent l'habitat marin à la plus grande biodiversité. Ce jeu de données affiche la distribution mondiale des récifs coralliens dans les régions tropicales et subtropicales.",
+    "description": "Les récifs coralliens d’eau chaude se trouvent dans des eaux claires et peu profondes et constituent des écosystèmes très dynamiques qui abritent l’habitat marin le plus riche en biodiversité. Ce jeu de données montre la répartition mondiale des récifs coralliens dans les régions tropicales et subtropicales.",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/1",
     "name": "Récifs coralliens"
   },
@@ -20,7 +20,7 @@
     "name": "ZEE"
   },
   "encounters": {
-    "description": "Identifié à partir des données AIS comme des lieux où deux navires, un transporteur et un navire de pêche, étaient à moins de 500 mètres pendant au moins 2 heures et se déplaçaient à une vitesse médiane inférieure à 2 noeuds, à au moins 10 km d'un mouillage côtier.",
+    "description": "Identifié à partir des données AIS comme des lieux où deux navires (un transporteur et un navire de pêche) se trouvaient à moins de 500 mètres l'un de l'autre pendant au moins 2 heures et se déplaçaient à une vitesse médiane inférieure à 2 noeuds, à au moins 10 km d'un mouillage côtier.",
     "moreInfoLink": "",
     "name": "Événements de recontre (AIS)"
   },
@@ -30,7 +30,7 @@
     "name": "Principales zones de pêche de la FAO"
   },
   "fishing-effort": {
-    "description": "Déterminer l'« effort de pêche apparent », Global Fishing Watch analyse les données du système d'identification automatique (AIS) et du système de surveillance des navires (VMS) recueillies auprès des navires que nos recherches ont identifiés comme étant des navires de pêche commerciaux connus ou potentiels et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires.",
+    "description": "Pour déterminer l'« effort de pêche apparent », Global Fishing Watch analyse les données du système d'identification automatique (AIS) et du système de surveillance des navires (VMS) recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou potentiels, et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires.",
     "moreInfoLink": "",
     "name": "Effort de pêche apparent"
   },
@@ -60,32 +60,32 @@
     "name": "AMP (WDPA)"
   },
   "nitrate": {
-    "description": "L'azote est requis par les plantes marines pour la photosynthèse et c'est un nutriment majeur pour la productivité de l'océan, cependant des concentrations élevées peuvent être un indicateur de pollution. Ce jeu de données est composé de paramètres biogéochimiques, y compris dl'azote, affichés sur l'océan global avec une résolution horizontale de 1/4 degrés.   ",
+    "description": "L'azote est requis par les plantes marines pour la photosynthèse et c'est un nutriment majeur pour la productivité de l'océan, cependant des concentrations élevées peuvent être un indicateur de pollution. Ce jeu de données est composé de paramètres biogéochimiques, y compris l'azote, affichés à l'échelle de l'océan mondial avec une résolution horizontale de 1/4 degrés.   ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentration d'azote (NO3)"
   },
   "offshore-fixed-infrastructure": {
-    "description": "« Infrastructure fixe offshore » est un ensemble de données mondial qui utilise l’IA et l’apprentissage automatique pour détecter et classer les structures dans les océans du monde. Différentes classifications (pétrole, éolien et inconnu) sont fournies, associées à des niveaux de confiance (élevé, moyen ou faible) reflétant notre certitude dans la classification attribuée. Les détections peuvent être filtrées et colorées sur la carte en utilisant à la fois la classification et le niveau de confiance. Les données sont mises à jour mensuellement et de nouvelles détections classifiées sont ajoutées au début de chaque mois. Les changements peuvent être facilement visualisés à l’aide de la barre temporelle, et l’industrialisation rapide des océans du monde devient évidente.",
+    "description": "« Infrastructure fixe offshore » est un jeu de données mondial qui utilise l’IA et l’apprentissage automatique pour détecter et classer les structures dans les océans du monde. Différentes classifications (pétrole, éolien et inconnu) sont fournies, associées à des niveaux de confiance (élevé, moyen ou faible) reflétant notre certitude dans la classification attribuée. Les détections peuvent être filtrées et colorées sur la carte en utilisant à la fois la classification et le niveau de confiance. Les données sont mises à jour mensuellement et de nouvelles détections classifiées sont ajoutées au début de chaque mois. Les changements peuvent être facilement visualisés à l’aide de la barre temporelle, et l’industrialisation rapide des océans du monde devient évidente.",
     "moreInfoLink": "",
     "name": "Infrastructure fixe offshore (SAR, optique)"
   },
   "oxygen": {
-    "description": "L'oxygène dissous est la quantité d'oxygène présente dans l'eau, il est crucial pour la croissance et la survie des organismes marins. Le réchauffement des températures océaniques peut entraîner une expansion des zones à faible teneur en oxygène, ce qui peut avoir un impact sur la répartition et l'abondance de la vie marine. Ce jeu de données est composé de paramètres biogéochimiques, y compris l'oxygène dissous, affichés sur l'océan global avec une résolution horizontale de 1/4 degrés. ",
+    "description": "L'oxygène dissous est la quantité d'oxygène présente dans l'eau. C'est un élément crucial pour la croissance et la survie des organismes marins. Le réchauffement des températures océaniques peut entraîner une expansion des zones à faible teneur en oxygène, ce qui peut avoir un impact sur la répartition et l'abondance de la vie marine. Ce jeu de données est composé de paramètres biogéochimiques, y compris l'oxygène dissous, affichés à l'échelle de l'océan mondial avec une résolution horizontale de 1/4 degrés. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentration d'oxygène (O2)"
   },
   "ph": {
-    "description": "L'acidité de l'océan est mesurée par le pH. L'augmentation de l'absorption de dioxyde de carbone a abaissé le pH de l'océan, avec pour conséquence l'acidification des océans, ce qui peut avoir des répercussions importantes sur les organismes marins. Ce jeu de données est composé de paramètres biogéochimiques, y compris le pH, affichés sur l'océan global avec une résolution horizontale de 1/4 degrés. ",
+    "description": "L'acidité de l'océan est mesurée par le pH. L'absorption accrue du dioxyde de carbone a abaissé le pH de l'océan, entraînant une acidification des océans qui peut avoir de vastes répercussions sur les organismes marins. Ce jeu de données est composé de paramètres biogéochimiques, y compris le pH, affichés à l'échelle de l'océan mondial avec une résolution horizontale de 1/4 degrés. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "pH"
   },
   "phosphate": {
-    "description": "Le phosphate est un nutriment majeur pour les réseaux trophiques marins et la productivité des océans, mais des concentrations élevées peuvent également être un indicateur de pollution. Ce jeu de données est composé de paramètres biogéochimiques, y compris le phosphate, affichés sur l'océan global avec une résolution horizontale de 1/4 degrés. ",
+    "description": "Le phosphate est un nutriment majeur pour les réseaux trophiques marins et la productivité des océans, mais des concentrations élevées peuvent également être un indicateur de pollution. Ce jeu de données est composé de paramètres biogéochimiques, y compris le phosphate, affichés à l'échelle de l'océan mondial avec une résolution horizontale de 1/4 degrés. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentration de phosphate (PO4)"
   },
   "presence": {
-    "description": "La couche de présence analyse les données du système d’identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés. La présence est déterminée en prenant les positions transmises par l'AIS du navire et est affichée comme une carte thermique. ",
+    "description": "Le calque de présence analyse les données du système d’identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés. La présence est déterminée en affichant les positions transmises par l'AIS du navire sous forme de carte thermique. ",
     "moreInfoLink": "",
     "name": "Présence de navire"
   },
@@ -105,12 +105,12 @@
     "name": "Salinité"
   },
   "sar": {
-    "description": "Le radar à ouverture synthétique (SAR) est capable de détecter les navires et les structures en mer dans toutes les conditions météorologiques. Le SAR est un capteur par satellite qui émet des micro-ondes en direction de la surface de la Terre et mesure l'amplitude et la phase des signaux qui sont reflétés par des objets sur le sol et sur l'eau, connus sous le nom de \"rétrodiffusion\".",
+    "description": "Le radar à ouverture synthétique (SAR) est capable de détecter les navires et les structures en mer dans toutes les conditions météorologiques. Le SAR est un capteur par satellite qui émet des micro-ondes en direction de la surface de la Terre et mesure l'amplitude et la phase des signaux qui sont reflétés par des objets sur le sol et sur l'eau, ce qui est connu sous le nom de « rétrodiffusion ».",
     "moreInfoLink": "",
     "name": "Détections radar (SAR)"
   },
   "seagrasses": {
-    "description": "Les herbiers marins sont des écosystèmes productifs présents dans des zones marines peu profondes partout dans le monde, où elles fournissent de la nourriture et de l'habitat aux organismes et jouent un rôle clé dans le cyclisme des nutriments. Ce jeu de données affiche la distribution globale des herbiers marins. ",
+    "description": "Les herbiers marins sont des écosystèmes productifs présents dans des zones marines peu profondes partout dans le monde, où elles fournissent de la nourriture et un habitat aux organismes et jouent un rôle clé dans le cycle des nutriments. Ce jeu de données affiche la distribution globale des herbiers marins. ",
     "moreInfoLink": "https://data.unep-wcmc.org/datasets/7",
     "name": "Herbiers marins"
   },
@@ -150,7 +150,7 @@
     "name": "Hauteur de houle"
   },
   "viirs": {
-    "description": "Le calque de détection des navires par lumière nocturne, connu sous le nom de suite de radiomètres pour imageurs dans l'infrarouge et le visible (ou VIIRS), affiche les navires en mer que les satellites ont détecté par la lumière qu'ils émettent la nuit. Bien qu'il ne soit pas exclusivement associé aux navires de pêche, ce calque d'activité est susceptible d'afficher des navires associés à des activités telles que la pêche aux calamars, qui utilisent des lumières vives et ont lieu la nuit.",
+    "description": "Le calque de détection des navires par lumière nocturne, connu sous le nom de suite de radiomètres pour imageurs dans l'infrarouge et le visible (ou VIIRS), affiche les navires en mer que les satellites ont détecté par la lumière qu'ils émettent la nuit. Bien qu'il ne soit pas exclusivement associé aux navires de pêche, ce calque d'activité est susceptible d'afficher des navires réalisant des activités qui impliquent des lumières vives et ont lieu la nuit, telles que la pêche au calmar.",
     "moreInfoLink": "",
     "name": "Détection de lumière de nuit (VIIRS)"
   }
