@@ -1,6 +1,6 @@
 {
   "bathymetry": {
-    "description": "La bathymétrie est la mesure de la profondeur d'eau et fournit des détails sur les caractéristiques physiques du plancher océanique. Ce jeu de données bathymétriques à grille est un modèle de terrain global continu qui fournit des données d'élévation pour l'océan en mètres sur une grille d'intervalles de 15 arc-secondes. ",
+    "description": "La bathymétrie est l'étude de la profondeur d'eau et des caractéristiques physiques du plancher océanique. Ce jeu de données bathymétriques à grille est un modèle de terrain global continu qui fournit des données d'élévation pour l'océan en mètres sur une grille d'intervalles de 15 arc-secondes. ",
     "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/",
     "name": "Bathymétrie"
   },
