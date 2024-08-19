@@ -36,6 +36,7 @@ import {
   getWorkspaceEnv,
   WorkspaceCategory,
   DEFAULT_WORKSPACE_ID,
+  PRIVATE_GFW_DATAVIEW_SLUGS,
 } from 'data/workspaces'
 import { AsyncReducerStatus, AsyncError } from 'utils/async-slice'
 import {
@@ -50,6 +51,7 @@ import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { AppDispatch } from 'store'
 import { LIBRARY_LAYERS } from 'data/layer-library'
+import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
@@ -107,6 +109,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = selectIsGuestUser(state)
     const gfwUser = selectIsGFWUser(state)
+    const privateUserGroups = selectPrivateUserGroups(state)
     const reportId = selectReportId(state)
     try {
       let workspace: Workspace<any> | null = null
@@ -174,6 +177,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ...(workspace?.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
       ].filter(Boolean)
+
+      if (privateUserGroups.length) {
+        dataviewIds.push(...PRIVATE_GFW_DATAVIEW_SLUGS)
+      }
 
       const uniqDataviewIds = uniq(dataviewIds) as string[]
 

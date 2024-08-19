@@ -125,6 +125,7 @@ export const PROFILE_DATAVIEW_SLUGS = [
 ]
 
 export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []
+export const PRIVATE_GFW_DATAVIEW_SLUGS: string[] = ['vms-private-search-vessels']
 export const HIDDEN_DATAVIEW_FILTERS: string[] = []
 
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE: DataviewInstance = {

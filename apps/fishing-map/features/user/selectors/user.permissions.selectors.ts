@@ -10,9 +10,10 @@ import {
   selectWorkspaceVesselGroups,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectAllReports } from 'features/reports/reports.slice'
-import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
-import { DEFAULT_GROUP_ID, PRIVATE_SUPPORTED_GROUPS } from 'features/user/user.config'
-import { USER_GROUP_WORKSPACE, UserGroup } from '../user.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import { DEFAULT_GROUP_ID } from 'features/user/user.config'
+import { USER_GROUP_WORKSPACE } from '../user.slice'
+import { selectPrivateUserGroups } from './user.groups.selectors'
 
 const hasUserPermission = (permission: UserPermission) =>
   createSelector([selectUserData], (userData): boolean => {
@@ -73,17 +74,6 @@ export const selectUserReports = createSelector(
       ['createdAt'],
       ['desc']
     )
-  }
-)
-
-const selectPrivateUserGroups = createSelector(
-  [selectUserGroups, selectIsGFWUser],
-  (userGroups = [], gfwUser) => {
-    const groupsWithAccess = gfwUser
-      ? PRIVATE_SUPPORTED_GROUPS.map((g) => g.toLowerCase())
-      : userGroups.filter((g) => PRIVATE_SUPPORTED_GROUPS.includes(g)).map((g) => g.toLowerCase())
-
-    return groupsWithAccess as UserGroup[]
   }
 )
 
