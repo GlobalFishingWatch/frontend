@@ -260,7 +260,7 @@ function ActivityLayerPanel({
               {!readOnly && (
                 <Remove onClick={onRemoveLayerClick} loading={layerActive && !layerLoaded} />
               )}
-              {!readOnly && layerError && (
+              {!readOnly && layerActive && layerError && (
                 <IconButton
                   icon={'warning'}
                   type={'warning'}
