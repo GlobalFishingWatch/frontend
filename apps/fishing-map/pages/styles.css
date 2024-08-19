@@ -24,6 +24,15 @@ body:has(.printing) {
   transition: none !important;
 }
 
+.experimental::after,
+.experimental label::after {
+  content: 'experimental';
+  color: red;
+  margin-left: 0.4rem;
+  font: var(--font-XS);
+  vertical-align: super;
+}
+
 .dragging * {
   user-select: none !important;
 }
