@@ -638,7 +638,7 @@
     },
     "toggleVisibility": "Cambiar la visibilidad de la capa",
     "type": "Tipo",
-    "user_track_fit_bounds": "Cambiar la vista y el intervalo de tiempo para ver la huella completa",
+    "user_track_fit_bounds": "Cambiar la vista y el intervalo de tiempo para ver la trayectoria completa",
     "vessel_fit_bounds": "Centrar mapa en la trayectoria de la embarcación",
     "vessel_fit_bounds_out_of_timerange": "La trayectoria de la embarcación no tiene actividad en el periodo seleccionado. ¿Desea cambiar el periodo para que se ajuste a esta trayectoria?"
   },
