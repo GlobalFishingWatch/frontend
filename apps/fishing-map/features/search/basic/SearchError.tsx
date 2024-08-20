@@ -30,7 +30,7 @@ function SearchError() {
     return (
       <SearchPlaceholder>
         <Trans i18nKey="errors.sessionExpired">
-          Your session has expired, please{' '}
+          Your session has expired, please
           <LocalStorageLoginLink className={styles.link}>log in</LocalStorageLoginLink> again.
         </Trans>
       </SearchPlaceholder>
