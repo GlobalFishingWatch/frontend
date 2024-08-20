@@ -1022,7 +1022,7 @@
     "create": "Crear nuevo",
     "createNeeded": "Cambiar la visibilidad del espacio de trabajo requiere crear uno nuevo",
     "edit": "Editar espacio de trabajo",
-    "editAccess": "Editar el acceso",
+    "editAccess": "Editar acceso",
     "editName": "Modificar el nombre del espacio de trabajo",
     "emptyState": "Sus espacios de trabajo aparecerán aquí",
     "emptyStateEnvironment": "Suba conjuntos de datos personalizados (polígonos, pistas o puntos) arrastrando y soltando sus archivos en el mapa.",

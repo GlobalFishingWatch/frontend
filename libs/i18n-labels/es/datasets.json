@@ -1350,8 +1350,8 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": "true",
-          "false": "false"
+          "true": "Coincidencia con AIS",
+          "false": "Sin coincidencia con AIS"
         }
       },
       "radiance": {
