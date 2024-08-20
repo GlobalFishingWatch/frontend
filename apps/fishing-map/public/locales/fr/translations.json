@@ -458,6 +458,7 @@
     "reportLogin": "Connectez-vous pour voir les navires actifs dans la zone",
     "requestAccess": "Demander l'accès",
     "searchLogin": "Connectez-vous pour rechercher des navires",
+    "sessionExpired": "Your session has expired, please <1>log in</1> again.",
     "showError": "Afficher l'erreur",
     "switchAccount": "Changer de compte",
     "trackCoordinateFields": "Les champs sélectionnés pour définir les coordonnées ne génèrent pas de lignes valides",
