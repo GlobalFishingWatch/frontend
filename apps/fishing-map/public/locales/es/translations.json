@@ -458,6 +458,7 @@
     "reportLogin": "Inicia sesión para ver las embarcaciones activas en el área (gratis, 2 minutos)",
     "requestAccess": "Solicitar acceso",
     "searchLogin": "Login para buscar embarcaciones",
+    "sessionExpired": "Tu sesión ha expirado, por favor <1>inicia sesión</1> de nuevo.",
     "showError": "Mostrar error",
     "switchAccount": "Cambiar de cuenta",
     "trackCoordinateFields": "Los campos seleccionados para definir las coordenadas no generan líneas válidas",

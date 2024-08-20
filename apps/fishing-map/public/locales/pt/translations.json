@@ -458,6 +458,7 @@
     "reportLogin": "Faça login para ver as embarcações ativas na área",
     "requestAccess": "Solicitar acesso",
     "searchLogin": "Faça login para pesquisar embarcações",
+    "sessionExpired": "Your session has expired, please <1>log in</1> again.",
     "showError": "Mostrar erros",
     "switchAccount": "Alterar conta",
     "trackCoordinateFields": "Os campos selecionados para definir as coordenadas não geram linhas válidas",
