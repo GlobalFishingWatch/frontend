@@ -17,6 +17,7 @@ import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { upperFirst } from 'utils/info'
 import ReportActivityEvolution from '../activity/ReportActivityEvolution'
 import styles from './ReportEnvironment.module.css'
 
@@ -44,6 +45,9 @@ function ReportEnvironment() {
         return (
           <div key={dataview.id} className={styles.container}>
             <p className={styles.summary}>
+              {dataset?.configuration?.function === 'AVG' && (
+                <span>{upperFirst(t('common.average', 'Average'))} </span>
+              )}
               <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
               {isDynamic && (
                 <Fragment>

@@ -28,6 +28,7 @@ import SearchPlaceholder, {
   SearchEmptyState,
 } from 'features/search/SearchPlaceholders'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
+import SearchError from '../basic/SearchError'
 
 const SearchAdvancedResults = dynamic(
   () => import(/* webpackChunkName: "SearchAdvancedResults" */ './SearchAdvancedResults')
@@ -105,7 +106,9 @@ function SearchAdvanced({
           <Button
             className={styles.confirmButton}
             onClick={fetchResults}
-            disabled={(!hasFilters && !searchQuery) || hasSearchFilterErrors}
+            disabled={
+              (!hasFilters && !searchQuery) || hasSearchFilterErrors || searchStatusCode === 401
+            }
             tooltip={
               hasSearchFilterErrors
                 ? t(
@@ -136,16 +139,7 @@ function SearchAdvanced({
             {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
               <SearchNoResultsState />
             )}
-            {searchStatus === AsyncReducerStatus.Error && (
-              <p className={styles.error}>
-                {searchStatusCode === 404
-                  ? t(
-                      'search.noResults',
-                      "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
-                    )
-                  : t('errors.genericShort', 'Something went wrong')}
-              </p>
-            )}
+            {searchStatus === AsyncReducerStatus.Error && <SearchError />}
           </div>
         )}
       </div>

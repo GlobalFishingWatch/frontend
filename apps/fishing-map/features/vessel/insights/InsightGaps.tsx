@@ -27,7 +27,7 @@ const InsightGaps = ({
   return (
     <div id="gaps" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.gaps', 'AIS Off Events')}</label>
+        <label className="experimental">{t('vessel.insights.gaps', 'AIS Off Events')}</label>
         <DataTerminology
           size="tiny"
           type="default"

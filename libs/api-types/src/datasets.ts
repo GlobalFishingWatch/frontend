@@ -126,6 +126,7 @@ export interface DatasetConfiguration {
   file?: string
   type?: EventTypes
   source?: string
+  function?: 'AVG' | 'SUM'
   aggregationOperation?: 'avg' | 'sum'
   geometryType?: DatasetGeometryType
   format?: 'geojson'
