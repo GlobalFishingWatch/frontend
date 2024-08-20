@@ -22,7 +22,7 @@
   },
   "full-panama-fishing-vessels": {
     "name": "Panama VMS (Full Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Public)",
+    "description": "Conjunto de Datos VMS Panamá (Público)",
     "schema": {
       "source": "fuente"
     }
@@ -53,8 +53,8 @@
     "name": "VMS de Belize",
     "description": "Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). Data is collected using Belize's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing presence algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "velocidad",
+      "bearing": "rumbo"
     }
   },
   "private-belize-fishing-vessels": {
@@ -75,21 +75,21 @@
     "name": "VMS de Belize",
     "description": "Presence (Belize private)",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "velocidad",
+      "bearing": "rumbo"
     }
   },
   "private-belize-vessel-identity-fishing": {
-    "name": "VMS Belize",
-    "description": "Vessel Identity"
+    "name": "VMS Belice",
+    "description": "Identidad de la embarcación"
   },
   "private-belize-vessel-identity-non-fishing": {
-    "name": "VMS Belize",
-    "description": "Vessel Identity"
+    "name": "VMS Belice",
+    "description": "Identidad de la embarcación"
   },
   "private-belize-vessel-identity": {
-    "name": "VMS Belize",
-    "description": "Vessel Identity"
+    "name": "VMS Belice",
+    "description": "Identidad de la embarcación"
   },
   "private-bra-onyxsat-fishing-effort": {
     "name": "VMS de Brazil",
@@ -154,8 +154,8 @@
       "targetSpecies": {
         "keyword": "targetSpecies",
         "enum": {
-          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
-          "Polvo": "Polvo",
+          "Sardinha-verdadeira e Bonito-listrado": "Sardinella brasiliensis y Katsuwonus pelamis",
+          "Polvo": "Pulpo",
           "Caranguejo-vermelho": "Caranguejo-vermelho",
           "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
           "peixes diversos": "peixes diversos",
@@ -288,8 +288,8 @@
           "costarica_vms_sardineros": "costarica_vms_sardineros"
         }
       },
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "velocidad",
+      "bearing": "rumbo"
     }
   },
   "private-ecuador-fishing-effort": {
@@ -299,7 +299,7 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing"
+          "fishing": "pesca"
         }
       }
     }
@@ -450,13 +450,13 @@
     "name": "Rare: Indonesia Pelagic",
     "description": "Rare Presence",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "velocidad",
+      "bearing": "rumbo"
     }
   },
   "private-indonesia-rare-vessel-identity": {
     "name": "Indonesia Rare (Vessels)",
-    "description": "Vessels (Indonesia Rare)"
+    "description": "Embarcaciones (indonesia Rare)"
   },
   "private-indonesia-rare-vessels": {
     "name": "Indonesia Rare (Vessels)",
