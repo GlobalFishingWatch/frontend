@@ -236,8 +236,8 @@ function DownloadActivityByVessel() {
           <Button
             testId="download-activity-vessel-button"
             onClick={onDownloadClick}
-            loading={isDownloadLoading || isDownloadTimeoutError}
             className={styles.downloadBtn}
+            loading={isDownloadAreaLoading || isDownloadLoading || isDownloadTimeoutError}
             disabled={!isDownloadReportSupported || isDownloadAreaLoading || isDownloadError}
           >
             {isDownloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
