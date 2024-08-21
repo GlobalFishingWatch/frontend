@@ -69,6 +69,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return super.isLoaded && this.state.viewportLoaded
   }
 
+  getError(): string {
+    return this.state.error
+  }
+
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
@@ -227,7 +231,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     const params = {
       datasets: [datasetId],
       ...(filters && { filters: [filters] }),
-      format: 'INTARRAY',
+      format: '4WINGS',
       'temporal-aggregation': true,
       'date-range': `${startIso},${endIso}`,
     }

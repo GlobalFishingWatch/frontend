@@ -11,6 +11,7 @@ import type {
   FourwingsRawData,
   ParseFourwingsClustersOptions,
   FourwingsPointFeature,
+  FourwingsClustersLoaderOptions,
 } from './types'
 
 const SCALE_VALUE = 1
@@ -20,7 +21,7 @@ const CELL_VALUE_INDEX = 1
 
 export const getPoints = (
   intArray: FourwingsRawData,
-  options?: FourwingsLoaderOptions
+  options?: FourwingsClustersLoaderOptions
 ): FourwingsPointFeature[] => {
   const {
     scale = SCALE_VALUE,
@@ -28,7 +29,7 @@ export const getPoints = (
     tile,
     cols,
     rows,
-  } = options?.fourwings || ({} as ParseFourwingsClustersOptions)
+  } = options?.fourwingsClusters || ({} as ParseFourwingsClustersOptions)
 
   const tileBBox: BBox = [
     (tile?.bbox as GeoBoundingBox).west,

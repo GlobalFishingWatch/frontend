@@ -48,7 +48,7 @@ export type FourwingsLoaderOptions = LoaderOptions & {
 }
 
 export type FourwingsClustersLoaderOptions = LoaderOptions & {
-  fourwings?: ParseFourwingsClustersOptions
+  fourwingsClusters?: ParseFourwingsClustersOptions
 }
 
 export type FourwingsFeatureProperties = {
