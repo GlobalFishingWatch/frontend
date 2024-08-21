@@ -990,7 +990,7 @@
     "widthRange": "Width range"
   },
   "vesselGroup": {
-    "add": "Add to group",
+    "add": "Add to vessel group",
     "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
     "createNewGroup": "Create new group",
