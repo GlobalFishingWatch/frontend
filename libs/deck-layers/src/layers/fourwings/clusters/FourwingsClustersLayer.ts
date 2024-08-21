@@ -5,7 +5,6 @@ import {
   LayerContext,
   LayersList,
   DefaultProps,
-  UpdateParameters,
   PickingInfo,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
@@ -38,6 +37,7 @@ import {
 } from './fourwings-clusters.types'
 
 type FourwingsClustersTileLayerState = {
+  error: string
   clusterIndex: Supercluster
   viewportLoaded: boolean
   clusters?: FourwingsClusterFeature[]
@@ -72,6 +72,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
+      error: '',
       viewportLoaded: false,
       clusterIndex: new Supercluster({
         radius: 100,
@@ -83,7 +84,13 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
   }
 
-  updateState({ props, oldProps, context }: UpdateParameters<this>) {}
+  // updateState({ props, oldProps, context }: UpdateParameters<this>) { }
+
+  _onLayerError = (error: Error) => {
+    console.warn(error.message)
+    this.setState({ error: error.message })
+    return true
+  }
 
   getPickingInfo = ({
     info,
@@ -148,7 +155,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       tile,
     }: {
       signal?: AbortSignal
-      tile?: TileLoadProps
+      tile: TileLoadProps
     }
   ) => {
     this.setState({ viewportLoaded: false })
@@ -165,10 +172,23 @@ export class FourwingsClustersLayer extends CompositeLayer<
       if (response.status >= 400 && response.status !== 404) {
         throw new Error(response.statusText)
       }
-      cols = parseInt(response.headers.get('X-columns') as string)
-      rows = parseInt(response.headers.get('X-rows') as string)
-      scale = parseFloat(response.headers.get('X-scale') as string)
-      offset = parseInt(response.headers.get('X-offset') as string)
+      if (response.headers.get('X-columns') && !cols) {
+        cols = parseInt(response.headers.get('X-columns') as string)
+      }
+      if (response.headers.get('X-rows') && !rows) {
+        rows = parseInt(response.headers.get('X-rows') as string)
+      }
+      if (response.headers.get('X-scale') && !scale) {
+        scale = parseFloat(response.headers.get('X-scale') as string)
+      }
+      if (response.headers.get('X-offset') && !offset) {
+        offset = parseInt(response.headers.get('X-offset') as string)
+      }
+
+      if (signal?.aborted) {
+        return
+      }
+
       return await parse(response.arrayBuffer(), FourwingsClustersLoader, {
         worker: true,
         fourwings: {
@@ -245,6 +265,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
         binary: false,
         loaders: [GFWMVTLoader],
+        onTileError: this._onLayerError,
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: () => null,
         getTileData: this._getTileData,
