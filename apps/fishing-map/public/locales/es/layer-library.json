@@ -67,7 +67,7 @@
   "offshore-fixed-infrastructure": {
     "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
     "moreInfoLink": "",
-    "name": "Offshore Fixed Infrastructure (SAR, Optical)"
+    "name": "Infraestructura fija en altamar (SAR, óptica)"
   },
   "oxygen": {
     "description": "El oxígeno disuelto es la cantidad de oxígeno presente en el agua y es crucial para el crecimiento y la supervivencia de los organismos marinos. El calentamiento de las aguas del océano pueden llevar a una expansión de zonas bajas en oxígeno, lo cual puede impactar la distribución y la abundancia de vida marina. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el oxígeno disuelto, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
@@ -122,7 +122,7 @@
   "species": {
     "description": "TODO",
     "moreInfoLink": "",
-    "name": "Species"
+    "name": "Especies"
   },
   "sst": {
     "description": "La temperatura de la superficie del mar es la temperatura del agua en o cerca de la superficie. Puede afectar a la meteorología y a los climas regionales, y junto con la salinidad puede conducir a la circulación de los océanos y al movimiento a gran escala de las corrientes oceánicas a nivel global. Este conjunto de datos proporciona la temperatura de la superficie del mar a una resolución de cuadrícula horizontal de 1/20 grados, utilizando datos in situ y satelitales tanto de radiómetros infrarrojos como de microondas.",
