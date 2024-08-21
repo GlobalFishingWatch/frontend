@@ -119,14 +119,14 @@ export interface DatasetConfigurationUI {
 export type DatasetConfigurationInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
 
 interface DatasetBackendConfig {
-  table: string
-  dataset: string
-  project: string
-  version: number
-  tileScale: number
-  tileOffset: number
-  timestamp: number | null
-  translate: boolean | null
+  table?: string
+  dataset?: string
+  project?: string
+  version?: number
+  tileScale?: number
+  tileOffset?: number
+  timestamp?: string
+  translate?: boolean | null
   numBytes?: number | null
   indexBoost?: number | null
   insightSources?: string[]
