@@ -4,9 +4,11 @@ import { DeckGL, DeckGLRef } from '@deck.gl/react'
 import dynamic from 'next/dynamic'
 // import { atom, useAtom } from 'jotai'
 import {
+  InteractionEvent,
   useIsDeckLayersLoading,
   useSetDeckLayerComposer,
   useSetDeckLayerLoadedState,
+  useSetMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import { useSetMapInstance } from 'features/map/map-context.hooks'
 // import { useClickedEventConnect, useGeneratorsConnect } from 'features/map/map.hooks'
@@ -79,6 +81,11 @@ const MapWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const layers = useMapLayers()
 
+  const setMapHoverFeatures = useSetMapHoverInteraction()
+  const onMouseLeave = useCallback(() => {
+    setMapHoverFeatures({} as InteractionEvent)
+  }, [setMapHoverFeatures])
+
   const setDeckLayers = useSetDeckLayerComposer()
   useEffect(() => {
     return () => {
@@ -102,7 +109,7 @@ const MapWrapper = () => {
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onMouseLeave={onMouseLeave}>
       <DeckGL
         id={MAP_CANVAS_ID}
         ref={deckRef}
