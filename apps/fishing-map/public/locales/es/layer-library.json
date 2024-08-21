@@ -65,9 +65,9 @@
     "name": "Concentración de nitrato (NO3)"
   },
   "offshore-fixed-infrastructure": {
-    "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
+    "description": "La infraestructura fija en altamar es un conjunto de datos global que utiliza IA y el aprendizaje automático para detectar y clasificar estructuras en todos los océanos del mundo. Se proporcionan etiquetas de clasificación (petróleo, viento y desconocidas), así como niveles de confianza (alto, medio o bajo) que reflejan nuestra certeza en cuanto a la etiqueta asignada. Las detecciones se pueden filtrar y colorear en el mapa utilizando tanto la etiqueta como el nivel de confianza. Los datos se actualizan mensualmente y se agregan nuevas detecciones clasificadas a principios de cada mes. Ver los cambios mediante la barra de tiempo es simple y permite reconocer la rápida industrialización de los océanos del mundo.",
     "moreInfoLink": "",
-    "name": "Infraestructura fija en altamar (SAR, óptica)"
+    "name": "Infraestructura fija en alta mar (SAR, óptica)"
   },
   "oxygen": {
     "description": "El oxígeno disuelto es la cantidad de oxígeno presente en el agua y es crucial para el crecimiento y la supervivencia de los organismos marinos. El calentamiento de las aguas del océano pueden llevar a una expansión de zonas bajas en oxígeno, lo cual puede impactar la distribución y la abundancia de vida marina. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el oxígeno disuelto, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
