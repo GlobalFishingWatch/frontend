@@ -191,7 +191,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
 
       return await parse(response.arrayBuffer(), FourwingsClustersLoader, {
         worker: true,
-        fourwings: {
+        fourwingsClusters: {
           sublayers: 1,
           cols,
           rows,

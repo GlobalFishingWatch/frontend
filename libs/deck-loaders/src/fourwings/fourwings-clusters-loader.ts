@@ -10,15 +10,15 @@ import { parseFourwingsClusters } from './lib/parse-fourwings-clusters'
 export const FourwingsClustersWorkerLoader: Loader = {
   name: 'fourwings cluster tiles',
   id: 'fourwings clusters',
-  module: 'fourwings',
+  module: 'fourwingsClusters',
   version: packageJson?.version,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
   worker: false,
   category: 'geometry',
   options: {
-    fourwings: {
-      workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
+    fourwingsClusters: {
+      workerUrl: `${PATH_BASENAME}/workers/fourwings-clusters-worker.js`,
       cols: 113,
       rows: 53,
       scale: 1,
