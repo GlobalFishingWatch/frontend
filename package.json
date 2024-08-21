@@ -240,6 +240,7 @@
     "prettier": "2.8.8",
     "prettier-eslint": "16.3.0",
     "react-fps": "^1.0.6",
+    "shx": "^0.3.4",
     "stylelint": "16.8.1",
     "stylelint-config-css-modules": "4.4.0",
     "stylelint-config-standard": "36.0.1",
