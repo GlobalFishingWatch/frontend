@@ -116,7 +116,7 @@ function VesselsTable({
   )
 
   const vessels = feature?.vessels?.slice(0, MAX_TOOLTIP_LIST)
-  const vesselsInfo = getVesselsInfoConfig(feature.vessels)
+  const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])
 
   const hasPinColumn =
     interactionAllowed &&

@@ -340,7 +340,7 @@ export const createVesselGroupThunk = createAsyncThunk(
     }
     const saveVesselGroup: any = async (vesselGroup: VesselGroupUpsert, tries = 0) => {
       let vesselGroupUpdated: VesselGroup
-      if (tries < 2) {
+      if (tries < 5) {
         try {
           const name = tries > 0 ? vesselGroupUpsert.name + `_${tries}` : vesselGroupUpsert.name
           vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>('/vessel-groups', {

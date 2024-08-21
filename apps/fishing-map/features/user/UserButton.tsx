@@ -11,7 +11,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const userData = useSelector(selectUserData)
-  const initials = userData
+  const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
   return (

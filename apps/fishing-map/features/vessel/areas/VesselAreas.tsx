@@ -58,7 +58,7 @@ const AreaTick = ({ y, payload }: any) => {
   }, [dispatchSetHighlightedEvents])
 
   return (
-    <foreignObject x={0} y={y - 12} className={styles.areaContainer}>
+    <foreignObject x={0} y={y - 12} width="200" height="40" className={styles.areaContainer}>
       <Tooltip
         content={`${t(
           'vessel.clickToFitMapToEvents',

@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 import { Spinner } from '@globalfishingwatch/ui-components'
-import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import {
@@ -14,7 +14,7 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectHighlightedWorkspacesStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { selectUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
+import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchUserVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
@@ -44,7 +44,7 @@ type SidebarProps = {
 function Sidebar({ onMenuClick }: SidebarProps) {
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
-  const isSmallScreen = useSmallScreen()
+  const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const isUserLocation = useSelector(selectIsUserLocation)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
@@ -52,7 +52,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const dataviewsResources = useSelector(selectDataviewsResources)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const userLogged = useSelector(selectIsUserLogged)
-  const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
+  const hasUserGroupsPermissions = useSelector(selectHasUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
 
   useEffect(() => {

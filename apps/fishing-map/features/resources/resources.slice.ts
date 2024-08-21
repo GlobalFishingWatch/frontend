@@ -7,4 +7,6 @@ export {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 
+export type { ResourcesState } from '@globalfishingwatch/dataviews-client'
+
 export default resourcesReducer

@@ -4,6 +4,7 @@ on:
 
 jobs:
   triage:
+    name: Label PR dependencies
     permissions:
       contents: read
       pull-requests: write

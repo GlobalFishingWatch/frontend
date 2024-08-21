@@ -60,7 +60,7 @@ export type ExtendedEventVessel = EventVessel & { dataset?: string }
 export type ExtendedFeatureEvent = ApiEvent<EventVessel> & { dataset: Dataset }
 
 export type SliceExtendedFourwingsDeckSublayer = FourwingsDeckSublayer & {
-  vessels: ExtendedFeatureVessel[]
+  vessels?: ExtendedFeatureVessel[]
 }
 export type SliceExtendedFourwingsPickingObject = Omit<
   FourwingsHeatmapPickingObject,

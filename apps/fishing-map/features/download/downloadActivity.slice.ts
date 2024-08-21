@@ -3,7 +3,12 @@ import { stringify } from 'qs'
 import { saveAs } from 'file-saver'
 import { RootState } from 'reducers'
 import { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import {
+  getIsConcurrentError,
+  getIsTimeoutError,
+  GFWAPI,
+  parseAPIError,
+} from '@globalfishingwatch/api-client'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
@@ -25,7 +30,7 @@ export type DateRange = {
 interface DownloadActivityState {
   areaKey: AreaKeys | undefined
   areaDataview: Dataview | UrlDataviewInstance | undefined
-  error: string
+  error: AsyncError | undefined
   status: AsyncReducerStatus
   activeTabId: HeatmapDownloadTab
 }
@@ -33,7 +38,7 @@ interface DownloadActivityState {
 const initialState: DownloadActivityState = {
   areaKey: undefined,
   areaDataview: undefined,
-  error: '',
+  error: undefined,
   status: AsyncReducerStatus.Idle,
   activeTabId: HeatmapDownloadTab.ByVessel,
 }
@@ -121,6 +126,12 @@ export const downloadActivityThunk = createAsyncThunk<
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { downloadActivity } = getState() as RootState
+      return downloadActivity?.status !== AsyncReducerStatus.Loading
+    },
   }
 )
 
@@ -142,7 +153,7 @@ const downloadActivitySlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(downloadActivityThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
-      state.error = ''
+      state.error = undefined
     })
     builder.addCase(downloadActivityThunk.fulfilled, (state) => {
       state.status = AsyncReducerStatus.Finished
@@ -151,7 +162,7 @@ const downloadActivitySlice = createSlice({
       state.status =
         action.error.message === 'Aborted' ? AsyncReducerStatus.Aborted : AsyncReducerStatus.Error
       if (action.payload?.message) {
-        state.error = action.payload?.message
+        state.error = action.payload
       }
     })
   },
@@ -161,7 +172,9 @@ export const { setDownloadActiveTab, setDownloadActivityAreaKey, resetDownloadAc
   downloadActivitySlice.actions
 
 const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
-const selectDownloadActivityErrorMsg = (state: RootState) => state.downloadActivity.error
+export const selectDownloadActivityError = (state: RootState) => state.downloadActivity.error
+export const selectDownloadActivityErrorMsg = (state: RootState) =>
+  state.downloadActivity.error?.message
 export const selectDownloadActivityAreaKey = (state: RootState) => state.downloadActivity.areaKey
 export const selectDownloadActiveTabId = (state: RootState) => state.downloadActivity.activeTabId
 
@@ -181,8 +194,18 @@ export const selectIsDownloadActivityFinished = createSelector(
 )
 
 export const selectIsDownloadAreaTooBig = createSelector(
-  [selectDownloadActivityErrorMsg],
-  (message) => message === 'Geometry too large'
+  [selectDownloadActivityError],
+  (downloadError) => downloadError?.message === 'Geometry too large'
+)
+
+export const selectIsDownloadActivityTimeoutError = createSelector(
+  [selectDownloadActivityError],
+  (downloadError) => getIsTimeoutError(downloadError)
+)
+
+export const selectIsDownloadActivityConcurrentError = createSelector(
+  [selectDownloadActivityError],
+  (downloadError) => getIsConcurrentError(downloadError)
 )
 
 export default downloadActivitySlice.reducer

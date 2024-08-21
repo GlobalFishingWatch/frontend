@@ -122,7 +122,7 @@ function WorkspaceError(): React.ReactElement {
             )
           }}
         >
-          Load default view
+          {t('errors.loadDefaultWorkspace', 'Load default workspace')}
         </Button>
       </ErrorPlaceHolder>
     )

@@ -22,7 +22,7 @@
   },
   "full-panama-fishing-vessels": {
     "name": "Panama VMS (Full Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Public)",
+    "description": "Conjunto de Datos VMS Panamá (Público)",
     "schema": {
       "source": "fuente"
     }
@@ -53,8 +53,8 @@
     "name": "VMS de Belize",
     "description": "Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). Data is collected using Belize's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing presence algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "velocidad",
+      "bearing": "rumbo"
     }
   },
   "private-belize-fishing-vessels": {
@@ -75,21 +75,21 @@
     "name": "VMS de Belize",
     "description": "Presence (Belize private)",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "velocidad",
+      "bearing": "rumbo"
     }
   },
   "private-belize-vessel-identity-fishing": {
-    "name": "VMS Belize",
-    "description": "Vessel Identity"
+    "name": "VMS de Belice",
+    "description": "Identidad de la embarcación"
   },
   "private-belize-vessel-identity-non-fishing": {
-    "name": "VMS Belize",
-    "description": "Vessel Identity"
+    "name": "VMS de Belice",
+    "description": "Identidad de la embarcación"
   },
   "private-belize-vessel-identity": {
-    "name": "VMS Belize",
-    "description": "Vessel Identity"
+    "name": "VMS de Belice",
+    "description": "Identidad de la embarcación"
   },
   "private-bra-onyxsat-fishing-effort": {
     "name": "VMS de Brazil",
@@ -154,8 +154,8 @@
       "targetSpecies": {
         "keyword": "targetSpecies",
         "enum": {
-          "Sardinha-verdadeira e Bonito-listrado": "Sardinha-verdadeira e Bonito-listrado",
-          "Polvo": "Polvo",
+          "Sardinha-verdadeira e Bonito-listrado": "Sardinella brasiliensis y Katsuwonus pelamis",
+          "Polvo": "Pulpo",
           "Caranguejo-vermelho": "Caranguejo-vermelho",
           "Sardinha-verdadeira e Anchova": "Sardinha-verdadeira e Anchova",
           "peixes diversos": "peixes diversos",
@@ -238,7 +238,7 @@
     }
   },
   "private-bra-onyxsat-presence": {
-    "name": "VMS de Brazil",
+    "name": "VMS de Brasil",
     "description": "Presence (Brazil private)",
     "schema": {
       "shiptype": {
@@ -251,12 +251,12 @@
     }
   },
   "private-bra-onyxsat-vessel-identity-fishing": {
-    "name": "VMS Brazil (Fishing Vessels)",
-    "description": "Fishing Vessels (VMS Brazil)"
+    "name": "VMS de Brasil (Pesqueros)",
+    "description": "Pesqueros (VMS Brasil)"
   },
   "private-bra-onyxsat-vessel-identity-non-fishing": {
-    "name": "VMS Brazil (Non Fishing Vessels)",
-    "description": "Non Fishing Vessels (VMS Brazil)"
+    "name": "VMS de Brasil (No Pesqueros)",
+    "description": "No Pesqueros (VMS Brasil)"
   },
   "private-brazil-opentuna-presence": {
     "name": "Brazil Open Tuna VMS",
@@ -288,8 +288,8 @@
           "costarica_vms_sardineros": "costarica_vms_sardineros"
         }
       },
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "velocidad",
+      "bearing": "rumbo"
     }
   },
   "private-ecuador-fishing-effort": {
@@ -299,7 +299,7 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "fishing": "fishing"
+          "fishing": "pesca"
         }
       }
     }
@@ -371,8 +371,8 @@
     "description": "VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques."
   },
   "private-indonesia-fishing-vessels": {
-    "name": "Indonesia VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Indonesia (Private)"
+    "name": "VMS de Indonesia (Pesqueros)",
+    "description": "Conjunto de Datos para VMS de Indonesia (Privado)"
   },
   "private-indonesia-ipnlf-fishing-effort": {
     "name": "AP2HI-IPNLF: Indonesia Pelagic",
@@ -450,13 +450,13 @@
     "name": "Rare: Indonesia Pelagic",
     "description": "Rare Presence",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "velocidad",
+      "bearing": "rumbo"
     }
   },
   "private-indonesia-rare-vessel-identity": {
-    "name": "Indonesia Rare (Vessels)",
-    "description": "Vessels (Indonesia Rare)"
+    "name": "Indonesia Rare (Embarcaciones)",
+    "description": "Embarcaciones (Indonesia Rare)"
   },
   "private-indonesia-rare-vessels": {
     "name": "Indonesia Rare (Vessels)",
@@ -469,8 +469,8 @@
     "name": "Indonesia Zebrax (Private)",
     "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por Rare, Aruna y AP2HI. Los datos se recopilan mediante distintos dispositivos que rastrean la ubicación y la velocidad. La información mostrada representa la presencia de la embarcación. La presencia se determina tomando todas las posiciones transmitidas por el dispositivo de la embarcación.",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "velocidad",
+      "bearing": "rumbo"
     }
   },
   "private-indonesia-zebrax-vessel-identity": {
@@ -485,7 +485,7 @@
     }
   },
   "private-norway-fishing-effort": {
-    "name": "Norway VMS",
+    "name": "VMS de Noruega",
     "description": " Los datos se recopilan utilizando el sistema de seguimiento de embarcaciones a través de satélites y se publican con un retraso de tres días. Los datos contienen información sobre la ubicación, velocidad, rumbo y movimiento de las embarcaciones. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos desarrollados para el sistema de identificación automática (AIS) para identificar la actividad y los comportamientos pesqueros. El algoritmo clasifica cada punto de datos transmitido por las embarcaciones como pesca aparentemente o no pesca, y muestra el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. El sistema VMS transmite datos de manera diferente a AIS y puede proporcionar diferentes medidas de integridad, precisión y calidad. Global Fishing Watch mejora continuamente sus algoritmos en todos los formatos de transmisión de datos para identificar algorítmicamente la \"actividad de pesca aparente\". Es posible que no se identifique alguna actividad pesquera o que el mapa de calor muestre una actividad pesquera aparente cuando la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” o “esfuerzo pesquero” como aparentes en lugar de ciertos. Toda la información de Global Fishing Watch sobre la \"aparente actividad pesquera\" debe considerarse una estimación y debe confiarse en ella únicamente a discreción del usuario. Los algoritmos de detección de pesca de Global Fishing Watch se desarrollan y prueban utilizando datos de eventos de pesca reales recopilados por observadores y se combinan con análisis de expertos de datos de movimiento de embarcaciones AIS, lo que da como resultado la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de la actividad pesquera y mejorar las técnicas de clasificación automatizadas"
   },
   "private-panama-fishing-effort": {
@@ -523,11 +523,11 @@
     }
   },
   "private-panama-vessel-identity-fishing": {
-    "name": "Panama Private VMS (Private Fishing Vessels)",
+    "name": "VMS Privado de Panamá (Pesqueros Privados)",
     "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada."
   },
   "private-panama-vessel-identity-non-fishing": {
-    "name": "Panama Private VMS (Private Non Fishing Vessels)",
+    "name": "VMS Privado de Panamá (No Pesqueros Privados)",
     "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada."
   },
   "private-peru-fishing-effort": {
@@ -609,7 +609,7 @@
   },
   "private-peru-vessel-identity-fishing": {
     "name": "VMS de Peru (Buques de pesca)",
-    "description": "Dataset for VMS Peru (Private)"
+    "description": "Conjunto de Datos VMS de Perú (Privado)"
   },
   "private-png-fishing-effort": {
     "name": "VMS de Papúa Nueva Guinea",
@@ -737,31 +737,33 @@
   },
   "public-belize-fishing-effort": {
     "name": "VMS de Belice",
-    "description": "Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). Data is collected using Belize's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing presence algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
+    "description": "Los datos del sistema de monitoreo de embarcaciones (VMS) son proporcionados por la Unidad de Pesca en Alta Mar de Belice (BHSFU). Los datos se recopilan mediante el sistema de seguimiento de embarcaciones de Belice a través de satélites y se publican con un retraso de tres días brindando información sobre la ubicación, la velocidad, el rumbo y el movimiento de las embarcaciones. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos desarrollados para el sistema de identificación automática (AIS) con el fin de identificar la actividad y los comportamientos pesqueros. El algoritmo clasifica cada punto de los datos transmitidos por las embarcaciones como \"pesca aparente\" o \"no pesca\" y muestra el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. El VMS transmite los datos de manera diferente al AIS y puede ofrecer diferentes medidas de integridad, precisión y calidad. Global Fishing Watch mejora continuamente sus algoritmos en todos los formatos de datos transmitidos para identificar algorítmicamente la \"actividad pesquera aparente\". Es posible que no se identifique alguna actividad pesquera o que el mapa de calor pueda mostrar una actividad pesquera aparente cuando en realidad no se está pescando. Por estas razones, Global Fishing Watch califica los términos \"actividad pesquera\", \"pesca\" o \"esfuerzo pesquero\" como aparentes en lugar de ciertos. Toda la información de Global Fishing Watch sobre “actividad pesquera aparente” debe considerarse una estimación y el usuario debe confiar únicamente en ella a su entera discreción. Los algoritmos de presencia pesquera de Global Fishing Watch se desarrollan y prueban utilizando datos reales de eventos pesqueros recopilados por observadores y se combinan con un análisis experto de los datos de movimiento de embarcaciones AIS, lo que da como resultado la clasificación manual de miles de eventos pesqueros conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de la actividad pesquera y mejorar las técnicas de clasificación automatizada.",
     "schema": {
       "speed": "speed",
       "bearing": "bearing"
     }
   },
   "public-belize-fishing-vessels": {
-    "name": "VMS Belize (Fishing Vessels)",
-    "description": "Fishing Vessels (VMS Belize)",
+    "name": "VMS de Belice (Pesqueros)",
+    "description": "Pesqueros (VMS Belice)",
     "schema": {
       "source": "fuente"
     }
   },
   "public-belize-vessel-identity-fishing": {
-    "name": "VMS Belize",
-    "description": "Vessel Identity (VMS Belize)"
+    "name": "VMS de Belice",
+    "description": "Identidad de la embarcación (VMS Belice)"
   },
   "public-belize-vessel-identity": {
-    "name": "VMS Belize",
-    "description": "Vessel Identity (VMS Belize)"
+    "name": "VMS de Belice",
+    "description": "Identidad de la embarcación (VMS Belice)"
   },
   "public-bra-onyxsat-fishing-effort": {
     "name": "VMS de Brasil",
-    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing detection algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing detection algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
       "target_species": {
         "keyword": "target_species",
         "enum": {
@@ -801,8 +803,8 @@
     }
   },
   "public-bra-onyxsat-fishing-vessels": {
-    "name": "VMS Brazil (Fishing Vessels)",
-    "description": "Fishing Vessels (VMS Brazil)",
+    "name": "VMS de Brasil (Pesqueros)",
+    "description": "Pesqueros (VMS Brasil)",
     "schema": {
       "source": "fuente",
       "codMarinha": "codMarinha",
@@ -846,8 +848,8 @@
     }
   },
   "public-bra-onyxsat-vessel-identity-fishing": {
-    "name": "VMS Brazil (Fishing Vessels)",
-    "description": "Fishing Vessels (VMS Brazil)"
+    "name": "VMS de Brasil (Pesqueros)",
+    "description": "Pesqueros (VMS Brasil)"
   },
   "public-brazil-opentuna-fishing-vessels": {
     "name": "Brazil Open Tuna VMS (Fishing vessels)",
@@ -861,16 +863,16 @@
     "description": "Esta capa de Global Fishing Watch utiliza datos proporcionados por ATLANTIC'S ALLIANCE FOR SOSTENIBLE TUNA, un grupo de empresas atuneras privadas brasileñas que decidieron ser transparentes, más información aquí. Los datos se recopilan utilizando su Sistema de Monitoreo de Embarcaciones (VMS) a través de satélites, incluida la identificación, ubicación, velocidad y rumbo de la embarcación. La información que se muestra representa la presencia del barco."
   },
   "public-brazil-opentuna-vessel-identity-fishing": {
-    "name": "Brazil Open Tuna VMS (Fishing vessels)",
-    "description": "Dataset for VMS Brazil (Public)"
+    "name": "VMS de Brasil Open Tuna (Pesqueros)",
+    "description": "Conjunto de Datos VMS Brasil (Público)"
   },
   "public-chile-all-vessels": {
     "name": "VMS de Chile (Todos los buques)",
-    "description": "Dataset for VMS Chile (Public)"
+    "description": "Conjunto de Datos VMS Chile (Público)"
   },
   "public-chile-fishing-effort": {
     "name": "VMS de Chile",
-    "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por el Servicio Nacional de Pesca y Acuicultura del gobierno chileno, SERNAPESCA. También es posible utilizar la ficha FILTERS en nuestra caja de herramientas para ver por separado los datos del VMS chileno para la pesca artesanal (&lt;18 metros) y buques industriales de pesca (&gt;18 metros). Tenga en cuenta que hay unos pocos barcos que son &lt;18 metros pero considerados industriales porque estaban registrados en la captura de cuotas industriales. SERNAPESCA también está utilizando nuestro mapa para visualizar y rastrear las posiciones de los buques para su flota, incluyendo los buques involucrados en la acuicultura (Visite el mapa en el sitio web de SERNAPESCA). Los datos se recogen utilizando los datos VMS chilenos vía satélites y receptores terrestres, y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesquera aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
+    "description": "Datos del sistema de monitoreo de embarcaciones (VMS) proporcionados por el regulador de pesca y acuicultura del gobierno de Chile (SERNAPESCA). Es posible filtrar los datos VMS de Chile para pesqueros de pequeña escala (<18 metros) y pesqueros industriales (>18 metros). Tenga en cuenta que algunas embarcaciones tienen <18 metros, pero se consideran industriales porque se registraron en la captura de cuotas industriales. SERNAPESCA también está utilizando nuestro mapa para visualizar y rastrear las posiciones de los buques de su flota, incluidos los buques involucrados en la acuicultura. Los datos se recopilan utilizando el VMS de Chile a través de satélites y receptores terrestres y contienen identidades de los buques, tipo de arte, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos del sistema de identificación automática (AIS) para identificar la actividad y los comportamientos pesqueros. El algoritmo clasifica cada punto de datos transmitido por las embarcaciones como \"aparentemente pescando\" o \"no pescando\" y muestra el primero en el mapa de Global Fishing Watch. El VMS transmite datos de manera bastante diferente al AIS y puede brindar diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán en todos nuestros formatos de datos de transmisión. El algoritmo de presencia de pesca de Global Fishing Watch para VMS, al igual que para AIS, es un esfuerzo máximo para identificar algorítmicamente la \"actividad pesquera aparente\". Es posible que no se identifique alguna actividad pesquera o que el mapa de calor pueda mostrar una actividad pesquera aparente cuando en realidad no se está pescando. Por este motivo, Global Fishing Watch califica los términos \"actividad pesquera\", \"pesca\" y \"esfuerzo pesquero\" como \"aparentes\" en lugar de ciertos. Toda la información de Global Fishing Watch sobre la \"actividad pesquera aparente\" debe considerarse una estimación y debe confiar en ella únicamente bajo su propio riesgo. Los algoritmos de presencia de pesca de Global Fishing Watch se desarrollan y prueban utilizando datos reales de eventos pesqueros recopilados por observadores, combinados con un análisis experto de los datos de movimiento de embarcaciones AIS, lo que da como resultado la clasificación manual de miles de eventos pesqueros conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de su programa de investigación para compartir datos de clasificación de la actividad pesquera y clasificación automatizada.",
     "schema": {
       "fleet": {
         "keyword": "Flota",
@@ -878,20 +880,22 @@
           "chile_vms_small_fisheries": "Artesanal",
           "chile_vms_industry": "Industrial"
         }
-      }
+      },
+      "speed": "speed",
+      "bearing": "bearing"
     }
   },
   "public-chile-fishing-vessels": {
-    "name": "Chile VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Chile (Public)"
+    "name": "VMS de Chile (Pesqueros)",
+    "description": "Conjunto de datos para VMS Chile (Público)"
   },
   "public-chile-non-fishing-vessels": {
     "name": "Chile VMS (Non fishing Vessels)",
-    "description": "Dataset for VMS Chile (Public)"
+    "description": "Conjunto de datos para VMS Chile (Público)"
   },
   "public-chile-presence": {
     "name": "VMS de Chile",
-    "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por el Servicio Nacional de Pesca y Acuicultura del gobierno chileno, SERNAPESCA. También es posible utilizar la ficha FILTERS en nuestra caja de herramientas para ver por separado los datos del VMS chileno para la pesca artesanal (&lt;18 metros) y buques industriales de pesca (&gt;18 metros). Tenga en cuenta que hay unos pocos barcos que son &lt;18 metros pero considerados industriales porque estaban registrados en la captura de cuotas industriales. SERNAPESCA también está utilizando nuestro mapa para visualizar y rastrear las posiciones de los buques para su flota, incluyendo los buques involucrados en la acuicultura (Visite el mapa en el sitio web de SERNAPESCA). Los datos se recogen utilizando los datos VMS chilenos vía satélites y receptores terrestres, y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesquera aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
+    "description": "Datos del sistema de monitoreo de embarcaciones (VMS) proporcionados por el regulador de pesca y acuicultura del gobierno de Chile (SERNAPESCA). Es posible filtrar los datos VMS de Chile para pesqueros de pequeña escala (<18 metros) y pesqueros industriales (>18 metros). Tenga en cuenta que algunas embarcaciones tienen <18 metros, pero se consideran industriales porque se registraron en la captura de cuotas industriales. SERNAPESCA también está utilizando nuestro mapa para visualizar y rastrear las posiciones de los buques de su flota, incluidos los buques involucrados en la acuicultura. Los datos se recopilan utilizando el VMS de Chile a través de satélites y receptores terrestres y contienen identidades de los buques, tipo de arte, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos del sistema de identificación automática (AIS) con el fin de identificar la actividad y los comportamientos pesqueros. El algoritmo clasifica cada punto de datos transmitidos por los buques como \"aparentemente pescando\" o \"no pescando\" y muestra el primero en el mapa de Global Fishing Watch. El VMS transmite datos de manera bastante diferente al AIS y puede brindar diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán en todos nuestros formatos de datos de transmisión. El algoritmo de presencia de pesca de Global Fishing Watch para VMS, al igual que para AIS, es un esfuerzo máximo para identificar algorítmicamente la \"actividad pesquera aparente\". Es posible que no se identifique alguna actividad pesquera o que el mapa de calor pueda mostrar una actividad pesquera aparente cuando en realidad no se está pescando. Por estos motivos, Global Fishing Watch califica los términos \"actividad pesquera\", \"pesca\" y \"esfuerzo pesquero\" como \"aparentes\" en lugar de ciertos. Toda la información de Global Fishing Watch sobre la \"actividad pesquera aparente\" debe considerarse una estimación y debe confiar en ella únicamente bajo su propio riesgo. Los algoritmos de presencia de pesca de Global Fishing Watch se desarrollan y prueban utilizando datos reales de eventos pesqueros recopilados por observadores, combinados con un análisis experto de los datos de movimiento de embarcaciones AIS, lo que da como resultado la clasificación manual de miles de eventos pesqueros conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de su programa de investigación para compartir datos de clasificación de la actividad pesquera y la clasificación automatizada.",
     "schema": {
       "fleet": {
         "keyword": "Flota",
@@ -901,16 +905,18 @@
           "chile_vms_aquaculture": "Acuicultura",
           "chile_vms_transport": "Transporte"
         }
-      }
+      },
+      "speed": "speed",
+      "bearing": "bearing"
     }
   },
   "public-chile-vessel-identity-fishing": {
-    "name": "Chile VMS (Non fishing Vessels)",
-    "description": "Dataset for VMS Chile (Public)"
+    "name": "VMS de Chile (No Pesqueros)",
+    "description": "Conjunto de datos para VMS Chile (Público)"
   },
   "public-chile-vessel-identity-non-fishing": {
-    "name": "Chile VMS (Non fishing Vessels)",
-    "description": "Dataset for VMS Chile (Public)"
+    "name": "VMS de Chile (No Pesqueros)",
+    "description": "Conjunto de datos para VMS Chile (Público)"
   },
   "public-cold-water-corals": {
     "name": "Cold Water Corals",
@@ -927,11 +933,13 @@
       "fleet": {
         "keyword": "Flota",
         "enum": {
-          "costarica_vms_avanzados": "costarica_vms_avanzados",
+          "costarica_vms_industrial_longline": "costarica_vms_industrial_longline",
           "costarica_vms_atuneros": "costarica_vms_atuneros",
           "costarica_vms_sardineros": "costarica_vms_sardineros"
         }
-      }
+      },
+      "speed": "speed",
+      "bearing": "bearing"
     }
   },
   "public-costa-rica-fishing-vessels": {
@@ -943,7 +951,7 @@
   },
   "public-costa-rica-vessel-identity-vessels": {
     "name": "VMS de Costa Rica",
-    "description": "Dataset for VMS Costa Rica (Public)"
+    "description": "Conjunto de datos para VMS Costa Rica (Público)"
   },
   "public-dgg_sar_caribe_match_2019": {
     "name": "SAR with an AIS-matched vessel",
@@ -957,6 +965,8 @@
     "name": "VMS de Ecuador",
     "description": "Los datos del sistema de monitoreo de embarcaciones (VMS) son proporcionados por la Armada de Ecuador a través de la Dirección Nacional de Espacios Acuáticos. Los datos se recopilan utilizando el sistema de seguimiento de embarcaciones de Ecuador a través de satélites y se publican con un retraso de siete días. Los datos contienen información sobre la identidad, ubicación, velocidad, rumbo y movimiento de las embarcaciones. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos desarrollados para el sistema de identificación automática (AIS) para identificar la actividad y los comportamientos pesqueros. El algoritmo clasifica cada punto de datos transmitido por las embarcaciones como pesca aparentemente o no pesca, y muestra el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. El sistema VMS transmite datos de manera diferente a AIS y puede proporcionar diferentes medidas de integridad, precisión y calidad. Global Fishing Watch mejora continuamente sus algoritmos en todos los formatos de transmisión de datos para identificar algorítmicamente la \\\"actividad de pesca aparente\\\". Es posible que no se identifique alguna actividad pesquera o que el mapa de calor muestre una actividad pesquera aparente cuando la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” o “esfuerzo pesquero” como aparentes en lugar de ciertos. Toda la información de Global Fishing Watch sobre la \\\"aparente actividad pesquera\\\" debe considerarse una estimación y debe confiarse en ella únicamente a discreción del usuario. Los algoritmos de detección de pesca de Global Fishing Watch se desarrollan y prueban utilizando datos de eventos de pesca reales recopilados por observadores y se combinan con análisis de expertos de datos de movimiento de embarcaciones AIS, lo que da como resultado la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de la actividad pesquera y mejorar las técnicas de clasificación automatizadas",
     "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
@@ -974,7 +984,7 @@
   },
   "public-ecuador-non-fishing-vessels": {
     "name": "Ecuador VMS (Non fishing vessels)",
-    "description": "Dataset for VMS Ecuador (Public)",
+    "description": "Conjunto de Datos VMS Ecuador (Público)",
     "schema": {
       "source": "fuente"
     }
@@ -999,12 +1009,12 @@
     }
   },
   "public-ecuador-vessel-identity-fishing": {
-    "name": "Ecuador VMS (Fishing vessels)",
-    "description": "VMS Ecuador (Fishing vessels)"
+    "name": "VMS de Ecuador (Pesqueros)",
+    "description": "VMS Ecuador (Pesqueros)"
   },
   "public-ecuador-vessel-identity-non-fishing": {
-    "name": "Ecuador VMS (Non fishing vessels)",
-    "description": "VMS Ecuador (Non fishing vessels)"
+    "name": "VMS de Ecuador (No Pesqueros)",
+    "description": "VMS de Ecuador (No Pesqueros)"
   },
   "public-eez-areas": {
     "name": "ZEE",
@@ -1082,7 +1092,7 @@
     }
   },
   "public-fixed-infrastructure-filtered": {
-    "name": "Offshore Fixed Infrastructure (SAR, Optical)",
+    "name": "Infraestructura fija offshore (SAR, Óptica)",
     "description": "<h2>Overview</h2> <p>Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans.</p> <p>Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level.<em></em>The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans. For example, you can easily observe the expansion of wind farms in the North and East China Seas, or changes in oil infrastructure in the Gulf of Mexico or Persian Gulf.</p> <p>By overlaying the existing map layers, you can explore how vessels interact with oil and wind structures, visualise the density of synthetic aperture radar (SAR) and Visible Infrared Imaging Radiometer Suite (VIIRS) vessel detections around infrastructure, or determine which marine protected areas (MPAs) contain wind, oil, or other infrastructure types. These are only examples of the types of questions we can now ask. Offshore fixed infrastructure is a first of its kind dataset that not only brings to light the extensive industrialization of our oceans, but enables users across industries to use this information in research, monitoring and management.</p> <h2>Use cases</h2> <ul> <li>Maritime domain awareness</li> <ul> <li>Infrastructure locations can support maritime domain awareness, and understanding of other activities occurring at sea.</li> <li>Infrastructure data supports assessments of ocean industrialization, facilitating monitoring of areas experiencing build-up or new development</li> </ul> <li>Monitoring vessels</li> <ul> <li>Infrastructure locations can be used to analyse the behaviour of vessels associated with infrastructure, including grouping vessels based on their interaction with oil and wind structures.</li> <li>Interactions between vessels and infrastructure can help quantify the resources required to support offshore industrial activity</li> <li>The impacts of infrastructure on fishing, including attracting or deterring fishing, can be analysed.</li> </ul> <li>Marine protected areas (MPAs) and marine spatial planning</li> <ul> <li>During the planning stage in the designation of new protected areas, knowing the location of existing infrastructure will be vital to understand which stakeholders shall be included in the consultation process, to understand potential conflicts, and identify easy wins.</li> </ul> <li>Environmental impacts</li> <ul> <li>Infrastructure locations can be used to help detect marine pollution events, and to differentiate between types of pollution events (e.g. pollution from vessels versus pollution from platforms)</li> </ul> </ul> <h2>Caveats</h2> <ul> <li><strong>Sentinel-1 and Sentinel-2 satellites do not sample most of the open ocean.</strong></li> <ul> <li>Most industrial activity happens relatively close to shore.</li> <li>The extent and frequency of SAR acquisitions is determined by the mission priorities.</li> <li>For more info see: https://www.nature.com/articles/s41586-023-06825-8/figures/5</li> </ul> <li><strong>We do not provide detections of infrastructure within 1 km of shore</strong></li> <ul> <li>We do not classify objects within 1 km of shore because it is difficult to map where the shoreline begins, and ambiguous coastlines and rocks cause false positives.</li> <li>The bulk of industrial activities, including offshore development with medium-to-large oil rigs and wind farms, occur several kilometers from shore.</li> </ul> <li> <strong>False positives can be produced from noise artifacts.</strong> </li> <ul> <li>Rocks, small islands, sea ice, radar ambiguities (radar echoes), and image artifacts can cause false positives</li> <li>Detections in some areas including Southern Chile, the Arctic, and the Norwegian Sea have been filtered to remove noise.</li> </ul> <li><strong>Spatial coverage varies over time, which can produce different detections results year on year - <a target=\"_blank\" href=\"https://share.cleanshot.com/yG0qfF\"> <span style=\"color:rgb(0, 0, 0);\">Example</span> </a></strong> </li> <ul> <li>Infrastructure detentions from 2017-01-01 to near real time are available, and updated on a monthly basis.</li> </ul> <li> <strong>Labels can change over time</strong> </li> <ul> <li>The label assigned to a structure is the greatest predicted label averaged across time. As we get more data, the label may change, and more accurately predict the true infrastructure type.</li> </ul> <li><strong>Global datasets aren’t perfect</strong></li> <ul> <li>We’ve done our best to create the most accurate product possible, but there will be infrastructure that isn’t detected, or has been classified incorrectly. This will be most evident when working at the project level.</li> <li>We strongly encourage users to provide feedback to the research team so that we may improve future versions of the model. All feedback is greatly appreciated.</li> </ul> </ul> <h2>Methods</h2> <h3>SAR imagery</h3> <p>We use SAR imagery from the Copernicus Sentinel-1 mission of the European Space Agency (ESA) [1]. The images are sourced from two satellites (S1A and S1B up until December 2021 when S1B stopped operating, and S1A only from 2022 onward) that orbit 180 degrees out of phase with each other in a polar, sun-synchronous orbit. Each satellite has a repeat-cycle of 12 days, so that together they provide a global mapping of coastal waters around the world approximately every six days for the period that both were operating. The number of images per location, however, varies greatly depending on mission priorities, latitude, and degree of overlap between adjacent satellite passes. Spatial coverage also varies over time [2]. Our data consist of dual-polarization images (VH and VV) from the Interferometric Wide (IW) swath mode, with a resolution of about 20 m.</p> <p>[1] <a target=\"_blank\" href=\"https://sedas.satapps.org/wp-content/uploads/2015/07/Sentinel-1_User_Handbook.pdf\"> <span style=\"color:rgb(0, 0, 0);\">https://sedas.satapps.org/wp-content/uploads/2015/07/Sentinel-1_User_Handbook.pdf</span> </a> </p> <p>[2]<a target=\"_blank\" href=\"https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-1/observation-scenario\"> <span style=\"color:rgb(0, 0, 0);\"></span> <span style=\"color:rgb(0, 0, 0);\">https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-1/observation-scenario</span> </a> </p> <h3>Infrastructure detection by SAR</h3> <p>Detecting infrastructure with SAR is based on the widely used Constant False Alarm Rate (CFAR) algorithm, an anomaly detection method conceived for detecting ships in synthetic aperture radar images, that has been modified to remove non-stationary objects. This algorithm is designed to search for pixel values that are unusually bright (the targets) compared to those in the surrounding area (the sea clutter). This method sets a threshold based on the pixel values of the local background (within a window), scanning the whole image pixel-by-pixel. Pixel values above the threshold constitute an anomaly and are likely to be samples from a target.</p> <h3>Infrastructure classification</h3> <p>To classify every detected offshore infrastructure, we used deep learning and designed a ConvNet based on the ConvNeXt architecture. A novel aspect of our deep learning classification approach is the combination of SAR imagery from Sentinel-1 with optical imagery from Sentinel-2. From six-month composites of dual-band SAR (VH and VV) and four-band optical (RGB and NIR) images, we extracted small tiles for every detected fixed infrastructure, with the respective objects at the center of the tile. A single model output includes the probabilities for the specified classes: wind, oil, unknown, lake maracaibo, and noise.</p> <h3>Filtering</h3> <p>GFW post-processed the classified SAR detections to reduce noise (false positives), remove vessels, exclude areas with sea ice at high latitudes, and incorporate expert feedback. We used a clustering approach to identify detections across time (within a 50 m radius) that were likely the same structure but their coordinates differed slightly, and assigned them the greatest average predicted label of the cluster. We also filled in gaps for fixed structures that were missing in one timestep but detected in the previous and following timesteps, and dropped detections appearing in a single timestep. Finally, the dataset underwent extensive manual review and editing by researchers and industry experts in order to refine the final product, and provide the most accurate dataset possible.</p> <h3>Data field descriptions</h3> <p>Each detection has a unique individual identifier (<em>detection_id</em>). A six-month image composite is used in the classification, therefore the <em>detection_date</em> represents the middle of the six month period. This helps to remove non-stationary objects (i.e. vessels), and avoid confusion in the model if a structure is being built, or there isn’t adequate imagery available. <em>structure_id</em> allows you to track a structure through time. There are therefore many <em>detection_id</em> (one for each month the structure is detected) for each <em>structure_id</em>. Labels of <em>wind</em> and <em>oil </em>represent any wind or oil related structure respectively. <em>Unknown</em> represents a structure that is not oil or wind related, such as bridges or navigational buoys. </p> <p>Label confidence levels of ‘High’. ‘Medium’ and ‘Low’ are assigned to each structure, and are conditional on where the detections fell in relation to the boundaries of manually developed wind and oil polygons, and whether the label has changed from the previous month. The <em>label_confidence</em> field can be used to filter analysis. </p> <h2>Resources, code and other notes</h2> <p>Two repos are used in the automation process, both of which are private, and should not be shared publicly.</p> <p>Detection and classification: https://github.com/GlobalFishingWatch/sentinel-1-ee/tree/master</p> <p>Clustering and reclassification: https://github.com/GlobalFishingWatch/infrastructure-post-processing</p> <p>All code developed for the paper, Paolo, F.S., Kroodsma, D., Raynor, J. et al. Satellite mapping reveals extensive industrial activity at sea. Nature 625, 85–91 (2024). https://doi.org/10.1038/s41586-023-06825-8, including SAR detection, deep learning models, and analyses is open source and freely available at https://github.com/GlobalFishingWatch/paper-industrial-activity.</p> <h2>Sources data and citations</h2> <p>Copernicus Sentinel data 2017-current</p> <p>Lujala, Päivi; Jan Ketil Rød &amp; Nadia Thieme, 2007. 'Fighting over Oil: Introducing A New Dataset', Conflict Management and Peace Science 24(3), 239-256</p> <p>Sabbatino, M., Romeo, L., Baker, V., Bauer, J., Barkhurst, A., Bean, A., DiGiulio, J., Jones, K., Jones, T.J., Justman, D., Miller III, R., Rose, K., and Tong., A., Global Oil &amp; Gas Infrastructure Features Database Geocube Collection, 2019-03-25, https://edx.netl.doe.gov/dataset/global-oil-gas-infrastructure-features-database-geocube-collection, DOI: 10.18141/1502839</p> <h2>License</h2> <p>Non-Commercial Use Only. The Site and the Services are provided for Non-Commercial use only in accordance with the CC BY-NC 4.0 license. If you would like to use the Site and/or the Services for commercial purposes, please contact us.</p> <h2>Global Fishing Watch metadata</h2> <p>Infrastructure development methods should reference the paper:</p> <p>Paolo, F.S., Kroodsma, D., Raynor, J. et al. Satellite mapping reveals extensive industrial activity at sea. Nature 625, 85–91 (2024). https://doi.org/10.1038/s41586-023-06825-8</p> <p>All code developed for the paper, including SAR detection, deep learning models, and analyses is open source and freely available at https://github.com/GlobalFishingWatch/paper-industrial-activity. All the data generated and used by these scripts can reference the following data repos:</p> <p>Analysis and Figures: https://doi.org/10.6084/m9.figshare.24309475</p> <p>Training and Evaluation: https://doi.org/10.6084/m9.figshare.24309469</p>",
     "schema": {
       "label": {
@@ -1151,7 +1161,7 @@
     "description": "Identificado de los datos AIS como lugares donde dos buques, un transportador y uno pesquero; estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media de &lt;2 nudos, y a menos de 10 km de la costa."
   },
   "public-global-encounters-events": {
-    "name": "Encounter Events. (AIS)",
+    "name": "Eventos de Encuentro (AIS)",
     "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
     "schema": {
       "duration": "duration"
@@ -1340,8 +1350,8 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": "true",
-          "false": "false"
+          "true": "Coincidencia con AIS",
+          "false": "Sin coincidencia con AIS"
         }
       },
       "radiance": {
@@ -1422,8 +1432,8 @@
     "description": "VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques."
   },
   "public-indonesia-fishing-vessels": {
-    "name": "Indonesia VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Indonesia (Public)"
+    "name": "VMS de Indonesia (Pesqueros)",
+    "description": "Conjunto de Datos para VMS de Indonesia (Privado)"
   },
   "public-indonesia-pelagic-fishing-effort": {
     "name": "Indonesia Pelagic (Pilot)",
@@ -1517,8 +1527,8 @@
     }
   },
   "public-mexico-vessel-identity-fishing": {
-    "name": "Mexico VMS (Fishing vessels)",
-    "description": "Dataset for VMS Mexico (Public)"
+    "name": "VMS de México (Pesqueros)",
+    "description": "Conjunto de datos para VMS México (Público)"
   },
   "public-mpa-all": {
     "name": "AMP (WDPA)",
@@ -1580,7 +1590,11 @@
   },
   "public-panama-fishing-effort": {
     "name": "VMS de Panamá",
-    "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panamá vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panamá también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesquera aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada."
+    "description": "Vessel monitoring system (VMS) data provided by the Panamanian Authority of Aquatic Resources (ARAP). Data is received by Panama’s VMS system via satellite and contains vessel identities, gear type, location, speed, direction and more. Panama’s carrier vessel data is also available here. Each point in the carrier vessel data layer represents a position of the carriers, but not all positions are displayed. Carrier vessel positions are displayed once per day. In the future, we expect to be able to display more positions. Click on a carrier vessel’s position to view the vessel’s complete track. Global Fishing Watch analyzes this data using the same algorithms we developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing,” and “fishing effort,” as “apparent” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing"
+    }
   },
   "public-panama-fishing-vessels": {
     "name": "Panama VMS (Public Fishing Vessels)",
@@ -1606,7 +1620,7 @@
   },
   "public-peru-fishing-effort": {
     "name": "VMS de Perú",
-    "description": "Esta capa de Global Fishing Watch utiliza los datos proporcionados por el Ministerio de la Producción del Gobierno peruano (PRODUCE). El permiso para incluir datos peruanos exigió que se implementara un retraso de 10 días para la publicación. Los datos se recogen utilizando su Sistema de Monitorización de Buques (VMS) a través de satélites y receptores terrestres, y contiene un tipo de engranaje de identidad, ubicación, velocidad, dirección y más. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
+    "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
       "fleet": {
         "keyword": "Flota",
@@ -1617,18 +1631,20 @@
           "not defined": "not defined"
         }
       },
+      "speed": "speed",
       "origin": {
         "keyword": "origin",
         "enum": {
           "PER": "Peru",
           "Foreign": "Foreign"
         }
-      }
+      },
+      "bearing": "bearing"
     }
   },
   "public-peru-fishing-vessels": {
-    "name": "Peru VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Peru (Public)"
+    "name": "VMS de Perú (Embarcaciones de pesca)",
+    "description": "Conjunto de Datos VMS Perú (Público)"
   },
   "public-peru-presence": {
     "name": "VMS de Perú",
@@ -1653,8 +1669,8 @@
     }
   },
   "public-peru-vessel-identity-fishing": {
-    "name": "Peru VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Peru (Public)"
+    "name": "VMS de Perú (Embarcaciones de pesca)",
+    "description": "Conjunto de Datos VMS Perú (Público)"
   },
   "public-png-fishing-effort": {
     "name": "VMS de Papúa Nueva Guinea",

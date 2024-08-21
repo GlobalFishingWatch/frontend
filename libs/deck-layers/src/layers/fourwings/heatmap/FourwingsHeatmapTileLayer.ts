@@ -402,18 +402,24 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         signal: tile.signal,
         responseType: 'default',
       })
-      if (tile.signal?.aborted) {
-        throw new Error('aborted')
-      }
       if (response.status >= 400 && response.status !== 404) {
         throw new Error(response.statusText)
       }
-      cols = parseInt(response.headers.get('X-columns') as string)
-      rows = parseInt(response.headers.get('X-rows') as string)
-      scale = parseFloat(response.headers.get('X-scale') as string)
-      offset = parseInt(response.headers.get('X-offset') as string)
-      noDataValue = parseInt(response.headers.get('X-empty-value') as string)
-
+      if (response.headers.get('X-columns') && !cols) {
+        cols = parseInt(response.headers.get('X-columns') as string)
+      }
+      if (response.headers.get('X-rows') && !rows) {
+        rows = parseInt(response.headers.get('X-rows') as string)
+      }
+      if (response.headers.get('X-scale') && !scale) {
+        scale = parseFloat(response.headers.get('X-scale') as string)
+      }
+      if (response.headers.get('X-offset') && !offset) {
+        offset = parseInt(response.headers.get('X-offset') as string)
+      }
+      if (response.headers.get('X-empty-value') && !noDataValue) {
+        noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      }
       return await response.arrayBuffer()
     }
 
@@ -421,12 +427,19 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const settledPromises = await Promise.allSettled(promises)
     const hasChunkError = settledPromises.some((p) => p.status === 'rejected')
     if (hasChunkError) {
-      throw new Error('chunk load error')
+      const error =
+        (settledPromises.find((p) => p.status === 'rejected' && p.reason.statusText) as any)?.reason
+          .statuxText || 'Error loading chunk'
+      throw new Error(error)
     }
 
     const arrayBuffers = settledPromises.flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
+
+    if (tile.signal?.aborted) {
+      return
+    }
 
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
@@ -486,17 +499,24 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         signal: tile.signal,
         responseType: 'default',
       })
-      if (tile.signal?.aborted) {
-        throw new Error('aborted')
-      }
       if (response.status >= 400 && response.status !== 404) {
         throw new Error(response.statusText)
       }
-      cols = parseInt(response.headers.get('X-columns') as string)
-      rows = parseInt(response.headers.get('X-rows') as string)
-      scale = parseFloat(response.headers.get('X-scale') as string)
-      offset = parseInt(response.headers.get('X-offset') as string)
-      noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      if (response.headers.get('X-columns') && !cols) {
+        cols = parseInt(response.headers.get('X-columns') as string)
+      }
+      if (response.headers.get('X-rows') && !rows) {
+        rows = parseInt(response.headers.get('X-rows') as string)
+      }
+      if (response.headers.get('X-scale') && !scale) {
+        scale = parseFloat(response.headers.get('X-scale') as string)
+      }
+      if (response.headers.get('X-offset') && !offset) {
+        offset = parseInt(response.headers.get('X-offset') as string)
+      }
+      if (response.headers.get('X-empty-value') && !noDataValue) {
+        noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      }
       const bins = JSON.parse(response.headers.get('X-bins-0') as string)?.map((n: string) => {
         return (parseInt(n) - offset) * scale
       })
@@ -520,12 +540,20 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       (p) => p.status === 'rejected' && p.reason.status !== 404
     )
     if (hasChunkError) {
-      throw new Error('chunk load error')
+      const error =
+        (settledPromises.find((p) => p.status === 'rejected' && p.reason.statusText) as any)?.reason
+          .statuxText || 'Error loading chunk'
+      throw new Error(error)
+    }
+
+    if (tile.signal?.aborted) {
+      return
     }
 
     const arrayBuffers = settledPromises.flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
+
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
       worker: true,
       fourwings: {

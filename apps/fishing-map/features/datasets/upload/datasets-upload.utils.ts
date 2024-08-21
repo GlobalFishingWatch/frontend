@@ -12,6 +12,7 @@ import {
   getDatasetSchema,
   getDatasetSchemaClean,
   getSchemaIdClean,
+  getUTCDate,
   guessColumnsFromSchema,
 } from '@globalfishingwatch/data-transforms'
 import {
@@ -105,6 +106,12 @@ export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: Extract
   const guessedColumns = guessColumnsFromSchema(baseMetadata.schema)
   const baseConfig = baseMetadata?.configuration
   const baseConfigUI = baseMetadata?.configuration?.configurationUI
+  const timestampGuessedValid =
+    guessedColumns.timestamp &&
+    data?.features?.some((f: any) => {
+      const value = f.properties?.[guessedColumns.timestamp]
+      return getUTCDate(value)?.toString() !== 'Invalid Date'
+    })
   return {
     ...baseMetadata,
     configuration: {
@@ -113,9 +120,9 @@ export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: Extract
       configurationUI: {
         ...(baseConfigUI && baseConfigUI),
         sourceFormat,
-        timestamp: guessedColumns.timestamp,
-        timeFilterType: guessedColumns.timestamp ? 'date' : null,
-        startTime: guessedColumns.timestamp || null,
+        timeFilterType: timestampGuessedValid ? 'date' : null,
+        timestamp: (timestampGuessedValid && guessedColumns.timestamp) || null,
+        startTime: (timestampGuessedValid && guessedColumns.timestamp) || null,
         geometryType: 'polygons' as DatasetGeometryType,
       },
     } as DatasetConfiguration,

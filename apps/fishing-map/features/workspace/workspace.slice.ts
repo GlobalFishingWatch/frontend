@@ -50,6 +50,8 @@ import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { AppDispatch } from 'store'
 import { LIBRARY_LAYERS } from 'data/layer-library'
+import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
+import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
@@ -72,7 +74,7 @@ interface WorkspaceSliceState {
 const initialState: WorkspaceSliceState = {
   status: AsyncReducerStatus.Idle,
   customStatus: AsyncReducerStatus.Idle,
-  error: {},
+  error: {} as AsyncError,
   data: null,
   password: '',
   lastVisited: undefined,
@@ -107,6 +109,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = selectIsGuestUser(state)
     const gfwUser = selectIsGFWUser(state)
+    const privateUserGroups = selectPrivateUserGroups(state)
     const reportId = selectReportId(state)
     try {
       let workspace: Workspace<any> | null = null
@@ -200,6 +203,18 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         // signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
         datasets = payload as Dataset[]
+
+        if (privateUserGroups.length) {
+          try {
+            const privateDatasets = privateUserGroups.flatMap((group) => {
+              return PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []
+            })
+
+            dispatch(fetchDatasetsByIdsThunk({ ids: privateDatasets }))
+          } catch (e) {
+            console.warn('Error fetching private datasets for search within user groups', e)
+          }
+        }
 
         // Try to add track for for VMS vessels in case it is logged using the full- datasets
         const vesselDataviewsWithoutTrack = dataviewInstances.filter((dataviewInstance) => {
@@ -317,7 +332,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
 
     const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
       let workspaceUpdated
-      if (tries < 2) {
+      if (tries < 4) {
         try {
           const name = tries > 0 ? defaultName + `_${tries}` : defaultName
           workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces`, {
@@ -338,7 +353,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
           } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
         } catch (e: any) {
           // Means we already have a workspace with this name
-          if (e.status === 400) {
+          if (e.status === 422 && e.message.includes('duplicated')) {
             return await saveWorkspace(tries + 1)
           }
           console.warn('Error creating workspace', e)

@@ -760,8 +760,10 @@
   },
   "public-bra-onyxsat-fishing-effort": {
     "name": "crwdns65605:0crwdne65605:0",
-    "description": "crwdns65607:0crwdne65607:0",
+    "description": "crwdns83618:0crwdne83618:0",
     "schema": {
+      "speed": "crwdns83620:0crwdne83620:0",
+      "bearing": "crwdns83622:0crwdne83622:0",
       "target_species": {
         "keyword": "crwdns65633:0crwdne65633:0",
         "enum": {
@@ -870,7 +872,7 @@
   },
   "public-chile-fishing-effort": {
     "name": "crwdns65851:0crwdne65851:0",
-    "description": "crwdns65853:0crwdne65853:0",
+    "description": "crwdns83624:0crwdne83624:0",
     "schema": {
       "fleet": {
         "keyword": "crwdns65861:0crwdne65861:0",
@@ -878,7 +880,9 @@
           "chile_vms_small_fisheries": "crwdns65863:0crwdne65863:0",
           "chile_vms_industry": "crwdns65865:0crwdne65865:0"
         }
-      }
+      },
+      "speed": "crwdns83626:0crwdne83626:0",
+      "bearing": "crwdns83628:0crwdne83628:0"
     }
   },
   "public-chile-fishing-vessels": {
@@ -891,7 +895,7 @@
   },
   "public-chile-presence": {
     "name": "crwdns65905:0crwdne65905:0",
-    "description": "crwdns65907:0crwdne65907:0",
+    "description": "crwdns83630:0crwdne83630:0",
     "schema": {
       "fleet": {
         "keyword": "crwdns65915:0crwdne65915:0",
@@ -901,7 +905,9 @@
           "chile_vms_aquaculture": "crwdns65921:0crwdne65921:0",
           "chile_vms_transport": "crwdns65923:0crwdne65923:0"
         }
-      }
+      },
+      "speed": "crwdns83632:0crwdne83632:0",
+      "bearing": "crwdns83634:0crwdne83634:0"
     }
   },
   "public-chile-vessel-identity-fishing": {
@@ -927,11 +933,13 @@
       "fleet": {
         "keyword": "crwdns65941:0crwdne65941:0",
         "enum": {
-          "costarica_vms_avanzados": "crwdns65943:0crwdne65943:0",
+          "costarica_vms_industrial_longline": "crwdns83636:0crwdne83636:0",
           "costarica_vms_atuneros": "crwdns65945:0crwdne65945:0",
           "costarica_vms_sardineros": "crwdns65947:0crwdne65947:0"
         }
-      }
+      },
+      "speed": "crwdns83638:0crwdne83638:0",
+      "bearing": "crwdns83640:0crwdne83640:0"
     }
   },
   "public-costa-rica-fishing-vessels": {
@@ -957,6 +965,8 @@
     "name": "crwdns65983:0crwdne65983:0",
     "description": "crwdns65985:0crwdne65985:0",
     "schema": {
+      "speed": "crwdns83642:0crwdne83642:0",
+      "bearing": "crwdns83644:0crwdne83644:0",
       "shiptype": {
         "keyword": "crwdns65995:0crwdne65995:0",
         "enum": {
@@ -1580,7 +1590,11 @@
   },
   "public-panama-fishing-effort": {
     "name": "crwdns67067:0crwdne67067:0",
-    "description": "crwdns67069:0crwdne67069:0"
+    "description": "crwdns83646:0crwdne83646:0",
+    "schema": {
+      "speed": "crwdns83648:0crwdne83648:0",
+      "bearing": "crwdns83650:0crwdne83650:0"
+    }
   },
   "public-panama-fishing-vessels": {
     "name": "crwdns67087:0crwdne67087:0",
@@ -1606,7 +1620,7 @@
   },
   "public-peru-fishing-effort": {
     "name": "crwdns67121:0crwdne67121:0",
-    "description": "crwdns67123:0crwdne67123:0",
+    "description": "crwdns83652:0crwdne83652:0",
     "schema": {
       "fleet": {
         "keyword": "crwdns67131:0crwdne67131:0",
@@ -1617,13 +1631,15 @@
           "not defined": "crwdns67139:0crwdne67139:0"
         }
       },
+      "speed": "crwdns83654:0crwdne83654:0",
       "origin": {
         "keyword": "crwdns67143:0crwdne67143:0",
         "enum": {
           "PER": "crwdns67145:0crwdne67145:0",
           "Foreign": "crwdns67147:0crwdne67147:0"
         }
-      }
+      },
+      "bearing": "crwdns83656:0crwdne83656:0"
     }
   },
   "public-peru-fishing-vessels": {

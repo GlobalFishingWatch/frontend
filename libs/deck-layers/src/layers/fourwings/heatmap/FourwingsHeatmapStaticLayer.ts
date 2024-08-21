@@ -59,10 +59,12 @@ const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
 export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmapTileLayerProps> {
   static layerName = 'FourwingsHeatmapStaticLayer'
   static defaultProps = defaultProps
+  state!: Omit<FourwingsTileLayerState, 'tilesCache'>
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
+      error: '',
       colorDomain: [],
       colorRanges: this._getColorRanges(),
       scales: [],
@@ -75,7 +77,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   _getState() {
-    return this.state as FourwingsTileLayerState
+    return this.state
   }
 
   _getColorRanges = () => {
@@ -84,6 +86,15 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     )
   }
 
+  _onLayerError = (error: Error) => {
+    console.warn(error.message)
+    this.setState({ error: error.message })
+    return true
+  }
+
+  getError(): string {
+    return this.state.error
+  }
   _calculateColorDomain = () => {
     // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
     // NO_DATA_VALUE = 0
@@ -157,7 +168,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   getFillColor = (feature: Feature<Geometry, FourwingsStaticFeatureProperties>) => {
-    const { scales } = this.state as FourwingsTileLayerState
+    const { scales } = this.state
     const scale = scales?.[0]
     if (
       !scale ||
@@ -193,7 +204,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   renderLayers(): Layer<{}> | LayersList {
     const { tilesUrl, sublayers, resolution, minVisibleValue, maxVisibleValue, maxZoom } =
       this.props
-    const { colorDomain, colorRanges } = this.state as FourwingsTileLayerState
+    const { colorDomain, colorRanges } = this.state
     const { zoom } = this.context.viewport
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
@@ -211,6 +222,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         loaders: [GFWMVTLoader],
         zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
         onTileLoad: this._onTileLoad,
+        onTileError: this._onLayerError,
         onViewportLoad: this._onViewportLoad,
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
         getFillColor: this.getFillColor,
@@ -255,7 +267,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
 
   _getLayerDataInWGS84(layer: any) {
     // needed to get access to the geometry coordinates
-    return layer.props.tile.dataInWGS84.map((f: FourwingsStaticFeature) => ({
+    return layer.props.tile?.dataInWGS84?.map((f: FourwingsStaticFeature) => ({
       ...f,
       geometry: {
         ...f.geometry,
@@ -300,11 +312,11 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   getColorDomain = () => {
-    return (this.state as FourwingsTileLayerState).colorDomain
+    return this.state.colorDomain
   }
 
   getColorRange = () => {
-    return (this.state as FourwingsTileLayerState).colorRanges
+    return this.state.colorRanges
   }
 
   getColorScale = () => {

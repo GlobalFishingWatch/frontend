@@ -26,6 +26,7 @@ import {
   getColorRamp,
   getLayerGroupOffset,
   getSteps,
+  getUTCDateTime,
   GFWMVTLoader,
   hexToDeckColor,
   LayerGroup,
@@ -38,7 +39,6 @@ import {
   POSITIONS_VISUALIZATION_MAX_ZOOM,
   SUPPORTED_POSITION_PROPERTIES,
 } from '../fourwings.config'
-import { getISODateFromTS } from '../heatmap/fourwings-heatmap.utils'
 import { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
 import { PATH_BASENAME } from '../../layers.config'
@@ -392,7 +392,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       extentEnd && extentEnd < endTime
         ? DateTime.fromMillis(extentEnd).plus({ day: 1 }).toMillis()
         : endTime
-
+    const startIso = getUTCDateTime(start < end ? start : end)
+      .startOf('hour')
+      .toISO()
+    const endIso = getUTCDateTime(end).startOf('hour').toISO()
     const params = {
       datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
       filters: sublayers.map((sublayer) => sublayer.filter),
@@ -404,7 +407,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           sublayerProperties?.join(',')
         ),
       }),
-      'date-range': `${getISODateFromTS(start < end ? start : end)},${getISODateFromTS(end)}`,
+      'date-range': `${startIso},${endIso}`,
     }
 
     const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })

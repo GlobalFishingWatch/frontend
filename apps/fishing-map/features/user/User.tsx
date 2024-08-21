@@ -17,7 +17,7 @@ import { selectUserTab } from 'routes/routes.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
 import styles from './User.module.css'
-import { selectUserGroupsPermissions } from './selectors/user.permissions.selectors'
+import { selectHasUserGroupsPermissions } from './selectors/user.permissions.selectors'
 import UserWorkspaces from './UserWorkspaces'
 import UserWorkspacesPrivate from './UserWorkspacesPrivate'
 import UserDatasets from './UserDatasets'
@@ -32,7 +32,7 @@ function User() {
   const userData = useSelector(selectUserData)
   const userTab = useSelector(selectUserTab)
   const { dispatchQueryParams } = useLocationConnect()
-  const hasUserGroupsPermissions = useSelector(selectUserGroupsPermissions)
+  const hasUserGroupsPermissions = useSelector(selectHasUserGroupsPermissions)
 
   const userTabs = useMemo(() => {
     const tabs = [

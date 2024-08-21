@@ -77,15 +77,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
     <div className={styles.content}>
       {Object.entries(featureByCategory)?.map(([featureCategory, features]) => {
         switch (featureCategory) {
-          // TODO: deck restore this popup
-          // case DataviewCategory.Comparison:
-          //   return (
-          //     <ComparisonRow
-          //       key={featureCategory}
-          //       feature={features[0]}
-          //       showFeaturesDetails={type === 'click'}
-          //     />
-          //   )
           case DataviewCategory.Activity:
           case DataviewCategory.Detections: {
             const positionFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
@@ -215,6 +206,11 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 feature.subcategory === DataviewType.UserContext ||
                 feature.subcategory === 'draw-polygons'
             )
+            const userBQHeatmapFeatures = (features as FourwingsHeatmapPickingObject[]).filter(
+              (feature) =>
+                feature.subcategory === DataviewType.UserContext ||
+                feature.subcategory === DataviewType.HeatmapAnimated
+            )
             return (
               <Fragment key={featureCategory}>
                 <UserPointsTooltipSection
@@ -225,6 +221,27 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                   features={userContextFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
+                {userBQHeatmapFeatures &&
+                  userBQHeatmapFeatures.map((feature, i) => {
+                    return feature.sublayers?.map((sublayer, j) => {
+                      const dataview = dataviews.find((d) => d.id === sublayer.id)
+                      return (
+                        <ActivityTooltipRow
+                          key={`${i}-${j}`}
+                          loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                          feature={{
+                            ...sublayer,
+                            category: feature.category as DataviewCategory,
+                            title: dataview
+                              ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+                              : feature.title,
+                          }}
+                          showFeaturesDetails={type === 'click'}
+                          activityType={dataview?.datasets?.[0]?.subcategory as DatasetSubCategory}
+                        />
+                      )
+                    })
+                  })}
               </Fragment>
             )
           }

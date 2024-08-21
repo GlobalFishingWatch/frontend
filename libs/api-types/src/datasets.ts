@@ -146,6 +146,9 @@ export interface DatasetConfiguration extends DatasetBackendConfig {
   id?: string
   index?: string
   type?: EventTypes
+  source?: string
+  function?: 'AVG' | 'SUM'
+  aggregationOperation?: 'avg' | 'sum'
   geometryType?: DatasetGeometryType
   format?: 'geojson'
   documentation?: DatasetDocumentation

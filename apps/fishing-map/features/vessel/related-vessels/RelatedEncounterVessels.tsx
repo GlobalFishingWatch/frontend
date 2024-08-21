@@ -17,7 +17,7 @@ const VesselTick = ({ y, index }: any) => {
   const encountersByVessel = useSelector(selectEventsGroupedByEncounteredVessel)
   const vessel = encountersByVessel[index]
   return (
-    <foreignObject x={0} y={y - 20} className={styles.vesselContainer}>
+    <foreignObject x={0} y={y - 20} width="200" height="40" className={styles.vesselContainer}>
       <RelatedVessel
         vesselToResolve={{ ...vessel, datasetId: vessel.dataset || DEFAULT_VESSEL_IDENTITY_ID }}
       />

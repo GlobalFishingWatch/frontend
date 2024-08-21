@@ -231,6 +231,12 @@ export function getSearchIdentityResolved(vessel: IdentityVessel | IdentityVesse
 
 function sortVesselRegistryProperties(properties: VesselRegistryProperty[]) {
   return [...properties].sort((a: any, b: any) => {
+    if (a.sourceCode[0] > b.sourceCode[0]) {
+      return 1
+    }
+    if (a.sourceCode[0] < b.sourceCode[0]) {
+      return -1
+    }
     return a.dateTo > b.dateTo ? -1 : 1
   })
 }

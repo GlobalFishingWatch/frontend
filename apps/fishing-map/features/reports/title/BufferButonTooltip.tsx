@@ -33,7 +33,7 @@ export const BufferButtonTooltip = ({
   handleBufferOperationChange,
 }: BufferButonTooltipProps) => {
   const { t } = useTranslation()
-  const STEP = 0.1
+  const STEP = 1
   const MIN = -100
   const MAX = 100
   const [values, setValues] = useState([0, defaultValue])

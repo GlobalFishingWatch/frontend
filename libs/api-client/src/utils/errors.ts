@@ -1,24 +1,48 @@
-import { ResponseError, V2MetadataError } from '../api-client'
+import { CONCURRENT_ERROR_STATUS } from '../config'
+
+export type V2MetadataError = Record<string, any>
+export interface V2MessageError {
+  detail: string
+  title: string
+  metadata?: V2MetadataError
+}
+export interface ResponseError {
+  status: number
+  message: string
+  messages?: V2MessageError[]
+}
+
+export const getIsUnauthorizedError = (error?: ResponseError | { status?: number }) =>
+  error && error.status && error.status > 400 && error.status < 403
+
+export const getIsConcurrentError = (error?: ResponseError | { status?: number }) =>
+  error?.status === CONCURRENT_ERROR_STATUS
+
 // The 524 timeout from cloudfare is not handled properly
 // and rejects with a typeError
 export const crossBrowserTypeErrorMessages = [
   'Load failed', // Safari
   'Failed to fetch', // Chromium
 ]
+export const getIsTimeoutError = (error?: ResponseError | { message?: string }) => {
+  if (!error?.message) return false
+  return crossBrowserTypeErrorMessages.some((e) => e.includes(error?.message as string))
+}
+
 export const parseAPIErrorStatus = (error: ResponseError) => {
-  return error.status || (error as any).code || null
+  return error?.status || (error as any).code || null
 }
 
 export const parseAPIErrorMessage = (error: ResponseError) => {
-  if (error.messages?.length) {
-    return error.messages[0]?.detail
+  if (error?.messages?.length) {
+    return error?.messages[0]?.detail
   }
-  return error.message || ''
+  return error?.message || ''
 }
 
 export const parseAPIErrorMetadata = (error: ResponseError) => {
-  if (error.messages?.length) {
-    return error.messages[0]?.metadata
+  if (error?.messages?.length) {
+    return error?.messages[0]?.metadata
   }
   return {} as V2MetadataError
 }
