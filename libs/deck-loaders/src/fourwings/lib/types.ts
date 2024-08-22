@@ -38,8 +38,17 @@ export type ParseFourwingsOptions = {
   workerUrl?: string
 }
 
+export type ParseFourwingsClustersOptions = Omit<
+  ParseFourwingsOptions,
+  'interval' | 'aggregationOperation' | 'sublayers' | 'initialTimeRange' | 'bufferedStartDate'
+>
+
 export type FourwingsLoaderOptions = LoaderOptions & {
   fourwings?: ParseFourwingsOptions
+}
+
+export type FourwingsClustersLoaderOptions = LoaderOptions & {
+  fourwingsClusters?: ParseFourwingsClustersOptions
 }
 
 export type FourwingsFeatureProperties = {
@@ -60,6 +69,12 @@ export type FourwingsPositionFeatureProperties = {
   [key: string]: any
 }
 
+export type FourwingsPointFeatureProperties = {
+  id: number
+  count: number
+  [key: string]: any
+}
+
 export type FourwingsStaticFeatureProperties = {
   count: number
   values: number[][]
@@ -71,6 +86,8 @@ export type FourwingsFeature<Properties = FourwingsFeatureProperties> = Feature<
 > & {
   aggregatedValues?: number[]
 }
+
 export type FourwingsValuesAndDatesFeature = [number[], number[]][] // values in first place, dates in second
 export type FourwingsStaticFeature = FourwingsFeature<FourwingsStaticFeatureProperties>
 export type FourwingsPositionFeature = Feature<Point, FourwingsPositionFeatureProperties>
+export type FourwingsPointFeature = Feature<Point, FourwingsPointFeatureProperties>

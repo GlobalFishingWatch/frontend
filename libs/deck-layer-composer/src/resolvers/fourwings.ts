@@ -20,7 +20,6 @@ import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets
 import { getDataviewAvailableIntervals } from './dataviews'
 import { DeckResolverFunction } from './types'
 
-// TODO: decide if include static here or create a new one
 export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayerProps> = (
   dataview,
   {

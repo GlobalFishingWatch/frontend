@@ -118,19 +118,39 @@ export interface DatasetConfigurationUI {
 
 export type DatasetConfigurationInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
 
-export interface DatasetConfiguration {
-  id?: string
-  index?: string
+interface DatasetBackendConfig {
+  table?: string
+  dataset?: string
+  project?: string
+  version?: number
+  tileScale?: number
+  tileOffset?: number
+  timestamp?: string
+  translate?: boolean | null
+  numBytes?: number | null
+  indexBoost?: number | null
+  insightSources?: string[]
+  interactionColumns?: string[]
+  interactionGroupColumns?: string[]
+  ttl?: number | null
+  band?: string | null
+  images?: string | null
+  source?: string | null
+  tableName?: string
   filePath?: string
   srid?: number
   file?: string
+}
+
+export interface DatasetConfiguration extends DatasetBackendConfig {
+  id?: string
+  index?: string
   type?: EventTypes
   source?: string
   function?: 'AVG' | 'SUM'
   aggregationOperation?: 'avg' | 'sum'
   geometryType?: DatasetGeometryType
   format?: 'geojson'
-  tableName?: string
   documentation?: DatasetDocumentation
   fields?: string[]
   idProperty?: string
