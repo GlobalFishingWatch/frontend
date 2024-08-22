@@ -28,6 +28,7 @@ import {
   LayerGroup,
 } from '../../../utils'
 import { HEATMAP_API_TILES_URL, POSITIONS_VISUALIZATION_MAX_ZOOM } from '../fourwings.config'
+import { getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
 import {
   FourwingsClusterEventType,
   FourwingsClusterFeature,
@@ -212,7 +213,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
     if (tile.signal?.aborted) {
       return null
     }
-    return this._fetch(tile.url!, { signal: tile.signal, tile })
+    const url = getURLFromTemplate(tile.url!, tile)
+    return this._fetch(url!, { signal: tile.signal, tile })
   }
 
   _getDataUrl() {
