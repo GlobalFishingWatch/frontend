@@ -137,19 +137,16 @@ export const useClickedEventConnect = () => {
       (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
     ) as FourwingsClusterPickingObject
 
-    if (clusterFeature?.properties?.count > 1) {
-      const { count } = clusterFeature.properties
+    if (clusterFeature?.properties?.count > 2) {
       const { expansionZoom } = clusterFeature
-      if (count > 1) {
-        if (!areTilesClusterLoading && expansionZoom) {
-          setMapCoordinates({
-            latitude: event.latitude,
-            longitude: event.longitude,
-            zoom: expansionZoom,
-          })
-        }
-        return
+      if (!areTilesClusterLoading && expansionZoom) {
+        setMapCoordinates({
+          latitude: event.latitude,
+          longitude: event.longitude,
+          zoom: expansionZoom,
+        })
       }
+      return
     }
 
     if (!event || !event.features) {
@@ -188,6 +185,7 @@ export const useClickedEventConnect = () => {
     const tileClusterFeature = event.features.find(
       (f) => f.category === DataviewCategory.Events && f.subcategory === DataviewType.TileCluster
     ) as SliceExtendedClusterPickingObject
+    debugger
     if (tileClusterFeature) {
       const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
       // TODO:deck migrate bqPocQuery to FourwingsClusters
@@ -352,7 +350,7 @@ export const useMapCursor = () => {
       }
       if (hoverFeatures?.some(isTilesClusterLayer)) {
         const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some(
-          (f) => f.properties?.count > 1
+          (f) => f.properties?.count > 2
         )
         if (!isCluster) {
           return 'pointer'

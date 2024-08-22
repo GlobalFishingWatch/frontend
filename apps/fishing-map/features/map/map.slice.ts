@@ -30,11 +30,7 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { AppDispatch } from 'store'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  fetchDatasetByIdThunk,
-  selectAllDatasets,
-  selectDatasetById,
-} from 'features/datasets/datasets.slice'
+import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
@@ -368,20 +364,16 @@ export const fetchClusterEventThunk = createAsyncThunk<
 >('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
   const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
-  const allDatasets = selectAllDatasets(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
-  const fourwingsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  // const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-  // TODO:deck remove this hardcoded dataset and get it from related
-  const eventsDataset = allDatasets?.find((d) => d.id === 'public-global-encounters-events:v3.0')
+  const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   let interactionId = eventFeature.id
   let eventId: string | undefined
-  if (interactionId && fourwingsDataset) {
+  if (interactionId && eventsDataset) {
     const start = getUTCDate(eventFeature?.startTime).toISOString()
     const end = getUTCDate(eventFeature?.endTime).toISOString()
     const datasetConfig: DataviewDatasetConfig = {
-      datasetId: fourwingsDataset?.id,
-      endpoint: EndpointId.FourwingsInteraction,
+      datasetId: eventsDataset?.id,
+      endpoint: EndpointId.ClusterTilesInteraction,
       params: [
         { id: 'z', value: eventFeature.properties.tile.z },
         { id: 'x', value: eventFeature.properties.tile.x },
@@ -393,11 +385,11 @@ export const fetchClusterEventThunk = createAsyncThunk<
         { id: 'date-range', value: [start, end].join(',') },
         {
           id: 'datasets',
-          value: [fourwingsDataset.id],
+          value: [eventsDataset.id],
         },
       ],
     }
-    const interactionUrl = resolveEndpoint(fourwingsDataset, datasetConfig)
+    const interactionUrl = resolveEndpoint(eventsDataset, datasetConfig)
     if (interactionUrl) {
       const eventsIds = await GFWAPI.fetch<APIPagination<string>>(interactionUrl, {
         signal,

@@ -134,7 +134,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     let points: FourwingsPointFeature[] = []
     if (allClusters.length) {
       allClusters.forEach((f) => {
-        f.properties.count > 1
+        f.properties.count > 2
           ? clusters.push(f as FourwingsClusterFeature)
           : points.push(f as FourwingsPointFeature)
       })

@@ -31,6 +31,7 @@ export enum EndpointId {
   ContextTiles = 'context-tiles',
   ContextFeature = 'context-feature',
   ClusterTiles = 'events-cluster-tiles',
+  ClusterTilesInteraction = 'events-cluster-interaction',
   ContextGeojson = 'temporal-context-geojson',
   Events = 'events',
   EventsDetail = 'events-detail',
