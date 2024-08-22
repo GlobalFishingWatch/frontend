@@ -10,7 +10,9 @@ import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import VesselGroupAddButton, {
+  VesselGroupAddActionButton,
+} from 'features/vessel-groups/VesselGroupAddButton'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   setVesselGroupConfirmationMode,
@@ -88,12 +90,9 @@ function SearchActions() {
 
   return (
     <Fragment>
-      <VesselGroupAddButton
-        vessels={vesselsSelected}
-        onAddToVesselGroup={onAddToVesselGroup}
-        showCount={false}
-        buttonClassName={cx(styles.footerAction, styles.vesselGroupButton)}
-      />
+      <VesselGroupAddButton vessels={vesselsSelected} onAddToVesselGroup={onAddToVesselGroup}>
+        <VesselGroupAddActionButton className={cx(styles.footerAction, styles.vesselGroupButton)} />
+      </VesselGroupAddButton>
       <Button
         className={styles.footerAction}
         onClick={onSeeVesselsInMapClick}

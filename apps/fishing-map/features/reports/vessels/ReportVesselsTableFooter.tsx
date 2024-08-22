@@ -167,7 +167,6 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
       <div className={cx(styles.flex, styles.expand)}>
         <VesselGroupAddButton
           vessels={vesselGroupIdentityVessels}
-          showCount={false}
           onAddToVesselGroup={onAddToVesselGroup}
         />
         <Button testId="download-vessel-table-report" onClick={onDownloadVesselsClick}>
