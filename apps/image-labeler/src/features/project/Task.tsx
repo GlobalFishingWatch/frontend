@@ -14,9 +14,10 @@ type TaskProps = {
   open: boolean
   onClick?: () => void
   onFinishTask: (taskId: string) => void
+  scale?: number
 }
 
-export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps) {
+export function Task({ projectId, task, open, onClick, onFinishTask, scale }: TaskProps) {
   const options: ChoiceOption[] = useMemo(
     () =>
       task.labels.map((label, index) => ({
@@ -123,7 +124,7 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
       )}
       <div className={styles.images}>
         {task.thumbnails.map((thumbnail, index) => (
-          <TaskImage thumbnail={thumbnail} key={index} />
+          <TaskImage thumbnail={thumbnail} key={index} scale={scale} open={open} />
         ))}
       </div>
       {

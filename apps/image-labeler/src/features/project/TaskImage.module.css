@@ -2,7 +2,8 @@
   position: relative;
   display: block;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1 / 1;
+  background: lightcoral;
 }
 
 .img {
@@ -17,4 +18,24 @@
 
 .disabled {
   user-select: none;
+}
+
+.scaleValue {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: var(--space-S);
+  filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 1));
+  color: white;
+  font-size: var(--font-size-S);
+  opacity: 1;
+}
+
+.scaleLine {
+  position: absolute;
+  bottom: var(--space-S);
+  right: var(--space-S);
+  filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
+  height: 2px;
+  background: white;
 }

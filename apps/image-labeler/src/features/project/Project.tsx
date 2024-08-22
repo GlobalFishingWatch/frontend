@@ -113,6 +113,7 @@ export function Project() {
           key={task.id}
           onClick={() => setActiveTaskId(task.id)}
           onFinishTask={setNextTask}
+          scale={taskData.metadata.scale}
         />
       ))}
       <Button onClick={handleLoadMoreTasks} className={styles.loadMoreButton} type="secondary">
