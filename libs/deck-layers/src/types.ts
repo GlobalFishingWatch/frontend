@@ -32,6 +32,7 @@ export type DeckPickingObject<G> = {
   id: string
   title?: string
   layerId: string
+  color?: string
   category: DeckLayerCategory
   subcategory?: DeckLayerSubcategory
 } & G

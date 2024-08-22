@@ -38,6 +38,7 @@ export type FourwingsClusterPickingObject = FourwingsClusterFeature &
     startTime: number
     endTime: number
     expansionZoom?: number
+    datasetId?: string
   }>
 
 export type FourwingsClusterPickingInfo = PickingInfo<

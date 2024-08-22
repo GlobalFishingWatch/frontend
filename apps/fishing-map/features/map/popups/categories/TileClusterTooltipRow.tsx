@@ -86,7 +86,7 @@ function EncounterTooltipRow({ feature, showFeaturesDetails }: EncountersLayerPr
       'This event happened outside the timerange of the Carrier Vessel Portal data'
     )
   }
-  const title = getDatasetLabel({ id: feature.datasetId })
+  const title = getDatasetLabel({ id: feature.datasetId! })
   return (
     <div className={styles.popupSection}>
       <Icon icon="encounters" className={styles.layerIcon} style={{ color: feature.color }} />
