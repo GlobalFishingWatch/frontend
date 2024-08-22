@@ -19,7 +19,7 @@ const InsightCoverage = ({
   return (
     <div id="coverage" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.coverage', 'AIS Coverage')}</label>
+        <label className="experimental">{t('vessel.insights.coverage', 'AIS Coverage')}</label>
         <DataTerminology
           size="tiny"
           type="default"
