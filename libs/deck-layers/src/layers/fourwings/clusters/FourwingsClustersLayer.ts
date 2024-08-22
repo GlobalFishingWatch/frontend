@@ -174,7 +174,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         responseType: 'default',
       })
       if (response.status >= 400 && response.status !== 404) {
-        throw new Error(response.statusText)
+        throw new Error(response.statusText || response.status)
       }
       if (response.headers.get('X-columns') && !cols) {
         cols = parseInt(response.headers.get('X-columns') as string)
@@ -204,7 +204,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         },
       })
     } catch (error: any) {
-      throw error
+      throw new Error(error.statusText || error.status)
     }
   }
 

@@ -1,16 +1,20 @@
 import cx from 'classnames'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
+import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { FourwingsClustersLayer } from '@globalfishingwatch/deck-layers'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { getDatasetLabel, getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import Remove from 'features/workspace/common/Remove'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import LayerSwitch from '../common/LayerSwitch'
 import Title from '../common/Title'
@@ -27,10 +31,14 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
   const [filterOpen, setFiltersOpen] = useState(false)
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const isGFWUser = useSelector(selectIsGFWUser)
+  const readOnly = useSelector(selectReadOnly)
   const showSchemaFilters = filtersAllowed.length > 0
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
+  const eventLayer = useGetDeckLayer<FourwingsClustersLayer>(dataview?.id)
+  const layerError = eventLayer?.instance?.getError?.()
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
 
@@ -108,6 +116,21 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
           )}
           <InfoModal dataview={dataview} />
           <Remove dataview={dataview} loading={layerActive && !layerLoaded} />
+          {!readOnly && layerActive && layerError && (
+            <IconButton
+              icon={'warning'}
+              type={'warning'}
+              tooltip={
+                isGFWUser
+                  ? `${t(
+                      'errors.layerLoading',
+                      'There was an error loading the layer'
+                    )} (${layerError})`
+                  : t('errors.layerLoading', 'There was an error loading the layer')
+              }
+              size="small"
+            />
+          )}
           {items.length > 1 && (
             <IconButton
               size="small"
