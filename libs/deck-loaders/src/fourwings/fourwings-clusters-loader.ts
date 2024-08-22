@@ -1,7 +1,7 @@
 import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
 import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
-import type { FourwingsLoaderOptions, ParseFourwingsClustersOptions } from './lib/types'
+import type { FourwingsClustersLoaderOptions, ParseFourwingsClustersOptions } from './lib/types'
 import { parseFourwingsClusters } from './lib/parse-fourwings-clusters'
 
 /**
@@ -9,7 +9,7 @@ import { parseFourwingsClusters } from './lib/parse-fourwings-clusters'
  */
 export const FourwingsClustersWorkerLoader: Loader = {
   name: 'fourwings cluster tiles',
-  id: 'fourwings clusters',
+  id: 'fourwingsClusters',
   module: 'fourwingsClusters',
   version: packageJson?.version,
   extensions: ['pbf'],
@@ -26,7 +26,7 @@ export const FourwingsClustersWorkerLoader: Loader = {
       noDataValue: 0,
       tile: undefined,
     } as ParseFourwingsClustersOptions,
-  } as FourwingsLoaderOptions,
+  } as FourwingsClustersLoaderOptions,
 }
 
 /**
@@ -34,7 +34,9 @@ export const FourwingsClustersWorkerLoader: Loader = {
  */
 export const FourwingsClustersLoader: LoaderWithParser = {
   ...FourwingsClustersWorkerLoader,
-  parse: async (data, options?: FourwingsLoaderOptions) => parseFourwingsClusters(data, options),
-  parseSync: (data, options?: FourwingsLoaderOptions) => parseFourwingsClusters(data, options),
+  parse: async (data, options?: FourwingsClustersLoaderOptions) =>
+    parseFourwingsClusters(data, options),
+  parseSync: (data, options?: FourwingsClustersLoaderOptions) =>
+    parseFourwingsClusters(data, options),
   binary: true,
 }
