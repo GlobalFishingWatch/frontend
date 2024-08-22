@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { Fragment, useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
@@ -23,6 +23,7 @@ import { getVesselLabel } from 'utils/info'
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
@@ -65,6 +66,14 @@ function VesselsSection(): React.ReactElement {
 
   const onDeleteAllClick = useCallback(() => {
     deleteDataviewInstance(dataviews.map((d) => d.id))
+  }, [dataviews, deleteDataviewInstance])
+
+  const onAddToVesselGroupClick = useCallback(() => {
+    console.log('todo')
+  }, [dataviews, deleteDataviewInstance])
+
+  const onAddVesselGroupClick = useCallback(() => {
+    console.log('todo')
   }, [dataviews, deleteDataviewInstance])
 
   const onSetSortOrderClick = useCallback(() => {
@@ -117,17 +126,27 @@ function VesselsSection(): React.ReactElement {
         {!readOnly && (
           <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
             {dataviews.length > 1 && (
-              <IconButton
-                icon={sortOrder.current === 'DESC' ? 'sort-asc' : 'sort-desc'}
-                size="medium"
-                tooltip={
-                  sortOrder.current === 'DESC'
-                    ? t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')
-                    : t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')
-                }
-                tooltipPlacement="top"
-                onClick={onSetSortOrderClick}
-              />
+              <Fragment>
+                <VesselGroupAddButton vessels={[]} onAddToVesselGroup={onAddToVesselGroupClick}>
+                  <IconButton
+                    icon={'add-to-vessel-group'}
+                    size="medium"
+                    tooltip={t('vesselGroup.addVessels', 'Add vessels to vessel group')}
+                    tooltipPlacement="top"
+                  />
+                </VesselGroupAddButton>
+                <IconButton
+                  icon={sortOrder.current === 'DESC' ? 'sort-asc' : 'sort-desc'}
+                  size="medium"
+                  tooltip={
+                    sortOrder.current === 'DESC'
+                      ? t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')
+                      : t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')
+                  }
+                  tooltipPlacement="top"
+                  onClick={onSetSortOrderClick}
+                />
+              </Fragment>
             )}
             {dataviews.length > 0 && (
               <IconButton
@@ -138,6 +157,13 @@ function VesselsSection(): React.ReactElement {
                 onClick={onDeleteAllClick}
               />
             )}
+            <IconButton
+              icon="vessel-group"
+              size="medium"
+              tooltip={t('vesselGroup.addToWorkspace', 'Add vessel group to workspace')}
+              tooltipPlacement="top"
+              onClick={onAddVesselGroupClick}
+            />
           </div>
         )}
         <IconButton
