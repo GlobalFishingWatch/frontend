@@ -48,7 +48,7 @@ export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas'
 
 // Workspaces dataviews
 export const FISHING_DATAVIEW_SLUG = 'apparent-fishing-effort-v-3'
-export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'fourwings-encounter-cluster-events' // 'encounter-cluster-events-v-3'
+export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events-v-3'
 export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-3'
 export const SAR_DATAVIEW_SLUG = 'sar-v-3'
 export const PRESENCE_DATAVIEW_SLUG = 'presence-activity-v-3'

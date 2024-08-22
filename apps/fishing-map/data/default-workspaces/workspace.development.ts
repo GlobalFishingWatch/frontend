@@ -104,7 +104,7 @@ const workspace: Workspace<WorkspaceState> = {
       id: ENCOUNTER_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
       config: {
-        visible: true,
+        visible: false,
       },
     },
     {
