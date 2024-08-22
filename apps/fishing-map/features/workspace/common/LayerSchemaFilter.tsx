@@ -264,7 +264,7 @@ function LayerSchemaFilter({
         options={options}
         selectedOption={optionsSelected?.[0]}
         containerClassName={cx(styles.multiSelect, {
-          experimental: EXPERIMENTAL_FILTERS.includes(id),
+          experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
         })}
         onSelect={(selection) => onSelect({ filterKey: id, selection: [selection] })}
         onRemove={() => onRemove(id, [])}
@@ -297,7 +297,7 @@ function LayerSchemaFilter({
           options={options}
           selectedOption={optionsSelected[0]}
           className={cx({
-            experimental: EXPERIMENTAL_FILTERS.includes(id),
+            experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
           })}
           labelContainerClassName={styles.labelContainer}
           onSelect={(selection) => onSelect({ filterKey: id, selection, singleValue: true })}
@@ -314,7 +314,7 @@ function LayerSchemaFilter({
             filterOperator,
           })}
           className={cx({
-            experimental: EXPERIMENTAL_FILTERS.includes(id),
+            experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
           })}
           options={options}
           selectedOptions={optionsSelected}
