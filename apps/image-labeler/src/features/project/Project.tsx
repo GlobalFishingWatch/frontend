@@ -5,7 +5,7 @@ import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { Slider } from '@globalfishingwatch/ui-components/slider'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
-import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks/use-local-storage'
 import {
   useGetLabellingProjectTasksByIdQuery,
   useGetLabellingProjectTasksQuery,
