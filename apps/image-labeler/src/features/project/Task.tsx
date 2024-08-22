@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components/choice'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
@@ -15,9 +15,18 @@ type TaskProps = {
   onClick?: () => void
   onFinishTask: (taskId: string) => void
   scale?: number
+  imageStyle?: React.CSSProperties
 }
 
-export function Task({ projectId, task, open, onClick, onFinishTask, scale }: TaskProps) {
+export function Task({
+  projectId,
+  task,
+  open,
+  onClick,
+  onFinishTask,
+  scale,
+  imageStyle,
+}: TaskProps) {
   const options: ChoiceOption[] = useMemo(
     () =>
       task.labels.map((label, index) => ({
@@ -115,7 +124,13 @@ export function Task({ projectId, task, open, onClick, onFinishTask, scale }: Ta
       )}
       <div className={styles.images}>
         {task.thumbnails.map((thumbnail, index) => (
-          <TaskImage thumbnail={thumbnail} key={index} scale={scale} open={open} />
+          <TaskImage
+            thumbnail={thumbnail}
+            key={index}
+            scale={scale}
+            open={open}
+            imageStyle={imageStyle}
+          />
         ))}
       </div>
       {
