@@ -78,6 +78,7 @@ const icons = [
   'more',
   'nasa-logo',
   'pacioos-logo',
+  'photo-edit',
   'pin-filled',
   'pin',
   'plus',
