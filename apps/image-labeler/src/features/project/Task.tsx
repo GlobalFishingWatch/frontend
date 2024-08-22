@@ -26,7 +26,6 @@ export function Task({ projectId, task, open, onClick, onFinishTask, scale }: Ta
       })),
     [task.labels]
   )
-  const [activeOption, setActiveOption] = useState<string>()
   const [setTask, { isLoading, data, error }] = useSetTaskMutation({
     fixedCacheKey: [projectId, task.id].join(),
   })
@@ -35,22 +34,18 @@ export function Task({ projectId, task, open, onClick, onFinishTask, scale }: Ta
     onFinishTask(task.id)
   }, [onFinishTask, task.id])
 
-  const handleSubmit = useCallback(() => {
-    if (activeOption) {
+  const setOption = useCallback(
+    (option: ChoiceOption) => {
       setFinishedTask()
-      setTask({ projectId, taskId: task.id, label: activeOption })
-    }
-  }, [activeOption, setFinishedTask, projectId, setTask, task.id])
+      setTask({ projectId, taskId: task.id, label: option.id })
+    },
+    [projectId, setFinishedTask, setTask, task.id]
+  )
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // e.preventDefault()
-      if (e.key === 'Enter') {
-        handleSubmit()
-        return
-      }
       if (e.key === 'Escape') {
-        setActiveOption(undefined)
         setFinishedTask()
         return
       }
@@ -67,11 +62,7 @@ export function Task({ projectId, task, open, onClick, onFinishTask, scale }: Ta
         window.removeEventListener('keydown', handleKeyDown)
       }
     }
-  }, [handleSubmit, setFinishedTask, open, options, task.id])
-
-  const setOption = (option: ChoiceOption) => {
-    setActiveOption(option.id)
-  }
+  }, [setFinishedTask, open, options, task.id, setOption])
 
   const isLabeled = data?.label !== undefined
 
@@ -129,23 +120,10 @@ export function Task({ projectId, task, open, onClick, onFinishTask, scale }: Ta
       </div>
       {
         <div className={cx(styles.labels, { [styles.hidden]: !open })}>
-          <Choice
-            options={options}
-            activeOption={data?.label || activeOption}
-            onSelect={setOption}
-          />
-          <div className={styles.buttons}>
-            <Button onClick={setFinishedTask} type="secondary">
-              Skip (Esc)
-            </Button>
-            <Button
-              onClick={handleSubmit}
-              type={activeOption ? 'default' : 'secondary'}
-              disabled={!activeOption}
-            >
-              {activeOption ? 'Confirm (Enter)' : 'Select a label'}
-            </Button>
-          </div>
+          <Choice options={options} activeOption={data?.label} onSelect={setOption} />
+          <Button onClick={setFinishedTask} type="secondary">
+            Skip (Esc)
+          </Button>
         </div>
       }
 
