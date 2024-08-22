@@ -21,7 +21,7 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
         dataset,
         {
           datasetId: dataset.id,
-          endpoint: EndpointId.FourwingsTiles,
+          endpoint: EndpointId.ClusterTiles,
           params: [{ id: 'type', value: 'heatmap' }],
         },
         { absolute: true }

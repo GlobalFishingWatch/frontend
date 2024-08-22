@@ -236,7 +236,14 @@ export class FourwingsClustersLayer extends CompositeLayer<
       'date-range': `${startIso},${endIso}`,
     }
 
-    const baseUrl = GFWAPI.generateUrl(this.props.tilesUrl as string, { absolute: true })
+    let tilesUrl = HEATMAP_API_TILES_URL
+    try {
+      const { origin, pathname } = new URL(this.props.tilesUrl)
+      tilesUrl = origin + pathname
+    } catch (e) {
+      console.warn(e)
+    }
+    const baseUrl = GFWAPI.generateUrl(tilesUrl, { absolute: true })
 
     return `${baseUrl}?${stringify(params)}`
   }
