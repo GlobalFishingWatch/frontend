@@ -8,10 +8,10 @@ import { useParams } from 'react-router-dom'
 import { FixedSizeList } from 'react-window'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { MAX_DOWNLOAD_FILES_LIMIT } from '../../config.js'
-import { ReactComponent as IconSearch } from '../../assets/icons/search.svg'
-import { ReactComponent as IconClose } from '../../assets/icons/close.svg'
-import { ReactComponent as IconArrowDown } from '../../assets/icons/arrow-down.svg'
-import { ReactComponent as IconArrowUp } from '../../assets/icons/arrow-up.svg'
+import IconSearch from '../../assets/icons/search.svg?react'
+import IconClose from '../../assets/icons/close.svg?react'
+import IconArrowDown from '../../assets/icons/arrow-down.svg?react'
+import IconArrowUp from '../../assets/icons/arrow-up.svg?react'
 import styles from './table.module.scss'
 
 const IndeterminateCheckbox = React.forwardRef(({ indeterminate, title, ...rest }, ref) => {
@@ -200,27 +200,30 @@ function Table({ columns, data }) {
         <div>
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <div
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className={styles.th}
-                >
-                  {column.render('Header')}{' '}
-                  {column.id !== 'selection' && (
-                    <span className={styles.sort}>
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
-                          <IconArrowDown />
-                        ) : (
-                          <IconArrowUp />
-                        )
-                      ) : (
-                        ''
+              {headerGroup.headers.map(
+                (column) =>
+                  console.log(column) || (
+                    <div
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      className={styles.th}
+                    >
+                      {column.render('Header')}{' '}
+                      {column.id !== 'selection' && (
+                        <span className={styles.sort}>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <IconArrowDown />
+                            ) : (
+                              <IconArrowUp />
+                            )
+                          ) : (
+                            ''
+                          )}
+                        </span>
                       )}
-                    </span>
-                  )}
-                </div>
-              ))}
+                    </div>
+                  )
+              )}
             </div>
           ))}
         </div>
@@ -231,6 +234,7 @@ function Table({ columns, data }) {
             return (
               <div {...row.getRowProps({ style })} className={styles.tr}>
                 {row.cells.map((cell) => {
+                  console.log('🚀 ~ {row.cells.map ~ cell:', cell)
                   return (
                     <div {...cell.getCellProps()} className={styles.td} title={cell.value}>
                       {cell.column.id === 'name' ? (
