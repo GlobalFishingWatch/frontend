@@ -38,6 +38,7 @@ import {
   fetchBQEventThunk,
   fetchClusterEventThunk,
   fetchFishingActivityInteractionThunk,
+  fetchLegacyEncounterEventThunk,
   selectApiEventStatus,
   selectClickedEvent,
   selectFishingInteractionStatus,
@@ -139,11 +140,13 @@ export const useClickedEventConnect = () => {
 
     if (clusterFeature?.properties?.count > 2) {
       const { expansionZoom } = clusterFeature
-      if (!areTilesClusterLoading && expansionZoom) {
+      const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
+      const expansionZoomValue = expansionZoom || legacyExpansionZoom
+      if (!areTilesClusterLoading && expansionZoomValue) {
         setMapCoordinates({
           latitude: event.latitude,
           longitude: event.longitude,
-          zoom: expansionZoom,
+          zoom: expansionZoomValue,
         })
       }
       return
@@ -190,8 +193,12 @@ export const useClickedEventConnect = () => {
       const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
       // TODO:deck migrate bqPocQuery to FourwingsClusters
       const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchClusterEventThunk
-
-      const eventsPromise = dispatch(fetchClusterEventThunk(tileClusterFeature))
+      // TODO:deck remove fetchLegacyEncounterEventThunk once fourwings cluster goes to pro
+      const clusterFn =
+        tileClusterFeature?.subcategory === DataviewType.TileCluster
+          ? fetchLegacyEncounterEventThunk
+          : fetchClusterEventThunk
+      const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
       setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
     }
   }

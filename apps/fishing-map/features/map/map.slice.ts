@@ -17,6 +17,7 @@ import {
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
+  ClusterPickingObject,
   ContextPickingObject,
   FourwingsClusterPickingObject,
   FourwingsDeckSublayer,
@@ -515,6 +516,103 @@ export const fetchBQEventThunk = createAsyncThunk<
   return
 })
 
+export const fetchLegacyEncounterEventThunk = createAsyncThunk<
+  ExtendedFeatureEvent | undefined,
+  ClusterPickingObject,
+  {
+    dispatch: AppDispatch
+  }
+>('map/fetchLegacyEncounterEvent', async (eventFeature, { signal, getState }) => {
+  const state = getState() as any
+  const eventDataviews = selectEventsDataviews(state) || []
+  const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
+  const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+
+  if (dataset) {
+    const datasetConfig = {
+      datasetId: dataset.id,
+      endpoint: EndpointId.EventsDetail,
+      params: [{ id: 'eventId', value: eventFeature.id }],
+      query: [{ id: 'dataset', value: dataset.id }],
+    }
+    const url = resolveEndpoint(dataset, datasetConfig)
+    if (url) {
+      const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
+
+      // Workaround to grab information about each vessel dataset
+      // will need discuss with API team to scale this for other types
+      const isACarrierTheMainVessel = clusterEvent.vessel.type === EventVesselTypeEnum.Carrier
+      const fishingVessel = isACarrierTheMainVessel
+        ? clusterEvent.encounter?.vessel
+        : clusterEvent.vessel
+      const carrierVessel = isACarrierTheMainVessel
+        ? clusterEvent.vessel
+        : clusterEvent.encounter?.vessel
+      let vesselsInfo: IdentityVessel[] = []
+      const vesselsDatasets = dataview?.datasets
+        ?.flatMap((d) => d.relatedDatasets || [])
+        .filter((d) => d?.type === DatasetTypes.Vessels)
+
+      if (vesselsDatasets?.length && fishingVessel && carrierVessel) {
+        const vesselDataset = selectDatasetById(vesselsDatasets[0].id)(state) as Dataset
+        const vesselsDatasetConfig = {
+          datasetId: vesselDataset.id,
+          endpoint: EndpointId.VesselList,
+          params: [],
+          query: [
+            { id: 'ids', value: [fishingVessel.id, carrierVessel.id] },
+            { id: 'datasets', value: vesselsDatasets.map((d) => d.id) },
+          ],
+        }
+        const vesselsUrl = resolveEndpoint(vesselDataset, vesselsDatasetConfig)
+        if (vesselsUrl) {
+          vesselsInfo = await GFWAPI.fetch<APIPagination<IdentityVessel>>(vesselsUrl, {
+            signal,
+          }).then((r) => r.entries)
+        }
+      }
+      if (clusterEvent) {
+        const fishingVesselDataset =
+          vesselsInfo.find(
+            (v) =>
+              getVesselProperty(v, 'id', {
+                identitySource: VesselIdentitySourceEnum.SelfReported,
+              }) === fishingVessel?.id
+          )?.dataset || ''
+        const carrierVesselDataset =
+          vesselsInfo.find(
+            (v) =>
+              getVesselProperty(v, 'id', {
+                identitySource: VesselIdentitySourceEnum.SelfReported,
+              }) === carrierVessel?.id
+          )?.dataset || ''
+        const carrierExtendedVessel: ExtendedEventVessel = {
+          ...(carrierVessel as EventVessel),
+          dataset: carrierVesselDataset,
+        }
+        const fishingExtendedVessel: ExtendedEventVessel = {
+          ...(fishingVessel as EventVessel),
+          dataset: fishingVesselDataset,
+        }
+        return {
+          ...clusterEvent,
+          vessel: carrierExtendedVessel,
+          ...(clusterEvent.encounter && {
+            encounter: {
+              ...clusterEvent.encounter,
+              vessel: fishingExtendedVessel,
+            },
+          }),
+          dataset,
+        }
+      }
+    } else {
+      console.warn('Missing url for endpoints', dataset, datasetConfig)
+    }
+  }
+  return
+})
+
 const slice = createSlice({
   name: 'map',
   initialState,
@@ -574,6 +672,26 @@ const slice = createSlice({
       }
     })
     builder.addCase(fetchClusterEventThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.apiEventStatus = AsyncReducerStatus.Idle
+      } else {
+        state.apiEventStatus = AsyncReducerStatus.Error
+      }
+    })
+    builder.addCase(fetchLegacyEncounterEventThunk.pending, (state, action) => {
+      state.apiEventStatus = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchLegacyEncounterEventThunk.fulfilled, (state, action) => {
+      state.apiEventStatus = AsyncReducerStatus.Finished
+      if (!state.clicked || !state.clicked.features || !action.payload) return
+      const feature = state.clicked?.features?.find(
+        (feature) => feature.id && action.meta.arg.id
+      ) as any
+      if (feature) {
+        feature.event = action.payload
+      }
+    })
+    builder.addCase(fetchLegacyEncounterEventThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
         state.apiEventStatus = AsyncReducerStatus.Idle
       } else {
