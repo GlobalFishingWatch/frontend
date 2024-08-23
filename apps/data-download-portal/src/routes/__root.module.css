@@ -1,0 +1,9 @@
+.userInfo {
+  position: absolute;
+  right: var(--space-L);
+  color: var(--color-secondary-blue);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-S);
+}
