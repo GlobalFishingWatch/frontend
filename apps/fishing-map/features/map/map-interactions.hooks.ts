@@ -183,7 +183,7 @@ export const useClickedEventConnect = () => {
     }
 
     const tileClusterFeature = event.features.find(
-      (f) => f.category === DataviewCategory.Events && f.subcategory === DataviewType.TileCluster
+      (f) => f.category === DataviewCategory.Events && isTilesClusterLayer(f)
     ) as SliceExtendedClusterPickingObject
 
     if (tileClusterFeature) {
