@@ -178,7 +178,10 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
         if (createWorkspaceThunk.fulfilled.match(createWorkspaceAction)) {
           const workspace = createWorkspaceAction.payload as Workspace
-          url = window.location.origin + `/${workspace?.category}/${workspace?.id}`
+          url =
+            window.location.origin +
+            window.location.pathname +
+            `/${workspace?.category}/${workspace?.id}`
         } else {
           console.error('Error creating feedback workspace, using default url to feedback sheet.')
         }
