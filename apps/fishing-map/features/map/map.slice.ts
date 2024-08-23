@@ -17,8 +17,8 @@ import {
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
-  ClusterPickingObject,
   ContextPickingObject,
+  FourwingsClusterPickingObject,
   FourwingsDeckSublayer,
   FourwingsHeatmapPickingObject,
   FourwingsPickingObject,
@@ -65,7 +65,7 @@ export type SliceExtendedFourwingsPickingObject = Omit<
   sublayers: SliceExtendedFourwingsDeckSublayer[]
 }
 
-export type SliceExtendedClusterPickingObject = ClusterPickingObject & {
+export type SliceExtendedClusterPickingObject = FourwingsClusterPickingObject & {
   event: ExtendedFeatureEvent
 }
 
@@ -75,7 +75,7 @@ type SliceExtendedFeature =
   | FourwingsPositionsPickingObject
   | ContextPickingObject
   | UserLayerPickingObject
-  | ClusterPickingObject
+  | FourwingsClusterPickingObject
   | VesselEventPickingObject
 
 // Extends the default extendedEvent including event and vessels information from API
@@ -355,9 +355,9 @@ export const fetchFishingActivityInteractionThunk = createAsyncThunk<
   }
 )
 
-export const fetchEncounterEventThunk = createAsyncThunk<
+export const fetchClusterEventThunk = createAsyncThunk<
   ExtendedFeatureEvent | undefined,
-  ClusterPickingObject,
+  FourwingsClusterPickingObject,
   {
     dispatch: AppDispatch
   }
@@ -365,16 +365,48 @@ export const fetchEncounterEventThunk = createAsyncThunk<
   const state = getState() as any
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
-  const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-
-  if (dataset) {
-    const datasetConfig = {
-      datasetId: dataset.id,
-      endpoint: EndpointId.EventsDetail,
-      params: [{ id: 'eventId', value: eventFeature.id }],
-      query: [{ id: 'dataset', value: dataset.id }],
+  const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  let interactionId = eventFeature.id
+  let eventId: string | undefined
+  if (interactionId && eventsDataset) {
+    const start = getUTCDate(eventFeature?.startTime).toISOString()
+    const end = getUTCDate(eventFeature?.endTime).toISOString()
+    const datasetConfig: DataviewDatasetConfig = {
+      datasetId: eventsDataset?.id,
+      endpoint: EndpointId.ClusterTilesInteraction,
+      params: [
+        { id: 'z', value: eventFeature.properties.tile.z },
+        { id: 'x', value: eventFeature.properties.tile.x },
+        { id: 'y', value: eventFeature.properties.tile.y },
+        { id: 'rows', value: eventFeature.properties.row as number },
+        { id: 'cols', value: eventFeature.properties.col as number },
+      ],
+      query: [
+        { id: 'date-range', value: [start, end].join(',') },
+        {
+          id: 'datasets',
+          value: [eventsDataset.id],
+        },
+      ],
     }
-    const url = resolveEndpoint(dataset, datasetConfig)
+    const interactionUrl = resolveEndpoint(eventsDataset, datasetConfig)
+    if (interactionUrl) {
+      const eventsIds = await GFWAPI.fetch<APIPagination<string>>(interactionUrl, {
+        signal,
+      })
+      // TODO:deck remove this hardcoded id once the api responds
+      eventId = eventsIds.entries[0][0] || 'a530d47f5f92b41c48c54b1d8c096570.1'
+    }
+  }
+  // TODO:deck get the event dataset from related
+  if (eventsDataset && eventId) {
+    const datasetConfig = {
+      datasetId: eventsDataset.id,
+      endpoint: EndpointId.EventsDetail,
+      params: [{ id: 'eventId', value: eventId }],
+      query: [{ id: 'dataset', value: eventsDataset.id }],
+    }
+    const url = resolveEndpoint(eventsDataset, datasetConfig)
     if (url) {
       const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
 
@@ -442,13 +474,14 @@ export const fetchEncounterEventThunk = createAsyncThunk<
               vessel: fishingExtendedVessel,
             },
           }),
-          dataset,
+          dataset: eventsDataset,
         }
       }
     } else {
-      console.warn('Missing url for endpoints', dataset, datasetConfig)
+      console.warn('Missing url for endpoints', eventsDataset, datasetConfig)
     }
   }
+
   return
 })
 
@@ -527,10 +560,10 @@ const slice = createSlice({
         state.fishingStatus = AsyncReducerStatus.Error
       }
     })
-    builder.addCase(fetchEncounterEventThunk.pending, (state, action) => {
+    builder.addCase(fetchClusterEventThunk.pending, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Loading
     })
-    builder.addCase(fetchEncounterEventThunk.fulfilled, (state, action) => {
+    builder.addCase(fetchClusterEventThunk.fulfilled, (state, action) => {
       state.apiEventStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
       const feature = state.clicked?.features?.find(
@@ -540,7 +573,7 @@ const slice = createSlice({
         feature.event = action.payload
       }
     })
-    builder.addCase(fetchEncounterEventThunk.rejected, (state, action) => {
+    builder.addCase(fetchClusterEventThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
         state.apiEventStatus = AsyncReducerStatus.Idle
       } else {

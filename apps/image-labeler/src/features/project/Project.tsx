@@ -1,9 +1,11 @@
 import { Link, getRouteApi, useNavigate } from '@tanstack/react-router'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import uniqBy from 'lodash/uniqBy'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+import { Slider } from '@globalfishingwatch/ui-components/slider'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks/use-local-storage'
 import {
   useGetLabellingProjectTasksByIdQuery,
   useGetLabellingProjectTasksQuery,
@@ -19,6 +21,9 @@ export function Project() {
   const { projectId } = route.useParams()
   const { activeTaskId } = route.useSearch()
   const navigate = useNavigate({ from: routePath })
+  const [imageStyleEditorOpen, setImageStyleOpen] = useState<Boolean>(false)
+  const [imageStyleSaturation, setImageStyleSaturation] = useLocalStorage('saturation', 1.5)
+  const [imageStyleContrast, setImageStyleContrast] = useLocalStorage('contrast', 1)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initialActiveTaskId = useMemo(() => activeTaskId as string | undefined, [])
@@ -113,8 +118,50 @@ export function Project() {
           key={task.id}
           onClick={() => setActiveTaskId(task.id)}
           onFinishTask={setNextTask}
+          scale={taskData.metadata.scale}
+          imageStyle={{
+            filter: ` saturate(${imageStyleSaturation}) contrast(${imageStyleContrast})`,
+          }}
         />
       ))}
+      <div
+        className={styles.imageStyleEditor}
+        style={{
+          borderRadius: imageStyleEditorOpen ? '1rem' : '4rem',
+        }}
+      >
+        {imageStyleEditorOpen && (
+          <div className={styles.editorContent}>
+            <Slider
+              label="Saturation"
+              config={{
+                min: 0,
+                max: 4,
+                steps: [0, 4],
+              }}
+              initialValue={imageStyleSaturation}
+              onChange={(value) => setImageStyleSaturation(value)}
+              className={styles.slider}
+            />
+            <Slider
+              label="Contrast"
+              config={{
+                min: 0,
+                max: 4,
+                steps: [0, 4],
+              }}
+              initialValue={imageStyleContrast}
+              onChange={(value) => setImageStyleContrast(value)}
+              className={styles.slider}
+            />
+          </div>
+        )}
+        <IconButton
+          onClick={() => setImageStyleOpen(!imageStyleEditorOpen)}
+          icon={imageStyleEditorOpen ? 'close' : 'photo-edit'}
+          type="border"
+        />
+      </div>
       <Button onClick={handleLoadMoreTasks} className={styles.loadMoreButton} type="secondary">
         Load more tasks
       </Button>

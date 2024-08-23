@@ -69,3 +69,7 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.link {
+  text-decoration: underline;
+}

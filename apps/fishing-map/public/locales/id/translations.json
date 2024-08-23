@@ -458,6 +458,7 @@
     "reportLogin": "Masuk untuk melihat kapal yang aktif di area ini",
     "requestAccess": "Meminta akses",
     "searchLogin": "Masuk untuk mencari kapal",
+    "sessionExpired": "Your session has expired, please <1>log in</1> again.",
     "showError": "Tampilkan kesalahan",
     "switchAccount": "Ganti akun",
     "trackCoordinateFields": "Bidang yang dipilih untuk menentukan koordinat tidak menghasilkan garis yang valid",

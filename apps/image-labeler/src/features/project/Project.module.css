@@ -34,3 +34,26 @@
   margin-top: var(--space-M);
   margin-bottom: var(--space-S);
 }
+
+.imageStyleEditor {
+  box-shadow: var(--box-shadow);
+  padding: 1.5rem;
+  background-color: white;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+}
+
+.editorContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.slider {
+  width: 20rem;
+}

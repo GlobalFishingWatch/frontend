@@ -138,7 +138,7 @@ export function getURLFromTemplate(
     template = template[i]
   }
 
-  let url = template
+  let url = decodeURI(template)
   for (const key of Object.keys(index)) {
     const regex = new RegExp(`{${key}}`, 'g')
     url = url.replace(regex, String((index as any)[key]))

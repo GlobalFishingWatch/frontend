@@ -34,8 +34,8 @@ export function getDatasetConfigurationProperty<P extends DatasetConfigurationPr
 export const getDatasetConfiguration = (
   dataset: Partial<Dataset> | undefined
 ): DatasetConfiguration & DatasetConfiguration['configurationUI'] => ({
-  ...dataset?.configuration,
-  ...dataset?.configuration?.configurationUI,
+  ...(dataset?.configuration || ({} as DatasetConfiguration)),
+  ...(dataset?.configuration?.configurationUI || ({} as DatasetConfiguration['configurationUI'])),
 })
 
 export function getDatasetGeometryType(dataset?: Dataset) {

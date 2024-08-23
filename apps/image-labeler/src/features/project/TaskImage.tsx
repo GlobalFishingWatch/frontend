@@ -1,10 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import styles from './TaskImage.module.css'
 
 type TaskImageProps = {
   thumbnail: string
+  scale?: number
+  open: boolean
+  imageStyle?: React.CSSProperties
 }
+
+const SCALE_LINE_WIDTH_PERCENTAGE = 10
 
 const rgb2luma = ({ r, g, b }: { r: number; g: number; b: number }) => {
   return Math.round(r * 0.299 + g * 0.587 + b * 0.114)
@@ -72,7 +77,7 @@ const drawEnhancedImageToCanvas = ({
   ctx.putImageData(idata, 0, 0)
 }
 
-export function TaskImage({ thumbnail }: TaskImageProps) {
+export function TaskImage({ thumbnail, scale, open, imageStyle }: TaskImageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [enhancedImageVisible, setEnhancedImageVisible] = useState(true)
 
@@ -102,9 +107,19 @@ export function TaskImage({ thumbnail }: TaskImageProps) {
       <canvas
         className={styles.img}
         ref={canvasRef}
-        style={{ visibility: enhancedImageVisible ? 'visible' : 'hidden' }}
+        style={{ visibility: enhancedImageVisible ? 'visible' : 'hidden', ...imageStyle }}
         title="Press and hold to see original image"
       />
+      {open && scale !== undefined && canvasRef.current?.width !== undefined && (
+        <Fragment>
+          <span className={styles.scaleValue}>
+            {(scale * canvasRef.current?.width) /
+              (canvasRef.current?.width / SCALE_LINE_WIDTH_PERCENTAGE)}{' '}
+            m
+          </span>
+          <div className={styles.scaleLine} style={{ width: `${SCALE_LINE_WIDTH_PERCENTAGE}%` }} />
+        </Fragment>
+      )}
     </div>
   )
 }

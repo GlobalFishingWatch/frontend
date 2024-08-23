@@ -14,7 +14,7 @@ import {
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import {
-  ClusterPickingObject,
+  FourwingsClusterPickingObject,
   DeckLayerInteractionPickingInfo,
   DeckLayerPickingObject,
   FourwingsHeatmapPickingObject,
@@ -36,7 +36,7 @@ import {
   SliceExtendedClusterPickingObject,
   SliceInteractionEvent,
   fetchBQEventThunk,
-  fetchEncounterEventThunk,
+  fetchClusterEventThunk,
   fetchFishingActivityInteractionThunk,
   selectApiEventStatus,
   selectClickedEvent,
@@ -134,21 +134,19 @@ export const useClickedEventConnect = () => {
       trackEvent(analyticsEvent)
     })
     const clusterFeature = event?.features?.find(
-      (f) => (f as ClusterPickingObject).category === DataviewCategory.Events
-    ) as ClusterPickingObject
+      (f) => (f as FourwingsClusterPickingObject).category === DataviewCategory.Events
+    ) as FourwingsClusterPickingObject
 
-    if (clusterFeature?.properties?.expansionZoom) {
-      const { count, expansionZoom, lat, lon } = clusterFeature.properties
-      if (count > 1) {
-        if (!areTilesClusterLoading && lat && lon) {
-          setMapCoordinates({
-            latitude: lat,
-            longitude: lon,
-            zoom: expansionZoom,
-          })
-        }
-        return
+    if (clusterFeature?.properties?.count > 2) {
+      const { expansionZoom } = clusterFeature
+      if (!areTilesClusterLoading && expansionZoom) {
+        setMapCoordinates({
+          latitude: event.latitude,
+          longitude: event.longitude,
+          zoom: expansionZoom,
+        })
       }
+      return
     }
 
     if (!event || !event.features) {
@@ -187,11 +185,13 @@ export const useClickedEventConnect = () => {
     const tileClusterFeature = event.features.find(
       (f) => f.category === DataviewCategory.Events && f.subcategory === DataviewType.TileCluster
     ) as SliceExtendedClusterPickingObject
+    debugger
     if (tileClusterFeature) {
       const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
-      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchEncounterEventThunk
+      // TODO:deck migrate bqPocQuery to FourwingsClusters
+      const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchClusterEventThunk
 
-      const eventsPromise = dispatch(fetchFn(tileClusterFeature))
+      const eventsPromise = dispatch(fetchClusterEventThunk(tileClusterFeature))
       setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
     }
   }
@@ -349,8 +349,8 @@ export const useMapCursor = () => {
         return 'move'
       }
       if (hoverFeatures?.some(isTilesClusterLayer)) {
-        const isCluster = (hoverFeatures as ClusterPickingObject[]).some(
-          (f) => f.properties?.count > 1
+        const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some(
+          (f) => f.properties?.count > 2
         )
         if (!isCluster) {
           return 'pointer'

@@ -19,6 +19,7 @@ import {
   selectIsDownloadActivityError,
   DateRange,
   selectDownloadActivityAreaKey,
+  selectIsDownloadActivityTimeoutError,
 } from 'features/download/downloadActivity.slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { TimelineDatesRange } from 'features/map/controls/MapInfo'
@@ -32,9 +33,11 @@ import {
 } from 'features/datasets/datasets.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDownloadActivityArea } from 'features/download/download.selectors'
+import {
+  selectDownloadActivityArea,
+  selectIsDownloadActivityAreaLoading,
+} from 'features/download/download.selectors'
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { AreaKeyId } from 'features/areas/areas.slice'
@@ -68,7 +71,8 @@ function DownloadActivityGridded() {
   const areaId = downloadAreaKey?.areaId as AreaKeyId
   const datasetId = downloadAreaKey?.datasetId as string
   const downloadAreaGeometry = downloadArea?.data?.geometry
-  const downloadAreaLoading = downloadArea?.status === AsyncReducerStatus.Loading
+  const isDownloadAreaLoading = useSelector(selectIsDownloadActivityAreaLoading)
+  const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
 
   const bufferUnit = useSelector(selectUrlBufferUnitQuery)
   const bufferValue = useSelector(selectUrlBufferValueQuery)
@@ -241,9 +245,9 @@ function DownloadActivityGridded() {
           <Button
             testId="download-activity-gridded-button"
             onClick={onDownloadClick}
-            loading={isDownloadLoading || downloadAreaLoading}
             className={styles.downloadBtn}
-            disabled={!isDownloadReportSupported || downloadAreaLoading || isDownloadError}
+            loading={isDownloadAreaLoading || isDownloadLoading || isDownloadTimeoutError}
+            disabled={!isDownloadReportSupported || isDownloadAreaLoading || isDownloadError}
           >
             {isDownloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
           </Button>

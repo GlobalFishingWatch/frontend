@@ -3,8 +3,8 @@ import {
   AnyDeckLayer,
   BaseMapLabelsLayer,
   BaseMapLayer,
-  ClusterLayer,
   ContextLayer,
+  FourwingsClustersLayer,
   FourwingsLayer,
   GraticulesLayer,
   PolygonsLayer,
@@ -19,7 +19,7 @@ import { ResolverGlobalConfig } from './types'
 import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckContextLayerProps } from './context'
-import { resolveDeckClusterLayerProps } from './clusters'
+import { resolveDeckFourwingsClustersLayerProps } from './clusters'
 import { resolveDeckVesselLayerProps } from './vessels'
 import {
   resolveDeckUserContextLayerProps,
@@ -83,8 +83,8 @@ export const dataviewToDeckLayer = (
     return layer
   }
   if (dataview.config?.type === DataviewType.TileCluster) {
-    const deckLayerProps = resolveDeckClusterLayerProps(dataview, layerConfig)
-    const layer = new ClusterLayer(deckLayerProps)
+    const deckLayerProps = resolveDeckFourwingsClustersLayerProps(dataview, layerConfig)
+    const layer = new FourwingsClustersLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Track) {

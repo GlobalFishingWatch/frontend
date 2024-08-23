@@ -50,6 +50,8 @@ import { getUTCDateTime } from 'utils/dates'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { AppDispatch } from 'store'
 import { LIBRARY_LAYERS } from 'data/layer-library'
+import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
+import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
@@ -107,6 +109,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = selectIsGuestUser(state)
     const gfwUser = selectIsGFWUser(state)
+    const privateUserGroups = selectPrivateUserGroups(state)
     const reportId = selectReportId(state)
     try {
       let workspace: Workspace<any> | null = null
@@ -200,6 +203,18 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         // signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
         datasets = payload as Dataset[]
+
+        if (privateUserGroups.length) {
+          try {
+            const privateDatasets = privateUserGroups.flatMap((group) => {
+              return PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []
+            })
+
+            dispatch(fetchDatasetsByIdsThunk({ ids: privateDatasets }))
+          } catch (e) {
+            console.warn('Error fetching private datasets for search within user groups', e)
+          }
+        }
 
         // Try to add track for for VMS vessels in case it is logged using the full- datasets
         const vesselDataviewsWithoutTrack = dataviewInstances.filter((dataviewInstance) => {

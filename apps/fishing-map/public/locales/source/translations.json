@@ -458,6 +458,7 @@
     "reportLogin": "Login to see the vessels active in the area",
     "requestAccess": "Request access",
     "searchLogin": "Login to search vessels",
+    "sessionExpired": "Your session has expired, please <1>log in</1> again.",
     "showError": "Show error",
     "switchAccount": "Switch account",
     "trackCoordinateFields": "The fields selected to define the coordinates don't generate valid lines",

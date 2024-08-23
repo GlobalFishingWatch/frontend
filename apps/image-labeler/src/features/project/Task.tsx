@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components/choice'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
@@ -14,9 +14,19 @@ type TaskProps = {
   open: boolean
   onClick?: () => void
   onFinishTask: (taskId: string) => void
+  scale?: number
+  imageStyle?: React.CSSProperties
 }
 
-export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps) {
+export function Task({
+  projectId,
+  task,
+  open,
+  onClick,
+  onFinishTask,
+  scale,
+  imageStyle,
+}: TaskProps) {
   const options: ChoiceOption[] = useMemo(
     () =>
       task.labels.map((label, index) => ({
@@ -25,7 +35,6 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
       })),
     [task.labels]
   )
-  const [activeOption, setActiveOption] = useState<string>()
   const [setTask, { isLoading, data, error }] = useSetTaskMutation({
     fixedCacheKey: [projectId, task.id].join(),
   })
@@ -34,22 +43,18 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
     onFinishTask(task.id)
   }, [onFinishTask, task.id])
 
-  const handleSubmit = useCallback(() => {
-    if (activeOption) {
+  const setOption = useCallback(
+    (option: ChoiceOption) => {
       setFinishedTask()
-      setTask({ projectId, taskId: task.id, label: activeOption })
-    }
-  }, [activeOption, setFinishedTask, projectId, setTask, task.id])
+      setTask({ projectId, taskId: task.id, label: option.id })
+    },
+    [projectId, setFinishedTask, setTask, task.id]
+  )
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // e.preventDefault()
-      if (e.key === 'Enter') {
-        handleSubmit()
-        return
-      }
       if (e.key === 'Escape') {
-        setActiveOption(undefined)
         setFinishedTask()
         return
       }
@@ -66,11 +71,7 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
         window.removeEventListener('keydown', handleKeyDown)
       }
     }
-  }, [handleSubmit, setFinishedTask, open, options, task.id])
-
-  const setOption = (option: ChoiceOption) => {
-    setActiveOption(option.id)
-  }
+  }, [setFinishedTask, open, options, task.id, setOption])
 
   const isLabeled = data?.label !== undefined
 
@@ -123,28 +124,21 @@ export function Task({ projectId, task, open, onClick, onFinishTask }: TaskProps
       )}
       <div className={styles.images}>
         {task.thumbnails.map((thumbnail, index) => (
-          <TaskImage thumbnail={thumbnail} key={index} />
+          <TaskImage
+            thumbnail={thumbnail}
+            key={index}
+            scale={scale}
+            open={open}
+            imageStyle={imageStyle}
+          />
         ))}
       </div>
       {
         <div className={cx(styles.labels, { [styles.hidden]: !open })}>
-          <Choice
-            options={options}
-            activeOption={data?.label || activeOption}
-            onSelect={setOption}
-          />
-          <div className={styles.buttons}>
-            <Button onClick={setFinishedTask} type="secondary">
-              Skip (Esc)
-            </Button>
-            <Button
-              onClick={handleSubmit}
-              type={activeOption ? 'default' : 'secondary'}
-              disabled={!activeOption}
-            >
-              {activeOption ? 'Confirm (Enter)' : 'Select a label'}
-            </Button>
-          </div>
+          <Choice options={options} activeOption={data?.label} onSelect={setOption} />
+          <Button onClick={setFinishedTask} type="secondary">
+            Skip (Esc)
+          </Button>
         </div>
       }
 

@@ -30,6 +30,7 @@ import {
 import { isBasicSearchAllowed } from 'features/search/search.selectors'
 import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
 import styles from './SearchBasic.module.css'
+import SearchError from './SearchError'
 
 export type SearchComponentProps = {
   onSuggestionClick?: () => void
@@ -52,7 +53,6 @@ function SearchBasic({
   const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
-  const searchStatusCode = useSelector(selectSearchStatusCode)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const { dispatchQueryParams } = useLocationConnect()
   const hasMoreResults =
@@ -158,16 +158,7 @@ function SearchBasic({
               {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
                 <SearchNoResultsState />
               )}
-              {searchStatus === AsyncReducerStatus.Error && (
-                <p className={styles.error}>
-                  {searchStatusCode === 404
-                    ? t(
-                        'search.noResults',
-                        "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
-                      )
-                    : t('errors.genericShort', 'Something went wrong')}
-                </p>
-              )}
+              {searchStatus === AsyncReducerStatus.Error && <SearchError />}
             </ul>
           ) : (
             <SearchNotAllowed />

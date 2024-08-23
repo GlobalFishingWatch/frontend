@@ -458,6 +458,7 @@
     "reportLogin": "Register or log in to see the active vessels in this area (free, 2 minutes)",
     "requestAccess": "Request access",
     "searchLogin": "Login to search vessels",
+    "sessionExpired": "Your session has expired, please <1>log in</1> again.",
     "showError": "Show error",
     "switchAccount": "Switch account",
     "trackCoordinateFields": "The fields selected to define the coordinates don't generate valid lines",
@@ -989,7 +990,7 @@
     "widthRange": "Width range"
   },
   "vesselGroup": {
-    "add": "Add to group",
+    "add": "Add to vessel group",
     "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
     "createNewGroup": "Create new group",
