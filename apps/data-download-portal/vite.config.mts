@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
-import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
+// import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
 
 export default defineConfig({
   root: __dirname,
@@ -24,10 +24,6 @@ export default defineConfig({
     react(),
     svgr(),
     nxViteTsPaths(),
-    TanStackRouterVite({
-      routesDirectory: './apps/data-download-portal/src/routes',
-      generatedRouteTree: './apps/data-download-portal/src/routeTree.gen.ts',
-    }),
     viteStaticCopy({
       targets: [
         {
