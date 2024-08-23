@@ -19,6 +19,7 @@ export const resolveDeckTileClusterLayerProps: DeckResolverFunction<TileClusterD
   return {
     id: dataview.id,
     tilesUrl: tileClusterUrl,
+    color: dataview.config?.color,
     // ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
     // ...(highlightedEvents && { currentEventId: highlightedEvents[0] }),
   }

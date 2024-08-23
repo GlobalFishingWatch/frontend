@@ -27,6 +27,7 @@ export enum DataviewType {
   Polygons = 'POLYGONS',
   Rulers = 'RULERS',
   TileCluster = 'TILE_CLUSTER',
+  FourwingsTileCluster = 'FOURWINGS_TILE_CLUSTER',
   Track = 'TRACK',
   UserContext = 'USER_CONTEXT',
   UserPoints = 'USER_POINTS',

@@ -185,7 +185,7 @@ export const useClickedEventConnect = () => {
     const tileClusterFeature = event.features.find(
       (f) => f.category === DataviewCategory.Events && f.subcategory === DataviewType.TileCluster
     ) as SliceExtendedClusterPickingObject
-    debugger
+
     if (tileClusterFeature) {
       const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
       // TODO:deck migrate bqPocQuery to FourwingsClusters
