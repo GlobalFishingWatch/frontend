@@ -14,8 +14,8 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
-import { ReportVesselWithDatasets } from 'features/reports-areas/reports.selectors'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
+import { ReportVesselWithDatasets } from 'features/area-report/reports.selectors'
 import styles from './VesselGroupAddButton.module.css'
 
 type VesselGroupAddButtonProps = {

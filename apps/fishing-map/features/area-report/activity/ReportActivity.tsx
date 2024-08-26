@@ -1,20 +1,20 @@
 import React, { Fragment, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import ReportActivityGraphSelector from 'features/reports/activity/ReportActivityGraphSelector'
+import ReportActivityGraphSelector from 'features/area-report/activity/ReportActivityGraphSelector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   getReportGraphMode,
   ReportGraphProps,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
-} from 'features/reports/reports-timeseries.hooks'
-import { selectTimeComparisonValues } from 'features/reports/reports.selectors'
+} from 'features/area-report/reports-timeseries.hooks'
+import { selectTimeComparisonValues } from 'features/area-report/reports.selectors'
 import { ReportActivityGraph } from 'types'
 import { selectReportActivityGraph } from 'features/app/selectors/app.reports.selector'
-import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
-import ReportActivityPeriodComparison from 'features/reports/activity/ReportActivityPeriodComparison'
-import ReportActivityPeriodComparisonGraph from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
+import ReportActivityPlaceholder from 'features/area-report/placeholders/ReportActivityPlaceholder'
+import ReportActivityPeriodComparison from 'features/area-report/activity/ReportActivityPeriodComparison'
+import ReportActivityPeriodComparisonGraph from 'features/area-report/activity/ReportActivityPeriodComparisonGraph'
 import UserGuideLink from 'features/help/UserGuideLink'
 import ReportActivityEvolution from './ReportActivityEvolution'
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'

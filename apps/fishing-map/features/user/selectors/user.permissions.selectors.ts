@@ -9,7 +9,7 @@ import {
   selectAllVesselGroups,
   selectWorkspaceVesselGroups,
 } from 'features/vessel-groups/vessel-groups.slice'
-import { selectAllReports } from 'features/reports/reports.slice'
+import { selectAllReports } from 'features/area-report/reports.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { DEFAULT_GROUP_ID } from 'features/user/user.config'
 import { USER_GROUP_WORKSPACE } from '../user.slice'

@@ -47,15 +47,15 @@ import { selectSearchOption, selectSearchQuery } from 'features/search/search.co
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { resetReportData } from 'features/reports/report.slice'
+import { resetReportData } from 'features/area-report/report.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectReportsStatus } from 'features/reports/reports.slice'
+import { selectReportsStatus } from 'features/area-report/reports.slice'
 import { selectCurrentReport } from 'features/app/selectors/app.reports.selector'
 import { useLocationConnect } from 'routes/routes.hook'
 import { HOME, REPORT, ROUTE_TYPES, WORKSPACE } from 'routes/routes'
 import { EMPTY_FILTERS, IMO_LENGTH, SSVID_LENGTH, SearchType } from 'features/search/search.config'
 import { resetAreaDetail } from 'features/areas/areas.slice'
-import { selectReportAreaIds } from 'features/reports/reports.selectors'
+import { selectReportAreaIds } from 'features/area-report/reports.selectors'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import { resetVesselState } from 'features/vessel/vessel.slice'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
@@ -64,12 +64,12 @@ import LanguageToggle from 'features/i18n/LanguageToggle'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { useHighlightReportArea } from 'features/reports/reports.hooks'
+import { useHighlightReportArea } from 'features/area-report/reports.hooks'
 import { useClipboardNotification } from './sidebar.hooks'
 import styles from './SidebarHeader.module.css'
 
 const NewReportModal = dynamic(
-  () => import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/NewReportModal')
+  () => import(/* webpackChunkName: "NewWorkspaceModal" */ 'features/area-report/NewReportModal')
 )
 
 function SaveReportButton() {

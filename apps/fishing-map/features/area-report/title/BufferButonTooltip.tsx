@@ -3,10 +3,15 @@ import { Range, getTrackBackground } from 'react-range'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Button, Choice, ChoiceOption, IconButton } from '@globalfishingwatch/ui-components'
-import { KILOMETERS, NAUTICAL_MILES, DISSOLVE, DIFFERENCE } from 'features/reports/reports.config'
+import {
+  KILOMETERS,
+  NAUTICAL_MILES,
+  DISSOLVE,
+  DIFFERENCE,
+} from 'features/area-report/reports.config'
 import { BufferOperation, BufferUnit } from 'types'
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
-import { selectReportPreviewBufferFeature } from 'features/reports/reports.selectors'
+import { selectReportPreviewBufferFeature } from 'features/area-report/reports.selectors'
 import styles from './ReportTitle.module.css'
 
 type BufferButonTooltipProps = {

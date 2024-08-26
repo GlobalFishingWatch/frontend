@@ -8,13 +8,13 @@ import { selectReportVesselGraph } from 'features/app/selectors/app.reports.sele
 import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
-import { ReportVesselsGraphPlaceholder } from 'features/reports/placeholders/ReportVesselsPlaceholder'
+import { ReportVesselsGraphPlaceholder } from 'features/area-report/placeholders/ReportVesselsPlaceholder'
 import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
-import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/reports/reports.config'
+import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
 import { getVesselGearType } from 'utils/info'
 import {
   cleanFlagState,
@@ -122,11 +122,9 @@ const CustomTick = (props: any) => {
 
   const tooltip = isOtherCategory ? (
     <ul>
-      {othersData!
-        ?.slice(0, MAX_OTHER_TOOLTIP_ITEMS)
-        .map(({ name, value }) => (
-          <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
-        ))}
+      {othersData!?.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
+        <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
+      ))}
       {othersData!?.length > MAX_OTHER_TOOLTIP_ITEMS && (
         <li>
           + {othersData!?.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}

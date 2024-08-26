@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import ReportVesselsGraphSelector from 'features/reports/vessels/ReportVesselsGraphSelector'
+import ReportVesselsGraphSelector from 'features/area-report/vessels/ReportVesselsGraphSelector'
 import {
   selectActiveReportDataviews,
   selectReportCategory,
 } from 'features/app/selectors/app.reports.selector'
 import { ReportCategory } from 'types'
-import ReportSummaryTags from 'features/reports/summary/ReportSummaryTags'
-import { FIELDS, getCommonProperties } from 'features/reports/reports.utils'
-import { PROPERTIES_EXCLUDED } from 'features/reports/summary/ReportSummary'
+import ReportSummaryTags from 'features/area-report/summary/ReportSummaryTags'
+import { FIELDS, getCommonProperties } from 'features/area-report/reports.utils'
+import { PROPERTIES_EXCLUDED } from 'features/area-report/summary/ReportSummary'
 import { ReportActivityUnit } from '../Report'
 import ReportVesselsGraph from './ReportVesselsGraph'
 import ReportVesselsFilter from './ReportVesselsFilter'

@@ -21,6 +21,7 @@ export const WORKSPACE_SEARCH = 'WORKSPACE_SEARCH'
 export const VESSEL = 'VESSEL'
 export const WORKSPACE_VESSEL = 'WORKSPACE_VESSEL'
 export const REPORT = 'REPORT'
+export const VESSEL_GROUP_REPORT = 'VESSEL_GROUP_REPORT'
 export const WORKSPACE_REPORT = 'WORKSPACE_REPORT'
 export const WORKSPACE_ROUTES = [HOME, WORKSPACE]
 export const REPORT_ROUTES = [REPORT, WORKSPACE_REPORT]
@@ -31,6 +32,7 @@ export type ROUTE_TYPES =
   | typeof WORKSPACES_LIST
   | typeof WORKSPACE
   | typeof VESSEL
+  | typeof VESSEL_GROUP_REPORT
   | typeof WORKSPACE_VESSEL
   | typeof REPORT
   | typeof WORKSPACE_REPORT
@@ -61,6 +63,9 @@ export const routesMap: RoutesMap = {
   },
   [REPORT]: {
     path: '/report/:reportId',
+  },
+  [VESSEL_GROUP_REPORT]: {
+    path: '/vessel-group-report/:vesselGroupId',
   },
   [VESSEL]: {
     path: '/vessel/:vesselId',

@@ -11,8 +11,8 @@ import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
   useTimeseriesStats,
-} from 'features/reports/reports-timeseries.hooks'
-import ReportActivityPlaceholder from 'features/reports/placeholders/ReportActivityPlaceholder'
+} from 'features/area-report/reports-timeseries.hooks'
+import ReportActivityPlaceholder from 'features/area-report/placeholders/ReportActivityPlaceholder'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'

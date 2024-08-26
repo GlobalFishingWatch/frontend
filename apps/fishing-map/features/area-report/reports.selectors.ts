@@ -32,7 +32,7 @@ import {
   getBufferedArea,
   getBufferedFeature,
   getReportCategoryFromDataview,
-} from 'features/reports/reports.utils'
+} from 'features/area-report/reports.utils'
 import { ReportCategory } from 'types'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
@@ -42,7 +42,7 @@ import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
-} from 'features/reports/reports.config'
+} from 'features/area-report/reports.config'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
 
@@ -521,7 +521,7 @@ const selectReportBufferArea = createSelector(
     if (bufferedArea?.geometry) {
       const bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
       // bbox is needed inside Area geometry to computeTimeseries
-      // fishing-map/features/reports/reports-timeseries.hooks.ts
+      // fishing-map/features/area-report/reports-timeseries.hooks.ts
       bufferedArea.geometry.bbox = bounds
     }
     return bufferedArea

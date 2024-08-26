@@ -10,6 +10,7 @@ import {
   selectIsAnySearchLocation,
   selectIsAnyVesselLocation,
   selectIsUserLocation,
+  selectIsVesselGroupReportLocation,
   selectIsWorkspacesListLocation,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -24,7 +25,12 @@ import styles from './Sidebar.module.css'
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
 
-const Report = dynamic(() => import(/* webpackChunkName: "Report" */ 'features/reports/Report'))
+const AreaReport = dynamic(
+  () => import(/* webpackChunkName: "Report" */ 'features/area-report/Report')
+)
+const VesselGroupReport = dynamic(
+  () => import(/* webpackChunkName: "Report" */ 'features/vessel-group-report/VesselGroupReport')
+)
 const VesselDetailWrapper = dynamic(
   () => import(/* webpackChunkName: "VesselDetailWrapper" */ 'features/vessel/Vessel')
 )
@@ -50,7 +56,8 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const dataviewsResources = useSelector(selectDataviewsResources)
-  const isReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyReportLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const userLogged = useSelector(selectIsUserLogged)
   const hasUserGroupsPermissions = useSelector(selectHasUserGroupsPermissions)
   const highlightedWorkspacesStatus = useSelector(selectHighlightedWorkspacesStatus)
@@ -100,8 +107,12 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       )
     }
 
-    if (isReportLocation) {
-      return <Report />
+    if (isAreaReportLocation) {
+      return <AreaReport />
+    }
+
+    if (isVesselGroupReportLocation) {
+      return <VesselGroupReport />
     }
 
     if (isSearchLocation) {
@@ -111,9 +122,10 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     return <Workspace />
   }, [
     highlightedWorkspacesStatus,
-    isReportLocation,
+    isAreaReportLocation,
     isSearchLocation,
     isUserLocation,
+    isVesselGroupReportLocation,
     isVesselLocation,
     isWorkspacesListLocation,
     userLogged,

@@ -6,7 +6,7 @@ import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { toFixed } from 'utils/shared'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import I18nDate from 'features/i18n/i18nDate'
-import { selectShowTimeComparison } from 'features/reports/reports.selectors'
+import { selectShowTimeComparison } from 'features/area-report/reports.selectors'
 import styles from './MapInfo.module.css'
 import MapScaleControl from './MapScaleControl'
 

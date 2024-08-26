@@ -5,11 +5,11 @@ import {
 } from '@globalfishingwatch/deck-layers'
 import { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { ReportGraphMode, ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
-import { FilteredPolygons } from 'features/reports/reports-geo.utils'
-import { DateTimeSeries } from 'features/reports/reports.hooks'
+import { ReportGraphMode, ReportGraphProps } from 'features/area-report/reports-timeseries.hooks'
+import { FilteredPolygons } from 'features/area-report/reports-geo.utils'
+import { DateTimeSeries } from 'features/area-report/reports.hooks'
 import { getUTCDateTime } from 'utils/dates'
-import { ComparisonGraphData } from 'features/reports/activity/ReportActivityPeriodComparisonGraph'
+import { ComparisonGraphData } from 'features/area-report/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
 
 export const filterTimeseriesByTimerange = (

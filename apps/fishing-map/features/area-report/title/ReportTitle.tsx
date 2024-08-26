@@ -14,18 +14,18 @@ import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_BUFFER_VALUE,
   NAUTICAL_MILES,
-} from 'features/reports/reports.config'
+} from 'features/area-report/reports.config'
 import {
   resetReportData,
   selectReportPreviewBuffer,
   setPreviewBuffer,
-} from 'features/reports/report.slice'
+} from 'features/area-report/report.slice'
 import {
   selectReportArea,
   selectReportAreaDataviews,
   selectReportAreaStatus,
-} from 'features/reports/reports.selectors'
-import ReportTitlePlaceholder from 'features/reports/placeholders/ReportTitlePlaceholder'
+} from 'features/area-report/reports.selectors'
+import ReportTitlePlaceholder from 'features/area-report/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   selectCurrentReport,
@@ -38,7 +38,7 @@ import { BufferOperation, BufferUnit } from 'types'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
+import { useReportFeaturesLoading } from 'features/area-report/reports-timeseries.hooks'
 import { useHighlightReportArea } from '../reports.hooks'
 import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'

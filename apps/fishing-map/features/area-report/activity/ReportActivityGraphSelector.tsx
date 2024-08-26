@@ -12,9 +12,9 @@ import {
   selectActiveReportDataviews,
   selectReportActivityGraph,
 } from 'features/app/selectors/app.reports.selector'
-import { useFitAreaInViewport } from 'features/reports/reports.hooks'
+import { useFitAreaInViewport } from 'features/area-report/reports.hooks'
 import { ReportActivityGraph } from 'types'
-import { useSetReportTimeComparison } from 'features/reports/reports-timecomparison.hooks'
+import { useSetReportTimeComparison } from 'features/area-report/reports-timecomparison.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
 type ReportActivityGraphSelectorProps = {

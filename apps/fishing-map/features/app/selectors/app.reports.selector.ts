@@ -5,7 +5,7 @@ import {
   selectActiveReportActivityDataviews,
   selectReportActiveCategories,
 } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectReportById } from 'features/reports/reports.slice'
+import { selectReportById } from 'features/area-report/reports.slice'
 import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
 import {
   selectLocationAreaId,

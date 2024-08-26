@@ -28,7 +28,7 @@ import {
   selectVesselId,
   selectIsAnyReportLocation,
 } from 'routes/routes.selectors'
-import { getReportCategoryFromDataview } from 'features/reports/reports.utils'
+import { getReportCategoryFromDataview } from 'features/area-report/reports.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
 import { selectTimebarSelectedEnvId } from 'features/app/selectors/app.timebar.selectors'
 import {

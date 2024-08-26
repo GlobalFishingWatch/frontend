@@ -24,22 +24,22 @@ import {
   selectReportCategory,
   selectReportTimeComparison,
 } from 'features/app/selectors/app.reports.selector'
-import { FilteredPolygons } from 'features/reports/reports-geo.utils'
+import { FilteredPolygons } from 'features/area-report/reports-geo.utils'
 import {
   FeaturesToTimeseriesParams,
   featuresToTimeseries,
   filterTimeseriesByTimerange,
-} from 'features/reports/reports-timeseries.utils'
-import { useReportAreaInViewport } from 'features/reports/reports.hooks'
+} from 'features/area-report/reports-timeseries.utils'
+import { useReportAreaInViewport } from 'features/area-report/reports.hooks'
 import {
   selectReportArea,
   selectReportBufferHash,
   selectShowTimeComparison,
-} from 'features/reports/reports.selectors'
+} from 'features/area-report/reports.selectors'
 import { ReportActivityGraph, ReportCategory } from 'types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { AreaGeometry } from 'features/areas/areas.slice'
-import { useFilterCellsByPolygonWorker } from 'features/reports/reports-geo.utils.workers.hooks'
+import { useFilterCellsByPolygonWorker } from 'features/area-report/reports-geo.utils.workers.hooks'
 import { TimeRange } from 'features/timebar/timebar.slice'
 
 interface EvolutionGraphData {
