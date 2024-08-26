@@ -43,6 +43,7 @@ type ReportRegion = {
 type FetchReportVesselsThunkParams = {
   region: ReportRegion
   datasets: string[]
+  includes: string[]
   filters: string[]
   vesselGroups: string[]
   dateRange: DateRange
@@ -72,6 +73,7 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
     region,
     datasets,
     filters,
+    includes = [],
     vesselGroups,
     dateRange,
     temporalResolution = TemporalResolution.Full,
@@ -83,6 +85,7 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
     reportBufferValue,
     reportBufferOperation,
   } = params
+
   const query = stringify(
     {
       datasets,
@@ -94,7 +97,7 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
         getUTCDateTime(dateRange?.end)?.toString(),
       ].join(','),
       'group-by': groupBy,
-      includes: REPORT_FIELDS_TO_INCLUDE.join(','),
+      includes: [...includes, ...REPORT_FIELDS_TO_INCLUDE].join(','),
       'spatial-resolution': spatialResolution,
       'spatial-aggregation': spatialAggregation,
       format: format,
@@ -108,6 +111,7 @@ export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
   )
   return query
 }
+
 export const fetchReportVesselsThunk = createAsyncThunk(
   'report/vessels',
   async (params: FetchReportVesselsThunkParams, { rejectWithValue }) => {
