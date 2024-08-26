@@ -7,6 +7,7 @@ import Login from './pages/login/login.jsx'
 import HeaderHtml from './components/header/header.jsx'
 import Loader from './components/loader/loader.jsx'
 import styles from './app.module.css'
+import '../../../libs/ui-components/src/base.css'
 
 const Home = lazy(() => import('./pages/home/home'))
 const Dataset = lazy(() => import('./pages/dataset/dataset'))
