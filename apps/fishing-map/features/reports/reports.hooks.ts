@@ -21,23 +21,19 @@ import {
   selectReportArea,
   selectReportAreaDataviews,
   selectReportAreaIds,
-  selectReportBufferHash,
   selectReportDataviewsWithPermissions,
 } from 'features/reports/reports.selectors'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { Bbox } from 'types'
 import { useSetMapCoordinates, useMapViewState } from 'features/map/map-viewport.hooks'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
-import { getDownloadReportSupported } from 'features/download/download.utils'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
 import { LAST_REPORTS_STORAGE_KEY, LastReportStorage } from 'features/reports/reports.config'
 import {
   fetchReportVesselsThunk,
   getReportQuery,
   selectReportVesselsData,
-  selectReportVesselsDateRangeHash,
   selectReportVesselsError,
   selectReportVesselsStatus,
 } from './report.slice'
@@ -140,18 +136,18 @@ export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
   const [_, setLastReportUrl] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
   const timerange = useSelector(selectTimeRange)
-  const timerangeSupported = getDownloadReportSupported(timerange.start, timerange.end)
-  const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
+  // const timerangeSupported = getDownloadReportSupported(timerange.start, timerange.end)
+  // const reportDateRangeHash = useSelector(selectReportVesselsDateRangeHash)
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
   const status = useSelector(selectReportVesselsStatus)
   const error = useSelector(selectReportVesselsError)
   const data = useSelector(selectReportVesselsData)
-  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  // const workspaceStatus = useSelector(selectWorkspaceStatus)
   const reportBufferUnit = useSelector(selectReportBufferUnit)
   const reportBufferValue = useSelector(selectReportBufferValue)
   const reportBufferOperation = useSelector(selectReportBufferOperation)
-  const reportBufferHash = useSelector(selectReportBufferHash)
+  // const reportBufferHash = useSelector(selectReportBufferHash)
 
   const updateWorkspaceReportUrls = useCallback(
     (reportUrl: any) => {
@@ -174,6 +170,9 @@ export function useFetchReportVessel() {
     const params = {
       datasets: reportDataviews.map(({ datasets }) =>
         datasets?.map((d: Dataset) => d.id).join(',')
+      ),
+      includes: reportDataviews.flatMap(
+        ({ datasets }) => datasets.flatMap(({ unit }) => unit || []) || []
       ),
       filters: reportDataviews.map(({ filter }) => filter).filter(Boolean),
       vesselGroups: reportDataviews.flatMap(({ vesselGroups }) => vesselGroups || []),
