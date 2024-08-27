@@ -26,23 +26,21 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
     setVesselGroupsOpen(!vesselGroupsOpen)
   }, [vesselGroupsOpen])
 
-  if (!hasUserGroupsPermissions) {
-    return null
-  }
-
   return (
     <Popover
       open={vesselGroupsOpen}
       onOpenChange={toggleVesselGroupsOpen}
       content={
         <ul className={styles.groupOptions}>
-          <li
-            className={cx(styles.groupOption, styles.groupOptionNew)}
-            onClick={() => onAddToVesselGroup?.(NEW_VESSEL_GROUP_ID)}
-            key="new-group"
-          >
-            {t('vesselGroup.createNewGroup', 'Create new group')}
-          </li>
+          {hasUserGroupsPermissions && (
+            <li
+              className={cx(styles.groupOption, styles.groupOptionNew)}
+              onClick={() => onAddToVesselGroup?.(NEW_VESSEL_GROUP_ID)}
+              key="new-group"
+            >
+              {t('vesselGroup.createNewGroup', 'Create new group')}
+            </li>
+          )}
           {vesselGroupOptions.map((group) => (
             <li
               className={styles.groupOption}

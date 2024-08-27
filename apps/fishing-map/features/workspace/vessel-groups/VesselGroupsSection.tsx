@@ -16,6 +16,7 @@ import { selectVesselGroupDataviews } from 'features/dataviews/selectors/datavie
 import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups.slice'
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
 function VesselGroupSection(): React.ReactElement {
@@ -52,7 +53,7 @@ function VesselGroupSection(): React.ReactElement {
         <h2 className={styles.sectionTitle}>{t('vesselGroup.vesselGroups', 'Vessel groups')}</h2>
         {!readOnly && (
           <VesselGroupListTooltip onAddToVesselGroup={onAddVesselGroupClick}>
-            <IconButton
+            <UserLoggedIconButton
               type="border"
               icon="vessel-group"
               size="medium"

@@ -157,17 +157,15 @@ export type VesselProfileState = {
 export type VesselProfileStateProperty = keyof VesselProfileState
 
 export type VesselGroupReportSection = 'vessels' | 'insights' | 'activity' | 'events'
-export type VesselGroupReportVesselsSectionCategory = 'flag' | 'vesselType' | 'gearType'
-export type VesselGroupReportActivitySectionCategory = 'fishing-effort' | 'presence'
-export type VesselGroupReportEventsSectionCategory = 'fishing' | 'encounters' | 'port' | 'loitering'
-export type VesselGroupReportSectionCategory =
-  | VesselGroupReportVesselsSectionCategory
-  | VesselGroupReportActivitySectionCategory
-  | VesselGroupReportEventsSectionCategory
+export type VesselGroupReportVesselsSubsection = 'flag' | 'vesselType' | 'gearType'
+export type VesselGroupReportActivitySubsection = 'fishing-effort' | 'presence'
+export type VesselGroupReportEventsSubsection = 'fishing' | 'encounters' | 'port' | 'loitering'
 
 export type VesselGroupReportState = {
   vesselGroupReportSection: VesselGroupReportSection
-  vesselGroupReportSectionCategory?: VesselGroupReportSectionCategory
+  vesselGroupReportVesselsSubsection?: VesselGroupReportVesselsSubsection
+  vesselGroupReportActivitySubsection?: VesselGroupReportActivitySubsection
+  vesselGroupReportEventsSubsection?: VesselGroupReportEventsSubsection
 }
 
 export type VesselGroupReportStateProperty = keyof VesselGroupReportState

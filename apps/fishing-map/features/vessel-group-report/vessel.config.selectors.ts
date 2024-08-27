@@ -16,9 +16,16 @@ export function selectVesselProfileStateProperty<P extends VesselGroupReportStat
     }
   )
 }
+
 export const selectVesselGroupReportSection = selectVesselProfileStateProperty(
   'vesselGroupReportSection'
 )
-export const selectVesselGroupReportSectionCategory = selectVesselProfileStateProperty(
-  'vesselGroupReportSectionCategory'
+export const selectVesselGroupReportVesselsSubsection = selectVesselProfileStateProperty(
+  'vesselGroupReportVesselsSubsection'
+)
+export const selectVesselGroupReportActivitySubsection = selectVesselProfileStateProperty(
+  'vesselGroupReportActivitySubsection'
+)
+export const selectVesselGroupReportEventsSubsection = selectVesselProfileStateProperty(
+  'vesselGroupReportEventsSubsection'
 )

@@ -1,6 +1,11 @@
+import { useSelector } from 'react-redux'
+import { selectVesselGroupReportVesselsSubsection } from '../vessel.config.selectors'
+
 type VesselGroupReportVesselsProps = {}
 
 function VesselGroupReportVessels(props: VesselGroupReportVesselsProps) {
+  const vesselSubSection = useSelector(selectVesselGroupReportVesselsSubsection)
+  console.log('🚀 ~ VesselGroupReportVessels ~ vesselSubSection:', vesselSubSection)
   return (
     <div>
       <p>Graph here</p>
