@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useCallback } from 'react'
+import Link from 'redux-first-router-link'
 import { Spinner, IconButton, Button } from '@globalfishingwatch/ui-components'
 import { VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -16,6 +17,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { getVesselGroupLabel } from 'features/vessel-groups/vessel-groups.utils'
 import { sortByCreationDate } from 'utils/dates'
+import { VESSEL_GROUP_REPORT } from 'routes/routes'
 import { selectUserVesselGroups } from './selectors/user.permissions.selectors'
 import styles from './User.module.css'
 
@@ -76,22 +78,35 @@ function UserVesselGroups() {
             sortByCreationDate<VesselGroup>(vesselGroups).map((vesselGroup) => {
               return (
                 <li className={styles.dataset} key={vesselGroup.id}>
-                  {getVesselGroupLabel(vesselGroup)}
-                  <div>
-                    <IconButton
-                      icon="edit"
-                      loading={vesselGroup.id === editingGroupId}
-                      tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
-                      onClick={() => onEditClick(vesselGroup)}
-                    />
-                    <IconButton
-                      icon="delete"
-                      type="warning"
-                      loading={vesselGroup.id === vesselGroupStatusId}
-                      tooltip={t('vesselGroup.remove', 'Remove vessel group')}
-                      onClick={() => onDeleteClick(vesselGroup)}
-                    />
-                  </div>
+                  <Link
+                    className={styles.workspaceLink}
+                    to={{
+                      type: VESSEL_GROUP_REPORT,
+                      payload: {
+                        vesselGroupId: vesselGroup.id,
+                      },
+                      query: {},
+                    }}
+                  >
+                    <span className={styles.workspaceTitle} data-test="workspace-name">
+                      {getVesselGroupLabel(vesselGroup)}{' '}
+                      <span className={styles.secondary}>({vesselGroup.vessels.length})</span>
+                    </span>
+                    <IconButton icon="arrow-right" />
+                  </Link>
+                  <IconButton
+                    icon="edit"
+                    loading={vesselGroup.id === editingGroupId}
+                    tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
+                    onClick={() => onEditClick(vesselGroup)}
+                  />
+                  <IconButton
+                    icon="delete"
+                    type="warning"
+                    loading={vesselGroup.id === vesselGroupStatusId}
+                    tooltip={t('vesselGroup.remove', 'Remove vessel group')}
+                    onClick={() => onDeleteClick(vesselGroup)}
+                  />
                 </li>
               )
             })
