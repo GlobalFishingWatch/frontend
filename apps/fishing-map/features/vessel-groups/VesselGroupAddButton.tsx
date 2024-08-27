@@ -1,9 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import React from 'react'
-import { Button, ButtonType, ButtonSize, Popover } from '@globalfishingwatch/ui-components'
+import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
 import { VesselLastIdentity } from 'features/search/search.slice'
 import {
   setVesselGroupEditId,
@@ -12,11 +11,10 @@ import {
   MAX_VESSEL_GROUP_VESSELS,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { ReportVesselWithDatasets } from 'features/area-report/reports.selectors'
-import styles from './VesselGroupAddButton.module.css'
+import styles from './VesselGroupListTooltip.module.css'
+import VesselGroupListTooltip from './VesselGroupListTooltip'
 
 type VesselGroupAddButtonProps = {
   mode?: 'auto' | 'manual'
@@ -77,17 +75,6 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
   } = props
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const hasUserGroupsPermissions = useSelector(selectHasUserGroupsPermissions)
-  const vesselGroupOptions = useVesselGroupsOptions()
-  const tooManyVessels = vessels?.length > MAX_VESSEL_GROUP_VESSELS
-  const disabled = !vessels?.length || tooManyVessels
-  const [vesselGroupsOpen, setVesselGroupsOpen] = useState(false)
-
-  const toggleVesselGroupsOpen = useCallback(() => {
-    if (!disabled) {
-      setVesselGroupsOpen(!vesselGroupsOpen)
-    }
-  }, [disabled, vesselGroupsOpen])
 
   const handleAddToVesselGroupClick = useCallback(
     async (vesselGroupId?: string) => {
@@ -123,48 +110,7 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
     [dispatch, mode, onAddToVesselGroup, vessels]
   )
   return (
-    hasUserGroupsPermissions && (
-      <Popover
-        open={vesselGroupsOpen}
-        onOpenChange={toggleVesselGroupsOpen}
-        content={
-          <ul className={styles.groupOptions}>
-            <li
-              className={cx(styles.groupOption, styles.groupOptionNew)}
-              onClick={() => handleAddToVesselGroupClick()}
-              key="new-group"
-            >
-              {t('vesselGroup.createNewGroup', 'Create new group')}
-            </li>
-            {vesselGroupOptions.map((group) => (
-              <li
-                className={styles.groupOption}
-                key={group.id}
-                onClick={() => handleAddToVesselGroupClick(group.id)}
-              >
-                {group.label}
-              </li>
-            ))}
-          </ul>
-        }
-      >
-        <div>
-          {React.Children.map(children, (child) => {
-            if (React.isValidElement(child)) {
-              return React.cloneElement(
-                child,
-                {
-                  ...props,
-                  vessels,
-                  onToggleClick: toggleVesselGroupsOpen,
-                } as VesselGroupAddButtonToggleProps,
-                child.props.children
-              )
-            }
-          })}
-        </div>
-      </Popover>
-    )
+    <VesselGroupListTooltip onAddToVesselGroup={handleAddToVesselGroupClick} children={children} />
   )
 }
 

@@ -23,6 +23,10 @@ export const selectDetectionsDataviews = selectDataviewInstancesByCategory(
   DataviewCategory.Detections
 )
 
+export const selectVesselGroupDataviews = selectDataviewInstancesByCategory(
+  DataviewCategory.VesselGroups
+)
+
 export const selectContextAreasDataviews = selectDataviewInstancesByCategory(
   DataviewCategory.Context
 )

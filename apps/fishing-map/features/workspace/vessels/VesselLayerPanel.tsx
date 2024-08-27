@@ -151,8 +151,8 @@ function VesselLayerPanel({ dataview, showApplyToAll }: VesselLayerPanelProps): 
     setInfoOpen(false)
   }
 
-  const trackLoaded = vesselLayer?.instance.getVesselTracksLayersLoaded()
-  const trackLayerVisible = vesselLayer?.instance.props.visible
+  const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
+  const trackLayerVisible = vesselLayer?.instance?.props?.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = vesselLayer?.instance.getVesselLayersError('track')

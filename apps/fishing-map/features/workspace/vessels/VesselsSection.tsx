@@ -70,11 +70,7 @@ function VesselsSection(): React.ReactElement {
 
   const onAddToVesselGroupClick = useCallback(() => {
     console.log('todo')
-  }, [dataviews, deleteDataviewInstance])
-
-  const onAddVesselGroupClick = useCallback(() => {
-    console.log('todo')
-  }, [dataviews, deleteDataviewInstance])
+  }, [])
 
   const onSetSortOrderClick = useCallback(() => {
     sortOrder.current = sortOrder.current === 'ASC' ? 'DESC' : 'ASC'
@@ -157,13 +153,6 @@ function VesselsSection(): React.ReactElement {
                 onClick={onDeleteAllClick}
               />
             )}
-            <IconButton
-              icon="vessel-group"
-              size="medium"
-              tooltip={t('vesselGroup.addToWorkspace', 'Add vessel group to workspace')}
-              tooltipPlacement="top"
-              onClick={onAddVesselGroupClick}
-            />
           </div>
         )}
         <IconButton

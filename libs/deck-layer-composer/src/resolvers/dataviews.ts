@@ -22,6 +22,7 @@ import {
   getMergedDataviewId,
   isActivityDataview,
   isDetectionsDataview,
+  isVesselGroupDataview,
   isEnvironmentalDataview,
   isHeatmapStaticDataview,
   isTrackDataview,
@@ -289,12 +290,14 @@ export function getDataviewsResolved(
     detectionDataviews,
     environmentalDataviews,
     staticDataviews,
+    vesselGroupDataview,
     vesselTrackDataviews,
     userTrackDataviews,
     userHeatmapDataviews,
     otherDataviews,
   } = dataviews.reduce(
     (acc, dataview) => {
+      // TODO: refactor to avoid the else if chain
       if (isActivityDataview(dataview)) {
         acc.activityDataviews.push(dataview)
       } else if (isDetectionsDataview(dataview)) {
@@ -303,6 +306,8 @@ export function getDataviewsResolved(
         acc.environmentalDataviews.push(dataview)
       } else if (isHeatmapStaticDataview(dataview)) {
         acc.staticDataviews.push(dataview)
+      } else if (isVesselGroupDataview(dataview)) {
+        acc.vesselGroupDataview.push(dataview)
       } else if (isUserHeatmapDataview(dataview)) {
         acc.userHeatmapDataviews.push(dataview)
       } else if (isTrackDataview(dataview)) {
@@ -319,6 +324,7 @@ export function getDataviewsResolved(
       detectionDataviews: [] as UrlDataviewInstance[],
       environmentalDataviews: [] as UrlDataviewInstance[],
       staticDataviews: [] as UrlDataviewInstance[],
+      vesselGroupDataview: [] as UrlDataviewInstance[],
       vesselTrackDataviews: [] as UrlDataviewInstance[],
       userHeatmapDataviews: [] as UrlDataviewInstance[],
       userTrackDataviews: [] as UrlDataviewInstance[],
@@ -364,6 +370,13 @@ export function getDataviewsResolved(
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
       }) || []
   )
+  const vesselGroupDataviewParsed = vesselGroupDataview.flatMap(
+    (d) =>
+      getFourwingsDataviewsResolved(d, {
+        colorRampWhiteEnd:
+          d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
+      }) || []
+  )
 
   const userHeatmapDataviewsParsed = getFourwingsDataviewsResolved(userHeatmapDataviews)
 
@@ -385,6 +398,7 @@ export function getDataviewsResolved(
     ...otherDataviews,
     ...staticDataviewsParsed,
     ...environmentalDataviewsParsed,
+    ...vesselGroupDataviewParsed,
     ...mergedDetectionsDataview,
     ...mergedActivityDataview,
     ...vesselTrackDataviewsParsed,

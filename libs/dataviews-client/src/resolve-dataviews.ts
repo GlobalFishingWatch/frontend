@@ -32,6 +32,13 @@ export function isDetectionsDataview(dataview: UrlDataviewInstance) {
   )
 }
 
+export function isVesselGroupDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.VesselGroups &&
+    dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
 export function isTrackDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Vessels && dataview.config?.type === DataviewType.Track

@@ -132,6 +132,7 @@
     "detections": "Detections",
     "disabled": "Disabled",
     "dismiss": "Dismiss",
+    "edit": "Edit",
     "environment": "Environment",
     "event_one": "event",
     "event_other": "events",
@@ -1017,6 +1018,11 @@
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselGroup": "Vessel group",
     "vesselGroups": "Vessel groups"
+  },
+  "vesselGroupReport": {
+    "clickToSee": "Click to see the vessel group report",
+    "linkToReport": "Check the vessel group report here",
+    "notFound": "Vessel group not found"
   },
   "workspace": {
     "add": "Add to workspace",

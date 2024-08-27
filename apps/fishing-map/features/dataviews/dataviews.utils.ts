@@ -19,6 +19,7 @@ import {
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  PRESENCE_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import {
   VesselInstanceDatasets,
@@ -29,6 +30,7 @@ import {
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounter-events'
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
+export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
 const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
 const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
@@ -208,6 +210,24 @@ export const getContextDataviewInstance = (datasetId: string): DataviewInstance<
         endpoint: EndpointId.ContextTiles,
       },
     ],
+  }
+  return contextDataviewInstance
+}
+
+export const getVesselGroupDataviewInstance = (
+  vesselGroupId: string
+): DataviewInstance<DataviewType> => {
+  const contextDataviewInstance = {
+    id: `${VESSEL_GROUP_DATAVIEW_PREFIX}${Date.now()}`,
+    category: DataviewCategory.VesselGroups,
+    config: {
+      colorCyclingType: 'fill' as ColorCyclingType,
+      visible: true,
+      filters: {
+        'vessel-groups': [vesselGroupId],
+      },
+    },
+    dataviewId: PRESENCE_DATAVIEW_SLUG,
   }
   return contextDataviewInstance
 }

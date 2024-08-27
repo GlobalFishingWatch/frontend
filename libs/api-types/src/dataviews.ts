@@ -195,6 +195,7 @@ export enum DataviewCategory {
   Events = 'events',
   User = 'user',
   Vessels = 'vessels',
+  VesselGroups = 'vesselGroups',
   Workspaces = 'workspaces',
   Buffer = 'buffer',
 }
