@@ -1,84 +1,122 @@
-import React, { Fragment } from 'react'
-import cx from 'classnames'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from './Header.module.css'
-import navigation, { MenuItem } from './Header.links'
+const navigation = [
+  {
+    label: 'impact',
+    items: [
+      {
+        label: 'what we do',
+        items: [
+          { label: '2030 strategy', href: 'https://globalfishingwatch.org/2030-strategy' },
+          { label: 'country outreach', href: 'https://globalfishingwatch.org/country-outreach' },
+          {
+            label: 'global ocean mapping',
+            href: 'https://globalfishingwatch.org/global-ocean-mapping',
+          },
+          {
+            label: 'international policy',
+            href: 'https://globalfishingwatch.org/international-policy',
+          },
+          { label: 'our approach', href: 'https://globalfishingwatch.org/our-approach' },
+          { label: 'transparency', href: 'https://globalfishingwatch.org/transparency' },
+        ],
+      },
+      {
+        label: 'science',
+        items: [
+          { label: 'projects', href: 'https://globalfishingwatch.org/research-projects' },
+          { label: 'publications', href: 'https://globalfishingwatch.org/publications' },
+          { label: 'research', href: 'https://globalfishingwatch.org/research' },
+        ],
+      },
+      {
+        label: 'highlights',
+        items: [
+          { label: 'Success Stories', href: 'https://globalfishingwatch.org/success-stories' },
+          {
+            label: 'Joint Analytical Cell',
+            href: 'https://globalfishingwatch.org/joint-analytical-cell',
+          },
+        ],
+      },
+    ],
+  },
 
-interface HeaderProps {
-  children?: React.ReactNode
-  mini?: boolean
-  inverted?: boolean
-}
-interface HeaderMenuItemProps {
-  index: number
-  item: MenuItem
-  mini?: boolean
-}
+  {
+    label: 'technology',
+    items: [
+      {
+        label: 'tools',
+        items: [
+          { label: 'Our Platform', href: 'https://globalfishingwatch.org/our-platform' },
+          { label: 'map', href: 'https://globalfishingwatch.org/our-map' },
+          {
+            label: 'Marine Manager',
+            href: 'https://globalfishingwatch.org/marine-manager-portal',
+          },
+          {
+            label: 'Carrier Vessels',
+            href: 'https://globalfishingwatch.org/carrier-vessels-portal',
+          },
+          { label: 'Vessel Viewer', href: 'https://globalfishingwatch.org/vessel-viewer-tool' },
+        ],
+      },
+      {
+        label: 'data',
+        items: [
+          { label: 'Our APIs', href: 'https://globalfishingwatch.org/our-apis' },
+          { label: 'Datasets & Code', href: 'https://globalfishingwatch.org/datasets-and-code' },
+        ],
+      },
+      {
+        label: 'help',
+        items: [
+          { label: 'FAQs', href: 'https://globalfishingwatch.org/help-faqs' },
+          { label: 'Platform Updates', href: 'https://globalfishingwatch.org/platform-updates' },
+          { label: 'Tutorials', href: 'https://globalfishingwatch.org/tutorials' },
+          {
+            label: 'User Guide',
+            href: 'https://globalfishingwatch.org/user-guide',
+          },
+        ],
+      },
+    ],
+  },
+  { label: 'newsroom', href: 'https://globalfishingwatch.org/newsroom' },
+  { label: 'stories & updates', href: 'https://globalfishingwatch.org/stories-and-updates' },
+  {
+    label: 'about',
 
-export function Header({ children, mini = false, inverted = false }: HeaderProps) {
-  return (
-    <div
-      className={cx(styles.gfwHeaderContainer, { [styles.gfwHeaderContainerInverted]: inverted })}
-    >
-      <header className={styles.gfwHeader}>
-        <div className={styles.whiteBg}></div>
-        <a className={styles.appLogo} href="https://globalfishingwatch.org">
-          <span className={styles.screenReaderOnly}>Home</span>
-        </a>
-        <a className={styles.screenReaderOnly} href="#main">
-          Skip navigation links
-        </a>
-
-        <div className={styles.navContainer}>
-          <input className={cx(styles.navMobile, styles.navMobileMenuAction)} type="checkbox" />
-          <div className={cx(styles.navMobile, styles.navMobileMenuIcon)}>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-
-          <nav className={styles.nav} role="navigation" aria-label="main menu">
-            <ul className={styles.navList} role="menubar">
-              {navigation.map(
-                (item, index) =>
-                  (!mini || (mini && item.mini)) && HeaderMenuItem({ index, item, mini })
-              )}
-              {!!children && children}
-            </ul>
-          </nav>
-        </div>
-      </header>
-    </div>
-  )
-}
-
-export function HeaderMenuItem({ index, item, mini = false }: HeaderMenuItemProps): JSX.Element {
-  return (
-    <li key={index} role="menuitem" className={item.className}>
-      {((item.link || item.onClick) && (
-        <a href={item.link} onClick={item.onClick}>
-          {item.label}
-        </a>
-      )) || <div>{item.label}</div>}
-      {!mini && item.childs && item.childs.length > 0 && (
-        <Fragment>
-          <input
-            name={`accordion-toggle-${index}`}
-            className={styles.accordionToggle}
-            type="checkbox"
-          />
-          <ul role="menu" className={cx([styles.navListSubMenu, item.className])}>
-            {item.childs.map((child, childIndex) => (
-              <HeaderMenuItem
-                key={`${index}-child-${childIndex}`}
-                index={childIndex}
-                item={child}
-                mini={mini}
-              />
-            ))}
-          </ul>
-        </Fragment>
-      )}
-    </li>
-  )
-}
+    items: [
+      {
+        label: 'Who we are',
+        items: [
+          {
+            label: 'A Vision for Our Global Ocean',
+            href: 'https://globalfishingwatch.org/a-vision-for-our-global-ocean',
+          },
+          { label: 'Careers', href: 'https://globalfishingwatch.org/careers' },
+        ],
+      },
+      {
+        label: 'Leadership',
+        items: [
+          { label: 'Board of Directors', href: 'https://globalfishingwatch.org/leadership' },
+          { label: 'Executive Team', href: 'https://globalfishingwatch.org/executive-team' },
+        ],
+      },
+      {
+        label: 'Team',
+        items: [{ label: 'Experts', href: 'https://globalfishingwatch.org/experts' }],
+      },
+      {
+        label: 'Reporting',
+        items: [
+          {
+            label: 'Annual Report 2023',
+            href: 'https://globalfishingwatch.org/annual-report-2023',
+          },
+          { label: 'Financials', href: 'https://globalfishingwatch.org/financials' },
+        ],
+      },
+    ],
+  },
+]
