@@ -1,0 +1,13 @@
+.emptyState {
+  height: 100%;
+  color: var(--color-secondary-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-L);
+}
+
+.loginLink {
+  text-decoration: underline;
+  margin: 0 0.2rem;
+}

@@ -54,6 +54,7 @@ export type WorkspaceParam =
   | WorkspaceTimeRangeParam
   | AnyStateProperty
   | VesselProfileStateProperty
+  | VesselGroupReportStateProperty
   | VesselSearchStateProperty
 
 export type WorkspaceViewport = Record<WorkspaceViewportParam, number>
@@ -155,6 +156,22 @@ export type VesselProfileState = {
 
 export type VesselProfileStateProperty = keyof VesselProfileState
 
+export type VesselGroupReportSection = 'vessels' | 'insights' | 'activity' | 'events'
+export type VesselGroupReportVesselsSectionCategory = 'flag' | 'vesselType' | 'gearType'
+export type VesselGroupReportActivitySectionCategory = 'fishing-effort' | 'presence'
+export type VesselGroupReportEventsSectionCategory = 'fishing' | 'encounters' | 'port' | 'loitering'
+export type VesselGroupReportSectionCategory =
+  | VesselGroupReportVesselsSectionCategory
+  | VesselGroupReportActivitySectionCategory
+  | VesselGroupReportEventsSectionCategory
+
+export type VesselGroupReportState = {
+  vesselGroupReportSection: VesselGroupReportSection
+  vesselGroupReportSectionCategory?: VesselGroupReportSectionCategory
+}
+
+export type VesselGroupReportStateProperty = keyof VesselGroupReportState
+
 type RedirectParam = {
   'access-token'?: string
 }
@@ -177,6 +194,7 @@ export type QueryParams = Partial<WorkspaceViewport> &
   Partial<WorkspaceTimeRange> &
   WorkspaceState &
   Partial<VesselProfileState> &
+  Partial<VesselGroupReportState> &
   AppState &
   RedirectParam &
   VesselSearchState

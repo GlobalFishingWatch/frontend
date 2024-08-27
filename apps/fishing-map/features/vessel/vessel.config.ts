@@ -2,7 +2,7 @@ import { RegionType, SelfReportedSource } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { I18nNamespaces } from 'features/i18n/i18n.types'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
-import { VesselProfileState } from 'types'
+import { VesselGroupReportState, VesselProfileState } from 'types'
 
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity'
 export const DEFAULT_VESSEL_IDENTITY_VERSION = 'v3.0'
@@ -19,6 +19,11 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselArea: 'eez',
   vesselRelated: 'encounters',
   viewOnlyVessel: true,
+}
+
+export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
+  vesselGroupReportSection: 'vessels',
+  vesselGroupReportSectionCategory: undefined,
 }
 
 export type VesselRenderField<Key = string> = {

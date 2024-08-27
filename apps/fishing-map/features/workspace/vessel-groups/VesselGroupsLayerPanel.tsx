@@ -45,6 +45,7 @@ function VesselGroupLayerPanel({
       id: dataview.id,
       config: {
         color: color.value,
+        colorRamp: color.id,
       },
     })
     setColorOpen(false)
@@ -111,6 +112,7 @@ function VesselGroupLayerPanel({
                 onColorClick={changeInstanceColor}
                 onToggleClick={onToggleColorOpen}
                 onClickOutside={closeExpandedContainer}
+                colorType="fill"
               />
             )}
             <Remove dataview={dataview} />
