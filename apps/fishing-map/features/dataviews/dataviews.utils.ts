@@ -216,20 +216,22 @@ export const getContextDataviewInstance = (datasetId: string): DataviewInstance<
 
 export const getVesselGroupDataviewInstance = (
   vesselGroupId: string
-): DataviewInstance<DataviewType> => {
-  const contextDataviewInstance = {
-    id: `${VESSEL_GROUP_DATAVIEW_PREFIX}${Date.now()}`,
-    category: DataviewCategory.VesselGroups,
-    config: {
-      colorCyclingType: 'fill' as ColorCyclingType,
-      visible: true,
-      filters: {
-        'vessel-groups': [vesselGroupId],
+): DataviewInstance<DataviewType> | undefined => {
+  if (vesselGroupId) {
+    const contextDataviewInstance = {
+      id: `${VESSEL_GROUP_DATAVIEW_PREFIX}${Date.now()}`,
+      category: DataviewCategory.VesselGroups,
+      config: {
+        colorCyclingType: 'fill' as ColorCyclingType,
+        visible: true,
+        filters: {
+          'vessel-groups': [vesselGroupId],
+        },
       },
-    },
-    dataviewId: PRESENCE_DATAVIEW_SLUG,
+      dataviewId: PRESENCE_DATAVIEW_SLUG,
+    }
+    return contextDataviewInstance
   }
-  return contextDataviewInstance
 }
 
 export const getDataviewInstanceFromDataview = (dataview: Dataview) => {
