@@ -6,10 +6,12 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
   ContextPickingObject,
+  FOOTPRINT_ID,
   FourwingsComparisonMode,
   FourwingsHeatmapPickingObject,
   FourwingsPositionsPickingObject,
   PolygonPickingObject,
+  POSITIONS_ID,
   RulerPickingObject,
   UserLayerPickingObject,
   VesselEventPickingObject,
@@ -80,18 +82,18 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           case DataviewCategory.Activity:
           case DataviewCategory.Detections: {
             const positionFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
-              (feature) => feature.visualizationMode === 'positions'
+              (feature) => feature.visualizationMode === POSITIONS_ID
             )
             const uniqPositionFeatures = uniqBy(positionFeatures, (f) => f.properties.id)
             const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
-              (feature) => feature.visualizationMode !== 'positions'
+              (feature) => feature.visualizationMode?.includes('heatmap')
             )
             const TooltipComponent =
               featureCategory === DataviewCategory.Detections
                 ? DetectionsTooltipRow
                 : ActivityTooltipRow
             return [...uniqPositionFeatures, ...heatmapFeatures].map((feature, i) => {
-              if (feature.visualizationMode === 'positions') {
+              if (feature.visualizationMode === POSITIONS_ID) {
                 return (
                   <PositionsRow
                     key={`${feature.id}-${i}`}
@@ -128,7 +130,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           }
           case DataviewCategory.VesselGroups: {
             const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
-              (feature) => feature.visualizationMode !== 'positions'
+              (feature) => feature.visualizationMode === FOOTPRINT_ID
             )
             return heatmapFeatures.map((feature, i) => {
               return feature.sublayers?.map((sublayer, j) => {
@@ -140,9 +142,8 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                     feature={{
                       ...sublayer,
                       category: feature.category as DataviewCategory,
-                      title: dataview
-                        ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
-                        : feature.title,
+                      // TODO get the title from the dataview
+                      title: feature.title,
                     }}
                     showFeaturesDetails={type === 'click'}
                     activityType={dataview?.datasets?.[0]?.subcategory as DatasetSubCategory}

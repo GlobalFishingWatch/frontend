@@ -37,7 +37,7 @@ import {
   SliceInteractionEvent,
   fetchBQEventThunk,
   fetchClusterEventThunk,
-  fetchFishingActivityInteractionThunk,
+  fetchHeatmapInteractionThunk,
   fetchLegacyEncounterEventThunk,
   selectApiEventStatus,
   selectClickedEvent,
@@ -47,7 +47,11 @@ import {
 import { useSetMapCoordinates } from './map-viewport.hooks'
 import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 
-export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = ['activity', 'detections']
+export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
+  DataviewCategory.VesselGroups,
+]
 
 const useMapClusterTilesLoading = () => {
   const eventsDataviews = useSelector(selectEventsDataviews)
@@ -162,7 +166,7 @@ export const useClickedEventConnect = () => {
     dispatch(setClickedEvent(event))
 
     // get temporal grid clicked features and order them by sublayerindex
-    const fishingActivityFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
+    const heatmapFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
       (feature) => {
         if (
           feature?.sublayers?.every((sublayer) => !sublayer.visible) ||
@@ -170,19 +174,22 @@ export const useClickedEventConnect = () => {
         ) {
           return false
         }
-        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(feature.category)
+        return SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+          feature.category as DataviewCategory
+        )
       }
     )
 
-    if (fishingActivityFeatures?.length) {
+    console.log('heatmapFeatures:', heatmapFeatures)
+    if (heatmapFeatures?.length) {
       dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
-      const activityProperties = fishingActivityFeatures.map((feature) =>
+      const heatmapProperties = heatmapFeatures.map((feature) =>
         feature.category === 'detections' ? 'detections' : 'hours'
       )
-      const activityPromise = dispatch(
-        fetchFishingActivityInteractionThunk({ fishingActivityFeatures, activityProperties })
+      const heatmapPromise = dispatch(
+        fetchHeatmapInteractionThunk({ heatmapFeatures, heatmapProperties })
       )
-      setInteractionPromises((prev) => ({ ...prev, activity: activityPromise as any }))
+      setInteractionPromises((prev) => ({ ...prev, activity: heatmapPromise as any }))
     }
 
     const tileClusterFeature = event.features.find(

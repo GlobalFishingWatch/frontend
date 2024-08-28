@@ -2,7 +2,12 @@ import { Color, CompositeLayer, LayersList, PickingInfo } from '@deck.gl/core'
 import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { FourwingsFeature, getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
-import { FourwingsAggregationOperation } from '../fourwings.types'
+import { FOOTPRINT_ID } from '../fourwings.config'
+import {
+  FourwingsAggregationOperation,
+  FourwingsHeatmapPickingInfo,
+  FourwingsHeatmapPickingObject,
+} from '../fourwings.types'
 import {
   COLOR_HIGHLIGHT_LINE,
   LayerGroup,
@@ -14,15 +19,10 @@ import {
   EMPTY_CELL_COLOR,
   getIntervalFrames,
 } from '../heatmap/fourwings-heatmap.utils'
-import {
-  FourwingsFootprintLayerProps,
-  FourwingsHeatmapPickingInfo,
-  FourwingsHeatmapPickingObject,
-} from './fourwings-footprint.types'
+import { FourwingsFootprintLayerProps } from './fourwings-footprint.types'
 
 export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLayerProps> {
   static layerName = 'FourwingsFootprintLayer'
-  layers: LayersList = []
   timeRangeKey!: string
   startFrame!: number
   endFrame!: number
@@ -54,13 +54,14 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
       ...(info.object || ({} as FourwingsFeature)),
       layerId: this.root.id,
       id: id,
-      title: id,
+      title: (sublayers?.[0].vesselGroups as string) || id,
       tile: tile.index,
       category,
       subcategory,
       sublayers,
       startTime,
       endTime,
+      visualizationMode: FOOTPRINT_ID,
       interval,
     }
     if (info.object) {
@@ -114,7 +115,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
     this.startFrame = startFrame
     this.endFrame = endFrame
 
-    this.layers = [
+    const layers = [
       new SolidPolygonLayer(
         this.props,
         this.getSubLayerProps({
@@ -135,7 +136,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
     const layerHighlightedFeatures = highlightedFeatures?.filter((f) => f.layerId === this.root.id)
     if (layerHighlightedFeatures) {
       layerHighlightedFeatures.forEach((highlightedFeature, index) => {
-        this.layers.push(
+        layers.push(
           new PathLayer(
             this.props,
             this.getSubLayerProps({
@@ -154,7 +155,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
         )
       })
     }
-    return this.layers
+    return layers
   }
 
   getData() {
