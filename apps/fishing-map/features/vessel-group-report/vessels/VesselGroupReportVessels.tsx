@@ -5,7 +5,6 @@ type VesselGroupReportVesselsProps = {}
 
 function VesselGroupReportVessels(props: VesselGroupReportVesselsProps) {
   const vesselSubSection = useSelector(selectVesselGroupReportVesselsSubsection)
-  console.log('🚀 ~ VesselGroupReportVessels ~ vesselSubSection:', vesselSubSection)
   return (
     <div>
       <p>Graph here</p>

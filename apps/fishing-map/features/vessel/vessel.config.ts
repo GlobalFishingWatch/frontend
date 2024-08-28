@@ -22,6 +22,7 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
 }
 
 export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
+  viewOnlyVesselGroup: true,
   vesselGroupReportSection: 'vessels',
   vesselGroupReportVesselsSubsection: 'flag',
   vesselGroupReportActivitySubsection: 'fishing-effort',

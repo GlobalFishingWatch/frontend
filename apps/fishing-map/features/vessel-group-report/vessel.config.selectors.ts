@@ -17,6 +17,7 @@ export function selectVesselProfileStateProperty<P extends VesselGroupReportStat
   )
 }
 
+export const selectViewOnlyVesselGroup = selectVesselProfileStateProperty('viewOnlyVesselGroup')
 export const selectVesselGroupReportSection = selectVesselProfileStateProperty(
   'vesselGroupReportSection'
 )

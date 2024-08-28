@@ -27,6 +27,7 @@ import {
   selectIsAnyVesselLocation,
   selectVesselId,
   selectIsAnyReportLocation,
+  selectIsVesselGroupReportLocation,
 } from 'routes/routes.selectors'
 import { getReportCategoryFromDataview } from 'features/area-report/reports.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
@@ -40,6 +41,7 @@ import {
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
+import { selectViewOnlyVesselGroup } from 'features/vessel-group-report/vessel.config.selectors'
 import {
   selectContextAreasDataviews,
   selectActivityDataviews,
@@ -97,6 +99,8 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectIsAnyVesselLocation,
     selectViewOnlyVessel,
     selectVesselId,
+    selectIsVesselGroupReportLocation,
+    selectViewOnlyVesselGroup,
   ],
   (
     dataviews = [],
@@ -104,7 +108,9 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     reportCategory,
     isVesselLocation,
     viewOnlyVessel,
-    vesselId
+    vesselId,
+    isVesselGroupReportLocation,
+    viewOnlyVesselGroup
   ) => {
     if (isReportLocation) {
       return dataviews.filter((dataview) => {
@@ -127,7 +133,32 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
         return config?.type === DataviewType.Track && id.includes(vesselId)
       })
     }
+
+    if (isVesselGroupReportLocation && viewOnlyVesselGroup) {
+      // TODO: decide how to filter out layers here
+      return dataviews.filter((dataview) => {
+        const isHeatmapDataview =
+          dataview.category === DataviewCategory.Activity ||
+          dataview.category === DataviewCategory.Detections
+        return !isHeatmapDataview && dataview.config?.visible
+      })
+    }
     return dataviews.filter((dataview) => dataview.config?.visible)
+  }
+)
+
+export const selectHasOtherVesselGroupDataviews = createSelector(
+  [selectAllDataviewInstancesResolved],
+  (dataviews) => {
+    if (!dataviews?.length) return false
+    // TODO: decide how to filter out layers here
+    return (
+      dataviews?.filter(
+        (dataview) =>
+          dataview.category === DataviewCategory.Activity ||
+          dataview.category === DataviewCategory.Detections
+      ).length > 0
+    )
   }
 )
 
