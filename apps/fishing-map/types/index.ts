@@ -157,7 +157,7 @@ export type VesselProfileState = {
 export type VesselProfileStateProperty = keyof VesselProfileState
 
 export type VesselGroupReportSection = 'vessels' | 'insights' | 'activity' | 'events'
-export type VesselGroupReportVesselsSubsection = 'flag' | 'vesselType' | 'gearType'
+export type VesselGroupReportVesselsSubsection = 'flag' | 'shiptypes' | 'geartypes'
 export type VesselGroupReportActivitySubsection = 'fishing-effort' | 'presence'
 export type VesselGroupReportEventsSubsection = 'fishing' | 'encounters' | 'port' | 'loitering'
 
