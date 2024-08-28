@@ -26,7 +26,7 @@ export const selectVesselGroupReportVesselsGraphDataGrouped = createSelector(
         )
         break
     }
-    return Object.entries(vesselsGrouped)
+    const orderedGroups = Object.entries(vesselsGrouped)
       .map(([key, value]) => ({
         name: key,
         value: (value as any[]).length,
@@ -40,5 +40,19 @@ export const selectVesselGroupReportVesselsGraphDataGrouped = createSelector(
         }
         return b.value - a.value
       })
+
+    if (orderedGroups.length <= 9) {
+      return orderedGroups
+    }
+    const firstTen = orderedGroups.slice(0, 9)
+    const other = orderedGroups.slice(9)
+
+    return [
+      ...firstTen,
+      {
+        name: OTHER_CATEGORY_LABEL,
+        value: other.reduce((acc, group) => acc + group.value, 0),
+      },
+    ]
   }
 )
