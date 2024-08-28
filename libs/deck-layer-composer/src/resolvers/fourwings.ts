@@ -159,6 +159,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
     visible: dataview.config?.visible ?? true,
+    color: dataview.config?.color,
     colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd ?? false,
     ...(onPositionsMaxPointsError && { onPositionsMaxPointsError }),
     ...(tilesUrl && { tilesUrl }),

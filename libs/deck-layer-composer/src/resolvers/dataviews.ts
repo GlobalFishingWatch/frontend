@@ -74,6 +74,7 @@ type GetMergedHeatmapAnimatedDataviewParams = {
   comparisonMode?: FourwingsComparisonMode
   timeRange?: TimeRange
   colorRampWhiteEnd?: boolean
+  color?: string
 }
 
 export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
@@ -142,6 +143,7 @@ export function getFourwingsDataviewsResolved(
       minVisibleValue: fourwingsDataviews[0].config?.minVisibleValue,
       maxVisibleValue: fourwingsDataviews[0].config?.maxVisibleValue,
       colorRampWhiteEnd,
+      color: fourwingsDataviews[0].config?.color,
       visualizationMode,
       comparisonMode,
     },
@@ -373,8 +375,8 @@ export function getDataviewsResolved(
   const vesselGroupDataviewParsed = vesselGroupDataview.flatMap(
     (d) =>
       getFourwingsDataviewsResolved(d, {
-        colorRampWhiteEnd:
-          d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
+        visualizationMode: 'footprint',
+        colorRampWhiteEnd: false,
       }) || []
   )
 

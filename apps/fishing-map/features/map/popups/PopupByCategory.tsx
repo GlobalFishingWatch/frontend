@@ -126,6 +126,31 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               })
             })
           }
+          case DataviewCategory.VesselGroups: {
+            const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
+              (feature) => feature.visualizationMode !== 'positions'
+            )
+            return heatmapFeatures.map((feature, i) => {
+              return feature.sublayers?.map((sublayer, j) => {
+                const dataview = dataviews.find((d) => d.id === sublayer.id)
+                return (
+                  <ActivityTooltipRow
+                    key={`${i}-${j}`}
+                    loading={activityInteractionStatus === AsyncReducerStatus.Loading}
+                    feature={{
+                      ...sublayer,
+                      category: feature.category as DataviewCategory,
+                      title: dataview
+                        ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+                        : feature.title,
+                    }}
+                    showFeaturesDetails={type === 'click'}
+                    activityType={dataview?.datasets?.[0]?.subcategory as DatasetSubCategory}
+                  />
+                )
+              })
+            })
+          }
           case DataviewCategory.Events: {
             if (apiEventStatus === AsyncReducerStatus.Loading) {
               return (

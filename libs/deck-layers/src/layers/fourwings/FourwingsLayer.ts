@@ -4,7 +4,8 @@ import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsHeatmapTileLayer } from './heatmap/FourwingsHeatmapTileLayer'
 import { FourwingsHeatmapStaticLayer } from './heatmap/FourwingsHeatmapStaticLayer'
 import { FourwingsPositionsTileLayer } from './positions/FourwingsPositionsTileLayer'
-import { HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
+import { FourwingsFootprintTileLayer } from './footprint/FourwingsFootprintTileLayer'
+import { FOOTPRINT_ID, HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
 import {
   FourwingsPickingObject,
   FourwingsVisualizationMode,
@@ -16,6 +17,7 @@ import {
   FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapTileLayerProps,
 } from './heatmap/fourwings-heatmap.types'
+import { FourwingsFootprintTileLayerProps } from './footprint/fourwings-footprint.types'
 import { getResolutionByVisualizationMode } from './heatmap/fourwings-heatmap.utils'
 
 export type FourwingsColorRamp = {
@@ -26,7 +28,8 @@ export type FourwingsColorRamp = {
 export type FourwingsLayerProps = Omit<
   FourwingsPositionsTileLayerProps &
     FourwingsHeatmapStaticLayerProps &
-    FourwingsHeatmapTileLayerProps & {
+    FourwingsHeatmapTileLayerProps &
+    FourwingsFootprintTileLayerProps & {
       id: string
       visualizationMode?: FourwingsVisualizationMode
     },
@@ -40,9 +43,19 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   renderLayers(): Layer<{}> | LayersList {
     const visualizationMode = this.getMode()
-    const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
     if (visualizationMode === POSITIONS_ID) {
+      const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
       return new PositionsLayerClass(
+        this.props,
+        this.getSubLayerProps({
+          id: POSITIONS_ID,
+          onViewportLoad: this.props.onViewportLoad,
+        })
+      )
+    }
+    if (visualizationMode === FOOTPRINT_ID) {
+      const FootprintLayerClass = this.getSubLayerClass('footprint', FourwingsFootprintTileLayer)
+      return new FootprintLayerClass(
         this.props,
         this.getSubLayerProps({
           id: POSITIONS_ID,
