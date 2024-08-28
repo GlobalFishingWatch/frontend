@@ -1,7 +1,6 @@
 import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import Link from 'redux-first-router-link'
 import { VesselGroup } from '@globalfishingwatch/api-types'
 import { IconButton, ColorBarOption, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -11,7 +10,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { formatInfoField } from 'utils/info'
-import { VESSEL_GROUP_REPORT } from 'routes/routes'
+import VesselGroupReportLink from 'features/vessel-group-report/VesselGroupReportLink'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -74,16 +73,7 @@ function VesselGroupLayerPanel({
         <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         <Title
           title={
-            <Link
-              className={styles.link}
-              to={{
-                type: VESSEL_GROUP_REPORT,
-                payload: {
-                  vesselGroupId: vesselGroup?.id,
-                },
-                query: {},
-              }}
-            >
+            <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
               <Tooltip
                 content={t('vesselGroupReport.clickToSee', 'Click to see the vessel group report')}
               >
@@ -92,7 +82,7 @@ function VesselGroupLayerPanel({
                   <span className={styles.secondary}> ({vesselGroup?.vessels.length})</span>
                 </span>
               </Tooltip>
-            </Link>
+            </VesselGroupReportLink>
           }
           className={styles.name}
           classNameActive={styles.active}

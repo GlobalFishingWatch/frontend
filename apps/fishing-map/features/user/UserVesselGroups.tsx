@@ -17,7 +17,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { getVesselGroupLabel } from 'features/vessel-groups/vessel-groups.utils'
 import { sortByCreationDate } from 'utils/dates'
-import { VESSEL_GROUP_REPORT } from 'routes/routes'
+import VesselGroupReportLink from 'features/vessel-group-report/VesselGroupReportLink'
 import { selectUserVesselGroups } from './selectors/user.permissions.selectors'
 import styles from './User.module.css'
 
@@ -78,22 +78,13 @@ function UserVesselGroups() {
             sortByCreationDate<VesselGroup>(vesselGroups).map((vesselGroup) => {
               return (
                 <li className={styles.dataset} key={vesselGroup.id}>
-                  <Link
-                    className={styles.workspaceLink}
-                    to={{
-                      type: VESSEL_GROUP_REPORT,
-                      payload: {
-                        vesselGroupId: vesselGroup.id,
-                      },
-                      query: {},
-                    }}
-                  >
+                  <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
                     <span className={styles.workspaceTitle} data-test="workspace-name">
                       {getVesselGroupLabel(vesselGroup)}{' '}
                       <span className={styles.secondary}>({vesselGroup.vessels.length})</span>
                     </span>
                     <IconButton icon="arrow-right" />
-                  </Link>
+                  </VesselGroupReportLink>
                   <IconButton
                     icon="edit"
                     loading={vesselGroup.id === editingGroupId}
