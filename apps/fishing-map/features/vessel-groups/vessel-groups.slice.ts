@@ -336,7 +336,7 @@ export const createVesselGroupThunk = createAsyncThunk(
   async (vesselGroupCreate: VesselGroupUpsert, { dispatch, getState }) => {
     const vesselGroupUpsert: VesselGroupUpsert = {
       ...vesselGroupCreate,
-      vessels: removeDuplicatedVesselGroupvessels(vesselGroupCreate.vessels),
+      vessels: removeDuplicatedVesselGroupvessels(vesselGroupCreate.vessels || []),
     }
     const saveVesselGroup: any = async (vesselGroup: VesselGroupUpsert, tries = 0) => {
       let vesselGroupUpdated: VesselGroup
@@ -366,16 +366,36 @@ export const updateVesselGroupThunk = createAsyncThunk(
   'vessel-groups/update',
   async (vesselGroupUpsert: VesselGroupUpsert & { id: string }) => {
     const { id, ...rest } = vesselGroupUpsert
-    const url = `/vessel-groups/${id}`
     const vesselGroup: VesselGroupUpsert = {
       ...rest,
-      vessels: removeDuplicatedVesselGroupvessels(rest.vessels),
+      vessels: removeDuplicatedVesselGroupvessels(rest.vessels || []),
     }
-    const vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>(url, {
+    const vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${id}`, {
       method: 'PATCH',
       body: vesselGroup,
     } as FetchOptions<any>)
     return vesselGroupUpdated
+  }
+)
+
+export const updateVesselGroupVesselsThunk = createAsyncThunk(
+  'vessel-groups/update-vessels',
+  async (
+    { id, vessels = [] }: Pick<VesselGroupUpsert, 'vessels'> & { id: string },
+    { getState, dispatch }
+  ) => {
+    let vesselGroup = selectVesselGroupById(id)(getState() as any)
+    if (!vesselGroup) {
+      vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${id}`)
+    }
+    if (vesselGroup) {
+      return dispatch(
+        updateVesselGroupThunk({
+          id: vesselGroup.id,
+          vessels: [...vesselGroup.vessels, ...vessels],
+        })
+      )
+    }
   }
 )
 

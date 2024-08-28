@@ -1004,6 +1004,7 @@
     "createNewGroup": "Create new group",
     "csvError": "Uploaded CSV file has multiple columns and there is no obvious ID column",
     "edit": "Edit list of vessels",
+    "enterName": "Enter vessel group name",
     "emptyState": "Your vessel groups will appear here",
     "groupName": "Group name",
     "idField": "ID field",
