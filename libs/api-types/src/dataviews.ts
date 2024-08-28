@@ -79,7 +79,7 @@ export interface DataviewConfig<Type = DataviewType> {
   /** String encoded for url from filters Record */
   filter?: string
   /** Record with id filter as key and filters as values */
-  filters?: Record<string, any>
+  filters?: DataviewDatasetFilter
   'vessel-groups'?: string[]
   filterOperators?: Record<string, FilterOperator>
   /** Min value for filters in environmental layers to perform frontend data filtering */
@@ -140,12 +140,14 @@ export interface DataviewDatasetConfigParam {
   value: string | number | boolean | string[] | number[]
 }
 
+export type DataviewDatasetFilter = Record<string, any>
 export type DatasetsMigration = Record<string, string>
 export interface DataviewDatasetConfig {
   datasetId: string
   endpoint: string
   params: DataviewDatasetConfigParam[]
   query?: DataviewDatasetConfigParam[]
+  filters?: DataviewDatasetFilter
   metadata?: Record<string, any>
 }
 
