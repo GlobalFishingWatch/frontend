@@ -7,6 +7,7 @@ export enum LayerGroup {
   Bathymetry = 'bathymetry', // 4Wings Bathymetry layer
   HeatmapStatic = 'heatmapStatic', // Fill/gradient-based heatmaps
   Heatmap = 'heatmap', // Fill/gradient-based temporal heatmaps
+  HeatmapFootprint = 'heatmapFootprint', // Fill/gradient-based temporal heatmaps
   OutlinePolygons = 'outlinePolygons', // Context layers with an outlined/hollow style such as RFMOs, MPAs, etc
   OutlinePolygonsFill = 'outlinePolygonsFill', // User context layers with a filled styles, below OutlinePolygons
   BasemapFill = 'basemapFill', // Landmass
@@ -32,6 +33,7 @@ export const LAYER_GROUP_ORDER = [
   LayerGroup.Bathymetry,
   LayerGroup.HeatmapStatic,
   LayerGroup.Heatmap,
+  LayerGroup.HeatmapFootprint,
   LayerGroup.OutlinePolygonsFill,
   LayerGroup.OutlinePolygons,
   LayerGroup.BasemapFill,

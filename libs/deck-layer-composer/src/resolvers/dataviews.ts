@@ -249,6 +249,7 @@ const HEATMAP_ANIMATED_CATEGORIES_ORDER: DataviewCategory[] = [
   DataviewCategory.Environment,
   DataviewCategory.Detections,
   DataviewCategory.Activity,
+  DataviewCategory.VesselGroups,
 ]
 
 export function getDataviewsSorted(
