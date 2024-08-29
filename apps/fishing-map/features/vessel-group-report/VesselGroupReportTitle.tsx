@@ -68,9 +68,16 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
   return (
     <div className={styles.container}>
       <div className={cx(styles.row, styles.border)}>
-        <h1 className={styles.title} data-test="report-title">
-          {formatInfoField(vesselGroup.name, 'name')}
-        </h1>
+        <div>
+          {vesselGroup.ownerType === 'user' && (
+            <label className={styles.userLabel}>
+              {t('vesselGroupReport.user', 'User Vessel Group')}
+            </label>
+          )}
+          <h1 className={styles.title} data-test="report-title">
+            {formatInfoField(vesselGroup.name, 'name')}
+          </h1>
+        </div>
         <a className={styles.reportLink} href={window.location.href}>
           {t('vesselGroupReport.linkToReport', 'Check the vessel group report here')}
         </a>
