@@ -20,6 +20,7 @@ import {
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
+  DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
 } from 'data/workspaces'
 import {
   VesselInstanceDatasets,
@@ -227,6 +228,7 @@ export const getVesselGroupDataviewInstance = (
         filters: {
           'vessel-groups': [vesselGroupId],
         },
+        datasets: DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
       },
       dataviewId: PRESENCE_DATAVIEW_SLUG,
     }
