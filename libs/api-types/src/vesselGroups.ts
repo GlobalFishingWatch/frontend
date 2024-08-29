@@ -15,4 +15,4 @@ export interface VesselGroup {
   createdAt?: string
 }
 
-export type VesselGroupUpsert = Partial<Pick<VesselGroup, 'id' | 'name' | 'vessels'>>
+export type VesselGroupUpsert = Partial<Pick<VesselGroup, 'id' | 'name' | 'vessels' | 'public'>>
