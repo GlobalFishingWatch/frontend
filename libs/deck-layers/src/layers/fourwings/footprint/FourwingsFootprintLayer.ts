@@ -97,7 +97,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
   }
 
   renderLayers() {
-    const { data, endTime, startTime, availableIntervals, tilesCache, highlightedFeatures } =
+    const { data, endTime, startTime, availableIntervals, tilesCache, highlightedFeatures, color } =
       this.props
 
     if (!data || !tilesCache) {
@@ -127,7 +127,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
           getPolygonOffset: (params: any) =>
             getLayerGroupOffset(LayerGroup.HeatmapFootprint, params),
           updateTriggers: {
-            getFillColor: [startTime, endTime],
+            getFillColor: [startTime, endTime, color],
           },
         })
       ),
