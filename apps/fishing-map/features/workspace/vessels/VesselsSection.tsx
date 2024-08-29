@@ -29,7 +29,7 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { selectVessselGroupsInWorkspace } from 'features/vessel-groups/vessel-groups.selectors'
+import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
@@ -49,7 +49,7 @@ function VesselsSection(): React.ReactElement {
   const dataviews = useSelector(selectVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(selectIsGuestUser)
-  const vesselGroupsInWorkspace = useSelector(selectVessselGroupsInWorkspace)
+  const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselTracksData = useTimebarVesselTracksData()
   const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)

@@ -25,6 +25,7 @@ import {
 } from 'utils/async-slice'
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { getVesselId } from 'features/vessel/vessel.utils'
+import { RootState } from 'store'
 import { fetchDatasetByIdThunk, selectDatasetById } from '../datasets/datasets.slice'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
@@ -280,10 +281,16 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
 
 export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
   'workspace-vessel-groups/fetch',
-  async (ids: string[] = [], { signal, rejectWithValue }) => {
+  async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
+    const vesselGroupsLoaded = (selectAllVesselGroups(getState() as RootState) || [])?.map(
+      (vg) => vg.id
+    )
+    const vesselGroupsNotLoaded = Array.from(
+      new Set(ids.filter((id) => !vesselGroupsLoaded.includes(id)))
+    )
     try {
       const vesselGroupsParams = {
-        ...(ids?.length && { ids }),
+        ...(vesselGroupsNotLoaded?.length && { ids: vesselGroupsNotLoaded }),
         cache: false,
         ...DEFAULT_PAGINATION_PARAMS,
       }

@@ -53,10 +53,3 @@ export const selectIsVessselGroupsFiltering = createSelector(
     return workspaceVesselGroupIds.length > 0
   }
 )
-
-export const selectVessselGroupsInWorkspace = createSelector(
-  [selectDataviewInstancesResolvedVisible],
-  (dataviews = []) => {
-    return dataviews.flatMap((dataview) => dataview.config?.filters?.['vessel-groups'] || [])
-  }
-)
