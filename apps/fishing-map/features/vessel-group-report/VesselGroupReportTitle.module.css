@@ -17,6 +17,11 @@
   padding-top: 0;
 }
 
+.userLabel {
+  line-height: 0.5;
+  margin-top: var(--space-S);
+}
+
 .title {
   font: var(--font-L);
   font-size: 2.2rem;

@@ -1,0 +1,1 @@
+export const OTHER_CATEGORY_LABEL = 'OTHER'

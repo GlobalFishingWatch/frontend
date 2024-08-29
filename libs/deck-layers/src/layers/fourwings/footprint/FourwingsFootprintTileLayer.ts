@@ -27,6 +27,7 @@ import {
 import {
   FourwingsAggregationOperation,
   FourwingsDeckSublayer,
+  FourwingsHeatmapTilesCache,
   FourwingsTileLayerColorScale,
   GetViewportDataParams,
 } from '../fourwings.types'
@@ -38,8 +39,7 @@ import {
 import { FourwingsFootprintLayer } from './FourwingsFootprintLayer'
 import {
   FourwingsFootprintTileLayerProps,
-  FourwingsHeatmapTilesCache,
-  FourwingsTileLayerState,
+  FourwingsFootprintTileLayerState,
 } from './fourwings-footprint.types'
 
 const defaultProps: DefaultProps<FourwingsFootprintTileLayerProps> = {
@@ -53,7 +53,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   static layerName = 'FourwingsFootprintTileLayer'
   static defaultProps = defaultProps
   initialBinsLoad = false
-  state!: FourwingsTileLayerState
+  state!: FourwingsFootprintTileLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -81,7 +81,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     return true
   }
 
-  _fetchTimeseriesTileData: any = async (tile: TileLoadProps) => {
+  _fetchTileData: any = async (tile: TileLoadProps) => {
     const { startTime, endTime, sublayers, availableIntervals, tilesUrl, extentStart } = this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     let cols: number = 0
@@ -175,7 +175,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     if (tile.signal?.aborted) {
       return null
     }
-    return this._fetchTimeseriesTileData(tile)
+    return this._fetchTileData(tile)
   }
 
   _getTileDataCache = ({

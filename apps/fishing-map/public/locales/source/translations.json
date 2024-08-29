@@ -207,6 +207,11 @@
     "share": "Share the current view",
     "since": "since",
     "sources": "Sources",
+    "sourceOptions": {
+      "both": "Registry and self reported",
+      "registryOnly": "Registry only",
+      "selfReportedOnly": "Self reported only"
+    },
     "summary": "Summary",
     "timerange": "Time range",
     "timerangeDaysFromLatest": "Days from latest data update (1-100)",
@@ -1022,7 +1027,8 @@
   "vesselGroupReport": {
     "clickToSee": "Click to see the vessel group report",
     "linkToReport": "Check the vessel group report here",
-    "notFound": "Vessel group not found"
+    "notFound": "Vessel group not found",
+    "user": "User Vessel Group"
   },
   "workspace": {
     "add": "Add to workspace",
