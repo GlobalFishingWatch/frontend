@@ -3,6 +3,7 @@ import { groupBy } from 'es-toolkit'
 import { IdentityVessel } from '@globalfishingwatch/api-types'
 import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel.config.selectors'
 import { OTHER_CATEGORY_LABEL } from 'features/vessel-group-report/vessel-group-report.config'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselGroupReportVessels } from '../vessel-group-report.slice'
 
 export const selectVesselGroupReportVesselsGraphDataGrouped = createSelector(
@@ -12,34 +13,23 @@ export const selectVesselGroupReportVesselsGraphDataGrouped = createSelector(
     let vesselsGrouped = {}
     switch (subsection) {
       case 'flag':
-        vesselsGrouped = groupBy(vessels, (vessel) => vessel.selfReportedInfo[0].flag)
+        vesselsGrouped = groupBy(vessels, (vessel) => getVesselProperty(vessel, 'flag'))
         break
       case 'shiptypes':
-        vesselsGrouped = groupBy(
-          vessels,
-          (vessel) => vessel.combinedSourcesInfo[0].shiptypes[0].name
-        )
+        vesselsGrouped = groupBy(vessels, (vessel) => getVesselProperty(vessel, 'shiptypes')?.[0])
         break
       case 'geartypes':
-        vesselsGrouped = groupBy(
-          vessels,
-          (vessel) => vessel.combinedSourcesInfo[0].geartypes[0].name
-        )
+        vesselsGrouped = groupBy(vessels, (vessel) => getVesselProperty(vessel, 'geartypes')?.[0])
         break
       case 'source':
         vesselsGrouped = vessels.reduce(
           (acc, vessel) => {
             if (vessel.registryInfo?.length && vessel.selfReportedInfo?.length) {
               acc.both.push(vessel)
-              return acc
-            }
-            if (vessel.registryInfo?.length) {
+            } else if (vessel.registryInfo?.length) {
               acc.registryOnly.push(vessel)
-              return acc
-            }
-            if (vessel.selfReportedInfo?.length) {
+            } else if (vessel.selfReportedInfo?.length) {
               acc.selfReportedOnly.push(vessel)
-              return acc
             }
             return acc
           },
@@ -65,11 +55,11 @@ export const selectVesselGroupReportVesselsGraphDataGrouped = createSelector(
     if (orderedGroups.length <= 9) {
       return orderedGroups
     }
-    const firstTen = orderedGroups.slice(0, 9)
+    const firstNine = orderedGroups.slice(0, 9)
     const other = orderedGroups.slice(9)
 
     return [
-      ...firstTen,
+      ...firstNine,
       {
         name: OTHER_CATEGORY_LABEL,
         value: other.reduce((acc, group) => acc + group.value, 0),

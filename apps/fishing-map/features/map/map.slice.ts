@@ -239,7 +239,6 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
       console.warn('fetchInteraction not possible, 0 features')
       return
     }
-    debugger
     const { featuresDataviews, fourWingsDataset, datasetConfig } =
       getInteractionEndpointDatasetConfig(heatmapFeatures, [
         ...temporalgridDataviews,

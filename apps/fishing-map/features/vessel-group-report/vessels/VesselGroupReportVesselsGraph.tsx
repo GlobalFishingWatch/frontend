@@ -70,8 +70,6 @@ const CustomTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount } = props
   const { t } = useTranslation()
   const subsection = useSelector(selectVesselGroupReportVesselsSubsection)
-  // const othersData = useSelector(selectReportVesselsGraphDataOthers)
-  // const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
   const isCategoryInteractive = !EMPTY_API_VALUES.includes(payload.value)
 
@@ -91,42 +89,6 @@ const CustomTick = (props: any) => {
     }
   }
 
-  // const filterProperties = {
-  //   [REPORT_VESSELS_GRAPH_FLAG]: 'flag',
-  //   [REPORT_VESSELS_GRAPH_GEARTYPE]: 'gear',
-  //   [REPORT_VESSELS_GRAPH_VESSELTYPE]: 'type',
-  // }
-
-  // const onLabelClick = () => {
-  //   if (isCategoryInteractive) {
-  //     const vesselFilter = isOtherCategory
-  //       ? cleanFlagState(
-  //           othersData!
-  //             ?.flatMap((d) => (EMPTY_API_VALUES.includes(d.name) ? [] : getTickLabel(d.name)))
-  //             .join('|')
-  //         )
-  //       : getTickLabel(payload.value)
-  //     dispatchQueryParams({
-  //       reportVesselFilter: `${filterProperties[selectedReportVesselGraph]}:${vesselFilter}`,
-  //       reportVesselPage: 0,
-  //     })
-  //   }
-  // }
-
-  // const tooltip = isOtherCategory ? (
-  //   <ul>
-  //     {othersData!?.slice(0, MAX_OTHER_TOOLTIP_ITEMS).map(({ name, value }) => (
-  //       <li key={`${name}-${value}`}>{`${getTickLabel(name)}: ${value}`}</li>
-  //     ))}
-  //     {othersData!?.length > MAX_OTHER_TOOLTIP_ITEMS && (
-  //       <li>
-  //         + {othersData!?.length - MAX_OTHER_TOOLTIP_ITEMS} {t('analysis.others', 'Others')}
-  //       </li>
-  //     )}
-  //   </ul>
-  // ) : (
-  //   ''
-  // )
   const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)
   const labelChunks = label.split(' ')
   let labelChunksClean = [labelChunks[0]]
@@ -161,7 +123,7 @@ const CustomTick = (props: any) => {
   )
 }
 
-export default function ReportVesselsGraph() {
+export default function VesselGroupReportVesselsGraph() {
   const { t } = useTranslation()
   // const dataviews = useSelector(selectDataviewInstancesByCategory(DataviewCategory.VesselGroups))
   const data = useSelector(selectVesselGroupReportVesselsGraphDataGrouped)
@@ -169,7 +131,7 @@ export default function ReportVesselsGraph() {
   return (
     <Fragment>
       <div className={styles.graph} data-test="report-vessels-graph">
-        {data ? (
+        {data && (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               width={500}
@@ -201,10 +163,6 @@ export default function ReportVesselsGraph() {
               />
             </BarChart>
           </ResponsiveContainer>
-        ) : (
-          <ReportVesselsGraphPlaceholder animate={false}>
-            {t('analysis.noVesselDataFiltered', 'There are no vessels matching your filter')}
-          </ReportVesselsGraphPlaceholder>
         )}
       </div>
     </Fragment>

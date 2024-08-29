@@ -206,11 +206,6 @@
     "share": "Share map",
     "since": "since",
     "sources": "Sources",
-    "sourceOptions": {
-      "both": "Registry and self reported",
-      "registryOnly": "Registry only",
-      "selfReportedOnly": "Self reported only"
-    },
     "summary": "Summary",
     "timerange": "Time range",
     "timerangeDaysFromLatest": "Days from latest data update (1-100)",
