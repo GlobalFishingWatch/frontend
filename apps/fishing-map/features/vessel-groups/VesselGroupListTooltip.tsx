@@ -3,7 +3,7 @@ import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import React from 'react'
-import { Popover } from '@globalfishingwatch/ui-components'
+import { Popover, Spinner } from '@globalfishingwatch/ui-components'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import styles from './VesselGroupListTooltip.module.css'
@@ -30,6 +30,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
     <Popover
       open={vesselGroupsOpen}
       onOpenChange={toggleVesselGroupsOpen}
+      placement="right"
       content={
         <ul className={styles.groupOptions}>
           {hasUserGroupsPermissions && (
@@ -45,9 +46,14 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
             <li
               className={styles.groupOption}
               key={group.id}
-              onClick={() => onAddToVesselGroup?.(group.id)}
+              onClick={
+                !group.loading && onAddToVesselGroup
+                  ? () => onAddToVesselGroup(group.id)
+                  : undefined
+              }
             >
               {group.label}
+              {group.loading && <Spinner className={styles.groupLoading} size="tiny" />}
             </li>
           ))}
         </ul>

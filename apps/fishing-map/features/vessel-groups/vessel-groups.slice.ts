@@ -331,6 +331,16 @@ const removeDuplicatedVesselGroupvessels = (vessels: VesselGroupVessel[]) => {
   return uniqBy(vessels, (vessel) => [vessel.vesselId, vessel.dataset].join(','))
 }
 
+export const fetchVesselGroupByIdThunk = createAsyncThunk(
+  'vessel-groups/fetchById',
+  async (vesselGroupId: string) => {
+    if (vesselGroupId) {
+      const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${id}`)
+      return vesselGroup
+    }
+  }
+)
+
 export const createVesselGroupThunk = createAsyncThunk(
   'vessel-groups/create',
   async (vesselGroupCreate: VesselGroupUpsert, { dispatch, getState }) => {
@@ -362,9 +372,12 @@ export const createVesselGroupThunk = createAsyncThunk(
   }
 )
 
+export type UpdateVesselGroupThunkParams = VesselGroupUpsert & {
+  id: string
+}
 export const updateVesselGroupThunk = createAsyncThunk(
   'vessel-groups/update',
-  async (vesselGroupUpsert: VesselGroupUpsert & { id: string }) => {
+  async (vesselGroupUpsert: UpdateVesselGroupThunkParams) => {
     const { id, ...rest } = vesselGroupUpsert
     const vesselGroup: VesselGroupUpsert = {
       ...rest,
@@ -380,13 +393,13 @@ export const updateVesselGroupThunk = createAsyncThunk(
 
 export const updateVesselGroupVesselsThunk = createAsyncThunk(
   'vessel-groups/update-vessels',
-  async (
-    { id, vessels = [] }: Pick<VesselGroupUpsert, 'vessels'> & { id: string },
-    { getState, dispatch }
-  ) => {
+  async ({ id, vessels = [] }: UpdateVesselGroupThunkParams, { getState, dispatch }) => {
     let vesselGroup = selectVesselGroupById(id)(getState() as any)
     if (!vesselGroup) {
-      vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${id}`)
+      const action = await dispatch(fetchVesselGroupByIdThunk(id))
+      if (fetchVesselGroupByIdThunk.fulfilled.match(action) && action.payload) {
+        vesselGroup = action.payload
+      }
     }
     if (vesselGroup) {
       return dispatch(
@@ -513,6 +526,7 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
   },
   thunks: {
     fetchThunk: fetchUserVesselGroupsThunk,
+    fetchByIdThunk: fetchVesselGroupByIdThunk,
     updateThunk: updateVesselGroupThunk,
     createThunk: createVesselGroupThunk,
     deleteThunk: deleteVesselGroupThunk,
