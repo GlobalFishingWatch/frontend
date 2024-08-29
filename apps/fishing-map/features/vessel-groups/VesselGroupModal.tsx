@@ -159,6 +159,7 @@ function VesselGroupModal(): React.ReactElement {
           dispatch(setVesselGroupSearchVessels(undefined))
           dispatch(resetVesselGroupStatus(''))
           abortSearch()
+          setShowBackButton(false)
         } else {
           close()
         }
