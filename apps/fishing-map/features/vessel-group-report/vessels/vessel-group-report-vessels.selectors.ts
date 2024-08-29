@@ -1,18 +1,64 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
 import { IdentityVessel } from '@globalfishingwatch/api-types'
-import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { OTHER_CATEGORY_LABEL } from 'features/vessel-group-report/vessel-group-report.config'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import {
   selectVesselGroupReportResultsPerPage,
   selectVesselGroupReportVesselPage,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
+import {
+  selectVesselGroupReportVesselsOrderDirection,
+  selectVesselGroupReportVesselsOrderProperty,
+  selectVesselGroupReportVesselsSubsection,
+} from '../vessel-group.config.selectors'
 import { selectVesselGroupReportVessels } from '../vessel-group-report.slice'
+
+const selectVesselGroupReportVesselsWithDefaultOrder = createSelector(
+  [selectVesselGroupReportVessels],
+  (vessels) => {
+    if (!vessels?.length) return []
+    return vessels.toSorted((a, b) => {
+      const aValue = getVesselProperty(a, 'shipname')
+      const bValue = getVesselProperty(b, 'shipname')
+      if (aValue === bValue) {
+        return 0
+      }
+      return aValue > bValue ? 1 : -1
+    })
+  }
+)
+export const selectVesselGroupReportVesselsOrdered = createSelector(
+  [
+    selectVesselGroupReportVesselsWithDefaultOrder,
+    selectVesselGroupReportVesselsOrderProperty,
+    selectVesselGroupReportVesselsOrderDirection,
+  ],
+  (vessels, property, direction) => {
+    if (!vessels?.length) return []
+    return vessels.toSorted((a, b) => {
+      const aValue =
+        property === 'shiptype'
+          ? getVesselProperty(a, 'shiptypes')?.[0]
+          : getVesselProperty(a, property)
+      const bValue =
+        property === 'shiptype'
+          ? getVesselProperty(b, 'shiptypes')?.[0]
+          : getVesselProperty(b, property)
+      if (aValue === bValue) {
+        return 0
+      }
+      if (direction === 'asc') {
+        return aValue > bValue ? 1 : -1
+      }
+      return aValue > bValue ? -1 : 1
+    })
+  }
+)
 
 export const selectVesselGroupReportVesselsPaginated = createSelector(
   [
-    selectVesselGroupReportVessels,
+    selectVesselGroupReportVesselsOrdered,
     selectVesselGroupReportVesselPage,
     selectVesselGroupReportResultsPerPage,
   ],

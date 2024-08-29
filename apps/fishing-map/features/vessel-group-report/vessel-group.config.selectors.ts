@@ -37,3 +37,9 @@ export const selectVesselGroupReportVesselPage = selectVesselGroupReportStatePro
 export const selectVesselGroupReportResultsPerPage = selectVesselGroupReportStateProperty(
   'vesselGroupReportResultsPerPage'
 )
+export const selectVesselGroupReportVesselsOrderProperty = selectVesselGroupReportStateProperty(
+  'vesselGroupReportVesselsOrderProperty'
+)
+export const selectVesselGroupReportVesselsOrderDirection = selectVesselGroupReportStateProperty(
+  'vesselGroupReportVesselsOrderDirection'
+)

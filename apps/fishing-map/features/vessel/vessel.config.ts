@@ -30,6 +30,8 @@ export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
   vesselGroupReportEventsSubsection: 'encounters',
   vesselGroupReportVesselPage: 0,
   vesselGroupReportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+  vesselGroupReportVesselsOrderProperty: 'shipname',
+  vesselGroupReportVesselsOrderDirection: 'asc',
 }
 
 export type VesselRenderField<Key = string> = {

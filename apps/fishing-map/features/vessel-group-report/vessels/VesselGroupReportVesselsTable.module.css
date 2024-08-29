@@ -19,6 +19,15 @@
   font: var(--font-S);
   color: var(--color-secondary-blue);
   text-transform: uppercase;
+  display: flex;
+}
+
+.sortIcon:not(.active) {
+  display: none;
+}
+
+.header:hover .sortIcon {
+  display: block;
 }
 
 .vesselsTable > div:not(.header) {
