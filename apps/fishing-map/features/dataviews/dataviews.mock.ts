@@ -14,7 +14,7 @@ const dataviews: Dataview[] = [
     datasetsConfig: [
       {
         filters: {
-          'encounter-types': [
+          encounter_type: [
             'CARRIER-FISHING',
             // 'FISHING-CARRIER',
             'FISHING-SUPPORT',
