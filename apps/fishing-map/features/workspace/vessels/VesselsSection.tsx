@@ -29,7 +29,8 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/VesselGroupListTooltip'
+import { selectVessselGroupsInWorkspace } from 'features/vessel-groups/vessel-groups.selectors'
+import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
@@ -48,6 +49,7 @@ function VesselsSection(): React.ReactElement {
   const dataviews = useSelector(selectVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(selectIsGuestUser)
+  const vesselGroupsInWorkspace = useSelector(selectVessselGroupsInWorkspace)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselTracksData = useTimebarVesselTracksData()
   const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)
@@ -77,16 +79,20 @@ function VesselsSection(): React.ReactElement {
   const onAddToVesselGroupClick = useCallback(
     (vesselGroupId?: string) => {
       if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {
-        const dataviewInstance = getVesselGroupDataviewInstance(vesselGroupId)
-        if (dataviewInstance) {
-          const dataviewsToDelete = dataviews.flatMap((d) =>
-            d.config?.visible ? { id: d.id, deleted: true } : []
-          )
-          upsertDataviewInstance([...dataviewsToDelete, dataviewInstance])
-        }
+        const isVesselGroupInWorkspace = vesselGroupsInWorkspace.includes(vesselGroupId)
+        const dataviewInstance = !isVesselGroupInWorkspace
+          ? getVesselGroupDataviewInstance(vesselGroupId)
+          : undefined
+        const dataviewsToDelete = dataviews.flatMap((d) =>
+          d.config?.visible ? { id: d.id, deleted: true } : []
+        )
+        upsertDataviewInstance([
+          ...dataviewsToDelete,
+          ...(dataviewInstance ? [dataviewInstance] : []),
+        ])
       }
     },
-    [dataviews, upsertDataviewInstance]
+    [dataviews, upsertDataviewInstance, vesselGroupsInWorkspace]
   )
 
   const onSetSortOrderClick = useCallback(() => {

@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import React from 'react'
 import { Popover, Spinner } from '@globalfishingwatch/ui-components'
-import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
+import {
+  NEW_VESSEL_GROUP_ID,
+  useVesselGroupsOptions,
+} from 'features/vessel-groups/vessel-groups.hooks'
 import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import styles from './VesselGroupListTooltip.module.css'
-
-export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 
 type VesselGroupListTooltipProps = {
   children?: React.ReactNode

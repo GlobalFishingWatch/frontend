@@ -18,7 +18,8 @@ import {
   UpdateVesselGroupThunkParams,
   updateVesselGroupVesselsThunk,
 } from './vessel-groups.slice'
-import { NEW_VESSEL_GROUP_ID } from './VesselGroupListTooltip'
+
+export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 
 export type AddVesselGroupVessel =
   | VesselLastIdentity
