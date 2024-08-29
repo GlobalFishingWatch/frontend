@@ -40,3 +40,7 @@
 .graph :global(.recharts-tooltip-cursor) {
   fill: var(--color-terthiary-blue);
 }
+
+.bar {
+  transition: fill 300ms linear;
+}

@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next'
 import { VesselGroupReportVesselsSubsection } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
-import { getVesselGearType, getVesselShipType } from 'utils/info'
+import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { selectVesselGroupReportVesselsGraphDataGrouped } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
+import { selectReportVesselGroupId } from 'routes/routes.selectors'
+import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import styles from './VesselGroupReportVesselsGraph.module.css'
-
-const MAX_OTHER_TOOLTIP_ITEMS = 10
 
 type ReportGraphTooltipProps = {
   active: boolean
@@ -35,13 +35,13 @@ const ReportGraphTooltip = (props: any) => {
   let translatedLabel = ''
   if (EMPTY_API_VALUES.includes(label)) translatedLabel = t('common.unknown', 'Unknown')
   else if (type === 'geartypes') {
-    translatedLabel = getVesselGearType({ geartypes: label })
+    translatedLabel = getVesselGearTypeLabel({ geartypes: label })
   } else if (type === 'shiptypes') {
-    translatedLabel = getVesselShipType({ shiptypes: label })
+    translatedLabel = getVesselShipTypeLabel({ shiptypes: label })
   } else if (type === 'source') {
     translatedLabel = t(`common.sourceOptions.${label}` as any, label)
   } else {
-    translatedLabel = t(`flags:${label}` as any, label)
+    translatedLabel = formatInfoField(label, 'flag') as string
   }
   if (active && payload && payload.length) {
     return (
@@ -76,11 +76,11 @@ const CustomTick = (props: any) => {
     if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
     switch (subsection) {
       case 'geartypes':
-        return getVesselGearType({ geartypes: label })
+        return getVesselGearTypeLabel({ geartypes: label })
       case 'shiptypes':
-        return `${t(`vessel.vesselTypes.${label?.toLowerCase()}` as any, label)}`
+        return getVesselShipTypeLabel({ shiptypes: label })
       case 'flag':
-        return t(`flags:${label}` as any, label)
+        return formatInfoField(label, 'flag') as string
       case 'source':
         return t(`common.sourceOptions.${label}` as any, label)
       default:
@@ -123,8 +123,12 @@ const CustomTick = (props: any) => {
 }
 
 export default function VesselGroupReportVesselsGraph() {
-  const { t } = useTranslation()
-  // const dataviews = useSelector(selectDataviewInstancesByCategory(DataviewCategory.VesselGroups))
+  const dataviews = useSelector(selectActiveDataviewInstancesResolved)
+  const reportVesselGroupId = useSelector(selectReportVesselGroupId)
+  const reportDataview = dataviews?.find(({ config }) =>
+    config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
+  )
+
   const data = useSelector(selectVesselGroupReportVesselsGraphDataGrouped)
   const selectedReportVesselGraph = useSelector(selectVesselGroupReportVesselsSubsection)
   return (
@@ -146,7 +150,11 @@ export default function VesselGroupReportVesselsGraph() {
               {data && (
                 <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
               )}
-              <Bar dataKey="value" fill={'#007bff'}>
+              <Bar
+                className={styles.bar}
+                dataKey="value"
+                fill={reportDataview?.config?.color || 'rgb(22, 63, 137)'}
+              >
                 <LabelList
                   position="top"
                   valueAccessor={(entry: any) => formatI18nNumber(entry.value)}

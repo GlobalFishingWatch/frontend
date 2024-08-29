@@ -29,12 +29,10 @@ export default function VesselGroupReportVesselsTableFooter({
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const allVessels = useSelector(selectVesselGroupReportVessels)
-  console.log('allVessels:', allVessels)
   const allFilteredVessels = useSelector(selectVesselGroupReportVessels)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   // const reportAreaName = useSelector(selectReportAreaName)
   const pagination = useSelector(selectVesselGroupReportVesselsPagination)
-  console.log('pagination:', pagination)
   const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
@@ -111,7 +109,6 @@ export default function VesselGroupReportVesselsTableFooter({
   const isLastPaginationPage =
     // pagination?.offset + pagination?.resultsPerPage >= (pagination?.totalFiltered as number)
     pagination?.offset + pagination?.resultsPerPage >= (pagination?.total as number)
-  console.log('pagination:', pagination)
 
   return (
     <div className={styles.footer}>

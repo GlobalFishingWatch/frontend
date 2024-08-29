@@ -16,8 +16,8 @@ import {
 import {
   formatInfoField,
   EMPTY_FIELD_PLACEHOLDER,
-  getVesselGearType,
-  getVesselShipType,
+  getVesselGearTypeLabel,
+  getVesselShipTypeLabel,
   getVesselOtherNamesLabel,
 } from 'utils/info'
 import I18nFlag from 'features/i18n/i18nFlag'
@@ -125,7 +125,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const shiptypes = getVesselProperty(vessel, 'shiptypes', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
           })
-          const label = getVesselShipType({ shiptypes })
+          const label = getVesselShipTypeLabel({ shiptypes })
           return (
             <CellWithFilter vessel={vessel} column="shiptypes" onClick={fetchResults}>
               {label || EMPTY_FIELD_PLACEHOLDER}
@@ -140,7 +140,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const geartypes = getVesselProperty(vessel, 'geartypes', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
           })
-          const label = getVesselGearType({ geartypes })
+          const label = getVesselGearTypeLabel({ geartypes })
           return (
             <CellWithFilter vessel={vessel} column="geartypes" onClick={fetchResults}>
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}>
@@ -159,7 +159,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const geartypes = getVesselProperty(vessel, 'geartypes', {
             identitySource: VesselIdentitySourceEnum.Registry,
           })
-          const label = getVesselGearType({ geartypes })
+          const label = getVesselGearTypeLabel({ geartypes })
           return (
             <CellWithFilter
               vessel={vessel}

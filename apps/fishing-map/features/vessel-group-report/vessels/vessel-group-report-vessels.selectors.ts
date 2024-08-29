@@ -7,6 +7,7 @@ import {
   selectVesselGroupReportResultsPerPage,
   selectVesselGroupReportVesselPage,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
+import { formatInfoField, getVesselShipNameLabel, getVesselShipTypeLabel } from 'utils/info'
 import {
   selectVesselGroupReportVesselsOrderDirection,
   selectVesselGroupReportVesselsOrderProperty,
@@ -14,37 +15,27 @@ import {
 } from '../vessel-group.config.selectors'
 import { selectVesselGroupReportVessels } from '../vessel-group-report.slice'
 
-const selectVesselGroupReportVesselsWithDefaultOrder = createSelector(
-  [selectVesselGroupReportVessels],
-  (vessels) => {
-    if (!vessels?.length) return []
-    return vessels.toSorted((a, b) => {
-      const aValue = getVesselProperty(a, 'shipname')
-      const bValue = getVesselProperty(b, 'shipname')
-      if (aValue === bValue) {
-        return 0
-      }
-      return aValue > bValue ? 1 : -1
-    })
-  }
-)
 export const selectVesselGroupReportVesselsOrdered = createSelector(
   [
-    selectVesselGroupReportVesselsWithDefaultOrder,
+    selectVesselGroupReportVessels,
     selectVesselGroupReportVesselsOrderProperty,
     selectVesselGroupReportVesselsOrderDirection,
   ],
   (vessels, property, direction) => {
     if (!vessels?.length) return []
     return vessels.toSorted((a, b) => {
-      const aValue =
-        property === 'shiptype'
-          ? getVesselProperty(a, 'shiptypes')?.[0]
-          : getVesselProperty(a, property)
-      const bValue =
-        property === 'shiptype'
-          ? getVesselProperty(b, 'shiptypes')?.[0]
-          : getVesselProperty(b, property)
+      let aValue = ''
+      let bValue = ''
+      if (property === 'flag') {
+        aValue = formatInfoField(getVesselProperty(a, 'flag'), 'flag') as string
+        bValue = formatInfoField(getVesselProperty(b, 'flag'), 'flag') as string
+      } else if (property === 'shiptype') {
+        aValue = getVesselShipTypeLabel({ shiptypes: getVesselProperty(a, 'shiptypes') })
+        bValue = getVesselShipTypeLabel({ shiptypes: getVesselProperty(b, 'shiptypes') })
+      } else {
+        aValue = getVesselShipNameLabel(a)
+        bValue = getVesselShipNameLabel(b)
+      }
       if (aValue === bValue) {
         return 0
       }

@@ -37,7 +37,7 @@ import { capitalize, sortFields } from 'utils/shared'
 import { t } from 'features/i18n/i18n'
 import { PUBLIC_SUFIX, FULL_SUFIX, DEFAULT_TIME_RANGE } from 'data/config'
 import { getFlags, getFlagsByIds } from 'utils/flags'
-import { getVesselGearType, getVesselShipType } from 'utils/info'
+import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
@@ -732,9 +732,9 @@ export const getCommonSchemaFieldsInDataview = (
         if (label === field) {
           if (schema === 'geartypes' || schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
-            label = getVesselGearType({ geartypes: field as string })
+            label = getVesselGearTypeLabel({ geartypes: field as string })
           } else if (schema === 'vessel_type') {
-            label = getVesselShipType({ shiptypes: field as string })
+            label = getVesselShipTypeLabel({ shiptypes: field as string })
           } else if (
             dataview.category !== DataviewCategory.Context &&
             schema !== 'vessel_id' &&

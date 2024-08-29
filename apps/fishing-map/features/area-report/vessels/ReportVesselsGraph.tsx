@@ -15,7 +15,7 @@ import {
   REPORT_VESSELS_GRAPH_VESSELTYPE,
 } from 'data/config'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
-import { getVesselGearType } from 'utils/info'
+import { getVesselGearTypeLabel } from 'utils/info'
 import {
   cleanFlagState,
   selectReportDataviewsWithPermissions,
@@ -48,7 +48,7 @@ const ReportGraphTooltip = (props: any) => {
   let translatedLabel = ''
   if (EMPTY_API_VALUES.includes(label)) translatedLabel = t('common.unknown', 'Unknown')
   else if (type === 'geartype') {
-    translatedLabel = getVesselGearType({ geartypes: label })
+    translatedLabel = getVesselGearTypeLabel({ geartypes: label })
   } else {
     translatedLabel = t(`flags:${label}` as any, label)
   }
@@ -88,7 +88,7 @@ const CustomTick = (props: any) => {
     if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
     switch (selectedReportVesselGraph) {
       case 'geartype':
-        return getVesselGearType({ geartypes: label })
+        return getVesselGearTypeLabel({ geartypes: label })
       case 'vesselType':
         return `${t(`vessel.vesselTypes.${label?.toLowerCase()}` as any, label)}`
       case 'flag':

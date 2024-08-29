@@ -18,8 +18,8 @@ import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
-  getVesselGearType,
-  getVesselShipType,
+  getVesselGearTypeLabel,
+  getVesselShipTypeLabel,
 } from 'utils/info'
 import {
   filterRegistryInfoByDateAndSSVID,
@@ -84,8 +84,8 @@ const VesselIdentity = () => {
         ...vesselIdentity,
         nShipname: formatInfoField(shipname, 'shipname') as string,
         flag: t(`flags:${flag}`, flag) as string,
-        shiptypes: getVesselShipType(vesselIdentity, { joinCharacter: ' -' }), // Can't be commas as it would break the csv format
-        geartypes: getVesselGearType(vesselIdentity, { joinCharacter: ' -' }),
+        shiptypes: getVesselShipTypeLabel(vesselIdentity, { joinCharacter: ' -' }), // Can't be commas as it would break the csv format
+        geartypes: getVesselGearTypeLabel(vesselIdentity, { joinCharacter: ' -' }),
         registryPublicAuthorizations:
           registryPublicAuthorizations &&
           filterRegistryInfoByDateAndSSVID(registryPublicAuthorizations, timerange, ssvid),

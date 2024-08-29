@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import { VesselType } from '@globalfishingwatch/api-types'
+import { EMPTY_FIELD_PLACEHOLDER, getVesselShipNameLabel, getVesselShipTypeLabel } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
@@ -110,9 +111,10 @@ export default function VesselGroupReportVesselsTable() {
             const vesselFlag = getVesselProperty(vessel, 'flag')
             const flag = t(`flags:${vesselFlag}` as any, EMPTY_FIELD_PLACEHOLDER)
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vesselFlag)
-            const vesselType = getVesselProperty(vessel, 'shiptypes')?.[0]
-            const type = t(`vessel.vesselTypes.${vesselType?.toLowerCase()}` as any, vesselType)
-            const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
+            const type = getVesselShipTypeLabel({
+              shiptypes: getVesselProperty(vessel, 'shiptypes'),
+            })
+            const typeInteractionEnabled = type !== (EMPTY_FIELD_PLACEHOLDER as VesselType)
             //   ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
             //   : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
             const pinTrackDisabled = workspaceStatus !== AsyncReducerStatus.Finished
@@ -129,10 +131,10 @@ export default function VesselGroupReportVesselsTable() {
                       vesselId={vesselId}
                       datasetId={vessel.dataset}
                     >
-                      {formatInfoField(getVesselProperty(vessel, 'shipname'), 'name')}
+                      {getVesselShipNameLabel(vessel)}
                     </VesselLink>
                   ) : (
-                    formatInfoField(getVesselProperty(vessel, 'shipname'), 'name')
+                    getVesselShipNameLabel(vessel)
                   )}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
