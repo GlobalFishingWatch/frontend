@@ -1,7 +1,9 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { useSelector } from 'react-redux'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import ReportTitlePlaceholder from 'features/area-report/placeholders/ReportTitlePlaceholder'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -11,8 +13,11 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups.slice'
 import { formatInfoField } from 'utils/info'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectHasOtherVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import styles from './VesselGroupReportTitle.module.css'
 import { VesselGroupReport } from './vessel-group-report.slice'
+import { selectViewOnlyVesselGroup } from './vessel.config.selectors'
 
 type ReportTitleProps = {
   loading?: boolean
@@ -22,6 +27,10 @@ type ReportTitleProps = {
 export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportTitleProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { dispatchQueryParams } = useLocationConnect()
+  const isSmallScreen = useSmallScreen()
+  const viewOnlyVesselGroup = useSelector(selectViewOnlyVesselGroup)
+  const hasOtherLayers = useSelector(selectHasOtherVesselGroupDataviews)
 
   const onEditClick = useCallback(() => {
     if (vesselGroup?.id || !vesselGroup?.vessels?.length) {
@@ -37,6 +46,11 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
       action: `Click print/save as pdf`,
     })
     window.print()
+  }
+
+  const toggleViewOnlyVesselGroup = () => {
+    if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+    dispatchQueryParams({ viewOnlyVesselGroup: !viewOnlyVesselGroup })
   }
 
   if (loading) {
@@ -62,6 +76,21 @@ export default function VesselGroupReportTitle({ vesselGroup, loading }: ReportT
         </a>
 
         <div className={styles.actions}>
+          {hasOtherLayers && (
+            <IconButton
+              className="print-hidden"
+              type="border"
+              icon={viewOnlyVesselGroup ? 'layers-on' : 'layers-off'}
+              tooltip={
+                viewOnlyVesselGroup
+                  ? t('vessel.showOtherLayers', 'Show other layers')
+                  : t('vessel.hideOtherLayers', 'Hide other layers')
+              }
+              tooltipPlacement="bottom"
+              size="small"
+              onClick={toggleViewOnlyVesselGroup}
+            />
+          )}
           <Button
             type="border-secondary"
             size="small"

@@ -64,9 +64,6 @@ export const routesMap: RoutesMap = {
   [REPORT]: {
     path: '/report/:reportId',
   },
-  [VESSEL_GROUP_REPORT]: {
-    path: '/vessel-group-report/:vesselGroupId',
-  },
   [VESSEL]: {
     path: '/vessel/:vesselId',
   },
@@ -85,6 +82,9 @@ export const routesMap: RoutesMap = {
   },
   [WORKSPACE_REPORT]: {
     path: '/:category/:workspaceId/report/:datasetId?/:areaId?',
+  },
+  [VESSEL_GROUP_REPORT]: {
+    path: '/:category/:workspaceId/vessel-group-report/:vesselGroupId',
   },
   [NOT_FOUND]: {
     path: '',

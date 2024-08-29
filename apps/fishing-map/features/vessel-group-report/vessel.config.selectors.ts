@@ -5,7 +5,7 @@ import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/vessel/vessel.config
 
 type VesselGroupReportProperty<P extends VesselGroupReportStateProperty> =
   Required<VesselGroupReportState>[P]
-export function selectVesselProfileStateProperty<P extends VesselGroupReportStateProperty>(
+function selectVesselGroupReportStateProperty<P extends VesselGroupReportStateProperty>(
   property: P
 ) {
   return createSelector(
@@ -17,15 +17,16 @@ export function selectVesselProfileStateProperty<P extends VesselGroupReportStat
   )
 }
 
-export const selectVesselGroupReportSection = selectVesselProfileStateProperty(
+export const selectViewOnlyVesselGroup = selectVesselGroupReportStateProperty('viewOnlyVesselGroup')
+export const selectVesselGroupReportSection = selectVesselGroupReportStateProperty(
   'vesselGroupReportSection'
 )
-export const selectVesselGroupReportVesselsSubsection = selectVesselProfileStateProperty(
+export const selectVesselGroupReportVesselsSubsection = selectVesselGroupReportStateProperty(
   'vesselGroupReportVesselsSubsection'
 )
-export const selectVesselGroupReportActivitySubsection = selectVesselProfileStateProperty(
+export const selectVesselGroupReportActivitySubsection = selectVesselGroupReportStateProperty(
   'vesselGroupReportActivitySubsection'
 )
-export const selectVesselGroupReportEventsSubsection = selectVesselProfileStateProperty(
+export const selectVesselGroupReportEventsSubsection = selectVesselGroupReportStateProperty(
   'vesselGroupReportEventsSubsection'
 )

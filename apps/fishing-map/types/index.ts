@@ -162,6 +162,7 @@ export type VesselGroupReportActivitySubsection = 'fishing-effort' | 'presence'
 export type VesselGroupReportEventsSubsection = 'fishing' | 'encounters' | 'port' | 'loitering'
 
 export type VesselGroupReportState = {
+  viewOnlyVesselGroup: boolean
   vesselGroupReportSection: VesselGroupReportSection
   vesselGroupReportVesselsSubsection?: VesselGroupReportVesselsSubsection
   vesselGroupReportActivitySubsection?: VesselGroupReportActivitySubsection

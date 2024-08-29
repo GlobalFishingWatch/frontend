@@ -27,6 +27,8 @@ import {
   selectIsAnyVesselLocation,
   selectVesselId,
   selectIsAnyReportLocation,
+  selectIsVesselGroupReportLocation,
+  selectReportVesselGroupId,
 } from 'routes/routes.selectors'
 import { getReportCategoryFromDataview } from 'features/area-report/reports.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
@@ -40,6 +42,7 @@ import {
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
+import { selectViewOnlyVesselGroup } from 'features/vessel-group-report/vessel.config.selectors'
 import {
   selectContextAreasDataviews,
   selectActivityDataviews,
@@ -48,7 +51,7 @@ import {
   selectEventsDataviews,
 } from './dataviews.categories.selectors'
 
-const VESSEL_ONLY_VISIBLE_LAYERS = [
+const REPORT_ONLY_VISIBLE_LAYERS = [
   DataviewType.Basemap,
   DataviewType.Context,
   DataviewType.UserContext,
@@ -97,6 +100,9 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectIsAnyVesselLocation,
     selectViewOnlyVessel,
     selectVesselId,
+    selectIsVesselGroupReportLocation,
+    selectReportVesselGroupId,
+    selectViewOnlyVesselGroup,
   ],
   (
     dataviews = [],
@@ -104,7 +110,10 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     reportCategory,
     isVesselLocation,
     viewOnlyVessel,
-    vesselId
+    vesselId,
+    isVesselGroupReportLocation,
+    reportVesselGroupId,
+    viewOnlyVesselGroup
   ) => {
     if (isReportLocation) {
       return dataviews.filter((dataview) => {
@@ -121,13 +130,46 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     }
     if (isVesselLocation && viewOnlyVessel && vesselId !== undefined) {
       return dataviews.filter(({ id, config }) => {
-        if (VESSEL_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
+        if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
           return config?.visible
         }
         return config?.type === DataviewType.Track && id.includes(vesselId)
       })
     }
+
+    if (isVesselGroupReportLocation && viewOnlyVesselGroup && reportVesselGroupId !== undefined) {
+      return getReportVesselGroupVisibleDataviews(dataviews, reportVesselGroupId)
+    }
+
     return dataviews.filter((dataview) => dataview.config?.visible)
+  }
+)
+
+function getReportVesselGroupVisibleDataviews(
+  dataviews: UrlDataviewInstance[],
+  reportVesselGroupId: string
+) {
+  return dataviews.filter(({ category, config }) => {
+    if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
+      return config?.visible
+    }
+    return (
+      category === DataviewCategory.VesselGroups &&
+      config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
+    )
+  })
+}
+
+export const selectHasOtherVesselGroupDataviews = createSelector(
+  [selectDataviewInstancesResolved, selectReportVesselGroupId],
+  (dataviews, reportVesselGroupId) => {
+    if (!dataviews?.length) return false
+    const vesselGroupReportDataviews = getReportVesselGroupVisibleDataviews(
+      dataviews,
+      reportVesselGroupId
+    )
+    const workspaceVisibleDataviews = dataviews.filter(({ config }) => config?.visible === true)
+    return workspaceVisibleDataviews.length > vesselGroupReportDataviews.length
   }
 )
 

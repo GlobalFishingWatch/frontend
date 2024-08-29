@@ -45,6 +45,7 @@ import {
   WORKSPACE_REPORT,
   SEARCH,
   WORKSPACE_SEARCH,
+  VESSEL_GROUP_REPORT,
 } from 'routes/routes'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { t } from 'features/i18n/i18n'
@@ -161,6 +162,7 @@ function App() {
   // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
   const locationNeedsFetch =
     locationType === REPORT ||
+    locationType === VESSEL_GROUP_REPORT ||
     (locationType === WORKSPACE_REPORT && currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
 
