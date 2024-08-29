@@ -48,10 +48,9 @@ const ReportGraphTooltip = (props: any) => {
         <p className={styles.tooltipLabel}>{translatedLabel}</p>
         <ul>
           {payload
-            .map(({ value, color }, index) => {
+            .map(({ value }, index) => {
               return value !== 0 ? (
                 <li key={index} className={styles.tooltipValue}>
-                  <span className={styles.tooltipValueDot} style={{ color }}></span>
                   <I18nNumber number={value} /> {t('common.vessel', { count: value }).toLowerCase()}
                 </li>
               ) : null
@@ -137,11 +136,9 @@ const CustomTick = (props: any) => {
   })
 
   return (
-    // <GFWTooltip content={tooltip} placement="bottom">
     <text
       className={cx({ [styles.axisLabel]: isCategoryInteractive })}
       transform={`translate(${x},${y - 3})`}
-      // onClick={onLabelClick}
     >
       {labelChunksClean.map((chunk) => (
         <Fragment key={chunk}>
@@ -157,7 +154,6 @@ const CustomTick = (props: any) => {
         </Fragment>
       ))}
     </text>
-    // </GFWTooltip>
   )
 }
 

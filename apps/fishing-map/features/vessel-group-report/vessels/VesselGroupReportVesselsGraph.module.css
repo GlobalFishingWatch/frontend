@@ -30,16 +30,6 @@
   color: var(--color-secondary-blue);
 }
 
-.tooltipValueDot {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 0.5rem;
-  display: inline-flex;
-  border: var(--border);
-  background-color: currentcolor;
-  margin-right: 0.5rem;
-}
-
 .graph tspan.info {
   text-transform: lowercase;
   font-family: serif;
