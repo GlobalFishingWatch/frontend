@@ -76,6 +76,14 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 ]
 
+export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
+  'public-global-presence:v3.0',
+  'public-chile-presence:v20211126',
+  'public-panama-presence:v20211126',
+  'public-norway-presence:v20220112',
+  'public-png-presence:v20230210',
+]
+
 const PRESENCE_DATAVIEWS = [
   VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
