@@ -1,10 +1,45 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
 import { IdentityVessel } from '@globalfishingwatch/api-types'
-import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel.config.selectors'
+import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { OTHER_CATEGORY_LABEL } from 'features/vessel-group-report/vessel-group-report.config'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import {
+  selectVesselGroupReportResultsPerPage,
+  selectVesselGroupReportVesselPage,
+} from 'features/vessel-group-report/vessel-group.config.selectors'
 import { selectVesselGroupReportVessels } from '../vessel-group-report.slice'
+
+export const selectVesselGroupReportVesselsPaginated = createSelector(
+  [
+    selectVesselGroupReportVessels,
+    selectVesselGroupReportVesselPage,
+    selectVesselGroupReportResultsPerPage,
+  ],
+  (vessels, page, resultsPerPage) => {
+    if (!vessels) return []
+    return vessels.slice((page - 1) * resultsPerPage, page * resultsPerPage)
+  }
+)
+
+export const selectVesselGroupReportVesselsPagination = createSelector(
+  [
+    selectVesselGroupReportVesselsPaginated,
+    selectVesselGroupReportVessels,
+    selectVesselGroupReportVesselPage,
+    selectVesselGroupReportResultsPerPage,
+  ],
+  (vessels, allVessels, page = 0, resultsPerPage) => {
+    return {
+      page,
+      offset: resultsPerPage * page,
+      resultsPerPage: resultsPerPage,
+      resultsNumber: vessels!?.length,
+      // totalFiltered: allVesselsFiltered!?.length,
+      total: allVessels!?.length,
+    }
+  }
+)
 
 export const selectVesselGroupReportVesselsGraphDataGrouped = createSelector(
   [selectVesselGroupReportVessels, selectVesselGroupReportVesselsSubsection],

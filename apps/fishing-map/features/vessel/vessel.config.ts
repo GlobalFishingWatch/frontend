@@ -27,6 +27,8 @@ export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
   vesselGroupReportVesselsSubsection: 'flag',
   vesselGroupReportActivitySubsection: 'fishing-effort',
   vesselGroupReportEventsSubsection: 'encounters',
+  vesselGroupReportVesselPage: 1,
+  vesselGroupReportResultsPerPage: 10,
 }
 
 export type VesselRenderField<Key = string> = {

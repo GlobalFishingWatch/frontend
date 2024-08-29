@@ -167,6 +167,8 @@ export type VesselGroupReportState = {
   vesselGroupReportVesselsSubsection?: VesselGroupReportVesselsSubsection
   vesselGroupReportActivitySubsection?: VesselGroupReportActivitySubsection
   vesselGroupReportEventsSubsection?: VesselGroupReportEventsSubsection
+  vesselGroupReportVesselPage?: number
+  vesselGroupReportResultsPerPage?: number
 }
 
 export type VesselGroupReportStateProperty = keyof VesselGroupReportState

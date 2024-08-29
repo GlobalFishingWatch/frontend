@@ -5,10 +5,9 @@ import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'r
 import { useTranslation } from 'react-i18next'
 import { VesselGroupReportVesselsSubsection } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { ReportVesselsGraphPlaceholder } from 'features/area-report/placeholders/ReportVesselsPlaceholder'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
 import { getVesselGearType, getVesselShipType } from 'utils/info'
-import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel.config.selectors'
+import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { selectVesselGroupReportVesselsGraphDataGrouped } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 

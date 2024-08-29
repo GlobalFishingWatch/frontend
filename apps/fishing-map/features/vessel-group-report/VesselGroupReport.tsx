@@ -15,7 +15,7 @@ import {
 import VesselGroupReportError from './VesselGroupReportError'
 import VesselGroupReportTitle from './VesselGroupReportTitle'
 import VesselGroupReportVessels from './vessels/VesselGroupReportVessels'
-import { selectVesselGroupReportSection } from './vessel.config.selectors'
+import { selectVesselGroupReportSection } from './vessel-group.config.selectors'
 
 type VesselGroupReportProps = {}
 
