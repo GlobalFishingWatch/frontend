@@ -91,11 +91,11 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
             }
             return {
               vesselId: id,
-              dataset: dataset as any,
+              dataset: typeof dataset === 'string' ? dataset : dataset.id,
             }
           }),
         }
-        const thunkFn: any =
+        const thunkFn =
           vesselGroupId === NEW_VESSEL_GROUP_ID
             ? createVesselGroupThunk
             : updateVesselGroupVesselsThunk
@@ -107,7 +107,7 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
         } else {
           vesselGroup.id = vesselGroupId
         }
-        const dispatchedAction = await dispatch(thunkFn(vesselGroup))
+        const dispatchedAction = await dispatch(thunkFn(vesselGroup as any))
         if (thunkFn.fulfilled.match(dispatchedAction)) {
           if (onAddToVesselGroup) {
             onAddToVesselGroup(dispatchedAction.payload.id)
@@ -118,8 +118,9 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
           ...vessel,
           id: (vessel as VesselLastIdentity)?.id || (vessel as ReportVesselWithDatasets)?.vesselId,
           dataset:
-            (vessel as VesselLastIdentity)?.dataset?.id ||
-            (vessel as ReportVesselWithDatasets)?.infoDataset?.id,
+            typeof vessel?.dataset === 'string'
+              ? vessel.dataset
+              : vessel.dataset?.id || (vessel as ReportVesselWithDatasets)?.infoDataset?.id,
         }))
         if (vesselsWithDataset?.length) {
           if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {

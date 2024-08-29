@@ -191,7 +191,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         accessorFn: (vessel: IdentityVesselData) => {
           const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const vesselData = getSearchIdentityResolved(vessel)
-          const { shipname, nShipname } = vesselData
+          const { dataset, shipname, nShipname } = vesselData
           const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
           const { transmissionDateFrom, transmissionDateTo } = vesselData
           const name = shipname ? formatInfoField(shipname, 'name') : EMPTY_FIELD_PLACEHOLDER
@@ -201,7 +201,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           return (
             <VesselLink
               vesselId={vesselData.id}
-              datasetId={vesselData.dataset?.id}
+              datasetId={typeof dataset === 'string' ? dataset : dataset.id}
               identity={bestIdentityMatch}
               onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}
@@ -328,7 +328,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t('vessel.transmission_other', 'Transmissions'),
       },
     ]
-  }, [fetchResults, i18n.language, onVesselClick, searchFilters?.infoSource, t])
+  }, [fetchResults, i18n.language, isSearchLocation, onVesselClick, searchFilters?.infoSource, t])
 
   const fetchMoreOnBottomReached = useCallback(() => {
     if (tableContainerRef.current) {
