@@ -28,6 +28,7 @@ import {
   selectVesselId,
   selectIsAnyReportLocation,
   selectIsVesselGroupReportLocation,
+  selectReportVesselGroupId,
 } from 'routes/routes.selectors'
 import { getReportCategoryFromDataview } from 'features/area-report/reports.utils'
 import { selectViewOnlyVessel } from 'features/vessel/vessel.config.selectors'
@@ -50,7 +51,7 @@ import {
   selectEventsDataviews,
 } from './dataviews.categories.selectors'
 
-const VESSEL_ONLY_VISIBLE_LAYERS = [
+const REPORT_ONLY_VISIBLE_LAYERS = [
   DataviewType.Basemap,
   DataviewType.Context,
   DataviewType.UserContext,
@@ -100,6 +101,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectViewOnlyVessel,
     selectVesselId,
     selectIsVesselGroupReportLocation,
+    selectReportVesselGroupId,
     selectViewOnlyVesselGroup,
   ],
   (
@@ -110,6 +112,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     viewOnlyVessel,
     vesselId,
     isVesselGroupReportLocation,
+    reportVesselGroupId,
     viewOnlyVesselGroup
   ) => {
     if (isReportLocation) {
@@ -127,38 +130,46 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     }
     if (isVesselLocation && viewOnlyVessel && vesselId !== undefined) {
       return dataviews.filter(({ id, config }) => {
-        if (VESSEL_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
+        if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
           return config?.visible
         }
         return config?.type === DataviewType.Track && id.includes(vesselId)
       })
     }
 
-    if (isVesselGroupReportLocation && viewOnlyVesselGroup) {
-      // TODO: decide how to filter out layers here
-      return dataviews.filter((dataview) => {
-        const isHeatmapDataview =
-          dataview.category === DataviewCategory.Activity ||
-          dataview.category === DataviewCategory.Detections
-        return !isHeatmapDataview && dataview.config?.visible
-      })
+    if (isVesselGroupReportLocation && viewOnlyVesselGroup && reportVesselGroupId !== undefined) {
+      return getReportVesselGroupVisibleDataviews(dataviews, reportVesselGroupId)
     }
+
     return dataviews.filter((dataview) => dataview.config?.visible)
   }
 )
 
-export const selectHasOtherVesselGroupDataviews = createSelector(
-  [selectAllDataviewInstancesResolved],
-  (dataviews) => {
-    if (!dataviews?.length) return false
-    // TODO: decide how to filter out layers here
+function getReportVesselGroupVisibleDataviews(
+  dataviews: UrlDataviewInstance[],
+  reportVesselGroupId: string
+) {
+  return dataviews.filter(({ category, config }) => {
+    if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
+      return config?.visible
+    }
     return (
-      dataviews?.filter(
-        (dataview) =>
-          dataview.category === DataviewCategory.Activity ||
-          dataview.category === DataviewCategory.Detections
-      ).length > 0
+      category === DataviewCategory.VesselGroups &&
+      config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
     )
+  })
+}
+
+export const selectHasOtherVesselGroupDataviews = createSelector(
+  [selectDataviewInstancesResolved, selectReportVesselGroupId],
+  (dataviews, reportVesselGroupId) => {
+    if (!dataviews?.length) return false
+    const vesselGroupReportDataviews = getReportVesselGroupVisibleDataviews(
+      dataviews,
+      reportVesselGroupId
+    )
+    const workspaceVisibleDataviews = dataviews.filter(({ config }) => config?.visible === true)
+    return workspaceVisibleDataviews.length > vesselGroupReportDataviews.length
   }
 )
 
