@@ -1,26 +1,21 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import { Fragment, useMemo } from 'react'
+import { Fragment } from 'react'
 import { unparse as unparseCSV } from 'papaparse'
 import { saveAs } from 'file-saver'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
-import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportVesselFilter } from 'features/app/selectors/app.reports.selector'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  setVesselGroupConfirmationMode,
-  setVesselGroupCurrentDataviewIds,
-} from 'features/vessel-groups/vessel-groups.slice'
 import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselGroupReportVessels } from 'features/vessel-group-report/vessel-group-report.slice'
 // import { parseReportVesselsToIdentity } from '../reports.utils'
-import styles from './ReportVesselsTableFooter.module.css'
+import styles from './VesselGroupReportVesselsTableFooter.module.css'
 import { selectVesselGroupReportVesselsPagination } from './vessel-group-report-vessels.selectors'
 
 type ReportVesselsTableFooterProps = {
@@ -72,15 +67,15 @@ export default function VesselGroupReportVesselsTableFooter({
   }
 
   const onPrevPageClick = () => {
-    dispatchQueryParams({ reportVesselPage: pagination.page - 1 })
+    dispatchQueryParams({ vesselGroupReportVesselPage: pagination.page - 1 })
   }
   const onNextPageClick = () => {
-    dispatchQueryParams({ reportVesselPage: pagination.page + 1 })
+    dispatchQueryParams({ vesselGroupReportVesselPage: pagination.page + 1 })
   }
   const onShowMoreClick = () => {
     dispatchQueryParams({
-      reportResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-      reportVesselPage: 0,
+      vesselGroupReportResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+      vesselGroupReportVesselPage: 0,
     })
     trackEvent({
       category: TrackCategory.Analysis,
@@ -88,24 +83,27 @@ export default function VesselGroupReportVesselsTableFooter({
     })
   }
   const onShowLessClick = () => {
-    dispatchQueryParams({ reportResultsPerPage: REPORT_VESSELS_PER_PAGE, reportVesselPage: 0 })
+    dispatchQueryParams({
+      vesselGroupReportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+      reportVesselPage: 0,
+    })
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Click on show less vessels`,
     })
   }
-  const onAddToVesselGroup = () => {
-    const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
-    if (dataviewIds?.length) {
-      dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
-    }
-    trackEvent({
-      category: TrackCategory.VesselGroups,
-      action: 'add_to_vessel_group',
-      label: 'report',
-    })
-  }
+  // const onAddToVesselGroup = () => {
+  //   const dataviewIds = heatmapDataviews.map(({ id }) => id)
+  //   dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
+  //   if (dataviewIds?.length) {
+  //     dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
+  //   }
+  //   trackEvent({
+  //     category: TrackCategory.VesselGroups,
+  //     action: 'add_to_vessel_group',
+  //     label: 'report',
+  //   })
+  // }
 
   const isShowingMore = pagination.resultsPerPage === REPORT_SHOW_MORE_VESSELS_PER_PAGE
   const hasLessVesselsThanAPage =
@@ -113,6 +111,7 @@ export default function VesselGroupReportVesselsTableFooter({
   const isLastPaginationPage =
     // pagination?.offset + pagination?.resultsPerPage >= (pagination?.totalFiltered as number)
     pagination?.offset + pagination?.resultsPerPage >= (pagination?.total as number)
+  console.log('pagination:', pagination)
 
   return (
     <div className={styles.footer}>
@@ -168,8 +167,18 @@ export default function VesselGroupReportVesselsTableFooter({
         </Fragment>
       </div>
       <div className={cx(styles.flex, styles.expand)}>
-        {/* <VesselGroupAddButton vessels={allVessels} onAddToVesselGroup={onAddToVesselGroup} /> */}
-        <Button testId="download-vessel-table-report" onClick={onDownloadVesselsClick}>
+        {/* <VesselGroupAddButton
+          vessels={allVessels}
+          onAddToVesselGroup={onAddToVesselGroup}
+          disabled
+          tooltip="TODO"
+        /> */}
+        <Button
+          testId="download-vessel-table-report"
+          onClick={onDownloadVesselsClick}
+          disabled
+          tooltip="TODO"
+        >
           {t('analysis.downloadVesselsList', 'Download csv')}
         </Button>
       </div>

@@ -5,7 +5,6 @@ import { Fragment } from 'react'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
-import ReportVesselsTableFooter from 'features/area-report/vessels/ReportVesselsTableFooter'
 import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
@@ -18,6 +17,7 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './VesselGroupReportVesselsTable.module.css'
 import { selectVesselGroupReportVesselsPaginated } from './vessel-group-report-vessels.selectors'
+import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTableFooter'
 
 export default function VesselGroupReportVesselsTable() {
   const { t } = useTranslation()
@@ -32,7 +32,7 @@ export default function VesselGroupReportVesselsTable() {
   )
 
   const onFilterClick = (reportVesselFilter: any) => {
-    dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
+    dispatchQueryParams({ reportVesselFilter, vesselGroupReportVesselPage: 0 })
   }
 
   return (
@@ -135,7 +135,7 @@ export default function VesselGroupReportVesselsTable() {
         </div>
       </div>
       {/* TODO */}
-      <ReportVesselsTableFooter reportName={'TODO'} />
+      <VesselGroupReportVesselsTableFooter reportName={'TODO'} />
     </Fragment>
   )
 }

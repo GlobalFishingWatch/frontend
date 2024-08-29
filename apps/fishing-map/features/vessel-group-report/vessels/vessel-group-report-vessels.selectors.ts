@@ -17,8 +17,8 @@ export const selectVesselGroupReportVesselsPaginated = createSelector(
     selectVesselGroupReportResultsPerPage,
   ],
   (vessels, page, resultsPerPage) => {
-    if (!vessels) return []
-    return vessels.slice((page - 1) * resultsPerPage, page * resultsPerPage)
+    if (!vessels?.length) return []
+    return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
   }
 )
 

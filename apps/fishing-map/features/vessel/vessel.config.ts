@@ -1,5 +1,6 @@
 import { RegionType, SelfReportedSource } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { I18nNamespaces } from 'features/i18n/i18n.types'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { VesselGroupReportState, VesselProfileState } from 'types'
@@ -27,8 +28,8 @@ export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
   vesselGroupReportVesselsSubsection: 'flag',
   vesselGroupReportActivitySubsection: 'fishing-effort',
   vesselGroupReportEventsSubsection: 'encounters',
-  vesselGroupReportVesselPage: 1,
-  vesselGroupReportResultsPerPage: 10,
+  vesselGroupReportVesselPage: 0,
+  vesselGroupReportResultsPerPage: REPORT_VESSELS_PER_PAGE,
 }
 
 export type VesselRenderField<Key = string> = {
