@@ -44,9 +44,63 @@ const PARAMS_TO_ABBREVIATED = {
   firstTransmissionDate: 'fTD',
   value: 'val',
   color: 'clr',
+  sidebarOpen: 'sbO',
+  timebarGraph: 'tG',
+  timebarSelectedEnvId: 'tSEI',
+  timebarVisualisation: 'tV',
+  visibleEvents: 'vE',
+  activityVisualizationMode: 'aVM',
+  detectionsVisualizationMode: 'dVM',
+  environmentVisualizationMode: 'eVM',
+  bivariateDataviews: 'bDV',
+  mapAnnotations: 'mA',
+  mapAnnotationsVisible: 'mAV',
+  mapRulers: 'mR',
+  mapRulersVisible: 'mRV',
+  //Vessel Profile
+  vesselDatasetId: 'vDi',
+  vesselRegistryId: 'vRi',
+  vesselSelfReportedId: 'vSRi',
+  vesselSection: 'vS',
+  vesselArea: 'vA',
+  vesselRelated: 'vR',
+  vesselIdentitySource: 'vIs',
+  vesselActivityMode: 'vAm',
+  viewOnlyVessel: 'vVO',
+  // Vessel Group Report
   'vessel-groups': 'vGs',
+  viewOnlyVesselGroup: 'vOVG',
+  vesselGroupReportSection: 'vGRS',
+  vesselGroupReportVesselsSubsection: 'vGRSS',
+  vesselGroupReportActivitySubsection: 'vGRAS',
+  vesselGroupReportEventsSubsection: 'vGRES',
+  vesselGroupReportVesselPage: 'vGRVP',
+  vesselGroupReportResultsPerPage: 'vGRRPP',
+  vesselGroupReportVesselFilter: 'vGRVF',
+  vesselGroupReportVesselsOrderProperty: 'vGRVOP',
+  vesselGroupReportVesselsOrderDirection: 'vGRVOD',
+  // Area report
+  reportActivityGraph: 'rAG',
+  reportAreaBounds: 'rAB',
+  reportCategory: 'rC',
+  reportTimeComparison: 'rTC',
+  reportVesselFilter: 'rVF',
+  reportVesselGraph: 'rVG',
+  reportVesselPage: 'rVP',
+  reportBufferValue: 'rBV',
+  reportBufferUnit: 'rBU',
+  reportBufferOperation: 'rBO',
+  reportResultsPerPage: 'rRPP',
 }
 const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
+
+const hasParamToBeAbbreviatedDuplicated = () => {
+  const paramsToBeAbbreviatedDuplicated = new Set(Object.values(PARAMS_TO_ABBREVIATED))
+  return paramsToBeAbbreviatedDuplicated.size !== Object.keys(PARAMS_TO_ABBREVIATED).length
+}
+if (hasParamToBeAbbreviatedDuplicated()) {
+  throw new Error('Duplicated abbreviated params')
+}
 
 const TOKEN_PREFIX = '~'
 export const TOKEN_REGEX = /~(\d+)/
