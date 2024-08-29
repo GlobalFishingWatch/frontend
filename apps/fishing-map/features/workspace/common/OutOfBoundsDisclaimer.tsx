@@ -34,7 +34,7 @@ const OutOfTimerangeDisclaimer = ({
       : getActiveDatasetsInActivityDataviews([dataview])
 
   const activeDatasets = dataview.datasets?.filter((d) => activeDatasetIds.includes(d.id))
-  const { extentStart, extentEnd = LAST_DATA_UPDATE } = getDatasetsExtent(activeDatasets, {
+  const { extentStart, extentEnd = LAST_DATA_UPDATE } = getDatasetsExtent<string>(activeDatasets, {
     format: 'isoString',
   })
 

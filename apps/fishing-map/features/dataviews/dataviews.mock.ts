@@ -1,10 +1,11 @@
 import { Dataview, DataviewType, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
+import { CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
 
 const dataviews: Dataview[] = [
   {
     id: 11111111,
     name: 'Encounter cluster events pipe 3',
-    slug: 'encounter-cluster-events-v-3',
+    slug: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
     app: 'fishing-map',
     config: {
       type: 'FOURWINGS_TILE_CLUSTER',
@@ -12,12 +13,14 @@ const dataviews: Dataview[] = [
     },
     datasetsConfig: [
       {
-        // query: [
-        //   {
-        //     id: 'encounter-types',
-        //     value: ['CARRIER-FISHING', 'FISHING-CARRIER', 'FISHING-SUPPORT', 'SUPPORT-FISHING'],
-        //   },
-        // ],
+        filters: {
+          encounter_type: [
+            'CARRIER-FISHING',
+            // 'FISHING-CARRIER',
+            'FISHING-SUPPORT',
+            // 'SUPPORT-FISHING',
+          ],
+        },
         params: [],
         endpoint: 'events-cluster-tiles',
         datasetId: 'public-global-encounters-events:v3.0',

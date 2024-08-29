@@ -392,11 +392,11 @@ export const fetchClusterEventThunk = createAsyncThunk<
     }
     const interactionUrl = resolveEndpoint(eventsDataset, datasetConfig)
     if (interactionUrl) {
-      const eventsIds = await GFWAPI.fetch<APIPagination<string>>(interactionUrl, {
+      const eventsIds = await GFWAPI.fetch<APIPagination<{ id: string }[]>>(interactionUrl, {
         signal,
       })
       // TODO:deck remove this hardcoded id once the api responds
-      eventId = eventsIds.entries[0][0] || 'a530d47f5f92b41c48c54b1d8c096570.1'
+      eventId = eventsIds.entries[0][0].id
     }
   }
   // TODO:deck get the event dataset from related

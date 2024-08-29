@@ -8,9 +8,7 @@ import {
   PickingInfo,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
-import { stringify } from 'qs'
 import { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
-import { DateTime } from 'luxon'
 import { IconLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import Supercluster from 'supercluster'
 import { ScalePower, scaleSqrt } from 'd3-scale'
@@ -22,7 +20,6 @@ import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
   getLayerGroupOffset,
-  getUTCDateTime,
   GFWMVTLoader,
   hexToDeckColor,
   LayerGroup,
@@ -217,38 +214,6 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return this._fetch(url!, { signal: tile.signal, tile })
   }
 
-  _getDataUrl() {
-    const { startTime, endTime, datasetId, filters, extentStart, extentEnd } = this.props
-
-    const start = extentStart && extentStart > startTime ? extentStart : startTime
-    const end =
-      extentEnd && extentEnd < endTime
-        ? DateTime.fromMillis(extentEnd).plus({ day: 1 }).toMillis()
-        : endTime
-    const startIso = getUTCDateTime(start < end ? start : end)
-      .startOf('hour')
-      .toISO()
-    const endIso = getUTCDateTime(end).startOf('hour').toISO()
-    const params = {
-      datasets: [datasetId],
-      ...(filters && { filters: [filters] }),
-      format: '4WINGS',
-      'temporal-aggregation': true,
-      'date-range': `${startIso},${endIso}`,
-    }
-
-    let tilesUrl = HEATMAP_API_TILES_URL
-    try {
-      const { origin, pathname } = new URL(this.props.tilesUrl)
-      tilesUrl = origin + pathname
-    } catch (e) {
-      console.warn(e)
-    }
-    const baseUrl = GFWAPI.generateUrl(tilesUrl, { absolute: true })
-
-    return `${baseUrl}?${stringify(params)}`
-  }
-
   _getPosition = (d: FourwingsClusterFeature) => {
     return d.geometry.coordinates as [number, number]
   }
@@ -268,12 +233,12 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<{}> | LayersList | null {
-    const { color } = this.props
+    const { color, tilesUrl } = this.props
     const { clusters, points, radiusScale } = this.state
     return [
       new TileLayer<FourwingsPointFeature, any>(this.props, {
         id: `${this.props.id}-tiles`,
-        data: this._getDataUrl(),
+        data: tilesUrl,
         maxZoom: POSITIONS_VISUALIZATION_MAX_ZOOM,
         binary: false,
         loaders: [GFWMVTLoader],

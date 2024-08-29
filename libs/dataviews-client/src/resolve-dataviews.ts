@@ -331,12 +331,14 @@ export const resolveDataviewDatasetResource = (
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
-export function getDataviewSqlFiltersResolved(dataview: UrlDataviewInstance) {
-  if (!dataview.config?.filters) {
+export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDataviewInstance) {
+  const datasetsConfigFilters = (dataview.datasetsConfig || [])?.reduce((acc, datasetConfig) => {
+    return { ...acc, ...(datasetConfig.filters || {}) }
+  }, {} as Record<string, any>)
+  const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
+  if (!Object.keys(filters).length) {
     return ''
   }
-  const { filters, filterOperators } = dataview.config
-
   const sqlFilters = Object.keys(filters)
     .filter((key) => key !== 'vessel-groups')
     .flatMap((filterKey) => {
@@ -370,7 +372,7 @@ export function getDataviewSqlFiltersResolved(dataview: UrlDataviewInstance) {
           return `${queryFilterKey} <= ${maxValue}`
         }
       }
-      const filterOperator = filterOperators?.[filterKey] || INCLUDE_FILTER_ID
+      const filterOperator = dataview.config?.filterOperators?.[filterKey] || INCLUDE_FILTER_ID
       const hasNumericFilterValues = filterValues.every((v: any) => isNumeric(v))
       const query = `${queryFilterKey} ${FILTER_OPERATOR_SQL[filterOperator]} (${filterValues
         .map((f: string) => (hasNumericFilterValues ? `${f}` : `'${f}'`))
