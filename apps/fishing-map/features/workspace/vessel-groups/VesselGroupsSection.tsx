@@ -3,20 +3,18 @@ import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@globalfishingwatch/ui-components'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import VesselGroupListTooltip, {
-  NEW_VESSEL_GROUP_ID,
-} from 'features/vessel-groups/VesselGroupListTooltip'
+import VesselGroupListTooltip from 'features/vessel-groups/VesselGroupListTooltip'
 import { getVesselGroupDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups.slice'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
 function VesselGroupSection(): React.ReactElement {

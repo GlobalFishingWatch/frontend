@@ -8,6 +8,7 @@ import {
 } from 'features/vessel-groups/vessel-groups.slice'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.selectors'
 
 export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
@@ -50,5 +51,12 @@ export const selectIsVessselGroupsFiltering = createSelector(
   [selectWorkspaceVessselGroupsIds],
   (workspaceVesselGroupIds = []) => {
     return workspaceVesselGroupIds.length > 0
+  }
+)
+
+export const selectVessselGroupsInWorkspace = createSelector(
+  [selectDataviewInstancesResolvedVisible],
+  (dataviews = []) => {
+    return dataviews.flatMap((dataview) => dataview.config?.filters?.['vessel-groups'] || [])
   }
 )

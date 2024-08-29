@@ -5,11 +5,12 @@ import React from 'react'
 import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
 import { MAX_VESSEL_GROUP_VESSELS } from 'features/vessel-groups/vessel-groups.slice'
 import styles from './VesselGroupListTooltip.module.css'
-import VesselGroupListTooltip, { NEW_VESSEL_GROUP_ID } from './VesselGroupListTooltip'
+import VesselGroupListTooltip from './VesselGroupListTooltip'
 import {
   AddVesselGroupVessel,
   useVesselGroupsModal,
   useVesselGroupsUpdate,
+  NEW_VESSEL_GROUP_ID,
 } from './vessel-groups.hooks'
 
 type VesselGroupAddButtonProps = {
