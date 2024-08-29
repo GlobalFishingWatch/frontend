@@ -11,7 +11,6 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { EMPTY_API_VALUES } from 'features/area-report/reports.config'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
-import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -33,6 +32,10 @@ export default function VesselGroupReportVesselsTable() {
 
   const onFilterClick = (reportVesselFilter: any) => {
     dispatchQueryParams({ reportVesselFilter, vesselGroupReportVesselPage: 0 })
+  }
+
+  const onPinClick = () => {
+    dispatchQueryParams({ viewOnlyVesselGroup: false })
   }
 
   return (
@@ -67,21 +70,14 @@ export default function VesselGroupReportVesselsTable() {
             const vesselType = getVesselProperty(vessel, 'shiptypes')?.[0]
             const type = t(`vessel.vesselTypes.${vesselType?.toLowerCase()}` as any, vesselType)
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
-            const hasDatasets = vessel.dataset?.includes(GLOBAL_VESSELS_DATASET_ID)
             //   ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
             //   : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
-            const pinTrackDisabled = !hasDatasets || workspaceStatus !== AsyncReducerStatus.Finished
+            const pinTrackDisabled = workspaceStatus !== AsyncReducerStatus.Finished
             const vesselId = getVesselProperty(vessel, 'id')
             return (
               <Fragment key={vesselId}>
                 <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
-                  <VesselPin
-                    vesselToResolve={{
-                      id: vesselId,
-                      datasetId: vessel.dataset,
-                    }}
-                    disabled={pinTrackDisabled}
-                  />
+                  <VesselPin vessel={vessel} disabled={pinTrackDisabled} onClick={onPinClick} />
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   {workspaceStatus === AsyncReducerStatus.Finished ? (
