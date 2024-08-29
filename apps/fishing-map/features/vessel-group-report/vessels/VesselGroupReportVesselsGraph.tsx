@@ -39,6 +39,8 @@ const ReportGraphTooltip = (props: any) => {
     translatedLabel = getVesselGearType({ geartypes: label })
   } else if (type === 'shiptypes') {
     translatedLabel = getVesselShipType({ shiptypes: label })
+  } else if (type === 'source') {
+    translatedLabel = t(`common.sourceOptions.${label}` as any, label)
   } else {
     translatedLabel = t(`flags:${label}` as any, label)
   }
@@ -82,6 +84,8 @@ const CustomTick = (props: any) => {
         return `${t(`vessel.vesselTypes.${label?.toLowerCase()}` as any, label)}`
       case 'flag':
         return t(`flags:${label}` as any, label)
+      case 'source':
+        return t(`common.sourceOptions.${label}` as any, label)
       default:
         return label
     }

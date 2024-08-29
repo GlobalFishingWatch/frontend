@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { VesselGroupReportVesselsSubsection } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectVesselGroupReportStatus } from 'features/vessel-group-report/vessel-group-report.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectVesselGroupReportVesselsSubsection } from '../vessel.config.selectors'
 
 type VesselGroupReportVesselsGraphSelectorProps = {}
@@ -10,24 +12,29 @@ type VesselGroupReportVesselsGraphSelectorProps = {}
 function VesselGroupReportVesselsGraphSelector(props: VesselGroupReportVesselsGraphSelectorProps) {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
+  const vesselGroupReportStatus = useSelector(selectVesselGroupReportStatus)
   const subsection = useSelector(selectVesselGroupReportVesselsSubsection)
+  const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
   const options: ChoiceOption<VesselGroupReportVesselsSubsection>[] = [
     {
       id: 'flag',
-      label: t('common.flag', 'Flag'),
-      // disabled: loading,
+      label: t('vessel.flag', 'Flag'),
+      disabled: loading,
     },
     {
       id: 'shiptypes',
-      label: t('vessel.type', 'Vessel type'),
-      tooltipPlacement: 'bottom',
-      // disabled: loading,
+      label: t('vessel.shiptype', 'Vessel type'),
+      disabled: loading,
     },
     {
       id: 'geartypes',
-      label: t('vessel.gearType', 'Gear type'),
-      tooltipPlacement: 'bottom',
-      // disabled: loading,
+      label: t('vessel.geartype', 'Gear type'),
+      disabled: loading,
+    },
+    {
+      id: 'source',
+      label: t('common.sources', 'Sources'),
+      disabled: loading,
     },
   ]
 

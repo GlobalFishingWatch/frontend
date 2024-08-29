@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy } from 'es-toolkit'
+import { IdentityVessel } from '@globalfishingwatch/api-types'
 import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel.config.selectors'
 import { OTHER_CATEGORY_LABEL } from 'features/vessel-group-report/vessel-group-report.config'
 import { selectVesselGroupReportVessels } from '../vessel-group-report.slice'
@@ -23,6 +24,26 @@ export const selectVesselGroupReportVesselsGraphDataGrouped = createSelector(
         vesselsGrouped = groupBy(
           vessels,
           (vessel) => vessel.combinedSourcesInfo[0].geartypes[0].name
+        )
+        break
+      case 'source':
+        vesselsGrouped = vessels.reduce(
+          (acc, vessel) => {
+            if (vessel.registryInfo?.length && vessel.selfReportedInfo?.length) {
+              acc.both.push(vessel)
+              return acc
+            }
+            if (vessel.registryInfo?.length) {
+              acc.registryOnly.push(vessel)
+              return acc
+            }
+            if (vessel.selfReportedInfo?.length) {
+              acc.selfReportedOnly.push(vessel)
+              return acc
+            }
+            return acc
+          },
+          { registryOnly: [], selfReportedOnly: [], both: [] } as Record<string, IdentityVessel[]>
         )
         break
     }
