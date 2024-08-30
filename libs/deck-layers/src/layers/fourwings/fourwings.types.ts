@@ -53,6 +53,7 @@ export type FourwingsDeckSublayer = {
   filter?: string
   positionProperties?: string[]
   vesselGroups?: string | string[]
+  vesselGroupsLength?: number
   extentStart?: number
   extentEnd?: number
 }
