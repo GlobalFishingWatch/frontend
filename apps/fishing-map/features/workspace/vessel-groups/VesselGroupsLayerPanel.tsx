@@ -11,6 +11,12 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { formatInfoField } from 'utils/info'
 import VesselGroupReportLink from 'features/vessel-group-report/VesselGroupReportLink'
+import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  setNewVesselGroupSearchVessels,
+  setVesselGroupEditId,
+  setVesselGroupsModalOpen,
+} from 'features/vessel-groups/vessel-groups.slice'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
@@ -26,6 +32,7 @@ function VesselGroupLayerPanel({
   vesselGroup,
 }: VesselGroupLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataview?.id)
@@ -48,6 +55,14 @@ function VesselGroupLayerPanel({
       },
     })
     setColorOpen(false)
+  }
+
+  const onEditClick = () => {
+    if (vesselGroup && (vesselGroup?.id || !vesselGroup?.vessels?.length)) {
+      dispatch(setVesselGroupEditId(vesselGroup.id))
+      dispatch(setNewVesselGroupSearchVessels(vesselGroup.vessels))
+      dispatch(setVesselGroupsModalOpen(true))
+    }
   }
 
   const onToggleColorOpen = () => {
@@ -96,14 +111,23 @@ function VesselGroupLayerPanel({
         >
           <Fragment>
             {layerActive && (
-              <Color
-                dataview={dataview}
-                open={colorOpen}
-                onColorClick={changeInstanceColor}
-                onToggleClick={onToggleColorOpen}
-                onClickOutside={closeExpandedContainer}
-                colorType="fill"
-              />
+              <Fragment>
+                <IconButton
+                  icon="edit"
+                  size="small"
+                  tooltip={t('common.edit', 'Edit')}
+                  onClick={onEditClick}
+                  tooltipPlacement="top"
+                />
+                <Color
+                  dataview={dataview}
+                  open={colorOpen}
+                  onColorClick={changeInstanceColor}
+                  onToggleClick={onToggleColorOpen}
+                  onClickOutside={closeExpandedContainer}
+                  colorType="fill"
+                />
+              </Fragment>
             )}
             <Remove dataview={dataview} />
           </Fragment>
