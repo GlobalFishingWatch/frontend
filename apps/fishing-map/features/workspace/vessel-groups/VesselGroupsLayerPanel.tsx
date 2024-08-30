@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { VesselGroup } from '@globalfishingwatch/api-types'
 import { IconButton, ColorBarOption, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -17,26 +18,33 @@ import {
   setVesselGroupEditId,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+import VesselGroupNotFound from './VesselGroupNotFound'
 
 export type VesselGroupLayerPanelProps = {
   dataview: UrlDataviewInstance
   vesselGroup?: VesselGroup
+  vesselGroupLoading?: boolean
 }
 
 function VesselGroupLayerPanel({
   dataview,
   vesselGroup,
+  vesselGroupLoading,
 }: VesselGroupLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const isGFWUser = useSelector(selectIsGFWUser)
+  const readOnly = useSelector(selectReadOnly)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataview?.id)
-  const layerLoaded = activityLayer?.loaded
+  const layerLoaded = activityLayer?.loaded && !vesselGroupLoading
   const layerError = activityLayer?.instance?.getError?.()
 
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
@@ -73,6 +81,10 @@ function VesselGroupLayerPanel({
     setColorOpen(false)
   }
 
+  if (!vesselGroup) {
+    return <VesselGroupNotFound dataview={dataview} />
+  }
+
   return (
     <div
       className={cx(
@@ -94,7 +106,9 @@ function VesselGroupLayerPanel({
               >
                 <span>
                   {formatInfoField(vesselGroup?.name, 'name')}{' '}
-                  <span className={styles.secondary}> ({vesselGroup?.vessels.length})</span>
+                  {vesselGroup?.vessels?.length && (
+                    <span className={styles.secondary}> ({vesselGroup?.vessels.length})</span>
+                  )}
                 </span>
               </Tooltip>
             </VesselGroupReportLink>
@@ -139,7 +153,22 @@ function VesselGroupLayerPanel({
                 />
               </Fragment>
             )}
-            <Remove dataview={dataview} />
+            {!readOnly && <Remove dataview={dataview} loading={layerActive && !layerLoaded} />}
+            {!readOnly && layerActive && layerError && (
+              <IconButton
+                icon={'warning'}
+                type={'warning'}
+                tooltip={
+                  isGFWUser
+                    ? `${t(
+                        'errors.layerLoading',
+                        'There was an error loading the layer'
+                      )} (${layerError})`
+                    : t('errors.layerLoading', 'There was an error loading the layer')
+                }
+                size="small"
+              />
+            )}
           </Fragment>
         </div>
         <IconButton

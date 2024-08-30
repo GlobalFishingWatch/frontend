@@ -15,6 +15,9 @@ type VesselGroupReportLinkProps = {
 function VesselGroupReportLink({ children, vesselGroupId }: VesselGroupReportLinkProps) {
   const workspace = useSelector(selectWorkspace)
   const query = useSelector(selectLocationQuery)
+  if (!workspace || !vesselGroupId) {
+    return children
+  }
   return (
     <Link
       className={styles.link}
