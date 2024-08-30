@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, sum, uniq, uniqBy } from 'es-toolkit'
 import sumBy from 'lodash/sumBy'
-import { matchSorter } from 'match-sorter'
 import { t } from 'i18next'
 import { FeatureCollection, MultiPolygon } from 'geojson'
 import { Dataset, DatasetTypes, ReportVessel } from '@globalfishingwatch/api-types'
@@ -32,10 +31,11 @@ import {
   getBufferedArea,
   getBufferedFeature,
   getReportCategoryFromDataview,
+  getVesselsFiltered,
 } from 'features/area-report/reports.utils'
 import { ReportCategory } from 'types'
 import { createDeepEqualSelector } from 'utils/selectors'
-import { EMPTY_FIELD_PLACEHOLDER, getVesselGearType } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, getVesselGearTypeLabel } from 'utils/info'
 import { sortStrings } from 'utils/shared'
 import { Area, AreaGeometry, selectAreas } from 'features/areas/areas.slice'
 import {
@@ -226,7 +226,7 @@ export const selectReportVesselsListWithAllInfo = createSelector(
           flagTranslatedClean: cleanFlagState(
             t(`flags:${vesselActivity[0]?.flag as string}` as any, vesselActivity[0]?.flag)
           ),
-          geartype: getVesselGearType({ geartypes: vesselActivity[0]?.geartype }),
+          geartype: getVesselGearTypeLabel({ geartypes: vesselActivity[0]?.geartype }),
           vesselType: t(
             `vessel.veeselTypes.${vesselActivity[0]?.vesselType}` as any,
             vesselActivity[0]?.vesselType
@@ -243,7 +243,7 @@ function cleanVesselOrGearType({ value, property }: CleanVesselOrGearTypeParams)
   const valuesCleanTranslated = valuesClean
     .map((value) => {
       if (property === 'geartype') {
-        return getVesselGearType({ geartypes: value })
+        return getVesselGearTypeLabel({ geartypes: value })
       }
       return t(`vessel.vesselTypes.${value?.toLowerCase()}` as any, value)
     })
@@ -257,65 +257,13 @@ export function cleanFlagState(flagState: string) {
   return flagState.replace(/,/g, '')
 }
 
-type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
-const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
-  name: ['shipName'],
-  flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
-  mmsi: ['mmsi'],
-  gear: ['geartype'],
-  type: ['vesselType'],
-}
-
-export function getVesselsFiltered(vessels: ReportVesselWithDatasets[], filter: string) {
-  if (!filter || !filter.length) {
-    return vessels
-  }
-
-  const filterBlocks = filter
-    .replace(/ ,/g, ',')
-    .replace(/ , /g, ',')
-    .replace(/, /g, ',')
-    .split(',')
-    .filter((block) => block.length)
-
-  if (!filterBlocks.length) {
-    return vessels
-  }
-
-  return filterBlocks
-    .reduce((vessels, block) => {
-      const propertiesToMatch =
-        block.includes(':') && FILTER_PROPERTIES[block.split(':')[0] as FilterProperty]
-      const words = (propertiesToMatch ? (block.split(':')[1] as FilterProperty) : block)
-        .replace('-', '')
-        .split('|')
-        .map((word) => word.trim())
-        .filter((word) => word.length)
-      const matched = words.flatMap((w) =>
-        matchSorter(vessels, w, {
-          keys: propertiesToMatch || Object.values(FILTER_PROPERTIES).flat(),
-          threshold: matchSorter.rankings.CONTAINS,
-        })
-      )
-      const uniqMatched = block.includes('|') ? Array.from(new Set([...matched])) : matched
-      if (block.startsWith('-')) {
-        const uniqMatchedIds = new Set<string>()
-        uniqMatched.forEach(({ vesselId = '' }) => {
-          uniqMatchedIds.add(vesselId)
-        })
-        return vessels.filter(({ vesselId = '' }) => !uniqMatchedIds.has(vesselId))
-      } else {
-        return uniqMatched
-      }
-    }, vessels)
-    .sort((a, b) => b.value - a.value)
-}
-
 export const selectReportVesselsFiltered = createSelector(
   [selectReportVesselsList, selectReportVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
-    return getVesselsFiltered(vessels, filter)
+    return getVesselsFiltered<ReportVesselWithDatasets>(vessels, filter).sort(
+      (a, b) => b.value - a.value
+    )
   }
 )
 

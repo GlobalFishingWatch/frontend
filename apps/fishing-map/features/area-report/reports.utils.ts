@@ -4,6 +4,7 @@ import { featureCollection, multiPolygon } from '@turf/helpers'
 import { difference, dissolve } from '@turf/turf'
 import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { parse } from 'qs'
+import { matchSorter } from 'match-sorter'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Dataview, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
@@ -20,6 +21,7 @@ import {
 import { Bbox, BufferOperation, BufferUnit, ReportCategory } from 'types'
 import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
+import { VesselGroupReportVesselParsed } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.types'
 import {
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_POINT_BUFFER_UNIT,
@@ -305,4 +307,66 @@ export function parseReportVesselsToIdentity(
     } as IdentityVesselData
   })
   return identityVessels
+}
+
+export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'gear' | 'type'
+export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
+  name: ['shipName'],
+  flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
+  mmsi: ['mmsi'],
+  gear: ['geartype'],
+  type: ['vesselType'],
+}
+
+export function getVesselsFiltered<
+  Vessel = ReportVesselWithDatasets | VesselGroupReportVesselParsed
+>(vessels: Vessel[], filter: string, filterProperties = FILTER_PROPERTIES) {
+  if (!filter || !filter.length) {
+    return vessels
+  }
+
+  const filterBlocks = filter
+    .replace(/ ,/g, ',')
+    .replace(/ , /g, ',')
+    .replace(/, /g, ',')
+    .split(',')
+    .filter((block) => block.length)
+
+  if (!filterBlocks.length) {
+    return vessels
+  }
+
+  return filterBlocks.reduce((vessels, block) => {
+    const propertiesToMatch =
+      block.includes(':') && filterProperties[block.split(':')[0] as FilterProperty]
+    const words = (propertiesToMatch ? (block.split(':')[1] as FilterProperty) : block)
+      .replace('-', '')
+      .split('|')
+      .map((word) => word.trim())
+      .filter((word) => word.length)
+    const matched = words.flatMap((w) =>
+      matchSorter(vessels, w, {
+        keys: propertiesToMatch || Object.values(filterProperties).flat(),
+        threshold: matchSorter.rankings.CONTAINS,
+      })
+    )
+    const uniqMatched = block.includes('|') ? Array.from(new Set([...matched])) : matched
+    if (block.startsWith('-')) {
+      const uniqMatchedIds = new Set<string>()
+      uniqMatched.forEach((vessel) => {
+        const id =
+          (vessel as ReportVesselWithDatasets).vesselId ||
+          (vessel as VesselGroupReportVesselParsed).id
+        uniqMatchedIds.add(id)
+      })
+      return vessels.filter((vessel) => {
+        const id =
+          (vessel as ReportVesselWithDatasets).vesselId ||
+          (vessel as VesselGroupReportVesselParsed).id
+        return !uniqMatchedIds.has(id)
+      })
+    } else {
+      return uniqMatched
+    }
+  }, vessels) as Vessel[]
 }

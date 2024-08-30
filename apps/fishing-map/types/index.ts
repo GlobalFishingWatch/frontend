@@ -160,6 +160,8 @@ export type VesselGroupReportSection = 'vessels' | 'insights' | 'activity' | 'ev
 export type VesselGroupReportVesselsSubsection = 'flag' | 'shiptypes' | 'geartypes' | 'source'
 export type VesselGroupReportActivitySubsection = 'fishing-effort' | 'presence'
 export type VesselGroupReportEventsSubsection = 'fishing' | 'encounters' | 'port' | 'loitering'
+export type VesselGroupReportVesselsOrderProperty = 'shipname' | 'flag' | 'shiptype'
+export type VesselGroupReportVesselsOrderDirection = 'asc' | 'desc'
 
 export type VesselGroupReportState = {
   viewOnlyVesselGroup: boolean
@@ -167,6 +169,11 @@ export type VesselGroupReportState = {
   vesselGroupReportVesselsSubsection?: VesselGroupReportVesselsSubsection
   vesselGroupReportActivitySubsection?: VesselGroupReportActivitySubsection
   vesselGroupReportEventsSubsection?: VesselGroupReportEventsSubsection
+  vesselGroupReportVesselPage?: number
+  vesselGroupReportResultsPerPage?: number
+  vesselGroupReportVesselFilter?: string
+  vesselGroupReportVesselsOrderProperty?: VesselGroupReportVesselsOrderProperty
+  vesselGroupReportVesselsOrderDirection?: VesselGroupReportVesselsOrderDirection
 }
 
 export type VesselGroupReportStateProperty = keyof VesselGroupReportState

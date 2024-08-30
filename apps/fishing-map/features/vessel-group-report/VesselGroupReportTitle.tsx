@@ -17,7 +17,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectHasOtherVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import styles from './VesselGroupReportTitle.module.css'
 import { VesselGroupReport } from './vessel-group-report.slice'
-import { selectViewOnlyVesselGroup } from './vessel.config.selectors'
+import { selectViewOnlyVesselGroup } from './vessel-group.config.selectors'
 
 type ReportTitleProps = {
   loading?: boolean

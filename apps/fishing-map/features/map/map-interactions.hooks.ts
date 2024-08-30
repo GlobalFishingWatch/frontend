@@ -180,7 +180,6 @@ export const useClickedEventConnect = () => {
       }
     )
 
-    console.log('heatmapFeatures:', heatmapFeatures)
     if (heatmapFeatures?.length) {
       dispatch(setHintDismissed('clickingOnAGridCellToShowVessels'))
       const heatmapProperties = heatmapFeatures.map((feature) =>

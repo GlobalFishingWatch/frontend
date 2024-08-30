@@ -5,7 +5,7 @@ import { VesselGroupReportVesselsSubsection } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselGroupReportStatus } from 'features/vessel-group-report/vessel-group-report.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { selectVesselGroupReportVesselsSubsection } from '../vessel.config.selectors'
+import { selectVesselGroupReportVesselsSubsection } from '../vessel-group.config.selectors'
 
 type VesselGroupReportVesselsGraphSelectorProps = {}
 

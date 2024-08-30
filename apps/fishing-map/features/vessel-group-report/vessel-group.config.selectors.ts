@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { VesselGroupReportState, VesselGroupReportStateProperty } from 'types'
 import { selectQueryParam } from 'routes/routes.selectors'
-import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/vessel/vessel.config'
+import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from './vessel-group-report.config'
 
 type VesselGroupReportProperty<P extends VesselGroupReportStateProperty> =
   Required<VesselGroupReportState>[P]
@@ -29,4 +29,20 @@ export const selectVesselGroupReportActivitySubsection = selectVesselGroupReport
 )
 export const selectVesselGroupReportEventsSubsection = selectVesselGroupReportStateProperty(
   'vesselGroupReportEventsSubsection'
+)
+
+export const selectVesselGroupReportVesselFilter = selectVesselGroupReportStateProperty(
+  'vesselGroupReportVesselFilter'
+)
+export const selectVesselGroupReportVesselPage = selectVesselGroupReportStateProperty(
+  'vesselGroupReportVesselPage'
+)
+export const selectVesselGroupReportResultsPerPage = selectVesselGroupReportStateProperty(
+  'vesselGroupReportResultsPerPage'
+)
+export const selectVesselGroupReportVesselsOrderProperty = selectVesselGroupReportStateProperty(
+  'vesselGroupReportVesselsOrderProperty'
+)
+export const selectVesselGroupReportVesselsOrderDirection = selectVesselGroupReportStateProperty(
+  'vesselGroupReportVesselsOrderDirection'
 )

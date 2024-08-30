@@ -19,7 +19,7 @@ import {
   hasTracksWithNoData,
   useTimebarVesselTracksData,
 } from 'features/timebar/timebar-vessel.hooks'
-import { getVesselLabel } from 'utils/info'
+import { getVesselShipNameLabel } from 'utils/info'
 import { selectResources, ResourcesState } from 'features/resources/resources.slice'
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
@@ -78,8 +78,8 @@ function VesselsSection(): React.ReactElement {
       .sort((a, b) => {
         const aResource = getVesselResourceByDataviewId(resources, a.id)
         const bResource = getVesselResourceByDataviewId(resources, b.id)
-        const aVesselLabel = aResource ? getVesselLabel(aResource.data) : ''
-        const bVesselLabel = bResource ? getVesselLabel(bResource.data) : ''
+        const aVesselLabel = aResource ? getVesselShipNameLabel(aResource.data) : ''
+        const bVesselLabel = bResource ? getVesselShipNameLabel(bResource.data) : ''
         if (!aVesselLabel || !bVesselLabel) return 0
         if (sortOrder.current === 'ASC') {
           return aVesselLabel < bVesselLabel ? -1 : 1

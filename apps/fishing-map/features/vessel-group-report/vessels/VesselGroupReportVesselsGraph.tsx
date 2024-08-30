@@ -5,14 +5,14 @@ import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'r
 import { useTranslation } from 'react-i18next'
 import { VesselGroupReportVesselsSubsection } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { ReportVesselsGraphPlaceholder } from 'features/area-report/placeholders/ReportVesselsPlaceholder'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
-import { getVesselGearType, getVesselShipType } from 'utils/info'
-import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel.config.selectors'
+import { formatInfoField } from 'utils/info'
+import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { selectVesselGroupReportVesselsGraphDataGrouped } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
+import { selectReportVesselGroupId } from 'routes/routes.selectors'
+import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 import styles from './VesselGroupReportVesselsGraph.module.css'
-
-const MAX_OTHER_TOOLTIP_ITEMS = 10
 
 type ReportGraphTooltipProps = {
   active: boolean
@@ -33,21 +33,15 @@ const ReportGraphTooltip = (props: any) => {
   const { active, payload, label, type } = props as ReportGraphTooltipProps
   const { t } = useTranslation()
 
-  let translatedLabel = ''
-  if (EMPTY_API_VALUES.includes(label)) translatedLabel = t('common.unknown', 'Unknown')
-  else if (type === 'geartypes') {
-    translatedLabel = getVesselGearType({ geartypes: label })
-  } else if (type === 'shiptypes') {
-    translatedLabel = getVesselShipType({ shiptypes: label })
-  } else if (type === 'source') {
-    translatedLabel = t(`common.sourceOptions.${label}` as any, label)
-  } else {
-    translatedLabel = t(`flags:${label}` as any, label)
+  let parsedLabel = label
+  if (EMPTY_API_VALUES.includes(label)) parsedLabel = t('common.unknown', 'Unknown')
+  else if (type === 'flag') {
+    parsedLabel = formatInfoField(label, 'flag') as string
   }
   if (active && payload && payload.length) {
     return (
       <div className={styles.tooltipContainer}>
-        <p className={styles.tooltipLabel}>{translatedLabel}</p>
+        <p className={styles.tooltipLabel}>{parsedLabel}</p>
         <ul>
           {payload
             .map(({ value }, index) => {
@@ -70,23 +64,31 @@ const CustomTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount } = props
   const { t } = useTranslation()
   const subsection = useSelector(selectVesselGroupReportVesselsSubsection)
+  const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
   const isCategoryInteractive = !EMPTY_API_VALUES.includes(payload.value)
 
   const getTickLabel = (label: string) => {
     if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
     switch (subsection) {
-      case 'geartypes':
-        return getVesselGearType({ geartypes: label })
-      case 'shiptypes':
-        return `${t(`vessel.vesselTypes.${label?.toLowerCase()}` as any, label)}`
       case 'flag':
-        return t(`flags:${label}` as any, label)
-      case 'source':
-        return t(`common.sourceOptions.${label}` as any, label)
+        return formatInfoField(label, 'flag') as string
       default:
         return label
     }
+  }
+  const filterProperties: Record<VesselGroupReportVesselsSubsection, string> = {
+    flag: 'flag',
+    shiptypes: 'type',
+    geartypes: 'gear',
+    source: 'source',
+  }
+
+  const onLabelClick = () => {
+    dispatchQueryParams({
+      vesselGroupReportVesselFilter: `${filterProperties[subsection]}:${payload.value}`,
+      vesselGroupReportVesselPage: 0,
+    })
   }
 
   const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)
@@ -105,6 +107,7 @@ const CustomTick = (props: any) => {
     <text
       className={cx({ [styles.axisLabel]: isCategoryInteractive })}
       transform={`translate(${x},${y - 3})`}
+      onClick={onLabelClick}
     >
       {labelChunksClean.map((chunk) => (
         <Fragment key={chunk}>
@@ -124,8 +127,12 @@ const CustomTick = (props: any) => {
 }
 
 export default function VesselGroupReportVesselsGraph() {
-  const { t } = useTranslation()
-  // const dataviews = useSelector(selectDataviewInstancesByCategory(DataviewCategory.VesselGroups))
+  const dataviews = useSelector(selectActiveDataviewInstancesResolved)
+  const reportVesselGroupId = useSelector(selectReportVesselGroupId)
+  const reportDataview = dataviews?.find(({ config }) =>
+    config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
+  )
+
   const data = useSelector(selectVesselGroupReportVesselsGraphDataGrouped)
   const selectedReportVesselGraph = useSelector(selectVesselGroupReportVesselsSubsection)
   return (
@@ -147,7 +154,11 @@ export default function VesselGroupReportVesselsGraph() {
               {data && (
                 <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
               )}
-              <Bar dataKey="value" fill={'#007bff'}>
+              <Bar
+                className={styles.bar}
+                dataKey="value"
+                fill={reportDataview?.config?.color || 'rgb(22, 63, 137)'}
+              >
                 <LabelList
                   position="top"
                   valueAccessor={(entry: any) => formatI18nNumber(entry.value)}

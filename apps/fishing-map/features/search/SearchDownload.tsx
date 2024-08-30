@@ -4,7 +4,7 @@ import { unparse as unparseCSV } from 'papaparse'
 import { saveAs } from 'file-saver'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
-import { formatInfoField, getVesselGearType, getVesselShipType } from 'utils/info'
+import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectSearchResults, selectSelectedVessels } from './search.slice'
 
@@ -22,8 +22,10 @@ function SearchDownload() {
           imo: getVesselProperty(vessel, 'imo'),
           'call sign': getVesselProperty(vessel, 'callsign'),
           flag: t(`flags:${getVesselProperty(vessel, 'flag')}` as any),
-          'vessel type': getVesselShipType({ shiptypes: getVesselProperty(vessel, 'shiptypes') }),
-          'gear type': getVesselGearType({
+          'vessel type': getVesselShipTypeLabel({
+            shiptypes: getVesselProperty(vessel, 'shiptypes'),
+          }),
+          'gear type': getVesselGearTypeLabel({
             geartypes: getVesselProperty(vessel, 'geartypes'),
           }),
           owner: formatInfoField(getVesselProperty(vessel, 'owner'), 'owner'),

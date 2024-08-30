@@ -5,6 +5,7 @@ import ReportVesselsGraphSelector from 'features/area-report/vessels/ReportVesse
 import {
   selectActiveReportDataviews,
   selectReportCategory,
+  selectReportVesselFilter,
 } from 'features/app/selectors/app.reports.selector'
 import { ReportCategory } from 'types'
 import ReportSummaryTags from 'features/area-report/summary/ReportSummaryTags'
@@ -24,6 +25,7 @@ type ReportVesselTableProps = {
 export default function ReportVessels({ activityUnit, reportName }: ReportVesselTableProps) {
   const { t } = useTranslation()
   const reportCategory = useSelector(selectReportCategory)
+  const reportVesselFilter = useSelector(selectReportVesselFilter)
   const dataviews = useSelector(selectActiveReportDataviews)
   const commonProperties = useMemo(() => {
     return getCommonProperties(dataviews).filter(
@@ -53,7 +55,11 @@ export default function ReportVessels({ activityUnit, reportName }: ReportVessel
         ))}
       </div>
       <ReportVesselsGraph />
-      <ReportVesselsFilter />
+      <ReportVesselsFilter
+        filter={reportVesselFilter}
+        filterQueryParam="reportVesselFilter"
+        pageQueryParam="reportVesselPage"
+      />
       <ReportVesselsTable activityUnit={activityUnit} reportName={reportName} />
     </div>
   )

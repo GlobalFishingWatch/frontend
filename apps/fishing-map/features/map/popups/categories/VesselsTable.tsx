@@ -12,9 +12,9 @@ import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
   getDetectionsTimestamps,
-  getVesselGearType,
+  getVesselGearTypeLabel,
   getVesselOtherNamesLabel,
-  getVesselShipType,
+  getVesselShipTypeLabel,
 } from 'utils/info'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -163,10 +163,10 @@ function VesselsTable({
               const vesselFlag = getVesselProperty(vessel, 'flag', getVesselPropertyParams)
 
               const vesselType = isPresenceActivity
-                ? getVesselShipType({
+                ? getVesselShipTypeLabel({
                     shiptypes: getVesselProperty(vessel, 'shiptypes', getVesselPropertyParams),
                   })
-                : getVesselGearType({
+                : getVesselGearTypeLabel({
                     geartypes: getVesselProperty(vessel, 'geartypes', getVesselPropertyParams),
                   })
 
