@@ -10,6 +10,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectVesselGroupReportData } from 'features/vessel-group-report/vessel-group-report.slice'
+import { formatInfoField } from 'utils/info'
 import { selectVesselGroupReportVesselFilter } from '../vessel-group.config.selectors'
 import styles from './VesselGroupReportVesselsTableFooter.module.css'
 import {
@@ -17,15 +19,10 @@ import {
   selectVesselGroupReportVesselsPagination,
 } from './vessel-group-report-vessels.selectors'
 
-type ReportVesselsTableFooterProps = {
-  reportName: string
-}
-
-export default function VesselGroupReportVesselsTableFooter({
-  reportName,
-}: ReportVesselsTableFooterProps) {
+export default function VesselGroupReportVesselsTableFooter() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
+  const vesselGroup = useSelector(selectVesselGroupReportData)
   const allVessels = useSelector(selectVesselGroupReportVesselsFiltered)
   const reportVesselFilter = useSelector(selectVesselGroupReportVesselFilter)
   const pagination = useSelector(selectVesselGroupReportVesselsPagination)
@@ -46,7 +43,7 @@ export default function VesselGroupReportVesselsTableFooter({
       //   })
       const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${reportName}-${start}-${end}.csv`)
+      saveAs(blob, `${formatInfoField(vesselGroup?.name, 'name')}-${start}-${end}.csv`)
     }
   }
 

@@ -173,8 +173,7 @@ export default function VesselGroupReportVesselsTable() {
           })}
         </div>
       </div>
-      {/* TODO */}
-      <VesselGroupReportVesselsTableFooter reportName={'TODO'} />
+      <VesselGroupReportVesselsTableFooter />
     </Fragment>
   )
 }
