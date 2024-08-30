@@ -87,7 +87,11 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
     [addVesselsToVesselGroup, createVesselGroupWithVessels, onAddToVesselGroup, vessels]
   )
   return (
-    <VesselGroupListTooltip onAddToVesselGroup={handleAddToVesselGroupClick} children={children} />
+    <VesselGroupListTooltip
+      onAddToVesselGroup={handleAddToVesselGroupClick}
+      vessels={vessels}
+      children={children}
+    />
   )
 }
 
