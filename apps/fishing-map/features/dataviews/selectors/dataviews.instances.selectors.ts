@@ -44,6 +44,7 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { createDeepEqualSelector } from 'utils/selectors'
+import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
 
 const EMPTY_ARRAY: [] = []
 
@@ -130,6 +131,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectDataviewInstancesMergedOrdered,
     selectAllDataviews,
     selectAllDatasets,
+    selectAllVesselGroups,
     selectUserLogged,
     selectTrackThinningConfig,
     selectIsGuestUser,
@@ -138,6 +140,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     dataviewInstances,
     dataviews,
     datasets,
+    vesselGroups,
     loggedUser,
     trackThinningZoomConfig,
     guestUser
@@ -181,7 +184,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
     const dataviewInstancesResolved = resolveDataviews(
       dataviewInstancesWithDatasetConfig,
       dataviews,
-      datasets
+      datasets,
+      vesselGroups
     )
     const callbacks: GetDatasetConfigsCallbacks = {
       info: infoDatasetConfigsCallback(guestUser),
