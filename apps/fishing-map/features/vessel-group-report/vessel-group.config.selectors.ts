@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { VesselGroupReportState, VesselGroupReportStateProperty } from 'types'
 import { selectQueryParam } from 'routes/routes.selectors'
-import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/vessel/vessel.config'
+import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from './vessel-group-report.config'
 
 type VesselGroupReportProperty<P extends VesselGroupReportStateProperty> =
   Required<VesselGroupReportState>[P]

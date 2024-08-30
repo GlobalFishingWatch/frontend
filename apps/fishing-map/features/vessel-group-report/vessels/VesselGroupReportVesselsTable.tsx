@@ -107,15 +107,14 @@ export default function VesselGroupReportVesselsTable() {
             />
           </div>
           {vessels?.map((vessel, i) => {
-            const { vesselId, shipName, flag, flagTranslatedClean, flagTranslated, mmsi, index } =
-              vessel
+            const { id, shipName, flag, flagTranslatedClean, flagTranslated, mmsi, index } = vessel
             const isLastRow = i === vessels.length - 1
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
             const type = vessel.vesselType
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             return (
-              <Fragment key={vesselId}>
+              <Fragment key={id}>
                 <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
                   <VesselPin
                     vessel={vesselsRaw?.[index]}
@@ -125,11 +124,7 @@ export default function VesselGroupReportVesselsTable() {
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
                   {workspaceReady ? (
-                    <VesselLink
-                      className={styles.link}
-                      vesselId={vesselId}
-                      datasetId={vessel.dataset}
-                    >
+                    <VesselLink className={styles.link} vesselId={id} datasetId={vessel.dataset}>
                       {shipName}
                     </VesselLink>
                   ) : (
