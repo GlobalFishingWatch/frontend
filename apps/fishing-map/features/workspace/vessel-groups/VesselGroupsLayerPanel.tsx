@@ -112,6 +112,16 @@ function VesselGroupLayerPanel({
           <Fragment>
             {layerActive && (
               <Fragment>
+                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+                  <IconButton
+                    tooltip={t(
+                      'vesselGroupReport.clickToSee',
+                      'Click to see the vessel group report'
+                    )}
+                    icon="analysis"
+                    size="small"
+                  />
+                </VesselGroupReportLink>
                 <IconButton
                   icon="edit"
                   size="small"
