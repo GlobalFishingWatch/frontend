@@ -4,10 +4,12 @@
   align-items: center;
   justify-content: space-between;
   margin-top: var(--space-S);
-  color: var(--color-secondary-blue);
+  gap: 1rem;
+}
+
+.footer button {
   text-transform: uppercase;
   font: var(--font-S);
-  gap: 1rem;
 }
 
 .flex {
