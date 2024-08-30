@@ -108,12 +108,6 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   visibleEvents: 'all',
   timebarGraph: TimebarGraphs.None,
   bivariateDataviews: undefined,
-  reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
-  reportCategory: undefined,
-  reportVesselFilter: '',
-  reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
-  reportVesselPage: 0,
-  reportResultsPerPage: REPORT_VESSELS_PER_PAGE,
   userTab: UserTab.Info,
 }
 

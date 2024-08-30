@@ -5,7 +5,6 @@ import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'r
 import { useTranslation } from 'react-i18next'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGraph } from 'features/app/selectors/app.reports.selector'
-import { ReportVesselGraph } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { ReportVesselsGraphPlaceholder } from 'features/area-report/placeholders/ReportVesselsPlaceholder'
@@ -22,6 +21,7 @@ import {
   selectReportVesselsGraphDataGrouped,
   selectReportVesselsGraphDataOthers,
 } from '../reports.selectors'
+import { ReportVesselGraph } from '../reports.types'
 import styles from './ReportVesselsGraph.module.css'
 
 const MAX_OTHER_TOOLTIP_ITEMS = 10

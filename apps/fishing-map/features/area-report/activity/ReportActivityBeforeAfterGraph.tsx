@@ -13,14 +13,14 @@ import {
 import { DateTime } from 'luxon'
 import { useSelector } from 'react-redux'
 import { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { selectReportTimeComparison } from 'features/app/selectors/app.reports.selector'
-import { ReportActivityTimeComparison } from 'types'
 import i18n from 'features/i18n/i18n'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { getUTCDateTime } from 'utils/dates'
 import { formatDate, tickFormatter } from 'features/area-report/reports.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { toFixed } from 'utils/shared'
+import { selectReportTimeComparison } from '../reports.config.selectors'
+import { ReportActivityTimeComparison } from '../reports.types'
 import styles from './ReportActivityEvolution.module.css'
 
 interface ComparisonGraphData {

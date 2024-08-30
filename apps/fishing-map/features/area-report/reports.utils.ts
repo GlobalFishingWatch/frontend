@@ -18,7 +18,7 @@ import {
   getSchemaFilterOperationInDataview,
   SupportedDatasetSchema,
 } from 'features/datasets/datasets.utils'
-import { Bbox, BufferOperation, BufferUnit, ReportCategory } from 'types'
+import { Bbox, BufferOperation, BufferUnit } from 'types'
 import { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { VesselGroupReportVesselParsed } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.types'
@@ -30,6 +30,7 @@ import {
   REPORT_BUFFER_FEATURE_ID,
 } from './reports.config'
 import { ReportVesselWithDatasets } from './reports.selectors'
+import { ReportCategory } from './reports.types'
 
 const ALWAYS_SHOWN_FILTERS = ['vessel-groups']
 

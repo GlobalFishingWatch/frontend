@@ -19,9 +19,9 @@ import {
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
-import { VesselSearchState } from 'types'
 import { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
+import { VesselSearchState } from 'features/search/search.types'
 
 export type VesselLastIdentity = Omit<IdentityVesselData, 'identities' | 'dataset'> & {
   dataset: Dataset | string

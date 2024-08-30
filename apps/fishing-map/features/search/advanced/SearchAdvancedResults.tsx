@@ -25,7 +25,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { SearchComponentProps } from 'features/search/basic/SearchBasic'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { FIRST_YEAR_OF_DATA } from 'data/config'
-import { Locale, VesselSearchState } from 'types'
+import { Locale } from 'types'
+import { VesselSearchState } from 'features/search/search.types'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   VesselIdentityProperty,

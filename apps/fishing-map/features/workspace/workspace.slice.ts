@@ -19,7 +19,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, VALID_PASSWORD } from 'data/config'
-import { QueryParams, WorkspaceState } from 'types'
+import { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import {
@@ -71,7 +71,7 @@ interface WorkspaceSliceState {
   // used to identify when someone saves its own version of the workspace
   customStatus: AsyncReducerStatus
   error: AsyncError
-  data: Workspace<WorkspaceState> | null
+  data: Workspace<AnyWorkspaceState> | null
   password: string | typeof VALID_PASSWORD
   lastVisited: LastWorkspaceVisited | undefined
 }

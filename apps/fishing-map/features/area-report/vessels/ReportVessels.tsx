@@ -5,13 +5,13 @@ import ReportVesselsGraphSelector from 'features/area-report/vessels/ReportVesse
 import {
   selectActiveReportDataviews,
   selectReportCategory,
-  selectReportVesselFilter,
 } from 'features/app/selectors/app.reports.selector'
-import { ReportCategory } from 'types'
 import ReportSummaryTags from 'features/area-report/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/area-report/reports.utils'
 import { PROPERTIES_EXCLUDED } from 'features/area-report/summary/ReportSummary'
 import { ReportActivityUnit } from '../Report'
+import { selectReportVesselFilter } from '../reports.config.selectors'
+import { ReportCategory } from '../reports.types'
 import ReportVesselsGraph from './ReportVesselsGraph'
 import ReportVesselsFilter from './ReportVesselsFilter'
 import ReportVesselsTable from './ReportVesselsTable'

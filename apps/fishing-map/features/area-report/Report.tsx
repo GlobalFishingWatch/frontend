@@ -30,7 +30,7 @@ import {
   selectReportDataviewsWithPermissions,
 } from 'features/area-report/reports.selectors'
 import ReportVesselsPlaceholder from 'features/area-report/placeholders/ReportVesselsPlaceholder'
-import { ReportCategory, TimebarVisualisations } from 'types'
+import { TimebarVisualisations } from 'types'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { SUPPORT_EMAIL } from 'data/config'
 import {
@@ -78,6 +78,7 @@ import ReportVessels from './vessels/ReportVessels'
 import ReportDownload from './download/ReportDownload'
 import ReportEnvironment from './environment/ReportEnvironment'
 import styles from './Report.module.css'
+import { ReportCategory } from './reports.types'
 
 export type ReportActivityUnit = 'hour' | 'detection'
 

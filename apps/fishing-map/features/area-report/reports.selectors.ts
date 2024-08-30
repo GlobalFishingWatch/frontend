@@ -9,16 +9,11 @@ import {
   selectReportAreaId,
   selectReportDatasetId,
   selectActiveReportDataviews,
-  selectReportActivityGraph,
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
   selectReportCategory,
-  selectReportResultsPerPage,
-  selectReportTimeComparison,
-  selectReportVesselFilter,
   selectReportVesselGraph,
-  selectReportVesselPage,
 } from 'features/app/selectors/app.reports.selector'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -33,7 +28,6 @@ import {
   getReportCategoryFromDataview,
   getVesselsFiltered,
 } from 'features/area-report/reports.utils'
-import { ReportCategory } from 'types'
 import { createDeepEqualSelector } from 'utils/selectors'
 import { EMPTY_FIELD_PLACEHOLDER, getVesselGearTypeLabel } from 'utils/info'
 import { sortStrings } from 'utils/shared'
@@ -45,6 +39,14 @@ import {
 } from 'features/area-report/reports.config'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectReportVesselsData, selectReportPreviewBuffer } from './report.slice'
+import {
+  selectReportVesselFilter,
+  selectReportVesselPage,
+  selectReportResultsPerPage,
+  selectReportActivityGraph,
+  selectReportTimeComparison,
+} from './reports.config.selectors'
+import { ReportCategory } from './reports.types'
 
 const EMPTY_ARRAY: [] = []
 
