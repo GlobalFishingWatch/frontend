@@ -1,4 +1,10 @@
+import {
+  REPORT_ACTIVITY_GRAPH_EVOLUTION,
+  REPORT_VESSELS_GRAPH_FLAG,
+  REPORT_VESSELS_PER_PAGE,
+} from 'data/config'
 import { BufferUnit, BufferOperation } from 'types'
+import { AreaReportState } from './reports.types'
 
 export const REPORT_BUFFER_FEATURE_ID: string = 'buffer'
 export const DEFAULT_BUFFER_VALUE: number = 50
@@ -20,3 +26,17 @@ export const OTHERS_CATEGORY_LABEL = 'OTHERS'
 
 export const MAX_DAYS_TO_COMPARE = 100
 export const MAX_MONTHS_TO_COMPARE = 12
+
+export const DEFAULT_AREA_REPORT_STATE: AreaReportState = {
+  reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
+  reportCategory: undefined,
+  reportVesselFilter: '',
+  reportVesselGraph: REPORT_VESSELS_GRAPH_FLAG,
+  reportVesselPage: 0,
+  reportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+  reportAreaBounds: undefined,
+  reportTimeComparison: undefined,
+  reportBufferValue: undefined,
+  reportBufferUnit: undefined,
+  reportBufferOperation: undefined,
+}

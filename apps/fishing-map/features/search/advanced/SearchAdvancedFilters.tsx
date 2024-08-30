@@ -24,7 +24,7 @@ import {
   DEFAULT_VESSEL_IDENTITY_ID,
 } from 'features/vessel/vessel.config'
 import { useSearchFiltersConnect, useSearchFiltersErrors } from 'features/search/search.hook'
-import { VesselSearchState } from 'types'
+import { VesselSearchState } from 'features/search/search.types'
 import {
   ADVANCED_SEARCH_FIELDS,
   getSearchDataview,

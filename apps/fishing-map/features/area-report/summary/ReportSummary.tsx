@@ -9,7 +9,6 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import {
   selectActiveReportDataviews,
   selectReportCategory,
-  selectReportTimeComparison,
 } from 'features/app/selectors/app.reports.selector'
 import ReportSummaryTags from 'features/area-report/summary/ReportSummaryTags'
 import { FIELDS, getCommonProperties } from 'features/area-report/reports.utils'
@@ -26,7 +25,6 @@ import ReportSummaryPlaceholder from 'features/area-report/placeholders/ReportSu
 import ReportSummaryTagsPlaceholder from 'features/area-report/placeholders/ReportSummaryTagsPlaceholder'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { listAsSentence } from 'utils/shared'
-import { ReportCategory } from 'types'
 import {
   getDateRangeHash,
   selectReportVesselsDateRangeHash,
@@ -34,6 +32,8 @@ import {
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useTimeCompareTimeDescription } from 'features/area-report/reports-timecomparison.hooks'
 import { selectReportVesselsHours, selectReportVesselsNumber } from '../reports.selectors'
+import { selectReportTimeComparison } from '../reports.config.selectors'
+import { ReportCategory } from '../reports.types'
 import styles from './ReportSummary.module.css'
 
 type ReportSummaryProps = {

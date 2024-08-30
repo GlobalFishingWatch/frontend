@@ -11,7 +11,6 @@ import {
   selectActiveReportDataviews,
   selectReportCategory,
 } from 'features/app/selectors/app.reports.selector'
-import { ReportCategory } from 'types'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { EMPTY_API_VALUES } from 'features/area-report/reports.config'
@@ -20,6 +19,7 @@ import VesselPin from 'features/vessel/VesselPin'
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { selectReportVesselsPaginated } from '../reports.selectors'
 import { ReportActivityUnit } from '../Report'
+import { ReportCategory } from '../reports.types'
 import styles from './ReportVesselsTable.module.css'
 
 type ReportVesselTableProps = {

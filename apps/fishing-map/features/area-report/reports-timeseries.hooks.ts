@@ -20,9 +20,7 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 import {
   selectActiveReportDataviews,
-  selectReportActivityGraph,
   selectReportCategory,
-  selectReportTimeComparison,
 } from 'features/app/selectors/app.reports.selector'
 import { FilteredPolygons } from 'features/area-report/reports-geo.utils'
 import {
@@ -36,11 +34,12 @@ import {
   selectReportBufferHash,
   selectShowTimeComparison,
 } from 'features/area-report/reports.selectors'
-import { ReportActivityGraph, ReportCategory } from 'types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { AreaGeometry } from 'features/areas/areas.slice'
 import { useFilterCellsByPolygonWorker } from 'features/area-report/reports-geo.utils.workers.hooks'
 import { TimeRange } from 'features/timebar/timebar.slice'
+import { ReportActivityGraph, ReportCategory } from './reports.types'
+import { selectReportActivityGraph, selectReportTimeComparison } from './reports.config.selectors'
 
 interface EvolutionGraphData {
   date: string

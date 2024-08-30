@@ -47,6 +47,7 @@ const selectIsReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === REPORT
 )
+
 const selectIsWorkspaceReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === WORKSPACE_REPORT

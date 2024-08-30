@@ -4,9 +4,9 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { Tab, Tabs } from '@globalfishingwatch/ui-components'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { VesselGroupReportSection } from 'types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
+import { VesselGroupReportSection } from 'features/vessel-groups/vessel-groups.types'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import {
   selectVesselGroupReportData,
