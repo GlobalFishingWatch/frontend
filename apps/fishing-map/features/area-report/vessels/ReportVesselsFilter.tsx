@@ -1,24 +1,29 @@
 import React, { useEffect, useState, Fragment } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from 'use-debounce'
 import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
-import { selectReportVesselFilter } from 'features/app/selectors/app.reports.selector'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import styles from './ReportVesselsFilter.module.css'
 
-type ReportVesselsFilterProps = {}
+type ReportVesselsFilterProps = {
+  filter: string
+  filterQueryParam: string
+  pageQueryParam: string
+}
 
-export default function ReportVesselsFilter(props: ReportVesselsFilterProps) {
+export default function ReportVesselsFilter({
+  filter,
+  filterQueryParam,
+  pageQueryParam,
+}: ReportVesselsFilterProps) {
   const { t } = useTranslation()
-  const reportVesselFilter = useSelector(selectReportVesselFilter)
   const { dispatchQueryParams } = useLocationConnect()
-  const [query, setQuery] = useState(reportVesselFilter)
+  const [query, setQuery] = useState(filter)
   const [debouncedQuery] = useDebounce(query, 200)
 
   useEffect(() => {
-    dispatchQueryParams({ reportVesselFilter: debouncedQuery, reportVesselPage: 0 })
+    dispatchQueryParams({ [filterQueryParam]: debouncedQuery, [pageQueryParam]: 0 })
     trackEvent({
       category: TrackCategory.Analysis,
       action: 'Type search into vessel list',
@@ -28,11 +33,11 @@ export default function ReportVesselsFilter(props: ReportVesselsFilterProps) {
   }, [debouncedQuery])
 
   useEffect(() => {
-    if (reportVesselFilter !== query) {
-      setQuery(reportVesselFilter)
+    if (filter !== query) {
+      setQuery(filter)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportVesselFilter])
+  }, [filter])
 
   return (
     <div className={styles.inputContainer}>

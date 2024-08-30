@@ -42,8 +42,8 @@ export default function VesselGroupReportVesselsTable() {
     userData?.permissions || []
   )
 
-  const onFilterClick = (reportVesselFilter: any) => {
-    dispatchQueryParams({ reportVesselFilter, vesselGroupReportVesselPage: 0 })
+  const onFilterClick = (vesselGroupReportVesselFilter: any) => {
+    dispatchQueryParams({ vesselGroupReportVesselFilter, vesselGroupReportVesselPage: 0 })
   }
 
   const onPinClick = () => {
@@ -107,18 +107,12 @@ export default function VesselGroupReportVesselsTable() {
             />
           </div>
           {vessels?.map((vessel, i) => {
+            const { vesselId, shipName, flag, flagTranslatedClean, flagTranslated, mmsi } = vessel
             const isLastRow = i === vessels.length - 1
-            const vesselFlag = getVesselProperty(vessel, 'flag')
-            const flag = t(`flags:${vesselFlag}` as any, EMPTY_FIELD_PLACEHOLDER)
-            const flagInteractionEnabled = !EMPTY_API_VALUES.includes(vesselFlag)
-            const type = getVesselShipTypeLabel({
-              shiptypes: getVesselProperty(vessel, 'shiptypes'),
-            })
-            const typeInteractionEnabled = type !== (EMPTY_FIELD_PLACEHOLDER as VesselType)
-            //   ? vessel.infoDataset !== undefined && vessel.trackDataset !== undefined
-            //   : vessel.infoDataset !== undefined || vessel.trackDataset !== undefined
+            const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
+            const type = vessel.vesselType
+            const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
             const pinTrackDisabled = workspaceStatus !== AsyncReducerStatus.Finished
-            const vesselId = getVesselProperty(vessel, 'id')
             return (
               <Fragment key={vesselId}>
                 <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
@@ -131,14 +125,14 @@ export default function VesselGroupReportVesselsTable() {
                       vesselId={vesselId}
                       datasetId={vessel.dataset}
                     >
-                      {getVesselShipNameLabel(vessel)}
+                      {shipName}
                     </VesselLink>
                   ) : (
-                    getVesselShipNameLabel(vessel)
+                    shipName
                   )}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
-                  <span>{getVesselProperty(vessel, 'ssvid') || EMPTY_FIELD_PLACEHOLDER}</span>
+                  <span>{mmsi || EMPTY_FIELD_PLACEHOLDER}</span>
                 </div>
                 <div
                   className={cx({
@@ -150,9 +144,13 @@ export default function VesselGroupReportVesselsTable() {
                       ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
                       : undefined
                   }
-                  onClick={flagInteractionEnabled ? () => onFilterClick(`flag:${flag}`) : undefined}
+                  onClick={
+                    flagInteractionEnabled
+                      ? () => onFilterClick(`flag:${flagTranslatedClean}`)
+                      : undefined
+                  }
                 >
-                  <span>{flag}</span>
+                  <span>{flagTranslated}</span>
                 </div>
                 <div
                   className={cx({

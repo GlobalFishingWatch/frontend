@@ -31,6 +31,9 @@ export const selectVesselGroupReportEventsSubsection = selectVesselGroupReportSt
   'vesselGroupReportEventsSubsection'
 )
 
+export const selectVesselGroupReportVesselFilter = selectVesselGroupReportStateProperty(
+  'vesselGroupReportVesselFilter'
+)
 export const selectVesselGroupReportVesselPage = selectVesselGroupReportStateProperty(
   'vesselGroupReportVesselPage'
 )

@@ -8,15 +8,14 @@ import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { selectReportVesselFilter } from 'features/app/selectors/app.reports.selector'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
-import { selectActiveActivityAndDetectionsDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectVesselGroupReportVessels } from 'features/vessel-group-report/vessel-group-report.slice'
-// import { parseReportVesselsToIdentity } from '../reports.utils'
+import { selectVesselGroupReportVesselFilter } from '../vessel-group.config.selectors'
 import styles from './VesselGroupReportVesselsTableFooter.module.css'
-import { selectVesselGroupReportVesselsPagination } from './vessel-group-report-vessels.selectors'
+import {
+  selectVesselGroupReportVesselsFiltered,
+  selectVesselGroupReportVesselsPagination,
+} from './vessel-group-report-vessels.selectors'
 
 type ReportVesselsTableFooterProps = {
   reportName: string
@@ -26,42 +25,29 @@ export default function VesselGroupReportVesselsTableFooter({
   reportName,
 }: ReportVesselsTableFooterProps) {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
-  const allVessels = useSelector(selectVesselGroupReportVessels)
-  const allFilteredVessels = useSelector(selectVesselGroupReportVessels)
-  const reportVesselFilter = useSelector(selectReportVesselFilter)
-  // const reportAreaName = useSelector(selectReportAreaName)
+  const allVessels = useSelector(selectVesselGroupReportVesselsFiltered)
+  const reportVesselFilter = useSelector(selectVesselGroupReportVesselFilter)
   const pagination = useSelector(selectVesselGroupReportVesselsPagination)
-  const heatmapDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const { start, end } = useSelector(selectTimeRange)
 
   if (!allVessels?.length) return null
 
-  // const vesselGroupIdentityVessels = useMemo(() => {
-  //   return parseReportVesselsToIdentity(reportVesselFilter ? allFilteredVessels : allVessels)
-  // }, [allFilteredVessels, allVessels, reportVesselFilter])
-
   const onDownloadVesselsClick = () => {
-    // if (allVesselsWithAllInfo?.length) {
-    //   const vessels = getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter)?.map(
-    //     (vessel) => {
-    //       const { dataviewId, category, sourceColor, flagTranslatedClean, ...rest } = vessel
-    //       return rest
-    //     }
-    //   ) as ReportVesselWithDatasets[]
-    //   trackEvent({
-    //     category: TrackCategory.Analysis,
-    //     action: `Click 'Download CSV'`,
-    //     label: `region name: ${reportAreaName} | timerange: ${start} - ${end} | filters: ${reportVesselFilter}`,
-    //   })
-    //   const csv = unparseCSV(vessels)
-    if (allVessels?.length) {
-      const csv = unparseCSV(allVessels)
+    const vessels = allVessels?.map((vessel) => {
+      const { flagTranslated, flagTranslatedClean, ...rest } = vessel
+      return rest
+    })
+    if (vessels?.length) {
+      //   trackEvent({
+      //     category: TrackCategory.Analysis,
+      //     action: `Click 'Download CSV'`,
+      //     label: `region name: ${reportAreaName} | timerange: ${start} - ${end} | filters: ${reportVesselFilter}`,
+      //   })
+      const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
       saveAs(blob, `${reportName}-${start}-${end}.csv`)
     }
-    // }
   }
 
   const onPrevPageClick = () => {
@@ -107,8 +93,7 @@ export default function VesselGroupReportVesselsTableFooter({
   const hasLessVesselsThanAPage =
     pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
   const isLastPaginationPage =
-    // pagination?.offset + pagination?.resultsPerPage >= (pagination?.totalFiltered as number)
-    pagination?.offset + pagination?.resultsPerPage >= (pagination?.total as number)
+    pagination?.offset + pagination?.resultsPerPage >= pagination?.totalFiltered
 
   return (
     <div className={styles.footer}>
@@ -125,8 +110,7 @@ export default function VesselGroupReportVesselsTableFooter({
             <span className={styles.noWrap}>
               {`${pagination?.offset + 1} - ${
                 isLastPaginationPage
-                  ? // ? pagination?.totalFiltered
-                    pagination?.total
+                  ? pagination?.totalFiltered
                   : pagination?.offset + pagination?.resultsPerPage
               }`}{' '}
             </span>
@@ -153,17 +137,17 @@ export default function VesselGroupReportVesselsTableFooter({
             </label>
           </button>
           <span className={cx(styles.noWrap, styles.right)}>
-            {/* {reportVesselFilter && ( */}
-            <Fragment>
-              <I18nNumber number={allVessels!?.length} /> {t('common.of', 'of')}{' '}
-            </Fragment>
-            {/* )} */}
+            {reportVesselFilter && (
+              <Fragment>
+                <I18nNumber number={pagination.totalFiltered} /> {t('common.of', 'of')}{' '}
+              </Fragment>
+            )}
             <I18nNumber number={pagination.total} />{' '}
             {t('common.vessel', { count: pagination?.total })}
           </span>
         </Fragment>
       </div>
-      <div className={cx(styles.flex, styles.expand)}>
+      <div className={cx(styles.flex, styles.expand, styles.end)}>
         {/* <VesselGroupAddButton
           vessels={allVessels}
           onAddToVesselGroup={onAddToVesselGroup}
@@ -171,10 +155,8 @@ export default function VesselGroupReportVesselsTableFooter({
           tooltip="TODO"
         /> */}
         <Button
-          testId="download-vessel-table-report"
+          // testId="download-vessel-table-report"
           onClick={onDownloadVesselsClick}
-          disabled
-          tooltip="TODO"
         >
           {t('analysis.downloadVesselsList', 'Download csv')}
         </Button>
