@@ -40,6 +40,7 @@ import {
   selectLocationType,
   selectIsWorkspaceVesselLocation,
   selectIsAnyVesselLocation,
+  selectIsVesselGroupReportLocation,
 } from 'routes/routes.selectors'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
@@ -358,7 +359,7 @@ function CloseReportButton() {
     dispatch(cleanCurrentWorkspaceReportState())
   }
 
-  const isWorkspaceRoute = workspaceId !== DEFAULT_WORKSPACE_ID
+  const isWorkspaceRoute = workspaceId !== undefined && workspaceId !== DEFAULT_WORKSPACE_ID
   const linkTo = {
     type: isWorkspaceRoute ? WORKSPACE : HOME,
     payload: {
@@ -449,6 +450,7 @@ function SidebarHeader() {
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
@@ -504,6 +506,8 @@ function SidebarHeader() {
     dispatchQueryParams({ searchOption: option.id, ...EMPTY_FILTERS, ...additionalParams })
   }
 
+  const showCloseReportButton = isReportLocation || isVesselGroupReportLocation
+
   return (
     <Sticky
       scrollElement=".scrollContainer"
@@ -523,7 +527,7 @@ function SidebarHeader() {
             )}
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
             {isSmallScreen && <UserButton className={styles.userButton} />}
-            {isReportLocation && <CloseReportButton />}
+            {showCloseReportButton && <CloseReportButton />}
             {isVesselLocation && <CloseVesselButton />}
             {isSearchLocation && !readOnly && !isSmallScreen && (
               <Choice
@@ -534,9 +538,10 @@ function SidebarHeader() {
                 className={styles.searchOption}
               />
             )}
-            {!isReportLocation && !isVesselLocation && showBackToWorkspaceButton && (
-              <CloseSectionButton />
-            )}
+            {!isReportLocation &&
+              !isVesselLocation &&
+              !showCloseReportButton &&
+              showBackToWorkspaceButton && <CloseSectionButton />}
           </Fragment>
         )}
       </div>

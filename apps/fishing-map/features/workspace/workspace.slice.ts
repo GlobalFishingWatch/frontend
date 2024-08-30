@@ -52,6 +52,8 @@ import { AppDispatch } from 'store'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
+import { DEFAULT_AREA_REPORT_STATE } from 'features/area-report/reports.config'
+import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/vessel-group-report/vessel-group-report.config'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
@@ -420,17 +422,14 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk<
 export function cleanReportQuery(query: QueryParams) {
   return {
     ...query,
-    reportActivityGraph: undefined,
-    reportAreaBounds: undefined,
-    reportCategory: undefined,
-    reportResultsPerPage: undefined,
-    reportTimeComparison: undefined,
-    reportVesselFilter: undefined,
-    reportVesselGraph: undefined,
-    reportVesselPage: undefined,
-    reportBufferUnit: undefined,
-    reportBufferValue: undefined,
-    reportBufferOperation: undefined,
+    ...Object.keys(DEFAULT_AREA_REPORT_STATE).reduce((acc, key) => {
+      acc[key] = undefined
+      return acc
+    }, {} as Record<string, undefined>),
+    ...Object.keys(DEFAULT_VESSEL_GROUP_REPORT_STATE).reduce((acc, key) => {
+      acc[key] = undefined
+      return acc
+    }, {} as Record<string, undefined>),
   }
 }
 
