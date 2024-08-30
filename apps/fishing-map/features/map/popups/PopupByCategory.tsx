@@ -33,6 +33,9 @@ import VesselEventsLayers from 'features/map/popups/categories/VesselEventsLayer
 import EnvironmentTooltipSection from 'features/map/popups/categories/EnvironmentLayers'
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
+import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
+import { formatInfoField } from 'utils/info'
+import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
 import {
   SliceExtendedClusterPickingObject,
   SliceExtendedFourwingsPickingObject,
@@ -54,6 +57,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const mapViewport = useMapViewport()
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
+  const allVesselGroups = useSelector(selectAllVisibleVesselGroups)
   const activityInteractionStatus = useSelector(selectFishingInteractionStatus)
   const apiEventStatus = useSelector(selectApiEventStatus)
   if (!mapViewport || !interaction || !interaction.features?.length) return null
@@ -135,18 +139,19 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             return heatmapFeatures.map((feature, i) => {
               return feature.sublayers?.map((sublayer, j) => {
                 const dataview = dataviews.find((d) => d.id === sublayer.id)
+                const vesselGroup = allVesselGroups.find((vesselGroup) =>
+                  dataview?.config?.filters?.['vessel-groups'].includes(vesselGroup.id)
+                )
                 return (
-                  <ActivityTooltipRow
+                  <VesselGroupTooltipRow
                     key={`${i}-${j}`}
                     loading={activityInteractionStatus === AsyncReducerStatus.Loading}
                     feature={{
                       ...sublayer,
                       category: feature.category as DataviewCategory,
-                      // TODO get the title from the dataview
-                      title: feature.title,
+                      title: formatInfoField(vesselGroup?.name, 'name') as string,
                     }}
                     showFeaturesDetails={type === 'click'}
-                    activityType={dataview?.datasets?.[0]?.subcategory as DatasetSubCategory}
                   />
                 )
               })
