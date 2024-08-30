@@ -73,22 +73,22 @@ function VesselGroupSection(): React.ReactElement {
         {dataviews.length > 0 ? (
           dataviews?.map((dataview) => {
             const dataviewVesselGroups = dataview.config?.filters?.['vessel-groups']
-            const vesselGroup =
-              workspaceVesselGroupsStatus === AsyncReducerStatus.Loading
-                ? ({
-                    id: dataviewVesselGroups[0],
-                    name: t('vesselGroup.loadingInfo', 'Loading vessel group info'),
-                  } as VesselGroup)
-                : allVesselGroups.find((vesselGroup) =>
-                    dataviewVesselGroups.includes(vesselGroup.id)
-                  )
+            let vesselGroup = allVesselGroups.find((vesselGroup) =>
+              dataviewVesselGroups.includes(vesselGroup.id)
+            )
+            if (workspaceVesselGroupsStatus === AsyncReducerStatus.Loading && !vesselGroup) {
+              vesselGroup = {
+                id: dataviewVesselGroups[0],
+                name: t('vesselGroup.loadingInfo', 'Loading vessel group info'),
+              } as VesselGroup
+            }
             return (
               <VesselGroupLayerPanel
                 key={dataview.id}
                 dataview={dataview}
                 vesselGroup={vesselGroup}
                 vesselGroupLoading={
-                  workspaceVesselGroupsStatus === AsyncReducerStatus.Loading ||
+                  (!vesselGroup && workspaceVesselGroupsStatus === AsyncReducerStatus.Loading) ||
                   dataviewVesselGroups[0] === vesselGroupsStatusId
                 }
               />
