@@ -59,7 +59,12 @@ import {
 } from './workspace.selectors'
 import { parseUpsertWorkspace } from './workspace.utils'
 
-type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
+export type LastWorkspaceVisited = {
+  type: ROUTE_TYPES
+  payload: any
+  query: any
+  replaceQuery?: boolean
+}
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus

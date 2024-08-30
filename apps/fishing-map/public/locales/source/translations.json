@@ -1015,6 +1015,7 @@
     "remove": "Remove vessel group",
     "removeVessel": "Remove vessel from group",
     "saveAndFilter": "Save and filter workspace",
+    "saveAndSeeInWorkspace": "Save and see in workspace",
     "saveForLater": "Save for later",
     "saveForLaterTooltip": "You'll find the group in the activity layers filters or your user panel button",
     "searchLimit": "Search is limited up to {{limit}} vessels",

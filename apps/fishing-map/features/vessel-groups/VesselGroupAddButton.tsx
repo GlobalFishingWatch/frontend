@@ -2,8 +2,10 @@ import { useCallback } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Button, ButtonType, ButtonSize } from '@globalfishingwatch/ui-components'
 import { MAX_VESSEL_GROUP_VESSELS } from 'features/vessel-groups/vessel-groups.slice'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import styles from './VesselGroupListTooltip.module.css'
 import VesselGroupListTooltip from './VesselGroupListTooltip'
 import {
@@ -38,17 +40,21 @@ export function VesselGroupAddActionButton({
   onToggleClick,
 }: VesselGroupAddButtonToggleProps) {
   const { t } = useTranslation()
+  const guestUser = useSelector(selectIsGuestUser)
   const tooManyVessels = vessels && vessels?.length > MAX_VESSEL_GROUP_VESSELS
+  const disabled = guestUser || !vessels?.length || tooManyVessels
 
   return (
     <Button
       size={buttonSize}
       type={buttonType}
       className={cx('print-hidden', styles.button, className)}
-      onClick={onToggleClick}
-      disabled={!vessels?.length || tooManyVessels}
+      onClick={disabled ? undefined : onToggleClick}
+      disabled={disabled}
       tooltip={
-        tooManyVessels
+        guestUser
+          ? t('vesselGroup.loginToAdd', 'Login to add to group')
+          : tooManyVessels
           ? t('vesselGroup.tooManyVessels', {
               count: MAX_VESSEL_GROUP_VESSELS,
               defaultValue: 'Maximum number of vessels is {{count}}',

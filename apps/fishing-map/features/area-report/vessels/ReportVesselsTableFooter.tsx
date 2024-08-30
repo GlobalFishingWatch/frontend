@@ -95,7 +95,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   }
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
+    dispatch(setVesselGroupConfirmationMode('saveAndSeeInWorkspace'))
     if (dataviewIds?.length) {
       dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
     }
