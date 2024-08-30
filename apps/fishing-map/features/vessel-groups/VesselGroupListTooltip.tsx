@@ -31,6 +31,16 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
     }
   }, [vesselGroupOptions?.length, vesselGroupsOpen])
 
+  const handleVesselGroupClick = useCallback(
+    (vesselGroupId: string) => {
+      if (onAddToVesselGroup) {
+        onAddToVesselGroup(vesselGroupId)
+        setVesselGroupsOpen(false)
+      }
+    },
+    [onAddToVesselGroup]
+  )
+
   return (
     <Popover
       open={vesselGroupsOpen}
@@ -41,7 +51,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
           {hasUserGroupsPermissions && (
             <li
               className={cx(styles.groupOption, styles.groupOptionNew)}
-              onClick={() => onAddToVesselGroup?.(NEW_VESSEL_GROUP_ID)}
+              onClick={() => handleVesselGroupClick(NEW_VESSEL_GROUP_ID)}
               key="new-group"
             >
               {t('vesselGroup.createNewGroup', 'Create new group')}
@@ -51,11 +61,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
             <li
               className={styles.groupOption}
               key={group.id}
-              onClick={
-                !group.loading && onAddToVesselGroup
-                  ? () => onAddToVesselGroup(group.id)
-                  : undefined
-              }
+              onClick={!group.loading ? () => handleVesselGroupClick(group.id) : undefined}
             >
               {group.label}
               {group.loading && <Spinner className={styles.groupLoading} size="tiny" />}
