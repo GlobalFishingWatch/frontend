@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { VesselGroup } from '@globalfishingwatch/api-types'
 import styles from 'features/workspace/shared/Sections.module.css'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -11,7 +10,6 @@ import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import VesselGroupListTooltip from 'features/vessel-groups/VesselGroupListTooltip'
 import { getVesselGroupDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectAllVisibleVesselGroups } from 'features/user/selectors/user.permissions.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectVesselGroupsStatusId,
@@ -27,7 +25,6 @@ function VesselGroupSection(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const dataviews = useSelector(selectVesselGroupDataviews)
-  const allVesselGroups = useSelector(selectAllVisibleVesselGroups)
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const vesselGroupsStatusId = useSelector(selectVesselGroupsStatusId)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -72,24 +69,14 @@ function VesselGroupSection(): React.ReactElement {
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
           dataviews?.map((dataview) => {
-            const dataviewVesselGroups = dataview.config?.filters?.['vessel-groups']
-            let vesselGroup = allVesselGroups.find((vesselGroup) =>
-              dataviewVesselGroups.includes(vesselGroup.id)
-            )
-            if (workspaceVesselGroupsStatus === AsyncReducerStatus.Loading && !vesselGroup) {
-              vesselGroup = {
-                id: dataviewVesselGroups[0],
-                name: t('vesselGroup.loadingInfo', 'Loading vessel group info'),
-              } as VesselGroup
-            }
             return (
               <VesselGroupLayerPanel
                 key={dataview.id}
                 dataview={dataview}
-                vesselGroup={vesselGroup}
                 vesselGroupLoading={
-                  (!vesselGroup && workspaceVesselGroupsStatus === AsyncReducerStatus.Loading) ||
-                  dataviewVesselGroups[0] === vesselGroupsStatusId
+                  (!dataview.vesselGroup &&
+                    workspaceVesselGroupsStatus === AsyncReducerStatus.Loading) ||
+                  dataview.vesselGroup?.id === vesselGroupsStatusId
                 }
               />
             )

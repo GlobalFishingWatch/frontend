@@ -2,7 +2,6 @@ import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { VesselGroup } from '@globalfishingwatch/api-types'
 import { IconButton, ColorBarOption, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
@@ -28,19 +27,18 @@ import VesselGroupNotFound from './VesselGroupNotFound'
 
 export type VesselGroupLayerPanelProps = {
   dataview: UrlDataviewInstance
-  vesselGroup?: VesselGroup
   vesselGroupLoading?: boolean
 }
 
 function VesselGroupLayerPanel({
   dataview,
-  vesselGroup,
   vesselGroupLoading,
 }: VesselGroupLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
+  const { vesselGroup } = dataview
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataview?.id)
@@ -105,9 +103,15 @@ function VesselGroupLayerPanel({
                 content={t('vesselGroupReport.clickToSee', 'Click to see the vessel group report')}
               >
                 <span>
-                  {formatInfoField(vesselGroup?.name, 'name')}{' '}
-                  {vesselGroup?.vessels?.length && (
-                    <span className={styles.secondary}> ({vesselGroup?.vessels.length})</span>
+                  {vesselGroupLoading ? (
+                    t('vesselGroup.loadingInfo', 'Loading vessel group info')
+                  ) : (
+                    <Fragment>
+                      {formatInfoField(vesselGroup?.name, 'name')}{' '}
+                      {vesselGroup?.vessels?.length && (
+                        <span className={styles.secondary}> ({vesselGroup?.vessels.length})</span>
+                      )}
+                    </Fragment>
                   )}
                 </span>
               </Tooltip>
