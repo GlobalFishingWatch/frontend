@@ -83,21 +83,23 @@ function UserVesselGroups() {
                       {getVesselGroupLabel(vesselGroup)}{' '}
                       <span className={styles.secondary}>({vesselGroup.vessels.length})</span>
                     </span>
-                    <IconButton icon="arrow-right" />
                   </VesselGroupReportLink>
-                  <IconButton
-                    icon="edit"
-                    loading={vesselGroup.id === editingGroupId}
-                    tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
-                    onClick={() => onEditClick(vesselGroup)}
-                  />
-                  <IconButton
-                    icon="delete"
-                    type="warning"
-                    loading={vesselGroup.id === vesselGroupStatusId}
-                    tooltip={t('vesselGroup.remove', 'Remove vessel group')}
-                    onClick={() => onDeleteClick(vesselGroup)}
-                  />
+                  <div>
+                    <IconButton icon="arrow-right" />
+                    <IconButton
+                      icon="edit"
+                      loading={vesselGroup.id === editingGroupId}
+                      tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
+                      onClick={() => onEditClick(vesselGroup)}
+                    />
+                    <IconButton
+                      icon="delete"
+                      type="warning"
+                      loading={vesselGroup.id === vesselGroupStatusId}
+                      tooltip={t('vesselGroup.remove', 'Remove vessel group')}
+                      onClick={() => onDeleteClick(vesselGroup)}
+                    />
+                  </div>
                 </li>
               )
             })

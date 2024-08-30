@@ -19,7 +19,7 @@ import {
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, VALID_PASSWORD } from 'data/config'
-import { QueryParams, WorkspaceState } from 'types'
+import { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import {
@@ -52,6 +52,8 @@ import { AppDispatch } from 'store'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
+import { DEFAULT_AREA_REPORT_STATE } from 'features/area-report/reports.config'
+import { DEFAULT_VESSEL_GROUP_REPORT_STATE } from 'features/vessel-group-report/vessel-group-report.config'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
@@ -59,14 +61,19 @@ import {
 } from './workspace.selectors'
 import { parseUpsertWorkspace } from './workspace.utils'
 
-type LastWorkspaceVisited = { type: ROUTE_TYPES; payload: any; query: any; replaceQuery?: boolean }
+export type LastWorkspaceVisited = {
+  type: ROUTE_TYPES
+  payload: any
+  query: any
+  replaceQuery?: boolean
+}
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
   // used to identify when someone saves its own version of the workspace
   customStatus: AsyncReducerStatus
   error: AsyncError
-  data: Workspace<WorkspaceState> | null
+  data: Workspace<AnyWorkspaceState> | null
   password: string | typeof VALID_PASSWORD
   lastVisited: LastWorkspaceVisited | undefined
 }
@@ -415,17 +422,14 @@ export const updatedCurrentWorkspaceThunk = createAsyncThunk<
 export function cleanReportQuery(query: QueryParams) {
   return {
     ...query,
-    reportActivityGraph: undefined,
-    reportAreaBounds: undefined,
-    reportCategory: undefined,
-    reportResultsPerPage: undefined,
-    reportTimeComparison: undefined,
-    reportVesselFilter: undefined,
-    reportVesselGraph: undefined,
-    reportVesselPage: undefined,
-    reportBufferUnit: undefined,
-    reportBufferValue: undefined,
-    reportBufferOperation: undefined,
+    ...Object.keys(DEFAULT_AREA_REPORT_STATE).reduce((acc, key) => {
+      acc[key] = undefined
+      return acc
+    }, {} as Record<string, undefined>),
+    ...Object.keys(DEFAULT_VESSEL_GROUP_REPORT_STATE).reduce((acc, key) => {
+      acc[key] = undefined
+      return acc
+    }, {} as Record<string, undefined>),
   }
 }
 

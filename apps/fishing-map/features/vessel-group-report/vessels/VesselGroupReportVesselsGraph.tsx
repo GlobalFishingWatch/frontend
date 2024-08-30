@@ -3,7 +3,6 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { VesselGroupReportVesselsSubsection } from 'types'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
 import { formatInfoField } from 'utils/info'
@@ -12,6 +11,7 @@ import { selectVesselGroupReportVesselsGraphDataGrouped } from 'features/vessel-
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { VesselGroupReportVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {

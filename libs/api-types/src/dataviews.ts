@@ -1,6 +1,7 @@
 import { Locale } from './i18n'
 import { ApiAppName } from './workspaces'
 import { Dataset } from './datasets'
+import { VesselGroup } from './vesselGroups'
 
 export type ColorCyclingType = 'fill' | 'line'
 export const INCLUDE_FILTER_ID = 'include'
@@ -39,12 +40,14 @@ export enum DataviewType {
 export type DataviewSublayerConfig = {
   id: string
   datasets: Dataset[]
+  visible?: boolean
   color?: string
   colorRamp?: string
-  visible?: boolean
   filter?: DataviewConfig['filter']
   filters?: DataviewConfig['filters']
   vesselGroups?: DataviewConfig['vessel-groups']
+  /** Needed to update the layer when the vessel group is edited */
+  vesselGroupsLength?: number
   maxZoom?: number
 }
 
@@ -213,6 +216,7 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
   updatedAt?: string
   config: DataviewConfig<Type>
   datasets?: Dataset[]
+  vesselGroup?: VesselGroup
   infoConfig?: DataviewInfoConfig
   eventsConfig?: DataviewEventsConfig
   filtersConfig?: DataviewFiltersConfig

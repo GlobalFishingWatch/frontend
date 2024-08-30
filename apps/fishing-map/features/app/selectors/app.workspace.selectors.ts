@@ -12,14 +12,8 @@ import {
   selectVisibleEvents,
 } from 'features/app/selectors/app.selectors'
 import {
-  selectReportActivityGraph,
-  selectReportAreaBounds,
   selectReportCategory,
-  selectReportResultsPerPage,
-  selectReportTimeComparison,
-  selectReportVesselFilter,
   selectReportVesselGraph,
-  selectReportVesselPage,
   selectReportBufferValue,
   selectReportBufferUnit,
   selectReportBufferOperation,
@@ -36,6 +30,14 @@ import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectDaysFromLatest, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
+import {
+  selectReportActivityGraph,
+  selectReportAreaBounds,
+  selectReportResultsPerPage,
+  selectReportTimeComparison,
+  selectReportVesselFilter,
+  selectReportVesselPage,
+} from 'features/area-report/reports.config.selectors'
 
 const selectWorkspaceReportState = createSelector(
   [

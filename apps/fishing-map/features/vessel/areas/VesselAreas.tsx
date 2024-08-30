@@ -11,7 +11,6 @@ import {
   selectEventsGroupedByArea,
   UNKNOWN_AREA,
 } from 'features/vessel/activity/vessels-activity.selectors'
-import { VesselAreaSubsection } from 'types'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
@@ -27,6 +26,7 @@ import { selectVesselProfileColor } from 'features/dataviews/selectors/dataviews
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
+import { VesselAreaSubsection } from '../vessel.types'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {

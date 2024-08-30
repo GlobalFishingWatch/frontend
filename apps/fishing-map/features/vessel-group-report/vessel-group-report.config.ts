@@ -1,5 +1,5 @@
 import { REPORT_VESSELS_PER_PAGE } from 'data/config'
-import { VesselGroupReportState } from 'types'
+import { VesselGroupReportState } from 'features/vessel-groups/vessel-groups.types'
 
 export const OTHER_CATEGORY_LABEL = 'OTHER'
 

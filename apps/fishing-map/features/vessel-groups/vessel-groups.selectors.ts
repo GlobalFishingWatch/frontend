@@ -1,13 +1,20 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { isAdvancedSearchAllowed } from 'features/search/search.selectors'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { selectLocationQuery, selectUrlDataviewInstances } from 'routes/routes.selectors'
 import {
   MAX_VESSEL_GROUP_VESSELS,
   selectNewVesselGroupSearchVessels,
   selectVesselGroupSearchVessels,
 } from 'features/vessel-groups/vessel-groups.slice'
-import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
+import {
+  selectLastVisitedWorkspace,
+  selectWorkspace,
+  selectWorkspaceDataviewInstances,
+} from 'features/workspace/workspace.selectors'
 import { selectHasUserGroupsPermissions } from 'features/user/selectors/user.permissions.selectors'
+import { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
+import { WORKSPACE } from 'routes/routes'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 
 export const selectAllVesselGroupSearchVessels = createSelector(
   [selectVesselGroupSearchVessels, selectNewVesselGroupSearchVessels],
@@ -43,6 +50,23 @@ export const selectWorkspaceVessselGroupsIds = createSelector(
     return [...workspaceDataviewInstances, ...urlDataviewInstances].flatMap(
       (dvi) => dvi?.config?.filters?.['vessel-groups'] || []
     )
+  }
+)
+
+export const selectVesselGroupWorkspaceToNavigate = createSelector(
+  [selectLastVisitedWorkspace, selectWorkspace, selectLocationQuery],
+  (lastVisitedWorkspace, workspace, query): LastWorkspaceVisited => {
+    if (lastVisitedWorkspace) {
+      return lastVisitedWorkspace
+    }
+    return {
+      type: WORKSPACE,
+      payload: {
+        category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+      },
+      query: query,
+    }
   }
 )
 

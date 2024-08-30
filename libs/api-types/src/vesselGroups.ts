@@ -15,4 +15,4 @@ export interface VesselGroup {
   createdAt?: string
 }
 
-export type VesselGroupUpsert = Omit<VesselGroup, 'id' | 'public' | 'ownerId' | 'ownerType'>
+export type VesselGroupUpsert = Partial<Pick<VesselGroup, 'id' | 'name' | 'vessels' | 'public'>>

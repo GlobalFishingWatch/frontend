@@ -15,13 +15,10 @@ import {
   getRelatedDatasetByType,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import {
-  selectWorkspaceDataviewInstances,
-  selectWorkspaceStateProperty,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
-import { ReportCategory, TimebarVisualisations } from 'types'
+import { TimebarVisualisations } from 'types'
 import { createDeepEqualSelector } from 'utils/selectors'
 import {
   selectIsAnyVesselLocation,
@@ -43,6 +40,8 @@ import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectViewOnlyVesselGroup } from 'features/vessel-group-report/vessel-group.config.selectors'
+import { ReportCategory } from 'features/area-report/reports.types'
+import { selectReportCategorySelector } from 'features/area-report/reports.config.selectors'
 import {
   selectContextAreasDataviews,
   selectActivityDataviews,
@@ -82,7 +81,6 @@ export const selectReportActiveCategories = createSelector(
   }
 )
 
-const selectReportCategorySelector = selectWorkspaceStateProperty('reportCategory')
 const selectReportCategory = createSelector(
   [selectReportCategorySelector, selectReportActiveCategories],
   (reportCategory, activeCategories): ReportCategory => {

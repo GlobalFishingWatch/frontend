@@ -29,7 +29,6 @@ import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
 import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselSection } from 'types'
 import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
@@ -50,6 +49,7 @@ import Insights from 'features/vessel/insights/Insights'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 import styles from './Vessel.module.css'
+import { VesselSection } from './vessel.types'
 
 const Vessel = () => {
   const { t } = useTranslation()

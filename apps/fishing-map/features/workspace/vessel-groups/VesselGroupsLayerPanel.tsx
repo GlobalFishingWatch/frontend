@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import cx from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { VesselGroup } from '@globalfishingwatch/api-types'
+import { useSelector } from 'react-redux'
 import { IconButton, ColorBarOption, Tooltip } from '@globalfishingwatch/ui-components'
 import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
@@ -11,25 +11,38 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { formatInfoField } from 'utils/info'
 import VesselGroupReportLink from 'features/vessel-group-report/VesselGroupReportLink'
+import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  setNewVesselGroupSearchVessels,
+  setVesselGroupEditId,
+  setVesselGroupsModalOpen,
+} from 'features/vessel-groups/vessel-groups.slice'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import Color from '../common/Color'
 import LayerSwitch from '../common/LayerSwitch'
 import Remove from '../common/Remove'
 import Title from '../common/Title'
+import VesselGroupNotFound from './VesselGroupNotFound'
 
 export type VesselGroupLayerPanelProps = {
   dataview: UrlDataviewInstance
-  vesselGroup?: VesselGroup
+  vesselGroupLoading?: boolean
 }
 
 function VesselGroupLayerPanel({
   dataview,
-  vesselGroup,
+  vesselGroupLoading,
 }: VesselGroupLayerPanelProps): React.ReactElement {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const isGFWUser = useSelector(selectIsGFWUser)
+  const readOnly = useSelector(selectReadOnly)
+  const { vesselGroup } = dataview
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataview?.id)
-  const layerLoaded = activityLayer?.loaded
+  const layerLoaded = activityLayer?.loaded && !vesselGroupLoading
   const layerError = activityLayer?.instance?.getError?.()
 
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
@@ -50,12 +63,24 @@ function VesselGroupLayerPanel({
     setColorOpen(false)
   }
 
+  const onEditClick = () => {
+    if (vesselGroup && (vesselGroup?.id || !vesselGroup?.vessels?.length)) {
+      dispatch(setVesselGroupEditId(vesselGroup.id))
+      dispatch(setNewVesselGroupSearchVessels(vesselGroup.vessels))
+      dispatch(setVesselGroupsModalOpen(true))
+    }
+  }
+
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
 
   const closeExpandedContainer = () => {
     setColorOpen(false)
+  }
+
+  if (!vesselGroup) {
+    return <VesselGroupNotFound dataview={dataview} />
   }
 
   return (
@@ -78,8 +103,16 @@ function VesselGroupLayerPanel({
                 content={t('vesselGroupReport.clickToSee', 'Click to see the vessel group report')}
               >
                 <span>
-                  {formatInfoField(vesselGroup?.name, 'name')}{' '}
-                  <span className={styles.secondary}> ({vesselGroup?.vessels.length})</span>
+                  {vesselGroupLoading ? (
+                    t('vesselGroup.loadingInfo', 'Loading vessel group info')
+                  ) : (
+                    <Fragment>
+                      {formatInfoField(vesselGroup?.name, 'name')}{' '}
+                      {vesselGroup?.vessels?.length && (
+                        <span className={styles.secondary}> ({vesselGroup?.vessels.length})</span>
+                      )}
+                    </Fragment>
+                  )}
                 </span>
               </Tooltip>
             </VesselGroupReportLink>
@@ -96,16 +129,50 @@ function VesselGroupLayerPanel({
         >
           <Fragment>
             {layerActive && (
-              <Color
-                dataview={dataview}
-                open={colorOpen}
-                onColorClick={changeInstanceColor}
-                onToggleClick={onToggleColorOpen}
-                onClickOutside={closeExpandedContainer}
-                colorType="fill"
+              <Fragment>
+                <VesselGroupReportLink vesselGroupId={vesselGroup?.id!}>
+                  <IconButton
+                    tooltip={t(
+                      'vesselGroupReport.clickToSee',
+                      'Click to see the vessel group report'
+                    )}
+                    icon="analysis"
+                    size="small"
+                  />
+                </VesselGroupReportLink>
+                <IconButton
+                  icon="edit"
+                  size="small"
+                  tooltip={t('common.edit', 'Edit')}
+                  onClick={onEditClick}
+                  tooltipPlacement="top"
+                />
+                <Color
+                  dataview={dataview}
+                  open={colorOpen}
+                  onColorClick={changeInstanceColor}
+                  onToggleClick={onToggleColorOpen}
+                  onClickOutside={closeExpandedContainer}
+                  colorType="fill"
+                />
+              </Fragment>
+            )}
+            {!readOnly && <Remove dataview={dataview} loading={layerActive && !layerLoaded} />}
+            {!readOnly && layerActive && layerError && (
+              <IconButton
+                icon={'warning'}
+                type={'warning'}
+                tooltip={
+                  isGFWUser
+                    ? `${t(
+                        'errors.layerLoading',
+                        'There was an error loading the layer'
+                      )} (${layerError})`
+                    : t('errors.layerLoading', 'There was an error loading the layer')
+                }
+                size="small"
               />
             )}
-            <Remove dataview={dataview} />
           </Fragment>
         </div>
         <IconButton

@@ -9,7 +9,6 @@ import I18nNumber from 'features/i18n/i18nNumber'
 import { useLocationConnect } from 'routes/routes.hook'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { selectReportVesselFilter } from 'features/app/selectors/app.reports.selector'
 import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -23,11 +22,11 @@ import {
   selectReportVesselsList,
   selectReportVesselsListWithAllInfo,
   selectReportVesselsPagination,
-  getVesselsFiltered,
   ReportVesselWithDatasets,
   selectReportAreaName,
 } from '../reports.selectors'
-import { parseReportVesselsToIdentity } from '../reports.utils'
+import { getVesselsFiltered, parseReportVesselsToIdentity } from '../reports.utils'
+import { selectReportVesselFilter } from '../reports.config.selectors'
 import styles from './ReportVesselsTableFooter.module.css'
 
 type ReportVesselsTableFooterProps = {
@@ -53,12 +52,13 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
 
   const onDownloadVesselsClick = () => {
     if (allVesselsWithAllInfo?.length) {
-      const vessels = getVesselsFiltered(allVesselsWithAllInfo, reportVesselFilter)?.map(
-        (vessel) => {
-          const { dataviewId, category, sourceColor, flagTranslatedClean, ...rest } = vessel
-          return rest
-        }
-      ) as ReportVesselWithDatasets[]
+      const vessels = getVesselsFiltered<ReportVesselWithDatasets>(
+        allVesselsWithAllInfo,
+        reportVesselFilter
+      )?.map((vessel) => {
+        const { dataviewId, category, sourceColor, flagTranslatedClean, ...rest } = vessel
+        return rest
+      })
       trackEvent({
         category: TrackCategory.Analysis,
         action: `Click 'Download CSV'`,
@@ -95,7 +95,7 @@ export default function ReportVesselsTableFooter({ reportName }: ReportVesselsTa
   }
   const onAddToVesselGroup = () => {
     const dataviewIds = heatmapDataviews.map(({ id }) => id)
-    dispatch(setVesselGroupConfirmationMode('saveAndNavigate'))
+    dispatch(setVesselGroupConfirmationMode('saveAndSeeInWorkspace'))
     if (dataviewIds?.length) {
       dispatch(setVesselGroupCurrentDataviewIds(dataviewIds))
     }

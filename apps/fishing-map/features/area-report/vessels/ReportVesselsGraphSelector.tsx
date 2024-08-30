@@ -12,8 +12,8 @@ import {
   selectReportCategory,
   selectReportVesselGraph,
 } from 'features/app/selectors/app.reports.selector'
-import { ReportCategory, ReportVesselGraph } from 'types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { ReportCategory, ReportVesselGraph } from '../reports.types'
 
 export default function ReportVesselsGraphSelector() {
   const { dispatchQueryParams } = useLocationConnect()

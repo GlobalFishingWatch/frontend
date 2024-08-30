@@ -202,12 +202,16 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     const sublayersDatasets = this.props.sublayers?.flatMap((s) => s.datasets || []).join(',')
     const sublayersFilters = this.props.sublayers?.flatMap((s) => s.filter || []).join(',')
     const sublayersVesselGroups = this.props.sublayers?.map((s) => s.vesselGroups || []).join(',')
+    const sublayersVesselGroupsLength = this.props.sublayers
+      ?.map((s) => s.vesselGroupsLength || [])
+      .join(',')
     return [
       dataCache,
       sublayersIds,
       sublayersDatasets,
       sublayersFilters,
       sublayersVesselGroups,
+      sublayersVesselGroupsLength,
     ].join('-')
   }
 

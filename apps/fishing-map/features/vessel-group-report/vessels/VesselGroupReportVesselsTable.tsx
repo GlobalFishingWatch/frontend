@@ -15,14 +15,14 @@ import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
-  VesselGroupReportVesselsOrderDirection,
-  VesselGroupReportVesselsOrderProperty,
-} from 'types'
-import {
   selectVesselGroupReportVesselsOrderDirection,
   selectVesselGroupReportVesselsOrderProperty,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { selectVesselGroupReportVessels } from 'features/vessel-group-report/vessel-group-report.slice'
+import {
+  VesselGroupReportVesselsOrderProperty,
+  VesselGroupReportVesselsOrderDirection,
+} from 'features/vessel-groups/vessel-groups.types'
 import styles from './VesselGroupReportVesselsTable.module.css'
 import { selectVesselGroupReportVesselsPaginated } from './vessel-group-report-vessels.selectors'
 import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTableFooter'

@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
-import { VesselGroupReportVesselsSubsection } from 'types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselGroupReportStatus } from 'features/vessel-group-report/vessel-group-report.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { VesselGroupReportVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import { selectVesselGroupReportVesselsSubsection } from '../vessel-group.config.selectors'
 
 type VesselGroupReportVesselsGraphSelectorProps = {}

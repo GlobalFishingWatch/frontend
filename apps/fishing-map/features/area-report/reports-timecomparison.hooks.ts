@@ -3,18 +3,16 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { SelectOption } from '@globalfishingwatch/ui-components'
-import { ReportActivityGraph } from 'types'
 import { AVAILABLE_START, AVAILABLE_END } from 'data/config'
-import {
-  selectReportActivityGraph,
-  selectReportTimeComparison,
-} from 'features/app/selectors/app.reports.selector'
+import {} from 'features/app/selectors/app.reports.selector'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getUTCDateTime } from 'utils/dates'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useFitAreaInViewport } from 'features/area-report/reports.hooks'
 import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from 'features/area-report/reports.config'
+import { selectReportActivityGraph, selectReportTimeComparison } from './reports.config.selectors'
+import { ReportActivityGraph } from './reports.types'
 
 // TODO get this from start and endDate from datasets
 const MIN_DATE = AVAILABLE_START.slice(0, 10)
