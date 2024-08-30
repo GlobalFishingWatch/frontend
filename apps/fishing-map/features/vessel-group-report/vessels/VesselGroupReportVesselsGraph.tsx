@@ -66,7 +66,6 @@ const CustomTick = (props: any) => {
   const subsection = useSelector(selectVesselGroupReportVesselsSubsection)
   const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
-  console.log('payload:', payload)
   const isCategoryInteractive = !EMPTY_API_VALUES.includes(payload.value)
 
   const getTickLabel = (label: string) => {
@@ -86,12 +85,10 @@ const CustomTick = (props: any) => {
   }
 
   const onLabelClick = () => {
-    if (filterProperties[subsection]) {
-      dispatchQueryParams({
-        vesselGroupReportVesselFilter: `${filterProperties[subsection]}:${payload.value}`,
-        vesselGroupReportVesselPage: 0,
-      })
-    }
+    dispatchQueryParams({
+      vesselGroupReportVesselFilter: `${filterProperties[subsection]}:${payload.value}`,
+      vesselGroupReportVesselPage: 0,
+    })
   }
 
   const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)

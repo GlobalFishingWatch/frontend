@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { Fragment } from 'react'
 import { IconButton } from '@globalfishingwatch/ui-components'
-import { VesselType } from '@globalfishingwatch/api-types'
-import { EMPTY_FIELD_PLACEHOLDER, getVesselShipNameLabel, getVesselShipTypeLabel } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/app/selectors/app.reports.selector'
@@ -13,7 +12,6 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { EMPTY_API_VALUES } from 'features/area-report/reports.config'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -24,6 +22,7 @@ import {
   selectVesselGroupReportVesselsOrderDirection,
   selectVesselGroupReportVesselsOrderProperty,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
+import { selectVesselGroupReportVessels } from 'features/vessel-group-report/vessel-group-report.slice'
 import styles from './VesselGroupReportVesselsTable.module.css'
 import { selectVesselGroupReportVesselsPaginated } from './vessel-group-report-vessels.selectors'
 import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTableFooter'
@@ -31,6 +30,7 @@ import VesselGroupReportVesselsTableFooter from './VesselGroupReportVesselsTable
 export default function VesselGroupReportVesselsTable() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
+  const vesselsRaw = useSelector(selectVesselGroupReportVessels)
   const vessels = useSelector(selectVesselGroupReportVesselsPaginated)
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -107,19 +107,24 @@ export default function VesselGroupReportVesselsTable() {
             />
           </div>
           {vessels?.map((vessel, i) => {
-            const { vesselId, shipName, flag, flagTranslatedClean, flagTranslated, mmsi } = vessel
+            const { vesselId, shipName, flag, flagTranslatedClean, flagTranslated, mmsi, index } =
+              vessel
             const isLastRow = i === vessels.length - 1
             const flagInteractionEnabled = !EMPTY_API_VALUES.includes(flagTranslated)
             const type = vessel.vesselType
             const typeInteractionEnabled = type !== EMPTY_FIELD_PLACEHOLDER
-            const pinTrackDisabled = workspaceStatus !== AsyncReducerStatus.Finished
+            const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
             return (
               <Fragment key={vesselId}>
                 <div className={cx({ [styles.border]: !isLastRow }, styles.icon)}>
-                  <VesselPin vessel={vessel} disabled={pinTrackDisabled} onClick={onPinClick} />
+                  <VesselPin
+                    vessel={vesselsRaw?.[index]}
+                    disabled={!workspaceReady}
+                    onClick={onPinClick}
+                  />
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
-                  {workspaceStatus === AsyncReducerStatus.Finished ? (
+                  {workspaceReady ? (
                     <VesselLink
                       className={styles.link}
                       vesselId={vesselId}

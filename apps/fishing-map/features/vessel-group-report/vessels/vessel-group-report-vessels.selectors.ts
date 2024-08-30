@@ -19,6 +19,7 @@ import {
 import { selectVesselGroupReportVessels } from '../vessel-group-report.slice'
 
 type VesselGroupReportVesselParsed = {
+  index: number
   dataset: string
   flag: string
   flagTranslated: string
@@ -35,7 +36,7 @@ export const selectVesselGroupReportVesselsParsed = createSelector(
   [selectVesselGroupReportVessels],
   (vessels) => {
     if (!vessels?.length) return null
-    return vessels.map((vessel) => {
+    return vessels.map((vessel, index) => {
       let source = ''
       if (vessel.registryInfo?.length && vessel.selfReportedInfo?.length) {
         source = 'both'
@@ -45,6 +46,7 @@ export const selectVesselGroupReportVesselsParsed = createSelector(
         source = vessel.selfReportedInfo[0].sourceCode.join(', ')
       }
       return {
+        index: index,
         shipName: formatInfoField(getVesselProperty(vessel, 'shipname'), 'name'),
         mmsi: getVesselProperty(vessel, 'ssvid'),
         imo: getVesselProperty(vessel, 'imo'),
