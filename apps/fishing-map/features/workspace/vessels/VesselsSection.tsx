@@ -15,7 +15,10 @@ import { WORKSPACE_SEARCH } from 'routes/routes'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectActiveVesselsDataviews,
+  selectVesselsDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   hasTracksWithNoData,
@@ -47,6 +50,7 @@ function VesselsSection(): React.ReactElement {
   const { t } = useTranslation()
   const { dispatchLocation } = useLocationConnect()
   const dataviews = useSelector(selectVesselsDataviews)
+  const activeDataviews = useSelector(selectActiveVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
@@ -55,7 +59,7 @@ function VesselsSection(): React.ReactElement {
   const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const searchAllowed = useSelector(isBasicSearchAllowed)
-  const someVesselsVisible = dataviews.some((d) => d.config?.visible)
+  const someVesselsVisible = activeDataviews.length > 0
   const readOnly = useSelector(selectReadOnly)
   const resources = useSelector(selectResources)
   const { dispatchQueryParams } = useLocationConnect()
@@ -127,10 +131,7 @@ function VesselsSection(): React.ReactElement {
     })
   }, [dispatchLocation, workspace])
 
-  const vesselResources = dataviews.flatMap((dataview) => {
-    if (!dataview.config?.visible) {
-      return []
-    }
+  const vesselResources = activeDataviews.flatMap((dataview) => {
     const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
     return resources[infoUrl] || []
   })
@@ -158,34 +159,37 @@ function VesselsSection(): React.ReactElement {
         </h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons, styles.sectionButtonsSecondary)}>
-            {dataviews.length > 1 && (
-              <Fragment>
-                <VesselGroupAddButton
-                  mode="auto"
-                  vessels={vesselsToVesselGroup}
-                  onAddToVesselGroup={onAddToVesselGroupClick}
-                >
-                  <IconButton
-                    icon={'add-to-vessel-group'}
-                    loading={areVesselsLoading}
-                    disabled={areVesselsLoading}
-                    size="medium"
-                    tooltip={t('vesselGroup.addVessels', 'Add vessels to vessel group')}
-                    tooltipPlacement="top"
-                  />
-                </VesselGroupAddButton>
+            {activeDataviews.length > 0 && (
+              <VesselGroupAddButton
+                mode="auto"
+                vessels={vesselsToVesselGroup}
+                onAddToVesselGroup={onAddToVesselGroupClick}
+              >
                 <IconButton
-                  icon={sortOrder.current === 'DESC' ? 'sort-asc' : 'sort-desc'}
+                  icon={'add-to-vessel-group'}
+                  loading={areVesselsLoading}
+                  disabled={areVesselsLoading}
                   size="medium"
-                  tooltip={
-                    sortOrder.current === 'DESC'
-                      ? t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')
-                      : t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')
-                  }
+                  tooltip={t(
+                    'vesselGroup.addVisibleVessels',
+                    'Add visible vessels to vessel group'
+                  )}
                   tooltipPlacement="top"
-                  onClick={onSetSortOrderClick}
                 />
-              </Fragment>
+              </VesselGroupAddButton>
+            )}
+            {dataviews.length > 1 && (
+              <IconButton
+                icon={sortOrder.current === 'DESC' ? 'sort-asc' : 'sort-desc'}
+                size="medium"
+                tooltip={
+                  sortOrder.current === 'DESC'
+                    ? t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')
+                    : t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')
+                }
+                tooltipPlacement="top"
+                onClick={onSetSortOrderClick}
+              />
             )}
             {dataviews.length > 0 && (
               <IconButton
