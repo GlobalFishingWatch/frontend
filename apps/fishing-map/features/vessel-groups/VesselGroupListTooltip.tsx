@@ -26,8 +26,10 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
   const [vesselGroupsOpen, setVesselGroupsOpen] = useState(false)
 
   const toggleVesselGroupsOpen = useCallback(() => {
-    setVesselGroupsOpen(!vesselGroupsOpen)
-  }, [vesselGroupsOpen])
+    if (vesselGroupOptions?.length) {
+      setVesselGroupsOpen(!vesselGroupsOpen)
+    }
+  }, [vesselGroupOptions?.length, vesselGroupsOpen])
 
   return (
     <Popover
