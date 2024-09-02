@@ -41,7 +41,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
     const positionProperties = uniq(
       sublayer?.datasets.flatMap((dataset) => Object.keys(dataset?.schema || {}))
     )
-    const { extentStart, extentEnd } = getDatasetsExtent(sublayer.datasets, {
+    const { extentStart, extentEnd } = getDatasetsExtent<number>(sublayer.datasets, {
       format: 'timestamp',
     })
 
@@ -60,8 +60,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
       unit: units[0]!,
       filter: sublayer?.filter,
       vesselGroups: sublayer?.vesselGroups,
-      extentStart: extentStart as number,
-      extentEnd: extentEnd as number,
+      extentStart,
+      extentEnd,
     }
   })
 
@@ -95,7 +95,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayer
       ? sublayer.datasets.filter((dataset) => dataset.type === DatasetTypes.Fourwings)
       : []
   )
-  const { extentStart, extentEnd } = getDatasetsExtent(allVisibleDatasets)
+  const { extentStart, extentEnd } = getDatasetsExtent<string>(allVisibleDatasets)
 
   const dataset = allVisibleDatasets?.[0]
 

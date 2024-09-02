@@ -66,3 +66,23 @@ steps:
         for i in ${AFFECTED_APPS[@]//,/}; do
           [ ! -z "$i" ] && gcloud -q beta builds triggers run --branch=develop ui-${i}-develop
         done
+
+  - id: scan
+      name: gcr.io/google.com/cloudsdktool/cloud-sdk
+      entrypoint: /bin/bash
+      args:
+        - -c
+        - |
+          gcloud artifacts docker images scan <image> \
+          --format='value(response.scan)' --additional-package-types=GO > scan_id.txt
+    - id: severity check
+      name: gcr.io/google.com/cloudsdktool/cloud-sdk
+      entrypoint: /bin/bash
+      args:
+        - -c
+        - |
+          apt-get update && apt-get install -y wget &&\
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq &&\
+          gcloud artifacts docker images list-vulnerabilities $(cat scan_id.txt) > vulns.yaml && \
+          cat vulns.yaml | yq '(.vulnerability.fixAvailable==true and (.vulnerability.effectiveSeverity== "CRITICAL" or .vulnerability.effectiveSeverity== "HIGH"))' | \
+          if grep -Exq "true"; then echo 'Failed vulnerability check. You need to resolve the following vulnerabilities:' && cat vulns.yaml | yq '. | select(.vulnerability.fixAvailable==true and (.vulnerability.effectiveSeverity== "CRITICAL" || .vulnerability.effectiveSeverity== "HIGH" ))' && exit 1; else exit 0; fi

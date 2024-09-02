@@ -1,25 +1,25 @@
-import { DatasetTypes, DataviewInstance } from '@globalfishingwatch/api-types'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import { DeckResolverFunction } from './types'
+import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { ClusterLayerProps } from '@globalfishingwatch/deck-layers'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import { DeckResolverFunction, ResolverGlobalConfig } from './types'
 
-type TileClusterDeckLayerProps = any
+// TODO: decide if include static here or create a new one
+export const resolveDeckTileClusterLayerProps: DeckResolverFunction<ClusterLayerProps> = (
+  dataview: UrlDataviewInstance,
+  { start, end }: ResolverGlobalConfig
+): ClusterLayerProps => {
+  const dataset = dataview.datasets?.[0]
+  const tilesUrl = dataset ? resolveEndpoint(dataset, dataview.datasetsConfig?.[0]!) : undefined
 
-export const resolveDeckTileClusterLayerProps: DeckResolverFunction<TileClusterDeckLayerProps> = (
-  dataview
-) => {
-  const { dataset: tileClusterDataset, url: tileClusterUrl } = resolveDataviewDatasetResource(
-    dataview,
-    DatasetTypes.Events
-  )
-
-  if (!tileClusterDataset || !tileClusterUrl) {
-    console.warn('No dataset config for TileCluster generator', dataview)
-    return []
-  }
   return {
     id: dataview.id,
-    tilesUrl: tileClusterUrl,
-    // ...(highlightedEvent && { currentEventId: highlightedEvent.id }),
-    // ...(highlightedEvents && { currentEventId: highlightedEvents[0] }),
+    category: dataview.category!,
+    subcategory: dataview.config?.type!,
+    datasetId: dataset?.id || '',
+    color: dataview.config?.color || '',
+    start: start,
+    end: end,
+    visible: dataview.config?.visible ?? true,
+    tilesUrl: tilesUrl || '',
   }
 }

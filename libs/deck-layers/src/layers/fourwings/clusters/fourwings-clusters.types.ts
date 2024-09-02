@@ -14,13 +14,10 @@ export type FourwingsClustersLayerProps = DeckLayerProps<{
   endTime: number
   color: string
   datasetId: string
-  filters: string
   eventType?: FourwingsClusterEventType
   maxClusterZoom?: number
   tilesUrl: string
   visible: boolean
-  extentStart?: number
-  extentEnd?: number
 }>
 
 export type FourwingsClusterProperties = {

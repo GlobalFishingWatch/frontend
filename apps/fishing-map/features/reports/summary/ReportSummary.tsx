@@ -112,8 +112,10 @@ export default function ReportSummary({ activityUnit, reportStatus }: ReportSumm
         reportHours)
     ) {
       const formattedTimeseries = formatEvolutionData(layersTimeseriesFiltered!?.[0])
-      const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg)))
-      const timeseriesMaxHours = sum(formattedTimeseries?.map((t) => sum(t.range.map((r) => r[1]))))
+      const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg)) || [])
+      const timeseriesMaxHours = sum(
+        formattedTimeseries?.map((t) => sum(t.range.map((r) => r[1]))) || []
+      )
       const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
       let activityQuantity =
         !timeseriesLoading && layersTimeseriesFiltered?.[0]

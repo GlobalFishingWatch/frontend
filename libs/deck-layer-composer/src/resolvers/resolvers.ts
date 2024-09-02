@@ -3,6 +3,7 @@ import {
   AnyDeckLayer,
   BaseMapLabelsLayer,
   BaseMapLayer,
+  ClusterLayer,
   ContextLayer,
   FourwingsClustersLayer,
   FourwingsLayer,
@@ -28,6 +29,7 @@ import {
 } from './user'
 import { resolveDeckGraticulesLayerProps } from './graticules'
 import { resolveDeckPolygonsLayerProps } from './polygons'
+import { resolveDeckTileClusterLayerProps } from './tile-cluster'
 
 export const getDataviewHighlightedFeatures = (
   dataview: DataviewInstance,
@@ -83,6 +85,11 @@ export const dataviewToDeckLayer = (
     return layer
   }
   if (dataview.config?.type === DataviewType.TileCluster) {
+    const deckLayerProps = resolveDeckTileClusterLayerProps(dataview, layerConfig)
+    const layer = new ClusterLayer(deckLayerProps)
+    return layer
+  }
+  if (dataview.config?.type === DataviewType.FourwingsTileCluster) {
     const deckLayerProps = resolveDeckFourwingsClustersLayerProps(dataview, layerConfig)
     const layer = new FourwingsClustersLayer(deckLayerProps)
     return layer
