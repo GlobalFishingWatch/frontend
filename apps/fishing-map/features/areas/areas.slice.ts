@@ -2,10 +2,11 @@ import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@r
 import memoize from 'lodash/memoize'
 import kebabCase from 'lodash/kebabCase'
 import { uniqBy } from 'es-toolkit'
-import { Polygon, MultiPolygon, FeatureCollection } from 'geojson'
+import { Polygon, MultiPolygon, FeatureCollection, GeometryCollection } from 'geojson'
 import union from '@turf/union'
 import { featureCollection } from '@turf/helpers'
 import { circle } from '@turf/circle'
+import { flatten } from '@turf/flatten'
 import { TileContextAreaFeature, Dataset, EndpointId } from '@globalfishingwatch/api-types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
@@ -87,17 +88,31 @@ async function fetchAreaDetail({
     console.warn('No endpoint found for area detail fetch')
     return
   }
-  let area = await GFWAPI.fetch<TileContextAreaFeature<AreaGeometry>>(endpoint, { signal })
+  let area = await GFWAPI.fetch<TileContextAreaFeature<AreaGeometry | GeometryCollection>>(
+    endpoint,
+    { signal }
+  )
   if (!area.geometry) {
     const endpointNoSimplified = resolveEndpoint(dataset, datasetConfig) as string
-    area = await GFWAPI.fetch<TileContextAreaFeature<AreaGeometry>>(endpointNoSimplified, {
-      signal,
-    })
+    area = await GFWAPI.fetch<TileContextAreaFeature<AreaGeometry | GeometryCollection>>(
+      endpointNoSimplified,
+      {
+        signal,
+      }
+    )
     if (!area.geometry) {
       console.warn('Area has no geometry, even calling the endpoint without simplification')
     }
   }
-  const bounds = area.bbox ? wrapBBoxLongitudes(area.bbox) : wrapGeometryBbox(area.geometry)
+  const geometry =
+    (area.geometry as GeometryCollection).type === 'GeometryCollection'
+      ? (union(flatten(area.geometry))?.geometry as AreaGeometry)
+      : (area.geometry as AreaGeometry)
+
+  if (!geometry) {
+    console.warn('No geometry found for area', area)
+  }
+  const bounds = area.bbox ? wrapBBoxLongitudes(area.bbox) : wrapGeometryBbox(geometry)
   // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
   // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
   if (area.geometry) {
@@ -108,7 +123,7 @@ async function fetchAreaDetail({
     name: areaName || area.value || area.properties.value || area.properties.name || area.id,
     bounds,
     type: area.type as 'Feature',
-    geometry: area.geometry,
+    geometry,
     properties: area.properties,
   }
 }
@@ -175,6 +190,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
     }
     const dataset = selectDatasetById(datasetId)(getState() as RootState)
     const area = await fetchAreaDetail({ dataset, areaId, areaName, signal, simplify })
+    debugger
     return area
   },
   {
