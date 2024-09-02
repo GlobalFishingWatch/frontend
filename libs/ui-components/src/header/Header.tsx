@@ -131,23 +131,20 @@ type MenuItem = {
   className?: string
   href?: string
   label: string | React.ReactNode
-  mini?: boolean
   items?: MenuItem[]
   onClick?: React.MouseEventHandler
 }
 
 interface HeaderProps {
   children?: React.ReactNode
-  mini?: boolean
   inverted?: boolean
 }
 interface HeaderMenuItemProps {
   index: number
   item: MenuItem
-  mini?: boolean
 }
 
-export function Header({ children, mini = false, inverted = false }: HeaderProps) {
+export function Header({ children, inverted = false }: HeaderProps) {
   return (
     <div
       className={cx(styles.gfwHeaderContainer, { [styles.gfwHeaderContainerInverted]: inverted })}
@@ -171,7 +168,7 @@ export function Header({ children, mini = false, inverted = false }: HeaderProps
 
           <nav className={styles.nav} role="navigation" aria-label="main menu">
             <ul className={styles.navList} role="menubar">
-              {navigation.map((item, index) => HeaderMenuItem({ index, item, mini }))}
+              {navigation.map((item, index) => HeaderMenuItem({ index, item }))}
               {!!children && children}
             </ul>
           </nav>
@@ -181,7 +178,7 @@ export function Header({ children, mini = false, inverted = false }: HeaderProps
   )
 }
 
-export function HeaderMenuItem({ index, item, mini = false }: HeaderMenuItemProps): JSX.Element {
+export function HeaderMenuItem({ index, item }: HeaderMenuItemProps): JSX.Element {
   return (
     <li key={index} role="menuitem" className={styles.navItem}>
       {item.href ? (

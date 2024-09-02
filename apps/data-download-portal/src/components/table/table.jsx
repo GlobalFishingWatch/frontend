@@ -234,7 +234,6 @@ function Table({ columns, data }) {
             return (
               <div {...row.getRowProps({ style })} className={styles.tr}>
                 {row.cells.map((cell) => {
-                  console.log('🚀 ~ {row.cells.map ~ cell:', cell)
                   return (
                     <div {...cell.getCellProps()} className={styles.td} title={cell.value}>
                       {cell.column.id === 'name' ? (

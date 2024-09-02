@@ -21,7 +21,7 @@
   align-items: center;
   text-transform: capitalize;
   cursor: pointer;
-  color: #1b4b87;
+  color: var(--color-primary-blue);
 }
 
 .itemLabel:hover {
@@ -207,6 +207,7 @@
 
 .subNavItemLabel {
   color: black;
+  font-size: 1.7rem;
   text-transform: capitalize;
   padding-top: 2rem;
   padding-bottom: 0.5rem;
