@@ -1,4 +1,13 @@
-import { Feature, FeatureCollection, GeoJsonProperties, Point, Polygon } from 'geojson'
+import {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  GeometryCollection,
+  Point,
+  Polygon,
+} from 'geojson'
+import { flatten } from '@turf/flatten'
+import union from '@turf/union'
 import {
   Dataset,
   DatasetCategory,
@@ -23,6 +32,7 @@ import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { getUTCDateTime } from 'utils/dates'
 import { FileType } from 'utils/files'
+import { AreaGeometry } from 'features/areas/areas.slice'
 
 type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
 
@@ -184,6 +194,10 @@ export const parseGeoJsonProperties = <T extends Polygon | Point>(
       return {
         ...feature,
         properties,
+        geometry:
+          (feature.geometry as unknown as GeometryCollection).type === 'GeometryCollection'
+            ? (union(flatten(feature.geometry))?.geometry as AreaGeometry)
+            : (feature.geometry as AreaGeometry),
       }
     }) as Feature<T, GeoJsonProperties>[],
   }
