@@ -190,7 +190,6 @@ export const fetchAreaDetailThunk = createAsyncThunk(
     }
     const dataset = selectDatasetById(datasetId)(getState() as RootState)
     const area = await fetchAreaDetail({ dataset, areaId, areaName, signal, simplify })
-    debugger
     return area
   },
   {
