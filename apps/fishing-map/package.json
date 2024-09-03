@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatchapp/fishing-map",
-  "version": "3.0.12",
+  "version": "3.0.15",
   "private": true,
   "scripts": {
     "dev": "next",
@@ -13,7 +13,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
-    "i18next-parser": "9.0.1",
+    "i18next-parser": "9.0.2",
     "source-map-explorer": "2.5.3"
   },
   "browserslist": [

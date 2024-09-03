@@ -1,0 +1,31 @@
+.bannerContainer {
+  background: #70c6ad url('./api-satellite.png') bottom right no-repeat;
+  width: 100%;
+  background-size: contain;
+  margin-top: 50px;
+  padding-bottom: 20px;
+}
+
+.title {
+  color: var(--white);
+  font: var(--GFW-font-XL);
+  letter-spacing: 0;
+  font-weight: var(--GFW-font-light);
+  padding: 20px 40% 0 20px;
+}
+
+.apiLink {
+  color: var(--primary-color);
+  font: var(--GFW-font-M);
+  font-weight: var(--GFW-font-light);
+  letter-spacing: 0.15px;
+  padding: 9px 14px;
+  background: var(--white);
+  margin: 20px 0 0 20px;
+  border-radius: 0;
+}
+
+.apiLink:hover {
+  color: var(--primary-color);
+  background: var(--border-color-light);
+}

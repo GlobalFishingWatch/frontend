@@ -185,11 +185,12 @@ export function getVesselProperty<P extends VesselIdentityProperty>(
 }
 export function getRelatedIdentityVesselIds(vessel: IdentityVessel | IdentityVesselData): string[] {
   if (!vessel) return [] as string[]
+  const vesselId = (vessel as IdentityVesselData).id || getVesselId(vessel)
   const identities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
   return identities
-    .filter((i) => i.matchFields === 'SEVERAL_FIELDS' && i.id !== identities[0].id)
+    .filter((i) => i.matchFields === 'SEVERAL_FIELDS' && i.id !== vesselId)
     .flatMap((i) => i.id || [])
 }
 

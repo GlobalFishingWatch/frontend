@@ -15,6 +15,20 @@
   box-sizing: border-box;
 }
 
+.navLabel,
+.itemLabel {
+  display: flex;
+  align-items: center;
+  text-transform: capitalize;
+  cursor: pointer;
+  color: var(--color-primary-blue);
+}
+
+.navLabel:hover,
+.itemLabel:hover {
+  color: var(--color-highlight, #ff6b6b);
+}
+
 .gfwHeaderContainer .gfwHeader {
   display: flex;
   align-items: center;
@@ -149,8 +163,9 @@
   width: 100%;
 }
 
-.gfwHeaderContainer .gfwHeader .navList > li {
+.navItem {
   font-size: 14px;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -158,57 +173,61 @@
   border-top: 1px solid rgba(127, 178, 192, 0.2);
   overflow: hidden;
   min-width: var(--space-L, 40px);
+  padding: var(--space-M, 20px);
 }
 
-.gfwHeaderContainer .gfwHeader .navList > li.highlightBtn {
+.navItem:hover {
+  background: white;
+}
+
+.navItem .highlightBtn {
   height: auto;
   width: 100%;
   text-align: center;
   padding: var(--space-M, 20px);
 }
 
-.gfwHeaderContainer .gfwHeader .navList > li.highlightBtn:hover {
+.navItem .highlightBtn:hover {
   border-color: transparent;
 }
 
-.gfwHeaderContainer .gfwHeader .navList > li.highlightBtn a {
-  border: 1px solid var(--color-highlight, rgb(255, 107, 107, 1));
-  color: var(--color-highlight, #ff6b6b);
+.navItem .highlightBtn a {
   padding: var(--space-S, 10px) var(--space-M, 20px);
-  transition: all 0.3s linear;
   width: 100%;
   display: block;
   text-align: center;
 }
 
-.gfwHeaderContainer .gfwHeader .navList > li.highlightBtn a:hover {
-  color: var(--color-brand-text, white);
-  background-color: var(--color-highlight, #ff6b6b);
-  padding: var(--space-S, 10px) var(--space-M, 20px);
-}
-
-.gfwHeaderContainer .gfwHeader .navList > li > a {
+.navItem > a {
   text-decoration: none;
   font-size: 14px;
   font-weight: 400;
-  padding: var(--space-M, 20px);
   color: #1b4b87;
   cursor: pointer;
 }
 
-.gfwHeaderContainer .gfwHeader .navList > li a:hover {
-  color: var(--color-highlight, #ff6b6b);
+.subNavItemLabel {
+  color: black;
+  font-size: 1.7rem;
+  text-transform: capitalize;
+  padding-top: 2rem;
+  padding-bottom: 0.5rem;
+  font-weight: 600;
 }
 
-.gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu {
+.navItem .navListSubMenu {
   list-style: none;
+}
+
+.navListSubMenu {
+  max-height: 0;
+  transition: max-height 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
 }
 
 .gfwHeaderContainer .gfwHeader .navList .accordionToggle {
   position: absolute;
   right: 1rem;
   top: 10px;
-  padding: 0;
   cursor: pointer;
   width: 40px;
   height: 40px;
@@ -237,30 +256,8 @@
   border: none;
 }
 
-.gfwHeaderContainer .gfwHeader .navList .accordionToggle + .navListSubMenu {
-  height: 0;
-  width: 100%;
-  padding: 0;
-}
-
 .gfwHeaderContainer .gfwHeader .navList .accordionToggle:checked + .navListSubMenu {
-  height: auto;
-}
-
-.gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu > li {
-  padding: 0 var(--space-M, 20px);
-}
-
-.gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu > li > a {
-  padding: var(--space-S, 10px);
-  padding-right: 0;
-  padding-left: 0;
-  display: block;
-  width: 100%;
-  text-decoration: none;
-  font-size: var(--font-size-M, 14px);
-  line-height: 1.4;
-  color: var(--color-brand, rgba(34, 68, 126, 1));
+  max-height: 50rem;
 }
 
 .gfwHeaderContainer .gfwHeader .navMobileMenuAction:checked ~ .nav {
@@ -268,8 +265,8 @@
   opacity: 1;
 }
 
-.gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu > li:hover a {
-  color: var(--color-highlight, #ff6b6b);
+.navLabelIcon {
+  display: none;
 }
 
 @media only screen and (min-width: 860px) {
@@ -304,7 +301,7 @@
     justify-content: flex-end;
   }
 
-  .gfwHeaderContainer .gfwHeader .navList > li {
+  .navItem {
     margin-right: var(--space-S, 10px);
     height: var(--header-height, 85px);
     flex-direction: row;
@@ -312,76 +309,51 @@
     overflow: unset;
     border-top: 3px solid transparent;
     border-bottom: none;
-    padding: 0;
+    /* padding: 0; */
     z-index: 10;
   }
 
-  .gfwHeaderContainer .gfwHeader .navList > li:hover {
+  .navItem:hover {
     z-index: 15;
   }
 
-  .gfwHeaderContainer .gfwHeader .navList > li > a {
+  .navLabelIcon {
+    display: block;
+  }
+
+  .subNavItem {
     padding: 0;
-    padding-bottom: 5px;
+    min-width: 190px;
+    height: fit-content;
   }
 
   .gfwHeaderContainerInverted .gfwHeader .navList > li > a {
     color: var(--white, white);
   }
 
-  .gfwHeaderContainer .gfwHeader .navList > li:hover {
-    border-top: 3px solid var(--color-highlight, rgb(255, 107, 107, 1));
+  .navListSubMenu {
+    display: none;
   }
 
-  .gfwHeaderContainer .gfwHeader .navList > li:hover .navListSubMenu,
-  .gfwHeaderContainer .gfwHeader .navList > li:focus-within .navListSubMenu {
-    height: auto;
-    border-color: var(--color-highlight, rgb(255, 107, 107, 1));
-  }
-
-  .gfwHeaderContainer .gfwHeader .navList > li.highlightBtn {
-    width: auto;
-    padding: 0;
-    padding-bottom: 5px;
-  }
-
-  .gfwHeaderContainer .gfwHeader .navList > li.highlightBtn a {
-    display: inline-block;
-  }
-
-  .gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu {
-    top: 82px;
-    min-width: 190px;
+  .navItem:hover .navListSubMenu {
+    display: flex;
     position: absolute;
-    height: 0;
+    top: 80px;
+    background-color: white;
+    max-height: fit-content;
+    width: 580px;
+    padding: 2rem;
+    left: 0rem;
     overflow: hidden;
-    border-top: 3px solid transparent;
-    height: auto;
-  }
-
-  .gfwHeaderContainer .gfwHeader .navList > li:last-child .navListSubMenu {
-    right: 0;
-  }
-
-  .gfwHeaderContainer .gfwHeader .navList > li .navListSubMenu > li {
-    background-color: var(--color-brand-text, white);
   }
 
   .gfwHeaderContainer .gfwHeader .navMobile {
     display: none;
   }
-}
-
-@media only screen and (min-width: 920px) {
-  .gfwHeaderContainer .gfwHeader .navList > li {
-    margin-right: var(--space-M, 20px);
-    padding: 0;
-  }
-}
-
-@media only screen and (min-width: 1080px) {
-  .gfwHeaderContainer .gfwHeader .navList > li {
-    margin-right: var(--space-L, 40px);
-    padding: 0;
+  .navItem:last-child .navListSubMenu {
+    position: absolute;
+    top: 80px;
+    transform: translateX(calc(-100% + 97px));
+    width: fit-content;
   }
 }

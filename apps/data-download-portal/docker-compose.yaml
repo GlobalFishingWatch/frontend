@@ -1,0 +1,14 @@
+services:
+  data-download-portal:
+    build:
+      context: ../../dist/apps/data-download-portal
+      dockerfile: ../../../apps/data-download-portal/Dockerfile
+      target: production
+    container_name: data-download-portal
+    ports:
+      - 3000:80
+    env_file:
+      - .env
+    environment:
+      - PORT=80
+      - API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
