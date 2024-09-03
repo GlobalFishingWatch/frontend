@@ -9,10 +9,11 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | [api-client](libs/api-client)                   | JS library to simplify GFW API login and resources fetch                       |
 | [api-types](libs/api-types)                     | API typescript schema definitions                                              |
 | [data-transforms](libs/data-transforms)         | Set ot shared tools for data transformations                                   |
+| [datasets-client](libs/datasets-client)         | A set of utils for handling api datasets                                       |
+| [dataviews-client](libs/dataviews-client)       | A set of utils for merge, combine and consume api dataviews into the apps      |
 | [deck-layer-composer](libs/deck-layer-composer) | Map integration of the deck-layers                                             |
 | [deck-layers](libs/deck-layers)                 | Deck classes for GFW layers                                                    |
 | [deck-loaders](libs/deck-loaders)               | Deck loaders for GFW layers                                                    |
-| [dataviews-client](libs/dataviews-client)       | Api-client wrapper to fetch and edit dataviews and associated datasets/data    |
 | [fourwings-aggregate](libs/fourwings-aggregate) | Logic to turn fourwings tiles or cells into meaningful values for the frontend |
 | [i18n-labels](libs/i18n-labels)                 | GFW shared translations                                                        |
 | [layer-composer](libs/layer-composer)           | Orchestrates various Layer Generators to generate a Mapbox GL Style document   |
@@ -27,8 +28,10 @@ All of them availables with the `@globalfishingwatch/` prefix:
 |                                                     |                                        |
 | --------------------------------------------------- | -------------------------------------- |
 | [api-portal](apps/api-portal)                       | Api documentation portal               |
+| [data-download-portal](apps/data-download-portal)   | The place to download datasets         |
 | [fishing-map-e2e](apps/fishing-map-e2e)             | Cypress e2e testing for the map        |
 | [fishing-map](apps/fishing-map)                     | Version 3.0 of the fishing map project |
+| [image-labeler](apps/image-labeler)                 | Labeling tool for satellite images     |
 | [port-labeler](apps/port-labeler)                   | Labeling tool for ports                |
 | [user-groups-admin](applications/user-groups-admin) | Tool to manage user groups with ease   |
 | [vessel-history](apps/vessel-history)               | Vessel history app                     |
