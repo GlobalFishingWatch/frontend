@@ -4,7 +4,11 @@ import {
   getDataviewSqlFiltersResolved,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import { FourwingsClustersLayerProps, getUTCDateTime } from '@globalfishingwatch/deck-layers'
+import {
+  FOURWINGS_MAX_ZOOM,
+  FourwingsClustersLayerProps,
+  getUTCDateTime,
+} from '@globalfishingwatch/deck-layers'
 import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { DataviewDatasetConfig, EndpointId } from '@globalfishingwatch/api-types'
 import { DeckResolverFunction, ResolverGlobalConfig } from './types'
@@ -37,7 +41,7 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
   FourwingsClustersLayerProps
 > = (
   dataview: UrlDataviewInstance,
-  { start, end }: ResolverGlobalConfig
+  { start, end, zoom }: ResolverGlobalConfig
 ): FourwingsClustersLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
@@ -48,6 +52,7 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
   const dataset = dataview.datasets?.[0]
   const dataviewDatasetConfig = dataview.datasetsConfig?.[0] || ({} as DataviewDatasetConfig)
   const datasetId = dataviewDatasetConfig.datasetId || dataset?.id
+  const isInPositionsMode = zoom !== undefined && zoom > FOURWINGS_MAX_ZOOM
 
   if (!dataset || !datasetId) {
     console.warn('No datasetId found for dataview', dataview)
@@ -58,14 +63,24 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
     datasetId: datasetId,
     endpoint: dataviewDatasetConfig.endpoint || EndpointId.ClusterTiles,
     params: uniqBy(
-      [...(dataviewDatasetConfig.params || []), { id: 'type', value: 'heatmap' }],
+      [
+        ...(dataviewDatasetConfig.params || []),
+        { id: 'type', value: isInPositionsMode ? 'position' : 'heatmap' },
+      ],
       (p) => p.id
     ),
     query: uniqBy(
       [
         ...(dataviewDatasetConfig.query || []),
-        { id: 'format', value: '4WINGS' },
-        { id: 'temporal-aggregation', value: true },
+        ...(isInPositionsMode
+          ? []
+          : [
+              {
+                id: 'temporal-aggregation',
+                value: true,
+              },
+            ]),
+        { id: 'format', value: isInPositionsMode ? 'MVT' : '4WINGS' },
         { id: 'datasets', value: datasetId },
         { id: 'filters', value: getDataviewSqlFiltersResolved(dataview) },
         {
