@@ -21,8 +21,12 @@ export const selectVesselHasEventsDatasets = createSelector([selectVesselDataset
   return vesselEventsDatasets ? vesselEventsDatasets.length > 0 : false
 })
 
+const selectVesselEventsDataSorted = createSelector([selectVesselEventsData], (events) => {
+  return events?.toSorted((a, b) => (b.end as number) - (a.end as number))
+})
+
 const selectVesselVisibleEventsData = createSelector(
-  [selectVesselEventsData, selectVisibleEvents],
+  [selectVesselEventsDataSorted, selectVisibleEvents],
   (events, visibleEvents) => {
     if (visibleEvents === 'all') return events
     return events?.filter(({ type }) => visibleEvents.includes(type))
