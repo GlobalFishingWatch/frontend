@@ -257,8 +257,9 @@
     "vitest": "^2.0.5"
   },
   "resolutions": {
-    "@luma/core": "9.0.15",
-    "@luma/engine": "9.0.15",
+    "@luma.gl/core": "9.0.24",
+    "@luma.gl/engine": "9.0.24",
+    "@luma.gl/webgl": "9.0.24",
     "@popperjs/core": "2.10.2",
     "@types/react-dom": "18.3.0",
     "@types/react": "18.3.3",
