@@ -196,6 +196,8 @@ steps:
   - id: scan
     name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: /bin/bash
+    env:
+      - 'SHORT_SHA=$SHORT_SHA'
     args:
       - -c
       - |
