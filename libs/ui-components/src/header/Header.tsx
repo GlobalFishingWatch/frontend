@@ -127,7 +127,7 @@ const navigation = [
   },
 ]
 
-type MenuItem = {
+export type MenuItem = {
   className?: string
   href?: string
   label: string | React.ReactNode
