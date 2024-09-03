@@ -129,7 +129,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           case DataviewCategory.Events: {
             if (apiEventStatus === AsyncReducerStatus.Loading) {
               return (
-                <div className={styles.loading}>
+                <div key={featureCategory} className={styles.loading}>
                   <Spinner size="small" />
                 </div>
               )

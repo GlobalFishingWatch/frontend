@@ -14,12 +14,7 @@ const dataviews: Dataview[] = [
     datasetsConfig: [
       {
         filters: {
-          encounter_type: [
-            'CARRIER-FISHING',
-            // 'FISHING-CARRIER',
-            'FISHING-SUPPORT',
-            // 'SUPPORT-FISHING',
-          ],
+          encounter_type: ['FISHING-CARRIER', 'FISHING-SUPPORT'],
         },
         params: [],
         endpoint: 'events-cluster-tiles',
