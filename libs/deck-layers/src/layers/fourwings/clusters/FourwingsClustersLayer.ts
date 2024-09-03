@@ -190,8 +190,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
       if (signal?.aborted) {
         return
       }
-
-      return await parse(response.arrayBuffer(), FourwingsClustersLoader, {
+      const data = await response.arrayBuffer()
+      if (data.byteLength === 0) {
+        return
+      }
+      return await parse(data, FourwingsClustersLoader, {
         worker: true,
         fourwingsClusters: {
           cols,
