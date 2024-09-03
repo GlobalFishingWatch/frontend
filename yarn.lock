@@ -3694,14 +3694,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@luma.gl/constants@npm:9.0.27, @luma.gl/constants@npm:^9.0.11, @luma.gl/constants@npm:^9.0.15":
+"@luma.gl/constants@npm:9.0.27":
   version: 9.0.27
   resolution: "@luma.gl/constants@npm:9.0.27"
   checksum: 10/34391583d76f107d02813404f5925bd67a068d53b635817e07456ff245c602db16b2bf2f30ff7dc5460330b4476ee922e5482d13ffaf824bb1933a2d47ee7f52
   languageName: node
   linkType: hard
 
-"@luma.gl/core@npm:^9.0.11, @luma.gl/core@npm:^9.0.15":
+"@luma.gl/core@npm:9.0.27":
   version: 9.0.27
   resolution: "@luma.gl/core@npm:9.0.27"
   dependencies:
@@ -3714,7 +3714,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@luma.gl/engine@npm:^9.0.11, @luma.gl/engine@npm:^9.0.15":
+"@luma.gl/engine@npm:9.0.27":
   version: 9.0.27
   resolution: "@luma.gl/engine@npm:9.0.27"
   dependencies:
@@ -3756,7 +3756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@luma.gl/webgl@npm:^9.0.15":
+"@luma.gl/webgl@npm:9.0.27":
   version: 9.0.27
   resolution: "@luma.gl/webgl@npm:9.0.27"
   dependencies:
