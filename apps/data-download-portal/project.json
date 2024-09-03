@@ -51,7 +51,8 @@
         "production": {
           "buildTarget": "data-download-portal:build:production"
         }
-      }
+      },
+      "dependsOn": ["build"]
     }
   }
 }

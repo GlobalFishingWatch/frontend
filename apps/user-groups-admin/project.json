@@ -51,7 +51,8 @@
         "production": {
           "buildTarget": "user-groups-admin:build:production"
         }
-      }
+      },
+      "dependsOn": ["build"]
     }
   }
 }
