@@ -197,6 +197,15 @@ function MapDraw() {
     saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
   }
 
+  let placeholderMessage =
+    mapDrawingMode === 'points'
+      ? t('layer.editPointHint', 'Click on the point to adjust their coordinates')
+      : t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')
+  if (error) {
+    placeholderMessage = error
+  } else if (hasOverlappingFeatures) {
+    placeholderMessage = t('layer.geometryError', 'Some polygons have self-intersections')
+  }
   return (
     <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
       {((drawFeatures?.features && drawFeatures?.features?.length > 0) ||
@@ -209,13 +218,7 @@ function MapDraw() {
             icon={error || hasOverlappingFeatures ? 'warning' : 'help'}
             onClick={error || hasOverlappingFeatures ? undefined : () => {}}
           />
-          {error ? (
-            <span>{error}</span>
-          ) : hasOverlappingFeatures ? (
-            t('layer.geometryError', 'Some polygons have self-intersections')
-          ) : (
-            t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')
-          )}
+          {placeholderMessage}
         </div>
       )}
       <InputText
