@@ -1,5 +1,5 @@
 import { ColorRampsIds } from '../../utils'
-import { DeckLayerProps } from '../../types'
+import { DeckLayerProps, DeckPickingObject } from '../../types'
 import {
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
@@ -65,7 +65,8 @@ export type BaseFourwingsLayerProps = DeckLayerProps<{
 }>
 
 export type FourwingsPickingInfo = FourwingsHeatmapPickingInfo | FourwingsPositionsPickingInfo
-export type FourwingsPickingObject =
+export type FourwingsPickingObject = DeckPickingObject<
   | FourwingsHeatmapPickingObject
   | FourwingsHeatmapStaticPickingObject
   | FourwingsPositionsPickingObject
+>

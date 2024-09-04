@@ -37,7 +37,7 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
   FourwingsClustersLayerProps
 > = (
   dataview: UrlDataviewInstance,
-  { start, end }: ResolverGlobalConfig
+  { start, end, zoom }: ResolverGlobalConfig
 ): FourwingsClustersLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
@@ -57,15 +57,10 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
   const datasetConfig = {
     datasetId: datasetId,
     endpoint: dataviewDatasetConfig.endpoint || EndpointId.ClusterTiles,
-    params: uniqBy(
-      [...(dataviewDatasetConfig.params || []), { id: 'type', value: 'heatmap' }],
-      (p) => p.id
-    ),
+    params: uniqBy(dataviewDatasetConfig.params, (p) => p.id),
     query: uniqBy(
       [
         ...(dataviewDatasetConfig.query || []),
-        { id: 'format', value: '4WINGS' },
-        { id: 'temporal-aggregation', value: true },
         { id: 'datasets', value: datasetId },
         { id: 'filters', value: getDataviewSqlFiltersResolved(dataview) },
         {

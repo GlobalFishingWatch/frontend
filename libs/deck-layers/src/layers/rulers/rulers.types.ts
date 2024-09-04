@@ -30,5 +30,5 @@ export type RulersLayerProps = GeoJsonLayerProps & {
 }
 
 export type RulerFeature = Feature<Point, RulerPointProperties>
-export type RulerPickingObject = RulerFeature & DeckPickingObject<{}>
+export type RulerPickingObject = DeckPickingObject<RulerFeature>
 export type RulerPickingInfo = PickingInfo<RulerPickingObject, { tile?: Tile2DHeader }>
