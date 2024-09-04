@@ -4,11 +4,7 @@ import {
   getDataviewSqlFiltersResolved,
   UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import {
-  FOURWINGS_MAX_ZOOM,
-  FourwingsClustersLayerProps,
-  getUTCDateTime,
-} from '@globalfishingwatch/deck-layers'
+import { FourwingsClustersLayerProps, getUTCDateTime } from '@globalfishingwatch/deck-layers'
 import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { DataviewDatasetConfig, EndpointId } from '@globalfishingwatch/api-types'
 import { DeckResolverFunction, ResolverGlobalConfig } from './types'
@@ -52,7 +48,6 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
   const dataset = dataview.datasets?.[0]
   const dataviewDatasetConfig = dataview.datasetsConfig?.[0] || ({} as DataviewDatasetConfig)
   const datasetId = dataviewDatasetConfig.datasetId || dataset?.id
-  const isInPositionsMode = zoom !== undefined && zoom > FOURWINGS_MAX_ZOOM
 
   if (!dataset || !datasetId) {
     console.warn('No datasetId found for dataview', dataview)
@@ -62,25 +57,10 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
   const datasetConfig = {
     datasetId: datasetId,
     endpoint: dataviewDatasetConfig.endpoint || EndpointId.ClusterTiles,
-    params: uniqBy(
-      [
-        ...(dataviewDatasetConfig.params || []),
-        { id: 'type', value: isInPositionsMode ? 'position' : 'heatmap' },
-      ],
-      (p) => p.id
-    ),
+    params: uniqBy(dataviewDatasetConfig.params, (p) => p.id),
     query: uniqBy(
       [
         ...(dataviewDatasetConfig.query || []),
-        ...(isInPositionsMode
-          ? []
-          : [
-              {
-                id: 'temporal-aggregation',
-                value: true,
-              },
-            ]),
-        { id: 'format', value: isInPositionsMode ? 'MVT' : '4WINGS' },
         { id: 'datasets', value: datasetId },
         { id: 'filters', value: getDataviewSqlFiltersResolved(dataview) },
         {

@@ -127,9 +127,9 @@ export function getURLFromTemplate(
     index: TileIndex
     id: string
   }
-): string | null {
+): string {
   if (!template || !template.length) {
-    return null
+    return ''
   }
   const { index, id } = tile
 
