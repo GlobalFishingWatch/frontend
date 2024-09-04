@@ -597,6 +597,7 @@
     "drawPolygon": "Dibujar una capa",
     "drawPolygonLogin": "Registra e inicia sesión para dibujar una capa (gratis, 2 minutos)",
     "editDraw": "Editar dibujo",
+    "editPointHint": "Click on the point to adjust their coordinates",
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
     "filterClose": "Cerrar los filtros",
     "filterOpen": "Abrir los filtros",
