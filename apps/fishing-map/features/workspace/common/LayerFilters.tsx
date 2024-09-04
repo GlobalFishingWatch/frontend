@@ -371,6 +371,12 @@ function LayerFilters({
         : newDataviewInstanceConfig
       upsertDataviewInstance(newDataviewInstancesConfig)
       newDataviewInstanceConfigRef.current = undefined
+    } else if (applyToAll && baseDataview.config?.filters) {
+      const newDataviewInstancesConfig = categoryDataviews.map((d) => ({
+        config: { filters: baseDataview.config?.filters },
+        id: d.id,
+      }))
+      upsertDataviewInstance(newDataviewInstancesConfig)
     }
     if (onConfirmCallback) {
       onConfirmCallback()
