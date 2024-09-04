@@ -15,7 +15,11 @@ import { selectUserData, selectIsGuestUser } from 'features/user/selectors/user.
 import { loadSpreadsheetDoc } from 'utils/spreadsheet'
 import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, ROOT_DOM_ELEMENT } from 'data/config'
+import {
+  AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX,
+  PATH_BASENAME,
+  ROOT_DOM_ELEMENT,
+} from 'data/config'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
@@ -178,10 +182,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
         if (createWorkspaceThunk.fulfilled.match(createWorkspaceAction)) {
           const workspace = createWorkspaceAction.payload as Workspace
-          url =
-            window.location.origin +
-            window.location.pathname +
-            `/${workspace?.category}/${workspace?.id}`
+          url = window.location.origin + PATH_BASENAME + `/${workspace?.category}/${workspace?.id}`
         } else {
           console.error('Error creating feedback workspace, using default url to feedback sheet.')
         }
