@@ -597,6 +597,7 @@
     "drawPolygon": "Draw a custom reference layer",
     "drawPolygonLogin": "Register and log in to draw a layer (free, 2 minutes)",
     "editDraw": "Edit draw",
+    "editPointHint": "Click on the point to adjust their coordinates",
     "editPolygonHint": "Click on polygon corners to adjust their coordinates",
     "filterClose": "Close filters",
     "filterOpen": "Open filters",
