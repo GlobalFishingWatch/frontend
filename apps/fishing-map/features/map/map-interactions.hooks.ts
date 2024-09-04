@@ -142,7 +142,7 @@ export const useClickedEventConnect = () => {
     if (clusterFeature?.properties?.count > 2) {
       const { expansionZoom } = clusterFeature
       const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
-      const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM
+      const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
       if (!areTilesClusterLoading && expansionZoomValue) {
         setMapCoordinates({
           latitude: event.latitude,
