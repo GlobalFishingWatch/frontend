@@ -597,6 +597,7 @@
     "drawPolygon": "crwdns60269:0crwdne60269:0",
     "drawPolygonLogin": "crwdns60271:0crwdne60271:0",
     "editDraw": "crwdns70228:0crwdne70228:0",
+    "editPointHint": "crwdns83682:0crwdne83682:0",
     "editPolygonHint": "crwdns60273:0crwdne60273:0",
     "filterClose": "crwdns60275:0crwdne60275:0",
     "filterOpen": "crwdns60279:0crwdne60279:0",
