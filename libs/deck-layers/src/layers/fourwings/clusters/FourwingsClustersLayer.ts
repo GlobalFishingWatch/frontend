@@ -133,6 +133,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       subcategory: this.props.subcategory,
       startTime: this.props.startTime,
       endTime: this.props.endTime,
+      uniqueFeatureInteraction: true,
       expansionZoom,
     }
     return { ...info, object }
