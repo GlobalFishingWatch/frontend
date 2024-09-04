@@ -18,6 +18,7 @@ import {
   DeckLayerInteractionPickingInfo,
   DeckLayerPickingObject,
   FourwingsHeatmapPickingObject,
+  FOURWINGS_MAX_ZOOM,
 } from '@globalfishingwatch/deck-layers'
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -145,7 +146,7 @@ export const useClickedEventConnect = () => {
     if (clusterFeature?.properties?.count > 2) {
       const { expansionZoom } = clusterFeature
       const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
-      const expansionZoomValue = expansionZoom || legacyExpansionZoom
+      const expansionZoomValue = expansionZoom || legacyExpansionZoom || FOURWINGS_MAX_ZOOM + 0.5
       if (!areTilesClusterLoading && expansionZoomValue) {
         setMapCoordinates({
           latitude: event.latitude,

@@ -26,6 +26,7 @@ export const FOOTPRINT_ID = 'footprint'
 export const SUPPORTED_POSITION_PROPERTIES = [/*'speed',*/ 'bearing', 'shipname', 'vessel_id']
 
 export const FOURWINGS_MAX_ZOOM = 12
+export const MAX_ZOOM_TO_CLUSTER_POINTS = 4.5
 export const MAX_POSITIONS_PER_TILE_SUPPORTED = 5000
 export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12
 

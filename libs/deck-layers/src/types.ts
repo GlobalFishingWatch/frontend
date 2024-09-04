@@ -35,6 +35,7 @@ export type DeckPickingObject<G> = {
   color?: string
   category: DeckLayerCategory
   subcategory?: DeckLayerSubcategory
+  uniqueFeatureInteraction?: boolean
 } & G
 
 export type AnyDeckLayer<D extends {} = {}> =

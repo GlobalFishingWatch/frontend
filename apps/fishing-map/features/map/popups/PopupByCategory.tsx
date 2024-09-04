@@ -81,7 +81,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
 
   return (
     <div className={styles.content}>
-      {Object.entries(featureByCategory)?.map(([featureCategory, features]) => {
+      {Object.entries(featureByCategory)?.map(([featureCategory, allCategoryFeatures]) => {
+        const features = allCategoryFeatures.some((feature) => feature.uniqueFeatureInteraction)
+          ? [allCategoryFeatures[0]]
+          : allCategoryFeatures
         switch (featureCategory) {
           case DataviewCategory.Activity:
           case DataviewCategory.Detections: {
