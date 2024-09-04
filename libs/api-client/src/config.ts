@@ -5,6 +5,7 @@ export const API_GATEWAY =
   process.env.REACT_APP_API_GATEWAY ||
   process.env.NEXT_PUBLIC_API_GATEWAY ||
   import.meta?.env?.API_GATEWAY || // vite bundled libraries
+  import.meta?.env?.VITE_API_GATEWAY ||
   'https://gateway.api.dev.globalfishingwatch.org'
 
 export const USER_TOKEN_STORAGE_KEY = 'GFW_API_USER_TOKEN'

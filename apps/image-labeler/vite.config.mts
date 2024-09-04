@@ -1,10 +1,11 @@
 /// <reference types='vitest' />
-import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
+import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
+import 'dotenv/config'
 
 export default defineConfig({
   root: __dirname,
@@ -56,7 +57,9 @@ export default defineConfig({
   },
 
   define: {
-    'process.env': {},
+    'process.env': {
+      API_GATEWAY: process.env.API_GATEWAY,
+    },
   },
 
   // test: {
