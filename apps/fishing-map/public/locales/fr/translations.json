@@ -597,6 +597,7 @@
     "drawPolygon": "Dessiner un calque",
     "drawPolygonLogin": "S'inscrire et se connecter pour dessiner un calque (gratuit, 2 minutes)",
     "editDraw": "Modifier le dessin",
+    "editPointHint": "Click on the point to adjust their coordinates",
     "editPolygonHint": "Cliquez sur les coins du polygone pour ajuster leurs coordonnées",
     "filterClose": "Fermer les filtres",
     "filterOpen": "Ouvrir les filtres",

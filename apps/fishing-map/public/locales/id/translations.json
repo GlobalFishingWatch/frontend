@@ -597,6 +597,7 @@
     "drawPolygon": "Gambar sebuah lapisan",
     "drawPolygonLogin": "Daftar dan masuk untuk menggambar lapisan (gratis, 2 menit)",
     "editDraw": "Sunting gambar",
+    "editPointHint": "Click on the point to adjust their coordinates",
     "editPolygonHint": "Klik pada sudut poligon untuk menyesuaikan koordinatnya",
     "filterClose": "Tutup filter",
     "filterOpen": "Buka filter",
