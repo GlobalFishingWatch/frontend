@@ -121,6 +121,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
     const object = {
       ...(info.object || ({} as FourwingsClusterFeature)),
       id: info.object?.properties.id || `${(info.object?.geometry?.coordinates || []).join('-')}`,
+      ...(this.isInPositionsMode &&
+        info.object?.properties.id && {
+          eventId: info.object?.properties.id,
+        }),
       color: this.props.color,
       layerId: this.root.id,
       datasetId: this.props.datasetId,
