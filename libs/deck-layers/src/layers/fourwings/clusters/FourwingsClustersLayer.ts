@@ -9,6 +9,7 @@ import {
   FilterContext,
 } from '@deck.gl/core'
 import { TileLayer, TileLayerProps } from '@deck.gl/geo-layers'
+import { CollisionFilterExtension } from '@deck.gl/extensions'
 import { GeoBoundingBox, Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { IconLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import Supercluster from 'supercluster'
@@ -330,6 +331,21 @@ export class FourwingsClustersLayer extends CompositeLayer<
         renderSubLayers: () => null,
         getTileData: this._getTileData,
       }),
+      new IconLayer({
+        id: `${this.props.id}-${POINTS_LAYER_ID}-icons`,
+        data: points,
+        getPosition: this._getPosition,
+        getColor: hexToDeckColor(color),
+        getSize: ICON_SIZE,
+        sizeUnits: 'pixels',
+        iconAtlas: `${PATH_BASENAME}/events-sprite.png`,
+        iconMapping: ICON_MAPPING,
+        //TODO remove fixed value
+        // getIcon: () => this.props.eventType
+        getIcon: () => 'encounter',
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
+        pickable: true,
+      }),
       new ScatterplotLayer({
         id: `${this.props.id}-${CLUSTER_LAYER_ID}`,
         data: clusters,
@@ -358,21 +374,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
         sizeUnits: 'pixels',
         getTextAnchor: 'middle',
         getAlignmentBaseline: 'center',
-      }),
-      new IconLayer({
-        id: `${this.props.id}-${POINTS_LAYER_ID}-icons`,
-        data: points,
-        getPosition: this._getPosition,
-        getColor: hexToDeckColor(color),
-        getSize: ICON_SIZE,
-        sizeUnits: 'pixels',
-        iconAtlas: `${PATH_BASENAME}/events-sprite.png`,
-        iconMapping: ICON_MAPPING,
-        //TODO remove fixed value
-        // getIcon: () => this.props.eventType
-        getIcon: () => 'encounter',
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
-        pickable: true,
+        extensions: [new CollisionFilterExtension()],
+        collisionTestProps: { sizeScale: 3 },
+        getCollisionPriority: (d: any) => parseInt(d.properties.count || 0),
+        collisionGroup: 'text',
       }),
     ]
   }
