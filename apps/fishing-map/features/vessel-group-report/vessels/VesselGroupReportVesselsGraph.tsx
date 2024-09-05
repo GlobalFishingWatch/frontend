@@ -6,11 +6,11 @@ import { VesselGroupEventsStatsResponseGroups } from 'queries/vessel-group-event
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
 import { formatInfoField } from 'utils/info'
-import { useLocationConnect } from 'routes/routes.hook'
 import {
   VesselGroupReportState,
   VesselGroupReportVesselsSubsection,
 } from 'features/vessel-groups/vessel-groups.types'
+import { useLocationConnect } from 'routes/routes.hook'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {

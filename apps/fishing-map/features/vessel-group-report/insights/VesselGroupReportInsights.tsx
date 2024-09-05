@@ -6,9 +6,9 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
-import { INSIGHTS_FISHING, MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
+import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
 import styles from './VesselGroupReportInsights.module.css'
-import VesselGroupReportInsightWrapper from './VesselGroupReportInsightsWrapper'
+import VesselGroupReportInsightCoverage from './VesselGroupReportInsightCoverage'
 
 const VesselGroupReportInsights = () => {
   const { t } = useTranslation()
@@ -44,13 +44,14 @@ const VesselGroupReportInsights = () => {
           terminologyKey="insights"
         />
       </p>
-      {INSIGHTS_FISHING.map((insight) => (
+      <VesselGroupReportInsightCoverage vesselGroupId={vesselGroupId} start={start} end={end} />
+      {/* {INSIGHTS_FISHING.map((insight) => (
         <VesselGroupReportInsightWrapper
           insight={insight}
           key={insight}
           vesselGroupId={vesselGroupId}
         />
-      ))}
+      ))} */}
     </div>
   )
 }
