@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
 import { AsyncError, AsyncReducerStatus } from 'utils/async-slice'
-import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 
 export type VesselGroupReport = Omit<VesselGroup, 'vessels'> & { vessels: IdentityVessel[] }
@@ -31,7 +30,7 @@ export const fetchVesselGroupReportThunk = createAsyncThunk(
     try {
       const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
       const vesselGroupVessels = await GFWAPI.fetch<APIPagination<IdentityVessel>>(
-        `/vessels?vessel-groups[0]=${vesselGroupId}&datasets[0]=${DEFAULT_VESSEL_IDENTITY_ID}`
+        `/vessels?vessel-groups[0]=${vesselGroupId}`
       )
       return {
         ...vesselGroup,
