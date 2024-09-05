@@ -132,7 +132,7 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
   }
 
   renderLayers() {
-    const { layers, steps, stepsPickValue, filters } = this.props
+    const { layers, steps, stepsPickValue, filters, color } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const filterProps = this._getTimeFilterProps()
@@ -160,7 +160,7 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
               getFillColor: hasColorSteps ? this._getFillStepsColor : this._getFillColor,
               updateTriggers: {
-                getFillColor: [highlightedFeatures, filters],
+                getFillColor: [highlightedFeatures, filters, color],
               },
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
@@ -170,7 +170,7 @@ export class UserContextTileLayer<PropsT = {}> extends UserBaseLayer<
               getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
               getLineColor: this._getLineColor,
               updateTriggers: {
-                getLineColor: [filters],
+                getLineColor: [filters, color],
               },
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
