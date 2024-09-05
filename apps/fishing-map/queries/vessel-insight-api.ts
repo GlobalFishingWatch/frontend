@@ -1,27 +1,29 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
-import { InsightResponse, InsightType } from '@globalfishingwatch/api-types'
+import {
+  InsightResponse,
+  InsightType,
+  VesselGroupInsightResponse,
+} from '@globalfishingwatch/api-types'
 
-type BaseInsightParams = {
+export type VesselInsightParams = {
   includes: InsightType[]
-}
-
-export type VesselInsightParams = BaseInsightParams & {
   startDate: string
   endDate: string
   vessels: { vesselId: string; datasetId: string }[]
 }
 
-export type VesselGroupInsightParams = BaseInsightParams & {
-  'start-date': string
-  'end-date': string
-  'vessel-groups': string[]
+export type VesselGroupInsightParams = {
+  vesselGroupId: string
+  insight: InsightType
+  start: string
+  end: string
 }
 
 // Define a service using a base URL and expected endpoints
 export const vesselInsightApi = createApi({
   reducerPath: 'vesselInsightApi',
-  baseQuery: gfwBaseQuery<InsightResponse>({
+  baseQuery: gfwBaseQuery<InsightResponse | VesselGroupInsightResponse>({
     baseUrl: `/insights`,
   }),
   endpoints: (builder) => ({
@@ -30,18 +32,16 @@ export const vesselInsightApi = createApi({
         return { url: '/vessels', method: 'POST', body }
       },
     }),
-    getVesselGroupInsight: builder.query<InsightResponse, VesselGroupInsightParams>({
-      // serializeQueryArgs: ({ queryArgs }: { queryArgs: VesselGroupInsightParams }) => {
-      //   return [
-      //     queryArgs.vesselGroups?.join('-'),
-      //     queryArgs.includes?.join('-'),
-      //     queryArgs.startDate,
-      //     queryArgs.endDate,
-      //   ].join('-')
-      // },
-      query: (params) => {
+    getVesselGroupInsight: builder.query<VesselGroupInsightResponse, VesselGroupInsightParams>({
+      query: ({ vesselGroupId, insight, start, end }) => {
+        const query = {
+          includes: [insight],
+          'vessel-groups': [vesselGroupId],
+          'start-date': start,
+          'end-date': end,
+        }
         return {
-          url: `/vessel-groups${getQueryParamsResolved(params)}`,
+          url: `/vessel-groups${getQueryParamsResolved(query)}`,
         }
       },
     }),
