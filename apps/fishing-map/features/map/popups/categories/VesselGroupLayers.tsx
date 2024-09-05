@@ -30,7 +30,11 @@ function VesselGroupTooltipRow({
             </div>
           )}
           {!loading && showFeaturesDetails && (
-            <VesselsTable feature={feature} activityType={DatasetSubCategory.Presence} />
+            <VesselsTable
+              feature={feature}
+              activityType={DatasetSubCategory.Presence}
+              showValue={false}
+            />
           )}
         </div>
       </div>

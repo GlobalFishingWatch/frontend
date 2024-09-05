@@ -103,11 +103,13 @@ function VesselsTable({
   vesselProperty = 'hours',
   activityType = DatasetSubCategory.Fishing,
   testId = 'vessels-table',
+  showValue = true,
 }: {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory }
   vesselProperty?: ActivityProperty
   activityType?: `${DatasetSubCategory}`
   testId?: string
+  showValue?: boolean
 }) {
   const { t } = useTranslation()
 
@@ -115,7 +117,27 @@ function VesselsTable({
     feature?.category || ''
   )
 
-  const vessels = feature?.vessels?.slice(0, MAX_TOOLTIP_LIST)
+  // TODO: consider showing more than 5 vessels when oly one layer is active
+  const featureVessels = showValue
+    ? feature?.vessels
+    : feature?.vessels?.toSorted((a, b) => {
+        const getVesselPropertyParams = {
+          identitySource: VesselIdentitySourceEnum.SelfReported,
+        }
+        const aName = formatInfoField(
+          getVesselProperty(a, 'shipname', getVesselPropertyParams),
+          'name'
+        )
+        const bName = formatInfoField(
+          getVesselProperty(b, 'shipname', getVesselPropertyParams),
+          'name'
+        )
+        if (aName < bName) return -1
+        if (aName > bName) return 1
+        return 0
+      })
+
+  const vessels = featureVessels?.slice(0, MAX_TOOLTIP_LIST)
   const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])
 
   const hasPinColumn =
@@ -140,11 +162,13 @@ function VesselsTable({
               </th>
               {/* Disabled for detections to allocate some space for timestamps interaction */}
               {vesselProperty !== 'detections' && <th>{t('vessel.source_short', 'source')}</th>}
-              <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
-                {feature?.unit === 'hours' && t('common.hour_other', 'hours')}
-                {feature?.unit === 'days' && t('common.days_other', 'days')}
-                {feature?.unit === 'detections' && t('common.detection_other', 'detections')}
-              </th>
+              {showValue && (
+                <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
+                  {feature?.unit === 'hours' && t('common.hour_other', 'hours')}
+                  {feature?.unit === 'days' && t('common.days_other', 'days')}
+                  {feature?.unit === 'detections' && t('common.detection_other', 'detections')}
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -224,17 +248,19 @@ function VesselsTable({
                       </Tooltip>
                     </td>
                   )}
-                  <td
-                    className={cx(styles.columnSpace, {
-                      [styles.vesselsTableHour]: isHoursProperty,
-                      [styles.largeColumn]: detectionsTimestamps?.length > 1,
-                    })}
-                  >
-                    <I18nNumber number={vessel[vesselProperty]} />{' '}
-                    {detectionsTimestamps?.length > 0 && (
-                      <VesselDetectionTimestamps vessel={vessel} />
-                    )}
-                  </td>
+                  {showValue && (
+                    <td
+                      className={cx(styles.columnSpace, {
+                        [styles.vesselsTableHour]: isHoursProperty,
+                        [styles.largeColumn]: detectionsTimestamps?.length > 1,
+                      })}
+                    >
+                      <I18nNumber number={vessel[vesselProperty]} />{' '}
+                      {detectionsTimestamps?.length > 0 && (
+                        <VesselDetectionTimestamps vessel={vessel} />
+                      )}
+                    </td>
+                  )}
                 </tr>
               )
             })}
