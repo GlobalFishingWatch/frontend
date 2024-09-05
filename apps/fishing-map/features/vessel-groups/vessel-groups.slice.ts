@@ -225,13 +225,9 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
     if (vesselGroup.id && dataset) {
       const datasetConfig: DataviewDatasetConfig = {
         endpoint: EndpointId.VesselList,
-        datasetId: dataset.id,
+        datasetId: '',
         params: [],
         query: [
-          {
-            id: 'datasets',
-            value: datasets,
-          },
           {
             id: 'vessel-groups',
             value: vesselGroup.id,
