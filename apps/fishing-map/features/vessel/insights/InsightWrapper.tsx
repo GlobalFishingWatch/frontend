@@ -42,7 +42,7 @@ const InsightWrapper = ({ insight }: { insight: InsightType }) => {
     }: {
       start: string
       end: string
-      insight: string
+      insight: InsightType
       vessel: IdentityVesselData
     }) => {
       const identities = getVesselIdentities(vessel, {

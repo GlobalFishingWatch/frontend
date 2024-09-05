@@ -1,6 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { stringify } from 'qs'
-import { gfwBaseQuery } from 'queries/base'
+import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 
 type VesselEventsApiParams = {
   vessels: string[]
@@ -32,7 +31,7 @@ export const vesselEventsApi = createApi({
           offset: 0,
         }
         return {
-          url: stringify(params, { arrayFormat: 'indices', addQueryPrefix: true }),
+          url: getQueryParamsResolved(params),
         }
       },
     }),

@@ -23,6 +23,7 @@ import VesselGroupReportError from './VesselGroupReportError'
 import VesselGroupReportTitle from './VesselGroupReportTitle'
 import VesselGroupReportVessels from './vessels/VesselGroupReportVessels'
 import { selectVesselGroupReportSection } from './vessel-group.config.selectors'
+import VesselGroupReportInsights from './insights/VesselGroupReportInsights'
 
 function VesselGroupReport() {
   const { t } = useTranslation()
@@ -70,9 +71,8 @@ function VesselGroupReport() {
       },
       {
         id: 'insights',
-        title: t('common.areas', 'Areas'),
-        disabled: true,
-        content: <p>Coming soon</p>,
+        title: t('common.insights', 'Insights'),
+        content: <VesselGroupReportInsights />,
       },
       {
         id: 'activity',
