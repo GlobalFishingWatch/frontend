@@ -36,7 +36,7 @@ export function getSupportedGroupByOptions(
   }
 
   const mmsiSupported = vesselDatasets.every((dataset) => {
-    const schemaItem = getDatasetSchemaItem(dataset, 'mmsi')
+    const schemaItem = getDatasetSchemaItem(dataset, 'ssvid')
     return schemaItem !== null && schemaItem !== undefined
   })
 
