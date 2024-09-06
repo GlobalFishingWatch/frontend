@@ -9,6 +9,7 @@ import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
 import styles from './VesselGroupReportInsights.module.css'
 import VesselGroupReportInsightCoverage from './VesselGroupReportInsightCoverage'
+import VesselGroupReportInsightGap from './VesselGroupReportInsightGaps'
 
 const VesselGroupReportInsights = () => {
   const { t } = useTranslation()
@@ -45,13 +46,7 @@ const VesselGroupReportInsights = () => {
         />
       </p>
       <VesselGroupReportInsightCoverage vesselGroupId={vesselGroupId} start={start} end={end} />
-      {/* {INSIGHTS_FISHING.map((insight) => (
-        <VesselGroupReportInsightWrapper
-          insight={insight}
-          key={insight}
-          vesselGroupId={vesselGroupId}
-        />
-      ))} */}
+      <VesselGroupReportInsightGap vesselGroupId={vesselGroupId} start={start} end={end} />
     </div>
   )
 }

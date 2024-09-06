@@ -85,27 +85,3 @@
   top: 0.4rem;
   margin-left: var(--space-XS);
 }
-
-.loadingPlaceholder {
-  height: 1.2rem;
-  border-radius: 0.8rem;
-  background: linear-gradient(
-    90deg,
-    rgba(var(--primary-blue-rgb), 0.1) 0%,
-    rgba(var(--primary-blue-rgb), 0.2) 40%,
-    rgba(var(--primary-blue-rgb), 0.1) 70%
-  );
-  background-size: 1000px 100%;
-  animation: placeHolderShimmer 2s linear forwards infinite;
-  margin-block: var(--space-XS);
-}
-
-@keyframes placeHolderShimmer {
-  0% {
-    background-position: -500px 0;
-  }
-
-  100% {
-    background-position: 500px 0;
-  }
-}

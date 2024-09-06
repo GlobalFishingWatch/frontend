@@ -29,7 +29,7 @@ const VesselGroupReportInsightCoverage = ({
   })
 
   return (
-    <div id="coverage" className={styles.insightContainer}>
+    <div id="vessel-group-coverage" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label className="experimental">{t('vessel.insights.coverage', 'AIS Coverage')}</label>
         <DataTerminology

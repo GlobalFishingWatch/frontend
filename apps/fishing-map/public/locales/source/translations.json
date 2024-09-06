@@ -1036,6 +1036,10 @@
   "vesselGroupReport": {
     "clickToSee": "Click to see the vessel group report",
     "linkToReport": "Check the vessel group report here",
+    "insights": {
+      "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
+      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
+    },
     "notFound": "Vessel group not found",
     "user": "User Vessel Group"
   },

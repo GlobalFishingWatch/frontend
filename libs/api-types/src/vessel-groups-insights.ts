@@ -11,7 +11,7 @@ type VesselGroupInsight<G> = G & { vesselId: string }
 export type VesselGroupInsightResponse = InsightBase & {
   vesselIdsWithoutIdentity: string[] | null
   coverage?: VesselGroupInsight<InsightCoverage>[]
-  gaps?: VesselGroupInsight<InsightGaps>[]
+  gap?: VesselGroupInsight<InsightGaps>[]
   apparentFishing?: VesselGroupInsight<InsightFishing>[]
   vesselIdentity?: VesselGroupInsight<InsightIdentity>[]
 }
