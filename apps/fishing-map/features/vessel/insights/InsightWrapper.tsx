@@ -1,18 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useGetVesselInsightMutation } from 'queries/vessel-insight-api'
 import { useCallback, useEffect } from 'react'
-import {
-  InsightFlagChangesResponse,
-  InsightIUUResponse,
-  InsightMOUListResponse,
-  InsightType,
-  VesselIdentitySourceEnum,
-} from '@globalfishingwatch/api-types'
-import {
-  InsightCoverageResponse,
-  InsightFishingResponse,
-  InsightGapsResponse,
-} from '@globalfishingwatch/api-types'
+import { InsightType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { IdentityVesselData } from 'features/vessel/vessel.slice'
@@ -72,56 +61,32 @@ const InsightWrapper = ({ insight }: { insight: InsightType }) => {
 
   if (insight === 'COVERAGE') {
     return (
-      <InsightCoverage
-        isLoading={isLoading}
-        insightData={data as InsightCoverageResponse}
-        error={error as ParsedAPIError}
-      />
+      <InsightCoverage isLoading={isLoading} insightData={data} error={error as ParsedAPIError} />
     )
   }
   if (insight === 'GAP') {
-    return (
-      <InsightGaps
-        isLoading={isLoading}
-        insightData={data as InsightGapsResponse}
-        error={error as ParsedAPIError}
-      />
-    )
+    return <InsightGaps isLoading={isLoading} insightData={data} error={error as ParsedAPIError} />
   }
   if (insight === 'FISHING') {
     return (
-      <InsightFishing
-        isLoading={isLoading}
-        insightData={data as InsightFishingResponse}
-        error={error as ParsedAPIError}
-      />
+      <InsightFishing isLoading={isLoading} insightData={data} error={error as ParsedAPIError} />
     )
   }
   if (insight === 'VESSEL-IDENTITY-IUU-VESSEL-LIST') {
-    return (
-      <InsightIUU
-        isLoading={isLoading}
-        insightData={data as InsightIUUResponse}
-        error={error as ParsedAPIError}
-      />
-    )
+    return <InsightIUU isLoading={isLoading} insightData={data} error={error as ParsedAPIError} />
   }
   if (insight === 'VESSEL-IDENTITY-FLAG-CHANGES') {
     return (
       <InsightFlagChanges
         isLoading={isLoading}
-        insightData={data as InsightFlagChangesResponse}
+        insightData={data}
         error={error as ParsedAPIError}
       />
     )
   }
   if (insight === 'VESSEL-IDENTITY-MOU-LIST') {
     return (
-      <InsightMOUList
-        isLoading={isLoading}
-        insightData={data as InsightMOUListResponse}
-        error={error as ParsedAPIError}
-      />
+      <InsightMOUList isLoading={isLoading} insightData={data} error={error as ParsedAPIError} />
     )
   }
 }

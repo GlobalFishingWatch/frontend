@@ -2,7 +2,7 @@ import { useGetVesselEventsQuery } from 'queries/vessel-events-api'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { InsightGapsResponse, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { InsightResponse, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -17,7 +17,7 @@ const InsightGapsDetails = ({
   toggleVisibility,
   visible,
 }: {
-  insightData: InsightGapsResponse
+  insightData?: InsightResponse
   toggleVisibility: () => void
   visible: boolean
 }) => {
@@ -31,7 +31,7 @@ const InsightGapsDetails = ({
   const { data, isLoading } = useGetVesselEventsQuery(
     {
       vessels: identities?.map((i) => i.id),
-      datasets: insightData?.gap.datasets || [],
+      datasets: insightData?.gap?.datasets || [],
       'start-date': start,
       'end-date': end,
     },

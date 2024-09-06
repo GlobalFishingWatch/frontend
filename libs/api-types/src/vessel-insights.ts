@@ -13,7 +13,7 @@ export type InsightBase = {
   }
 }
 
-type ValueInPeriod = {
+export type InsightValueInPeriod = {
   from: string
   to: string
   value: string // BLACK | GREY
@@ -49,7 +49,7 @@ export type InsightGaps = {
 export type InsightIdentityEntry = {
   totalTimesListed: number
   totalTimesListedInThePeriod: number
-  valuesInThePeriod: ValueInPeriod[]
+  valuesInThePeriod: InsightValueInPeriod[]
 }
 export type InsightIdentity = {
   datasets: string[]
@@ -63,7 +63,7 @@ export type InsightIdentity = {
 
 export type InsightResponse = InsightBase & {
   coverage?: InsightCoverage
-  gaps?: InsightGaps
+  gap?: InsightGaps
   apparentFishing?: InsightFishing
   vesselIdentity?: InsightIdentity
 }
