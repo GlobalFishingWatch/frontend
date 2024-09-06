@@ -159,7 +159,7 @@ const AppModals = () => {
       >
         <LayerLibrary />
       </Modal>
-      {isDatasetUploadModalOpen && <NewDataset />}
+      {!isVesselGroupModalOpen && isDatasetUploadModalOpen && <NewDataset />}
       <EditWorkspaceModal />
       <CreateWorkspaceModal />
       {downloadActivityAreaKey && <DownloadActivityModal />}
