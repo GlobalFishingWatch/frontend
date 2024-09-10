@@ -31,11 +31,11 @@ export const PRIVATE_SEARCH_DATASET_BY_GROUP: Record<UserGroup, string[]> = {
     'private-bra-onyxsat-vessel-identity-fishing:v20211126',
     'private-bra-onyxsat-vessel-identity-non-fishing:v20211126',
   ],
-  'costa rica': [
-    'private-costa-rica-vessel-identity-vessels:v20211126',
+  'costa rica': ['private-costa-rica-vessel-identity-vessels:v20211126'],
+  ecuador: [
     'private-ecuador-vessel-identity-fishing:v20211126',
+    'private-ecuador-vessel-identity-non-fishing:v20211126',
   ],
-  ecuador: ['private-ecuador-vessel-identity-non-fishing:v20211126'],
   panama: [
     'private-panama-vessel-identity-non-fishing:v20211126',
     'private-panama-vessel-identity-fishing:v20211126',
