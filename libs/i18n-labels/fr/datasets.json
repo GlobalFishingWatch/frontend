@@ -80,7 +80,7 @@
     }
   },
   "private-belize-vessel-identity-fishing": {
-    "name": "VMS Belize",
+    "name": "VMS Bélize",
     "description": "Identité du navire"
   },
   "private-belize-vessel-identity-non-fishing": {
@@ -383,7 +383,7 @@
     "description": "AP2HI-IPNLF Presence",
     "schema": {
       "speed": "vitesse",
-      "bearing": "bearing"
+      "bearing": "cap"
     }
   },
   "private-indonesia-ipnlf-vessel-identity": {
@@ -406,8 +406,8 @@
     "description": "Pelagic Presence"
   },
   "private-indonesia-pelagic-vessel-identity": {
-    "name": "Indonesia Pelagic (Vessels)",
-    "description": "Vessels (Indonesia Pelagic)"
+    "name": "Pélagiques Indonésie (Navires)",
+    "description": "Navires (Pélagiques Indonésie)"
   },
   "private-indonesia-pelagic-vessels": {
     "name": "Indonesia Pelagic (Vessels)",
@@ -423,21 +423,21 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "Cast Nets": "Cast Nets",
-          "Anchored gillnets": "Anchored gillnets",
-          "Shrimp net": "Shrimp net",
-          "Purse Seine Big Pelagics with one boat": "Purse Seine Big Pelagics with one boat",
+          "Cast Nets": "Filets à lancer",
+          "Anchored gillnets": "Filets maillants ancrés",
+          "Shrimp net": "Filet à crevette",
+          "Purse Seine Big Pelagics with one boat": "Senne tournante à grands pélagiques avec un navire",
           "Transporter": "Transporter",
-          "Basic longline": "Basic longline",
-          "Pole-and-line": "Pole-and-line",
-          "Hand Line Tuna": "Hand Line Tuna",
-          "Handline": "Handline",
-          "Purse Seine Small Pelagics": "Purse Seine Small Pelagics",
+          "Basic longline": "Palangre de base",
+          "Pole-and-line": "Canne à pêche",
+          "Hand Line Tuna": "Ligne à main à thons",
+          "Handline": "Ligne à main",
+          "Purse Seine Small Pelagics": "Senne tournante à petits pélagiques",
           "Stick-Held lift net": "Stick-Held lift net",
-          "Longline Tuna": "Longline Tuna",
-          "Oceanic gillnet": "Oceanic gillnet",
-          "Fish net/dragnet": "Fish net/dragnet",
-          "Squid hooking": "Squid hooking"
+          "Longline Tuna": "Palangre à thons",
+          "Oceanic gillnet": "Filet maillant océanique",
+          "Fish net/dragnet": "Filet « Dragnet »",
+          "Squid hooking": "Turlutte"
         }
       }
     }
@@ -447,16 +447,16 @@
     "description": "Indonesia Rare Fishing Effort"
   },
   "private-indonesia-rare-presence": {
-    "name": "Rare: Indonesia Pelagic",
+    "name": "Rare : Pélagique Indonésie",
     "description": "Rare Presence",
     "schema": {
-      "speed": "speed",
-      "bearing": "bearing"
+      "speed": "vitesse",
+      "bearing": "cap"
     }
   },
   "private-indonesia-rare-vessel-identity": {
-    "name": "Indonesia Rare (Vessels)",
-    "description": "Vessels (Indonesia Rare)"
+    "name": "Rare, Indonésie (Navires)",
+    "description": "Navires (Rare, Indonésie)"
   },
   "private-indonesia-rare-vessels": {
     "name": "Indonesia Rare (Vessels)",
@@ -523,31 +523,31 @@
     }
   },
   "private-panama-vessel-identity-fishing": {
-    "name": "Panama Private VMS (Private Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Private)"
+    "name": "VMS privé Panama (Navires de pêche, privé)",
+    "description": "Jeu de données pour VMS Panama (Privé)"
   },
   "private-panama-vessel-identity-non-fishing": {
-    "name": "Panama Private VMS (Private Non Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Private)"
+    "name": "VMS privé Panama (Navires non pêche, privé)",
+    "description": "Jeu de données pour VMS Panama (Privé)"
   },
   "private-peru-fishing-effort": {
     "name": "Peru VMS",
     "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
     "schema": {
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "flotte",
         "enum": {
-          "industrial": "industrial",
-          "artisanal": "artisanal",
+          "industrial": "industrielle",
+          "artisanal": "artisanale",
           "small-scale": "small-scale",
-          "not defined": "not defined"
+          "not defined": "non définie"
         }
       },
       "origin": {
-        "keyword": "origin",
+        "keyword": "origine",
         "enum": {
           "PER": "PER",
-          "Foreign": "Foreign"
+          "Foreign": "Étrangère"
         }
       }
     }
@@ -567,18 +567,18 @@
         }
       },
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "flotte",
         "enum": {
-          "industrial": "industrial",
-          "artisanal": "artisanal",
-          "not defined": "not defined"
+          "industrial": "industrielle",
+          "artisanal": "artisanale",
+          "not defined": "non définie"
         }
       },
       "origin": {
-        "keyword": "origin",
+        "keyword": "origine",
         "enum": {
           "Peru": "Pérou",
-          "Foreign": "Foreign"
+          "Foreign": "Étrangère"
         }
       },
       "source": "source",
@@ -587,28 +587,28 @@
   },
   "private-peru-presence": {
     "name": "Peru VMS Presence",
-    "description": "Vessel monitoring system (VMS) data provided by the Peruvian Government’s Ministry of Production, Fisheries Sector (PRODUCE). Permission to include Peruvian Data required that a 10 day delay to publishing was implemented. Data is collected using their vessel monitoring system (VMS) via satellites and terrestrial receivers, and contains a vessel’s identity gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing detection algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing detection algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "description": "Données du système de surveillance des navires (VMS) fournies par le ministère de la Production, secteur de la pêche (PRODUCE) du gouvernement péruvien. L’autorisation d’inclure les données péruviennes a nécessité la mise en place d’un délai de publication de 10 jours. Les données sont collectées à l’aide de leur système de surveillance des navires (VMS) via des satellites et des récepteurs terrestres, et contiennent l’identité du navire, le type d’engin, l’emplacement, la vitesse, le cap et d'autres informations. Global Fishing Watch analyse ces données à l’aide des mêmes algorithmes développés pour les données du système d’identification automatique (AIS) afin d’identifier l’activité et les comportements de pêche. L’algorithme classe chaque point de données de transmission pour ces navires comme étant en pêche ou non et affiche l'activité de pêche sur la carte thermique de l'activité de pêche de Global Fishing Watch. Le VMS diffuse les données de manière assez différente de l’AIS et peut donner des mesures différentes d’exhaustivité, d’exactitude et de qualité. Au fil du temps, nos algorithmes s’amélioreront dans tous nos formats de données de transmission. L’algorithme de détection de pêche de Global Fishing Watch pour le VMS, comme pour l’AIS, constitue un effort optimal pour identifier algorithmiquement « l’activité de pêche apparente ». Il est possible que certaines activités de pêche ne soient pas identifiées ou que la carte thermique montre une activité de pêche apparente alors qu'il n'y a pas réellement de pêche. Pour ces raisons, Global Fishing Watch qualifie les termes « activité de pêche », « pêche » ou « effort de pêche » d'« apparents » plutôt que certains. Toutes les informations de Global Fishing Watch sur « l'activité de pêche apparente » doivent être considérées comme une estimation et leur utilisation se fait à vos propres risques. Les algorithmes de détection de pêche de Global Fishing Watch sont développés et testés à l'aide de données réelles sur les événements de pêche collectées par des observateurs, combinées à une analyse experte des données AIS de mouvement des navires, ce qui permet la classification manuelle de milliers d'événements de pêche connus. Global Fishing Watch collabore également étroitement avec des chercheurs universitaires dans le cadre de notre programme de recherche pour partager des données de classification des activités de pêche et des techniques de classification automatisée.",
     "schema": {
       "fleet": {
-        "keyword": "fleet",
+        "keyword": "flotte",
         "enum": {
-          "industrial": "industrial",
-          "artisanal": "artisanal",
-          "small-scale": "small-scale",
-          "not defined": "not defined"
+          "industrial": "industrielle",
+          "artisanal": "artisanale",
+          "small-scale": "petite échelle",
+          "not defined": "non définie"
         }
       },
       "origin": {
-        "keyword": "origin",
+        "keyword": "origine",
         "enum": {
           "PER": "PER",
-          "Foreign": "Foreign"
+          "Foreign": "Étrangère"
         }
       }
     }
   },
   "private-peru-vessel-identity-fishing": {
-    "name": "Private Peru VMS (Fishing Vessels)",
+    "name": "VMS Pérou privé (Navires de pêche)",
     "description": "Dataset for VMS Peru (Private)"
   },
   "private-png-fishing-effort": {
