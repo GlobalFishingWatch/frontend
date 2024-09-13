@@ -16,10 +16,24 @@ export const selectReportAreaBounds = selectAreaReportStateProperty('reportAreaB
 export const selectReportActivityGraph = selectAreaReportStateProperty('reportActivityGraph')
 export const selectReportVesselGraphSelector = selectAreaReportStateProperty('reportVesselGraph')
 export const selectReportVesselFilter = selectAreaReportStateProperty('reportVesselFilter')
-export const selectReportVesselPage = selectAreaReportStateProperty('reportVesselPage')
-export const selectReportResultsPerPage = selectAreaReportStateProperty('reportResultsPerPage')
 export const selectReportTimeComparison = selectAreaReportStateProperty('reportTimeComparison')
 export const selectReportBufferValueSelector = selectAreaReportStateProperty('reportBufferValue')
 export const selectReportBufferUnitSelector = selectAreaReportStateProperty('reportBufferUnit')
 export const selectReportBufferOperationSelector =
   selectAreaReportStateProperty('reportBufferOperation')
+
+export const selectReportVesselPage = createSelector(
+  [selectAreaReportStateProperty('reportVesselPage')],
+  (reportVesselPage): number => {
+    return typeof reportVesselPage === 'string' ? parseInt(reportVesselPage) : reportVesselPage
+  }
+)
+
+export const selectReportResultsPerPage = createSelector(
+  [selectAreaReportStateProperty('reportResultsPerPage')],
+  (reportResultsPerPage): number => {
+    return typeof reportResultsPerPage === 'string'
+      ? parseInt(reportResultsPerPage)
+      : reportResultsPerPage
+  }
+)
