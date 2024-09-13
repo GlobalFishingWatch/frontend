@@ -354,10 +354,10 @@ export const selectActiveActivityDataviewsByVisualisation = (
         const selectedVGDataview =
           timebarSelectedVGId && vesselGroupDataviews.find((d) => d.id === timebarSelectedVGId)
 
-        if (selectedVGDataview) {
-          return [selectedVGDataview]
-        } else if (vesselGroupDataviews[0]) return [vesselGroupDataviews[0]]
+        if (selectedVGDataview) return [selectedVGDataview]
+        else if (vesselGroupDataviews[0]) return [vesselGroupDataviews[0]]
       }
+      // timebarVisualisation === TimebarVisualisations.Environment
       const selectedEnvDataview =
         timebarSelectedEnvId && environmentDataviews.find((d) => d.id === timebarSelectedEnvId)
 
