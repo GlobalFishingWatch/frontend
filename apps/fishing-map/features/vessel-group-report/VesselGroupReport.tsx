@@ -7,6 +7,12 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VesselGroupReportSection } from 'features/vessel-groups/vessel-groups.types'
+import { TimebarVisualisations } from 'types'
+import {
+  useTimebarVesselGroupConnect,
+  useTimebarVisualisationConnect,
+} from 'features/timebar/timebar.hooks'
+import { selectActiveVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import {
   selectVesselGroupReportData,
@@ -17,9 +23,7 @@ import VesselGroupReportTitle from './VesselGroupReportTitle'
 import VesselGroupReportVessels from './vessels/VesselGroupReportVessels'
 import { selectVesselGroupReportSection } from './vessel-group.config.selectors'
 
-type VesselGroupReportProps = {}
-
-function VesselGroupReport(props: VesselGroupReportProps) {
+function VesselGroupReport() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const fetchVesselGroupReport = useFetchVesselGroupReport()
@@ -27,10 +31,24 @@ function VesselGroupReport(props: VesselGroupReportProps) {
   const vesselGroup = useSelector(selectVesselGroupReportData)!
   const reportStatus = useSelector(selectVesselGroupReportStatus)
   const reportSection = useSelector(selectVesselGroupReportSection)
+  const dataviews = useSelector(selectActiveVesselGroupDataviews)
+  const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
+  const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
 
   useEffect(() => {
     fetchVesselGroupReport(vesselGroupId)
-  }, [fetchVesselGroupReport, vesselGroupId])
+    const reportDataview = dataviews?.find(({ vesselGroup }) => vesselGroup?.id === vesselGroupId)
+    if (reportDataview) {
+      dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup)
+      dispatchTimebarSelectedVGId(reportDataview?.id)
+    }
+  }, [
+    dataviews,
+    dispatchTimebarSelectedVGId,
+    dispatchTimebarVisualisation,
+    fetchVesselGroupReport,
+    vesselGroupId,
+  ])
 
   const changeTab = useCallback(
     (tab: Tab<VesselGroupReportSection>) => {

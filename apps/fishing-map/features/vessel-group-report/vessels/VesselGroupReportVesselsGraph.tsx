@@ -9,9 +9,9 @@ import { formatInfoField } from 'utils/info'
 import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { selectVesselGroupReportVesselsGraphDataGrouped } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
-import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VesselGroupReportVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
+import { selectActiveVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {
@@ -127,10 +127,10 @@ const CustomTick = (props: any) => {
 }
 
 export default function VesselGroupReportVesselsGraph() {
-  const dataviews = useSelector(selectActiveDataviewInstancesResolved)
+  const dataviews = useSelector(selectActiveVesselGroupDataviews)
   const reportVesselGroupId = useSelector(selectReportVesselGroupId)
-  const reportDataview = dataviews?.find(({ config }) =>
-    config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
+  const reportDataview = dataviews?.find(
+    ({ vesselGroup }) => vesselGroup?.id === reportVesselGroupId
   )
 
   const data = useSelector(selectVesselGroupReportVesselsGraphDataGrouped)
