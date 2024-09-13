@@ -59,6 +59,11 @@ export default function ReportActivity() {
   const isSameTimeseriesMode = layersTimeseriesFiltered?.[0]?.mode === reportGraphMode
   const showSelectors = layersTimeseriesFiltered !== undefined
   const showPlaceholder = loading || !isSameTimeseriesMode
+  const isEmptyData =
+    layersTimeseriesFiltered &&
+    layersTimeseriesFiltered.every(({ timeseries }) => timeseries.length === 0) &&
+    !loading
+
   return (
     <div className={styles.container}>
       {showSelectors && (
@@ -69,6 +74,10 @@ export default function ReportActivity() {
       )}
       {showPlaceholder ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
+      ) : isEmptyData ? (
+        <ReportActivityPlaceholder showHeader={false} animate={false}>
+          {t('analysis.noDataByArea', 'No data available for the selected area')}
+        </ReportActivityPlaceholder>
       ) : (
         <GraphComponent
           start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
