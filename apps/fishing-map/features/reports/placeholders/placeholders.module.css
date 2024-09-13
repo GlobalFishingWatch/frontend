@@ -150,3 +150,12 @@
     background-position: 500px 0;
   }
 }
+
+.children {
+  position: absolute;
+  inset: 0;
+  top: -3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

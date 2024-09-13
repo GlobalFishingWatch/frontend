@@ -340,7 +340,7 @@ export const selectReportVesselsPagination = createSelector(
     return {
       page,
       offset: resultsPerPage * page,
-      resultsPerPage: resultsPerPage,
+      resultsPerPage,
       resultsNumber: vessels!?.length,
       totalFiltered: allVesselsFiltered!?.length,
       total: allVessels!?.length,
