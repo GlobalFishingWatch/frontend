@@ -141,10 +141,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
             return heatmapFeatures.map((feature, i) => {
               return feature.sublayers?.map((sublayer, j) => {
-                const dataview = dataviews.find((d) => d.id === sublayer.id)
-                const vesselGroup = allVesselGroups.find((vesselGroup) =>
-                  dataview?.config?.filters?.['vessel-groups'].includes(vesselGroup.id)
-                )
+                const vesselGroup = dataviews.find((d) => d.id === sublayer.id)?.vesselGroup
                 return (
                   <VesselGroupTooltipRow
                     key={`${i}-${j}`}
