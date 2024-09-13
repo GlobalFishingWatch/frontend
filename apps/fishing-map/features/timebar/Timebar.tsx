@@ -408,6 +408,7 @@ const TimebarWrapper = () => {
           <Fragment>
             {(timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
               timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
+              timebarVisualisation === TimebarVisualisations.VesselGroup ||
               timebarVisualisation === TimebarVisualisations.Environment) && (
               <TimebarActivityGraph visualisation={timebarVisualisation} />
             )}

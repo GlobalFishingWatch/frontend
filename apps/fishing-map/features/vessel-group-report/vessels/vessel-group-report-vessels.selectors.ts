@@ -65,6 +65,38 @@ const REPORT_FILTER_PROPERTIES: Record<ReportFilterProperty, string[]> = {
   source: ['source'],
 }
 
+export const selectVesselGroupReportVesselsTimeRange = createSelector(
+  [selectVesselGroupReportVesselsParsed],
+  (vessels) => {
+    if (!vessels?.length) return null
+    let start: string = ''
+    let end: string = ''
+    vessels.forEach((vessel) => {
+      if (!start || vessel.transmissionDateFrom < start) {
+        start = vessel.transmissionDateFrom
+      }
+      if (!end || vessel.transmissionDateTo > end) {
+        end = vessel.transmissionDateTo
+      }
+    })
+    return { start, end }
+  }
+)
+
+export const selectVesselGroupReportVesselsFlags = createSelector(
+  [selectVesselGroupReportVesselsParsed],
+  (vessels) => {
+    if (!vessels?.length) return null
+    let flags = new Set<string>()
+    vessels.forEach((vessel) => {
+      if (vessel.flag) {
+        flags.add(vessel.flag)
+      }
+    })
+    return flags
+  }
+)
+
 export const selectVesselGroupReportVesselsFiltered = createSelector(
   [selectVesselGroupReportVesselsParsed, selectVesselGroupReportVesselFilter],
   (vessels, filter) => {

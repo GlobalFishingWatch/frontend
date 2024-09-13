@@ -12,6 +12,7 @@ import {
   selectActiveReportActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
+  selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { ReactComponent as AreaIcon } from 'assets/icons/timebar-area.svg'
@@ -25,10 +26,12 @@ import {
   selectActiveTrackDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { formatInfoField } from 'utils/info'
 import {
   useTimebarVisualisationConnect,
   useTimebarGraphConnect,
   useTimebarEnvironmentConnect,
+  useTimebarVesselGroupConnect,
 } from './timebar.hooks'
 import styles from './TimebarSettings.module.css'
 
@@ -67,6 +70,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
     selectActiveHeatmapEnvironmentalDataviewsWithoutStatic
   )
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const vesselIds = activeTrackDataviews.map((v) => v.id)
   const trackLayers = useGetDeckLayers<VesselLayer | UserTracksLayer>(vesselIds)
@@ -78,6 +82,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
+  const { timebarSelectedVGId, dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
   const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews!?.length <= 2
 
@@ -101,6 +106,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const setEnvironmentActive = (environmentalDataviewId: string) => {
     dispatchTimebarVisualisation(TimebarVisualisations.Environment)
     dispatchTimebarSelectedEnvId(environmentalDataviewId)
+  }
+  const setVesselGroupActive = (vesselGroupDataviewId: string) => {
+    dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup)
+    dispatchTimebarSelectedVGId(vesselGroupDataviewId)
   }
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
@@ -174,6 +183,26 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   tooltip={detectionsTooltipLabel}
                   onClick={setHeatmapDetectionsActive}
                 />
+                {activeVesselGroupDataviews.map((vgDataview) => {
+                  return (
+                    <Radio
+                      key={vgDataview.id}
+                      label={
+                        <Icon
+                          SvgIcon={AreaIcon}
+                          label={formatInfoField(vgDataview.vesselGroup?.name, 'name') as string}
+                          color={vgDataview?.config?.color || COLOR_PRIMARY_BLUE}
+                        />
+                      }
+                      active={
+                        timebarVisualisation === TimebarVisualisations.VesselGroup &&
+                        timebarSelectedVGId === vgDataview.id
+                      }
+                      tooltip={activityTooltipLabel}
+                      onClick={() => setVesselGroupActive(vgDataview.id)}
+                    />
+                  )
+                })}
               </Fragment>
             )}
             <Radio

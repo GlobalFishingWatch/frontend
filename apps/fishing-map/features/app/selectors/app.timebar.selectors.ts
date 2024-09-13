@@ -1,6 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { DEFAULT_TIME_RANGE } from 'data/config'
-import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import {
+  selectEnvironmentalDataviews,
+  selectVesselGroupDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { TimeRange } from 'features/timebar/timebar.slice'
 import {
@@ -37,6 +40,17 @@ export const selectTimebarSelectedEnvId = createSelector(
       return timebarSelectedEnvId || envDataviews[0]?.id
     }
     return timebarSelectedEnvId
+  }
+)
+
+const selectTimebarSelectedVGIdSelector = selectWorkspaceStateProperty('timebarSelectedVGId')
+export const selectTimebarSelectedVGId = createSelector(
+  [selectTimebarSelectedVGIdSelector, selectTimebarVisualisation, selectVesselGroupDataviews],
+  (timebarSelectedVGId, timebarVisualisation, vesselGroupDataviews): string => {
+    if (timebarVisualisation === TimebarVisualisations.VesselGroup) {
+      return timebarSelectedVGId || vesselGroupDataviews[0]?.id
+    }
+    return timebarSelectedVGId
   }
 )
 
