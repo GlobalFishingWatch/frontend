@@ -40,6 +40,17 @@ export const selectTimebarSelectedEnvId = createSelector(
   }
 )
 
+const selectTimebarSelectedVGIdSelector = selectWorkspaceStateProperty('timebarSelectedVGId')
+export const selectTimebarSelectedVGId = createSelector(
+  [selectTimebarSelectedVGIdSelector, selectTimebarVisualisation, selectEnvironmentalDataviews],
+  (timebarSelectedVGId, timebarVisualisation, envDataviews): string => {
+    if (timebarVisualisation === TimebarVisualisations.Environment) {
+      return timebarSelectedVGId || envDataviews[0]?.id
+    }
+    return timebarSelectedVGId
+  }
+)
+
 const selectTimebarGraphSelector = selectWorkspaceStateProperty('timebarGraph')
 export const selectTimebarGraph = createSelector(
   [selectTimebarGraphSelector, selectActiveVesselsDataviews],

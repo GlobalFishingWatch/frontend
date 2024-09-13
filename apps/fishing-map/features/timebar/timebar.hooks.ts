@@ -8,6 +8,7 @@ import { TimebarGraphs, TimebarVisualisations } from 'types'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
+  selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -213,6 +214,20 @@ export const useTimebarEnvironmentConnect = () => {
   )
 
   return { timebarSelectedEnvId, dispatchTimebarSelectedEnvId }
+}
+
+export const useTimebarVesselGroupConnect = () => {
+  const { dispatchQueryParams } = useLocationConnect()
+  const timebarSelectedVGId = useSelector(selectTimebarSelectedVGId)
+
+  const dispatchTimebarSelectedVGId = useCallback(
+    (timebarSelectedVGId: string) => {
+      dispatchQueryParams({ timebarSelectedVGId })
+    },
+    [dispatchQueryParams]
+  )
+
+  return { timebarSelectedVGId, dispatchTimebarSelectedVGId }
 }
 
 export const useTimebarGraphConnect = () => {

@@ -56,6 +56,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   sidebarOpen?: boolean
   timebarGraph?: TimebarGraphs
   timebarSelectedEnvId?: string
+  timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisations
   visibleEvents?: VisibleEvents
 }
@@ -96,6 +97,7 @@ export enum TimebarVisualisations {
   HeatmapActivity = 'heatmap',
   HeatmapDetections = 'heatmapDetections',
   Vessel = 'vessel',
+  VesselGroup = 'vesselGroup',
   Environment = 'environment',
 }
 

@@ -5,6 +5,7 @@ import { TimebarVisualisations } from 'types'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectTimebarSelectedEnvId,
+  selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
 import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
@@ -14,6 +15,7 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
+  selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectActivityVisualizationMode,
@@ -54,8 +56,10 @@ export const selectTimebarSelectedDataviews = createSelector(
   [
     selectTimebarVisualisation,
     selectTimebarSelectedEnvId,
+    selectTimebarSelectedVGId,
     selectActiveDetectionsDataviews,
     selectActiveActivityDataviews,
+    selectActiveVesselGroupDataviews,
     selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
     selectReportCategory,
     selectIsAnyReportLocation,
@@ -63,8 +67,10 @@ export const selectTimebarSelectedDataviews = createSelector(
   (
     timebarVisualisation,
     timebarSelectedEnvId,
+    timebarSelectedVGId,
     detectionsDataviews,
     activityDataviews,
+    vesselGroupDataviews,
     environmentalDataviews,
     reportCategory,
     isReportLocation
@@ -72,6 +78,9 @@ export const selectTimebarSelectedDataviews = createSelector(
     if (!timebarVisualisation) return []
     if (timebarVisualisation === TimebarVisualisations.Environment) {
       return environmentalDataviews.filter((d) => d.id === timebarSelectedEnvId)
+    }
+    if (timebarVisualisation === TimebarVisualisations.VesselGroup) {
+      return vesselGroupDataviews.filter((d) => d.id === timebarSelectedVGId)
     }
     if (timebarVisualisation === TimebarVisualisations.HeatmapDetections) {
       return detectionsDataviews
