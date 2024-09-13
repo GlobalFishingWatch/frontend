@@ -1,5 +1,14 @@
 import { useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
+import { useTranslation } from 'react-i18next'
+import parse from 'html-react-parser'
 import ReportVesselsFilter from 'features/area-report/vessels/ReportVesselsFilter'
+import { selectVesselGroupReportVessels } from 'features/vessel-group-report/vessel-group-report.slice'
+import {
+  selectVesselGroupReportVesselsFlags,
+  selectVesselGroupReportVesselsTimeRange,
+} from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { selectVesselGroupReportVesselFilter } from '../vessel-group.config.selectors'
 import VesselGroupReportVesselsGraphSelector from './VesselGroupReportVesselsGraphSelector'
 import VesselGroupReportVesselsGraph from './VesselGroupReportVesselsGraph'
@@ -7,13 +16,35 @@ import VesselGroupReportVesselsTable from './VesselGroupReportVesselsTable'
 import styles from './VesselGroupReportVessels.module.css'
 
 function VesselGroupReportVessels() {
-  const vesselGroupReportVesselFilter = useSelector(selectVesselGroupReportVesselFilter)
+  const { t } = useTranslation()
+  const vessels = useSelector(selectVesselGroupReportVessels)
+  const timeRange = useSelector(selectVesselGroupReportVesselsTimeRange)
+  const flags = useSelector(selectVesselGroupReportVesselsFlags)
+  const filter = useSelector(selectVesselGroupReportVesselFilter)
   return (
     <div className={styles.container}>
+      {timeRange && vessels && flags && (
+        <h2 className={styles.summary}>
+          {parse(
+            t('vesselGroup.summary', {
+              defaultValue:
+                'This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>',
+              vessels: vessels?.length,
+              flags: flags?.size,
+              start: formatI18nDate(timeRange.start, {
+                format: DateTime.DATE_MED,
+              }),
+              end: formatI18nDate(timeRange.end, {
+                format: DateTime.DATE_MED,
+              }),
+            })
+          )}
+        </h2>
+      )}
       <VesselGroupReportVesselsGraphSelector />
       <VesselGroupReportVesselsGraph />
       <ReportVesselsFilter
-        filter={vesselGroupReportVesselFilter}
+        filter={filter}
         filterQueryParam="vesselGroupReportVesselFilter"
         pageQueryParam="vesselGroupReportVesselPage"
       />

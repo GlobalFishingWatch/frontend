@@ -1023,6 +1023,7 @@
     "saveForLater": "Save for later",
     "saveForLaterTooltip": "You'll find the group in the activity layers filters or your user panel button",
     "searchLimit": "Search is limited up to {{limit}} vessels",
+    "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
     "tooManyVessels_other": "Maximum number of vessels is {{count}}",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
