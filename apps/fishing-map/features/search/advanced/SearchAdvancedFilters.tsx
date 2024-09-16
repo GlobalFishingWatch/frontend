@@ -95,7 +95,7 @@ function AdvancedFilterInputField({
           : ''
       }
       value={value}
-      label={t(`vessel.${field}`, field)}
+      label={t(`vessel.${field === 'ssvid' ? 'mmsi' : field}`, field)}
     />
   )
 }
