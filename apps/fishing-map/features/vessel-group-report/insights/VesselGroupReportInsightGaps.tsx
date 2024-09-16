@@ -7,15 +7,12 @@ import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { getVesselId, getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectVesselGroupReportData } from '../vessel-group-report.slice'
-import {
-  selectFetchVesselGroupReportGapParams,
-  selectVesselGroupGapInsightData,
-} from '../vessel-group-report.selectors'
+import { selectFetchVesselGroupReportGapParams } from '../vessel-group-report.selectors'
 import styles from './VesselGroupReportInsight.module.css'
 import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
 import VesselGroupReportInsightGapVesselEvents from './VesselGroupReportInsightGapVesselEvents'
+import { selectVesselGroupReportGapVessels } from './vessel-group-insights.selectors'
 
 const VesselGroupReportInsightGap = () => {
   const { t } = useTranslation()
@@ -28,23 +25,8 @@ const VesselGroupReportInsightGap = () => {
   const { data, error, isLoading } = useGetVesselGroupInsightQuery(fetchVesselGroupParams, {
     skip: !vesselGroup,
   })
-  // const dataFromSelector = useSelector(selectVesselGroupGapInsightData)
+  const vesselsWithGaps = useSelector(selectVesselGroupReportGapVessels)
 
-  const vesselsWithInsigth = data?.gap?.map((vessel) => vessel.vesselId)
-  const vessels = vesselGroup?.vessels?.filter((vessel) =>
-    vesselsWithInsigth?.includes(getVesselId(vessel))
-  )
-
-  // const infoVesselDatasets = Array.from(new Set(vessels?.flatMap((vessel) => vessel.dataset)))
-  // const { data: events, isLoading: isEventsLoading } = useGetVesselEventsQuery(
-  //   {
-  //     datasets: vessels.flatMap((vessel) => vessel.dataset),
-  //     vessels: expandedVesselIds,
-  //     'start-date': start,
-  //     'end-date': end,
-  //   },
-  //   { skip: !vesselGroup }
-  // )
   const eventsByVessel = useMemo(() => {
     return groupBy(data?.gap, (entry) => entry.vesselId)
   }, [data])
@@ -83,13 +65,12 @@ const VesselGroupReportInsightGap = () => {
           label={gapsTitle}
           onToggle={(isOpen) => isOpen !== isExpanded && setIsExpanded(!isExpanded)}
         >
-          {vessels && vessels?.length > 0 && (
+          {vesselsWithGaps && vesselsWithGaps?.length > 0 && (
             <ul>
-              {vessels.map((vessel) => {
-                const vesselId = getVesselId(vessel)
+              {vesselsWithGaps.map((vessel) => {
+                const vesselId = vessel.id
                 const isExpandedVessel = expandedVesselIds.includes(vesselId)
                 // TODO: get the proper datasetId
-                const eventsDatasetId = 'public-global-gaps-events:v3.0'
                 return (
                   <li>
                     <Collapsable
@@ -97,7 +78,7 @@ const VesselGroupReportInsightGap = () => {
                       open={isExpandedVessel}
                       className={styles.collapsable}
                       labelClassName={styles.collapsableLabel}
-                      label={getVesselProperty(vessel, 'nShipname')}
+                      label={vessel.nShipname}
                       onToggle={(isOpen, id) => {
                         setExpandedVesselIds((expandedIds) => {
                           return isOpen && id
@@ -106,10 +87,10 @@ const VesselGroupReportInsightGap = () => {
                         })
                       }}
                     >
-                      {isExpandedVessel && (
+                      {isExpandedVessel && vessel.eventsDatasetId && (
                         <VesselGroupReportInsightGapVesselEvents
                           vesselId={vesselId}
-                          datasetId={eventsDatasetId}
+                          datasetId={vessel.eventsDatasetId}
                           start={fetchVesselGroupParams.start}
                           end={fetchVesselGroupParams.end}
                         />

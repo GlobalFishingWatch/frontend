@@ -8,6 +8,9 @@ import { selectActiveDataviewInstancesResolved } from 'features/dataviews/select
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 
+export const COVERAGE_INSIGHT_ID = 'COVERAGE' as InsightType
+export const GAP_INSIGHT_ID = 'GAP' as InsightType
+
 export const selectVesselGroupReportDataview = createSelector(
   [selectActiveDataviewInstancesResolved, selectReportVesselGroupId],
   (dataviews, reportVesselGroupId) => {
@@ -31,14 +34,14 @@ export const selectBaseVesselGroupReportParams = createSelector(
 export const selectFetchVesselGroupReportCoverageParams = createSelector(
   [selectBaseVesselGroupReportParams],
   (params) => {
-    return { ...params, insight: 'COVERAGE' as InsightType }
+    return { ...params, insight: COVERAGE_INSIGHT_ID }
   }
 )
 
 export const selectFetchVesselGroupReportGapParams = createSelector(
   [selectBaseVesselGroupReportParams],
   (params) => {
-    return { ...params, insight: 'GAP' as InsightType }
+    return { ...params, insight: GAP_INSIGHT_ID }
   }
 )
 
