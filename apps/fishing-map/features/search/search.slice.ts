@@ -101,7 +101,10 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             let value = filter
             // Supports searching by multiple values separated by comma
             if (ADVANCED_SEARCH_FIELDS.includes(field as any) && value?.includes(',')) {
-              value = (value as string).split(',').map((v) => v.trim())
+              value = (value as string)
+                .split(',')
+                .map((v) => v.trim())
+                .filter(Boolean)
             }
             return { key: field as AdvancedSearchQueryFieldKey, value }
           }
