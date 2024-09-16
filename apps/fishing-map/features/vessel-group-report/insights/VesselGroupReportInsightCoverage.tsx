@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
+import { useSelector } from 'react-redux'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import { selectFetchVesselGroupReportCoverageParams } from '../vessel-group-report.selectors'
 import styles from './VesselGroupReportInsight.module.css'
 import VesselGroupReportInsightCoverageGraph from './VesselGroupReportInsightCoverageGraph'
 
@@ -11,22 +13,10 @@ const VesselGroupReportInsightCoveragePlaceholder = () => {
   return <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
 }
 
-const VesselGroupReportInsightCoverage = ({
-  vesselGroupId,
-  start,
-  end,
-}: {
-  vesselGroupId: string
-  start: string
-  end: string
-}) => {
+const VesselGroupReportInsightCoverage = () => {
   const { t } = useTranslation()
-  const { data, error, isLoading } = useGetVesselGroupInsightQuery({
-    vesselGroupId: vesselGroupId,
-    insight: 'COVERAGE',
-    start,
-    end,
-  })
+  const fetchParams = useSelector(selectFetchVesselGroupReportCoverageParams)
+  const { data, error, isLoading } = useGetVesselGroupInsightQuery(fetchParams)
 
   return (
     <div id="vessel-group-coverage" className={styles.insightContainer}>

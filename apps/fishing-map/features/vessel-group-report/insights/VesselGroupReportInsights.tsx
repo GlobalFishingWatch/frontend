@@ -5,7 +5,6 @@ import { Icon } from '@globalfishingwatch/ui-components'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
 import styles from './VesselGroupReportInsights.module.css'
 import VesselGroupReportInsightCoverage from './VesselGroupReportInsightCoverage'
@@ -14,7 +13,6 @@ import VesselGroupReportInsightGap from './VesselGroupReportInsightGaps'
 const VesselGroupReportInsights = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
-  const vesselGroupId = useSelector(selectReportVesselGroupId)
 
   if (DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR) {
     return (
@@ -45,8 +43,8 @@ const VesselGroupReportInsights = () => {
           terminologyKey="insights"
         />
       </p>
-      <VesselGroupReportInsightCoverage vesselGroupId={vesselGroupId} start={start} end={end} />
-      <VesselGroupReportInsightGap vesselGroupId={vesselGroupId} start={start} end={end} />
+      <VesselGroupReportInsightCoverage />
+      <VesselGroupReportInsightGap />
     </div>
   )
 }

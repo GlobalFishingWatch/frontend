@@ -1,5 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
+import { RootState } from 'reducers'
 import {
   InsightResponse,
   InsightType,
@@ -51,3 +52,8 @@ export const vesselInsightApi = createApi({
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const { useGetVesselInsightMutation, useGetVesselGroupInsightQuery } = vesselInsightApi
+
+export const selectVesselGroupInsightApiSlice = (state: RootState) => state.vesselInsightApi
+
+export const selectVesselGroupInsight = (params: VesselGroupInsightParams) =>
+  vesselInsightApi.endpoints.getVesselGroupInsight.select(params)

@@ -1,6 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
+import {
+  selectVesselGroupInsight,
+  selectVesselGroupInsightApiSlice,
+} from 'queries/vessel-insight-api'
+import { InsightType } from '@globalfishingwatch/api-types'
 import { selectActiveDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 
 export const selectVesselGroupReportDataview = createSelector(
   [selectActiveDataviewInstancesResolved, selectReportVesselGroupId],
@@ -8,5 +14,37 @@ export const selectVesselGroupReportDataview = createSelector(
     return dataviews?.find(({ config }) =>
       config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
     )
+  }
+)
+
+export const selectBaseVesselGroupReportParams = createSelector(
+  [selectTimeRange, selectReportVesselGroupId],
+  ({ start, end }, reportVesselGroupId) => {
+    return {
+      vesselGroupId: reportVesselGroupId,
+      start,
+      end,
+    }
+  }
+)
+
+export const selectFetchVesselGroupReportCoverageParams = createSelector(
+  [selectBaseVesselGroupReportParams],
+  (params) => {
+    return { ...params, insight: 'COVERAGE' as InsightType }
+  }
+)
+
+export const selectFetchVesselGroupReportGapParams = createSelector(
+  [selectBaseVesselGroupReportParams],
+  (params) => {
+    return { ...params, insight: 'GAP' as InsightType }
+  }
+)
+
+export const selectVesselGroupGapInsightData = createSelector(
+  [selectVesselGroupInsightApiSlice, selectFetchVesselGroupReportGapParams],
+  (vesselInsightApi, params) => {
+    return selectVesselGroupInsight(params)({ vesselInsightApi })?.data
   }
 )

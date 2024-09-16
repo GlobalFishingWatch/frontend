@@ -85,3 +85,19 @@
   top: 0.4rem;
   margin-left: var(--space-XS);
 }
+
+.insightContainer .collapsable {
+  justify-content: flex-start;
+}
+
+.insightContainer .collapsable::before {
+  display: none;
+  content: '';
+}
+
+.insightContainer .collapsableLabel {
+  padding-left: 0;
+  font: var(--font-M);
+  color: var(--color-primary-blue);
+  text-transform: none;
+}
