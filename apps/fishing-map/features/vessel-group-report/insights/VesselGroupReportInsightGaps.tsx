@@ -53,7 +53,44 @@ const VesselGroupReportInsightGap = ({
       ) : error ? (
         <InsightError error={error as ParsedAPIError} />
       ) : (
-        <span>{gapsTitle}</span>
+        <Collapsable
+          open={isExpanded}
+          className={styles.collapsable}
+          labelClassName={styles.collapsableLabel}
+          label={gapsTitle}
+          onToggle={(isOpen) => isOpen !== isExpanded && setIsExpanded(!isExpanded)}
+        >
+          {vessels && vessels?.length > 0 && (
+            <ul>
+              {vessels.map((vessel) => {
+                const vesselId = getVesselId(vessel)
+                const isExpandedVessel = expandedVesselIds.includes(vesselId)
+                return (
+                  <li>
+                    <Collapsable
+                      id={vesselId}
+                      open={isExpandedVessel}
+                      className={styles.collapsable}
+                      labelClassName={styles.collapsableLabel}
+                      label={getVesselProperty(vessel, 'nShipname')}
+                      onToggle={(isOpen, id) => {
+                        setExpandedVesselIds((expandedIds) => {
+                          return isOpen && id
+                            ? [...expandedIds, id]
+                            : expandedIds.filter((vesselId) => vesselId !== id)
+                        })
+                      }}
+                    >
+                      {eventsByVessel[vesselId].map((event) => {
+                        return event.aisOff.join(',')
+                      })}
+                    </Collapsable>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </Collapsable>
       )}
     </div>
   )

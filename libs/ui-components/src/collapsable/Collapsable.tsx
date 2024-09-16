@@ -4,19 +4,29 @@ import { Icon } from '../icon'
 import styles from './Collapsable.module.css'
 
 interface CollapsableProps {
+  id?: string
   open?: boolean
   label?: string | ReactNode
   children?: string | ReactNode
   className?: string
-  onToggle?: () => void
+  labelClassName?: string
+  onToggle?: (isOpen: boolean, id?: string) => void
 }
 
 export function Collapsable(props: CollapsableProps) {
-  const { open = true, label, className, children, onToggle } = props
+  const { id, open = true, label, className, labelClassName, children, onToggle } = props
+
+  const handleToggle = (e: any) => {
+    e.stopPropagation()
+    if (onToggle) {
+      onToggle(e.nativeEvent.newState === 'open', id)
+    }
+  }
+
   return (
-    <details open={open} className={cx(styles.details, className)} onToggle={onToggle}>
-      <summary className={styles.summary}>
-        <span className={styles.label}>{label}</span>
+    <details id={id} open={open} className={styles.details} onToggle={handleToggle}>
+      <summary className={cx(styles.summary, className)}>
+        <span className={cx(styles.label, labelClassName)}>{label}</span>
         <Icon className={styles.icon} icon="arrow-down" />
       </summary>
       {children}
