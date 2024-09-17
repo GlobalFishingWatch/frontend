@@ -3,19 +3,22 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import VesselEvent from 'features/vessel/activity/event/Event'
 import styles from './VesselGroupReportInsight.module.css'
 
-const VesselGroupReportInsightGapVesselEvents = ({
+const VesselGroupReportInsightVesselEvents = ({
+  ids,
   vesselId,
   datasetId,
   start,
   end,
 }: {
-  vesselId: string
+  ids?: string[]
+  vesselId?: string
   datasetId: string
   start: string
   end: string
 }) => {
   const { data, isLoading } = useGetVesselEventsQuery({
-    vessels: [vesselId],
+    ...(vesselId && { vessels: [vesselId] }),
+    ...(ids && { ids: ids }),
     datasets: [datasetId],
     'start-date': start,
     'end-date': end,
@@ -36,4 +39,4 @@ const VesselGroupReportInsightGapVesselEvents = ({
   )
 }
 
-export default VesselGroupReportInsightGapVesselEvents
+export default VesselGroupReportInsightVesselEvents

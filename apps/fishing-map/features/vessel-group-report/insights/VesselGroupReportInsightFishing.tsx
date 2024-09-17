@@ -10,7 +10,7 @@ import { selectVesselGroupReportData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportFishingParams } from '../vessel-group-report.selectors'
 import styles from './VesselGroupReportInsight.module.css'
 import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
-import VesselGroupReportInsightGapVesselEvents from './VesselGroupReportInsightGapVesselEvents'
+import VesselGroupReportInsightVesselEvents from './VesselGroupReportInsightVesselEvents'
 import {
   selectVesselGroupReportVesselsWithNoTakeMpas,
   selectVesselGroupReportVesselsInRfmoWithoutKnownAuthorization,
@@ -95,8 +95,8 @@ const VesselGroupReportInsightFishing = () => {
                           }}
                         >
                           {isExpandedVessel && vessel.datasets?.[0] && (
-                            <VesselGroupReportInsightGapVesselEvents
-                              vesselId={vesselId}
+                            <VesselGroupReportInsightVesselEvents
+                              ids={vessel.eventsInNoTakeMpas}
                               datasetId={vessel.datasets[0]}
                               start={reportFishingParams.start}
                               end={reportFishingParams.end}
@@ -159,8 +159,8 @@ const VesselGroupReportInsightFishing = () => {
                             }}
                           >
                             {isExpandedVessel && vessel.datasets?.[0] && (
-                              <VesselGroupReportInsightGapVesselEvents
-                                vesselId={vesselId}
+                              <VesselGroupReportInsightVesselEvents
+                                ids={vessel.eventsInRfmoWithoutKnownAuthorization}
                                 datasetId={vessel.datasets[0]}
                                 start={reportFishingParams.start}
                                 end={reportFishingParams.end}

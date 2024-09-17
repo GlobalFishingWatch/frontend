@@ -10,7 +10,7 @@ import { selectVesselGroupReportData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportGapParams } from '../vessel-group-report.selectors'
 import styles from './VesselGroupReportInsight.module.css'
 import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
-import VesselGroupReportInsightGapVesselEvents from './VesselGroupReportInsightGapVesselEvents'
+import VesselGroupReportInsightVesselEvents from './VesselGroupReportInsightVesselEvents'
 import { selectVesselGroupReportGapVessels } from './vessel-group-report-insights.selectors'
 
 const VesselGroupReportInsightGap = () => {
@@ -80,7 +80,7 @@ const VesselGroupReportInsightGap = () => {
                       }}
                     >
                       {isExpandedVessel && vessel.datasets[0] && (
-                        <VesselGroupReportInsightGapVesselEvents
+                        <VesselGroupReportInsightVesselEvents
                           vesselId={vesselId}
                           datasetId={vessel.datasets[0]}
                           start={fetchVesselGroupParams.start}
