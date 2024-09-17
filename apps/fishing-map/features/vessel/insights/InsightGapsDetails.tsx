@@ -6,10 +6,10 @@ import { InsightResponse, VesselIdentitySourceEnum } from '@globalfishingwatch/a
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
 import Event from '../activity/event/Event'
 import { selectVesselInfoData } from '../selectors/vessel.selectors'
+import VesselEvent from '../activity/event/Event'
 import styles from './Insights.module.css'
 
 const InsightGapsDetails = ({
@@ -52,12 +52,12 @@ const InsightGapsDetails = ({
         }
         icon={visible ? 'arrow-top' : 'arrow-down'}
       />
-      {visible && data?.entries?.length > 0 && (
+      {visible && data?.entries && data?.entries?.length > 0 && (
         <ul className={styles.eventDetailsList}>
           {[...data.entries]
             .reverse()
             .map(removeNonTunaRFMO)
-            .map((event: ActivityEvent) => (
+            .map((event: VesselEvent) => (
               <Event key={event.id} event={event} className={styles.event} />
             ))}
         </ul>
