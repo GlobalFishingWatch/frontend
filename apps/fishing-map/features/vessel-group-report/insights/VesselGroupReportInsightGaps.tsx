@@ -58,6 +58,7 @@ const VesselGroupReportInsightGap = () => {
         <InsightError error={error as ParsedAPIError} />
       ) : (
         <Collapsable
+          id="gap-events"
           open={isExpanded}
           className={styles.collapsable}
           labelClassName={styles.collapsableLabel}
