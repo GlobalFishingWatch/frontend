@@ -10,6 +10,7 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 
 export const COVERAGE_INSIGHT_ID = 'COVERAGE' as InsightType
 export const GAP_INSIGHT_ID = 'GAP' as InsightType
+export const FISHING_INSIGHT_ID = 'FISHING' as InsightType
 
 export const selectVesselGroupReportDataview = createSelector(
   [selectActiveDataviewInstancesResolved, selectReportVesselGroupId],
@@ -45,8 +46,22 @@ export const selectFetchVesselGroupReportGapParams = createSelector(
   }
 )
 
+export const selectFetchVesselGroupReportFishingParams = createSelector(
+  [selectBaseVesselGroupReportParams],
+  (params) => {
+    return { ...params, insight: FISHING_INSIGHT_ID }
+  }
+)
+
 export const selectVesselGroupGapInsightData = createSelector(
   [selectVesselGroupInsightApiSlice, selectFetchVesselGroupReportGapParams],
+  (vesselInsightApi, params) => {
+    return selectVesselGroupInsight(params)({ vesselInsightApi })?.data
+  }
+)
+
+export const selectVesselGroupFishingInsightData = createSelector(
+  [selectVesselGroupInsightApiSlice, selectFetchVesselGroupReportFishingParams],
   (vesselInsightApi, params) => {
     return selectVesselGroupInsight(params)({ vesselInsightApi })?.data
   }

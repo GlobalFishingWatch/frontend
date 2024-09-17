@@ -1038,7 +1038,11 @@
     "linkToReport": "Check the vessel group report here",
     "insights": {
       "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected",
+      "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
+      "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
+      "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} fishing event from {{vessels}} vessels detected outside known RFMO authorized areas",
+      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} fishing event from {{vessels}} vessels detected outside known RFMO authorized areas"
     },
     "notFound": "Vessel group not found",
     "user": "User Vessel Group"

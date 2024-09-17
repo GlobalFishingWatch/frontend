@@ -6,7 +6,7 @@ import {
   InsightIdentity,
 } from './vessel-insights'
 
-type VesselGroupInsight<G> = G & { vesselId: string }
+type VesselGroupInsight<G> = G & { vesselId: string; datasets: string[] }
 
 export type VesselGroupInsightResponse = InsightBase & {
   vesselIdsWithoutIdentity: string[] | null
