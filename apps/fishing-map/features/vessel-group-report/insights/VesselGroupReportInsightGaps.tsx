@@ -18,7 +18,6 @@ const VesselGroupReportInsightGap = () => {
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const [expandedVesselIds, setExpandedVesselIds] = useState<string[]>([])
-  console.log('🚀 ~ VesselGroupReportInsightGap ~ expandedVesselIds:', expandedVesselIds)
   const vesselGroup = useSelector(selectVesselGroupReportData)
   const fetchVesselGroupParams = useSelector(selectFetchVesselGroupReportGapParams)
 

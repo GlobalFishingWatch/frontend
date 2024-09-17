@@ -1,5 +1,7 @@
 import { useGetVesselEventsQuery } from 'queries/vessel-events-api'
 import { Spinner } from '@globalfishingwatch/ui-components'
+import VesselEvent from 'features/vessel/activity/event/Event'
+import styles from './VesselGroupReportInsight.module.css'
 
 const VesselGroupReportInsightGapVesselEvents = ({
   vesselId,
@@ -21,8 +23,17 @@ const VesselGroupReportInsightGapVesselEvents = ({
   if (isLoading) {
     return <Spinner size="small" />
   }
-  console.log('🚀 ~ data:', data)
-  return <span>TODO: show GAP events</span>
+  if (!data?.entries) {
+    return null
+  }
+
+  return (
+    <ul className={styles.eventDetailsList}>
+      {data.entries.map((event) => (
+        <VesselEvent key={event.id} event={event} className={styles.event} />
+      ))}
+    </ul>
+  )
 }
 
 export default VesselGroupReportInsightGapVesselEvents
