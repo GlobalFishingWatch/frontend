@@ -12,7 +12,8 @@ import {
   useTimebarVesselGroupConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
-import { selectActiveVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectVesselGroupReportDataview } from 'features/dataviews/selectors/dataviews.selectors'
+import VesselGroupReportEvents from 'features/vessel-group-report/events/VesselGroupReportEvents'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import {
   selectVesselGroupReportData,
@@ -31,19 +32,18 @@ function VesselGroupReport() {
   const vesselGroup = useSelector(selectVesselGroupReportData)!
   const reportStatus = useSelector(selectVesselGroupReportStatus)
   const reportSection = useSelector(selectVesselGroupReportSection)
-  const dataviews = useSelector(selectActiveVesselGroupDataviews)
+  const reportDataview = useSelector(selectVesselGroupReportDataview)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
 
   useEffect(() => {
     fetchVesselGroupReport(vesselGroupId)
-    const reportDataview = dataviews?.find(({ vesselGroup }) => vesselGroup?.id === vesselGroupId)
     if (reportDataview) {
       dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup)
       dispatchTimebarSelectedVGId(reportDataview?.id)
     }
   }, [
-    dataviews,
+    reportDataview,
     dispatchTimebarSelectedVGId,
     dispatchTimebarVisualisation,
     fetchVesselGroupReport,
@@ -83,16 +83,15 @@ function VesselGroupReport() {
       {
         id: 'events',
         title: t('common.events', 'Events'),
-        disabled: true,
-        content: <p>Coming soon</p>,
+        content: <VesselGroupReportEvents />,
       },
     ],
     [t]
   )
 
-  if (reportStatus === AsyncReducerStatus.Error) {
-    return <VesselGroupReportError />
-  }
+  // if (reportStatus === AsyncReducerStatus.Error) {
+  //   return <VesselGroupReportError />
+  // }
 
   return (
     <div>
@@ -104,7 +103,7 @@ function VesselGroupReport() {
         tabs={sectionTabs}
         activeTab={reportSection}
         onTabClick={changeTab}
-        mountAllTabsOnLoad
+        // mountAllTabsOnLoad
       />
     </div>
   )

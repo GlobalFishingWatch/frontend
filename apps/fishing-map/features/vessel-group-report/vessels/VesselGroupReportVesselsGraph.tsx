@@ -3,15 +3,13 @@ import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
+import { VesselGroupEventsStatsResponseGroups } from 'queries/vessel-group-events-stats-api'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
 import { formatInfoField } from 'utils/info'
 import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel-group.config.selectors'
-import { selectVesselGroupReportVesselsGraphDataGrouped } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
-import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VesselGroupReportVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
-import { selectActiveVesselGroupDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import styles from './VesselGroupReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {
@@ -26,7 +24,7 @@ type ReportGraphTooltipProps = {
     unit: string
   }[]
   label: string
-  type: VesselGroupReportVesselsSubsection
+  type: VesselGroupReportVesselsSubsection | 'geartype'
 }
 
 const ReportGraphTooltip = (props: any) => {
@@ -37,6 +35,8 @@ const ReportGraphTooltip = (props: any) => {
   if (EMPTY_API_VALUES.includes(label)) parsedLabel = t('common.unknown', 'Unknown')
   else if (type === 'flag') {
     parsedLabel = formatInfoField(label, 'flag') as string
+  } else if (type === 'geartype') {
+    parsedLabel = formatInfoField(label, 'geartypes') as string
   }
   if (active && payload && payload.length) {
     return (
@@ -61,18 +61,19 @@ const ReportGraphTooltip = (props: any) => {
 }
 
 const CustomTick = (props: any) => {
-  const { x, y, payload, width, visibleTicksCount } = props
+  const { x, y, payload, width, visibleTicksCount, property } = props
   const { t } = useTranslation()
-  const subsection = useSelector(selectVesselGroupReportVesselsSubsection)
   const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
   const isCategoryInteractive = !EMPTY_API_VALUES.includes(payload.value)
 
   const getTickLabel = (label: string) => {
     if (EMPTY_API_VALUES.includes(label)) return t('analysis.unknown', 'Unknown')
-    switch (subsection) {
+    switch (property) {
       case 'flag':
         return formatInfoField(label, 'flag') as string
+      case 'geartype':
+        return formatInfoField(label, 'geartypes') as string
       default:
         return label
     }
@@ -86,7 +87,9 @@ const CustomTick = (props: any) => {
 
   const onLabelClick = () => {
     dispatchQueryParams({
-      vesselGroupReportVesselFilter: `${filterProperties[subsection]}:${payload.value}`,
+      vesselGroupReportVesselFilter: `${
+        filterProperties[property as VesselGroupReportVesselsSubsection]
+      }:${payload.value}`,
       vesselGroupReportVesselPage: 0,
     })
   }
@@ -126,15 +129,17 @@ const CustomTick = (props: any) => {
   )
 }
 
-export default function VesselGroupReportVesselsGraph() {
-  const dataviews = useSelector(selectActiveVesselGroupDataviews)
-  const reportVesselGroupId = useSelector(selectReportVesselGroupId)
-  const reportDataview = dataviews?.find(
-    ({ vesselGroup }) => vesselGroup?.id === reportVesselGroupId
-  )
+export type VesselGroupReportVesselsGraphProperty = 'flag' | 'geartype'
 
-  const data = useSelector(selectVesselGroupReportVesselsGraphDataGrouped)
-  const selectedReportVesselGraph = useSelector(selectVesselGroupReportVesselsSubsection)
+export default function VesselGroupReportVesselsGraph({
+  data,
+  color = 'rgb(22, 63, 137)',
+  property,
+}: {
+  data: VesselGroupEventsStatsResponseGroups
+  color?: string
+  property: VesselGroupReportVesselsGraphProperty
+}) {
   return (
     <Fragment>
       <div className={styles.graph} data-test="report-vessels-graph">
@@ -151,14 +156,8 @@ export default function VesselGroupReportVesselsGraph() {
                 bottom: 0,
               }}
             >
-              {data && (
-                <Tooltip content={<ReportGraphTooltip type={selectedReportVesselGraph} />} />
-              )}
-              <Bar
-                className={styles.bar}
-                dataKey="value"
-                fill={reportDataview?.config?.color || 'rgb(22, 63, 137)'}
-              >
+              {data && <Tooltip content={<ReportGraphTooltip type={property} />} />}
+              <Bar className={styles.bar} dataKey="value" fill={color}>
                 <LabelList
                   position="top"
                   valueAccessor={(entry: any) => formatI18nNumber(entry.value)}
@@ -169,7 +168,7 @@ export default function VesselGroupReportVesselsGraph() {
                 interval="equidistantPreserveStart"
                 tickLine={false}
                 minTickGap={-1000}
-                tick={<CustomTick />}
+                tick={<CustomTick property={property} />}
                 tickMargin={0}
               />
             </BarChart>
