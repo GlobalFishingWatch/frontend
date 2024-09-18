@@ -51,15 +51,27 @@ export type InsightIdentityEntry = {
   totalTimesListedInThePeriod: number
   valuesInThePeriod: InsightValueInPeriod[]
 }
-export type InsightIdentity = {
-  datasets: string[]
+
+export type InsightIdentityMOU = {
   mouList?: {
     tokyo: InsightIdentityEntry
     paris: InsightIdentityEntry
   }
+}
+
+export type InsightIdentityIUU = {
   iuuVesselList?: InsightIdentityEntry
+}
+
+export type InsightIdentityFlagsChanges = {
   flagsChanges?: InsightIdentityEntry
 }
+
+export type InsightIdentity<
+  InsighIdentityType = InsightIdentityMOU & InsightIdentityIUU & InsightIdentityFlagsChanges
+> = {
+  datasets: string[]
+} & InsighIdentityType
 
 export type InsightResponse = InsightBase & {
   coverage?: InsightCoverage
