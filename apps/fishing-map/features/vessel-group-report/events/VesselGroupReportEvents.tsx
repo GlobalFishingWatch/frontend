@@ -1,8 +1,11 @@
 import { useSelector } from 'react-redux'
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
 import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
-import { useGetVesselGroupEventsStatsQuery } from 'queries/vessel-group-events-stats-api'
+import {
+  useGetVesselGroupEventsStatsQuery,
+  VesselGroupEventsStatsResponseGroups,
+} from 'queries/vessel-group-events-stats-api'
 import { useTranslation } from 'react-i18next'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import VesselGroupReportEventsSubsectionSelector from 'features/vessel-group-report/events/VesselGroupReportEventsSubsectionSelector'
@@ -70,6 +73,13 @@ function VesselGroupReportEvents() {
   if (eventsDataview?.id === ENCOUNTER_EVENTS_SOURCE_ID) {
     color = 'rgb(247 222 110)'
   }
+  const filteredGroups = useMemo(() => {
+    if (!data) return null
+    if (!filter) return data.groups
+    const [filterProperty, filterValue] = filter.split(':')
+    if (vesselsGroupByProperty !== filterProperty) return data.groups
+    return data.groups.filter(({ name }) => name === filterValue)
+  }, [data, filter, vesselsGroupByProperty])
 
   if (error) return <p className={styles.error}>{(error as any).message}</p>
   if (!data) return null
@@ -113,7 +123,7 @@ function VesselGroupReportEvents() {
           <VesselGroupReportEventsVesselPropertySelector />
         </div>
         <VesselGroupReportVesselsGraph
-          data={data.groups}
+          data={filteredGroups as VesselGroupEventsStatsResponseGroups}
           color={eventsDataview?.config?.color}
           property={vesselsGroupByProperty}
           filterQueryParam="vesselGroupReportEventsVesselFilter"

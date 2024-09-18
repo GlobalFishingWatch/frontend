@@ -60,7 +60,12 @@ export const selectVesselGroupReportEventsVessels = createSelector(
       if (!vesselWithEvents) {
         return []
       }
-      return { ...vesselWithEvents, ...getSearchIdentityResolved(vessel) }
+      const identity = getSearchIdentityResolved(vessel)
+      return {
+        ...vesselWithEvents,
+        ...identity,
+        geartype: identity.geartypes,
+      }
     })
     return insightVessels.sort((a, b) => b.numEvents - a.numEvents)
   }

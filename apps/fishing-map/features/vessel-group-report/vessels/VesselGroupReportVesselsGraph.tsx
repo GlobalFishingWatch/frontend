@@ -1,13 +1,11 @@
 import React, { Fragment } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { VesselGroupEventsStatsResponseGroups } from 'queries/vessel-group-events-stats-api'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { EMPTY_API_VALUES, OTHERS_CATEGORY_LABEL } from 'features/area-report/reports.config'
 import { formatInfoField } from 'utils/info'
-import { selectVesselGroupReportVesselsSubsection } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { VesselGroupReportVesselsSubsection } from 'features/vessel-groups/vessel-groups.types'
 import styles from './VesselGroupReportVesselsGraph.module.css'
@@ -79,10 +77,11 @@ const CustomTick = (props: any) => {
         return label
     }
   }
-  const filterProperties: Record<VesselGroupReportVesselsSubsection, string> = {
+  const filterProperties: Record<VesselGroupReportVesselsSubsection | 'geartype', string> = {
     flag: 'flag',
     shiptypes: 'type',
     geartypes: 'gear',
+    geartype: 'gear',
     source: 'source',
   }
 
