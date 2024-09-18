@@ -9,8 +9,10 @@ import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
 import styles from './VesselGroupReportInsights.module.css'
 import VesselGroupReportInsightCoverage from './VesselGroupReportInsightCoverage'
 import VesselGroupReportInsightGap from './VesselGroupReportInsightGaps'
+import VesselGroupReportInsightIUU from './VesselGroupReportInsightIUU'
 import VesselGroupReportInsightFishing from './VesselGroupReportInsightFishing'
 import VesselGroupReportInsightFlagChange from './VesselGroupReportInsightFlagChange'
+import VesselGroupReportInsightMOU from './VesselGroupReportInsightMOU'
 
 const VesselGroupReportInsights = () => {
   const { t } = useTranslation()
@@ -48,6 +50,9 @@ const VesselGroupReportInsights = () => {
       <VesselGroupReportInsightCoverage />
       <VesselGroupReportInsightGap />
       <VesselGroupReportInsightFishing />
+      <VesselGroupReportInsightIUU />
+      <VesselGroupReportInsightFlagChange />
+      <VesselGroupReportInsightMOU />
     </div>
   )
 }

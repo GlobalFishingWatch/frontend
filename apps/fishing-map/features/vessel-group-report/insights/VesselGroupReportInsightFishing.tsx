@@ -14,11 +14,13 @@ import VesselGroupReportInsightVesselEvents from './VesselGroupReportInsightVess
 import {
   selectVesselGroupReportVesselsWithNoTakeMpas,
   selectVesselGroupReportVesselsInRfmoWithoutKnownAuthorization,
+  VesselGroupReportInsightVessel,
 } from './vessel-group-report-insights.selectors'
 
 const VesselGroupReportInsightFishing = () => {
   const { t } = useTranslation()
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isMPAExpanded, setIsMPAExpanded] = useState(false)
+  const [isRFMOExpanded, setIsRFMOExpanded] = useState(false)
   const [expandedVesselIds, setExpandedVesselIds] = useState<string[]>([])
   const vesselGroup = useSelector(selectVesselGroupReportData)
   const reportFishingParams = useSelector(selectFetchVesselGroupReportFishingParams)
@@ -31,6 +33,62 @@ const VesselGroupReportInsightFishing = () => {
     selectVesselGroupReportVesselsInRfmoWithoutKnownAuthorization
   )
 
+  const onMPAToggle = (isOpen: boolean) => {
+    if (isOpen !== isMPAExpanded) {
+      setIsMPAExpanded(!isMPAExpanded)
+    }
+    if (!isOpen) {
+      setExpandedVesselIds([])
+    }
+  }
+
+  const onRFMOToggle = (isOpen: boolean) => {
+    if (isOpen !== isRFMOExpanded) {
+      setIsRFMOExpanded(!isRFMOExpanded)
+    }
+    if (!isOpen) {
+      setExpandedVesselIds([])
+    }
+  }
+
+  const getVesselGroupReportInsighFishingVessels = (vessels: VesselGroupReportInsightVessel[]) => {
+    return (
+      <ul>
+        {vessels.map((vessel) => {
+          const vesselId = vessel.identity.id
+          const isExpandedVessel = expandedVesselIds.includes(vesselId)
+          return (
+            <li>
+              <Collapsable
+                id={vesselId}
+                open={isExpandedVessel}
+                className={styles.collapsable}
+                labelClassName={styles.collapsableLabel}
+                label={vessel.identity.nShipname}
+                onToggle={(isOpen, id) => {
+                  setExpandedVesselIds((expandedIds) => {
+                    return isOpen && id
+                      ? [...expandedIds, id]
+                      : expandedIds.filter((vesselId) => vesselId !== id)
+                  })
+                }}
+              >
+                {isExpandedVessel && vessel.datasets?.[0] && (
+                  <VesselGroupReportInsightVesselEvents
+                    ids={vessel.eventsInNoTakeMpas}
+                    datasetId={vessel.datasets[0]}
+                    start={reportFishingParams.start}
+                    end={reportFishingParams.end}
+                  />
+                )}
+              </Collapsable>
+            </li>
+          )
+        })}
+      </ul>
+    )
+  }
+
   return (
     <div id="vessel-group-fishing" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
@@ -42,7 +100,7 @@ const VesselGroupReportInsightFishing = () => {
           terminologyKey="insightsFishing"
         />
       </div>
-      {isLoading ? (
+      {isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
       ) : error ? (
         <InsightError error={error as ParsedAPIError} />
@@ -58,7 +116,7 @@ const VesselGroupReportInsightFishing = () => {
           ) : (
             <Collapsable
               id="no-take-vessels"
-              open={isExpanded}
+              open={isMPAExpanded}
               className={styles.collapsable}
               labelClassName={styles.collapsableLabel}
               label={t('vesselGroups.insights.fishingInNoTakeMpas', {
@@ -70,44 +128,9 @@ const VesselGroupReportInsightFishing = () => {
                 ),
                 vessels: vesselsWithNoTakeMpas?.length,
               })}
-              onToggle={(isOpen) => isOpen !== isExpanded && setIsExpanded(!isExpanded)}
+              onToggle={onMPAToggle}
             >
-              {vesselsWithNoTakeMpas && vesselsWithNoTakeMpas?.length > 0 && (
-                <ul>
-                  {vesselsWithNoTakeMpas.map((vessel) => {
-                    const vesselId = vessel.identity.id
-                    const isExpandedVessel = expandedVesselIds.includes(vesselId)
-                    // TODO: get the proper datasetId
-                    return (
-                      <li>
-                        <Collapsable
-                          id={vesselId}
-                          open={isExpandedVessel}
-                          className={styles.collapsable}
-                          labelClassName={styles.collapsableLabel}
-                          label={vessel.identity.nShipname}
-                          onToggle={(isOpen, id) => {
-                            setExpandedVesselIds((expandedIds) => {
-                              return isOpen && id
-                                ? [...expandedIds, id]
-                                : expandedIds.filter((vesselId) => vesselId !== id)
-                            })
-                          }}
-                        >
-                          {isExpandedVessel && vessel.datasets?.[0] && (
-                            <VesselGroupReportInsightVesselEvents
-                              ids={vessel.eventsInNoTakeMpas}
-                              datasetId={vessel.datasets[0]}
-                              start={reportFishingParams.start}
-                              end={reportFishingParams.end}
-                            />
-                          )}
-                        </Collapsable>
-                      </li>
-                    )
-                  })}
-                </ul>
-              )}
+              {getVesselGroupReportInsighFishingVessels(vesselsWithNoTakeMpas)}
             </Collapsable>
           )}
           {!vesselsInRfmoWithoutKnownAuthorization ||
@@ -121,7 +144,7 @@ const VesselGroupReportInsightFishing = () => {
           ) : (
             <Collapsable
               id="without-known-authorization-vessels"
-              open={isExpanded}
+              open={isRFMOExpanded}
               className={styles.collapsable}
               labelClassName={styles.collapsableLabel}
               label={t('vesselGroups.insights.fishingInRfmoWithoutKnownAuthorization', {
@@ -134,44 +157,9 @@ const VesselGroupReportInsightFishing = () => {
                 ),
                 vessels: vesselsInRfmoWithoutKnownAuthorization.length,
               })}
-              onToggle={(isOpen) => isOpen !== isExpanded && setIsExpanded(!isExpanded)}
+              onToggle={onRFMOToggle}
             >
-              {vesselsInRfmoWithoutKnownAuthorization &&
-                vesselsInRfmoWithoutKnownAuthorization?.length > 0 && (
-                  <ul>
-                    {vesselsInRfmoWithoutKnownAuthorization.map((vessel) => {
-                      const vesselId = vessel.identity.id
-                      const isExpandedVessel = expandedVesselIds.includes(vesselId)
-                      return (
-                        <li>
-                          <Collapsable
-                            id={vesselId}
-                            open={isExpandedVessel}
-                            className={styles.collapsable}
-                            labelClassName={styles.collapsableLabel}
-                            label={vessel.identity.nShipname}
-                            onToggle={(isOpen, id) => {
-                              setExpandedVesselIds((expandedIds) => {
-                                return isOpen && id
-                                  ? [...expandedIds, id]
-                                  : expandedIds.filter((vesselId) => vesselId !== id)
-                              })
-                            }}
-                          >
-                            {isExpandedVessel && vessel.datasets?.[0] && (
-                              <VesselGroupReportInsightVesselEvents
-                                ids={vessel.eventsInRfmoWithoutKnownAuthorization}
-                                datasetId={vessel.datasets[0]}
-                                start={reportFishingParams.start}
-                                end={reportFishingParams.end}
-                              />
-                            )}
-                          </Collapsable>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                )}
+              {getVesselGroupReportInsighFishingVessels(vesselsInRfmoWithoutKnownAuthorization)}
             </Collapsable>
           )}
         </Fragment>
