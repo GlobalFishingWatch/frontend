@@ -4,16 +4,16 @@ import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectVesselGroupReportStatus } from 'features/vessel-group-report/vessel-group-report.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { VesselGroupReportEventsSubsection } from 'features/vessel-groups/vessel-groups.types'
-import { selectVesselGroupReportEventsSubsection } from '../vessel-group.config.selectors'
+import { VGREventsSubsection } from 'features/vessel-groups/vessel-groups.types'
+import { selectVGREventsSubsection } from '../vessel-group.config.selectors'
 
 function VesselGroupReportEventsSubsectionSelector() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroupReportStatus = useSelector(selectVesselGroupReportStatus)
-  const subsection = useSelector(selectVesselGroupReportEventsSubsection)
+  const subsection = useSelector(selectVGREventsSubsection)
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
-  const options: ChoiceOption<VesselGroupReportEventsSubsection>[] = [
+  const options: ChoiceOption<VGREventsSubsection>[] = [
     {
       id: 'encounter-events',
       label: t('event.encounter_other', 'Encounters'),
@@ -42,13 +42,13 @@ function VesselGroupReportEventsSubsectionSelector() {
     },
   ]
 
-  const onSelectSubsection = (option: ChoiceOption<VesselGroupReportEventsSubsection>) => {
+  const onSelectSubsection = (option: ChoiceOption<VGREventsSubsection>) => {
     if (subsection !== option.id) {
       // trackEvent({
       //   category: TrackCategory.Analysis,
       //   action: `Click on ${option.id} activity graph`,
       // })
-      dispatchQueryParams({ vesselGroupReportEventsSubsection: option.id })
+      dispatchQueryParams({ vGREventsSubsection: option.id })
     }
   }
 

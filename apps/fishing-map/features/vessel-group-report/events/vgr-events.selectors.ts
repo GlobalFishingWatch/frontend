@@ -10,21 +10,16 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
-  selectVesselGroupReportEventsResultsPerPage,
-  selectVesselGroupReportEventsSubsection,
-  selectVesselGroupReportEventsVesselFilter,
-  selectVesselGroupReportEventsVesselPage,
+  selectVGREventsResultsPerPage,
+  selectVGREventsSubsection,
+  selectVGREventsVesselFilter,
+  selectVGREventsVesselPage,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { getVesselsFiltered } from 'features/area-report/reports.utils'
 import { REPORT_FILTER_PROPERTIES } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
 
-export const selectFetchVesselGroupReportEventsVesselsParams = createSelector(
-  [
-    selectTimeRange,
-    selectReportVesselGroupId,
-    selectEventsDataviews,
-    selectVesselGroupReportEventsSubsection,
-  ],
+export const selectFetchVGREventsVesselsParams = createSelector(
+  [selectTimeRange, selectReportVesselGroupId, selectEventsDataviews, selectVGREventsSubsection],
   ({ start, end }, reportVesselGroupId, eventsDataviews, eventsSubsection) => {
     const eventsDataview = eventsDataviews.find(({ id }) => id === eventsSubsection)
     if (!reportVesselGroupId || !eventsDataview) {
@@ -39,8 +34,8 @@ export const selectFetchVesselGroupReportEventsVesselsParams = createSelector(
   }
 )
 
-export const selectVesselGroupReportEventsVesselsData = createSelector(
-  [selectVesselGroupEventsStatsApiSlice, selectFetchVesselGroupReportEventsVesselsParams],
+export const selectVGREventsVesselsData = createSelector(
+  [selectVesselGroupEventsStatsApiSlice, selectFetchVGREventsVesselsParams],
   (vesselGroupEventsStatsApi, params) => {
     if (!params) {
       return
@@ -49,8 +44,8 @@ export const selectVesselGroupReportEventsVesselsData = createSelector(
   }
 )
 
-export const selectVesselGroupReportEventsVessels = createSelector(
-  [selectVesselGroupReportEventsVesselsData, selectVesselGroupReportData],
+export const selectVGREventsVessels = createSelector(
+  [selectVGREventsVesselsData, selectVesselGroupReportData],
   (data, vesselGroup) => {
     if (!data || !vesselGroup) {
       return
@@ -71,33 +66,29 @@ export const selectVesselGroupReportEventsVessels = createSelector(
   }
 )
 
-export const selectVesselGroupReportEventsVesselsFiltered = createSelector(
-  [selectVesselGroupReportEventsVessels, selectVesselGroupReportEventsVesselFilter],
+export const selectVGREventsVesselsFiltered = createSelector(
+  [selectVGREventsVessels, selectVGREventsVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
     return getVesselsFiltered(vessels, filter, REPORT_FILTER_PROPERTIES)
   }
 )
 
-export const selectVesselGroupReportEventsVesselsPaginated = createSelector(
-  [
-    selectVesselGroupReportEventsVesselsFiltered,
-    selectVesselGroupReportEventsVesselPage,
-    selectVesselGroupReportEventsResultsPerPage,
-  ],
+export const selectVGREventsVesselsPaginated = createSelector(
+  [selectVGREventsVesselsFiltered, selectVGREventsVesselPage, selectVGREventsResultsPerPage],
   (vessels, page, resultsPerPage) => {
     if (!vessels?.length) return []
     return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
   }
 )
 
-export const selectVesselGroupReportEventsVesselsPagination = createSelector(
+export const selectVGREventsVesselsPagination = createSelector(
   [
-    selectVesselGroupReportEventsVesselsPaginated,
-    selectVesselGroupReportEventsVessels,
-    selectVesselGroupReportEventsVesselsFiltered,
-    selectVesselGroupReportEventsVesselPage,
-    selectVesselGroupReportEventsResultsPerPage,
+    selectVGREventsVesselsPaginated,
+    selectVGREventsVessels,
+    selectVGREventsVesselsFiltered,
+    selectVGREventsVesselPage,
+    selectVGREventsResultsPerPage,
   ],
   (vessels, allVessels, allVesselsFiltered, page = 0, resultsPerPage) => {
     return {

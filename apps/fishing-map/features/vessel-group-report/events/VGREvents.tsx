@@ -8,12 +8,12 @@ import {
 } from 'queries/vessel-group-events-stats-api'
 import { useTranslation } from 'react-i18next'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import VesselGroupReportEventsSubsectionSelector from 'features/vessel-group-report/events/VesselGroupReportEventsSubsectionSelector'
-import VesselGroupReportEventsGraph from 'features/vessel-group-report/events/VesselGroupReportEventsGraph'
+import VGREventsSubsectionSelector from 'features/vessel-group-report/events/VGREventsSubsectionSelector'
+import VGREventsGraph from 'features/vessel-group-report/events/VGREventsGraph'
 import {
-  selectVesselGroupReportEventsSubsection,
-  selectVesselGroupReportEventsVesselFilter,
-  selectVesselGroupReportEventsVesselsProperty,
+  selectVGREventsSubsection,
+  selectVGREventsVesselFilter,
+  selectVGREventsVesselsProperty,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -22,19 +22,19 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import VesselGroupReportVesselsGraph from 'features/vessel-group-report/vessels/VesselGroupReportVesselsGraph'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import VesselGroupReportEventsVesselPropertySelector from 'features/vessel-group-report/events/VesselGroupReportEventsVesselPropertySelector'
-import VesselGroupReportEventsVesselsTable from 'features/vessel-group-report/events/VesselGroupReportEventsVesselsTable'
+import VGREventsVesselPropertySelector from 'features/vessel-group-report/events/VGREventsVesselPropertySelector'
+import VGREventsVesselsTable from 'features/vessel-group-report/events/VGREventsVesselsTable'
 import ReportVesselsFilter from 'features/area-report/vessels/ReportVesselsFilter'
-import styles from './VesselGroupReportEvents.module.css'
+import styles from './VGREvents.module.css'
 
-function VesselGroupReportEvents() {
+function VGREvents() {
   const { t } = useTranslation()
   const vesselGroupId = useSelector(selectReportVesselGroupId)
-  const filter = useSelector(selectVesselGroupReportEventsVesselFilter)
-  const eventsSubsection = useSelector(selectVesselGroupReportEventsSubsection)
+  const filter = useSelector(selectVGREventsVesselFilter)
+  const eventsSubsection = useSelector(selectVGREventsSubsection)
   const eventsDataviews = useSelector(selectEventsDataviews)
   const eventsDataview = eventsDataviews.find(({ id }) => id === eventsSubsection)
-  const vesselsGroupByProperty = useSelector(selectVesselGroupReportEventsVesselsProperty)
+  const vesselsGroupByProperty = useSelector(selectVGREventsVesselsProperty)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   useEffect(() => {
     if (eventsDataview) {
@@ -87,7 +87,7 @@ function VesselGroupReportEvents() {
   return (
     <Fragment>
       <div className={styles.container}>
-        <VesselGroupReportEventsSubsectionSelector />
+        <VGREventsSubsectionSelector />
         <h2 className={styles.summary}>
           {parse(
             t('vesselGroup.summaryEvents', {
@@ -109,7 +109,7 @@ function VesselGroupReportEvents() {
             })
           )}
         </h2>
-        <VesselGroupReportEventsGraph
+        <VGREventsGraph
           color={color}
           start={start}
           end={end}
@@ -120,24 +120,24 @@ function VesselGroupReportEvents() {
       <div className={styles.container}>
         <div className={styles.flex}>
           <label>{t('common.vessels', 'Vessels')}</label>
-          <VesselGroupReportEventsVesselPropertySelector />
+          <VGREventsVesselPropertySelector />
         </div>
         <VesselGroupReportVesselsGraph
           data={filteredGroups as VesselGroupEventsStatsResponseGroups}
           color={eventsDataview?.config?.color}
           property={vesselsGroupByProperty}
-          filterQueryParam="vesselGroupReportEventsVesselFilter"
-          pageQueryParam="vesselGroupReportEventsVesselPage"
+          filterQueryParam="vGREventsVesselFilter"
+          pageQueryParam="vGREventsVesselPage"
         />
         <ReportVesselsFilter
           filter={filter}
-          filterQueryParam="vesselGroupReportEventsVesselFilter"
-          pageQueryParam="vesselGroupReportEventsVesselPage"
+          filterQueryParam="vGREventsVesselFilter"
+          pageQueryParam="vGREventsVesselPage"
         />
-        <VesselGroupReportEventsVesselsTable />
+        <VGREventsVesselsTable />
       </div>
     </Fragment>
   )
 }
 
-export default VesselGroupReportEvents
+export default VGREvents

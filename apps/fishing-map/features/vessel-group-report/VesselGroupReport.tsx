@@ -13,7 +13,7 @@ import {
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
 import { selectVesselGroupReportDataview } from 'features/dataviews/selectors/dataviews.selectors'
-import VesselGroupReportEvents from 'features/vessel-group-report/events/VesselGroupReportEvents'
+import VGREvents from 'features/vessel-group-report/events/VGREvents'
 import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import {
   selectVesselGroupReportData,
@@ -83,7 +83,7 @@ function VesselGroupReport() {
       {
         id: 'events',
         title: t('common.events', 'Events'),
-        content: <VesselGroupReportEvents />,
+        content: <VGREvents />,
       },
     ],
     [t]

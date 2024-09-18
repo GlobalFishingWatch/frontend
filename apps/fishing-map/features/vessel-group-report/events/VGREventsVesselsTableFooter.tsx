@@ -12,19 +12,19 @@ import { REPORT_SHOW_MORE_VESSELS_PER_PAGE, REPORT_VESSELS_PER_PAGE } from 'data
 import { selectVesselGroupReportData } from 'features/vessel-group-report/vessel-group-report.slice'
 import { formatInfoField } from 'utils/info'
 import {
-  selectVesselGroupReportEventsVessels,
-  selectVesselGroupReportEventsVesselsPagination,
-} from 'features/vessel-group-report/events/vessel-group-report-events.selectors'
-import { selectVesselGroupReportEventsVesselFilter } from '../vessel-group.config.selectors'
+  selectVGREventsVessels,
+  selectVGREventsVesselsPagination,
+} from 'features/vessel-group-report/events/vgr-events.selectors'
+import { selectVGREventsVesselFilter } from '../vessel-group.config.selectors'
 import styles from '../vessels/VesselGroupReportVesselsTableFooter.module.css'
 
 export default function VesselGroupReportVesselsTableFooter() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroup = useSelector(selectVesselGroupReportData)
-  const allVessels = useSelector(selectVesselGroupReportEventsVessels)
-  const reportVesselFilter = useSelector(selectVesselGroupReportEventsVesselFilter)
-  const pagination = useSelector(selectVesselGroupReportEventsVesselsPagination)
+  const allVessels = useSelector(selectVGREventsVessels)
+  const reportVesselFilter = useSelector(selectVGREventsVesselFilter)
+  const pagination = useSelector(selectVGREventsVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
 
   if (!allVessels?.length) return null
@@ -47,15 +47,15 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
 
   const onPrevPageClick = () => {
-    dispatchQueryParams({ vesselGroupReportEventsVesselPage: pagination.page - 1 })
+    dispatchQueryParams({ vGREventsVesselPage: pagination.page - 1 })
   }
   const onNextPageClick = () => {
-    dispatchQueryParams({ vesselGroupReportEventsVesselPage: pagination.page + 1 })
+    dispatchQueryParams({ vGREventsVesselPage: pagination.page + 1 })
   }
   const onShowMoreClick = () => {
     dispatchQueryParams({
-      vesselGroupReportEventsResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-      vesselGroupReportEventsVesselPage: 0,
+      vGREventsResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+      vGREventsVesselPage: 0,
     })
     // trackEvent({
     //   category: TrackCategory.Analysis,
@@ -64,7 +64,7 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
   const onShowLessClick = () => {
     dispatchQueryParams({
-      vesselGroupReportEventsResultsPerPage: REPORT_VESSELS_PER_PAGE,
+      vGREventsResultsPerPage: REPORT_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })
     // trackEvent({

@@ -13,16 +13,16 @@ import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
-  selectFetchVesselGroupReportEventsVesselsParams,
-  selectVesselGroupReportEventsVesselsPaginated,
-} from 'features/vessel-group-report/events/vessel-group-report-events.selectors'
-import VesselGroupReportEventsVesselsTableFooter from 'features/vessel-group-report/events/VesselGroupReportEventsVesselsTableFooter'
+  selectFetchVGREventsVesselsParams,
+  selectVGREventsVesselsPaginated,
+} from 'features/vessel-group-report/events/vgr-events.selectors'
+import VGREventsVesselsTableFooter from 'features/vessel-group-report/events/VGREventsVesselsTableFooter'
 import styles from '../vessels/VesselGroupReportVesselsTable.module.css'
 
 export default function VesselGroupReportEventsVesselsTable() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const params = useSelector(selectFetchVesselGroupReportEventsVesselsParams)
+  const params = useSelector(selectFetchVGREventsVesselsParams)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { error, isLoading } = useGetVesselGroupEventsVesselsQuery(
     params as VesselGroupEventsVesselsParams,
@@ -30,7 +30,7 @@ export default function VesselGroupReportEventsVesselsTable() {
       skip: !params,
     }
   )
-  const vessels = useSelector(selectVesselGroupReportEventsVesselsPaginated)
+  const vessels = useSelector(selectVGREventsVesselsPaginated)
 
   const onPinClick = () => {
     dispatchQueryParams({ viewOnlyVesselGroup: false })
@@ -95,7 +95,7 @@ export default function VesselGroupReportEventsVesselsTable() {
           })}
         </div>
       </div>
-      <VesselGroupReportEventsVesselsTableFooter />
+      <VGREventsVesselsTableFooter />
     </Fragment>
   )
 }

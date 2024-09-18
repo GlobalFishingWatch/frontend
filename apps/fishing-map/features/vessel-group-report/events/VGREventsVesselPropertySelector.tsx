@@ -2,14 +2,14 @@ import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Choice, ChoiceOption } from '@globalfishingwatch/ui-components'
 import { useLocationConnect } from 'routes/routes.hook'
-import { VesselGroupReportEventsVesselsProperty } from 'features/vessel-groups/vessel-groups.types'
-import { selectVesselGroupReportEventsVesselsProperty } from '../vessel-group.config.selectors'
+import { VGREventsVesselsProperty } from 'features/vessel-groups/vessel-groups.types'
+import { selectVGREventsVesselsProperty } from '../vessel-group.config.selectors'
 
 function VesselGroupReportEventsVesselPropertySelector() {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
-  const property = useSelector(selectVesselGroupReportEventsVesselsProperty)
-  const options: ChoiceOption<VesselGroupReportEventsVesselsProperty>[] = [
+  const property = useSelector(selectVGREventsVesselsProperty)
+  const options: ChoiceOption<VGREventsVesselsProperty>[] = [
     {
       id: 'flag',
       label: t('common.flag', 'Flag'),
@@ -20,9 +20,9 @@ function VesselGroupReportEventsVesselPropertySelector() {
     },
   ]
 
-  const onSelectSubsection = (option: ChoiceOption<VesselGroupReportEventsVesselsProperty>) => {
+  const onSelectSubsection = (option: ChoiceOption<VGREventsVesselsProperty>) => {
     if (property !== option.id) {
-      dispatchQueryParams({ vesselGroupReportEventsVesselsProperty: option.id })
+      dispatchQueryParams({ vGREventsVesselsProperty: option.id })
     }
   }
 
