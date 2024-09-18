@@ -61,7 +61,8 @@ const ReportGraphTooltip = (props: any) => {
 }
 
 const CustomTick = (props: any) => {
-  const { x, y, payload, width, visibleTicksCount, property } = props
+  const { x, y, payload, width, visibleTicksCount, property, filterQueryParam, pageQueryParam } =
+    props
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
@@ -87,10 +88,10 @@ const CustomTick = (props: any) => {
 
   const onLabelClick = () => {
     dispatchQueryParams({
-      vesselGroupReportVesselFilter: `${
-        filterProperties[property as VesselGroupReportVesselsSubsection]
-      }:${payload.value}`,
-      vesselGroupReportVesselPage: 0,
+      [filterQueryParam]: `${filterProperties[property as VesselGroupReportVesselsSubsection]}:${
+        payload.value
+      }`,
+      [pageQueryParam]: 0,
     })
   }
 
@@ -135,10 +136,14 @@ export default function VesselGroupReportVesselsGraph({
   data,
   color = 'rgb(22, 63, 137)',
   property,
+  filterQueryParam,
+  pageQueryParam,
 }: {
   data: VesselGroupEventsStatsResponseGroups
   color?: string
   property: VesselGroupReportVesselsGraphProperty
+  filterQueryParam: string
+  pageQueryParam: string
 }) {
   return (
     <Fragment>
@@ -168,7 +173,13 @@ export default function VesselGroupReportVesselsGraph({
                 interval="equidistantPreserveStart"
                 tickLine={false}
                 minTickGap={-1000}
-                tick={<CustomTick property={property} />}
+                tick={
+                  <CustomTick
+                    property={property}
+                    filterQueryParam={filterQueryParam}
+                    pageQueryParam={pageQueryParam}
+                  />
+                }
                 tickMargin={0}
               />
             </BarChart>

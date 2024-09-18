@@ -15,7 +15,7 @@ import {
   selectVesselGroupReportEventsVessels,
   selectVesselGroupReportEventsVesselsPagination,
 } from 'features/vessel-group-report/events/vessel-group-report-events.selectors'
-import { selectVesselGroupReportVesselFilter } from '../vessel-group.config.selectors'
+import { selectVesselGroupReportEventsVesselFilter } from '../vessel-group.config.selectors'
 import styles from '../vessels/VesselGroupReportVesselsTableFooter.module.css'
 
 export default function VesselGroupReportVesselsTableFooter() {
@@ -23,7 +23,7 @@ export default function VesselGroupReportVesselsTableFooter() {
   const { dispatchQueryParams } = useLocationConnect()
   const vesselGroup = useSelector(selectVesselGroupReportData)
   const allVessels = useSelector(selectVesselGroupReportEventsVessels)
-  const reportVesselFilter = useSelector(selectVesselGroupReportVesselFilter)
+  const reportVesselFilter = useSelector(selectVesselGroupReportEventsVesselFilter)
   const pagination = useSelector(selectVesselGroupReportEventsVesselsPagination)
   const { start, end } = useSelector(selectTimeRange)
 

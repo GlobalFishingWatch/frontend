@@ -12,8 +12,8 @@ import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.ca
 import {
   selectVesselGroupReportEventsResultsPerPage,
   selectVesselGroupReportEventsSubsection,
+  selectVesselGroupReportEventsVesselFilter,
   selectVesselGroupReportEventsVesselPage,
-  selectVesselGroupReportVesselFilter,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { getVesselsFiltered } from 'features/area-report/reports.utils'
 import { REPORT_FILTER_PROPERTIES } from 'features/vessel-group-report/vessels/vessel-group-report-vessels.selectors'
@@ -60,14 +60,14 @@ export const selectVesselGroupReportEventsVessels = createSelector(
       if (!vesselWithEvents) {
         return []
       }
-      return { ...vesselWithEvents, identity: getSearchIdentityResolved(vessel) }
+      return { ...vesselWithEvents, ...getSearchIdentityResolved(vessel) }
     })
     return insightVessels.sort((a, b) => b.numEvents - a.numEvents)
   }
 )
 
 export const selectVesselGroupReportEventsVesselsFiltered = createSelector(
-  [selectVesselGroupReportEventsVessels, selectVesselGroupReportVesselFilter],
+  [selectVesselGroupReportEventsVessels, selectVesselGroupReportEventsVesselFilter],
   (vessels, filter) => {
     if (!vessels?.length) return null
     return getVesselsFiltered(vessels, filter, REPORT_FILTER_PROPERTIES)

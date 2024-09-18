@@ -56,6 +56,8 @@ function VesselGroupReportVessels() {
         data={data}
         color={reportDataview?.config?.color}
         property={subsection as VesselGroupReportVesselsGraphProperty}
+        filterQueryParam="vesselGroupReportVesselFilter"
+        pageQueryParam="vesselGroupReportVesselPage"
       />
       <ReportVesselsFilter
         filter={filter}

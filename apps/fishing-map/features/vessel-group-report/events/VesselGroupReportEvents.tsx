@@ -9,6 +9,7 @@ import VesselGroupReportEventsSubsectionSelector from 'features/vessel-group-rep
 import VesselGroupReportEventsGraph from 'features/vessel-group-report/events/VesselGroupReportEventsGraph'
 import {
   selectVesselGroupReportEventsSubsection,
+  selectVesselGroupReportEventsVesselFilter,
   selectVesselGroupReportEventsVesselsProperty,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -20,11 +21,13 @@ import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import VesselGroupReportEventsVesselPropertySelector from 'features/vessel-group-report/events/VesselGroupReportEventsVesselPropertySelector'
 import VesselGroupReportEventsVesselsTable from 'features/vessel-group-report/events/VesselGroupReportEventsVesselsTable'
+import ReportVesselsFilter from 'features/area-report/vessels/ReportVesselsFilter'
 import styles from './VesselGroupReportEvents.module.css'
 
 function VesselGroupReportEvents() {
   const { t } = useTranslation()
   const vesselGroupId = useSelector(selectReportVesselGroupId)
+  const filter = useSelector(selectVesselGroupReportEventsVesselFilter)
   const eventsSubsection = useSelector(selectVesselGroupReportEventsSubsection)
   const eventsDataviews = useSelector(selectEventsDataviews)
   const eventsDataview = eventsDataviews.find(({ id }) => id === eventsSubsection)
@@ -113,6 +116,13 @@ function VesselGroupReportEvents() {
           data={data.groups}
           color={eventsDataview?.config?.color}
           property={vesselsGroupByProperty}
+          filterQueryParam="vesselGroupReportEventsVesselFilter"
+          pageQueryParam="vesselGroupReportEventsVesselPage"
+        />
+        <ReportVesselsFilter
+          filter={filter}
+          filterQueryParam="vesselGroupReportEventsVesselFilter"
+          pageQueryParam="vesselGroupReportEventsVesselPage"
         />
         <VesselGroupReportEventsVesselsTable />
       </div>

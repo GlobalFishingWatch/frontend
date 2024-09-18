@@ -49,13 +49,8 @@ export default function VesselGroupReportEventsVesselsTable() {
           <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
           <div className={styles.header}>{t('layer.flagState_one', 'Flag state')}</div>
           <div className={styles.header}>{t('common.events', 'events')}</div>
-          {/* <div className={styles.header}>
-            {t('vessel.vessel_type', 'Vessel Type')}
-          </div> */}
           {vessels?.map((vessel, i) => {
-            const { vesselId, numEvents, identity } = vessel
-            const { shipname, flag, ssvid, dataset } = identity || {}
-            console.log('identity:', identity)
+            const { vesselId, numEvents, shipname, flag, ssvid, dataset } = vessel
             const isLastRow = i === vessels.length - 1
             const name = formatInfoField(shipname, 'name') as string
             const workspaceReady = workspaceStatus === AsyncReducerStatus.Finished
