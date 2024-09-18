@@ -1,7 +1,11 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
+import { RootState } from 'reducers'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getDataviewSqlFiltersResolved,
+  UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import {
   DataviewDatasetConfig,
@@ -153,7 +157,7 @@ const getInteractionEndpointDatasetConfig = (
     ],
   }
 
-  const filters = featuresDataviews.map((dv) => dv.config?.filter || '')
+  const filters = featuresDataviews.map((dataview) => getDataviewSqlFiltersResolved(dataview) || '')
   if (filters.length) {
     datasetConfig.query?.push({ id: 'filters', value: filters })
   }
@@ -363,13 +367,13 @@ export const fetchClusterEventThunk = createAsyncThunk<
     dispatch: AppDispatch
   }
 >('map/fetchEncounterEvent', async (eventFeature, { signal, getState }) => {
-  const state = getState() as any
+  const state = getState() as RootState
   const eventDataviews = selectEventsDataviews(state) || []
   const dataview = eventDataviews.find((d) => d.id === eventFeature.layerId)
   const eventsDataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   let interactionId = eventFeature.id
-  let eventId: string | undefined
-  if (interactionId && eventsDataset) {
+  let eventId: string | undefined = eventFeature.eventId
+  if (!eventId && interactionId && eventsDataset) {
     const start = getUTCDate(eventFeature?.startTime).toISOString()
     const end = getUTCDate(eventFeature?.endTime).toISOString()
     const datasetConfig: DataviewDatasetConfig = {
@@ -389,6 +393,10 @@ export const fetchClusterEventThunk = createAsyncThunk<
           value: [eventsDataset.id],
         },
       ],
+    }
+    if (dataview) {
+      const filters = getDataviewSqlFiltersResolved(dataview)
+      datasetConfig.query?.push({ id: 'filters', value: filters })
     }
     const interactionUrl = resolveEndpoint(eventsDataset, datasetConfig)
     if (interactionUrl) {

@@ -51,7 +51,8 @@
         "production": {
           "buildTarget": "image-labeler:build:production"
         }
-      }
+      },
+      "dependsOn": ["build"]
     }
   }
 }

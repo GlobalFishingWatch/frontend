@@ -86,7 +86,7 @@ type SupportedActivityDatasetSchema =
   | 'visibleValues'
   | 'callsign'
   | 'shipname'
-  | 'mmsi'
+  | 'ssvid'
   | 'imo'
   | 'label'
 

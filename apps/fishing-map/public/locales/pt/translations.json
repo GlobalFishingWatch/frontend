@@ -597,6 +597,7 @@
     "drawPolygon": "Desenhe uma camada",
     "drawPolygonLogin": "Registre-se e faça login para desenhar uma camada (grátis, 2 minutos)",
     "editDraw": "Editar desenho",
+    "editPointHint": "Click on the point to adjust their coordinates",
     "editPolygonHint": "Clique nos cantos do polígono para ajustar suas coordenadas",
     "filterClose": "Fechar filtros",
     "filterOpen": "Abrir filtros",

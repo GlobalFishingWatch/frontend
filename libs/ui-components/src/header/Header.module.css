@@ -24,6 +24,7 @@
   color: var(--color-primary-blue);
 }
 
+.navLabel:hover,
 .itemLabel:hover {
   color: var(--color-highlight, #ff6b6b);
 }
@@ -175,9 +176,9 @@
   padding: var(--space-M, 20px);
 }
 
-/* .navItem:hover {
+.navItem:hover {
   background: white;
-} */
+}
 
 .navItem .highlightBtn {
   height: auto;
