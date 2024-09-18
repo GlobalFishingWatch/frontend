@@ -20,6 +20,9 @@ export type VesselGroupReportState = {
   vesselGroupReportVesselPage?: number
   vesselGroupReportResultsPerPage?: number
   vesselGroupReportVesselFilter?: string
+  vesselGroupReportEventsVesselPage?: number
+  vesselGroupReportEventsResultsPerPage?: number
+  vesselGroupReportEventsVesselFilter?: string
   vesselGroupReportVesselsOrderProperty?: VesselGroupReportVesselsOrderProperty
   vesselGroupReportVesselsOrderDirection?: VesselGroupReportVesselsOrderDirection
 }

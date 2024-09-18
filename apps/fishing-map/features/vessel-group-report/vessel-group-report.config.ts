@@ -12,6 +12,8 @@ export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
   vesselGroupReportEventsVesselsProperty: 'flag',
   vesselGroupReportVesselPage: 0,
   vesselGroupReportResultsPerPage: REPORT_VESSELS_PER_PAGE,
+  vesselGroupReportEventsVesselPage: 0,
+  vesselGroupReportEventsResultsPerPage: REPORT_VESSELS_PER_PAGE,
   vesselGroupReportVesselsOrderProperty: 'shipname',
   vesselGroupReportVesselsOrderDirection: 'asc',
 }

@@ -60,7 +60,7 @@ export const selectVesselGroupReportVesselsParsed = createSelector(
 )
 
 type ReportFilterProperty = FilterProperty | 'source'
-const REPORT_FILTER_PROPERTIES: Record<ReportFilterProperty, string[]> = {
+export const REPORT_FILTER_PROPERTIES: Record<ReportFilterProperty, string[]> = {
   ...FILTER_PROPERTIES,
   source: ['source'],
 }

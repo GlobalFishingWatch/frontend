@@ -19,6 +19,7 @@ import VesselGroupReportVesselsGraph from 'features/vessel-group-report/vessels/
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import VesselGroupReportEventsVesselPropertySelector from 'features/vessel-group-report/events/VesselGroupReportEventsVesselPropertySelector'
+import VesselGroupReportEventsVesselsTable from 'features/vessel-group-report/events/VesselGroupReportEventsVesselsTable'
 import styles from './VesselGroupReportEvents.module.css'
 
 function VesselGroupReportEvents() {
@@ -113,6 +114,7 @@ function VesselGroupReportEvents() {
           color={eventsDataview?.config?.color}
           property={vesselsGroupByProperty}
         />
+        <VesselGroupReportEventsVesselsTable />
       </div>
     </Fragment>
   )
