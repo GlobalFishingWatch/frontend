@@ -31,7 +31,7 @@ export const fetchVesselGroupReportThunk = createAsyncThunk(
     try {
       const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
       const vesselGroupVessels = await GFWAPI.fetch<APIPagination<IdentityVessel>>(
-        `/vessels?${stringify({ 'vessel-groups': [vesselGroupId], cache: false })}`,
+        `/vessels?${stringify({ 'vessel-groups': [vesselGroupId] })}`,
         { cache: 'reload' }
       )
       return {

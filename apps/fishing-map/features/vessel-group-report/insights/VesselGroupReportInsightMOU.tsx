@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
@@ -12,7 +13,7 @@ import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFie
 import { formatInfoField } from 'utils/info'
 import { selectVesselGroupReportData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportMOUParams } from '../vessel-group-report.selectors'
-import styles from './VesselGroupReportInsight.module.css'
+import styles from './VesselGroupReportInsights.module.css'
 import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
 import {
   MOUInsightCountry,
@@ -40,17 +41,17 @@ const VesselsInMOUByCategory = ({
     <Collapsable
       open={expanded}
       className={styles.collapsable}
-      labelClassName={styles.collapsableLabel}
+      labelClassName={cx(styles.collapsableLabel, styles.row)}
       label={label}
       onToggle={onToggle}
     >
       {Object.keys(insightsByVessel)?.length > 0 && (
-        <ul>
+        <ul className={styles.nested}>
           {Object.values(insightsByVessel).map((insights) => {
             const name = formatInfoField(insights[0].vessel.shipname, 'name')
             const flags = Array.from(new Set(insights.map((i) => i.insight.reference)))
             return (
-              <li>
+              <li className={styles.row}>
                 {name} ({flags.map((f) => formatInfoField(f, 'flag')).join(',')})
               </li>
             )
@@ -100,17 +101,19 @@ const VesselGroupReportInsightMOU = () => {
       }
       const uniqVessels = Array.from(new Set(vesselInsights.map((v) => v.vessel.id)))
       return (
-        <VesselsInMOUByCategory
-          key={list}
-          insights={vesselInsights}
-          expanded={insightsExpanded.includes(`${country}-${list}`)}
-          onToggle={(isOpen) => onToggle(isOpen, list)}
-          label={t(`vesselGroupReport.insights.MOUListsCount`, {
-            vessels: uniqVessels.length,
-            list: t(`insights.lists.${list}`, list),
-            defaultValue: `{{vessels}} vessels operated under a flag present on the {{list}} list`,
-          })}
-        />
+        <div className={styles.nested}>
+          <VesselsInMOUByCategory
+            key={list}
+            insights={vesselInsights}
+            expanded={insightsExpanded.includes(`${country}-${list}`)}
+            onToggle={(isOpen) => onToggle(isOpen, list)}
+            label={t(`vesselGroupReport.insights.MOUListsCount`, {
+              vessels: uniqVessels.length,
+              list: t(`insights.lists.${list}`, list),
+              defaultValue: `{{vessels}} vessels operated under a flag present on the {{list}} list`,
+            })}
+          />
+        </div>
       )
     })
   }
@@ -133,32 +136,34 @@ const VesselGroupReportInsightMOU = () => {
       ) : error ? (
         <InsightError error={error as ParsedAPIError} />
       ) : (
-        <Fragment>
-          <label>{t('insights.countries.paris', 'Paris')}</label>
-          {hasVesselsInParisMOU ? (
-            getVesselsInMOU(MOUVesselsGrouped.paris, 'paris')
-          ) : (
-            <p>
-              {t('vesselGroupReport.insights.MOUListsEmpty', {
-                defaultValue:
-                  'No vessels flying under a flag present on the {{country}} MOU black or grey lists',
-                country: t('insights.countries.paris', 'Paris'),
-              })}
-            </p>
-          )}
-          <label>{t('insights.countries.tokyo', 'Tokyo')}</label>
-          {hasVesselsInTokyoMOU ? (
-            getVesselsInMOU(MOUVesselsGrouped.tokyo, 'tokyo')
-          ) : (
-            <p>
-              {t('vesselGroupReport.insights.MOUListsEmpty', {
-                defaultValue:
-                  'No vessels flying under a flag present on the {{country}} MOU black or grey lists',
-                country: t('insights.countries.tokyo', 'Tokyo'),
-              })}
-            </p>
-          )}
-        </Fragment>
+        <div className={styles.insightContent}>
+          <div className={styles.nested}>
+            <label className={styles.row}>{t('insights.countries.paris', 'Paris')}</label>
+            {hasVesselsInParisMOU ? (
+              getVesselsInMOU(MOUVesselsGrouped.paris, 'paris')
+            ) : (
+              <p className={cx(styles.secondary, styles.nested, styles.row)}>
+                {t('vesselGroupReport.insights.MOUListsEmpty', {
+                  defaultValue:
+                    'No vessels flying under a flag present on the {{country}} MOU black or grey lists',
+                  country: t('insights.countries.paris', 'Paris'),
+                })}
+              </p>
+            )}
+            <label className={styles.row}>{t('insights.countries.tokyo', 'Tokyo')}</label>
+            {hasVesselsInTokyoMOU ? (
+              getVesselsInMOU(MOUVesselsGrouped.tokyo, 'tokyo')
+            ) : (
+              <p className={cx(styles.secondary, styles.nested, styles.row)}>
+                {t('vesselGroupReport.insights.MOUListsEmpty', {
+                  defaultValue:
+                    'No vessels flying under a flag present on the {{country}} MOU black or grey lists',
+                  country: t('insights.countries.tokyo', 'Tokyo'),
+                })}
+              </p>
+            )}
+          </div>
+        </div>
       )}
     </div>
   )

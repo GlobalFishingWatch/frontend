@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
 import { useState } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
@@ -11,7 +12,7 @@ import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFie
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectVesselGroupReportData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportFlagChangeParams } from '../vessel-group-report.selectors'
-import styles from './VesselGroupReportInsight.module.css'
+import styles from './VesselGroupReportInsights.module.css'
 import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
 import { selectVesselGroupReportFlagChangesVessels } from './vessel-group-report-insights.selectors'
 
@@ -46,36 +47,38 @@ const VesselGroupReportInsightFlagChange = () => {
       ) : error ? (
         <InsightError error={error as ParsedAPIError} />
       ) : !vesselsWithFlagChanges || vesselsWithFlagChanges.length === 0 ? (
-        <span className={styles.secondary}>
+        <span className={cx(styles.secondary, styles.nested, styles.row)}>
           {t(
             'vesselGroupReport.insights.flagChangesEmpty',
             'There are no vessels with flag changes'
           )}
         </span>
       ) : (
-        <Collapsable
-          id="no-take-vessels"
-          open={isExpanded}
-          className={styles.collapsable}
-          labelClassName={styles.collapsableLabel}
-          label={t('vesselGroupReport.insights.flagChangesCount', {
-            defaultValue: '{{vessels}} vessels had flag changes',
-            vessels: vesselsWithFlagChanges.length,
-          })}
-          onToggle={(isOpen) => isOpen !== isExpanded && setIsExpanded(!isExpanded)}
-        >
-          <ul>
-            {vesselsWithFlagChanges.map((vessel) => (
-              <li key={vessel.identity.id} className={styles.vessel}>
-                {formatInfoField(vessel.identity.shipname, 'name')} (
-                {vessel.flagsChanges?.valuesInThePeriod.map((v) =>
-                  formatInfoField(v.value, 'flag')
-                )}
-                )
-              </li>
-            ))}
-          </ul>
-        </Collapsable>
+        <div className={styles.nested}>
+          <Collapsable
+            id="no-take-vessels"
+            open={isExpanded}
+            className={styles.collapsable}
+            labelClassName={cx(styles.collapsableLabel, styles.row)}
+            label={t('vesselGroupReport.insights.flagChangesCount', {
+              defaultValue: '{{vessels}} vessels had flag changes',
+              vessels: vesselsWithFlagChanges.length,
+            })}
+            onToggle={(isOpen) => isOpen !== isExpanded && setIsExpanded(!isExpanded)}
+          >
+            <ul className={styles.nested}>
+              {vesselsWithFlagChanges.map((vessel) => (
+                <li key={vessel.identity.id} className={cx(styles.vessel, styles.row)}>
+                  {formatInfoField(vessel.identity.shipname, 'name')} (
+                  {vessel.flagsChanges?.valuesInThePeriod.map((v) =>
+                    formatInfoField(v.value, 'flag')
+                  )}
+                  )
+                </li>
+              ))}
+            </ul>
+          </Collapsable>
+        </div>
       )}
     </div>
   )

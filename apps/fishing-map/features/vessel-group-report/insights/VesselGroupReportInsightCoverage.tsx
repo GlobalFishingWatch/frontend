@@ -5,7 +5,7 @@ import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectFetchVesselGroupReportCoverageParams } from '../vessel-group-report.selectors'
-import styles from './VesselGroupReportInsight.module.css'
+import styles from './VesselGroupReportInsights.module.css'
 import VesselGroupReportInsightCoverageGraph from './VesselGroupReportInsightCoverageGraph'
 
 const VesselGroupReportInsightCoveragePlaceholder = () => {

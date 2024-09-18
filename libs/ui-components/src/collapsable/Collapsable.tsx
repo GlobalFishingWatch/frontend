@@ -27,7 +27,7 @@ export function Collapsable(props: CollapsableProps) {
     <details id={id} open={open} className={styles.details} onToggle={handleToggle}>
       <summary className={cx(styles.summary, className)}>
         <span className={cx(styles.label, labelClassName)}>{label}</span>
-        <Icon className={styles.icon} icon="arrow-down" />
+        <Icon className={cx(styles.icon, 'print-hidden')} icon="arrow-down" />
       </summary>
       {children}
     </details>

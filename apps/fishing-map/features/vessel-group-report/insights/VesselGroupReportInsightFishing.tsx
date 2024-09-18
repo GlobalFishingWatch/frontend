@@ -1,14 +1,16 @@
 import { useTranslation } from 'react-i18next'
 import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
+import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
+import { formatInfoField } from 'utils/info'
 import { selectVesselGroupReportData } from '../vessel-group-report.slice'
 import { selectFetchVesselGroupReportFishingParams } from '../vessel-group-report.selectors'
-import styles from './VesselGroupReportInsight.module.css'
+import styles from './VesselGroupReportInsights.module.css'
 import VesselGroupReportInsightPlaceholder from './VesselGroupReportInsightsPlaceholders'
 import VesselGroupReportInsightVesselEvents from './VesselGroupReportInsightVesselEvents'
 import {
@@ -53,18 +55,18 @@ const VesselGroupReportInsightFishing = () => {
 
   const getVesselGroupReportInsighFishingVessels = (vessels: VesselGroupReportInsightVessel[]) => {
     return (
-      <ul>
+      <ul className={cx(styles.nested, styles.row)}>
         {vessels.map((vessel) => {
           const vesselId = vessel.identity.id
           const isExpandedVessel = expandedVesselIds.includes(vesselId)
           return (
-            <li>
+            <li className={styles.row}>
               <Collapsable
                 id={vesselId}
                 open={isExpandedVessel}
                 className={styles.collapsable}
                 labelClassName={styles.collapsableLabel}
-                label={vessel.identity.nShipname}
+                label={formatInfoField(vessel.identity.shipname, 'name')}
                 onToggle={(isOpen, id) => {
                   setExpandedVesselIds((expandedIds) => {
                     return isOpen && id
@@ -105,14 +107,14 @@ const VesselGroupReportInsightFishing = () => {
       ) : error ? (
         <InsightError error={error as ParsedAPIError} />
       ) : (
-        <Fragment>
+        <div className={styles.nested}>
           {!vesselsWithNoTakeMpas || vesselsWithNoTakeMpas?.length === 0 ? (
-            <label>
+            <p className={cx(styles.secondary, styles.row)}>
               {t(
                 'vessel.insights.fishingEventsInNoTakeMpasEmpty',
                 'No fishing events detected in no-take MPAs'
               )}
-            </label>
+            </p>
           ) : (
             <Collapsable
               id="no-take-vessels"
@@ -135,12 +137,12 @@ const VesselGroupReportInsightFishing = () => {
           )}
           {!vesselsInRfmoWithoutKnownAuthorization ||
           !vesselsInRfmoWithoutKnownAuthorization?.length ? (
-            <label>
+            <p className={cx(styles.secondary, styles.row)}>
               {t(
                 'vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty',
                 'No fishing events detected outside known RFMO authorized areas'
               )}
-            </label>
+            </p>
           ) : (
             <Collapsable
               id="without-known-authorization-vessels"
@@ -162,7 +164,7 @@ const VesselGroupReportInsightFishing = () => {
               {getVesselGroupReportInsighFishingVessels(vesselsInRfmoWithoutKnownAuthorization)}
             </Collapsable>
           )}
-        </Fragment>
+        </div>
       )}
     </div>
   )
