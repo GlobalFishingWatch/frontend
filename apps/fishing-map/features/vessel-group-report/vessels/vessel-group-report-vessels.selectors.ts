@@ -4,7 +4,7 @@ import { IdentityVessel } from '@globalfishingwatch/api-types'
 import { OTHER_CATEGORY_LABEL } from 'features/vessel-group-report/vessel-group-report.config'
 import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import {
-  selectVGRResultsPerPage,
+  selectVGRVesselsResultsPerPage,
   selectVGRVesselFilter,
   selectVGRVesselPage,
 } from 'features/vessel-group-report/vessel-group.config.selectors'
@@ -129,7 +129,7 @@ export const selectVGRVesselsOrdered = createSelector(
 )
 
 export const selectVGRVesselsPaginated = createSelector(
-  [selectVGRVesselsOrdered, selectVGRVesselPage, selectVGRResultsPerPage],
+  [selectVGRVesselsOrdered, selectVGRVesselPage, selectVGRVesselsResultsPerPage],
   (vessels, page, resultsPerPage) => {
     if (!vessels?.length) return []
     return vessels.slice(resultsPerPage * page, resultsPerPage * (page + 1))
@@ -142,7 +142,7 @@ export const selectVGRVesselsPagination = createSelector(
     selectVGRVessels,
     selectVGRVesselsFiltered,
     selectVGRVesselPage,
-    selectVGRResultsPerPage,
+    selectVGRVesselsResultsPerPage,
   ],
   (vessels, allVessels, allVesselsFiltered, page = 0, resultsPerPage) => {
     return {

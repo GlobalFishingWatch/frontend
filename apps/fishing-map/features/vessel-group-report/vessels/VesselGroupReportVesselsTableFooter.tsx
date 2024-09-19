@@ -55,7 +55,7 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
   const onShowMoreClick = () => {
     dispatchQueryParams({
-      vGRResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+      vGRVesselsResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
       vGRVesselPage: 0,
     })
     // trackEvent({
@@ -65,7 +65,7 @@ export default function VesselGroupReportVesselsTableFooter() {
   }
   const onShowLessClick = () => {
     dispatchQueryParams({
-      vGRResultsPerPage: REPORT_VESSELS_PER_PAGE,
+      vGRVesselsResultsPerPage: REPORT_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })
     // trackEvent({

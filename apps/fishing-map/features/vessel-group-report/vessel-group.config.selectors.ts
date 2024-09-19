@@ -22,15 +22,15 @@ export const selectViewOnlyVesselGroup = selectVGRStateProperty('viewOnlyVesselG
 export const selectVGRSection = selectVGRStateProperty('vGRSection')
 export const selectVGRVesselsSubsection = selectVGRStateProperty('vGRVesselsSubsection')
 export const selectVGRActivitySubsection = selectVGRStateProperty('vGRActivitySubsection')
-export const selectVGREventsSubsection = selectVGRStateProperty('vGREventsSubsection')
-export const selectVGREventsVesselsProperty = selectVGRStateProperty('vGREventsVesselsProperty')
 
 export const selectVGRVesselFilter = selectVGRStateProperty('vGRVesselFilter')
 export const selectVGRVesselPage = selectVGRStateProperty('vGRVesselPage')
-export const selectVGRResultsPerPage = selectVGRStateProperty('vGRResultsPerPage')
+export const selectVGRVesselsResultsPerPage = selectVGRStateProperty('vGRVesselsResultsPerPage')
 export const selectVGRVesselsOrderProperty = selectVGRStateProperty('vGRVesselsOrderProperty')
 export const selectVGRVesselsOrderDirection = selectVGRStateProperty('vGRVesselsOrderDirection')
 
+export const selectVGREventsSubsection = selectVGRStateProperty('vGREventsSubsection')
+export const selectVGREventsVesselsProperty = selectVGRStateProperty('vGREventsVesselsProperty')
 export const selectVGREventsVesselFilter = selectVGRStateProperty('vGREventsVesselFilter')
 export const selectVGREventsVesselPage = selectVGRStateProperty('vGREventsVesselPage')
 export const selectVGREventsResultsPerPage = selectVGRStateProperty('vGREventsResultsPerPage')

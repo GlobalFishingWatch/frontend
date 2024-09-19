@@ -14,7 +14,7 @@ export type VesselGroupReportState = {
   vGREventsSubsection?: VGREventsSubsection
   vGREventsVesselsProperty?: VGREventsVesselsProperty
   vGRVesselPage?: number
-  vGRResultsPerPage?: number
+  vGRVesselsResultsPerPage?: number
   vGRVesselFilter?: string
   vGREventsVesselPage?: number
   vGREventsResultsPerPage?: number

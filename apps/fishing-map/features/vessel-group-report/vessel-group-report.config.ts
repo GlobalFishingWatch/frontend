@@ -11,7 +11,7 @@ export const DEFAULT_VESSEL_GROUP_REPORT_STATE: VesselGroupReportState = {
   vGREventsSubsection: 'encounter-events',
   vGREventsVesselsProperty: 'flag',
   vGRVesselPage: 0,
-  vGRResultsPerPage: REPORT_VESSELS_PER_PAGE,
+  vGRVesselsResultsPerPage: REPORT_VESSELS_PER_PAGE,
   vGREventsVesselPage: 0,
   vGREventsResultsPerPage: REPORT_VESSELS_PER_PAGE,
   vGRVesselsOrderProperty: 'shipname',
